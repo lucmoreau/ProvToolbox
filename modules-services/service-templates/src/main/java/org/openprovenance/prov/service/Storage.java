@@ -16,7 +16,7 @@ public class Storage {
     static Logger logger = LogManager.getLogger(Storage.class);
 
     public Connection setup(String host, String username, String password) {
-        host="localhost"; // "localhost
+        //host="localhost"; // "localhost
         String url = "jdbc:postgresql://" + host + ":5432/templates?sslmode=disable";
         Properties props = new Properties();
         props.setProperty("user", username);

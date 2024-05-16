@@ -304,14 +304,20 @@ public class CompilerSqlComposer {
 
 
         String PRELUDE_TO_AUTO_GENERATE="\n\n--- PRELUDE_TO_AUTO_GENERATE\n\n " +
-   /*             "CREATE OR REPLACE FUNCTION insert_into_activity (input_id BIGINT)\n" +
+               "CREATE OR REPLACE FUNCTION insert_into_activity (input_id BIGINT)\n" +
                 "    returns table(id INT)\n" +
                 "as $$\n" +
                 "INSERT INTO activity (id)\n" +
                 "SELECT input_id\n" +
                 "RETURNING activity.id as id\n" +
                 "$$ language SQL;\n" +
-                "\n\n" + */
+                "\n\n" +
+                "CREATE TABLE IF NOT EXISTS policy (\n" +
+                "  id SERIAL,\n" +
+                "  serial INT,\n" +
+                "  created_at timestamp with time zone NOT NULL DEFAULT NOW()\n" +
+                " );\n" +
+                "\n\n" +
                 "CREATE OR REPLACE FUNCTION insert_into_policy (input_id BIGINT, input_serial INT)\n" +
                 "                    returns table(id INT) \n" +
                 "                as $$\n" +
@@ -319,7 +325,17 @@ public class CompilerSqlComposer {
                 "                SELECT input_id, input_serial\n" +
                 "                RETURNING policy.id as id\n" +
                 "                $$ language SQL;\n" +
-                "\t\t\t\t"
+                "\t\t\t\t" +
+                "CREATE TABLE IF NOT EXISTS plead_transforming_composite_linker\n" +
+                "(\n" +
+                "  ID SERIAL,\n" +
+                "    --  The file resulting from transformation\n" +
+                "  composite INT,\n" +
+                "  --  The file that was transformed\n" +
+                "  simple INT,\n" +
+                "  created_at timestamp with time zone NOT NULL DEFAULT NOW()\n" +
+                ");\n" +
+
   /*              "\n\n" +
                 "CREATE OR REPLACE FUNCTION insert_into_assembled_collection (input_id BIGINT)\n" +
                 "    returns table(id INT)\n" +
@@ -340,6 +356,7 @@ public class CompilerSqlComposer {
                 "$$ language SQL;\n" +
                 "\n\n" +
                 "\t\t\t\t"+
+                */
                 "\n\n" +
                 "CREATE OR REPLACE FUNCTION insert_into_file (input_id BIGINT)\n" +
                 "    returns table(id INT)\n" +
@@ -349,7 +366,7 @@ public class CompilerSqlComposer {
                 "RETURNING file.id as id\n" +
                 "$$ language SQL;\n" +
                 "\n\n"
-                */
+
 
 
 

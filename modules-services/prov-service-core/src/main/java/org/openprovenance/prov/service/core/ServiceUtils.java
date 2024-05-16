@@ -122,59 +122,65 @@ public class ServiceUtils {
         if (formData.get("translate") != null) {
             String val = getFormDataValue(formData, "translate");
             if (val != null) {
-                if ("json".equals(val))
-                    return Destination.JSON;
-                if ("jsonld".equals(val))
-                    return Destination.JSONLD;
-                if ("provx".equals(val))
-                    return Destination.XML;
-                if ("provn".equals(val))
-                    return Destination.PROVN;
-                if ("turtle".equals(val))
-                    return Destination.TURTLE;
-                if ("trig".equals(val))
-                    return Destination.TRIG;
-                if ("svg".equals(val))
-                    return Destination.SVG;
-                if ("jpg".equals(val))
-                    return Destination.JPG;
+                switch (val) {
+                    case "json":
+                        return Destination.JSON;
+                    case "png":
+                        return Destination.PNG;
+                    case "jsonld":
+                        return Destination.JSONLD;
+                    case "provx":
+                        return Destination.XML;
+                    case "provn":
+                        return Destination.PROVN;
+                    case "pdf":
+                        return Destination.PDF;
+                    case "svg":
+                        return Destination.SVG;
+                    case "jpg":
+                        return Destination.JPG;
+                }
             }
         }
         if (formData.get("expand") != null) {
             String val = getFormDataValue(formData, "expand");
             if (val != null) {
-                if ("json".equals(val))
-                    return Destination.JSON;
-                if ("jsonld".equals(val))
-                    return Destination.JSONLD;
-                if ("provx".equals(val))
-                    return Destination.XML;
-                if ("provn".equals(val))
-                    return Destination.PROVN;
-                if ("turtle".equals(val))
-                    return Destination.TURTLE;
-                if ("trig".equals(val))
-                    return Destination.TRIG;
-                if ("svg".equals(val))
-                    return Destination.SVG;
+                switch (val) {
+                    case "json":
+                        return Destination.JSON;
+                    case "jsonld":
+                        return Destination.JSONLD;
+                    case "provx":
+                        return Destination.XML;
+                    case "provn":
+                        return Destination.PROVN;
+                    case "png":
+                        return Destination.PNG;
+                    case "pdf":
+                        return Destination.PDF;
+                    case "svg":
+                        return Destination.SVG;
+                }
                 return Destination.UNKNOWN;
             }
         }
         if (formData.get("summarise") != null) {
             String val = getFormDataValue(formData, "summarise");
             if (val != null) {
-                if ("json".equals(val))
-                    return Destination.JSON;
-                if ("provx".equals(val))
-                    return Destination.XML;
-                if ("provn".equals(val))
-                    return Destination.PROVN;
-                if ("turtle".equals(val))
-                    return Destination.TURTLE;
-                if ("trig".equals(val))
-                    return Destination.TRIG;
-                if ("svg".equals(val))
-                    return Destination.SVG;
+                switch (val) {
+                    case "json":
+                        return Destination.JSON;
+                    case "provx":
+                        return Destination.XML;
+                    case "png":
+                        return Destination.PNG;
+                    case "provn":
+                        return Destination.PROVN;
+                    case "pdf":
+                        return Destination.PDF;
+                    case "svg":
+                        return Destination.SVG;
+                }
                 return Destination.UNKNOWN;
             }
         }
@@ -201,7 +207,7 @@ public class ServiceUtils {
     }
 
     public enum Destination {
-        UNKNOWN("UNKNOWN"), JSON("json"), XML("provx"), PROVN("provn"), TURTLE("ttl"), TRIG("trig"), SVG("svg"), JPG("jpg"), JSONLD("jsonld") ;
+        UNKNOWN("UNKNOWN"), JSON("json"), XML("provx"), PROVN("provn"), PNG("png"),  PDF("pdf"), SVG("svg"), JPG("jpg"), JSONLD("jsonld") ;
         private Destination(String text) {
             this.text = text;
         }

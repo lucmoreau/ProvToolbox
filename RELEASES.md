@@ -30,6 +30,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: sql generation for retrieving record for base_relation(id)
 * prov plugin for maven
 * service-templates: security configuration, oidc and keycloak
+* docker-service-templates: dockerisation of service-templates
 
 
 `2.0.5`

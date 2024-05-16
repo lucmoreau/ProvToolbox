@@ -477,7 +477,8 @@
     }
 
     function submitBrowse() {
-        let url = "http://localhost:7072/ptl/provapi/templates/records"
+        //let url = "http://localhost:7072/ptl/provapi/templates/records"
+        let url = "${service.context}/provapi/templates/records"
         console.log("submitBrowse " + url)
         let id = '#browser_list'
         let from_date = $('#browser_from_date').val()
@@ -536,7 +537,8 @@
     }
 
     function submitNavigate(id) {
-        let url = "http://localhost:7072/ptl/provapi/templates/viz"
+        //let url = "http://localhost:7072/ptl/provapi/templates/viz"
+        let url = "${service.context}/provapi/templates/viz"
         let template=$('#navigator-template').val();
         let property=$('#navigator-property').val();
         let template_id=$('#navigator-id').val();

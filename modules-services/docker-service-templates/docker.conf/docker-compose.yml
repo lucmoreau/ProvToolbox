@@ -1,0 +1,73 @@
+version: "3.0"
+
+
+services:
+
+
+
+
+
+  provtemplates:
+    env_file: env_file.env
+    image: docker-service-templates.temurin
+    restart: always
+    platform: linux/arm64/v8
+    ports:
+      - "8080:8080"
+    links:
+      - postgres:postgres
+      - redis:redis
+    environment:
+      - CATALINA_OPTS=-DPSERVICE_REDIS_HOST=redis -DPSERVICE_REDIS_PORT=6379  -DMONGOSERVER_HOST=mongo -DPSERVICE_STORAGE=fs -DPOSTGRES_HOST=postgres -DTPL_DB_USER=${TPM_DB_USER} -DTPL_DB_PASS=${TPM_DB_PASS} -DTPL_KEYCLOAK_BASEURI=${TPL_KEYCLOAK_BASEURI} -DTPL_HOST=http://localhost:8080/ptl -DPROV_API=http://localhost:8080/ptl/provapi
+    volumes:
+      - $FILE_HOME/log-dir:/home/pservice
+    depends_on:
+      - postgres
+      - redis
+
+
+
+  postgres:
+    env_file: env_file.env
+    #image: provenance/postgres_init:latest
+    image: postgres:14
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - TPM_DB_USER=${TPM_DB_USER}
+      - TPM_DB_PASS=${TPM_DB_PASS}
+      - TPM_DB_NAME=templates
+    volumes:
+      - $DOCKER_TPM_CONF/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
+      - $POSTGRES_HOME/data:/var/lib/postgresql/data
+    ports:
+      - "15432:5432"
+
+  redis:
+    env_file: env_file.env
+    image: redis
+    restart: always
+    expose:
+      - 6379
+    volumes:
+      - $REDIS_HOME:/data
+    command: [redis-server, '--appendonly yes']
+
+  mongo:
+    env_file: env_file.env
+    image: mongo
+    restart: always
+    expose:
+      - 27017
+    volumes:
+      - $MONGO_HOME:/data/db
+
+networks:
+  db-keycloak:
+    driver: bridge

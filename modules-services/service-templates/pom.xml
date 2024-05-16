@@ -361,10 +361,6 @@
 
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
                 <directory>src/main/sql</directory>
                 <filtering>true</filtering>
             </resource>
@@ -418,7 +414,7 @@
             </activation>
             <properties>
                 <isdocker />
-                <IGNOREM.upload.directory>${project.build.directory}/</IGNOREM.upload.directory>
+                <upload.directory>${project.build.directory}/</upload.directory>
                 <validation.log.location>target/</validation.log.location>
                 <validation.prov.log.location>target/</validation.prov.log.location>
             </properties>
@@ -449,6 +445,12 @@
                         </executions>
                     </plugin>
                 </plugins>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
             </build>
         </profile>
 
@@ -456,9 +458,10 @@
             <id>docker</id>
             <properties>
                 <isdocker>docker</isdocker>
-                <IGNOREME.upload.directory>/home/pservice/files/</IGNOREME.upload.directory>
+                <upload.directory>/home/pservice/files/</upload.directory>
                 <validation.log.location>/home/pservice/log/</validation.log.location>
                 <validation.prov.log.location>/home/pservice/log/</validation.prov.log.location>
+                <hsqldb.location>target/test-database/database</hsqldb.location>
             </properties>
             <build>
                 <plugins>
@@ -469,7 +472,22 @@
                             <skip>true</skip>
                         </configuration>
                     </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>${war.plugin.version}</version>
+                        <configuration>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <classifier>docker</classifier>
+                        </configuration>
+                    </plugin>
                 </plugins>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
             </build>
         </profile>
 
@@ -625,11 +643,12 @@
                                             <name>TPL_API</name>
                                             <value>${service.protocol}://${service.host}:${service.port}${service.context}/provapi</value>
                                         </property>
+                                                     -->
                                         <property>
                                             <name>TPL_HOST</name>
                                             <value>${service.protocol}://${service.host}:${service.port}${service.context}</value>
                                         </property>
-                                        -->
+
                                     </properties>
                                 </configuration>
                             </execution>

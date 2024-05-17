@@ -66,6 +66,10 @@ public class TemplateService {
     public static final String tplKeycloakBaseuri=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_BASEURI, "http://localhost:8080/auth");
     public static final String TPL_KEYCLOAK_USERNAME = "TPL_KEYCLOAK_USERNAME";
     public static final String tplKeycloakUsername=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_USERNAME, "user");
+    public static final String TPL_KEYCLOAK_CLIENTID = "TPL_KEYCLOAK_CLIENTID";
+    public static final String tplKeycloakClientId=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_CLIENTID, "clientid");
+    public static final String TPL_KEYCLOAK_REALM = "TPL_KEYCLOAK_REALM";
+    public static final String tplKeycloakRealm=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_REALM, "realm");
     public static final String TPL_KEYCLOAK_PASSWORD = "TPL_KEYCLOAK_PASSWORD";
     public static final String tplKeycloakPassword=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_PASSWORD, "password");
 

@@ -13,7 +13,7 @@ build.docker:
 
 
 jetty:
-	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; mvn jetty:run-war -Pjetty
+	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; mvn -Pjetty jetty:run-war
 
 
 jetty.post:
@@ -31,7 +31,7 @@ WEBSERVICE=http://localhost:7072/ptl/provapi/documents_form/
 OUTPUT_FORMAT=svg
 test.luc:
 	bin/keycloak-get-token.sh
-	curl --cookie-jar target/cookie-jar.txt -i -X POST  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" -H "Content-Type: multipart/form-data" -Fstatements=@src/test/resources/bindings/b1.json -Furl=$(TEMPLATE_URL) -Fexpand=$(OUTPUT_FORMAT) -Ftype=$(OUTPUT_FORMAT) $(WEBSERVICE)| grep Location | awk '{ print $$2 }' > target/location1.txt
+	curl -k -s --cookie-jar target/cookie-jar.txt -i -X POST  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" -H "Content-Type: multipart/form-data" -Fstatements=@src/test/resources/bindings/b1.json -Furl=$(TEMPLATE_URL) -Fexpand=$(OUTPUT_FORMAT) -Ftype=$(OUTPUT_FORMAT) $(WEBSERVICE)| grep Location | awk '{ print $$2 }' > target/location1.txt
 	echo "#!/bin/sh" > target/shell1.sh
 	cat target/location1.txt | tr -d '\r' | awk '{printf("/usr/bin/curl -D target/headers1.txt -o target/payload1.$(OUTPUT_FORMAT) --cookie-jar target/cookie-jar.txt -X GET \"%s\"\n", $$1) }' >> target/shell1.sh
 	sh target/shell1.sh

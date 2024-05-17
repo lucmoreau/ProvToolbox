@@ -18,27 +18,36 @@ import org.pac4j.oidc.credentials.extractor.OidcExtractor;
 import org.pac4j.oidc.profile.creator.OidcProfileCreator;
 
 
-import static org.openprovenance.prov.service.TemplateService.provHost;
-import static org.openprovenance.prov.service.TemplateService.tplKeycloakBaseuri;
+import static org.openprovenance.prov.service.TemplateService.*;
 
 public class SecurityConfigFactory implements ConfigFactory {
 
+    public static final String CALLBACK_URL = provHost + "/callback";
     static Logger logger = LogManager.getLogger(SecurityConfigFactory.class);
 
-
-    String realmName = "xplain";
 
 
     @Override
     public Config build(final Object... parameters) {
+
+        //System.setProperty("javax.net.ssl.keyStore", "/Users/luc/IdeaProjects/ProvToolbox/modules-services/docker-service-templates/docker.conf/certs/server.truststore");
+       // System.setProperty("javax.net.ssl.keyStorePassword", "luc@pass");
+      //  System.setProperty("javax.net.ssl.trustStore", "/Users/luc/IdeaProjects/ProvToolbox/modules-services/docker-service-templates/docker.conf/certs/server.truststore");
+        //System.setProperty("javax.net.ssl.trustStorePassword", "luc@pass");
+        //System.setProperty("javax.net.debug", "ssl");
+
         // first one for BearerAuth, second one for Oidc
-        OidcClient oidcClient1 = configureKeycloakOidcClient();
+        KeycloakOidcClient oidcClient1 = configureKeycloakOidcClient();
         OidcClient oidcClient2 = configureKeycloakOidcClient();
         OidcConfiguration oidcConfiguration1=oidcClient1.getConfiguration();
-        oidcConfiguration1.setWithState(false);
+        //System.out.println("OIDC Configuration: " + oidcClient2.getConfiguration().getSSLFactory());
+        //oidcClient2.getConfiguration().setSSLFactory(null);
+         oidcConfiguration1.setWithState(false);
+        //oidcConfiguration1.setUseNonce(true);
         //ParameterClient parameterClient = configureParameterClient();
-        DirectBearerAuthClient directBearerAuthClient = configureDirectBearerAuthClient(oidcClient1, oidcConfiguration1);
-        Clients clients = new Clients("http://localhost:7072/ptl/callback",  oidcClient2); //directBearerAuthClient,
+        DirectBearerAuthClient directBearerAuthClient = configureDirectBearerAuthClient(oidcClient1, oidcClient1.getConfiguration());
+       // System.out.println("preferred algo " + oidcConfiguration1.getPreferredJwsAlgorithm());
+        Clients clients = new Clients(CALLBACK_URL,  directBearerAuthClient, oidcClient2); //directBearerAuthClient,oidcClient2
         Config config = new Config(clients);
         logger.info("Config created" + config);
         return config;
@@ -47,9 +56,9 @@ public class SecurityConfigFactory implements ConfigFactory {
     public DirectBearerAuthClient configureDirectBearerAuthClient(OidcClient oidcClient, OidcConfiguration oidcConfiguration) {
         DirectBearerAuthClient client = new DirectBearerAuthClient();
         JwtAuthenticator tokenAuthenticator = new JwtAuthenticator();  //Collections.singletonList(new RSASignatureConfiguration())
-        tokenAuthenticator.setRealmName(realmName);
+        tokenAuthenticator.setRealmName(tplKeycloakRealm);
 
-        client.setRealmName(realmName);
+        client.setRealmName(tplKeycloakRealm);
         //client.setAuthenticator(tokenAuthenticator);
         //client.setCredentialsExtractor(new BearerAuthExtractor());
         client.setCredentialsExtractor(new OidcExtractor(oidcConfiguration, oidcClient));
@@ -62,7 +71,7 @@ public class SecurityConfigFactory implements ConfigFactory {
 
     public ParameterClient configureParameterClient() {
         JwtAuthenticator tokenAuthenticator = new JwtAuthenticator();
-        tokenAuthenticator.setRealmName(realmName);
+        tokenAuthenticator.setRealmName(tplKeycloakRealm);
 
 
         ParameterClient client = new ParameterClient("AUTHORIZATION", tokenAuthenticator);
@@ -78,7 +87,7 @@ public class SecurityConfigFactory implements ConfigFactory {
         return client;
     }
 
-    public OidcClient configureKeycloakOidcClient() {
+    public KeycloakOidcClient configureKeycloakOidcClient() {
 
 
 
@@ -86,17 +95,16 @@ public class SecurityConfigFactory implements ConfigFactory {
         //config.setDiscoveryURI("https://openprovenance.org/auth/realms/xplain/.well-known/openid-configuration");
         //config.setDiscoveryURI(tplKeycloak);
 
-        config.setClientId("assistant");
-        config.setRealm(realmName);
+        config.setClientId(tplKeycloakClientId);
+        config.setRealm(tplKeycloakRealm);
         config.setBaseUri(tplKeycloakBaseuri);
 
         KeycloakOidcClient client = new KeycloakOidcClient(config);
-        //client.setCallbackUrl("http://localhost:7072/ptl/callback");
 
 
-        client.setCallbackUrl(provHost + "/callback");
+        client.setCallbackUrl(CALLBACK_URL);
 
-        logger.info("KeycloakOidcClient created");
+        logger.info("KeycloakOidcClient created " + tplKeycloakClientId + " " + tplKeycloakRealm + " " + tplKeycloakBaseuri + " " + CALLBACK_URL +  client.getConfiguration().getDiscoveryURI() );
 
         return client;
     }

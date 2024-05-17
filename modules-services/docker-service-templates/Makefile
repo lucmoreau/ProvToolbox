@@ -93,3 +93,16 @@ docker.logs:
 docker.restart:
 	docker-compose --project-name $(DOCKER_PROJECT) -f docker.conf/docker-compose.yml restart prov-wrt
 
+gen.key:
+	openssl req -newkey rsa:2048 -nodes -keyout docker.conf/certs/server.key.pem -x509 -days 3650 -out docker.conf/certs/server.crt.pem -subj '/CN=localhost'
+
+pkcs12:
+	openssl pkcs12 -export -in docker.conf/certs/server.crt.pem -inkey docker.conf/certs/server.key.pem -name localhost -out docker.conf/certs/server-PKCS-12.p12
+
+
+trusted.store:
+	keytool -import -deststorepass luc@pass -alias localhost.pub -file docker.conf/certs/server.crt.pem -storetype JKS -keystore server.truststore
+	keytool -importkeystore -deststorepass luc@pass -destkeystore server.truststore -srckeystore docker.conf/certs/server-PKCS-12.p12 -srcstoretype PKCS12
+
+list.store:
+	keytool -list -keystore docker.conf/certs/server.truststore

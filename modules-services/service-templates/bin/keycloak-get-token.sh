@@ -25,7 +25,7 @@ else
         PASSWORD=$TPL_KEYCLOAK_PASSWORD
 fi
 
-LINE="curl -s -X POST $TPL_KEYCLOAK  -d username=$TPL_KEYCLOAK_USERNAME -d password=$PASSWORD -d grant_type=password -d client_id=$CLIENT_ID"
+LINE="curl -k -s -X POST $TPL_KEYCLOAK  -d username=$TPL_KEYCLOAK_USERNAME -d password=$PASSWORD -d grant_type=password -d client_id=$CLIENT_ID"
 
 if [[ $VERBOSE == true ]]; then
         echo $LINE

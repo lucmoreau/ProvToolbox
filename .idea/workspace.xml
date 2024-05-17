@@ -9,30 +9,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-entrypoint-initdb.d/01-init.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/env_file.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/src/main/resources/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/src/main/resources/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/src/test/resources/sculpture.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/certs/server-PKCS-12.p12" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/certs/server.crt.pem" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/certs/server.key.pem" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/certs/server.truststore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/prov-realm.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-entrypoint-initdb.d/01-init.sh" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-entrypoint-initdb.d/01-init.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/bin/keycloak-get-token.sh" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/bin/keycloak-get-token.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/config/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/config/log4j2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/SecurityConfigFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/SecurityConfigFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/Storage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/Storage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/org/openprovenance/prov/service/core/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/org/openprovenance/prov/service/core/config.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/forms.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/forms.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/org/openprovenance/prov/service/core/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/org/openprovenance/prov/service/core/config.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,6 +145,8 @@
     "JUnit.PleadTest.testPleadRemote.executor": "Run",
     "JUnit.PleadWorkflowIT.testPleadLocal.executor": "Run",
     "JUnit.PleadWorkflowIT.testPleadRemote.executor": "Run",
+    "Makefile Target.pkcs12.executor": "Run",
+    "Makefile Target.trusted.store.executor": "Run",
     "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -209,11 +200,11 @@
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/certs" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/test/resources" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/test" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/main" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/apache" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/test/javascript" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig" />
@@ -251,7 +242,7 @@
       <recent name="org.openprovenance.prov.service.iobean.composite" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TemplatesToDot">
+  <component name="RunManager" selected="Makefile Target.trusted.store">
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -320,32 +311,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DateTest.testDate5" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-model" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.model.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.DateTest" />
-      <option name="METHOD_NAME" value="testDate5" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="PleadTest.testPlead1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-template-library" />
       <extension name="coverage">
@@ -366,58 +331,6 @@
       </extension>
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.templates.library" />
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.templates.library.PleadTest" />
-      <option name="METHOD_NAME" value="testPlead1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PleadTest.testPlead1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-template-library" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.templates.library.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.templates.library" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.templates.library.PleadTest" />
-      <option name="METHOD_NAME" value="testPlead1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PleadWorkflowIT.testPlead1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="service-templates" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.service.template.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.template" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.template.PleadWorkflowIT" />
       <option name="METHOD_NAME" value="testPlead1" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
@@ -611,6 +524,18 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="pkcs12" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-services/docker-service-templates/Makefile" target="pkcs12" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="trusted.store" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-services/docker-service-templates/Makefile" target="trusted.store" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
     </configuration>
     <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
@@ -708,20 +633,19 @@
     <list>
       <item itemvalue="Application.TemplatesToDot" />
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="JUnit.DateTest.testDate5" />
-      <item itemvalue="JUnit.PleadTest.testPlead1" />
-      <item itemvalue="JUnit.PleadWorkflowIT.testPlead1" />
       <item itemvalue="JUnit.PleadWorkflowIT.testPleadLocal" />
       <item itemvalue="JUnit.PleadWorkflowIT.testPleadRemote" />
+      <item itemvalue="Makefile Target.pkcs12" />
+      <item itemvalue="Makefile Target.trusted.store" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Makefile Target.trusted.store" />
+        <item itemvalue="Makefile Target.pkcs12" />
         <item itemvalue="Application.TemplatesToDot" />
         <item itemvalue="JUnit.PleadWorkflowIT.testPleadRemote" />
         <item itemvalue="JUnit.PleadWorkflowIT.testPleadLocal" />
-        <item itemvalue="JUnit.PleadWorkflowIT.testPlead1" />
-        <item itemvalue="JUnit.PleadTest.testPlead1" />
       </list>
     </recent_temporary>
   </component>
@@ -1158,7 +1082,7 @@
       <workItem from="1713385489351" duration="267000" />
       <workItem from="1713385763798" duration="179264000" />
       <workItem from="1714472444531" duration="62246000" />
-      <workItem from="1715690420906" duration="76499000" />
+      <workItem from="1715690420906" duration="108220000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

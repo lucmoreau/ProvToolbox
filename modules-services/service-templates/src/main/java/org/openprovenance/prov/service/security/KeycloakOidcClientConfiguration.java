@@ -48,7 +48,7 @@ public class KeycloakOidcClientConfiguration implements ClientConfiguration {
 
     @Override
     public Client configureClient() {
-        return configureKeycloakOidcClient(new KeycloakOidcClientConfiguration());
+        return configureKeycloakOidcClient(this);
     }
 
     @Override

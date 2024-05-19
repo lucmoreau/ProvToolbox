@@ -95,6 +95,7 @@ public class SecurityConfigFactory implements ConfigFactory {
         KeycloakOidcClient client = new KeycloakOidcClient(keycloakOidcConfiguration);
         client.setCallbackUrl(config.getCallbackUrl());
 
+
         logger.info("KeycloakOidcClient created " + keycloakOidcConfiguration);
 
         return client;

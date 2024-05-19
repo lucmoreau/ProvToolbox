@@ -70,10 +70,11 @@ public class TemplateService {
     //public static final String tplKeycloakUsername=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_USERNAME, "user");
     //public static final String TPL_KEYCLOAK_CLIENTID = "TPL_KEYCLOAK_CLIENTID";
     //public static final String tplKeycloakClientId=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_CLIENTID, "clientid");
-    public static final String TPL_KEYCLOAK_CLIENTID_DIRECT = "TPL_KEYCLOAK_CLIENTID_DIRECT";
-    public static final String getTplKeycloakClientidDirect=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_CLIENTID_DIRECT, "clientid-direct");
+    //public static final String TPL_KEYCLOAK_CLIENTID_DIRECT = "TPL_KEYCLOAK_CLIENTID_DIRECT";
+    //public static final String getTplKeycloakClientidDirect=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_CLIENTID_DIRECT, "clientid-direct");
     //public static final String TPL_KEYCLOAK_REALM = "TPL_KEYCLOAK_REALM";
     //public static final String tplKeycloakRealm=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_REALM, "realm");
+
     public static final String TPL_SECURITY_CONFIG = "TPL_SECURITY_CONFIG";
     public static final String tplSecurityConfig=getSystemOrEnvironmentVariableOrDefault(TPL_SECURITY_CONFIG, "somefile-somewhere");
 

@@ -9,26 +9,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/ClaimAndSignatureConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/ClientConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/DirectBearerAuthClientConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/KeycloakOidcClientConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/RoleAuthorizationGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/SecurityConfigFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/SecurityConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/Utils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/config/local-security-config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/config/openprovenance-security-config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/bin/keycloak-get-token.sh" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/bin/keycloak-get-token.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/config/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/config/log4j2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/SecurityConfigFactory.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF/web.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/KeycloakOidcClientConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/KeycloakOidcClientConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/SecurityConfigFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/SecurityConfigFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/test/config/openprovenance-security-config.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/config/openprovenance-security-config.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1089,7 +1074,7 @@
       <workItem from="1713385489351" duration="267000" />
       <workItem from="1713385763798" duration="179264000" />
       <workItem from="1714472444531" duration="62246000" />
-      <workItem from="1715690420906" duration="136107000" />
+      <workItem from="1715690420906" duration="136884000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

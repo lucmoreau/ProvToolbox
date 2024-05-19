@@ -31,6 +31,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov plugin for maven
 * service-templates: security configuration, oidc and keycloak
 * docker-service-templates: dockerisation of service-templates
+* service-templates: security configuration file
+
 
 
 `2.0.5`

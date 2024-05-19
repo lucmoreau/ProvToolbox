@@ -16,6 +16,7 @@ source $PROV_CREDENTIALS
 CLIENT_ID="KeycloakOidcClient"
 CLIENT_ID="assistant"
 CLIENT_ID="ptm"
+CLIENT_ID="assistant-direct"
 
 
 if [[ $TPL_KEYCLOAK_PASSWORD = '' ]]; then
@@ -25,7 +26,7 @@ else
         PASSWORD=$TPL_KEYCLOAK_PASSWORD
 fi
 
-LINE="curl -k -s -X POST $TPL_KEYCLOAK  -d username=$TPL_KEYCLOAK_USERNAME -d password=$PASSWORD -d grant_type=password -d client_id=$CLIENT_ID"
+LINE="curl -k -s -X POST $TPL_KEYCLOAK  -d username=$TPL_KEYCLOAK_USERNAME -d password=$PASSWORD -d grant_type=password -d client_id=$TPL_KEYCLOAK_CLIENTID_DIRECT"
 
 if [[ $VERBOSE == true ]]; then
         echo $LINE

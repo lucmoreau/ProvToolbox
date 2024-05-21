@@ -14,6 +14,7 @@ public class DirectBearerAuthClientConfiguration implements ClientConfiguration 
     private String role;
     private String clientId;
     private String baseUri;
+    private String realmUri;
 
     public String getRealm() {
         return realm;
@@ -55,6 +56,14 @@ public class DirectBearerAuthClientConfiguration implements ClientConfiguration 
 
     public void setBaseUri(String baseUri) {
         this.baseUri = baseUri;
+    }
+
+    public String getRealmUri() {
+        return realmUri;
+    }
+
+    public void setRealmUri(String realmUri) {
+        this.realmUri = realmUri;
     }
 
     @Override

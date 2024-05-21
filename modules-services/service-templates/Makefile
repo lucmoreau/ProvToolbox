@@ -36,8 +36,10 @@ test.luc:
 	@cat target/location1.txt | tr -d '\r' | awk '{printf("/usr/bin/curl -s -H \"Authorization: Bearer `cat /Users/luc/.keycloak_token`\" -D target/headers1.txt -o target/payload1.$(OUTPUT_FORMAT) --cookie-jar target/cookie-jar.txt -X GET \"%s\"\n", $$1) }' >> target/shell1.sh
 	sh target/shell1.sh
 
-#TODO need to pass the access toke
-#curl -k -s --cookie-jar target/cookie-jar.txt -i -X GET  -H "Authorization: Bearer `cat /Users/luc/.keycloak_token`" -D target/headers1.txt -o target/payload1.svg --cookie-jar target/cookie-jar.txt -X GET "http://localhost:7072/ptl/provapi/documents/r75510.svg"
+test2:
+	bin/get-with-keycloak-standard-flow.sh http://localhost:7072/ptl/forms.html -o target/payload.html -D target/header.txt
+	@echo "Now, using cookie only, to access resources"
+	curl -s -o target/payload.html -D - --cookie-jar target/cookie.jar.txt --cookie target/cookie.jar.txt http://localhost:7072/ptl/forms.html
 
 
 test.bob:

@@ -34,12 +34,16 @@ fi
 
 TOKEN=$($LINE | jq -r '.access_token')
 
+decode() {
+          jq -R 'split(".") | .[1] | @base64d | fromjson' <<< $1
+}
+
 if [[ $(echo $TOKEN) != 'null' ]]; then
         echo $TOKEN > $TOKEN_DESTINATION
-        echo "Token saved in $TOKEN_DESTINATION"
+        #echo "Token saved in $TOKEN_DESTINATION"
+        if [[ $VERBOSE == true ]]; then
+          decode $TOKEN
+        fi
 fi
-
-
-#echo $TOKEN
 
 

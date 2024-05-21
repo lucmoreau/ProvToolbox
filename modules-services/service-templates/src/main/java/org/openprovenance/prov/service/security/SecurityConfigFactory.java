@@ -24,7 +24,6 @@ import static org.openprovenance.prov.service.security.Utils.getRsaPublicKey;
 
 public class SecurityConfigFactory implements ConfigFactory {
 
-    public static final String CALLBACK_URL = provHost + "/callback";
     static Logger logger = LogManager.getLogger(SecurityConfigFactory.class);
     final private Utils utils = new Utils();
 
@@ -68,7 +67,7 @@ public class SecurityConfigFactory implements ConfigFactory {
         JwtAuthenticator tokenAuthenticator = new JwtAuthenticator();
         tokenAuthenticator.setRealmName(config.getRealm());
         RSASignatureConfiguration signatureConfiguration;
-        signatureConfiguration= new ClaimAndSignatureConfiguration(config.getClientId());
+        signatureConfiguration= new ClaimAndSignatureConfiguration(config.getClientId(), config.getRealmUri());
         signatureConfiguration.setPublicKey(getRsaPublicKey(config.getSignaturePublicKey()));
         signatureConfiguration.setPrivateKey(null);
         tokenAuthenticator.addSignatureConfiguration(signatureConfiguration);

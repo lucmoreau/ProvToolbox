@@ -1,7 +1,10 @@
 package org.openprovenance.prov.template.json;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -32,5 +35,9 @@ public class Bindings {
         bindingsBean.template=template;
         bindingsBean.linked=linked;
         return bindingsBean;
+    }
+
+    public static Bindings fromStream(ObjectMapper om, InputStream is) throws IOException {
+        return om.readValue(is, Bindings.class);
     }
 }

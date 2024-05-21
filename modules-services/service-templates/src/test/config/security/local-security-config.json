@@ -1,14 +1,14 @@
 
 
 {
-    "callbackUrl": "http://localhost:7072/callback",
+    "callbackUrl": "http://localhost:7072/ptl/callback",
     "configurations": {
         "KeycloakOidcClient": {
             "@type": "KeycloakOidcClient",
             "clientId": "assistant",
             "realm": "xplain",
             "baseUri": "https://openprovenance.org/auth",
-            "callbackUrl": "http://localhost:7072/callback"
+            "callbackUrl": "http://localhost:7072/ptl/callback"
         },
         "DirectBearerAuthClient": {
             "@type": "DirectBearerAuthClient",

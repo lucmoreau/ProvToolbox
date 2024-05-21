@@ -29,6 +29,10 @@ public class Expand {
         this.addOrderp = addOrderp;
         this.allUpdatedRequired = allUpdatedRequired;
     }
+    public Expand(ProvFactory pf) {
+        this(pf, false, false);
+    }
+
 
 
     public Document expander(Document docIn, Bindings bindings) {

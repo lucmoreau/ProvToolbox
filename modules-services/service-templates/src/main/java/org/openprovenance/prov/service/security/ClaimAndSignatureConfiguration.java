@@ -14,9 +14,11 @@ class ClaimAndSignatureConfiguration extends RSASignatureConfiguration {
     private static final Logger logger = LogManager.getLogger(ClaimAndSignatureConfiguration.class);
 
     private final String clientId;
+    private final String realmUri;
 
-    public ClaimAndSignatureConfiguration(String clientId)  {
+    public ClaimAndSignatureConfiguration(String clientId, String realmUri)  {
         this.clientId=clientId;
+        this.realmUri=realmUri;
     }
 
     @Override
@@ -32,8 +34,8 @@ class ClaimAndSignatureConfiguration extends RSASignatureConfiguration {
                 logger.info("azp claim is correct ");
             }
             String issuer = claims.getIssuer();
-            if (!Objects.equals(issuer, "https://openprovenance.org/auth/realms/xplain")) {
-                logger.info("issuer claim not configure realm: " + issuer);
+            if (!Objects.equals(issuer, realmUri)) {
+                logger.info("issuer is not the same as expected baseUri: " + issuer);
                 return false;
             } else {
                 logger.info("issuer claim is correct ");

@@ -1,8 +1,8 @@
-
-
 {
     "callbackUrl": "http://localhost:7072/ptl/callback",
+
     "configurations": {
+
         "KeycloakOidcClient": {
             "@type": "KeycloakOidcClient",
             "clientId": "assistant",
@@ -10,6 +10,7 @@
             "baseUri": "https://openprovenance.org/auth",
             "callbackUrl": "http://localhost:7072/ptl/callback"
         },
+
         "DirectBearerAuthClient": {
             "@type": "DirectBearerAuthClient",
             "clientId": "assistant-direct",

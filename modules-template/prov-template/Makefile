@@ -33,3 +33,10 @@ PTM_EXPAND=../../modules-executable/toolbox/target/appassembler/bin/ptm-expand
 
 test.ptm:
 	$(PTM_EXPAND) src/main/resources/meta/config/config-ptm.json
+
+
+test.schema:
+	ajv -s src/main/resources/jsonschema/bindings-schema.json -d $(FILE)
+
+test.schema1:
+	$(MAKE) FILE=src/test/resources/bindings/b21.json test.schema

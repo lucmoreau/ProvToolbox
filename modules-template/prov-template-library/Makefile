@@ -14,3 +14,20 @@ compile.plead.templates:
 transpile.code:
 	 export JAVA_HOME=/usr/local/java/jdk-12.0.1.jdk/Contents/Home/; mvn -f pom12.xml jsweet:jsweet
 
+
+test.schema:
+	@ajv -s ../prov-template/src/main/resources/jsonschema/bindings-schema.json -d $(FILE)
+
+BINDINGS_DIR=src/main/resources/bindings/org/openprovenance/prov/templates
+
+ALL_BINDINGS = $(wildcard $(BINDINGS_DIR)/plead/*.json $(BINDINGS_DIR)/pg/*.json $(BINDINGS_DIR)/ptm/*.json)
+
+test.schema.example:
+	$(MAKE) FILE=$(BINDINGS_DIR)/plead/plead-transforming.json test.schema
+
+# test.schema.all to test schema for all bindings in $(ALL_BINDINGS)
+test.schema.all:
+	@$(foreach FILE, $(ALL_BINDINGS), $(MAKE) FILE=$(FILE) test.schema;)
+
+go:
+	echo $(SOURCES)

@@ -3,6 +3,11 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.11 (ProvToolbox)" />
   </component>
+  <component name="EntryPointsManager">
+    <writeAnnotations>
+      <writeAnnotation name="org.apache.maven.plugins.annotations.Parameter" />
+    </writeAnnotations>
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="Osmorc" url="file://$PROJECT_DIR$/modules-executable/prov-interop" />

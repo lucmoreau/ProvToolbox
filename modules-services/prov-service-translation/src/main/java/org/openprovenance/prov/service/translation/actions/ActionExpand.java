@@ -108,10 +108,13 @@ public class ActionExpand implements ActionPerformer {
         return expanded;
     }
 
-    public static Pair<Document,Bindings> expandTemplate(Document templateDocument,
-                                                         InputStream inputStream,
-                                                         ObjectMapper om,
-                                                         ProvFactory pFactory) throws IOException {
+    public
+    static Pair<Document,Bindings> expandTemplate (
+                         Document templateDocument,
+                         InputStream inputStream,
+                         ObjectMapper om,
+                         ProvFactory pFactory)
+            throws IOException {
         Bindings bindings = Bindings.fromStream(om,inputStream);
         Expand myExpand=new Expand(pFactory);
         Document expanded = myExpand.expander(templateDocument, bindings);

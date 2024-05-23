@@ -15,10 +15,7 @@ import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.apache.logging.log4j.core.util.FileUtils.mkdir;
 
@@ -68,10 +65,10 @@ public class Executor {
     }
 
 
-    public int execute(String basedir, String configurationPath) {
+    public int execute(String inputBasedir, String outputBasedir, String configurationPath) {
         try {
 
-            configurationPath=basedir + "/" + configurationPath;
+            configurationPath=inputBasedir + "/" + configurationPath;
 
             System.out.println("In executor " + configurationPath);
 
@@ -88,7 +85,7 @@ public class Executor {
                     variableMap.putAll(om.readValue(new FileInputStream(variableMapPath), Map.class));
                 }
             }
-            return execute(config, basedir, variableMap);
+            return execute(config, inputBasedir, outputBasedir, variableMap);
         } catch (Exception e) {
             logger.error("Error while executing", e);
             return 1;
@@ -96,19 +93,24 @@ public class Executor {
     }
 
 
-    public int execute(Config config, String basedir, Map<String, String> variableMap) throws IOException {
-        config.mtemplate_dir=Config.addBaseDir(basedir, config.mtemplate_dir);
-        config.mbindings_dir=Config.addBaseDir(basedir, config.mbindings_dir);
-        config.expand_dir=Config.addBaseDir(basedir, config.expand_dir);
+    public int execute(Config config, String inputBasedir, String outputBasedir, Map<String, String> variableMap) throws IOException {
+        config.mtemplate_dir=Config.addBaseDir(inputBasedir, config.mtemplate_dir);
+        config.mbindings_dir=Config.addBaseDir(inputBasedir, config.mbindings_dir);
+        config.expand_dir=Config.addBaseDir(outputBasedir, config.expand_dir);
 
         logger.info("mtemplate_dirs: " + config.mtemplate_dir);
         logger.info("mbindings_dir: " + config.mbindings_dir);
         logger.info("expand_dir: " + config.expand_dir);
 
+
+        System.out.println("mtemplate_dirs: " + config.mtemplate_dir);
+        System.out.println("mbindings_dir: " + config.mbindings_dir);
+        System.out.println("expand_dir: " + config.expand_dir);
+
         mkdir(new File(config.expand_dir),true);
 
         for (Config.ConfigTask task : config.tasks) {
-            task.mtemplate_dir=Config.addBaseDir(basedir, task.mtemplate_dir);
+            task.mtemplate_dir=Config.addBaseDir(inputBasedir, task.mtemplate_dir);
             logger.info("task: " + task);
 
             switch (task.type) {
@@ -222,7 +224,7 @@ public class Executor {
                 return Pair.of(new FileInputStream(f),f);
             }
         }
-        throw new FileNotFoundException(filename);
+        throw new FileNotFoundException(filename + " in paths " + mtemplate_dir);
     }
 
     private InputStream substituteVariablesInFile(Map<String, String> variableMap, String filename) throws IOException {
@@ -254,12 +256,41 @@ public class Executor {
 
 
     public static void main(String [] args) {
+        System.out.println("Executor: " + Arrays.toString(args));
         Executor executor=new Executor();
-        String basedir=args[0];
+        // find the position of string "-configs" in args
+        int pos=0;
+        boolean found=false;
+        for (int i=0; i<args.length; i++) {
+            if (args[i].equals("-configs")) {
+                pos=i;
+                found=true;
+                break;
+            }
+        }
+        if (!found || pos>2) {
+            System.out.println("Usage: Executor [input-basedir] [output-basedir] -configs <config1> <config2> ...");
+            return;
+        }
+        String inputBaseDir;
+        String outputBaseDir;
+        if (pos==0) {
+            inputBaseDir="";
+            outputBaseDir="";
+        } else if (pos==1) {
+            inputBaseDir=args[0];
+            outputBaseDir=args[0];
+        } else  {
+            inputBaseDir=args[0];
+            outputBaseDir=args[1];
+        }
+
+
+
         // for all args starting with second execute
 
-        for (int i=1; i<args.length; i++) {
-            executor.execute(basedir, args[i]);
+        for (int i=pos+1; i<args.length; i++) {
+            executor.execute(inputBaseDir, outputBaseDir, args[i]);
         }
 
 

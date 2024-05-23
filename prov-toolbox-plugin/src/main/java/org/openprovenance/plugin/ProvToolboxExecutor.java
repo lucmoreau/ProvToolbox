@@ -21,7 +21,6 @@ public class ProvToolboxExecutor extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    //@Parameter(property = "provconvert.className", required = true)
     private String className=CommandLineArguments.class.getName();
 
     @Parameter(property = "provconvert.args")
@@ -37,12 +36,18 @@ public class ProvToolboxExecutor extends AbstractMojo {
             System.out.println("urls=" + urls);
             System.out.println("className=" + className);
             System.out.println("args=" + args);
-            URLClassLoader loader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
-            Class<?> clazz = Class.forName(className, true, loader);
-            Method method = clazz.getMethod("main", String[].class);
+
+            // is it necessary to load class dynamically? why not call it directly?
+
+            //URLClassLoader loader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
+            //Class<?> clazz = Class.forName(className, true, loader);
+            //Method method = clazz.getMethod("mainNoExit", String[].class);
             String[] argsArray = args.toArray(new String[0]);
-            method.invoke(null, (Object) argsArray);  // cast is necessary to avoid varargs issues
-        } catch (Exception e) {
+            CommandLineArguments.mainNoExit(argsArray);
+
+            //method.invoke(null, (Object) argsArray);  // cast is necessary to avoid varargs issues
+
+        } catch (Throwable e) {
             throw new MojoExecutionException("Failed to execute class " + className, e);
         }
     }

@@ -17,17 +17,17 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mojo(name = "bindings-validate", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
+@Mojo(name = "validate-bindings", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
 public class BindingsSchemaValidator extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    @Parameter(property = "bindings-validate.warning", defaultValue = "false")
+    @Parameter(property = "validate-bindings.warning", defaultValue = "false")
     private boolean warning;
 
 
-    @Parameter(property = "bindings-validate.args")
+    @Parameter(property = "validate-bindings.args")
     private List<String> args = new ArrayList<>();
 
     public void execute() throws MojoExecutionException {

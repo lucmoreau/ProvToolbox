@@ -32,11 +32,16 @@ wfl:
 PTM_EXPAND=../../modules-executable/toolbox/target/appassembler/bin/ptm-expand
 
 test.ptm:
-	$(PTM_EXPAND) src/main/resources/meta/config/config-ptm.json
+	$(PTM_EXPAND) `pwd` -configs src/main/resources/meta/config/config-generic.json
+	$(PTM_EXPAND) `pwd` -configs src/main/resources/meta/config/config-plead.json
+	$(PTM_EXPAND) `pwd` -configs src/main/resources/meta/config/config-ptm.json
+	$(PTM_EXPAND) `pwd` -configs src/main/resources/meta/config/config-pg.json
 
+SCHEMA_FILE=src/main/resources/jsonschema/bindings-schema.json
 
+#extracted for book
 test.schema:
-	ajv -s src/main/resources/jsonschema/bindings-schema.json -d $(FILE)
+	ajv -s $(SCHEMA_FILE) -d $(FILE)
 
 test.schema1:
 	$(MAKE) FILE=src/test/resources/bindings/b21.json test.schema

@@ -34,6 +34,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates: security configuration file
 * prov-toolbox-plugin: a maven plugin to wrap up provconvert and other utilities
 * prov-template: a schema for bindings files (and maven plugin)
+* prov-toolbox-plugin: a maven plugins to validate bindings and process templates
 
 
 

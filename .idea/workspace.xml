@@ -8,18 +8,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/PK_CommandLineArguments.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/PK_CommandLineArguments.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/meta/Executor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/meta/Executor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/jsonschema/bindings-schema.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/jsonschema/bindings-schema.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-toolbox-plugin/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/prov-toolbox-plugin/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/BindingsSchemaValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/BindingsSchemaValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ProvToolboxExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ProvToolboxExecutor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/TemplateExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/TemplateExecutor.java" afterDir="false" />
-    </list>
+    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -1082,7 +1071,7 @@
       <workItem from="1713385763798" duration="179264000" />
       <workItem from="1714472444531" duration="62246000" />
       <workItem from="1715690420906" duration="169149000" />
-      <workItem from="1716384651492" duration="26099000" />
+      <workItem from="1716384651492" duration="26421000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

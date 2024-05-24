@@ -137,7 +137,7 @@
                         </program>
                         <program>
                             <mainClass>org.openprovenance.prov.template.expander.meta.Executor</mainClass>
-                            <name>ptm-expand</name>
+                            <name>prov-template-process</name>
                         </program>
 
                     </programs>

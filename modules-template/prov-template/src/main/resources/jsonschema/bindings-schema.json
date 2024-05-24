@@ -161,11 +161,12 @@
             "$ref": "#/definitions/Context"
         },
         "template": {
-            "type": "string"
-        }
+            "type":  ["string", "null"]
+            }
     },
     "required": [
         "var",
         "context"
-    ]
+    ],
+    "additionalProperties": false
 }

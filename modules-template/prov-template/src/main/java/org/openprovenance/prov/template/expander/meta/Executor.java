@@ -16,6 +16,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.apache.logging.log4j.core.util.FileUtils.mkdir;
 
@@ -68,7 +69,9 @@ public class Executor {
     public int execute(String inputBasedir, String outputBasedir, String configurationPath) {
         try {
 
-            configurationPath=inputBasedir + "/" + configurationPath;
+            if (!configurationPath.startsWith("/")) {
+                configurationPath = inputBasedir + "/" + configurationPath;
+            }
 
             System.out.println("In executor " + configurationPath);
 
@@ -78,13 +81,13 @@ public class Executor {
 
             Map<String,String> variableMap=new HashMap<>();
             if (config.variableMaps!=null) {
+                interpretRelativeDirectoriesInVariableMaps(inputBasedir, config, localdir);
                 for (String variableMapPath: config.variableMaps) {
-                    variableMapPath=localdir + "/" + variableMapPath;
-
                     System.out.println("loading variable map " +  variableMapPath);
                     variableMap.putAll(om.readValue(new FileInputStream(variableMapPath), Map.class));
                 }
             }
+            config.template_path =config.template_path.stream().map(s -> (s.startsWith("."))? localdir+s.substring(1):s).collect(Collectors.toList());
             return execute(config, inputBasedir, outputBasedir, variableMap);
         } catch (Exception e) {
             logger.error("Error while executing", e);
@@ -92,25 +95,36 @@ public class Executor {
         }
     }
 
+    private void interpretRelativeDirectoriesInVariableMaps(String inputBasedir, Config config, String localdir) {
+        config.variableMaps =Config.addBaseDir(inputBasedir, config.variableMaps);
+        config.variableMaps = config.variableMaps.stream().map(s -> (s.startsWith("."))? localdir +s.substring(1):s).collect(Collectors.toList());
+    }
+
 
     public int execute(Config config, String inputBasedir, String outputBasedir, Map<String, String> variableMap) throws IOException {
-        config.mtemplate_dir=Config.addBaseDir(inputBasedir, config.mtemplate_dir);
-        config.mbindings_dir=Config.addBaseDir(inputBasedir, config.mbindings_dir);
-        config.expand_dir=Config.addBaseDir(outputBasedir, config.expand_dir);
+        config.template_path =Config.addBaseDir(inputBasedir, config.template_path);
+        config.bindings_path =Config.addBaseDir(inputBasedir, config.bindings_path);
+        config.output_dir =Config.addBaseDir(outputBasedir, config.output_dir);
 
-        logger.info("mtemplate_dirs: " + config.mtemplate_dir);
-        logger.info("mbindings_dir: " + config.mbindings_dir);
-        logger.info("expand_dir: " + config.expand_dir);
+        logger.info("template_path: " + config.template_path);
+        logger.info("bindings_path: " + config.bindings_path);
+        logger.info("output_dir: " + config.output_dir);
 
 
-        System.out.println("mtemplate_dirs: " + config.mtemplate_dir);
-        System.out.println("mbindings_dir: " + config.mbindings_dir);
-        System.out.println("expand_dir: " + config.expand_dir);
+        System.out.println("template_path: " + config.template_path);
+        System.out.println("bindings_path: " + config.bindings_path);
+        System.out.println("output_dir: " + config.output_dir);
 
-        mkdir(new File(config.expand_dir),true);
+        mkdir(new File(config.output_dir),true);
 
         for (Config.ConfigTask task : config.tasks) {
-            task.mtemplate_dir=Config.addBaseDir(inputBasedir, task.mtemplate_dir);
+            task.template_path =Config.addBaseDir(inputBasedir, task.template_path);
+            if (task.addOutputDirToInputPath) {
+                if (task.template_path==null) {
+                    task.template_path=new LinkedList<>();
+                }
+                task.template_path.add(config.output_dir);
+            }
             logger.info("task: " + task);
 
             switch (task.type) {
@@ -135,12 +149,17 @@ public class Executor {
 
     Ptm_expandingBuilder builder=new Ptm_expandingBuilder();
     public void executeExpandTask(Config config, Config.ConfigTask task, Map<String, String> variableMap) throws IOException {
-        String bindingsFilename = config.mbindings_dir + "/" + task.bindings;
+        Pair<FileInputStream,File> pair=findFileinDirs2(config.bindings_path, task.bindings);
+        String bindingsFilename=pair.getRight().getAbsolutePath();
+
+
+
+        //String bindingsFilename = config.bindings_path + "/" + task.bindings;
         InputStream is=substituteVariablesInFile(variableMap, bindingsFilename);
 
         Expand expand = new Expand(pf, false, false);
-        List<String> mtemplate_dir = (task.mtemplate_dir==null)? config.mtemplate_dir : task.mtemplate_dir;
-        Pair<FileInputStream, File> fileinDirs = findFileinDirs2(mtemplate_dir, task.input);
+        List<String> template_path = (task.template_path ==null)? config.template_path : task.template_path;
+        Pair<FileInputStream, File> fileinDirs = findFileinDirs2(template_path, task.input);
 
         long secondsSince2023_01_01 = (System.currentTimeMillis() - 1672531200000L)/1000;
 
@@ -148,10 +167,10 @@ public class Executor {
 
         Document doc=expand.expander(deserialise(fileinDirs.getLeft()), om.readValue(is, Bindings.class));
         for (String format: task.formats) {
-            String documentFilename = config.expand_dir + "/" + task.output + "." + format;
+            String documentFilename = config.output_dir + "/" + task.output + "." + format;
             serialize(new FileOutputStream(documentFilename), format, doc, false);
             if (task.copyinput != null && task.copyinput) {
-                serialize(new FileOutputStream(config.expand_dir + "/" + task.input.replace(".provn","."+format)), format, doc, false);
+                serialize(new FileOutputStream(config.output_dir + "/" + task.input.replace(".provn","."+format)), format, doc, false);
             }
             String csvRecord = createExpansionCsvRecord(task, format, fileinDirs, secondsSince2023_01_01);
             loggedRecords.add(csvRecord);
@@ -165,7 +184,7 @@ public class Executor {
 
     private void exportProvenanceAsCsv(Config config, Config.ConfigTask task, List<String> loggedRecords) throws IOException {
         if (task.hasProvenance!=null) {
-            try (FileOutputStream fos = new FileOutputStream(config.expand_dir + "/" + task.hasProvenance)) {
+            try (FileOutputStream fos = new FileOutputStream(config.output_dir + "/" + task.hasProvenance)) {
                 for (String csvRecord: loggedRecords) {
                     fos.write(csvRecord.getBytes(StandardCharsets.UTF_8));
                     fos.write("\n".getBytes(StandardCharsets.UTF_8));
@@ -188,18 +207,24 @@ public class Executor {
 
     public void executeMergeTask(Config config, Config.ConfigTask task, Map<String, String> variableMap) throws IOException {
 
-        Expand expand = new Expand(pf, false, false);
-        List<String> mtemplate_dir = (task.mtemplate_dir==null)? config.mtemplate_dir : task.mtemplate_dir;
-        Document doc1 = deserialise(findFileinDirs(mtemplate_dir, task.input));
-        Document doc2 = deserialise(findFileinDirs(mtemplate_dir, task.input2));
+        List<String> updatedTemplatePath;
+        if (task.template_path ==null) {
+            updatedTemplatePath=config.template_path;
+        } else {
+            updatedTemplatePath=new LinkedList<>();
+            updatedTemplatePath.addAll(task.template_path);
+            updatedTemplatePath.addAll(config.template_path);
+        }
+        Document doc1 = deserialise(findFileinDirs(updatedTemplatePath, task.input));
+        Document doc2 = deserialise(findFileinDirs(updatedTemplatePath, task.input2));
         Document doc3=new IndexedDocument(pf,doc1,false).merge(doc2).toDocument();
         for (String format: task.formats) {
-            serialize(new FileOutputStream(config.expand_dir + "/" + task.output + "." + format), format, doc3, false);
+            serialize(new FileOutputStream(config.output_dir + "/" + task.output + "." + format), format, doc3, false);
         }
         // option to clean up tmp file
         if (task.clean2!=null && task.clean2) {
             for (String format: task.formats) {
-                for (String dir : mtemplate_dir) {
+                for (String dir : updatedTemplatePath) {
                     File f = new File(dir + "/" + task.input2.replace(".provn", "." + format));
                     if (f.exists()) f.delete();
                 }
@@ -207,24 +232,24 @@ public class Executor {
         }
     }
 
-    private FileInputStream findFileinDirs(List<String> mtemplate_dir, String filename) throws FileNotFoundException {
-        for (String dir: mtemplate_dir) {
+    private FileInputStream findFileinDirs(List<String> template_path, String filename) throws FileNotFoundException {
+        for (String dir: template_path) {
             File f=new File(dir + "/" + filename);
             if (f.exists()) {
                 return new FileInputStream(f);
             }
         }
-        throw new FileNotFoundException(filename);
+        throw new FileNotFoundException(filename+ " in paths " + template_path);
     }
 
-    private Pair<FileInputStream, File> findFileinDirs2(List<String> mtemplate_dir, String filename) throws FileNotFoundException {
-        for (String dir: mtemplate_dir) {
+    private Pair<FileInputStream, File> findFileinDirs2(List<String> template_path, String filename) throws FileNotFoundException {
+        for (String dir: template_path) {
             File f=new File(dir + "/" + filename);
             if (f.exists()) {
                 return Pair.of(new FileInputStream(f),f);
             }
         }
-        throw new FileNotFoundException(filename + " in paths " + mtemplate_dir);
+        throw new FileNotFoundException(filename + " in paths " + template_path);
     }
 
     private InputStream substituteVariablesInFile(Map<String, String> variableMap, String filename) throws IOException {
@@ -269,7 +294,7 @@ public class Executor {
             }
         }
         if (!found || pos>2) {
-            System.out.println("Usage: Executor [input-basedir] [output-basedir] -configs <config1> <config2> ...");
+            System.out.println("Usage: Executor [input-basedir] [output-basedir] -configs <ttf1> <ttf2> ...");
             return;
         }
         String inputBaseDir;

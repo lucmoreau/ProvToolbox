@@ -1,9 +1,9 @@
 {
-    "mtemplate_dir": ["target/generated-templates/org/openprovenance/prov/templates/generic", "src/main/resources/meta/metatemplates"],
-    "mbindings_dir": "src/main/resources/meta/ptmbindings",
-    "expand_dir": "target/generated-templates/org/openprovenance/prov/templates/ptm",
+    "template_path": ["target/generated-templates/org/openprovenance/prov/templates/generic", "src/main/resources/meta/metatemplates"],
+    "bindings_path": ["src/main/resources/meta/ptmbindings"],
+    "output_dir": "generated-templates/org/openprovenance/prov/templates/ptm",
 
-    "variableMaps": ["common-ns.json"],
+    "variableMaps": ["./common-ns.json"],
 
     "tasks": [
         {
@@ -25,8 +25,6 @@
 
         }
     ]
-
-
 }
 
 

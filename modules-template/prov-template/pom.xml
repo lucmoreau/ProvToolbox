@@ -68,7 +68,7 @@
                 </configuration>
             </plugin>
 
-            <!-- exec plugin: to exec main in Executor.java during test phase.
+            <!--
             Maven plugin not available yet at this point in the build. -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -76,6 +76,70 @@
                 <version>${exec.plugin.version}</version>
                 <executions>
                     <execution>
+                        <id>ajv.ttf.schema.generic</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <executable>ajv</executable>
+                            <arguments>
+                                <argument>-s</argument>
+                                <argument>src/main/resources/jsonschema/ttf-schema.json</argument>
+                                <argument>-d</argument>
+                                <argument>src/main/resources/meta/config/config-generic.json</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>ajv.ttf.schema.plead</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <executable>ajv</executable>
+                            <arguments>
+                                <argument>-s</argument>
+                                <argument>src/main/resources/jsonschema/ttf-schema.json</argument>
+                                <argument>-d</argument>
+                                <argument>src/main/resources/meta/config/config-plead.json</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>ajv.ttf.schema.ptm</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <executable>ajv</executable>
+                            <arguments>
+                                <argument>-s</argument>
+                                <argument>src/main/resources/jsonschema/ttf-schema.json</argument>
+                                <argument>-d</argument>
+                                <argument>src/main/resources/meta/config/config-ptm.json</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>ajv.ttf.schema.pg</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <executable>ajv</executable>
+                            <arguments>
+                                <argument>-s</argument>
+                                <argument>src/main/resources/jsonschema/ttf-schema.json</argument>
+                                <argument>-d</argument>
+                                <argument>src/main/resources/meta/config/config-pg.json</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution> <!-- exec plugin: to exec main in Executor.java during test phase. -->
                         <id>default-cli</id>
                         <goals>
                             <goal>java</goal>
@@ -85,6 +149,7 @@
                             <mainClass>org.openprovenance.prov.template.expander.meta.Executor</mainClass>
                             <arguments>
                                 <argument>${project.basedir}</argument>
+                                <argument>${project.build.directory}</argument>
                                 <argument>-configs</argument>
                                 <argument>src/main/resources/meta/config/config-generic.json</argument>
                                 <argument>src/main/resources/meta/config/config-plead.json</argument>

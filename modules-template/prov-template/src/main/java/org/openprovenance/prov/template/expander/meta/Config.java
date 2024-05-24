@@ -3,9 +3,9 @@ package org.openprovenance.prov.template.expander.meta;
 import java.util.List;
 
 public class Config {
-    public List<String> mtemplate_dir;
-    public String mbindings_dir;
-    public String expand_dir;
+    public List<String> template_path;
+    public List<String> bindings_path;
+    public String output_dir;
 
     public List<String> variableMaps;
     public List<ConfigTask> tasks;
@@ -13,7 +13,7 @@ public class Config {
     public static List<String> addBaseDir(String basedir, List<String> directories) {
         if (directories!=null) {
             for (int i=0; i<directories.size(); i++) {
-                if (!directories.get(i).startsWith("/")) {
+                if (!directories.get(i).startsWith("/") & !directories.get(i).startsWith(".")) {
                     directories.set(i, basedir + "/" + directories.get(i));
                 }
             }
@@ -34,9 +34,10 @@ public class Config {
     //@JsonPropertyOrder({"type", "src", "output", "bindings", "formats"})
     public static class ConfigTask {
         public String type;
+        public String description;
         public String input;
         public String input2;
-        public List<String> mtemplate_dir;
+        public List<String> template_path;
         public String output;
         public String bindings;
         public List<String> formats;
@@ -44,14 +45,16 @@ public class Config {
         public Boolean clean2;
         public String hasProvenance;
         public List<String> variableMaps;
+        public boolean addOutputDirToInputPath=false;
 
         @Override
         public String toString() {
             return "ConfigTask{" +
                     "type='" + type + '\'' +
+                    ", description='" + description + '\'' +
                     ", input='" + input + '\'' +
                     ", input2='" + input2 + '\'' +
-                    ", mtemplate_dir=" + mtemplate_dir +
+                    ", template_path=" + template_path +
                     ", output='" + output + '\'' +
                     ", bindings='" + bindings + '\'' +
                     ", formats=" + formats +
@@ -59,6 +62,7 @@ public class Config {
                     ", clean2=" + clean2 +
                     ", hasProvenance='" + hasProvenance + '\'' +
                     ", variableMaps=" + variableMaps +
+                    ", addOutputDirToInputPath=" + addOutputDirToInputPath +
                     '}';
         }
     }
@@ -66,9 +70,9 @@ public class Config {
     @Override
     public String toString() {
         return "Config{" +
-                "mtemplate_dir='" + mtemplate_dir + '\'' +
-                ", mbindings_dir='" + mbindings_dir + '\'' +
-                ", expand_dir='" + expand_dir + '\'' +
+                "template_path='" + template_path + '\'' +
+                ", bindings_path='" + bindings_path + '\'' +
+                ", output_dir='" + output_dir + '\'' +
                 ", variableMaps=" + variableMaps +
                 ", tasks=" + tasks +
                 '}';

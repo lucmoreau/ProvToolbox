@@ -1,0 +1,92 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "ProvFormat": {
+            "type": "string",
+            "enum": ["provn", "prov-jsonld", "svg", "png", "pdf"]
+        },
+        "Task": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["expansion", "merge"]
+                },
+                "description": {
+                    "type": "string"
+                },
+                "input": {
+                    "type": "string"
+                },
+                "output": {
+                    "type": "string"
+                },
+                "bindings": {
+                    "type": "string"
+                },
+                "formats": {
+                    "type": "array",
+                    "items":  {"$ref": "#/definitions/ProvFormat"}
+                },
+                "hasProvenance": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "type",
+                "input",
+                "output",
+                "bindings",
+                "formats",
+                "hasProvenance"
+            ]
+        }
+    },
+    "type": "object",
+    "properties": {
+        "template_path": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "string"
+                }
+            ],
+            "minItems": 1
+        },
+        "bindings_path": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "string"
+                }
+            ],
+            "minItems": 1
+        },
+        "output_dir": {
+            "type": "string"
+        },
+        "variableMaps": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "tasks": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Task"
+            },
+            "minItems": 1
+        }
+    },
+
+    "required": [
+        "template_path",
+        "bindings_path",
+        "output_dir",
+        "variableMaps",
+        "tasks"
+    ]
+}

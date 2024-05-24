@@ -29,8 +29,8 @@ public class TemplateExecutor extends AbstractMojo {
     private String outputBaseDir;
 
 
-    @Parameter(property = "process-templates.args", required = true)
-    private List<String> args = new ArrayList<>();
+    @Parameter(property = "process-templates.configs", required = true)
+    private List<String> configs = new ArrayList<>();
 
     public void execute() throws MojoExecutionException {
         String className=Executor.class.getName();
@@ -60,9 +60,9 @@ public class TemplateExecutor extends AbstractMojo {
                 finalList.add(outputBaseDir);
             }
             finalList.add("-configs");
-            finalList.addAll(args);
+            finalList.addAll(configs);
 
-            System.out.println("args:=" + finalList);
+            System.out.println("configs:=" + finalList);
             URLClassLoader loader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
             Class<?> clazz = Class.forName(className, true, loader);
             Method method = clazz.getMethod("main", String[].class);

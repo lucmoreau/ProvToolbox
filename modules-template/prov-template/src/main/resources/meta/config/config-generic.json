@@ -1,7 +1,9 @@
 {
-    "mtemplate_dir": ["src/main/resources/meta/metatemplates"],
-    "mbindings_dir": "src/main/resources/meta/metabindings",
-    "expand_dir": "target/generated-templates/org/openprovenance/prov/templates/generic",
+    "template_path": ["src/main/resources/meta/metatemplates"],
+    "bindings_path": ["src/main/resources/meta/metabindings"],
+    "output_dir": "generated-templates/org/openprovenance/prov/templates/generic",
+
+    "variableMaps": ["./common-ns.json"],
 
     "tasks": [
         {
@@ -41,7 +43,7 @@
         {
             "type": "expansion",
             "input": "joining2.provn",
-            "mtemplate_dir": ["target/generated-templates/org/openprovenance/prov/templates/generic"],
+            "template_path": ["target/generated-templates/org/openprovenance/prov/templates/generic"],
             "output": "binaryop",
             "bindings": "binaryop.json",
             "formats": ["provn", "png", "svg"],

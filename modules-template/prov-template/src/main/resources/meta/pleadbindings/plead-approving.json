@@ -37,7 +37,6 @@
         "var":    "${var_ns}",
         "vargen": "${vargen_ns}",
         "xsd":    "${xsd_ns}"
-
     },
     "template" : null
 }

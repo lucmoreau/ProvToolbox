@@ -14,9 +14,10 @@ compile.plead.templates:
 transpile.code:
 	 export JAVA_HOME=/usr/local/java/jdk-12.0.1.jdk/Contents/Home/; mvn -f pom12.xml jsweet:jsweet
 
+SCHEMA_FILE=../prov-template/src/main/resources/jsonschema/bindings-schema.json
 
 test.schema:
-	@ajv -s ../prov-template/src/main/resources/jsonschema/bindings-schema.json -d $(FILE)
+	@ajv -s $(SCHEMA_FILE) -d $(FILE)
 
 BINDINGS_DIR=src/main/resources/bindings/org/openprovenance/prov/templates
 
@@ -31,3 +32,11 @@ test.schema.all:
 
 go:
 	echo $(SOURCES)
+
+ALL_TEMPLATE_PROJECTS_DIR=src/main/resources/config
+ALL_TEMPLATE_PROJECTS = $(wildcard $(ALL_TEMPLATE_PROJECTS_DIR)/*.json)
+
+
+test.schema.projects:
+	@$(foreach FILE, $(ALL_TEMPLATE_PROJECTS), $(MAKE) FILE=$(FILE) SCHEMA_FILE=../prov-template-compiler/src/main/resources/schema/template-project-schema.json test.schema;)
+

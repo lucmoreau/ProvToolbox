@@ -162,7 +162,10 @@
         },
         "template": {
             "type":  ["string", "null"]
-            }
+        },
+        "@documentation": {
+            "type":  ["string", "null"]
+        }
     },
     "required": [
         "var",

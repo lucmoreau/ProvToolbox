@@ -329,7 +329,7 @@
             </activation>
             <properties>
                 <isdocker />
-                <IGNOREM.upload.directory>${project.build.directory}/</IGNOREM.upload.directory>
+                <upload.directory>${project.build.directory}/</upload.directory>
                 <validation.log.location>target/</validation.log.location>
                 <validation.prov.log.location>target/</validation.prov.log.location>
             </properties>

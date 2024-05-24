@@ -9,13 +9,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/schema/template-project-schema.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/TemplateProjectSchemaValidator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/TtfSchemaValidator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/jsonschema/bindings-schema.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/jsonschema/bindings-schema.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-approving.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-approving.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1079,7 +1075,7 @@
       <workItem from="1713385763798" duration="179264000" />
       <workItem from="1714472444531" duration="62246000" />
       <workItem from="1715690420906" duration="169149000" />
-      <workItem from="1716384651492" duration="50818000" />
+      <workItem from="1716384651492" duration="53134000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

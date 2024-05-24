@@ -40,12 +40,6 @@
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-service-validation</artifactId>
-            <version>2.0.6-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-index-redis</artifactId>
             <version>2.0.6-SNAPSHOT</version>
         </dependency>
@@ -421,8 +415,6 @@
             <properties>
                 <isdocker />
                 <upload.directory>${project.build.directory}/</upload.directory>
-                <validation.log.location>target/</validation.log.location>
-                <validation.prov.log.location>target/</validation.prov.log.location>
             </properties>
 
             <build>
@@ -465,8 +457,6 @@
             <properties>
                 <isdocker>docker</isdocker>
                 <upload.directory>/home/pservice/files/</upload.directory>
-                <validation.log.location>/home/pservice/log/</validation.log.location>
-                <validation.prov.log.location>/home/pservice/log/</validation.prov.log.location>
                 <hsqldb.location>target/test-database/database</hsqldb.location>
             </properties>
             <build>

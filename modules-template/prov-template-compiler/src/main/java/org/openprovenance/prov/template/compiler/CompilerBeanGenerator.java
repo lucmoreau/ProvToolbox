@@ -83,6 +83,7 @@ public class CompilerBeanGenerator {
 
         FieldSpec.Builder b0 = FieldSpec.builder(String.class, Constants.IS_A)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addJavadoc("The template name")
                 .initializer("$S", templateName);
 
         builder.addField(b0.build());

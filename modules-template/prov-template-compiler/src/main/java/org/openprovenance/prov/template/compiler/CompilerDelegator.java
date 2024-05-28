@@ -31,12 +31,20 @@ public class CompilerDelegator {
         ClassName beanProcessorClass = ClassName.get(locations.getFilePackage(configs.beanProcessor), configs.beanProcessor);
         builder.addSuperinterface(beanProcessorClass);
 
+        builder.addJavadoc("Delegator for processing beans\n");
+
         builder.addField(beanProcessorClass, DELEGATOR_VAR, Modifier.FINAL, Modifier.PRIVATE);
 
         MethodSpec.Builder mspec2 = MethodSpec
                 .constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(beanProcessorClass, DELEGATOR_VAR);
+
+        CodeBlock.Builder jdoc = CodeBlock.builder();
+        jdoc.add("Constructor for Delegator\n");
+        jdoc.add("@param delegator a processor to which processing of beans is delegated\n");
+        mspec2.addJavadoc(jdoc.build());
+
         compilerUtil.specWithComment(mspec2);
         mspec2.addStatement("this.$N=$N", DELEGATOR_VAR, DELEGATOR_VAR);
 
@@ -53,6 +61,12 @@ public class CompilerDelegator {
                     .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())
                     .returns(className);
             compilerUtil.specWithComment(mspec);
+            CodeBlock.Builder jdoc2= CodeBlock.builder();
+            jdoc2.add("Porcessing method\n");
+            jdoc2.add("@param bean an input bean\n");
+            jdoc2.add("@return a processed bean\n");
+            mspec.addJavadoc(jdoc2.build());
+
             mspec.addStatement("return $N.process($N)", DELEGATOR_VAR, BEAN_VAR);
             builder.addMethod(mspec.build());
         }

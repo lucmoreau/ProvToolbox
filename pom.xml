@@ -43,6 +43,16 @@
 		<developer>
 			<id>lucmoreau</id>
 			<name>Luc Moreau</name>
+			<email>luc.moreau@kcl.ac.uk</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>King's College London</organization>
+			<timezone>0</timezone>
+		</developer>
+		<developer>
+			<id>lucmoreau</id>
+			<name>Luc Moreau</name>
 			<email>l.moreau@ecs.soton.ac.uk</email>
 			<roles>
 				<role>Developer</role>

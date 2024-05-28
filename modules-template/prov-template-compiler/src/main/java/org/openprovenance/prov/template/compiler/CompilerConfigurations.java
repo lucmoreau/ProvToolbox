@@ -71,6 +71,7 @@ public class CompilerConfigurations {
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(theConfiguratorName);
+        builder.addJavadoc("The table configurator $N\n", theConfiguratorName);
 
         // the following in only used for the enactorConfigurator
         if (beanProcessor!=null) {
@@ -94,7 +95,14 @@ public class CompilerConfigurations {
             locations.updateWithConfig(config);
             final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
             String builderParameter = "builder";
+
+            CodeBlock.Builder jdoc = CodeBlock.builder();
+            jdoc.add("Gets configuration\n");
+            jdoc.add("@param $N builder for template $N\n", builderParameter, config.name);
+            jdoc.add("@return $T\n", String[].class);
+
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(config.name)
+                    .addJavadoc(jdoc.build())
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .addParameter(ParameterSpec.builder(className, builderParameter).build())
                     .returns(typeName);

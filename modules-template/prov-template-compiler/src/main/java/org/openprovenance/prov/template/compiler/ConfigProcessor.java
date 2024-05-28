@@ -613,7 +613,7 @@ public class ConfigProcessor implements Constants {
                     compilerJsonSchema.generateJSonSchema(templateName+"_1", bindingsSchema, null, "#/definitions/", null);
 
 
-                    compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing, getInputOutputMaps(), configs.search);
+                    if (configs.sqlFile!=null) compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing, getInputOutputMaps(), configs.search);
 
                     SimpleTemplateCompilerConfig config = new SimpleTemplateCompilerConfig();
                     config.name = compositeBeanNameClass;

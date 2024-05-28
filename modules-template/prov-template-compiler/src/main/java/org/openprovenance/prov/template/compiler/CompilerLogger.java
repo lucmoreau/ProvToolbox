@@ -116,7 +116,14 @@ public class CompilerLogger {
     static final ParameterizedTypeName mapType2 = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(String.class), TypeVariableName.get("T"));
 
     private MethodSpec generateInitializeBeanTableMethod(TemplatesCompilerConfig configs, Locations locations) {
+        CodeBlock.Builder jdoc = CodeBlock.builder();
+        jdoc.add("Initialize a table of bean builders\n");
+        jdoc.add("@param $N a table configurator \n", "configurator");
+        jdoc.add("@param <T> type variable for the result associated with each template name\n");
+        jdoc.add("@return $T&lt;$T,$T&gt;\n", Map.class,String.class, TypeVariableName.get("T"));
+
         MethodSpec.Builder builder = MethodSpec.methodBuilder(INITIALIZE_BEAN_TABLE)
+                .addJavadoc(jdoc.build())
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addTypeVariable(typeT)
                 .returns(mapType);
@@ -143,14 +150,23 @@ public class CompilerLogger {
     }
 
     private MethodSpec generateInitializeCompositeBeanTableMethod(TemplatesCompilerConfig configs, Locations locations) {
+        String compositeTableConfigurator = COMPOSITE + configs.tableConfigurator;
+        ParameterizedTypeName parameterType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(compositeTableConfigurator), compositeTableConfigurator), typeT);
+
+        CodeBlock.Builder jdoc = CodeBlock.builder();
+        jdoc.add("Initialize a table of composite bean builders\n");
+        jdoc.add("@param $N a table configurator \n", "configurator");
+        jdoc.add("@param <T> type variable for the result associated with each template name\n");
+        jdoc.add("@return $T&lt;$T,$T&gt;\n", Map.class,String.class, TypeVariableName.get("T"));
+
         MethodSpec.Builder builder = MethodSpec.methodBuilder("initializeCompositeBeanTable")
+                .addJavadoc(jdoc.build())
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addTypeVariable(typeT)
                 .returns(mapType);
         compilerUtil.specWithComment(builder);
 
-        String compositeTableConfigurator = COMPOSITE + configs.tableConfigurator;
-        builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(compositeTableConfigurator), compositeTableConfigurator), typeT), "configurator");
+        builder.addParameter(parameterType, "configurator");
 
 
         builder.addStatement("$T $N=$N $T()",mapType, A_TABLE_VAR, "new", mapType2);
@@ -226,8 +242,10 @@ public class CompilerLogger {
         ArrayTypeName builderArrayType = ArrayTypeName.of(cln);
 
         MethodSpec.Builder builder2 = MethodSpec.methodBuilder(Constants.GET_BUILDERS_METHOD)
+                .addJavadoc("Returns the array of builders")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(builderArrayType);
+                .returns(builderArrayType)
+               ;
         builder.addMethod(builder2.build());
 
         TypeSpec theInterface = builder.build();

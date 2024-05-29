@@ -31,8 +31,7 @@ public class CompilerTableConfiguratorWithMap {
     SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, boolean compositeOnly, Locations locations, String l2p_src_dir) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.tableConfigurator==null) throw new NullPointerException("tableConfigurator is null");
-        String originalTableClassName=(compositeOnly)? Constants.COMPOSITE +configs.tableConfigurator:configs.tableConfigurator;
+        String originalTableClassName=(compositeOnly)? Constants.COMPOSITE_TABLE_CONFIGURATOR : Constants.TABLE_CONFIGURATOR;
         String tableClassName=originalTableClassName+WITH_MAP;
 
         String directory=locations.convertToDirectory(l2p_src_dir,"configurator");

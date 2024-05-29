@@ -122,7 +122,8 @@ public interface Constants {
     String CREATED_AT_COLUMN = "created_at";
     String PROCESSOR = "_processor";
     String DOCUMENT_BUILDER_DISPATCHER = "documentBuilderDispatcher";
-    String TEMPLATE_BUILDER = "templateBuilder";
+    String TEMPLATE_BUILDER_VARIABLE = "templateBuilder";
+    String TEMPLATE_BUILDERS = "TemplateBuilders";
     String PROPERTY_MAP = "propertyMap";
     String INPUT = "input";
     String OUTPUT = "output";
@@ -130,8 +131,11 @@ public interface Constants {
     String INPUT_ID = "input_id";
     String NAMED_PREFIX = "named_";
     String CONFIGURATOR = "configurator";
-    String LOGGER = "logger";
-    String INTEGRATOR = "integrator";
-    String COMMON = "common";
-    String CLIENT = "client";
+    String SUB_PACKAGE_LOGGER = "logger";
+    String SUB_PACKAGE_INTEGRATOR = "integrator";
+    String SUB_PACKAGE_COMMON = "common";
+    String SUB_PACKAGE_CLIENT = "client";
+    String BEAN_PROCESSOR = "BeanProcessor";
+    String LOGGER="Logger";
+
 }

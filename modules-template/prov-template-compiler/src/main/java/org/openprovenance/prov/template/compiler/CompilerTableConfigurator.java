@@ -28,8 +28,7 @@ public class CompilerTableConfigurator {
     SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, boolean compositeOnly, Locations locations) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.tableConfigurator==null) throw new NullPointerException("tableConfigurator is null");
-        String tableClassName=(compositeOnly)? Constants.COMPOSITE +configs.tableConfigurator:configs.tableConfigurator;
+        String tableClassName=(compositeOnly)? Constants.COMPOSITE_TABLE_CONFIGURATOR:Constants.TABLE_CONFIGURATOR;
 
         TypeSpec.Builder builder =  compilerUtil.generateInterfaceInitParameter(tableClassName, CompilerUtil.typeT);
 

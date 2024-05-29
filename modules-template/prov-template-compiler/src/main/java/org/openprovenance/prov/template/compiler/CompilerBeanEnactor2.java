@@ -24,8 +24,6 @@ public class CompilerBeanEnactor2 {
     SpecificationFile generateBeanEnactor2(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
-
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_ENACTOR2);
         builder.addModifiers(Modifier.ABSTRACT);

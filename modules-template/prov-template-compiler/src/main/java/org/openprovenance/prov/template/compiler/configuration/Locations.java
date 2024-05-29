@@ -27,8 +27,8 @@ public class Locations {
 
     public void updateWithConfig(TemplateCompilerConfig config) {
         if (config.package_==null) config.package_=configs.root_package;
-        this.config_common_package     = config.package_+ "." + Constants.CLIENT + "." + Constants.COMMON;
-        this.config_integrator_package = config.package_+ "." + Constants.CLIENT + "." + Constants.INTEGRATOR;
+        this.config_common_package     = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_COMMON;
+        this.config_integrator_package = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_INTEGRATOR;
         this.config_backend            = config.package_;
     }
 
@@ -37,9 +37,9 @@ public class Locations {
         this.cli_src_dir=cli_src_dir;
         this.python_dir=configs.python_dir;
 
-        this.configurator_package  = configs.root_package + "." + Constants.CLIENT + "." + configs.configurator_folder;
-        this.configurator_package2 = configs.root_package + "." + Constants.CLIENT + "." + configs.configurator_folder + CONFIG2_EXTENSION;
-        this.logger_package        = configs.root_package + "." + Constants.CLIENT + "." + configs.logger_folder;
+        this.configurator_package  = configs.root_package + "." + Constants.SUB_PACKAGE_CLIENT + "." + CONFIGURATOR;
+        this.configurator_package2 = configs.root_package + "." + Constants.SUB_PACKAGE_CLIENT + "." + CONFIGURATOR + CONFIG2_EXTENSION;
+        this.logger_package        = configs.root_package + "." + Constants.SUB_PACKAGE_CLIENT + "." + SUB_PACKAGE_LOGGER;
 
     }
 
@@ -54,20 +54,11 @@ public class Locations {
 
 
     public String getFilePackage(String file) {
-        if (file.equals(configs.logger)) {
-            return logger_package;
-        } else if (file.equals(TABLE_CONFIGURATOR) || file.equals(TABLE_CONFIGURATOR+"ForTypes")) {
-            return configurator_package;
-        } else if (file.equals(TABLE_CONFIGURATOR + WITH_MAP) || file.equals(TABLE_CONFIGURATOR + "ForTypes" + WITH_MAP)) {
-            return configurator_package;
-        } else if (file.equals(COMPOSITE_TABLE_CONFIGURATOR)) {
-            return configurator_package;
-        } else if (file.equals(configs.beanProcessor)) {
-            return config_common_package;
-        } else if (file.equals(configs.templateBuilders)) {
-            return logger_package;
-        }
         switch (file) {
+            case LOGGER:
+            case TEMPLATE_BUILDERS:
+                return logger_package;
+
             case BEAN_ENACTOR2:
             case TEMPLATE_INVOKER:
             case INPUT_OUTPUT_PROCESSOR:
@@ -78,6 +69,10 @@ public class Locations {
             case BEAN_COMPLETER2:
                 return config_integrator_package;
 
+            case TABLE_CONFIGURATOR:
+            case TABLE_CONFIGURATOR+"ForTypes":
+            case TABLE_CONFIGURATOR+WITH_MAP:
+            case TABLE_CONFIGURATOR+"ForTypes"+WITH_MAP:
             case CONVERTER_CONFIGURATOR:
             case BUILDER_CONFIGURATOR:
             case SQL_INSERT_CONFIGURATOR:
@@ -89,6 +84,7 @@ public class Locations {
             case ENACTOR_CONFIGURATOR:
             case COMPOSITE_ENACTOR_CONFIGURATOR:
             case RECORD_2_RECORD_CONFIGURATOR:
+            case COMPOSITE_TABLE_CONFIGURATOR:
                 return configurator_package;
 
             case COMPOSITE_ENACTOR_CONFIGURATOR2:
@@ -102,6 +98,7 @@ public class Locations {
             case BEAN_CHECKER:
             case QUERY_INVOKER:
             case BEAN_ENACTOR:
+            case BEAN_PROCESSOR:
                 return config_common_package;
 
             case SQL_INTERFACE:

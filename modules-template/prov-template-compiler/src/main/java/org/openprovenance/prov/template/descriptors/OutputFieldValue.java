@@ -50,6 +50,16 @@ public enum OutputFieldValue {
         }
         throw new UnsupportedOperationException("never reaching this point");
     }
-
+    @JsonIgnore
+    static public boolean hasOutput (OutputFieldValue outputFieldValue) {
+        if (outputFieldValue == null) return false;
+        switch (outputFieldValue) {
+            case True:
+            case Optional:
+            case False:
+                return true;
+        }
+        throw new UnsupportedOperationException("never reaching this point");
+    }
 
 }

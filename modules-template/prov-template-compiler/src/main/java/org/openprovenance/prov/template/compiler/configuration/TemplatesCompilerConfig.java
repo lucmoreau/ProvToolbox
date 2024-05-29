@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import  org.openprovenance.prov.template.compiler.common.Constants;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -16,25 +15,22 @@ public class TemplatesCompilerConfig {
     public String name;
     public String group;
     public String description;
-    public String logger;
-    public String templateBuilders;
-    public String tableConfigurator;
-    public String beanProcessor;
+    public String documentation;
+
     public String root_package;
 
-    public String configurator_folder=Constants.CONFIGURATOR;
-    public String logger_folder=Constants.LOGGER;
-
-    public List<String> search;
     public String script;
     public String script_dir;
+    public String python_dir;
+
     public boolean integrator;
     public boolean jsweet;
     public boolean sbean;
+
     public String jsonschema;
     public String sqlFile;
-    public String documentation;
-    public String python_dir;
+    public List<String> search;
+
 
     @Override
     public String toString() {
@@ -44,23 +40,17 @@ public class TemplatesCompilerConfig {
                 ", name='" + name + '\'' +
                 ", group='" + group + '\'' +
                 ", description='" + description + '\'' +
-                ", logger='" + logger + '\'' +
-                ", templateBuilders='" + templateBuilders + '\'' +
-                ", tableConfigurator='" + tableConfigurator + '\'' +
-                ", beanProcessor='" + beanProcessor + '\'' +
+                ", documentation='" + documentation + '\'' +
                 ", root_package='" + root_package + '\'' +
-                ", configurator_folder='" + configurator_folder + '\'' +
-                ", logger_folder='" + logger_folder + '\'' +
-                ", search=" + search +
                 ", script='" + script + '\'' +
                 ", script_dir='" + script_dir + '\'' +
+                ", python_dir='" + python_dir + '\'' +
                 ", integrator=" + integrator +
                 ", jsweet=" + jsweet +
                 ", sbean=" + sbean +
                 ", jsonschema='" + jsonschema + '\'' +
                 ", sqlFile='" + sqlFile + '\'' +
-                ", documentation='" + documentation + '\'' +
-                ", python_dir='" + python_dir + '\'' +
+                ", search=" + search +
                 ", templates=" + Arrays.toString(templates) +
                 ", sqlTables=" + sqlTables +
                 '}';

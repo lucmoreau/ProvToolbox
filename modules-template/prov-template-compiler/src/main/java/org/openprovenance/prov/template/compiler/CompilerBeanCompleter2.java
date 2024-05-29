@@ -25,8 +25,6 @@ public class CompilerBeanCompleter2 {
     SpecificationFile generateBeanCompleter2(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
-
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_COMPLETER2);
 
 

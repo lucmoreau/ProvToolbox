@@ -33,8 +33,8 @@ public class CompilerBeanChecker {
 
         String packageForBeans;
         if (direction==BeanDirection.COMMON) {
-            packageForBeans=locations.getFilePackage(configs.beanProcessor);
-            builder.addSuperinterface(ClassName.get(packageForBeans, configs.beanProcessor));
+            packageForBeans=locations.getFilePackage(Constants.BEAN_PROCESSOR);
+            builder.addSuperinterface(ClassName.get(packageForBeans, Constants.BEAN_PROCESSOR));
         } else {
             packageForBeans=locations.getFilePackage(INPUT_PROCESSOR);
             builder.addSuperinterface(ClassName.get(packageForBeans, INPUT_PROCESSOR));

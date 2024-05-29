@@ -28,7 +28,7 @@ public class CompilerDelegator {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.DELEGATOR);
 
-        ClassName beanProcessorClass = ClassName.get(locations.getFilePackage(configs.beanProcessor), configs.beanProcessor);
+        ClassName beanProcessorClass = compilerUtil.getClass(BEAN_PROCESSOR, locations);
         builder.addSuperinterface(beanProcessorClass);
 
         builder.addJavadoc("Delegator for processing beans\n");

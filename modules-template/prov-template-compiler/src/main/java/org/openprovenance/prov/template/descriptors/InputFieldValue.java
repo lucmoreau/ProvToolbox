@@ -37,7 +37,17 @@ public enum InputFieldValue {
 
         return null; // or fail
     }
-
+    @JsonIgnore
+    static public boolean hasInput (InputFieldValue inputFieldValue) {
+        if (inputFieldValue == null) return false;
+        switch (inputFieldValue) {
+            case Compulsory:
+            case Optional:
+            case False:
+                return true;
+        }
+        throw new UnsupportedOperationException("never reaching this point");
+    }
     @JsonIgnore
     static public boolean isInput (InputFieldValue inputFieldValue) {
         if (inputFieldValue == null) return false;

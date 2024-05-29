@@ -30,8 +30,6 @@ public class CompilerTypeConverter {
     SpecificationFile generateTypeConverter(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
-
         ParameterizedTypeName getterOfT=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.TYPE_CONVERTER), Constants.TYPE_CONVERTER+"."+Constants.GETTER),typeT);
 
 

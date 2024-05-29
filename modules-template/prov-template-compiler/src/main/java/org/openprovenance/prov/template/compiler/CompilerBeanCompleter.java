@@ -26,14 +26,12 @@ public class CompilerBeanCompleter {
     SpecificationFile generateBeanCompleter(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
-
 
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_COMPLETER);
 
-        builder.addSuperinterface(ClassName.get(locations.getFilePackage(configs.beanProcessor),configs.beanProcessor));
+        builder.addSuperinterface(compilerUtil.getClass(Constants.BEAN_PROCESSOR, locations));
 
         builder.addField(CompilerUtil.mapType,"m", Modifier.FINAL);
 

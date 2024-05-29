@@ -25,9 +25,6 @@ public class CompilerBeanEnactor {
     SpecificationFile generateBeanEnactor(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
-
-
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_ENACTOR);
@@ -35,9 +32,9 @@ public class CompilerBeanEnactor {
         builder.addTypeVariable(typeResult);
 
 
-        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(Constants.QUERY_INVOKER), Constants.QUERY_INVOKER);
-        ClassName beanCompleterClass = ClassName.get(locations.getFilePackage(BEAN_COMPLETER), BEAN_COMPLETER);
-        ClassName beanProcessorClass = ClassName.get(locations.getFilePackage(configs.beanProcessor), configs.beanProcessor);
+        ClassName queryInvokerClass  = compilerUtil.getClass(QUERY_INVOKER,  locations);
+        ClassName beanCompleterClass = compilerUtil.getClass(BEAN_COMPLETER, locations);
+        ClassName beanProcessorClass = compilerUtil.getClass(BEAN_PROCESSOR, locations);
         builder.addSuperinterface(beanProcessorClass);
 
 

@@ -14,7 +14,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Variant;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.Formats.ProvFormatType;
@@ -641,7 +640,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                         Locations locations = new Locations(configs, null);
 
 
-                        cp.generate(doc, locations, config.template, config.packge, config.outfile, config.location, config.location, true, config.location, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
+                        cp.generate(doc, locations, config.template, config.packge, config.outfile, config.location, config.location, true, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
                         return CommandLineArguments.STATUS_OK;
 
                     } catch (IOException e) {

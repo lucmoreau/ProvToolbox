@@ -27,6 +27,7 @@ import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.notation.ProvDeserialiser;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.descriptors.*;
@@ -851,5 +852,10 @@ public class CompilerUtil {
         RuntimeException exception = new RuntimeException();
         return exception.getStackTrace()[2];
     }
+
+    public ClassName getClass(String name, Locations locations) {
+        return ClassName.get(locations.getFilePackage(name), name);
+    }
+
 
 }

@@ -32,7 +32,7 @@ public class CompilerQueryInvoker {
         TypeSpec.Builder builder = compilerUtil.generateClassInit((withBean)?Constants.QUERY_INVOKER:Constants.QUERY_INVOKER2);
 
         if (withBean) {
-            builder.addSuperinterface(ClassName.get(locations.getFilePackage(configs.beanProcessor), configs.beanProcessor));
+            builder.addSuperinterface(compilerUtil.getClass(BEAN_PROCESSOR,locations));
         } else {
             builder.addSuperinterface(ClassName.get(locations.getFilePackage(INPUT_PROCESSOR), INPUT_PROCESSOR));
         }

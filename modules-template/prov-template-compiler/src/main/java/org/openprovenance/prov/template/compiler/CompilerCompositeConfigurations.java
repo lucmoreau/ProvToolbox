@@ -28,11 +28,7 @@ public class CompilerCompositeConfigurations {
                                                            String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.configurator_folder ==null) throw new NullPointerException("configurator_package is null");
-
-        String compositeTableConfigurator = COMPOSITE + configs.tableConfigurator;
-        final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(compositeTableConfigurator), compositeTableConfigurator), typeName);
-
+        final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(COMPOSITE_TABLE_CONFIGURATOR), COMPOSITE_TABLE_CONFIGURATOR), typeName);
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(fileName);
 
@@ -83,7 +79,7 @@ public class CompilerCompositeConfigurations {
     static final ParameterizedTypeName recordsProcessorOfUnknown = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"RecordsProcessorInterface"), TypeVariableName.get("?"));
 
     public SpecificationFile generateCompositeEnactorConfigurator(TemplatesCompilerConfig configs, Locations locations, String fileName) {
-        return  generateCompositeConfigurator(configs, locations, recordsProcessorOfUnknown, this::generateMethodEnactor, "generateCompositeConfigurator", ClassName.get(locations.getFilePackage(configs.beanProcessor),configs.beanProcessor), fileName);
+        return  generateCompositeConfigurator(configs, locations, recordsProcessorOfUnknown, this::generateMethodEnactor, "generateCompositeConfigurator", compilerUtil.getClass(BEAN_PROCESSOR, locations), fileName);
     }
 
 
@@ -107,10 +103,7 @@ public class CompilerCompositeConfigurations {
                                                             String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.configurator_folder ==null) throw new NullPointerException("configurator_package is null");
-
-        String compositeTableConfigurator = COMPOSITE + configs.tableConfigurator;
-        final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(compositeTableConfigurator), compositeTableConfigurator), typeName);
+        final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(COMPOSITE_TABLE_CONFIGURATOR), COMPOSITE_TABLE_CONFIGURATOR), typeName);
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(fileName);

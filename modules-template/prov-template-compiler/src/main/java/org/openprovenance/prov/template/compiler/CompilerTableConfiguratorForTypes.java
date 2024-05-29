@@ -4,7 +4,6 @@ import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
-import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
@@ -32,8 +31,7 @@ public class CompilerTableConfiguratorForTypes {
     SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, boolean compositeOnly, Locations locations, String l2p_src_dir) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.tableConfigurator==null) throw new NullPointerException("tableConfigurator is null");
-        String originalTableClassName=(compositeOnly)? Constants.COMPOSITE +configs.tableConfigurator:configs.tableConfigurator;
+        String originalTableClassName=(compositeOnly)? COMPOSITE_TABLE_CONFIGURATOR:TABLE_CONFIGURATOR;
         String tableClassName=originalTableClassName+"ForTypes"+WITH_MAP;
 
         String directory=locations.convertToDirectory(l2p_src_dir,"configurator");
@@ -85,13 +83,13 @@ public class CompilerTableConfiguratorForTypes {
 
                 mspec_builder.addStatement("$T $N=$N.get($S)", stringArrayType, "properties", PROPERTY_ORDER, config.name);
 
-                mspec_builder.addStatement("$T $N = ($T) $N.get($S)", builderClass, TEMPLATE_BUILDER, builderClass, DOCUMENT_BUILDER_DISPATCHER, config.name);
+                mspec_builder.addStatement("$T $N = ($T) $N.get($S)", builderClass, TEMPLATE_BUILDER_VARIABLE, builderClass, DOCUMENT_BUILDER_DISPATCHER, config.name);
 
-                mspec_builder.addStatement("$T $N=$N.make($N.getTypedRecord())", Object[].class, "record2", TEMPLATE_BUILDER, TEMPLATE_BUILDER);
+                mspec_builder.addStatement("$T $N=$N.make($N.getTypedRecord())", Object[].class, "record2", TEMPLATE_BUILDER_VARIABLE, TEMPLATE_BUILDER_VARIABLE);
 
                 mspec_builder.addStatement("$T knownTypeMap=new $T<>()", mapQualifiedName2StringSetType, HashMap.class);
                 //        plead_trainingBuilder.make(plead_trainingBuilder.getTypeManager(knownTypeMap, new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>()));
-                mspec_builder.addStatement("$N.make($N.getTypeManager(knownTypeMap, new $T<>(), new $T<>(), new $T<>(), new $T<>()))", TEMPLATE_BUILDER, TEMPLATE_BUILDER, HashMap.class, HashMap.class, HashMap.class, HashMap.class);
+                mspec_builder.addStatement("$N.make($N.getTypeManager(knownTypeMap, new $T<>(), new $T<>(), new $T<>(), new $T<>()))", TEMPLATE_BUILDER_VARIABLE, TEMPLATE_BUILDER_VARIABLE, HashMap.class, HashMap.class, HashMap.class, HashMap.class);
 
                 mspec_builder.addStatement("$T $N=new $T<>()", mapString2StringSetType, PROPERTY_MAP, HashMap.class);
                 mspec_builder.beginControlFlow("for (int i=0; i<$N.length; i++)", "record2");

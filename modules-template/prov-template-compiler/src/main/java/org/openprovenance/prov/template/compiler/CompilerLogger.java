@@ -34,7 +34,7 @@ public class CompilerLogger {
     SpecificationFile generateLogger(TemplatesCompilerConfig configs, Locations locations, String fileName, Map<String, Map<String, Map<String, String>>> inputOutputMaps) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(configs.logger);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(LOGGER);
         builder.addSuperinterface(ClassName.get(Constants.CLIENT_PACKAGE, LOGGER_INTERFACE));
 
         for (TemplateCompilerConfig config : configs.templates) {
@@ -130,7 +130,7 @@ public class CompilerLogger {
         compilerUtil.specWithComment(builder);
 
 
-        builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.tableConfigurator), configs.tableConfigurator), TypeVariableName.get("T")), "configurator");
+        builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(TABLE_CONFIGURATOR), TABLE_CONFIGURATOR), TypeVariableName.get("T")), "configurator");
 
         builder.addStatement("$T $N=$N $T()",mapType, A_TABLE_VAR,"new", mapType2);
 
@@ -150,8 +150,7 @@ public class CompilerLogger {
     }
 
     private MethodSpec generateInitializeCompositeBeanTableMethod(TemplatesCompilerConfig configs, Locations locations) {
-        String compositeTableConfigurator = COMPOSITE + configs.tableConfigurator;
-        ParameterizedTypeName parameterType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(compositeTableConfigurator), compositeTableConfigurator), typeT);
+        ParameterizedTypeName parameterType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(COMPOSITE_TABLE_CONFIGURATOR), COMPOSITE_TABLE_CONFIGURATOR), typeT);
 
         CodeBlock.Builder jdoc = CodeBlock.builder();
         jdoc.add("Initialize a table of composite bean builders\n");

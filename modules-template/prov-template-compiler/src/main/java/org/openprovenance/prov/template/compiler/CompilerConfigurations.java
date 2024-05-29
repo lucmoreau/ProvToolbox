@@ -65,8 +65,6 @@ public class CompilerConfigurations {
                                                   Consumer<TypeSpec.Builder> optionalCode) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.configurator_folder ==null) throw new NullPointerException("configurator_package is null");
-
         final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(TABLE_CONFIGURATOR),TABLE_CONFIGURATOR), typeName);
 
 
@@ -187,7 +185,7 @@ public class CompilerConfigurations {
         return  generateConfigurator(configs, locations, theConfiguratorName, record2recordType, this::generateMethodRecord2RecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON, directory, fileName, optionalCode);
     }
     public SpecificationFile generateEnactorConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor, "generateEnactorConfigurator", BeanDirection.COMMON, ClassName.get(locations.getFilePackage(configs.beanProcessor),configs.beanProcessor), false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor, "generateEnactorConfigurator", BeanDirection.COMMON, compilerUtil.getClass(BEAN_PROCESSOR,locations), false, null, BeanDirection.COMMON, directory, fileName);
     }
 
     public SpecificationFile generateEnactorConfigurator2(TemplatesCompilerConfig configs, String theConfiguratorName, String integrator_package, Locations locations, String directory, String fileName) {

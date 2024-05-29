@@ -49,7 +49,7 @@ public class CompilerJsonSchema {
     }
 
     public Map<String, Object> initializeSchemaMap() {
-        final HashMap<String, Object> res = new HashMap<String, Object>();
+        final HashMap<String, Object> res = new HashMap<>();
         res.put("definitions", new HashMap<String, Object>());
         res.put("allOf", new LinkedList<HashMap<String,Object>>());
         res.put("type", "object");
@@ -117,7 +117,7 @@ public class CompilerJsonSchema {
             Map<String,Object>subschema= (Map<String, Object>) ((Map<String,Object>)jsonSchemaAsAMap.get("definitions")).get(consistsOf);
 
 
-            Map<String, Object> subschema2 = new HashMap<>(subschema);
+            Map<String, Object> subschema2 = (subschema==null)? new HashMap<>(): new HashMap<>(subschema);
             // note: the $id are not correct
             subschema2.put("title", consistsOf + " {{idx}}");
             Map<String, Object> propertiesMap = (Map<String, Object>) subschema2.get("properties");

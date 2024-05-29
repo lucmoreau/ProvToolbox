@@ -112,26 +112,6 @@
         "version": {
             "type": "string"
         },
-        "logger": {
-            "type": "string"
-        },
-        "templateBuilders": {
-            "type": "string"
-        },
-        "tableConfigurator": {
-            "type": "string"
-        },
-        "beanProcessor": {
-            "type": "string"
-        },
-        "logger_folder": {
-            "type": "string",
-            "default": "logger"
-        },
-        "configurator_folder": {
-            "type": "string",
-            "default": "configurator"
-        },
         "root_package": {
             "type": "string"
         },
@@ -193,10 +173,7 @@
         "destination",
         "description",
         "version",
-        "templateBuilders",
         "root_package",
-        "tableConfigurator",
-        "beanProcessor",
         "script",
         "script_dir",
         "python_dir",

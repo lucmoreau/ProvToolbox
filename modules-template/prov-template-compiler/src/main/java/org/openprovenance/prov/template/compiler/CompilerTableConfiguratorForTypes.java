@@ -6,7 +6,6 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
-import org.openprovenance.prov.template.log2prov.FileBuilder;
 
 import javax.lang.model.element.Modifier;
 
@@ -124,7 +123,7 @@ public class CompilerTableConfiguratorForTypes {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage = configs.init_package + ".configurator";
+        String myPackage = configs.root_package + ".configurator";
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

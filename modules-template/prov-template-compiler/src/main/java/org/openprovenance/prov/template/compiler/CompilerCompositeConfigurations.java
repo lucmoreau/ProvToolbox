@@ -28,7 +28,7 @@ public class CompilerCompositeConfigurations {
                                                            String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.configurator_package==null) throw new NullPointerException("configurator_package is null");
+        if (configs.configurator_folder ==null) throw new NullPointerException("configurator_package is null");
 
         String compositeTableConfigurator = COMPOSITE + configs.tableConfigurator;
         final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(compositeTableConfigurator), compositeTableConfigurator), typeName);
@@ -107,7 +107,7 @@ public class CompilerCompositeConfigurations {
                                                             String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.configurator_package==null) throw new NullPointerException("configurator_package is null");
+        if (configs.configurator_folder ==null) throw new NullPointerException("configurator_package is null");
 
         String compositeTableConfigurator = COMPOSITE + configs.tableConfigurator;
         final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(compositeTableConfigurator), compositeTableConfigurator), typeName);

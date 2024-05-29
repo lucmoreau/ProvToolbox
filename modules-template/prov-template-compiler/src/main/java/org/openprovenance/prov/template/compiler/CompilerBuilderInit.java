@@ -73,9 +73,9 @@ public class CompilerBuilderInit {
 
         TypeSpec theInitializer=builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theInitializer, configs, configs.init_package, stackTraceElement);
+        JavaFile myfile = compilerUtil.specWithComment(theInitializer, configs, configs.root_package, stackTraceElement);
 
-        return new SpecificationFile(myfile, directory, fileName, configs.init_package);
+        return new SpecificationFile(myfile, directory, fileName, configs.root_package);
     }
 
     public MethodSpec generateMain() {

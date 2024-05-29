@@ -112,9 +112,6 @@
         "version": {
             "type": "string"
         },
-        "init_package": {
-            "type": "string"
-        },
         "logger": {
             "type": "string"
         },
@@ -127,10 +124,15 @@
         "beanProcessor": {
             "type": "string"
         },
-        "logger_package": {
-            "type": "string"
+        "logger_folder": {
+            "type": "string",
+            "default": "logger"
         },
-        "configurator_package": {
+        "configurator_folder": {
+            "type": "string",
+            "default": "configurator"
+        },
+        "root_package": {
             "type": "string"
         },
         "script": {
@@ -141,6 +143,9 @@
         },
         "python_dir": {
             "type": "string"
+        },
+        "integrator": {
+            "type": "boolean"
         },
         "sbean": {
             "type": "boolean"
@@ -188,13 +193,10 @@
         "destination",
         "description",
         "version",
-        "init_package",
-        "logger",
         "templateBuilders",
+        "root_package",
         "tableConfigurator",
         "beanProcessor",
-        "logger_package",
-        "configurator_package",
         "script",
         "script_dir",
         "python_dir",

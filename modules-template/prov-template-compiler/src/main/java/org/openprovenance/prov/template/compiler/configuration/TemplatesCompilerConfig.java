@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import  org.openprovenance.prov.template.compiler.common.Constants;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -15,16 +16,19 @@ public class TemplatesCompilerConfig {
     public String name;
     public String group;
     public String description;
-    public String init_package;
     public String logger;
     public String templateBuilders;
     public String tableConfigurator;
     public String beanProcessor;
-    public String logger_package;
-    public String configurator_package;
+    public String root_package;
+
+    public String configurator_folder=Constants.CONFIGURATOR;
+    public String logger_folder=Constants.LOGGER;
+
     public List<String> search;
     public String script;
     public String script_dir;
+    public boolean integrator;
     public boolean jsweet;
     public boolean sbean;
     public String jsonschema;
@@ -40,16 +44,17 @@ public class TemplatesCompilerConfig {
                 ", name='" + name + '\'' +
                 ", group='" + group + '\'' +
                 ", description='" + description + '\'' +
-                ", init_package='" + init_package + '\'' +
                 ", logger='" + logger + '\'' +
                 ", templateBuilders='" + templateBuilders + '\'' +
                 ", tableConfigurator='" + tableConfigurator + '\'' +
                 ", beanProcessor='" + beanProcessor + '\'' +
-                ", logger_package='" + logger_package + '\'' +
-                ", configurator_package='" + configurator_package + '\'' +
-                ", search='" + search + '\'' +
+                ", root_package='" + root_package + '\'' +
+                ", configurator_folder='" + configurator_folder + '\'' +
+                ", logger_folder='" + logger_folder + '\'' +
+                ", search=" + search +
                 ", script='" + script + '\'' +
                 ", script_dir='" + script_dir + '\'' +
+                ", integrator=" + integrator +
                 ", jsweet=" + jsweet +
                 ", sbean=" + sbean +
                 ", jsonschema='" + jsonschema + '\'' +

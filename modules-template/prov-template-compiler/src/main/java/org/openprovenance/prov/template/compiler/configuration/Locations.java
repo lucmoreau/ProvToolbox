@@ -19,32 +19,27 @@ public class Locations {
     private String config_integrator_package;
 
 
-    private final String compositeTableConfigurator;
 
 
 
 
-
-    static String INTEGRATOR="integrator";
-    static String CLIENT="client"; // FIXME: need to be able to rename
-    static String COMMON="common";
     static final String CONFIG2_EXTENSION = "2";
 
     public void updateWithConfig(TemplateCompilerConfig config) {
-        this.config_common_package     = config.package_+ "." + CLIENT + "." + COMMON;
-        this.config_integrator_package = config.package_+ "." + CLIENT + "." + INTEGRATOR;
+        if (config.package_==null) config.package_=configs.root_package;
+        this.config_common_package     = config.package_+ "." + Constants.CLIENT + "." + Constants.COMMON;
+        this.config_integrator_package = config.package_+ "." + Constants.CLIENT + "." + Constants.INTEGRATOR;
         this.config_backend            = config.package_;
     }
 
     public Locations(TemplatesCompilerConfig configs, String cli_src_dir) {
         this.configs=configs;
         this.cli_src_dir=cli_src_dir;
-        this.compositeTableConfigurator=COMPOSITE + configs.tableConfigurator;
         this.python_dir=configs.python_dir;
 
-        configurator_package=configs.configurator_package;
-        configurator_package2=configs.configurator_package+ CONFIG2_EXTENSION;
-        logger_package=configs.logger_package;
+        this.configurator_package  = configs.root_package + "." + Constants.CLIENT + "." + configs.configurator_folder;
+        this.configurator_package2 = configs.root_package + "." + Constants.CLIENT + "." + configs.configurator_folder + CONFIG2_EXTENSION;
+        this.logger_package        = configs.root_package + "." + Constants.CLIENT + "." + configs.logger_folder;
 
     }
 
@@ -61,11 +56,11 @@ public class Locations {
     public String getFilePackage(String file) {
         if (file.equals(configs.logger)) {
             return logger_package;
-        } else if (file.equals(configs.tableConfigurator) || file.equals(configs.tableConfigurator+"ForTypes")) {
+        } else if (file.equals(TABLE_CONFIGURATOR) || file.equals(TABLE_CONFIGURATOR+"ForTypes")) {
             return configurator_package;
-        } else if (file.equals(configs.tableConfigurator + WITH_MAP) || file.equals(configs.tableConfigurator + "ForTypes" + WITH_MAP)) {
+        } else if (file.equals(TABLE_CONFIGURATOR + WITH_MAP) || file.equals(TABLE_CONFIGURATOR + "ForTypes" + WITH_MAP)) {
             return configurator_package;
-        } else if (file.equals(compositeTableConfigurator)) {
+        } else if (file.equals(COMPOSITE_TABLE_CONFIGURATOR)) {
             return configurator_package;
         } else if (file.equals(configs.beanProcessor)) {
             return config_common_package;
@@ -79,7 +74,6 @@ public class Locations {
             case QUERY_INVOKER2:
             case INPUT_PROCESSOR:
             case COMPOSITE_BEAN_COMPLETER2:
-            case TYPE_CONVERTER:
             case BEAN_CHECKER2:
             case BEAN_COMPLETER2:
                 return config_integrator_package;
@@ -102,6 +96,7 @@ public class Locations {
 
                 return configurator_package2;
 
+            case TYPE_CONVERTER:
             case DELEGATOR:
             case BEAN_COMPLETER:
             case BEAN_CHECKER:

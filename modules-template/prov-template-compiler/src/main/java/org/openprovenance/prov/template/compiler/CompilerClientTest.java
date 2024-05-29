@@ -54,10 +54,10 @@ public class CompilerClientTest {
 
         TypeSpec theInitializer=builder.build();
 
-        JavaFile myfile = JavaFile.builder(configs.init_package, theInitializer)
+        JavaFile myfile = JavaFile.builder(configs.root_package, theInitializer)
                 .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $N",getClass().getName(), configs.name)
                 .build();
-        return new SpecificationFile(myfile, directory, fileName, configs.init_package);
+        return new SpecificationFile(myfile, directory, fileName, configs.root_package);
 
     }
 

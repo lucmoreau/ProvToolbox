@@ -34,7 +34,7 @@ public class CompilerScript {
                 line = line.replace("${VERSION}", configs.version);
                 line = line.replace("${NAME}", configs.name);
                 line = line.replace("${GROUP}", configs.group.replace(".", "/"));
-                line = line.replace("${INIT}", configs.init_package + "." + Constants.INIT);
+                line = line.replace("${INIT}", configs.root_package + "." + Constants.INIT);
 
                 os.println(line);
                 line = reader.readLine();

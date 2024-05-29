@@ -90,7 +90,7 @@ public class CompilerTableConfiguratorWithMap {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage = configs.init_package + ".configurator";
+        String myPackage = configs.root_package + ".configurator";
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

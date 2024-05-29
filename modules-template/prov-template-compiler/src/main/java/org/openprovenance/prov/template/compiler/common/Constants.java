@@ -47,6 +47,8 @@ public interface Constants {
     String SQL_CONFIGURATOR = "SqlConfigurator";
     String SQL_INSERT_CONFIGURATOR = "SqlInsertConfigurator";
     String CSV_CONFIGURATOR = "CsvConfigurator";
+    String TABLE_CONFIGURATOR = "TableConfigurator";
+    String COMPOSITE_TABLE_CONFIGURATOR = "CompositeTableConfigurator";
     String BUILDER_CONFIGURATOR = "BuilderConfigurator";
     String CONVERTER_CONFIGURATOR = "ConverterConfigurator";
     String RECORD_2_RECORD_CONFIGURATOR = "CsvRecord2ObjectRecordConfigurator";
@@ -127,4 +129,9 @@ public interface Constants {
     String SUFFIX_TYPE = "_type";
     String INPUT_ID = "input_id";
     String NAMED_PREFIX = "named_";
+    String CONFIGURATOR = "configurator";
+    String LOGGER = "logger";
+    String INTEGRATOR = "integrator";
+    String COMMON = "common";
+    String CLIENT = "client";
 }

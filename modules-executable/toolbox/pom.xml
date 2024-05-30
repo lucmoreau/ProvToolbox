@@ -136,7 +136,7 @@
                             <name>provconvert</name>
                         </program>
                         <program>
-                            <mainClass>org.openprovenance.prov.template.expander.meta.Executor</mainClass>
+                            <mainClass>org.openprovenance.prov.template.expander.meta.BatchExecutor</mainClass>
                             <name>prov-template-process</name>
                         </program>
 

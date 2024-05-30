@@ -48,7 +48,7 @@ public class CompilerTest extends TestCase {
         //cp.processTemplateGenerationConfig("src/test/resources/config1.json", pf);
 
 
-        TemplatesCompilerConfig configs = objectMapper.readValue(new File(path), TemplatesCompilerConfig.class);
+        TemplatesProjectConfiguration configs = objectMapper.readValue(new File(path), TemplatesProjectConfiguration.class);
         TemplateCompilerConfig config = configs.templates[0];
         System.out.println("=====> \n" + configs);
 

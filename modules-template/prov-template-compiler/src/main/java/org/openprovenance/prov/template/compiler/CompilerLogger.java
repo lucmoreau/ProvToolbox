@@ -31,7 +31,7 @@ public class CompilerLogger {
     }
 
 
-    SpecificationFile generateLogger(TemplatesCompilerConfig configs, Locations locations, String fileName, Map<String, Map<String, Map<String, String>>> inputOutputMaps) {
+    SpecificationFile generateLogger(TemplatesProjectConfiguration configs, Locations locations, String fileName, Map<String, Map<String, Map<String, String>>> inputOutputMaps) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(LOGGER);
@@ -115,7 +115,7 @@ public class CompilerLogger {
     static final ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeVariableName.get("T"));
     static final ParameterizedTypeName mapType2 = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(String.class), TypeVariableName.get("T"));
 
-    private MethodSpec generateInitializeBeanTableMethod(TemplatesCompilerConfig configs, Locations locations) {
+    private MethodSpec generateInitializeBeanTableMethod(TemplatesProjectConfiguration configs, Locations locations) {
         CodeBlock.Builder jdoc = CodeBlock.builder();
         jdoc.add("Initialize a table of bean builders\n");
         jdoc.add("@param $N a table configurator \n", "configurator");
@@ -149,7 +149,7 @@ public class CompilerLogger {
 
     }
 
-    private MethodSpec generateInitializeCompositeBeanTableMethod(TemplatesCompilerConfig configs, Locations locations) {
+    private MethodSpec generateInitializeCompositeBeanTableMethod(TemplatesProjectConfiguration configs, Locations locations) {
         ParameterizedTypeName parameterType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(COMPOSITE_TABLE_CONFIGURATOR), COMPOSITE_TABLE_CONFIGURATOR), typeT);
 
         CodeBlock.Builder jdoc = CodeBlock.builder();
@@ -184,7 +184,7 @@ public class CompilerLogger {
 
     }
 
-    SpecificationFile generateBuilderInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
+    SpecificationFile generateBuilderInterface(TemplatesProjectConfiguration configs, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(Constants.BUILDER_INTERFACE);
@@ -232,7 +232,7 @@ public class CompilerLogger {
         return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
     }
 
-    SpecificationFile generateLoggerInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
+    SpecificationFile generateLoggerInterface(TemplatesProjectConfiguration configs, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(Constants.LOGGER_INTERFACE);
@@ -325,7 +325,7 @@ public class CompilerLogger {
 
     }
 
-    public SpecificationFile generateProcessorArgsInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
+    public SpecificationFile generateProcessorArgsInterface(TemplatesProjectConfiguration configs, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(PROCESSOR_ARGS_INTERFACE,  CompilerUtil.typeT);
@@ -345,7 +345,7 @@ public class CompilerLogger {
         return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
     }
 
-    public SpecificationFile generateRecordsProcessorInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
+    public SpecificationFile generateRecordsProcessorInterface(TemplatesProjectConfiguration configs, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(RECORDS_PROCESSOR_INTERFACE, CompilerUtil.typeT);

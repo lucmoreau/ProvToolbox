@@ -1,4 +1,4 @@
-package org.openprovenance.plugin;
+package org.openprovenance.plugin.ttb;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -6,7 +6,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.openprovenance.prov.template.expander.meta.Executor;
 
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -15,25 +14,25 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-@Mojo(name = "process-templates", defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
-public class TemplateExecutor extends AbstractMojo {
+@Mojo(name = "execute-ttb", defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
+public class BatchExecutor extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    @Parameter(property = "process-templates.baseDir")
+    @Parameter(property = "execute-ttb.baseDir")
     private String baseDir;
-    @Parameter(property = "process-templates.inputBaseDir")
+    @Parameter(property = "execute-ttb.inputBaseDir")
     private String inputBaseDir;
-    @Parameter(property = "process-templates.outputBaseDir")
+    @Parameter(property = "execute-ttb.outputBaseDir")
     private String outputBaseDir;
 
 
-    @Parameter(property = "process-templates.configs", required = true)
+    @Parameter(property = "execute-ttb.configs", required = true)
     private List<String> configs = new ArrayList<>();
 
     public void execute() throws MojoExecutionException {
-        String className=Executor.class.getName();
+        String className= org.openprovenance.prov.template.expander.meta.BatchExecutor.class.getName();
 
         try {
             if ((baseDir!=null) && (inputBaseDir!=null)) {

@@ -6,7 +6,7 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 
 import javax.lang.model.element.Modifier;
 
@@ -21,7 +21,7 @@ public class CompilerInputOutputProcessor {
     }
 
 
-    SpecificationFile generateInputOutputProcessor(TemplatesCompilerConfig configs, Locations locations, String package_, boolean ioConverter, String directory, String fileName) {
+    SpecificationFile generateInputOutputProcessor(TemplatesProjectConfiguration configs, Locations locations, String package_, boolean ioConverter, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit((ioConverter)?INPUT_OUTPUT_PROCESSOR:INPUT_PROCESSOR);

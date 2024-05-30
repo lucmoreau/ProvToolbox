@@ -33,7 +33,7 @@ public class CompilerBeanGenerator {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
-    public SpecificationFile generateBean(TemplatesCompilerConfig configs, Locations locations, String templateName, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, String fileName) {
+    public SpecificationFile generateBean(TemplatesProjectConfiguration configs, Locations locations, String templateName, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         String name = compilerUtil.beanNameClass(templateName, beanDirection);
@@ -176,7 +176,7 @@ public class CompilerBeanGenerator {
     }
 
 
-    static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, TemplatesCompilerConfig configs, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
+    static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, TemplatesProjectConfiguration configs, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
         return newSpecificationFiles(locations, spec, myfile, directory, fileName, packge, selectedExports, compilerUtil.pySpecWithComment(configs, stackTraceElement));
     }
 
@@ -207,7 +207,7 @@ public class CompilerBeanGenerator {
 
     public Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable=new HashMap<>();
 
-    String newVariant(String templateName, List<String> sharing, TemplatesCompilerConfig configs) {
+    String newVariant(String templateName, List<String> sharing, TemplatesProjectConfiguration configs) {
         String shared= stringForSharedVariables(sharing);
         variantTable.putIfAbsent(templateName,new HashMap<>());
         Triple<String, List<String>, TemplateBindingsSchema> triple = variantTable.get(templateName).get(shared);
@@ -340,7 +340,7 @@ public class CompilerBeanGenerator {
     }
 
 
-    public void generateSimpleConfigsWithVariants(Locations locations, TemplatesCompilerConfig configs) {
+    public void generateSimpleConfigsWithVariants(Locations locations, TemplatesProjectConfiguration configs) {
         variantTable.keySet().forEach(
                 templateName -> {
                     Map<String, Triple<String, List<String>, TemplateBindingsSchema>> allVariants=variantTable.get(templateName);

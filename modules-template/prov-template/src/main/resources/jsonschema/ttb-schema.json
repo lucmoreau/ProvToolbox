@@ -1,5 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Schema for a Template Tasks Batch",
     "definitions": {
         "ProvFormat": {
             "type": "string",
@@ -18,11 +19,17 @@
                 "input": {
                     "type": "string"
                 },
+                "input2": {
+                    "type": "string"
+                },
                 "output": {
                     "type": "string"
                 },
                 "bindings": {
-                    "type": "string"
+                    "oneOf": [
+                        {"type": "string"},
+                        {"type": "null"}
+                    ]
                 },
                 "formats": {
                     "type": "array",
@@ -30,6 +37,21 @@
                 },
                 "hasProvenance": {
                     "type": "string"
+                },
+                "copyinput": {
+                    "type": "boolean"
+                },
+                "clean2": {
+                    "type": "boolean"
+                },
+                "template_path": {
+                    "type": "array",
+                    "items": [
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "minItems": 1
                 }
             },
             "required": [
@@ -37,9 +59,9 @@
                 "input",
                 "output",
                 "bindings",
-                "formats",
-                "hasProvenance"
-            ]
+                "formats"
+            ],
+            "additionalProperties": false
         }
     },
     "type": "object",

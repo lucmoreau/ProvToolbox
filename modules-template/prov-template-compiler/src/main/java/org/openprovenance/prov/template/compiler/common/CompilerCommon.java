@@ -10,7 +10,7 @@ import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.*;
 
 import javax.lang.model.element.Modifier;
@@ -56,7 +56,7 @@ public class CompilerCommon {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, BeanKind beanKind, String fileName, String consistsOf) {
+    public Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, BeanKind beanKind, String fileName, String consistsOf) {
 
 
         Bundle bun=u.getBundle(doc).get(0);
@@ -72,7 +72,7 @@ public class CompilerCommon {
     }
 
 
-    Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib_aux(TemplatesCompilerConfig configs, Locations locations, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, BeanKind beanKind, String fileName, String consistsOf) {
+    Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib_aux(TemplatesProjectConfiguration configs, Locations locations, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, BeanKind beanKind, String fileName, String consistsOf) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = generateClassInit(name, Constants.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName), Constants.BUILDER, templateName);
@@ -1568,7 +1568,7 @@ public class CompilerCommon {
     }
 
 
-    public SpecificationFile generateSQLInterface(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+    public SpecificationFile generateSQLInterface(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit("SQL");

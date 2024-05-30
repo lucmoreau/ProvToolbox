@@ -25,7 +25,7 @@ public class CompilerQueryInvoker {
     }
 
 
-    public SpecificationFile generateQueryInvoker(TemplatesCompilerConfig configs, Locations locations, boolean withBean, String fileName) {
+    public SpecificationFile generateQueryInvoker(TemplatesProjectConfiguration configs, Locations locations, boolean withBean, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
@@ -167,7 +167,7 @@ public class CompilerQueryInvoker {
 
     }
 
-    private void simpleQueryInvoker(TemplatesCompilerConfig configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean) {
+    private void simpleQueryInvoker(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean) {
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
         String startCallString= Constants.INSERT_PREFIX + config.name + " (";
         compilerUtil.specWithComment(mspec);
@@ -204,7 +204,7 @@ public class CompilerQueryInvoker {
         mspec.addStatement("$N.append($S)", sbVar, endCallString);
 
     }
-    private void simpleQueryInvokerEmbedded(TemplatesCompilerConfig configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, List<String> sharing) {
+    private void simpleQueryInvokerEmbedded(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, List<String> sharing) {
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
         String startCallString= Constants.INSERT_PREFIX + config.name + " (";
         compilerUtil.specWithComment(mspec);
@@ -253,7 +253,7 @@ public class CompilerQueryInvoker {
 
     }
 
-    public void compositeQueryInvoker(TemplatesCompilerConfig configs, Locations locations, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, boolean withBean) {
+    public void compositeQueryInvoker(TemplatesProjectConfiguration configs, Locations locations, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, boolean withBean) {
         CompositeTemplateCompilerConfig compositeConfig=(CompositeTemplateCompilerConfig ) config;
         compilerUtil.specWithComment(mspec);
 

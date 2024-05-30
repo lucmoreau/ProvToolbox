@@ -7,7 +7,7 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 
 import javax.lang.model.element.Modifier;
 
@@ -21,7 +21,7 @@ public class CompilerBeanEnactor2 {
     }
 
 
-    SpecificationFile generateBeanEnactor2(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+    SpecificationFile generateBeanEnactor2(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 

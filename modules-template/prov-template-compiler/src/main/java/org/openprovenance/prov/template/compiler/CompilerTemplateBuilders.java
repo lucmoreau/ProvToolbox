@@ -19,7 +19,7 @@ public class CompilerTemplateBuilders {
     }
 
 
-    SpecificationFile generateTemplateBuilders(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+    SpecificationFile generateTemplateBuilders(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 

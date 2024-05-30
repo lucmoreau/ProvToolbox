@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
@@ -183,7 +183,7 @@ public class CompilerDocumentation {
     }
 
 
-    public void generateDocumentationEnd(TemplatesCompilerConfig configs, String cli_webjar_dir) {
+    public void generateDocumentationEnd(TemplatesProjectConfiguration configs, String cli_webjar_dir) {
         if (os!=null) { // insure this had been initialised
             os.println("</body>");
             os.println("</html>");

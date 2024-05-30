@@ -23,7 +23,7 @@ public class CompilerBeanCompleter {
     // so disabling this code for now
     final boolean sqlCode=false;
 
-    SpecificationFile generateBeanCompleter(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+    SpecificationFile generateBeanCompleter(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 

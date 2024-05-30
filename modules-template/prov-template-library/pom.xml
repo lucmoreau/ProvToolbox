@@ -85,6 +85,17 @@
                 <version>${exec.plugin.version}</version>
                 <executions>
                     <execution>
+                        <id>check-template-project-definitions</id>
+                        <phase>generate-sources</phase>
+                        <goals><goal>exec</goal></goals>
+                        <configuration>
+                            <executable>make</executable>
+                            <arguments>
+                                <argument>test.schema.projects</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>compile-template-plead</id>
                         <phase>generate-sources</phase>
                         <goals><goal>exec</goal></goals>
@@ -94,7 +105,8 @@
                                 <argument>-classpath</argument>
                                 <classpath />
                                 <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
-                                <argument>src/main/resources/config/config_plead.json</argument>
+                                <argument>src/main/resources/config/tp_plead.json</argument>
+                                <argument>${project.basedir}</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -109,7 +121,8 @@
                                 <argument>-classpath</argument>
                                 <classpath />
                                 <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
-                                <argument>src/main/resources/config/config_ptm.json</argument>
+                                <argument>src/main/resources/config/tp_ptm.json</argument>
+                                <argument>${project.basedir}</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -126,7 +139,8 @@
                                 <argument>-classpath</argument>
                                 <classpath />
                                 <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
-                                <argument>src/main/resources/config/config_pg.json</argument>
+                                <argument>src/main/resources/config/tp_pg.json</argument>
+                                <argument>${project.basedir}</argument>
                             </arguments>
                         </configuration>
                     </execution>

@@ -26,7 +26,7 @@ public class CompilerBuilderInit {
     }
 
 
-    SpecificationFile generateInitializer(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+    SpecificationFile generateInitializer(TemplatesProjectConfiguration configs, Locations locations, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         int size=configs.templates.length;

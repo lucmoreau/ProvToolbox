@@ -9,7 +9,7 @@ import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class Locations {
     final private String cli_src_dir;
-    final private TemplatesCompilerConfig configs;
+    final private TemplatesProjectConfiguration configs;
     final private String configurator_package;
     final private String logger_package;
     final private String configurator_package2;
@@ -32,7 +32,7 @@ public class Locations {
         this.config_backend            = config.package_;
     }
 
-    public Locations(TemplatesCompilerConfig configs, String cli_src_dir) {
+    public Locations(TemplatesProjectConfiguration configs, String cli_src_dir) {
         this.configs=configs;
         this.cli_src_dir=cli_src_dir;
         this.python_dir=configs.python_dir;

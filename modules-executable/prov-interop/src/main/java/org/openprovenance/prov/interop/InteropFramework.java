@@ -21,7 +21,7 @@ import org.openprovenance.prov.model.exception.DocumentedUnsupportedCaseExceptio
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.expander.Expand;
 
 
@@ -519,7 +519,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         } else if (config.template_builder!=null) {
             ConfigProcessor cp=new ConfigProcessor(pFactory);
-            return cp.processTemplateGenerationConfig(config.template_builder, pFactory);
+            // At the moment, the assumption is that base dir is the current directory
+            return cp.processTemplateGenerationConfig(config.template_builder, ".", ".", pFactory);
 
         } else if (config.log2prov!=null) {
             try {
@@ -635,7 +636,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 if (config.bindingsVersion>=3) {
                     try {
 
-                        TemplatesCompilerConfig configs = new TemplatesCompilerConfig();
+                        TemplatesProjectConfiguration configs = new TemplatesProjectConfiguration();
                         //FIXME: configs not initialized!!
                         Locations locations = new Locations(configs, null);
 

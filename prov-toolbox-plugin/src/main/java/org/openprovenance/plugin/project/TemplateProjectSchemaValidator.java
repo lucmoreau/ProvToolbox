@@ -1,4 +1,4 @@
-package org.openprovenance.plugin;
+package org.openprovenance.plugin.project;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -7,7 +7,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.openprovenance.prov.template.expander.Expand;
+import org.openprovenance.prov.template.compiler.CompilerSQL;
+
 
 import java.net.URL;
 import java.nio.file.Files;
@@ -16,17 +17,17 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mojo(name = "validate-ttf", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
-public class TtfSchemaValidator extends AbstractMojo {
+@Mojo(name = "validate-template-project", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
+public class TemplateProjectSchemaValidator extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    @Parameter(property = "validate-ttf.warning", defaultValue = "false")
+    @Parameter(property = "validate-template-project.warning", defaultValue = "false")
     private boolean warning;
 
 
-    @Parameter(property = "validate-ttf.args")
+    @Parameter(property = "validate-template-project.args")
     private List<String> args = new ArrayList<>();
 
     public void execute() throws MojoExecutionException {
@@ -39,14 +40,14 @@ public class TtfSchemaValidator extends AbstractMojo {
             //System.out.println("urls=" + urls);
             //System.out.println("args=" + args);
 
-            // copy file f to a temporary file with name openprovenance-ttf-schema-${project.version}.json
+            // copy file f to a temporary file with name openprovenance-template-project-schema-${project.version}.json
             String projectVersion = project.getVersion(); // get the project version
-            String tempFileName = "openprovenance-ttf-schema-" + projectVersion + ".json"; // create the temp file name
+            String tempFileName = "openprovenance-template-project-schema-" + projectVersion + ".json"; // create the temp file name
 
             // create a path for the temp file in the system's default temporary-file directory
             Path tempFilePath = Paths.get(System.getProperty("java.io.tmpdir"), tempFileName);
 
-            IOUtils.copy(Expand.class.getClassLoader().getResourceAsStream("jsonschema/ttf-schema.json"), Files.newOutputStream(tempFilePath));
+            IOUtils.copy(CompilerSQL.class.getClassLoader().getResourceAsStream("schema/template-project-schema.json"), Files.newOutputStream(tempFilePath));
 
             for (String arg : args) {
 

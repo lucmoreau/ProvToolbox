@@ -7,7 +7,7 @@ import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
@@ -33,7 +33,7 @@ public class CompilerTypedRecord {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
-    public SpecificationFile generatedTypedRecordConstructor(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    public SpecificationFile generatedTypedRecordConstructor(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -49,7 +49,7 @@ public class CompilerTypedRecord {
 
 
 
-    public SpecificationFile generateTypeDeclaration_aux(TemplatesCompilerConfig configs, Locations locations, Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    public SpecificationFile generateTypeDeclaration_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 

@@ -2,7 +2,7 @@ package org.openprovenance.prov.template.expander.meta;
 
 import java.util.List;
 
-public class Config {
+public class TemplateTasksBatch {
     public List<String> template_path;
     public List<String> bindings_path;
     public String output_dir;

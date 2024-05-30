@@ -10,7 +10,7 @@ import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 
 import javax.lang.model.element.Modifier;
 
@@ -25,7 +25,7 @@ public class CompilerClientTest {
     }
 
 
-    public SpecificationFile generateTestFile_cli(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+    public SpecificationFile generateTestFile_cli(TemplatesProjectConfiguration configs, Locations locations, String directory, String fileName) {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInitExtends(TESTER_FILE,"junit.framework","TestCase");
 

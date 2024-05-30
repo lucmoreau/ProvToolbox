@@ -29,7 +29,7 @@ import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
@@ -802,7 +802,7 @@ public class CompilerUtil {
                         stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(), stackTraceElement.getLineNumber())
                 .build();
     }
-    public JavaFile specWithComment(TypeSpec typeSpec, TemplatesCompilerConfig configs, String packge, StackTraceElement stackTraceElement) {
+    public JavaFile specWithComment(TypeSpec typeSpec, TemplatesProjectConfiguration configs, String packge, StackTraceElement stackTraceElement) {
         return JavaFile.builder(packge, typeSpec)
                 .addFileComment("Generated automatically by ProvToolbox for template configuration '$L'", configs.name)
                 .addFileComment("\nby class $L, method $L,\nin file $L, at line $L",
@@ -817,7 +817,7 @@ public class CompilerUtil {
                 + ", \nin file " + stackTraceElement.getFileName()
                 + ", at line $L " + stackTraceElement.getLineNumber();
     }
-    public String pySpecWithComment(TemplatesCompilerConfig configs, StackTraceElement stackTraceElement) {
+    public String pySpecWithComment(TemplatesProjectConfiguration configs, StackTraceElement stackTraceElement) {
         return "Generated automatically by ProvToolbox for template configuration '" + configs.name + "'\n"
                 + "by class " + stackTraceElement.getClassName()
                 + ", method " + stackTraceElement.getMethodName()

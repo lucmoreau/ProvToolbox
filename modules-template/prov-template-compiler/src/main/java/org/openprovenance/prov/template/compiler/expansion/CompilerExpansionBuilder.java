@@ -16,7 +16,7 @@ import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
@@ -61,7 +61,7 @@ public class CompilerExpansionBuilder {
 
 
 
-    public SpecificationFile generateBuilderInterfaceSpecification(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    public SpecificationFile generateBuilderInterfaceSpecification(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -75,7 +75,7 @@ public class CompilerExpansionBuilder {
 
     }
 
-    SpecificationFile generateBuilderInterfaceSpecification_aux(TemplatesCompilerConfig configs, Locations locations, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    SpecificationFile generateBuilderInterfaceSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(name+"Interface", "T");
@@ -90,7 +90,7 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public SpecificationFile generateBuilderSpecification(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
+    public SpecificationFile generateBuilderSpecification(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -121,7 +121,7 @@ public class CompilerExpansionBuilder {
         return builder.build();
     }
 
-    SpecificationFile generateBuilderSpecification_aux(TemplatesCompilerConfig configs, Locations locations, Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
+    SpecificationFile generateBuilderSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassBuilder2(name);

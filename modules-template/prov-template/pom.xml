@@ -85,14 +85,14 @@
                             <executable>ajv</executable>
                             <arguments>
                                 <argument>-s</argument>
-                                <argument>src/main/resources/jsonschema/ttf-schema.json</argument>
+                                <argument>src/main/resources/jsonschema/ttb-schema.json</argument>
                                 <argument>-d</argument>
-                                <argument>src/main/resources/meta/config/config-generic.json</argument>
+                                <argument>src/main/resources/meta/config/ttb-generic.json</argument>
                             </arguments>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>ajv.ttf.schema.plead</id>
+                        <id>ajv.ttb.schema.plead</id>
                         <goals>
                             <goal>exec</goal>
                         </goals>
@@ -101,9 +101,9 @@
                             <executable>ajv</executable>
                             <arguments>
                                 <argument>-s</argument>
-                                <argument>src/main/resources/jsonschema/ttf-schema.json</argument>
+                                <argument>src/main/resources/jsonschema/ttb-schema.json</argument>
                                 <argument>-d</argument>
-                                <argument>src/main/resources/meta/config/config-plead.json</argument>
+                                <argument>src/main/resources/meta/config/ttb-plead.json</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -117,9 +117,9 @@
                             <executable>ajv</executable>
                             <arguments>
                                 <argument>-s</argument>
-                                <argument>src/main/resources/jsonschema/ttf-schema.json</argument>
+                                <argument>src/main/resources/jsonschema/ttb-schema.json</argument>
                                 <argument>-d</argument>
-                                <argument>src/main/resources/meta/config/config-ptm.json</argument>
+                                <argument>src/main/resources/meta/config/ttb-ptm.json</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -133,9 +133,9 @@
                             <executable>ajv</executable>
                             <arguments>
                                 <argument>-s</argument>
-                                <argument>src/main/resources/jsonschema/ttf-schema.json</argument>
+                                <argument>src/main/resources/jsonschema/ttb-schema.json</argument>
                                 <argument>-d</argument>
-                                <argument>src/main/resources/meta/config/config-pg.json</argument>
+                                <argument>src/main/resources/meta/config/ttb-pg.json</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -146,15 +146,15 @@
                         </goals>
                         <phase>test</phase>
                         <configuration>
-                            <mainClass>org.openprovenance.prov.template.expander.meta.Executor</mainClass>
+                            <mainClass>org.openprovenance.prov.template.expander.meta.BatchExecutor</mainClass>
                             <arguments>
                                 <argument>${project.basedir}</argument>
                                 <argument>${project.build.directory}</argument>
                                 <argument>-configs</argument>
-                                <argument>src/main/resources/meta/config/config-generic.json</argument>
-                                <argument>src/main/resources/meta/config/config-plead.json</argument>
-                                <argument>src/main/resources/meta/config/config-ptm.json</argument>
-                                <argument>src/main/resources/meta/config/config-pg.json</argument>
+                                <argument>src/main/resources/meta/config/ttb-generic.json</argument>
+                                <argument>src/main/resources/meta/config/ttb-plead.json</argument>
+                                <argument>src/main/resources/meta/config/ttb-ptm.json</argument>
+                                <argument>src/main/resources/meta/config/ttb-pg.json</argument>
                             </arguments>
                         </configuration>
 

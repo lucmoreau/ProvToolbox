@@ -1,4 +1,4 @@
-package org.openprovenance.plugin;
+package org.openprovenance.plugin.ttb;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -9,25 +9,25 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.openprovenance.prov.template.expander.Expand;
 
-
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+/** Validation of a Template Tasks Batch (TTB) */
 
-@Mojo(name = "validate-bindings", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
-public class BindingsSchemaValidator extends AbstractMojo {
+@Mojo(name = "validate-ttb", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
+public class TtbSchemaValidator extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    @Parameter(property = "validate-bindings.warning", defaultValue = "false")
+    @Parameter(property = "validate-ttb.warning", defaultValue = "false")
     private boolean warning;
 
 
-    @Parameter(property = "validate-bindings.args")
+    @Parameter(property = "validate-ttb.args")
     private List<String> args = new ArrayList<>();
 
     public void execute() throws MojoExecutionException {
@@ -40,14 +40,14 @@ public class BindingsSchemaValidator extends AbstractMojo {
             //System.out.println("urls=" + urls);
             //System.out.println("args=" + args);
 
-            // copy file f to a temporary file with name openprovenance-bindings-schema-${project.version}.json
+            // copy file f to a temporary file with name openprovenance-ttf-schema-${project.version}.json
             String projectVersion = project.getVersion(); // get the project version
-            String tempFileName = "openprovenance-bindings-schema-" + projectVersion + ".json"; // create the temp file name
+            String tempFileName = "openprovenance-ttf-schema-" + projectVersion + ".json"; // create the temp file name
 
             // create a path for the temp file in the system's default temporary-file directory
             Path tempFilePath = Paths.get(System.getProperty("java.io.tmpdir"), tempFileName);
 
-            IOUtils.copy(Expand.class.getClassLoader().getResourceAsStream("jsonschema/bindings-schema.json"), Files.newOutputStream(tempFilePath));
+            IOUtils.copy(Expand.class.getClassLoader().getResourceAsStream("jsonschema/ttb-schema.json"), Files.newOutputStream(tempFilePath));
 
             for (String arg : args) {
 

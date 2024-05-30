@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class TemplatesCompilerConfig {
+/** Templates Project Configuration, defined in schema template-project.json */
+public class TemplatesProjectConfiguration {
     public String destination;
        
     public String version;  
@@ -34,7 +35,7 @@ public class TemplatesCompilerConfig {
 
     @Override
     public String toString() {
-        return "TemplatesCompilerConfig{" +
+        return "TemplatesProjectConfiguration{" +
                 "destination='" + destination + '\'' +
                 ", version='" + version + '\'' +
                 ", name='" + name + '\'' +

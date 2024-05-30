@@ -19,7 +19,7 @@ public class CompilerCompositeConfigurations {
     String enactorVar = "beanEnactor";
 
 
-    public SpecificationFile generateCompositeConfigurator(TemplatesCompilerConfig configs,
+    public SpecificationFile generateCompositeConfigurator(TemplatesProjectConfiguration configs,
                                                            Locations locations,
                                                            TypeName typeName,
                                                            QuadConsumer<String, MethodSpec.Builder, TypeName, TypeName> generator,
@@ -78,7 +78,7 @@ public class CompilerCompositeConfigurations {
 
     static final ParameterizedTypeName recordsProcessorOfUnknown = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"RecordsProcessorInterface"), TypeVariableName.get("?"));
 
-    public SpecificationFile generateCompositeEnactorConfigurator(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+    public SpecificationFile generateCompositeEnactorConfigurator(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         return  generateCompositeConfigurator(configs, locations, recordsProcessorOfUnknown, this::generateMethodEnactor, "generateCompositeConfigurator", compilerUtil.getClass(BEAN_PROCESSOR, locations), fileName);
     }
 
@@ -94,7 +94,7 @@ public class CompilerCompositeConfigurations {
         mspec.addStatement("return enactor");
     }
 
-    public SpecificationFile generateCompositeConfigurator2(TemplatesCompilerConfig configs,
+    public SpecificationFile generateCompositeConfigurator2(TemplatesProjectConfiguration configs,
                                                             Locations locations,
                                                             TypeName typeName,
                                                             QuintetConsumer<String, MethodSpec.Builder, TypeName, TypeName, TypeName> generator,
@@ -154,7 +154,7 @@ public class CompilerCompositeConfigurations {
 
     }
 
-    public SpecificationFile generateCompositeEnactorConfigurator2(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+    public SpecificationFile generateCompositeEnactorConfigurator2(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         return  generateCompositeConfigurator2(configs, locations, recordsProcessorOfUnknown, this::generateMethodEnactor2, "generateCompositeConfigurator", ClassName.get(locations.getFilePackage(BeanDirection.INPUTS),INPUT_OUTPUT_PROCESSOR), fileName);
     }
 

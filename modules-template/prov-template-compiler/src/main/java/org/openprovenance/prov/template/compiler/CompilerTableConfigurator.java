@@ -18,14 +18,14 @@ public class CompilerTableConfigurator {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
-    SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, Locations locations) {
+    SpecificationFile generateTableConfigurator(TemplatesProjectConfiguration configs, Locations locations) {
         return generateTableConfigurator(configs,false, locations);
     }
-    SpecificationFile generateCompositeTableConfigurator(TemplatesCompilerConfig configs, Locations locations) {
+    SpecificationFile generateCompositeTableConfigurator(TemplatesProjectConfiguration configs, Locations locations) {
         return generateTableConfigurator(configs,true, locations);
     }
 
-    SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, boolean compositeOnly, Locations locations) {
+    SpecificationFile generateTableConfigurator(TemplatesProjectConfiguration configs, boolean compositeOnly, Locations locations) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         String tableClassName=(compositeOnly)? Constants.COMPOSITE_TABLE_CONFIGURATOR:Constants.TABLE_CONFIGURATOR;

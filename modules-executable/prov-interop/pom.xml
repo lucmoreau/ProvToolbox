@@ -77,7 +77,7 @@
     </dependencies>
 
     <properties>
-        <interop.config>light</interop.config>
+        <interop.templateTasksBatch>light</interop.templateTasksBatch>
         <prov.factory>org.openprovenance.prov.vanilla.ProvFactory</prov.factory>
     </properties>
 

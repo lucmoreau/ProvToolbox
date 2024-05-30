@@ -25,7 +25,7 @@ public class CompilerTemplateInvoker {
 
     static TypeName mapType=ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), ClassName.get(Object.class));
 
-    SpecificationFile generateTemplateInvoker(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+    SpecificationFile generateTemplateInvoker(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
         TypeSpec.Builder builder = compilerUtil.generateClassInit(TEMPLATE_INVOKER).addSuperinterface(ClassName.get(locations.getFilePackage(BeanDirection.INPUTS),INPUT_OUTPUT_PROCESSOR)).addModifiers(Modifier.ABSTRACT);
 

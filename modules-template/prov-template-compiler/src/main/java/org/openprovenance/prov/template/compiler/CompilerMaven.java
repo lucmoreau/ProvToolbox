@@ -13,7 +13,7 @@ import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 
 import javax.lang.model.element.Modifier;
 import java.io.*;
@@ -29,7 +29,7 @@ public class CompilerMaven {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
-    public boolean makeRootPom(TemplatesCompilerConfig configs, String root_dir, String cli_lib, String l2p_lib) {
+    public boolean makeRootPom(TemplatesProjectConfiguration configs, String root_dir, String cli_lib, String l2p_lib) {
         Model model = new Model();
         model.setGroupId(configs.group);
         model.setArtifactId(configs.name);
@@ -55,7 +55,7 @@ public class CompilerMaven {
 
     }
 
-    public boolean makeSubPom(TemplatesCompilerConfig configs, String dir, String name, boolean dependencies, boolean jsweet, boolean jackson, boolean escape) {
+    public boolean makeSubPom(TemplatesProjectConfiguration configs, String dir, String name, boolean dependencies, boolean jsweet, boolean jackson, boolean escape) {
         Model model = new Model();
         model.setArtifactId(name);
         model.setName(name);
@@ -292,7 +292,7 @@ public class CompilerMaven {
 
 
 
-    public SpecificationFile generateTestFile_l2p(TemplatesCompilerConfig configs, String directory, String fileName) {
+    public SpecificationFile generateTestFile_l2p(TemplatesProjectConfiguration configs, String directory, String fileName) {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInitExtends(TESTER_FILE,"junit.framework","TestCase");
 

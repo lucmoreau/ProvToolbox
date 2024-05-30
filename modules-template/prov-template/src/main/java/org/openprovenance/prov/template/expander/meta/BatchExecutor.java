@@ -20,17 +20,16 @@ import java.util.stream.Collectors;
 
 import static org.apache.logging.log4j.core.util.FileUtils.mkdir;
 
-public class Executor {
+public class BatchExecutor {
 
     private final Map<String, org.openprovenance.prov.model.ProvSerialiser> serializerMap=new HashMap<>();
-    private final Map<String, org.openprovenance.prov.model.ProvDeserialiser> deserializerMap=new HashMap<>();
-    static Logger logger = LogManager.getLogger(Executor.class);
+    static Logger logger = LogManager.getLogger(BatchExecutor.class);
     static private final ProvFactory pf= org.openprovenance.prov.vanilla.ProvFactory.getFactory();
     static final private ObjectMapper om = new ObjectMapper();
     private ProvDeserialiser deserialiser;
 
 
-    public Executor () {
+    public BatchExecutor() {
         initializeSerializerDispatcher();
     }
 
@@ -57,9 +56,9 @@ public class Executor {
         }
     }
 
-    public static Config load(String configurationPath, ObjectMapper objectMapper) {
+    public static TemplateTasksBatch load(String configurationPath, ObjectMapper objectMapper) {
         try {
-            return objectMapper.readValue(new File(configurationPath), Config.class);
+            return objectMapper.readValue(new File(configurationPath), TemplateTasksBatch.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -75,64 +74,64 @@ public class Executor {
 
             System.out.println("In executor " + configurationPath);
 
-            Config config = load(configurationPath, om);
+            TemplateTasksBatch templateTasksBatch = load(configurationPath, om);
 
             String localdir = new File(configurationPath).getParent();
 
             Map<String,String> variableMap=new HashMap<>();
-            if (config.variableMaps!=null) {
-                interpretRelativeDirectoriesInVariableMaps(inputBasedir, config, localdir);
-                for (String variableMapPath: config.variableMaps) {
+            if (templateTasksBatch.variableMaps!=null) {
+                interpretRelativeDirectoriesInVariableMaps(inputBasedir, templateTasksBatch, localdir);
+                for (String variableMapPath: templateTasksBatch.variableMaps) {
                     System.out.println("loading variable map " +  variableMapPath);
                     variableMap.putAll(om.readValue(new FileInputStream(variableMapPath), Map.class));
                 }
             }
-            config.template_path =config.template_path.stream().map(s -> (s.startsWith("."))? localdir+s.substring(1):s).collect(Collectors.toList());
-            return execute(config, inputBasedir, outputBasedir, variableMap);
+            templateTasksBatch.template_path = templateTasksBatch.template_path.stream().map(s -> (s.startsWith("."))? localdir+s.substring(1):s).collect(Collectors.toList());
+            return execute(templateTasksBatch, inputBasedir, outputBasedir, variableMap);
         } catch (Exception e) {
             logger.error("Error while executing", e);
             return 1;
         }
     }
 
-    private void interpretRelativeDirectoriesInVariableMaps(String inputBasedir, Config config, String localdir) {
-        config.variableMaps =Config.addBaseDir(inputBasedir, config.variableMaps);
-        config.variableMaps = config.variableMaps.stream().map(s -> (s.startsWith("."))? localdir +s.substring(1):s).collect(Collectors.toList());
+    private void interpretRelativeDirectoriesInVariableMaps(String inputBasedir, TemplateTasksBatch templateTasksBatch, String localdir) {
+        templateTasksBatch.variableMaps = TemplateTasksBatch.addBaseDir(inputBasedir, templateTasksBatch.variableMaps);
+        templateTasksBatch.variableMaps = templateTasksBatch.variableMaps.stream().map(s -> (s.startsWith("."))? localdir +s.substring(1):s).collect(Collectors.toList());
     }
 
 
-    public int execute(Config config, String inputBasedir, String outputBasedir, Map<String, String> variableMap) throws IOException {
-        config.template_path =Config.addBaseDir(inputBasedir, config.template_path);
-        config.bindings_path =Config.addBaseDir(inputBasedir, config.bindings_path);
-        config.output_dir =Config.addBaseDir(outputBasedir, config.output_dir);
+    public int execute(TemplateTasksBatch templateTasksBatch, String inputBasedir, String outputBasedir, Map<String, String> variableMap) throws IOException {
+        templateTasksBatch.template_path = TemplateTasksBatch.addBaseDir(inputBasedir, templateTasksBatch.template_path);
+        templateTasksBatch.bindings_path = TemplateTasksBatch.addBaseDir(inputBasedir, templateTasksBatch.bindings_path);
+        templateTasksBatch.output_dir = TemplateTasksBatch.addBaseDir(outputBasedir, templateTasksBatch.output_dir);
 
-        logger.info("template_path: " + config.template_path);
-        logger.info("bindings_path: " + config.bindings_path);
-        logger.info("output_dir: " + config.output_dir);
+        logger.info("template_path: " + templateTasksBatch.template_path);
+        logger.info("bindings_path: " + templateTasksBatch.bindings_path);
+        logger.info("output_dir: " + templateTasksBatch.output_dir);
 
 
-        System.out.println("template_path: " + config.template_path);
-        System.out.println("bindings_path: " + config.bindings_path);
-        System.out.println("output_dir: " + config.output_dir);
+        System.out.println("template_path: " + templateTasksBatch.template_path);
+        System.out.println("bindings_path: " + templateTasksBatch.bindings_path);
+        System.out.println("output_dir: " + templateTasksBatch.output_dir);
 
-        mkdir(new File(config.output_dir),true);
+        mkdir(new File(templateTasksBatch.output_dir),true);
 
-        for (Config.ConfigTask task : config.tasks) {
-            task.template_path =Config.addBaseDir(inputBasedir, task.template_path);
+        for (TemplateTasksBatch.ConfigTask task : templateTasksBatch.tasks) {
+            task.template_path = TemplateTasksBatch.addBaseDir(inputBasedir, task.template_path);
             if (task.addOutputDirToInputPath) {
                 if (task.template_path==null) {
                     task.template_path=new LinkedList<>();
                 }
-                task.template_path.add(config.output_dir);
+                task.template_path.add(templateTasksBatch.output_dir);
             }
             logger.info("task: " + task);
 
             switch (task.type) {
                 case "expansion":
-                    executeExpandTask(config, task, variableMap);
+                    executeExpandTask(templateTasksBatch, task, variableMap);
                     break;
                 case "merge":
-                    executeMergeTask(config, task, variableMap);
+                    executeMergeTask(templateTasksBatch, task, variableMap);
                     break;
                 default:
                     logger.error("Unknown task type " + task.type);
@@ -148,8 +147,8 @@ public class Executor {
     }
 
     Ptm_expandingBuilder builder=new Ptm_expandingBuilder();
-    public void executeExpandTask(Config config, Config.ConfigTask task, Map<String, String> variableMap) throws IOException {
-        Pair<FileInputStream,File> pair=findFileinDirs2(config.bindings_path, task.bindings);
+    public void executeExpandTask(TemplateTasksBatch templateTasksBatch, TemplateTasksBatch.ConfigTask task, Map<String, String> variableMap) throws IOException {
+        Pair<FileInputStream,File> pair=findFileinDirs2(templateTasksBatch.bindings_path, task.bindings);
         String bindingsFilename=pair.getRight().getAbsolutePath();
 
 
@@ -158,7 +157,7 @@ public class Executor {
         InputStream is=substituteVariablesInFile(variableMap, bindingsFilename);
 
         Expand expand = new Expand(pf, false, false);
-        List<String> template_path = (task.template_path ==null)? config.template_path : task.template_path;
+        List<String> template_path = (task.template_path ==null)? templateTasksBatch.template_path : task.template_path;
         Pair<FileInputStream, File> fileinDirs = findFileinDirs2(template_path, task.input);
 
         long secondsSince2023_01_01 = (System.currentTimeMillis() - 1672531200000L)/1000;
@@ -167,24 +166,24 @@ public class Executor {
 
         Document doc=expand.expander(deserialise(fileinDirs.getLeft()), om.readValue(is, Bindings.class));
         for (String format: task.formats) {
-            String documentFilename = config.output_dir + "/" + task.output + "." + format;
+            String documentFilename = templateTasksBatch.output_dir + "/" + task.output + "." + format;
             serialize(new FileOutputStream(documentFilename), format, doc, false);
             if (task.copyinput != null && task.copyinput) {
-                serialize(new FileOutputStream(config.output_dir + "/" + task.input.replace(".provn","."+format)), format, doc, false);
+                serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + task.input.replace(".provn","."+format)), format, doc, false);
             }
             String csvRecord = createExpansionCsvRecord(task, format, fileinDirs, secondsSince2023_01_01);
             loggedRecords.add(csvRecord);
         }
 
 
-        exportProvenanceAsCsv(config, task, loggedRecords);
+        exportProvenanceAsCsv(templateTasksBatch, task, loggedRecords);
 
 
     }
 
-    private void exportProvenanceAsCsv(Config config, Config.ConfigTask task, List<String> loggedRecords) throws IOException {
+    private void exportProvenanceAsCsv(TemplateTasksBatch templateTasksBatch, TemplateTasksBatch.ConfigTask task, List<String> loggedRecords) throws IOException {
         if (task.hasProvenance!=null) {
-            try (FileOutputStream fos = new FileOutputStream(config.output_dir + "/" + task.hasProvenance)) {
+            try (FileOutputStream fos = new FileOutputStream(templateTasksBatch.output_dir + "/" + task.hasProvenance)) {
                 for (String csvRecord: loggedRecords) {
                     fos.write(csvRecord.getBytes(StandardCharsets.UTF_8));
                     fos.write("\n".getBytes(StandardCharsets.UTF_8));
@@ -193,7 +192,7 @@ public class Executor {
         }
     }
 
-    private String createExpansionCsvRecord(Config.ConfigTask task, String format, Pair<FileInputStream, File> fileinDirs, long secondsSince2023_01_01) {
+    private String createExpansionCsvRecord(TemplateTasksBatch.ConfigTask task, String format, Pair<FileInputStream, File> fileinDirs, long secondsSince2023_01_01) {
         Ptm_expandingBean bean=new Ptm_expandingBean();
         bean.bindings= task.bindings;
         bean.provenance=task.hasProvenance;
@@ -205,21 +204,21 @@ public class Executor {
         return bean.process(builder.args2csv());
     }
 
-    public void executeMergeTask(Config config, Config.ConfigTask task, Map<String, String> variableMap) throws IOException {
+    public void executeMergeTask(TemplateTasksBatch templateTasksBatch, TemplateTasksBatch.ConfigTask task, Map<String, String> variableMap) throws IOException {
 
         List<String> updatedTemplatePath;
         if (task.template_path ==null) {
-            updatedTemplatePath=config.template_path;
+            updatedTemplatePath= templateTasksBatch.template_path;
         } else {
             updatedTemplatePath=new LinkedList<>();
             updatedTemplatePath.addAll(task.template_path);
-            updatedTemplatePath.addAll(config.template_path);
+            updatedTemplatePath.addAll(templateTasksBatch.template_path);
         }
         Document doc1 = deserialise(findFileinDirs(updatedTemplatePath, task.input));
         Document doc2 = deserialise(findFileinDirs(updatedTemplatePath, task.input2));
         Document doc3=new IndexedDocument(pf,doc1,false).merge(doc2).toDocument();
         for (String format: task.formats) {
-            serialize(new FileOutputStream(config.output_dir + "/" + task.output + "." + format), format, doc3, false);
+            serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + task.output + "." + format), format, doc3, false);
         }
         // option to clean up tmp file
         if (task.clean2!=null && task.clean2) {
@@ -282,7 +281,7 @@ public class Executor {
 
     public static void main(String [] args) {
         System.out.println("Executor: " + Arrays.toString(args));
-        Executor executor=new Executor();
+        BatchExecutor executor=new BatchExecutor();
         // find the position of string "-configs" in args
         int pos=0;
         boolean found=false;

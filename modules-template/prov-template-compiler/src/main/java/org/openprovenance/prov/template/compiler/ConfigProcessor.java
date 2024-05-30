@@ -142,13 +142,13 @@ public class ConfigProcessor implements Constants {
         return Configuration.getPropertiesFromClasspath(getClass(),"compiler.properties").getProperty("compiler.version");
     }
     final String compilerVersion=readCompilerVersion();
-    public int processTemplateGenerationConfig(String template_builder, ProvFactory pFactory) {
-        TemplatesCompilerConfig configs;
+    public int processTemplateGenerationConfig(String template_builder, String inputBaseDir, String outputBaseDir, ProvFactory pFactory) {
+        TemplatesProjectConfiguration configs;
 
         try {
-            configs = objectMapper.readValue(new File(template_builder), TemplatesCompilerConfig.class);
+            configs = objectMapper.readValue(new File(addBaseDirIfRelative(template_builder, inputBaseDir)), TemplatesProjectConfiguration.class);
             //System.out.println(configs);
-            final String root_dir = configs.destination + "/" + configs.name;
+            final String root_dir = outputBaseDir + "/" + configs.destination + "/" + configs.name;
             new File(root_dir).mkdirs(); 
             final String cli_lib = configs.name + "_cli";
             final String cli_dir = root_dir + "/" + cli_lib;
@@ -179,6 +179,8 @@ public class ConfigProcessor implements Constants {
             for (TemplateCompilerConfig aconfig: configs.templates) {
                 if (TemplateConfigurationEnum.isSimple(aconfig)) {
                     SimpleTemplateCompilerConfig config=(SimpleTemplateCompilerConfig) aconfig;
+                    config.template=addBaseDirIfRelative(config.template, inputBaseDir);
+                    config.bindings=addBaseDirIfRelative(config.bindings, inputBaseDir);
                     locations.updateWithConfig(config);
                     doGenerateServerForEntry(config, configs, locations, cli_src_dir, l2p_src_dir, pFactory, cli_webjar_dir);
                     FileUtils.copyFileToDirectory(new File(config.template), new File(cli_webjar_templates_dir));
@@ -197,6 +199,8 @@ public class ConfigProcessor implements Constants {
 
                             //System.out.println("==> Found " + aconfig2);
                             SimpleTemplateCompilerConfig sc=(SimpleTemplateCompilerConfig) aconfig2;
+                            sc.template=addBaseDirIfRelative(sc.template, inputBaseDir);
+                            sc.bindings=addBaseDirIfRelative(sc.bindings, inputBaseDir);
                             SimpleTemplateCompilerConfig sc2=sc.cloneAsInstanceInComposition(config.name);
                             doGenerateServerForEntry(config, sc2, configs, locations, cli_src_dir, l2p_src_dir, cli_webjar_dir);
                         }
@@ -234,6 +238,11 @@ public class ConfigProcessor implements Constants {
         return 0;
     }
 
+    private String addBaseDirIfRelative(String template_builder, String baseDir) {
+        if (template_builder.startsWith("/")) return template_builder;
+        return baseDir + "/" + template_builder;
+    }
+
     public Set<String> getReferencedSqlTables() {
         return referencedSqlTables;
     }
@@ -256,19 +265,19 @@ public class ConfigProcessor implements Constants {
     }
 
 
-    public void generateJSonSchemaEnd(TemplatesCompilerConfig configs, String cli_src_dir) {
+    public void generateJSonSchemaEnd(TemplatesProjectConfiguration configs, String cli_src_dir) {
         if (configs.jsonschema!=null) compilerJsonSchema.generateJSonSchemaEnd(configs.jsonschema, cli_src_dir +"/../resources");
     }
 
-    public void generateSQLEnd(TemplatesCompilerConfig configs, String cli_src_dir) {
+    public void generateSQLEnd(TemplatesProjectConfiguration configs, String cli_src_dir) {
         if (configs.sqlFile!=null) compilerSQL.generateSQLEnd(configs.sqlFile, cli_src_dir +"/../resources", getReferencedSqlTables());
     }
 
-    public void generateDocumentationEnd(TemplatesCompilerConfig configs, String cli_webjar_dir) {
+    public void generateDocumentationEnd(TemplatesProjectConfiguration configs, String cli_webjar_dir) {
         if (configs.documentation!=null) compilerDocumentation.generateDocumentationEnd(configs,cli_webjar_dir);
     }
 
-    public void doGenerateProject(TemplatesCompilerConfig configs, Locations locations, String root_dir, String cli_lib, String l2p_lib, String l2p_dir, String l2p_src_dir, String l2p_test_src_dir, String cli_test_src_dir, String cli_webjar_dir) {
+    public void doGenerateProject(TemplatesProjectConfiguration configs, Locations locations, String root_dir, String cli_lib, String l2p_lib, String l2p_dir, String l2p_src_dir, String l2p_test_src_dir, String cli_test_src_dir, String cli_webjar_dir) {
         final String init_dir= l2p_src_dir + "/" + configs.root_package.replace('.', '/') + "/";
         final String l2p_test_dir= l2p_test_src_dir + "/" + configs.root_package.replace('.', '/') + "/";
         final String cli_test_dir= cli_test_src_dir + "/" + configs.root_package.replace('.', '/') + "/";
@@ -288,7 +297,7 @@ public class ConfigProcessor implements Constants {
 
     }
 
-    public void doGenerateClientAndProject(TemplatesCompilerConfig configs, Locations locations, String cli_lib, String cli_dir, String cli_src_dir) {
+    public void doGenerateClientAndProject(TemplatesProjectConfiguration configs, Locations locations, String cli_lib, String cli_dir, String cli_src_dir) {
 
 
         final String openprovenance_dir= cli_src_dir + "/" + CLIENT_PACKAGE.replace('.', '/') + "/";
@@ -430,7 +439,7 @@ public class ConfigProcessor implements Constants {
 
 
 
-    private void exportMiscFiles(TemplatesCompilerConfig configs, String cli_dir, String cli_lib) {
+    private void exportMiscFiles(TemplatesProjectConfiguration configs, String cli_dir, String cli_lib) {
         if (configs.jsweet) {
             InputStream is=getClass().getResourceAsStream("/js/TemplateManager.js");
             String targetLocation= cli_dir+"/src/main/js";
@@ -468,7 +477,7 @@ public class ConfigProcessor implements Constants {
         return compilerUtil.readDocumentFromFile(config.template);
     }
 
-    public void doGenerateServerForEntry(SimpleTemplateCompilerConfig config, TemplatesCompilerConfig configs, Locations locations, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {
+    public void doGenerateServerForEntry(SimpleTemplateCompilerConfig config, TemplatesProjectConfiguration configs, Locations locations, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
 
@@ -488,7 +497,7 @@ public class ConfigProcessor implements Constants {
         }
     }
 
-    public void doGenerateServerForEntry(CompositeTemplateCompilerConfig compositeTemplateCompilerConfig, SimpleTemplateCompilerConfig config, TemplatesCompilerConfig configs, Locations locations, String cli_src_dir, String l2p_src_dir, String cli_webjar_dir) {
+    public void doGenerateServerForEntry(CompositeTemplateCompilerConfig compositeTemplateCompilerConfig, SimpleTemplateCompilerConfig config, TemplatesProjectConfiguration configs, Locations locations, String cli_src_dir, String l2p_src_dir, String cli_webjar_dir) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
 
@@ -506,7 +515,7 @@ public class ConfigProcessor implements Constants {
         }
     }
 
-    public void doGenerateServerForEntry1(Document doc, SimpleTemplateCompilerConfig config, TemplatesCompilerConfig configs, Locations locations, String cli_src_dir, String l2p_src_dir, String cli_webjar_dir) {
+    public void doGenerateServerForEntry1(Document doc, SimpleTemplateCompilerConfig config, TemplatesProjectConfiguration configs, Locations locations, String cli_src_dir, String l2p_src_dir, String cli_webjar_dir) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
         try {
@@ -518,7 +527,7 @@ public class ConfigProcessor implements Constants {
     }
 
     public boolean generate(Document doc, Locations locations, String templateName, String packageName, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String jsonschema, String documentation, JsonNode bindings_schema,
-                            TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir, boolean inComposition, List<String> sharing, String consistsOf, TemplatesCompilerConfig configs) {
+                            TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir, boolean inComposition, List<String> sharing, String consistsOf, TemplatesProjectConfiguration configs) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
             String bnI= compilerUtil.templateNameClass(templateName)+"Interface";
@@ -758,9 +767,17 @@ public class ConfigProcessor implements Constants {
     }
 
     public static void main(String [] args) {
+        //System.out.println(Arrays.asList(args));
+
+        if (args.length!=3 && args.length!=2) {
+            // display args
+            throw new IllegalArgumentException("Usage: ConfigProcessor <config-file> <inputBaseDir> <outputBaseDir>");
+        }
         org.openprovenance.prov.vanilla.ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
         ConfigProcessor cp=new ConfigProcessor(pf);
-        cp.processTemplateGenerationConfig(args[0],pf);
+        String inputBaseDir=args[1];
+        String outputBaseDir=(args.length==3)?args[2]:inputBaseDir;
+        cp.processTemplateGenerationConfig(args[0],inputBaseDir, outputBaseDir,pf);
     }
 
 }

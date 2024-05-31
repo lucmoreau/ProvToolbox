@@ -128,9 +128,6 @@
         "integrator": {
             "type": "boolean"
         },
-        "sbean": {
-            "type": "boolean"
-        },
         "jsweet": {
             "type": "boolean"
         },
@@ -178,7 +175,6 @@
         "script",
         "script_dir",
         "python_dir",
-        "sbean",
         "jsweet",
         "jsonschema",
         "documentation",

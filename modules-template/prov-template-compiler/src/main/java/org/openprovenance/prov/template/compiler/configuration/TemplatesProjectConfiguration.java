@@ -26,7 +26,6 @@ public class TemplatesProjectConfiguration {
 
     public boolean integrator;
     public boolean jsweet;
-    public boolean sbean;
 
     public String jsonschema;
     public String sqlFile;
@@ -48,7 +47,6 @@ public class TemplatesProjectConfiguration {
                 ", python_dir='" + python_dir + '\'' +
                 ", integrator=" + integrator +
                 ", jsweet=" + jsweet +
-                ", sbean=" + sbean +
                 ", jsonschema='" + jsonschema + '\'' +
                 ", sqlFile='" + sqlFile + '\'' +
                 ", search=" + search +

@@ -10,7 +10,6 @@
 	"script_dir": "target/bin",
 	"python_dir": "target/generated-python",
 	"integrator": true,
-	"sbean": true,
 	"jsweet": true,
 	"jsonschema": "schema-plead.json",
 	"documentation": "doc-plead.html",

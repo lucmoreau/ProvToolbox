@@ -641,7 +641,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                         Locations locations = new Locations(configs, null);
 
 
-                        cp.generate(doc, locations, config.template, config.packge, config.outfile, config.location, config.location, true, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
+                        cp.generate(doc, locations, config.template, config.packge, config.outfile, config.location, config.location, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
                         return CommandLineArguments.STATUS_OK;
 
                     } catch (IOException e) {

@@ -10,7 +10,6 @@
     "python_dir": "target/generated-python",
     "integrator": true,
     "jsweet": true,
-    "sbean": true,
     "jsonschema": "schema-pg.json",
     "sqlFile": "prov-template-library-pg.sql",
     "documentation": "doc-pg.html",

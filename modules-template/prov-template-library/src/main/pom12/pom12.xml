@@ -30,7 +30,7 @@
                 </executions>
 
                 <configuration>
-                    <compileSourceRootsOverride>${project.build.directory}/generated-sources/${package.name}_cli</compileSourceRootsOverride>
+                    <compileSourceRootsOverride>${project.build.directory}/generated-sources/${package.name.cli}</compileSourceRootsOverride>
                     <verbose>false</verbose>
                     <outDir>${project.build.directory}/js</outDir>
                     <tsOut>${project.build.directory}/ts</tsOut>

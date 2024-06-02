@@ -48,8 +48,8 @@
     <properties>
         <meta-inf-webjars>META-INF/resources/webjars</meta-inf-webjars>
         <package.name>template_library</package.name>
-        <template_lib_cli>${package.name}/${package.name}_cli</template_lib_cli>
-        <template_lib_l2p>${package.name}/${package.name}_l2p</template_lib_l2p>
+        <package.name.cli>${package.name}_cli</package.name.cli>
+        <package.name.l2p>${package.name}_l2p</package.name.l2p>
     </properties>
 
     <build>
@@ -200,26 +200,6 @@
                     </execution>
                     -->
 
-                    <!--
-                    <execution>
-                        <id>transpile.to.js</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>mvn</executable>
-                            <arguments>
-                                <argument>-f</argument>
-                                <argument>pom12.xml</argument>
-                                <argument>jsweet:jsweet</argument>
-                            </arguments>
-                            <environmentVariables>
-                                <JAVA_HOME>${java12.home}</JAVA_HOME>
-                            </environmentVariables>
-                        </configuration>
-                    </execution>
-                    -->
                 </executions>
 
             </plugin>
@@ -239,13 +219,13 @@
                         </goals>
                         <configuration>
                             <target>
-                                <move todir="${project.build.directory}/generated-sources/${package.name}_cli">
-                                    <fileset dir="${project.build.directory}/${template_lib_cli}/src/main/java">
+                                <move todir="${project.build.directory}/generated-sources/${package.name.cli}">
+                                    <fileset dir="${project.build.directory}/${package.name}/${package.name.cli}/src/main/java">
                                         <include name="**/*" />
                                     </fileset>
                                 </move>
-                                <move todir="${project.build.directory}/generated-sources/${package.name}_l2p">
-                                    <fileset dir="${project.build.directory}/${template_lib_l2p}/src/main/java">
+                                <move todir="${project.build.directory}/generated-sources/${package.name.l2p}">
+                                    <fileset dir="${project.build.directory}/${package.name}/${package.name.l2p}/src/main/java">
                                         <include name="**/*" />
                                     </fileset>
                                 </move>
@@ -295,79 +275,6 @@
                 </executions>
             </plugin>
 
-            <!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec.plugin.version}</version>
-                <executions>
-
-
-                    <execution>
-                        <id>transpile.to.js</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>mvn</executable>
-                            <arguments>
-                                <argument>-f</argument>
-                                <argument>pom12.xml</argument>
-                                <argument>jsweet:jsweet</argument>
-                            </arguments>
-                            <environmentVariables>
-                                <JAVA_HOME>${java12.home}</JAVA_HOME>
-                            </environmentVariables>
-                        </configuration>
-                    </execution>
-
-                </executions>
-
-            </plugin>
-
-
--->
-
-            <!--
-            <plugin>
-                <groupId>org.jsweet</groupId>
-                <artifactId>jsweet-maven-plugin</artifactId>
-                <version>${jsweet.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>generate-js</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>jsweet</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <compileSourceRootsOverride>${project.build.directory}/generated-sources/${package.name}_cli</compileSourceRootsOverride>
-                    <verbose>false</verbose>
-                    <outDir>${project.build.directory}/js</outDir>
-                    <tsOut>${project.build.directory}/ts</tsOut>
-                    <candiesJsOut>target/webapp/candies</candiesJsOut>
-                    <excludes>
-                        <exclude>**/node_modules/**</exclude>
-                        <exclude>**/node/**</exclude>
-                    </excludes>
-                    <targetVersion>ES6</targetVersion>
-                    <module>commonjs</module>
-                    <bundle>true</bundle>
-                    <declaration>true</declaration>
-                    <dtsOut>${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}</dtsOut>
-                </configuration>
-            </plugin>
--->
 
 
             <plugin>
@@ -383,8 +290,8 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources/${package.name}_cli</source>
-                                <source>${project.build.directory}/generated-sources/${package.name}_l2p</source>
+                                <source>${project.build.directory}/generated-sources/${package.name.cli}</source>
+                                <source>${project.build.directory}/generated-sources/${package.name.l2p}</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -412,7 +319,7 @@
                                     </excludes>
                                 </resource>
                                 <resource>
-                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/js</directory>
+                                    <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/js</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/js</targetPath>
                                     <excludes>
                                         <exclude>**/junk/**</exclude>
@@ -448,7 +355,7 @@
                                 </resource>
 
                                 <resource>
-                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/css</directory>
+                                    <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/css</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/css</targetPath>
                                     <includes>
                                         <include>*.css</include>
@@ -456,7 +363,7 @@
                                 </resource>
 
                                 <resource>
-                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/resources</directory>
+                                    <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/resources</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/schema</targetPath>
                                     <includes>
                                         <include>schema-plead.json</include>
@@ -465,7 +372,7 @@
                                 </resource>
 
                                 <resource>
-                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/resources</directory>
+                                    <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/resources</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/sql</targetPath>
                                     <includes>
                                         <include>prov-template-library-plead.sql</include>
@@ -475,7 +382,7 @@
 
 
                                 <resource>
-                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/resources/${meta-inf-webjars}/${package.name}_cli/0.1.0/html</directory>
+                                    <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/resources/${meta-inf-webjars}/${package.name.cli}/0.1.0/html</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/html</targetPath>
                                     <includes>
                                         <include>doc-plead.html</include>

@@ -4,46 +4,48 @@
     <parent>
         <artifactId>modules-template</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.0.6-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>${project.version}</version>
+        <relativePath>../../../pom.xml</relativePath>
     </parent>
 
     <artifactId>prov-template-library</artifactId>
-    <version>2.0.6-SNAPSHOT</version>
+    <version>${project.version}</version>
 
-    <name> |---- PROV-TEMPLATE-LIBRARY</name>
 
+    <name> |---- PROV-TEMPLATE-LIBRARY js (java 12)</name>
     <dependencies>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-n</artifactId>
-            <version>2.0.6-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>2.0.6-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template-compiler</artifactId>
-            <version>2.0.6-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template</artifactId>
-            <version>2.0.6-SNAPSHOT</version>
+            <version>${project.version}</version>
             <classifier>template-library</classifier>
             <type>zip</type>
         </dependency>
     </dependencies>
 
+    <!--
     <properties>
         <meta-inf-webjars>META-INF/resources/webjars</meta-inf-webjars>
         <package.name>template_library</package.name>
         <template_lib_cli>${package.name}/${package.name}_cli</template_lib_cli>
         <template_lib_l2p>${package.name}/${package.name}_l2p</template_lib_l2p>
     </properties>
+    -->
 
     <build>
         <plugins>
@@ -65,7 +67,7 @@
                 </executions>
                 <configuration>
                     <compileSourceRootsOverride>${project.build.directory}/generated-sources/${package.name}_cli</compileSourceRootsOverride>
-                    <verbose>true</verbose>
+                    <verbose>false</verbose>
                     <outDir>${project.build.directory}/js</outDir>
                     <tsOut>${project.build.directory}/ts</tsOut>
                     <candiesJsOut>target/webapp/candies</candiesJsOut>
@@ -81,6 +83,7 @@
                     <dtsOut>${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}</dtsOut>
                 </configuration>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -201,7 +204,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+-->
 
         </plugins>
     </build>

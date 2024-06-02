@@ -53,6 +53,24 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>templating-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>filter-src</id>
+                        <goals>
+                            <goal>filter-sources</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${basedir}/src/main/pom12</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/pom12</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.6.0</version>
@@ -266,7 +284,7 @@
                                 <exec executable="mvn">
                                     <env key="JAVA_HOME" value="${java12.home}" />
                                     <arg value="-f" />
-                                    <arg value="pom12.xml" />
+                                    <arg value="${project.build.directory}/pom12/pom12.xml" />
                                     <arg value="jsweet:jsweet" />
                                 </exec>
                             </target>

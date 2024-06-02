@@ -35,14 +35,6 @@
             <classifier>template-library</classifier>
             <type>zip</type>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>templates_cli</artifactId>
-            <version>0.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        -->
     </dependencies>
 
     <properties>

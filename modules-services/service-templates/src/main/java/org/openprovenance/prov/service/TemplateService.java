@@ -38,7 +38,7 @@ import java.util.function.Function;
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_IMAGE_SVG_XML;
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_TEXT_HTML;
 import static org.openprovenance.prov.service.Storage.getStringFromClasspath;
-import static org.openprovenance.prov.template.library.plead.logger.Logger.initializeBeanTable;
+import static org.openprovenance.prov.template.library.plead.client.logger.Logger.initializeBeanTable;
 
 @Path("")
 public class TemplateService {
@@ -151,7 +151,7 @@ public class TemplateService {
             put("PROV_API", provAPI);
         }};
         this.documentBuilderDispatcher=initializeBeanTable(new org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorWithMap(map,pf));
-        this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om, documentBuilderDispatcher, org.openprovenance.prov.template.library.plead.logger.Logger.ioMap);
+        this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om, documentBuilderDispatcher, org.openprovenance.prov.template.library.plead.client.logger.Logger.ioMap);
         this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),templateDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
         this.recordMaker=initializeBeanTable(new TableConfiguratorForObjectRecordMaker(documentBuilderDispatcher));
 

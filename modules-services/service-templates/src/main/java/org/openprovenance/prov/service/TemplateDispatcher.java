@@ -7,18 +7,16 @@ import org.openprovenance.prov.client.RecordsProcessorInterface;
 import org.openprovenance.prov.service.iobean.composite.SqlCompositeEnactorConfigurator3;
 import org.openprovenance.prov.service.iobean.simple.SqlEnactorConfigurator3;
 import org.openprovenance.prov.template.library.plead.client.configurator.*;
-import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
-import org.openprovenance.prov.template.library.plead.logger.TemplateBuilders;
+import org.openprovenance.prov.template.library.plead.client.logger.TemplateBuilders;
 
 
 import java.sql.Connection;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.template.library.plead.logger.Logger.initializeBeanTable;
-import static org.openprovenance.prov.template.library.plead.logger.Logger.initializeCompositeBeanTable;
+import static org.openprovenance.prov.template.library.plead.client.logger.Logger.initializeBeanTable;
+import static org.openprovenance.prov.template.library.plead.client.logger.Logger.initializeCompositeBeanTable;
 
 public class TemplateDispatcher {
     static Logger logger = LogManager.getLogger(TemplateDispatcher.class);

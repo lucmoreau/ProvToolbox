@@ -28,7 +28,7 @@ import org.openprovenance.prov.service.translation.TranslationService;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
-import org.openprovenance.prov.service.validation.storage.StorageConfiguration;
+import org.openprovenance.prov.service.translation.storage.StorageConfiguration;
 
 
 import java.util.HashSet;

@@ -11,34 +11,7 @@
     <artifactId>prov-template-library</artifactId>
     <version>${project.version}</version>
 
-
     <name> |---- PROV-TEMPLATE-LIBRARY js (java 12)</name>
-    <!--
-    <dependencies>
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-n</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-model</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-template-compiler</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-template</artifactId>
-            <version>${project.version}</version>
-            <classifier>template-library</classifier>
-            <type>zip</type>
-        </dependency>
-    </dependencies>
-    -->
 
     <build>
         <plugins>

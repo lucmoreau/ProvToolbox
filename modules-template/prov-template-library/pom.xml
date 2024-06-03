@@ -52,13 +52,13 @@
                 <version>3.0.0</version>
                 <executions>
                     <execution>
-                        <id>filter-src</id>
+                        <id>preparing.jsweet.script</id>
                         <goals>
                             <goal>filter-sources</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${basedir}/src/main/pom12</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/pom12</outputDirectory>
+                            <sourceDirectory>src/main/jsweet</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/jsweet</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -157,6 +157,7 @@
                         </configuration>
                     </execution>
 
+
                     <execution>
                         <id>default-cli</id>
                         <goals>
@@ -171,6 +172,7 @@
                             </arguments>
                         </configuration>
                     </execution>
+
 
                     <!--
                     <execution>
@@ -226,11 +228,6 @@
                                         <include name="**/*" />
                                     </fileset>
                                 </copy>
-                                <copy todir="${project.build.directory}/bindings">
-                                    <fileset dir="src/main/resources/bindings">
-                                        <include name="**/*" />
-                                    </fileset>
-                                </copy>
                             </target>
                         </configuration>
                     </execution>
@@ -254,17 +251,51 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
+                            <!--suppress UnresolvedMavenProperty -->
                             <target if="${java12Exists}">
+                                <exec executable="${project.build.directory}/jsweet/jsweet.sh">
+
+                                </exec>
+                                <!--
                                 <exec executable="mvn">
                                     <env key="JAVA_HOME" value="${java12.home}" />
                                     <arg value="-f" />
-                                    <arg value="${project.build.directory}/pom12/pom12.xml" />
+                                    <arg value="${project.build.directory}/jsweet/pom-jsweet.xml" />
                                     <arg value="-Dlibrary.source=${project.build.directory}/generated-sources/${package.name.cli}"/>
                                     <arg value="jsweet:jsweet" />
                                 </exec>
+                                -->
                             </target>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>antrun.no.jsweet</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <target unless="${java12Exists}">
+                                <echo message="Java 12 not found, skipping jsweet compilation" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>antrun.run.test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target if="${java12Exists}">
+                            <exec executable="npm" dir="${project.basedir}">
+                                <arg value="test" />
+                            </exec>
+                            </target>
+                        </configuration>
+                    </execution>
+
                 </executions>
             </plugin>
 
@@ -300,51 +331,30 @@
                                 <resource>
                                     <directory>${project.build.directory}/resources</directory>
                                     <targetPath />
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/js</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/js</targetPath>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/js</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/js</targetPath>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/ts</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/ts</targetPath>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/bindings</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/bindings</targetPath>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/prov-template-library/templates</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/templates</targetPath>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/prov-template-library/mbindings</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/mbindings</targetPath>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
 
                                 <resource>
@@ -359,8 +369,7 @@
                                     <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/resources</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/schema</targetPath>
                                     <includes>
-                                        <include>schema-plead.json</include>
-                                        <include>schema-ptm.json</include>
+                                        <include>*.json</include>
                                     </includes>
                                 </resource>
 
@@ -368,8 +377,7 @@
                                     <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/resources</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/sql</targetPath>
                                     <includes>
-                                        <include>prov-template-library-plead.sql</include>
-                                        <include>prov-template-library-ptm.sql</include>
+                                        <include>*.sql</include>
                                     </includes>
                                 </resource>
 
@@ -378,12 +386,8 @@
                                     <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/resources/${meta-inf-webjars}/${package.name.cli}/0.1.0/html</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/html</targetPath>
                                     <includes>
-                                        <include>doc-plead.html</include>
-                                        <include>doc-ptm.html</include>
+                                        <include>*.html</include>
                                     </includes>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                             </resources>
                         </configuration>
@@ -412,5 +416,42 @@
         </plugins>
     </build>
 
+    <!--
+    <profiles>
+        <profile>
+            <id>conditional-run-js-tests</id>
+            <activation>
+                <file>
+                    <exists>${java12.home}bin/java</exists>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${exec.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>npm.test.in.profile</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>test</phase>
+                                <configuration>
+                                    <basedir>${project.basedir}</basedir>
+                                    <executable>npm</executable>
+                                    <arguments>
+                                        <argument>test</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    -->
 
 </project>

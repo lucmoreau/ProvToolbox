@@ -30,7 +30,7 @@
                     <verbose>false</verbose>
                     <outDir>${project.build.directory}/js</outDir>
                     <tsOut>${project.build.directory}/ts</tsOut>
-                    <candiesJsOut>target/webapp/candies</candiesJsOut>
+                    <candiesJsOut>${project.build.directory}/webapp/candies</candiesJsOut>
                     <excludes>
                         <exclude>**/node_modules/**</exclude>
                         <exclude>**/node/**</exclude>

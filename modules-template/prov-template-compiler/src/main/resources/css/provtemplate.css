@@ -20,6 +20,30 @@
     content: '(type: ';
 }
 
+.csv_input {
+    color: blue;
+}
+.csv_input::after {
+    color: blue;
+    content: ')';
+}
+.csv_input::before {
+    color: blue;
+    content: '(';
+}
+
+.csv_output {
+    color: darkorange;
+}
+.csv_output::after {
+    color: darkorange;
+    content: ')';
+}
+.csv_output::before {
+    color: darkorange;
+    content: '(';
+}
+
 .csv_shared::after {
     content: ')';
 }

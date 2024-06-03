@@ -119,6 +119,21 @@ public class CompilerDocumentation {
                 final String jsonType = convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName());
 
                 os.print(makeSpan(jsonType, "csv_type"));
+
+                if (descriptorUtils.isInput(key,bindingsSchema)) {
+                    String input="";
+                    input=input+"I";
+                    if (descriptorUtils.isCompulsoryInput(key,bindingsSchema)) {
+                        input=input+"*";
+                    }
+                    os.println(makeSpan(input, "csv_input"));
+                }
+
+                if (descriptorUtils.isOutput(key,bindingsSchema)) {
+                    String output="O";
+                    os.println(makeSpan(output, "csv_output"));
+                }
+
                 if (sharing!=null && sharing.contains(key)) {
                     os.print(makeSpan("share-able variable", "csv_shared"));
                 }

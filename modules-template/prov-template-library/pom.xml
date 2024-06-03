@@ -80,7 +80,6 @@
                                 <artifactItem>
                                     <groupId>org.openprovenance.prov</groupId>
                                     <artifactId>prov-template</artifactId>
-                                    <!--<version>2.0.5-SNAPSHOT</version> -->
                                     <classifier>template-library</classifier>
                                     <type>zip</type>
                                     <overWrite>false</overWrite>
@@ -157,26 +156,10 @@
                         </configuration>
                     </execution>
 
-<!--
-                    <execution>
-                        <id>default-cli</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <phase>test</phase>
-                        <configuration>
-                            <basedir>${project.basedir}</basedir>
-                            <executable>npm</executable>
-                            <arguments>
-                                <argument>test</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
--->
 
-                    <!--
+
                     <execution>
-                        <id>python-test</id>
+                        <id>python.test</id>
                         <phase>test</phase>
                         <goals>
                             <goal>exec</goal>
@@ -192,7 +175,7 @@
                             </environmentVariables>
                         </configuration>
                     </execution>
-                    -->
+
 
                 </executions>
 
@@ -232,7 +215,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>check-java12-exists</id>
+                        <id>check.java12.exists</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>run</goal>
@@ -245,7 +228,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>antrun-jsweet</id>
+                        <id>antrun.jsweet</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>run</goal>
@@ -253,18 +236,10 @@
                         <configuration>
                             <!--suppress UnresolvedMavenProperty -->
                             <target if="${java12Exists}">
+                                <echo message="Java 12 found, doing jsweet compilation" />
                                 <exec executable="${project.build.directory}/jsweet/jsweet.sh">
 
                                 </exec>
-                                <!--
-                                <exec executable="mvn">
-                                    <env key="JAVA_HOME" value="${java12.home}" />
-                                    <arg value="-f" />
-                                    <arg value="${project.build.directory}/jsweet/pom-jsweet.xml" />
-                                    <arg value="-Dlibrary.source=${project.build.directory}/generated-sources/${package.name.cli}"/>
-                                    <arg value="jsweet:jsweet" />
-                                </exec>
-                                -->
                             </target>
                         </configuration>
                     </execution>
@@ -277,7 +252,7 @@
                         <configuration>
                             <!--suppress UnresolvedMavenProperty -->
                             <target unless="${java12Exists}">
-                                <echo message="Java 12 not found, skipping jsweet compilation" />
+                                <echo message="Java 12 not found, skipping jsweet compilation, no npm test" />
                             </target>
                         </configuration>
                     </execution>
@@ -288,10 +263,11 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <target if="${java12Exists}">
-                            <exec executable="npm" dir="${project.basedir}">
-                                <arg value="test" />
-                            </exec>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <target name="do.run.test" if="${java12Exists}" >
+                                <exec executable="npm" dir="${project.basedir}">
+                                    <arg value="test" />
+                                </exec>
                             </target>
                         </configuration>
                     </execution>
@@ -416,42 +392,5 @@
         </plugins>
     </build>
 
-    <!--
-    <profiles>
-        <profile>
-            <id>conditional-run-js-tests</id>
-            <activation>
-                <file>
-                    <exists>${java12.home}bin/java</exists>
-                </file>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>${exec.plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>npm.test.in.profile</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>test</phase>
-                                <configuration>
-                                    <basedir>${project.basedir}</basedir>
-                                    <executable>npm</executable>
-                                    <arguments>
-                                        <argument>test</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-    -->
 
 </project>

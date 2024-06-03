@@ -1,5 +1,5 @@
 
-from org.openprovenance.prov.template.library.plead.logger.Logger import Logger
+from org.openprovenance.prov.template.library.plead.client.logger.Logger import Logger
 from org.openprovenance.prov.template.library.plead.client.common.Plead_approvingBuilder import Plead_approvingBuilder
 from org.openprovenance.prov.template.library.plead.client.common.Plead_approvingBean    import Plead_approvingBean
 

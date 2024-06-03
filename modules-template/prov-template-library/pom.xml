@@ -259,6 +259,7 @@
                                     <env key="JAVA_HOME" value="${java12.home}" />
                                     <arg value="-f" />
                                     <arg value="${project.build.directory}/pom12/pom12.xml" />
+                                    <arg value="-Dlibrary.source=${project.build.directory}/generated-sources/${package.name.cli}"/>
                                     <arg value="jsweet:jsweet" />
                                 </exec>
                             </target>

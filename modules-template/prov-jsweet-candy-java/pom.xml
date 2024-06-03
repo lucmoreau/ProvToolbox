@@ -135,18 +135,6 @@
 								</exec>
 							</target>
 						</configuration>
-						<!--
-						<configuration>
-							<target if="${java12Exists}">
-								<exec executable="mvn">
-									<env key="JAVA_HOME" value="${java12.home}" />
-									<arg value="-f" />
-									<arg value="pom12.xml" />
-									<arg value="jsweet:jsweet" />
-								</exec>
-							</target>
-						</configuration>
-						-->
 					</execution>
 					<execution>
 						<id>antrun.no.jsweet</id>

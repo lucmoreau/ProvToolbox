@@ -157,7 +157,7 @@
                         </configuration>
                     </execution>
 
-
+<!--
                     <execution>
                         <id>default-cli</id>
                         <goals>
@@ -172,7 +172,7 @@
                             </arguments>
                         </configuration>
                     </execution>
-
+-->
 
                     <!--
                     <execution>

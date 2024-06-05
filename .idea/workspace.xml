@@ -9,20 +9,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/actions/ActionMetrics.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/rator.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/interop/ApiUriFragments.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/interop/ApiUriFragments.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/api.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/api.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/contact.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/expander.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/expander.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/translator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/translator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/validator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/validator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java/org/openprovenance/prov/service/summary/SummariseApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java/org/openprovenance/prov/service/summary/SummariseApplication.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -970,7 +965,7 @@
       <workItem from="1715690420906" duration="169149000" />
       <workItem from="1716384651492" duration="130994000" />
       <workItem from="1717088781190" duration="23673000" />
-      <workItem from="1717243679715" duration="62748000" />
+      <workItem from="1717243679715" duration="66512000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

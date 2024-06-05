@@ -4,7 +4,10 @@
 #FROM tomcat:9-jdk11-openjdk-slim
 #FROM tomcat:9-jdk12-adoptopenjdk-openj9
 #FROM tomcat:9-jdk11-temurin-jammy
-FROM tomcat:10.1.13-jdk17-temurin-jammy
+#FROM tomcat:10.1.13-jdk17-temurin-jammy
+FROM tomcat:10.1.24-jdk17-temurin-jammy
+
+# or should it be jre??
 
 
 MAINTAINER Luc Moreau "luc.moreau@kcl.ac.uk"

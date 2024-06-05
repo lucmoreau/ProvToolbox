@@ -23,6 +23,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static org.openprovenance.prov.service.core.ServiceUtils.UPLOADED_FILE_PATH;
+
 @ApplicationPath("/provapi")
 public class SummariseApplication extends Application {
 	private final Set<Object> singletons = new HashSet<>();
@@ -41,6 +43,7 @@ public class SummariseApplication extends Application {
 		ps.addToConfiguration("cli.config", intF.getConfig());
 		ps.addToConfiguration("version", Configuration.toolboxVersion);
 		ps.addToConfiguration("long.version", Configuration.longToolboxVersion);
+		ps.addToConfiguration("uploaded.filepath", UPLOADED_FILE_PATH);
 
 
 		singletons.add(ps);

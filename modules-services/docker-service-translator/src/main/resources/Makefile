@@ -24,7 +24,9 @@ WAR_FILE=$(ORIGIN)-$(WAR_VERSION)-docker
 DOCKER=sudo /usr/bin/docker
 DOCKER=docker
 
-build.all: mk.dir NO.generate.docker.war alt.copy.war dck.file build
+build.all.NO: mk.dir NO.generate.docker.war alt.copy.war dck.file build
+
+build.all: mk.dir generate.docker.war copy.war dck.file build
 
 mk.dir:
 	mkdir -p $(LOCATION_IMAGE)
@@ -43,7 +45,7 @@ alt.copy.war:
 	cp ${project.build.directory}/$(WAR_FILE).war $(LOCATION_IMAGE)/$(WAR_FILE).war
 
 copy.war:
-	cp ${project.basedir}/../$(ORIGIN)/target/$(WAR_FILE_ORIGINAL).war $(LOCATION_IMAGE)/$(WAR_FILE).war
+	cp ${project.basedir}/../$(ORIGIN)/target/$(WAR_FILE).war $(LOCATION_IMAGE)/$(WAR_FILE).war
 
 dck.file:
 	cp ${project.basedir}/target/classes/Dockerfile $(LOCATION_IMAGE)

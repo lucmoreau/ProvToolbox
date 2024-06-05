@@ -367,7 +367,7 @@
             <id>docker</id>
             <properties>
                 <isdocker>docker</isdocker>
-                <IGNOREME.upload.directory>/home/pservice/files/</IGNOREME.upload.directory>
+                <upload.directory>/home/pservice/files/</upload.directory>
                 <validation.log.location>/home/pservice/log/</validation.log.location>
                 <validation.prov.log.location>/home/pservice/log/</validation.prov.log.location>
             </properties>

@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.openprovenance.prov.interop.ApiUriFragments.FRAGMENT_PROVAPI;
+import static org.openprovenance.prov.service.core.ServiceUtils.UPLOADED_FILE_PATH;
 import static org.openprovenance.prov.service.core.SwaggerTags.*;
 
 @OpenAPIDefinition(
@@ -98,6 +99,8 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 		ps.addToConfiguration("cli.config", intF.getConfig());
 		ps.addToConfiguration("version", Configuration.toolboxVersion);
 		ps.addToConfiguration("long.version", Configuration.longToolboxVersion);
+		ps.addToConfiguration("uploaded.filepath", UPLOADED_FILE_PATH==null?"<<not specified>>":UPLOADED_FILE_PATH);
+
 
 
 		singletons.add(ps);

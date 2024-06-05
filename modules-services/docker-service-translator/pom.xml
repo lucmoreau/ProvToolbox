@@ -32,6 +32,31 @@
 
 
         <plugins>
+
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>exec1</id>
+                        <phase>compile</phase>
+                        <goals><goal>exec</goal></goals>
+                        <configuration>
+                            <workingDirectory>${project.build.directory}</workingDirectory>
+                            <executable>make</executable>
+                            <arguments>
+                                <argument>-f</argument>
+                                <argument>classes/Makefile</argument>
+                                <argument>build.all</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -58,28 +83,6 @@
                         </artifactItem>
                     </artifactItems>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>exec1</id>
-                        <phase>compile</phase>
-                        <goals><goal>exec</goal></goals>
-                        <configuration>
-                            <workingDirectory>${project.build.directory}</workingDirectory>
-                            <executable>make</executable>
-                            <arguments>
-                                <argument>-f</argument>
-                                <argument>classes/Makefile</argument>
-                                <argument>build.all</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
 

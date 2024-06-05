@@ -54,6 +54,8 @@ public class CommandLineArguments implements ErrorCodes {
     public static final String DATE_TIME = "dateTime";
     public static final String TIMEZONE = "timeZone";
 
+    public static final String METRICS = "metrics";
+
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
 
@@ -224,7 +226,12 @@ public class CommandLineArguments implements ErrorCodes {
                 .longOpt(TIMEZONE)
                 .build();
 
-
+        Option metrics = Option.builder(METRICS)
+                .argName("file")
+                .hasArg()
+                .desc("use given file as metrics output")
+                .longOpt(METRICS)
+                .build();
 
         Option log2kernel = new Option(LOG2KERNEL, LOG2KERNEL, false, "generating provenance types");
 
@@ -266,6 +273,7 @@ public class CommandLineArguments implements ErrorCodes {
         options.addOption(config);
         options.addOption(dateTime);
         options.addOption(timeZone);
+        options.addOption(metrics);
 
         return options;
 
@@ -318,6 +326,7 @@ public class CommandLineArguments implements ErrorCodes {
         boolean config=false;
         DateTimeOption dateTime=DateTimeOption.UTC;
         TimeZone timeZone=null;
+        String metrics=null;
 
 
         try {
@@ -369,6 +378,8 @@ public class CommandLineArguments implements ErrorCodes {
             if (line.hasOption(LOG2KERNEL))  log2kernel = true;
 
             if (line.hasOption(CONFIG))  config = true;
+
+            if (line.hasOption(METRICS))  metrics = line.getOptionValue(METRICS);
 
             if (help!=null) {
             	HelpFormatter formatter = new HelpFormatter();
@@ -425,7 +436,8 @@ public class CommandLineArguments implements ErrorCodes {
                                                 log2kernel,
                                                 config,
                                                 dateTime,
-                                                timeZone);
+                                                timeZone,
+                                                metrics);
             InteropFramework interop=new InteropFramework(commandLineArguments,
                                                           InteropFramework.getDefaultFactory());
             if (listFormatsp) {
@@ -481,11 +493,12 @@ public class CommandLineArguments implements ErrorCodes {
     public final  boolean config;
     public final DateTimeOption dateTime;
     public final TimeZone timeZone;
+    public final String metrics;
 
     public CommandLineArguments(String verbose, String debug, String logfile,
                                 String infile, String informat, String outfile, String outformat, String namespaces, String title,
                                 String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, boolean builder, String template_builder, String packge, String location, String generator,
-                                String index, String merge, String flatten, String compare, String compareOut, String log2prov, boolean log2kernel, boolean config, DateTimeOption dateTime, TimeZone timeZone) {
+                                String index, String merge, String flatten, String compare, String compareOut, String log2prov, boolean log2kernel, boolean config, DateTimeOption dateTime, TimeZone timeZone, String metrics) {
         this.verbose=verbose;
         this.debug=debug;
         this.logfile=logfile;
@@ -517,6 +530,7 @@ public class CommandLineArguments implements ErrorCodes {
         this.config=config;
         this.dateTime=dateTime;
         this.timeZone=timeZone;
+        this.metrics=metrics;
         
     }
     public CommandLineArguments() {
@@ -551,6 +565,7 @@ public class CommandLineArguments implements ErrorCodes {
         this.config=false;
         this.dateTime=DateTimeOption.PRESERVE;
         this.timeZone=null;
+        this.metrics=null;
 
     }
     

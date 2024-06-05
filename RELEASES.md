@@ -36,9 +36,11 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template: a schema for bindings files (and maven plugin)
 * prov-toolbox-plugin: a maven plugins to validate bindings and process templates
 * prov-template: refined definition of template transformation file and defined schema for it
-* prov-template-compiler: JSON schema for template project and goal validate-template-project in prov-toolbox-plugin  
-
-
+* prov-template-compiler: JSON schema for template project and goal validate-template-project in prov-toolbox-plugin
+* prov-template-compiler: input/output info in template documentation
+* prov-template-compiler: refactored invocation of jsweet, conditional on presence of jdk12
+* prov-model: provenance statistics
+* prov-model: fixed issue with IndexedDocument (and named relations)
 
 `2.0.5`
 * prov-template-library: cleaned up pom.xml

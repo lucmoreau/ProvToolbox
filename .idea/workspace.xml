@@ -9,9 +9,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/prov/pc1-full.provn" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerDocumentation.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerDocumentation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/css/provtemplate.css" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/css/provtemplate.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -136,6 +140,7 @@
     "JUnit.PleadWorkflowIT.testPleadLocal.executor": "Run",
     "JUnit.PleadWorkflowIT.testPleadRemote.executor": "Run",
     "Makefile Target.pkcs12.executor": "Run",
+    "Makefile Target.test.metrics.executor": "Run",
     "Makefile Target.test.schema.projects.executor": "Run",
     "Makefile Target.trusted.store.executor": "Run",
     "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
@@ -148,7 +153,7 @@
     "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/mojos/src/main/java/org/openprovenance/prov",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-jsweet-candy-java/src/main",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-executable/toolbox/src/test/resources/prov",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -177,18 +182,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.rules" />
       <recent name="org.openprovenance.prov.service.security" />
       <recent name="org.openprovenance.prov.service" />
       <recent name="org.openprovenance.prov.template.compiler" />
       <recent name="org.openprovenance.prov.template.emitter.minilanguage" />
-      <recent name="org.openprovenance.prov.template.emitter" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/prov" />
       <recent name="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/test/config/security" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/bin" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/test/config" />
-      <recent name="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources" />
@@ -233,7 +238,7 @@
       <recent name="org.openprovenance.prov.service.iobean.composite" />
     </key>
   </component>
-  <component name="RunManager" selected="Makefile Target.test.schema.projects">
+  <component name="RunManager" selected="Makefile Target.test.metrics">
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -298,58 +303,6 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PleadWorkflowIT.testPleadLocal" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="service-templates" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.service.template.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.template" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.template.PleadWorkflowIT" />
-      <option name="METHOD_NAME" value="testPleadLocal" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PleadWorkflowIT.testPleadRemote" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="service-templates" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.service.template.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.template" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.template.PleadWorkflowIT" />
-      <option name="METHOD_NAME" value="testPleadRemote" />
-      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -440,6 +393,12 @@
     </configuration>
     <configuration name="pkcs12" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/modules-services/docker-service-templates/Makefile" target="pkcs12" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="test.metrics" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.metrics" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
@@ -552,8 +511,7 @@
     <list>
       <item itemvalue="Application.TemplatesToDot" />
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="JUnit.PleadWorkflowIT.testPleadLocal" />
-      <item itemvalue="JUnit.PleadWorkflowIT.testPleadRemote" />
+      <item itemvalue="Makefile Target.test.metrics" />
       <item itemvalue="Makefile Target.test.schema.projects" />
       <item itemvalue="Makefile Target.pkcs12" />
       <item itemvalue="Makefile Target.trusted.store" />
@@ -561,11 +519,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Makefile Target.test.metrics" />
         <item itemvalue="Makefile Target.test.schema.projects" />
         <item itemvalue="Makefile Target.trusted.store" />
         <item itemvalue="Makefile Target.pkcs12" />
         <item itemvalue="Application.TemplatesToDot" />
-        <item itemvalue="JUnit.PleadWorkflowIT.testPleadRemote" />
       </list>
     </recent_temporary>
   </component>
@@ -1005,7 +963,7 @@
       <workItem from="1715690420906" duration="169149000" />
       <workItem from="1716384651492" duration="130994000" />
       <workItem from="1717088781190" duration="23673000" />
-      <workItem from="1717243679715" duration="39893000" />
+      <workItem from="1717243679715" duration="57960000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

@@ -85,7 +85,7 @@ public class Rules {
 
                                             if (e2.getId().equals(wdf.getGeneratedEntity())) {
                                                 triangle.add(List.of(activity, e1, e2, wdf, wgb, usd));
-                                            } 
+                                            }
 
                                         }
                                     }

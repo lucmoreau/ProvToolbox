@@ -151,7 +151,7 @@ issue.209:
 	curl --silent https://gist.githubusercontent.com/lucmoreau/28632ef5bbe37b109300870c445772cc/raw/a711ebff4c433dd2f655bc4772e07b1e2809289e/gistfile1.jsonld | $(PROVCONVERT) -infile - -informat jsonld -outfile - -outformat provn -dateTime UTC
 	curl --silent https://gist.githubusercontent.com/lucmoreau/28632ef5bbe37b109300870c445772cc/raw/a711ebff4c433dd2f655bc4772e07b1e2809289e/gistfile1.jsonld | $(PROVCONVERT) -infile - -informat jsonld -outfile - -outformat provn -dateTime SYSTEM
 
-mvn.test: test.issue.209.jsonld test.issue.209.json test.issue.209.provx test.issue.209.provn test.default test.pgo
+mvn.test: test.issue.209.jsonld test.issue.209.json test.issue.209.provx test.issue.209.provn test.default test.pgo test.metrics
 
 test.issue.209.jsonld:
 	@echo "- jsonld input: testing dateTime PRESERVE"
@@ -241,3 +241,7 @@ test.pgo:
 #  issue#215
 test.issue.215:
 	@$(PROVCONVERT) -infile src/test/resources/issue215/example.xml -outfile - -outformat provn
+
+test.metrics:
+	@$(PROVCONVERT) -infile src/test/resources/prov/pc1-full.provn -metrics target/pc1-full-metrics.json
+	@jq . target/pc1-full-metrics.json

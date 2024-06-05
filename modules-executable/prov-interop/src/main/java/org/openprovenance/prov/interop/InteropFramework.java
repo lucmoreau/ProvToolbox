@@ -18,6 +18,7 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.Formats.ProvFormatType;
 import org.openprovenance.prov.model.exception.DocumentedUnsupportedCaseException;
+import org.openprovenance.prov.rules.Rules;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
@@ -478,7 +479,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             System.out.println("provconvert.main=" + CommandLineArguments.class.getName());
             return CommandLineArguments.STATUS_OK;
         }
-        if (config.outfile == null && config.compare == null && config.template_builder == null)
+        if (config.outfile == null && config.compare == null && config.template_builder == null && config.metrics == null)
             return CommandLineArguments.STATUS_NO_OUTPUT_OR_COMPARISON;
         if (config.infile == null && config.generator == null && config.template_builder == null && config.merge == null)
             return CommandLineArguments.STATUS_NO_INPUT;
@@ -612,6 +613,16 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             gg.generateElements();
 
             doc = gg.getDetails().getDocument();
+        }
+
+        if (config.metrics != null) {
+            Object data=new Rules().getMetrics(doc, pFactory);
+            try {
+                new ObjectMapper().writeValue(new File(config.metrics), data);
+                return 0;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         if (config.compare!=null) {

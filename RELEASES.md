@@ -41,6 +41,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: refactored invocation of jsweet, conditional on presence of jdk12
 * prov-model: provenance statistics
 * prov-model: fixed issue with IndexedDocument (and named relations)
+* service-translator and prov-service-translator: metrics for provenance
 
 `2.0.5`
 * prov-template-library: cleaned up pom.xml

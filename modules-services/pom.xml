@@ -19,6 +19,8 @@
         <module>prov-service-validation</module>
         <module>service-translator</module>
         <module>docker-service-translator</module>
+        <module>service-templates</module>
+
     </modules>
 
 

@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>ProvTranslator</title>
+	<title>ProvValidator</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author" content="">
-
 
 	<style type="text/css">
 		body {
@@ -40,7 +39,7 @@
 </nav>
 
 <script>
-	$('#header-translator').addClass("active");
+	$('#header-validator').addClass("active");
 </script>
 
 <section>
@@ -59,16 +58,10 @@
 							<td>
 								<input type="file"   name="file" class="primary" style="width:320px; "/>
 							</td>
-							<td> </td>
 							<td rowspan="3">
-								<input type="submit"   value="jsonld"   name="translate"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
-								<input type="submit"   value="json"     name="translate"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
-								<input type="submit"   value="provx"    name="translate"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
-								<input type="submit"   value="provn"    name="translate"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
-								<input type="submit"   value="svg"      name="translate"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+								<input type="submit" value="Rate" name="metrics" class="btn btn-primary btn-large" style="text-align:center; width:80px; " />
 							</td>
 						</tr>
-
 						<tr>
 							<td>Enter a URL:</td>
 							<td>
@@ -77,17 +70,20 @@
 									<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
 										<span class="caret"></span>
 									</a>
+
 									<ul class="dropdown-menu">
 										<li>Examples</li>
 										<li><a href="#" onclick="updateRootURLInputBox('${service.context}/provapi/resources/prov/primer.provn')">
 											<i class="icon-ok"></i> Primer</a>
 										</li>
+
 										<li><a href="#" onclick="updateRootURLInputBox('${service.context}/provapi/resources/prov/pc1.provn')">
 											<i class="icon-ok"></i> PC1</a>
 										</li>
 										<li><a href="#" onclick="updateRootURLInputBox('${service.context}/provapi/resources/prov/invalid.provn')">
 											<i class="icon-remove"></i> Invalid</a>
 										</li>
+
 										<li class="divider"></li>
 										<li><a href="#" onclick="updateURLInputBox('')"><i class="icon-trash"></i> Clear</a></li>
 									</ul>
@@ -99,25 +95,28 @@
 								<br>
 								<table>
 									<tr>
+										<td><input type="radio" name="type" value="ttl" checked/>ttl</td>
+										<td><input type="radio" name="type" value="rdf"/>rdf</td>
+									</tr>
+									<tr>
 										<td><input type="radio" name="type" value="provn"/>provn</td>
 										<td><input type="radio" name="type" value="provx"/>provx</td>
 									</tr>
 									<tr>
-										<td><input type="radio" name="type" value="jsonld"/>jsonld</td>
+										<td><input type="radio" name="type" value="trig"/>trig</td>
 										<td><input type="radio" name="type" value="json"/>json</td>
 									</tr>
 								</table>
 							</td>
+
 							<td>
 								<textarea rows="10" name="statements" style="width:350px; "></textarea>
 							</td>
 						</tr>
-
 					</table>
 				</div>
 			</form>
 		</div>
-
 
 		<div class="col-sm-4" id="what-do-we?" style="text-align:left; width:350px; font-size: 90%; " >
 			<p style="font-size: 90%; "><b>What do we store?</b></p>
@@ -125,6 +124,8 @@
 			<p style="font-size: 90%; "><b>Agreement</b></p>
 			<p style="font-size: 90%; ">By pressing the validate/translate buttons, you agree with the terms and conditions  of this service (for full details, <a href="https://openprovenance.org/ethics/provenance-web-services/">see ethics application</a>). Specifically, you agree for <em>Collected Data</em> being stored and used for research purpose by King's College London; you also agree that no guarantees are provided as to the correctness of the validation/analysis results. The information we capture is anonymous and we will not seek to try and identify users from  IP addresses. Given this, we provide no mechanism by which logged information can be erased.</p>
 		</div>
+
+
 	</div>
 
 </section>

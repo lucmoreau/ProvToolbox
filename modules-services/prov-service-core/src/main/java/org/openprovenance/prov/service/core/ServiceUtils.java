@@ -192,7 +192,7 @@ public class ServiceUtils {
     }
 
     public enum Action {
-        UNKNOWN("UNKNOWN"), VALIDATE("VALIDATE"), EXPAND("EXPAND"), NF("NF"), SIGN("SIGN"), SIGNATURE("SIGNATURE)"), CHECK("CHECK"), RANDOM("RANDOM"), LINEAR("LINEAR"), EXPLANATION("EXPLANATION"), TRANSLATE("TRANSLATE"), SUMMARISE("SUMMARISE"), UPLOAD("UPLOAD");
+        UNKNOWN("UNKNOWN"), VALIDATE("VALIDATE"), EXPAND("EXPAND"), METRICS("METRICS"), NF("NF"), SIGN("SIGN"), SIGNATURE("SIGNATURE)"), CHECK("CHECK"), RANDOM("RANDOM"), LINEAR("LINEAR"), EXPLANATION("EXPLANATION"), TRANSLATE("TRANSLATE"), SUMMARISE("SUMMARISE"), UPLOAD("UPLOAD");
         // JSON("json"), XML("provx"), PROVN("provn"), TURTLE("ttl"), TRIG("trig"), SVG("svg"), JPG("jpg") ;
 
         Action(String text) {
@@ -243,6 +243,11 @@ public class ServiceUtils {
         if (formData.get("translate") != null) {
             return Action.TRANSLATE;
         }
+
+        if (formData.get("metrics") != null) {
+            return Action.METRICS;
+        }
+
 
         if (formData.get("sign") != null) {
             String val = getFormDataValue(formData, "sign");

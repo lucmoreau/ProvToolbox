@@ -1,23 +1,22 @@
 package org.openprovenance.prov.service.core;
 
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.service.core.config.StorageConfiguration;
 import org.openprovenance.prov.storage.filesystem.NonDocumentResourceStorageFileSystem;
 import org.openprovenance.prov.service.core.memory.NonDocumentResourceIndexInMemory;
 import org.openprovenance.prov.storage.api.*;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
 
-import static org.openprovenance.prov.service.core.ServiceUtils.UPLOADED_FILE_PATH;
 
 public class ServiceUtilsConfig extends StorageConfig {
-    public final Map<String, String> configuration;
+    public final StorageConfiguration configuration;
 
-    public ServiceUtilsConfig(Map<String, String> configuration) {
+    public ServiceUtilsConfig(StorageConfiguration configuration) {
         extensionMap = new HashMap<>();
         nonDocumentResourceIndex=new NonDocumentResourceIndexInMemory( 100);
-        nonDocumentResourceStorage=new NonDocumentResourceStorageFileSystem(new File(UPLOADED_FILE_PATH));
+        nonDocumentResourceStorage=new NonDocumentResourceStorageFileSystem(new File(configuration.uploaded_filepath));
         genericResourceStorageMap=new HashMap<>();
         this.configuration=configuration;
     }

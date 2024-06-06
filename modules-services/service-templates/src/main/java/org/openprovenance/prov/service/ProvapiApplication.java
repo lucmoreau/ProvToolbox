@@ -21,6 +21,7 @@ import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.core.config.StorageConfiguration;
 import org.openprovenance.prov.service.core.writers.NodeMessageBodyWriter;
 import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.readers.*;
@@ -28,14 +29,13 @@ import org.openprovenance.prov.service.translation.TranslationService;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
-import org.openprovenance.prov.service.translation.storage.StorageConfiguration;
+import org.openprovenance.prov.service.translation.storage.StorageSetup;
 
 
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.openprovenance.prov.interop.ApiUriFragments.FRAGMENT_PROVAPI;
-import static org.openprovenance.prov.service.core.ServiceUtils.UPLOADED_FILE_PATH;
 import static org.openprovenance.prov.service.core.SwaggerTags.*;
 
 @OpenAPIDefinition(
@@ -86,15 +86,16 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 
 	private final Set<Object> singletons = new HashSet<>();
 
-	public final StorageConfiguration sc = new StorageConfiguration();
+	public final StorageSetup storageSetup = new StorageSetup();
 
 	public ProvapiApplication() {
 		InteropFramework intF=new InteropFramework();
 		final ProvFactory factory = InteropFramework.getDefaultFactory();
 
 
+		StorageConfiguration sc = StorageConfiguration.loadConfiguration();
 
-		ServiceUtilsConfig config= sc.makeConfig(factory);
+		ServiceUtilsConfig config= storageSetup.makeConfig(factory, sc);
 
 		PostService ps=new PostService(config);
 
@@ -102,7 +103,6 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 		ps.addToConfiguration("cli.config", intF.getConfig());
 		ps.addToConfiguration("version", Configuration.toolboxVersion);
 		ps.addToConfiguration("long.version", Configuration.longToolboxVersion);
-		ps.addToConfiguration("uploaded.filepath", UPLOADED_FILE_PATH);
 
 
 

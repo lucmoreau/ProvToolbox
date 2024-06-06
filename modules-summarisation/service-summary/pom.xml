@@ -414,6 +414,7 @@
                                 </goals>
                                 <configuration>
                                     <properties>
+                                        <!--
                                         <property>
                                             <name>PSERVICE_MONGO_HOST</name>
                                             <value>localhost</value>
@@ -438,6 +439,7 @@
                                             <name>PSERVICE_REDIS_HOST</name>
                                             <value>localhost</value>
                                         </property>
+                                        -->
                                         <property>
                                             <name>POSTGRES_HOST</name>
                                             <name>localhost</name>
@@ -445,6 +447,10 @@
                                         <property>
                                             <name>RESOURCES_HOST</name>
                                             <value>${service.protocol}://${service.host}:${service.port}${service.context}/provapi/resources</value>
+                                        </property>
+                                        <property>
+                                            <name>PROV_STORAGE_CONFIG</name>
+                                            <value>${project.build.directory}/test-classes/config/storage-configuration-fs-memory.json</value>
                                         </property>
                                     </properties>
                                 </configuration>

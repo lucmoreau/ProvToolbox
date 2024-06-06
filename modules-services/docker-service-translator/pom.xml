@@ -76,7 +76,7 @@
                             <groupId>org.openprovenance.prov</groupId>
                             <artifactId>service-translator</artifactId>
                             <version>${project.version}</version>
-                            <classifier>docker</classifier>
+                            <!--<classifier>docker</classifier>-->
                             <type>war</type>
                             <overWrite>true</overWrite>
                             <outputDirectory>${project.build.directory}</outputDirectory>

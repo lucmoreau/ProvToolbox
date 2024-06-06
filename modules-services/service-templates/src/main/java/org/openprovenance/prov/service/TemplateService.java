@@ -38,6 +38,7 @@ import java.util.function.Function;
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_IMAGE_SVG_XML;
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_TEXT_HTML;
 import static org.openprovenance.prov.service.Storage.getStringFromClasspath;
+import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
 import static org.openprovenance.prov.template.library.plead.client.logger.Logger.initializeBeanTable;
 
 @Path("")
@@ -89,16 +90,7 @@ public class TemplateService {
     private final Map<String, Function<Object[], Object[]>> recordMaker;
 
 
-    static final String getSystemOrEnvironmentVariableOrDefault(String name, String defaultValue) {
-        String value = System.getProperty(name);
-        if (value == null) {
-            value = System.getenv(name);
-        }
-        if (value == null) {
-            value = defaultValue;
-        }
-        return value;
-    }
+
 
     static final List<String> sqlFilesToExecute = List.of("/utils.sql");
 

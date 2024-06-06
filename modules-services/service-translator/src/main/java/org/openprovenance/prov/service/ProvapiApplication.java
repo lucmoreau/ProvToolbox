@@ -2,6 +2,8 @@
 package org.openprovenance.prov.service;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -21,6 +23,7 @@ import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.core.config.StorageConfiguration;
 import org.openprovenance.prov.service.core.writers.NodeMessageBodyWriter;
 import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.translation.RandomService;
@@ -30,13 +33,12 @@ import org.openprovenance.prov.service.translation.TranslationService;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import org.openprovenance.prov.service.validation.ValidationService;
-import org.openprovenance.prov.service.validation.storage.StorageConfiguration;
+import org.openprovenance.prov.service.validation.storage.StorageSetup;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.openprovenance.prov.interop.ApiUriFragments.FRAGMENT_PROVAPI;
-import static org.openprovenance.prov.service.core.ServiceUtils.UPLOADED_FILE_PATH;
 import static org.openprovenance.prov.service.core.SwaggerTags.*;
 
 @OpenAPIDefinition(
@@ -85,13 +87,25 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 
 	private final Set<Object> singletons = new HashSet<>();
 
-	public final StorageConfiguration sc = new StorageConfiguration();
+
+	StorageConfiguration sc = StorageConfiguration.loadConfiguration();
+
+
+
+	public final StorageSetup storageSetup = new StorageSetup();
 
 	public ProvapiApplication() {
 		InteropFramework intF=new InteropFramework();
 		final ProvFactory factory = InteropFramework.getDefaultFactory();
 
-		ServiceUtilsConfig config= sc.makeConfig(factory);
+        try {
+            logger.info("ProvapiApplication constructor ... start" + new ObjectMapper().writeValueAsString(sc)) ;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        ServiceUtilsConfig config= storageSetup.makeConfig(factory,sc);
 
 		PostService ps=new PostService(config);
 
@@ -99,7 +113,6 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 		ps.addToConfiguration("cli.config", intF.getConfig());
 		ps.addToConfiguration("version", Configuration.toolboxVersion);
 		ps.addToConfiguration("long.version", Configuration.longToolboxVersion);
-		ps.addToConfiguration("uploaded.filepath", UPLOADED_FILE_PATH==null?"<<not specified>>":UPLOADED_FILE_PATH);
 
 
 

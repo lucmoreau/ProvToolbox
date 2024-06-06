@@ -42,6 +42,10 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-model: provenance statistics
 * prov-model: fixed issue with IndexedDocument (and named relations)
 * service-translator and prov-service-translator: metrics for provenance
+* prov-template: updated mongo storage to Bindings, replacing deprecated BindingsBean
+* prov-storage-mongodb: updated mongo storage to Bindings, replacing deprecated BindingsBean
+* service-translator, service-templates: introduced storage configuration file
+
 
 `2.0.5`
 * prov-template-library: cleaned up pom.xml

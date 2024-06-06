@@ -13,7 +13,7 @@ build.docker:
 
 
 jetty:
-	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; mvn -Pjetty jetty:run-war
+	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TEMPLATES}; mvn -Pjetty jetty:run-war
 
 
 jetty.post:

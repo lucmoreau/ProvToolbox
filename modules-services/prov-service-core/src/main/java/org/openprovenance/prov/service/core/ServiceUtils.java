@@ -31,23 +31,26 @@ import java.util.*;
 
 
 public class ServiceUtils {
+    final private static Logger logger = LogManager.getLogger(ServiceUtils.class);
 
-    public static final String DOCUMENT_NOT_FOUND = "Document not found";
     public static final String WILDCARD = "*";
     public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
-    public static final String HEADER_PARAM_ACCEPT = "Accept";
 
     public static final String CONFIG_PROPERTIES = "config.properties";
 
-    public static final String UPLOADED_FILE_PATH = getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("upload.directory");
-    public static final String containerVersion = getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("container.version");
-    public static final String containerClassifier = getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("container.classifier");
-
-    public static final String longContainerVersion = "ProvToolbox/modules-services " + containerVersion + (((containerClassifier==null) || (containerClassifier=="")) ? "" : "-" + containerClassifier) + " (" + getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("timestamp") + ")";
 
     private final JobManagement jobManager;
 
-
+    public static String getSystemOrEnvironmentVariableOrDefault(String name, String defaultValue) {
+        String value = System.getProperty(name);
+        if (value == null) {
+            value = System.getenv(name);
+        }
+        if (value == null) {
+            value = defaultValue;
+        }
+        return value;
+    }
 
     private final NonDocumentResourceIndex<NonDocumentResource> nonDocumentResourceIndex;
     private final NonDocumentResourceStorage nonDocumentResourceStorage;
@@ -69,7 +72,6 @@ public class ServiceUtils {
         return Configuration.getPropertiesFromClasspath(ServiceUtils.class, propFileName);
     }
 
-    final private static Logger logger = LogManager.getLogger(ServiceUtils.class);
 
 
 

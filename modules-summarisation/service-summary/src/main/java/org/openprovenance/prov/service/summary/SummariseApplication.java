@@ -10,6 +10,7 @@ import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtilsConfig;
+import org.openprovenance.prov.service.core.config.StorageConfiguration;
 import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.summary.writers.Level0MessageBodyWriter;
 import org.openprovenance.prov.service.summary.writers.ScalaDocumentMessageBodyWriter;
@@ -17,13 +18,11 @@ import org.openprovenance.prov.service.translation.TranslationService;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
-import org.openprovenance.prov.service.translation.storage.StorageConfiguration;
+import org.openprovenance.prov.service.translation.storage.StorageSetup;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-import static org.openprovenance.prov.service.core.ServiceUtils.UPLOADED_FILE_PATH;
 
 @ApplicationPath("/provapi")
 public class SummariseApplication extends Application {
@@ -34,8 +33,11 @@ public class SummariseApplication extends Application {
 		InteropFramework intF=new InteropFramework();
 		org.openprovenance.prov.model.ProvFactory factory = InteropFramework.getDefaultFactory();
 
-		StorageConfiguration sc = new MyStorageConfiguration();
-		ServiceUtilsConfig config= sc.makeConfig(factory);
+		StorageSetup storageSetup = new StorageSetup();
+		StorageConfiguration sc = StorageConfiguration.loadConfiguration();
+		ServiceUtilsConfig config= storageSetup.makeConfig(factory, sc);
+
+		System.out.println("Configuration --- " + sc);
 
 		PostService ps=new PostService(config);
 
@@ -43,7 +45,6 @@ public class SummariseApplication extends Application {
 		ps.addToConfiguration("cli.config", intF.getConfig());
 		ps.addToConfiguration("version", Configuration.toolboxVersion);
 		ps.addToConfiguration("long.version", Configuration.longToolboxVersion);
-		ps.addToConfiguration("uploaded.filepath", UPLOADED_FILE_PATH);
 
 
 		singletons.add(ps);
@@ -72,14 +73,5 @@ public class SummariseApplication extends Application {
 	}
 
 
-	public static class MyStorageConfiguration extends StorageConfiguration {
-		@Override
-		public Map<String,String> theDefaultConfiguration() {
-			Map<String,String> config=super.theDefaultConfiguration();
-			// not ready for redis, as extension field is being used
-			config.put(PSERVICE_INDEX,      "fs");
-			return config;
-		}
 
-	}
 }

@@ -5,8 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.ServiceUtilsConfig;
+import org.openprovenance.prov.service.core.config.StorageConfiguration;
 import org.openprovenance.prov.service.core.memory.DocumentResourceIndexInMemory;
-import org.openprovenance.prov.service.translation.storage.EnvironmentVariables;
 import org.openprovenance.prov.service.validation.ActionValidate;
 import org.openprovenance.prov.service.validation.ValidationResource;
 import org.openprovenance.prov.service.validation.memory.ValidationResourceIndexInMemory;
@@ -19,18 +19,15 @@ import org.openprovenance.prov.storage.redis.RedisDocumentResourceIndex;
 import org.openprovenance.prov.validation.report.ValidationReport;
 import org.openprovenance.prov.validation.report.json.Mapper;
 
+import java.io.File;
 import java.util.Map;
 
-public class StorageConfiguration extends org.openprovenance.prov.service.translation.storage.StorageConfiguration implements EnvironmentVariables {
+public class StorageSetup extends org.openprovenance.prov.service.translation.storage.StorageSetup {
 
-    static Logger logger = LogManager.getLogger(StorageConfiguration.class);
-
-
-
-
+    static Logger logger = LogManager.getLogger(StorageSetup.class);
 
     @Override
-    public ServiceUtilsConfig withMongoDb(ServiceUtilsConfig utilsConfig2, ProvFactory factory, Map<String,String> configuration) {
+    public ServiceUtilsConfig withMongoDb(ServiceUtilsConfig utilsConfig2, ProvFactory factory, StorageConfiguration configuration) {
         ServiceUtilsConfig utilsConfig=super.withMongoDb(utilsConfig2, factory,configuration);
 
         // extends configuration with this service storage requirements
@@ -38,8 +35,8 @@ public class StorageConfiguration extends org.openprovenance.prov.service.transl
         ObjectMapper mapper= Mapper.getValidationReportMapper();
         mapper.registerModule(org.mongojack.internal.MongoJackModule.INSTANCE);
 
-        final String mongoHost = configuration.get(PSERVICE_MONGO_HOST);
-        final String mongoDbName = configuration.get(PSERVICE_DBNAME);
+        final String mongoHost = configuration.mongo_host;
+        final String mongoDbName = configuration.dbname;
 
         MongoGenericResourceStorage<ValidationReport> reportStorage= new MongoGenericResourceStorage<>(
                 mongoHost,
@@ -60,18 +57,18 @@ public class StorageConfiguration extends org.openprovenance.prov.service.transl
 
 
     @Override
-    public ServiceUtilsConfig withFileSystem(ServiceUtilsConfig utilsConfig2, ProvFactory factory, Map<String,String> configuration) {
+    public ServiceUtilsConfig withFileSystem(ServiceUtilsConfig utilsConfig2, ProvFactory factory, StorageConfiguration configuration) {
         ServiceUtilsConfig utilsConfig=super.withFileSystem(utilsConfig2, factory, configuration);
 
-        utilsConfig.genericResourceStorageMap.put(ActionValidate.REPORT_KEY,new NonDocumentGenericResourceStorageFileSystem<>(Mapper.getValidationReportMapper(), ValidationReport.class, path));
-        utilsConfig.genericResourceStorageMap.put(ActionValidate.MATRIX_KEY,new NonDocumentGenericResourceStorageFileSystem<>(new ObjectMapper(), Object.class, path));
+        utilsConfig.genericResourceStorageMap.put(ActionValidate.REPORT_KEY,new NonDocumentGenericResourceStorageFileSystem<>(Mapper.getValidationReportMapper(), ValidationReport.class, new File(configuration.uploaded_filepath)));
+        utilsConfig.genericResourceStorageMap.put(ActionValidate.MATRIX_KEY,new NonDocumentGenericResourceStorageFileSystem<>(new ObjectMapper(), Object.class, new File(configuration.uploaded_filepath)));
 
         return utilsConfig;
     }
 
 
     @Override
-    public Map<String, ResourceIndex<?>> initInMemory(ServiceUtilsConfig config, Map<String, String> configuration) {
+    public Map<String, ResourceIndex<?>> initInMemory(ServiceUtilsConfig config, StorageConfiguration configuration) {
         Map<String, ResourceIndex<?>> extensionMap = super.initInMemory(config, configuration);
         ResourceIndex<?> di=extensionMap.get(DocumentResource.getResourceKind());
         extensionMap.put(ValidationResource.getResourceKind(),  new ValidationResourceIndexInMemory((DocumentResourceIndexInMemory)di, ValidationResourceIndexInMemory.factory));
@@ -80,7 +77,7 @@ public class StorageConfiguration extends org.openprovenance.prov.service.transl
 
 
     @Override
-    public Map<String, ResourceIndex<?>> initRedis(ServiceUtilsConfig config, Map<String, String> configuration) {
+    public Map<String, ResourceIndex<?>> initRedis(ServiceUtilsConfig config, StorageConfiguration configuration) {
         Map<String, ResourceIndex<?>> extensionMap = super.initRedis(config, configuration);
         ResourceIndex<?> di=extensionMap.get(DocumentResource.getResourceKind());
         extensionMap.put(ValidationResource.getResourceKind(), new RedisValidationResourceIndex((RedisDocumentResourceIndex) di,RedisValidationResourceIndex.factory));

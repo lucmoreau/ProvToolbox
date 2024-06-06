@@ -12,7 +12,7 @@ build.docker:
 
 # will run on port 7070 as per root pom.xml
 jetty:
-	 mvn jetty:run-war -Pjetty
+	 export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TRANSLATOR}; mvn jetty:run-war -Pjetty
 
 jetty.post:
 	 mvn -Ppostgres jetty:run

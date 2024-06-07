@@ -11,6 +11,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
+import static org.openprovenance.prov.service.TemplateService.NO_SECURITY_CONFIG;
+
 public class Utils {
     static RSAPublicKey getRsaPublicKey(String publicKeyString) {
         KeyFactory kf = null;
@@ -32,6 +34,9 @@ public class Utils {
 
     public SecurityConfiguration readSecurityConfiguration(String configFileName) {
         try {
+            if (NO_SECURITY_CONFIG.equals(configFileName)) {
+                return null;
+            }
             return om.readValue(new File(configFileName), SecurityConfiguration.class);
         } catch (IOException e) {
             throw new RuntimeException(e);

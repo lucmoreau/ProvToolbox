@@ -16,6 +16,8 @@
     <url-pattern>/webjars/*</url-pattern>
   </filter-mapping>
 
+
+
   <filter>
     <filter-name>callbackFilter</filter-name>
     <filter-class>org.pac4j.jee.filter.CallbackFilter</filter-class>

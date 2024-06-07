@@ -77,7 +77,8 @@ public class TemplateService {
     //public static final String tplKeycloakRealm=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_REALM, "realm");
 
     public static final String TPL_SECURITY_CONFIG = "TPL_SECURITY_CONFIG";
-    public static final String tplSecurityConfig=getSystemOrEnvironmentVariableOrDefault(TPL_SECURITY_CONFIG, "somefile-somewhere");
+    public static final String NO_SECURITY_CONFIG = "no-security-config";
+    public static final String tplSecurityConfig=getSystemOrEnvironmentVariableOrDefault(TPL_SECURITY_CONFIG, NO_SECURITY_CONFIG);
 
 
     private final TemplateLogic templateLogic;

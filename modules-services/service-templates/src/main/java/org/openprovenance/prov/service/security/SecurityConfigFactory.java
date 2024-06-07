@@ -33,6 +33,10 @@ public class SecurityConfigFactory implements ConfigFactory {
     public Config build(final Object... parameters) {
 
         SecurityConfiguration securityConfiguration=utils.readSecurityConfiguration(tplSecurityConfig);
+        if (securityConfiguration==null) {
+            logger.info("No SecurityConfiguration: " + tplSecurityConfig);
+            return new Config();
+        }
         logger.info("SecurityConfiguration read " + securityConfiguration);
         List<Client> clients=securityConfiguration.configurations.keySet().stream().map(key -> securityConfiguration.configurations.get(key).configureClient()).collect(Collectors.toList());
         Config config = new Config(securityConfiguration.getCallbackUrl(), clients);

@@ -7,6 +7,7 @@ import org.openprovenance.prov.model.Statement;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class Bundle implements org.openprovenance.prov.model.Bundle, Equals, ToString, HashCode {
 
@@ -17,11 +18,7 @@ public class Bundle implements org.openprovenance.prov.model.Bundle, Equals, ToS
 
     public Bundle(org.openprovenance.prov.model.QualifiedName id, Namespace namespace, Collection<Statement> statements) {
         this.id=id;
-        if (namespace!=null) {
-            this.namespaces=namespace;
-        } else {
-            this.namespaces=new Namespace();
-        }
+        this.namespaces = Objects.requireNonNullElseGet(namespace, Namespace::new);
         if (statements!=null) this.statements.addAll(statements);
     }
 

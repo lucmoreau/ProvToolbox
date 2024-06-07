@@ -42,6 +42,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     private final ObjectMapper mapper;
     final ProvFactory factory = ProvFactory.getFactory();
+    private final DBCollection collection;
 
     public MongoDocumentResourceStorage(String dbname) {
         this("localhost", dbname);
@@ -53,7 +54,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
         DB db = mongoClient.getDB(dbname);
         this.db=db;
 
-        DBCollection collection=db.getCollection(COLLECTION_DOCUMENTS);
+        collection=db.getCollection(COLLECTION_DOCUMENTS);
 
         this.mapper=new ObjectMapper();
         mapper.registerModule(org.mongojack.internal.MongoJackModule.INSTANCE);
@@ -66,9 +67,22 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
         JacksonDBCollection<DocumentWrapper, String> documentCollection = JacksonDBCollection.wrap(collection, DocumentWrapper.class, String.class, mapper);
         this.documentCollection=documentCollection;
-
-
     }
+
+    JacksonDBCollection<DocumentWrapper, String> newDocumentCollection(DateTimeOption dateTimeOption, TimeZone optionalTimeZone) {
+        ObjectMapper mapper=new ObjectMapper();
+        mapper.registerModule(org.mongojack.internal.MongoJackModule.INSTANCE);
+
+
+        // this call updates the mapper with custom deserialisers
+        ProvDeserialiser deserialiser=new ProvDeserialiser(mapper, dateTimeOption, optionalTimeZone);
+
+
+        JacksonDBCollection<DocumentWrapper, String> documentCollection = JacksonDBCollection.wrap(collection, DocumentWrapper.class, String.class, mapper);
+        return JacksonDBCollection.wrap(collection, DocumentWrapper.class, String.class, mapper);
+    }
+
+
     @Override
     public String newStore(Formats.ProvFormat format) throws IOException {
         DocumentWrapper dw=new DocumentWrapper();
@@ -112,10 +126,12 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     @Override
     public Document readDocument(String id, boolean known, DateTimeOption dateTimeOption, TimeZone timeZone) {
-        logger.warn("No support fro dateTimeOption and timeZone");
-        System.out.println("No support for dateTimeOption and timeZone");
-        logger.warn("No support for dateTimeOption and timeZone");
-        return readDocument(id, known);
+        logger.warn("Check new support for dateTimeOption and timeZon " + dateTimeOption + " " + timeZone);
+        System.out.println("Check new support for dateTimeOption and timeZone " + dateTimeOption + " " + timeZone);
+        // HACK, global variable, prevents concurrren tuse
+        getAttributes().get().remove(JSONLD_CONTEXT_KEY_NAMESPACE);
+        return newDocumentCollection(dateTimeOption, timeZone).findOneById(id).document;
+        //return readDocument(id, known);
     }
 
     @Override

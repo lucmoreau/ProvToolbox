@@ -68,6 +68,7 @@ public class ActionExpand implements ActionPerformer {
 
             Document templateDocument = utils.getDocumentFromCacheOrStore(tr.getStorageId());
 
+
             ServiceUtils.Destination destination = utils.getDestination(formData);
 
             List<InputPart> inputParts = formData.get("statements");

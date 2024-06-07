@@ -43,6 +43,7 @@ import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.expander.exception.BundleVariableHasMultipleValues;
 import org.openprovenance.prov.template.expander.exception.BundleVariableHasNoValue;
+import org.openprovenance.prov.template.json.Bindings;
 
 public class ExpandAction implements StatementAction {
 

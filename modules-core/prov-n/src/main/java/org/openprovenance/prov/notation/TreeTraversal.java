@@ -476,7 +476,6 @@ public class TreeTraversal {
 
                 convert(ast.getChild(1));
 
-
                 // parse bundleId after namespace declarations
                 QualifiedName bundleId=(QualifiedName) convert(ast.getChild(0));
 

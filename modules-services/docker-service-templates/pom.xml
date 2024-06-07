@@ -75,7 +75,7 @@
                             <groupId>org.openprovenance.prov</groupId>
                             <artifactId>service-templates</artifactId>
                             <version>${project.version}</version>
-                            <classifier>docker</classifier>
+                            <classifier>secure</classifier>
                             <type>war</type>
                             <overWrite>true</overWrite>
                             <outputDirectory>${project.build.directory}</outputDirectory>

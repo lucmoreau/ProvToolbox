@@ -89,6 +89,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 	public final StorageSetup storageSetup = new StorageSetup();
 
 	public ProvapiApplication() {
+		logger.info("ProvapiApplication constructor ... start");
 		InteropFramework intF=new InteropFramework();
 		final ProvFactory factory = InteropFramework.getDefaultFactory();
 

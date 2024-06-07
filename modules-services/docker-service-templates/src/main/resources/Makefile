@@ -15,7 +15,7 @@ DOCKER_RUN_DIR=$(HOME)/docker/log-dir
 
 WAR_VERSION=${project.version}
 WAR_FILE_ORIGINAL=$(ORIGIN)-$(WAR_VERSION)-jetty
-WAR_FILE=$(ORIGIN)-$(WAR_VERSION)-docker
+WAR_FILE=$(ORIGIN)-$(WAR_VERSION)-secure
 
 
 
@@ -24,7 +24,7 @@ WAR_FILE=$(ORIGIN)-$(WAR_VERSION)-docker
 DOCKER=sudo /usr/bin/docker
 DOCKER=docker
 
-build.all: mk.dir generate.docker.war alt.copy.war dck.file build
+build.all: mk.dir NO.generate.docker.war alt.copy.war dck.file build
 
 mk.dir:
 	mkdir -p $(LOCATION_IMAGE)

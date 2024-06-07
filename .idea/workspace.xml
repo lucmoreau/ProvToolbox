@@ -10,8 +10,14 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/.env" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/env_file.env" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/env_file.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/src/main/resources/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/src/main/resources/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/src/main/resources/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/src/main/resources/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/SecurityConfigFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/SecurityConfigFactory.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -974,7 +980,7 @@
       <workItem from="1715690420906" duration="169149000" />
       <workItem from="1716384651492" duration="130994000" />
       <workItem from="1717088781190" duration="23673000" />
-      <workItem from="1717243679715" duration="109114000" />
+      <workItem from="1717243679715" duration="115178000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

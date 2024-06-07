@@ -32,7 +32,7 @@ VOLUME ${upload.directory}
 
 #RUN rm -r -f /usr/local/tomcat/webapps/ROOT
 
-ADD ${origin.project}-${project.version}-docker.war /usr/local/tomcat/webapps/${service.context}.war
+ADD ${origin.project}-${project.version}-secure.war /usr/local/tomcat/webapps/${service.context}.war
 
 EXPOSE 8080
 

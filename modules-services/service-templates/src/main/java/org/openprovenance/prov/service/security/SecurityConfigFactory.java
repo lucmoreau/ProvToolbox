@@ -28,6 +28,9 @@ public class SecurityConfigFactory implements ConfigFactory {
     static Logger logger = LogManager.getLogger(SecurityConfigFactory.class);
     final private Utils utils = new Utils();
 
+    public SecurityConfigFactory() {
+        logger.info("########### SecurityConfigFactory constructor ###########");
+    }
 
 
     @Override

@@ -14,7 +14,7 @@
 
 
 
-    <Logger name="org.openprovenance.prov.service.translator" level="debug"  additivity="false">
+    <Logger name="org.openprovenance.prov.service.translator" level="info"  additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
     <Logger name="org.openprovenance.prov.service.validator" level="debug"  additivity="false">

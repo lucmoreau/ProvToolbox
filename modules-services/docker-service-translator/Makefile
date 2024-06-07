@@ -64,6 +64,7 @@ run.9090:
 
 setup.dir:
 	mkdir -p $(DOCKER_RUN_DIR)/database $(DOCKER_RUN_DIR)/files $(DOCKER_RUN_DIR)/log
+	cp docker.conf/storage-configuration-mongodb-redis.json $(DOCKER_RUN_DIR)/files/storage-configuration.json
 
 
 

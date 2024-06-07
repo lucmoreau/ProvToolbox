@@ -73,7 +73,7 @@ public class ActionExpand implements ActionPerformer {
 
             List<InputPart> inputParts = formData.get("statements");
             String bindings = inputParts.get(0).getBodyAsString();
-            logger.debug("bindings " + bindings);
+            //logger.debug("bindings " + bindings);
 
             Document expanded = expandTemplateWithBindings(templateDocument, tr, bindings);
 

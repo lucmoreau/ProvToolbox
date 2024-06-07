@@ -328,8 +328,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <isdocker />
-                <upload.directory>${project.build.directory}/</upload.directory>
                 <validation.log.location>target/</validation.log.location>
                 <validation.prov.log.location>target/</validation.prov.log.location>
             </properties>
@@ -363,6 +361,7 @@
             </build>
         </profile>
 
+        <!--
         <profile>
             <id>docker</id>
             <properties>
@@ -384,7 +383,7 @@
                 </plugins>
             </build>
         </profile>
-
+-->
 
 
         <profile>

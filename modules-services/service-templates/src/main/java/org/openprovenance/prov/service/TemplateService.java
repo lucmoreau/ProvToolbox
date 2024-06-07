@@ -22,6 +22,8 @@ import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.iobean.composite.SqlCompositeBeanEnactor3;
 import org.openprovenance.prov.service.readers.*;
+import org.openprovenance.prov.service.security.SecurityConfiguration;
+import org.openprovenance.prov.service.security.Utils;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
@@ -79,6 +81,8 @@ public class TemplateService {
     public static final String TPL_SECURITY_CONFIG = "TPL_SECURITY_CONFIG";
     public static final String NO_SECURITY_CONFIG = "no-security-config";
     public static final String tplSecurityConfig=getSystemOrEnvironmentVariableOrDefault(TPL_SECURITY_CONFIG, NO_SECURITY_CONFIG);
+    public static final Utils secUtils=new Utils();
+    public static final SecurityConfiguration securityConfiguration=secUtils.readSecurityConfiguration(tplSecurityConfig);
 
 
     private final TemplateLogic templateLogic;
@@ -111,6 +115,8 @@ public class TemplateService {
         this.ps = ps;
         this.utils = ps.getServiceUtils();
         this.storage=new Storage();
+
+        ps.addToConfiguration("security.config", securityConfiguration);
 
         Connection conn=storage.setup(postgresHost, postgresUsername, postgresPassword);
         this.templateDispatcher=new TemplateDispatcher(storage,conn);

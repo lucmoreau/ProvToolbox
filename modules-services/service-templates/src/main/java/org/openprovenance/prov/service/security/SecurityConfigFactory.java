@@ -3,6 +3,7 @@ package org.openprovenance.prov.service.security;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openprovenance.prov.service.TemplateService;
 import org.pac4j.core.authorization.authorizer.CsrfAuthorizer;
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.Client;
@@ -32,7 +33,7 @@ public class SecurityConfigFactory implements ConfigFactory {
     @Override
     public Config build(final Object... parameters) {
 
-        SecurityConfiguration securityConfiguration=utils.readSecurityConfiguration(tplSecurityConfig);
+        SecurityConfiguration securityConfiguration= TemplateService.securityConfiguration;
         if (securityConfiguration==null) {
             logger.info("No SecurityConfiguration: " + tplSecurityConfig);
             return new Config();

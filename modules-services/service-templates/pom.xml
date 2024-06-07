@@ -420,7 +420,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <webxml.location>${unsecure.webxml.location</webxml.location>
+                <webxml.location>${unsecure.webxml.location}</webxml.location>
             </properties>
         </profile>
         <profile>
@@ -478,44 +478,6 @@
             </build>
         </profile>
 
-        <!--
-        <profile>
-            <id>docker</id>
-            <properties>
-                <isdocker>docker</isdocker>
-                <upload.directory>/home/pservice/files/</upload.directory>
-                <hsqldb.location>target/test-database/database</hsqldb.location>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>${war.plugin.version}</version>
-                        <configuration>
-                            <failOnMissingWebXml>false</failOnMissingWebXml>
-                            <classifier>docker</classifier>
-                        </configuration>
-                    </plugin>
-                </plugins>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <filtering>true</filtering>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
--->
-
-
         <profile>
             <id>jetty</id>
             <activation>
@@ -542,22 +504,22 @@
 
                         <executions>
                             <execution>
-                                <id>secure.war</id>
+                                <id>default.war.no.classifier</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>war</goal>
                                 </goals>
 
                                 <configuration>
+                                    <classifier />
                                     <failOnMissingWebXml>true</failOnMissingWebXml>
-                                    <webXml>${secure.webxml.location}</webXml>
-                                    <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+                                    <webXml>${webxml.location}</webXml>
+                                    <webappDirectory>${project.build.directory}/${project.build.finalName}-default</webappDirectory>
                                     <filters>
                                         <filter>
                                             src/main/resources/properties/prov-template-library.webapp.config.properties
                                         </filter>
                                     </filters>
-                                    <classifier />
                                     <webResources>
                                         <resource>
                                             <filtering>true</filtering>
@@ -568,7 +530,34 @@
                                     </webResources>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>secure.war</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
 
+                                <configuration>
+                                    <classifier>secure</classifier>
+
+                                    <failOnMissingWebXml>true</failOnMissingWebXml>
+                                    <webXml>${secure.webxml.location}</webXml>
+                                    <webappDirectory>${project.build.directory}/${project.build.finalName}-secure</webappDirectory>
+                                    <filters>
+                                        <filter>
+                                            src/main/resources/properties/prov-template-library.webapp.config.properties
+                                        </filter>
+                                    </filters>
+                                    <webResources>
+                                        <resource>
+                                            <filtering>true</filtering>
+                                            <!-- this is relative to the pom.xml directory -->
+                                            <directory>src/main/webapp.filter</directory>
+                                            <includes>*</includes>
+                                        </resource>
+                                    </webResources>
+                                </configuration>
+                            </execution>
                             <execution>
                                 <id>unsecure.war</id>
                                 <phase>package</phase>

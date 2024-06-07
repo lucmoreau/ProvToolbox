@@ -46,7 +46,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-storage-mongodb: updated mongo storage to Bindings, replacing deprecated BindingsBean
 * service-translator, service-templates: introduced storage configuration file
 * prov-storage-mongodb, prov-jsonld: fixed issue with handling of bundle Id and date options
-
+* docker-service-templates: a secure docker image for templates service
 
 `2.0.5`
 * prov-template-library: cleaned up pom.xml

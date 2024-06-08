@@ -54,9 +54,12 @@ services:
     volumes:
       - $FILE_HOME/log-dir:/home/pservice
     depends_on:
-      - postgres
-      - redis
-      - mongo
+      redis:
+        condition: service_started
+      mongo:
+        condition: service_started
+      postgres:
+        condition: service_healthy
 
 
 

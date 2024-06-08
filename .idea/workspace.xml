@@ -9,8 +9,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-entrypoint-initdb16.d/01-init.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/.env" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-entrypoint-initdb.d/01-init.sh" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/docker-entrypoint-initdb14.d/01-init.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/env_file.env" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/env_file.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -149,7 +154,7 @@
     "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/mojos/src/main/java/org/openprovenance/prov",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-templates/src/main/webapp.filter/WEB-INF",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/docker-service-templates/docker.conf",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -185,11 +190,11 @@
       <recent name="org.openprovenance.prov.template.compiler" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/config" />
       <recent name="$PROJECT_DIR$/modules-services/docker-service-translator/docker.conf" />
       <recent name="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/config" />
-      <recent name="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/config" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources" />
@@ -972,7 +977,7 @@
       <workItem from="1715690420906" duration="169149000" />
       <workItem from="1716384651492" duration="130994000" />
       <workItem from="1717088781190" duration="23673000" />
-      <workItem from="1717243679715" duration="117205000" />
+      <workItem from="1717243679715" duration="123605000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

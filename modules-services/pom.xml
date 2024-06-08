@@ -20,6 +20,7 @@
         <module>service-translator</module>
         <module>docker-service-translator</module>
         <module>service-templates</module>
+        <module>docker-service-templates</module>
 
     </modules>
 

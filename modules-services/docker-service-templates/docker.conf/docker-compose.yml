@@ -47,26 +47,23 @@ services:
     ports:
       - "8080:8080"
     links:
-      - postgres:postgres
+      - postgres16:postgres16
       - redis:redis
     environment:
-      - CATALINA_OPTS=-DPROV_STORAGE_CONFIG=/home/pservice/storage-configuration.json -DPOSTGRES_HOST=postgres -DTPL_DB_USER=${TPM_DB_USER} -DTPL_DB_PASS=${TPM_DB_PASS}  -DTPL_SECURITY_CONFIG=/home/pservice/openprovenance-auth2-security-config.json  -DTPL_HOST=http://localhost:8080/ptl -DPROV_API=http://localhost:8080/ptl/provapi
+      - CATALINA_OPTS=-DPROV_STORAGE_CONFIG=/home/pservice/storage-configuration.json -DPOSTGRES_HOST=postgres16 -DTPL_DB_USER=${TPM_DB_USER} -DTPL_DB_PASS=${TPM_DB_PASS}  -DTPL_SECURITY_CONFIG=/home/pservice/openprovenance-auth2-security-config.json  -DTPL_HOST=http://localhost:8080/ptl -DPROV_API=http://localhost:8080/ptl/provapi
     volumes:
-      - $FILE_HOME/log-dir:/home/pservice
+      - $COMPOSITION_HOME/file:/home/pservice
     depends_on:
       redis:
         condition: service_started
       mongo:
         condition: service_started
-      postgres:
+      postgres16:
         condition: service_healthy
 
-
-
-  postgres:
+  postgres16:
     env_file: env_file.env
-    #image: provenance/postgres_init:latest
-    image: postgres:14
+    image: postgres:16
     restart: always
     healthcheck:
       test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
@@ -76,17 +73,40 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=templates
       - TPM_DB_USER=${TPM_DB_USER}
       - TPM_DB_PASS=${TPM_DB_PASS}
       - TPM_DB_NAME=templates
-      - KC_DB_NAME=keycloak
     volumes:
-      - $DOCKER_TPM_CONF/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
-      - $POSTGRES_HOME/data:/var/lib/postgresql/data
+      - $DOCKER_TPM_CONF/docker-entrypoint-initdb16.d/:/docker-entrypoint-initdb.d/
+      - $COMPOSITION_HOME/postgres16/data:/var/lib/postgresql/data
     expose:
-        - 5432
-#    ports:
-#      - "15432:5432"
+      - 5432
+#
+#  postgres14:
+#    env_file: env_file.env
+#    #image: provenance/postgres_init:latest
+#    image: postgres:14  #:15
+#    restart: always
+#    healthcheck:
+#      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
+#      timeout: 45s
+#      interval: 10s
+#      retries: 10
+#    environment:
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=admin
+#      - TPM_DB_USER=${TPM_DB_USER}
+#      - TPM_DB_PASS=${TPM_DB_PASS}
+#      - TPM_DB_NAME=templates
+#      - KC_DB_NAME=keycloak
+#    volumes:
+#      - $DOCKER_TPM_CONF/docker-entrypoint-initdb14.d/:/docker-entrypoint-initdb.d/
+#      - $COMPOSITION_HOME/postgres14/data:/var/lib/postgresql/data
+#    expose:
+#        - 5432
+#    profiles:
+#      - donotstart
 
   redis:
     env_file: env_file.env
@@ -95,7 +115,7 @@ services:
     expose:
       - 6379
     volumes:
-      - $REDIS_HOME:/data
+      - $COMPOSITION_HOME/redis:/data
     command: [redis-server, '--appendonly yes']
 
   mongo:
@@ -105,7 +125,7 @@ services:
     expose:
       - 27017
     volumes:
-      - $MONGO_HOME:/data/db
+      - $COMPOSITION_HOME/mongo:/data/db
 
 networks:
   db-keycloak:

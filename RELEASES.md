@@ -47,6 +47,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-translator, service-templates: introduced storage configuration file
 * prov-storage-mongodb, prov-jsonld: fixed issue with handling of bundle Id and date options
 * docker-service-templates: a secure docker image for templates service
+* prov-template-archetype: skeleton
 
 `2.0.5`
 * prov-template-library: cleaned up pom.xml

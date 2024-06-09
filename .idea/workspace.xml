@@ -9,8 +9,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/prov-template-archetype/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prov-template-archetype/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/META-INF/maven/archetype-metadata.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-library/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-library/src/main/java/App.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-library/src/test/java/AppTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-service/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-service/src/main/java/App.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-service/src/test/java/AppTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/config/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/config/log4j2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -149,7 +159,7 @@
     "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/mojos/src/main/java/org/openprovenance/prov",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/docker-service-templates/docker.conf",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/prov-template-archetype/src/main/resources/archetype-resources",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -185,18 +195,18 @@
       <recent name="org.openprovenance.prov.template.compiler" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources" />
+      <recent name="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-library" />
+      <recent name="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/src" />
       <recent name="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/config" />
-      <recent name="$PROJECT_DIR$/modules-services/docker-service-translator/docker.conf" />
-      <recent name="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/config" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/test/config/security" />
       <recent name="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf/certs" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/test/resources" />
-      <recent name="$PROJECT_DIR$/modules-services/service-templates/src/test" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig" />
@@ -972,7 +982,7 @@
       <workItem from="1715690420906" duration="169149000" />
       <workItem from="1716384651492" duration="130994000" />
       <workItem from="1717088781190" duration="23673000" />
-      <workItem from="1717243679715" duration="124138000" />
+      <workItem from="1717243679715" duration="127574000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

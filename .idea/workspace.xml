@@ -9,18 +9,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/prov-template-archetype/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-template-archetype/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/META-INF/maven/archetype-metadata.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-library/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-library/src/main/java/App.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-library/src/test/java/AppTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-service/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-service/src/main/java/App.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-service/src/test/java/AppTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-template-archetype/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/prov-template-archetype/Makefile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -982,7 +972,7 @@
       <workItem from="1715690420906" duration="169149000" />
       <workItem from="1716384651492" duration="130994000" />
       <workItem from="1717088781190" duration="23673000" />
-      <workItem from="1717243679715" duration="127574000" />
+      <workItem from="1717243679715" duration="133644000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

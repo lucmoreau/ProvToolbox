@@ -14,10 +14,10 @@ import java.util.List;
 public interface JLD_QualifiedHadMember extends JLD_Generic2, JLD_Qualified {
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getCollection();
+    QualifiedName getCollection();
 
     @JsonDeserialize(contentUsing = CustomQualifiedNameDeserializer.class)
-    public List<QualifiedName> getEntity();
+    List<QualifiedName> getEntity();
 
 
 }

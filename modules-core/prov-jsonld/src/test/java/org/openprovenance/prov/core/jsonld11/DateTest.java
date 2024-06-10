@@ -21,9 +21,9 @@ public class DateTest extends TestCase {
             "    \"xsd\" : \"http://www.w3.org/2001/XMLSchema#\",\n" +
             "    \"ex\" : \"https://example.org/\",\n" +
             "    \"prov\" : \"http://www.w3.org/ns/prov#\"\n" +
-            "  }, \"http://openprovenance.org/prov.jsonld\" ],\n" +
+            "  }, \"https://openprovenance.org/prov-jsonld/context.json\" ],\n" +
             "  \"@graph\" : [ {\n" +
-            "    \"@type\" : \"prov:Activity\",\n" +
+            "    \"@type\" : \"Activity\",\n" +
             "    \"@id\" : \"ex:a\",\n" +
             "    \"startTime\" : \"2023-09-08T20:12:45.109-04:00\",\n" +
             "    \"endTime\" : \"2023-10-15T20:35:06.793-02:00\"\n" +

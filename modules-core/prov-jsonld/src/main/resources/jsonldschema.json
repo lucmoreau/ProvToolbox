@@ -10,14 +10,16 @@
 			"type": "string",
 			"title": "The QualifiedName Schema",
 			"default": "",
-			"pattern": "^[A-Za-z0-9_]+:(.*)$"
+			"pattern": "(^[A-Za-z0-9_]+:)?(.*)$"
 		},
 		"QualifiedName+": {
 			"$id": "#/definitions/QualifiedName+",
 			"oneOf": [
 				{ "$ref": "#/definitions/QualifiedName" },
-				{ "type": "array",
-					"items": { "$ref": "#/definitions/QualifiedName" }}
+				{
+					"type": "array",
+					"items": { "$ref": "#/definitions/QualifiedName" }
+				}
 			]
 		},
 		"non_prov_properties": {
@@ -121,11 +123,12 @@
 			"type": "object",
 			"required": [ "@type", "@id" ],
 			"properties": {
-				"@type":           { "pattern": "prov:Entity" },
+				"@type":           { "pattern": "Entity" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:location":   { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"value":      { "$ref": "#/definitions/ArrayOfValues"},
+				"location":   { "$ref": "#/definitions/ArrayOfValues" },
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -136,11 +139,11 @@
 			"type": "object",
 			"required": [ "@type", "@id" ],
 			"properties": {
-				"@type":           { "pattern": "prov:Agent" },
+				"@type":           { "pattern": "Agent" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:location":   { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"location":   { "$ref": "#/definitions/ArrayOfValues" },
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -151,13 +154,13 @@
 			"type": "object",
 			"required": [ "@type", "@id" ],
 			"properties": {
-				"@type":           { "pattern": "prov:Activity" },
+				"@type":           { "pattern": "Activity" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"startTime":       { "$ref": "#/definitions/DateTime" },
 				"endTime":         { "$ref": "#/definitions/DateTime" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:location":   { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"location":   { "$ref": "#/definitions/ArrayOfValues" },
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"allOf": [
 				{ "$ref": "#/definitions/non_prov_properties"}
@@ -167,13 +170,13 @@
 			"type": "object",
 			"required": [ "@type", "@id" ],
 			"properties": {
-				"@type":           { "pattern": "prov:Activity" },
+				"@type":           { "pattern": "Activity" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"startTime":       { "$ref": "#/definitions/DateTime" },
 				"endTime":         { "$ref": "#/definitions/DateTime" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:location":   { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"location":   { "$ref": "#/definitions/ArrayOfValues" },
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -184,15 +187,15 @@
 			"type": "object",
 			"required": [ "@type" ],
 			"properties": {
-				"@type":           { "pattern": "prov:Usage" },
+				"@type":           { "pattern": "Usage" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"entity":          { "$ref": "#/definitions/QualifiedName"},
 				"activity":        { "$ref": "#/definitions/QualifiedName" },
 				"time":            { "$ref": "#/definitions/DateTime" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:role":       { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:location":   { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"role":       { "$ref": "#/definitions/ArrayOfValues" },
+				"location":   { "$ref": "#/definitions/ArrayOfValues" },
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -203,15 +206,15 @@
 			"type": "object",
 			"required": [ "@type" ],
 			"properties": {
-				"@type":           { "pattern": "prov:Generation" },
+				"@type":           { "pattern": "Generation" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"entity":          { "$ref": "#/definitions/QualifiedName"},
 				"activity":        { "$ref": "#/definitions/QualifiedName" },
 				"time":            { "$ref": "#/definitions/DateTime" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:role":       { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:location":   { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"role":       { "$ref": "#/definitions/ArrayOfValues" },
+				"location":   { "$ref": "#/definitions/ArrayOfValues" },
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -222,15 +225,15 @@
 			"type": "object",
 			"required": [ "@type" ],
 			"properties": {
-				"@type":           { "pattern": "prov:Invalidation" },
+				"@type":           { "pattern": "Invalidation" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"entity":          { "$ref": "#/definitions/QualifiedName"},
 				"activity":        { "$ref": "#/definitions/QualifiedName" },
 				"time":            { "$ref": "#/definitions/DateTime" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:role":       { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:location":   { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"role":       { "$ref": "#/definitions/ArrayOfValues" },
+				"location":   { "$ref": "#/definitions/ArrayOfValues" },
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -243,16 +246,16 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:Start" },
+				"@type":           { "pattern": "Start" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"activity":        { "$ref": "#/definitions/QualifiedName" },
 				"starter":         { "$ref": "#/definitions/QualifiedName"},
 				"trigger":         { "$ref": "#/definitions/QualifiedName" },
 				"time":            { "$ref": "#/definitions/DateTime" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:role":       { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:location":   { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"role":       { "$ref": "#/definitions/ArrayOfValues" },
+				"location":   { "$ref": "#/definitions/ArrayOfValues" },
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -265,16 +268,16 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:End" },
+				"@type":           { "pattern": "End" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"activity":        { "$ref": "#/definitions/QualifiedName" },
 				"ender" :          { "$ref": "#/definitions/QualifiedName"},
 				"trigger":         { "$ref": "#/definitions/QualifiedName" },
 				"time":            { "$ref": "#/definitions/DateTime" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:role":       { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:location":   { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"role":       { "$ref": "#/definitions/ArrayOfValues" },
+				"location":   { "$ref": "#/definitions/ArrayOfValues" },
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -287,12 +290,12 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:Attribution" },
+				"@type":           { "pattern": "Attribution" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"entity":          { "$ref": "#/definitions/QualifiedName" },
 				"agent" :          { "$ref": "#/definitions/QualifiedName"},
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -305,15 +308,15 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:Association" },
+				"@type":           { "pattern": "Association" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"activity":        { "$ref": "#/definitions/QualifiedName" },
 				"agent" :          { "$ref": "#/definitions/QualifiedName"},
 				"plan" :           { "$ref": "#/definitions/QualifiedName"},
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:role":       { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:location":   { "$ref": "#/definitions/ArrayOfValues" },
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"role":       { "$ref": "#/definitions/ArrayOfValues" },
+				"location":   { "$ref": "#/definitions/ArrayOfValues" },
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -326,13 +329,13 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:Delegation" },
+				"@type":           { "pattern": "Delegation" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"delegate":        { "$ref": "#/definitions/QualifiedName" },
 				"responsible":     { "$ref": "#/definitions/QualifiedName" },
 				"activity":        { "$ref": "#/definitions/QualifiedName" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -345,15 +348,15 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:Derivation" },
+				"@type":           { "pattern": "Derivation" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"activity":        { "$ref": "#/definitions/QualifiedName" },
 				"generation":      { "$ref": "#/definitions/QualifiedName" },
 				"usage":           { "$ref": "#/definitions/QualifiedName" },
 				"generatedEntity": { "$ref": "#/definitions/QualifiedName" },
 				"usedEntity":      { "$ref": "#/definitions/QualifiedName" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -366,12 +369,12 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:Alternate" },
+				"@type":           { "pattern": "provext:Alternate" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"alternate1":      { "$ref": "#/definitions/QualifiedName" },
 				"alternate2":      { "$ref": "#/definitions/QualifiedName" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -384,12 +387,12 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:Specialization" },
+				"@type":           { "pattern": "provext:Specialization" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"generalEntity":   { "$ref": "#/definitions/QualifiedName" },
 				"specificEntity":  { "$ref": "#/definitions/QualifiedName" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -402,12 +405,12 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:Membership" },
+				"@type":           { "pattern": "provext:Membership" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"entity":          { "$ref": "#/definitions/QualifiedName+" },
 				"collection":      { "$ref": "#/definitions/QualifiedName" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -420,12 +423,12 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:QualifiedAlternate" },
+				"@type":           { "pattern": "provext:QualifiedAlternate" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"alternate1":      { "$ref": "#/definitions/QualifiedName" },
 				"alternate2":      { "$ref": "#/definitions/QualifiedName" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -438,12 +441,12 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:QualifiedSpecialization" },
+				"@type":           { "pattern": "provext:QualifiedSpecialization" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"generalEntity":   { "$ref": "#/definitions/QualifiedName" },
 				"specificEntity":  { "$ref": "#/definitions/QualifiedName" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -456,12 +459,12 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:QualifiedMembership" },
+				"@type":           { "pattern": "provext:QualifiedMembership" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"collection":      { "$ref": "#/definitions/QualifiedName" },
 				"entity":          { "$ref": "#/definitions/QualifiedName+" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -474,12 +477,12 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:Influence" },
+				"@type":           { "pattern": "Influence" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"influencer":      { "$ref": "#/definitions/QualifiedName" },
 				"influencee":      { "$ref": "#/definitions/QualifiedName" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -492,12 +495,12 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:Communication" },
+				"@type":           { "pattern": "Communication" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"informant":       { "$ref": "#/definitions/QualifiedName" },
 				"informed":        { "$ref": "#/definitions/QualifiedName" },
-				"prov:type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+				"type":       { "$ref": "#/definitions/ArrayOfValues"},
+				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
 				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -510,7 +513,7 @@
 				"@type", "@id", "@graph", "@context"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:Bundle" },
+				"@type":           { "pattern": "Bundle" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"@context":        { "$ref": "#/definitions/Context" },
 				"@graph":          {
@@ -526,7 +529,7 @@
 				"@context", "@graph"
 			],
 			"properties": {
-				"@type":           { "pattern": "prov:Document" },
+				"@type":           { "pattern": "Document" },
 				"@context":        { "$ref": "#/definitions/Context" },
 				"@graph":          {
 					"type": "array",

@@ -12,18 +12,18 @@ import org.openprovenance.prov.model.QualifiedName;
 public interface JLD_WasDerivedFrom extends JLD_Generic2 {
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getActivity();
+    QualifiedName getActivity();
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getGeneratedEntity();
+    QualifiedName getGeneratedEntity();
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getUsedEntity();
+    QualifiedName getUsedEntity();
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getUsage();
+    QualifiedName getUsage();
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getGeneration();
+    QualifiedName getGeneration();
 
 }

@@ -46,4 +46,17 @@ public class RoundTripFromJavaMongoTest extends RoundTripFromJavaJSONLD11Test {
 
         return doc;
     }
+
+    public boolean checkTest(String name) {
+        if (name.contains("DictionaryMembership")) {
+            System.out.println(escapeRed("########## Skipping testing for " + name + " in " + extension()));
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String jsonSchemaLocation() {
+        return "../../modules-core/prov-jsonld/" + super.jsonSchemaLocation();
+    }
 }

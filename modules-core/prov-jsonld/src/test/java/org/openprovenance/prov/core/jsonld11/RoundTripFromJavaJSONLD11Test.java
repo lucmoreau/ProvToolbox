@@ -28,9 +28,7 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
 
 
     public void writeDocumentToFile(Document doc, String file) throws IOException {
-
         writingMessage(file);
-
 
         ProvSerialiser serial=new ProvSerialiser(mapper, false);
         serial.serialiseDocument(new FileOutputStream(file), doc, true);
@@ -41,27 +39,48 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
         Runtime runtime = Runtime.getRuntime();
         java.lang.Process proc = runtime.exec(command);
         try {
-            BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-            String s_error=errorReader.readLine();
-            if (s_error!=null && !s_error.equals("")) {
-                System.out.println("Error:  " + s_error);
+            final int exitValue = proc.waitFor();
+            if (exitValue == 0) {
+                return ;
+            } else {
+                try (final BufferedReader b = new BufferedReader(new InputStreamReader(proc.getErrorStream()))) {
+                    String line;
+                    if ((line = b.readLine()) != null)
+                        System.out.println(escapeRed(line));
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
+                throw new IOException("exit value " + exitValue);
             }
-            proc.waitFor();
             //System.err.println("exit value " + proc.exitValue());
-        } catch (InterruptedException e){};
+        } catch (InterruptedException e) {
+            throw new IOException(e);
+        }
     }
 
     public String extension() {
         return ".jsonld";
     }
 
+
+
     public boolean checkTest(String name) {
-        if (name.endsWith("entity101" + extension())
-        || name.contains("DictionaryMembership")) {
+        if (name.contains("DictionaryMembership")) {
             System.out.println(escapeRed("########## Skipping testing for " + name + " in " + extension()));
             return false;
         }
-        return true;
+        // call ajv executable on the command line to validate the JSON-LD file
+        try {
+            executeAndWait("ajv -s " + jsonSchemaLocation() + " -d " + name);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public String jsonSchemaLocation() {
+        return "src/main/resources/jsonldschema.json";
     }
 
     @Override

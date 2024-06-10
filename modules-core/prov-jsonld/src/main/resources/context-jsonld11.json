@@ -4,18 +4,18 @@
 	"xsd": "http://www.w3.org/2001/XMLSchema#",
 	"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
 	"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-	"prov:role": {
+	"role": {
 		"@id": "prov:hadRole",
 		"@type": "@id"
 	},
-	"prov:type": {
+	"type": {
 		"@id": "rdf:type",
 		"@type": "@id"
 	},
-	"prov:label": {
+	"label": {
 		"@id": "rdfs:label"
 	},
-	"prov:location": {
+	"location": {
 		"@id": "prov:atLocation",
 		"@type": "@id"
 	},
@@ -33,7 +33,7 @@
 		"@type": "@id"
 	},
 
-	"prov:Activity": {
+	"Activity": {
 		"@id": "prov:Activity",
 		"@context" : {
 			"startTime": {
@@ -47,7 +47,7 @@
 		}
 	},
 
-	"prov:Delegation": {
+	"Delegation": {
 		"@id": "prov:Delegation",
 		"@context": {
 			"responsible": {
@@ -81,7 +81,7 @@
 		}
 	},
 
-	"prov:Generation": {
+	"Generation": {
 		"@id": "prov:Generation",
 		"@context": {
 			"entity": {
@@ -96,7 +96,7 @@
 		}
 	},
 
-	"prov:Invalidation": {
+	"Invalidation": {
 		"@id": "prov:Invalidation",
 		"@context": {
 			"entity": {
@@ -111,7 +111,7 @@
 		}
 	},
 
-	"prov:Attribution": {
+	"Attribution": {
 		"@id": "prov:Attribution",
 		"@context": {
 			"entity": {
@@ -122,23 +122,7 @@
 
 	},
 
-	"prov:Usage": {
-		"@id": "prov:Usage",
-		"@context": {
-			"activity": {
-				"@reverse" : "prov:qualifiedUsage",
-				"@type" : "@id"
-			},
-			"time": {
-				"@id": "prov:atTime",
-				"@type": "xsd:dateTime"
-			}
-
-		}
-
-	},
-
-	"prov:Association": {
+	"Association": {
 		"@id": "prov:Association",
 		"@context": {
 			"activity": {
@@ -152,7 +136,7 @@
 		}
 	},
 
-	"prov:Communication": {
+	"Communication": {
 		"@id": "prov:Communication",
 		"@context": {
 			"informed": {
@@ -166,7 +150,7 @@
 		}
 	},
 
-	"prov:Influence": {
+	"Influence": {
 		"@id": "prov:Influence",
 		"@context": {
 			"influencee": {
@@ -180,7 +164,7 @@
 		}
 	},
 
-	"prov:Derivation": {
+	"Derivation": {
 		"@id": "prov:Derivation",
 		"@context": {
 			"generatedEntity": {
@@ -205,7 +189,7 @@
 			}
 		}
 	},
-	"prov:Start": {
+	"Start": {
 		"@id": "prov:Start",
 		"@context": {
 			"activity": {
@@ -228,7 +212,7 @@
 		}
 	},
 
-	"prov:End": {
+	"End": {
 		"@id": "prov:End",
 		"@context": {
 			"activity": {
@@ -251,7 +235,7 @@
 		}
 	},
 
-	"prov:QualifiedSpecialization": {
+	"QualifiedSpecialization": {
 		"@id": "prov:QualifiedSpecialization",
 		"@context": {
 			"specificEntity": {
@@ -266,11 +250,11 @@
 	},
 
 
-	"prov:QualifiedMembership": {
-		"@id": "prov:QualifiedMembership",
+	"QualifiedMembership": {
+		"@id": "provext:QualifiedMembership",
 		"@context": {
 			"collection": {
-				"@reverse" : "prov:qualifiedMembership",
+				"@reverse" : "provext:qualifiedMembership",
 				"@type" : "@id"
 			},
 			"entity": {
@@ -280,11 +264,11 @@
 		}
 	},
 
-	"prov:QualifiedAlternate": {
-		"@id": "prov:QualifiedAlternate",
+	"QualifiedAlternate": {
+		"@id": "provext:QualifiedAlternate",
 		"@context": {
 			"alternate1": {
-				"@reverse" : "prov:qualifiedAlternate",
+				"@reverse" : "provext:qualifiedAlternate",
 				"@type" : "@id"
 			},
 			"alternate2": {

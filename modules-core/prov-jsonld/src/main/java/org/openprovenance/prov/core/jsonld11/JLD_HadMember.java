@@ -11,10 +11,9 @@ import java.util.List;
 
 public interface JLD_HadMember extends HasKind {
 
-
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getCollection();
+    QualifiedName getCollection();
 
     @JsonDeserialize(contentUsing = CustomQualifiedNameDeserializer.class)
-    public List<QualifiedName> getEntity();
+    List<QualifiedName> getEntity();
 }

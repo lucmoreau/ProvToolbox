@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
-    public static final String JSONLD_DEFAULT_NAMESPACE = "@vocab";
+    public static final String JSONLD_DEFAULT_NAMESPACE = "@base";
     private final boolean embedContext;
 
     public CustomNamespaceSerializer(boolean embedContext) {

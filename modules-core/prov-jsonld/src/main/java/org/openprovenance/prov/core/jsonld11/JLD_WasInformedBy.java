@@ -11,10 +11,10 @@ import org.openprovenance.prov.model.QualifiedName;
 public interface JLD_WasInformedBy extends JLD_Generic2 {
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getInformed();
+    QualifiedName getInformed();
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getInformant();
+    QualifiedName getInformant();
 
 
 }

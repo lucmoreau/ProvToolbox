@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public interface JLD_Qualified {
 
-
     @JsonIgnore
-    public boolean isUnqualified();
+    boolean isUnqualified();
 
 }

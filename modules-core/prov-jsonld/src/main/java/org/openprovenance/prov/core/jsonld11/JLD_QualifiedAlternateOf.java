@@ -11,12 +11,11 @@ import org.openprovenance.prov.model.QualifiedName;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface JLD_QualifiedAlternateOf extends JLD_Generic2, JLD_Qualified {
 
+    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+    QualifiedName getAlternate2();
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getAlternate2();
-
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getAlternate1();
+    QualifiedName getAlternate1();
 
 
 }

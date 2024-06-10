@@ -5,15 +5,15 @@
     "ex" : "https://example.org",
     "@vocab" : "https://www.bbc.co.uk/",
     "prov" : "http://www.w3.org/ns/prov#"
-  }, "http://openprovenance.org/prov.jsonld" ],
+  }, "https://openprovenance.org/prov-jsonld/context.json" ],
   "@graph" : [ {
-    "@type" : "prov:Entity",
+    "@type" : "Entity",
     "@id" : "e"
   }, {
-    "@type" : "prov:Activity",
+    "@type" : "Activity",
     "@id" : "ex:ac"
   }, {
-    "@type" : "prov:Generation",
+    "@type" : "Generation",
     "@id" : "ex:g",
     "entity" : "e",
     "activity" : "ex:ac"

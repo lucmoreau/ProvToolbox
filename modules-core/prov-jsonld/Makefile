@@ -1,23 +1,20 @@
 
-FILES    := $(shell find target -name '*.jsonld11')
+FILES    := $(shell find target -name '*.jsonld')
 
 FILES_TO_CHECK    := $(patsubst %, %.check, $(FILES))
-
-
 
 echo:
 	echo $(FILES)
 	echo $(FILES_TO_CHECK)
 
-check:
-	ajv -s src/main/resources/jsonldschema.json -d target/pc1-full.json
+JSONLD_SCHEMA=src/main/resources/2024-06-11/jsonldschema.json
 
 check.file:
-	@ajv -s src/main/resources/jsonldschema.json -d $(FILE)
+	@ajv -s $(JSONLD_SCHEMA) -d $(FILE)
 
 
 
-target/%.jsonld11.check: target/%.jsonld11
+target/%.jsonld.check: target/%.jsonld
 	@-$(MAKE) FILE=$< check.file
 
 

@@ -19,6 +19,7 @@
         <module name="benchmarks" />
         <module name="prov-model" />
         <module name="modules-executable-provman" />
+        <module name="docker-service-templates" />
         <module name="prov-toolbox-plugin" />
         <module name="prov-scala-misc" />
         <module name="prov-model-scala" />

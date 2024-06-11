@@ -8,7 +8,10 @@ import org.openprovenance.prov.model.RoundTripFromJavaTest;
 
 import java.io.*;
 
+import static org.openprovenance.prov.core.jsonld11.serialization.Constants.JSONLDSCHEMA_JSON_2024_06_11;
+
 public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
+
 
     public Document readDocumentFromFile(String file) throws IOException {
         readingMessage(file);
@@ -75,12 +78,12 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
             return true;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
     public String jsonSchemaLocation() {
-        return "src/main/resources/jsonldschema.json";
+        return JSONLDSCHEMA_JSON_2024_06_11;
     }
 
     @Override

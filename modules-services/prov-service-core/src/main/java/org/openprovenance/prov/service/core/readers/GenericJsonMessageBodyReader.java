@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.readers;
+package org.openprovenance.prov.service.core.readers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.Consumes;

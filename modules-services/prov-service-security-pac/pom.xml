@@ -10,7 +10,7 @@
     <artifactId>prov-service-security-pac</artifactId>
     <packaging>jar</packaging>
 
-    <name>prov-service-security-pac</name>
+    <name>|---- PROV-SERVICE-SECURITY-PAC</name>
 
     <dependencies>
 

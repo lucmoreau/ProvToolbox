@@ -27,6 +27,15 @@ public class SqlCompositeBeanCompleter3 extends BeanCompleter2 {
         this.extra=extra;
     }
 
+    private void setLocation(int parent) {
+        extra[0]= parent;
+    }
+    public Integer getLocation() {
+        return (Integer) extra[0];
+    }
+    private boolean locationNotExists() {
+        return extra == null;
+    }
 
     @Override
     public boolean next() {
@@ -37,23 +46,24 @@ public class SqlCompositeBeanCompleter3 extends BeanCompleter2 {
         }
     }
 
-    public Plead_transformingOutputs process(Plead_transformingOutputs bean) {
-        super.process(bean);
-        extraProcess(bean);
-        return bean;
-    }
-
-    public void extraProcess(Plead_transformingOutputs bean) {
-        if (extra==null) return;
-        int parent=getter.get(Integer.class, PARENT_COLUMN);
-        extra[0]=parent;
-    }
 
 
     public Plead_transforming_compositeOutputs process(Plead_transforming_compositeOutputs bean) {
         Plead_transforming_compositeOutputs result=super.process(bean);
-        bean.ID= (Integer) extra[0];
+        bean.ID= getLocation();
         return result;
+    }
+
+    public Plead_transformingOutputs process(Plead_transformingOutputs bean) {
+        super.process(bean);
+        extraProcessComposee(bean);
+        return bean;
+    }
+
+    public void extraProcessComposee(Plead_transformingOutputs bean) {
+        if (locationNotExists()) return;
+        int parent=getter.get(Integer.class, PARENT_COLUMN);
+        setLocation(parent);
     }
 
 }

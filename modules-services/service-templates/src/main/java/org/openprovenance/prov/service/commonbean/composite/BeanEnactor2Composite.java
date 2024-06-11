@@ -15,7 +15,7 @@ public class BeanEnactor2Composite<RESULT> extends BeanEnactor2<RESULT> {
     public Plead_transforming_compositeOutputs process(Plead_transforming_compositeInputs bean) {
         return realiser.generic_enact(new Plead_transforming_compositeOutputs(),bean,
                 checker::process,
-                (sb,b) -> new QueryInvoker2Composite(sb).process(b),
+                (sb,b) -> new QueryInvoker2Composite(sb).process(b),  // this method process
                 (rs,b) -> realiser.beanCompleterFactory(rs,new Object[1]).process(b));
     }
 }

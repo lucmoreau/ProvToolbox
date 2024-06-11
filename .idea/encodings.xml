@@ -90,6 +90,8 @@
     <file url="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/templateTasksBatch" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services/prov-service-security-pac/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services/prov-service-security-pac/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/prov-service-translation" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/prov-service-translation/src/main/resources" charset="UTF-8" />

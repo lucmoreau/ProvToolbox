@@ -21,6 +21,7 @@
         <module>docker-service-translator</module>
         <module>service-templates</module>
         <module>docker-service-templates</module>
+        <module>prov-service-security-pac</module>
 
     </modules>
 

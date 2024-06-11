@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.security;
+package org.openprovenance.prov.service.security.pac;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.security;
+package org.openprovenance.prov.service.security.pac;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;

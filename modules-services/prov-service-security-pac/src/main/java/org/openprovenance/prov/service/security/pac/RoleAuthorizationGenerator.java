@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.security;
+package org.openprovenance.prov.service.security.pac;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

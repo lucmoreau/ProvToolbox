@@ -22,13 +22,13 @@ import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.iobean.composite.SqlCompositeBeanEnactor3;
 import org.openprovenance.prov.service.readers.*;
-import org.openprovenance.prov.service.security.SecurityConfiguration;
-import org.openprovenance.prov.service.security.Utils;
+
+import org.openprovenance.prov.service.security.pac.SecurityConfiguration;
+import org.openprovenance.prov.service.security.pac.Utils;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.ProvUtilities;
-import org.pac4j.core.profile.Pac4JPrincipal;
 
 import java.io.*;
 import java.security.Principal;
@@ -82,7 +82,7 @@ public class TemplateService {
     public static final String NO_SECURITY_CONFIG = "no-security-config";
     public static final String tplSecurityConfig=getSystemOrEnvironmentVariableOrDefault(TPL_SECURITY_CONFIG, NO_SECURITY_CONFIG);
     public static final Utils secUtils=new Utils();
-    public static final SecurityConfiguration securityConfiguration=secUtils.readSecurityConfiguration(tplSecurityConfig);
+    public static final SecurityConfiguration securityConfiguration=(NO_SECURITY_CONFIG.equals(tplSecurityConfig))?null:secUtils.readSecurityConfiguration(tplSecurityConfig);
 
 
     private final TemplateLogic templateLogic;

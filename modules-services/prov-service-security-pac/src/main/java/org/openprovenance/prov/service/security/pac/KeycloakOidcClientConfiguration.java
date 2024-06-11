@@ -1,8 +1,8 @@
-package org.openprovenance.prov.service.security;
+package org.openprovenance.prov.service.security.pac;
 
 import org.pac4j.core.client.Client;
 
-import static org.openprovenance.prov.service.security.SecurityConfigFactory.configureKeycloakOidcClient;
+import static org.openprovenance.prov.service.security.pac.Utils.configureKeycloakOidcClient;
 
 public class KeycloakOidcClientConfiguration implements ClientConfiguration {
     private String clientId;

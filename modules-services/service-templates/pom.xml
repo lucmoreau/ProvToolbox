@@ -40,6 +40,12 @@
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-security-pac</artifactId>
+            <version>2.0.6-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-index-redis</artifactId>
             <version>2.0.6-SNAPSHOT</version>
         </dependency>
@@ -216,43 +222,6 @@
             <version>${resteasy.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.pac4j/pac4j-jakartaee -->
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-jakartaee</artifactId>
-            <version>${pac4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>jakartaee-pac4j</artifactId>
-            <version>7.1.0</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-oidc</artifactId>
-            <version>${pac4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-core</artifactId>
-            <version>${pac4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-http</artifactId>
-            <version>${pac4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-jwt</artifactId>
-            <version>${pac4j.version}</version>
-        </dependency>
-
-
 
 
         <dependency>

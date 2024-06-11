@@ -1,8 +1,9 @@
-package org.openprovenance.prov.service.security;
+package org.openprovenance.prov.service.security.pac;
 
 import org.pac4j.core.client.Client;
 
-import static org.openprovenance.prov.service.security.SecurityConfigFactory.configureDirectBearerAuthClient;
+import static org.openprovenance.prov.service.security.pac.Utils.configureDirectBearerAuthClient;
+
 
 public class DirectBearerAuthClientConfiguration implements ClientConfiguration {
 

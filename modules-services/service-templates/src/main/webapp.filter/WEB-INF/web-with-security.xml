@@ -38,7 +38,7 @@
     <filter-class>org.pac4j.jee.filter.SecurityFilter</filter-class>
     <init-param>
       <param-name>configFactory</param-name>
-      <param-value>org.openprovenance.prov.service.security.SecurityConfigFactory</param-value>
+      <param-value>org.openprovenance.prov.service.SecurityConfigFactory</param-value>
     </init-param>
 
     <init-param>

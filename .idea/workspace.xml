@@ -9,19 +9,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/2020-03-23/context.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/2020-03-23/schema.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-security-pac/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-security-pac/src/test/java/org/openprovenance/prov/AppTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/Constants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomNamespaceSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomNamespaceSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/context-jsonld.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/2018-07-10/context.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/context-jsonld11.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/2024-06-11/context.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/jsonldschema.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/2024-06-11/jsonldschema.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/jsonld11/RoundTripFromJavaJSONLD11Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/jsonld11/RoundTripFromJavaJSONLD11Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomNamespaceSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomNamespaceSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/ClaimAndSignatureConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-security-pac/src/main/java/org/openprovenance/prov/service/security/pac/ClaimAndSignatureConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/ClientConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-security-pac/src/main/java/org/openprovenance/prov/service/security/pac/ClientConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/DirectBearerAuthClientConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-security-pac/src/main/java/org/openprovenance/prov/service/security/pac/DirectBearerAuthClientConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/KeycloakOidcClientConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-security-pac/src/main/java/org/openprovenance/prov/service/security/pac/KeycloakOidcClientConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/RoleAuthorizationGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-security-pac/src/main/java/org/openprovenance/prov/service/security/pac/RoleAuthorizationGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/SecurityConfigFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/SecurityConfigFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/SecurityConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-security-pac/src/main/java/org/openprovenance/prov/service/security/pac/SecurityConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/security/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-security-pac/src/main/java/org/openprovenance/prov/service/security/pac/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF/web-with-security.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF/web-with-security.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -233,10 +238,10 @@
       <recent name="org.openprovenance.prov.core" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.service" />
       <recent name="org.openprovenance.prov.templates.library" />
       <recent name="org.openprovenance.prov.service.core" />
       <recent name="org.openprovenance.prov.scala.nf" />
-      <recent name="org.openprovenance.prov.service" />
       <recent name="org.openprovenance.prov" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -1027,7 +1032,7 @@
       <workItem from="1716384651492" duration="130994000" />
       <workItem from="1717088781190" duration="23673000" />
       <workItem from="1717243679715" duration="146900000" />
-      <workItem from="1718091655832" duration="3456000" />
+      <workItem from="1718091655832" duration="5197000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

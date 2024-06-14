@@ -10,7 +10,7 @@ public class AgentBuilder extends GenericBuilder<AgentBuilder>{
 
     }
     public Builder build() {
-        parent.statements.add(mc.newEntity(id,attrs));
+        parent.statements.add(mc.newAgent(id,attrs));
         return parent;
     }
 

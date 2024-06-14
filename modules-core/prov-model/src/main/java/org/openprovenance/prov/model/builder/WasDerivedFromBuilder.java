@@ -43,6 +43,21 @@ public class WasDerivedFromBuilder extends GenericBuilder<WasDerivedFromBuilder>
         return this;
     }
 
+    public WasDerivedFromBuilder activity(QualifiedName activity) {
+        this.activity=activity;
+        return this;
+    }
+    public WasDerivedFromBuilder activity(String prefix, String local) {
+        this.activity= qn(prefix,local);
+        return this;
+    }
+    public WasDerivedFromBuilder activity(String knownAs) {
+        QualifiedName qn=parent.knownAs.get(knownAs);
+        if (qn==null) throw new NullPointerException("activity cannot find knownAs " + knownAs + " in " + parent.knownAs);
+        this.activity=qn;
+        return this;
+    }
+
     public Builder build() {
         parent.statements.add(mc.newWasDerivedFrom(id, generatedEntity, usedEntity, activity, generation, usage, attrs));
         return parent;

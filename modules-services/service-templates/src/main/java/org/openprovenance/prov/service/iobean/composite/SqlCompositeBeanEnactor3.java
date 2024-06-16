@@ -1,9 +1,8 @@
 package org.openprovenance.prov.service.iobean.composite;
 
 import org.openprovenance.prov.service.Storage;
-import org.openprovenance.prov.service.commonbean.composite.BeanEnactor2Composite;
 import org.openprovenance.prov.template.library.plead.client.integrator.BeanChecker2;
-import org.openprovenance.prov.template.library.plead.client.integrator.BeanEnactor2;
+import org.openprovenance.prov.template.library.plead.client.integrator.BeanEnactor2Composite;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

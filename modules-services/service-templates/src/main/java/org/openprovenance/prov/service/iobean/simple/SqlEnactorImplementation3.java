@@ -2,7 +2,6 @@ package org.openprovenance.prov.service.iobean.simple;
 
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.service.Storage;
-import org.openprovenance.prov.service.iobean.composite.SqlCompositeBeanCompleter3;
 import org.openprovenance.prov.template.library.plead.client.integrator.BeanCompleter2;
 import org.openprovenance.prov.template.library.plead.client.integrator.BeanEnactor2;
 
@@ -34,7 +33,7 @@ public class SqlEnactorImplementation3 implements BeanEnactor2.EnactorImplementa
         composeQuery.accept(sb, bean);
 
         String statement = sb.toString();
-       System.out.println("statement = " + statement);
+        System.out.println("statement = " + statement);
         ResultSet rs;
         try {
             rs = storage.executeQuery(conn, statement);

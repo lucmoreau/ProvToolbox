@@ -1,5 +1,6 @@
-package org.openprovenance.prov.service.commonbean.composite;
+package org.openprovenance.prov.service.obsolete;
 import org.openprovenance.prov.service.Storage;
+import org.openprovenance.prov.service.commonbean.composite.SqlCompositeBeanEnactor;
 import org.openprovenance.prov.template.library.plead.client.configurator.CompositeEnactorConfigurator;
 
 import java.sql.Connection;

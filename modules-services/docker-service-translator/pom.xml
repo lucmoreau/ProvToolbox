@@ -38,8 +38,8 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>${exec.plugin.version}</version>
-                <executions>
-                    <execution>
+                    <executions>
+                        <execution>
                         <id>exec1</id>
                         <phase>compile</phase>
                         <goals><goal>exec</goal></goals>

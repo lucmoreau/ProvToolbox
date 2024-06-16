@@ -13,10 +13,13 @@ public class Locations {
     final private String configurator_package;
     final private String logger_package;
     final private String configurator_package2;
-    public final String python_dir;
+    final private String l2p_src_dir;
     private String config_common_package;
     private String config_backend;
     private String config_integrator_package;
+    private String config_sql_common_backend_package;
+    private String config_sql_integration_backend_package;
+    public final String python_dir;
 
 
 
@@ -30,11 +33,14 @@ public class Locations {
         this.config_common_package     = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_COMMON;
         this.config_integrator_package = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_INTEGRATOR;
         this.config_backend            = config.package_;
+        this.config_sql_common_backend_package = config_backend + ".sql.common";
+        this.config_sql_integration_backend_package = config_backend + ".sql.integration";
     }
 
-    public Locations(TemplatesProjectConfiguration configs, String cli_src_dir) {
+    public Locations(TemplatesProjectConfiguration configs, String cli_src_dir, String l2p_src_dir) {
         this.configs=configs;
         this.cli_src_dir=cli_src_dir;
+        this.l2p_src_dir=l2p_src_dir;
         this.python_dir=configs.python_dir;
 
         this.configurator_package  = configs.root_package + "." + Constants.SUB_PACKAGE_CLIENT + "." + CONFIGURATOR;
@@ -51,10 +57,18 @@ public class Locations {
     public String convertToDirectory(String aPackage) {
         return cli_src_dir + "/" + aPackage.replace('.', '/') + "/";
     }
+    public String convertToBackendDirectory(String aPackage) {
+        return l2p_src_dir + "/" + aPackage.replace('.', '/') + "/";
+    }
 
 
     public String getFilePackage(String file) {
         switch (file) {
+            case SQL_BEAN_COMPLETER:
+            case SQL_COMPOSITE_BEAN_COMPLETER:
+                return config_sql_common_backend_package;
+            case SQL_BEAN_COMPLETER3:
+                return config_sql_integration_backend_package;
             case LOGGER:
             case TEMPLATE_BUILDERS:
                 return logger_package;

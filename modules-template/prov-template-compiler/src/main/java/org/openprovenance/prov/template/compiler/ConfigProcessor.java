@@ -22,6 +22,7 @@ import org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuil
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
 import org.openprovenance.prov.template.compiler.integration.CompilerIntegrator;
+import org.openprovenance.prov.template.compiler.sql.CompilerSqlIntegration;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
@@ -41,18 +42,18 @@ import static org.openprovenance.prov.template.compiler.expansion.StatementTypeA
 
 
 public class ConfigProcessor implements Constants {
-    static final TypeVariableName typeResult = TypeVariableName.get("RESULT");
+    public static final TypeVariableName typeResult = TypeVariableName.get("RESULT");
     public static final TypeVariableName typeOutput = TypeVariableName.get("OUTPUT");
     public static final TypeVariableName typeOut = TypeVariableName.get("OUT");
     public static final TypeVariableName typeIn = TypeVariableName.get("IN");
 
     static final TypeVariableName typeT = TypeVariableName.get("T");
     static final TypeName biconsumerType2=ParameterizedTypeName.get(ClassName.get(BiConsumer.class), typeResult, typeT);
-    static final TypeName biconsumerTypeOut=ParameterizedTypeName.get(ClassName.get(BiConsumer.class), typeResult, typeOut);
+    public static final TypeName biconsumerTypeOut=ParameterizedTypeName.get(ClassName.get(BiConsumer.class), typeResult, typeOut);
     static final TypeName consumerT=ParameterizedTypeName.get(ClassName.get(Consumer.class), typeT);
-    static final TypeName consumerIn=ParameterizedTypeName.get(ClassName.get(Consumer.class), typeIn);
+    public static final TypeName consumerIn=ParameterizedTypeName.get(ClassName.get(Consumer.class), typeIn);
     static final TypeName biconsumerType=ParameterizedTypeName.get(ClassName.get(BiConsumer.class),ClassName.get(StringBuilder.class), typeT);
-    static final TypeName biconsumerTypeIn=ParameterizedTypeName.get(ClassName.get(BiConsumer.class),ClassName.get(StringBuilder.class), typeIn);
+    public static final TypeName biconsumerTypeIn=ParameterizedTypeName.get(ClassName.get(BiConsumer.class),ClassName.get(StringBuilder.class), typeIn);
     static final TypeName listTypeT=ParameterizedTypeName.get(ClassName.get(List.class), typeT);
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
@@ -78,6 +79,7 @@ public class ConfigProcessor implements Constants {
     private final CompilerTypeConverter compilerTypeConverter ;
     private final CompilerBeanEnactor compilerBeanEnactor;
     private final CompilerBeanEnactor2 compilerBeanEnactor2 ;
+    private final CompilerSqlIntegration compilerSqlIntegration;
     private final CompilerBeanEnactor2Composite compilerBeanEnactor2composite;
     private final CompilerQueryInvoker compilerQueryInvoker ;
     private final CompilerBeanChecker compilerBeanChecker;
@@ -141,6 +143,7 @@ public class ConfigProcessor implements Constants {
         this.compilerTableConfiguratorWithMap = new CompilerTableConfiguratorWithMap(pFactory);
         this.compilerTemplateBuilders = new CompilerTemplateBuilders(pFactory);
         this.compilerTableConfiguratorForTypes = new CompilerTableConfiguratorForTypes(pFactory);
+        this.compilerSqlIntegration = new CompilerSqlIntegration(pFactory);
     }
 
     public String readCompilerVersion() {
@@ -178,7 +181,7 @@ public class ConfigProcessor implements Constants {
             new File(cli_webjar_templates_dir).mkdirs();
 
 
-            Locations locations=new Locations(configs,cli_src_dir);
+            Locations locations=new Locations(configs,cli_src_dir,l2p_src_dir);
 
 
             for (TemplateCompilerConfig aconfig: configs.templates) {
@@ -390,6 +393,18 @@ public class ConfigProcessor implements Constants {
 
             SpecificationFile queryComposer3 = compilerQueryInvoker.generateQueryInvoker(configs, locations, false, QUERY_INVOKER2);
             queryComposer3.save();
+
+            if (configs.sqlFile!=null) {
+                SpecificationFile generateSqlIntegration_beanCompleter = compilerSqlIntegration.generateSqlIntegration_BeanCompleter(configs, locations, SQL_BEAN_COMPLETER);
+                generateSqlIntegration_beanCompleter.save();
+
+                SpecificationFile generateSqlIntegration_compositeBeanCompleter = compilerSqlIntegration.generateSqlIntegration_CompositeBeanCompleter(configs, locations, SQL_COMPOSITE_BEAN_COMPLETER);
+                generateSqlIntegration_compositeBeanCompleter.save();
+
+                SpecificationFile generateSqlIntegration_beanCompleter3 = compilerSqlIntegration.generateSqlIntegration_BeanCompleter3(configs, locations, SQL_BEAN_COMPLETER3);
+                generateSqlIntegration_beanCompleter3.save();
+
+            }
         }
 
         SpecificationFile queryComposer= compilerQueryInvoker.generateQueryInvoker(configs, locations, true, QUERY_INVOKER );

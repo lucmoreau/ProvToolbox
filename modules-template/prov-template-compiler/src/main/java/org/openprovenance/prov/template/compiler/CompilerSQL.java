@@ -429,7 +429,7 @@ public class CompilerSQL {
     public void generateSQLInsertFunction(String jsonschema, String templateName, String consistOf, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared, Map<String, Map<String, Map<String, String>>> inputOutputMaps, List<String> search) {
         new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertFunction(jsonschema,templateName, consistOf, root_dir,templateBindingsSchema,shared);
 
-        if (shared!=null && shared.size()>0) {
+        if (shared!=null && !shared.isEmpty()) {
             new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateInsertIntoSharedRelation(templateName, templateBindingsSchema, shared);
             new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertArrayFunction(templateName, consistOf, templateBindingsSchema, shared);
             new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertCompositeAndLinkerFunction(templateName, consistOf, templateBindingsSchema, shared);

@@ -3,6 +3,7 @@ package org.openprovenance.prov.service.commonbean.composite;
 import org.openprovenance.prov.service.Storage;
 import org.openprovenance.prov.service.commonbean.simple.SqlEnactorImplementation;
 import org.openprovenance.prov.template.library.plead.client.common.BeanCompleter;
+import org.openprovenance.prov.template.library.plead.sql.common.SqlCompositeBeanCompleter;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

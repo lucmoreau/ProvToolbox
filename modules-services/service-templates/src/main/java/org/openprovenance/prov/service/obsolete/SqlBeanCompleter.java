@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.commonbean.simple;
+package org.openprovenance.prov.service.obsolete;
 
 import org.openprovenance.prov.template.library.plead.client.common.BeanCompleter;
 

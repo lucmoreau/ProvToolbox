@@ -5,7 +5,7 @@ package org.openprovenance.prov.service.iobean.composite;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static org.openprovenance.prov.service.iobean.simple.SqlBeanCompleter3.newGetter;
+import static  org.openprovenance.prov.template.library.plead.sql.integration.SqlBeanCompleter3.newGetter;
 import org.openprovenance.prov.template.library.plead.client.integrator.BeanCompleter3;
 
 

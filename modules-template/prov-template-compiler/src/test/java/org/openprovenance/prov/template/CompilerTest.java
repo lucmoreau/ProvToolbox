@@ -35,10 +35,10 @@ public class CompilerTest extends TestCase {
 
     public void testCompiler1() throws IOException {
 
-        testCompilerWithSingleTemplate("src/test/resources/config1.json");
+        doTestCompilerWithSingleTemplate("src/test/resources/config1.json");
     }
 
-    public void testCompilerWithSingleTemplate(String path) throws IOException {
+    public void doTestCompilerWithSingleTemplate(String path) throws IOException {
         System.out.println("Compiling " + path);
         Utility u=new Utility();
 
@@ -79,7 +79,7 @@ public class CompilerTest extends TestCase {
         new File(cli_webjar_templates_dir).mkdirs();
 
 
-        Locations locations=new Locations(configs,cli_src_dir);
+        Locations locations=new Locations(configs,cli_src_dir, l2p_src_dir);
 
         locations.updateWithConfig(config);
 

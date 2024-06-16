@@ -59,12 +59,12 @@ public class SqlEnactorImplementation3 implements BeanEnactor2.EnactorImplementa
 
     @Override
     public BeanCompleter2 beanCompleterFactory(ResultSet rs) {
-        return new SqlBeanCompleter3(rs);
+        return new  org.openprovenance.prov.template.library.plead.sql.integration.SqlBeanCompleter3(rs);
     }
 
     @Override
     public BeanCompleter2 beanCompleterFactory(ResultSet rs, Object [] extra) {
-        return new SqlBeanCompleter3(rs);
+        return new  org.openprovenance.prov.template.library.plead.sql.integration.SqlBeanCompleter3(rs);
     }
 
 }

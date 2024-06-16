@@ -140,4 +140,7 @@ public interface Constants {
     String BEAN_PROCESSOR = "BeanProcessor";
     String LOGGER="Logger";
 
+    String SQL_BEAN_COMPLETER = "SqlBeanCompleter";
+    String SQL_BEAN_COMPLETER3 = "SqlBeanCompleter3";
+    String SQL_COMPOSITE_BEAN_COMPLETER = "SqlCompositeBeanCompleter";
 }

@@ -4,6 +4,7 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.service.Storage;
 import org.openprovenance.prov.template.library.plead.client.common.BeanCompleter;
 import org.openprovenance.prov.template.library.plead.client.common.BeanEnactor;
+import org.openprovenance.prov.template.library.plead.sql.common.SqlBeanCompleter;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

@@ -1,8 +1,5 @@
-package org.openprovenance.prov.service.commonbean.composite;
+package org.openprovenance.prov.service.obsolete;
 
-
-
-import org.openprovenance.prov.service.commonbean.simple.SqlBeanCompleter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

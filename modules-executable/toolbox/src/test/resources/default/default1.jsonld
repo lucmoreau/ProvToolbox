@@ -3,7 +3,7 @@
     "xsd" : "http://www.w3.org/2001/XMLSchema#",
     "bbc" : "https://www.bbc.co.uk/",
     "ex" : "https://example.org",
-    "@vocab" : "https://www.bbc.co.uk/",
+    "@base" : "https://www.bbc.co.uk/",
     "prov" : "http://www.w3.org/ns/prov#"
   }, "https://openprovenance.org/prov-jsonld/context.json" ],
   "@graph" : [ {

@@ -3,7 +3,7 @@
     "xsd" : "http://www.w3.org/2001/XMLSchema#",
     "ex" : "https://example.org/",
     "prov" : "http://www.w3.org/ns/prov#"
-  }, "https://openprovenance.org/prov-jsonld/context.json" ],,
+  }, "https://openprovenance.org/prov-jsonld/context.json" ],
   "@graph" : [ {
     "@type" : "Activity",
     "@id" : "ex:a",

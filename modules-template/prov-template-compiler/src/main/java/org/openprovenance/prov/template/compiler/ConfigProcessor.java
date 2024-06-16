@@ -72,10 +72,13 @@ public class ConfigProcessor implements Constants {
     private final CompilerTemplateInvoker compilerTemplateInvoker;
     private final CompilerBeanCompleter compilerBeanCompleter;
     private final CompilerBeanCompleter2 compilerBeanCompleter2;
+    private final CompilerBeanCompleter3 compilerBeanCompleter3;
+
     private final CompilerBeanCompleter2Composite compilerBeanCompleter2Composite;
     private final CompilerTypeConverter compilerTypeConverter ;
     private final CompilerBeanEnactor compilerBeanEnactor;
     private final CompilerBeanEnactor2 compilerBeanEnactor2 ;
+    private final CompilerBeanEnactor2Composite compilerBeanEnactor2composite;
     private final CompilerQueryInvoker compilerQueryInvoker ;
     private final CompilerBeanChecker compilerBeanChecker;
     private final CompilerDelegator compilerDelegator;
@@ -120,8 +123,10 @@ public class ConfigProcessor implements Constants {
         this.compilerClientTest =new CompilerClientTest(pFactory);
         this.compilerTemplateInvoker = new CompilerTemplateInvoker(pFactory);
         this.compilerBeanEnactor2 = new CompilerBeanEnactor2(pFactory);
+        this.compilerBeanEnactor2composite = new CompilerBeanEnactor2Composite(pFactory);
         this.compilerBeanEnactor = new CompilerBeanEnactor(pFactory);
         this.compilerBeanCompleter2 = new CompilerBeanCompleter2(pFactory);
+        this.compilerBeanCompleter3 = new CompilerBeanCompleter3(pFactory);
         this.compilerBeanCompleter2Composite  = new CompilerBeanCompleter2Composite(pFactory);
         this.compilerBeanProcessor  = new CompilerBeanProcessor(pFactory);
         this.compilerCompositeConfigurations = new CompilerCompositeConfigurations(pFactory);
@@ -363,6 +368,9 @@ public class ConfigProcessor implements Constants {
             SpecificationFile beanCompleter2 = compilerBeanCompleter2.generateBeanCompleter2(configs, locations, BEAN_COMPLETER2);
             beanCompleter2.save();
 
+            SpecificationFile beanCompleter3 = compilerBeanCompleter3.generateBeanCompleter3(configs, locations, BEAN_COMPLETER3);
+            beanCompleter3.save();
+
             SpecificationFile beanCompleter2Composite = compilerBeanCompleter2Composite.generateBeanCompleter2Composite(configs, locations, COMPOSITE_BEAN_COMPLETER2);
             beanCompleter2Composite.save();
         }
@@ -377,6 +385,8 @@ public class ConfigProcessor implements Constants {
             SpecificationFile beanEnactor2 = compilerBeanEnactor2.generateBeanEnactor2(configs, locations, BEAN_ENACTOR2);
             beanEnactor2.save();
 
+            SpecificationFile beanEnactor2Composite = compilerBeanEnactor2composite.generateBeanEnactor2Composite(configs, locations, BEAN_ENACTOR2_COMPOSITE);
+            beanEnactor2Composite.save();
 
             SpecificationFile queryComposer3 = compilerQueryInvoker.generateQueryInvoker(configs, locations, false, QUERY_INVOKER2);
             queryComposer3.save();

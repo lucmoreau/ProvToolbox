@@ -58,10 +58,12 @@ public interface Constants {
     String ENACTOR_CONFIGURATOR2 = "EnactorConfigurator2";
     String BEAN_COMPLETER = "BeanCompleter";
     String BEAN_COMPLETER2 = "BeanCompleter2";
+    String BEAN_COMPLETER3 = "BeanCompleter3";
     String COMPOSITE_BEAN_COMPLETER2 = "CompositeBeanCompleter2";
     String TYPE_CONVERTER = "TypeConverter";
     String BEAN_ENACTOR = "BeanEnactor";
     String BEAN_ENACTOR2 = "BeanEnactor2";
+    String BEAN_ENACTOR2_COMPOSITE = "BeanEnactor2Composite";
     String QUERY_INVOKER = "QueryInvoker";
     String QUERY_INVOKER2 = "QueryInvoker2";
     String BEAN_CHECKER = "BeanChecker";

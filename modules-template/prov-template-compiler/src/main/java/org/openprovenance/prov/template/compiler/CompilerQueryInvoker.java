@@ -17,6 +17,8 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 public class CompilerQueryInvoker {
     public static final String CONVERT_TO_NULLABLE_TEXT = "convertToNullableTEXT";
     public static final String CONVERT_TO_NON_NULLABLE_TEXT = "convertToNonNullableTEXT";
+    public static final String sbVar="sb";
+    public static final String linkingVar="linking";
     private final CompilerUtil compilerUtil;
 
 
@@ -37,15 +39,27 @@ public class CompilerQueryInvoker {
             builder.addSuperinterface(ClassName.get(locations.getFilePackage(INPUT_PROCESSOR), INPUT_PROCESSOR));
         }
 
-        String sbVar="sb";
+
         builder.addField(StringBuilder.class, sbVar, Modifier.FINAL);
+        builder.addField(boolean.class, linkingVar, Modifier.FINAL);
 
-
-        MethodSpec.Builder cbuilder= MethodSpec.constructorBuilder()
+        MethodSpec.Builder cbuilder = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(StringBuilder.class, sbVar)
-                .addStatement("this.$N = $N", sbVar, sbVar);
+                .addStatement("this.$N = $N", sbVar, sbVar)
+                .addStatement("this.$N = false", linkingVar);
         builder.addMethod(cbuilder.build());
+
+        if (!withBean) {
+            // add an additional constructor for QUERY_INVOKER2
+            MethodSpec.Builder cbuilder2 = MethodSpec.constructorBuilder()
+                    .addModifiers(Modifier.PUBLIC)
+                    .addParameter(StringBuilder.class, sbVar)
+                    .addParameter(boolean.class, linkingVar)
+                    .addStatement("this.$N = $N", sbVar, sbVar)
+                    .addStatement("this.$N = $N", linkingVar, linkingVar);
+            builder.addMethod(cbuilder2.build());
+        }
 
 
         Set<String> foundSpecialTypes=new HashSet<>();
@@ -261,8 +275,15 @@ public class CompilerQueryInvoker {
 
 
         mspec.addStatement("$N.append($S)", sbVar, "select * from ");
-        String startCallString= Constants.INSERT_PREFIX + config.name + INSERT_ARRAY_SUFFIX +" (";
+
+        mspec.beginControlFlow("if ($N)", linkingVar);
+        String startCallString= Constants.INSERT_PREFIX + config.name + INSERT_COMPOSITE_AND_LINKER_SUFFIX +" (";
         mspec.addStatement("$N.append($S)", sbVar, startCallString);
+        mspec.nextControlFlow("else");
+        String startCallString2= Constants.INSERT_PREFIX + config.name + INSERT_ARRAY_SUFFIX   +" (";
+        mspec.addStatement("$N.append($S)", sbVar, startCallString2);
+        mspec.endControlFlow();
+
         mspec.addStatement("$N.append($S)", sbVar, "ARRAY[\n");
         String variableBean1=variableBean+"_1";
         mspec.addStatement("boolean first=true");

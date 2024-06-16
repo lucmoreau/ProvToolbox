@@ -60,6 +60,7 @@ public class Locations {
                 return logger_package;
 
             case BEAN_ENACTOR2:
+            case BEAN_ENACTOR2_COMPOSITE:
             case TEMPLATE_INVOKER:
             case INPUT_OUTPUT_PROCESSOR:
             case QUERY_INVOKER2:
@@ -67,6 +68,7 @@ public class Locations {
             case COMPOSITE_BEAN_COMPLETER2:
             case BEAN_CHECKER2:
             case BEAN_COMPLETER2:
+            case BEAN_COMPLETER3:
                 return config_integrator_package;
 
             case TABLE_CONFIGURATOR:

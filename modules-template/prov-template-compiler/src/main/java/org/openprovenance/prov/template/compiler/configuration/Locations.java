@@ -66,6 +66,7 @@ public class Locations {
         switch (file) {
             case SQL_BEAN_COMPLETER:
             case SQL_COMPOSITE_BEAN_COMPLETER:
+            case SQL_ENACTOR_IMPLEMENTATION:
                 return config_sql_common_backend_package;
             case SQL_BEAN_COMPLETER3:
                 return config_sql_integration_backend_package;

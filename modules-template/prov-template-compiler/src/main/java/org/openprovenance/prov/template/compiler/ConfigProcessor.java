@@ -404,6 +404,9 @@ public class ConfigProcessor implements Constants {
                 SpecificationFile generateSqlIntegration_beanCompleter3 = compilerSqlIntegration.generateSqlIntegration_BeanCompleter3(configs, locations, SQL_BEAN_COMPLETER3);
                 generateSqlIntegration_beanCompleter3.save();
 
+                SpecificationFile generateSqlIntegration_enactorImplementation = compilerSqlIntegration.generateSqlIntegration_EnactorImplementation(configs, locations, SQL_ENACTOR_IMPLEMENTATION);
+                generateSqlIntegration_enactorImplementation.save();
+
             }
         }
 

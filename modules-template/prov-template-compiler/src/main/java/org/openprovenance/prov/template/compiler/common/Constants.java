@@ -143,4 +143,5 @@ public interface Constants {
     String SQL_BEAN_COMPLETER = "SqlBeanCompleter";
     String SQL_BEAN_COMPLETER3 = "SqlBeanCompleter3";
     String SQL_COMPOSITE_BEAN_COMPLETER = "SqlCompositeBeanCompleter";
+    String SQL_ENACTOR_IMPLEMENTATION = "SqlEnactorImplementation";
 }

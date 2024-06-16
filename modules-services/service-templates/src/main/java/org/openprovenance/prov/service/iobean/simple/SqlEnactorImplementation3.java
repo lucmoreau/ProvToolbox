@@ -4,6 +4,7 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.service.Storage;
 import org.openprovenance.prov.template.library.plead.client.integrator.BeanCompleter2;
 import org.openprovenance.prov.template.library.plead.client.integrator.BeanEnactor2;
+import org.openprovenance.prov.template.library.plead.sql.integration.SqlBeanCompleter3;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -36,7 +37,7 @@ public class SqlEnactorImplementation3 implements BeanEnactor2.EnactorImplementa
         System.out.println("statement = " + statement);
         ResultSet rs;
         try {
-            rs = storage.executeQuery(conn, statement);
+            rs = executeQuery(statement);
             if (!rs.next()) {
                 rs.close();
                 throw new SQLException("Single row result was expected but result set is empty ");
@@ -55,16 +56,19 @@ public class SqlEnactorImplementation3 implements BeanEnactor2.EnactorImplementa
         return output;
     }
 
+    public ResultSet executeQuery(String statement) throws SQLException {
+        return storage.executeQuery(conn, statement);
+    }
 
 
     @Override
     public BeanCompleter2 beanCompleterFactory(ResultSet rs) {
-        return new  org.openprovenance.prov.template.library.plead.sql.integration.SqlBeanCompleter3(rs);
+        return new  SqlBeanCompleter3(rs);
     }
 
     @Override
     public BeanCompleter2 beanCompleterFactory(ResultSet rs, Object [] extra) {
-        return new  org.openprovenance.prov.template.library.plead.sql.integration.SqlBeanCompleter3(rs);
+        return new  SqlBeanCompleter3(rs);
     }
 
 }

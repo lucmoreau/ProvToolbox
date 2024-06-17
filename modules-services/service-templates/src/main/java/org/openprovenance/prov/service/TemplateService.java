@@ -126,7 +126,7 @@ public class TemplateService {
         this.om.enable(SerializationFeature.INDENT_OUTPUT);
         this.om.registerModule(new JavaTimeModule());
 
-        this.sqlCompositeBeanEnactor3 =new SqlCompositeBeanEnactor3(storage,conn);
+        this.sqlCompositeBeanEnactor3 =new SqlCompositeBeanEnactor3(storage.getQuerier(conn));
 
         this.compositeLinker=new HashMap<>() {{
             put("plead_transforming_composite", new Linker("plead_transforming_composite_linker", "plead_transforming"));

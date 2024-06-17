@@ -1,16 +1,15 @@
 package org.openprovenance.prov.service.iobean.composite;
 
-import org.openprovenance.prov.service.Storage;
-import org.openprovenance.prov.service.iobean.simple.SqlEnactorImplementation3;
+import org.openprovenance.prov.template.library.plead.sql.integration.SqlEnactorImplementation3;
 import org.openprovenance.prov.template.library.plead.client.integrator.BeanCompleter2;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.function.Function;
 
 public class SqlCompositeEnactorImplementation3 extends SqlEnactorImplementation3 {
 
-    public SqlCompositeEnactorImplementation3(Storage storage, Connection conn) {
-        super(storage,conn);
+    public SqlCompositeEnactorImplementation3(Function<String,ResultSet> querier) {
+        super( querier);
     }
 
     @Override

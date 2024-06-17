@@ -8,6 +8,7 @@ import org.openprovenance.prov.template.library.plead.client.common.Delegator;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.function.Function;
 
 
 public class SqlCompositeBeanEnactor extends BeanEnactor<ResultSet> {
@@ -29,8 +30,8 @@ public class SqlCompositeBeanEnactor extends BeanEnactor<ResultSet> {
          */
     }
 
-    public SqlCompositeBeanEnactor(Storage storage, Connection conn) {
-        super(new  SqlCompositeEnactorImplementation(storage,conn), new CheckerAndFixShared(new BeanChecker()));
+    public SqlCompositeBeanEnactor(Function<String,ResultSet> querier) {
+            super(new  SqlCompositeEnactorImplementation(querier), new CheckerAndFixShared(new BeanChecker()));
     }
 
 }

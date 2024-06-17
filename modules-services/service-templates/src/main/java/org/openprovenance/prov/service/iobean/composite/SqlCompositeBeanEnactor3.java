@@ -6,12 +6,13 @@ import org.openprovenance.prov.template.library.plead.client.integrator.BeanEnac
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.function.Function;
 
 
 public class SqlCompositeBeanEnactor3 extends BeanEnactor2Composite<ResultSet> {
 
-    public SqlCompositeBeanEnactor3(Storage storage, Connection conn) {
-        super(new SqlCompositeEnactorImplementation3(storage,conn), new BeanChecker2());
+    public SqlCompositeBeanEnactor3(Function<String,ResultSet> querier) {
+        super(new SqlCompositeEnactorImplementation3(querier), new BeanChecker2());
     }
 
 }

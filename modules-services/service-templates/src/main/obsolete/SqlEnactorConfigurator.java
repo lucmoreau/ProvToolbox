@@ -9,7 +9,8 @@ import java.sql.Connection;
 
 public class SqlEnactorConfigurator extends EnactorConfigurator {
     public SqlEnactorConfigurator(Storage storage, Connection conn) {
-        super(new SqlBeanEnactor(storage, conn));
+        //super(new SqlBeanEnactor(storage, conn));
+        super(new SqlBeanEnactor(null));
     }
 
 }

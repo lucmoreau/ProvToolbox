@@ -7,11 +7,12 @@ import org.openprovenance.prov.template.library.plead.sql.common.SqlCompositeBea
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.function.Function;
 
 public class SqlCompositeEnactorImplementation extends SqlEnactorImplementation {
 
-    public SqlCompositeEnactorImplementation(Storage storage, Connection conn) {
-        super(storage,conn);
+    public SqlCompositeEnactorImplementation(Function<String,ResultSet> querier) {
+        super(querier);
     }
 
     @Override

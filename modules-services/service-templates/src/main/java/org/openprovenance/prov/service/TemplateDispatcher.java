@@ -46,9 +46,9 @@ public class TemplateDispatcher {
         sqlInsert=initializeBeanTable(new SqlInsertConfigurator());
         beanConverter=initializeBeanTable(new ConverterConfigurator());
         //enactorConverter=initializeBeanTable(new SqlEnactorConfigurator(storage,conn));
-        enactorConverter=initializeBeanTable(new SqlEnactorConfigurator3(storage,conn));
+        enactorConverter=initializeBeanTable(new SqlEnactorConfigurator3(storage.getQuerier(conn)));
         //compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator(storage,conn));
-        compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator3(storage,conn));
+        compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator3(storage.getQuerier(conn)));
         successors = initializeBeanTable(new SuccessorConfigurator());
         predecessors = successors
                 .keySet()

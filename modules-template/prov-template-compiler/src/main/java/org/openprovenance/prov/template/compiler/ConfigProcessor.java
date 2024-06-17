@@ -407,6 +407,10 @@ public class ConfigProcessor implements Constants {
                 SpecificationFile generateSqlIntegration_enactorImplementation = compilerSqlIntegration.generateSqlIntegration_EnactorImplementation(configs, locations, SQL_ENACTOR_IMPLEMENTATION);
                 generateSqlIntegration_enactorImplementation.save();
 
+                SpecificationFile generateSqlIntegration_enactorImplementation3 = compilerSqlIntegration.generateSqlIntegration_IntegratorEnactorImplementation(configs, locations, SQL_ENACTOR_IMPLEMENTATION3);
+                generateSqlIntegration_enactorImplementation3.save();
+
+
             }
         }
 

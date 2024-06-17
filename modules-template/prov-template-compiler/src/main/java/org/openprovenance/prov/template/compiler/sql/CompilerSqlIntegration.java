@@ -16,6 +16,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
@@ -267,6 +268,11 @@ public class CompilerSqlIntegration {
                 return bean;
             }
 
+                          @Override
+              public BeanCompleter beanCompleterFactory(ResultSet rs) {
+                return new SqlBeanCompleter(rs);
+              }
+
             abstract public ResultSet getExecuteQuery(String statement) throws SQLException;
 
                      public static void printResultSet(ResultSet resultSet) {
@@ -289,8 +295,20 @@ public class CompilerSqlIntegration {
 
          */
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_ENACTOR_IMPLEMENTATION);
-        builder.addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT);
+        builder.addModifiers(Modifier.PUBLIC);
         builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR), Constants.BEAN_ENACTOR, "EnactorImplementation"), TypeName.get(ResultSet.class)));
+
+        ParameterizedTypeName querierType = ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class));
+        // fields
+        FieldSpec.Builder field1 = FieldSpec.builder(querierType, "querier", Modifier.PRIVATE, Modifier.FINAL);
+        builder.addField(field1.build());
+
+        // constructor
+        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(querierType, "querier");
+        constructor.addStatement("this.querier=querier");
+        builder.addMethod(constructor.build());
 
         /*
         // fields
@@ -309,7 +327,6 @@ public class CompilerSqlIntegration {
         constructor.addStatement("this.storage=storage");
         constructor.addStatement("this.conn=conn");
         builder.addMethod(constructor.build());
-
          */
 
         // method
@@ -329,7 +346,7 @@ public class CompilerSqlIntegration {
         mspec.addStatement("String statement = sb.toString()");
         mspec.addStatement("$T rs", ResultSet.class);
         mspec.beginControlFlow("try");
-        mspec.addStatement("rs = executeQuery(statement)");
+        mspec.addStatement("rs = querier.apply(statement)");
         mspec.beginControlFlow("if (!rs.next())");
         mspec.addStatement("rs.close()");
         mspec.addStatement("throw new $T(\"Single row result was expected but result set is empty \")", SQLException.class);
@@ -349,6 +366,19 @@ public class CompilerSqlIntegration {
 
         builder.addMethod(mspec.build());
 
+        // method
+        MethodSpec.Builder method = MethodSpec.methodBuilder("beanCompleterFactory")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .returns(ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER), Constants.BEAN_COMPLETER))
+                .addParameter(ResultSet.class, "rs");
+
+        method.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(Constants.SQL_BEAN_COMPLETER), Constants.SQL_BEAN_COMPLETER));
+        builder.addMethod(method.build());
+
+
+
+        /*
         // abstract method
         MethodSpec.Builder abstractMethod = MethodSpec.methodBuilder("executeQuery")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
@@ -357,6 +387,8 @@ public class CompilerSqlIntegration {
                 .addParameter(String.class, "statement");
 
         builder.addMethod(abstractMethod.build());
+
+         */
 
         // static method
         MethodSpec.Builder staticMethod = MethodSpec.methodBuilder("printResultSet")
@@ -382,6 +414,7 @@ public class CompilerSqlIntegration {
         staticMethod.addStatement("throw new $T(e)", RuntimeException.class);
         staticMethod.endControlFlow();
 
+
         builder.addMethod(staticMethod.build());
 
 
@@ -395,5 +428,183 @@ public class CompilerSqlIntegration {
         return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName+ DOT_JAVA_EXTENSION, myPackage);
 
     }
+
+   public SpecificationFile generateSqlIntegration_IntegratorEnactorImplementation(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
+    StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
+        /* class with following code
+
+             @Override
+    public <IN, OUT> OUT generic_enact(OUT output,
+                                       IN bean,
+                                       Consumer<IN> check,
+                                       BiConsumer<StringBuilder, IN> composeQuery,
+                                       BiConsumer<ResultSet, OUT> completeBean) {
+        check.accept(bean);
+        StringBuilder sb = new StringBuilder();
+        composeQuery.accept(sb, bean);
+
+        String statement = sb.toString();
+        System.out.println("statement = " + statement);
+        ResultSet rs;
+        try {
+            rs = executeQuery(statement);
+            if (!rs.next()) {
+                rs.close();
+                throw new SQLException("Single row result was expected but result set is empty ");
+            }
+            completeBean.accept(rs,output);
+            if (rs.next()) {
+                rs.close();
+                throw new SQLException("Single row result was expected for query ");
+            } else {
+                rs.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UncheckedException("Issue in enactment " + statement, e);
+        }
+        return output;
+    }
+                          @Override
+              public BeanCompleter2 beanCompleterFactory(ResultSet rs) {
+                return new SqlBeanCompleter3(rs);
+              }
+                              @Override
+                public BeanCompleter2 beanCompleterFactory(ResultSet rs, Object [] extra) {
+                    return new  SqlBeanCompleter3(rs);
+                }
+
+
+
+         */
+    TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_ENACTOR_IMPLEMENTATION3);
+    builder.addModifiers(Modifier.PUBLIC);
+    builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2), Constants.BEAN_ENACTOR2, "EnactorImplementation"), TypeName.get(ResultSet.class)));
+
+    ParameterizedTypeName querierType = ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class));
+    // fields
+    FieldSpec.Builder field1 = FieldSpec.builder(querierType, "querier", Modifier.PRIVATE, Modifier.FINAL);
+    builder.addField(field1.build());
+
+    // constructor
+    MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
+            .addModifiers(Modifier.PUBLIC)
+            .addParameter(querierType, "querier");
+    constructor.addStatement("this.querier=querier");
+    builder.addMethod(constructor.build());
+
+        /*
+        // fields
+        FieldSpec.Builder field1 = FieldSpec.builder(Storage.class, "storage", Modifier.PRIVATE, Modifier.FINAL);
+        builder.addField(field1.build());
+
+        FieldSpec.Builder field2 = FieldSpec.builder(Connection.class, "conn", Modifier.PRIVATE, Modifier.FINAL);
+        builder.addField(field2.build());
+
+        // constructor
+        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(Storage.class, "storage")
+                .addParameter(Connection.class, "conn");
+
+        constructor.addStatement("this.storage=storage");
+        constructor.addStatement("this.conn=conn");
+        builder.addMethod(constructor.build());
+         */
+
+       // method
+       MethodSpec.Builder mspec = MethodSpec.methodBuilder("generic_enact")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .addTypeVariable(TypeVariableName.get("IN"))
+                .addTypeVariable(TypeVariableName.get("OUT"))
+                .addParameter(TypeVariableName.get("OUT"), "output")
+                .addParameter(TypeVariableName.get("IN"), "bean")
+                .addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), TypeVariableName.get("IN")), "check")
+                .addParameter(ParameterizedTypeName.get(ClassName.get(BiConsumer.class), ClassName.get(StringBuilder.class), TypeVariableName.get("IN")), "composeQuery")
+                .addParameter(ParameterizedTypeName.get(ClassName.get(BiConsumer.class), TypeName.get(ResultSet.class), TypeVariableName.get("OUT")), "completeBean")
+                .returns(TypeVariableName.get("OUT"));
+
+
+
+        mspec.addStatement("check.accept(bean)");
+        mspec.addStatement("$T sb = new $T()", StringBuilder.class, StringBuilder.class);
+        mspec.addStatement("composeQuery.accept(sb, bean)");
+        mspec.addStatement("String statement = sb.toString()");
+        mspec.addStatement("$T rs", ResultSet.class);
+        mspec.beginControlFlow("try");
+        mspec.addStatement("rs = querier.apply(statement)");
+        mspec.beginControlFlow("if (!rs.next())");
+        mspec.addStatement("rs.close()");
+        mspec.addStatement("throw new $T(\"Single row result was expected but result set is empty \")", SQLException.class);
+        mspec.endControlFlow();
+        mspec.addStatement("completeBean.accept(rs, output)");
+        mspec.beginControlFlow("if (rs.next())");
+        mspec.addStatement("rs.close()");
+        mspec.addStatement("throw new $T(\"Single row result was expected for query \")", SQLException.class);
+        mspec.nextControlFlow("else");
+        mspec.addStatement("rs.close()");
+       mspec.endControlFlow();
+       mspec.nextControlFlow("catch ($T e)", SQLException.class);
+       mspec.addStatement("e.printStackTrace()");
+       mspec.addStatement("throw new $T(\"Issue in enactment \" + statement, e)", UncheckedException.class);
+       mspec.endControlFlow();
+       mspec.addStatement("return output");
+
+       builder.addMethod(mspec.build());
+
+
+
+
+
+
+       // method
+    MethodSpec.Builder method = MethodSpec.methodBuilder("beanCompleterFactory")
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(Override.class)
+            .returns(ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
+            .addParameter(ResultSet.class, "rs");
+
+    method.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(Constants.SQL_BEAN_COMPLETER3), Constants.SQL_BEAN_COMPLETER3));
+    builder.addMethod(method.build());
+
+    MethodSpec.Builder method2 = MethodSpec.methodBuilder("beanCompleterFactory")
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(Override.class)
+            .returns(ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
+            .addParameter(ResultSet.class, "rs")
+            .addParameter(Object [].class, "extra");
+
+       method2.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(Constants.SQL_BEAN_COMPLETER3), Constants.SQL_BEAN_COMPLETER3));
+       builder.addMethod(method2.build());
+
+
+
+        /*
+        // abstract method
+        MethodSpec.Builder abstractMethod = MethodSpec.methodBuilder("executeQuery")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(ResultSet.class)
+                .addException(SQLException.class)
+                .addParameter(String.class, "statement");
+
+        builder.addMethod(abstractMethod.build());
+
+         */
+
+
+
+
+    TypeSpec theClass= builder.build();
+
+    String myPackage= locations.getFilePackage(fileName);
+
+    JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
+
+    // note, this goes to the back
+    return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName+ DOT_JAVA_EXTENSION, myPackage);
+
+}
 
 }

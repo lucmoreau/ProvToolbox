@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.*;
 import java.util.Properties;
+import java.util.function.Function;
 
 import static org.openprovenance.prov.configuration.Configuration.getPropertiesFromClasspath;
 
@@ -77,6 +78,17 @@ public class Storage {
         ResultSet rs = st.executeQuery(statements);
         //displayResultSet(rs);
         return rs;
+    }
+
+    public Function<String,ResultSet> getQuerier (Connection conn) {
+        return (String statement) -> {
+            try {
+                return executeQuery(conn, statement);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        };
     }
 
     private void displayResultSet(ResultSet resultSet) throws SQLException {

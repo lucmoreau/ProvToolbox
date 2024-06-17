@@ -69,6 +69,7 @@ public class Locations {
             case SQL_ENACTOR_IMPLEMENTATION:
                 return config_sql_common_backend_package;
             case SQL_BEAN_COMPLETER3:
+            case SQL_ENACTOR_IMPLEMENTATION3:
                 return config_sql_integration_backend_package;
             case LOGGER:
             case TEMPLATE_BUILDERS:

@@ -9,26 +9,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateDispatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateLogic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/commonbean/composite/SqlCompositeBeanEnactor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/composite/SqlCompositeBeanEnactor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/commonbean/composite/SqlCompositeEnactorImplementation.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/composite/SqlCompositeEnactorImplementation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/commonbean/simple/SqlBeanEnactor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/simple/SqlBeanEnactor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/commonbean/simple/SqlEnactorImplementation.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/simple/SqlEnactorImplementation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/iobean/composite/SqlCompositeBeanCompleter3.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/iobean/composite/SqlCompositeBeanCompleter3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/iobean/composite/SqlCompositeBeanEnactor3.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/iobean/composite/SqlCompositeBeanEnactor3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/iobean/composite/SqlCompositeEnactorConfigurator3.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/iobean/composite/SqlCompositeEnactorConfigurator3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/iobean/composite/SqlCompositeEnactorImplementation3.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/iobean/composite/SqlCompositeEnactorImplementation3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/iobean/simple/SqlBeanEnactor3.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/iobean/simple/SqlBeanEnactor3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/iobean/simple/SqlEnactorConfigurator3.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/iobean/simple/SqlEnactorConfigurator3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanEnactor2Composite.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanEnactor2Composite.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/configuration/Locations.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/configuration/Locations.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlIntegration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlIntegration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/BeanCompleter3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/BeanEnactor2Composite.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/QueryInvoker2Composite.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/SqlBeanCompleter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/SqlBeanCompleter3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/SqlCompositeBeanCompleter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/SqlCompositeEnactorConfigurator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/SqlEnactorConfigurator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/SqlEnactorImplementation3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/composite/SqlCompositeBeanEnactor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/composite/SqlCompositeEnactorImplementation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/iobean/composite/SqlCompositeBeanCompleter3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/iobean/composite/SqlCompositeBeanEnactor3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/iobean/composite/SqlCompositeEnactorConfigurator3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/iobean/composite/SqlCompositeEnactorImplementation3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/iobean/simple/SqlBeanEnactor3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/iobean/simple/SqlEnactorConfigurator3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/simple/SqlBeanEnactor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/obsolete/simple/SqlEnactorImplementation.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1053,7 +1052,7 @@
       <workItem from="1717243679715" duration="146900000" />
       <workItem from="1718091655832" duration="73759000" />
       <workItem from="1718607369852" duration="3594000" />
-      <workItem from="1718639569403" duration="7890000" />
+      <workItem from="1718639569403" duration="8518000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

@@ -24,6 +24,7 @@ public class CompilerBeanEnactor2Composite {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_ENACTOR2_COMPOSITE);
         builder.addTypeVariable(typeResult);
+        builder.addJavadoc("Ensures that composite beans are given an ID\n");
 
 
         ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(Constants.QUERY_INVOKER2), Constants.QUERY_INVOKER2);

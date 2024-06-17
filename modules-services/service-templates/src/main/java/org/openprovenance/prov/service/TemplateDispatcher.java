@@ -4,10 +4,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.client.ProcessorArgsInterface;
 import org.openprovenance.prov.client.RecordsProcessorInterface;
-import org.openprovenance.prov.service.iobean.composite.SqlCompositeEnactorConfigurator3;
-import org.openprovenance.prov.service.iobean.simple.SqlEnactorConfigurator3;
 import org.openprovenance.prov.template.library.plead.client.configurator.*;
 import org.openprovenance.prov.template.library.plead.client.logger.TemplateBuilders;
+import org.openprovenance.prov.template.library.plead.sql.integration.SqlCompositeEnactorConfigurator3;
+import org.openprovenance.prov.template.library.plead.sql.integration.SqlEnactorConfigurator3;
 
 
 import java.sql.Connection;

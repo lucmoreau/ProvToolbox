@@ -14,7 +14,4 @@ public class SqlBeanEnactor3 extends BeanEnactor2<ResultSet> {
         super(new SqlCompositeEnactorImplementation3(querier), new BeanChecker2());
     }
 
-
-
-
 }

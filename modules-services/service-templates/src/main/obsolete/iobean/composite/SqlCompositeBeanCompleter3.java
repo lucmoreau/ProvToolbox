@@ -20,7 +20,7 @@ public class SqlCompositeBeanCompleter3 extends BeanCompleter3 {
     }
 
     public SqlCompositeBeanCompleter3(ResultSet rs, Object[] extra) {
-        super(newGetter(rs));
+        super(SqlBeanCompleter3.newGetter(rs));
         this.rs=rs;
         this.extra=extra;
     }
@@ -45,10 +45,5 @@ public class SqlCompositeBeanCompleter3 extends BeanCompleter3 {
             extra[0]= parent;
         }
     }
-
-
-
-
-
 
 }

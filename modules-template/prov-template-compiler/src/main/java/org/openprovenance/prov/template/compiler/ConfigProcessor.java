@@ -410,7 +410,32 @@ public class ConfigProcessor implements Constants {
                 SpecificationFile generateSqlIntegration_enactorImplementation3 = compilerSqlIntegration.generateSqlIntegration_IntegratorEnactorImplementation(configs, locations, SQL_ENACTOR_IMPLEMENTATION3);
                 generateSqlIntegration_enactorImplementation3.save();
 
+                SpecificationFile generateSqlIntegration_beanEnactorImplementation = compilerSqlIntegration.generateSqlIntegration_CompositeEnactorImplementation(configs, locations, SQL_COMPOSITE_ENACTOR_IMPLEMENTATION);
+                generateSqlIntegration_beanEnactorImplementation.save();
 
+                SpecificationFile generateSqlIntegration_compositeBeanEnactor = compilerSqlIntegration.generateSqlIntegration_CompositeBeanEnactor(configs, locations, SQL_COMPOSITE_BEAN_ENACTOR);
+                generateSqlIntegration_compositeBeanEnactor.save();
+
+                SpecificationFile generateSqlIntegration_beanEnactor = compilerSqlIntegration.generateSqlIntegration_BeanEnactor(configs, locations, SQL_BEAN_ENACTOR);
+                generateSqlIntegration_beanEnactor.save();
+
+                SpecificationFile generateSqlIntegration_beanEnactor3 = compilerSqlIntegration.generateSqlIntegration_BeanEnactor3(configs, locations, SQL_BEAN_ENACTOR3);
+                generateSqlIntegration_beanEnactor3.save();
+
+                SpecificationFile generateSqlIntegration_compositeEnactorImplementation3 = compilerSqlIntegration.generateSqlIntegration_CompositeEnactorImplementation3(configs, locations, SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3);
+                generateSqlIntegration_compositeEnactorImplementation3.save();
+
+                SpecificationFile generatedSqlIntegration_compositeBeanCompleter3 = compilerSqlIntegration.generateSqlIntegration_CompositeBeanCompleter3(configs, locations, SQL_COMPOSITE_BEAN_COMPLETER3);
+                generatedSqlIntegration_compositeBeanCompleter3.save();
+
+                SpecificationFile generateSqlIntegration_compositeBeanEnactor3 = compilerSqlIntegration.generateSqlIntegration_CompositeBeanEnactor3(configs, locations, SQL_COMPOSITE_BEAN_ENACTOR3);
+                generateSqlIntegration_compositeBeanEnactor3.save();
+
+                SpecificationFile generatedSqlIntegration_compositeEnactorConfigurator3 = compilerSqlIntegration.generateSqlIntegration_CompositeEnactorConfigurator3(configs, locations, SQL_COMPOSITE_ENACTOR_CONFIGURATOR3);
+                generatedSqlIntegration_compositeEnactorConfigurator3.save();
+
+                SpecificationFile generatedSqlIntegration_enactorConfigurator3 = compilerSqlIntegration.generateSqlIntegration_EnactorConfigurator3(configs, locations, SQL_ENACTOR_CONFIGURATOR3);
+                generatedSqlIntegration_enactorConfigurator3.save();
             }
         }
 
@@ -431,8 +456,6 @@ public class ConfigProcessor implements Constants {
 
         SpecificationFile configurationPropertyOrder= compilerConfigurations.generatePropertyOrderConfigurator(configs,PROPERTY_ORDER_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(PROPERTY_ORDER_CONFIGURATOR)), PROPERTY_ORDER_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationPropertyOrder.save();
-
-
 
         SpecificationFile configurationCsv= compilerConfigurations.generateCsvConfigurator(configs,CSV_CONFIGURATOR, locations,locations.convertToDirectory(locations.getFilePackage(CSV_CONFIGURATOR)), CSV_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationCsv.save();

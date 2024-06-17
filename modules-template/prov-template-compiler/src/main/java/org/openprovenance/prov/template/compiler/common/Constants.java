@@ -145,4 +145,15 @@ public interface Constants {
     String SQL_COMPOSITE_BEAN_COMPLETER = "SqlCompositeBeanCompleter";
     String SQL_ENACTOR_IMPLEMENTATION = "SqlEnactorImplementation";
     String SQL_ENACTOR_IMPLEMENTATION3 = "SqlEnactorImplementation3";
+    String SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3 = "SqlCompositeEnactorImplementation3";
+    String SQL_COMPOSITE_ENACTOR_IMPLEMENTATION = "SqlCompositeEnactorImplementation";
+    String SQL_COMPOSITE_BEAN_ENACTOR= "SqlCompositeBeanEnactor";
+    String SQL_COMPOSITE_BEAN_COMPLETER3 = "SqlCompositeBeanCompleter3";
+    String SQL_BEAN_ENACTOR= "SqlBeanEnactor";
+    String SQL_BEAN_ENACTOR3= "SqlBeanEnactor3";
+    String SQL_COMPOSITE_BEAN_ENACTOR3= "SqlCompositeBeanEnactor3";
+    String SQL_ENACTOR_CONFIGURATOR3= "SqlEnactorConfigurator3";
+    String SQL_COMPOSITE_ENACTOR_CONFIGURATOR3= "SqlCompositeEnactorConfigurator3";
+
+
 }

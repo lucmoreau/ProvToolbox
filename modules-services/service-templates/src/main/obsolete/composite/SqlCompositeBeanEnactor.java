@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 public class SqlCompositeBeanEnactor extends BeanEnactor<ResultSet> {
 
-    static final class CheckerAndFixShared extends Delegator {
+    private static final class CheckerAndFixShared extends Delegator {
         CheckerAndFixShared(BeanProcessor bc) {
             super(bc);
         }
@@ -31,7 +31,7 @@ public class SqlCompositeBeanEnactor extends BeanEnactor<ResultSet> {
     }
 
     public SqlCompositeBeanEnactor(Function<String,ResultSet> querier) {
-            super(new  SqlCompositeEnactorImplementation(querier), new CheckerAndFixShared(new BeanChecker()));
+            super(new  org.openprovenance.prov.template.library.plead.sql.common.SqlCompositeEnactorImplementation(querier), new CheckerAndFixShared(new BeanChecker()));
     }
 
 }

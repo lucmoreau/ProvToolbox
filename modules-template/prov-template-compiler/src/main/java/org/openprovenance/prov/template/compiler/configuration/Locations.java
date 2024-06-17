@@ -65,11 +65,20 @@ public class Locations {
     public String getFilePackage(String file) {
         switch (file) {
             case SQL_BEAN_COMPLETER:
-            case SQL_COMPOSITE_BEAN_COMPLETER:
+            case SQL_BEAN_ENACTOR:
             case SQL_ENACTOR_IMPLEMENTATION:
+            case SQL_COMPOSITE_BEAN_COMPLETER:
+            case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION:
+            case SQL_COMPOSITE_BEAN_ENACTOR:
                 return config_sql_common_backend_package;
             case SQL_BEAN_COMPLETER3:
             case SQL_ENACTOR_IMPLEMENTATION3:
+            case SQL_COMPOSITE_BEAN_ENACTOR3:
+            case SQL_COMPOSITE_BEAN_COMPLETER3:
+            case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3:
+            case SQL_BEAN_ENACTOR3:
+            case SQL_ENACTOR_CONFIGURATOR3:
+            case SQL_COMPOSITE_ENACTOR_CONFIGURATOR3:
                 return config_sql_integration_backend_package;
             case LOGGER:
             case TEMPLATE_BUILDERS:

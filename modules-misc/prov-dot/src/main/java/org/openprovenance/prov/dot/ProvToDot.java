@@ -1,6 +1,8 @@
 package org.openprovenance.prov.dot;
 import java.io.*;
 import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.DocumentedUnsupportedCaseException;
@@ -8,6 +10,7 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.openprovenance.prov.vanilla.QualifiedSpecializationOf;
 
 /** Serialisation of  Prov representation to DOT format. */
 public class ProvToDot implements DotProperties,  RecommendedProvVisualProperties, ProvShorthandNames {
@@ -16,7 +19,12 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
     public int MAX_TOOLTIP_LENGTH = 2000;
 
-    ProvUtilities u=new ProvUtilities();
+
+    final Supplier<ProvUtilities> getProvUtilities;
+    final ProvUtilities u;
+
+
+
     final ProvFactory pf;
     QualifiedName makeSumSize(){
         return pf.newQualifiedName(NamespacePrefixMapper.SUMMARY_NS, "size", NamespacePrefixMapper.SUMMARY_PREFIX);
@@ -43,7 +51,16 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     public ProvToDot(ProvFactory pf) {
         this.pf=pf;
         SUM_SIZE=makeSumSize();
+        this.getProvUtilities= ProvUtilities::new;
+        this.u=this.getProvUtilities.get();
     }
+    public ProvToDot(ProvFactory pf, Supplier<ProvUtilities> getProvUtilities) {
+        this.pf=pf;
+        SUM_SIZE=makeSumSize();
+        this.getProvUtilities= getProvUtilities;
+        this.u= this.getProvUtilities.get();
+    }
+
 
 
     public void convert(Document graph, String dotFile, String pdfFile, String title) throws java.io.IOException {
@@ -624,7 +641,13 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
         List<QualifiedName> others=u.getOtherCauses(e);
         if (others !=null) { // n-ary case
-            String bnid="bn" + (bncounter++);
+
+            // if relation e has id
+            String id=null;
+            if (e instanceof Identifiable && ((Identifiable)e).getId()!=null) {
+                id=qualifiedNameToString(((Identifiable)e).getId());
+            }
+            String bnid=(id==null)? "bn" + (bncounter++) : id;
 
 
             emitBlankNode(dotify(bnid), addBlankNodeShape(properties), out);
@@ -674,6 +697,10 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             if (e instanceof HasOther) {
                 addColors((HasOther)e,properties4);
             }
+            properties4.put(DOT_STYLE,"dashed");
+            properties4.put(DOT_ARROWHEAD,"none");
+            properties4.put(DOT_COLOUR,"gray");
+
             for (QualifiedName other: others) {
                 if (other!=null) {
                     emitRelation(  e.getKind(),
@@ -896,6 +923,52 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     public void setLayout(String layout) {
         this.layout=layout;
     }
+
+    static class ProvUtilitiesForTriangle extends ProvUtilities {
+        @Override
+        public List<QualifiedName> getOtherCauses(Relation r) {
+            if (r instanceof WasAttributedTo) {
+                WasAttributedTo wat = (WasAttributedTo) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(wat, NamespacePrefixMapper.PROV_EXT_NS);
+                List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+            }  else if (r instanceof QualifiedSpecializationOf ) {
+                QualifiedSpecializationOf spe = (QualifiedSpecializationOf) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(spe, NamespacePrefixMapper.PROV_EXT_NS);
+                List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+            }  else if (r instanceof Used ) {
+                Used usd = (Used) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(usd, NamespacePrefixMapper.PROV_EXT_NS);
+                List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+            }  else if (r instanceof WasDerivedFrom ) {
+                WasDerivedFrom der = (WasDerivedFrom) r;
+
+                List<QualifiedName> result=new LinkedList<>();
+                if (der.getGeneration()!=null) {
+                    result.add(der.getGeneration());
+                }
+                if (der.getUsage()!=null) {
+                    result.add(der.getUsage());
+                }
+                if (der.getActivity()!=null) {
+                    result.add(der.getActivity());
+                }
+                return result;
+            } else if (r instanceof WasGeneratedBy || r instanceof WasAssociatedWith || r instanceof SpecializationOf ) {
+                return Collections.emptyList();
+            }else {
+                return super.getOtherCauses(r);
+            }
+        }
+    }
+
+    public static ProvToDot newProvToDot(ProvFactory pf) {
+        Supplier<ProvUtilities> utilities= ProvUtilitiesForTriangle::new;
+        return new ProvToDot(pf, utilities);
+    }
+
 
 
 }

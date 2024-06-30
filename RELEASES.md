@@ -50,6 +50,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-archetype: skeleton
 * prov-jsonld: fixed incompatibility issues with jsonld1.1
 * prov-service-security-pac: created sub-module
+* prov-dot: displays qualification patterns
 
 `2.0.5`
 * prov-template-library: cleaned up pom.xml

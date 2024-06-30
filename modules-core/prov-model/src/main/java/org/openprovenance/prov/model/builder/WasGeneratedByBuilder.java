@@ -51,6 +51,10 @@ public class WasGeneratedByBuilder extends TimeBuilder<WasGeneratedByBuilder> im
         return parent;
     }
 
+    public WasGeneratedByBuilder aka() {
+        parent.knownAs.put(id.getLocalPart(),id);
+        return this;
+    }
 
 
 }

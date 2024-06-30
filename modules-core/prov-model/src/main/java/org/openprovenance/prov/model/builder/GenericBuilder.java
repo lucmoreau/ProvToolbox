@@ -81,6 +81,9 @@ abstract public class GenericBuilder<T extends GenericBuilder<T>> {
     public T attr(QualifiedName elementName, String value) {
         return attr(pf.newAttribute(elementName,value,pf.getName().XSD_STRING));
     }
+    public T attrQn(QualifiedName elementName, String knownAs) {
+        return attr(pf.newAttribute(elementName,parent.knownAs.get(knownAs),pf.getName().PROV_QUALIFIED_NAME));
+    }
     public T label(String lab) {
         return attr(pf.newAttribute(provLabel,lab,pf.getName().XSD_STRING));
     }

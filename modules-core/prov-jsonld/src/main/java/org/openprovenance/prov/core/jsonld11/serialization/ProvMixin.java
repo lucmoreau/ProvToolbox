@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.core.jsonld11.JLD_Document;
 import org.openprovenance.prov.vanilla.*;
 
-public class ProvMixin extends org.openprovenance.prov.core.json.serialization.ProvMixin {
+public class ProvMixin {//extends org.openprovenance.prov.core.json.serialization.ProvMixin {
 
     public ProvMixin() {
     }

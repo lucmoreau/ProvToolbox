@@ -164,7 +164,6 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
         List<Role> roles_discard=new LinkedList<>();
         u.distribute((QualifiedName)qn,attributes,getLabel(),values_discard,getLocation(),getType(),roles_discard,getOther());
         if (!values_discard.isEmpty()) value=Optional.of(values_discard.get(0));
-
     }
 
 

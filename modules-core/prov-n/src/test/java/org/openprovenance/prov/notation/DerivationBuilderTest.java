@@ -21,6 +21,7 @@ public class DerivationBuilderTest extends org.openprovenance.prov.model.Derivat
 
         DerivationBuilder builder=new DerivationBuilder();
         new ProvSerialiser(pFactory).serialiseDocument(Files.newOutputStream(new File("target/example-transporting.provn").toPath()), builder.makeDocument_Transporting(), true);
+        new ProvSerialiser(pFactory).serialiseDocument(Files.newOutputStream(new File("target/example-transporting-full-triangle.provn").toPath()), builder.makeDocument_TransportingFullTriangle(), true);
         new ProvSerialiser(pFactory).serialiseDocument(Files.newOutputStream(new File("target/example-weighing.provn").toPath()), builder.makeDocument_Weighing(), true);
         new ProvSerialiser(pFactory).serialiseDocument(Files.newOutputStream(new File("target/example-transporting-attribution.provn").toPath()), builder.makeDocument_TransportingAttribution(), true);
         new ProvSerialiser(pFactory).serialiseDocument(Files.newOutputStream(new File("target/example-attribution.provn").toPath()), builder.makeDocument_Attribution(), true);

@@ -139,8 +139,8 @@
                         "type": "object",
                         "required": [ "@type", "@id" ],
                         "properties": {
-                                "@type":           { "pattern": "Agent" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
+                                "@type":      { "pattern": "Agent" },
+                                "@id":        { "$ref": "#/definitions/QualifiedName" },
                                 "type":       { "$ref": "#/definitions/ArrayOfValues"},
                                 "location":   { "$ref": "#/definitions/ArrayOfValues" },
                                 "label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
@@ -154,10 +154,10 @@
                         "type": "object",
                         "required": [ "@type", "@id" ],
                         "properties": {
-                                "@type":           { "pattern": "Activity" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
-                                "startTime":       { "$ref": "#/definitions/DateTime" },
-                                "endTime":         { "$ref": "#/definitions/DateTime" },
+                                "@type":      { "pattern": "Activity" },
+                                "@id":        { "$ref": "#/definitions/QualifiedName" },
+                                "startTime":  { "$ref": "#/definitions/DateTime" },
+                                "endTime":    { "$ref": "#/definitions/DateTime" },
                                 "type":       { "$ref": "#/definitions/ArrayOfValues"},
                                 "location":   { "$ref": "#/definitions/ArrayOfValues" },
                                 "label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
@@ -170,10 +170,10 @@
                         "type": "object",
                         "required": [ "@type", "@id" ],
                         "properties": {
-                                "@type":           { "pattern": "Activity" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
-                                "startTime":       { "$ref": "#/definitions/DateTime" },
-                                "endTime":         { "$ref": "#/definitions/DateTime" },
+                                "@type":      { "pattern": "Activity" },
+                                "@id":        { "$ref": "#/definitions/QualifiedName" },
+                                "startTime":  { "$ref": "#/definitions/DateTime" },
+                                "endTime":    { "$ref": "#/definitions/DateTime" },
                                 "type":       { "$ref": "#/definitions/ArrayOfValues"},
                                 "location":   { "$ref": "#/definitions/ArrayOfValues" },
                                 "label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
@@ -187,11 +187,11 @@
                         "type": "object",
                         "required": [ "@type" ],
                         "properties": {
-                                "@type":           { "pattern": "Usage" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
-                                "entity":          { "$ref": "#/definitions/QualifiedName"},
-                                "activity":        { "$ref": "#/definitions/QualifiedName" },
-                                "time":            { "$ref": "#/definitions/DateTime" },
+                                "@type":      { "pattern": "Usage" },
+                                "@id":        { "$ref": "#/definitions/QualifiedName" },
+                                "entity":     { "$ref": "#/definitions/QualifiedName"},
+                                "activity":   { "$ref": "#/definitions/QualifiedName" },
+                                "time":       { "$ref": "#/definitions/DateTime" },
                                 "type":       { "$ref": "#/definitions/ArrayOfValues"},
                                 "role":       { "$ref": "#/definitions/ArrayOfValues" },
                                 "location":   { "$ref": "#/definitions/ArrayOfValues" },
@@ -206,11 +206,11 @@
                         "type": "object",
                         "required": [ "@type" ],
                         "properties": {
-                                "@type":           { "pattern": "Generation" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
-                                "entity":          { "$ref": "#/definitions/QualifiedName"},
-                                "activity":        { "$ref": "#/definitions/QualifiedName" },
-                                "time":            { "$ref": "#/definitions/DateTime" },
+                                "@type":      { "pattern": "Generation" },
+                                "@id":        { "$ref": "#/definitions/QualifiedName" },
+                                "entity":     { "$ref": "#/definitions/QualifiedName"},
+                                "activity":   { "$ref": "#/definitions/QualifiedName" },
+                                "time":       { "$ref": "#/definitions/DateTime" },
                                 "type":       { "$ref": "#/definitions/ArrayOfValues"},
                                 "role":       { "$ref": "#/definitions/ArrayOfValues" },
                                 "location":   { "$ref": "#/definitions/ArrayOfValues" },
@@ -225,15 +225,15 @@
                         "type": "object",
                         "required": [ "@type" ],
                         "properties": {
-                                "@type":           { "pattern": "Invalidation" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
-                                "entity":          { "$ref": "#/definitions/QualifiedName"},
-                                "activity":        { "$ref": "#/definitions/QualifiedName" },
-                                "time":            { "$ref": "#/definitions/DateTime" },
-                                "type":            { "$ref": "#/definitions/ArrayOfValues"},
-                                "role":            { "$ref": "#/definitions/ArrayOfValues" },
-                                "location":        { "$ref": "#/definitions/ArrayOfValues" },
-                                "label":           { "$ref": "#/definitions/ArrayOfLabelValues"}
+                                "@type":     { "pattern": "Invalidation" },
+                                "@id":       { "$ref": "#/definitions/QualifiedName" },
+                                "entity":    { "$ref": "#/definitions/QualifiedName"},
+                                "activity":  { "$ref": "#/definitions/QualifiedName" },
+                                "time":      { "$ref": "#/definitions/DateTime" },
+                                "type":      { "$ref": "#/definitions/ArrayOfValues"},
+                                "role":      { "$ref": "#/definitions/ArrayOfValues" },
+                                "location":  { "$ref": "#/definitions/ArrayOfValues" },
+                                "label":     { "$ref": "#/definitions/ArrayOfLabelValues"}
                         },
                         "patternProperties": {
                                 "^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -244,12 +244,12 @@
                         "type": "object",
                         "required": [ "@type" ],
                         "properties": {
-                                "@type":           { "pattern": "Start" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
-                                "activity":        { "$ref": "#/definitions/QualifiedName" },
-                                "starter":         { "$ref": "#/definitions/QualifiedName"},
-                                "trigger":         { "$ref": "#/definitions/QualifiedName" },
-                                "time":            { "$ref": "#/definitions/DateTime" },
+                                "@type":      { "pattern": "Start" },
+                                "@id":        { "$ref": "#/definitions/QualifiedName" },
+                                "activity":   { "$ref": "#/definitions/QualifiedName" },
+                                "starter":    { "$ref": "#/definitions/QualifiedName"},
+                                "trigger":    { "$ref": "#/definitions/QualifiedName" },
+                                "time":       { "$ref": "#/definitions/DateTime" },
                                 "type":       { "$ref": "#/definitions/ArrayOfValues"},
                                 "role":       { "$ref": "#/definitions/ArrayOfValues" },
                                 "location":   { "$ref": "#/definitions/ArrayOfValues" },
@@ -264,16 +264,16 @@
                         "type": "object",
                         "required": [ "@type" ],
                         "properties": {
-                                "@type":           { "pattern": "End" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
-                                "activity":        { "$ref": "#/definitions/QualifiedName" },
-                                "ender" :          { "$ref": "#/definitions/QualifiedName"},
-                                "trigger":         { "$ref": "#/definitions/QualifiedName" },
-                                "time":            { "$ref": "#/definitions/DateTime" },
-                                "type":            { "$ref": "#/definitions/ArrayOfValues"},
-                                "role":            { "$ref": "#/definitions/ArrayOfValues" },
-                                "location":        { "$ref": "#/definitions/ArrayOfValues" },
-                                "label":           { "$ref": "#/definitions/ArrayOfLabelValues"}
+                                "@type":     { "pattern": "End" },
+                                "@id":       { "$ref": "#/definitions/QualifiedName" },
+                                "activity":  { "$ref": "#/definitions/QualifiedName" },
+                                "ender" :    { "$ref": "#/definitions/QualifiedName"},
+                                "trigger":   { "$ref": "#/definitions/QualifiedName" },
+                                "time":      { "$ref": "#/definitions/DateTime" },
+                                "type":      { "$ref": "#/definitions/ArrayOfValues"},
+                                "role":      { "$ref": "#/definitions/ArrayOfValues" },
+                                "location":  { "$ref": "#/definitions/ArrayOfValues" },
+                                "label":     { "$ref": "#/definitions/ArrayOfLabelValues"}
                         },
                         "patternProperties": {
                                 "^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -284,12 +284,12 @@
                         "type": "object",
                         "required": [ "@type" ],
                         "properties": {
-                                "@type":           { "pattern": "Attribution" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
-                                "entity":          { "$ref": "#/definitions/QualifiedName" },
-                                "agent" :          { "$ref": "#/definitions/QualifiedName"},
-                                "type":       { "$ref": "#/definitions/ArrayOfValues"},
-                                "label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+                                "@type":     { "pattern": "Attribution" },
+                                "@id":       { "$ref": "#/definitions/QualifiedName" },
+                                "entity":    { "$ref": "#/definitions/QualifiedName" },
+                                "agent" :    { "$ref": "#/definitions/QualifiedName"},
+                                "type":      { "$ref": "#/definitions/ArrayOfValues"},
+                                "label":     { "$ref": "#/definitions/ArrayOfLabelValues"}
                         },
                         "patternProperties": {
                                 "^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -300,15 +300,14 @@
                         "type": "object",
                         "required": [ "@type" ],
                         "properties": {
-                                "@type":           { "pattern": "Association" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
-                                "activity":        { "$ref": "#/definitions/QualifiedName" },
-                                "agent" :          { "$ref": "#/definitions/QualifiedName"},
-                                "plan" :           { "$ref": "#/definitions/QualifiedName"},
-                                "type":            { "$ref": "#/definitions/ArrayOfValues"},
-                                "role":            { "$ref": "#/definitions/ArrayOfValues" },
-                                "location":        { "$ref": "#/definitions/ArrayOfValues" },
-                                "label":           { "$ref": "#/definitions/ArrayOfLabelValues"}
+                                "@type":     { "pattern": "Association" },
+                                "@id":       { "$ref": "#/definitions/QualifiedName" },
+                                "activity":  { "$ref": "#/definitions/QualifiedName" },
+                                "agent" :    { "$ref": "#/definitions/QualifiedName"},
+                                "plan" :     { "$ref": "#/definitions/QualifiedName"},
+                                "type":      { "$ref": "#/definitions/ArrayOfValues"},
+                                "role":      { "$ref": "#/definitions/ArrayOfValues" },
+                                "label":     { "$ref": "#/definitions/ArrayOfLabelValues"}
                         },
                         "patternProperties": {
                                 "^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -319,13 +318,13 @@
                         "type": "object",
                         "required": [ "@type" ],
                         "properties": {
-                                "@type":           { "pattern": "Delegation" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
-                                "delegate":        { "$ref": "#/definitions/QualifiedName" },
-                                "responsible":     { "$ref": "#/definitions/QualifiedName" },
-                                "activity":        { "$ref": "#/definitions/QualifiedName" },
-                                "type":            { "$ref": "#/definitions/ArrayOfValues"},
-                                "label":           { "$ref": "#/definitions/ArrayOfLabelValues"}
+                                "@type":       { "pattern": "Delegation" },
+                                "@id":         { "$ref": "#/definitions/QualifiedName" },
+                                "delegate":    { "$ref": "#/definitions/QualifiedName" },
+                                "responsible": { "$ref": "#/definitions/QualifiedName" },
+                                "activity":    { "$ref": "#/definitions/QualifiedName" },
+                                "type":        { "$ref": "#/definitions/ArrayOfValues"},
+                                "label":       { "$ref": "#/definitions/ArrayOfLabelValues"}
                         },
                         "patternProperties": {
                                 "^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -357,10 +356,10 @@
                                 "@type"
                         ],
                         "properties": {
-                                "@type":           { "pattern": "provext:Alternate" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
-                                "alternate1":      { "$ref": "#/definitions/QualifiedName" },
-                                "alternate2":      { "$ref": "#/definitions/QualifiedName" },
+                                "@type":      { "pattern": "provext:Alternate" },
+                                "@id":        { "$ref": "#/definitions/QualifiedName" },
+                                "alternate1": { "$ref": "#/definitions/QualifiedName" },
+                                "alternate2": { "$ref": "#/definitions/QualifiedName" },
                                 "type":       { "$ref": "#/definitions/ArrayOfValues"},
                                 "label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
                         },
@@ -375,12 +374,12 @@
                                 "@type"
                         ],
                         "properties": {
-                                "@type":           { "pattern": "provext:Specialization" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
-                                "generalEntity":   { "$ref": "#/definitions/QualifiedName" },
-                                "specificEntity":  { "$ref": "#/definitions/QualifiedName" },
-                                "type":       { "$ref": "#/definitions/ArrayOfValues"},
-                                "label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
+                                "@type":          { "pattern": "provext:Specialization" },
+                                "@id":            { "$ref": "#/definitions/QualifiedName" },
+                                "generalEntity":  { "$ref": "#/definitions/QualifiedName" },
+                                "specificEntity": { "$ref": "#/definitions/QualifiedName" },
+                                "type":           { "$ref": "#/definitions/ArrayOfValues"},
+                                "label":          { "$ref": "#/definitions/ArrayOfLabelValues"}
                         },
                         "patternProperties": {
                                 "^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
@@ -393,10 +392,10 @@
                                 "@type"
                         ],
                         "properties": {
-                                "@type":           { "pattern": "provext:Membership" },
-                                "@id":             { "$ref": "#/definitions/QualifiedName" },
-                                "entity":          { "$ref": "#/definitions/QualifiedName+" },
-                                "collection":      { "$ref": "#/definitions/QualifiedName" },
+                                "@type":      { "pattern": "provext:Membership" },
+                                "@id":        { "$ref": "#/definitions/QualifiedName" },
+                                "entity":     { "$ref": "#/definitions/QualifiedName+" },
+                                "collection": { "$ref": "#/definitions/QualifiedName" },
                                 "type":       { "$ref": "#/definitions/ArrayOfValues"},
                                 "label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
                         },

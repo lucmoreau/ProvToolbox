@@ -39,7 +39,38 @@ public class WasDerivedFromBuilder extends GenericBuilder<WasDerivedFromBuilder>
         return this;
     }
     public WasDerivedFromBuilder usedEntity(String prefix, String local) {
+        this.usage= qn(prefix,local);
+        return this;
+    }
+
+    public WasDerivedFromBuilder usage(QualifiedName usage) {
+        this.usage=usage;
+        return this;
+    }
+    public WasDerivedFromBuilder usage(String knownAs) {
+        QualifiedName qn=parent.knownAs.get(knownAs);
+        if (qn==null) throw new NullPointerException("usage cannot find knownAs " + knownAs + " in " + parent.knownAs);
+        this.usage=qn;
+        return this;
+    }
+
+    public WasDerivedFromBuilder usage(String prefix, String local) {
         this.usedEntity= qn(prefix,local);
+        return this;
+    }
+    public WasDerivedFromBuilder generation(QualifiedName generation) {
+        this.generation=generation;
+        return this;
+    }
+    public WasDerivedFromBuilder generation(String knownAs) {
+        QualifiedName qn=parent.knownAs.get(knownAs);
+        if (qn==null) throw new NullPointerException("generation cannot find knownAs " + knownAs + " in " + parent.knownAs);
+        this.generation=qn;
+        return this;
+    }
+
+    public WasDerivedFromBuilder generation(String prefix, String local) {
+        this.generation= qn(prefix,local);
         return this;
     }
 
@@ -55,6 +86,11 @@ public class WasDerivedFromBuilder extends GenericBuilder<WasDerivedFromBuilder>
         QualifiedName qn=parent.knownAs.get(knownAs);
         if (qn==null) throw new NullPointerException("activity cannot find knownAs " + knownAs + " in " + parent.knownAs);
         this.activity=qn;
+        return this;
+    }
+
+    public WasDerivedFromBuilder aka() {
+        parent.knownAs.put(id.getLocalPart(),id);
         return this;
     }
 

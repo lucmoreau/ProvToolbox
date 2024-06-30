@@ -35,7 +35,6 @@ public interface HasLocation {
      * 
      * 
      */
-
-    public List<Location> getLocation();
+    List<Location> getLocation();
 
 } 

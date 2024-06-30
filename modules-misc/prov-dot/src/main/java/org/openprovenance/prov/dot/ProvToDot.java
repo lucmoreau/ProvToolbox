@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.IOUtils;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.DocumentedUnsupportedCaseException;
 import org.openprovenance.prov.model.exception.UncheckedException;
@@ -63,31 +64,31 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
 
 
-    public void convert(Document graph, String dotFile, String pdfFile, String title) throws java.io.IOException {
+    public void convert(Document graph, String dotFile, String pdfFile, String title) throws IOException {
         convert(graph,new File(dotFile), title);
         Runtime runtime = Runtime.getRuntime();
         @SuppressWarnings("unused")
-        java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
+        Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
     }
 
     public void convert(Document graph, String dotFile, OutputStream pdfStream, String title)
-            throws java.io.IOException {
+            throws IOException {
         convert(graph,new File(dotFile), title);
         Runtime runtime = Runtime.getRuntime();
-        java.lang.Process proc = runtime.exec("dot  -Tpdf " + dotFile);
+        Process proc = runtime.exec("dot  -Tpdf " + dotFile);
         InputStream is=proc.getInputStream();
-        org.apache.commons.io.IOUtils.copy(is, pdfStream);
+        IOUtils.copy(is, pdfStream);
     }
     public void convert(Document graph, String dotFile, String title)
-            throws java.io.IOException {
+            throws IOException {
         convert(graph,new File(dotFile),title);
     }
 
     public void convert(Document graph, String dotFile, String aFile, String type, String title)
-            throws java.io.IOException {
+            throws IOException {
         convert(graph,new File(dotFile),title);
         Runtime runtime = Runtime.getRuntime();
-        java.lang.Process proc = runtime.exec("dot -o " + aFile + " -T" + type + " " + dotFile);
+        Process proc = runtime.exec("dot -o " + aFile + " -T" + type + " " + dotFile);
         try {
             BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
             String s_error=errorReader.readLine();
@@ -106,9 +107,9 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             File dotFile=File.createTempFile("temp", ".dot");
             convert(graph, dotFile ,title);
             Runtime runtime = Runtime.getRuntime();
-            java.lang.Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
+            Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
             InputStream is=proc.getInputStream();
-            org.apache.commons.io.IOUtils.copy(is, os);
+            IOUtils.copy(is, os);
             @SuppressWarnings("unused")
             boolean resultCode=dotFile.delete();
 
@@ -122,17 +123,17 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     }
 
     public void convert(Document graph, String dotFile, OutputStream os, String type, String title)
-            throws java.io.IOException {
+            throws IOException {
         convert(graph,new File(dotFile),title);
         Runtime runtime = Runtime.getRuntime();
 
-        java.lang.Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
+        Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
         InputStream is=proc.getInputStream();
-        org.apache.commons.io.IOUtils.copy(is, os);
+        IOUtils.copy(is, os);
 
     }
 
-    public void convert(Document graph, File file, String title) throws java.io.FileNotFoundException{
+    public void convert(Document graph, File file, String title) throws FileNotFoundException{
         OutputStream os=new FileOutputStream(file);
         convert(graph, new PrintStream(os), title);
     }
@@ -925,8 +926,25 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     }
 
     static class ProvUtilitiesForTriangle extends ProvUtilities {
+        private final List<String> exceptions;
+
+
+        public ProvUtilitiesForTriangle() {
+            super();
+            exceptions = List.of();
+        }
+        public ProvUtilitiesForTriangle(List<String> exceptions) {
+            super();
+            this.exceptions=exceptions;
+        }
+
         @Override
         public List<QualifiedName> getOtherCauses(Relation r) {
+            if (r instanceof Identifiable & ((Identifiable)r).getId()!=null) {
+                if (exceptions.contains(((Identifiable)r).getId().getLocalPart())) {
+                    return null;
+                }
+            }
             if (r instanceof WasAttributedTo) {
                 WasAttributedTo wat = (WasAttributedTo) r;
                 Hashtable<String, List<Other>> attributes=attributesWithNamespace(wat, NamespacePrefixMapper.PROV_EXT_NS);
@@ -956,7 +974,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                     result.add(der.getActivity());
                 }
                 return result;
-            } else if (r instanceof WasGeneratedBy || r instanceof WasAssociatedWith || r instanceof SpecializationOf ) {
+            } else if (r instanceof WasGeneratedBy || r instanceof WasAssociatedWith || r instanceof SpecializationOf | r instanceof WasInvalidatedBy) {
                 return Collections.emptyList();
             }else {
                 return super.getOtherCauses(r);
@@ -966,6 +984,10 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
     public static ProvToDot newProvToDot(ProvFactory pf) {
         Supplier<ProvUtilities> utilities= ProvUtilitiesForTriangle::new;
+        return new ProvToDot(pf, utilities);
+    }
+    public static ProvToDot newProvToDot(ProvFactory pf, List<String> exceptions) {
+        Supplier<ProvUtilities> utilities= () -> new ProvUtilitiesForTriangle(exceptions);
         return new ProvToDot(pf, utilities);
     }
 

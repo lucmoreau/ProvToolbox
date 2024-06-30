@@ -78,7 +78,7 @@ public class Builder {
     public WasInfluencedByBuilder wasInfluencedBy() {
         return new WasInfluencedByBuilder(this,mc,pf);
     }
-    public WasInvalidatedByBuilder wasInvalidatedByBuilder() {
+    public WasInvalidatedByBuilder wasInvalidatedBy() {
         return new WasInvalidatedByBuilder(this,mc,pf);
     }
     public ActedOnBehalfOfBuilder actedOnBehalfOf() {

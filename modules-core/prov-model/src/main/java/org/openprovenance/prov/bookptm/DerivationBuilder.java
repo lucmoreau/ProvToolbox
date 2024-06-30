@@ -65,6 +65,14 @@ public class DerivationBuilder {
         return doc;
     }
 
+    public Document makeDocument_Attribution2FullTriangle() {
+        Builder builder = new Builder(pFactory, pFactory, pFactory);
+        Definitions defs = getDefinitions(builder);
+        attributionDescription2FullTriangle(builder, defs, true);
+        Document doc=builder.build();
+        return doc;
+    }
+
     public Document makeDocument_Specialization() {
         Builder builder = new Builder(pFactory, pFactory, pFactory);
         Definitions defs = getDefinitions(builder);
@@ -219,6 +227,99 @@ public class DerivationBuilder {
                 .attrQn(defs.activity, "a7667")
                 .build();
     }
+
+    private void attributionDescription2FullTriangle(Builder builder, Definitions defs, boolean standalone) {
+
+
+
+        builder.entity()
+                .id(defs.XID, "b34/7").aka()
+                .type(defs.Box)
+                .build();
+
+
+        builder.entity()
+                .id(defs.XID, "crdbrd843").aka()
+                .label("cardboard")
+                .build();
+
+        builder.entity()
+                .id(defs.XID, "bks644").aka()
+                //.type(defs.Books)
+                .label("books")
+                .build();
+
+
+        builder.agent()
+                .id(defs.XID, "luc").knownAsLocal()
+                .type(name.PROV_PERSON)
+                .build();
+
+        builder.activity()
+                .id(defs.XID, "a7699").knownAsLocal()
+                .label("unpacking activity")
+                .build();
+
+        builder.wasGeneratedBy()
+                .id(defs.XID, "wgb11").aka()
+                .entity("bks644")
+                .activity("a7699")
+                .build();
+
+        builder.wasGeneratedBy()
+                .id(defs.XID, "wgb12").aka()
+                .entity("crdbrd843")
+                .activity("a7699")
+                .build();
+
+        builder.used()
+                .id(defs.XID, "used11").aka()
+                .activity("a7699")
+                .entity("b34/7")
+                .build();
+
+
+        builder.wasDerivedFrom()
+                .id(defs.XID, "deriv11").aka()
+                .generatedEntity("bks644")
+                .usedEntity("b34/7")
+                .activity("a7699")
+                .generation("wgb11")
+                .usage("used11")
+                .build();
+
+        builder.wasDerivedFrom()
+                .id(defs.XID, "deriv12").aka()
+                .generatedEntity("crdbrd843")
+                .usedEntity("b34/7")
+                .activity("a7699")
+                .generation("wgb12")
+                .usage("used11")
+                .build();
+
+
+        builder.wasAssociatedWith()
+                .id(defs.XID, "waw11").aka()
+                .activity("a7699")
+                .agent("luc")
+                .build();
+
+        builder.wasInvalidatedBy()
+                .id(defs.XID, "wib11").aka()
+                .entity("b34/7")
+                .activity("a7699")
+                .build();
+
+
+        builder.wasAttributedTo()
+                .entity("b34/7")
+                .agent("luc")
+                .attrQn(defs.association,"waw11")
+                .attrQn(defs.invalidation,"wib11")
+                .attrQn(defs.activity, "a7699")
+                .build();
+    }
+
 
     public void weighingDescription(Builder builder, Definitions defs, boolean standalone) {
 
@@ -542,10 +643,11 @@ public class DerivationBuilder {
         QualifiedName association   =builder.qn(PROVEXT, "association");
         QualifiedName generation    =builder.qn(PROVEXT, "generation");
         QualifiedName activity      =builder.qn(PROVEXT, "activity");
+        QualifiedName invalidation  =builder.qn(PROVEXT, "invalidation");
 
 
         QualifiedName foaf_name    = builder.qn(FOAF, "name");
-        Definitions result = new Definitions(XID, Box, FPC, Ownership, Transporting, Weighing, Packing, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, scientist, scale, Instrument, specialization, derivation, entity, association, generation, activity);
+        Definitions result = new Definitions(XID, Box, FPC, Ownership, Transporting, Weighing, Packing, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, scientist, scale, Instrument, specialization, derivation, entity, association, generation, activity, invalidation);
         return result;
     }
 
@@ -573,8 +675,9 @@ public class DerivationBuilder {
         public final QualifiedName association;
         public final QualifiedName generation;
         public final QualifiedName activity;
+        public final QualifiedName invalidation;
 
-        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity) {
+        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation) {
             this.XID = XID;
             this.Box = Box;
             this.FPC = fpc;
@@ -598,6 +701,7 @@ public class DerivationBuilder {
             this.association = association;
             this.generation = generation;
             this.activity = activity;
+            this.invalidation = invalidation;
         }
     }
 

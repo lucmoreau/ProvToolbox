@@ -11,9 +11,10 @@ import static org.openprovenance.prov.model.NamespacePrefixMapper.*;
 
 public class DerivationBuilder {
 
-    static final String EX_NS_URI = "http://example.org/ns/";
+    static final String VOCAB_NS_URI = "http://example.org/ns/";
     static final String EX_IDS_URI = "http://example.org/id/";
     static final String FOAF_URI="http://xmlns.com/foaf/0.1/";
+    public static final String VOCAB = "vocab";
     public static ProvFactory pFactory=new org.openprovenance.prov.vanilla.ProvFactory();
     public static Name name=pFactory.getName();
     protected final String edge2Colour;
@@ -107,6 +108,37 @@ public class DerivationBuilder {
         return doc;
     }
 
+    public Document makeDocument_StartPartialTriangle() {
+        Builder builder = new Builder(pFactory, pFactory, pFactory);
+        Definitions defs = getDefinitions(builder);
+        startDescriptionPartialTriangle(builder, defs, true);
+        Document doc=builder.build();
+        return doc;
+    }
+
+    public Document makeDocument_EndPartialTriangle() {
+        Builder builder = new Builder(pFactory, pFactory, pFactory);
+        Definitions defs = getDefinitions(builder);
+        endDescriptionPartialTriangle(builder, defs, true);
+        Document doc=builder.build();
+        return doc;
+    }
+
+    public Document makeDocument_AddElementToCollection() {
+        Builder builder = new Builder(pFactory, pFactory, pFactory);
+        Definitions defs = getDefinitions(builder);
+        addElementToCollection(builder, defs, true);
+        Document doc=builder.build();
+        return doc;
+    }
+
+    public Document makeDocument_RemoveElementFromCollection() {
+        Builder builder = new Builder(pFactory, pFactory, pFactory);
+        Definitions defs = getDefinitions(builder);
+        removeElementFromCollection(builder, defs, true);
+        Document doc=builder.build();
+        return doc;
+    }
 
     public Document makeDerivation() {
         Builder builder = new Builder(pFactory, pFactory, pFactory);
@@ -689,15 +721,238 @@ public class DerivationBuilder {
 
     }
 
+    private void startDescriptionPartialTriangle(Builder builder, Definitions defs, boolean standalone) {
+
+
+
+        builder.activity()
+                .id(defs.XID, "a0").aka()
+                .build();
+
+
+        builder.entity()
+                .id(defs.XID, "e").aka()
+                .build();
+
+        builder.activity()
+                .id(defs.XID, "a1").aka()
+                .build();
+
+
+        builder.wasGeneratedBy()
+                .id(defs.XID, "g").aka()
+                .entity("e")
+                .activity("a0")
+                .attr(defs.dotColour, edge1Colour)
+                .build();
+
+
+
+
+        builder.wasStartedBy()
+                .activity("a1")
+                .entity("e")
+                .starter("a0")
+                .attrQn(defs.generation,"g")
+                //.attrQn(defs.usage, "u")
+                .attr(defs.dotColour, edge3Colour)
+                .build();
+
+
+    }
+
+    private void endDescriptionPartialTriangle(Builder builder, Definitions defs, boolean standalone) {
+
+
+
+        builder.activity()
+                .id(defs.XID, "a0").aka()
+                .build();
+
+
+        builder.entity()
+                .id(defs.XID, "e").aka()
+                .build();
+
+        builder.activity()
+                .id(defs.XID, "a1").aka()
+                .build();
+
+
+        builder.wasGeneratedBy()
+                .id(defs.XID, "g").aka()
+                .entity("e")
+                .activity("a0")
+                .attr(defs.dotColour, edge1Colour)
+                .build();
+
+
+
+
+        builder.wasEndedBy()
+                .activity("a1")
+                .entity("e")
+                .ender("a0")
+                .attrQn(defs.generation,"g")
+                //.attrQn(defs.usage, "u")
+                .attr(defs.dotColour, edge3Colour)
+                .build();
+
+
+    }
+
+    private void addElementToCollection(Builder builder, Definitions defs, boolean standalone) {
+
+
+
+        builder.activity()
+                .id(defs.XID, "add").aka()
+                .type(defs.ExtendingCollection)
+                .build();
+
+
+        builder.entity()
+                .id(defs.XID, "coll0").aka()
+                .type(name.PROV_COLLECTION)
+                .build();
+
+        builder.entity()
+                .id(defs.XID, "item").aka()
+                .label("An item")
+                .build();
+
+        builder.entity()
+                .id(defs.XID, "coll1").aka()
+                .type(name.PROV_COLLECTION)
+                .build();
+
+
+        builder.wasGeneratedBy()
+                .entity("coll1")
+                .activity("add")
+                .role(VOCAB, "outCollection")
+                .build();
+
+        builder.used()
+                .activity("add")
+                .entity("coll0")
+                .role(VOCAB, "inCollection")
+                .build();
+
+        builder.used()
+                .activity("add")
+                .entity("item")
+                .role(VOCAB, "inEntity")
+                .build();
+
+        builder.wasDerivedFrom()
+                .generatedEntity("coll1")
+                .usedEntity("coll0")
+                .activity("add")
+                .type(defs.ExtendingCollection)
+                .build();
+
+        /*
+        builder.wasDerivedFrom()
+                .generatedEntity("coll1")
+                .usedEntity("item")
+                .activity("add")
+                .build();
+
+         */
+
+        builder.hadMember()
+                .collection("coll1")
+                .entity("item")
+                .type(name.newProvQualifiedName("Derivation"))
+                .type(defs.AddingElement)
+                .build();
+
+    }
+    private void removeElementFromCollection(Builder builder, Definitions defs, boolean standalone) {
+
+
+
+        builder.activity()
+                .id(defs.XID, "rem").aka()
+                .type(defs.ReducingCollection)
+                .build();
+
+
+        builder.entity()
+                .id(defs.XID, "coll0").aka()
+                .type(name.PROV_COLLECTION)
+                .build();
+
+        builder.entity()
+                .id(defs.XID, "item").aka()
+                .label("An item")
+                .build();
+
+        builder.hadMember()
+                .collection("coll0")
+                .entity("item")
+                .build();
+
+        builder.entity()
+                .id(defs.XID, "coll1").aka()
+                .type(name.PROV_COLLECTION)
+                .build();
+
+
+        builder.wasGeneratedBy()
+                .entity("coll1")
+                .activity("rem")
+                .role(VOCAB, "outCollection")
+                .build();
+
+        builder.used()
+                .activity("rem")
+                .entity("coll0")
+                .role(VOCAB, "inCollection")
+                .build();
+
+        builder.used()
+                .activity("rem")
+                .entity("item")
+                .role(VOCAB, "inEntity")
+                .build();
+
+        builder.wasDerivedFrom()
+                .generatedEntity("coll1")
+                .usedEntity("coll0")
+                .activity("rem")
+                .type(defs.ReducingCollection)
+                .build();
+
+
+        builder.wasDerivedFrom()
+                .generatedEntity("coll1")
+                .usedEntity("item")
+                .activity("rem")
+                .type(defs.RemovingElement)
+                .build();
+
+
+        /*
+
+        builder.hadMember()
+                .collection("coll1")
+                .entity("item")
+                .type(name.newProvQualifiedName("Derivation"))
+                .type(defs.AddingElement)
+                .build();   */
+
+    }
 
 
     public Definitions getDefinitions(Builder builder) {
-        Prefix VOCAB  = builder.prefix("vocab");
+        Prefix VOCAB  = builder.prefix(DerivationBuilder.VOCAB);
         Prefix XID    = builder.prefix("xid");
         Prefix FOAF    = builder.prefix("foaf");
         Prefix PROVEXT = builder.prefix("provext");
         Prefix DOT    = builder.prefix(DOT_PREFIX);
-        builder.prefix(VOCAB, EX_NS_URI);
+        builder.prefix(VOCAB, VOCAB_NS_URI);
         builder.prefix(XID, EX_IDS_URI);
         builder.prefix(FOAF, FOAF_URI);
         builder.prefix(PROVEXT, PROV_EXT_NS);
@@ -727,10 +982,14 @@ public class DerivationBuilder {
         QualifiedName invalidation  =builder.qn(PROVEXT, "invalidation");
         QualifiedName usage         =builder.qn(PROVEXT, "usage");
         QualifiedName dotColour     =builder.qn(DOT, "color");
+        QualifiedName AddingElement =builder.qn(VOCAB, "AddingElement");
+        QualifiedName ExtendingCollection =builder.qn(VOCAB, "ExtendingCollection");
+        QualifiedName RemovingElement =builder.qn(VOCAB, "RemovingElement");
+        QualifiedName ReducingCollection =builder.qn(VOCAB, "ReducingCollection");
 
 
         QualifiedName foaf_name    = builder.qn(FOAF, "name");
-        Definitions result = new Definitions(XID, Box, FPC, Ownership, Transporting, Weighing, Packing, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, scientist, scale, Instrument, specialization, derivation, entity, association, generation, activity, invalidation, usage, dotColour);
+        Definitions result = new Definitions(XID, Box, FPC, Ownership, Transporting, Weighing, Packing, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, scientist, scale, Instrument, specialization, derivation, entity, association, generation, activity, invalidation, usage, dotColour, AddingElement, ExtendingCollection, RemovingElement, ReducingCollection);
         return result;
     }
 
@@ -761,8 +1020,12 @@ public class DerivationBuilder {
         public final QualifiedName invalidation;
         public final QualifiedName usage;
         public final QualifiedName dotColour;
+        public final QualifiedName AddingElement;
+        public final QualifiedName ExtendingCollection;
+        public final QualifiedName RemovingElement;
+        public final QualifiedName ReducingCollection;
 
-        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation, QualifiedName usage, QualifiedName dotColour) {
+        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation, QualifiedName usage, QualifiedName dotColour, QualifiedName addingElement, QualifiedName extendingCollection, QualifiedName removingElement, QualifiedName reducingCollection) {
             this.XID = XID;
             this.Box = Box;
             this.FPC = fpc;
@@ -789,6 +1052,10 @@ public class DerivationBuilder {
             this.invalidation = invalidation;
             this.usage = usage;
             this.dotColour = dotColour;
+            this.AddingElement = addingElement;
+            this.ExtendingCollection = extendingCollection;
+            RemovingElement = removingElement;
+            ReducingCollection = reducingCollection;
         }
     }
 

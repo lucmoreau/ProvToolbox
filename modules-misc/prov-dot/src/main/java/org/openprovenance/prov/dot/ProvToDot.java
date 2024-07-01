@@ -940,7 +940,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
         @Override
         public List<QualifiedName> getOtherCauses(Relation r) {
-            if (r instanceof Identifiable & ((Identifiable)r).getId()!=null) {
+            if (r instanceof Identifiable && ((Identifiable)r).getId()!=null) {
                 if (exceptions.contains(((Identifiable)r).getId().getLocalPart())) {
                     return null;
                 }
@@ -961,10 +961,26 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
             }  else if (r instanceof WasInformedBy ) {
-                WasInformedBy usd = (WasInformedBy) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(usd, NamespacePrefixMapper.PROV_EXT_NS);
+                WasInformedBy wib = (WasInformedBy) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(wib, NamespacePrefixMapper.PROV_EXT_NS);
                 List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+            } else if (r instanceof WasStartedBy ) {
+                List<QualifiedName> result1=super.getOtherCauses(r);
+                WasStartedBy start = (WasStartedBy) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(start, NamespacePrefixMapper.PROV_EXT_NS);
+                List<Other> tmp=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                List<QualifiedName> result2=tmp.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+                if (result1!=null) result2.addAll(result1);
+                return result2;
+            }  else if (r instanceof WasEndedBy ) {
+                List<QualifiedName> result1=super.getOtherCauses(r);
+                WasEndedBy end = (WasEndedBy) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(end, NamespacePrefixMapper.PROV_EXT_NS);
+                List<Other> tmp=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                List<QualifiedName> result2=tmp.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+                if (result1!=null) result2.addAll(result1);
+                return result2;
             }  else if (r instanceof WasDerivedFrom ) {
                 WasDerivedFrom der = (WasDerivedFrom) r;
 

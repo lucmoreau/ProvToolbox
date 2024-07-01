@@ -64,7 +64,7 @@ public class WasEndedByBuilder extends TimeBuilder<WasEndedByBuilder> implements
 
 
     public Builder build() {
-        parent.statements.add(mc.newWasEndedBy(id, entity, activity, ender, time, attrs));
+        parent.statements.add(mc.newWasEndedBy(id, activity, entity, ender, time, attrs));
         return parent;
     }
 

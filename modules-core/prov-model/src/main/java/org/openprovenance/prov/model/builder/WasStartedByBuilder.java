@@ -62,7 +62,7 @@ public class WasStartedByBuilder extends TimeBuilder<WasStartedByBuilder> implem
         return this;
     }
     public Builder build() {
-        parent.statements.add(mc.newWasStartedBy(id, entity, activity, starter, time, attrs));
+        parent.statements.add(mc.newWasStartedBy(id,  activity, entity, starter, time, attrs));
         return parent;
     }
 

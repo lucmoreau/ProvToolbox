@@ -22,6 +22,7 @@ public class Name {
         PROV_KEY=newProvQualifiedName("key");
 
         PROV_PERSON=newProvQualifiedName("Person");
+        PROV_COLLECTION=newProvQualifiedName("Collection");
         PROV_ORGANIZATION=newProvQualifiedName("Organization");
 
         XSD_STRING=newXsdQualifiedName("string");
@@ -113,6 +114,7 @@ public class Name {
 
 
     final public QualifiedName PROV_PERSON;
+    final public QualifiedName PROV_COLLECTION;
     final public QualifiedName PROV_ORGANIZATION;
 
     /** Qualified Name for <a href="http://www.w3.org/TR/xmlschema-2/#string">xsd:string</a>  */

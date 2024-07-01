@@ -36,7 +36,7 @@ public class ActivityBuilder extends GenericBuilder<ActivityBuilder>{
     }
 
 
-    public ActivityBuilder knownAsLocal() {
+    public ActivityBuilder aka() {
         parent.knownAs.put(id.getLocalPart(),id);
         return this;
     }

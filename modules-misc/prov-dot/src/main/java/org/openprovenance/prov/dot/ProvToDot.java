@@ -960,6 +960,11 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 Hashtable<String, List<Other>> attributes=attributesWithNamespace(usd, NamespacePrefixMapper.PROV_EXT_NS);
                 List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+            }  else if (r instanceof WasInformedBy ) {
+                WasInformedBy usd = (WasInformedBy) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(usd, NamespacePrefixMapper.PROV_EXT_NS);
+                List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
             }  else if (r instanceof WasDerivedFrom ) {
                 WasDerivedFrom der = (WasDerivedFrom) r;
 
@@ -974,9 +979,9 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                     result.add(der.getActivity());
                 }
                 return result;
-            } else if (r instanceof WasGeneratedBy || r instanceof WasAssociatedWith || r instanceof SpecializationOf | r instanceof WasInvalidatedBy) {
+            } else if (r instanceof WasGeneratedBy || r instanceof WasAssociatedWith || r instanceof SpecializationOf | r instanceof WasInvalidatedBy ) {
                 return Collections.emptyList();
-            }else {
+            } else {
                 return super.getOtherCauses(r);
             }
         }

@@ -52,34 +52,34 @@ public class PC1BuilderTest extends TestCase {
 
                 builder .forEach(List.of("a1","a2","a3","a4"), (a) ->
                                 builder .activity()
-                                        .id(PC1, a).knownAsLocal()
+                                        .id(PC1, a).aka()
                                         .type(PRIMITIVE_ALIGN_WARP)
                                         .label("align_warp " + a)
                                         .build())
 
                         .forEach(List.of("a5","a6","a7","a8"), (a,count) ->
                                 builder .activity()
-                                        .id(PC1, a).knownAsLocal()
+                                        .id(PC1, a).aka()
                                         .type(PRIMITIVE_RESLICE)
                                         .label("Reslice " + (count+1))
                                         .build())
 
                         .activity()
-                        .id(PC1, "a9").knownAsLocal()
+                        .id(PC1, "a9").aka()
                         .type(PRIMITIVE_SOFTMEAN)
                         .label("Softmean")
                         .build()
 
                         .forEach(List.of("a10","a11","a12"), (a, count) ->
                                 builder .activity()
-                                        .id(PC1, a).knownAsLocal()
+                                        .id(PC1, a).aka()
                                         .type(PRIMITIVE_SLICER)
                                         .label("Slicer " + (count+1))
                                         .build())
 
                         .forEach(List.of("a13","a14", "a15"), (a, count) ->
                                 builder .activity()
-                                        .id(PC1, a).knownAsLocal()
+                                        .id(PC1, a).aka()
                                         .type(PRIMITIVE_CONVERT)
                                         .label("Convert " + (count+1))
                                         .build())

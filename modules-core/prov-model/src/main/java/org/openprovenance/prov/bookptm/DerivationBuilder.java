@@ -7,7 +7,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.builder.Builder;
 import org.openprovenance.prov.model.builder.Prefix;
 
-import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS;
+import static org.openprovenance.prov.model.NamespacePrefixMapper.*;
 
 public class DerivationBuilder {
 
@@ -16,6 +16,16 @@ public class DerivationBuilder {
     static final String FOAF_URI="http://xmlns.com/foaf/0.1/";
     public static ProvFactory pFactory=new org.openprovenance.prov.vanilla.ProvFactory();
     public static Name name=pFactory.getName();
+    protected final String edge2Colour;
+    protected final String edge1Colour;
+    protected final String edge3Colour;
+
+
+    public DerivationBuilder() {
+        edge1Colour = "red";
+        edge2Colour = "blue";
+        edge3Colour = "gold";
+    }
 
     public Document makeDocument_Transporting() {
         Builder builder = new Builder(pFactory, pFactory, pFactory);
@@ -85,6 +95,14 @@ public class DerivationBuilder {
         Builder builder = new Builder(pFactory, pFactory, pFactory);
         Definitions defs = getDefinitions(builder);
         specializationDescriptionFullTriangle(builder, defs, true);
+        Document doc=builder.build();
+        return doc;
+    }
+
+    public Document makeDocument_CommunicationFullTriangle() {
+        Builder builder = new Builder(pFactory, pFactory, pFactory);
+        Definitions defs = getDefinitions(builder);
+        communicationDescriptionFullTriangle(builder, defs, true);
         Document doc=builder.build();
         return doc;
     }
@@ -167,7 +185,7 @@ public class DerivationBuilder {
                 .build();
 
         builder.activity()
-                .id(defs.XID, "a7667").knownAsLocal()
+                .id(defs.XID, "a7667").aka()
                 .label("packing activity")
                 .type(defs.Packing)
                 .build();
@@ -176,6 +194,7 @@ public class DerivationBuilder {
                 .id(defs.XID, "wgb0").aka()
                 .entity("b34/5")
                 .activity("a7667")
+                .attr(defs.dotColour, edge2Colour)
                 .build();
 
         builder.used()
@@ -215,6 +234,7 @@ public class DerivationBuilder {
                 .id(defs.XID, "waw1").aka()
                 .activity("a7667")
                 .agent("luc")
+                .attr(defs.dotColour, edge1Colour)
                 .build();
 
 
@@ -225,6 +245,7 @@ public class DerivationBuilder {
                 .attrQn(defs.association,"waw1")
                 .attrQn(defs.generation,"wgb0")
                 .attrQn(defs.activity, "a7667")
+                .attr(defs.dotColour, edge3Colour)
                 .build();
     }
 
@@ -256,7 +277,7 @@ public class DerivationBuilder {
                 .build();
 
         builder.activity()
-                .id(defs.XID, "a7699").knownAsLocal()
+                .id(defs.XID, "a7699").aka()
                 .label("unpacking activity")
                 .build();
 
@@ -302,12 +323,15 @@ public class DerivationBuilder {
                 .id(defs.XID, "waw11").aka()
                 .activity("a7699")
                 .agent("luc")
+                .attr(defs.dotColour, edge1Colour)
                 .build();
 
         builder.wasInvalidatedBy()
                 .id(defs.XID, "wib11").aka()
                 .entity("b34/7")
                 .activity("a7699")
+                .attr(defs.dotColour, edge2Colour)
+
                 .build();
 
 
@@ -317,6 +341,7 @@ public class DerivationBuilder {
                 .attrQn(defs.association,"waw11")
                 .attrQn(defs.invalidation,"wib11")
                 .attrQn(defs.activity, "a7699")
+                .attr(defs.dotColour, edge3Colour)
                 .build();
     }
 
@@ -332,7 +357,7 @@ public class DerivationBuilder {
         }
 
         builder.activity()
-                .id(defs.XID, "a7588").knownAsLocal()
+                .id(defs.XID, "a7588").aka()
                 .label("weighing activity")
                 .type(defs.Weighing)
                 .build();
@@ -403,7 +428,7 @@ public class DerivationBuilder {
                 .build();
 
         builder.activity()
-                .id(defs.XID, "a7543").knownAsLocal()
+                .id(defs.XID, "a7543").aka()
                 .label("some activity")
                 .type(defs.Transporting)
                 .start("2024-07-16T10:05:00")
@@ -451,7 +476,7 @@ public class DerivationBuilder {
                 .build();
 
         builder.activity()
-                .id(defs.XID, "a7543").knownAsLocal()
+                .id(defs.XID, "a7543").aka()
                 .label("some activity")
                 .type(defs.Transporting)
                 .start("2024-07-16T10:05:00")
@@ -465,6 +490,8 @@ public class DerivationBuilder {
                 .type(defs.DropOff)
                 .time("2024-07-16T11:58:00")
                 .label("drop-off at destination")
+                .attr(defs.dotColour, edge1Colour)
+
                 .build();
 
         builder.used()
@@ -474,6 +501,8 @@ public class DerivationBuilder {
                 .type(defs.PickUp)
                 .time("2024-07-16T10:20:00")
                 .label("pick up at origin")
+                .attr(defs.dotColour, edge2Colour)
+
                 .build();
 
         builder.wasDerivedFrom()
@@ -483,6 +512,7 @@ public class DerivationBuilder {
                 .activity("a7543")
                 .generation("wgb1")
                 .usage("used1")
+                .attr(defs.dotColour, edge3Colour)
                 .build();
 
     }
@@ -491,7 +521,7 @@ public class DerivationBuilder {
     public void transportingAttribution(Builder builder, Definitions defs, boolean standalone) {
         if (standalone) {
             builder.activity()
-                    .id(defs.XID, "a7543").knownAsLocal()
+                    .id(defs.XID, "a7543").aka()
                     .type(defs.Transporting)
                     .build();
         }
@@ -586,6 +616,7 @@ public class DerivationBuilder {
                     .generatedEntity("b34/6")
                     .usedEntity("b34/5")
                     .type(defs.Transporting)
+                    .attr(defs.dotColour, edge2Colour)
                     .build();
         }
 
@@ -599,6 +630,7 @@ public class DerivationBuilder {
                 .id(defs.XID,"spe1").aka()
                 .generalEntity("b34")
                 .specificEntity("b34/5")
+                .attr(defs.dotColour, edge1Colour)
                 .build();
 
         builder.specializationOf()
@@ -607,7 +639,54 @@ public class DerivationBuilder {
                 .attrQn(defs.specialization,"spe1")
                 .attrQn(defs.derivation,"deriv1")
                 .attrQn(defs.entity, "b34/5")
+                .attr(defs.dotColour, edge3Colour)
                 .build();
+    }
+
+    private void communicationDescriptionFullTriangle(Builder builder, Definitions defs, boolean standalone) {
+
+
+
+        builder.activity()
+                .id(defs.XID, "a0").aka()
+                .build();
+
+
+        builder.entity()
+                .id(defs.XID, "e").aka()
+                .build();
+
+        builder.activity()
+                .id(defs.XID, "a1").aka()
+                .build();
+
+
+        builder.wasGeneratedBy()
+                .id(defs.XID, "g").aka()
+                .entity("e")
+                .activity("a0")
+                .attr(defs.dotColour, edge1Colour)
+                .build();
+
+
+        builder.used()
+                .id(defs.XID, "u").aka()
+                .activity("a1")
+                .entity("e")
+                .attr(defs.dotColour, edge2Colour)
+                .build();
+
+
+        builder.wasInformedBy()
+                .informant("a0")
+                .informed("a1")
+                .attrQn(defs.entity,"e")
+                .attrQn(defs.generation,"g")
+                .attrQn(defs.usage, "u")
+                .attr(defs.dotColour, edge3Colour)
+                .build();
+
+
     }
 
 
@@ -617,10 +696,12 @@ public class DerivationBuilder {
         Prefix XID    = builder.prefix("xid");
         Prefix FOAF    = builder.prefix("foaf");
         Prefix PROVEXT = builder.prefix("provext");
+        Prefix DOT    = builder.prefix(DOT_PREFIX);
         builder.prefix(VOCAB, EX_NS_URI);
         builder.prefix(XID, EX_IDS_URI);
         builder.prefix(FOAF, FOAF_URI);
         builder.prefix(PROVEXT, PROV_EXT_NS);
+        builder.prefix(DOT, DOT_NS);
 
         QualifiedName Box          = builder.qn(VOCAB, "Box");
         QualifiedName FPC          = builder.qn(VOCAB, "FPC");
@@ -644,10 +725,12 @@ public class DerivationBuilder {
         QualifiedName generation    =builder.qn(PROVEXT, "generation");
         QualifiedName activity      =builder.qn(PROVEXT, "activity");
         QualifiedName invalidation  =builder.qn(PROVEXT, "invalidation");
+        QualifiedName usage         =builder.qn(PROVEXT, "usage");
+        QualifiedName dotColour     =builder.qn(DOT, "color");
 
 
         QualifiedName foaf_name    = builder.qn(FOAF, "name");
-        Definitions result = new Definitions(XID, Box, FPC, Ownership, Transporting, Weighing, Packing, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, scientist, scale, Instrument, specialization, derivation, entity, association, generation, activity, invalidation);
+        Definitions result = new Definitions(XID, Box, FPC, Ownership, Transporting, Weighing, Packing, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, scientist, scale, Instrument, specialization, derivation, entity, association, generation, activity, invalidation, usage, dotColour);
         return result;
     }
 
@@ -676,8 +759,10 @@ public class DerivationBuilder {
         public final QualifiedName generation;
         public final QualifiedName activity;
         public final QualifiedName invalidation;
+        public final QualifiedName usage;
+        public final QualifiedName dotColour;
 
-        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation) {
+        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation, QualifiedName usage, QualifiedName dotColour) {
             this.XID = XID;
             this.Box = Box;
             this.FPC = fpc;
@@ -702,6 +787,8 @@ public class DerivationBuilder {
             this.generation = generation;
             this.activity = activity;
             this.invalidation = invalidation;
+            this.usage = usage;
+            this.dotColour = dotColour;
         }
     }
 

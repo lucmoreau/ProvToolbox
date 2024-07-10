@@ -1,6 +1,8 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.0.6-SNAPSHOT`
+`2.0.7-SNAPSHOT`
+
+`2.0.6`
 * prov-template-compiler: introduced sqlify for a few more keywords
 * prov-template-compiler: fixed json schema generation for float/double
 * prov-template-library: updated plead templates to support sql backend, with ID being keys

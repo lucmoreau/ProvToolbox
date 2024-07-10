@@ -172,7 +172,7 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <!-- patch the shell script to avoid changing current directory, so that
                                      relative files are understood as relative to the current directory. -->
 
@@ -241,7 +241,7 @@
                                     <arg value="${project.build.directory}/provconvert.1" />
                                 </exec>
 
-                            </tasks>
+                            </target>
                         </configuration>
                     </execution>
                     <execution>
@@ -251,7 +251,7 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <!--<copy todir="${izpack.staging}">
                                           <fileset dir="${basedir}/src/izpack" />
                                 </copy>
@@ -263,7 +263,7 @@
                                 <copy todir="${izpack.staging}">
                                     <fileset dir="${project.build.directory}/appassembler" />
                                 </copy>
-                            </tasks>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
@@ -464,7 +464,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <tasks>
+                                    <target>
                                         <exec executable="touch" dir="${izpack.staging}/utils/wrappers/izpack2app/">
                                             <arg value="Mac-App-Template" />
                                         </exec>
@@ -515,7 +515,7 @@
                                         </exec>
 
 
-                                    </tasks>
+                                    </target>
                                 </configuration>
                             </execution>
 
@@ -525,7 +525,7 @@
                                 <id>IzPack-Win-Executable-From-Linux</id>
                                 <phase>install</phase>
                                 <configuration>
-                                    <tasks>
+                                    <target>
                                         <exec executable="chmod" dir="${izpack.staging}/utils/wrappers/izpack2exe/">
                                             <arg value="a+x" />
                                             <arg value="7za" />
@@ -548,7 +548,7 @@
                                         </exec>
 
 
-                                    </tasks>
+                                    </target>
                                 </configuration>
                                 <goals>
                                     <goal>run</goal>

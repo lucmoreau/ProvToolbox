@@ -14,7 +14,7 @@
 		<repository>
 			<id>jsweet-central</id>
 			<name>libs-release</name>
-			<url>http://repository.jsweet.org/artifactory/libs-release-local</url>
+			<url>https://repository.jsweet.org/artifactory/libs-release-local</url>
 		</repository>
 	</repositories>
 	<!--
@@ -22,7 +22,7 @@
 		<pluginRepository>
 			<id>jsweet-plugins-release</id>
 			<name>plugins-release</name>
-			<url>http://repository.jsweet.org/artifactory/plugins-release-local</url>
+			<url>https://repository.jsweet.org/artifactory/plugins-release-local</url>
 		</pluginRepository>
 	</pluginRepositories>
 	-->

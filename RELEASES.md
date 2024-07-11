@@ -1,6 +1,9 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.0.7-SNAPSHOT`
+`2.0.8-SNAPSHOT`
+*
+
+`2.0.7`
 * prov-jsonld: fixed context url
 * prov-model: builder for bundles
 * prov-template-compiler: generating outstanding sql methods and tables

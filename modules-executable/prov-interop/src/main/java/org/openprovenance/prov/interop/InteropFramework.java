@@ -356,13 +356,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 case PROVN:
                     extensionMap.put(PROVN, EXTENSION_PROVN);
                     extensionRevMap.put(EXTENSION_PROVN, PROVN);
-                    extensionRevMap.put("pn", PROVN);
-                    extensionRevMap.put("asn", PROVN);
-                    extensionRevMap.put("prov-asn", PROVN);
-                    mimeTypeMap.put(PROVN,
-                            MEDIA_TEXT_PROVENANCE_NOTATION);
-                    mimeTypeRevMap.put(MEDIA_TEXT_PROVENANCE_NOTATION,
-                            PROVN);
+                   // extensionRevMap.put("pn", PROVN);
+                   // extensionRevMap.put("asn", PROVN);
+                   // extensionRevMap.put("prov-asn", PROVN);
+                    mimeTypeMap.put(PROVN, MEDIA_TEXT_PROVENANCE_NOTATION);
+                    mimeTypeRevMap.put(MEDIA_TEXT_PROVENANCE_NOTATION, PROVN);
                     provTypeMap.put(PROVN, ProvFormatType.INPUTOUTPUT);
                     break;
                 case SVG:
@@ -372,6 +370,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     mimeTypeRevMap.put(MEDIA_IMAGE_SVG_XML, ProvFormat.SVG);
                     provTypeMap.put(ProvFormat.SVG, ProvFormatType.OUTPUT);
                     break;
+                    /*
                 case TRIG:
                     extensionMap.put(ProvFormat.TRIG, EXTENSION_TRIG);
                     extensionRevMap.put(EXTENSION_TRIG, ProvFormat.TRIG);
@@ -386,6 +385,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     mimeTypeRevMap.put(MEDIA_TEXT_TURTLE, ProvFormat.TURTLE);
                     provTypeMap.put(ProvFormat.TURTLE, ProvFormatType.INPUTOUTPUT);
                     break;
+
+                     */
                 case JSONLD:
                     extensionMap.put(ProvFormat.JSONLD, EXTENSION_JSONLD);
                     extensionRevMap.put(EXTENSION_JSONLD, ProvFormat.JSONLD);

@@ -22,7 +22,7 @@ public class StorageConfiguration implements EnvironmentVariables {
     public int mongo_port = 27017;
     public String uploaded_filepath="/somewhere/to/upload";
 
-    public static final String provStorageConfigurationFile=getSystemOrEnvironmentVariableOrDefault(PROV_STORAGE_CONFIG, "somefile-somewhere");
+    public static final String provStorageConfigurationFile=getSystemOrEnvironmentVariableOrDefault(PROV_STORAGE_CONFIG, "somefile-somewhere-NOT-DEFINED-in-PROV_STORAGE_CONFIG");
     public static StorageConfiguration loadConfiguration() {
         try {
             return new ObjectMapper().readValue(new File(provStorageConfigurationFile), StorageConfiguration.class);

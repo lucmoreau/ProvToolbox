@@ -9,7 +9,7 @@ TARGET_IMAGE=$(SERVICE).${docker.java.platform}
 LOCATION_IMAGE=$(TARGET_IMAGE)
 
 
-EXPORT_IMAGE=provenance/provapi
+EXPORT_IMAGE=provenance/templates
 
 DOCKER_RUN_DIR=$(HOME)/docker/log-dir
 

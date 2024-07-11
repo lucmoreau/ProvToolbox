@@ -3,6 +3,8 @@ package org.openprovenance.prov.template.compiler.configuration;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
 
     public String template;
@@ -35,8 +37,10 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
     @JsonIgnore
     public boolean inComposition=false;
 
+    @JsonIgnore
+    public List<String> sharing;
 
-    public SimpleTemplateCompilerConfig cloneAsInstanceInComposition(String newName) {
+    public SimpleTemplateCompilerConfig cloneAsInstanceInComposition(String newName, List<String> sharing) {
         SimpleTemplateCompilerConfig clone= new SimpleTemplateCompilerConfig();
         clone.template=template;
         clone.type_=type_;
@@ -44,6 +48,7 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
         clone.package_=package_;
         clone.bindings=bindings;
         clone.inComposition=true;
+        clone.sharing=sharing;
         return clone;
     }
 }

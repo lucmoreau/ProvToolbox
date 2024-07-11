@@ -22,6 +22,7 @@ import org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuil
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
 import org.openprovenance.prov.template.compiler.integration.CompilerIntegrator;
+import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlIntegration;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
@@ -197,6 +198,7 @@ public class ConfigProcessor implements Constants {
                     CompositeTemplateCompilerConfig config=(CompositeTemplateCompilerConfig) aconfig;
 
 
+
                     String simple=config.consistsOf;
                     List<String> sharing=config.sharing;
                     boolean found=false;
@@ -209,7 +211,7 @@ public class ConfigProcessor implements Constants {
                             SimpleTemplateCompilerConfig sc=(SimpleTemplateCompilerConfig) aconfig2;
                             sc.template=addBaseDirIfRelative(sc.template, inputBaseDir);
                             sc.bindings=addBaseDirIfRelative(sc.bindings, inputBaseDir);
-                            SimpleTemplateCompilerConfig sc2=sc.cloneAsInstanceInComposition(config.name);
+                            SimpleTemplateCompilerConfig sc2=sc.cloneAsInstanceInComposition(config.name,config.sharing);
                             doGenerateServerForEntry(config, sc2, configs, locations, cli_src_dir, l2p_src_dir, cli_webjar_dir);
                         }
                     }
@@ -545,7 +547,7 @@ public class ConfigProcessor implements Constants {
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, locations, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>(), null, configs);
+            generate(doc, locations, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, config.sharing, null, configs);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException | FileNotFoundException e) {
@@ -578,7 +580,7 @@ public class ConfigProcessor implements Constants {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
         try {
-            generate(doc, locations, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>(), null, configs);
+            generate(doc, locations, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, config.sharing, null, configs);
         } catch (SecurityException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -689,7 +691,7 @@ public class ConfigProcessor implements Constants {
                 if (configs.sqlFile!=null) {
                     compilerSQL.generateSQL(templateName, bindingsSchema);
                     compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList(), getInputOutputMaps(), configs.search);
-                    compilerSQL.generateSQLPrimitiveTables(sqlTables);
+                    compilerSQL.generateSQLPrimitiveTables(sqlTables,bindingsSchema);
                 }
             }
 

@@ -9,7 +9,7 @@ import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import org.openprovenance.prov.template.log2prov.interfaces.TriFunction;
@@ -41,7 +41,7 @@ public class CompilerTypeManagement {
     private Map<String,Collection<String>> knownTypes;
     private Map<String,Collection<String>> unknownTypes;
 
-    public SpecificationFile generateTypeDeclaration(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    public SpecificationFile generateTypeDeclaration(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
         knownTypes=new HashMap<>();
         unknownTypes=new HashMap<>();
 
@@ -102,7 +102,7 @@ public class CompilerTypeManagement {
 
 
 
-    public SpecificationFile generateTypeDeclaration_aux(TemplatesCompilerConfig configs, Locations locations, Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    public SpecificationFile generateTypeDeclaration_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         MethodSpec.Builder mbuilder = MethodSpec.methodBuilder("call")

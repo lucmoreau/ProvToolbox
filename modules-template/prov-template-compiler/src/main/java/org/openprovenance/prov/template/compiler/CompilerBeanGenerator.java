@@ -33,7 +33,7 @@ public class CompilerBeanGenerator {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
-    public SpecificationFile generateBean(TemplatesCompilerConfig configs, Locations locations, String templateName, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, String fileName) {
+    public SpecificationFile generateBean(TemplatesProjectConfiguration configs, Locations locations, String templateName, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         String name = compilerUtil.beanNameClass(templateName, beanDirection);
@@ -42,6 +42,13 @@ public class CompilerBeanGenerator {
         }
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(name);
+
+        /* does not work with transpiler
+        builder.addAnnotation(AnnotationSpec.builder(JsonInclude.class)
+                .addMember("value", "$T.Include.NON_NULL", JsonInclude.class)
+                .build());
+
+         */
 
         switch (beanKind) {
             case SIMPLE:
@@ -76,6 +83,7 @@ public class CompilerBeanGenerator {
 
         FieldSpec.Builder b0 = FieldSpec.builder(String.class, Constants.IS_A)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addJavadoc("The template name")
                 .initializer("$S", templateName);
 
         builder.addField(b0.build());
@@ -128,7 +136,7 @@ public class CompilerBeanGenerator {
         }
 
         if (beanKind==BeanKind.SIMPLE && beanDirection==BeanDirection.COMMON) {
-            MethodSpec mbuild = generateInvokeProcessor(templateName, packge, bindingsSchema);
+            MethodSpec mbuild = generateInvokeProcessor(templateName, packge, bindingsSchema, null);
             builder.addMethod(mbuild);
 
         } else if (beanKind==BeanKind.COMPOSITE) {
@@ -137,6 +145,11 @@ public class CompilerBeanGenerator {
 
             if (sharing!=null) {
                 variant = newVariant(consistOf, sharing, configs);
+            }
+
+            if (beanDirection==BeanDirection.COMMON) {
+                MethodSpec mbuild = generateInvokeProcessor(templateName, packge, bindingsSchema, ELEMENTS);
+                builder.addMethod(mbuild);
             }
 
             generateCompositeList(consistOf, packge, builder, beanDirection, variant, sharing);
@@ -163,7 +176,7 @@ public class CompilerBeanGenerator {
     }
 
 
-    static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, TemplatesCompilerConfig configs, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
+    static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, TemplatesProjectConfiguration configs, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
         return newSpecificationFiles(locations, spec, myfile, directory, fileName, packge, selectedExports, compilerUtil.pySpecWithComment(configs, stackTraceElement));
     }
 
@@ -194,7 +207,7 @@ public class CompilerBeanGenerator {
 
     public Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable=new HashMap<>();
 
-    String newVariant(String templateName, List<String> sharing, TemplatesCompilerConfig configs) {
+    String newVariant(String templateName, List<String> sharing, TemplatesProjectConfiguration configs) {
         String shared= stringForSharedVariables(sharing);
         variantTable.putIfAbsent(templateName,new HashMap<>());
         Triple<String, List<String>, TemplateBindingsSchema> triple = variantTable.get(templateName).get(shared);
@@ -296,7 +309,7 @@ public class CompilerBeanGenerator {
         return ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(template)),typeT);
     }
 
-    public MethodSpec generateInvokeProcessor(String template, String packge, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateInvokeProcessor(String template, String packge, TemplateBindingsSchema bindingsSchema, String elements) {
 
         Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
         if (fieldNames.contains(PROCESSOR_PARAMETER_NAME)) {
@@ -310,8 +323,16 @@ public class CompilerBeanGenerator {
 
         builder.addParameter(processorClassType(template,packge), PROCESSOR_PARAMETER_NAME);
 
+        Collection<String> actualFieldNames;
+        if (elements!=null) {
+            actualFieldNames=new LinkedList<>(fieldNames);
+            actualFieldNames.add(elements);
+        } else {
+            actualFieldNames=fieldNames;
+        }
+
         builder.addStatement("return $N.$N($L)", PROCESSOR_PARAMETER_NAME, Constants.PROCESSOR_PROCESS_METHOD_NAME,
-                CodeBlock.join(fieldNames.stream().map(field ->
+                CodeBlock.join(actualFieldNames.stream().map(field ->
                         CodeBlock.of("$N", field)).collect(Collectors.toList()), ","));
 
         return builder.build();
@@ -319,7 +340,7 @@ public class CompilerBeanGenerator {
     }
 
 
-    public void generateSimpleConfigsWithVariants(Locations locations, TemplatesCompilerConfig configs) {
+    public void generateSimpleConfigsWithVariants(Locations locations, TemplatesProjectConfiguration configs) {
         variantTable.keySet().forEach(
                 templateName -> {
                     Map<String, Triple<String, List<String>, TemplateBindingsSchema>> allVariants=variantTable.get(templateName);

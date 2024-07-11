@@ -17,11 +17,11 @@
     }, {
       "@id" : "ex:cv2"
     } ],
-    "d" : [ {
+    "d" : [[ {
       "@value" : "Luc@example"
     }, {
       "@value" : "lm@soton"
-    } ]
+    } ]]
   },
   "vargen" : { },
   "context" : {

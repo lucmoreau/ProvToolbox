@@ -1,0 +1,185 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Templates Project Schema",
+    "definitions": {
+        "SimpleTemplateDescriptor": {
+            "type": "object",
+            "properties": {
+                "@type": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "template": {
+                    "type": "string"
+                },
+                "package": {
+                    "type": "string"
+                },
+                "bindings": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "@type",
+                "name",
+                "template",
+                "package",
+                "bindings"
+            ],
+            "additionalProperties": false
+        },
+        "CompositeTemplateDescriptor": {
+            "type": "object",
+            "properties": {
+                "@type": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "consistsOf": {
+                    "type": "string"
+                },
+                "package": {
+                    "type": "string"
+                },
+                "sharing": {
+                    "type": "array",
+                    "items": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "@type",
+                "name",
+                "consistsOf",
+                "package",
+                "sharing"
+            ],
+            "additionalProperties": false
+        },
+        "TemplateDescriptor": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/SimpleTemplateDescriptor"
+                },
+                {
+                    "$ref": "#/definitions/CompositeTemplateDescriptor"
+                }
+            ]
+        },
+        "TableDescriptor": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "serial": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "created_at"
+            ],
+            "additionalProperties": false
+        }
+    },
+    "type": "object",
+    "properties": {
+        "group": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "destination": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        },
+        "root_package": {
+            "type": "string"
+        },
+        "script": {
+            "type": "string"
+        },
+        "script_dir": {
+            "type": "string"
+        },
+        "python_dir": {
+            "type": "string"
+        },
+        "integrator": {
+            "type": "boolean"
+        },
+        "jsweet": {
+            "type": "boolean"
+        },
+        "jsonschema": {
+            "type": "string"
+        },
+        "documentation": {
+            "type": "string"
+        },
+        "sqlFile": {
+            "type": "string"
+        },
+        "templates": {
+            "type": "array",
+            "items": [
+                {
+                    "$ref": "#/definitions/TemplateDescriptor"
+                }
+            ]
+        },
+        "search": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "sql.tables": {
+            "type": "object",
+            "patternProperties": {
+                "^(.*)$": {
+                    "$ref": "#/definitions/TableDescriptor"
+                }
+            }
+        }
+    },
+    "required": [
+        "group",
+        "name",
+        "destination",
+        "description",
+        "version",
+        "root_package",
+        "script",
+        "script_dir",
+        "python_dir",
+        "jsweet",
+        "jsonschema",
+        "documentation",
+
+        "templates"
+    ],
+    "additionalProperties": false
+}

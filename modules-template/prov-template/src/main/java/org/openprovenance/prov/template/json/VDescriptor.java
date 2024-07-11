@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class VDescriptor implements SingleDescriptor {
 
@@ -39,5 +40,18 @@ public class VDescriptor implements SingleDescriptor {
         res.put(AT_VALUE, value);
         if (type!=null) res.put(AT_TYPE, type);
         return res;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VDescriptor that = (VDescriptor) o;
+        return Objects.equals(value, that.value) && Objects.equals(type, that.type) && Objects.equals(language, that.language);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, type, language);
     }
 }

@@ -3,22 +3,34 @@
         "pipeline": [
             {
                 "@id": "file:*",
-                "@type": "xsd:string",
-                "@examplar": "file/pipeline678.csv",
+                "@type": "xsd:int",
+                "@examplar": 122,
                 "@documentation": "The pipeline resulting from the training",
                 "@input": "false",
                 "@output": "true",
                 "@sql.table": "file"
             }
         ],
+        "filename": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:string",
+                    "@examplar": "file/123b.csv",
+                    "@documentation": "The pipeline filename resulting from the training",
+                    "@input": "compulsory",
+                    "@output": "false",
+                    "@sql.type":  "nonNullableTEXT"
+                }
+            ]
+        ],
         "training_dataset": [
             {
                 "@id": "file:*",
-                "@type": "xsd:string",
-                "@examplar": "file/dataset.csv",
-                "@documentation": "The dataset used int he training",
+                "@type": "xsd:int",
+                "@examplar": 121,
+                "@documentation": "The dataset used in the training",
                 "@input": "compulsory",
-                "@output": "false",
                 "@sql.table": "file"
             }
         ],
@@ -27,7 +39,8 @@
                 "@id": "ag:*",
                 "@type": "xsd:int",
                 "@documentation": "An organization aiming managing the ML pipeline",
-                "@input": "optional"
+                "@input": "optional",
+                "@sql.table": "agent"
             }
         ],
         "engineer": [
@@ -35,7 +48,8 @@
                 "@id": "ag:*",
                 "@type": "xsd:int",
                 "@documentation": "The engineer developing the ML pipeline",
-                "@input": "optional"
+                "@input": "optional",
+                "@sql.table": "agent"
             }
         ],
         "training": [
@@ -53,7 +67,8 @@
                     "@value": "*",
                     "@type": "xsd:string",
                     "@documentation": "The actual path of the file",
-                    "@input": "optional"
+                    "@input": "optional",
+                    "@sql.type":  "nullableTEXT"
                 }
             ]
         ],

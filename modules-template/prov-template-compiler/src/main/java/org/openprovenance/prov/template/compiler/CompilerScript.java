@@ -1,7 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -19,7 +19,7 @@ public class CompilerScript {
 
 
 
-    public void generateScript(TemplatesCompilerConfig configs) {
+    public void generateScript(TemplatesProjectConfiguration configs) {
         new File(configs.script_dir).mkdirs();
         try {
             final String path = configs.script_dir + "/" + configs.script;
@@ -34,7 +34,7 @@ public class CompilerScript {
                 line = line.replace("${VERSION}", configs.version);
                 line = line.replace("${NAME}", configs.name);
                 line = line.replace("${GROUP}", configs.group.replace(".", "/"));
-                line = line.replace("${INIT}", configs.init_package + "." + Constants.INIT);
+                line = line.replace("${INIT}", configs.root_package + "." + Constants.INIT);
 
                 os.println(line);
                 line = reader.readLine();

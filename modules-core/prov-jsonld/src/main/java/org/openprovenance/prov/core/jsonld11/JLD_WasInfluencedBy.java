@@ -11,10 +11,10 @@ import org.openprovenance.prov.model.QualifiedName;
 public interface JLD_WasInfluencedBy extends JLD_Generic2 {
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getInfluencee();
+    QualifiedName getInfluencee();
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getInfluencer();
+    QualifiedName getInfluencer();
 
 
 }

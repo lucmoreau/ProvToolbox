@@ -1,0 +1,132 @@
+version: "3.0"
+
+
+services:
+#
+#  keycloak:
+#    env_file: env_file.env
+#    image: quay.io/keycloak/keycloak:24.0.4 #23.0.0 24.0.3
+#    restart: always
+#    environment:
+#      - KEYCLOAK_USER=admin
+#      - KEYCLOAK_PASSWORD=admin
+#      - KEYCLOAK_IMPORT=/tmp/prov-realm.json
+#      - KC_HOSTNAME_STRICT=false
+#      - KC_HOSTNAME_STRICT_HTTPS=true
+#      - KEYCLOAK_ADMIN=admin
+#      - KEYCLOAK_ADMIN_PASSWORD=admin
+#      - KC_HTTP_RELATIVE_PATH=/auth
+#      - KC_HTTP_ENABLED=false
+#      - KC_DB=postgres
+#      - KC_DB_USERNAME=${TPM_DB_USER}
+#      - KC_DB_PASSWORD=${TPM_DB_PASS}
+#      - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak
+#      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/conf/server.crt.pem
+#      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/conf/server.key.pem
+#    volumes:
+#      - $DOCKER_TPM_CONF/prov-realm.json:/tmp/prov-realm.json
+#      - $DOCKER_TPM_CONF/certs/server.crt.pem:/opt/keycloak/conf/server.crt.pem
+#      - $DOCKER_TPM_CONF/certs/server.key.pem:/opt/keycloak/conf/server.key.pem
+#    ports:
+#      - "8443:8443"
+#    links:
+#      - postgres:postgres
+#    command: ["start"]
+#    depends_on:
+#      - postgres
+#
+#
+
+
+
+  provtemplates:
+    env_file: env_file.env
+    image: docker-service-templates.temurin
+    restart: always
+    platform: linux/arm64/v8
+    ports:
+      - "8080:8080"
+    links:
+      - postgres16:postgres16
+      - redis:redis
+    environment:
+      - CATALINA_OPTS=-DPROV_STORAGE_CONFIG=/home/pservice/storage-configuration.json -DPOSTGRES_HOST=postgres16 -DTPL_DB_USER=${TPM_DB_USER} -DTPL_DB_PASS=${TPM_DB_PASS}  -DTPL_SECURITY_CONFIG=/home/pservice/openprovenance-auth2-security-config.json  -DTPL_HOST=http://localhost:8080/ptl -DPROV_API=http://localhost:8080/ptl/provapi
+    volumes:
+      - $COMPOSITION_HOME/file:/home/pservice
+    depends_on:
+      redis:
+        condition: service_started
+      mongo:
+        condition: service_started
+      postgres16:
+        condition: service_healthy
+
+  postgres16:
+    env_file: env_file.env
+    image: postgres:16
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=templates
+      - TPM_DB_USER=${TPM_DB_USER}
+      - TPM_DB_PASS=${TPM_DB_PASS}
+      - TPM_DB_NAME=templates
+    volumes:
+      - $DOCKER_TPM_CONF/docker-entrypoint-initdb16.d/:/docker-entrypoint-initdb.d/
+      - $COMPOSITION_HOME/postgres16/data:/var/lib/postgresql/data
+    expose:
+      - 5432
+#
+#  postgres14:
+#    env_file: env_file.env
+#    #image: provenance/postgres_init:latest
+#    image: postgres:14  #:15
+#    restart: always
+#    healthcheck:
+#      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
+#      timeout: 45s
+#      interval: 10s
+#      retries: 10
+#    environment:
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=admin
+#      - TPM_DB_USER=${TPM_DB_USER}
+#      - TPM_DB_PASS=${TPM_DB_PASS}
+#      - TPM_DB_NAME=templates
+#      - KC_DB_NAME=keycloak
+#    volumes:
+#      - $DOCKER_TPM_CONF/docker-entrypoint-initdb14.d/:/docker-entrypoint-initdb.d/
+#      - $COMPOSITION_HOME/postgres14/data:/var/lib/postgresql/data
+#    expose:
+#        - 5432
+#    profiles:
+#      - donotstart
+
+  redis:
+    env_file: env_file.env
+    image: redis
+    restart: always
+    expose:
+      - 6379
+    volumes:
+      - $COMPOSITION_HOME/redis:/data
+    command: [redis-server, '--appendonly yes']
+
+  mongo:
+    env_file: env_file.env
+    image: mongo
+    restart: always
+    expose:
+      - 27017
+    volumes:
+      - $COMPOSITION_HOME/mongo:/data/db
+
+networks:
+  db-keycloak:
+    driver: bridge

@@ -7,7 +7,7 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 
 import javax.lang.model.element.Modifier;
 
@@ -22,11 +22,8 @@ public class CompilerBeanEnactor {
     }
 
 
-    SpecificationFile generateBeanEnactor(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+    SpecificationFile generateBeanEnactor(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
-
-        if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
-
 
 
 
@@ -35,9 +32,9 @@ public class CompilerBeanEnactor {
         builder.addTypeVariable(typeResult);
 
 
-        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(Constants.QUERY_INVOKER), Constants.QUERY_INVOKER);
-        ClassName beanCompleterClass = ClassName.get(locations.getFilePackage(BEAN_COMPLETER), BEAN_COMPLETER);
-        ClassName beanProcessorClass = ClassName.get(locations.getFilePackage(configs.beanProcessor), configs.beanProcessor);
+        ClassName queryInvokerClass  = compilerUtil.getClass(QUERY_INVOKER,  locations);
+        ClassName beanCompleterClass = compilerUtil.getClass(BEAN_COMPLETER, locations);
+        ClassName beanProcessorClass = compilerUtil.getClass(BEAN_PROCESSOR, locations);
         builder.addSuperinterface(beanProcessorClass);
 
 

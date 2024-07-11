@@ -33,6 +33,7 @@ public class CustomXMLGregorianCalendarDeserializer extends JsonDeserializer<XML
 
     @Override
     public XMLGregorianCalendar deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+        //System.out.println("********* Deserializing XMLGregorianCalendar " + dateTimeOption + " " + optionalTimeZone);
         String text = jsonParser.getText();
         XMLGregorianCalendar xmlGregorianCalendar = pf.newISOTime(text, dateTimeOption, optionalTimeZone);
         logger.debug("Deserialized XMLGregorianCalendar: {} {}", text, xmlGregorianCalendar);

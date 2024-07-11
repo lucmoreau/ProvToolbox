@@ -3,33 +3,56 @@
         "split_file1": [
             {
                 "@id": "file:*",
-                "@type": "xsd:string",
-                "@examplar": "file/12378_1.csv",
+                "@type": "xsd:int",
+                "@examplar": 122,
                 "@documentation": "The first file resulting from the split",
                 "@input": "false",
                 "@output": "true",
                 "@sql.table": "file"
             }
         ],
+        "filename1": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:string",
+                    "@examplar": "file/12378_1.csv",
+                    "@documentation": "The first filename resulting from the split",
+                    "@input": "compulsory",
+                    "@sql.type":  "nonNullableTEXT"
+                }
+            ]
+        ],
         "split_file2": [
             {
                 "@id": "file:*",
-                "@type": "xsd:string",
-                "@examplar": "file/12378_2.csv",
+                "@type": "xsd:int",
+                "@examplar": 123,
                 "@documentation": "The second file resulting from the split",
                 "@input": "false",
                 "@output": "true",
                 "@sql.table": "file"
             }
         ],
+        "filename2": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:string",
+                    "@examplar": "file/12378_2.csv",
+                    "@documentation": "The second filename resulting from the split",
+                    "@input": "compulsory",
+                    "@sql.type":  "nonNullableTEXT"
+                }
+            ]
+        ],
         "file": [
             {
                 "@id": "file:*",
-                "@type": "xsd:string",
-                "@examplar": "file/123.csv",
-                "@documentation": "The file before transformation",
+                "@type": "xsd:int",
+                "@examplar": 121,
+                "@documentation": "The file before splitting",
                 "@input": "compulsory",
-                "@output": "false",
                 "@sql.table": "file"
             }
         ],
@@ -38,7 +61,8 @@
                 "@id": "ag:*",
                 "@type": "xsd:int",
                 "@documentation": "An organization aiming managing the ML pipeline",
-                "@input": "optional"
+                "@input": "optional",
+                "@sql.table": "agent"
             }
         ],
         "engineer": [
@@ -46,7 +70,8 @@
                 "@id": "ag:*",
                 "@type": "xsd:int",
                 "@documentation": "The engineer developing the ML pipeline",
-                "@input": "optional"
+                "@input": "optional",
+                "@sql.table": "agent"
             }
         ],
         "splitting": [
@@ -84,7 +109,8 @@
                     "@value": "*",
                     "@type": "xsd:string",
                     "@documentation": "The actual path of the file",
-                    "@input": "optional"
+                    "@input": "optional",
+                    "@sql.type":  "nullableTEXT"
                 }
             ]
         ],
@@ -114,7 +140,8 @@
                     "@value": "*",
                     "@type": "xsd:string",
                     "@documentation": "The actual path of the file",
-                    "@input": "optional"
+                    "@input": "optional",
+                    "@sql.type":  "nullableTEXT"
                 }
             ]
         ],

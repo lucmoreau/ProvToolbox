@@ -16,7 +16,6 @@ package org.openprovenance.prov.template.compiler.sql;
 
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.sql.*;
 import java.util.*;
 import java.util.function.Function;
@@ -153,6 +152,24 @@ public class QueryBuilder {
             return queryBuilder;
         };
     }
+
+    public static Function<PrettyPrinter,QueryBuilder> ARGS(List<?> values) {
+
+        return (prettyPrinter) -> {
+
+            StringBuilder sqlBuilder = new StringBuilder();
+
+
+            //sqlBuilder.append(function);
+            //prettyPrinter.open();
+
+
+            QueryBuilder queryBuilder = new QueryBuilder(sqlBuilder, prettyPrinter);
+            queryBuilder.args(values);
+            return queryBuilder;
+        };
+    }
+
     public QueryBuilder selectExp(String... columns) {
         if (columns == null || columns.length == 0) {
             throw new IllegalArgumentException();
@@ -318,6 +335,8 @@ public class QueryBuilder {
         //sqlBuilder.append(" left join ");
         //sqlBuilder.append(table);
 
+        prettyPrinter.newline(0);
+
         prettyPrinter.write(" LEFT JOIN ");
         prettyPrinter.write(table);
 
@@ -355,7 +374,7 @@ public class QueryBuilder {
      * The {@link QueryBuilder} instance.
      */
     public QueryBuilder on(String... predicates) {
-        return filter("ON", predicates);
+        return filterOpen(false, "ON", predicates);
     }
 
     /**
@@ -368,16 +387,23 @@ public class QueryBuilder {
      * The {@link QueryBuilder} instance.
      */
     public QueryBuilder where(String... predicates) {
-        return filter(" WHERE", predicates);
+        return filterOpen(false, " WHERE", predicates);
     }
-
-    private QueryBuilder filter(String clause, String... predicates) {
+    public QueryBuilder whereOpen(String... predicates) {
+        return filterOpen(true," WHERE", predicates);
+    }
+    private QueryBuilder filterOpen(boolean bracket, String clause, String... predicates) {
         if (predicates == null) {
             throw new IllegalArgumentException();
         }
 
+        prettyPrinter.write(" ");
         prettyPrinter.write(clause);
         prettyPrinter.write(" ");
+
+        if (bracket) {
+            prettyPrinter.write("(");
+        }
 
         for (int i = 0; i < predicates.length; i++) {
             if (i > 0) {
@@ -402,6 +428,10 @@ public class QueryBuilder {
     public QueryBuilder and(String... predicates) {
         return conditional(" AND", predicates);
     }
+    public QueryBuilder andOpen(String... predicates) {
+        return conditional(true," AND", predicates);
+    }
+
 
     /**
      * Creates an "or" conditional.
@@ -415,8 +445,11 @@ public class QueryBuilder {
     public QueryBuilder or(String... predicates) {
         return conditional(" OR", predicates);
     }
-
     private QueryBuilder conditional(String operator, String... predicates) {
+        return conditional(false, operator, predicates);
+    }
+
+    private QueryBuilder conditional(boolean bracket, String operator, String... predicates) {
         if (predicates == null || predicates.length == 0) {
             throw new IllegalArgumentException();
         }
@@ -425,8 +458,12 @@ public class QueryBuilder {
         prettyPrinter.write(" ");
 
 
+        if (bracket) {
+            prettyPrinter.write("(");
+        }
 
-        if (predicates.length > 1) {
+
+        if (predicates.length > 1)  {
             prettyPrinter.open();
         }
 
@@ -441,6 +478,41 @@ public class QueryBuilder {
             prettyPrinter.close();
         }
 
+        return this;
+
+    }
+
+    /*
+    public QueryBuilder and() {
+        return conditionalStart(" AND");
+    }
+
+     */
+
+    public QueryBuilder close() {
+        prettyPrinter.write(")");
+        return this;
+
+    }
+    public QueryBuilder newline() {
+        prettyPrinter.newline(0);
+        return this;
+
+    }
+    public QueryBuilder allowBreak() {
+        prettyPrinter.allowBreak(0);
+        return this;
+    }
+    public QueryBuilder begin(int n) {
+        prettyPrinter.begin(n);
+        return this;
+    }
+
+
+
+    private QueryBuilder conditionalStart(String operator) {
+        prettyPrinter.write(operator);
+        prettyPrinter.write(" ");
         return this;
 
     }
@@ -619,8 +691,9 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append(" order by ");
-        sqlBuilder.append(String.join(", ", columns));
+        prettyPrinter.newline(0);
+        prettyPrinter.write(" ORDER BY ");
+        prettyPrinter.write(String.join(", ", columns));
 
         return this;
     }
@@ -634,8 +707,7 @@ public class QueryBuilder {
      * @return
      * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder
-    returning(Collection<String> outputs) {
+    public QueryBuilder returning(Collection<String> outputs) {
         return returning(false,outputs);
     }
 
@@ -679,7 +751,7 @@ public class QueryBuilder {
     public QueryBuilder alias(String alias) {
 
 
-        prettyPrinter.write("AS ");
+        prettyPrinter.write(" AS ");
         prettyPrinter.write(alias);
         prettyPrinter.write(" ");
 
@@ -735,6 +807,12 @@ public class QueryBuilder {
         return this;
     }
 
+    public QueryBuilder desc() {
+        prettyPrinter.write(" DESC ");
+        return this;
+    }
+
+
     /**
      * Appends a "for update" clause to a query.
      *
@@ -761,7 +839,8 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        prettyPrinter.write("UNION ");
+        prettyPrinter.write(" UNION ");
+        prettyPrinter.allowBreak(0);
         QueryBuilder queryBuilder=queryBuilderFun.apply(prettyPrinter);
 
         //sqlBuilder.append(" union ");
@@ -877,7 +956,15 @@ public class QueryBuilder {
                 prettyPrinter.comma();
             }
 
-            prettyPrinter.write(String.valueOf(values.get(i)));
+            if (values.get(i) instanceof Function) {
+                prettyPrinter.write("(");
+                ((Function<PrettyPrinter, QueryBuilder>) values.get(i)).apply(prettyPrinter);
+                prettyPrinter.write(")");
+            } else {
+                prettyPrinter.write(String.valueOf(values.get(i)));
+            }
+
+
         }
 
         prettyPrinter.close();
@@ -1146,7 +1233,7 @@ public class QueryBuilder {
         prettyPrinter.flush();
     }
 
-    static class FunctionQueryBuilder extends QueryBuilder {
+    static public class FunctionQueryBuilder extends QueryBuilder {
 
         public FunctionQueryBuilder(StringBuilder sqlBuilder, PrettyPrinter prettyPrinter)  {
             super(sqlBuilder, prettyPrinter);
@@ -1499,7 +1586,7 @@ public class QueryBuilder {
 
 
 
-    static Unquote unquote(String val) {
+    public static Unquote unquote(String val) {
         return new Unquote(val);
     }
     static Unquote arrayOf(String val) {

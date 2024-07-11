@@ -151,7 +151,7 @@ issue.209:
 	curl --silent https://gist.githubusercontent.com/lucmoreau/28632ef5bbe37b109300870c445772cc/raw/a711ebff4c433dd2f655bc4772e07b1e2809289e/gistfile1.jsonld | $(PROVCONVERT) -infile - -informat jsonld -outfile - -outformat provn -dateTime UTC
 	curl --silent https://gist.githubusercontent.com/lucmoreau/28632ef5bbe37b109300870c445772cc/raw/a711ebff4c433dd2f655bc4772e07b1e2809289e/gistfile1.jsonld | $(PROVCONVERT) -infile - -informat jsonld -outfile - -outformat provn -dateTime SYSTEM
 
-mvn.test: test.issue.209.jsonld test.issue.209.json test.issue.209.provx test.issue.209.provn test.default test.pgo
+mvn.test: test.issue.209.jsonld test.issue.209.json test.issue.209.provx test.issue.209.provn test.default test.pgo test.metrics
 
 test.issue.209.jsonld:
 	@echo "- jsonld input: testing dateTime PRESERVE"
@@ -211,9 +211,9 @@ test.default: test.default.json test.default.jsonld
 
 test.default.jsonld:
 	@echo "- testing default namespace: PROVN, JSONLD, JSON -> JSONLD"
-	@$(PROVCONVERT) -infile src/test/resources/default/default1.provn  -outfile - -outformat=jsonld | jq --exit-status '.["@context"][0]["@vocab"]=="https://www.bbc.co.uk/"' > /dev/null
-	@$(PROVCONVERT) -infile src/test/resources/default/default1.jsonld -outfile - -outformat=jsonld | jq --exit-status '.["@context"][0]["@vocab"]=="https://www.bbc.co.uk/"' > /dev/null
-	@$(PROVCONVERT) -infile src/test/resources/default/default1.json   -outfile - -outformat=jsonld | jq --exit-status '.["@context"][0]["@vocab"]=="https://www.bbc.co.uk/"' > /dev/null
+	@$(PROVCONVERT) -infile src/test/resources/default/default1.provn  -outfile - -outformat=jsonld | jq --exit-status '.["@context"][0]["@base"]=="https://www.bbc.co.uk/"' > /dev/null
+	@$(PROVCONVERT) -infile src/test/resources/default/default1.jsonld -outfile - -outformat=jsonld | jq --exit-status '.["@context"][0]["@base"]=="https://www.bbc.co.uk/"' > /dev/null
+	@$(PROVCONVERT) -infile src/test/resources/default/default1.json   -outfile - -outformat=jsonld | jq --exit-status '.["@context"][0]["@base"]=="https://www.bbc.co.uk/"' > /dev/null
 	@echo "- testing default namespace: PROVX -> JSONLD (lost default namespace)"
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.provx  -outfile - -outformat=jsonld | jq --exit-status '.["@graph"][0]["@id"]=="bbc:e"' > /dev/null
 
@@ -241,3 +241,7 @@ test.pgo:
 #  issue#215
 test.issue.215:
 	@$(PROVCONVERT) -infile src/test/resources/issue215/example.xml -outfile - -outformat provn
+
+test.metrics:
+	@$(PROVCONVERT) -infile src/test/resources/prov/pc1-full.provn -metrics target/pc1-full-metrics.json
+	@jq . target/pc1-full-metrics.json

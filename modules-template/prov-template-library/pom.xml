@@ -4,11 +4,11 @@
     <parent>
         <artifactId>modules-template</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.0.5</version>
+        <version>2.0.6</version>
     </parent>
 
     <artifactId>prov-template-library</artifactId>
-    <version>2.0.5</version>
+    <version>2.0.6</version>
 
     <name> |---- PROV-TEMPLATE-LIBRARY</name>
 
@@ -16,22 +16,22 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-n</artifactId>
-            <version>2.0.5</version>
+            <version>2.0.6</version>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>2.0.5</version>
+            <version>2.0.6</version>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template-compiler</artifactId>
-            <version>2.0.5</version>
+            <version>2.0.6</version>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template</artifactId>
-            <version>2.0.5</version>
+            <version>2.0.6</version>
             <classifier>template-library</classifier>
             <type>zip</type>
         </dependency>
@@ -40,12 +40,30 @@
     <properties>
         <meta-inf-webjars>META-INF/resources/webjars</meta-inf-webjars>
         <package.name>template_library</package.name>
-        <template_lib_cli>${package.name}/${package.name}_cli</template_lib_cli>
-        <template_lib_l2p>${package.name}/${package.name}_l2p</template_lib_l2p>
+        <package.name.cli>${package.name}_cli</package.name.cli>
+        <package.name.l2p>${package.name}_l2p</package.name.l2p>
     </properties>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>templating-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>preparing.jsweet.script</id>
+                        <goals>
+                            <goal>filter-sources</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>src/main/jsweet</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/jsweet</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -62,7 +80,6 @@
                                 <artifactItem>
                                     <groupId>org.openprovenance.prov</groupId>
                                     <artifactId>prov-template</artifactId>
-                                    <!--<version>2.0.5-SNAPSHOT</version> -->
                                     <classifier>template-library</classifier>
                                     <type>zip</type>
                                     <overWrite>false</overWrite>
@@ -79,6 +96,17 @@
                 <version>${exec.plugin.version}</version>
                 <executions>
                     <execution>
+                        <id>check-template-project-definitions</id>
+                        <phase>generate-sources</phase>
+                        <goals><goal>exec</goal></goals>
+                        <configuration>
+                            <executable>make</executable>
+                            <arguments>
+                                <argument>test.schema.projects</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>compile-template-plead</id>
                         <phase>generate-sources</phase>
                         <goals><goal>exec</goal></goals>
@@ -88,7 +116,8 @@
                                 <argument>-classpath</argument>
                                 <classpath />
                                 <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
-                                <argument>src/main/resources/config/config_plead.json</argument>
+                                <argument>src/main/resources/config/tp_plead.json</argument>
+                                <argument>${project.basedir}</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -103,7 +132,8 @@
                                 <argument>-classpath</argument>
                                 <classpath />
                                 <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
-                                <argument>src/main/resources/config/config_ptm.json</argument>
+                                <argument>src/main/resources/config/tp_ptm.json</argument>
+                                <argument>${project.basedir}</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -120,28 +150,16 @@
                                 <argument>-classpath</argument>
                                 <classpath />
                                 <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
-                                <argument>src/main/resources/config/config_pg.json</argument>
+                                <argument>src/main/resources/config/tp_pg.json</argument>
+                                <argument>${project.basedir}</argument>
                             </arguments>
                         </configuration>
                     </execution>
 
-                    <execution>
-                        <id>default-cli</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <phase>test</phase>
-                        <configuration>
-                            <basedir>${project.basedir}</basedir>
-                            <executable>npm</executable>
-                            <arguments>
-                                <argument>test</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
+
 
                     <execution>
-                        <id>python-test</id>
+                        <id>python.test</id>
                         <phase>test</phase>
                         <goals>
                             <goal>exec</goal>
@@ -158,26 +176,7 @@
                         </configuration>
                     </execution>
 
-                    <!--
-                    <execution>
-                        <id>transpile.to.js</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>mvn</executable>
-                            <arguments>
-                                <argument>-f</argument>
-                                <argument>pom12.xml</argument>
-                                <argument>jsweet:jsweet</argument>
-                            </arguments>
-                            <environmentVariables>
-                                <JAVA_HOME>${java12.home}</JAVA_HOME>
-                            </environmentVariables>
-                        </configuration>
-                    </execution>
-                    -->
+
                 </executions>
 
             </plugin>
@@ -197,21 +196,16 @@
                         </goals>
                         <configuration>
                             <target>
-                                <move todir="${project.build.directory}/generated-sources/${package.name}_cli">
-                                    <fileset dir="${project.build.directory}/${template_lib_cli}/src/main/java">
+                                <move todir="${project.build.directory}/generated-sources/${package.name.cli}">
+                                    <fileset dir="${project.build.directory}/${package.name}/${package.name.cli}/src/main/java">
                                         <include name="**/*" />
                                     </fileset>
                                 </move>
-                                <move todir="${project.build.directory}/generated-sources/${package.name}_l2p">
-                                    <fileset dir="${project.build.directory}/${template_lib_l2p}/src/main/java">
+                                <move todir="${project.build.directory}/generated-sources/${package.name.l2p}">
+                                    <fileset dir="${project.build.directory}/${package.name}/${package.name.l2p}/src/main/java">
                                         <include name="**/*" />
                                     </fileset>
                                 </move>
-                                <copy todir="${project.build.directory}/bindings">
-                                    <fileset dir="src/main/resources/bindings">
-                                        <include name="**/*" />
-                                    </fileset>
-                                </copy>
                                 <copy todir="${project.build.directory}/bindings">
                                     <fileset dir="src/main/resources/bindings">
                                         <include name="**/*" />
@@ -221,7 +215,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>check-java12-exists</id>
+                        <id>check.java12.exists</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>run</goal>
@@ -234,98 +228,53 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>antrun-jsweet</id>
+                        <id>antrun.jsweet</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
                         <configuration>
+                            <!--suppress UnresolvedMavenProperty -->
                             <target if="${java12Exists}">
-                                <exec executable="mvn">
-                                    <env key="JAVA_HOME" value="${java12.home}" />
-                                    <arg value="-f" />
-                                    <arg value="pom12.xml" />
-                                    <arg value="jsweet:jsweet" />
+                                <echo message="Java 12 found, doing jsweet compilation" />
+                                <exec executable="${project.build.directory}/jsweet/jsweet.sh">
+
                                 </exec>
                             </target>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
-
-            <!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec.plugin.version}</version>
-                <executions>
-
-
                     <execution>
-                        <id>transpile.to.js</id>
+                        <id>antrun.no.jsweet</id>
                         <phase>generate-sources</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>run</goal>
                         </goals>
                         <configuration>
-                            <executable>mvn</executable>
-                            <arguments>
-                                <argument>-f</argument>
-                                <argument>pom12.xml</argument>
-                                <argument>jsweet:jsweet</argument>
-                            </arguments>
-                            <environmentVariables>
-                                <JAVA_HOME>${java12.home}</JAVA_HOME>
-                            </environmentVariables>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <target unless="${java12Exists}">
+                                <echo message="Java 12 not found, skipping jsweet compilation, no npm test" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>antrun.run.test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <target name="do.run.test" if="${java12Exists}">
+                                <exec executable="npm" dir="${project.basedir}">
+                                    <arg value="test" />
+                                </exec>
+                            </target>
                         </configuration>
                     </execution>
 
                 </executions>
-
             </plugin>
 
-
--->
-
-            <!--
-            <plugin>
-                <groupId>org.jsweet</groupId>
-                <artifactId>jsweet-maven-plugin</artifactId>
-                <version>${jsweet.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>generate-js</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>jsweet</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <compileSourceRootsOverride>${project.build.directory}/generated-sources/${package.name}_cli</compileSourceRootsOverride>
-                    <verbose>false</verbose>
-                    <outDir>${project.build.directory}/js</outDir>
-                    <tsOut>${project.build.directory}/ts</tsOut>
-                    <candiesJsOut>target/webapp/candies</candiesJsOut>
-                    <excludes>
-                        <exclude>**/node_modules/**</exclude>
-                        <exclude>**/node/**</exclude>
-                    </excludes>
-                    <targetVersion>ES6</targetVersion>
-                    <module>commonjs</module>
-                    <bundle>true</bundle>
-                    <declaration>true</declaration>
-                    <dtsOut>${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}</dtsOut>
-                </configuration>
-            </plugin>
--->
 
 
             <plugin>
@@ -341,8 +290,8 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources/${package.name}_cli</source>
-                                <source>${project.build.directory}/generated-sources/${package.name}_l2p</source>
+                                <source>${project.build.directory}/generated-sources/${package.name.cli}</source>
+                                <source>${project.build.directory}/generated-sources/${package.name.l2p}</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -358,55 +307,34 @@
                                 <resource>
                                     <directory>${project.build.directory}/resources</directory>
                                     <targetPath />
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/js</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/js</targetPath>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                                 <resource>
-                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/js</directory>
+                                    <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/js</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/js</targetPath>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/ts</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/ts</targetPath>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/bindings</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/bindings</targetPath>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/prov-template-library/templates</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/templates</targetPath>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/prov-template-library/mbindings</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/mbindings</targetPath>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
 
                                 <resource>
-                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/css</directory>
+                                    <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/css</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/css</targetPath>
                                     <includes>
                                         <include>*.css</include>
@@ -414,34 +342,28 @@
                                 </resource>
 
                                 <resource>
-                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/resources</directory>
+                                    <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/resources</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/schema</targetPath>
                                     <includes>
-                                        <include>schema-plead.json</include>
-                                        <include>schema-ptm.json</include>
+                                        <include>*.json</include>
                                     </includes>
                                 </resource>
 
                                 <resource>
-                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/resources</directory>
+                                    <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/resources</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/sql</targetPath>
                                     <includes>
-                                        <include>prov-template-library-plead.sql</include>
-                                        <include>prov-template-library-ptm.sql</include>
+                                        <include>*.sql</include>
                                     </includes>
                                 </resource>
 
 
                                 <resource>
-                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/resources/${meta-inf-webjars}/${package.name}_cli/0.1.0/html</directory>
+                                    <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/resources/${meta-inf-webjars}/${package.name.cli}/0.1.0/html</directory>
                                     <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/html</targetPath>
                                     <includes>
-                                        <include>doc-plead.html</include>
-                                        <include>doc-ptm.html</include>
+                                        <include>*.html</include>
                                     </includes>
-                                    <excludes>
-                                        <exclude>**/junk/**</exclude>
-                                    </excludes>
                                 </resource>
                             </resources>
                         </configuration>
@@ -466,9 +388,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-
-
 
         </plugins>
     </build>

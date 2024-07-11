@@ -13,14 +13,14 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public interface JLD_WasEndedBy extends JLD_Generic, HasRole {
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getTrigger();
+    QualifiedName getTrigger();
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getActivity();
+    QualifiedName getActivity();
 
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getEnder();
+    QualifiedName getEnder();
 
     XMLGregorianCalendar getTime();
 

@@ -7,7 +7,7 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 
 import javax.lang.model.element.Modifier;
 
@@ -22,14 +22,16 @@ public class CompilerDelegator {
     }
 
 
-    public SpecificationFile generateDelegator(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+    public SpecificationFile generateDelegator(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.DELEGATOR);
 
-        ClassName beanProcessorClass = ClassName.get(locations.getFilePackage(configs.beanProcessor), configs.beanProcessor);
+        ClassName beanProcessorClass = compilerUtil.getClass(BEAN_PROCESSOR, locations);
         builder.addSuperinterface(beanProcessorClass);
+
+        builder.addJavadoc("Delegator for processing beans\n");
 
         builder.addField(beanProcessorClass, DELEGATOR_VAR, Modifier.FINAL, Modifier.PRIVATE);
 
@@ -37,6 +39,12 @@ public class CompilerDelegator {
                 .constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(beanProcessorClass, DELEGATOR_VAR);
+
+        CodeBlock.Builder jdoc = CodeBlock.builder();
+        jdoc.add("Constructor for Delegator\n");
+        jdoc.add("@param delegator a processor to which processing of beans is delegated\n");
+        mspec2.addJavadoc(jdoc.build());
+
         compilerUtil.specWithComment(mspec2);
         mspec2.addStatement("this.$N=$N", DELEGATOR_VAR, DELEGATOR_VAR);
 
@@ -53,6 +61,12 @@ public class CompilerDelegator {
                     .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())
                     .returns(className);
             compilerUtil.specWithComment(mspec);
+            CodeBlock.Builder jdoc2= CodeBlock.builder();
+            jdoc2.add("Porcessing method\n");
+            jdoc2.add("@param bean an input bean\n");
+            jdoc2.add("@return a processed bean\n");
+            mspec.addJavadoc(jdoc2.build());
+
             mspec.addStatement("return $N.process($N)", DELEGATOR_VAR, BEAN_VAR);
             builder.addMethod(mspec.build());
         }

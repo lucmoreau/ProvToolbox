@@ -13,10 +13,12 @@ import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.template.compiler.*;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.Descriptor;
+import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import org.openprovenance.prov.template.expander.ExpandAction;
 import org.openprovenance.prov.template.expander.ExpandUtil;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.typeT;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
+import static org.openprovenance.prov.template.compiler.common.CompilerCommon.makeArgsList;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.*;
 import static org.openprovenance.prov.template.expander.ExpandUtil.*;
 
@@ -58,7 +61,7 @@ public class CompilerExpansionBuilder {
 
 
 
-    public SpecificationFile generateBuilderInterfaceSpecification(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    public SpecificationFile generateBuilderInterfaceSpecification(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -72,7 +75,7 @@ public class CompilerExpansionBuilder {
 
     }
 
-    SpecificationFile generateBuilderInterfaceSpecification_aux(TemplatesCompilerConfig configs, Locations locations, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    SpecificationFile generateBuilderInterfaceSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(name+"Interface", "T");
@@ -87,7 +90,7 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public SpecificationFile generateBuilderSpecification(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
+    public SpecificationFile generateBuilderSpecification(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -118,7 +121,7 @@ public class CompilerExpansionBuilder {
         return builder.build();
     }
 
-    SpecificationFile generateBuilderSpecification_aux(TemplatesCompilerConfig configs, Locations locations, Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
+    SpecificationFile generateBuilderSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassBuilder2(name);
@@ -152,6 +155,7 @@ public class CompilerExpansionBuilder {
             builder.addMethod(generateFactoryMethodWithContinuation(allVars, allAtts, name,  templateName, packge, bindings_schema));
             builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
             builder.addMethod(generateFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindings_schema));
+            builder.addMethod(generateUniqueRecordFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
         }
 
 
@@ -823,7 +827,7 @@ public class CompilerExpansionBuilder {
         JsonNode the_var = bindings_schema.get("var");
 
         builder.addParameter(Object[].class, "__record");
-        builder.addParameter(processorInterfaceType(template, packge), "_processor");
+        builder.addParameter(processorInterfaceType(template, packge), Constants.PROCESSOR);
 
         int count = 1;
         Iterator<String> iter = the_var.fieldNames();
@@ -843,8 +847,54 @@ public class CompilerExpansionBuilder {
             args = args + key;
             count++;
         }
+
         builder.addStatement("return make(" + args + ",_processor)");
 
+
+        MethodSpec method = builder.build();
+
+        return method;
+    }
+
+    public MethodSpec generateUniqueRecordFactoryMethodWithArrayAndContinuation(String name, String template, String packge, TemplateBindingsSchema bindingsSchema) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(TypeVariableName.get("T"))
+                .addTypeVariable(TypeVariableName.get("T"));
+
+        compilerUtil.specWithComment(builder);
+
+        builder.addParameter(processorInterfaceType(template, packge), Constants.PROCESSOR);
+
+        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
+        Collection<String> variables=descriptorUtils.fieldNames(bindingsSchema);
+
+        int count = 1;
+        for (String variable: variables) {
+            List<Descriptor> descriptors = theVar.get(variable);
+            if (descriptors!=null) {
+                for (Descriptor descriptor: descriptors) {
+                    final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, variable);
+                    final String converter = compilerUtil.getConverterForDeclaredType(atype);
+                    if (descriptor instanceof NameDescriptor) {
+
+                        if (converter == null) {
+                            String statement = "$T $N=($T) \"" + count + "\"";
+                            builder.addStatement(statement, atype, variable, atype);
+                        } else {
+                            String statement = "$T $N=$N(" + count + ")";
+                            builder.addStatement(statement, atype, variable, converter);
+                        }
+                    } else {
+                        String statement = "$T $N=$N /* $L */";
+                        builder.addStatement(statement, atype, variable, "null", count);
+                    }
+                    count++;
+                }
+            }
+        }
+        CodeBlock argsList=makeArgsList(variables);
+        builder.addStatement("return make($L,$N)", argsList, Constants.PROCESSOR);
 
         MethodSpec method = builder.build();
 

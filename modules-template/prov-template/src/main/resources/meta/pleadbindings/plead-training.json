@@ -13,8 +13,8 @@
         "start" :                   [{"@id" : "var:start"}],
         "end" :                     [{"@id" : "var:end"}],
         "plan":                     [{"@id" : null}],
-        "oprops":                   [[{"@id": "plead:createdAt"}, {"@id": "plead:path"}]],
-        "oprop_values":             [[{"@id": "var:time"},   {"@id": "var:path"}]]
+        "oprops":                   [[{"@id": "plead:createdAt"}, {"@id": "plead:filename"}, {"@id": "plead:path"}]],
+        "oprop_values":             [[{"@id": "var:time"},        {"@id": "var:filename"},   {"@id": "var:path"}]]
     },
     "vargen" : {
         "view" : [ {

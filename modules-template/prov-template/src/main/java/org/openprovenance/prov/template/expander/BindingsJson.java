@@ -146,16 +146,6 @@ public class BindingsJson {
 
 
 
-    private static BindingsBean importBean(JsonNode json) {
-
-        try {
-            return mapper.treeToValue(json,BindingsBean.class);
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new UncheckedException("JSON conversion to bean failed", e);
-        }
-    }
     public static Bindings importBindings(JsonNode json) {
 
         try {
@@ -165,10 +155,6 @@ public class BindingsJson {
             e.printStackTrace();
             throw new UncheckedException("JSON conversion to bean failed", e);
         }
-    }
-
-    public static OldBindings getOldBindingsFromSchema(JsonNode bindings_schema, ProvFactory provFactory) {
-        return Conversions.fromBean(BindingsJson.importBean(bindings_schema), provFactory);
     }
 
     public static OldBindings getBindingsFromSchema(JsonNode bindings_schema, ProvFactory provFactory) {

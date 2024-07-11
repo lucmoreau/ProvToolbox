@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>modules-template</artifactId>
 		<groupId>org.openprovenance.prov</groupId>
-		<version>2.0.5</version>
+		<version>2.0.6</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,7 @@
 		<repository>
 			<id>jsweet-central</id>
 			<name>libs-release</name>
-			<url>http://repository.jsweet.org/artifactory/libs-release-local</url>
+			<url>https://repository.jsweet.org/artifactory/libs-release-local</url>
 		</repository>
 	</repositories>
 	<!--
@@ -22,7 +22,7 @@
 		<pluginRepository>
 			<id>jsweet-plugins-release</id>
 			<name>plugins-release</name>
-			<url>http://repository.jsweet.org/artifactory/plugins-release-local</url>
+			<url>https://repository.jsweet.org/artifactory/plugins-release-local</url>
 		</pluginRepository>
 	</pluginRepositories>
 	-->
@@ -57,6 +57,24 @@
 					<target>11</target>
 					<fork>true</fork>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>templating-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>preparing.jsweet.script</id>
+						<goals>
+							<goal>filter-sources</goal>
+						</goals>
+						<configuration>
+							<sourceDirectory>src/main/jsweet</sourceDirectory>
+							<outputDirectory>${project.build.directory}/jsweet</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 
 			<plugin>
@@ -109,13 +127,25 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
+							<!--suppress UnresolvedMavenProperty -->
 							<target if="${java12Exists}">
-								<exec executable="mvn">
-									<env key="JAVA_HOME" value="${java12.home}" />
-									<arg value="-f" />
-									<arg value="pom12.xml" />
-									<arg value="jsweet:jsweet" />
+								<echo message="Java 12 found, doing jsweet compilation" />
+								<exec executable="${project.build.directory}/jsweet/jsweet.sh">
+
 								</exec>
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>antrun.no.jsweet</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<!--suppress UnresolvedMavenProperty -->
+							<target unless="${java12Exists}">
+								<echo message="Java 12 not found, skipping jsweet compilation, no npm test" />
 							</target>
 						</configuration>
 					</execution>

@@ -1,7 +1,64 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
-`2.0.5-SNAPSHOT`
+
+`2.0.7-SNAPSHOT`
+
+`2.0.6`
+* prov-template-compiler: introduced sqlify for a few more keywords
+* prov-template-compiler: fixed json schema generation for float/double
+* prov-template-library: updated plead templates to support sql backend, with ID being keys
+* service-templates: deployment of prov-template-library as a service
+* service-templates: submission of csv with json results and reconstructed csv_log
+* service-templates: visualising prov for a template instantiation
+* service-templates: plead workflow, run locally and remotely
+* service-templates: extracting provenance of a workflow run
+* prov-template-library: added composite template plead_transforming_composite
+* prov-template-compiler: documentation for composite templates
+* prov-template-compiler: forms for composite templates (work in progress)
+* prov-template-compiler: composite templates conversion to csv
+* service-templates: form interface to support composite templates (csv or json)
+* service-templates: composite templates are persisted as record linking to composed instances
+* service-templates: provenance generation for composite templates
+* prov-template-compiler: generation of insert_plead_transforming_composite_composite_and_linker sql method
+* prov-template-compiler: search records function
+* service-templates: search records functionality
+* service-templates: browser tab
+* service-templates: navigation between templates
+* service-templates: recursive traversal query
+* service-templates: navigation tab
+* prov-template-compiler: getting level0 types for template variables
+* service-templates: displaying level0 types colours for template variables
+* service-templates: viewing template instance value by property
+* service-templates: browsing template tab
+* prov-template-compiler: sql generation for retrieving record for base_relation(id)
+* prov plugin for maven
+* service-templates: security configuration, oidc and keycloak
+* docker-service-templates: dockerisation of service-templates
+* service-templates: security configuration file
+* prov-toolbox-plugin: a maven plugin to wrap up provconvert and other utilities
+* prov-template: a schema for bindings files (and maven plugin)
+* prov-toolbox-plugin: a maven plugins to validate bindings and process templates
+* prov-template: refined definition of template transformation file and defined schema for it
+* prov-template-compiler: JSON schema for template project and goal validate-template-project in prov-toolbox-plugin
+* prov-template-compiler: input/output info in template documentation
+* prov-template-compiler: refactored invocation of jsweet, conditional on presence of jdk12
+* prov-model: provenance statistics
+* prov-model: fixed issue with IndexedDocument (and named relations)
+* service-translator and prov-service-translator: metrics for provenance
+* prov-template: updated mongo storage to Bindings, replacing deprecated BindingsBean
+* prov-storage-mongodb: updated mongo storage to Bindings, replacing deprecated BindingsBean
+* service-translator, service-templates: introduced storage configuration file
+* prov-storage-mongodb, prov-jsonld: fixed issue with handling of bundle Id and date options
+* docker-service-templates: a secure docker image for templates service
+* prov-template-archetype: skeleton
+* prov-jsonld: fixed incompatibility issues with jsonld1.1
+* prov-service-security-pac: created sub-module
+* prov-dot: displays qualification patterns
+* prov-model: extension of builder to support book example
+
+`2.0.5`
 * prov-template-library: cleaned up pom.xml
 * prov-template-compiler: allowing for @sql.type in NameDescriptor
+* provtoolbox compiles with jdk 21 and 22, but requires jdk12 for jsweet
 
 `2.0.4`
 * prov-explanations: restructured explanation system, introduced interfaces separating components

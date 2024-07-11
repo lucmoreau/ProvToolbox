@@ -19,7 +19,8 @@
         <module name="benchmarks" />
         <module name="prov-model" />
         <module name="modules-executable-provman" />
-        <module name="templates_l2p" />
+        <module name="docker-service-templates" />
+        <module name="prov-toolbox-plugin" />
         <module name="prov-scala-misc" />
         <module name="prov-model-scala" />
         <module name="tutorial5" />
@@ -30,7 +31,6 @@
         <module name="prov-storage-filesystem" />
         <module name="demo" />
         <module name="prov-jsonld-xml" />
-        <module name="templates_cli" />
         <module name="prov-typemap" />
         <module name="prov-validation" />
         <module name="prov-storage-index-redis" />
@@ -43,7 +43,9 @@
         <module name="provconvert" />
         <module name="ProvToolbox-Tutorial1" />
         <module name="service-translator" />
+        <module name="prov-service-security-pac" />
         <module name="nlg-spec-transformer" />
+        <module name="service-templates" />
         <module name="prov-summarisation" />
         <module name="prov-service-validation" />
         <module name="prov-interop" />
@@ -68,8 +70,15 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="arti" target="11" />
+      <module name="mojos" target="11" />
       <module name="prov-jsonld-xml (1)" target="11" />
+      <module name="prov-plugin" target="1.5" />
       <module name="prov-scala" target="9" />
+      <module name="ProvToolbox-Tutorial2" target="1.5" />
+      <module name="templates" target="1.5" />
+      <module name="templates_cli" target="1.8" />
+      <module name="templates_l2p" target="1.8" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>

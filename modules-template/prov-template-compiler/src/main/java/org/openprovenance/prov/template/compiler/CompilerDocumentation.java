@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
@@ -43,7 +43,7 @@ public class CompilerDocumentation {
 
 
 
-    public void generateDocumentation(String documentationFile, String templateName, String root_dir, TemplateBindingsSchema bindingsSchema) {
+    public void generateDocumentation(String documentationFile, String templateName, String root_dir, TemplateBindingsSchema bindingsSchema, List<String> sharing) {
 
         if (os==null) {
             new File(root_dir).mkdirs();
@@ -108,6 +108,7 @@ public class CompilerDocumentation {
 
             for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
 
+
                 required.add(key);
 
                 os.println("<li>");
@@ -117,7 +118,26 @@ public class CompilerDocumentation {
 
                 final String jsonType = convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName());
 
-                os.println(makeSpan(jsonType, "csv_type")+":");
+                os.print(makeSpan(jsonType, "csv_type"));
+
+                if (descriptorUtils.isInput(key,bindingsSchema)) {
+                    String input="";
+                    input=input+"I";
+                    if (descriptorUtils.isCompulsoryInput(key,bindingsSchema)) {
+                        input=input+"*";
+                    }
+                    os.println(makeSpan(input, "csv_input"));
+                }
+
+                if (descriptorUtils.isOutput(key,bindingsSchema)) {
+                    String output="O";
+                    os.println(makeSpan(output, "csv_output"));
+                }
+
+                if (sharing!=null && sharing.contains(key)) {
+                    os.print(makeSpan("share-able variable", "csv_shared"));
+                }
+                os.println(":");
 
 
                 Descriptor descriptor=theVar.get(key).get(0);
@@ -178,7 +198,7 @@ public class CompilerDocumentation {
     }
 
 
-    public void generateDocumentationEnd(TemplatesCompilerConfig configs, String cli_webjar_dir) {
+    public void generateDocumentationEnd(TemplatesProjectConfiguration configs, String cli_webjar_dir) {
         if (os!=null) { // insure this had been initialised
             os.println("</body>");
             os.println("</html>");

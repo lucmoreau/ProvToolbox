@@ -58,7 +58,7 @@ public class IndexedDocument implements StatementAction {
     /* Collection of WasGeneratedBy edges that have a given entity as an
      * effect. */
     private final HashMap<QualifiedName,Collection<WasGeneratedBy>> entityWasGeneratedByMap= new HashMap<>();
-    private final Collection<WasGeneratedBy> anonWasGeneratedBy=new LinkedList<WasGeneratedBy>();
+    private final Collection<WasGeneratedBy> anonWasGeneratedBy= new LinkedList<>();
     private final HashMap<QualifiedName,Collection<WasGeneratedBy>> namedWasGeneratedByMap= new HashMap<>();
 
 
@@ -68,7 +68,7 @@ public class IndexedDocument implements StatementAction {
     /* Collection of WasDerivedFrom edges that have a given entity as an
      * effect. */
     private final HashMap<QualifiedName,Collection<WasDerivedFrom>> entityEffectWasDerivedFromMap= new HashMap<>();
-    private final Collection<WasDerivedFrom> anonWasDerivedFrom=new LinkedList<WasDerivedFrom>();
+    private final Collection<WasDerivedFrom> anonWasDerivedFrom= new LinkedList<>();
     private final HashMap<QualifiedName,Collection<WasDerivedFrom>> namedWasDerivedFromMap= new HashMap<>();
 
 
@@ -90,7 +90,7 @@ public class IndexedDocument implements StatementAction {
     /* Collection of WasAttributedTo edges that have a given agent as a
      * cause. */
     private final HashMap<QualifiedName,Collection<WasAttributedTo>> agentWasAttributedToMap= new HashMap<>();
-    private final Collection<WasAttributedTo> anonWasAttributedTo=new LinkedList<WasAttributedTo>();
+    private final Collection<WasAttributedTo> anonWasAttributedTo= new LinkedList<>();
     private final HashMap<QualifiedName,Collection<WasAttributedTo>> namedWasAttributedToMap= new HashMap<>();
 
 
@@ -100,7 +100,7 @@ public class IndexedDocument implements StatementAction {
     /* Collection of WasInformedBy edges that have a given activity as an
      * effect. */
     private final HashMap<QualifiedName,Collection<WasInformedBy>> activityEffectWasInformedByMap= new HashMap<>();
-    private final Collection<WasInformedBy> anonWasInformedBy=new LinkedList<WasInformedBy>();
+    private final Collection<WasInformedBy> anonWasInformedBy= new LinkedList<>();
     private final HashMap<QualifiedName,Collection<WasInformedBy>> namedWasInformedByMap= new HashMap<>();
 
     private Namespace nss;
@@ -114,32 +114,32 @@ public class IndexedDocument implements StatementAction {
 
     private final HashMap<QualifiedName, Collection<WasInvalidatedBy>> namedWasInvalidatedByMap= new HashMap<>();
     private final HashMap<QualifiedName, Collection<WasInvalidatedBy>> entityWasInvalidatedByMap= new HashMap<>();
-    private final Collection<WasInvalidatedBy> anonWasInvalidatedBy=new LinkedList<WasInvalidatedBy>();
+    private final Collection<WasInvalidatedBy> anonWasInvalidatedBy= new LinkedList<>();
     private final HashMap<QualifiedName, Collection<WasInvalidatedBy>> activityWasInvalidatedByMap= new HashMap<>();
 
     private final HashMap<QualifiedName, Collection<SpecializationOf>> namedSpecializationOfMap= new HashMap<>();
     private final HashMap<QualifiedName, Collection<SpecializationOf>> specificEntitySpecializationOfMap= new HashMap<>();
-    private final Collection<SpecializationOf> anonSpecializationOf=new LinkedList<SpecializationOf>();
+    private final Collection<SpecializationOf> anonSpecializationOf= new LinkedList<>();
     private final HashMap<QualifiedName, Collection<SpecializationOf>> genericEntitySpecializationOfMap= new HashMap<>();
 
-    private final Collection<AlternateOf> anonAlternateOf=new LinkedList<AlternateOf>();
+    private final Collection<AlternateOf> anonAlternateOf= new LinkedList<>();
     private final HashMap<QualifiedName, Collection<AlternateOf>> namedAlternateOfMap= new HashMap<>();
     private final HashMap<QualifiedName, Collection<AlternateOf>> entityCauseAlternateOfMap= new HashMap<>();
     private final HashMap<QualifiedName, Collection<AlternateOf>> entityEffectAlternateOfMap= new HashMap<>();
 
     private final HashMap<QualifiedName, Collection<WasInfluencedBy>> influenceeWasInfluencedByMap= new HashMap<>();
     private final HashMap<QualifiedName, Collection<WasInfluencedBy>> influencerWasInfluencedByMap= new HashMap<>();
-    private final Collection<WasInfluencedBy> anonWasInfluencedBy=new LinkedList<WasInfluencedBy>();
+    private final Collection<WasInfluencedBy> anonWasInfluencedBy= new LinkedList<>();
     private final HashMap<QualifiedName, Collection<WasInfluencedBy>> namedWasInfluencedByMap= new HashMap<>();
     private final HashMap<QualifiedName, Collection<WasStartedBy>> activityWasStartedByMap= new HashMap<>();
     private final HashMap<QualifiedName, Collection<WasStartedBy>> entityWasStartedByMap= new HashMap<>();
-    private final Collection<WasStartedBy> anonWasStartedBy=new LinkedList<WasStartedBy>();
+    private final Collection<WasStartedBy> anonWasStartedBy= new LinkedList<>();
     private final HashMap<QualifiedName, Collection<WasStartedBy>> namedWasStartedByMap= new HashMap<>();
-    private final Collection<WasEndedBy> anonWasEndedBy=new LinkedList<WasEndedBy>();
+    private final Collection<WasEndedBy> anonWasEndedBy= new LinkedList<>();
     private final HashMap<QualifiedName, Collection<WasEndedBy>> activityWasEndedByMap= new HashMap<>();
     private final HashMap<QualifiedName, Collection<WasEndedBy>> namedWasEndedByMap= new HashMap<>();
     private final HashMap<QualifiedName, Collection<WasEndedBy>> entityWasEndedByMap= new HashMap<>();
-    private final Collection<HadMember> anonHadMember=new LinkedList<HadMember>();
+    private final Collection<HadMember> anonHadMember= new LinkedList<>();
     private final HashMap<QualifiedName, Collection<HadMember>> collHadMemberMap= new HashMap<>();
     private final HashMap<QualifiedName, Collection<HadMember>> namedHadMemberMap= new HashMap<>();
     private final HashMap<QualifiedName, Collection<HadMember>> entityHadMemberMap= new HashMap<>();
@@ -510,7 +510,7 @@ public class IndexedDocument implements StatementAction {
             id=null;
         }
 
-        if (id == null) {
+        {
 
             boolean found = false;
             Collection<T> relationCollection = effectRelationMap.get(aid2);
@@ -531,23 +531,34 @@ public class IndexedDocument implements StatementAction {
                 }
             }
 
-            relationCollection = causeRelationMap.get(aid1);
-            if (relationCollection == null) {
-                relationCollection = new LinkedList<T>();
-                relationCollection.add(statement);
-                causeRelationMap.put(aid1, relationCollection);
+
+            boolean found2 = false;
+            Collection<T> relationCollection2 = causeRelationMap.get(aid1);
+            if (relationCollection2 == null) {
+                relationCollection2 = new LinkedList<T>();
+                relationCollection2.add(statement);
+                causeRelationMap.put(aid1, relationCollection2);
             } else {
-                if (!found) {
+                for (T u : relationCollection2) {
+                    if (u.equals(statement)) {
+                        found2 = true;
+                        statement = u;
+                        break;
+                    }
+                }
+                if (!found2) {
                     // if we had not found it in the first table, then we
                     // have to add it here too
-                    relationCollection.add(statement);
+                    relationCollection2.add(statement);
                 }
             }
 
-            if (!found) {
+            if (!found || !found2) {
                 anonRelationCollection.add(statement);
             }
-        } else {
+
+        }
+        if (id!=null){
             Collection<T> relationCollection=namedRelationMap.get(id);
             if (relationCollection==null) {
                 relationCollection=new LinkedList<T>();
@@ -667,7 +678,7 @@ public class IndexedDocument implements StatementAction {
         throw new UnsupportedOperationException();
     }
 
-    HashMap<QualifiedName,IndexedDocument> bundleMap=new HashMap<QualifiedName,IndexedDocument>();
+    HashMap<QualifiedName,IndexedDocument> bundleMap= new HashMap<>();
 
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
@@ -991,6 +1002,51 @@ public class IndexedDocument implements StatementAction {
         }
 
         return last;
+    }
+
+    public Collection<Entity> getEntities() {
+        return entityMap.values();
+    }
+
+    public Collection<Activity> getActivities() {
+        return activityMap.values();
+    }
+
+    public Collection<Agent> getAgents() {
+        return agentMap.values();
+    }
+
+    public void checkActivityUsedMap() {
+        for (QualifiedName qn: activityUsedMap.keySet()) {
+            Collection<Used> c=activityUsedMap.get(qn);
+            for (Used u: c) {
+                if (!qn.equals(u.getActivity())) {
+                    throw new UnsupportedOperationException("ActivityUsedMap not indexed properly " + qn + ": " + u);
+                }
+            }
+        }
+    }
+
+    public void checkEntityWasGeneratedByMap() {
+        for (QualifiedName qn: entityWasGeneratedByMap.keySet()) {
+            Collection<WasGeneratedBy> c=entityWasGeneratedByMap.get(qn);
+            for (WasGeneratedBy u: c) {
+                if (!qn.equals(u.getEntity())) {
+                    throw new UnsupportedOperationException("EntityWasGeneratedByMap not indexed properly " + qn + ": " + u);
+                }
+            }
+        }
+    }
+
+    public void checkEntityCauseWasDerivedFromMap() {
+        for (QualifiedName qn: entityCauseWasDerivedFromMap.keySet()) {
+            Collection<WasDerivedFrom> c=entityCauseWasDerivedFromMap.get(qn);
+            for (WasDerivedFrom u: c) {
+                if (!qn.equals(u.getUsedEntity())) {
+                    throw new UnsupportedOperationException("EntityCauseWasDerivedFromMap not indexed properly " + qn + ": " + u);
+                }
+            }
+        }
     }
 
 

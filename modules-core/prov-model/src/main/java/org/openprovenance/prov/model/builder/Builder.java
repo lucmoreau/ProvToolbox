@@ -42,8 +42,14 @@ public class Builder {
     public EntityBuilder entity() {
         return new EntityBuilder(this, mc, pf);
     }
+    public AgentBuilder agent() {
+        return new AgentBuilder(this, mc, pf);
+    }
     public WasDerivedFromBuilder wasDerivedFrom() {
         return new WasDerivedFromBuilder(this, mc, pf);
+    }
+    public WasAttributedToBuilder wasAttributedTo() {
+        return new WasAttributedToBuilder(this, mc, pf);
     }
     public UsedBuilder used() {
         return new UsedBuilder(this,mc,pf);
@@ -72,11 +78,14 @@ public class Builder {
     public WasInfluencedByBuilder wasInfluencedBy() {
         return new WasInfluencedByBuilder(this,mc,pf);
     }
-    public WasInvalidatedByBuilder wasInvalidatedByBuilder() {
+    public WasInvalidatedByBuilder wasInvalidatedBy() {
         return new WasInvalidatedByBuilder(this,mc,pf);
     }
     public ActedOnBehalfOfBuilder actedOnBehalfOf() {
         return new ActedOnBehalfOfBuilder(this,mc,pf);
+    }
+    public WasAssociatedWithBuilder wasAssociatedWith() {
+        return new WasAssociatedWithBuilder(this,mc,pf);
     }
 
 
@@ -118,5 +127,9 @@ public class Builder {
 
     public Prefix prefix(String pref) {
         return new Prefix(this,pref);
+    }
+
+    public QualifiedName PROV_PERSON() {
+        return pf.getName().PROV_PERSON;
     }
 }

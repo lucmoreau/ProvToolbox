@@ -7,10 +7,11 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 
 import javax.lang.model.element.Modifier;
 
+import static org.openprovenance.prov.template.compiler.common.Constants.BEAN_PROCESSOR;
 import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
 
 public class CompilerBeanProcessor {
@@ -21,12 +22,10 @@ public class CompilerBeanProcessor {
     }
 
 
-    SpecificationFile generateBeanProcessor(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+    SpecificationFile generateBeanProcessor(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
-
-        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(configs.beanProcessor);
+        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(BEAN_PROCESSOR);
 
         for (TemplateCompilerConfig config : configs.templates) {
             //if (!(config instanceof SimpleTemplateCompilerConfig)) continue;

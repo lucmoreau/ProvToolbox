@@ -43,6 +43,12 @@ public class SpecializationOfBuilder extends GenericBuilder<SpecializationOfBuil
         return this;
     }
 
+    public SpecializationOfBuilder aka() {
+        parent.knownAs.put(id.getLocalPart(),id);
+        return this;
+    }
+
+
     public Builder build() {
         if ((id==null)&&attrs.isEmpty()) {
             parent.statements.add(mc.newSpecializationOf(specificEntity, generalEntity));

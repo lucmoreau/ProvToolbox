@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
@@ -21,7 +22,6 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 public class CompilerProcessor {
     private final ProvFactory pFactory;
     private final CompilerUtil compilerUtil;
-    private final boolean debugComment=true;
 
     public CompilerProcessor(ProvFactory pFactory) {
         this.pFactory=pFactory;
@@ -34,10 +34,10 @@ public class CompilerProcessor {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public SpecificationFile generateProcessor(Locations locations, String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator, String fileName) {
+    public SpecificationFile generateProcessor(Locations locations, String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator, String fileName, String consistsOf) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = generateProcessorClassInit(inIntegrator? compilerUtil.integratorNameClass(templateName) : compilerUtil.processorNameClass(templateName));
+        TypeSpec.Builder builder = generateProcessorClassInit(inIntegrator ? compilerUtil.integratorNameClass(templateName) : compilerUtil.processorNameClass(templateName));
 
         MethodSpec.Builder mbuilder = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC)
@@ -58,7 +58,11 @@ public class CompilerProcessor {
 
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
 
-            if (!inIntegrator || descriptorUtils.isInput(key,bindingsSchema)) {
+            if (inIntegrator &&
+                    (!(descriptorUtils.hasInput(key,bindingsSchema) ||
+                            descriptorUtils.hasOutput(key,bindingsSchema) )) ) {
+                throw new UnsupportedOperationException("In integrator, but no input or output value for " + key);
+            } else if (!inIntegrator || descriptorUtils.isInput(key,bindingsSchema)) {
 
                 mbuilder.addParameter(compilerUtil.getJavaTypeForDeclaredType(theVar, key), key);
 
@@ -81,6 +85,15 @@ public class CompilerProcessor {
             }
 
         }
+
+
+
+        if (consistsOf!=null) {
+            final TypeName listType=ParameterizedTypeName.get(ClassName.get(List.class),ClassName.get(packge, compilerUtil.beanNameClass(consistsOf, BeanDirection.COMMON)));
+            mbuilder.addParameter(listType, Constants.ELEMENTS);
+            jdoc.add("@param $N: to do \n", Constants.ELEMENTS);
+        }
+
         jdoc.add(retString);
 
         mbuilder.addJavadoc(jdoc.build());

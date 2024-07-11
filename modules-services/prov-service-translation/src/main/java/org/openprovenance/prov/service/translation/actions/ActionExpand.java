@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.translation.actions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -16,7 +17,6 @@ import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.TemplateResource;
-import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
 import org.openprovenance.prov.template.expander.Expand;
 import org.openprovenance.prov.template.json.Bindings;
 import org.quartz.JobKey;
@@ -68,11 +68,12 @@ public class ActionExpand implements ActionPerformer {
 
             Document templateDocument = utils.getDocumentFromCacheOrStore(tr.getStorageId());
 
+
             ServiceUtils.Destination destination = utils.getDestination(formData);
 
             List<InputPart> inputParts = formData.get("statements");
             String bindings = inputParts.get(0).getBodyAsString();
-            logger.debug("bindings " + bindings);
+            //logger.debug("bindings " + bindings);
 
             Document expanded = expandTemplateWithBindings(templateDocument, tr, bindings);
 
@@ -101,37 +102,24 @@ public class ActionExpand implements ActionPerformer {
     }
 
     private Document expandTemplateWithBindings(Document templateDocument, TemplateResource tr, String bindingsString) throws IOException {
-        boolean allExpanded=false;
-        ProvFactory pFactory=utils.getProvFactory();
-        boolean addOrderp=false;
-
-        Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
-
-        InputStream stream = new ByteArrayInputStream(bindingsString.getBytes(StandardCharsets.UTF_8));
-        Bindings bindings = om.readValue(stream, Bindings.class);
-
-
-
-        Document expanded = myExpand.expander(templateDocument, bindings);
-
-
+        Pair<Document,Bindings> pair = expandTemplate(templateDocument, new ByteArrayInputStream(bindingsString.getBytes(StandardCharsets.UTF_8)), om, utils.getProvFactory());
+        Document expanded = pair.getLeft();
+        Bindings bindings = pair.getRight();
         storeBindings(tr, bindings);
-        //storeBindings(tr, bean);
-
-
         return expanded;
     }
 
-    private void storeBindings(TemplateResource tr, BindingsBean bean) throws IOException {
-
-        final NonDocumentGenericResourceStorage<BindingsBean> bindingsStorage = (NonDocumentGenericResourceStorage<BindingsBean> ) utils.getGenericResourceStorageMap().get(BINDINGS_KEY);
-        String bindingsStoreId= bindingsStorage.newStore("json", "application/json");
-
-        bindingsStorage.serializeObjectToStore(bean,bindingsStoreId);
-
-        logger.debug("saving bindings " + " " + bindingsStoreId);
-        tr.setBindingsStorageId(bindingsStoreId);
-
+    public
+    static Pair<Document,Bindings> expandTemplate (
+                         Document templateDocument,
+                         InputStream inputStream,
+                         ObjectMapper om,
+                         ProvFactory pFactory)
+            throws IOException {
+        Bindings bindings = Bindings.fromStream(om,inputStream);
+        Expand myExpand=new Expand(pFactory);
+        Document expanded = myExpand.expander(templateDocument, bindings);
+        return Pair.of(expanded,bindings);
     }
 
     private void storeBindings(TemplateResource tr, Bindings bean) throws IOException {

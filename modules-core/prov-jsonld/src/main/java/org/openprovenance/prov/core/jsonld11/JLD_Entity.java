@@ -9,6 +9,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public interface JLD_Entity extends JLD_Agent {
 
     @JsonIgnore
-    public org.openprovenance.prov.model.Value getValue();
+    org.openprovenance.prov.model.Value getValue();
 
 }

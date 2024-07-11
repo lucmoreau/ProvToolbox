@@ -1,8 +1,12 @@
 package org.openprovenance.prov.template.json;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Bindings {
@@ -32,5 +36,22 @@ public class Bindings {
         bindingsBean.template=template;
         bindingsBean.linked=linked;
         return bindingsBean;
+    }
+
+    public static Bindings fromStream(ObjectMapper om, InputStream is) throws IOException {
+        return om.readValue(is, Bindings.class);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bindings bindings = (Bindings) o;
+        return Objects.equals(var, bindings.var) && Objects.equals(vargen, bindings.vargen) && Objects.equals(context, bindings.context) && Objects.equals(linked, bindings.linked) && Objects.equals(template, bindings.template);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(var, vargen, context, linked, template);
     }
 }

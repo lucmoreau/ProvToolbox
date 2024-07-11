@@ -4,22 +4,25 @@
 		"bean": [
 			{
 				"@id": "ex:*",
-				"@documentation": "The bean identifier",
+				"@documentation": "The bean identifier (not used for now)",
+				"@input": "false",
 				"@output": "true"
 			}
 		],
 		"count": [[
 			{
 				"@type": "xsd:int",
-				"@documentation": "The number of records being composed",
-				"@input": "compulsory"
+				"@documentation": "The number of records being composed (calculated automatically)",
+				"@input": "compulsory",
+				"@output": "false"
 			}
 		]],
 		"type": [
 			{
 				"@id": "ex:*",
 				"@documentation": "The type of bean being composed",
-				"@input": "compulsory"
+				"@input": "compulsory",
+				"@output": "false"
 			}
 		]
 	},

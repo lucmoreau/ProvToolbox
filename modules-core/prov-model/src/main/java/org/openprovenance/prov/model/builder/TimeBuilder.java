@@ -16,4 +16,5 @@ abstract public class TimeBuilder<T extends TimeBuilder<T>> extends GenericBuild
     public void setTime(XMLGregorianCalendar time) {
         this.time=time;
     }
+
 }

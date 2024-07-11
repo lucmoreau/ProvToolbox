@@ -3,6 +3,11 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.11 (ProvToolbox)" />
   </component>
+  <component name="EntryPointsManager">
+    <writeAnnotations>
+      <writeAnnotation name="org.apache.maven.plugins.annotations.Parameter" />
+    </writeAnnotations>
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="Osmorc" url="file://$PROJECT_DIR$/modules-executable/prov-interop" />
@@ -45,15 +50,18 @@
         <option value="$PROJECT_DIR$/modules-explanations/pom.xml" />
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" />
         <option value="$PROJECT_DIR$/modules-explanations/prov-summary-explanations/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/service-templates/pom.xml" />
+        <option value="$PROJECT_DIR$/prov-toolbox-plugin/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/modules-legacy/pom.xml" />
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" />
+        <option value="$PROJECT_DIR$/mojos/pom.xml" />
+        <option value="$PROJECT_DIR$/prov-plugin/arti/pom.xml" />
       </set>
     </option>
-    <option name="workspaceImportForciblyTurnedOn" value="true" />
   </component>
   <component name="ProjectResources">
     <resource url="http://www.w3.org/ns/prov#" location="$PROJECT_DIR$" />

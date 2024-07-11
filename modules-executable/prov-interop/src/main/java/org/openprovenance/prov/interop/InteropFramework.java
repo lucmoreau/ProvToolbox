@@ -14,15 +14,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Variant;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.Formats.ProvFormatType;
 import org.openprovenance.prov.model.exception.DocumentedUnsupportedCaseException;
+import org.openprovenance.prov.rules.Rules;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.expander.Expand;
 
 
@@ -479,7 +479,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             System.out.println("provconvert.main=" + CommandLineArguments.class.getName());
             return CommandLineArguments.STATUS_OK;
         }
-        if (config.outfile == null && config.compare == null && config.template_builder == null)
+        if (config.outfile == null && config.compare == null && config.template_builder == null && config.metrics == null)
             return CommandLineArguments.STATUS_NO_OUTPUT_OR_COMPARISON;
         if (config.infile == null && config.generator == null && config.template_builder == null && config.merge == null)
             return CommandLineArguments.STATUS_NO_INPUT;
@@ -520,7 +520,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         } else if (config.template_builder!=null) {
             ConfigProcessor cp=new ConfigProcessor(pFactory);
-            return cp.processTemplateGenerationConfig(config.template_builder, pFactory);
+            // At the moment, the assumption is that base dir is the current directory
+            return cp.processTemplateGenerationConfig(config.template_builder, ".", ".", pFactory);
 
         } else if (config.log2prov!=null) {
             try {
@@ -614,6 +615,16 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             doc = gg.getDetails().getDocument();
         }
 
+        if (config.metrics != null) {
+            Object data=new Rules().getMetrics(doc, pFactory);
+            try {
+                new ObjectMapper().writeValue(new File(config.metrics), data);
+                return 0;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         if (config.compare!=null) {
             try {
                 return doCompare(doc, inputer.readDocument(config.compare, config.informat));
@@ -636,19 +647,19 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 if (config.bindingsVersion>=3) {
                     try {
 
-                        TemplatesCompilerConfig configs = new TemplatesCompilerConfig();
+                        TemplatesProjectConfiguration configs = new TemplatesProjectConfiguration();
                         //FIXME: configs not initialized!!
-                        Locations locations = new Locations(configs, null);
+                        Locations locations = new Locations(configs, null, null);
 
 
-                        cp.generate(doc, locations, config.template, config.packge, config.outfile, config.location, config.location, true, config.location, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
+                        cp.generate(doc, locations, config.template, config.packge, config.outfile, config.location, config.location, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
                         return CommandLineArguments.STATUS_OK;
 
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    throw new DocumentedUnsupportedCaseException("bindings version number < 3");
+                    throw new DocumentedUnsupportedCaseException("bindings version number < 3: " + config.bindingsVersion);
                 }
             }
 
@@ -671,7 +682,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     expanded = myExpand.expander(doc, inBindings);
 
                 } else {
-                    throw new DocumentedUnsupportedCaseException("bindings version number <> 3");
+                    throw new DocumentedUnsupportedCaseException("bindings version number <> 3: " + config.bindingsVersion);
                 }
                 boolean flag = myExpand.getAllExpanded();
                 outputer.writeDocumentToFileOrDefaultOutput(config.outfile, expanded, config.outformat);

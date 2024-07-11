@@ -44,7 +44,10 @@ public class WasInvalidatedByBuilder extends TimeBuilder<WasInvalidatedByBuilder
         this.activity=qn;
         return this;
     }
-
+    public WasInvalidatedByBuilder aka() {
+        parent.knownAs.put(id.getLocalPart(),id);
+        return this;
+    }
 
     public Builder build() {
         parent.statements.add(mc.newWasInvalidatedBy(id, entity, activity, time, attrs));

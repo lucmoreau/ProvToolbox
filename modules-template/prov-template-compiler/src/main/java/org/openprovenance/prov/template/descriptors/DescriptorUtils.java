@@ -52,6 +52,14 @@ public class DescriptorUtils {
         Function<NameDescriptor, Boolean> nf=(nd)->OutputFieldValue.isOutput(nd.getOutput());
         return getFromDescriptor(descriptor, af, nf);
     }
+    public boolean hasOutput(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var=templateBindingsSchema.getVar().get(key);
+        if (var==null) throw new NullPointerException("hasOutput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        Descriptor descriptor=var.get(0);
+        Function<AttributeDescriptor, Boolean> af=(ad)->OutputFieldValue.hasOutput(ad.getOutput());
+        Function<NameDescriptor, Boolean> nf=(nd)->OutputFieldValue.hasOutput(nd.getOutput());
+        return getFromDescriptor(descriptor, af, nf);
+    }
     public boolean isOutputName(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var = templateBindingsSchema.getVar().get(key);
         if (var == null)
@@ -61,10 +69,10 @@ public class DescriptorUtils {
         Function<NameDescriptor, Boolean> nf = (nd) -> OutputFieldValue.isOutput(nd.getOutput());
         return getFromDescriptor(descriptor, af, nf);
     }
-    public Optional<String> getOutputSqlTable(String key, TemplateBindingsSchema templateBindingsSchema) {
+    public Optional<String> getSqlTable(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var = templateBindingsSchema.getVar().get(key);
         if (var == null)
-            throw new NullPointerException("getOutputSqlTable could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+            throw new NullPointerException("getSqlTable could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
         Descriptor descriptor = var.get(0);
         Function<AttributeDescriptor, Optional<String>> af = (ad) -> Optional.empty();
         Function<NameDescriptor, Optional<String>> nf = (nd) -> Optional.ofNullable(nd.getTable());
@@ -107,6 +115,14 @@ public class DescriptorUtils {
     }
 
 
+    public boolean hasInput(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var=templateBindingsSchema.getVar().get(key);
+        if (var==null) throw new NullPointerException("hasInput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        Descriptor descriptor=var.get(0);
+        Function<AttributeDescriptor, Boolean> af=(ad)->InputFieldValue.hasInput(ad.getInput());
+        Function<NameDescriptor, Boolean> nf=(nd)->InputFieldValue.hasInput(nd.getInput());
+        return getFromDescriptor(descriptor, af, nf);
+    }
     public boolean isInput(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var=templateBindingsSchema.getVar().get(key);
         if (var==null) throw new NullPointerException("isInput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());

@@ -92,12 +92,7 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
 
         SimpleModule module =
                 new SimpleModule("CustomKindDeserializer", new Version(1, 0, 0, null, null, null));
-
-
-
         TypeFactory typeFactory = mapper.getTypeFactory();
-
-
 
         // DESERIALISER
         MapType mapType2 = typeFactory.constructMapType(HashMap.class, String.class, Object.class);
@@ -109,7 +104,6 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
         module.addDeserializer(XMLGregorianCalendar.class, new CustomXMLGregorianCalendarDeserializer(dateTimeOption,optionalTimeZone));
 
         provMixin().addProvMixin(mapper);
-
 
         mapper.registerModule(module);
     }

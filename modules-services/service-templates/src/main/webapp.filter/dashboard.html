@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="utf-8" http-equiv="encoding"/>
+    <title>prov-sustainability Dashboard ${project.version}</title>
+    <link rel="stylesheet" href="/ptm/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.css" />
+    <link rel="stylesheet" href="/ptm/webjars/prov-template-library/${project.version}/css/provtemplate.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/ptm/webjars/font-awesome/${webjars.fontawesome.version}/css/font-awesome.min.css"/>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+
+<body>
+
+<script src="/ptm/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+<script src="/ptm/webjars/datatables.net/${webjars.datatables.version}/js/jquery.dataTables.min.js" type="text/javascript" charset="utf8" ></script>
+
+<script src="/ptm/webjars/JSV/lib/jsv.js"></script>
+<script src="/ptm/webjars/underscore/${webjars.underscore.version}/underscore.js"></script>
+<script src="/ptm/webjars/jsonform/lib/jsonform.js"></script>
+<script src="/ptm/webjars/jquery-csv/${webjars.jquery.csv.version}/src/jquery.csv.js"></script>
+<!--<script src="/ptm/webjars/prov-jsweet-candy-java/${prov.toolbox.version}/bundle.js"></script>-->
+<script src="/ptm/webjars/j4ts/${webjars.j4ts.version}/bundle.js"></script>
+
+<script src="/ptm/webjars/prov-template-library/${project.version}/js/bundle.js"></script>
+<script src="/ptm/webjars/prov-template-library/${project.version}/js/TemplateManager.js"></script>
+
+
+
+<style>
+    .container {
+        min-width:1200px;
+        width: auto !important;
+        width:1500px;
+    }
+</style>
+
+<div class="container">
+    <div class="row header">
+        <div class="col-lg-12 text-left">
+            <h3>PROV Environmental Management System (${project.version})</h3>
+        </div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a href="#tab_browse" data-toggle="pill" class="nav-link active show" role="tab">Browse</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_documentation" data-toggle="pill" class="nav-link" role="tab">Documentation</a>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="all-tab-contents">
+
+            <div id="tab_documentation" class="tab-pane" role="tabpanel">
+                <div class="col-lg-2">
+                    <div id="template-dropdown-documentation">
+                        <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Provenance Template Library</a>
+                    </div>
+                </div>
+                <div class="col-lg-7 first-column">
+                    <div id="documentation">
+
+                    </div>
+
+                    <div id="documentation_image">
+
+                    </div>
+                    <div id="tmp_div" class="invisible_div">
+
+                    </div>
+                </div>
+            </div>
+            <div id="tab_browse" class="tab-pane disabled" role="tabpanel">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a href="#tab_ems_policy" data-toggle="pill" class="nav-link" role="tab">Policy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#tab_objectives" data-toggle="pill" class="nav-link active" role="tab">Objectives</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#tab_obligations" data-toggle="pill" class="nav-link active" role="tab">Obligations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#tab_ems_environment" data-toggle="pill" class="nav-link active show" role="tab">Environment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#tab_aspects" data-toggle="pill" class="nav-link active" role="tab">Aspects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#tab_prov" data-toggle="pill" class="nav-link active" role="tab">PROV</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#tab_data" data-toggle="pill" class="nav-link active" role="tab">Data</a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <div class="tab-content" id="all-subtab-contents">
+                <div id="tab_ems_policy" class="tab-pane" role="tabpanel">
+                    <div class="col-lg-8">
+
+
+                        <p> </p>
+
+                        <button id="button-policy-objectives"  type="button" class="btn btn-warning" onclick="loadPolicyObjectives()">Get Policy Objectives</button>
+                        <button id="button-policy-obligations" type="button" class="btn btn-warning" onclick="loadPolicyObligations()">Get Policy Obligations</button>
+
+                        <p style="display:none" id="policy_list_comments">Select your policy type.</p>
+
+                        <table id="policy_list"
+                               class="display"
+                               style="width:100%">
+
+                        </table>
+
+
+                        <div id="template_placeholder">
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+                <div id="tab_ems_xxx" class="tab-pane disabled" role="tabpanel">
+                    <div class="col-lg-4">
+                        <h4>xxx</h4>
+
+                        <p>Select your xxx</p>
+
+                    </div>
+                </div>
+                <div id="tab_ems_environment" class="tab-pane disabled" role="tabpanel">
+                    <div class="col-lg-8">
+                        <p> </p>
+
+                        <button id="button-environment" type="button" class="btn btn-warning" onclick="getEnvironment()">Get Environment</button>
+
+                        <p style="display:none" id="environment_list_comments">Select your environment type.</p>
+
+                        <table id="environment_list"
+                               class="display"
+                               style="width:100%">
+
+                        </table>
+
+
+                    </div>
+                </div>
+                <div id="tab_prov" class="tab-pane disabled" role="tabpanel">
+                    <div class="col-lg-4">
+
+                        <div id="prov-anchor-comments"></div>
+
+                        <div id="prov-anchor"></div>
+
+                    </div>
+                </div>
+                <div id="tab_data" class="tab-pane disabled" role="tabpanel">
+                    <div class="col-lg-4">
+                        <div id="live-dropdown-composer" class="">
+                            <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="live-dropdown-composer-lnk" aria-expanded="false">Resource</a>
+                            <ul class="dropdown-menu" id="#live-dropdown-composer">
+                                <li><a class="dropdown-item" data-tmpl="energy" href="#" onclick="set_live_resource('emission_activity')">emission_activity</a></li>
+                                <li><a class="dropdown-item" data-tmpl="waste" href="#" onclick="set_live_resource('waste')">waste</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-4">
+                        <pre id="resource_kind"></pre>
+
+                        <pre><input type="text" id="resource_key" value=""></pre>
+
+                        <button id="button-live-data"  type="button" class="btn btn-warning"
+                                onclick="getLiveData(get_live_resource(),document.getElementById('resource_key').value)">Get Live Data</button>
+
+
+                        <pre id="live_data" class="pretty"></pre>
+
+                        <div id="live_data_comments"></div>
+
+                    </div>
+                </div>
+                <div id="tab_objectives" class="tab-pane disabled" role="tabpanel">
+                    <div class="col-lg-5">
+                        <h4>Objectives</h4>
+
+                        <div id="objective_list_comments"></div>
+
+                        <table id="objective_list"
+                               class="display"
+                               style="width:100%">
+
+                        </table>
+                    </div>
+                </div>
+                <div id="tab_obligations" class="tab-pane disabled" role="tabpanel">
+                    <div class="col-lg-5">
+                        <h4>Obligations</h4>
+
+                        <div id="obligation_list_comments"></div>
+
+                        <table id="obligation_list"
+                               class="display"
+                               style="width:100%">
+
+                        </table>
+                    </div>
+                </div>
+                <div id="tab_aspects" class="tab-pane disabled" role="tabpanel">
+                    <div class="col-lg-5">
+                        <h4>objectives</h4>
+
+                        <div id="aspect_list_comments"></div>
+
+                        <table id="apect_list"
+                               class="display"
+                               style="width:100%">
+
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+    let schemaUrl = "/ptm/webjars/prov-template-library/${project.version}/schema/schema-plead.json";
+    let docUrl = "/ptm/webjars/prov-template-library/${project.version}/html/doc-plead.html";
+    const logger=new org.openprovenance.prov.template.library.plead.logger.Logger();
+    var profile = {
+        "plead_approving": {
+            "compulsory": ["isA"] + org.openprovenance.prov.template.library.plead.client.common.Plead_approvingBuilder.compulsoryInputs,
+            "optional": [  "aspect1", "aspect0", "anticipating", "time"]
+        },
+        "plead_validating": {
+            "compulsory": ["isA"] + org.openprovenance.prov.template.library.plead.client.common.Plead_validatingBuilder.compulsoryInputs,
+            "optional": [  "aspect1", "aspect0", "anticipating", "time"]
+        },
+        "defining_environment": {
+            "compulsory": ["isA", "environmentType", "ems", "organization", "management"],
+            "optional": ["ems1", "ems0", "defining", "time"]
+        },
+        "expressing_policy": {
+            "compulsory": ["isA", "policy", "ems", "organization", "management", ],
+            "optional": ["ems1", "ems0",  "expressing", "time"]
+        },
+        "fulfilling_obligation": {
+            "compulsory": ["isA", "obligation", "policy", "organization", "management", "obligator"],
+            "optional": ["policy1", "policy0",  "fulfilling", "time"]
+        },
+        "identifying_aspect": {
+            "compulsory": ["isA", "aspect",  "environmentType", "organization", "management"],
+            "optional": ["environmentType1", "environmentType0", "identifying", "time"]
+        },
+        "setting_objective": {
+            "compulsory": ["isA", "objective", "policy", "organization", "management"],
+            "optional": [ "policy1", "policy0",  "setting", "time"]
+        },
+        "updating_aspect": {
+            "compulsory": ["isA", "aspect", "organization", "management"],
+            "optional": ["aspect1", "aspect0", "time", "impact", "score", "rank", "legislation", "frequency", "likelihood", "severity", "env_impact", "impact_score", "direct_control", "interested_parties", "lack_of_data", "area_of_legislation", "operational_controls"]
+        },
+        "updating_objective": {
+            "compulsory": ["isA", "objective", "organization", "management"],
+            "optional": ["objective1", "objective0", "time", "baseline_year", "university_policy_objective", "control_influence", "deadline", "indicator", "monitoring", "objective_targets", "objective_type", "period", "progress", "ref", "staff_and_student_engagement_target"]
+        },
+    };
+
+    const enact_result_box_identifier = '#enact_result';
+
+
+    var jsonSubmit=true;
+
+
+    function submitEnactor() {
+        var url = '/ptm/provapi/statements/';
+        var id=enact_result_box_identifier;
+        $(id).html($('<p>'));
+        $(id).attr('received','false');
+        submitService(url,id,"#csv_log", true,true)
+    }
+
+
+
+
+    var alreadySeen=[]
+
+    function getPolicyTemplate(url) {
+        console.log("getPolicyTemplate " + url)
+
+        getSVG("#prov-anchor","#prov-anchor-comments", url);
+
+    }
+    function getPolicyObjectives(url) {
+        url = url + ".csv"
+        console.log("getPolicyObjectives " + url)
+        let id = '#objective_list'
+        let id2 = '#objective_list_comments'
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "text",
+            success: function (contents) {
+                var data = $.csv.toArrays(contents);
+                var columns = data[0];
+                var titles = $.map(columns, function (column) {
+                    return {"title": column}
+                })
+                console.log(titles)
+                data.shift()
+
+                // url is of the shape 	http://localhost:7071/provapi/template/expressing_policy/114.csv
+                // xlsx is of the shape http://localhost:7071/provapi/template/expressing_policy/114.xlsx
+
+                let xlsxUrl = url.replace('.csv', '.xlsx')
+                let jsonUrl = url.replace('.csv', '.json')
+
+
+                $(id2).html("<a target='_blank' href='" + url + "'>CSV File</a>,  <a target='_blank' href='" + xlsxUrl + "'>Excel spreadsheet</a>, and   <a target='_blank' href='" + jsonUrl + "'>JSON Structure</a>")
+
+                $(id).DataTable({
+                    destroy: true,
+                    "data": data,
+                    "columns": titles
+                });
+            }
+        });
+    }
+
+    function getPolicyObligations(url) {
+        url=url+".csv"
+        console.log("getPolicyObligations " + url)
+        let id='#obligation_list'
+        let id2='#obligation_list_comments'
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "text",
+            success: function(contents) {
+                var data = $.csv.toArrays(contents);
+                var columns= data[0];
+                var titles=$.map(columns, function (column) {return {"title": column}})
+                console.log(titles)
+                data.shift()
+
+                // url is of the shape 	http://localhost:7071/provapi/template/expressing_policy/114.csv
+                // xlsx is of the shape http://localhost:7071/provapi/template/expressing_policy/114.xlsx
+
+                let xlsxUrl=url.replace('.csv', '.xlsx')
+
+
+                $(id2).html("<a target='_blank' href='" + url + "'>CSV File</a> and <a target='_blank' href='" + xlsxUrl + "'>Excel spreadsheet</a>")
+
+                $(id).DataTable( {
+                    destroy: true,
+                    "data": data,
+                    "columns": titles
+                } );
+            }
+        });
+
+
+
+    }
+
+
+    function loadPolicyObjectives() {
+        let url='/ptm/provapi/policy_objectives'
+        console.log("loadPolicyObjectives " + url)
+
+        let id='#policy_list'
+        let comments='#policy_list_comments'
+
+
+        $(id).DataTable( {
+            destroy: true,
+            ajax: {
+                url: url,
+                dataSrc: ''
+            },
+            columns: [
+                {
+                    title: 'id',
+                    data: 'id'
+                },
+                {
+                    title: 'objective',
+                    data: 'objective'  ,
+                    render: function (data, type, row, meta) {
+                        return data.toString() + " <button  onclick='getPolicyTemplate(\"/ptm/provapi/policy_objective/" + row['policy'] + "/" + row['pid'] + "/"+ data.toString() + "\")' ><i class='fa fa-sitemap' aria-hidden='true'></i></button>";
+                    }
+                },
+                {
+                    title: 'policy0',
+                    data: 'pid'
+                },
+                {
+                    title: 'policy',
+                    data: 'policy',
+                    render: function (data, type, row, meta) {
+                        return data.toString() + " <button  onclick='getPolicyTemplate(\"/ptm/provapi/policy_objective/" + data.toString() + "\")' ><i class='fa fa-sitemap' aria-hidden='true'></i></button>" +
+                            "<button  onclick='getPolicyObjectives(\"/ptm/provapi/policy_objective/" + data.toString() + "\")' ><i class='fa fa-table' aria-hidden='true'></i></button>";
+                    }
+                },
+
+                { title: 'ems1', data: 'ems1' },
+                { title: 'ems0', data: 'ems0' },
+                { title: 'ems', data: 'ems' },
+                { title: 'date', data: 'created_at' }],
+
+        } );
+        $(comments).attr('style', 'display: true')
+
+    }
+
+    function loadPolicyObligations() {
+        let url='/ptm/provapi/policy_obligations'
+        console.log("loadPolicyObligations " + url)
+
+        let id='#policy_list'
+        let comments='#policy_list_comments'
+
+
+        $(id).DataTable( {
+            destroy: true,
+            ajax: {
+                url: url,
+                dataSrc: ''
+            },
+            columns: [
+                {
+                    title: 'id',
+                    data: 'id'
+                },
+                {
+                    title: 'obligation',
+                    data: 'obligation'  ,
+                    render: function (data, type, row, meta) {
+                        return  data.toString() + " <button  onclick='getPolicyTemplate(\"/ptm/provapi/policy_obligation/" + row['policy'] + "/" + row['pid'] + "/"+ data.toString() + "\")' ><i class='fa fa-sitemap' aria-hidden='true'></i></button>";
+                    }
+                },
+                {
+                    title: 'pid',
+                    data: 'pid'
+                },
+                {
+                    title: 'policy',
+                    data: 'policy',
+                    render: function (data, type, row, meta) {
+                        return data.toString() + " <button  onclick='getPolicyTemplate(\"/ptm/provapi/policy_obligation/" + data.toString() + "\")' ><i class='fa fa-sitemap' aria-hidden='true'></i></button>" +
+                            "<button  onclick='getPolicyObligations(\"/ptm/provapi/policy_obligation/" + data.toString() + "\")' ><i class='fa fa-table' aria-hidden='true'></i></button>";
+                    }
+                },
+
+                { title: 'ems1', data: 'ems1' },
+                { title: 'ems0', data: 'ems0' },
+                { title: 'ems', data: 'ems' },
+                { title: 'date', data: 'created_at' }],
+
+        } );
+        $(comments).attr('style', 'display: true')
+
+    }
+
+
+    function getEnvironment() {
+        console.log("getEnvironment")
+        let url='/ptm/provapi/environment'
+        let id='#environment_list'
+        let comments='#environment_list_comments'
+
+        $(id).DataTable( {
+            destroy: true,
+            ajax: {
+                url: url,
+                dataSrc: ''
+            },
+            columns: [
+                {
+                    title: 'id',
+                    data: 'id'
+                },
+                {
+                    title: 'aspect',
+                    data: 'aspect'  ,
+                    render: function (data, type, row, meta) {
+                        return "<button  onclick='getPolicyTemplate(\"/ptm/provapi/template/fixme/" + row['policy'] + "/" + row['pid'] + "/"+ data.toString() + "\")' >"  + data.toString() + "</button>";
+                    }
+                },
+                {
+                    title: 'envid',
+                    data: 'envid'
+                },
+                {
+                    title: 'environmentType',
+                    data: 'environmentType',
+                    render: function (data, type, row, meta) {
+                        return "<button  onclick='getPolicyTemplate(\"/ptm/provapi/template/fixme/" + data.toString() + "\")' >"  + data.toString() + "</button>" +
+                            "<button  onclick='getPolicyObjectives(\"/ptm/provapi/template/fixme/" + data.toString() + "\")' >"  + data.toString() + "</button>";
+                    }
+                },
+
+                { title: 'ems1', data: 'ems1' },
+                { title: 'ems0', data: 'ems0' },
+                { title: 'ems', data: 'ems' },
+                { title: 'date', data: 'created_at' }],
+
+        } );
+        $(comments).attr('style', 'display: true')
+
+
+
+    }
+
+    function getSVG(id, id2, url) {
+
+        console.log("getSVG")
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+            $(id).html("error with " + event);
+
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+            $(id).html("abort with " + event);
+        };
+        xhr.onload= function() {
+            console.log("loaded " + xhr.status);
+            if (xhr.status === 400 || xhr.status === 404) {
+                $(id).html("status code " + xhr.status + " " + xhr.responseText);
+            } else {
+                $(id).html(xhr.responseText);
+                $(id2).html("SVG accessible from <a target='_blank'  href='" + url + "'>url</a>");
+            }
+        }
+        xhr.setRequestHeader("Accept", "image/svg+xml");
+        xhr.send();
+
+    }
+   function getLiveData(resource, id) {
+        console.log("getLiveData " + resource + " " + id);
+        let url='/ptm/provapi/live/' + resource + '/' + id;
+        console.log("getLiveData " + url);
+        getJSON('#live_data', url);
+    }
+
+    var live_resource;
+
+    function set_live_resource(resource) {
+        console.log("set_live_resource " + resource);
+        live_resource=resource;
+        $('#resource_kind').html(resource)
+        if (resource==='waste') {
+            document.getElementById("resource_key").value = 15985;
+        } else if (resource==='emission_activity') {
+            document.getElementById("resource_key").value=20452;
+        }
+    }
+    function get_live_resource() {
+        console.log("get_live_resource " + live_resource);
+        return live_resource;
+    }
+
+    function getJSON(id, url, id2) {
+
+        console.log("getJSON")
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+            $(id).html("error with " + event);
+
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+            $(id).html("abort with " + event);
+        };
+        xhr.onload= function() {
+            console.log("loaded " + xhr.status);
+            if (xhr.status === 400 || xhr.status === 404) {
+                $(id).html("status code " + xhr.status + " " + xhr.responseText);
+            } else {
+                const parsed = JSON.parse(xhr.responseText);
+                let highlighted=tm.syntaxHighlight_json(JSON.stringify(parsed, null, 2), "ignoreme")
+                $(id).html(highlighted);
+                if (id2) $(id2).append(xhr.responseText);
+                $(comments).attr('style', 'display: true')
+            }
+        }
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.send();
+
+    }
+    function submitService(url,id,id2, enactorp, allRecordsp) {
+        console.log("submitService")
+
+        let csv_data=$('#csv_result').text()
+        let json_data=JSON.stringify(alreadySeen.concat([tm.getBean()]))
+        if (allRecordsp) alreadySeen=[]
+        console.log("submitService " + json_data);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+            $(id).html("error with " + event);
+
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+            $(id).html("abort with " + event);
+        };
+        xhr.onload= function() {
+            console.log("loaded " + xhr.status);
+            if (xhr.status === 400 || xhr.status === 404) {
+                $(id).html("status code " + xhr.status + " " + xhr.responseText);
+            } else if (!enactorp && (xhr.status === 200)) {
+                $(id).html('<i class="fa fa-check"></i>' + "Passed Validator!");
+            } else {
+                const parsed = JSON.parse(xhr.responseText);
+                let name=parsed[0]["isA"];
+                let highlighted=tm.syntaxHighlight_json(JSON.stringify(parsed, null, 2), name)
+                $(id).html(highlighted);
+                if (id2) $(id2).append(xhr.responseText);
+            }
+            $(id).attr('received','true');
+        }
+        xhr.setRequestHeader("Accept", "text/csv");
+        xhr.setRequestHeader("Accept", "application/vnd.kcl.prov-sustainability+json");
+        if (jsonSubmit) {
+            xhr.setRequestHeader("Content-Type", "application/vnd.kcl.prov-sustainability+json");
+        } else {
+            xhr.setRequestHeader("Content-Type", "text/csv");
+        }
+
+        console.log("submitService " + jsonSubmit);
+
+        if (jsonSubmit) {
+            xhr.send(json_data);
+        } else {
+            xhr.send(csv_data);
+        }
+    }
+
+    function enactClear() {
+        $(enact_result_box_identifier).html("");
+    }
+
+
+
+    let imageNameMapper = {
+        "anticipating_impact": "anticipating-impact",
+        "defining_environment": "defining-environment",
+        "expressing_policy": "expressing-policy",
+        "identifying_aspect": "identifying-aspect",
+        "setting_objective": "setting-objective",
+        "fulfilling_obligation": "fulfilling-obligation",
+        "updating_aspect": "updating-aspect",
+        "updating_objective": "updating-objective",
+
+        "registering_method": "registering-method",
+        "updating_target": "updating-target",
+        "updating_policy": "updating-policy",
+        "updating_obligation": "updating-obligation",
+        "setting_target": "setting-target",
+        "reporting_progress": "reporting-progress"
+    };
+
+    const tm=new TemplateManager(logger,schemaUrl,docUrl,profile);
+    tm.setCsvResult('#csv_result');
+    tm.setJsonResult('#json_result');
+    tm.setImageUrlPrefix('/ptm/webjars/prov-template-library/${project.version}/templates/');
+    tm.setImageLocation('#documentation_image');
+    tm.setFilenameConverter(imageNameMapper)
+    tm.createDropdownForPlayground("#template-dropdown-composer", "tm");
+    tm.createDropdownForDocumentation("#template-dropdown-documentation", "tm");
+
+
+</script>
+
+<script src="/ptm/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+<script src="/ptm/webjars/bootstrap/${webjars.bootstrap.version}/js/dropdown.js"></script>
+<script src="/ptm/webjars/bootstrap/${webjars.bootstrap.version}/js/tab.js"></script>
+
+<script>
+    $('.dropdown-toggle').dropdown();
+</script>
+</body>
+</html>

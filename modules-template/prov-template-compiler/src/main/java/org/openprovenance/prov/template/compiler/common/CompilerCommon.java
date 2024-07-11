@@ -10,7 +10,7 @@ import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.*;
 
 import javax.lang.model.element.Modifier;
@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
+import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfString;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.expander.ExpandUtil.isVariable;
@@ -37,7 +38,6 @@ public class CompilerCommon {
     private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
 
-    private final boolean debugComment=true;
     private final CompilerSQL compilerSQL;
 
     public CompilerCommon(ProvFactory pFactory, CompilerSQL compilerSQL) {
@@ -47,15 +47,16 @@ public class CompilerCommon {
     }
 
 
-    public TypeSpec.Builder generateClassInit(String builderName, String builderPackage, String processorName, String supername) {
+    public TypeSpec.Builder generateClassInit(String builderName, String builderPackage, String processorName, String supername, String templateName) {
         return TypeSpec.classBuilder(builderName)
                 .addSuperinterface(ClassName.get(builderPackage,supername))
                 .addSuperinterface(ClassName.get(builderPackage,"SQL"))
+                .addJavadoc("Builder class for $N", templateName)
                 //.addSuperinterface(ClassName.get(processorPackage,processorName))  // implements Processor Interface
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind, String fileName) {
+    public Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, BeanKind beanKind, String fileName, String consistsOf) {
 
 
         Bundle bun=u.getBundle(doc).get(0);
@@ -66,18 +67,25 @@ public class CompilerCommon {
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
 
-        return generateCommonLib_aux(configs, locations, allVars,allAtts,name, templateName, packageName, bindingsSchema, indexed, logger, beanKind, fileName);
+        return generateCommonLib_aux(configs, locations, allVars,allAtts,name, templateName, packageName, bindingsSchema, indexed, beanKind, fileName, consistsOf);
 
     }
 
 
-    Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib_aux(TemplatesCompilerConfig configs, Locations locations, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind, String fileName) {
+    Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib_aux(TemplatesProjectConfiguration configs, Locations locations, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, BeanKind beanKind, String fileName, String consistsOf) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = generateClassInit(name, Constants.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName), Constants.BUILDER);
+        TypeSpec.Builder builder = generateClassInit(name, Constants.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName), Constants.BUILDER, templateName);
 
 
         Map<Integer, List<Integer>> successorTable=null;
+
+        //add default constructor
+        builder.addMethod(MethodSpec.constructorBuilder()
+                .addJavadoc("Default constructor for builder for template $N", templateName)
+                .addModifiers(Modifier.PUBLIC)
+                .build());
+
 
 
         builder.addMethod(generateNameAccessor(templateName));
@@ -90,21 +98,25 @@ public class CompilerCommon {
         builder.addMethod(generateRecordCsvProcessorMethod(beanKind));
         compilerSQL.generateSQLstatements(builder, templateName, bindingsSchema, beanKind);
 
-        ClassName integratorClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), compilerUtil.integratorBuilderNameClass(templateName));
-        builder.addField(FieldSpec.builder(integratorClassName, "__integrator")
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                .initializer("new $T()", integratorClassName)
-                .build());
-        MethodSpec.Builder builder1 = MethodSpec
-                .methodBuilder("getIntegrator")
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
-        compilerUtil.specWithComment(builder1);
-        builder1.returns(integratorClassName)
-                .addStatement("return __integrator");
-        builder.addMethod(builder1.build());
+        if (configs.integrator) {
+            ClassName integratorClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), compilerUtil.integratorBuilderNameClass(templateName));
+            builder.addField(FieldSpec.builder(integratorClassName, "__integrator")
+                    .addJavadoc("Generated by method $N", getClass().getName()+".generateCommonLib_aux()")
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                    .initializer("new $T()", integratorClassName)
+                    .build());
+
+            MethodSpec.Builder builder1 = MethodSpec
+                    .methodBuilder("getIntegrator")
+                    .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
+            compilerUtil.specWithJavaDoc(builder1);
+            builder1.returns(integratorClassName)
+                    .addStatement("return __integrator");
+            builder.addMethod(builder1.build());
+        }
 
         if (beanKind==BeanKind.SIMPLE) {
-            builder.addMethod(generateCommonCSVConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
+            builder.addMethod(generateCommonCSVConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(LOGGER), LOGGER));
             builder.addMethod(generateCommonSQLConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
             builder.addMethod(generateArgsToRecordMethod(templateName, packageName, bindingsSchema));
             builder.addMethod(generateProcessorConverter(templateName, packageName, bindingsSchema, BeanDirection.COMMON));
@@ -112,8 +124,8 @@ public class CompilerCommon {
             builder.addMethod(generateApplyMethod(templateName, packageName));
 
 
-            builder.addMethod(generateCommonMethod2(templateName, bindingsSchema));
-            builder.addMethod(generateCommonMethod2PureCsv(templateName, bindingsSchema));
+            builder.addMethod(generateLoggerMethod(templateName, bindingsSchema));
+            builder.addMethod(generateCommonMethod2PureCsv(templateName, bindingsSchema, consistsOf));
             builder.addMethod(generateCommonMethod3static(bindingsSchema));
             builder.addMethod(generateCommonMethod4static(allVars, bindingsSchema, indexed));
             final Pair<MethodSpec, Map<Integer, List<Integer>>> methodSpecMapPair = generateCommonMethod5static(allVars, bindingsSchema, indexed);
@@ -165,7 +177,14 @@ public class CompilerCommon {
 
         } else {
             builder.addField(generateField4aBeanConverter3("toBean", templateName, packageName, A_RECORD_BEAN_CONVERTER, BeanDirection.COMMON));
-            builder.addMethod(generateFactoryMethodToBeanWithArrayComposite("toBean", templateName, packageName, bindingsSchema, locations.getFilePackage(logger), logger, BeanDirection.COMMON, null, null));
+            builder.addMethod(generateFactoryMethodToBeanWithArrayComposite("toBean", templateName, packageName, bindingsSchema, locations.getFilePackage(LOGGER), LOGGER, BeanDirection.COMMON, null, null));
+            builder.addMethod(generateNewBean(templateName, packageName));
+
+            builder.addField(generateField4aArgs2CsvConverter(name,templateName,packageName));
+            builder.addMethod(generateCommonMethod2PureCsv(templateName, bindingsSchema, consistsOf));
+            builder.addMethod(generateCommonCSVConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(LOGGER), LOGGER));
+            builder.addMethod(generateNullOutputsMethod());
+            builder.addMethod(generateNullInputsMethod());
 
         }
 
@@ -215,14 +234,14 @@ public class CompilerCommon {
         return builder.build();
     }
 
-    public MethodSpec generateCommonMethod2(String template, TemplateBindingsSchema bindingsSchema) {
-        return generateCommonMethod2(template, bindingsSchema, true);
+    public MethodSpec generateLoggerMethod(String template, TemplateBindingsSchema bindingsSchema) {
+        return generateLoggerMethod(template, bindingsSchema, true, null);
     }
-    public MethodSpec generateCommonMethod2PureCsv(String template, TemplateBindingsSchema bindingsSchema) {
-        return generateCommonMethod2(template, bindingsSchema, false);
+    public MethodSpec generateCommonMethod2PureCsv(String template, TemplateBindingsSchema bindingsSchema, String consistsOf) {
+        return generateLoggerMethod(template, bindingsSchema, false, consistsOf);
     }
 
-    public MethodSpec generateCommonCSVConverterMethod_aux(String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateCommonCSVConverterMethod_aux(String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, String consistsOf, String loggerPackage, String logger) {
         final TypeName processorClassName = processorClassType(template, packge,ClassName.get(String.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.ARGS_CSV_CONVERSION_METHOD)
@@ -243,11 +262,86 @@ public class CompilerCommon {
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
 
         CodeBlock.Builder lambda=CodeBlock.builder();
-        CodeBlock paramsList= makeParamsList(variables, var, compilerUtil);
+        Collection<String> actualVariables;
+        CodeBlock paramsList;
+        if (beanKind==BeanKind.COMPOSITE) {
+            actualVariables = new LinkedList<>(variables);
+            actualVariables.add(ELEMENTS);
+            String beanNameClass = compilerUtil.beanNameClass(consistsOf, BeanDirection.COMMON);
+            ParameterizedTypeName listBeanType=ParameterizedTypeName.get(ClassName.get(List.class),ClassName.get(packge,beanNameClass));
+            paramsList= makeParamsListComposite(actualVariables, var, compilerUtil, listBeanType);
+        } else {
+            actualVariables=variables;
+            paramsList= makeParamsList(actualVariables, var, compilerUtil);
+        }
+
         lambda.add("($L) -> $N {\n", paramsList, MARKER_LAMBDA_BODY).indent();
         lambda.addStatement("$T $N=$N $T()", StringBuffer.class, SB_VAR, "new", StringBuffer.class);
+
         CodeBlock argsList = makeRenamedArgsList(SB_VAR,variables);
         lambda.addStatement("$N.$N($L)", SELF_VAR, loggerName, argsList);
+
+        if (consistsOf!=null) {
+            String[] variableArray = variables.toArray(new String[]{});
+            String beanNameClass = compilerUtil.beanNameClass(consistsOf, BeanDirection.COMMON);
+            lambda.beginControlFlow("for ($T $N: $N) ", ClassName.get(packge,beanNameClass), VAR_ELEMENT, Constants.GENERATED_VAR_PREFIX + ELEMENTS);
+            ClassName loggerClassName = ClassName.get(loggerPackage, logger);
+
+            ParameterizedTypeName parametericInterface=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(consistsOf)), TypeName.get(Object[].class));
+            ParameterizedTypeName parametericInterface2=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(consistsOf)), TypeVariableName.get("?"));
+
+            lambda.addStatement("$T $N=$T.$N.$N()",
+                    parametericInterface,
+                    "processor",
+                    loggerClassName,
+                    Constants.GENERATED_VAR_PREFIX + consistsOf,
+                    Constants.ARGS2RECORD_CONVERTER);
+
+            lambda.addStatement("// the following line generates ts error: Untyped function calls may not accept type arguments.");
+
+            lambda.addStatement("$T $N=$N.$N($N)",
+                    Object[].class,
+                    VAR_OBJECTS,
+                    VAR_ELEMENT,
+                    "process",
+                    "processor");
+
+            lambda.addStatement("$T $N=$T.$N.$N($N)",
+                    processorOfString,
+                    VAR_CSV_CONVERTER,
+                    loggerClassName,
+                    "simpleCSvConverters",
+                    "get",
+                    Constants.GENERATED_VAR_PREFIX + variableArray[2]);
+
+            lambda.addStatement("$T $N=$N.$N($N)",
+                    String.class,
+                    VAR_CSV,
+                    VAR_CSV_CONVERTER,
+                    "process",
+                    VAR_OBJECTS);
+
+
+
+/*
+            lambda.addStatement("$T $N=$T.simpleCSvConverters.get($N).process($N.get(i).process($T.$N.$N()))",
+                    String.class,
+                    "s",
+                    loggerClassName,
+                    Constants.GENERATED_VAR_PREFIX + variableArray[2],
+                    Constants.GENERATED_VAR_PREFIX + ELEMENTS,
+                    loggerClassName,
+                    Constants.GENERATED_VAR_PREFIX + consistsOf,
+                    Constants.ARGS2RECORD_CONVERTER);
+
+
+ */
+          //  lambda.addStatement("$T $N=$S", String.class, VAR_CSV, "hello");
+            lambda.addStatement("$N.append($S).append($N)", SB_VAR, "\n", VAR_CSV);
+            lambda.endControlFlow();
+        }
+
+
         lambda.addStatement("return $N.$N()", SB_VAR,"toString");
         lambda.unindent().add("}; $N", MARKER_LAMBDA_END);
         // note, poet builder does not accept nested statement codeblock, so instead of adding a statement, we add a codeblock
@@ -261,6 +355,10 @@ public class CompilerCommon {
     public static CodeBlock makeParamsList(Collection<String> variables, Map<String, List<Descriptor>> var, CompilerUtil compilerUtil) {
         return CodeBlock.join(variables.stream().map(variable ->
                 CodeBlock.of("$T $N", compilerUtil.getJavaTypeForDeclaredType(var, variable), Constants.GENERATED_VAR_PREFIX + variable)).collect(Collectors.toList()), ", ");
+    }
+    public static CodeBlock makeParamsListComposite(Collection<String> variables, Map<String, List<Descriptor>> var, CompilerUtil compilerUtil, ParameterizedTypeName listBeanType) {
+        return CodeBlock.join(variables.stream().map(variable ->
+                CodeBlock.of("$T $N", (variable.equals(ELEMENTS)? listBeanType: compilerUtil.getJavaTypeForDeclaredType(var, variable)), Constants.GENERATED_VAR_PREFIX + variable)).collect(Collectors.toList()), ", ");
     }
 
     public static CodeBlock makeRenamedArgsList(String head, Collection<String> variables) {
@@ -304,6 +402,7 @@ public class CompilerCommon {
 
     private FieldSpec generateFieldPropertyOrder(TemplateBindingsSchema bindingsSchema) {
         FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), Constants.PROPERTY_ORDER, Modifier.PUBLIC, Modifier.STATIC);
+        fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateFieldPropertyOrder()");
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
         fbuilder.initializer("new $T {$L}", String[].class, makeStringSequence(IS_A,variables));
         return fbuilder.build();
@@ -337,7 +436,7 @@ public class CompilerCommon {
     public FieldSpec generateField4aBeanConverter3(String toBean, String templateName, String packge, String fieldName, BeanDirection direction) {
         TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, ConfigProcessor.RECORDS_PROCESSOR_INTERFACE),ClassName.get(packge,compilerUtil.beanNameClass(templateName, direction)));
         FieldSpec.Builder fbuilder=FieldSpec.builder(myType, fieldName,Modifier.FINAL, Modifier.PUBLIC);
-        if (debugComment) fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aBeanConverter3()");
+        fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aBeanConverter3()");
         fbuilder.initializer(" ($T records) -> { return $N(records); }", listOfArrays, toBean);
         return fbuilder.build();
     }
@@ -346,7 +445,7 @@ public class CompilerCommon {
     public FieldSpec generateField4aBeanConverter2(String toBean, String templateName, String packge, String fieldName, BeanDirection direction) {
         TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(packge,compilerUtil.beanNameClass(templateName, direction)));
         FieldSpec.Builder fbuilder=FieldSpec.builder(myType, fieldName,Modifier.FINAL, Modifier.PUBLIC);
-        if (debugComment) fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aBeanConverter2()");
+        fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aBeanConverter2()");
         fbuilder.initializer(" ($T $N) -> { return $N($N); }",Object[].class,"record",toBean,"record");
         return fbuilder.build();
     }
@@ -354,7 +453,7 @@ public class CompilerCommon {
     private FieldSpec generateField4aSQLConverter2(String name, String templateName, String packge) {
         final TypeName processorClassName = processorClassType(templateName, packge, ClassName.get(String.class));
         FieldSpec.Builder fbuilder=FieldSpec.builder(processorClassName, Constants.A_BEAN_SQL_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
-        if (debugComment) fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aSQLConverter2()");
+        fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aSQLConverter2()");
         fbuilder.initializer("$N()", Constants.BEAN_SQL_CONVERSION_METHOD);
         return fbuilder.build();
     }
@@ -363,7 +462,7 @@ public class CompilerCommon {
     private FieldSpec generateField4aArgs2CsvConverter(String name, String templateName, String packge) {
         final TypeName processorClassName = processorClassType(templateName, packge, ClassName.get(String.class));
         FieldSpec.Builder fbuilder=FieldSpec.builder(processorClassName, Constants.A_ARGS_CSV_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
-
+        fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aArgs2CsvConverter()");
         fbuilder.initializer("$N()", Constants.ARGS_CSV_CONVERSION_METHOD);
         return fbuilder.build();
     }
@@ -382,7 +481,7 @@ public class CompilerCommon {
     private FieldSpec generateField4aRecord2CsvConverter(String name, String templateName, String packge) {
         TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
         FieldSpec.Builder fbuilder=FieldSpec.builder(myType, Constants.A_RECORD_CSV_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
-        if (debugComment) fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aRecord2CsvConverter()");
+        fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aRecord2CsvConverter()");
         fbuilder.initializer(" ($T $N) -> { return $N($N).$N($N); }", Object[].class, "record", "toBean", "record", "process", Constants.A_ARGS_CSV_CONVERTER);
         return fbuilder.build();
     }
@@ -673,7 +772,7 @@ public class CompilerCommon {
     }
 
 
-    public MethodSpec generateCommonMethod2(String template, TemplateBindingsSchema bindingsSchema, boolean legacy) {
+    public MethodSpec generateLoggerMethod(String template, TemplateBindingsSchema bindingsSchema, boolean legacy, String consistOf) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(compilerUtil.loggerName(template) + (legacy ? "_impure" : ""))
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class);
@@ -682,17 +781,27 @@ public class CompilerCommon {
         compilerUtil.specWithComment(builder);
 
 
+
         Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
         Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
+
+        CodeBlock.Builder jdoc = CodeBlock.builder();
+        jdoc.add("Logger method\n");
+        jdoc.add("@param $N a StringBuffer\n", var);
 
 
         builder.addParameter(StringBuffer.class, var);
 
         for (String key: fieldNames) {
             String newkey = compilerUtil.generateNewNameForVariable(key);
+            Descriptor descriptor=theVar.get(key).get(0);
+            String documentation=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
+
+            jdoc.add("@param $N $N\n", newkey, documentation);
             builder.addParameter(compilerUtil.getJavaTypeForDeclaredType(theVar, key), newkey);
         }
 
+        builder.addJavadoc(jdoc.build());
 
 
         String constant = (legacy? "[" : "") + StringEscapeUtils.escapeCsv(template);
@@ -812,6 +921,7 @@ public class CompilerCommon {
 
     public MethodSpec generatePropertyOrderMethod() {
         MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.PROPERTY_ORDER_METHOD)
+                .addJavadoc("Null method for composite\n@return the array of properties in order\n")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(String[].class);
         compilerUtil.specWithComment(builder5);
@@ -820,6 +930,7 @@ public class CompilerCommon {
     }
     public MethodSpec generateOutputsMethod() {
         MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.OUTPUTS_METHOD)
+                .addJavadoc("Null method for composite\n@return null")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(String[].class);
         compilerUtil.specWithComment(builder5);
@@ -828,6 +939,7 @@ public class CompilerCommon {
     }
     public MethodSpec generateCompulsoryInputsMethod() {
         MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.COMPULSORY_INPUTS_METHOD)
+                .addJavadoc("Null method for composite\n@return null")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(String[].class);
         compilerUtil.specWithComment(builder5);
@@ -836,10 +948,29 @@ public class CompilerCommon {
     }
     public MethodSpec generateInputsMethod() {
         MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.INPUTS_METHOD)
+                .addJavadoc("Null method for composite\n@return null")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(String[].class);
         compilerUtil.specWithComment(builder5);
         builder5.addStatement("return $N", Constants.INPUTS);
+        return builder5.build();
+    }
+    public MethodSpec generateNullInputsMethod() {
+        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.INPUTS_METHOD)
+                .addJavadoc("Null method for composite\n@return null")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(String[].class);
+        compilerUtil.specWithComment(builder5);
+        builder5.addStatement("return $N", "null");
+        return builder5.build();
+    }
+    public MethodSpec generateNullOutputsMethod() {
+        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.OUTPUTS_METHOD)
+                .addJavadoc("Null method for composite\n@return null")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(String[].class);
+        compilerUtil.specWithComment(builder5);
+        builder5.addStatement("return $N", "null");
         return builder5.build();
     }
     public MethodSpec generateRecordCsvProcessorMethod(BeanKind beanKind) {
@@ -1282,7 +1413,7 @@ public class CompilerCommon {
 
 
 
-        builder.addStatement("return bean");
+        builder.addStatement("return $N", "bean");
 
 
         MethodSpec method = builder.build();
@@ -1437,7 +1568,7 @@ public class CompilerCommon {
     }
 
 
-    public SpecificationFile generateSQLInterface(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+    public SpecificationFile generateSQLInterface(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit("SQL");

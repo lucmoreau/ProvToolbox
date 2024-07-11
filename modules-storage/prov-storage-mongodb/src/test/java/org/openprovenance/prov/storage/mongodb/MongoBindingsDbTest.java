@@ -6,8 +6,10 @@ import junit.framework.TestCase;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Conversions;
 import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
+import org.openprovenance.prov.template.json.Bindings;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class MongoBindingsDbTest extends TestCase {
@@ -27,12 +29,12 @@ public class MongoBindingsDbTest extends TestCase {
         assertNotNull(id);
 
 
-        BindingsBean bindings1= Conversions.importBean(new File("src/test/resources/bindings1.json"));
+        Bindings bindings1= Bindings.fromStream(mapper, new FileInputStream("src/test/resources/bindings1.json"));
 
         ds.serializeObjectToStore(bindings1,id);
 
 
-        BindingsBean bindings2=ds.deserializeObjectFromStore(id);
+        Bindings bindings2=ds.deserializeObjectFromStore(id);
 
         assertNotNull(bindings2);
 

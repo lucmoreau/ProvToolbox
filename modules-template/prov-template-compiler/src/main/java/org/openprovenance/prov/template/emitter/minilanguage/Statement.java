@@ -63,6 +63,7 @@ public class Statement {
             return new Assignment(null, (Expression) getArg(elements.get(0)),new MethodCall((String)getArg(elements.get(3)), "get", ll, elements), elements);
         }
         else {
+            //System.out.println("makeStatemetn, calling makeExpression with " + elements);
             return makeExpression(elements);
         }
 

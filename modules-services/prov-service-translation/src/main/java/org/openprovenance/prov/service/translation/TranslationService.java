@@ -1,5 +1,6 @@
 package org.openprovenance.prov.service.translation;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -7,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.StreamingOutput;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.interop.ApiUriFragments;
@@ -15,7 +17,9 @@ import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.rules.Rules;
 import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.translation.actions.ActionMetrics;
 import org.openprovenance.prov.service.translation.actions.ActionTranslate;
 import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.ResourceIndex;
@@ -44,6 +48,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
 	private TranslationService(PostService postService, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
         utils=postService.getServiceUtils();
         postService.addToPerformers(PostService.addToList(new ActionTranslate(utils), performers));
+        postService.addToPerformers(PostService.addToList(new ActionMetrics(utils), performers));
 		postService.addOtherPerformer(otherPerformer);
 	}
 
@@ -185,6 +190,47 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
         File f = new File(storageId);
         logger.debug("**** Reconstructing  mimeType " + mimeType + " for  original " + storageId);
         return ServiceUtils.composeResponseOK((Object) f).type(mimeType).build();
+    }
+
+    @GET
+    @Path(FRAGMENT_METRICS+ "{docId}.json")
+    @Tag(name=DOCUMENTS)
+    @Produces(MEDIA_APPLICATION_JSON)
+    @Operation(summary = "Metrics for document",
+            description = "Metrics for document as a JSON object. The metrics are computed by the ProvToolbox. The metrics are not guaranteed to be stable from one version of the ProvToolbox to the next.",
+            responses = { @ApiResponse(responseCode = "200", description = "Representation of document"),
+                    @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
+    public Response getMetrics(@Context HttpServletResponse response,
+                               @Context HttpServletRequest request,
+                               @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String docId) throws IOException {
+
+        ResourceIndex<DocumentResource> index=utils.getDocumentResourceIndex().getIndex();
+        DocumentResource dr = index.get(docId);
+        index.close();
+        if (dr == null) {
+            return utils.composeResponseNotFoundResource(docId);
+        }
+        DateTimeOption _dateTimeOption=DateTimeOption.PRESERVE;
+        TimeZone _timeZone=null;
+
+        Document doc;
+        if (_dateTimeOption.equals(DateTimeOption.PRESERVE)) {
+            doc=utils.getDocumentFromCacheOrStore(dr.getStorageId());
+        } else {
+            doc=utils.getDocumentFromStore(dr.getStorageId(), _dateTimeOption, _timeZone);
+        }
+        if (doc == null) {
+            return utils.composeResponseNotFoundDocument(docId);
+        }
+
+        Rules rules=new Rules();
+        Object o=rules.getMetrics(doc, utils.getProvFactory());
+
+        StreamingOutput promise= out -> new ObjectMapper().writeValue(out, o);
+
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
+
+
     }
 
 }

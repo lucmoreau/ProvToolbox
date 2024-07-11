@@ -25,7 +25,7 @@ public class CompilerBeanChecker {
     }
 
 
-    public SpecificationFile generateBeanChecker(TemplatesCompilerConfig configs, Locations locations, BeanDirection direction, Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable, String fileName) {
+    public SpecificationFile generateBeanChecker(TemplatesProjectConfiguration configs, Locations locations, BeanDirection direction, Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
@@ -33,8 +33,8 @@ public class CompilerBeanChecker {
 
         String packageForBeans;
         if (direction==BeanDirection.COMMON) {
-            packageForBeans=locations.getFilePackage(configs.beanProcessor);
-            builder.addSuperinterface(ClassName.get(packageForBeans, configs.beanProcessor));
+            packageForBeans=locations.getFilePackage(Constants.BEAN_PROCESSOR);
+            builder.addSuperinterface(ClassName.get(packageForBeans, Constants.BEAN_PROCESSOR));
         } else {
             packageForBeans=locations.getFilePackage(INPUT_PROCESSOR);
             builder.addSuperinterface(ClassName.get(packageForBeans, INPUT_PROCESSOR));

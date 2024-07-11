@@ -1,53 +1,177 @@
 digraph "PROV" { size="16,12"; rankdir="BT";
-0 -> 0	[ color="#000000",
-	  penwidth="10.0"]
+10	[ side="4",
+	  fontcolor="#0000FF",
+	  style="filled",
+	  URL="T4",
+	  label="example_4",
+	  color="#0000FF",
+	  fillcolor="#9FB1FC",
+	  tooltip="T4",
+	  shape="polygon",
+	  width="1.0"]
+8 -> 1	[ color="#000000",
+	  penwidth="1.0"]
 
-3	[ fontcolor="#000000",
+11 -> bn2	[ arrowhead="none",
+	  color="#000000",
+	  penwidth="1.0"]
+
+0 -> 3	[ color="#000000",
+	  penwidth="1.0"]
+
+7	[ fontcolor="#808080",
+	  style="filled",
+	  URL="T6",
+	  label="blogEntry_6",
+	  color="#808080",
+	  fillcolor="#FFFC87",
+	  tooltip="T6",
+	  shape="ellipse",
+	  width="1.0"]
+4 -> 11	[ color="#000000",
+	  penwidth="1.0"]
+
+5	[ fontcolor="#000000",
 	  style="filled",
 	  URL="T0",
-	  label="ag1_0",
+	  label="chartgen_0",
 	  color="#000000",
 	  fillcolor="#FDB266",
 	  tooltip="T0",
 	  shape="house",
 	  width="1.0"]
+8	[ side="4",
+	  fontcolor="#0000FF",
+	  style="filled",
+	  URL="T10",
+	  label="correct_10",
+	  color="#0000FF",
+	  fillcolor="#9FB1FC",
+	  tooltip="T10",
+	  shape="polygon",
+	  width="1.0"]
+6	[ fontcolor="#808080",
+	  style="filled",
+	  URL="T9",
+	  label="articleV1_9",
+	  color="#808080",
+	  fillcolor="#FFFC87",
+	  tooltip="T9",
+	  shape="ellipse",
+	  width="1.0"]
+4 -> 10	[ color="#000000",
+	  penwidth="1.0"]
+
 0	[ fontcolor="#808080",
 	  style="filled",
+	  URL="T7",
+	  label="example_7",
+	  color="#808080",
+	  fillcolor="#FFFC87",
+	  tooltip="T7",
+	  shape="ellipse",
+	  width="1.0"]
+7 -> 1	[ color="#000000",
+	  penwidth="1.0"]
+
+4	[ fontcolor="#808080",
+	  style="filled",
+	  URL="T5",
+	  label="chart1_5",
+	  color="#808080",
+	  fillcolor="#FFFC87",
+	  tooltip="T5",
+	  shape="ellipse",
+	  width="1.0"]
+10 -> 11	[ color="#000000",
+	  penwidth="4.0"]
+
+0 -> 0	[ color="#000000",
+	  penwidth="1.0"]
+
+10 -> 1	[ color="#000000",
+	  penwidth="10.0"]
+
+2	[ fontcolor="#808080",
+	  style="filled",
+	  URL="T8",
+	  label="composition_8",
+	  color="#808080",
+	  fillcolor="#FFFC87",
+	  tooltip="T8",
+	  shape="ellipse",
+	  width="1.0"]
+4 -> 3	[ color="#000000",
+	  penwidth="1.0"]
+
+0 -> 1	[ color="#000000",
+	  penwidth="1.0"]
+
+bn2 -> 10	[ color="#000000",
+	  penwidth="1.0"]
+
+bn2 -> 5	[ color="#000000",
+	  penwidth="1.0"]
+
+9	[ fontcolor="#808080",
+	  style="filled",
 	  URL="T3",
-	  label="e_3",
+	  label="articleV2_3",
 	  color="#808080",
 	  fillcolor="#FFFC87",
 	  tooltip="T3",
 	  shape="ellipse",
 	  width="1.0"]
-1 -> 3	[ color="#000000",
+2 -> 10	[ color="#000000",
 	  penwidth="1.0"]
 
-0 -> 2	[ color="#000000",
+9 -> 0	[ color="#000000",
 	  penwidth="1.0"]
 
-2	[ fontcolor="#808080",
+11	[ fontcolor="#000000",
 	  style="filled",
-	  URL="T1",
-	  label="e1_1",
-	  color="#808080",
-	  fillcolor="#FFFC87",
-	  tooltip="T1",
-	  shape="ellipse",
+	  URL="T11",
+	  label="derek_11",
+	  color="#000000",
+	  fillcolor="#FDB266",
+	  tooltip="T11",
+	  shape="house",
 	  width="1.0"]
-0 -> 1	[ color="#000000",
-	  penwidth="10.0"]
+0 -> 8	[ color="#000000",
+	  penwidth="1.0"]
 
+bn2	[ label="",
+	  shape="point",
+	  color="#000000"]
 1	[ fontcolor="#808080",
 	  style="filled",
 	  URL="T2",
-	  label="e2_2",
+	  label="example_2",
 	  color="#808080",
 	  fillcolor="#FFFC87",
 	  tooltip="T2",
 	  shape="ellipse",
 	  width="1.0"]
-1 -> 2	[ color="#000000",
+9 -> 1	[ color="#000000",
 	  penwidth="1.0"]
 
+10 -> 2	[ color="#000000",
+	  penwidth="1.0"]
+
+9 -> 6	[ color="#000000",
+	  penwidth="1.0"]
+
+6 -> 1	[ color="#000000",
+	  penwidth="1.0"]
+
+3	[ side="4",
+	  fontcolor="#0000FF",
+	  style="filled",
+	  URL="T1",
+	  label="compile_1",
+	  color="#0000FF",
+	  fillcolor="#9FB1FC",
+	  tooltip="T1",
+	  shape="polygon",
+	  width="1.0"]
 }

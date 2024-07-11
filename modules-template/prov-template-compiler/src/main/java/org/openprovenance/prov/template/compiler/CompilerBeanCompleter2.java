@@ -22,10 +22,8 @@ public class CompilerBeanCompleter2 {
     }
 
 
-    SpecificationFile generateBeanCompleter2(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+    SpecificationFile generateBeanCompleter2(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
-
-        if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_COMPLETER2);
 
@@ -55,7 +53,7 @@ public class CompilerBeanCompleter2 {
         builder.addType(inface.build());
 
 
-        builder.addField(TypeVariableName.get(Constants.GETTER),"getter", Modifier.FINAL);
+        builder.addField(TypeVariableName.get(Constants.GETTER),"getter", Modifier.FINAL, Modifier.PROTECTED);
 
 
         MethodSpec.Builder cbuilder2= MethodSpec.constructorBuilder();

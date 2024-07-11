@@ -65,6 +65,11 @@ public class WasAssociatedWithBuilder extends GenericBuilder<WasAssociatedWithBu
         return this;
     }
 
+    public WasAssociatedWithBuilder aka() {
+        parent.knownAs.put(id.getLocalPart(),id);
+        return this;
+    }
+
     public Builder build() {
         parent.statements.add(mc.newWasAssociatedWith(id, activity, agent, plan, attrs));
         return parent;

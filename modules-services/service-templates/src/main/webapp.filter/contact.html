@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ProvValidator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <style type="text/css">
+        body {
+            padding-left: 5px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+    </style>
+    <script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+    <link href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            <li id="header-translator"> <a href="translator.html">Translate</a></li>
+            <li id="header-expander">   <a href="expander.html">Expand</a></li>
+            <li id="header-validator">  <a href="validator.html">Validate</a></li>
+            <li id="header-api">        <a href="api.html">API</a></li>
+            <li id="header-about">      <a href="about.html">About</a></li>
+            <li id="header-contact">    <a href="contact.html">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<script>
+    $('#header-contact').addClass("active");
+</script>
+
+<section>
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8" style="text-align:left;margin-top:80px;margin-bottom:50px">
+            <p>For any inquiry about ProvToolbox, please contact:</p>
+            <p/><p/><p/>
+            <address>
+                Professor Luc Moreau<br/>
+                Department of Informatics<br/>
+                King's College London<br/>
+                or<br/>
+                report issues on github<br/>
+                <a href="https://github.com/lucmoreau/ProvToolbox">https://github.com/lucmoreau/ProvToolbox</a><br/>
+            </address>
+
+            <div>
+                When reporting an issue about ProvToolbox <code>provconvert</code>, please provide the information returned by the command
+                <code>provconvert --version</code>.
+            </div>
+
+            <div>
+                When reporting an issue about this service, please provide the information returned by <a href="${service.context}/provapi/configuration">/provapi/configuration</a>.
+            </div>
+
+        </div>
+    </div>
+
+
+
+</section>
+
+
+
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+
+<script src="provservice.js"></script>
+
+</body>
+
+</html>

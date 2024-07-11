@@ -8,7 +8,14 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities" />
+    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/bookptm/DerivationBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/bookptm/DerivationBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/Name.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/Name.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/builder/WasEndedByBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/builder/WasEndedByBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/builder/WasStartedByBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/builder/WasStartedByBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,10 +50,10 @@
         <option value="Package Object" />
         <option value="HTML File" />
         <option value="Scala Trait" />
-        <option value="Interface" />
         <option value="JavaScript File" />
         <option value="Enum" />
         <option value="Python Script" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -59,6 +66,12 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;lucmoreau&quot;
+  }
+}</component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
       <filtered-out-file-type name="LOCAL_BRANCH" />
@@ -67,6 +80,12 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/lucmoreau/ProvToolbox&quot;,
+    &quot;accountId&quot;: &quot;f75af254-b653-4000-a82a-28cf662d1438&quot;
+  }
+}</component>
   <component name="InvalidFacetManager">
     <ignored-facets>
       <facet id="prov-template-library/invalid/Python" />
@@ -92,7 +111,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
@@ -111,27 +130,48 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "Application.TemplatesViz.executor": "Run",
     "JUnit.DateTest.testDate5.executor": "Run",
+    "JUnit.DerivationBuilderTest (1).executor": "Run",
+    "JUnit.DerivationBuilderTest.executor": "Run",
+    "JUnit.DerivationBuilderTest.testBuild (1).executor": "Run",
+    "JUnit.DerivationBuilderTest.testBuild.executor": "Run",
+    "JUnit.ExpandIT.executor": "Run",
+    "JUnit.PleadTest.testPlead1 (1).executor": "Run",
+    "JUnit.PleadTest.testPlead1.executor": "Run",
+    "JUnit.PleadTest.testPleadLocal.executor": "Run",
+    "JUnit.PleadTest.testPleadRemote.executor": "Run",
+    "JUnit.PleadWorkflowIT.testPleadLocal.executor": "Run",
+    "JUnit.PleadWorkflowIT.testPleadRemote.executor": "Run",
+    "JUnit.RoundTripFromJavaJSONLD11Test.executor": "Run",
+    "JUnit.RoundTripFromJavaMongoTest.executor": "Run",
+    "Makefile Target.pkcs12.executor": "Run",
+    "Makefile Target.test.metrics.executor": "Run",
+    "Makefile Target.test.schema.projects.executor": "Run",
+    "Makefile Target.trusted.store.executor": "Run",
+    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
     "extract.method.default.visibility": "public",
     "git-widget-placeholder": "development2__0",
+    "jdk.selected.JAVA_MODULE": "17",
+    "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
-    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model/src/main/java/org/openprovenance/prov/model",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-jsweet-candy-java",
+    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/mojos/src/main/java/org/openprovenance/prov",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/prov-template-archetype/src/main/resources/archetype-resources",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.stylelint": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "SDKs",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.66091955",
     "run.code.analysis.last.selected.profile": "pProject Default",
     "scala_project_settings_configurable.last_selected_tab_index": "0",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.scala.compiler.ScalaCompileServerForm",
+    "settings.editor.selected.configurable": "com.github.copilot.settings.ApplicationConfigurable",
     "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
     "vue.rearranger.settings.migration": "true"
   }
@@ -143,27 +183,30 @@
       </console-settings>
     </option>
   </component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
-      <recent name="org.openprovenance.prov.template.emitter.minilanguage" />
-      <recent name="org.openprovenance.prov.template.emitter" />
+      <recent name="org.openprovenance.prov.service.core.config" />
+      <recent name="org.openprovenance.prov.rules" />
+      <recent name="org.openprovenance.prov.service.security" />
       <recent name="org.openprovenance.prov.service" />
-      <recent name="org.openprovenance.prov.model.builder" />
-      <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
+      <recent name="org.openprovenance.prov.template.compiler" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/assembly" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
+      <recent name="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources" />
+      <recent name="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/app-template-library" />
+      <recent name="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources/src" />
+      <recent name="$PROJECT_DIR$/modules-services/docker-service-templates/docker.conf" />
+      <recent name="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/apache" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/test/javascript" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/attic" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources" />
+      <recent name="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/2024-06-11" />
+      <recent name="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/2018-07-10" />
+      <recent name="$PROJECT_DIR$/" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources" />
+      <recent name="$PROJECT_DIR$/modules-services/service-templates/src/test/config/security" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig" />
@@ -173,11 +216,11 @@
       <recent name="org.openprovenance.prov.interop.Configuration" />
     </key>
     <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.service.security.ClientConfiguration" />
+      <recent name="org.openprovenance.prov.template.compiler.common.Constants" />
+      <recent name="org.openprovenance.prov.template.compiler.common.CompilerCommon" />
       <recent name="org.openprovenance.prov.core.jsonld11.serialization.Constants" />
       <recent name="org.openprovenance.prov.template.compiler.CompilerQueryInvoker" />
-      <recent name="org.openprovenance.prov.interop.ApiUriFragments" />
-      <recent name="org.openprovenance.prov.service.core.Constants" />
-      <recent name="org.openprovenance.prov.service.core.SwaggerTags" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="org.openprovenance.prov.dot" />
@@ -187,29 +230,22 @@
       <recent name="org.openprovenance.prov.core" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.service" />
+      <recent name="org.openprovenance.prov.templates.library" />
       <recent name="org.openprovenance.prov.service.core" />
       <recent name="org.openprovenance.prov.scala.nf" />
-      <recent name="org.openprovenance.prov.service" />
       <recent name="org.openprovenance.prov" />
-      <recent name="org.openprovenance.prov.service.translator.translator" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="org.openprovenance.prov.template.emitter.minilanguage" />
+      <recent name="org.openprovenance.prov.template.compiler.sql" />
+      <recent name="org.openprovenance.prov.template.compiler" />
+      <recent name="org.openprovenance.prov.notation" />
       <recent name="org.openprovenance.prov.model" />
-      <recent name="org.openprovenance.prov.template.emitter" />
-      <recent name="org.openprovenance.prov.service.translator" />
-      <recent name="org.openprovenance.prov.vanilla" />
+      <recent name="org.openprovenance.prov.service.translation.actions" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.DateTest.testDate5">
-    <configuration name="CompilerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-template-compiler" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
+  <component name="RunManager" selected="JUnit.DerivationBuilderTest (1)">
+    <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
         <option name="IS_SUBST" value="false" />
@@ -220,21 +256,55 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="ALTERNATIVE_JRE_PATH" value="12" />
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.CompilerTest" />
+      <option name="MAIN_CLASS_NAME" value="" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="CompilerTest.testCompiler1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-template-compiler" />
+    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
+      <option name="VMParameters" value="" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="alternativeJrePath" />
+      <option name="alternativeJrePathEnabled" value="false" />
+      <option name="classpathModifications">
+        <list />
+      </option>
+      <option name="envs">
+        <map />
+      </option>
+      <option name="passParentEnvs" value="true" />
+      <option name="programParameters" value="" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <option name="testKind" value="Class" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <option name="shortenClasspath" value="NONE" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
+      <deployment type="dockerfile">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="DerivationBuilderTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-n" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.notation.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -248,15 +318,15 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.CompilerTest" />
-      <option name="METHOD_NAME" value="testCompiler1" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.notation" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.notation.DerivationBuilderTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DateTest.testDate1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DerivationBuilderTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-model" />
       <extension name="coverage">
         <pattern>
@@ -275,14 +345,14 @@
         </ENTRIES>
       </extension>
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.DateTest" />
-      <option name="METHOD_NAME" value="testDate1" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.DerivationBuilderTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DateTest.testDate5" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DerivationBuilderTest.testBuild (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-model" />
       <extension name="coverage">
         <pattern>
@@ -301,8 +371,34 @@
         </ENTRIES>
       </extension>
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.DateTest" />
-      <option name="METHOD_NAME" value="testDate5" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.DerivationBuilderTest" />
+      <option name="METHOD_NAME" value="testBuild" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DerivationBuilderTest.testBuild" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-n" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.notation.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.notation" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.notation.DerivationBuilderTest" />
+      <option name="METHOD_NAME" value="testBuild" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -328,6 +424,52 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
+      <module name="prov-jsonld" />
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoundTripFromJavaMongoTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-storage-mongodb" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.storage.mongodb.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.storage.mongodb" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.storage.mongodb.RoundTripFromJavaMongoTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -346,20 +488,54 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="test.pgo" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.pgo" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
-    </configuration>
     <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
+      <option name="VMParameters" value="" />
       <option name="allowRunningInParallel" value="false" />
+      <option name="alternativeJrePath" />
+      <option name="alternativeJrePathEnabled" value="false" />
+      <option name="classpathModifications">
+        <list />
+      </option>
+      <option name="envs">
+        <map />
+      </option>
+      <option name="passParentEnvs" value="true" />
+      <option name="programParameters" value="" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
       </option>
       <option name="testKind" value="Class" />
+      <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
+      <option name="searchTest" value="In single module" />
+      <option name="shortenClasspath" value="NONE" />
+      <option name="testClassPath" value="org.openprovenance.prov.scala.ModelSpec" />
+      <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="prov-model-scala" />
+      <option name="VMParameters" value="" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="alternativeJrePath" />
+      <option name="alternativeJrePathEnabled" value="false" />
+      <option name="classpathModifications">
+        <list />
+      </option>
+      <option name="envs">
+        <map />
+      </option>
+      <option name="passParentEnvs" value="true" />
+      <option name="programParameters" value="" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <option name="testKind" value="Class" />
+      <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
       <option name="searchTest" value="In single module" />
       <option name="shortenClasspath" value="NONE" />
       <option name="testClassPath" value="org.openprovenance.prov.scala.ModelSpec" />
@@ -369,13 +545,26 @@
       </method>
     </configuration>
     <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
+      <option name="VMParameters" value="" />
       <option name="allowRunningInParallel" value="false" />
+      <option name="alternativeJrePath" />
+      <option name="alternativeJrePathEnabled" value="false" />
+      <option name="classpathModifications">
+        <list />
+      </option>
+      <option name="envs">
+        <map />
+      </option>
+      <option name="passParentEnvs" value="true" />
+      <option name="programParameters" value="" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
       </option>
       <option name="testKind" value="Class" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
       <option name="shortenClasspath" value="NONE" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -394,20 +583,20 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="JUnit.DateTest.testDate5" />
-      <item itemvalue="JUnit.CompilerTest.testCompiler1" />
-      <item itemvalue="JUnit.DateTest.testDate1" />
-      <item itemvalue="JUnit.CompilerTest" />
-      <item itemvalue="Makefile Target.test.pgo" />
+      <item itemvalue="JUnit.DerivationBuilderTest" />
+      <item itemvalue="JUnit.DerivationBuilderTest (1)" />
+      <item itemvalue="JUnit.DerivationBuilderTest.testBuild" />
+      <item itemvalue="JUnit.DerivationBuilderTest.testBuild (1)" />
+      <item itemvalue="JUnit.RoundTripFromJavaMongoTest" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.DateTest.testDate5" />
-        <item itemvalue="JUnit.CompilerTest.testCompiler1" />
-        <item itemvalue="JUnit.CompilerTest" />
-        <item itemvalue="Makefile Target.test.pgo" />
-        <item itemvalue="JUnit.DateTest.testDate1" />
+        <item itemvalue="JUnit.DerivationBuilderTest (1)" />
+        <item itemvalue="JUnit.DerivationBuilderTest" />
+        <item itemvalue="JUnit.DerivationBuilderTest.testBuild (1)" />
+        <item itemvalue="JUnit.DerivationBuilderTest.testBuild" />
+        <item itemvalue="JUnit.RoundTripFromJavaMongoTest" />
       </list>
     </recent_temporary>
   </component>
@@ -450,8 +639,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="jdk-17.0.10-corretto-17.0.10-f644763e9732-24582b8d" />
-        <option value="jdk-17.0.9-corretto-17.0.9-f644763e9732-203781b8" />
+        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
       </set>
     </attachedChunks>
   </component>
@@ -831,7 +1020,26 @@
       <workItem from="1708331698235" duration="9936000" />
       <workItem from="1709408911546" duration="549000" />
       <workItem from="1710416342599" duration="1308000" />
-      <workItem from="1711105997230" duration="10827000" />
+      <workItem from="1711105997230" duration="12994000" />
+      <workItem from="1711121045894" duration="4750000" />
+      <workItem from="1711296175962" duration="104799000" />
+      <workItem from="1712682645402" duration="47841000" />
+      <workItem from="1712914860175" duration="12497000" />
+      <workItem from="1712931150654" duration="30173000" />
+      <workItem from="1713161046817" duration="18832000" />
+      <workItem from="1713334270338" duration="782000" />
+      <workItem from="1713337784627" duration="9990000" />
+      <workItem from="1713372878257" duration="5927000" />
+      <workItem from="1713385489351" duration="267000" />
+      <workItem from="1713385763798" duration="179264000" />
+      <workItem from="1714472444531" duration="62246000" />
+      <workItem from="1715690420906" duration="169149000" />
+      <workItem from="1716384651492" duration="130994000" />
+      <workItem from="1717088781190" duration="23673000" />
+      <workItem from="1717243679715" duration="146900000" />
+      <workItem from="1718091655832" duration="73759000" />
+      <workItem from="1718607369852" duration="3594000" />
+      <workItem from="1718639569403" duration="66708000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

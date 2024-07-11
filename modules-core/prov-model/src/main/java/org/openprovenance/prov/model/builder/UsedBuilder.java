@@ -50,6 +50,10 @@ public class UsedBuilder extends TimeBuilder<UsedBuilder> implements HasRole<Use
         return parent;
     }
 
+    public UsedBuilder aka() {
+        parent.knownAs.put(id.getLocalPart(),id);
+        return this;
+    }
 
 
 }

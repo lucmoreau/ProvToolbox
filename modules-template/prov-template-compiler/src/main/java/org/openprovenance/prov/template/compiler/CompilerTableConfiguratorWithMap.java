@@ -21,18 +21,17 @@ public class CompilerTableConfiguratorWithMap {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
-    SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, Locations locations, String l2p_src_dir) {
+    SpecificationFile generateTableConfigurator(TemplatesProjectConfiguration configs, Locations locations, String l2p_src_dir) {
         return generateTableConfigurator(configs,false, locations, l2p_src_dir);
     }
-    SpecificationFile generateCompositeTableConfigurator(TemplatesCompilerConfig configs, Locations locations, String l2p_src_dir) {
+    SpecificationFile generateCompositeTableConfigurator(TemplatesProjectConfiguration configs, Locations locations, String l2p_src_dir) {
         return generateTableConfigurator(configs,true, locations, l2p_src_dir);
     }
 
-    SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, boolean compositeOnly, Locations locations, String l2p_src_dir) {
+    SpecificationFile generateTableConfigurator(TemplatesProjectConfiguration configs, boolean compositeOnly, Locations locations, String l2p_src_dir) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        if (configs.tableConfigurator==null) throw new NullPointerException("tableConfigurator is null");
-        String originalTableClassName=(compositeOnly)? Constants.COMPOSITE +configs.tableConfigurator:configs.tableConfigurator;
+        String originalTableClassName=(compositeOnly)? Constants.COMPOSITE_TABLE_CONFIGURATOR : Constants.TABLE_CONFIGURATOR;
         String tableClassName=originalTableClassName+WITH_MAP;
 
         String directory=locations.convertToDirectory(l2p_src_dir,"configurator");
@@ -90,7 +89,7 @@ public class CompilerTableConfiguratorWithMap {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage = configs.init_package + ".configurator";
+        String myPackage = configs.root_package + ".configurator";
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

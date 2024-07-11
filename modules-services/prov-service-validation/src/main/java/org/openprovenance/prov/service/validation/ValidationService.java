@@ -311,7 +311,7 @@ public class ValidationService  implements Constants,InteropMediaType, SwaggerTa
             responses = { @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
     public Response getMatrixAsPng(@PathParam("docId") String msg) 		throws java.io.IOException {
 
-        String pngFilename = ServiceUtils.UPLOADED_FILE_PATH + msg + ".png";
+        //String pngFilename = ServiceUtils.UPLOADED_FILE_PATH + msg + ".png";
 
         ValidationResource vr = utils.getValidationResourceIndex().get(msg);
 

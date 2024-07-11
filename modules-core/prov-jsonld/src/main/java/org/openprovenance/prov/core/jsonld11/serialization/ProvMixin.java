@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.core.jsonld11.JLD_Document;
 import org.openprovenance.prov.vanilla.*;
 
-public class ProvMixin extends org.openprovenance.prov.core.json.serialization.ProvMixin {
+public class ProvMixin {//extends org.openprovenance.prov.core.json.serialization.ProvMixin {
 
     public ProvMixin() {
     }
@@ -35,7 +35,7 @@ public class ProvMixin extends org.openprovenance.prov.core.json.serialization.P
         mapper.addMixIn(Location.class,             org.openprovenance.prov.core.jsonld11.JLD_Attribute.class);
         mapper.addMixIn(Other.class,                org.openprovenance.prov.core.jsonld11.JLD_Attribute.class);
         mapper.addMixIn(Type.class,                 org.openprovenance.prov.core.jsonld11.JLD_Attribute.class);
-        mapper.addMixIn(TypedValue.class,           org.openprovenance.prov.core.jsonld11.JLD_Attribute.class); //FIXME LUC
+        mapper.addMixIn(TypedValue.class,           org.openprovenance.prov.core.jsonld11.JLD_Attribute.class);
         mapper.addMixIn(Bundle.class,               org.openprovenance.prov.core.jsonld11.JLD_Bundle.class);
         mapper.addMixIn(MisnamedBundle.class,       org.openprovenance.prov.core.jsonld11.JLD_Bundle.class);
         mapper.addMixIn(QualifiedSpecializationOf.class,  org.openprovenance.prov.core.jsonld11.JLD_QualifiedSpecializationOf.class);

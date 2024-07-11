@@ -11,8 +11,6 @@ import org.openprovenance.prov.model.QualifiedName;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface JLD_QualifiedSpecializationOf extends JLD_Generic2, JLD_Qualified {
 
-
-
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getGeneralEntity();
 

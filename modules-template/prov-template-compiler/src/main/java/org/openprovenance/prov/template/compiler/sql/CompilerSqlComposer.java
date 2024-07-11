@@ -9,11 +9,13 @@ import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import java.util.*;
+import java.util.Collections;
 import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerSQL.convertToSQLType;
+import static org.openprovenance.prov.template.compiler.CompilerSQL.initNameMap;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
 
@@ -26,11 +28,9 @@ public class CompilerSqlComposer {
     final Map<String,String> arrayFunctionDeclarations;
 
 
-    final public boolean withRelationId;
     private final String tableKey;
 
-    public CompilerSqlComposer(ProvFactory pFactory, boolean withRelationId, String tableKey, Map<String, String> functionDeclarations, Map<String,String> arrayFunctionDeclarations) {
-        this.withRelationId=withRelationId;
+    public CompilerSqlComposer(ProvFactory pFactory, String tableKey, Map<String, String> functionDeclarations, Map<String,String> arrayFunctionDeclarations) {
         this.tableKey=tableKey;
         this.functionDeclarations = functionDeclarations;
         this.arrayFunctionDeclarations = arrayFunctionDeclarations;
@@ -84,9 +84,8 @@ public class CompilerSqlComposer {
                                           key -> unquote(getTheSqlType(compilerUtil, key, templateBindingsSchema, var)),
                                           (x, y) -> y,
                                           () -> new LinkedHashMap<String, Object>(){{
-                                                            if (withRelationId) {
-                                                                put(tableKey, unquote("INT"));
-                                                 }}}));
+                                              put(tableKey, unquote("INT"));
+                                          }}));
         if (functionReturns.keySet().size()==1) {
             // ensure that there are more than one column, otherwise postgres converts it to a scalar
             functionReturns.put(DUMMY, unquote("INT"));
@@ -105,7 +104,7 @@ public class CompilerSqlComposer {
                                 if (isShared) {
                                     return unquote(appendPossiblySharedOutput(key, isShared));
                                 } else {
-                                    String the_table = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
+                                    String the_table = descriptorUtils.getSqlTable(key, templateBindingsSchema).orElse(key);
                                     String new_table = newTableWithId(key);
                                     String new_id = the_table + "_id";
                                     return (Function<PrettyPrinter, QueryBuilder>) (pp) -> QueryBuilder.select(new_id).apply(pp).from(new_table);
@@ -157,7 +156,7 @@ public class CompilerSqlComposer {
                 .filter(key -> descriptorUtils.isOutput(key, templateBindingsSchema) && !shared.contains(key))
                 .collect(Collectors.toMap(  this::newTableWithId,
                         key -> {
-                            String the_table = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
+                            String the_table = descriptorUtils.getSqlTable(key, templateBindingsSchema).orElse(key);
                             Optional<AttributeDescriptor.SqlForeign> sqlForeign = descriptorUtils.getOutputSqlForeign(key, templateBindingsSchema);
                             if (sqlForeign.isPresent()) {
                                 String foreignType=Constants.INPUT_PREFIX + sqlForeign.get().getType();
@@ -165,7 +164,7 @@ public class CompilerSqlComposer {
                                 String foreignItem=Constants.INPUT_PREFIX + sqlForeign.get().getItem();
 
 
-                                String theTable = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
+                                String theTable = descriptorUtils.getSqlTable(key, templateBindingsSchema).orElse(key);
 
                                 //(SELECT f_build_and_execute_select('creating_emission_report', input_attribute, input_item) as literal),
                                 return (pp) -> new QueryBuilder(pp)
@@ -189,9 +188,7 @@ public class CompilerSqlComposer {
                 .filter(key -> descriptorUtils.isOutput(key, templateBindingsSchema) && !shared.contains(key))
                 .map(key -> orig_templateName + "." + key)
                 .collect(Collectors.toCollection(() -> new LinkedList<>() {{
-                    if (withRelationId) {
-                        add(orig_templateName + "." + tableKey);
-                    }
+                    add(orig_templateName + "." + tableKey);
                 }}));
 
         // insuring that the table has more than one column, otherwise postgress converts it to a scalar
@@ -227,6 +224,8 @@ public class CompilerSqlComposer {
     }
 
 
+    boolean generatedPrelude=false;
+
     public void generateSQLInsertArrayFunction(String templateName, String consistOf, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
 
         String template_type=((consistOf==null)?templateName:consistOf)+"_type";
@@ -238,7 +237,7 @@ public class CompilerSqlComposer {
 
         final Predicate<String> isOutput = (key) -> descriptorUtils.isOutput(key, templateBindingsSchema);
         final Predicate<String> isInput  = (key) -> descriptorUtils.isInput (key, templateBindingsSchema);
-        final Function<String,String> table  = (key) -> descriptorUtils.getOutputSqlTable (key, templateBindingsSchema).orElse(key);
+        final Function<String,String> table  = (key) -> descriptorUtils.getSqlTable(key, templateBindingsSchema).orElse(key);
 
 
         Map<String,?> funParams=new HashMap<>() {{
@@ -251,41 +250,40 @@ public class CompilerSqlComposer {
                 .stream()
                 .filter(isOutput)
                 .collect(Collectors.toMap(  this::sqlify,
-                                            key -> unquote(getTheSqlType(compilerUtil, key, templateBindingsSchema, var)),
-                                            (x, y) -> y,
-                                            () -> new LinkedHashMap<String, Object>(){{
-                                                if (withRelationId) {
-                                                    put(tableKey, unquote("INT"));
-                                                }}}));
+                        key -> unquote(getTheSqlType(compilerUtil, key, templateBindingsSchema, var)),
+                        (x, y) -> y,
+                        () -> new LinkedHashMap<String, Object>(){{
+                                put(tableKey, unquote("INT"));
+                        }}));
 
         Map<String,Function<PrettyPrinter, ?>> cteValues1=descriptorUtils
                 .fieldNames(templateBindingsSchema)
                 .stream()
                 .filter(key -> isOutput.test(key) && shared.contains(key))
                 .collect(Collectors.toMap(  this::table_tokens,
-                                            key ->  (pp0) ->
-                                                      QueryBuilder
-                                                              .select(TOKEN_VAR_NAME, "id", insert_into_table(table.apply(key), additionalColumnsWithoutAlias2(templateBindingsSchema,key)))
-                                                              .apply(pp0)
-                                                              .from(
-                                                                      (pp) ->
-                                                                        QueryBuilder
-                                                                                .select(makeArray(  TOKEN_VAR_NAME,
-                                                                                                    nextVal(table.apply(key)),
-                                                                                                    additionalColumnsWithAlias(templateBindingsSchema, key)))
-                                                                                .apply(pp)
-                                                                                .from((pp1) ->
-                                                                                        QueryBuilder
-                                                                                                .select(makeArray("DISTINCT ON (" + key + ") " + key + " AS " + TOKEN_VAR_NAME,
-                                                                                                        additionalColumnsWithoutAlias(templateBindingsSchema,key)))
-                                                                                                .apply(pp1)
-                                                                                                .from(Constants.INPUT_TABLE),
-                                                                                        table_tokens0(key)),
-                                                                      table_tokens(key)),
-                                            (x, y) -> y,
-                                            () -> new LinkedHashMap<String, Function<PrettyPrinter, ?>>() {{
-                                                put(Constants.INPUT_TABLE, pp -> QueryBuilder.select("*").apply(pp).from("unnest (" + Constants.RECORDS_VAR + ")"));
-                                            }}));
+                        key ->  (pp0) ->
+                                QueryBuilder
+                                        .select(TOKEN_VAR_NAME, "id", insert_into_table(table.apply(key), additionalColumnsWithoutAlias2(templateBindingsSchema,key)))
+                                        .apply(pp0)
+                                        .from(
+                                                (pp) ->
+                                                        QueryBuilder
+                                                                .select(makeArray(  TOKEN_VAR_NAME,
+                                                                        nextVal(table.apply(key)),
+                                                                        additionalColumnsWithAlias(templateBindingsSchema, key)))
+                                                                .apply(pp)
+                                                                .from((pp1) ->
+                                                                                QueryBuilder
+                                                                                        .select(makeArray("DISTINCT ON (" + key + ") " + key + " AS " + TOKEN_VAR_NAME,
+                                                                                                additionalColumnsWithoutAlias(templateBindingsSchema,key)))
+                                                                                        .apply(pp1)
+                                                                                        .from(Constants.INPUT_TABLE),
+                                                                        table_tokens0(key)),
+                                                table_tokens(key)),
+                        (x, y) -> y,
+                        () -> new LinkedHashMap<String, Function<PrettyPrinter, ?>>() {{
+                            put(Constants.INPUT_TABLE, pp -> QueryBuilder.select("*").apply(pp).from("unnest (" + Constants.RECORDS_VAR + ")"));
+                        }}));
 
 
 
@@ -295,26 +293,32 @@ public class CompilerSqlComposer {
                 .filter(isOutput)
                 .map(key ->  shared.contains(key)? localId(key) : "(" + Constants.ARECORD_VAR + ")." + sqlify(key))
                 .collect(Collectors.toCollection(() -> new LinkedList<>(){{
-                    if (withRelationId) {
                         add("(" + Constants.ARECORD_VAR + ")." + tableKey);
-                    }}}));
+                    }}));
 
         List<String> theArguments=descriptorUtils
                 .fieldNames(templateBindingsSchema)
                 .stream()
                 .filter(key -> isInput.test(key) || shared.contains(key))
                 .map(key -> shared.contains(key)? table_token_id_pairs(key) + ".id" : key)
+                .map(this::sqlify)
                 .collect(Collectors.toList());
 
 
         String PRELUDE_TO_AUTO_GENERATE="\n\n--- PRELUDE_TO_AUTO_GENERATE\n\n " +
-                "CREATE OR REPLACE FUNCTION insert_into_activity (input_id BIGINT)\n" +
+               "CREATE OR REPLACE FUNCTION insert_into_activity (input_id BIGINT)\n" +
                 "    returns table(id INT)\n" +
                 "as $$\n" +
                 "INSERT INTO activity (id)\n" +
                 "SELECT input_id\n" +
                 "RETURNING activity.id as id\n" +
                 "$$ language SQL;\n" +
+                "\n\n" +
+                "CREATE TABLE IF NOT EXISTS policy (\n" +
+                "  id SERIAL,\n" +
+                "  serial INT,\n" +
+                "  created_at timestamp with time zone NOT NULL DEFAULT NOW()\n" +
+                " );\n" +
                 "\n\n" +
                 "CREATE OR REPLACE FUNCTION insert_into_policy (input_id BIGINT, input_serial INT)\n" +
                 "                    returns table(id INT) \n" +
@@ -323,15 +327,25 @@ public class CompilerSqlComposer {
                 "                SELECT input_id, input_serial\n" +
                 "                RETURNING policy.id as id\n" +
                 "                $$ language SQL;\n" +
-                "\t\t\t\t"+
-                "\n\n" +
+                "\t\t\t\t" +
+                "CREATE TABLE IF NOT EXISTS plead_transforming_composite_linker\n" +
+                "(\n" +
+                "  ID SERIAL,\n" +
+                "    --  The file resulting from transformation\n" +
+                "  composite INT,\n" +
+                "  --  The file that was transformed\n" +
+                "  simple INT,\n" +
+                "  created_at timestamp with time zone NOT NULL DEFAULT NOW()\n" +
+                ");\n" +
+
+  /*              "\n\n" +
                 "CREATE OR REPLACE FUNCTION insert_into_assembled_collection (input_id BIGINT)\n" +
-                        "    returns table(id INT)\n" +
-                        "as $$\n" +
-                        "INSERT INTO assembled_collection (id)\n" +
-                        "SELECT input_id\n" +
-                        "RETURNING assembled_collection.id as id\n" +
-                        "$$ language SQL;\n" +
+                "    returns table(id INT)\n" +
+                "as $$\n" +
+                "INSERT INTO assembled_collection (id)\n" +
+                "SELECT input_id\n" +
+                "RETURNING assembled_collection.id as id\n" +
+                "$$ language SQL;\n" +
                 "\n\n" +
                 "\t\t\t\t"+
                 "\n\n" +
@@ -342,7 +356,26 @@ public class CompilerSqlComposer {
                 "SELECT input_id\n" +
                 "RETURNING chart.id as id\n" +
                 "$$ language SQL;\n" +
+                "\n\n" +
+                "\t\t\t\t"+
+                */
+                "\n\n" +
+                "CREATE TABLE IF NOT EXISTS file\n   (\n" +
+                "  id SERIAL,\n" +
+                "  serial INT,\n" +
+                "  created_at timestamp with time zone NOT NULL DEFAULT NOW()\n" +
+                " );\n" +
+                "\n\n" +
+                "CREATE OR REPLACE FUNCTION insert_into_file (input_id BIGINT)\n" +
+                "    returns table(id INT)\n" +
+                "as $$\n" +
+                "INSERT INTO file (id)\n" +
+                "SELECT input_id\n" +
+                "RETURNING file.id as id\n" +
+                "$$ language SQL;\n" +
                 "\n\n"
+
+
 
 
 
@@ -354,7 +387,7 @@ public class CompilerSqlComposer {
 
         QueryBuilder fun =
                 new QueryBuilder()
-                        .comment(PRELUDE_TO_AUTO_GENERATE)
+                        .comment(generatedPrelude? "PRELUDE ALREADY GENERATED" : PRELUDE_TO_AUTO_GENERATE)
                         .comment("Generated by method " + getClass().getName()+ ".generateSQLInsertArrayFunction")
                         .next(QueryBuilder.createFunction(insertFunctionName))
                         .params(funParams)
@@ -365,7 +398,7 @@ public class CompilerSqlComposer {
                         .from((pp) -> shared
                                         .stream()
                                         .reduce(QueryBuilder.select(makeArray(shared.stream().map(theColumn->table_token_id_pairs(theColumn)+".id" + " AS " + localId(theColumn)).collect(Collectors.toList()),
-                                                                              QueryBuilder.functionCall(  "insert_" + templateName, theArguments, Constants.ARECORD_VAR))).apply(pp).from(Constants.INPUT_TABLE),
+                                                        QueryBuilder.functionCall(  "insert_" + templateName, theArguments, Constants.ARECORD_VAR))).apply(pp).from(Constants.INPUT_TABLE),
                                                 (qb, s)  // (BiFunction<QueryBuilder, String, QueryBuilder>)
                                                         -> qb.join((pp1) -> QueryBuilder.select(getId(table_tokens(s)), getToken(table_tokens(s)))
                                                                 .apply(pp1)
@@ -377,6 +410,8 @@ public class CompilerSqlComposer {
                                 "inserted_rows")
                         .bodyEnd("");
 
+        generatedPrelude=true;
+
         String sql=fun.getSQL();
 
 
@@ -386,6 +421,89 @@ public class CompilerSqlComposer {
         arrayFunctionDeclarations.put(insertFunctionName, sql);
 
         System.out.println("=== PRETTY2 ==>\n " + sql + "\n===========");
+
+
+
+    }
+
+    public void generateSQLInsertCompositeAndLinkerFunction(String templateName, String consistOf, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
+
+        String template_type=((consistOf==null)?templateName:consistOf)+"_type";
+
+        Map<String, List<Descriptor>> var = templateBindingsSchema.getVar();
+
+        final String insertFunctionName= Constants.INSERT_PREFIX+templateName+ INSERT_COMPOSITE_AND_LINKER_SUFFIX;
+        final String insertArrayFunctionName= Constants.INSERT_PREFIX+templateName+ INSERT_ARRAY_SUFFIX;
+
+
+        final Predicate<String> isOutput = (key) -> descriptorUtils.isOutput(key, templateBindingsSchema);
+        final Predicate<String> isInput  = (key) -> descriptorUtils.isInput (key, templateBindingsSchema);
+        final Function<String,String> table  = (key) -> descriptorUtils.getSqlTable(key, templateBindingsSchema).orElse(key);
+
+
+        Map<String,?> funParams=new HashMap<>() {{
+            put(Constants.RECORDS_VAR, arrayOf(template_type));
+        }};
+
+
+        Map<String,Object> functionReturns=descriptorUtils
+                .fieldNames(templateBindingsSchema)
+                .stream()
+                .filter(isOutput)
+                .collect(Collectors.toMap(  this::sqlify,
+                        key -> unquote(getTheSqlType(compilerUtil, key, templateBindingsSchema, var)),
+                        (x, y) -> y,
+                        () -> new LinkedHashMap<String, Object>(){{
+                                put(tableKey, unquote("INT"));
+                            }}));
+        functionReturns.put("parent", unquote("INT"));
+
+        Map<String,Function<PrettyPrinter, ?>> cteValues2= new LinkedHashMap<>();
+        cteValues2.put(INSERTED_CONSISTS_OF, pp -> QueryBuilder.select("*").apply(pp).from(insertArrayFunctionName + " (" + Constants.RECORDS_VAR + ")"));
+
+        Map<String,Object> inserted_values1= new LinkedHashMap<>();
+        inserted_values1.put("bean",  unquote("null"));
+        inserted_values1.put("count",  ((Function<PrettyPrinter, QueryBuilder>) (pp) -> QueryBuilder.select("count(ID)").apply(pp).from(INSERTED_CONSISTS_OF)));
+        inserted_values1.put("type",   "plead_transforming");
+        cteValues2.put(THE_RECORD, pp -> new QueryBuilder(pp).insertInto(templateName).values(inserted_values1).returning(Collections.singleton("ID")));
+
+
+       // Function<PrettyPrinter, QueryBuilder> fbuild = pp -> {pp.open(); QueryBuilder qb= select("ID AS composite").apply(pp).from(THE_RECORD); pp.close(); return qb;};
+        Function<PrettyPrinter, QueryBuilder> fbuild = pp -> {pp.open(); QueryBuilder qb= select("ID AS composite").apply(pp).from(THE_RECORD); pp.close(); return qb;};
+        cteValues2.put(THE_PRODUCT, ((Function<PrettyPrinter, QueryBuilder>) (pp) -> QueryBuilder.select(fbuild, "ID AS simple").apply(pp).from(INSERTED_CONSISTS_OF)));
+
+        cteValues2.put("the_linker", pp -> new QueryBuilder(pp).insertInto(templateName+ LINKER_SUFFIX + "(composite,simple) ").selectExp("*").from(THE_PRODUCT));
+
+        List<String> insertColumns=descriptorUtils
+                .fieldNames(templateBindingsSchema)
+                .stream()
+                .filter(isOutput)
+                .map(key ->  shared.contains(key)? key : sqlify(key))  // was  "(" + Constants.ARECORD_VAR + ")." + sqlify(key)
+                .collect(Collectors.toCollection(() -> new LinkedList<>(){{
+                    add( "ID");
+                }}));
+        insertColumns.add("(select ID AS parent from " + THE_RECORD + ")");
+
+
+        QueryBuilder fun =
+                new QueryBuilder()
+                        .comment("Generated by method " + getClass().getName()+ ".generateSQLInsertCompositeAndLinkerFunction")
+                        .next(QueryBuilder.createFunction(insertFunctionName))
+                        .params(funParams)
+                        .returns("table", functionReturns)
+                        .bodyStart("")
+                        .cte(cteValues2)
+                        .selectExp(insertColumns.toArray(ARRAY_OF_STRING))
+                        .from(INSERTED_CONSISTS_OF)
+                        .bodyEnd("");
+
+        String sql=fun.getSQL();
+
+
+
+
+        arrayFunctionDeclarations.put(insertFunctionName, sql);
+
 
 
 
@@ -454,12 +572,9 @@ public class CompilerSqlComposer {
     private String nextVal(String key) {
         return "cast(nextval('" + key + "_id_seq') as INT) as id";
     }
-
     static HashMap<String, Object> Default_Values() {
         return new HashMap<>();
     }
-
-
     private String newTableWithId(String key) {
         return "_" + "new_" + key + "_with_id";
     }
@@ -504,14 +619,283 @@ public class CompilerSqlComposer {
 
     Map<String,String> nameMap=initNameMap();
 
-    private Map<String, String> initNameMap() {
-        Map<String,String> res=new HashMap<>();
-        res.put("order", "_order");
-        return res;
-    }
+
 
     public String sqlify(String key) {
         return nameMap.getOrDefault(key,key);
+    }
+
+
+    public void generateSQLSearchRecordFunction(String baseRelation, Map<String, List<String>> templates, String templateName, String consistOf, String rootDir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
+
+        String searchFunction="search_records_for_" + baseRelation;
+
+        Map<String,?> funParams=new HashMap<>() {{
+            put("from_date", unquote("timestamptz"));
+            put("to_date",   unquote("timestamptz"));
+        }};
+
+        Map<String,Object> functionReturns= new LinkedHashMap<>() {{
+            put("ID",                 unquote("INT"));
+            put(CREATED_AT_COLUMN,    unquote("timestamptz"));
+            put(TABLE_NAME_COLUMN,    unquote("text"));
+            put("key",                 unquote("INT"));
+
+        }};
+
+        //create string COALESCE(plead_transforming.transforming, plead_filtering.filtering) AS key,
+        String coalescedKey= templates.keySet().stream().map(p -> p + ".id").collect(Collectors.joining(", ", "COALESCE (", ")"));
+
+        String nameCase= templates
+                .keySet()
+                .stream()
+                .map(p ->
+                        templates
+                                .get(p)
+                                .stream()
+                                .map(c -> p + "." + c + " IS NOT NULL ")
+                                .collect(Collectors.joining( " OR ", " WHEN " , "  THEN '" + p + "'")) )
+                .collect(Collectors.joining(" ", "CASE "," END"));
+
+        QueryBuilder fun=
+                new QueryBuilder()
+                        .comment("Generated by method " + getClass().getName()+ ".generateSQLSearchRecordFunction")
+                        .next(QueryBuilder.createFunction(searchFunction))
+                        .params(funParams)
+                        .returns("table", functionReturns)
+                        .bodyStart("")
+                        .selectExp(baseRelation+".id as ID", CREATED_AT_COLUMN, nameCase + " AS " + TABLE_NAME_COLUMN, coalescedKey + " as " + BASETABLE_KEY_COLUMN )
+                        .from(baseRelation);
+
+        for (String template: templates.keySet()) {
+            boolean first=true;
+            fun.leftJoin(template);
+            for (String column: templates.get(template)) {
+                if (first) {
+                    fun.on(baseRelation + ".id = " + template + "." + column);
+                    first=false;
+                } else {
+                    fun.or(baseRelation + ".id = " + template + "." + column);
+                }
+            }
+            //fun.leftJoin(template.getLeft()).on(baseRelation + ".id = " + template.getLeft() + "." + template.getRight());
+        }
+        fun.newline().whereOpen("from_date", "is", "null").or(CREATED_AT_COLUMN, ">", "from_date").close();
+        fun.andOpen("to_date", "is", "null").or(CREATED_AT_COLUMN, "<", "to_date").close();
+
+        boolean first= true;
+        for (String template: templates.keySet()) {
+            for (String column: templates.get(template)) {
+                if (first) {
+                    fun.begin(5).andOpen(template + "." + column, "is not", "null");
+                    first = false;
+                } else {
+                    fun.allowBreak().or(template + "." + column, "is not", "null");
+                }
+            }
+        };
+        fun.close().end();
+        fun.orderBy(CREATED_AT_COLUMN).desc();
+
+
+        fun.bodyEnd("");
+        String sql=fun.getSQL();
+
+        arrayFunctionDeclarations.put(searchFunction, sql);
+
+    }
+    public void generateSQLSearchRecordByIdFunctionOLD(String baseRelation, Map<String, List<String>> templates, String templateName, String consistOf, String rootDir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
+
+        String searchFunction="search_records_by_id_for_" + baseRelation;
+
+
+        Map<String,?> funParams=new HashMap<>() {{
+            put(INPUT_ID, unquote("INT"));
+        }};
+        Map<String,Object> functionReturns= new LinkedHashMap<>() {{
+            put("ID",                 unquote("INT"));
+            put(CREATED_AT_COLUMN,    unquote("timestamptz"));
+            put(TABLE_NAME_COLUMN,    unquote("text"));
+            put("key",                 unquote("INT"));
+
+        }};
+
+        //create string COALESCE(plead_transforming.transforming, plead_filtering.filtering) AS key,
+        String coalescedKey= templates.keySet().stream().map(p -> p + ".id").collect(Collectors.joining(", ", "COALESCE (", ")"));
+
+        String nameCase= templates
+                .keySet()
+                .stream()
+                .map(p ->
+                        templates
+                                .get(p)
+                                .stream()
+                                .map(c ->  p + "." + c + " IS NOT NULL ")
+                                .collect(Collectors.joining( " OR ", " WHEN " , "  THEN '" + p + "'")) )
+                .collect(Collectors.joining(" ", "CASE "," END"));
+
+        QueryBuilder fun=
+                new QueryBuilder()
+                        .comment("Generated by method " + getClass().getName()+ ".generateSQLSearchRecordByIdFunction")
+                        .next(QueryBuilder.createFunction(searchFunction))
+                        .params(funParams)
+                        .returns("table", functionReturns)
+                        .bodyStart("")
+                        .selectExp(baseRelation+".id as ID", CREATED_AT_COLUMN, nameCase + " AS " + TABLE_NAME_COLUMN, coalescedKey + " as " + BASETABLE_KEY_COLUMN )
+                        .from(baseRelation);
+
+        for (String template: templates.keySet()) {
+            boolean first=true;
+            fun.leftJoin(template);
+            for (String column: templates.get(template)) {
+                if (first) {
+                    fun.on(baseRelation + ".id = " + INPUT_ID).andOpen(baseRelation + ".id = " + template + "." + column);
+                    first=false;
+                } else {
+                    fun.or(baseRelation + ".id = " + template + "." + column);
+                }
+            }
+            fun.close();
+            //fun.leftJoin(template.getLeft()).on(baseRelation + ".id = " + template.getLeft() + "." + template.getRight());
+        }
+
+
+        boolean first= true;
+        for (String template: templates.keySet()) {
+            for (String column: templates.get(template)) {
+                if (first) {
+                    fun.begin(5).whereOpen(template + "." + column, "is not", "null");
+                    first = false;
+                } else {
+                    fun.allowBreak().or(template + "." + column, "is not", "null");
+                }
+            }
+        };
+        fun.close().end();
+        fun.orderBy(CREATED_AT_COLUMN).desc();
+
+
+        fun.bodyEnd("");
+        String sql=fun.getSQL();
+
+        arrayFunctionDeclarations.put(searchFunction, sql);
+
+    }
+
+    public String sqlQuote(String s) {
+        return "'" + s + "'";
+    }
+
+    public void generateSQLSearchRecordByIdFunction(String baseRelation, Map<String, List<String>> templates, String templateName, String consistOf, String rootDir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
+
+        String searchFunction="search_records_by_id_for_" + baseRelation;
+
+
+        Map<String,?> funParams=new HashMap<>() {{
+            put(INPUT_ID, unquote("INT"));
+        }};
+        Map<String,Object> functionReturns= new LinkedHashMap<>() {{
+            put("ID",                 unquote("INT"));
+            put(CREATED_AT_COLUMN,    unquote("timestamptz"));
+            put(TABLE_NAME_COLUMN,    unquote("text"));
+            put(PROPERTY_COLUMN,      unquote("text"));
+            put("key",                unquote("INT"));
+
+        }};
+
+
+        QueryBuilder fun=
+                new QueryBuilder()
+                        .comment("Generated by method " + getClass().getName()+ ".generateSQLSearchRecordByIdFunction")
+                        .next(QueryBuilder.createFunction(searchFunction))
+                        .params(funParams)
+                        .returns("table", functionReturns)
+                        .bodyStart("")
+                ;
+
+
+        boolean first=true;
+        for (String template : templates.keySet()) {
+
+            for (String column: templates.get(template)) {
+
+                if (first) {
+                    fun.selectExp(baseRelation + ".id as ID", baseRelation + "." + CREATED_AT_COLUMN, sqlQuote(template) + " AS " + TABLE_NAME_COLUMN, sqlQuote(column) + " AS " + PROPERTY_COLUMN, template + ".id as " + BASETABLE_KEY_COLUMN)
+                            .from(baseRelation);
+                    first = false;
+                } else {
+                    fun.newline().newline().union((pp) -> select(baseRelation + ".id as ID", baseRelation + "." + CREATED_AT_COLUMN, sqlQuote(template) + " AS " + TABLE_NAME_COLUMN, sqlQuote(column) + " AS " + PROPERTY_COLUMN, template + ".id as " + BASETABLE_KEY_COLUMN).apply(pp).from(baseRelation));
+                }
+
+                fun.leftJoin(template);
+
+                fun.newline().on(baseRelation + ".id = " + INPUT_ID).and(baseRelation + ".id = " + template + "." + column);
+
+                fun.newline().where( template + "." + column, "is not", "null");
+            }
+            //fun.close();
+            // closing whereOpen
+            //fun.end();
+            // closing begin
+        }
+
+
+
+
+        fun.orderBy(CREATED_AT_COLUMN).desc();
+
+
+        fun.bodyEnd("");
+        String sql=fun.getSQL();
+
+        arrayFunctionDeclarations.put(searchFunction, sql);
+
+    }
+
+    public void generateInsertIntoSharedRelation(String template, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
+        /*
+
+CREATE OR REPLACE FUNCTION insert_into_chart (input_id BIGINT)
+    returns table(id INT)
+as $$
+INSERT INTO chart (id)
+SELECT input_id
+RETURNING chart.id as id
+$$ language SQL;         */
+
+        Collection<String> sqlTables=new HashSet<>();
+        for (String key: shared) {
+            descriptorUtils.getSqlTable(key, templateBindingsSchema).ifPresent(sqlTables::add);
+        }
+
+        for (String relation: sqlTables) {
+
+            QueryBuilder fun =
+                    new QueryBuilder()
+                            .comment("Generated by method " + getClass().getName() + ".generateInsertIntoSharedRelation")
+                            .next(QueryBuilder.createFunction("insert_into_" + relation))
+                            .params(new HashMap<>() {{
+                                put(INPUT_ID, unquote("BIGINT"));
+                            }})
+                            .returns("table", new HashMap<>() {{
+                                put("id", unquote("INT"));
+                            }})
+                            .bodyStart("")
+                            .insertInto(relation).values(new HashMap<>() {{
+                                put("id",  (Function<PrettyPrinter, QueryBuilder>) (pp) -> QueryBuilder.select(INPUT_ID).apply(pp));
+                            }})
+                            .returning(Collections.singleton(relation + ".id as id"));
+
+
+            fun.bodyEnd("");
+            String sql = fun.getSQL();
+
+            System.out.println("###############################");
+
+            System.out.println(sql);
+        }
+
+
     }
 
 

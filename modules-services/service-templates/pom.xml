@@ -1,0 +1,705 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>modules-services</artifactId>
+        <groupId>org.openprovenance.prov</groupId>
+        <version>2.0.6</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>service-templates</artifactId>
+    <name> |---- SERVICE-TEMPLATES</name>
+    <packaging>war</packaging>
+    <description>A REST service for PROV-template-based provenance</description>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-interop</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-template</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-core</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-translation</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-security-pac</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-storage-index-redis</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-template-compiler</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-storage-mongodb</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-template-library</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-servlet-initializer</artifactId>
+            <version>${resteasy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakarta.servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2-jakarta</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>swagger-ui</artifactId>
+            <version>${webjars.swagger-ui.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>${webjars.jquery.version}</version> <!-- need to change version in jsp files too -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap-table</artifactId>
+            <version>${webjars.bootstrap.tables.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>${webjars.bootstrap.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>${webjars.fontawesome.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.bowergithub.ajaxorg</groupId>
+            <artifactId>ace-builds</artifactId>
+            <version>${webjars.ace.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>popper.js</artifactId>
+            <version>1.15.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>underscore</artifactId>
+            <version>${webjars.underscore.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>datatables.net-scroller</artifactId>
+            <version>${webjars.datatables.net-scroller.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.bowergithub.garycourt</groupId>
+            <artifactId>jsv</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.bowergithub.jsonform</groupId>
+            <artifactId>jsonform</artifactId>
+            <version>2.1.5</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>jquery-csv</artifactId>
+            <version>0.8.3</version>
+        </dependency>
+
+
+
+        <dependency>
+            <groupId>org.jsweet</groupId>
+            <artifactId>j4ts</artifactId>
+            <version>${webjars.j4ts.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jsweet</groupId>
+                    <artifactId>jsweet-transpiler</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgres.version}</version>
+        </dependency>
+
+
+        <!-- for testing -->
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-model</artifactId>
+            <version>2.0.6</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>${resteasy.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- following two dependencies required to address: warning:
+        Unable to load io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider -->
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.76.Final</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-resolver-dns-native-macos</artifactId>
+            <version>4.1.76.Final</version>
+            <classifier>osx-aarch_64</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.16.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-validation</artifactId>
+            <version>2.0.6</version>
+            <scope>test</scope>
+        </dependency>
+
+
+    </dependencies>
+
+
+
+
+    <build>
+        <plugins>
+
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${javadoc.plugin.version}</version>
+                <configuration>
+                    <source>1.9</source>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${jar.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>16</source>
+                    <target>16</target>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/sql</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/config</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>log4j2.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/webapp.filter</directory>
+                <targetPath>${project.build.directory}/webapp.filtered</targetPath>
+                <filtering>true</filtering>
+            </resource>
+
+        </resources>
+
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources/config</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>log4j2.xml</include>
+                </includes>
+            </testResource>
+        </testResources>
+    </build>
+
+    <properties>
+        <service.port>7072</service.port>
+        <service.context>/ptl</service.context>
+        <service.host>localhost</service.host>
+        <service.protocol>http</service.protocol>
+        <the.template.library>prov-template-library</the.template.library>
+        <the.template.sublibrary>-plead</the.template.sublibrary>
+        <unsecure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-no-security.xml</unsecure.webxml.location>
+        <secure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-with-security.xml</secure.webxml.location>
+    </properties>
+
+
+    <profiles>
+        <profile>
+            <id>nosecurity</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <webxml.location>${unsecure.webxml.location}</webxml.location>
+            </properties>
+        </profile>
+        <profile>
+            <id>security</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <webxml.location>${secure.webxml.location}</webxml.location>
+            </properties>
+        </profile>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+              <!--  <isdocker />
+                <upload.directory>${project.build.directory}/</upload.directory>
+                -->
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${failsafe.plugin.version}</version>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <runOrder>alphabetical</runOrder>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>integration-test</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>verify</id>
+                                <goals>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+
+        <profile>
+            <id>jetty</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-util</artifactId>
+                    <version>${jetty.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.microprofile.config</groupId>
+                    <artifactId>microprofile-config-api</artifactId>
+                    <version>${microprofile.version}</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>${war.plugin.version}</version>
+
+                        <executions>
+                            <execution>
+                                <id>default.war.no.classifier</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
+
+                                <configuration>
+                                    <classifier />
+                                    <failOnMissingWebXml>true</failOnMissingWebXml>
+                                    <webXml>${webxml.location}</webXml>
+                                    <webappDirectory>${project.build.directory}/${project.build.finalName}-default</webappDirectory>
+                                    <filters>
+                                        <filter>
+                                            src/main/resources/properties/prov-template-library.webapp.config.properties
+                                        </filter>
+                                    </filters>
+                                    <webResources>
+                                        <resource>
+                                            <filtering>true</filtering>
+                                            <!-- this is relative to the pom.xml directory -->
+                                            <directory>src/main/webapp.filter</directory>
+                                            <includes>*</includes>
+                                        </resource>
+                                    </webResources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>secure.war</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
+
+                                <configuration>
+                                    <classifier>secure</classifier>
+
+                                    <failOnMissingWebXml>true</failOnMissingWebXml>
+                                    <webXml>${secure.webxml.location}</webXml>
+                                    <webappDirectory>${project.build.directory}/${project.build.finalName}-secure</webappDirectory>
+                                    <filters>
+                                        <filter>
+                                            src/main/resources/properties/prov-template-library.webapp.config.properties
+                                        </filter>
+                                    </filters>
+                                    <webResources>
+                                        <resource>
+                                            <filtering>true</filtering>
+                                            <!-- this is relative to the pom.xml directory -->
+                                            <directory>src/main/webapp.filter</directory>
+                                            <includes>*</includes>
+                                        </resource>
+                                    </webResources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>unsecure.war</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
+
+                                <configuration>
+                                    <classifier>unsecure</classifier>
+                                    <failOnMissingWebXml>true</failOnMissingWebXml>
+                                    <webappDirectory>${project.build.directory}/${project.build.finalName}-unsecure</webappDirectory>
+                                    <webXml>${unsecure.webxml.location}</webXml>
+                                    <filters>
+                                        <filter>
+                                            src/main/resources/properties/prov-template-library.webapp.config.properties
+                                        </filter>
+                                    </filters>
+                                    <webResources>
+                                        <resource>
+                                            <filtering>true</filtering>
+                                            <!-- this is relative to the pom.xml directory -->
+                                            <directory>src/main/webapp.filter</directory>
+                                            <includes>*</includes>
+                                        </resource>
+                                    </webResources>
+
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>${jar.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>test-jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>1.0.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>set-system-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <properties>
+                                        <!--
+                                        <property>
+                                            <name>PSERVICE_MONGO_HOST</name>
+                                            <value>localhost</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_DBNAME</name>
+                                            <value>provtest</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_INDEX</name>
+                                            <value>redis</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_DEL_PERIOD</name>
+                                            <value>600</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_STORAGE</name>
+                                            <value>fs</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_REDIS_HOST</name>
+                                            <value>localhost</value>
+                                        </property>
+                                        <property>
+                                            <name>POSTGRES_HOST</name>
+                                            <name>localhost</name>
+                                        </property>
+                                        -->
+                                        <property>
+                                            <name>RESOURCES_HOST</name>
+                                            <value>${service.protocol}://${service.host}:${service.port}${service.context}/provapi/resources</value>
+                                        </property>
+                                        <!--
+                                        <property>
+                                            <name>TPL_DB_USER</name>
+                                            <value>luc</value>
+                                        </property>
+                                        <property>
+                                            <name>TPL_DB_PASS</name>
+                                            <value>admin</value>
+                                        </property>
+                                        <property>
+                                            <name>TPL_API</name>
+                                            <value>${service.protocol}://${service.host}:${service.port}${service.context}/provapi</value>
+                                        </property>
+                                                     -->
+                                        <property>
+                                            <name>TPL_HOST</name>
+                                            <value>${service.protocol}://${service.host}:${service.port}${service.context}</value>
+                                        </property>
+                                        <property>
+                                            <name>PROV_STORAGE_CONFIG</name>
+                                            <value>${project.build.directory}/test-classes/config/storage-configuration-mongodb-redis.json</value>
+                                        </property>
+                                        <!--
+                                        <property>
+                                            <name>TPL_SECURITY_CONFIG</name>
+                                            <value>${TPL_SECURITY_CONFIG_DEFAULT}</value>
+                                        </property>
+                                        -->
+
+                                    </properties>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <version>${jetty.version}</version>
+                        <configuration>
+                            <webApp>
+                                <contextPath>${service.context}</contextPath>
+                                <descriptor>${webxml.location}</descriptor>
+                            </webApp>
+                            <httpConnector>
+                                <port>${service.port}</port>
+                            </httpConnector>
+                            <stopKey>foo</stopKey>
+                            <stopPort>9999</stopPort>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start-jetty</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                                <configuration>
+
+
+
+                                    <!-- -->
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>stop-jetty</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+
+    </profiles>
+
+
+
+
+</project>

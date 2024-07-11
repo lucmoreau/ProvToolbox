@@ -1,13 +1,17 @@
 package org.openprovenance.prov.dot;
 import java.io.*;
 import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
+import org.apache.commons.io.IOUtils;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.DocumentedUnsupportedCaseException;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.openprovenance.prov.vanilla.QualifiedSpecializationOf;
 
 /** Serialisation of  Prov representation to DOT format. */
 public class ProvToDot implements DotProperties,  RecommendedProvVisualProperties, ProvShorthandNames {
@@ -16,7 +20,12 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
     public int MAX_TOOLTIP_LENGTH = 2000;
 
-    ProvUtilities u=new ProvUtilities();
+
+    final Supplier<ProvUtilities> getProvUtilities;
+    final ProvUtilities u;
+
+
+
     final ProvFactory pf;
     QualifiedName makeSumSize(){
         return pf.newQualifiedName(NamespacePrefixMapper.SUMMARY_NS, "size", NamespacePrefixMapper.SUMMARY_PREFIX);
@@ -43,34 +52,43 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     public ProvToDot(ProvFactory pf) {
         this.pf=pf;
         SUM_SIZE=makeSumSize();
+        this.getProvUtilities= ProvUtilities::new;
+        this.u=this.getProvUtilities.get();
+    }
+    public ProvToDot(ProvFactory pf, Supplier<ProvUtilities> getProvUtilities) {
+        this.pf=pf;
+        SUM_SIZE=makeSumSize();
+        this.getProvUtilities= getProvUtilities;
+        this.u= this.getProvUtilities.get();
     }
 
 
-    public void convert(Document graph, String dotFile, String pdfFile, String title) throws java.io.IOException {
+
+    public void convert(Document graph, String dotFile, String pdfFile, String title) throws IOException {
         convert(graph,new File(dotFile), title);
         Runtime runtime = Runtime.getRuntime();
         @SuppressWarnings("unused")
-        java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
+        Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
     }
 
     public void convert(Document graph, String dotFile, OutputStream pdfStream, String title)
-            throws java.io.IOException {
+            throws IOException {
         convert(graph,new File(dotFile), title);
         Runtime runtime = Runtime.getRuntime();
-        java.lang.Process proc = runtime.exec("dot  -Tpdf " + dotFile);
+        Process proc = runtime.exec("dot  -Tpdf " + dotFile);
         InputStream is=proc.getInputStream();
-        org.apache.commons.io.IOUtils.copy(is, pdfStream);
+        IOUtils.copy(is, pdfStream);
     }
     public void convert(Document graph, String dotFile, String title)
-            throws java.io.IOException {
+            throws IOException {
         convert(graph,new File(dotFile),title);
     }
 
     public void convert(Document graph, String dotFile, String aFile, String type, String title)
-            throws java.io.IOException {
+            throws IOException {
         convert(graph,new File(dotFile),title);
         Runtime runtime = Runtime.getRuntime();
-        java.lang.Process proc = runtime.exec("dot -o " + aFile + " -T" + type + " " + dotFile);
+        Process proc = runtime.exec("dot -o " + aFile + " -T" + type + " " + dotFile);
         try {
             BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
             String s_error=errorReader.readLine();
@@ -89,9 +107,9 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             File dotFile=File.createTempFile("temp", ".dot");
             convert(graph, dotFile ,title);
             Runtime runtime = Runtime.getRuntime();
-            java.lang.Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
+            Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
             InputStream is=proc.getInputStream();
-            org.apache.commons.io.IOUtils.copy(is, os);
+            IOUtils.copy(is, os);
             @SuppressWarnings("unused")
             boolean resultCode=dotFile.delete();
 
@@ -105,17 +123,17 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     }
 
     public void convert(Document graph, String dotFile, OutputStream os, String type, String title)
-            throws java.io.IOException {
+            throws IOException {
         convert(graph,new File(dotFile),title);
         Runtime runtime = Runtime.getRuntime();
 
-        java.lang.Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
+        Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
         InputStream is=proc.getInputStream();
-        org.apache.commons.io.IOUtils.copy(is, os);
+        IOUtils.copy(is, os);
 
     }
 
-    public void convert(Document graph, File file, String title) throws java.io.FileNotFoundException{
+    public void convert(Document graph, File file, String title) throws FileNotFoundException{
         OutputStream os=new FileOutputStream(file);
         convert(graph, new PrintStream(os), title);
     }
@@ -624,7 +642,13 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
         List<QualifiedName> others=u.getOtherCauses(e);
         if (others !=null) { // n-ary case
-            String bnid="bn" + (bncounter++);
+
+            // if relation e has id
+            String id=null;
+            if (e instanceof Identifiable && ((Identifiable)e).getId()!=null) {
+                id=qualifiedNameToString(((Identifiable)e).getId());
+            }
+            String bnid=(id==null)? "bn" + (bncounter++) : id;
 
 
             emitBlankNode(dotify(bnid), addBlankNodeShape(properties), out);
@@ -674,6 +698,10 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             if (e instanceof HasOther) {
                 addColors((HasOther)e,properties4);
             }
+            properties4.put(DOT_STYLE,"dashed");
+            properties4.put(DOT_ARROWHEAD,"none");
+            properties4.put(DOT_COLOUR,"gray");
+
             for (QualifiedName other: others) {
                 if (other!=null) {
                     emitRelation(  e.getKind(),
@@ -787,8 +815,8 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     //////////////////////////////////////////////////////////////////////
 
 
-    String name;
-    private String layout;
+    protected String name;
+    protected String layout;
 
     /* make name compatible with dot notation*/
 
@@ -871,14 +899,14 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         sb.append("]");
     }
 
-    void prelude(Document ignoredDoc, PrintStream out) {
+    protected void prelude(Document ignoredDoc, PrintStream out) {
         out.println("digraph \"" + name + "\" { rankdir=\"BT\"; ");  //size="16,12"; 
         if (layout!=null) {
             out.println("layout=\"" + layout + "\"; ");
         }
     }
 
-    void postlude(Document ignoredDoc, PrintStream out) {
+    protected void postlude(Document ignoredDoc, PrintStream out) {
         out.println("}");
         out.close();
     }
@@ -896,6 +924,94 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     public void setLayout(String layout) {
         this.layout=layout;
     }
+
+    static class ProvUtilitiesForTriangle extends ProvUtilities {
+        private final List<String> exceptions;
+
+
+        public ProvUtilitiesForTriangle() {
+            super();
+            exceptions = List.of();
+        }
+        public ProvUtilitiesForTriangle(List<String> exceptions) {
+            super();
+            this.exceptions=exceptions;
+        }
+
+        @Override
+        public List<QualifiedName> getOtherCauses(Relation r) {
+            if (r instanceof Identifiable && ((Identifiable)r).getId()!=null) {
+                if (exceptions.contains(((Identifiable)r).getId().getLocalPart())) {
+                    return null;
+                }
+            }
+            if (r instanceof WasAttributedTo) {
+                WasAttributedTo wat = (WasAttributedTo) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(wat, NamespacePrefixMapper.PROV_EXT_NS);
+                List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+            }  else if (r instanceof QualifiedSpecializationOf ) {
+                QualifiedSpecializationOf spe = (QualifiedSpecializationOf) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(spe, NamespacePrefixMapper.PROV_EXT_NS);
+                List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+            }  else if (r instanceof Used ) {
+                Used usd = (Used) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(usd, NamespacePrefixMapper.PROV_EXT_NS);
+                List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+            }  else if (r instanceof WasInformedBy ) {
+                WasInformedBy wib = (WasInformedBy) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(wib, NamespacePrefixMapper.PROV_EXT_NS);
+                List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+            } else if (r instanceof WasStartedBy ) {
+                List<QualifiedName> result1=super.getOtherCauses(r);
+                WasStartedBy start = (WasStartedBy) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(start, NamespacePrefixMapper.PROV_EXT_NS);
+                List<Other> tmp=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                List<QualifiedName> result2=tmp.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+                if (result1!=null) result2.addAll(result1);
+                return result2;
+            }  else if (r instanceof WasEndedBy ) {
+                List<QualifiedName> result1=super.getOtherCauses(r);
+                WasEndedBy end = (WasEndedBy) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(end, NamespacePrefixMapper.PROV_EXT_NS);
+                List<Other> tmp=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                List<QualifiedName> result2=tmp.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+                if (result1!=null) result2.addAll(result1);
+                return result2;
+            }  else if (r instanceof WasDerivedFrom ) {
+                WasDerivedFrom der = (WasDerivedFrom) r;
+
+                List<QualifiedName> result=new LinkedList<>();
+                if (der.getGeneration()!=null) {
+                    result.add(der.getGeneration());
+                }
+                if (der.getUsage()!=null) {
+                    result.add(der.getUsage());
+                }
+                if (der.getActivity()!=null) {
+                    result.add(der.getActivity());
+                }
+                return result;
+            } else if (r instanceof WasGeneratedBy || r instanceof WasAssociatedWith || r instanceof SpecializationOf | r instanceof WasInvalidatedBy ) {
+                return Collections.emptyList();
+            } else {
+                return super.getOtherCauses(r);
+            }
+        }
+    }
+
+    public static ProvToDot newProvToDot(ProvFactory pf) {
+        Supplier<ProvUtilities> utilities= ProvUtilitiesForTriangle::new;
+        return new ProvToDot(pf, utilities);
+    }
+    public static ProvToDot newProvToDot(ProvFactory pf, List<String> exceptions) {
+        Supplier<ProvUtilities> utilities= () -> new ProvUtilitiesForTriangle(exceptions);
+        return new ProvToDot(pf, utilities);
+    }
+
 
 
 }

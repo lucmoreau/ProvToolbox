@@ -15,5 +15,4 @@ public interface ProvSerialiser {
      */
     void serialiseDocument (OutputStream out, Document document, boolean formatted);
 
-    
 }

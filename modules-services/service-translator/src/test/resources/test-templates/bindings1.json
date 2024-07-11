@@ -15,23 +15,23 @@
         "@id": "ex:input_1"
       }
     ],
-    "consumed_value1": [
+    "consumed_value1": [[
       {
         "@value": "4",
         "@type": "xsd:int"
       }
-    ],
+    ]],
     "consumed2": [
       {
         "@id": "ex:input_2"
       }
     ],
-    "consumed_value2": [
+    "consumed_value2": [[
       {
         "@value": "5",
         "@type": "xsd:int"
       }
-    ],
+    ]],
     "produced": [
       {
         "@id": "ex:output"
@@ -42,13 +42,14 @@
         "@id": "ex:Result"
       }
     ],
-    "produced_value": [
+    "produced_value": [[
       {
         "@value": "20",
         "@type": "xsd:int"
       }
-    ]
+    ]]
   },
+  "vargen": {},
   "context": {
     "ex": "http://example.org/#"
   },

@@ -1,0 +1,22 @@
+
+
+{
+    "callbackUrl": "http://localhost:7072/ptl/callback",
+    "configurations": {
+        "KeycloakOidcClient": {
+            "@type": "KeycloakOidcClient",
+            "clientId": "assistant",
+            "realm": "xplain",
+            "baseUri": "https://openprovenance.org/auth",
+            "callbackUrl": "http://localhost:7072/ptl/callback"
+        },
+        "DirectBearerAuthClient": {
+            "@type": "DirectBearerAuthClient",
+            "clientId": "ptm-direct",
+            "realm": "prov",
+            "baseUri": "https://localhost:8443/auth",
+            "signaturePublicKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAruqUQyGToB2Wzw0HjJWnO4exfclh4VNows2rIK1NHvcHQrlc73hNyUujeHR9R3hZE0Z1M3APFGX6VL/R8/J+V5BWaNwcjL/gYW4lPbcdL3M9Lt5Q+/s9ISMaQDskQ2IhWNczpnnzet2Bj+A5RzdhAmHCIuT0da/2CEUuEPqGr2evXVVfIUXkcsNGwenYEW5M71ZC/uuFlb7fxjuOut4aFg96hZD0c93DVq7vIJ45S75Ukdt0nB4a+Vu9TVUpFERSAPrWjF89qig3S8XDkghXDdMfePLkVklttcTWINDsMIm56p4k2syfQqa9v5z6dn4IkFRy7ptZ9AmD7PjvXb68HwIDAQAB",
+            "role": "provwriter"
+        }
+    }
+}

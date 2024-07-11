@@ -3,8 +3,6 @@ package org.openprovenance.prov.template.compiler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.MissingNode;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
 import org.openprovenance.prov.model.ProvFactory;
@@ -19,14 +17,17 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
+import static org.openprovenance.prov.template.compiler.common.Constants.ELEMENTS;
 
 public class CompilerJsonSchema {
     private final CompilerUtil compilerUtil;
+    private final ProvFactory pFactory;
     ObjectMapper om = new ObjectMapper();
     Map<String, Object> jsonSchemaAsAMap = initializeSchemaMap();
 
     public CompilerJsonSchema(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
+        this.pFactory=pFactory;
     }
 
     public void generateJSonSchemaEnd(String jsonschema, String root_dir) {
@@ -48,25 +49,25 @@ public class CompilerJsonSchema {
     }
 
     public Map<String, Object> initializeSchemaMap() {
-        final HashMap<String, Object> res = new HashMap<String, Object>();
+        final HashMap<String, Object> res = new HashMap<>();
         res.put("definitions", new HashMap<String, Object>());
         res.put("allOf", new LinkedList<HashMap<String,Object>>());
         res.put("type", "object");
         return res;
     }
 
-    public void generateJSonSchema(String templateName, TemplateBindingsSchema bindingsSchema) {
+    public void generateJSonSchema(String templateName, TemplateBindingsSchema bindingsSchema, String consistsOf, String idPrefix, List<String> sharing) {
 
 
         Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
         Collection<String> variables=descriptorUtils.fieldNames(bindingsSchema);
 
 
-        Map<String, Object> aSchema = new HashMap<String, Object>();
-        aSchema.put(get$id(), "#/definitions/" + templateName);
+        Map<String, Object> aSchema = new HashMap<>();
+        aSchema.put(get$id(), idPrefix + templateName);
         aSchema.put("type", "object");
 
-        Map<String, Object> properties = new HashMap<String, Object>();
+        Map<String, Object> properties = new HashMap<>();
         aSchema.put("properties", properties);
 
         List<String> requiredProperties=new LinkedList<>();
@@ -76,14 +77,21 @@ public class CompilerJsonSchema {
         for (String key: variables) {
 
             requiredProperties.add(key);
-            Map<String, Object> atype = new HashMap<String, Object>();
-            atype.put(get$id(), "#/definitions/"+templateName+"/properties/"+key);
+            Map<String, Object> atype = new HashMap<>();
+            atype.put(get$id(), idPrefix +templateName+"/properties/"+key);
             atype.put("title", title(key));
             final String jsonType = convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName());
             atype.put("type", jsonType);
-            final Object defaultValue=defaultValue(jsonType);
-            if (defaultValue!=null) atype.put("default", defaultValue);
+            //final Object defaultValue=defaultValue(jsonType);
+            //if (defaultValue!=null) atype.put("default", defaultValue);
             //atype.put("required", true);
+
+            // LUC FIXME: should be generated for composite only, and subtype needs to be adjusted.
+            if (consistsOf!=null && key.equals("type")) {
+                atype.put("readOnly", "true");
+                atype.put("default", consistsOf);
+            }
+
 
             Descriptor descriptor=theVar.get(key).get(0);
             String documentation=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
@@ -96,9 +104,50 @@ public class CompilerJsonSchema {
             properties.put(key, atype);
         }
 
+        if (consistsOf!=null) {
+            String elementKey = ELEMENTS;
+            requiredProperties.add(elementKey);
+            Map<String, Object> atype2 = new HashMap<>();
+            atype2.put(get$id(), idPrefix + templateName + "/properties/" + elementKey);
+            atype2.put("title", title(elementKey));
+            atype2.put("type", "array");
+
+            // jsonform does not support $ref in items, so we need to expand the schema
+
+            Map<String,Object>subschema= (Map<String, Object>) ((Map<String,Object>)jsonSchemaAsAMap.get("definitions")).get(consistsOf);
+
+
+            Map<String, Object> subschema2 = (subschema==null)? new HashMap<>(): new HashMap<>(subschema);
+            // note: the $id are not correct
+            subschema2.put("title", consistsOf + " {{idx}}");
+            Map<String, Object> propertiesMap = (Map<String, Object>) subschema2.get("properties");
+            for (String sharingKey: sharing) {
+                Map<String, Object> sharedKeyMap = (Map<String, Object>) propertiesMap.get(sharingKey);
+                sharedKeyMap.put("required", "true");
+                if ("integer".equals(sharedKeyMap.get("type"))) {
+                    sharedKeyMap.put("maximum", -1);
+                    sharedKeyMap.put("description", "<span class='shared_var'>Shared variable:</span> " + ((String)sharedKeyMap.get("description")).replace("integer", "<span class='shared_var'>convention: negative integer</span>"));
+                } else {
+                    sharedKeyMap.put("description", "<span class='shared_var'>Shared variable:</span> " + sharedKeyMap.get("description"));
+
+                }
+            }
+
+
+            atype2.put("items",subschema2);
+            properties.put(elementKey, atype2);
+
+            ((Map<String, Object>)properties.get("count")).put("readOnly", "true");
+
+
+
+        }
+
+
+
         String key="isA";
-        Map<String, Object> atype = new HashMap<String, Object>();
-        atype.put(get$id(), "#/definitions/"+templateName+"/properties/"+key);
+        Map<String, Object> atype = new HashMap<>();
+        atype.put(get$id(), idPrefix +templateName+"/properties/"+key);
         atype.put("title", title(key));
         atype.put("type", "string");
         atype.put("readOnly", "true");
@@ -117,7 +166,7 @@ public class CompilerJsonSchema {
         Map<String,Object> ifThenBlock=new HashMap<>();
         Map<String,Object> ifBlock=new HashMap<>();
         ifThenBlock.put("if",ifBlock);
-        ifThenBlock.put("then", Map.of("$ref","#/definitions/" + templateName));
+        ifThenBlock.put("then", Map.of("$ref", idPrefix + templateName));
         ifBlock.put("type", "object");
         ifBlock.put("properties", Map.of("isA", Map.of("const", templateName)));
 
@@ -154,9 +203,9 @@ public class CompilerJsonSchema {
             case "java.lang.Integer":
                 return "integer";
             case "java.lang.Float":
-                return "float";
+                return "number";
             case "java.lang.Double":
-                return "double";
+                return "number";
             case "java.lang.Boolean":
                 return "boolean";
         }

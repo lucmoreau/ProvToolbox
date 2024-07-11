@@ -31,23 +31,26 @@ import java.util.*;
 
 
 public class ServiceUtils {
+    final private static Logger logger = LogManager.getLogger(ServiceUtils.class);
 
-    public static final String DOCUMENT_NOT_FOUND = "Document not found";
     public static final String WILDCARD = "*";
     public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
-    public static final String HEADER_PARAM_ACCEPT = "Accept";
 
     public static final String CONFIG_PROPERTIES = "config.properties";
 
-    public static final String UPLOADED_FILE_PATH = getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("upload.directory");
-    public static final String containerVersion = getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("container.version");
-    public static final String containerClassifier = getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("container.classifier");
-
-    public static final String longContainerVersion = "ProvToolbox/modules-services " + containerVersion + (((containerClassifier==null) || (containerClassifier=="")) ? "" : "-" + containerClassifier) + " (" + getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("timestamp") + ")";
 
     private final JobManagement jobManager;
 
-
+    public static String getSystemOrEnvironmentVariableOrDefault(String name, String defaultValue) {
+        String value = System.getProperty(name);
+        if (value == null) {
+            value = System.getenv(name);
+        }
+        if (value == null) {
+            value = defaultValue;
+        }
+        return value;
+    }
 
     private final NonDocumentResourceIndex<NonDocumentResource> nonDocumentResourceIndex;
     private final NonDocumentResourceStorage nonDocumentResourceStorage;
@@ -69,7 +72,6 @@ public class ServiceUtils {
         return Configuration.getPropertiesFromClasspath(ServiceUtils.class, propFileName);
     }
 
-    final private static Logger logger = LogManager.getLogger(ServiceUtils.class);
 
 
 
@@ -122,59 +124,65 @@ public class ServiceUtils {
         if (formData.get("translate") != null) {
             String val = getFormDataValue(formData, "translate");
             if (val != null) {
-                if ("json".equals(val))
-                    return Destination.JSON;
-                if ("jsonld".equals(val))
-                    return Destination.JSONLD;
-                if ("provx".equals(val))
-                    return Destination.XML;
-                if ("provn".equals(val))
-                    return Destination.PROVN;
-                if ("turtle".equals(val))
-                    return Destination.TURTLE;
-                if ("trig".equals(val))
-                    return Destination.TRIG;
-                if ("svg".equals(val))
-                    return Destination.SVG;
-                if ("jpg".equals(val))
-                    return Destination.JPG;
+                switch (val) {
+                    case "json":
+                        return Destination.JSON;
+                    case "png":
+                        return Destination.PNG;
+                    case "jsonld":
+                        return Destination.JSONLD;
+                    case "provx":
+                        return Destination.XML;
+                    case "provn":
+                        return Destination.PROVN;
+                    case "pdf":
+                        return Destination.PDF;
+                    case "svg":
+                        return Destination.SVG;
+                    case "jpg":
+                        return Destination.JPG;
+                }
             }
         }
         if (formData.get("expand") != null) {
             String val = getFormDataValue(formData, "expand");
             if (val != null) {
-                if ("json".equals(val))
-                    return Destination.JSON;
-                if ("jsonld".equals(val))
-                    return Destination.JSONLD;
-                if ("provx".equals(val))
-                    return Destination.XML;
-                if ("provn".equals(val))
-                    return Destination.PROVN;
-                if ("turtle".equals(val))
-                    return Destination.TURTLE;
-                if ("trig".equals(val))
-                    return Destination.TRIG;
-                if ("svg".equals(val))
-                    return Destination.SVG;
+                switch (val) {
+                    case "json":
+                        return Destination.JSON;
+                    case "jsonld":
+                        return Destination.JSONLD;
+                    case "provx":
+                        return Destination.XML;
+                    case "provn":
+                        return Destination.PROVN;
+                    case "png":
+                        return Destination.PNG;
+                    case "pdf":
+                        return Destination.PDF;
+                    case "svg":
+                        return Destination.SVG;
+                }
                 return Destination.UNKNOWN;
             }
         }
         if (formData.get("summarise") != null) {
             String val = getFormDataValue(formData, "summarise");
             if (val != null) {
-                if ("json".equals(val))
-                    return Destination.JSON;
-                if ("provx".equals(val))
-                    return Destination.XML;
-                if ("provn".equals(val))
-                    return Destination.PROVN;
-                if ("turtle".equals(val))
-                    return Destination.TURTLE;
-                if ("trig".equals(val))
-                    return Destination.TRIG;
-                if ("svg".equals(val))
-                    return Destination.SVG;
+                switch (val) {
+                    case "json":
+                        return Destination.JSON;
+                    case "provx":
+                        return Destination.XML;
+                    case "png":
+                        return Destination.PNG;
+                    case "provn":
+                        return Destination.PROVN;
+                    case "pdf":
+                        return Destination.PDF;
+                    case "svg":
+                        return Destination.SVG;
+                }
                 return Destination.UNKNOWN;
             }
         }
@@ -186,7 +194,7 @@ public class ServiceUtils {
     }
 
     public enum Action {
-        UNKNOWN("UNKNOWN"), VALIDATE("VALIDATE"), EXPAND("EXPAND"), NF("NF"), SIGN("SIGN"), SIGNATURE("SIGNATURE)"), CHECK("CHECK"), RANDOM("RANDOM"), LINEAR("LINEAR"), EXPLANATION("EXPLANATION"), TRANSLATE("TRANSLATE"), SUMMARISE("SUMMARISE"), UPLOAD("UPLOAD");
+        UNKNOWN("UNKNOWN"), VALIDATE("VALIDATE"), EXPAND("EXPAND"), METRICS("METRICS"), NF("NF"), SIGN("SIGN"), SIGNATURE("SIGNATURE)"), CHECK("CHECK"), RANDOM("RANDOM"), LINEAR("LINEAR"), EXPLANATION("EXPLANATION"), TRANSLATE("TRANSLATE"), SUMMARISE("SUMMARISE"), UPLOAD("UPLOAD");
         // JSON("json"), XML("provx"), PROVN("provn"), TURTLE("ttl"), TRIG("trig"), SVG("svg"), JPG("jpg") ;
 
         Action(String text) {
@@ -201,7 +209,7 @@ public class ServiceUtils {
     }
 
     public enum Destination {
-        UNKNOWN("UNKNOWN"), JSON("json"), XML("provx"), PROVN("provn"), TURTLE("ttl"), TRIG("trig"), SVG("svg"), JPG("jpg"), JSONLD("jsonld") ;
+        UNKNOWN("UNKNOWN"), JSON("json"), XML("provx"), PROVN("provn"), PNG("png"),  PDF("pdf"), SVG("svg"), JPG("jpg"), JSONLD("jsonld") ;
         private Destination(String text) {
             this.text = text;
         }
@@ -237,6 +245,11 @@ public class ServiceUtils {
         if (formData.get("translate") != null) {
             return Action.TRANSLATE;
         }
+
+        if (formData.get("metrics") != null) {
+            return Action.METRICS;
+        }
+
 
         if (formData.get("sign") != null) {
             String val = getFormDataValue(formData, "sign");

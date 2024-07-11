@@ -1,0 +1,178 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+
+        "Context": {
+            "$id": "#/definitions/Context",
+            "type": "object",
+            "title": "The Items Schema",
+            "additionalProperties": { "type": "string"}
+        },
+        "QualifiedName": {
+            "$id": "#/definitions/QualifiedName",
+            "type": "string",
+            "title": "The QualifiedName Schema",
+            "default": "",
+            "pattern": "^[A-Za-z0-9_]+:(.*)$"
+        },
+        "XsdType": {
+            "$id": "#/definitions/XsdType",
+            "type": "string",
+            "enum": ["xsd:string", "xsd:int", "xsd:float", "xsd:boolean", "xsd:dateTime"]
+        },
+
+        "lang_string": {
+            "type": "object",
+            "required": [ "@value" ],
+            "properties": {
+                "@value": {
+                    "type": "string"
+                },
+                "@language": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ValuesOrIds": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/ArrayOfArraysOfValues"
+                },
+                {
+                    "$ref": "#/definitions/ArrayOfIds"
+                }
+            ]
+        },
+        "ArrayOfArraysOfValues": {
+            "type": "array",
+            "items": [
+                { "$ref": "#/definitions/ArrayOfValues" }
+            ]
+        },
+        "ArrayOfValues": {
+            "$id": "#/definitions/ArrayOfValues",
+            "type": "array",
+            "items": {
+                "anyOf": [
+                    { "$ref": "#/definitions/QualifiedName" },
+                    { "$ref": "#/definitions/An@value" },
+                    { "$ref": "#/definitions/An@id" },
+                    { "$ref": "#/definitions/lang_string" }
+                ]
+            }
+        },
+        "ArrayOfIds": {
+            "$id": "#/definitions/ArrayOfIds",
+            "type": "array",
+            "items": {
+                "anyOf": [
+                    { "$ref": "#/definitions/An@id" }
+                ]
+            }
+        },
+
+        "An@id":  {
+            "type": "object",
+            "properties": {
+                "@id": {
+                    "type": "string"
+                },
+                "@type": {"$ref": "#/definitions/XsdType"},
+
+                "@documentation": {
+                    "type": "string"
+                },
+                "@examplar": {
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ]
+                },
+                "@input": {
+                    "type": "string",
+                    "enum": ["compulsory", "optional", "false"]
+                },
+                "@output": {
+                    "type": "string",
+                    "enum": ["true", "false"]
+                },
+                "@sql.table": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "@id"
+            ],
+            "additionalProperties": false
+        },
+        "An@value": {
+            "type": "object",
+            "properties": {
+                "@value": {
+                    "type": "string"
+                },
+                "@type": {"$ref": "#/definitions/XsdType"},
+                "@documentation": {
+                    "type": "string"
+                },
+                "@examplar": {
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ]
+                },
+                "@input" : {
+                    "type": "string",
+                    "enum": ["compulsory", "optional", "false"]
+                },
+                "@output" : {
+                    "type": "string",
+                    "enum": ["true", "false"]
+                },
+                "@sql.type" : {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
+        }
+
+    },
+    "type": "object",
+    "properties": {
+        "var": {
+            "type": "object",
+            "patternProperties": {
+                "^(.*)$": { "$ref": "#/definitions/ValuesOrIds" }
+            }
+        },
+        "vargen": {
+            "type": "object"
+        },
+        "context": {
+            "$ref": "#/definitions/Context"
+        },
+        "template": {
+            "type":  ["string", "null"]
+        },
+        "@documentation": {
+            "type":  ["string", "null"]
+        }
+    },
+    "required": [
+        "var",
+        "context"
+    ],
+    "additionalProperties": false
+}

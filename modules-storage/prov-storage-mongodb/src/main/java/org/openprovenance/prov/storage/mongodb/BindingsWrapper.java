@@ -1,7 +1,7 @@
 package org.openprovenance.prov.storage.mongodb;
 
-import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
+import org.openprovenance.prov.template.json.Bindings;
 
-public class BindingsWrapper extends TypeWrapper<BindingsBean> {
+public class BindingsWrapper extends TypeWrapper<Bindings> {
 
 }

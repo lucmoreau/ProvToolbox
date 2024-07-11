@@ -37,12 +37,11 @@
     },
     "linked": {"input":  "output"},
     "context" : {
-        "plead": "https://plead-project.org/ns/plead#",
-        "uuid" : "urn:uuid:",
-        "xsd": "http://www.w3.org/2001/XMLSchema#",
-        "var": "http://openprovenance.org/var#",
-        "vargen": "http://openprovenance.org/vargen#",
-        "prov": "http://www.w3.org/ns/prov#"
+        "prov":   "${prov_ns}",
+        "uuid" :  "${uuid_ns}",
+        "var":    "${var_ns}",
+        "vargen": "${vargen_ns}",
+        "xsd":    "${xsd_ns}"
     },
     "template" : null
 }

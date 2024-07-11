@@ -1,3 +1,4 @@
+
 /**
  * ProvToolbox
  *
@@ -20,9 +21,11 @@
  *
  */
 
+const ELEMENTS = "__elements";
 
 
 class TemplateManager {
+
     constructor(logger, schemaUrl, docUrl, profileValue) {
         this.logger = logger;
         this.schemaUrl = schemaUrl;
@@ -68,8 +71,17 @@ class TemplateManager {
     populateBean(template, values) {
         var builder = this.builderTable[template];
         var bean = builder.newBean();
+        console.log("populateBean")
         for (const k in values) {
-            bean[k] = values[k];
+            if (k===ELEMENTS) {
+                var subBeans = [];
+                for (const i in values[k]) {
+                    subBeans.push(this.populateSubBean(values["type"], values[k][i]));
+                }
+                bean[k] = subBeans;
+            } else {
+                bean[k] = values[k];
+            }
         }
         console.log(bean);
         var csv = bean.process(builder.aArgs2CsVConverter);
@@ -77,16 +89,48 @@ class TemplateManager {
         return [csv,values]; // note: i am only exporting the populated values, as opposed to the whole bean
     }
 
+    populateSubBean(template, values) {
+        console.log("populateSubBean " + template )
+        console.log(values)
+        var builder = this.builderTable[template];
+        var bean = builder.newBean();
+        for (const k in values) {
+            bean[k] = values[k];
+        }
+        console.log(bean);
+        values["isA"]=builder.getName();
+        return bean; // note: i am only exporting the populated values, as opposed to the whole bean
+    }
 
 
     defaultSubmitFunction(myself, template, csv_location, json_location) {
         return function (errors, values) {
             console.log(values);
+            if (values[ELEMENTS]) {
+                values.count=values[ELEMENTS].length;
+            }
             let csv_bean = myself.populateBean(template, values);
             let csv=csv_bean[0];
             let bean=csv_bean[1];
             let name=bean["isA"];
             console.log(csv);
+            myself.setBean(bean);
+            if (values[ELEMENTS]) {
+                myself.getBean().count=values[ELEMENTS].length;
+                // also update the form
+
+                var elementById = document.getElementById("jsonform-1-elt-count");
+                if (elementById==null) {
+                    elementById = document.getElementById("jsonform-2-elt-count");
+                    if (elementById == null) {
+                        elementById = document.getElementById("jsonform-3-elt-count");
+                    }
+                }
+                if (elementById!=null) {
+                    elementById.value=values[ELEMENTS].length;
+                }
+
+            }
             if (csv_location) {
                 let csv_div = $('<div>');
                 csv_div.append('<p>' + csv + '</p>')
@@ -99,7 +143,7 @@ class TemplateManager {
 
             if (json_location) {
                 let json_div = $('<div>');
-                myself.setBean(bean);
+
                 json_div.append('<p>' + myself.syntaxHighlight_json(JSON.stringify(bean, null, 2), name) + '</p>');
                 if (errors) {
                     json_div.append('<p>Reported errors:</p>')
@@ -129,7 +173,7 @@ class TemplateManager {
             let compulsory=myprofile.compulsory.includes(property)
             if (myprofile==="ALL" || compulsory || myprofile.optional.includes(property)) {
                 if (compulsory) {
-                    schemaDef.properties[property].required=true;  // updates schema, and make property mandatory
+                    schemaDef.properties[property].required = true;
                 }
                 required.push({
                     "key": property,
@@ -145,10 +189,29 @@ class TemplateManager {
                 });
             }
         });
-        required.push({
-            "type": "submit",
-            "title": "Submit"
-        });
+
+        if (schemaDef.properties[ELEMENTS]) {
+            const nested_compulsory=myprofile.compulsory.filter(x => Array.isArray(x)).map(x => x[1])
+            $.each(schemaDef.properties[ELEMENTS].items.required, function (i, property) {
+                let compulsory=nested_compulsory.includes(property)
+                if (compulsory) {
+                    schemaDef.properties[ELEMENTS].items.properties[property].required = true;
+                }
+            });
+            const newSubProperties={}
+            $.each(schemaDef.properties[ELEMENTS].items.required, function (i, property) {
+                newSubProperties[property]=schemaDef.properties[ELEMENTS].items.properties[property]
+            });
+            schemaDef.properties[ELEMENTS].items.properties=newSubProperties;
+
+        }
+
+        if (false) {
+            required.push({
+                "type": "submit",
+                "title": "Submit"
+            });
+        }
         //console.log(schemaDef);
         //console.log(required)
         var config = {};

@@ -9,42 +9,43 @@ import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class Locations {
     final private String cli_src_dir;
-    final private TemplatesCompilerConfig configs;
+    final private TemplatesProjectConfiguration configs;
     final private String configurator_package;
     final private String logger_package;
     final private String configurator_package2;
-    public final String python_dir;
+    final private String l2p_src_dir;
     private String config_common_package;
     private String config_backend;
     private String config_integrator_package;
+    private String config_sql_common_backend_package;
+    private String config_sql_integration_backend_package;
+    public final String python_dir;
 
 
-    private final String compositeTableConfigurator;
 
 
 
 
-
-    static String INTEGRATOR="integrator";
-    static String CLIENT="client"; // FIXME: need to be able to rename
-    static String COMMON="common";
     static final String CONFIG2_EXTENSION = "2";
 
     public void updateWithConfig(TemplateCompilerConfig config) {
-        this.config_common_package     = config.package_+ "." + CLIENT + "." + COMMON;
-        this.config_integrator_package = config.package_+ "." + CLIENT + "." + INTEGRATOR;
+        if (config.package_==null) config.package_=configs.root_package;
+        this.config_common_package     = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_COMMON;
+        this.config_integrator_package = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_INTEGRATOR;
         this.config_backend            = config.package_;
+        this.config_sql_common_backend_package = config_backend + ".sql.common";
+        this.config_sql_integration_backend_package = config_backend + ".sql.integration";
     }
 
-    public Locations(TemplatesCompilerConfig configs, String cli_src_dir) {
+    public Locations(TemplatesProjectConfiguration configs, String cli_src_dir, String l2p_src_dir) {
         this.configs=configs;
         this.cli_src_dir=cli_src_dir;
-        this.compositeTableConfigurator=COMPOSITE + configs.tableConfigurator;
+        this.l2p_src_dir=l2p_src_dir;
         this.python_dir=configs.python_dir;
 
-        configurator_package=configs.configurator_package;
-        configurator_package2=configs.configurator_package+ CONFIG2_EXTENSION;
-        logger_package=configs.logger_package;
+        this.configurator_package  = configs.root_package + "." + Constants.SUB_PACKAGE_CLIENT + "." + CONFIGURATOR;
+        this.configurator_package2 = configs.root_package + "." + Constants.SUB_PACKAGE_CLIENT + "." + CONFIGURATOR + CONFIG2_EXTENSION;
+        this.logger_package        = configs.root_package + "." + Constants.SUB_PACKAGE_CLIENT + "." + SUB_PACKAGE_LOGGER;
 
     }
 
@@ -56,43 +57,61 @@ public class Locations {
     public String convertToDirectory(String aPackage) {
         return cli_src_dir + "/" + aPackage.replace('.', '/') + "/";
     }
+    public String convertToBackendDirectory(String aPackage) {
+        return l2p_src_dir + "/" + aPackage.replace('.', '/') + "/";
+    }
 
 
     public String getFilePackage(String file) {
-        if (file.equals(configs.logger)) {
-            return logger_package;
-        } else if (file.equals(configs.tableConfigurator)) {
-            return configurator_package;
-        } else if (file.equals(configs.tableConfigurator + WITH_MAP)) {
-            return configurator_package;
-        } else if (file.equals(compositeTableConfigurator)) {
-            return configurator_package;
-        } else if (file.equals(configs.beanProcessor)) {
-            return config_common_package;
-        } else if (file.equals(configs.templateBuilders)) {
-            return logger_package;
-        }
         switch (file) {
+            case SQL_BEAN_COMPLETER:
+            case SQL_BEAN_ENACTOR:
+            case SQL_ENACTOR_IMPLEMENTATION:
+            case SQL_COMPOSITE_BEAN_COMPLETER:
+            case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION:
+            case SQL_COMPOSITE_BEAN_ENACTOR:
+                return config_sql_common_backend_package;
+            case SQL_BEAN_COMPLETER3:
+            case SQL_ENACTOR_IMPLEMENTATION3:
+            case SQL_COMPOSITE_BEAN_ENACTOR3:
+            case SQL_COMPOSITE_BEAN_COMPLETER3:
+            case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3:
+            case SQL_BEAN_ENACTOR3:
+            case SQL_ENACTOR_CONFIGURATOR3:
+            case SQL_COMPOSITE_ENACTOR_CONFIGURATOR3:
+                return config_sql_integration_backend_package;
+            case LOGGER:
+            case TEMPLATE_BUILDERS:
+                return logger_package;
+
             case BEAN_ENACTOR2:
+            case BEAN_ENACTOR2_COMPOSITE:
             case TEMPLATE_INVOKER:
             case INPUT_OUTPUT_PROCESSOR:
             case QUERY_INVOKER2:
             case INPUT_PROCESSOR:
             case COMPOSITE_BEAN_COMPLETER2:
-            case TYPE_CONVERTER:
             case BEAN_CHECKER2:
             case BEAN_COMPLETER2:
+            case BEAN_COMPLETER3:
                 return config_integrator_package;
 
+            case TABLE_CONFIGURATOR:
+            case TABLE_CONFIGURATOR+"ForTypes":
+            case TABLE_CONFIGURATOR+WITH_MAP:
+            case TABLE_CONFIGURATOR+"ForTypes"+WITH_MAP:
             case CONVERTER_CONFIGURATOR:
             case BUILDER_CONFIGURATOR:
             case SQL_INSERT_CONFIGURATOR:
             case PROPERTY_ORDER_CONFIGURATOR:
+            case OUTPUTS_CONFIGURATOR:
+            case INPUTS_CONFIGURATOR:
             case SQL_CONFIGURATOR:
             case CSV_CONFIGURATOR:
             case ENACTOR_CONFIGURATOR:
             case COMPOSITE_ENACTOR_CONFIGURATOR:
             case RECORD_2_RECORD_CONFIGURATOR:
+            case COMPOSITE_TABLE_CONFIGURATOR:
                 return configurator_package;
 
             case COMPOSITE_ENACTOR_CONFIGURATOR2:
@@ -100,11 +119,13 @@ public class Locations {
 
                 return configurator_package2;
 
+            case TYPE_CONVERTER:
             case DELEGATOR:
             case BEAN_COMPLETER:
             case BEAN_CHECKER:
             case QUERY_INVOKER:
             case BEAN_ENACTOR:
+            case BEAN_PROCESSOR:
                 return config_common_package;
 
             case SQL_INTERFACE:

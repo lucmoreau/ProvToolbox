@@ -8,6 +8,8 @@ import org.openprovenance.prov.vanilla.QualifiedName;
 
 import java.io.IOException;
 
+import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
+
 
 final public class CustomKeySerializer extends StdSerializer<QualifiedName> {
 
@@ -23,7 +25,7 @@ final public class CustomKeySerializer extends StdSerializer<QualifiedName> {
     @Override
     public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         String s;
-        if (q.getPrefix()==null) {
+        if (q.getPrefix()==null || PROV_NS.equals(q.getNamespaceURI())) {
             s = q.getLocalPart();
         } else {
             s = q.getPrefix() + ":" + q.getLocalPart();

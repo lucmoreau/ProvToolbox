@@ -128,11 +128,14 @@ public class Field {
         put("org.openprovenance.prov.client.Builder[]", "List[Builder]");
         put("java.util.Map<java.lang.String, org.openprovenance.prov.client.Builder>", "Dict[str,Builder]"); // watch out: string representation with a space!!
         put("java.util.Map<java.lang.String, org.openprovenance.prov.client.ProcessorArgsInterface<?>>", "Dict[str,ProcessorArgsInterface]");
+        put("java.util.Map<java.lang.String, org.openprovenance.prov.client.ProcessorArgsInterface<java.lang.String>>", "Dict[str,ProcessorArgsInterface]");
+
     }};
 
     static final java.util.Map<String, String[]> typeToImportsTable = new java.util.HashMap<>() {{
         put("org.openprovenance.prov.client.Builder[]", new String[] {"from typing import List", "from org.openprovenance.prov.client.Builder import Builder"});
         put("java.util.Map<java.lang.String, org.openprovenance.prov.client.Builder>", new String[] {"from typing import Dict"});
         put("java.util.Map<java.lang.String, org.openprovenance.prov.client.ProcessorArgsInterface<?>>", new String[] {"from org.openprovenance.prov.client.ProcessorArgsInterface import ProcessorArgsInterface"});
+        put("java.util.Map<java.lang.String, org.openprovenance.prov.client.ProcessorArgsInterface<java.lang.String>>", new String[] {"from org.openprovenance.prov.client.ProcessorArgsInterface import ProcessorArgsInterface"});
     }};
 }

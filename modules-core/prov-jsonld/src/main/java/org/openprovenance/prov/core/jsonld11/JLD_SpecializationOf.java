@@ -12,9 +12,9 @@ public interface JLD_SpecializationOf extends HasKind {
 
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getGeneralEntity();
+    QualifiedName getGeneralEntity();
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getSpecificEntity();
+    QualifiedName getSpecificEntity();
 
 }

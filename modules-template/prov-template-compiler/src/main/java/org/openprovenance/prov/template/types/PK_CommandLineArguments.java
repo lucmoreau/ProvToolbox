@@ -56,14 +56,14 @@ public class PK_CommandLineArguments {
                 .argName("file")
                 .required()
                 .hasArg()
-                .desc("use given file as input")
+                .desc("use the given file as input")
                 .longOpt(INFILE)
                 .build();
 
         Option outfile = Option.builder("o")
                 .argName("file")
                 .hasArg()
-                .desc("use given file as output")
+                .desc("use the given file as output")
                 .longOpt(OUTFILE)
                 .build();
 

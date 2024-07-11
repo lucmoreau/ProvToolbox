@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="utf-8"/>
+    <title>${form.dashboard.title}</title>
+    <link rel="stylesheet" href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.css" />
+    <link rel="stylesheet" href="${service.context}/webjars/${the.template.library}/${project.version}/css/provtemplate.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="${service.context}/webjars/font-awesome/${webjars.fontawesome.version}/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css"  href="${service.context}/webjars/swagger-ui/${webjars.swagger-ui.version}/swagger-ui.css" >
+    <link rel="icon"       type="image/png" href="${service.context}/webjars/swagger-ui/${webjars.swagger-ui.version}/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon"       type="image/png" href="${service.context}/webjars/swagger-ui/${webjars.swagger-ui.version}/favicon-16x16.png" sizes="16x16" />
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+
+<body>
+<script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+<script src="${service.context}/webjars/datatables.net/${webjars.datatables.version}/js/jquery.dataTables.min.js" type="text/javascript" charset="utf8" ></script>
+<script src="${service.context}/webjars/JSV/lib/jsv.js"></script>
+<script src="${service.context}/webjars/underscore/${webjars.underscore.version}/underscore.js"></script>
+<script src="${service.context}/webjars/jsonform/lib/jsonform.js"></script>
+<script src="${service.context}/webjars/jsonform/deps/opt/jquery-ui.js"></script>
+<script src="${service.context}/webjars/jquery-csv/${webjars.jquery.csv.version}/src/jquery.csv.js"></script>
+
+
+<script src="${service.context}/webjars/j4ts/${webjars.j4ts.version}/bundle.js"></script>
+
+
+<script src="${service.context}/webjars/${the.template.library}/${project.version}/js/bundle.js"></script>
+<script src="${service.context}/webjars/${the.template.library}/${project.version}/js/TemplateManager.js"></script>
+
+<style>
+    .container {
+        min-width:1200px;
+        width: auto !important;
+        width:1500px;
+    }
+    .shared_var {
+        color: blue;
+    }
+</style>
+
+<div class="container">
+    <div class="row header">
+        <div class="col-lg-12 text-left">
+            <h3>${form.dashboard.title}</h3>
+        </div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a href="#tab_compose" data-toggle="pill" class="nav-link show active" role="tab" id="composer-lnk">Composer</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_documentation" data-toggle="pill" class="nav-link" role="tab">Documentation</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_csv_log" data-toggle="pill" class="nav-link" role="tab">CSV Logger</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_browser" data-toggle="pill" class="nav-link" role="tab">Browser</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_navigator" data-toggle="pill" class="nav-link" role="tab">Navigator</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_expand" data-toggle="pill" class="nav-link" role="tab">Expand</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_api" data-toggle="pill" class="nav-link" role="tab">API</a>
+            </li>
+
+
+
+
+        </ul>
+
+        <div class="tab-content" id="all-tab-contents">
+            <div id="tab_compose" class="tab-pane active" role="tabpanel">
+                <div class="col-lg-2">
+                    <div id="template-dropdown-composer">
+                        <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="template-dropdown-composer-lnk">PLEAD Templates</a>
+                    </div>
+                </div>
+                <div class="col-lg-4 first-column">
+                    <div id="template-form">
+                        <form></form>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <h4>CSV encoding</h4>
+                    <pre id="csv_result"><p> </p></pre>
+                    <p> </p>
+                    <h4>JSON encoding</h4>
+                    <pre id="json_result" class="pretty">
+                    </pre>
+                </div>
+                <div class="col-sm-3">
+                    <button id="button-submit-json" type="button" class="btn btn-warning" onclick="submitEnactor(true)">Submit (json)</button>
+                    <button id="button-submit-csv" type="button" class="btn btn-warning" onclick="submitEnactor(false)">Submit (csv)</button>
+                    <button id="button-clear" type="button" class="btn btn-info" onclick="enactClear()">Clear</button>
+                    <h4>Submission Result</h4>
+                    <pre id="enact_result" class="pretty"> </pre>
+                    <p id="prov_link"></p>
+                </div>
+            </div>
+
+            <div id="tab_documentation" class="tab-pane" role="tabpanel">
+                <div class="col-lg-2">
+                    <div id="template-dropdown-documentation">
+                        <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">PLEAD Templates</a>
+                    </div>
+                </div>
+                <div class="col-lg-7 first-column">
+                    <div id="documentation">
+                    </div>
+                    <div id="documentation_image">
+                    </div>
+                    <div id="tmp_div" class="invisible_div">
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="tab_csv_log" class="tab-pane" role="tabpanel">
+                <pre id="csv_log"></pre>
+            </div>
+
+            <div id="tab_browser" class="tab-pane" role="tabpanel">
+                <div class="col-lg-2">
+                    <label for="browser_base_relation">Base relation:</label><input type="text" id="browser_base_relation" class="form-control" value="activity">
+                    <label for="browser_from_date">From date:</label><input type="datetime-local" id="browser_from_date" class="form-control" >
+                    <label for="browser_to_date">To date:</label><input type="datetime-local" id="browser_to_date" class="form-control" >
+                    <label for="browser_limit"></label><input type="number" id="browser_limit" class="form-control" value="10">
+
+                    <p></p>
+                    <button id="browser-refresh" type="button" class="btn btn-info" onclick="submitBrowse()">Refresh</button>
+                    <button id="browser-clear" type="button" class="btn btn-warning" onclick="clearBrowse()">Clear</button>
+
+                </div>
+                <div class="col-lg-10 first-column">
+                    <table id="browser_list"
+                           class="display"
+                           style="width:80%">
+
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab_navigator" class="tab-pane" role="tabpanel">
+                <div class="col-lg-2">
+                    <label for="navigator-id"></label><input type="number" id="navigator-id" class="form-control" value="8">
+                    <label for="navigator-template"></label><input type="text" id="navigator-template" class="form-control" value="plead_approving">
+                    <label for="navigator-property"></label><input type="text" id="navigator-property" class="form-control" value="approved_pipeline">
+                    <p></p>
+                    <p></p>
+
+                    <button id="navigator-refresh" type="button" class="btn btn-info" onclick="submitNavigate('#navigator-div')">Refresh</button>
+                </div>
+                <div class="col-lg-10 first-column" id="navigator-div">
+                </div>
+            </div>
+
+            <div id="tab_api" class="tab-pane" role="tabpanel">
+
+                <div class="row">
+
+                    <div class="spancol-sm-8" style="margin-top:80px;margin-bottom:50px">
+
+                        <div id="swagger-ui"></div>
+
+                        <div id="swagger-ui2"></div>
+
+                    </div>
+                </div>
+
+
+                <script src="${service.context}/webjars/swagger-ui/${webjars.swagger-ui.version}/swagger-ui-bundle.js"> </script>
+                <script src="${service.context}/webjars/swagger-ui/${webjars.swagger-ui.version}/swagger-ui-standalone-preset.js"> </script>
+                <script type="text/javascript">
+                    var myUrl=document.URL;
+                    console.log("myUrl");
+                    console.log(myUrl);
+                    // delete the substring that follows # in the URL
+                    myUrl=myUrl.substring(0, myUrl.lastIndexOf('#'));
+                    // delete the substring that follows the last / in the URL
+                    myUrl=myUrl.substring(0, myUrl.lastIndexOf('/'));
+
+                    myApiUrl=myUrl.concat("/provapi/openapi.json");
+                    //myApiUrl2=myUrl.replace("/api.html","/resources/openapi.json");
+                    //myApiUrl=myUrl.replace("/view/api","/luc.yaml");
+
+                    console.log("myApiUrl");
+                    console.log(myApiUrl);
+
+                    window.onload = function() {
+
+                        // Build a system
+                        const ui = SwaggerUIBundle({
+                            url:myApiUrl,
+                            //urls: [{url: myApiUrl, name: "PROV API"}, {url: myApiUrl2, name: "Resources"}],
+                            dom_id: '#swagger-ui',
+                            deepLinking: true,
+                            presets: [
+                                SwaggerUIBundle.presets.apis,
+                                SwaggerUIStandalonePreset
+                            ],
+                            plugins: [
+                                SwaggerUIBundle.plugins.DownloadUrl
+                            ],
+                            layout: "StandaloneLayout"
+                        })
+
+
+                        window.ui = ui
+                    }
+                </script>
+            </div>
+
+            <div id="tab_expand" class="tab-pane" role="tabpanel">
+
+                <div class="col-sm-8" style="text-align:center;margin-top:80px;margin-bottom:50px">
+                    <form action="${service.context}/provapi/documents_form/" method="post" enctype="multipart/form-data">
+                        <style type="text/css">
+                            .input-append .btn .dropdown-toggle {
+                                float: none;
+                            }
+                        </style>
+                        <div style="text-align:left;">
+                            <table style="margin-left: auto; margin-right: auto;">
+                                <tr>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td rowspan="3">
+                                        <input type="submit"   value="jsonld" name="expand"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+                                        <input type="submit"   value="json"   name="expand"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+                                        <input type="submit"   value="provx"  name="expand"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+                                        <input type="submit"   value="provn"  name="expand"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+                                        <input type="submit"   value="svg"    name="expand"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Template</td>
+                                    <td>
+                                        <div class="input-append btn-group">
+                                            <input id="the-url-input" type="text" name="url" class="input-large" style="width:315px; height: 30px"  />
+
+                                            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                                                <span class="caret"></span>
+                                            </a>
+
+
+                                            <ul class="dropdown-menu">
+                                                <li>Templates</li>
+                                                <!--
+                                                <li><a href="#" onclick="updateRootURLInputBox('${service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1.provn')">
+                                                    <i class="icon-ok"></i>  generic.binaryop (old)</a>
+                                                </li>
+                                                -->
+                                                <li><a href="#" onclick="updateRootURLInputBox('${service.context}/webjars/prov-template-library/${project.version}/templates/org/openprovenance/prov/templates/generic/binaryop.provn')">
+                                                    <i class="icon-ok"></i>  generic/binaryop</a>
+                                                </li>
+
+                                                <li class="divider"></li>
+                                                <li><a href="#" onclick="updateURLInputBox('')"><i class="icon-trash"></i> Clear</a></li>
+                                            </ul>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Bindings</td>
+                                    <td>
+                                        <textarea id="the-bindings-input" rows="10" name="statements" placehoder="Set of bindings in json format" style="width:350px; "></textarea>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Examples</td>
+                                    <td>
+                                        <div class="input-append btn-group">
+
+                                            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                                                <span class="caret"></span>
+                                            </a>
+
+                                            <ul class="dropdown-menu">
+                                                <li>Bindings Examples</li>
+                                                <li><a href="#" onclick="updateRootBindingsBox('${service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b1.json')">
+                                                    <i class="icon-ok"></i>  generic.binaryop.b1 (1 output)</a>
+                                                </li>
+                                                <li><a href="#" onclick="updateRootBindingsBox('${service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b2.json')">
+                                                    <i class="icon-ok"></i>  generic.binaryop.b2 (2 outputs)</a>
+                                                </li>
+                                                <li><a href="#" onclick="updateRootBindingsBox('${service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b3.json')">
+                                                    <i class="icon-ok"></i>  generic.binaryop.b3 (1 output, 2 properties)</a>
+                                                </li>
+                                                <li><a href="#" onclick="updateRootBindingsBox('${service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b4.json')">
+                                                    <i class="icon-ok"></i>  generic.binaryop.b4 (2 outputs, 1 or 2 properties)</a>
+                                                </li>
+
+                                                <li class="divider"></li>
+                                                <li><a href="#" onclick="updateBindingsBoxupdateBindingsBox('')"><i class="icon-trash"></i> Clear</a></li>
+                                            </ul>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function diff (arr1, arr2) {
+        return arr1.filter(x => !arr2.includes(x));
+    }
+
+    function constructMenusConfiguration() {
+        let profile = {}
+        for (var indx in builders) {
+            const builder = builders[indx]
+            let name = builder.getName()
+            if (typeof builder.getCompulsoryInputs !== "undefined") { //not selecting composite
+                let compusolryFields = ["isA"].concat(builder.getCompulsoryInputs());
+                let optionalFields = diff(builder.getInputs(), builder.getCompulsoryInputs());
+                profile[name] = {
+                    compulsory: compusolryFields,
+                    optional: optionalFields
+                }
+            } else {
+                console.log("composite " + name)
+                profile[name] = {
+                    compulsory: ["isA","__elements"],
+                    optional: diff(builder.getPropertyOrder(), ["isA"])
+                }
+                profile[name].compulsory=profile[name].compulsory.concat(profile["plead_transforming"].compulsory.map(x => ["__element", x]));
+            }
+        }
+        //console.log(profile)
+        return profile;
+    }
+
+
+
+    const MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON = "application/vnd.kcl.prov-template+json";
+    const MEDIA_TYPE_TEXT_CSV = "text/csv";
+
+    const HTML_ANCHOR_ENACT_RESULT_BOX = '#enact_result';
+    const HTML_ANCHOR_JSON_RESULT = '#json_result';
+    const HTML_ANCHOR_CSV_RESULT = '#csv_result';
+    const HTML_ANCHOR_CSV_LOG = '#csv_log';
+    const HTML_ANCHOR_ENACT_RESULT_PROV_LINK = '#prov_link';
+    const HTML_ANCHOR_DOCUMENTATION_IMAGE = '#documentation_image';
+    const HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER = "#template-dropdown-composer";
+    const HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN = "#template-dropdown-documentation";
+
+    const SUBMISSION_URL = '${service.context}/provapi/statements/';
+    const SCHEMA_URL = "${service.context}/webjars/${the.template.library}/${project.version}/schema/schema${the.template.sublibrary}.json";
+    const DOC_URL = "${service.context}/webjars/${the.template.library}/${project.version}/html/doc${the.template.sublibrary}.html";
+
+    const logger=new org.openprovenance.prov.template.library.plead.client.logger.Logger();
+    const builders=logger.getBuilders()
+    const profile = constructMenusConfiguration();
+
+    console.log(profile)
+
+
+    function submitEnactor(jsonSubmit) {
+        $(HTML_ANCHOR_ENACT_RESULT_BOX).html($('<p>'));
+        $(HTML_ANCHOR_ENACT_RESULT_BOX).attr('received','false');
+        submitService(jsonSubmit, SUBMISSION_URL, HTML_ANCHOR_ENACT_RESULT_BOX, HTML_ANCHOR_CSV_LOG, HTML_ANCHOR_ENACT_RESULT_PROV_LINK, true,true)
+    }
+
+
+
+    var alreadySeen=[]
+
+    function createProvLink(name, ID) {
+        return "Link to Provenance <a target='_blank' href='${service.context}/provapi/template/" + name + "/" + ID + ".svg'   >(svg)</a>,"
+                               + " <a target='_blank' href='${service.context}/provapi/template/" + name + "/" + ID + ".provn' >(provn)</a>,"
+                               + " <a target='_blank' href='${service.context}/provapi/template/" + name + "/" + ID + ".jsonld'>(jsonld)</a>";
+    }
+
+    function submitService(jsonSubmit, url, anchor_result_box, anchor_csv, anchor_result_prov_link, enactorp, allRecordsp) {
+        console.log("submitService")
+
+        let csv_data=$(HTML_ANCHOR_CSV_RESULT).text()
+        const input_bean = tm.getBean();
+        const __elements=input_bean.__elements;
+        let json_data=JSON.stringify(alreadySeen.concat([input_bean]))
+        if (allRecordsp) alreadySeen=[]
+        console.log("submitService " + json_data);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+            $(anchor_result_box).html("error with " + event);
+
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+            $(anchor_result_box).html("abort with " + event);
+        };
+        xhr.onload= function() {
+            console.log("loaded " + xhr.status);
+            if (xhr.status === 400 || xhr.status === 404) {
+                $(anchor_result_box).html("status code " + xhr.status + " " + xhr.responseText);
+            } else if (!enactorp && (xhr.status === 200)) {
+                $(anchor_result_box).html('<i class="fa fa-check"></i>' + "Passed Validator!");
+            } else {
+                const parsed = JSON.parse(xhr.responseText);
+                let name=parsed[0]["isA"];
+                if (__elements) {
+                    // this is a compositive bean, get the type from the input bean
+                    parsed[0].type=input_bean.type;
+                }
+                let highlighted=tm.syntaxHighlight_json(JSON.stringify(parsed, null, 2), name)
+                $(anchor_result_box).html(highlighted);
+                if (anchor_csv) {
+                    let merged= {...input_bean, ...parsed[0]}
+                    let csv_bean=tm.populateBean(name, merged)
+                    // if we want json log
+                    //      $(id2).append(JSON.stringify(merged, null, 2));
+                    // if we want csv log
+                    $(anchor_csv).append("<p>").append(csv_bean[0]).append("</p>");
+                }
+                if (anchor_result_prov_link) {
+                    let ID=parsed[0]["ID"];
+                    let prov_link = createProvLink(name, ID);
+                    $(anchor_result_prov_link).html(prov_link);
+                }
+            }
+            $(anchor_result_box).attr('received','true');
+        }
+
+        // Currently, the server does not support the csv format in the result
+        if (true) {
+            xhr.setRequestHeader("Accept", MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON);
+        } else {
+            xhr.setRequestHeader("Accept", MEDIA_TYPE_TEXT_CSV);
+        }
+
+        if (jsonSubmit) {
+            xhr.setRequestHeader("Content-Type", MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON);
+        } else {
+            xhr.setRequestHeader("Content-Type", MEDIA_TYPE_TEXT_CSV);
+        }
+
+        console.log("submitService " + jsonSubmit);
+
+        if (jsonSubmit) {
+            xhr.send(json_data);
+        } else {
+            xhr.send(csv_data);
+        }
+    }
+
+    function enactClear() {
+        $(HTML_ANCHOR_ENACT_RESULT_BOX).html("");
+        $(HTML_ANCHOR_ENACT_RESULT_PROV_LINK).html("");
+    }
+
+    function clearBrowse() {
+        //$('#browser_list').DataTable().clear().destroy();
+        $('#browser_from_date').val("");
+        $('#browser_to_date').val("");
+        $('#browser_base_relation').val("activity");
+        $('#browser_limit').val("10");
+    }
+
+    function submitBrowse() {
+        //let url = "http://localhost:7072/ptl/provapi/templates/records"
+        let url = "${service.context}/provapi/templates/records"
+        console.log("submitBrowse " + url)
+        let id = '#browser_list'
+        let from_date = $('#browser_from_date').val()
+        let to_date = $('#browser_to_date').val()
+        let limit = $('#browser_limit').val()
+
+        // if from_date is not empty string, replace by null
+        if (from_date === "") {
+            from_date = null
+        }
+        // if to_date is not empty string, replace by null
+        if (to_date === "") {
+            to_date = null
+        }
+
+
+
+        let search_config = {
+            base_relation: $('#browser_base_relation').val(),
+            from_date: from_date,
+            to_date: to_date,
+            limit: limit
+        }
+        let json_data=JSON.stringify(search_config)
+        console.log("submitBrowse " + json_data)
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+        };
+        xhr.onload= function (contents) {
+            let contents2 = xhr.responseText;
+            var data = $.csv.toArrays(contents2);
+            data.shift()
+            var columns = data[0];
+            var titles = $.map(columns, function (column) {
+                return {"title": column}
+            })
+            console.log(titles)
+            data.shift()
+
+            $(id).DataTable({
+                destroy: true,
+                "data": data,
+                "columns": titles,
+                order: [[1, 'desc']]
+            });
+        }
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(json_data);
+
+    }
+
+    function submitNavigate(id) {
+        //let url = "http://localhost:7072/ptl/provapi/templates/viz"
+        let url = "${service.context}/provapi/templates/viz"
+        let template=$('#navigator-template').val();
+        let property=$('#navigator-property').val();
+        let template_id=$('#navigator-id').val();
+
+        console.log("submitNavigate " + template + " " + property + " " + id)
+
+        let config = {
+            template: template,
+            property: property,
+            id: template_id
+        }
+
+        let json_data=JSON.stringify(config)
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+        };
+        xhr.onload= function() {
+            const response = xhr.responseText;
+            console.log("loaded " + xhr.status);
+            $(id).html(response);
+        }
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Accept", "image/svg+xml");
+        xhr.send(json_data);
+
+
+    }
+
+
+    let imageNameMapper = {
+        "plead_transforming": "plead-transforming",
+        "plead_filtering": "plead-filtering",
+        "plead_training": "plead-training",
+        "plead_validating": "plead-validating",
+        "plead_approving": "plead-approving",
+        "plead_splitting": "plead-splitting"
+    };
+
+    const tm=new TemplateManager(logger,SCHEMA_URL,DOC_URL,profile);
+    tm.setCsvResult(HTML_ANCHOR_CSV_RESULT);
+    tm.setJsonResult(HTML_ANCHOR_JSON_RESULT);
+    tm.setImageUrlPrefix('${image.url.prefix}');
+    tm.setImageLocation(HTML_ANCHOR_DOCUMENTATION_IMAGE);
+    tm.setFilenameConverter(imageNameMapper)
+    tm.createDropdownForPlayground(HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER, "tm");
+    tm.createDropdownForDocumentation(HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN, "tm");
+
+
+
+</script>
+<script src="provservice.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/dropdown.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/tab.js"></script>
+<script>
+    $('.dropdown-toggle').dropdown();
+</script>
+</body>
+</html>

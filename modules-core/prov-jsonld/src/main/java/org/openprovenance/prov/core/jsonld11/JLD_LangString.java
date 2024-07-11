@@ -9,11 +9,10 @@ import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface JLD_LangString {
 
-
     @JsonProperty(Constants.PROPERTY_STRING_VALUE)
-    public String getValue();
+    String getValue();
 
     @JsonProperty(Constants.PROPERTY_STRING_LANG)
-    public String getLang();
+    String getLang();
 
 }

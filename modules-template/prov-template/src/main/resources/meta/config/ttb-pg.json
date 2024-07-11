@@ -1,0 +1,41 @@
+{
+    "template_path": ["generated-templates/org/openprovenance/prov/templates/generic", "src/main/resources/meta/metatemplates"],
+    "bindings_path": ["src/main/resources/meta/pg-bindings"],
+    "output_dir": "generated-templates/org/openprovenance/prov/templates/pg",
+
+    "variableMaps": ["./common-ns.json"],
+
+    "tasks": [
+        {
+            "type": "expansion",
+            "input": "operation.provn",
+            "output": "pg-capturing",
+            "bindings": "pg-capturing.json",
+            "formats": ["provn", "png"],
+            "hasProvenance": "prov-pg-capturing.prov-csv"
+
+        },
+        {
+            "type": "expansion",
+            "input": "operation.provn",
+            "output": "pg-dropping",
+            "bindings": "pg-dropping.json",
+            "formats": ["provn", "png"],
+            "hasProvenance": "prov-pg-dropping.prov-csv"
+
+        },
+        {
+            "type": "expansion",
+            "input": "operation.provn",
+            "output": "pg-ballcollecting",
+            "bindings": "pg-ballcollecting.json",
+            "formats": ["provn", "png"],
+            "hasProvenance": "prov-pg-ballcollecting.prov-csv"
+
+        }
+    ]
+
+
+}
+
+

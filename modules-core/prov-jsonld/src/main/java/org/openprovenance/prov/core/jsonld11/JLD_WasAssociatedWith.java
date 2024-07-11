@@ -11,14 +11,14 @@ import org.openprovenance.prov.model.QualifiedName;
 public interface JLD_WasAssociatedWith extends JLD_Generic2, HasRole {
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getAgent();
+    QualifiedName getAgent();
 
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getActivity();
+    QualifiedName getActivity();
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getPlan();
+    QualifiedName getPlan();
 
 
 }

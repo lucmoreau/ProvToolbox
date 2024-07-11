@@ -32,4 +32,20 @@ wfl:
 PTM_EXPAND=../../modules-executable/toolbox/target/appassembler/bin/ptm-expand
 
 test.ptm:
-	$(PTM_EXPAND) src/main/resources/meta/config/config-ptm.json
+	$(PTM_EXPAND) `pwd`/target -configs src/main/resources/meta/config/ttb-generic.json
+	$(PTM_EXPAND) `pwd`/target -configs src/main/resources/meta/config/ttb-plead.json
+	$(PTM_EXPAND) `pwd`/target -configs src/main/resources/meta/config/ttb-ptm.json
+	$(PTM_EXPAND) `pwd`/target -configs src/main/resources/meta/config/ttb-pg.json
+
+BINDINGS_SCHEMA_FILE=src/main/resources/jsonschema/bindings-schema.json
+TTF_SCHEMA_FILE=src/main/resources/jsonschema/ttf-schema.json
+
+#extracted for book
+test.schema:
+	ajv -s $(SCHEMA_FILE) -d $(FILE)
+
+test.schema1:
+	$(MAKE) FILE=src/test/resources/bindings/b21.json SCHEMA_FILE=$(BINDINGS_SCHEMA_FILE) test.schema
+
+test.ttf1:
+	$(MAKE) FILE=src/main/resources/meta/config/config-generic.json SCHEMA_FILE=$(TTF_SCHEMA_FILE) test.schema

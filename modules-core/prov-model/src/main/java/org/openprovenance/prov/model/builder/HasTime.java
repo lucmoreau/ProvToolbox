@@ -12,6 +12,11 @@ public interface HasTime<T extends GenericBuilder<T>> {
         setTime(time);
         return (T) this;
     }
+
+    default T time(String t) {
+        setTime(pf().newISOTime(t));
+        return(T) this;
+    }
     default T now() {
         setTime(pf().newTimeNow());
         return(T) this;

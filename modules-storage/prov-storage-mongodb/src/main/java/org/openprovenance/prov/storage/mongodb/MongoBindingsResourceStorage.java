@@ -3,10 +3,10 @@ package org.openprovenance.prov.storage.mongodb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
+import org.openprovenance.prov.template.json.Bindings;
 
 
-public class MongoBindingsResourceStorage extends MongoGenericResourceStorage<BindingsBean> implements Constants {
+public class MongoBindingsResourceStorage extends MongoGenericResourceStorage<Bindings> implements Constants {
 
 
 
@@ -16,11 +16,11 @@ public class MongoBindingsResourceStorage extends MongoGenericResourceStorage<Bi
 
     public MongoBindingsResourceStorage(String dbname, ObjectMapper mapper) {
 
-        super(dbname,COLLECTION_BINDINGS, mapper, BindingsBean.class, BindingsWrapper::new);
+        super(dbname,COLLECTION_BINDINGS, mapper, Bindings.class, BindingsWrapper::new);
     }
     public MongoBindingsResourceStorage(String host, String dbname, ObjectMapper mapper) {
 
-        super(host, dbname,COLLECTION_BINDINGS, mapper, BindingsBean.class, BindingsWrapper::new);
+        super(host, dbname,COLLECTION_BINDINGS, mapper, Bindings.class, BindingsWrapper::new);
     }
 
 }

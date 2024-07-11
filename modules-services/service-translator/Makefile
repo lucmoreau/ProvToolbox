@@ -6,13 +6,13 @@ tomcat:
 	mvn tomcat7:run -Ptomcat  -X
 
 
-build.docker:
-	mvn clean install -Ptomcat,hsqldb,docker
+#build.docker:
+#	mvn clean install -Ptomcat,hsqldb,docker
 
 
 # will run on port 7070 as per root pom.xml
 jetty:
-	 mvn jetty:run-war -Pjetty
+	 export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TRANSLATOR}; mvn jetty:run-war -Pjetty
 
 jetty.post:
 	 mvn -Ppostgres jetty:run
@@ -58,47 +58,6 @@ xslt:
 
 
 
-# release 0.7.1
-
-## to prepare a war file, postgresql backend, deployable on tomcat (home, smurf, pat)
-## run the following build.test.jetty
-### and then run deploy.pat (or equivalent on gaston)
-build.test.jetty.postgres:
-	mvn clean install -Pjetty,postgres,global
-
-build.test.tomcat.postgres:
-	mvn clean install -Ptomcat,postgres,global
-
-build.test.jetty.hsqldb:
-	mvn clean install -Pjetty,hsqldb,global
-
-build.test.tomcat.hsqldb:
-	mvn clean install -Ptomcat,hsqldb,global
-
-build.test.all:
-	$(MAKE) build.test.tomcat.hsqldb
-	$(MAKE) build.test.tomcat.postgres
-	$(MAKE) build.test.jetty.hsqldb
-	$(MAKE) build.test.jetty.postgres
-
-WHAT=prov-service-0.7.1-SNAPSHOT
-deploy:
-	curl --upload-file target/$(WHAT).war "http://prov:prov2012@provenance.ecs.soton.ac.uk:7000/manager/deploy?path=/$(WHAT)&update=true"
-
-deploy.smurf:
-	mvn clean install -Ptomcat,postgres,global
-	curl --upload-file target/$(WHAT).war "http://prov:prov2012@smurf.ecs.soton.ac.uk:7000/manager/text/deploy?path=/$(WHAT)&update=true"
-
-deploy.gaston:
-	curl --upload-file target/$(WHAT).war "http://admin:admin@localhost:7000/manager/text/deploy?path=/$(WHAT)&update=true"
-
-deploy.pat:
-	curl --upload-file target/$(WHAT).war "http://prov:prov2012@provenance.ecs.soton.ac.uk:18080/manager/text/deploy?path=/$(WHAT)&update=true"
-
-deploy.dev:
-	curl --upload-file target/$(WHAT).war "http://prov:prov2012@prov-dev.ecs.soton.ac.uk:7000/manager/html/deploy?path=/$(WHAT)&update=true"
-
-
 
 FILE_TO_POST=$(HOME)/luc-svn/prov-book/application/datajournalism.provn
 MIME_TYPE=text/provenance-notation; charset=UTF-8
@@ -139,49 +98,6 @@ post_template:
 post_bindings:
 	@curl $(PASSWD) -D - -H "Content-Type: $(MIME_TYPE)" -X POST --data-binary @$(FILE_TO_POST) $(HTTP_SERVICE)/ptm/bindings/
 
-tmpl1:
-	@$(MAKE) -s FILE_TO_POST="resources/template-attribution.provn" MIME_TYPE="text/provenance-notation" post_template > resources/header-t1.txt
-	@cat resources/header-t1.txt
-	@cat resources/header-t1.txt |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-t1.txt
-	@cat resources/location-t1.txt
-	@$(MAKE)  SERVICE=$(SERVICE) -s gt1
-
-tmpl2:
-	@$(MAKE) -s FILE_TO_POST="resources/test-template.provn" MIME_TYPE="text/provenance-notation" post_template > resources/header-t2.txt
-	@cat resources/header-t2.txt
-	@cat resources/header-t2.txt |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-t2.txt
-	@cat resources/location-t2.txt
-	@$(MAKE) SERVICE=$(SERVICE) -s gt2
-
-tmpl3:
-	@$(MAKE) SERVICE=$(SERVICE) -s FILE_TO_POST="src/main/resources/templates/put-named-document.provn" MIME_TYPE="text/provenance-notation" post_template > resources/header-t3.txt
-	@cat resources/header-t3.txt
-	@cat resources/header-t3.txt |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-t3.txt
-	@cat resources/location-t3.txt
-	@$(MAKE) SERVICE=$(SERVICE) -s gt3
-
-tmpl4:
-	@$(MAKE) SERVICE=$(SERVICE) -s FILE_TO_POST="src/main/resources/templates/post-document.provn" MIME_TYPE="text/provenance-notation" post_template > resources/header-t4.txt
-	@cat resources/header-t4.txt
-	@cat resources/header-t4.txt |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-t4.txt
-	@cat resources/location-t4.txt
-	@$(MAKE) SERVICE=$(SERVICE) -s gt4
-
-
-bind1:
-	@$(MAKE) SERVICE=$(SERVICE) -s FILE_TO_POST="resources/bindingsCheneyTRENDDB09.provn" MIME_TYPE="text/provenance-notation" post_bindings > resources/header-b1.txt
-	@cat resources/header-b1.txt
-	@cat resources/header-b1.txt |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-b1.txt
-	@cat resources/location-b1.txt
-	@$(MAKE) -s gb1
-
-bind2:
-	@$(MAKE) -s FILE_TO_POST="resources/bindingsMoreauOPM101.provn" MIME_TYPE="text/provenance-notation" post_bindings > resources/header-b2.txt
-	@cat resources/header-b2.txt
-	@cat resources/header-b2.txt |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-b2.txt
-	@cat resources/location-b2.txt
-	@$(MAKE) SERVICE=$(SERVICE) -s gb2
-
 
 gt1.type:
 	@cat resources/location-t1.txt
@@ -221,42 +137,6 @@ get_document:
 	@curl $(PASSWD) -D -  -X GET $(DOCUMENT)$(DOCUMENT_TYPE)
 
 
-
-
-log1:
-	@$(MAKE) -s FILE_TO_POST="resources/plps-log-template.provn" MIME_TYPE="text/provenance-notation" post_template > resources/header-l1.txt
-	@cat resources/header-l1.txt
-	@cat resources/header-l1.txt |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-l1.txt
-	@cat resources/location-l1.txt
-
-log2:
-	@$(MAKE) -s FILE_TO_POST="resources/bindings-plps-log1.provn" MIME_TYPE="text/provenance-notation" post_bindings > resources/header-l2.txt
-	@cat resources/header-l2.txt
-	@cat resources/header-l2.txt |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-l2.txt
-	@cat resources/location-l2.txt
-
-exlog1:
-	$(MAKE) TEMPLATE=`cat resources/location-l1.txt | sed -e 's/http:\/\/$(SERVICE)\/ptm\/templates\///'` BINDING=`cat resources/location-l2.txt | sed -e 's/http:\/\/$(SERVICE)\/ptm\/bindings\///'` MIME_TYPE="text/provenance-notation" expansion
-
-
-post_idoc1:
-	@curl  $(PASSWD) -D - -H "Content-Type: $(MIME_TYPE)" -X POST $(HTTP_SERVICE)/ptm/idocuments/ > resources/header-i1.txt
-	@cat resources/header-i1.txt
-	@cat resources/header-i1.txt |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-i1.txt
-	@cat resources/location-i1.txt
-
-
-
-
-post_idoc2:
-	@curl -D - -H "Content-Type: $(MIME_TYPE)" -X POST $(DOCUMENT) > resources/header-i2.txt
-	@cat resources/header-i2.txt
-	@cat resources/header-i2.txt |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-i2.txt
-
-pp2:
-	$(MAKE) DOCUMENT=`grep http resources/location-i1.txt` post_idoc2
-
-
 #HTTP_SERVICE=https://$(SERVICE)
 HTTP_SERVICE=http://$(SERVICE)
 
@@ -292,109 +172,6 @@ gn4:
 pn2:
 	@curl $(PASSWD) -D - -X PUT  --data-urlencode template=`cat resources/location-t1.txt` $(HTTP_SERVICE)/ptm/templates/name/hello |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-n1.txt
 
-test-suite1:
-	@$(MAKE) tmpl3
-	@$(MAKE) gt3
-	@$(MAKE) pn3
-	@$(MAKE) gn3
-	@$(MAKE) tmpl4
-	@$(MAKE) gt4
-	@$(MAKE) pn4
-	@$(MAKE) gn4
-	@$(MAKE) log1
-	@$(MAKE) pn1
-	@$(MAKE) gn1
-	@$(MAKE) bind1
-	@$(MAKE) gb1
-	@$(MAKE) bind2
-	@$(MAKE) gb2
-	@$(MAKE) tmpl1
-	@$(MAKE) gt1
-	@$(MAKE) DOCUMENT_TYPE=".json" gt1.type
-#	@$(MAKE) DOCUMENT_TYPE=".ttl" gt1.type  PROBLEM
-	@$(MAKE) post_idoc1
-	@curl -D - -X POST --data-urlencode template=`cat resources/location-t1.txt` --data-urlencode bindings=`cat resources/location-b1.txt` `grep http resources/location-i1.txt`
-	@curl -D - -X POST --data-urlencode template=`cat resources/location-t1.txt` --data-urlencode bindings=`cat resources/location-b2.txt` `grep http resources/location-i1.txt`
-	@curl -D - -X GET `grep http resources/location-i1.txt`/original
-	@curl -D - -X GET `grep http resources/location-i1.txt`  
-	@curl -D - -X GET `grep http resources/location-i1.txt`  |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-c1.txt
-	@curl -D - --location -H "Accept: text/provenance-notation"   -X GET `grep http resources/location-i1.txt`  
-	@curl -D - -X GET `grep http resources/location-c1.txt`  | grep Link: | awk '{print $$2 }' | tr -d '<' | tr -d '>' | tr -d ';' > resources/provenance-link-1.txt
-	@curl -D - -X GET `grep http resources/provenance-link-1.txt`  
-	echo "TODO COMPLETE provenance , missin g variables, and incorrect namespaces"
-
-#HOST=gaston:8080
-#HOST=smurf.ecs.soton.ac.uk:7000
-HOST=provenance.ecs.soton.ac.uk
-
-test-suite2:
-	$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT tmpl3
-	$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT gt3
-	$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT pn3
-	$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT gn3
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT tmpl4
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT gt4
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT pn4
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT gn4
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT log1
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT pn1
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT gn1
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT bind1
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT gb1
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT bind2
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT gb2
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT tmpl1
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT gt1
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT DOCUMENT_TYPE=".json" gt1.type
-#	@$(MAKE) DOCUMENT_TYPE=".ttl" gt1.type  PROBLEM
-	@$(MAKE) SERVICE=$(HOST)/prov-vservice-0.5.2-SNAPSHOT post_idoc1
-	@curl -D - -X POST --data-urlencode template=`cat resources/location-t1.txt` --data-urlencode bindings=`cat resources/location-b1.txt` `grep http resources/location-i1.txt`
-	@curl -D - -X POST --data-urlencode template=`cat resources/location-t1.txt` --data-urlencode bindings=`cat resources/location-b2.txt` `grep http resources/location-i1.txt`
-	@curl -D - -X GET `grep http resources/location-i1.txt`/original
-	@curl -D - -X GET `grep http resources/location-i1.txt`  
-	@curl -D - -X GET `grep http resources/location-i1.txt`  |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-c1.txt
-	@curl -D - --location -H "Accept: text/provenance-notation"   -X GET `grep http resources/location-i1.txt`  
-	@curl -D - -X GET `grep http resources/location-c1.txt`  | grep Link: | awk '{print $$2 }' | tr -d '<' | tr -d '>' | tr -d ';' > resources/provenance-link-1.txt
-	@curl -D - -X GET `grep http resources/provenance-link-1.txt`  
-	echo "TODO COMPLETE provenance , missin g variables, and incorrect namespaces"
-
-PASSWD=-u rideshare:smart2014
-
-test-suite3:
-	$(MAKE) SERVICE=$(HOST) tmpl3
-	$(MAKE) SERVICE=$(HOST) gt3
-	$(MAKE) SERVICE=$(HOST) pn3
-	$(MAKE) SERVICE=$(HOST) gn3
-	@$(MAKE) SERVICE=$(HOST) tmpl4
-	@$(MAKE) SERVICE=$(HOST) gt4
-	@$(MAKE) SERVICE=$(HOST) pn4
-	@$(MAKE) SERVICE=$(HOST) gn4
-	@$(MAKE) SERVICE=$(HOST) log1
-	@$(MAKE) SERVICE=$(HOST) pn1
-	@$(MAKE) SERVICE=$(HOST) gn1
-	@$(MAKE) SERVICE=$(HOST) bind1
-	@$(MAKE) SERVICE=$(HOST) gb1
-	@$(MAKE) SERVICE=$(HOST) bind2
-	@$(MAKE) SERVICE=$(HOST) gb2
-	@$(MAKE) SERVICE=$(HOST) tmpl1
-	@$(MAKE) SERVICE=$(HOST) gt1
-	@$(MAKE) SERVICE=$(HOST) DOCUMENT_TYPE=".json" gt1.type
-	@$(MAKE) SERVICE=$(HOST) post_idoc1
-	@curl $(PASSWD) -D - -X POST --data-urlencode template=`cat resources/location-t1.txt` --data-urlencode bindings=`cat resources/location-b1.txt` `grep http resources/location-i1.txt`
-	@curl $(PASSWD) -D - -X POST --data-urlencode template=`cat resources/location-t1.txt` --data-urlencode bindings=`cat resources/location-b2.txt` `grep http resources/location-i1.txt`
-	@curl $(PASSWD) -D - -X GET `grep http resources/location-i1.txt`/original
-	@curl $(PASSWD) -D - -X GET `grep http resources/location-i1.txt`  
-	@curl $(PASSWD) -D - -X GET `grep http resources/location-i1.txt`  |  tr -d '\015' | grep Location | awk '{print $$2 }' > resources/location-c1.txt
-	@curl $(PASSWD) -D - --location -H "Accept: text/provenance-notation"   -X GET `grep http resources/location-i1.txt`  
-	@curl $(PASSWD) -D - -X GET `grep http resources/location-c1.txt`  | grep Link: | awk '{print $$2 }' | tr -d '<' | tr -d '>' | tr -d ';' > resources/provenance-link-1.txt
-	@curl $(PASSWD) -D - -X GET `grep http resources/provenance-link-1.txt`  
-	echo "TODO COMPLETE provenance , missin g variables, and incorrect namespaces"
-
-
-### create tunnel on pat, to redirect pat port 9339 to smurf port 7000
-### allows https://provenance.ecs.soton.ac.uk/ptm/bindings
-tunnel:
-	ssh lavm@pat.ecs.soton.ac.uk -R 9339:smurf.ecs.soton.ac.uk:7000
 
 
 MIME_TYPE2=text/provenance-notation

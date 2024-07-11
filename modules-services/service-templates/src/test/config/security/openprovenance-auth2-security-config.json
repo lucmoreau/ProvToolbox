@@ -1,0 +1,24 @@
+{
+    "callbackUrl": "http://localhost:7072/ptl/callback",
+
+    "configurations": {
+
+        "KeycloakOidcClient": {
+            "@type": "KeycloakOidcClient",
+            "clientId": "ptm-indirect",
+            "realm": "prov",
+            "baseUri": "https://openprovenance.org/auth2",
+            "callbackUrl": "http://localhost:7072/ptl/callback"
+        },
+
+        "DirectBearerAuthClient": {
+            "@type": "DirectBearerAuthClient",
+            "clientId": "ptm-direct",
+            "realm": "prov",
+            "baseUri": "https://openprovenance.org/auth2",
+            "realmUri": "https://openprovenance.org/auth2/realms/prov",
+            "signaturePublicKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6KdST144IZU8ajuINgbFboiGZJBpk0mnXZknNI+BvQYbNK0M6y1PzDw8MEZaGVPlxMEs0aoHTkEp6oMVFKtbNXtY35NdYlgjpDyqz1cnKxWjnOKpqNj56z+T09BRCbe17ksCK7nKmsGskBnM5VK8xPsSFdCsG6hzBS13JrdUi4x/PUw/iK3f0BynCAIuCRhrBp6APQfBxCV3IP+zaORN8WwB7zM0nw/bfwfwxV3UOnEYrGy+a/AtbuPakAXj8ZFcXUVnpzoOeuhziSRzvx4qrJKLNyvsh232RncUQsyrFn1wx8RftpKltkXmzQz63g3Moh2e/Ua+0mbqHg8B6SYoowIDAQAB",
+            "role": "provwriter"
+        }
+    }
+}

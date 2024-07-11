@@ -57,7 +57,6 @@ public interface WasAttributedTo  extends Identifiable,  HasLabel, HasType, HasO
      * 
      * @param entity {@link QualifiedName} of the entity
      */
-    
     void setEntity(QualifiedName entity);
 
     /**  Set the identifier of the agent whom the entity is ascribed to.

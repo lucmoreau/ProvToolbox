@@ -1,0 +1,46 @@
+{
+	"group": "org.openprovenance.prov",
+	"name": "template_library",
+	"destination": "target",
+	"description": "PROV templates for prov template management",
+	"version": "0.1.0",
+	"root_package": "org.openprovenance.prov.template.library.ptm",
+	"script": "tmp_run",
+	"script_dir": "target/bin",
+	"python_dir": "target/generated-python",
+	"integrator": true,
+	"jsweet": true,
+	"jsonschema": "schema-ptm.json",
+	"documentation": "doc-ptm.html",
+	"sqlFile": "prov-template-library-ptm.sql",
+	"templates" : [
+
+
+		{
+			"@type": "simple",
+			"name": "ptm_expanding",
+			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/ptm/ptm-expanding.provn",
+			"package": "org.openprovenance.prov.template.library.ptm",
+			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-expanding.json"
+		},
+		{
+			"@type": "simple",
+			"name": "ptm_mexpanding",
+			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/ptm/ptm-mexpanding.provn",
+			"package": "org.openprovenance.prov.template.library.ptm",
+			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-mexpanding.json"
+		}
+
+	],
+	"sql.tables":  {
+		"activity": {
+			"id": "SERIAL",
+			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+		},
+		"file": {
+			"id": "SERIAL",
+			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+		}
+
+	}
+}

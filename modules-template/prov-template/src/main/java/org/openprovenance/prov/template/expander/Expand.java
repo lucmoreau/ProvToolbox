@@ -29,13 +29,17 @@ public class Expand {
         this.addOrderp = addOrderp;
         this.allUpdatedRequired = allUpdatedRequired;
     }
+    public Expand(ProvFactory pf) {
+        this(pf, false, false);
+    }
+
 
 
     public Document expander(Document docIn, Bindings bindings) {
 
         
         Bundle bun;
-        logger.info("expander: expander " + bindings);
+        //logger.info("expander: expander " + bindings);
 
         try {
             bun = u.getBundle(docIn).get(0);
@@ -50,9 +54,9 @@ public class Expand {
         Document doc1 = pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
 
-        logger.info("expander: id uri " + bun1.getId().getNamespaceURI());
-        logger.info("expander: id pre " + bun1.getId().getPrefix());
-        logger.info("expander: id loc " + bun1.getId().getLocalPart());
+        //logger.info("expander: id uri " + bun1.getId().getNamespaceURI());
+        //logger.info("expander: id pre " + bun1.getId().getPrefix());
+        //logger.info("expander: id loc " + bun1.getId().getLocalPart());
 
         bun1.setNamespace(Namespace.gatherNamespaces(bun1));
 

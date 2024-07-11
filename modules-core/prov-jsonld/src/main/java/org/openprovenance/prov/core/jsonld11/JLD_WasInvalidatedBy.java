@@ -13,10 +13,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public interface JLD_WasInvalidatedBy extends JLD_Generic, HasRole {
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getEntity();
+    QualifiedName getEntity();
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getActivity();
+    QualifiedName getActivity();
 
     XMLGregorianCalendar getTime();
 

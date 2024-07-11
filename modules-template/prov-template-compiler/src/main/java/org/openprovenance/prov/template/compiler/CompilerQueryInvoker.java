@@ -17,6 +17,8 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 public class CompilerQueryInvoker {
     public static final String CONVERT_TO_NULLABLE_TEXT = "convertToNullableTEXT";
     public static final String CONVERT_TO_NON_NULLABLE_TEXT = "convertToNonNullableTEXT";
+    public static final String sbVar="sb";
+    public static final String linkingVar="linking";
     private final CompilerUtil compilerUtil;
 
 
@@ -25,27 +27,39 @@ public class CompilerQueryInvoker {
     }
 
 
-    public SpecificationFile generateQueryInvoker(TemplatesCompilerConfig configs, Locations locations, boolean withBean, String fileName) {
+    public SpecificationFile generateQueryInvoker(TemplatesProjectConfiguration configs, Locations locations, boolean withBean, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit((withBean)?Constants.QUERY_INVOKER:Constants.QUERY_INVOKER2);
 
         if (withBean) {
-            builder.addSuperinterface(ClassName.get(locations.getFilePackage(configs.beanProcessor), configs.beanProcessor));
+            builder.addSuperinterface(compilerUtil.getClass(BEAN_PROCESSOR,locations));
         } else {
             builder.addSuperinterface(ClassName.get(locations.getFilePackage(INPUT_PROCESSOR), INPUT_PROCESSOR));
         }
 
-        String sbVar="sb";
+
         builder.addField(StringBuilder.class, sbVar, Modifier.FINAL);
+        builder.addField(boolean.class, linkingVar, Modifier.FINAL);
 
-
-        MethodSpec.Builder cbuilder= MethodSpec.constructorBuilder()
+        MethodSpec.Builder cbuilder = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(StringBuilder.class, sbVar)
-                .addStatement("this.$N = $N", sbVar, sbVar);
+                .addStatement("this.$N = $N", sbVar, sbVar)
+                .addStatement("this.$N = false", linkingVar);
         builder.addMethod(cbuilder.build());
+
+        if (!withBean) {
+            // add an additional constructor for QUERY_INVOKER2
+            MethodSpec.Builder cbuilder2 = MethodSpec.constructorBuilder()
+                    .addModifiers(Modifier.PUBLIC)
+                    .addParameter(StringBuilder.class, sbVar)
+                    .addParameter(boolean.class, linkingVar)
+                    .addStatement("this.$N = $N", sbVar, sbVar)
+                    .addStatement("this.$N = $N", linkingVar, linkingVar);
+            builder.addMethod(cbuilder2.build());
+        }
 
 
         Set<String> foundSpecialTypes=new HashSet<>();
@@ -167,7 +181,7 @@ public class CompilerQueryInvoker {
 
     }
 
-    private void simpleQueryInvoker(TemplatesCompilerConfig configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean) {
+    private void simpleQueryInvoker(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean) {
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
         String startCallString= Constants.INSERT_PREFIX + config.name + " (";
         compilerUtil.specWithComment(mspec);
@@ -204,7 +218,7 @@ public class CompilerQueryInvoker {
         mspec.addStatement("$N.append($S)", sbVar, endCallString);
 
     }
-    private void simpleQueryInvokerEmbedded(TemplatesCompilerConfig configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, List<String> sharing) {
+    private void simpleQueryInvokerEmbedded(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, List<String> sharing) {
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
         String startCallString= Constants.INSERT_PREFIX + config.name + " (";
         compilerUtil.specWithComment(mspec);
@@ -253,7 +267,7 @@ public class CompilerQueryInvoker {
 
     }
 
-    public void compositeQueryInvoker(TemplatesCompilerConfig configs, Locations locations, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, boolean withBean) {
+    public void compositeQueryInvoker(TemplatesProjectConfiguration configs, Locations locations, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, boolean withBean) {
         CompositeTemplateCompilerConfig compositeConfig=(CompositeTemplateCompilerConfig ) config;
         compilerUtil.specWithComment(mspec);
 
@@ -261,8 +275,15 @@ public class CompilerQueryInvoker {
 
 
         mspec.addStatement("$N.append($S)", sbVar, "select * from ");
-        String startCallString= Constants.INSERT_PREFIX + config.name + INSERT_ARRAY_SUFFIX +" (";
+
+        mspec.beginControlFlow("if ($N)", linkingVar);
+        String startCallString= Constants.INSERT_PREFIX + config.name + INSERT_COMPOSITE_AND_LINKER_SUFFIX +" (";
         mspec.addStatement("$N.append($S)", sbVar, startCallString);
+        mspec.nextControlFlow("else");
+        String startCallString2= Constants.INSERT_PREFIX + config.name + INSERT_ARRAY_SUFFIX   +" (";
+        mspec.addStatement("$N.append($S)", sbVar, startCallString2);
+        mspec.endControlFlow();
+
         mspec.addStatement("$N.append($S)", sbVar, "ARRAY[\n");
         String variableBean1=variableBean+"_1";
         mspec.addStatement("boolean first=true");

@@ -1,6 +1,8 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.0.7-SNAPSHOT`
+* prov-jsonld: fixed context url
+* prov-model: builder for bundles
 
 `2.0.6`
 * prov-template-compiler: introduced sqlify for a few more keywords

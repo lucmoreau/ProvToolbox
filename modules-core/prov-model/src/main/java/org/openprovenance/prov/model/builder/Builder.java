@@ -19,7 +19,7 @@ import java.util.function.Function;
 public class Builder {
 
     protected final ModelConstructor mc;
-    protected final Namespace namespace;
+    protected Namespace namespace;
     protected final ProvFactory pf;
     protected final HashMap<String,QualifiedName> knownAs;
     protected final ModelConstructorExtension mce;
@@ -93,6 +93,10 @@ public class Builder {
         return mc.newDocument(namespace,statements,bundles);
     }
 
+    public BundleBuilder bundle() {
+        return new BundleBuilder(this,mc,mce,pf);
+    }
+
     public Builder prefix(Prefix prefix, String ns) {
         namespace.register(prefix.get(),ns);
         return this;
@@ -101,6 +105,7 @@ public class Builder {
         namespace.register(prefix,ns);
         return this;
     }
+
 
     final public QualifiedName qn(Prefix prefix, String local) {
         return mc.newQualifiedName(namespace.lookupPrefix(prefix.get()),local,prefix.get());
@@ -122,6 +127,10 @@ public class Builder {
             function.apply(t, count++);
         }
         return this;
+    }
+
+    public Builder buildBundle() {
+        throw new UnsupportedOperationException("Cannot build a Bundle from a document builder. Call build instead.");
     }
 
 

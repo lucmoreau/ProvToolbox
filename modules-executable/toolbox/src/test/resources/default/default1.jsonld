@@ -5,7 +5,7 @@
     "ex" : "https://example.org",
     "@base" : "https://www.bbc.co.uk/",
     "prov" : "http://www.w3.org/ns/prov#"
-  }, "https://openprovenance.org/prov-jsonld/context.json" ],
+  }, "https://openprovenance.org/prov-jsonld/context.jsonld" ],
   "@graph" : [ {
     "@type" : "Entity",
     "@id" : "e"

@@ -21,7 +21,7 @@ public class DateTest extends TestCase {
             "    \"xsd\" : \"http://www.w3.org/2001/XMLSchema#\",\n" +
             "    \"ex\" : \"https://example.org/\",\n" +
             "    \"prov\" : \"http://www.w3.org/ns/prov#\"\n" +
-            "  }, \"https://openprovenance.org/prov-jsonld/context.json\" ],\n" +
+            "  }, \"https://openprovenance.org/prov-jsonld/context.jsonld\" ],\n" +
             "  \"@graph\" : [ {\n" +
             "    \"@type\" : \"Activity\",\n" +
             "    \"@id\" : \"ex:a\",\n" +

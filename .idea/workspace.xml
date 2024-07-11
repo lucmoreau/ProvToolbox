@@ -9,12 +9,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/builder/BundleBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/2024-06-11/jsonldschema.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/2024-06-11/jsonldschema.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/jsonld11/DateTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/jsonld11/DateTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/bookptm/DerivationBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/bookptm/DerivationBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/Name.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/Name.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/builder/WasEndedByBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/builder/WasEndedByBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/builder/WasStartedByBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/builder/WasStartedByBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/builder/Builder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/builder/Builder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/DerivationBuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/DerivationBuilderTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/dates/date_with_tz_offset.jsonld" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/dates/date_with_tz_offset.jsonld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/default/default1.jsonld" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/default/default1.jsonld" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -136,6 +142,7 @@
     "JUnit.DerivationBuilderTest.executor": "Run",
     "JUnit.DerivationBuilderTest.testBuild (1).executor": "Run",
     "JUnit.DerivationBuilderTest.testBuild.executor": "Run",
+    "JUnit.DerivationBuilderTest.testOther.executor": "Run",
     "JUnit.ExpandIT.executor": "Run",
     "JUnit.PleadTest.testPlead1 (1).executor": "Run",
     "JUnit.PleadTest.testPlead1.executor": "Run",
@@ -188,11 +195,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.model.builder" />
       <recent name="org.openprovenance.prov.service.core.config" />
       <recent name="org.openprovenance.prov.rules" />
       <recent name="org.openprovenance.prov.service.security" />
       <recent name="org.openprovenance.prov.service" />
-      <recent name="org.openprovenance.prov.template.compiler" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/prov-template-archetype/src/main/resources/archetype-resources" />
@@ -244,7 +251,7 @@
       <recent name="org.openprovenance.prov.service.translation.actions" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.DerivationBuilderTest (1)">
+  <component name="RunManager" selected="JUnit.DerivationBuilderTest.testOther">
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -404,51 +411,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
-      <module name="prov-jsonld" />
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
-      <module name="prov-jsonld" />
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="RoundTripFromJavaMongoTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-storage-mongodb" />
+    <configuration name="DerivationBuilderTest.testOther" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-n" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.storage.mongodb.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.notation.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -462,8 +429,48 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.storage.mongodb" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.storage.mongodb.RoundTripFromJavaMongoTest" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.notation" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.notation.DerivationBuilderTest" />
+      <option name="METHOD_NAME" value="testOther" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
+      <module name="prov-jsonld" />
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
+      <module name="prov-jsonld" />
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
@@ -583,20 +590,20 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
+      <item itemvalue="JUnit.DerivationBuilderTest.testOther" />
       <item itemvalue="JUnit.DerivationBuilderTest" />
       <item itemvalue="JUnit.DerivationBuilderTest (1)" />
       <item itemvalue="JUnit.DerivationBuilderTest.testBuild" />
       <item itemvalue="JUnit.DerivationBuilderTest.testBuild (1)" />
-      <item itemvalue="JUnit.RoundTripFromJavaMongoTest" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.DerivationBuilderTest.testOther" />
         <item itemvalue="JUnit.DerivationBuilderTest (1)" />
         <item itemvalue="JUnit.DerivationBuilderTest" />
         <item itemvalue="JUnit.DerivationBuilderTest.testBuild (1)" />
         <item itemvalue="JUnit.DerivationBuilderTest.testBuild" />
-        <item itemvalue="JUnit.RoundTripFromJavaMongoTest" />
       </list>
     </recent_temporary>
   </component>
@@ -1039,7 +1046,9 @@
       <workItem from="1717243679715" duration="146900000" />
       <workItem from="1718091655832" duration="73759000" />
       <workItem from="1718607369852" duration="3594000" />
-      <workItem from="1718639569403" duration="66708000" />
+      <workItem from="1718639569403" duration="67340000" />
+      <workItem from="1720032453503" duration="12633000" />
+      <workItem from="1720505599253" duration="16813000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

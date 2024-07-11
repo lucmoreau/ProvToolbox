@@ -75,7 +75,7 @@ public class CompilerBeanChecker {
 
                                     TemplateCompilerConfig config = Arrays.stream(configs.templates).filter(c -> Objects.equals(c.name, templateName)).findFirst().get();
                                     SimpleTemplateCompilerConfig sConfig = (SimpleTemplateCompilerConfig) config;
-                                    SimpleTemplateCompilerConfig sConfig2 = sConfig.cloneAsInstanceInComposition(templateName + extension);
+                                    SimpleTemplateCompilerConfig sConfig2 = sConfig.cloneAsInstanceInComposition(templateName + extension, null);
 
                                     builder.addMethod(generateCheckerMethod(templateName , extension, sConfig2, direction, packageForBeans, sharing));
 

@@ -15,7 +15,7 @@ public class AgentBuilder extends GenericBuilder<AgentBuilder>{
     }
 
 
-    public AgentBuilder knownAsLocal() {
+    public AgentBuilder aka() {
         parent.knownAs.put(id.getLocalPart(),id);
         return this;
     }

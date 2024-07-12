@@ -5,7 +5,6 @@ import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.builder.Builder;
-import org.openprovenance.prov.model.builder.BundleBuilder;
 import org.openprovenance.prov.model.builder.Prefix;
 
 import static org.openprovenance.prov.model.NamespacePrefixMapper.*;
@@ -158,6 +157,14 @@ public class DerivationBuilder {
         return doc;
     }
 
+    public Document makeDocument_exampleSelfReferentialBundleInDocument() {
+        Builder builder = new Builder(pFactory, pFactory, pFactory);
+        Definitions defs = getDefinitions(builder);
+        exampleSelfReferentialBundleInDocument(builder, defs, true);
+        Document doc = builder.build();
+        return doc;
+    }
+
     public Document makeDerivation() {
         Builder builder = new Builder(pFactory, pFactory, pFactory);
         return makeDerivation(builder);
@@ -193,7 +200,7 @@ public class DerivationBuilder {
         }
 
         builder.agent()
-                .id(defs.XID, "luc").knownAsLocal()
+                .id(defs.XID, "luc").aka()
                 .type(name.PROV_PERSON)
                 .build();
 
@@ -230,7 +237,7 @@ public class DerivationBuilder {
 
 
         builder.agent()
-                .id(defs.XID, "luc").knownAsLocal()
+                .id(defs.XID, "luc").aka()
                 .type(name.PROV_PERSON)
                 .build();
 
@@ -322,7 +329,7 @@ public class DerivationBuilder {
 
 
         builder.agent()
-                .id(defs.XID, "luc").knownAsLocal()
+                .id(defs.XID, "luc").aka()
                 .type(name.PROV_PERSON)
                 .build();
 
@@ -437,7 +444,7 @@ public class DerivationBuilder {
                 .build();
 
         builder.agent()
-                .id(defs.XID, "alice").knownAsLocal()
+                .id(defs.XID, "alice").aka()
                 .type(name.PROV_PERSON)
                 .attr(defs.foaf_name, "Alice")
                 .build();
@@ -449,7 +456,7 @@ public class DerivationBuilder {
                 .build();
 
         builder.agent()
-                .id(defs.XID, "scale101").knownAsLocal()
+                .id(defs.XID, "scale101").aka()
                 .type(defs.Instrument)
                 .build();
 
@@ -577,14 +584,14 @@ public class DerivationBuilder {
         }
 
         builder.agent()
-                .id(defs.XID, "ag990").knownAsLocal()
+                .id(defs.XID, "ag990").aka()
                 .type(name.PROV_ORGANIZATION)
                 .attr(defs.foaf_name, "BigTransport, Inc.")
                 .build();
 
 
         builder.agent()
-                .id(defs.XID, "bob").knownAsLocal()
+                .id(defs.XID, "bob").aka()
                 .type(name.PROV_PERSON)
                 .attr(defs.foaf_name, "Bob")
                 .build();
@@ -1010,7 +1017,7 @@ public class DerivationBuilder {
                 .build()
 
                 .agent()
-                .id(defs.XID, "agent0").knownAsLocal()
+                .id(defs.XID, "agent0").aka()
                 .build()
 
                 .wasAttributedTo()
@@ -1021,14 +1028,62 @@ public class DerivationBuilder {
                 .build();
 
 
-
-
-
-
-
     }
 
 
+    private void exampleSelfReferentialBundleInDocument(Builder builder, Definitions defs, boolean standalone) {
+
+        builder.bundle()
+                .id(defs.XID, "b0").aka()
+                .entity()
+                .id(defs.XID, "e0").aka()
+                .label("an entity")
+                .build()
+
+                .activity()
+                .id(defs.XID, "a0").aka()
+                .build()
+
+                .wasGeneratedBy()
+                .entity("e0")
+                .activity("a0")
+                .build()
+
+                .buildBundle()
+
+                .bundle()
+                .id(defs.XID, "b1").aka()
+
+                .entity()
+                .id(defs.XID, "b0").aka()
+                .type(name.PROV_BUNDLE)
+                .build()
+
+                .agent()
+                .id(defs.XID, "agent0").aka()
+                .build()
+
+                .wasAttributedTo()
+                .entity("b0")
+                .agent("agent0")
+                .build()
+
+                .entity()
+                .id(defs.XID,"b1")
+                .type(name.PROV_BUNDLE)
+                .build()
+
+                .wasAttributedTo()
+                .entity("b1")
+                .agent("agent0")
+                .build()
+                .buildBundle()
+
+
+                .build();
+
+
+    }
 
 
     public Definitions getDefinitions(Builder builder) {

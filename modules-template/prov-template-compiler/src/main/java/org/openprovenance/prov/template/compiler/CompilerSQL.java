@@ -489,7 +489,7 @@ public class CompilerSQL {
                 // group by first element in the pair, and associated it with a list of the second element in the pair
                 Map<String, List<String>> groupedTemplatesWithBaseRelation = templatesWithBaseRelation.stream().collect(Collectors.groupingBy(Pair::getLeft, Collectors.mapping(Pair::getRight, Collectors.toList())));
 
-                System.out.println("######## groupedTemplatesWithBaseRelation=" + groupedTemplatesWithBaseRelation);
+              //  System.out.println("######## groupedTemplatesWithBaseRelation=" + groupedTemplatesWithBaseRelation);
 
         /*
         List<Pair<String, String>> templates = List.of(

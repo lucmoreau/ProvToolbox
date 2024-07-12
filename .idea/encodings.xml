@@ -174,6 +174,8 @@
     <file url="file://$PROJECT_DIR$/modules-validation/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mojos/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mojos/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/prov-template-archetype/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/prov-template-archetype/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/prov-toolbox-plugin/arti/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/prov-toolbox-plugin/arti/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/prov-toolbox-plugin/src/main/java" charset="UTF-8" />

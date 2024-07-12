@@ -9,8 +9,8 @@
     <artifactId>prov-toolbox-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
-    <name>prov-plugin Maven Plugin</name>
 
+    <name>|&gt;- PROVTOOLBOX-PLUGIN</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -58,7 +58,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

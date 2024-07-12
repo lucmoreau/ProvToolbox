@@ -34,7 +34,8 @@
 		<module>modules-explanations</module>
 
 		<module>modules-executable-provman</module>
-        <module>prov-toolbox-plugin</module>
+		<module>prov-toolbox-plugin</module>
+		<module>prov-template-archetype</module>
 
 	</modules>
 

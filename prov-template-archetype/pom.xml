@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.openprovenance.prov</groupId>
         <artifactId>ProvToolbox</artifactId>
-        <version>2.0.6-SNAPSHOT</version>
+        <version>2.0.8-SNAPSHOT</version>
     </parent>
 
     <artifactId>prov-template-archetype</artifactId>
-    <version>2.0.6-SNAPSHOT</version>
     <packaging>maven-archetype</packaging>
-    <name>prov-template-archetype</name>
+    <name>|&gt;- PROV-TEMPLATE-ARCHETYPE</name>
+
     <description>Archetype used to generate rest application based on jaxrs 2.1</description>
 
     <build>

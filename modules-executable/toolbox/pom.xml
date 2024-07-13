@@ -565,7 +565,7 @@
                         <version>2.2.0</version>
                         <executions>
                             <execution>
-                                <id>attach-rpm</id>
+                                <id>attach-rpm1</id>
                                 <goals>
                                     <goal>attached-rpm</goal>
                                 </goals>
@@ -876,13 +876,14 @@
                     </plugin>
                     -->
 
+                    <!--
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>rpm-maven-plugin</artifactId>
                         <version>2.2.0</version>
                         <executions>
                             <execution>
-                                <id>attach-rpm</id>
+                                <id>attach-rpm2</id>
                                 <goals>
                                     <goal>attached-rpm</goal>
                                 </goals>
@@ -893,7 +894,6 @@
                             <license>MIT License</license>
                             <distribution>provconvert</distribution>
                             <group>Application/Provenance</group>
-                            <!-- <icon>src/main/resources/icon.gif</icon> -->
                             <packager>Luc Moreau</packager>
                             <prefix>/usr/local</prefix>
                             <changelogFile>src/changelog</changelogFile>
@@ -971,6 +971,8 @@
                             </preremoveScriptlet>
                         </configuration>
                     </plugin>
+                    -->
+
 
                 </plugins>
             </build>

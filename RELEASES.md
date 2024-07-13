@@ -1,7 +1,7 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.0.8-SNAPSHOT`
-*
+* module-tools: prov-template-archetype and prov-toolbox-plugin
 
 `2.0.7`
 * prov-jsonld: fixed context url

@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.openprovenance.prov</groupId>
-        <artifactId>ProvToolbox</artifactId>
+        <artifactId>modules-tools</artifactId>
         <version>2.0.8-SNAPSHOT</version>
     </parent>
 
@@ -10,7 +10,7 @@
     <packaging>maven-plugin</packaging>
 
 
-    <name>|&gt;- PROVTOOLBOX-PLUGIN</name>
+    <name> |---- PROVTOOLBOX-PLUGIN</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

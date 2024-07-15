@@ -12,58 +12,68 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.openprovenance.prov.template.compiler.CompilerQueryInvoker.CONVERT_TO_NON_NULLABLE_TEXT;
+import static org.openprovenance.prov.template.compiler.CompilerQueryInvoker.CONVERT_TO_NULLABLE_TEXT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
-public class CompilerQueryInvoker {
-    public static final String CONVERT_TO_NULLABLE_TEXT = "convertToNullableTEXT";
-    public static final String CONVERT_TO_NON_NULLABLE_TEXT = "convertToNonNullableTEXT";
+public class CompilerQueryInvokerWithPrincipal {
     public static final String sbVar="sb";
     public static final String linkingVar="linking";
+    public static final String principalVar="principal";
+    public static final String queryInvokerVar ="queryInvoker";
+
     private final CompilerUtil compilerUtil;
 
 
-    public CompilerQueryInvoker(ProvFactory pFactory) {
+    public CompilerQueryInvokerWithPrincipal(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
 
-    public SpecificationFile generateQueryInvoker(TemplatesProjectConfiguration configs, Locations locations, boolean withBean, String fileName) {
+    public SpecificationFile generateQueryInvokerWithPrincipal(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit((withBean)?Constants.QUERY_INVOKER:Constants.QUERY_INVOKER2);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.QUERY_INVOKER2WP);
 
-        if (withBean) {
-            builder.addSuperinterface(compilerUtil.getClass(BEAN_PROCESSOR,locations));
-        } else {
-            builder.addSuperinterface(ClassName.get(locations.getFilePackage(INPUT_PROCESSOR), INPUT_PROCESSOR));
-        }
+
+        builder.addSuperinterface(ClassName.get(locations.getFilePackage(INPUT_PROCESSOR), INPUT_PROCESSOR));
+
+        ClassName queryInvoke2Class=ClassName.get(locations.getFilePackage(QUERY_INVOKER2), QUERY_INVOKER2);
 
 
         builder.addField(StringBuilder.class, sbVar, Modifier.FINAL);
         builder.addField(boolean.class, linkingVar, Modifier.FINAL);
+        builder.addField(String.class, principalVar, Modifier.FINAL);
+        builder.addField(queryInvoke2Class, queryInvokerVar, Modifier.FINAL);
 
         MethodSpec.Builder cbuilder = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(StringBuilder.class, sbVar)
+                .addParameter(String.class, principalVar)
                 .addStatement("this.$N = $N", sbVar, sbVar)
-                .addStatement("this.$N = false", linkingVar);
+                .addStatement("this.$N = false", linkingVar)
+                .addStatement("this.$N = $N", principalVar, principalVar)
+                .addStatement("this.$N = new $T($N,$N)", queryInvokerVar, queryInvoke2Class, sbVar, linkingVar);
+
         builder.addMethod(cbuilder.build());
 
-        if (!withBean) {
-            // add an additional constructor for QUERY_INVOKER2
-            MethodSpec.Builder cbuilder2 = MethodSpec.constructorBuilder()
-                    .addModifiers(Modifier.PUBLIC)
-                    .addParameter(StringBuilder.class, sbVar)
-                    .addParameter(boolean.class, linkingVar)
-                    .addStatement("this.$N = $N", sbVar, sbVar)
-                    .addStatement("this.$N = $N", linkingVar, linkingVar);
-            builder.addMethod(cbuilder2.build());
-        }
+
+        // add an additional constructor for QUERY_INVOKER2
+        MethodSpec.Builder cbuilder2 = MethodSpec.constructorBuilder()
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(StringBuilder.class, sbVar)
+                .addParameter(boolean.class, linkingVar)
+                .addParameter(String.class, principalVar)
+                .addStatement("this.$N = $N", sbVar, sbVar)
+                .addStatement("this.$N = $N", linkingVar, linkingVar)
+                .addStatement("this.$N = $N", principalVar, principalVar)
+                .addStatement("this.$N = new $T($N,$N)", queryInvokerVar, queryInvoke2Class, sbVar, linkingVar) ;
+        builder.addMethod(cbuilder2.build());
+
 
 
         Set<String> foundSpecialTypes=new HashSet<>();
-        foundSpecialTypes.add(NON_NULLABLE_TEXT); // always add this one, as it is required in QueryInvoker2WP
 
         for (TemplateCompilerConfig config : configs.templates) {
 
@@ -77,96 +87,18 @@ public class CompilerQueryInvoker {
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
             compilerUtil.specWithComment(mspec);
             mspec
-                    .addParameter(ParameterSpec.builder((withBean)?className:inputClassName, VARIABLE_BEAN).build())
-                    .returns((withBean)?className:inputClassName);
+                    .addParameter(ParameterSpec.builder(inputClassName, VARIABLE_BEAN).build())
+                    .returns(inputClassName);
 
             if (config instanceof SimpleTemplateCompilerConfig) {
                 simpleQueryInvoker(configs, config, foundSpecialTypes, sbVar, mspec, VARIABLE_BEAN);
                 mspec.addStatement("return $N", VARIABLE_BEAN);
             } else {
-                compositeQueryInvoker(configs, locations, config, foundSpecialTypes, sbVar, mspec, VARIABLE_BEAN, withBean);
+                compositeQueryInvoker(configs, locations, config, foundSpecialTypes, sbVar, mspec, VARIABLE_BEAN, false);
                 mspec.addStatement("return $N", VARIABLE_BEAN);
             }
 
             builder.addMethod(mspec.build());
-        }
-
-        if (foundSpecialTypes.contains(Constants.TIMESTAMPTZ)) {
-            final String timeVariable = "time";
-            MethodSpec.Builder mbuilder2= MethodSpec.methodBuilder("convertToTimestamptz");
-            compilerUtil.specWithComment(mbuilder2);
-            mbuilder2
-                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-                    .addParameter(String.class, timeVariable)
-                    .returns(String.class)
-                    .beginControlFlow("if ($N==null)", timeVariable)
-                    .addStatement("return $S",  "NULL")
-                    .nextControlFlow("else")
-                    .addStatement("return $S+$N+$S", "'", timeVariable, "'::timestamptz")
-                    .endControlFlow();
-
-            builder.addMethod(mbuilder2.build());
-        }
-        if (foundSpecialTypes.contains(Constants.SQL_DATE)) {
-            final String dateVariable = "date";
-            MethodSpec.Builder mbuilder2= MethodSpec.methodBuilder("convertToDate");
-            compilerUtil.specWithComment(mbuilder2);
-            mbuilder2
-                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-                    .addParameter(String.class, dateVariable)
-                    .returns(String.class)
-                    .beginControlFlow("if ($N==null)", dateVariable)
-                    .addStatement("return $S",  "NULL")
-                    .nextControlFlow("else")
-                    .addStatement("return $S+$N+$S", "'", dateVariable, "'::date")
-                    .endControlFlow();
-
-            builder.addMethod(mbuilder2.build());
-        }
-        if (foundSpecialTypes.contains(Constants.NULLABLE_TEXT)) {
-            final String strVariable = "str";
-            MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder(CONVERT_TO_NULLABLE_TEXT);
-            compilerUtil.specWithComment(mbuilder3);
-            mbuilder3
-                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-                    .addParameter(String.class, strVariable)
-                    .returns(String.class)
-                    .beginControlFlow("if ($N==null)", strVariable)
-                    .addStatement("return $S",  "''::TEXT")
-                    .nextControlFlow("else")
-                    .addStatement("return $S+$N.replace($S,$S)+$S", "'", strVariable, "'", "''", "'::TEXT")
-                    .endControlFlow();
-
-            builder.addMethod(mbuilder3.build());
-        }
-        if (foundSpecialTypes.contains(Constants.NON_NULLABLE_TEXT)) {
-            final String strVariable = "str";
-            MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder(CONVERT_TO_NON_NULLABLE_TEXT);
-            compilerUtil.specWithComment(mbuilder3);
-            mbuilder3
-                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-                    .addParameter(String.class, strVariable)
-                    .returns(String.class)
-                    .addStatement("return $S+$N.replace($S,$S)+$S", "'", strVariable, "'", "''", "'::TEXT");
-
-            builder.addMethod(mbuilder3.build());
-        }
-
-        if (foundSpecialTypes.contains(Constants.JSON_TEXT)) {
-            final String strVariable = "str";
-            MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder("convertToJsonTEXT");
-            compilerUtil.specWithComment(mbuilder3);
-            mbuilder3
-                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-                    .addParameter(String.class, strVariable)
-                    .returns(String.class)
-                    .beginControlFlow("if ($N==null)", strVariable)
-                    .addStatement("return $S",  "''::json")
-                    .nextControlFlow("else")
-                    .addStatement("return $S+$N.replace($S,$S)+$S", "'", strVariable, "'", "''", "'::json")
-                    .endControlFlow();
-
-            builder.addMethod(mbuilder3.build());
         }
 
 
@@ -178,7 +110,7 @@ public class CompilerQueryInvoker {
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
+        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
 
     }
 
@@ -187,7 +119,7 @@ public class CompilerQueryInvoker {
         String startCallString= Constants.INSERT_PREFIX + config.name + " (";
         compilerUtil.specWithComment(mspec);
 
-        mspec.addStatement("$N.append($S)", sbVar, "select * from ");
+        mspec.addStatement("$N.append($S)", sbVar, "WITH \n    insertion_result AS (select * from ");
         mspec.addStatement("$N.append($S)", sbVar, startCallString);
 
 
@@ -215,10 +147,42 @@ public class CompilerQueryInvoker {
                 }
             }
         }
-        String endCallString= ");";
+        String endCallString= "))";
         mspec.addStatement("$N.append($S)", sbVar, endCallString);
+        insertAccessControl(config, sbVar, mspec, bindingsSchema);
+
+
+        mspec.addStatement("$N.append($S)", sbVar, ";\n");
+
 
     }
+
+    private void insertAccessControl(TemplateCompilerConfig config, String sbVar, MethodSpec.Builder mspec, TemplateBindingsSchema bindingsSchema) {
+        mspec.addStatement("$N.append($S)", sbVar, "\nINSERT INTO record_index(key,table_name,principal)\n");
+        mspec.addStatement("$N.append($S).append($S).append($N($S))",
+                sbVar,
+                "VALUES ((SELECT id FROM insertion_result)",
+                ",\n",
+                queryInvokerVar + "." + CONVERT_TO_NON_NULLABLE_TEXT,
+                config.name);
+        mspec.addStatement("$N.append($S).append($N($N))",
+                sbVar,
+                ",\n",
+                queryInvokerVar + "." + CONVERT_TO_NON_NULLABLE_TEXT,
+                principalVar);
+        mspec.addStatement("$N.append($S)", sbVar, ")\nRETURNING (SELECT ID FROM insertion_result) as id\n");
+
+        for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
+            if (descriptorUtils.isOutput(key, bindingsSchema)) {
+                Class<?> cl = compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
+
+                mspec.addStatement("$N.append($S)", sbVar, ",");
+                mspec.addStatement("$N.append($S)", sbVar, "(SELECT " + key + " FROM insertion_result)");
+
+            }
+        }
+    }
+
     private void simpleQueryInvokerEmbedded(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, List<String> sharing) {
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
         String startCallString= Constants.INSERT_PREFIX + config.name + " (";
@@ -272,7 +236,10 @@ public class CompilerQueryInvoker {
         CompositeTemplateCompilerConfig compositeConfig=(CompositeTemplateCompilerConfig ) config;
         compilerUtil.specWithComment(mspec);
 
-        mspec.addStatement("$N.append($S)", sbVar, "---- query invoker for  " + compositeConfig.name + "\n\n");
+        mspec.addStatement("$N.append($S)", sbVar, "---- query invoker for  " + compositeConfig.name + " (with Principal)\n\n");
+
+
+        mspec.addStatement("$N.append($S)", sbVar, "WITH \n    insertion_result AS (");
 
 
         mspec.addStatement("$N.append($S)", sbVar, "select * from ");
@@ -315,51 +282,33 @@ public class CompilerQueryInvoker {
 
         mspec.endControlFlow();
 
-        mspec.addStatement("$N.append($S)", sbVar, "]);\n");
+        mspec.addStatement("$N.append($S)", sbVar, "]))\n");
 
 
-        /*
+        insertAccessControl(config, sbVar, mspec, compilerUtil.getBindingsSchema(composee));
 
-select *
-from insert_anticipating_impact_composite_array(
-    ARRAY[  (-1, -1, 20,14,5,8, 0,  '2018-10-24T22:20:13.456Z'::timestamptz)::anticipating_impact_type,
-                    (-2, -1, 21,15,7,9, 0,  '2018-11-24T22:20:13.456Z'::timestamptz)::anticipating_impact_type,
-                    (-2, -1, 11,15,7,1, 1,  '2018-12-24T22:20:13.456Z'::timestamptz)::anticipating_impact_type ]);
-
-ssue in enactment ---- query invoker for  anticipating_impact_composite
-
-select * from insert_anticipating_impact_composite_array (ARRAY[
-[ 20,14,5,8,'2018-10-24T22:20:13.456Z'::timestamptz],
-     [ 21,15,7,9,'2018-11-24T22:20:13.456Z'::timestamptz],
-     [ 11,15,7,1,'2018-12-24T22:20:13.456Z'::timestamptz]]);
-
-select * from insert_anticipating_impact_composite_array (ARRAY[
-[ -1,-1,20,14,5,8, 0,'2018-10-24T22:20:13.456Z'::timestamptz] :: anticipating_impact_type,
-     [ -2,-1,21,15,7,9,1,'2018-11-24T22:20:13.456Z'::timestamptz] :: anticipating_impact_type,
-     [ -2,-1,11,15,7,1,1,'2018-12-24T22:20:13.456Z'::timestamptz] :: anticipating_impact_type]);
-
-*/
+        mspec.addStatement("$N.append($S)", sbVar, ";\n");
 
 
     }
+
 
     public String converterForSpecialType(String specialType) {
         switch (specialType) {
             case Constants.SQL_DATE:
-                return "convertToDate";
+                return queryInvokerVar + "." + "convertToDate";
             case Constants.TIMESTAMPTZ:
-                return "convertToTimestamptz";
+                return queryInvokerVar + "." + "convertToTimestamptz";
             case Constants.NULLABLE_TEXT:
-                return CONVERT_TO_NULLABLE_TEXT;
+                return queryInvokerVar + "." + CONVERT_TO_NULLABLE_TEXT;
             case Constants.NON_NULLABLE_TEXT:
-                return CONVERT_TO_NON_NULLABLE_TEXT;
+                return queryInvokerVar + "." + CONVERT_TO_NON_NULLABLE_TEXT;
             case Constants.JSON_TEXT:
-                return "convertToJsonTEXT";
+                return queryInvokerVar + "." + "convertToJsonTEXT";
             default:
                 return null;
-                //throw new IllegalStateException("Unexpected value: " + specialType);
+            //throw new IllegalStateException("Unexpected value: " + specialType);
         }
     }
-
 
 }

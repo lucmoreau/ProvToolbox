@@ -82,6 +82,7 @@ public class Storage {
 
     public Function<String,ResultSet> getQuerier (Connection conn) {
         return (String statement) -> {
+            logger.info("Executing query: " + statement);
             try {
                 return executeQuery(conn, statement);
             } catch (SQLException e) {

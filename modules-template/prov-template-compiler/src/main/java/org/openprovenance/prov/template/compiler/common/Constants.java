@@ -63,9 +63,12 @@ public interface Constants {
     String TYPE_CONVERTER = "TypeConverter";
     String BEAN_ENACTOR = "BeanEnactor";
     String BEAN_ENACTOR2 = "BeanEnactor2";
+    String BEAN_ENACTOR2_WP = "BeanEnactor2WithPrincipal";
     String BEAN_ENACTOR2_COMPOSITE = "BeanEnactor2Composite";
+    String BEAN_ENACTOR2_COMPOSITE_WP = "BeanEnactor2CompositeWithPrincipal";
     String QUERY_INVOKER = "QueryInvoker";
     String QUERY_INVOKER2 = "QueryInvoker2";
+    String QUERY_INVOKER2WP = "QueryInvoker2WithPrincipal";
     String BEAN_CHECKER = "BeanChecker";
     String BEAN_CHECKER2 = "BeanChecker2";
     String DELEGATOR = "Delegator";
@@ -140,6 +143,9 @@ public interface Constants {
     String BEAN_PROCESSOR = "BeanProcessor";
     String LOGGER="Logger";
 
+    String principalVar = "principal";
+
+
     String SQL_BEAN_COMPLETER = "SqlBeanCompleter";
     String SQL_BEAN_COMPLETER3 = "SqlBeanCompleter3";
     String SQL_COMPOSITE_BEAN_COMPLETER = "SqlCompositeBeanCompleter";
@@ -151,9 +157,13 @@ public interface Constants {
     String SQL_COMPOSITE_BEAN_COMPLETER3 = "SqlCompositeBeanCompleter3";
     String SQL_BEAN_ENACTOR= "SqlBeanEnactor";
     String SQL_BEAN_ENACTOR3= "SqlBeanEnactor3";
+    String SQL_BEAN_ENACTOR4= "SqlBeanEnactor4";
     String SQL_COMPOSITE_BEAN_ENACTOR3= "SqlCompositeBeanEnactor3";
+    String SQL_COMPOSITE_BEAN_ENACTOR4= "SqlCompositeBeanEnactor4";
     String SQL_ENACTOR_CONFIGURATOR3= "SqlEnactorConfigurator3";
+    String SQL_ENACTOR_CONFIGURATOR4= "SqlEnactorConfigurator4";
     String SQL_COMPOSITE_ENACTOR_CONFIGURATOR3= "SqlCompositeEnactorConfigurator3";
+    String SQL_COMPOSITE_ENACTOR_CONFIGURATOR4= "SqlCompositeEnactorConfigurator4";
 
 
 }

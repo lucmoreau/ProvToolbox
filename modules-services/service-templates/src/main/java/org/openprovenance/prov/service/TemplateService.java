@@ -25,7 +25,7 @@ import org.openprovenance.prov.service.readers.*;
 import org.openprovenance.prov.service.security.pac.SecurityConfiguration;
 import org.openprovenance.prov.service.security.pac.Utils;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
-import org.openprovenance.prov.template.library.plead.sql.integration.SqlCompositeBeanEnactor3;
+import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeBeanEnactor4;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.ProvUtilities;
@@ -42,6 +42,7 @@ import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_TEXT_HTML;
 import static org.openprovenance.prov.service.Storage.getStringFromClasspath;
 import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
 import static org.openprovenance.prov.template.library.plead.client.logger.Logger.initializeBeanTable;
+import static org.openprovenance.prov.template.library.plead.sql.integration.BeanEnactor2WithPrincipal.setPrincipal;
 
 @Path("")
 public class TemplateService {
@@ -86,7 +87,7 @@ public class TemplateService {
 
 
     private final TemplateLogic templateLogic;
-    private final SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3;
+    private final SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor4;
 
     private final Querier querier;
     private final TemplateQuery queryTemplate;
@@ -126,7 +127,7 @@ public class TemplateService {
         this.om.enable(SerializationFeature.INDENT_OUTPUT);
         this.om.registerModule(new JavaTimeModule());
 
-        this.sqlCompositeBeanEnactor3 =new SqlCompositeBeanEnactor3(storage.getQuerier(conn));
+        this.sqlCompositeBeanEnactor4 =new SqlCompositeBeanEnactor4(storage.getQuerier(conn));
 
         this.compositeLinker=new HashMap<>() {{
             put("plead_transforming_composite", new Linker("plead_transforming_composite_linker", "plead_transforming"));
@@ -154,7 +155,7 @@ public class TemplateService {
         this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),templateDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
         this.recordMaker=initializeBeanTable(new TableConfiguratorForObjectRecordMaker(documentBuilderDispatcher));
 
-        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor3, this.typeAssignment);
+        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor4, this.typeAssignment);
 
 
     }
@@ -188,6 +189,10 @@ public class TemplateService {
         if (documentOrCsv==null) {
             return utils.composeResponseInternalServerError("null document", new NullPointerException());
         }
+
+        // set thread specific variable
+        setPrincipal(principal.getName());
+
         List<Object> result;
         if (documentOrCsv.csv!=null) {
             result=templateLogic.processIncomingCsv(documentOrCsv.csv);

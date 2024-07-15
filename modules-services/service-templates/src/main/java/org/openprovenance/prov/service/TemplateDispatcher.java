@@ -6,6 +6,8 @@ import org.openprovenance.prov.client.ProcessorArgsInterface;
 import org.openprovenance.prov.client.RecordsProcessorInterface;
 import org.openprovenance.prov.template.library.plead.client.configurator.*;
 import org.openprovenance.prov.template.library.plead.client.logger.TemplateBuilders;
+import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeEnactorConfigurator4;
+import org.openprovenance.prov.template.library.plead.sql.access_control.SqlEnactorConfigurator4;
 import org.openprovenance.prov.template.library.plead.sql.integration.SqlCompositeEnactorConfigurator3;
 import org.openprovenance.prov.template.library.plead.sql.integration.SqlEnactorConfigurator3;
 
@@ -46,9 +48,9 @@ public class TemplateDispatcher {
         sqlInsert=initializeBeanTable(new SqlInsertConfigurator());
         beanConverter=initializeBeanTable(new ConverterConfigurator());
         //enactorConverter=initializeBeanTable(new SqlEnactorConfigurator(storage,conn));
-        enactorConverter=initializeBeanTable(new SqlEnactorConfigurator3(storage.getQuerier(conn)));
+        enactorConverter=initializeBeanTable(new SqlEnactorConfigurator4(storage.getQuerier(conn)));
         //compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator(storage,conn));
-        compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator3(storage.getQuerier(conn)));
+        compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator4(storage.getQuerier(conn)));
         successors = initializeBeanTable(new SuccessorConfigurator());
         predecessors = successors
                 .keySet()

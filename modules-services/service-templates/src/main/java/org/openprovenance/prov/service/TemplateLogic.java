@@ -14,7 +14,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.readers.TemplatesVizConfig;
 import org.openprovenance.prov.template.library.plead.Plead_trainingBuilder;
-import org.openprovenance.prov.template.library.plead.sql.integration.SqlCompositeBeanEnactor3;
+import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeBeanEnactor4;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
@@ -35,14 +35,14 @@ public class TemplateLogic {
     private final Map<String, FileBuilder> documentBuilderDispatcher;
     private final ServiceUtils utils;
     private final ObjectMapper om;
-    private final SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3;
+    private final SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor3;
 
     private final EnactCsvRecords<Object> enactCsvRecords= new EnactCsvRecords<>();
     private final TemplateQuery templateQuery;
     private final Map<String, Map<String, Set<String>>> typeAssignment;
 
 
-    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3, Map<String, Map<String, Set<String>>> typeAssignment) {
+    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor3, Map<String, Map<String, Set<String>>> typeAssignment) {
         this.pf = pf;
         this.templateDispatcher = templateDispatcher;
         this.documentBuilderDispatcher = documentBuilderDispatcher;

@@ -3,7 +3,6 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
-import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
@@ -11,32 +10,34 @@ import javax.lang.model.element.Modifier;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
-public class CompilerBeanEnactor2Composite {
+public class CompilerBeanEnactor2CompositeWithPrincipal {
     private final CompilerUtil compilerUtil;
 
-    public CompilerBeanEnactor2Composite(ProvFactory pFactory) {
+    public CompilerBeanEnactor2CompositeWithPrincipal(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
 
-    SpecificationFile generateBeanEnactor2Composite(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
+    SpecificationFile generateBeanEnactor2CompositeWithPrincipal(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_ENACTOR2_COMPOSITE);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_ENACTOR2_COMPOSITE_WP);
         builder.addTypeVariable(typeResult);
         builder.addJavadoc("Ensures that composite beans are given an ID\n");
 
 
-        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(Constants.QUERY_INVOKER2), Constants.QUERY_INVOKER2);
-        ParameterizedTypeName beanEnactor2Class = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2), Constants.BEAN_ENACTOR2), typeResult);
+        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(Constants.QUERY_INVOKER2WP), Constants.QUERY_INVOKER2WP);
+        ParameterizedTypeName beanEnactor2Class = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2_WP), Constants.BEAN_ENACTOR2_WP), typeResult);
 
         ClassName inputProcessorClass = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), INPUT_PROCESSOR);
         builder.superclass(beanEnactor2Class);
 
 
 
+
         builder.addField(inputProcessorClass,"checker",Modifier.FINAL, Modifier.PRIVATE);
+
 
 
         // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
@@ -80,8 +81,8 @@ public class CompilerBeanEnactor2Composite {
 
                 mspec.addStatement("return $N.generic_enact(new $T(),bean,\n" +
                         "                b -> checker.process(b),\n" +
-                        "                (sb,b) -> new $T(sb,true).process(b),\n" +
-                        "                (rs,b) -> $N.beanCompleterFactory(rs,new Object[1]).process(b))", Constants.REALISER, outputClassName, queryInvokerClass, Constants.REALISER);
+                        "                (sb,b) -> new $T(sb,true,$N()).process(b),\n" +
+                        "                (rs,b) -> $N.beanCompleterFactory(rs,new Object[1]).process(b))", Constants.REALISER, outputClassName, queryInvokerClass, "getPrincipal", Constants.REALISER);
 
                 builder.addMethod(mspec.build());
             }
@@ -94,7 +95,7 @@ public class CompilerBeanEnactor2Composite {
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+ DOT_JAVA_EXTENSION, myPackage);
+        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName+ DOT_JAVA_EXTENSION, myPackage);
 
     }
 

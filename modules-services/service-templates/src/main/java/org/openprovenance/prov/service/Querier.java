@@ -33,7 +33,6 @@ public class Querier  {
         ResultSet rs;
         try {
             rs=storage.executeQuery(conn,statement);
-
             completeData.accept(rs, data);
             rs.close();
         } catch (SQLException e) {

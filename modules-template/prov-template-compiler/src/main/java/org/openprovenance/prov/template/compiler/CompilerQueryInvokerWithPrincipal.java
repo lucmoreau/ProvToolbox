@@ -149,7 +149,7 @@ public class CompilerQueryInvokerWithPrincipal {
         }
         String endCallString= "))";
         mspec.addStatement("$N.append($S)", sbVar, endCallString);
-        insertAccessControl(config, sbVar, mspec, bindingsSchema);
+        insertAccessControlSimple(config, sbVar, mspec, bindingsSchema);
 
 
         mspec.addStatement("$N.append($S)", sbVar, ";\n");
@@ -157,7 +157,7 @@ public class CompilerQueryInvokerWithPrincipal {
 
     }
 
-    private void insertAccessControl(TemplateCompilerConfig config, String sbVar, MethodSpec.Builder mspec, TemplateBindingsSchema bindingsSchema) {
+    private void insertAccessControlSimple(TemplateCompilerConfig config, String sbVar, MethodSpec.Builder mspec, TemplateBindingsSchema bindingsSchema) {
         mspec.addStatement("$N.append($S)", sbVar, "\nINSERT INTO record_index(key,table_name,principal)\n");
         mspec.addStatement("$N.append($S).append($S).append($N($S))",
                 sbVar,
@@ -181,6 +181,45 @@ public class CompilerQueryInvokerWithPrincipal {
 
             }
         }
+
+    }
+
+    private void insertAccessControlComposite(TemplateCompilerConfig config, String sbVar, MethodSpec.Builder mspec, SimpleTemplateCompilerConfig composee, TemplateBindingsSchema bindingsSchema) {
+        mspec.addStatement("$N.append($S)", sbVar, "insertion_result2 AS (");
+        mspec.addStatement("$N.append($S)", sbVar, "\n   INSERT INTO record_index(key,table_name,principal)\n");
+        mspec.addStatement("$N.append($S).append($S).append($N($S))",
+                sbVar,
+                "   SELECT id",
+                ",",
+                queryInvokerVar + "." + CONVERT_TO_NON_NULLABLE_TEXT,
+                composee.name);
+        mspec.addStatement("$N.append($S).append($N($N))",
+                sbVar,
+                ",",
+                queryInvokerVar + "." + CONVERT_TO_NON_NULLABLE_TEXT,
+                principalVar);
+        mspec.addStatement("$N.append($S)", sbVar, "\n   FROM insertion_result\n");
+        mspec.addStatement("$N.append($S)", sbVar, "   returning *),\n");
+
+        mspec.addStatement("$N.append($S)", sbVar, "insertion_result3 AS (");
+
+        mspec.addStatement("$N.append($S)", sbVar, "\n   INSERT INTO record_index(key,table_name,principal)\n");
+        mspec.addStatement("$N.append($S).append($S).append($N($S))",
+                sbVar,
+                "   SELECT parent as key",
+                ",",
+                queryInvokerVar + "." + CONVERT_TO_NON_NULLABLE_TEXT,
+                config.name);
+        mspec.addStatement("$N.append($S).append($N($N))",
+                sbVar,
+                ",",
+                queryInvokerVar + "." + CONVERT_TO_NON_NULLABLE_TEXT,
+                principalVar);
+        mspec.addStatement("$N.append($S)", sbVar, "\n   from insertion_result)\n");
+
+        mspec.addStatement("$N.append($S)", sbVar, "select * from insertion_result\n");
+
+
     }
 
     private void simpleQueryInvokerEmbedded(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, List<String> sharing) {
@@ -282,10 +321,10 @@ public class CompilerQueryInvokerWithPrincipal {
 
         mspec.endControlFlow();
 
-        mspec.addStatement("$N.append($S)", sbVar, "]))\n");
+        mspec.addStatement("$N.append($S)", sbVar, "])),\n");
 
 
-        insertAccessControl(config, sbVar, mspec, compilerUtil.getBindingsSchema(composee));
+        insertAccessControlComposite(config, sbVar, mspec, composee, compilerUtil.getBindingsSchema(composee));
 
         mspec.addStatement("$N.append($S)", sbVar, ";\n");
 

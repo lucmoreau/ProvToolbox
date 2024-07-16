@@ -21,6 +21,7 @@ import org.openprovenance.prov.vanilla.ProvFactory;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -150,7 +151,7 @@ public class TemplateLogic {
     }
 
 
-    public void generateViz(TemplatesVizConfig config, OutputStream out) {
+    public void generateViz(TemplatesVizConfig config, String principal, OutputStream out) {
 
         typeAssignment.entrySet().removeIf(entry -> entry.getValue() ==null || entry.getValue().isEmpty());
 
@@ -172,7 +173,7 @@ public class TemplateLogic {
                                                                         .get(var))))));
 
         logger.info("baseTypes " + baseTypes);
-        templateQuery.generateViz(config.id, config.template, config.property, baseTypes, out);
+        templateQuery.generateViz(config.id, config.template, config.property, baseTypes, principal, out);
     }
 
 

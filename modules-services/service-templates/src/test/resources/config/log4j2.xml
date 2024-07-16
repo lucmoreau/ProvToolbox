@@ -12,8 +12,6 @@
       <AppenderRef ref="Console"/>
     </Root>
 
-
-
     <Logger name="org.openprovenance.prov.service.translator" level="info"  additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>

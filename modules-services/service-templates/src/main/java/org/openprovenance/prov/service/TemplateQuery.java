@@ -155,11 +155,11 @@ public class TemplateQuery {
 
     }
 
-    public void generateViz(Integer id, String template, String property, Map<String, Map<String, String>> baseTypes, OutputStream out) {
+    public void generateViz(Integer id, String template, String property, Map<String, Map<String, String>> baseTypes, String principal, OutputStream out) {
 
         logger.info("generateViz " + id + " " + template + " " + property);
 
-        List<TemplateConnection> templateConnections = recursiveTraversal(id, template, property);
+        List<TemplateConnection> templateConnections = recursiveTraversal(id, template, property, principal);
         // reverse list
         Collections.reverse(templateConnections);
 
@@ -176,7 +176,7 @@ public class TemplateQuery {
         public String out_property;
     }
 
-    public List<TemplateConnection> recursiveTraversal(Integer id, String template, String property) {
+    public List<TemplateConnection> recursiveTraversal(Integer id, String template, String property, String principal) {
         List<TemplateConnection> the_records = new LinkedList<>();
         querier.do_query(the_records,
                 null,
@@ -188,7 +188,9 @@ public class TemplateQuery {
                     sb.append(template);
                     sb.append("','");
                     sb.append(property);
-                    sb.append("')");
+                    sb.append("') as template_connection\n");
+                    joinAccessControl("template_connection.in_template", principal, sb, "template_connection", "in_id");
+                    andAccessControl(principal, sb);
                 },
                 (rs, data) -> {
                     while (rs.next()) {
@@ -206,6 +208,8 @@ public class TemplateQuery {
         return the_records;
     }
 
+
+
     public Document constructDocument(Map<String, FileBuilder> documentBuilderDispatcher, List<Object[]> the_records) {
             IndexedDocument iDoc = new IndexedDocument(pf, pf.newDocument());
             for (Object[] record : the_records) {
@@ -221,7 +225,7 @@ public class TemplateQuery {
             return iDoc.toDocument();
         }
 
-    public List<Object[]> query(String template, Integer id, boolean withTitles, Principal principal) {
+    public List<Object[]> query(String template, Integer id, boolean withTitles, String principal) {
         if (isComposite(template)) {
             return queryComposite(template, id, withTitles, principal);
         } else {
@@ -233,7 +237,7 @@ public class TemplateQuery {
         return compositeLinker.containsKey(template);
     }
 
-    public List<Object[]> querySimple(String template, Integer id, boolean withTitles, Principal principal) {
+    public List<Object[]> querySimple(String template, Integer id, boolean withTitles, String principal) {
         List<Object[]> the_records = new LinkedList<>();
         String[] propertyOrder=templateDispatcher.getPropertyOrder().get(template);
         //System.out.println("propertyOrder = " + Arrays.toString(propertyOrder));
@@ -261,7 +265,7 @@ public class TemplateQuery {
                     joinAccessControl(template, principal, sb);
                     sb.append("\n WHERE template.id=");
                     sb.append(id);
-                    whereAccessControl(principal, sb);
+                    andAccessControl(principal, sb);
 
                 },
                 (rs, data) -> {
@@ -284,25 +288,39 @@ public class TemplateQuery {
         return the_records;
     }
 
-    public void whereAccessControl(Principal principal, StringBuilder sb) {
+    public void whereAccessControl(String principal, StringBuilder sb) {
+        sb.append("\n WHERE (record_index.principal='");
+        sb.append(principal);
+        sb.append("' OR access_control.record IS NOT NULL)");
+    }
+    public void andAccessControl(String principal, StringBuilder sb) {
         sb.append("\n AND (record_index.principal='");
-        sb.append(principal.getName());
+        sb.append(principal);
         sb.append("' OR access_control.record IS NOT NULL)");
     }
 
-    public void joinAccessControl(String template, Principal principal, StringBuilder sb) {
-        sb.append("\n LEFT JOIN record_index ON record_index.key=template.id");
-        sb.append("\n AND record_index.table_name='");
-        sb.append(template);
-        sb.append("'");
+    public void joinAccessControl(String template, String principal, StringBuilder sb) {
+        joinAccessControl(template, principal, sb, "template", "id");
+    }
+
+    public void joinAccessControl(String template, String principal, StringBuilder sb, String label, String id) {
+        sb.append("\n LEFT JOIN record_index ON record_index.key=" + label + "." + id);
+        if (template.startsWith(label)) {
+            sb.append("\n AND record_index.table_name=");
+            sb.append(template);
+        } else {
+            sb.append("\n AND record_index.table_name='");
+            sb.append(template);
+            sb.append("'");
+        }
         sb.append("\n AND record_index.principal IS NOT NULL");
         sb.append("\n LEFT JOIN access_control\n ON access_control.record=record_index.id");
         sb.append("\n AND access_control.authorized='");
-        sb.append(principal.getName());
+        sb.append(principal);
         sb.append("'");
     }
 
-    public List<RecordEntry2> queryTemplatesRecords(SearchConfig config) {
+    public List<RecordEntry2> queryTemplatesRecords(SearchConfig config, String principal) {
         String base_relation = config.base_relation;
         String from_date = config.from_date;
         String to_date = config.to_date;
@@ -316,18 +334,20 @@ public class TemplateQuery {
         }
 
 
-        return queryTemplatesRecords(base_relation, from_date, to_date, limit);
+        return queryTemplatesRecords(base_relation, from_date, to_date, limit, principal);
     }
 
-    private List<RecordEntry2> queryTemplatesRecords(String base_relation, String from_date, String to_date, Integer limit) {
+    private List<RecordEntry2> queryTemplatesRecords(String base_relation, String from_date, String to_date, Integer limit, String principal) {
         List<RecordEntry2> linked_records = new LinkedList<>();
 
         querier.do_query(linked_records,
                 null,
                 (sb, data) -> {
-                    sb.append("SELECT * FROM ");
-                    sb.append("search_records_for_" + base_relation + "(").append(from_date).append(",").append(to_date).append(") ");
-                    sb.append("limit ").append(limit);
+                    sb.append("SELECT search_record.*\n FROM ");
+                    sb.append("search_records_for_" + base_relation + "(").append(from_date).append(",").append(to_date).append(") as search_record ");
+                    joinAccessControl("search_record.table_name", principal, sb, "search_record", "key");
+                    whereAccessControl(principal, sb);
+                    sb.append("\n limit ").append(limit);
                     System.out.println("sb = " + sb.toString());
                 },
                 (rs, data) -> {
@@ -410,7 +430,7 @@ public class TemplateQuery {
 
 
     }
-    public List<Object[]> queryComposite(String template, Integer id, boolean withTitles, Principal principal) {
+    public List<Object[]> queryComposite(String template, Integer id, boolean withTitles, String principal) {
         List<RecordEntry> linked_records = new LinkedList<>();
         TemplateService.Linker linker = compositeLinker.get(template);
 
@@ -451,7 +471,7 @@ public class TemplateQuery {
         return the_records;
     }
 
-    public List<Object[]> queryTemplates(TableKeyList tableKeyList, boolean withTitles, Principal principal) {
+    public List<Object[]> queryTemplates(TableKeyList tableKeyList, boolean withTitles, String principal) {
         List<Object[]> result = new LinkedList<>();
         for (TableKey tableKey : tableKeyList.key) {
             logger.info("tableKey = " + tableKey);
@@ -561,6 +581,7 @@ public class TemplateQuery {
                                     }
                                     fun.on (out_templatex + "." +  out_property + " = " + in_templatex  + "." +  in_property )
                                             .and(           unquote(PARAM_PROPERTY) + " = '" + in_property + "'")
+                                            .and(           unquote(PARAM_TEMPLATE) + " = '" + in_templatex + "'")
                                             .and( in_templatex + ".id=" + PARAM_ID);
                                 }
                             }

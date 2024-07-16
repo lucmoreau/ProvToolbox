@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
@@ -22,6 +23,7 @@ import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.readers.*;
 
+import org.openprovenance.prov.service.security.pac.RoleAuthorizationGenerator;
 import org.openprovenance.prov.service.security.pac.SecurityConfiguration;
 import org.openprovenance.prov.service.security.pac.Utils;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
@@ -29,6 +31,10 @@ import org.openprovenance.prov.template.library.plead.sql.access_control.SqlComp
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.ProvUtilities;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.profile.BasicUserProfile;
+import org.pac4j.core.profile.Pac4JPrincipal;
+import org.pac4j.core.profile.UserProfile;
 
 import java.io.*;
 import java.security.Principal;
@@ -177,13 +183,16 @@ public class TemplateService {
     @Tag(name = "template")
     @Consumes({InteropMediaType.MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON})
     @Produces({InteropMediaType.MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON}) //InteropMediaType.MEDIA_TEXT_CSV,
-    public Response submitStatements(@Context HttpServletResponse response,
-                                      @Context HttpServletRequest request,
+    public Response submitStatements(@Context HttpServletRequest request,
                                       @Context HttpHeaders headers,
                                       @Context UriInfo uriInfo,
                                      // @Parameter(name = "id", description = "session id", required = true) @PathParam("id") String sessionUUID,
                                       JsonOrCsv documentOrCsv) {
         Principal principal = request.getUserPrincipal();
+        logger.info("headers " + headers.getRequestHeaders());
+
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
         logger.info("post statements id: principal " + principal);
 
         if (documentOrCsv==null) {
@@ -191,7 +200,7 @@ public class TemplateService {
         }
 
         // set thread specific variable
-        setPrincipal(principal.getName());
+        setPrincipal(principalAsPreferredUsername);
 
         List<Object> result;
         if (documentOrCsv.csv!=null) {
@@ -219,16 +228,19 @@ public class TemplateService {
                                                  @Context HttpServletRequest request,
                                                  @Context HttpHeaders headers,
                                                  @Context UriInfo uriInfo,
+
                                                  @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
                                                  @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id,
                                                  @Parameter(name = "extension", description = "extension", required = true) @PathParam("extension") String extension) {
-
 
         logger.info("getTemplateInstanceWithId " + template + " " + id + " " + extension);
 
         Principal principal = request.getUserPrincipal();
 
-        List<Object[]> records = queryTemplate.query(template, id, false, principal);
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+
+        List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
         debugDisplay("records.size ", records.size());
 
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
@@ -243,6 +255,16 @@ public class TemplateService {
 
         }
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
+    }
+
+    public String getPrincipalAsPreferredUsername(Principal principal) {
+        String principalAsPreferredUsername= principal.getName();
+        UserProfile profile = RoleAuthorizationGenerator.getProfile(principal.getName());
+        if (profile!=null) {
+            String tmp= (String) profile.getAttribute("preferred_username");
+            if (tmp!=null) principalAsPreferredUsername=tmp;
+        }
+        return principalAsPreferredUsername;
     }
 
 
@@ -260,11 +282,12 @@ public class TemplateService {
                                                       @Parameter(name = "extension", description = "extension", required = true) @PathParam("extension") String extension) {
 
         Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
         logger.info("getTemplatePropertyInstanceWithId " + template + " " + id + " " + variable);
 
-        List<Object[]> records = queryTemplate.query(template, id, false, principal);
+        List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
         //debugDisplay("records.size ", records.size());
 
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
@@ -329,8 +352,9 @@ public class TemplateService {
                                  TableKeyList tableKey) {
 
         Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
-        List<Object[]> records = queryTemplate.queryTemplates(tableKey, false, principal);
+        List<Object[]> records = queryTemplate.queryTemplates(tableKey, false, principalAsPreferredUsername);
 
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 
@@ -360,7 +384,11 @@ public class TemplateService {
 
         logger.info("getTemplatesRecords " + searchConfig);
 
-        List<TemplateQuery.RecordEntry2> records = queryTemplate.queryTemplatesRecords(searchConfig);
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+
+        List<TemplateQuery.RecordEntry2> records = queryTemplate.queryTemplatesRecords(searchConfig, principalAsPreferredUsername);
 
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader();
         StreamingOutput promise= out -> {
@@ -395,8 +423,11 @@ public class TemplateService {
                                     @Context UriInfo uriInfo,
                                     TemplatesVizConfig config) {
 
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
-        StreamingOutput promise= out -> templateLogic.generateViz(config, out);
+
+        StreamingOutput promise= out -> templateLogic.generateViz(config, principalAsPreferredUsername, out);
 
         return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_IMAGE_SVG_XML).build();
 
@@ -415,6 +446,8 @@ public class TemplateService {
                                 @Parameter(name = "id", description = "id", required = true) @PathParam("id") Integer id,
                                 @Parameter(name = "extension", description = "extension", required = false) @PathParam("extension") String extension){
         Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
 
         logger.info("getLiveNode " + relation + " " + id);
 
@@ -429,7 +462,7 @@ public class TemplateService {
 
         logger.info("getLiveNode " + tableKeyList);
 
-        List<Object[]> records = queryTemplate.queryTemplates(tableKeyList, false, principal);
+        List<Object[]> records = queryTemplate.queryTemplates(tableKeyList, false, principalAsPreferredUsername);
 
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 

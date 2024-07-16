@@ -3,6 +3,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 `2.0.8-SNAPSHOT`
 * module-tools: prov-template-archetype and prov-toolbox-plugin
 * prov-template-compiler: record index with principal
+* service-template: simple and composite queries with access control
+
 
 `2.0.7`
 * prov-jsonld: fixed context url

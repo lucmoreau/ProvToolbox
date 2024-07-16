@@ -30,6 +30,7 @@ public class Querier  {
         StringBuilder sb=new StringBuilder();
         composeQuery.accept(sb,data);
         String statement=sb.toString();
+        logger.debug("Executing statement: " + statement);
         ResultSet rs;
         try {
             rs=storage.executeQuery(conn,statement);

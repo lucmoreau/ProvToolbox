@@ -226,7 +226,9 @@ public class TemplateService {
 
         logger.info("getTemplateInstanceWithId " + template + " " + id + " " + extension);
 
-        List<Object[]> records = queryTemplate.query(template, id, false);
+        Principal principal = request.getUserPrincipal();
+
+        List<Object[]> records = queryTemplate.query(template, id, false, principal);
         debugDisplay("records.size ", records.size());
 
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
@@ -257,10 +259,12 @@ public class TemplateService {
                                                       @Parameter(name = "variable", description = "variable", required = true) @PathParam("variable") String variable,
                                                       @Parameter(name = "extension", description = "extension", required = true) @PathParam("extension") String extension) {
 
+        Principal principal = request.getUserPrincipal();
+
 
         logger.info("getTemplatePropertyInstanceWithId " + template + " " + id + " " + variable);
 
-        List<Object[]> records = queryTemplate.query(template, id, false);
+        List<Object[]> records = queryTemplate.query(template, id, false, principal);
         //debugDisplay("records.size ", records.size());
 
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
@@ -324,7 +328,9 @@ public class TemplateService {
                                  @Parameter(name = "extension", description = "extension", required = true) @PathParam("extension") String extension,
                                  TableKeyList tableKey) {
 
-        List<Object[]> records = queryTemplate.queryTemplates(tableKey, false);
+        Principal principal = request.getUserPrincipal();
+
+        List<Object[]> records = queryTemplate.queryTemplates(tableKey, false, principal);
 
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 
@@ -408,6 +414,7 @@ public class TemplateService {
                                 @Parameter(name = "relation", description = "relation", required = true) @PathParam("relation") String relation,
                                 @Parameter(name = "id", description = "id", required = true) @PathParam("id") Integer id,
                                 @Parameter(name = "extension", description = "extension", required = false) @PathParam("extension") String extension){
+        Principal principal = request.getUserPrincipal();
 
         logger.info("getLiveNode " + relation + " " + id);
 
@@ -422,7 +429,7 @@ public class TemplateService {
 
         logger.info("getLiveNode " + tableKeyList);
 
-        List<Object[]> records = queryTemplate.queryTemplates(tableKeyList, false);
+        List<Object[]> records = queryTemplate.queryTemplates(tableKeyList, false, principal);
 
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 

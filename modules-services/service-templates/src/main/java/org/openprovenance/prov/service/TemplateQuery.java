@@ -15,6 +15,7 @@ import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import java.io.OutputStream;
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -220,11 +221,11 @@ public class TemplateQuery {
             return iDoc.toDocument();
         }
 
-    public List<Object[]> query(String template, Integer id, boolean withTitles) {
+    public List<Object[]> query(String template, Integer id, boolean withTitles, Principal principal) {
         if (isComposite(template)) {
-            return queryComposite(template, id, withTitles);
+            return queryComposite(template, id, withTitles, principal);
         } else {
-            return querySimple(template, id, withTitles);
+            return querySimple(template, id, withTitles, principal);
         }
     }
 
@@ -232,17 +233,36 @@ public class TemplateQuery {
         return compositeLinker.containsKey(template);
     }
 
-    public List<Object[]> querySimple(String template, Integer id, boolean withTitles) {
+    public List<Object[]> querySimple(String template, Integer id, boolean withTitles, Principal principal) {
         List<Object[]> the_records = new LinkedList<>();
         String[] propertyOrder=templateDispatcher.getPropertyOrder().get(template);
         //System.out.println("propertyOrder = " + Arrays.toString(propertyOrder));
         querier.do_query(the_records,
                 null,
                 (sb, data) -> {
-                    sb.append("SELECT * FROM ");
+            /* generate following query
+                    SELECT template.*
+                    FROM plead_transforming AS template
+                    LEFT JOIN record_index
+                    ON record_index.key = template.id
+                    AND record_index.table_name = 'plead_transforming'
+                    AND record_index.principal IS NOT NULL
+                    LEFT JOIN access_control
+                    ON access_control.record = record_index.id
+                    AND access_control.authorized = 'joe'
+                    WHERE template.id = 478
+                    AND (record_index.principal = 'joe' OR access_control.record IS NOT NULL);
+
+             */
+
+                    sb.append("SELECT template.*\n FROM ");
                     sb.append(template);
-                    sb.append(" WHERE id=");
+                    sb.append(" as template ");
+                    joinAccessControl(template, principal, sb);
+                    sb.append("\n WHERE template.id=");
                     sb.append(id);
+                    whereAccessControl(principal, sb);
+
                 },
                 (rs, data) -> {
                     while (rs.next()) {
@@ -262,6 +282,24 @@ public class TemplateQuery {
                 });
 
         return the_records;
+    }
+
+    public void whereAccessControl(Principal principal, StringBuilder sb) {
+        sb.append("\n AND (record_index.principal='");
+        sb.append(principal.getName());
+        sb.append("' OR access_control.record IS NOT NULL)");
+    }
+
+    public void joinAccessControl(String template, Principal principal, StringBuilder sb) {
+        sb.append("\n LEFT JOIN record_index ON record_index.key=template.id");
+        sb.append("\n AND record_index.table_name='");
+        sb.append(template);
+        sb.append("'");
+        sb.append("\n AND record_index.principal IS NOT NULL");
+        sb.append("\n LEFT JOIN access_control\n ON access_control.record=record_index.id");
+        sb.append("\n AND access_control.authorized='");
+        sb.append(principal.getName());
+        sb.append("'");
     }
 
     public List<RecordEntry2> queryTemplatesRecords(SearchConfig config) {
@@ -372,7 +410,7 @@ public class TemplateQuery {
 
 
     }
-    public List<Object[]> queryComposite(String template, Integer id, boolean withTitles) {
+    public List<Object[]> queryComposite(String template, Integer id, boolean withTitles, Principal principal) {
         List<RecordEntry> linked_records = new LinkedList<>();
         TemplateService.Linker linker = compositeLinker.get(template);
 
@@ -381,8 +419,11 @@ public class TemplateQuery {
                 (sb, data) -> {
                     sb.append("SELECT * FROM ");
                     sb.append(linker.table);
+                    sb.append(" AS template ");
+                    joinAccessControl(template, principal, sb);
                     sb.append(" WHERE composite=");
                     sb.append(id);
+                    whereAccessControl(principal, sb);
                 },
                 (rs, data) -> {
                     while (rs.next()) {
@@ -403,18 +444,18 @@ public class TemplateQuery {
         List<Object[]> the_records = new LinkedList<>();
         for (RecordEntry linked_record : linked_records) {
             Integer simple = linked_record.key;
-            List<Object[]> simple_records = querySimple(linked_record.table, simple, withTitles);
+            List<Object[]> simple_records = querySimple(linked_record.table, simple, withTitles, principal);
             the_records.addAll(simple_records);
         }
 
         return the_records;
     }
 
-    public List<Object[]> queryTemplates(TableKeyList tableKeyList, boolean withTitles) {
+    public List<Object[]> queryTemplates(TableKeyList tableKeyList, boolean withTitles, Principal principal) {
         List<Object[]> result = new LinkedList<>();
         for (TableKey tableKey : tableKeyList.key) {
             logger.info("tableKey = " + tableKey);
-            List<Object[]> tmp=query(tableKey.isA, tableKey.ID, withTitles);
+            List<Object[]> tmp=query(tableKey.isA, tableKey.ID, withTitles, principal);
             result.addAll(tmp);
         }
         return result;

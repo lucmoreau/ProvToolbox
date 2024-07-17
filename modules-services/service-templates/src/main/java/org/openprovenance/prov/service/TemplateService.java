@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
@@ -63,8 +62,8 @@ public class TemplateService {
     private final Map<String, FileBuilder> documentBuilderDispatcher;
     public static final String TPL_HOST = "TPL_HOST";
     public static final String provHost =getSystemOrEnvironmentVariableOrDefault(TPL_HOST, "http://localhost:8080/ems");
-    public static final String TPL_API = "TPL_API";
-    public static final String provAPI =getSystemOrEnvironmentVariableOrDefault(TPL_API, "http://localhost:8080/ems/provapi");
+    public static final String PROV_API = "PROV_API";
+    public static final String provAPI =getSystemOrEnvironmentVariableOrDefault(PROV_API, "http://localhost:8080/ems/provapi");
     public static final String POSTGRES_HOST = "POSTGRES_HOST";
     public static final String postgresHost=System.getProperty(POSTGRES_HOST, "localhost");
     public static final String DB_USER = "TPL_DB_USER";
@@ -188,19 +187,17 @@ public class TemplateService {
                                       @Context UriInfo uriInfo,
                                      // @Parameter(name = "id", description = "session id", required = true) @PathParam("id") String sessionUUID,
                                       JsonOrCsv documentOrCsv) {
-        Principal principal = request.getUserPrincipal();
-        logger.info("headers " + headers.getRequestHeaders());
-
-        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
-
-        logger.info("post statements id: principal " + principal);
-
         if (documentOrCsv==null) {
             return utils.composeResponseInternalServerError("null document", new NullPointerException());
         }
 
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
         // set thread specific variable
         setPrincipal(principalAsPreferredUsername);
+
+        logger.info("post statements id: principal " + principal);
+
 
         List<Object> result;
         if (documentOrCsv.csv!=null) {
@@ -236,7 +233,6 @@ public class TemplateService {
         logger.info("getTemplateInstanceWithId " + template + " " + id + " " + extension);
 
         Principal principal = request.getUserPrincipal();
-
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
@@ -451,9 +447,9 @@ public class TemplateService {
 
         logger.info("getLiveNode " + relation + " " + id);
 
-        logger.info("accept header " + headers.getAcceptableMediaTypes());
+        //logger.info("accept header " + headers.getAcceptableMediaTypes());
 
-        List<TemplateQuery.RecordEntry2> ll=templateLogic.generateLiveNode(relation, id);
+        List<TemplateQuery.RecordEntry2> ll=templateLogic.generateLiveNode(relation, id, principalAsPreferredUsername);
         TableKeyList tableKeyList=new TableKeyList();
         ll.forEach(e -> tableKeyList.key.add(new TableKey() {{
             isA=e.table_name;
@@ -471,9 +467,9 @@ public class TemplateService {
             Object[] record=records.get(i);
             String property=ll.get(i).property;
             String template=(String)record[0];
-            logger.info("template " + template);
-            logger.info("property " + property);
-            logger.info("record " + java.util.Arrays.asList(record));
+            //logger.info("template " + template);
+            //logger.info("property " + property);
+            //logger.info("record " + java.util.Arrays.asList(record));
 
             int index=java.util.Arrays.asList(templateDispatcher.getPropertyOrder().get(template)).indexOf(property);
             Object[] objectRecord=recordMaker.get(template).apply(record);

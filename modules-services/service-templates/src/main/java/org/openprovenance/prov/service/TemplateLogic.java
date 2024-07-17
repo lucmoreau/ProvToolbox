@@ -21,7 +21,6 @@ import org.openprovenance.prov.vanilla.ProvFactory;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -221,9 +220,9 @@ public class TemplateLogic {
         return propertyMap;
     }
 
-    public List<TemplateQuery.RecordEntry2> generateLiveNode(String relation, Integer id) {
-        List<TemplateQuery.RecordEntry2> records=templateQuery.queryTemplatesRecordsById(relation, id, 30);
-        System.out.println("records " + records);
+    public List<TemplateQuery.RecordEntry2> generateLiveNode(String relation, Integer id, String principal) {
+        List<TemplateQuery.RecordEntry2> records=templateQuery.queryTemplatesRecordsById(relation, id, 30, principal);
+        //System.out.println("records " + records);
         return records;
     }
 }

@@ -16,7 +16,6 @@ import org.openprovenance.prov.vanilla.ProvFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -380,16 +379,18 @@ public class TemplateQuery {
         return linked_records;
     }
 
-    public List<RecordEntry2> queryTemplatesRecordsById(String base_relation, Integer id, Integer limit) {
+    public List<RecordEntry2> queryTemplatesRecordsById(String base_relation, Integer id, Integer limit, String principal) {
         List<RecordEntry2> linked_records = new LinkedList<>();
 
         querier.do_query(linked_records,
                 null,
                 (sb, data) -> {
                     sb.append("SELECT * FROM ");
-                    sb.append("search_records_by_id_for_" + base_relation + "(" + id + ") ");
-                    sb.append("limit ").append(limit);
-                    System.out.println("sb = " + sb.toString());
+                    sb.append("search_records_by_id_for_" + base_relation + "(" + id + ") as search_record");
+                    joinAccessControl("search_record.table_name", principal, sb, "search_record", "key");
+                    whereAccessControl(principal, sb);
+                    sb.append("\n limit ").append(limit);
+                    //System.out.println("sb = " + sb.toString());
                 },
                 (rs, data) -> {
                     while (rs.next()) {

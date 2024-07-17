@@ -14,6 +14,7 @@ import org.openprovenance.prov.template.compiler.sql.QueryBuilder;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.security.Principal;
 import java.sql.Timestamp;
@@ -343,10 +344,12 @@ public class TemplateQuery {
         querier.do_query(linked_records,
                 null,
                 (sb, data) -> {
-                    sb.append("SELECT search_record.*\n FROM ");
+                    sb.append("SELECT search_record.*,record_index.principal,json_agg(ac2.authorized) as authorized\n FROM ");
                     sb.append("search_records_for_" + base_relation + "(").append(from_date).append(",").append(to_date).append(") as search_record ");
                     joinAccessControl("search_record.table_name", principal, sb, "search_record", "key");
+                    sb.append("\n LEFT JOIN access_control as ac2  ON ac2.record=record_index.id");
                     whereAccessControl(principal, sb);
+                    sb.append("\n group by search_record.id, search_record.created_at, search_record.table_name, search_record.key, record_index.principal\n");
                     sb.append("\n limit ").append(limit);
                     System.out.println("sb = " + sb.toString());
                 },
@@ -358,6 +361,16 @@ public class TemplateQuery {
                         record.base_relation = base_relation;
                         record.table_name = rs.getObject("table_name", String.class);
                         record.id = rs.getObject("ID", Integer.class);
+                        record.principal = rs.getObject("principal", String.class);
+                        try {
+                            List<String> authorized=new ObjectMapper().readValue(rs.getString("authorized").getBytes(), List.class);
+                            if (authorized!=null && !authorized.isEmpty() && authorized.get(0)==null) {
+                                authorized=List.of();
+                            }
+                            record.authorized=authorized;
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
 
                         data.add(record);
                     }
@@ -412,6 +425,8 @@ public class TemplateQuery {
         public String created_at;
         public String table_name;
         public Integer id;
+        public String principal;
+        public List<String> authorized;
 
 
         @Override
@@ -423,10 +438,10 @@ public class TemplateQuery {
                     ", created_at='" + created_at + '\'' +
                     ", table_name='" + table_name + '\'' +
                     ", id=" + id +
+                    ", principal='" + principal + '\'' +
+                    ", authorized=" + authorized +
                     '}';
         }
-
-
 
 
     }

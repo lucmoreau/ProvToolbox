@@ -362,14 +362,15 @@ public class TemplateQuery {
                         record.table_name = rs.getObject("table_name", String.class);
                         record.id = rs.getObject("ID", Integer.class);
                         record.principal = rs.getObject("principal", String.class);
+                        String authorized1 = rs.getString("authorized");
                         try {
-                            List<String> authorized=new ObjectMapper().readValue(rs.getString("authorized").getBytes(), List.class);
+                            List<String> authorized=new ObjectMapper().readValue(authorized1.getBytes(), List.class);
                             if (authorized!=null && !authorized.isEmpty() && authorized.get(0)==null) {
                                 authorized=List.of();
                             }
                             record.authorized=authorized;
                         } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            throw new RuntimeException("failed to parse authorized field: " + authorized1, e);
                         }
 
                         data.add(record);

@@ -166,4 +166,5 @@ public interface Constants {
     String SQL_COMPOSITE_ENACTOR_CONFIGURATOR4= "SqlCompositeEnactorConfigurator4";
 
 
+    String POST_PROCESS_METHOD_NAME = "postEnactmentProcessing";
 }

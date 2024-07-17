@@ -97,13 +97,13 @@ public class CompilerBeanCompleter2 {
                 final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
 
                 final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
-                MethodSpec.Builder mspec = createProcessMethod(bindingsSchema, outputClassName, true);
+                MethodSpec.Builder mspec = createProcessMethod(config.name, bindingsSchema, outputClassName, true);
 
                 builder.addMethod(mspec.build());
 
 
                 final ClassName inputClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), inputBeanNameClass);
-                MethodSpec.Builder mspec2 = createProcessMethod(bindingsSchema, inputClassName, false);
+                MethodSpec.Builder mspec2 = createProcessMethod(config.name, bindingsSchema, inputClassName, false);
                 builder.addMethod(mspec2.build());
             } else {
                 CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
@@ -134,6 +134,12 @@ public class CompilerBeanCompleter2 {
             }
         }
 
+        builder.addMethod(MethodSpec.methodBuilder(POST_PROCESS_METHOD_NAME)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(Integer.class, "id")
+                .addParameter(String.class, "template")
+                .returns(void.class).build());
+
         builder.addMethod(MethodSpec.methodBuilder("next").addModifiers(Modifier.PUBLIC).returns(boolean.class).addStatement("return true").build());
 
 
@@ -148,7 +154,7 @@ public class CompilerBeanCompleter2 {
     }
 
 
-    private MethodSpec.Builder createProcessMethod(TemplateBindingsSchema bindingsSchema, ClassName outputClassName, boolean isOutput) {
+    private MethodSpec.Builder createProcessMethod(String template, TemplateBindingsSchema bindingsSchema, ClassName outputClassName, boolean isOutput) {
         MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
@@ -156,7 +162,10 @@ public class CompilerBeanCompleter2 {
         compilerUtil.specWithComment(mspec);
 
 
-        if (isOutput) mspec.addStatement("$N.ID= getter.get(Integer.class,$S)", BEAN_VAR, "ID");
+        if (isOutput) {
+            mspec.addStatement("$N.ID= getter.get(Integer.class,$S)", BEAN_VAR, "ID");
+            mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, BEAN_VAR, template);
+        }
 
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
             if (isOutput && descriptorUtils.isOutput(key, bindingsSchema)) {

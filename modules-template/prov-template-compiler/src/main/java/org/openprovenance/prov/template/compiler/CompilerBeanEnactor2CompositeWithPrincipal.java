@@ -9,6 +9,7 @@ import org.openprovenance.prov.template.compiler.configuration.*;
 import javax.lang.model.element.Modifier;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.sql.CompilerSqlIntegration.BIFUN;
 
 public class CompilerBeanEnactor2CompositeWithPrincipal {
     private final CompilerUtil compilerUtil;
@@ -37,6 +38,7 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
 
 
         builder.addField(inputProcessorClass,"checker",Modifier.FINAL, Modifier.PRIVATE);
+        builder.addField(BIFUN, "postProcessing", Modifier.FINAL, Modifier.PRIVATE);
 
 
 
@@ -49,13 +51,15 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
         MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER)
-                .addParameter(inputProcessorClass, "checker");
+                .addParameter(inputProcessorClass, "checker")
+                .addParameter(BIFUN, "postProcessing");
         compilerUtil.specWithComment(cbuilder3);
 
         cbuilder3
-                .addStatement("super($N,$N)", Constants.REALISER, "checker")
+                .addStatement("super($N,$N,$N)", Constants.REALISER, "checker","postProcessing")
                 .addStatement("this.$N = $N", Constants.REALISER, Constants.REALISER)
-                .addStatement("this.$N = $N", "checker", "checker");
+                .addStatement("this.$N = $N", "checker", "checker")
+                .addStatement("this.$N = postProcessing", "postProcessing");
 
         builder.addMethod(cbuilder3.build());
 
@@ -82,7 +86,7 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
                 mspec.addStatement("return $N.generic_enact(new $T(),bean,\n" +
                         "                b -> checker.process(b),\n" +
                         "                (sb,b) -> new $T(sb,true,$N()).process(b),\n" +
-                        "                (rs,b) -> $N.beanCompleterFactory(rs,new Object[1]).process(b))", Constants.REALISER, outputClassName, queryInvokerClass, "getPrincipal", Constants.REALISER);
+                        "                (rs,b) -> $N.beanCompleterFactory(rs,new Object[1],postProcessing))", Constants.REALISER, outputClassName, queryInvokerClass, "getPrincipal", Constants.REALISER);
 
                 builder.addMethod(mspec.build());
             }

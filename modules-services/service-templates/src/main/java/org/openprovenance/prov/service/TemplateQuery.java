@@ -3,6 +3,7 @@ package org.openprovenance.prov.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Document;
@@ -165,6 +166,18 @@ public class TemplateQuery {
 
 
         new TemplatesToDot(templateConnections, baseTypes, ioMap, templateDispatcher, pf).convert(null, out, "template_connections");
+    }
+
+    DigestUtils sha512 = new DigestUtils(DigestUtils.getSha3_512Digest());
+
+    public Object getHash(String template, Object[] record) {
+        //String hash1=sha512.digestAsHex(record.toString());
+
+        String csv=templateDispatcher.getCsvConverter().get(template).process(record);
+        String hash2=sha512.digestAsHex(csv);
+
+        return List.of(hash2, csv);
+
     }
 
     static public class TemplateConnection {

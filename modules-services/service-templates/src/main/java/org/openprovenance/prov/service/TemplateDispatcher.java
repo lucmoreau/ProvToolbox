@@ -15,6 +15,7 @@ import org.openprovenance.prov.template.library.plead.sql.integration.SqlEnactor
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.library.plead.client.logger.Logger.initializeBeanTable;
@@ -38,6 +39,10 @@ public class TemplateDispatcher {
     private final Map<String, String[]> inputs;
     private final Map<String, String[]> outputs;
 
+    BiFunction<Integer, String, Object> postProcessing = (i, s) -> {
+        logger.info("Post processing: "+i+" "+s);
+        return null;
+    };
 
     public TemplateDispatcher(Storage storage, Connection conn) {
         propertyOrder=initializeBeanTable(new PropertyOrderConfigurator());
@@ -48,9 +53,9 @@ public class TemplateDispatcher {
         sqlInsert=initializeBeanTable(new SqlInsertConfigurator());
         beanConverter=initializeBeanTable(new ConverterConfigurator());
         //enactorConverter=initializeBeanTable(new SqlEnactorConfigurator(storage,conn));
-        enactorConverter=initializeBeanTable(new SqlEnactorConfigurator4(storage.getQuerier(conn)));
+        enactorConverter=initializeBeanTable(new SqlEnactorConfigurator4(storage.getQuerier(conn), postProcessing));
         //compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator(storage,conn));
-        compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator4(storage.getQuerier(conn)));
+        compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator4(storage.getQuerier(conn), postProcessing));
         successors = initializeBeanTable(new SuccessorConfigurator());
         predecessors = successors
                 .keySet()

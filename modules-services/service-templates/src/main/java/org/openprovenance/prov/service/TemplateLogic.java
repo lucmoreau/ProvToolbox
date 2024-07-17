@@ -35,21 +35,21 @@ public class TemplateLogic {
     private final Map<String, FileBuilder> documentBuilderDispatcher;
     private final ServiceUtils utils;
     private final ObjectMapper om;
-    private final SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor3;
+    private final SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor4;
 
     private final EnactCsvRecords<Object> enactCsvRecords= new EnactCsvRecords<>();
     private final TemplateQuery templateQuery;
     private final Map<String, Map<String, Set<String>>> typeAssignment;
 
 
-    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor3, Map<String, Map<String, Set<String>>> typeAssignment) {
+    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor4, Map<String, Map<String, Set<String>>> typeAssignment) {
         this.pf = pf;
         this.templateDispatcher = templateDispatcher;
         this.documentBuilderDispatcher = documentBuilderDispatcher;
         this.utils = utils;
         this.om = om;
         om.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
-        this.sqlCompositeBeanEnactor3 = sqlCompositeBeanEnactor3;
+        this.sqlCompositeBeanEnactor4 = sqlCompositeBeanEnactor4;
         this.templateQuery = templateQuery;
         this.typeAssignment = typeAssignment;
     }

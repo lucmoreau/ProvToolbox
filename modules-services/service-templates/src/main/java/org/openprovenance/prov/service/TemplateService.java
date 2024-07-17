@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
@@ -132,7 +133,7 @@ public class TemplateService {
         this.om.enable(SerializationFeature.INDENT_OUTPUT);
         this.om.registerModule(new JavaTimeModule());
 
-        this.sqlCompositeBeanEnactor4 =new SqlCompositeBeanEnactor4(storage.getQuerier(conn));
+        this.sqlCompositeBeanEnactor4 =new SqlCompositeBeanEnactor4(storage.getQuerier(conn), templateDispatcher.postProcessing);
 
         this.compositeLinker=new HashMap<>() {{
             put("plead_transforming_composite", new Linker("plead_transforming_composite_linker", "plead_transforming"));
@@ -500,6 +501,40 @@ public class TemplateService {
         }
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
 
+
+    }
+
+    @GET
+    @Path("/template/{template}/{id}/hash")
+    @Tag(name = "template")
+    @Produces({ InteropMediaType.MEDIA_TEXT_PLAIN})
+    public Response getHash(@Context HttpServletResponse response,
+                                              @Context HttpServletRequest request,
+                                              @Context HttpHeaders headers,
+                                              @Context UriInfo uriInfo,
+
+                                              @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
+                                              @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id) {
+
+        logger.info("getHash " + template + " " + id );
+
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+
+        List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
+        if (records.size()!=1) {
+            return utils.composeResponseBadRequest("record not found", new IllegalArgumentException("size not 1:" + records.size()));
+        }
+
+        Object[] record=records.get(0);
+
+
+        Object hash=queryTemplate.getHash(template,record);
+
+
+
+        return ServiceUtils.composeResponseOK(hash).type(InteropMediaType.MEDIA_TEXT_PLAIN).build();
 
     }
 

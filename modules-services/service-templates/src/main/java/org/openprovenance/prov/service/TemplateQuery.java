@@ -168,9 +168,9 @@ public class TemplateQuery {
         new TemplatesToDot(templateConnections, baseTypes, ioMap, templateDispatcher, pf).convert(null, out, "template_connections");
     }
 
-    DigestUtils sha512 = new DigestUtils(DigestUtils.getSha3_512Digest());
+    final DigestUtils sha512 = new DigestUtils(DigestUtils.getSha3_512Digest());
 
-    public Object getHash(String template, Object[] record) {
+    public List<String> getHash(String template, Object[] record) {
         //String hash1=sha512.digestAsHex(record.toString());
 
         String csv=templateDispatcher.getCsvConverter().get(template).process(record);
@@ -178,6 +178,34 @@ public class TemplateQuery {
 
         return List.of(hash2, csv);
 
+    }
+
+    public void updateHash(String template, int id, List<String> hash, String principal) {
+        querier.do_statements(null,
+                null,
+                (sb, data) -> {
+                    sb.append("UPDATE record_index");
+                    sb.append(" SET hash='");
+                    sb.append(makeSignatureRecord(hash));
+                    sb.append("' WHERE key=");
+                    sb.append(id);
+                    sb.append(" AND principal='");
+                    sb.append(principal);
+                    sb.append("'");
+                    sb.append(" AND table_name='");
+                    sb.append(template);
+                    sb.append("'");
+                });
+    }
+
+    private String makeSignatureRecord(List<String> hash) {
+        Map<String,String> map=new LinkedHashMap<>();
+        map.put("SHA3-512", hash.get(0));
+        try {
+            return om.writeValueAsString(map);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     static public class TemplateConnection {
@@ -356,12 +384,12 @@ public class TemplateQuery {
         querier.do_query(linked_records,
                 null,
                 (sb, data) -> {
-                    sb.append("SELECT search_record.*,record_index.principal,json_agg(ac2.authorized) as authorized\n FROM ");
+                    sb.append("SELECT search_record.*,record_index.principal,json_agg(ac2.authorized) as authorized,record_index.hash as hash\n FROM ");
                     sb.append("search_records_for_" + base_relation + "(").append(from_date).append(",").append(to_date).append(") as search_record ");
                     joinAccessControl("search_record.table_name", principal, sb, "search_record", "key");
                     sb.append("\n LEFT JOIN access_control as ac2  ON ac2.record=record_index.id");
                     whereAccessControl(principal, sb);
-                    sb.append("\n group by search_record.id, search_record.created_at, search_record.table_name, search_record.key, record_index.principal\n");
+                    sb.append("\n group by search_record.id, search_record.created_at, search_record.table_name, search_record.key, record_index.principal, record_index.hash\n");
                     sb.append("\n limit ").append(limit);
                     System.out.println("sb = " + sb.toString());
                 },
@@ -375,12 +403,15 @@ public class TemplateQuery {
                         record.id = rs.getObject("ID", Integer.class);
                         record.principal = rs.getObject("principal", String.class);
                         String authorized1 = rs.getString("authorized");
+                        String hash1= rs.getString("hash");
                         try {
-                            List<String> authorized=new ObjectMapper().readValue(authorized1.getBytes(), List.class);
+                            List<String> authorized=(authorized1==null)?null:om.readValue(authorized1.getBytes(), List.class);
+                            Map<String,String> hash=(hash1==null)?null:om.readValue(hash1, Map.class);
                             if (authorized!=null && !authorized.isEmpty() && authorized.get(0)==null) {
                                 authorized=List.of();
                             }
                             record.authorized=authorized;
+                            record.hash=hash;
                         } catch (IOException e) {
                             throw new RuntimeException("failed to parse authorized field: " + authorized1, e);
                         }
@@ -442,6 +473,7 @@ public class TemplateQuery {
         public Integer id;
         public String principal;
         public List<String> authorized;
+        public Map<String, String> hash;
 
 
         @Override
@@ -455,6 +487,7 @@ public class TemplateQuery {
                     ", id=" + id +
                     ", principal='" + principal + '\'' +
                     ", authorized=" + authorized +
+                    ", hash=" + hash +
                     '}';
         }
 

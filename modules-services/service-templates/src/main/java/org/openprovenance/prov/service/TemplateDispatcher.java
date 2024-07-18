@@ -39,12 +39,8 @@ public class TemplateDispatcher {
     private final Map<String, String[]> inputs;
     private final Map<String, String[]> outputs;
 
-    BiFunction<Integer, String, Object> postProcessing = (i, s) -> {
-        logger.info("Post processing: "+i+" "+s);
-        return null;
-    };
 
-    public TemplateDispatcher(Storage storage, Connection conn) {
+    public TemplateDispatcher(Storage storage, Connection conn, BiFunction<Integer, String, Object> postProcessing) {
         propertyOrder=initializeBeanTable(new PropertyOrderConfigurator());
         inputs=initializeBeanTable(new InputsConfigurator());
         outputs = initializeBeanTable(new OutputsConfigurator());

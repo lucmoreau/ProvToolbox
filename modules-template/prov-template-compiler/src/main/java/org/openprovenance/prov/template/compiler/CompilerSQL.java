@@ -469,7 +469,8 @@ public class CompilerSQL {
                 "  ID SERIAL,\n" +
                 "  key INT,\n" +
                 "  table_name TEXT,\n" +
-                "  principal TEXT\n" +
+                "  principal TEXT,\n" +
+                "  hash jsonb\n" +
                 ");\n" +
                 "\n" +
                 "\n" +

@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import static org.openprovenance.prov.template.library.plead.sql.integration.BeanEnactor2WithPrincipal.getPrincipal;
 
 public class TemplateLogic {
 
@@ -224,5 +225,21 @@ public class TemplateLogic {
         List<TemplateQuery.RecordEntry2> records=templateQuery.queryTemplatesRecordsById(relation, id, 30, principal);
         //System.out.println("records " + records);
         return records;
+    }
+
+    public Object postProcessing(int id, String template) {
+        logger.info("postProcessing " + id + " " + template);
+
+        String principal=getPrincipal();
+        List<Object[]> records = templateQuery.query(template, id, false, principal);
+
+        if (!records.isEmpty()) {
+            Object[] record=records.get(0);
+            List<String> hash=templateQuery.getHash(template,record);
+            templateQuery.updateHash(template, id, hash, principal);
+            logger.info("update hash for " + id + " " + template + ": " + hash);
+        }
+
+        return null;
     }
 }

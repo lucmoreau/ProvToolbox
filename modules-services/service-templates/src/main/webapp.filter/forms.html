@@ -132,7 +132,7 @@
                     <label for="browser_base_relation">Base relation:</label><input type="text" id="browser_base_relation" class="form-control" value="activity">
                     <label for="browser_from_date">From date:</label><input type="datetime-local" id="browser_from_date" class="form-control" >
                     <label for="browser_to_date">To date:</label><input type="datetime-local" id="browser_to_date" class="form-control" >
-                    <label for="browser_limit"></label><input type="number" id="browser_limit" class="form-control" value="10">
+                    <label for="browser_limit"></label><input type="number" id="browser_limit" class="form-control" value="100">
 
                     <p></p>
                     <button id="browser-refresh" type="button" class="btn btn-info" onclick="submitBrowse()">Refresh</button>
@@ -523,17 +523,52 @@
             })
             console.log(titles)
             data.shift()
+            console.log(data)
 
             $(id).DataTable({
                 destroy: true,
                 "data": data,
                 "columns": titles,
-                order: [[1, 'desc']]
+                order: [[1, 'desc']],
+                columnDefs: [
+                    {
+                        // The `data` parameter refers to the data for the cell (defined by the
+                        // `data` option, which defaults to the column being worked with, in
+                        // this case `data: 0`.
+                        render: (data, type, row) => makeLinkToSignature(cleanSignature(data),row[4],row[3]),
+                        targets: 7
+                    },//,
+                    {
+                        render: (data, type, row) => makeLinkToTemplate(data,row[4],row[3]),
+                        targets: 4
+                    }
+                    //{ visible: false, targets: [3] }
+                    ]
+
             });
         }
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(json_data);
 
+    }
+
+    function cleanSignature(data) {
+        console.log("cleanSignature " + data)
+        if (data===null || data===undefined || data==="" || data==="null") {
+            return "";
+        }
+        let sig=JSON.parse(data)["SHA3-512"]
+        return sig.substring(0, 8) + "...";
+    }
+
+    function makeLinkToSignature(data, id, template) {
+        if (data==="") return "";
+        return "<a  target='_blank' href='${service.context}/provapi/hash/template/" + template + "/" + id + "'>" + data + "</a>";
+    }
+
+    function makeLinkToTemplate(data, id, template) {
+        if (data==="") return "";
+        return "<a  target='_blank' href='${service.context}/provapi/template/" + template + "/" + id + ".svg'>" + data + "</a>";
     }
 
     function submitNavigate(id) {

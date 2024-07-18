@@ -6,6 +6,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-template: simple and composite queries with access control
 * service-template: queries with access control, incl browsing and navigation
 * service-template: hash of record, post-processing of record
+* service-template: browsing tab, with links to hash of record and template
 
 
 `2.0.7`

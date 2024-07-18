@@ -40,6 +40,7 @@ public class TemplateQuery {
     public static final String OUT_PROPERTY = "out_property";
 
     public static final String[] COMPOSITE_LINKER_COLUMNS = new String[]{"composite","simple"};
+    public static final String SHA_3_512 = "SHA3-512";
     private final Querier querier;
     private final ProvFactory pf = new ProvFactory();
     private final TemplateDispatcher templateDispatcher;
@@ -199,13 +200,18 @@ public class TemplateQuery {
     }
 
     private String makeSignatureRecord(List<String> hash) {
-        Map<String,String> map=new LinkedHashMap<>();
-        map.put("SHA3-512", hash.get(0));
+        Map<String, String> map = makeSignatureMap(hash);
         try {
             return om.writeValueAsString(map);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Map<String, String> makeSignatureMap(List<String> hash) {
+        Map<String,String> map=new LinkedHashMap<>();
+        map.put(SHA_3_512, hash.get(0));
+        return map;
     }
 
     static public class TemplateConnection {

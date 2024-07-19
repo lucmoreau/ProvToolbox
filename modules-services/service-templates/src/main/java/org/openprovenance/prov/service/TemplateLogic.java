@@ -234,11 +234,18 @@ public class TemplateLogic {
         String principal=getPrincipal();
         List<Object[]> records = templateQuery.query(template, id, false, principal);
 
+        logger.info("records " + records.size() + " " + records.stream().map(Arrays::toString).collect(Collectors.joining(",")));
         if (!records.isEmpty()) {
-            Object[] record=records.get(0);
-            Map<String, String> hash=templateQuery.computeHash(template,id,record);
-            templateQuery.updateHash(template, id, hash, principal);
-            logger.info("update hash for " + id + " " + template + ": " + hash);
+            if (records.size()>1) {
+                Map<String, String> hash = templateQuery.computeHash(template, id, records);
+                templateQuery.updateHash(template, id, hash, principal);
+                logger.info("update hash for " + id + " " + template + ": " + hash);
+            } else {
+                Object[] record = records.get(0);
+                Map<String, String> hash = templateQuery.computeHash(template, id, record);
+                templateQuery.updateHash(template, id, hash, principal);
+                logger.info("update hash for " + id + " " + template + ": " + hash);
+            }
         }
 
         return null;

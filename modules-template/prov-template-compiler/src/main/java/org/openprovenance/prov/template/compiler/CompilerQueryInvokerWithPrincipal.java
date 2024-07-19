@@ -206,7 +206,7 @@ public class CompilerQueryInvokerWithPrincipal {
         mspec.addStatement("$N.append($S)", sbVar, "\n   INSERT INTO record_index(key,table_name,principal)\n");
         mspec.addStatement("$N.append($S).append($S).append($N($S))",
                 sbVar,
-                "   SELECT parent as key",
+                "   SELECT distinct(parent) as key",
                 ",",
                 queryInvokerVar + "." + CONVERT_TO_NON_NULLABLE_TEXT,
                 config.name);

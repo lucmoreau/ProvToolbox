@@ -173,19 +173,35 @@ public class TemplateQuery {
     final DigestUtils sha512 = new DigestUtils(DigestUtils.getSha3_512Digest());
 
     public Map<String, String> computeHash(String template, int id, Object[] record) {
-        //String hash1=sha512.digestAsHex(record.toString());
 
         StringBuilder sb=new StringBuilder();
         sb.append(id).append(",");
-        String csv=templateDispatcher.getCsvConverter().get(template).process(record);
-        sb.append(csv);
-        String hash2=sha512.digestAsHex(sb.toString());
+        sb.append(templateDispatcher.getCsvConverter().get((String)record[0]).process(record));
 
+        String csv = sb.toString();
+        String hash2=sha512.digestAsHex(csv);
         Map<String,String> map=new LinkedHashMap<>();
         map.put(SHA_3_512, hash2);
         map.put("csv", csv);
         return map;
     }
+
+    public Map<String, String> computeHash(String template, int id, List<Object[]> records) {
+        StringBuilder sb=new StringBuilder();
+        sb.append(id).append(",").append(template).append(",").append(records.size());
+        for (Object[] record: records) {
+            sb.append("\n");
+            sb.append(templateDispatcher.getCsvConverter().get((String)record[0]).process(record));
+        }
+
+        String csv = sb.toString();
+        String hash2=sha512.digestAsHex(csv);
+        Map<String,String> map=new LinkedHashMap<>();
+        map.put(SHA_3_512, hash2);
+        map.put("csv", csv);
+        return map;
+    }
+
 
     public void updateHash(String template, int id, Map<String,String> hash, String principal) {
         querier.do_statements(null,
@@ -252,6 +268,7 @@ public class TemplateQuery {
         map.put(SHA_3_512, hash.get(0));
         return map;
     }
+
 
     static public class TemplateConnection {
         public Integer in_id;
@@ -545,13 +562,17 @@ public class TemplateQuery {
         querier.do_query(linked_records,
                 null,
                 (sb, data) -> {
+                    sb.append("SELECT * FROM (");
                     sb.append("SELECT * FROM ");
-                    sb.append(linker.table);
+                    sb.append(template); // was linker.table
                     sb.append(" AS template ");
                     joinAccessControl(template, principal, sb);
-                    sb.append("\n WHERE composite=");
+                    sb.append("\n WHERE key=");
                     sb.append(id);
                     andAccessControl(principal, sb);
+                    sb.append(") as combo ");
+                    sb.append("\n LEFT JOIN ").append(linker.table).append(" AS linker ");
+                    sb.append(" ON combo.key = linker.composite");
                 },
                 (rs, data) -> {
                     while (rs.next()) {

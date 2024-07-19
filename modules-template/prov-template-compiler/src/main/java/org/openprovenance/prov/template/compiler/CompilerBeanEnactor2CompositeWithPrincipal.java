@@ -43,7 +43,7 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
 
 
         // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
-        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2)+"."+ Constants.BEAN_ENACTOR2, Constants.ENACTOR_IMPLEMENTATION), typeResult);
+        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2_WP)+"."+ Constants.BEAN_ENACTOR2_WP, Constants.ENACTOR_IMPLEMENTATION), typeResult);
 
         builder.addField(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PRIVATE);
 
@@ -86,7 +86,7 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
                 mspec.addStatement("return $N.generic_enact(new $T(),bean,\n" +
                         "                b -> checker.process(b),\n" +
                         "                (sb,b) -> new $T(sb,true,$N()).process(b),\n" +
-                        "                (rs,b) -> $N.beanCompleterFactory(rs,new Object[1],postProcessing))", Constants.REALISER, outputClassName, queryInvokerClass, "getPrincipal", Constants.REALISER);
+                        "                (rs,b) -> $N.beanCompleterFactory(rs,new Object[1],postProcessing).process(b))", Constants.REALISER, outputClassName, queryInvokerClass, "getPrincipal", Constants.REALISER);
 
                 builder.addMethod(mspec.build());
             }

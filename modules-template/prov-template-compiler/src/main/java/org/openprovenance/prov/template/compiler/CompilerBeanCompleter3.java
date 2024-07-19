@@ -78,7 +78,7 @@ public class CompilerBeanCompleter3 {
                     final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
                     final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
-                    MethodSpec.Builder mspec = createSimpleProcessMethod(outputClassName);
+                    MethodSpec.Builder mspec = createSimpleProcessMethod(outputClassName,config.name);
 
                     builder.addMethod(mspec.build());
 
@@ -109,7 +109,7 @@ public class CompilerBeanCompleter3 {
     }
 
 
-    private MethodSpec.Builder createSimpleProcessMethod(ClassName outputClassName) {
+    private MethodSpec.Builder createSimpleProcessMethod(ClassName outputClassName, String template) {
         MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
@@ -130,6 +130,7 @@ public class CompilerBeanCompleter3 {
                 .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
                 .returns(outputClassName);
         compilerUtil.specWithComment(mspec);
+
 
         mspec.addStatement("$T result=super.$N($N)", outputClassName, Constants.PROCESS_METHOD_NAME, BEAN_VAR);
         mspec.addStatement("result.ID=getValueFromLocation()");

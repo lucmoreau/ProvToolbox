@@ -75,3 +75,7 @@ post.template:
 	bin/keycloak-get-token.sh
 	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" -d @src/test/resources/json/bindings.json -H "Content-type: application/vnd.kcl.prov-template+json" -H "Accept: application/vnd.kcl.prov-template+json" http://localhost:7072/ptl/provapi/statements 
 
+post.template2:
+	bin/keycloak-get-token.sh
+	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" -d @src/test/resources/json/bindings2.json -H "Content-type: application/vnd.kcl.prov-template+json" -H "Accept: application/vnd.kcl.prov-template+json" http://localhost:7072/ptl/provapi/statements
+

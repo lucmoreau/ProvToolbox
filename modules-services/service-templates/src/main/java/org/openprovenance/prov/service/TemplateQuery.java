@@ -8,12 +8,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
-import org.openprovenance.prov.service.readers.SearchConfig;
 import org.openprovenance.prov.service.readers.TableKey;
 import org.openprovenance.prov.service.readers.TableKeyList;
+import org.openprovenance.prov.service.readers.SearchConfig;
 import org.openprovenance.prov.template.compiler.sql.QueryBuilder;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
+
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -171,17 +172,22 @@ public class TemplateQuery {
 
     final DigestUtils sha512 = new DigestUtils(DigestUtils.getSha3_512Digest());
 
-    public List<String> getHash(String template, Object[] record) {
+    public Map<String, String> computeHash(String template, int id, Object[] record) {
         //String hash1=sha512.digestAsHex(record.toString());
 
+        StringBuilder sb=new StringBuilder();
+        sb.append(id).append(",");
         String csv=templateDispatcher.getCsvConverter().get(template).process(record);
-        String hash2=sha512.digestAsHex(csv);
+        sb.append(csv);
+        String hash2=sha512.digestAsHex(sb.toString());
 
-        return List.of(hash2, csv);
-
+        Map<String,String> map=new LinkedHashMap<>();
+        map.put(SHA_3_512, hash2);
+        map.put("csv", csv);
+        return map;
     }
 
-    public void updateHash(String template, int id, List<String> hash, String principal) {
+    public void updateHash(String template, int id, Map<String,String> hash, String principal) {
         querier.do_statements(null,
                 null,
                 (sb, data) -> {
@@ -199,8 +205,41 @@ public class TemplateQuery {
                 });
     }
 
-    private String makeSignatureRecord(List<String> hash) {
-        Map<String, String> map = makeSignatureMap(hash);
+    public Map<String, String> retrieveHash(String template, int id, String principal) {
+
+        Map<String,String> map=new HashMap<>();
+
+        return querier.do_query(map,
+                null,
+                (sb, data) -> {
+                    sb.append("SELECT hash FROM record_index WHERE key=");
+                    sb.append(id);
+                    sb.append(" AND principal='");
+                    sb.append(principal);
+                    sb.append("'");
+                    sb.append(" AND table_name='");
+                    sb.append(template);
+                    sb.append("'");
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        String hash1 = rs.getString("hash");
+                        try {
+                            Map<String, String> hash2 = om.readValue(hash1, Map.class);
+                            data.putAll(hash2);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+    }
+
+
+
+    private String makeSignatureRecord(Map<String,String> persistedMap) {
+        Map<String, String> map = new HashMap<>();
+        map.putAll(persistedMap);
+        map.remove("csv");
         try {
             return om.writeValueAsString(map);
         } catch (JsonProcessingException e) {
@@ -510,9 +549,9 @@ public class TemplateQuery {
                     sb.append(linker.table);
                     sb.append(" AS template ");
                     joinAccessControl(template, principal, sb);
-                    sb.append(" WHERE composite=");
+                    sb.append("\n WHERE composite=");
                     sb.append(id);
-                    whereAccessControl(principal, sb);
+                    andAccessControl(principal, sb);
                 },
                 (rs, data) -> {
                     while (rs.next()) {

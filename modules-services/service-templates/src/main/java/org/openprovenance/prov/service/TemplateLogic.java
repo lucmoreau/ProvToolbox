@@ -15,6 +15,7 @@ import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.readers.TemplatesVizConfig;
 import org.openprovenance.prov.template.library.plead.Plead_trainingBuilder;
 import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeBeanEnactor4;
+import org.openprovenance.prov.template.library.plead.sql.integration.SqlCompositeBeanEnactor3;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
@@ -25,7 +26,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
-import static org.openprovenance.prov.template.library.plead.sql.integration.BeanEnactor2WithPrincipal.getPrincipal;
+import static org.openprovenance.prov.template.library.plead.sql.access_control.BeanEnactor4.getPrincipal;
 
 public class TemplateLogic {
 
@@ -36,21 +37,21 @@ public class TemplateLogic {
     private final Map<String, FileBuilder> documentBuilderDispatcher;
     private final ServiceUtils utils;
     private final ObjectMapper om;
-    private final SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor4;
+    private final SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor;
 
     private final EnactCsvRecords<Object> enactCsvRecords= new EnactCsvRecords<>();
     private final TemplateQuery templateQuery;
     private final Map<String, Map<String, Set<String>>> typeAssignment;
 
 
-    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor4, Map<String, Map<String, Set<String>>> typeAssignment) {
+    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor, Map<String, Map<String, Set<String>>> typeAssignment) {
         this.pf = pf;
         this.templateDispatcher = templateDispatcher;
         this.documentBuilderDispatcher = documentBuilderDispatcher;
         this.utils = utils;
         this.om = om;
         om.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
-        this.sqlCompositeBeanEnactor4 = sqlCompositeBeanEnactor4;
+        this.sqlCompositeBeanEnactor = sqlCompositeBeanEnactor;
         this.templateQuery = templateQuery;
         this.typeAssignment = typeAssignment;
     }
@@ -235,7 +236,7 @@ public class TemplateLogic {
 
         if (!records.isEmpty()) {
             Object[] record=records.get(0);
-            List<String> hash=templateQuery.getHash(template,record);
+            Map<String, String> hash=templateQuery.computeHash(template,id,record);
             templateQuery.updateHash(template, id, hash, principal);
             logger.info("update hash for " + id + " " + template + ": " + hash);
         }

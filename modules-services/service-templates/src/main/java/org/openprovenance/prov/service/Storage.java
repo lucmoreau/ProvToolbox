@@ -82,7 +82,7 @@ public class Storage {
 
     public Function<String,ResultSet> getQuerier (Connection conn) {
         return (String statement) -> {
-            logger.info("Executing query: " + statement);
+            //logger.info("Executing query: " + statement);
             try {
                 return executeQuery(conn, statement);
             } catch (SQLException e) {
@@ -92,7 +92,7 @@ public class Storage {
         };
     }
 
-    private void displayResultSet(ResultSet resultSet) throws SQLException {
+    static public void displayResultSet(ResultSet resultSet) throws SQLException {
         ResultSetMetaData rsmd = resultSet.getMetaData();
         int columnsNumber = rsmd.getColumnCount();
         StringBuilder sb=new StringBuilder();
@@ -105,6 +105,7 @@ public class Storage {
             sb.append("\n");
         }
         logger.info(sb.toString());
+        System.out.println(sb.toString());
 
     }
 

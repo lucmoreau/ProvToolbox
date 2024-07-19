@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
@@ -21,13 +20,18 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
-import org.openprovenance.prov.service.readers.*;
+import org.openprovenance.prov.service.readers.TableKeyList;
+import org.openprovenance.prov.service.readers.TableKey;
+import org.openprovenance.prov.service.readers.JsonOrCsv;
+import org.openprovenance.prov.service.readers.SearchConfig;
+import org.openprovenance.prov.service.readers.TemplatesVizConfig;
 
 import org.openprovenance.prov.service.security.pac.RoleAuthorizationGenerator;
 import org.openprovenance.prov.service.security.pac.SecurityConfiguration;
 import org.openprovenance.prov.service.security.pac.Utils;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
 import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeBeanEnactor4;
+import org.openprovenance.prov.template.library.plead.sql.integration.SqlCompositeBeanEnactor3;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.ProvUtilities;
@@ -38,7 +42,6 @@ import java.security.Principal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_IMAGE_SVG_XML;
@@ -46,7 +49,7 @@ import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_TEXT_HTML;
 import static org.openprovenance.prov.service.Storage.getStringFromClasspath;
 import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
 import static org.openprovenance.prov.template.library.plead.client.logger.Logger.initializeBeanTable;
-import static org.openprovenance.prov.template.library.plead.sql.integration.BeanEnactor2WithPrincipal.setPrincipal;
+import static org.openprovenance.prov.template.library.plead.sql.access_control.BeanEnactor4.setPrincipal;
 
 @Path("")
 public class TemplateService {
@@ -91,7 +94,7 @@ public class TemplateService {
 
 
     private final TemplateLogic templateLogic;
-    private final SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor4;
+    private final SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor;
 
     private final Querier querier;
     private final TemplateQuery queryTemplate;
@@ -130,7 +133,8 @@ public class TemplateService {
         this.om.enable(SerializationFeature.INDENT_OUTPUT);
         this.om.registerModule(new JavaTimeModule());
 
-        this.sqlCompositeBeanEnactor4 =new SqlCompositeBeanEnactor4(storage.getQuerier(conn), this::postProcessing);
+        this.sqlCompositeBeanEnactor =new SqlCompositeBeanEnactor4(storage.getQuerier(conn), this::postProcessing);
+        //this.sqlCompositeBeanEnactor =new SqlCompositeBeanEnactor3(storage.getQuerier(conn));
 
         this.compositeLinker=new HashMap<>() {{
             put("plead_transforming_composite", new Linker("plead_transforming_composite_linker", "plead_transforming"));
@@ -158,7 +162,7 @@ public class TemplateService {
         this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),templateDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
         this.recordMaker=initializeBeanTable(new TableConfiguratorForObjectRecordMaker(documentBuilderDispatcher));
 
-        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor4, this.typeAssignment);
+        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor, this.typeAssignment);
 
 
     }
@@ -223,7 +227,7 @@ public class TemplateService {
     @GET
     @Path("/template/{template}/{id}.{extension}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
+    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML, InteropMediaType.MEDIA_TEXT_CSV  })
     public Response getTemplateInstanceWithId(@Context HttpServletResponse response,
                                                  @Context HttpServletRequest request,
                                                  @Context HttpHeaders headers,
@@ -242,6 +246,15 @@ public class TemplateService {
         List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
         debugDisplay("records.size ", records.size());
 
+        if (extension.equals("csv")) {
+            List<Object> ll=new LinkedList<>();
+            for (Object[] record: records) {
+                String csv=templateDispatcher.getCsvConverter().get(template).process(record);
+                ll.add(csv);
+                ll.add("\n");
+            }
+            return ServiceUtils.composeResponseOK(templateLogic.streamOutRecordsToCSV(ll)).type(InteropMediaType.MEDIA_TEXT_CSV).build();
+        }
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 
         switch (extension) {
@@ -270,7 +283,7 @@ public class TemplateService {
     @GET
     @Path("/template/{template}/{id}/{variable:\\w+}{extension:(\\.\\w+)?}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
+    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML})
     public Response getTemplatePropertyInstanceWithId(@Context HttpServletResponse response,
                                                       @Context HttpServletRequest request,
                                                       @Context HttpHeaders headers,
@@ -288,6 +301,7 @@ public class TemplateService {
 
         List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
         //debugDisplay("records.size ", records.size());
+
 
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 
@@ -525,6 +539,32 @@ public class TemplateService {
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
+        Map<String, String> hash=queryTemplate.retrieveHash(template,id,principalAsPreferredUsername);
+
+        StreamingOutput promise= out -> om.writeValue(out,hash);
+
+        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_APPLICATION_JSON).build();
+
+    }
+
+    @GET
+    @Path("/rehash/template/{template}/{id}")
+    @Tag(name = "template")
+    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSON})
+    public Response reHash(@Context HttpServletResponse response,
+                            @Context HttpServletRequest request,
+                            @Context HttpHeaders headers,
+                            @Context UriInfo uriInfo,
+
+                            @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
+                            @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id) {
+
+        logger.info("getHash " + template + " " + id );
+
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+
         List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
         if (records.size()!=1) {
             return utils.composeResponseBadRequest("record not found", new IllegalArgumentException("size not 1:" + records.size()));
@@ -532,7 +572,13 @@ public class TemplateService {
 
         Object[] record=records.get(0);
 
-        Map<String, String> hash=queryTemplate.makeSignatureMap(queryTemplate.getHash(template,record));
+        Map<String, String> hash=queryTemplate.computeHash(template, id, record);
+
+        Map<String,String> storedHash=queryTemplate.retrieveHash(template,id,principalAsPreferredUsername);
+        for (String key: storedHash.keySet()) {
+            if (key.equals("csv")) continue;
+            hash.put(key+".check", String.valueOf(storedHash.get(key).equals(hash.get(key))));
+        }
 
         StreamingOutput promise= out -> om.writeValue(out,hash);
 

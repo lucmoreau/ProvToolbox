@@ -31,6 +31,7 @@
 
 <script src="${service.context}/webjars/${the.template.library}/${project.version}/js/bundle.js"></script>
 <script src="${service.context}/webjars/${the.template.library}/${project.version}/js/TemplateManager.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-sha3@0.8.0/src/sha3.js"></script>
 
 <style>
     .container {
@@ -525,6 +526,8 @@
             data.shift()
             console.log(data)
 
+            let seen=[]
+
             $(id).DataTable({
                 destroy: true,
                 "data": data,
@@ -535,13 +538,18 @@
                         // The `data` parameter refers to the data for the cell (defined by the
                         // `data` option, which defaults to the column being worked with, in
                         // this case `data: 0`.
-                        render: (data, type, row) => makeLinkToSignature(cleanSignature(data),row[4],row[3]),
+                        render: (data, type, row) => makeLinkToSignature(cleanSignature(data,row[4],row[3],seen),row[4],row[3]),
                         targets: 7
                     },//,
                     {
                         render: (data, type, row) => makeLinkToTemplate(data,row[4],row[3]),
                         targets: 4
+                    },
+                    {
+                        render: (data, type, row) => makeLinkToBaseRelation(data,data,row[2]),
+                        targets: 0
                     }
+
                     //{ visible: false, targets: [3] }
                     ]
 
@@ -552,14 +560,57 @@
 
     }
 
-    function cleanSignature(data) {
-        console.log("cleanSignature " + data)
+    function cleanSignature(data,id,template,seen) {
         if (data===null || data===undefined || data==="" || data==="null") {
             return "";
         }
+
         let sig=JSON.parse(data)["SHA3-512"]
-        return sig.substring(0, 8) + "...";
+
+        if (!seen.includes(id)) {
+            seen.push(id)
+            getRecordAsCsv(sig, id, template)
+        }
+
+        return "<div id='" + sig + "'>" + sig.substring(0, 8) + "..." + "</div>"
     }
+
+    function getRecordAsCsv(sig, id, template) {
+        let url = "http://localhost:7072/ptl/provapi/template/" + template + "/" + id + ".csv"
+        // perform an XMLHttpRequest() to get the csv record, calculate its hash and compare it with the signature
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+        };
+        xhr.onload= function() {
+            const response = xhr.responseText;
+            // get first line of the response
+            let trimmed=response.slice(0, response.indexOf("\n"));
+            // string to hash
+            let toHash=id+","+trimmed
+
+            let csv_sig=sha3_512(toHash)
+            console.log("id: hash " + id )
+            console.log("- csv_sig " + csv_sig)
+            console.log("- sig " + sig)
+            let div_id = "#" + sig
+            if (csv_sig !== sig) {
+                // append cross at the end of the div with id
+                $(div_id).append('<i  style="color: red"class="fa fa-times"></i>')
+            } else {
+                // append a green tick at the end of the div with id
+                $(div_id).append('<i style="color: green" class="fa fa-check"></i>')
+
+            }
+        }
+        xhr.setRequestHeader("Accept", "text/csv");
+        xhr.send();
+    }
+
 
     function makeLinkToSignature(data, id, template) {
         if (data==="") return "";
@@ -569,6 +620,11 @@
     function makeLinkToTemplate(data, id, template) {
         if (data==="") return "";
         return "<a  target='_blank' href='${service.context}/provapi/template/" + template + "/" + id + ".svg'>" + data + "</a>";
+    }
+
+    function makeLinkToBaseRelation(data, id, relation) {
+        if (data==="") return "";
+        return "<a  target='_blank' href='${service.context}/provapi/live/" + relation + "/" + id + ".svg'>" + data + "</a>";
     }
 
     function submitNavigate(id) {

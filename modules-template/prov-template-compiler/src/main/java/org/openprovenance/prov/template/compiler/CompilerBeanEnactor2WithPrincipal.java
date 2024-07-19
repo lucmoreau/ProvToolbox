@@ -27,7 +27,14 @@ public class CompilerBeanEnactor2WithPrincipal {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
+        // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
+        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2)+"."+ Constants.BEAN_ENACTOR2, Constants.ENACTOR_IMPLEMENTATION), typeResult);
+        // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
+        final TypeName THIS_ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2_WP)+"."+ Constants.BEAN_ENACTOR2_WP, Constants.ENACTOR_IMPLEMENTATION), typeResult);
+
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_ENACTOR2_WP);
+        // add superclass BeanEnactor2
+        builder.superclass(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2), Constants.BEAN_ENACTOR2), typeResult));
         builder.addModifiers(Modifier.ABSTRACT);
         builder.addTypeVariable(typeResult);
 
@@ -41,9 +48,12 @@ public class CompilerBeanEnactor2WithPrincipal {
 
 
 
-        /*
+
         TypeSpec.Builder inface=compilerUtil.generateInterfaceInit(Constants.ENACTOR_IMPLEMENTATION);
+        inface.addSuperinterface(ENACTOR_IMPLEMENTATION_TYPE);
         inface.addTypeVariable(typeResult);
+
+        /*
         MethodSpec.Builder method1 = MethodSpec.methodBuilder("generic_enact")
                 .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
                 .addParameter(ParameterSpec.builder(typeOut,"output").build())
@@ -65,6 +75,7 @@ public class CompilerBeanEnactor2WithPrincipal {
 
         inface.addMethod(method2.build());
 
+
         MethodSpec.Builder method3 = MethodSpec.methodBuilder("beanCompleterFactory")
                 .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
                 .addParameter(ParameterSpec.builder(typeResult,"rs").build())
@@ -73,10 +84,27 @@ public class CompilerBeanEnactor2WithPrincipal {
 
         inface.addMethod(method3.build());
 
+         */
+        MethodSpec.Builder method4 = MethodSpec.methodBuilder("beanCompleterFactory")
+                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
+                .addParameter(ParameterSpec.builder(typeResult,"rs").build())
+                .addParameter(ParameterSpec.builder(Object[].class,"extra").build())
+                .addParameter(ParameterSpec.builder(BIFUN,"postProcessing").build())
+                .returns(beanCompleterClass);
+        inface.addMethod(method4.build());
+
+        MethodSpec.Builder method5 = MethodSpec.methodBuilder("beanCompleterFactory")
+                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
+                .addParameter(ParameterSpec.builder(typeResult,"rs").build())
+                .addParameter(ParameterSpec.builder(BIFUN,"postProcessing").build())
+                .returns(beanCompleterClass);
+        inface.addMethod(method5.build());
+
+
 
         builder.addType(inface.build());
 
-         */
+
 
         builder.addField(inputProcessorClass,"checker",Modifier.FINAL, Modifier.PRIVATE);
         builder.addField(BIFUN,"postProcessing",Modifier.FINAL, Modifier.PRIVATE);
@@ -101,20 +129,18 @@ public class CompilerBeanEnactor2WithPrincipal {
         builder.addMethod(getPrincipal.build());
 
 
-        // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
-        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2)+"."+ Constants.BEAN_ENACTOR2, Constants.ENACTOR_IMPLEMENTATION), typeResult);
-
-        builder.addField(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PRIVATE);
+        builder.addField(THIS_ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PRIVATE);
 
 
         MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER)
+                .addParameter(THIS_ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER)
                 .addParameter(inputProcessorClass, "checker")
                 .addParameter(BIFUN, "postProcessing");
         compilerUtil.specWithComment(cbuilder3);
 
         cbuilder3
+                .addStatement("super($N,$N)", Constants.REALISER, "checker")
                 .addStatement("this.$N = $N", Constants.REALISER, Constants.REALISER)
                 .addStatement("this.$N = $N", "checker", "checker")
                 .addStatement("this.$N = $N", "postProcessing", "postProcessing");

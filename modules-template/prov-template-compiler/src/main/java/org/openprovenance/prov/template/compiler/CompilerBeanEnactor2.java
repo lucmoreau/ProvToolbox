@@ -70,6 +70,7 @@ public class CompilerBeanEnactor2 {
                 .returns(beanCompleterClass);
         inface.addMethod(method3.build());
 
+        /*
         MethodSpec.Builder method4 = MethodSpec.methodBuilder("beanCompleterFactory")
                 .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
                 .addParameter(ParameterSpec.builder(typeResult,"rs").build())
@@ -84,6 +85,8 @@ public class CompilerBeanEnactor2 {
                 .addParameter(ParameterSpec.builder(BIFUN,"postProcessing").build())
                 .returns(beanCompleterClass);
         inface.addMethod(method5.build());
+
+         */
 
 
         builder.addType(inface.build());

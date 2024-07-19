@@ -448,12 +448,39 @@ public class TemplateQuery {
         querier.do_query(linked_records,
                 null,
                 (sb, data) -> {
-                    sb.append("SELECT search_record.*,record_index.principal,json_agg(ac2.authorized) as authorized,json_agg(link.composite) as parent, record_index.hash as hash\n FROM ");
+                    StringBuffer aggregator= new StringBuffer();
+                    aggregator.append("json_build_array(");
+                    final int[] count0 = {0};
+                    compositeLinker.forEach((k,v) -> {
+                        if (includeComposite) {
+                            count0[0]++;
+                            if (count0[0]>1) {
+                                aggregator.append(",");
+                            }
+                            aggregator.append("json_agg(");
+                            aggregator.append("link").append(count0[0]).append(".composite)");
+                            aggregator.append(",");
+                            aggregator.append("'").append(k).append("'");
+                        }});
+                     aggregator.append(")");
+
+                    sb.append("SELECT search_record.*,record_index.principal,json_agg(ac2.authorized) as authorized,").append(aggregator.toString()).append(" as parent, record_index.hash as hash\n FROM ");
                     sb.append("search_records_for_" + base_relation + "(").append(from_date).append(",").append(to_date).append(") as search_record ");
                     joinAccessControl("search_record.table_name", principal, sb, "search_record", "key");
                     sb.append("\n LEFT JOIN access_control as ac2  ON ac2.record=record_index.id");
-                    sb.append("\n LEFT JOIN plead_transforming_composite_linker as link\n");
-                    sb.append("\n ON record_index.key=simple");
+                    final int[] count = {0};
+                    compositeLinker.forEach((k,v) -> {
+                        if (includeComposite) {
+                            count[0]++;
+                            sb.append("\n LEFT JOIN ");
+                            sb.append(v.table);
+                            sb.append(" as link").append(count[0]);
+                            sb.append("\n ON search_record.key=link").append(count[0]).append(".simple");
+                        }
+                    });
+
+                    //sb.append("\n LEFT JOIN plead_transforming_composite_linker as link\n");
+                   // sb.append("\n ON record_index.key=simple");
                     whereAccessControl(principal, sb);
                     sb.append("\n group by search_record.id, search_record.created_at, search_record.table_name, search_record.key, record_index.principal, record_index.hash\n");
                     sb.append("\n limit ").append(limit);
@@ -463,10 +490,12 @@ public class TemplateQuery {
                     while (rs.next()) {
                         PGobject parent1=rs.getObject("parent", PGobject.class);
                         Integer parent=null;
+                        String parent_relation=null;
                         try {
-                            List<Integer> parentL =(parent1==null)?null:om.readValue(parent1.getValue(), List.class);
-                            if (parentL!=null && !parentL.isEmpty()) {
-                                parent=parentL.get(0);
+                            List<Object> parents =(parent1==null)?null:om.readValue(parent1.getValue(), List.class);
+                            if (parents!=null && !parents.isEmpty()) {
+                                parent=((List<Integer>)(parents.get(0))).get(0);
+                                parent_relation=(String)(parents.get(1));
                             }
                         } catch (JsonProcessingException e) {
                             throw new RuntimeException(e);
@@ -478,7 +507,7 @@ public class TemplateQuery {
                             parentRecord.base_relation = base_relation;
                             parentRecord.id = rs.getObject("ID", Integer.class);
                             parentRecord.created_at = rs.getObject("created_at", Timestamp.class).toInstant().toString();
-                            parentRecord.table_name = rs.getObject("table_name", String.class)+"_composite"; // HACK
+                            parentRecord.table_name= parent_relation;//rs-.getObject("table_name", String.class)+"_composite"; // HACK
                             data.add(parentRecord);
                         }
 

@@ -1,6 +1,9 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.0.8-SNAPSHOT`
+`2.0.9-SNAPSHOT`
+* 
+
+`2.0.8`
 * module-tools: prov-template-archetype and prov-toolbox-plugin
 * prov-template-compiler: record index with principal
 * service-template: simple and composite queries with access control

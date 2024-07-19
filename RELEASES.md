@@ -1,6 +1,7 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.0.9-SNAPSHOT`
+* service-template: returning hash code and location of submitted record
 * 
 
 `2.0.8`

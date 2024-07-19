@@ -210,7 +210,7 @@ public class TemplateQuery {
                 (sb, data) -> {
                     sb.append("UPDATE record_index");
                     sb.append(" SET hash='");
-                    sb.append(makeSignatureRecord(hash));
+                    sb.append(makeHashRecord(hash));
                     sb.append("' WHERE key=");
                     sb.append(id);
                     sb.append(" AND principal='");
@@ -253,7 +253,7 @@ public class TemplateQuery {
 
 
 
-    private String makeSignatureRecord(Map<String,String> persistedMap) {
+     String makeHashRecord(Map<String,String> persistedMap) {
         Map<String, String> map = new HashMap<>();
         map.putAll(persistedMap);
         map.remove("csv");

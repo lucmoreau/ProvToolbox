@@ -22,7 +22,6 @@ import org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuil
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
 import org.openprovenance.prov.template.compiler.integration.CompilerIntegrator;
-import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlIntegration;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
@@ -80,9 +79,12 @@ public class ConfigProcessor implements Constants {
     private final CompilerTypeConverter compilerTypeConverter ;
     private final CompilerBeanEnactor compilerBeanEnactor;
     private final CompilerBeanEnactor2 compilerBeanEnactor2 ;
+    private final CompilerBeanEnactor2WithPrincipal compilerBeanEnactor2WP ;
     private final CompilerSqlIntegration compilerSqlIntegration;
     private final CompilerBeanEnactor2Composite compilerBeanEnactor2composite;
+    private final CompilerBeanEnactor2CompositeWithPrincipal compilerBeanEnactor2compositeWP;
     private final CompilerQueryInvoker compilerQueryInvoker ;
+    private final CompilerQueryInvokerWithPrincipal compilerQueryInvokerWithPrincipal ;
     private final CompilerBeanChecker compilerBeanChecker;
     private final CompilerDelegator compilerDelegator;
     private final CompilerConfigurations compilerConfigurations ;
@@ -126,6 +128,7 @@ public class ConfigProcessor implements Constants {
         this.compilerClientTest =new CompilerClientTest(pFactory);
         this.compilerTemplateInvoker = new CompilerTemplateInvoker(pFactory);
         this.compilerBeanEnactor2 = new CompilerBeanEnactor2(pFactory);
+        this.compilerBeanEnactor2WP = new CompilerBeanEnactor2WithPrincipal(pFactory);
         this.compilerBeanEnactor2composite = new CompilerBeanEnactor2Composite(pFactory);
         this.compilerBeanEnactor = new CompilerBeanEnactor(pFactory);
         this.compilerBeanCompleter2 = new CompilerBeanCompleter2(pFactory);
@@ -145,6 +148,8 @@ public class ConfigProcessor implements Constants {
         this.compilerTemplateBuilders = new CompilerTemplateBuilders(pFactory);
         this.compilerTableConfiguratorForTypes = new CompilerTableConfiguratorForTypes(pFactory);
         this.compilerSqlIntegration = new CompilerSqlIntegration(pFactory);
+        this.compilerQueryInvokerWithPrincipal = new CompilerQueryInvokerWithPrincipal(pFactory);
+        this.compilerBeanEnactor2compositeWP = new CompilerBeanEnactor2CompositeWithPrincipal(pFactory);
     }
 
     public String readCompilerVersion() {
@@ -390,11 +395,20 @@ public class ConfigProcessor implements Constants {
             SpecificationFile beanEnactor2 = compilerBeanEnactor2.generateBeanEnactor2(configs, locations, BEAN_ENACTOR2);
             beanEnactor2.save();
 
+            SpecificationFile beanEnactor2WP = compilerBeanEnactor2WP.generateBeanEnactor2WithPrincipal(configs, locations, BEAN_ENACTOR2_WP);
+            beanEnactor2WP.save();
+
             SpecificationFile beanEnactor2Composite = compilerBeanEnactor2composite.generateBeanEnactor2Composite(configs, locations, BEAN_ENACTOR2_COMPOSITE);
             beanEnactor2Composite.save();
 
+            SpecificationFile beanEnactor2CompositeWP = compilerBeanEnactor2compositeWP.generateBeanEnactor2CompositeWithPrincipal(configs, locations, BEAN_ENACTOR2_COMPOSITE_WP);
+            beanEnactor2CompositeWP.save();
+
             SpecificationFile queryComposer3 = compilerQueryInvoker.generateQueryInvoker(configs, locations, false, QUERY_INVOKER2);
             queryComposer3.save();
+
+            SpecificationFile queryComposerWP= compilerQueryInvokerWithPrincipal.generateQueryInvokerWithPrincipal(configs, locations, QUERY_INVOKER2WP );
+            queryComposerWP.save();
 
             if (configs.sqlFile!=null) {
                 SpecificationFile generateSqlIntegration_beanCompleter = compilerSqlIntegration.generateSqlIntegration_BeanCompleter(configs, locations, SQL_BEAN_COMPLETER);
@@ -405,12 +419,17 @@ public class ConfigProcessor implements Constants {
 
                 SpecificationFile generateSqlIntegration_beanCompleter3 = compilerSqlIntegration.generateSqlIntegration_BeanCompleter3(configs, locations, SQL_BEAN_COMPLETER3);
                 generateSqlIntegration_beanCompleter3.save();
+                SpecificationFile generateSqlIntegration_beanCompleter4 = compilerSqlIntegration.generateSqlIntegration_BeanCompleter4(configs, locations, SQL_BEAN_COMPLETER4);
+                generateSqlIntegration_beanCompleter4.save();
 
                 SpecificationFile generateSqlIntegration_enactorImplementation = compilerSqlIntegration.generateSqlIntegration_EnactorImplementation(configs, locations, SQL_ENACTOR_IMPLEMENTATION);
                 generateSqlIntegration_enactorImplementation.save();
 
                 SpecificationFile generateSqlIntegration_enactorImplementation3 = compilerSqlIntegration.generateSqlIntegration_IntegratorEnactorImplementation(configs, locations, SQL_ENACTOR_IMPLEMENTATION3);
                 generateSqlIntegration_enactorImplementation3.save();
+
+                SpecificationFile generateSqlIntegration_enactorImplementation4 = compilerSqlIntegration.generateSqlIntegration_IntegratorEnactorImplementation4(configs, locations, SQL_ENACTOR_IMPLEMENTATION4);
+                generateSqlIntegration_enactorImplementation4.save();
 
                 SpecificationFile generateSqlIntegration_beanEnactorImplementation = compilerSqlIntegration.generateSqlIntegration_CompositeEnactorImplementation(configs, locations, SQL_COMPOSITE_ENACTOR_IMPLEMENTATION);
                 generateSqlIntegration_beanEnactorImplementation.save();
@@ -423,26 +442,46 @@ public class ConfigProcessor implements Constants {
 
                 SpecificationFile generateSqlIntegration_beanEnactor3 = compilerSqlIntegration.generateSqlIntegration_BeanEnactor3(configs, locations, SQL_BEAN_ENACTOR3);
                 generateSqlIntegration_beanEnactor3.save();
+                SpecificationFile generateSqlIntegration_beanEnactor4 = compilerSqlIntegration.generateSqlIntegration_BeanEnactor4(configs, locations, SQL_BEAN_ENACTOR4);
+                generateSqlIntegration_beanEnactor4.save();
 
                 SpecificationFile generateSqlIntegration_compositeEnactorImplementation3 = compilerSqlIntegration.generateSqlIntegration_CompositeEnactorImplementation3(configs, locations, SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3);
                 generateSqlIntegration_compositeEnactorImplementation3.save();
 
+                SpecificationFile generateSqlIntegration_compositeEnactorImplementation4 = compilerSqlIntegration.generateSqlIntegration_CompositeEnactorImplementation4(configs, locations, SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4);
+                generateSqlIntegration_compositeEnactorImplementation4.save();
+
+
                 SpecificationFile generatedSqlIntegration_compositeBeanCompleter3 = compilerSqlIntegration.generateSqlIntegration_CompositeBeanCompleter3(configs, locations, SQL_COMPOSITE_BEAN_COMPLETER3);
                 generatedSqlIntegration_compositeBeanCompleter3.save();
+
+                SpecificationFile generatedSqlIntegration_compositeBeanCompleter4 = compilerSqlIntegration.generateSqlIntegration_CompositeBeanCompleter4(configs, locations, SQL_COMPOSITE_BEAN_COMPLETER4);
+                generatedSqlIntegration_compositeBeanCompleter4.save();
 
                 SpecificationFile generateSqlIntegration_compositeBeanEnactor3 = compilerSqlIntegration.generateSqlIntegration_CompositeBeanEnactor3(configs, locations, SQL_COMPOSITE_BEAN_ENACTOR3);
                 generateSqlIntegration_compositeBeanEnactor3.save();
 
+                SpecificationFile generateSqlIntegration_compositeBeanEnactor4 = compilerSqlIntegration.generateSqlIntegration_CompositeBeanEnactor4(configs, locations, SQL_COMPOSITE_BEAN_ENACTOR4);
+                generateSqlIntegration_compositeBeanEnactor4.save();
+
                 SpecificationFile generatedSqlIntegration_compositeEnactorConfigurator3 = compilerSqlIntegration.generateSqlIntegration_CompositeEnactorConfigurator3(configs, locations, SQL_COMPOSITE_ENACTOR_CONFIGURATOR3);
                 generatedSqlIntegration_compositeEnactorConfigurator3.save();
 
+                SpecificationFile generatedSqlIntegration_compositeEnactorConfigurator4 = compilerSqlIntegration.generateSqlIntegration_CompositeEnactorConfigurator4(configs, locations, SQL_COMPOSITE_ENACTOR_CONFIGURATOR4);
+                generatedSqlIntegration_compositeEnactorConfigurator4.save();
+
                 SpecificationFile generatedSqlIntegration_enactorConfigurator3 = compilerSqlIntegration.generateSqlIntegration_EnactorConfigurator3(configs, locations, SQL_ENACTOR_CONFIGURATOR3);
                 generatedSqlIntegration_enactorConfigurator3.save();
+
+                SpecificationFile generatedSqlIntegration_enactorConfigurator4 = compilerSqlIntegration.generateSqlIntegration_EnactorConfigurator4(configs, locations, SQL_ENACTOR_CONFIGURATOR4);
+                generatedSqlIntegration_enactorConfigurator4.save();
             }
         }
 
         SpecificationFile queryComposer= compilerQueryInvoker.generateQueryInvoker(configs, locations, true, QUERY_INVOKER );
         queryComposer.save();
+
+
 
 
         SpecificationFile beanChecker= compilerBeanChecker.generateBeanChecker(configs, locations, BeanDirection.COMMON, null, BEAN_CHECKER);

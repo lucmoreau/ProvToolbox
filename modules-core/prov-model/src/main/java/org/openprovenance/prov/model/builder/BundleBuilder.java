@@ -2,12 +2,14 @@ package org.openprovenance.prov.model.builder;
 
 import org.openprovenance.prov.model.*;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 public class BundleBuilder extends Builder {
     private final Builder parentBuilder;
     private final ProvFactory pf;
+    private final HashMap<String, QualifiedName> knowAsCopy;
     private QualifiedName id;
     private Namespace namespaceCopy;
     private List<Statement> statementsCopy;
@@ -21,6 +23,8 @@ public class BundleBuilder extends Builder {
         this.namespace.setParent(this.namespaceCopy);
         this.statementsCopy = parentBuilder.statements;
         this.statements = new LinkedList<>();
+        this.knowAsCopy = parentBuilder.knownAs;
+        this.knownAs = new HashMap<>();
     }
 
     public BundleBuilder id(QualifiedName id) {
@@ -43,6 +47,7 @@ public class BundleBuilder extends Builder {
         parentBuilder.bundles.add(bundle);
         parentBuilder.namespace = namespaceCopy;
         parentBuilder.statements = statementsCopy;
+        parentBuilder.knownAs = knowAsCopy;
         return parentBuilder;
     }
 
@@ -52,7 +57,7 @@ public class BundleBuilder extends Builder {
     }
 
     public BundleBuilder aka() {
-        parentBuilder.knownAs.put(id.getLocalPart(), id);
+        knownAs.put(id.getLocalPart(), id);
         return this;
     }
 

@@ -51,14 +51,25 @@ import java.util.concurrent.atomic.AtomicInteger;
         }
     }
     public void testPleadRemote() {
+        pleadRemote(true);
+    }
+
+    public void pleadRemote(boolean authorizer) {
         List<Object> inputs=new LinkedList<>();
         List<Object> outputs=new LinkedList<>();
 
 
         String statementsURL= config.hostURLprefixContext + "/provapi/statements";
 
+        System.out.println("statementsURL: "+statementsURL);
 
-        new PleadWorkflow(new WebTemplateInvoker(statementsURL),inputs,outputs).workflow("doc123", 1, 220, 222, 1, 50, "path",null,null);
+        try {
+            new PleadWorkflow(new WebTemplateInvoker(statementsURL, authorizer), inputs, outputs).workflow("doc123", 1, 220, 222, 1, 50, "path", null, null);
+        } catch (IllegalStateException e) {
+            System.out.println("Error: " + e.getMessage());
+            assertTrue(e.getMessage().contains("5xxServerError"));
+        }
+
 
         try {
             System.out.println(om.writeValueAsString(outputs));

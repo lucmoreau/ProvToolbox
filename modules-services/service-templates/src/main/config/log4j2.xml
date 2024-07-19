@@ -23,11 +23,11 @@
       <AppenderRef ref="Console"/>
     </Logger>
 
-    <Logger name="org.pac4j.oidc" level="debug"  additivity="false">
+    <Logger name="org.pac4j.oidc" level="info"  additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
 
-    <Logger name="org.pac4j.jwt" level="debug"  additivity="false">
+    <Logger name="org.pac4j.jwt" level="info"  additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
 

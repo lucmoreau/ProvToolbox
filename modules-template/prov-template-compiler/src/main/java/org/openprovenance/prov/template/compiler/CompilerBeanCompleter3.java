@@ -5,7 +5,6 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
-import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
 
@@ -79,7 +78,7 @@ public class CompilerBeanCompleter3 {
                     final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
                     final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
-                    MethodSpec.Builder mspec = createSimpleProcessMethod(outputClassName);
+                    MethodSpec.Builder mspec = createSimpleProcessMethod(outputClassName,config.name);
 
                     builder.addMethod(mspec.build());
 
@@ -91,7 +90,7 @@ public class CompilerBeanCompleter3 {
 
                 final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
 
-                MethodSpec.Builder mspec = createCompositeProcessMethod(outputClassName);
+                MethodSpec.Builder mspec = createCompositeProcessMethod(config.name,outputClassName);
                 builder.addMethod(mspec.build());
 
             }
@@ -110,7 +109,7 @@ public class CompilerBeanCompleter3 {
     }
 
 
-    private MethodSpec.Builder createSimpleProcessMethod(ClassName outputClassName) {
+    private MethodSpec.Builder createSimpleProcessMethod(ClassName outputClassName, String template) {
         MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
@@ -125,15 +124,18 @@ public class CompilerBeanCompleter3 {
         return mspec;
     }
 
-    private MethodSpec.Builder createCompositeProcessMethod(ClassName outputClassName) {
+    private MethodSpec.Builder createCompositeProcessMethod(String template, ClassName outputClassName) {
         MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
                 .returns(outputClassName);
         compilerUtil.specWithComment(mspec);
 
+
         mspec.addStatement("$T result=super.$N($N)", outputClassName, Constants.PROCESS_METHOD_NAME, BEAN_VAR);
         mspec.addStatement("result.ID=getValueFromLocation()");
+        mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, "result", template);
+
         mspec.addStatement("return $N", "result");
         mspec.addAnnotation(Override.class);
 

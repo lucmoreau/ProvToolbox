@@ -21,7 +21,7 @@ public class Builder {
     protected final ModelConstructor mc;
     protected Namespace namespace;
     protected final ProvFactory pf;
-    protected final HashMap<String,QualifiedName> knownAs;
+    protected HashMap<String,QualifiedName> knownAs;
     protected final ModelConstructorExtension mce;
 
     protected List<Statement> statements=new LinkedList<>();

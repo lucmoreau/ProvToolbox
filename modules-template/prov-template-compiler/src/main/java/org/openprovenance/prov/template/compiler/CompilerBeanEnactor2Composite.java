@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
+import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
@@ -35,9 +36,7 @@ public class CompilerBeanEnactor2Composite {
 
 
 
-
         builder.addField(inputProcessorClass,"checker",Modifier.FINAL, Modifier.PRIVATE);
-
 
 
         // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted

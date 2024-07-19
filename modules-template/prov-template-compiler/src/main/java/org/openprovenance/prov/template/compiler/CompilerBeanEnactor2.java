@@ -12,6 +12,7 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectC
 import javax.lang.model.element.Modifier;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.sql.CompilerSqlIntegration.BIFUN;
 
 public class CompilerBeanEnactor2 {
     private final CompilerUtil compilerUtil;
@@ -67,8 +68,25 @@ public class CompilerBeanEnactor2 {
                 .addParameter(ParameterSpec.builder(typeResult,"rs").build())
                 .addParameter(ParameterSpec.builder(Object[].class,"extra").build())
                 .returns(beanCompleterClass);
-
         inface.addMethod(method3.build());
+
+        /*
+        MethodSpec.Builder method4 = MethodSpec.methodBuilder("beanCompleterFactory")
+                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
+                .addParameter(ParameterSpec.builder(typeResult,"rs").build())
+                .addParameter(ParameterSpec.builder(Object[].class,"extra").build())
+                .addParameter(ParameterSpec.builder(BIFUN,"postProcessing").build())
+                .returns(beanCompleterClass);
+        inface.addMethod(method4.build());
+
+        MethodSpec.Builder method5 = MethodSpec.methodBuilder("beanCompleterFactory")
+                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
+                .addParameter(ParameterSpec.builder(typeResult,"rs").build())
+                .addParameter(ParameterSpec.builder(BIFUN,"postProcessing").build())
+                .returns(beanCompleterClass);
+        inface.addMethod(method5.build());
+
+         */
 
 
         builder.addType(inface.build());

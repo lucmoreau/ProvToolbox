@@ -26,6 +26,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.*;
 
 @Path("")
@@ -115,6 +116,9 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
                            @Context HttpHeaders headers,
                            @Context HttpServletRequest ignoredRequestContext) {
         MediaType mediaType = headers.getMediaType();
+
+        Principal principal = ignoredRequestContext.getUserPrincipal();
+        logger.info("principal is " + principal);
 
         if (mediaType.toString().startsWith("multipart/form-data")) {
 

@@ -20,15 +20,22 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
-import org.openprovenance.prov.service.readers.*;
+import org.openprovenance.prov.service.readers.TableKeyList;
+import org.openprovenance.prov.service.readers.TableKey;
+import org.openprovenance.prov.service.readers.JsonOrCsv;
+import org.openprovenance.prov.service.readers.SearchConfig;
+import org.openprovenance.prov.service.readers.TemplatesVizConfig;
 
+import org.openprovenance.prov.service.security.pac.RoleAuthorizationGenerator;
 import org.openprovenance.prov.service.security.pac.SecurityConfiguration;
 import org.openprovenance.prov.service.security.pac.Utils;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
+import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeBeanEnactor4;
 import org.openprovenance.prov.template.library.plead.sql.integration.SqlCompositeBeanEnactor3;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.ProvUtilities;
+import org.pac4j.core.profile.UserProfile;
 
 import java.io.*;
 import java.security.Principal;
@@ -42,6 +49,7 @@ import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_TEXT_HTML;
 import static org.openprovenance.prov.service.Storage.getStringFromClasspath;
 import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
 import static org.openprovenance.prov.template.library.plead.client.logger.Logger.initializeBeanTable;
+import static org.openprovenance.prov.template.library.plead.sql.access_control.BeanEnactor4.setPrincipal;
 
 @Path("")
 public class TemplateService {
@@ -56,8 +64,8 @@ public class TemplateService {
     private final Map<String, FileBuilder> documentBuilderDispatcher;
     public static final String TPL_HOST = "TPL_HOST";
     public static final String provHost =getSystemOrEnvironmentVariableOrDefault(TPL_HOST, "http://localhost:8080/ems");
-    public static final String TPL_API = "TPL_API";
-    public static final String provAPI =getSystemOrEnvironmentVariableOrDefault(TPL_API, "http://localhost:8080/ems/provapi");
+    public static final String PROV_API = "PROV_API";
+    public static final String provAPI =getSystemOrEnvironmentVariableOrDefault(PROV_API, "http://localhost:8080/ems/provapi");
     public static final String POSTGRES_HOST = "POSTGRES_HOST";
     public static final String postgresHost=System.getProperty(POSTGRES_HOST, "localhost");
     public static final String DB_USER = "TPL_DB_USER";
@@ -86,7 +94,7 @@ public class TemplateService {
 
 
     private final TemplateLogic templateLogic;
-    private final SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3;
+    private final SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor;
 
     private final Querier querier;
     private final TemplateQuery queryTemplate;
@@ -119,14 +127,14 @@ public class TemplateService {
         ps.addToConfiguration("security.config", securityConfiguration);
 
         Connection conn=storage.setup(postgresHost, postgresUsername, postgresPassword);
-        this.templateDispatcher=new TemplateDispatcher(storage,conn);
+        this.templateDispatcher=new TemplateDispatcher(storage,conn,this::postProcessing);
         this.querier =new Querier(storage,conn);
-       // this.spreadsheetExporter=new SpreadsheetExporter(querier);
         this.om=new ObjectMapper();
         this.om.enable(SerializationFeature.INDENT_OUTPUT);
         this.om.registerModule(new JavaTimeModule());
 
-        this.sqlCompositeBeanEnactor3 =new SqlCompositeBeanEnactor3(storage.getQuerier(conn));
+        this.sqlCompositeBeanEnactor =new SqlCompositeBeanEnactor4(storage.getQuerier(conn), this::postProcessing);
+        //this.sqlCompositeBeanEnactor =new SqlCompositeBeanEnactor3(storage.getQuerier(conn));
 
         this.compositeLinker=new HashMap<>() {{
             put("plead_transforming_composite", new Linker("plead_transforming_composite_linker", "plead_transforming"));
@@ -154,10 +162,15 @@ public class TemplateService {
         this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),templateDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
         this.recordMaker=initializeBeanTable(new TableConfiguratorForObjectRecordMaker(documentBuilderDispatcher));
 
-        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor3, this.typeAssignment);
+        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor, this.typeAssignment);
 
 
     }
+
+
+    private Object postProcessing(Integer i, String s) {
+        return templateLogic.postProcessing(i,s);
+    };
 
     private void executeStatementsFromFile(Connection conn, String filename) {
         boolean anyResult;
@@ -176,18 +189,23 @@ public class TemplateService {
     @Tag(name = "template")
     @Consumes({InteropMediaType.MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON})
     @Produces({InteropMediaType.MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON}) //InteropMediaType.MEDIA_TEXT_CSV,
-    public Response submitStatements(@Context HttpServletResponse response,
-                                      @Context HttpServletRequest request,
+    public Response submitStatements(@Context HttpServletRequest request,
                                       @Context HttpHeaders headers,
                                       @Context UriInfo uriInfo,
                                      // @Parameter(name = "id", description = "session id", required = true) @PathParam("id") String sessionUUID,
                                       JsonOrCsv documentOrCsv) {
-        Principal principal = request.getUserPrincipal();
-        logger.info("post statements id: principal " + principal);
-
         if (documentOrCsv==null) {
             return utils.composeResponseInternalServerError("null document", new NullPointerException());
         }
+
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+        // set thread specific variable
+        setPrincipal(principalAsPreferredUsername);
+
+        logger.info("post statements id: principal " + principal);
+
+
         List<Object> result;
         if (documentOrCsv.csv!=null) {
             result=templateLogic.processIncomingCsv(documentOrCsv.csv);
@@ -209,21 +227,34 @@ public class TemplateService {
     @GET
     @Path("/template/{template}/{id}.{extension}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
+    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML, InteropMediaType.MEDIA_TEXT_CSV  })
     public Response getTemplateInstanceWithId(@Context HttpServletResponse response,
                                                  @Context HttpServletRequest request,
                                                  @Context HttpHeaders headers,
                                                  @Context UriInfo uriInfo,
+
                                                  @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
                                                  @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id,
                                                  @Parameter(name = "extension", description = "extension", required = true) @PathParam("extension") String extension) {
 
-
         logger.info("getTemplateInstanceWithId " + template + " " + id + " " + extension);
 
-        List<Object[]> records = queryTemplate.query(template, id, false);
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+
+        List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
         debugDisplay("records.size ", records.size());
 
+        if (extension.equals("csv")) {
+            List<Object> ll=new LinkedList<>();
+            for (Object[] record: records) {
+                String csv=templateDispatcher.getCsvConverter().get(template).process(record);
+                ll.add(csv);
+                ll.add("\n");
+            }
+            return ServiceUtils.composeResponseOK(templateLogic.streamOutRecordsToCSV(ll)).type(InteropMediaType.MEDIA_TEXT_CSV).build();
+        }
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 
         switch (extension) {
@@ -238,11 +269,21 @@ public class TemplateService {
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
     }
 
+    public String getPrincipalAsPreferredUsername(Principal principal) {
+        String principalAsPreferredUsername= principal.getName();
+        UserProfile profile = RoleAuthorizationGenerator.getProfile(principal.getName());
+        if (profile!=null) {
+            String tmp= (String) profile.getAttribute("preferred_username");
+            if (tmp!=null) principalAsPreferredUsername=tmp;
+        }
+        return principalAsPreferredUsername;
+    }
+
 
     @GET
     @Path("/template/{template}/{id}/{variable:\\w+}{extension:(\\.\\w+)?}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
+    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML})
     public Response getTemplatePropertyInstanceWithId(@Context HttpServletResponse response,
                                                       @Context HttpServletRequest request,
                                                       @Context HttpHeaders headers,
@@ -252,11 +293,15 @@ public class TemplateService {
                                                       @Parameter(name = "variable", description = "variable", required = true) @PathParam("variable") String variable,
                                                       @Parameter(name = "extension", description = "extension", required = true) @PathParam("extension") String extension) {
 
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
 
         logger.info("getTemplatePropertyInstanceWithId " + template + " " + id + " " + variable);
 
-        List<Object[]> records = queryTemplate.query(template, id, false);
+        List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
         //debugDisplay("records.size ", records.size());
+
 
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 
@@ -319,7 +364,10 @@ public class TemplateService {
                                  @Parameter(name = "extension", description = "extension", required = true) @PathParam("extension") String extension,
                                  TableKeyList tableKey) {
 
-        List<Object[]> records = queryTemplate.queryTemplates(tableKey, false);
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+        List<Object[]> records = queryTemplate.queryTemplates(tableKey, false, principalAsPreferredUsername);
 
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 
@@ -349,18 +397,23 @@ public class TemplateService {
 
         logger.info("getTemplatesRecords " + searchConfig);
 
-        List<TemplateQuery.RecordEntry2> records = queryTemplate.queryTemplatesRecords(searchConfig);
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+
+        List<TemplateQuery.RecordEntry2> records = queryTemplate.queryTemplatesRecords(searchConfig, principalAsPreferredUsername, true);
 
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader();
         StreamingOutput promise= out -> {
             OutputStreamWriter out2 = new OutputStreamWriter(out);
+            ObjectMapper om2=new ObjectMapper();
             try {
                 CSVPrinter csvFilePrinter = new CSVPrinter(out2, csvFileFormat);
                 csvFilePrinter.printComment("Generated by TemplateService");
-                csvFilePrinter.printRecord("id", "created_at", "base_relation", "table_name", "key");
+                csvFilePrinter.printRecord("id", "created_at", "base_relation", "table_name", "key", "principal", "authorized", "hash");
 
                 for (TemplateQuery.RecordEntry2 record : records) {
-                    csvFilePrinter.printRecord(record.id,  record.created_at, record.base_relation, record.table_name, record.key);
+                    csvFilePrinter.printRecord(record.id,  record.created_at, record.base_relation, record.table_name, record.key,record.principal, record.authorized, om2.writeValueAsString(record.hash));
                 }
                 csvFilePrinter.flush();
             } catch (IOException e) {
@@ -384,8 +437,11 @@ public class TemplateService {
                                     @Context UriInfo uriInfo,
                                     TemplatesVizConfig config) {
 
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
-        StreamingOutput promise= out -> templateLogic.generateViz(config, out);
+
+        StreamingOutput promise= out -> templateLogic.generateViz(config, principalAsPreferredUsername, out);
 
         return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_IMAGE_SVG_XML).build();
 
@@ -403,12 +459,15 @@ public class TemplateService {
                                 @Parameter(name = "relation", description = "relation", required = true) @PathParam("relation") String relation,
                                 @Parameter(name = "id", description = "id", required = true) @PathParam("id") Integer id,
                                 @Parameter(name = "extension", description = "extension", required = false) @PathParam("extension") String extension){
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
 
         logger.info("getLiveNode " + relation + " " + id);
 
-        logger.info("accept header " + headers.getAcceptableMediaTypes());
+        //logger.info("accept header " + headers.getAcceptableMediaTypes());
 
-        List<TemplateQuery.RecordEntry2> ll=templateLogic.generateLiveNode(relation, id);
+        List<TemplateQuery.RecordEntry2> ll=templateLogic.generateLiveNode(relation, id, principalAsPreferredUsername);
         TableKeyList tableKeyList=new TableKeyList();
         ll.forEach(e -> tableKeyList.key.add(new TableKey() {{
             isA=e.table_name;
@@ -417,7 +476,7 @@ public class TemplateService {
 
         logger.info("getLiveNode " + tableKeyList);
 
-        List<Object[]> records = queryTemplate.queryTemplates(tableKeyList, false);
+        List<Object[]> records = queryTemplate.queryTemplates(tableKeyList, false, principalAsPreferredUsername);
 
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 
@@ -426,9 +485,9 @@ public class TemplateService {
             Object[] record=records.get(i);
             String property=ll.get(i).property;
             String template=(String)record[0];
-            logger.info("template " + template);
-            logger.info("property " + property);
-            logger.info("record " + java.util.Arrays.asList(record));
+            //logger.info("template " + template);
+            //logger.info("property " + property);
+            //logger.info("record " + java.util.Arrays.asList(record));
 
             int index=java.util.Arrays.asList(templateDispatcher.getPropertyOrder().get(template)).indexOf(property);
             Object[] objectRecord=recordMaker.get(template).apply(record);
@@ -459,6 +518,71 @@ public class TemplateService {
         }
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
 
+
+    }
+
+    @GET
+    @Path("/hash/template/{template}/{id}")
+    @Tag(name = "template")
+    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSON})
+    public Response getHash(@Context HttpServletResponse response,
+                                              @Context HttpServletRequest request,
+                                              @Context HttpHeaders headers,
+                                              @Context UriInfo uriInfo,
+
+                                              @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
+                                              @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id) {
+
+        logger.info("getHash " + template + " " + id );
+
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+
+        Map<String, String> hash=queryTemplate.retrieveHash(template,id,principalAsPreferredUsername);
+
+        StreamingOutput promise= out -> om.writeValue(out,hash);
+
+        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_APPLICATION_JSON).build();
+
+    }
+
+    @GET
+    @Path("/rehash/template/{template}/{id}")
+    @Tag(name = "template")
+    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSON})
+    public Response reHash(@Context HttpServletResponse response,
+                            @Context HttpServletRequest request,
+                            @Context HttpHeaders headers,
+                            @Context UriInfo uriInfo,
+
+                            @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
+                            @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id) {
+
+        logger.info("getHash " + template + " " + id );
+
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+
+        List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
+        if (records.size()!=1) {
+            return utils.composeResponseBadRequest("record not found", new IllegalArgumentException("size not 1:" + records.size()));
+        }
+
+        Object[] record=records.get(0);
+
+        Map<String, String> hash=queryTemplate.computeHash(template, id, record);
+
+        Map<String,String> storedHash=queryTemplate.retrieveHash(template,id,principalAsPreferredUsername);
+        for (String key: storedHash.keySet()) {
+            if (key.equals("csv")) continue;
+            hash.put(key+".check", String.valueOf(storedHash.get(key).equals(hash.get(key))));
+        }
+
+        StreamingOutput promise= out -> om.writeValue(out,hash);
+
+        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_APPLICATION_JSON).build();
 
     }
 

@@ -63,6 +63,7 @@ public class CompilerQueryInvoker {
 
 
         Set<String> foundSpecialTypes=new HashSet<>();
+        foundSpecialTypes.add(NON_NULLABLE_TEXT); // always add this one, as it is required in QueryInvoker2WP
 
         for (TemplateCompilerConfig config : configs.templates) {
 
@@ -95,7 +96,7 @@ public class CompilerQueryInvoker {
             MethodSpec.Builder mbuilder2= MethodSpec.methodBuilder("convertToTimestamptz");
             compilerUtil.specWithComment(mbuilder2);
             mbuilder2
-                    .addModifiers(Modifier.FINAL)
+                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
                     .addParameter(String.class, timeVariable)
                     .returns(String.class)
                     .beginControlFlow("if ($N==null)", timeVariable)
@@ -111,7 +112,7 @@ public class CompilerQueryInvoker {
             MethodSpec.Builder mbuilder2= MethodSpec.methodBuilder("convertToDate");
             compilerUtil.specWithComment(mbuilder2);
             mbuilder2
-                    .addModifiers(Modifier.FINAL)
+                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
                     .addParameter(String.class, dateVariable)
                     .returns(String.class)
                     .beginControlFlow("if ($N==null)", dateVariable)
@@ -127,7 +128,7 @@ public class CompilerQueryInvoker {
             MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder(CONVERT_TO_NULLABLE_TEXT);
             compilerUtil.specWithComment(mbuilder3);
             mbuilder3
-                    .addModifiers(Modifier.FINAL)
+                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
                     .addParameter(String.class, strVariable)
                     .returns(String.class)
                     .beginControlFlow("if ($N==null)", strVariable)
@@ -143,7 +144,7 @@ public class CompilerQueryInvoker {
             MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder(CONVERT_TO_NON_NULLABLE_TEXT);
             compilerUtil.specWithComment(mbuilder3);
             mbuilder3
-                    .addModifiers(Modifier.FINAL)
+                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
                     .addParameter(String.class, strVariable)
                     .returns(String.class)
                     .addStatement("return $S+$N.replace($S,$S)+$S", "'", strVariable, "'", "''", "'::TEXT");
@@ -156,7 +157,7 @@ public class CompilerQueryInvoker {
             MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder("convertToJsonTEXT");
             compilerUtil.specWithComment(mbuilder3);
             mbuilder3
-                    .addModifiers(Modifier.FINAL)
+                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
                     .addParameter(String.class, strVariable)
                     .returns(String.class)
                     .beginControlFlow("if ($N==null)", strVariable)

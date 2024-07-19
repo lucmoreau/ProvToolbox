@@ -22,19 +22,24 @@ public class WebTemplateInvoker extends TemplateInvoker {
     private String password;
     private String authoriser;
     private String accessToken;
+    private String clientid;
 
-    public WebTemplateInvoker(String url) {
+    public WebTemplateInvoker(String url, boolean authorizer) {
         super();
         this.url=url;
+        if (authorizer) setAuthoriser();
     }
 
-    public void setAuthoriser(String authoriser, String username, String password) {
+    public void setAuthoriser(String authoriser, String username, String password, String clientid) {
         this.authoriser=authoriser;
         this.username=username;
         this.password=password;
-        if ((authoriser!=null)&&(username!=null)&&(password!=null)) {
-            this.accessToken=si.getAccessTokenValue(authoriser,username, password);
+        this.clientid=clientid;
+        if ((authoriser!=null)&&(username!=null)&&(password!=null)&&(clientid!=null)) {
+            System.out.println("*** Setting authoriser, username and password " + authoriser);
+            this.accessToken=si.getAccessTokenValue(authoriser,username, password, clientid);
         } else {
+            System.out.println("*** No authoriser, username or password " + authoriser + " " + username + " " + password);
             this.accessToken=null;
         }
     }
@@ -49,7 +54,8 @@ public class WebTemplateInvoker extends TemplateInvoker {
         setAuthoriser(
                 getEnvironmentVariable(environment, "TPL_KEYCLOAK"),
                 getEnvironmentVariable(environment, "TPL_KEYCLOAK_USERNAME"),
-                getEnvironmentVariable(environment, "TPL_KECYLOAK_PASSWORD"));
+                getEnvironmentVariable(environment, "TPL_KEYCLOAK_PASSWORD"),
+                getEnvironmentVariable(environment, "TPL_KEYCLOAK_CLIENTID_DIRECT"));
 
     }
 
@@ -60,9 +66,9 @@ public class WebTemplateInvoker extends TemplateInvoker {
         List<IN> inputs = Collections.singletonList(inputs0);
         Optional<List<Map<String, Object>>> out1 = si.postInstructionsInOut(url, inputs, listType, accessToken);
         if (!out1.isPresent()) {
-            logger.warn("out1 is empty for Updating_obligationInputs ");
-            System.out.println("out1 is empty for Updating_obligationInputs ");
-            throw new IllegalStateException("out1 is empty for Updating_obligationInputs ");
+            logger.warn("out1 is empty for " + inputs.getClass() );
+            System.out.println("out1 is empty for " + inputs.getClass() );
+            throw new IllegalStateException("out1 is empty for " + inputs.getClass());
         } else {
             List<Map<String, Object>> result0 = out1.get();
             Map<String, Object> result1 = result0.get(0);

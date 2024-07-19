@@ -6,6 +6,8 @@ import org.openprovenance.prov.client.ProcessorArgsInterface;
 import org.openprovenance.prov.client.RecordsProcessorInterface;
 import org.openprovenance.prov.template.library.plead.client.configurator.*;
 import org.openprovenance.prov.template.library.plead.client.logger.TemplateBuilders;
+import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeEnactorConfigurator4;
+import org.openprovenance.prov.template.library.plead.sql.access_control.SqlEnactorConfigurator4;
 import org.openprovenance.prov.template.library.plead.sql.integration.SqlCompositeEnactorConfigurator3;
 import org.openprovenance.prov.template.library.plead.sql.integration.SqlEnactorConfigurator3;
 
@@ -13,6 +15,7 @@ import org.openprovenance.prov.template.library.plead.sql.integration.SqlEnactor
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.library.plead.client.logger.Logger.initializeBeanTable;
@@ -37,7 +40,7 @@ public class TemplateDispatcher {
     private final Map<String, String[]> outputs;
 
 
-    public TemplateDispatcher(Storage storage, Connection conn) {
+    public TemplateDispatcher(Storage storage, Connection conn, BiFunction<Integer, String, Object> postProcessing) {
         propertyOrder=initializeBeanTable(new PropertyOrderConfigurator());
         inputs=initializeBeanTable(new InputsConfigurator());
         outputs = initializeBeanTable(new OutputsConfigurator());
@@ -46,9 +49,11 @@ public class TemplateDispatcher {
         sqlInsert=initializeBeanTable(new SqlInsertConfigurator());
         beanConverter=initializeBeanTable(new ConverterConfigurator());
         //enactorConverter=initializeBeanTable(new SqlEnactorConfigurator(storage,conn));
-        enactorConverter=initializeBeanTable(new SqlEnactorConfigurator3(storage.getQuerier(conn)));
+        enactorConverter=initializeBeanTable(new SqlEnactorConfigurator4(storage.getQuerier(conn), postProcessing));
+        //enactorConverter=initializeBeanTable(new SqlEnactorConfigurator3(storage.getQuerier(conn)));
         //compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator(storage,conn));
-        compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator3(storage.getQuerier(conn)));
+        compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator4(storage.getQuerier(conn), postProcessing));
+        //compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator3(storage.getQuerier(conn)));
         successors = initializeBeanTable(new SuccessorConfigurator());
         predecessors = successors
                 .keySet()

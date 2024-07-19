@@ -13,11 +13,6 @@ fi
 
 source $PROV_CREDENTIALS
 
-CLIENT_ID="KeycloakOidcClient"
-CLIENT_ID="assistant"
-CLIENT_ID="ptm"
-CLIENT_ID="assistant-direct"
-
 
 if [[ $TPL_KEYCLOAK_PASSWORD = '' ]]; then
   echo -n Password:

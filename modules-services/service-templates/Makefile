@@ -11,9 +11,12 @@ tomcat:
 build.docker:
 	mvn clean install -Ptomcat,hsqldb,docker
 
+install.sec:
+	export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TEMPLATES}; export TPL_SECURITY_CONFIG=${TPL_SECURITY_CONFIG_DEFAULT}; mvn -Pjetty,security clean install
 
 jetty:
 	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TEMPLATES}; export TPL_SECURITY_CONFIG=${TPL_SECURITY_CONFIG_DEFAULT}; mvn -Pjetty,security jetty:run-war
+
 jetty.nosec:
 	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TEMPLATES}; unset TPL_SECURITY_CONFIG; mvn -Pjetty,nosecurity jetty:run-war
 
@@ -25,7 +28,7 @@ jetty.post:
 #SERVICE=localhost:7000/prov-vservice-0.5.2-SNAPSHOT
 SERVICE=localhost:8080
 
-TEMPLATE_URL=http://localhost:7072/ptl/webjars/prov-template-library/2.0.6-SNAPSHOT/templates/org/openprovenance/prov/templates/generic/binaryop.provn
+TEMPLATE_URL=http://localhost:7072/ptl/webjars/prov-template-library/2.0.8-SNAPSHOT/templates/org/openprovenance/prov/templates/generic/binaryop.provn
 
 WEBSERVICE=https://openprovenance.org/services/provapi/documents_form/
 WEBSERVICE=http://localhost:7072/ptl/provapi/documents_form/
@@ -61,3 +64,18 @@ test.syntax1:
 
 test.ptl1:
 	curl -i -X POST  -H "Content-Type: application/json"  -d @src/test/resources/json/table-key1.json  $(WEBSERVICE).svg
+
+
+
+test.template:
+	bin/keycloak-get-token.sh
+	curl -i -X GET  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`"   http://localhost:7072/ptl/provapi/template/plead_transforming/480.jsonld
+
+post.template:
+	bin/keycloak-get-token.sh
+	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" -d @src/test/resources/json/bindings.json -H "Content-type: application/vnd.kcl.prov-template+json" -H "Accept: application/vnd.kcl.prov-template+json" http://localhost:7072/ptl/provapi/statements 
+
+post.template2:
+	bin/keycloak-get-token.sh
+	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" -d @src/test/resources/json/bindings2.json -H "Content-type: application/vnd.kcl.prov-template+json" -H "Accept: application/vnd.kcl.prov-template+json" http://localhost:7072/ptl/provapi/statements
+

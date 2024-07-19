@@ -1,9 +1,24 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.0.7-SNAPSHOT`
+`2.0.9-SNAPSHOT`
+* 
+
+`2.0.8`
+* module-tools: prov-template-archetype and prov-toolbox-plugin
+* prov-template-compiler: record index with principal
+* service-template: simple and composite queries with access control
+* service-template: queries with access control, incl browsing and navigation
+* service-template: hash of record, post-processing of record
+* service-template: browsing tab, with links to hash of record and template
+* prov-template-compiler: fixed issue with composite, post processing
+* service-template: hash for composite records
+* service-template: record browser tab now listing composites
+
+`2.0.7`
 * prov-jsonld: fixed context url
 * prov-model: builder for bundles
 * prov-template-compiler: generating outstanding sql methods and tables
+* prov-template-archetype: work in progress
 
 `2.0.6`
 * prov-template-compiler: introduced sqlify for a few more keywords

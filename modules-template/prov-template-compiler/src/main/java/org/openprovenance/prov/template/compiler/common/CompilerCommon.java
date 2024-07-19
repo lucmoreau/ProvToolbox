@@ -35,6 +35,8 @@ public class CompilerCommon {
     public static final String MARKER_ELSE = "/*#else#*/";
     public static final String MARKER_THEN = "/*#then#*/";
     public static final String MARKER_ARRAY = "/*#array#*/";
+    public static final String UNKNOWN = "unknown";
+    public static final String POST_PROCESSING_VAR = "postProcessing";
     private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
 

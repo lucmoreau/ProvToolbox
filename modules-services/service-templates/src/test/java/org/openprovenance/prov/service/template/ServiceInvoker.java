@@ -24,7 +24,6 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
-import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -38,13 +37,15 @@ public class ServiceInvoker {
     WebClient webclient= WebClient.create();
 
 
-    public String getAccessTokenValue(String  url, String name, String password) {
-        String encodedClientData = Base64.getEncoder().encodeToString((name + ":" + password) .getBytes());
+    public String getAccessTokenValue(String  url, String name, String password, String clientid) {
+        //String encodedClientData = Base64.getEncoder().encodeToString((name + ":" + password) .getBytes());
         MultiValueMap<String, String> values=new LinkedMultiValueMap<>();
         values.add("grant_type", "password");
         values.add("username", name);
         values.add("password",password);
-        values.add("client_id","assistant");
+        values.add("client_id",clientid);
+
+        System.out.println("values: "+values);
         final JsonNode resource = webclient.post()
                 .uri(url)
                // .header("Authorization", "Basic " + encodedClientData)
@@ -77,6 +78,7 @@ public class ServiceInvoker {
     public <Tin,Tout> Optional<Tout> postInstructionsInOut(String serviceEndpoint, Tin data, ParameterizedTypeReference<Tout> clazz, String accessTokenValue) {
         Duration timeoutIn10Seconds = Duration.ofSeconds(10);
 
+
         return webclient
                 .method(HttpMethod.POST)
                 .uri(serviceEndpoint)
@@ -84,7 +86,10 @@ public class ServiceInvoker {
                 .header(HttpHeaders.CONTENT_TYPE, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)
                 .header(HttpHeaders.ACCEPT, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)
                 .headers(h -> {
-                    if (accessTokenValue!=null) h.setBearerAuth(accessTokenValue);
+                    if (accessTokenValue!=null) {
+                        h.setBearerAuth(accessTokenValue);
+                    }
+
                 })
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, response -> {
@@ -95,7 +100,21 @@ public class ServiceInvoker {
                     return Mono.error(() -> {
                         try {
                             //String b=response.bodyToMono(String.class).toFuture().get();
-                            return new IllegalStateException(String.format("4xxClientError %s for input data:\n %s\n", statusCode, new ObjectMapper().writeValueAsString(data)));
+                            return new IllegalStateException(String.format("4xxClientError %s for input data:\n %s\n access token: %s\n", statusCode, new ObjectMapper().writeValueAsString(data),accessTokenValue));
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+
+                })
+                .onStatus(HttpStatus::is5xxServerError, response -> {
+                    String statusCode = response.statusCode().toString();
+
+                    logTraceResponse(logger,response);
+
+                    return Mono.error(() -> {
+                        try {
+                            return new IllegalStateException(String.format("5xxServerError %s for input data:\n %s\n access token: %s\n", statusCode, new ObjectMapper().writeValueAsString(data), accessTokenValue));
                         } catch (JsonProcessingException e) {
                             throw new RuntimeException(e);
                         }

@@ -3,17 +3,21 @@ package org.openprovenance.prov.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
-import org.openprovenance.prov.service.readers.SearchConfig;
 import org.openprovenance.prov.service.readers.TableKey;
 import org.openprovenance.prov.service.readers.TableKeyList;
+import org.openprovenance.prov.service.readers.SearchConfig;
 import org.openprovenance.prov.template.compiler.sql.QueryBuilder;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
+import org.postgresql.util.PGobject;
 
+
+import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.*;
@@ -38,6 +42,7 @@ public class TemplateQuery {
     public static final String OUT_PROPERTY = "out_property";
 
     public static final String[] COMPOSITE_LINKER_COLUMNS = new String[]{"composite","simple"};
+    public static final String SHA_3_512 = "SHA3-512";
     private final Querier querier;
     private final ProvFactory pf = new ProvFactory();
     private final TemplateDispatcher templateDispatcher;
@@ -154,17 +159,117 @@ public class TemplateQuery {
 
     }
 
-    public void generateViz(Integer id, String template, String property, Map<String, Map<String, String>> baseTypes, OutputStream out) {
+    public void generateViz(Integer id, String template, String property, Map<String, Map<String, String>> baseTypes, String principal, OutputStream out) {
 
         logger.info("generateViz " + id + " " + template + " " + property);
 
-        List<TemplateConnection> templateConnections = recursiveTraversal(id, template, property);
+        List<TemplateConnection> templateConnections = recursiveTraversal(id, template, property, principal);
         // reverse list
         Collections.reverse(templateConnections);
 
 
         new TemplatesToDot(templateConnections, baseTypes, ioMap, templateDispatcher, pf).convert(null, out, "template_connections");
     }
+
+    final DigestUtils sha512 = new DigestUtils(DigestUtils.getSha3_512Digest());
+
+    public Map<String, String> computeHash(String template, int id, Object[] record) {
+
+        StringBuilder sb=new StringBuilder();
+        sb.append(id).append(",");
+        sb.append(templateDispatcher.getCsvConverter().get((String)record[0]).process(record));
+
+        String csv = sb.toString();
+        String hash2=sha512.digestAsHex(csv);
+        Map<String,String> map=new LinkedHashMap<>();
+        map.put(SHA_3_512, hash2);
+        map.put("csv", csv);
+        return map;
+    }
+
+    public Map<String, String> computeHash(String template, int id, List<Object[]> records) {
+        StringBuilder sb=new StringBuilder();
+        sb.append(id).append(",").append(template).append(",").append(records.size());
+        for (Object[] record: records) {
+            sb.append("\n");
+            sb.append(templateDispatcher.getCsvConverter().get((String)record[0]).process(record));
+        }
+
+        String csv = sb.toString();
+        String hash2=sha512.digestAsHex(csv);
+        Map<String,String> map=new LinkedHashMap<>();
+        map.put(SHA_3_512, hash2);
+        map.put("csv", csv);
+        return map;
+    }
+
+
+    public void updateHash(String template, int id, Map<String,String> hash, String principal) {
+        querier.do_statements(null,
+                null,
+                (sb, data) -> {
+                    sb.append("UPDATE record_index");
+                    sb.append(" SET hash='");
+                    sb.append(makeSignatureRecord(hash));
+                    sb.append("' WHERE key=");
+                    sb.append(id);
+                    sb.append(" AND principal='");
+                    sb.append(principal);
+                    sb.append("'");
+                    sb.append(" AND table_name='");
+                    sb.append(template);
+                    sb.append("'");
+                });
+    }
+
+    public Map<String, String> retrieveHash(String template, int id, String principal) {
+
+        Map<String,String> map=new HashMap<>();
+
+        return querier.do_query(map,
+                null,
+                (sb, data) -> {
+                    sb.append("SELECT hash FROM record_index WHERE key=");
+                    sb.append(id);
+                    sb.append(" AND principal='");
+                    sb.append(principal);
+                    sb.append("'");
+                    sb.append(" AND table_name='");
+                    sb.append(template);
+                    sb.append("'");
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        String hash1 = rs.getString("hash");
+                        try {
+                            Map<String, String> hash2 = om.readValue(hash1, Map.class);
+                            data.putAll(hash2);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+    }
+
+
+
+    private String makeSignatureRecord(Map<String,String> persistedMap) {
+        Map<String, String> map = new HashMap<>();
+        map.putAll(persistedMap);
+        map.remove("csv");
+        try {
+            return om.writeValueAsString(map);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<String, String> makeSignatureMap(List<String> hash) {
+        Map<String,String> map=new LinkedHashMap<>();
+        map.put(SHA_3_512, hash.get(0));
+        return map;
+    }
+
 
     static public class TemplateConnection {
         public Integer in_id;
@@ -175,7 +280,7 @@ public class TemplateQuery {
         public String out_property;
     }
 
-    public List<TemplateConnection> recursiveTraversal(Integer id, String template, String property) {
+    public List<TemplateConnection> recursiveTraversal(Integer id, String template, String property, String principal) {
         List<TemplateConnection> the_records = new LinkedList<>();
         querier.do_query(the_records,
                 null,
@@ -187,7 +292,9 @@ public class TemplateQuery {
                     sb.append(template);
                     sb.append("','");
                     sb.append(property);
-                    sb.append("')");
+                    sb.append("') as template_connection\n");
+                    joinAccessControl("template_connection.in_template", principal, sb, "template_connection", "in_id");
+                    andAccessControl(principal, sb);
                 },
                 (rs, data) -> {
                     while (rs.next()) {
@@ -205,6 +312,8 @@ public class TemplateQuery {
         return the_records;
     }
 
+
+
     public Document constructDocument(Map<String, FileBuilder> documentBuilderDispatcher, List<Object[]> the_records) {
             IndexedDocument iDoc = new IndexedDocument(pf, pf.newDocument());
             for (Object[] record : the_records) {
@@ -220,11 +329,11 @@ public class TemplateQuery {
             return iDoc.toDocument();
         }
 
-    public List<Object[]> query(String template, Integer id, boolean withTitles) {
+    public List<Object[]> query(String template, Integer id, boolean withTitles, String principal) {
         if (isComposite(template)) {
-            return queryComposite(template, id, withTitles);
+            return queryComposite(template, id, withTitles, principal);
         } else {
-            return querySimple(template, id, withTitles);
+            return querySimple(template, id, withTitles, principal);
         }
     }
 
@@ -232,17 +341,36 @@ public class TemplateQuery {
         return compositeLinker.containsKey(template);
     }
 
-    public List<Object[]> querySimple(String template, Integer id, boolean withTitles) {
+    public List<Object[]> querySimple(String template, Integer id, boolean withTitles, String principal) {
         List<Object[]> the_records = new LinkedList<>();
         String[] propertyOrder=templateDispatcher.getPropertyOrder().get(template);
         //System.out.println("propertyOrder = " + Arrays.toString(propertyOrder));
         querier.do_query(the_records,
                 null,
                 (sb, data) -> {
-                    sb.append("SELECT * FROM ");
+            /* generate following query
+                    SELECT template.*
+                    FROM plead_transforming AS template
+                    LEFT JOIN record_index
+                    ON record_index.key = template.id
+                    AND record_index.table_name = 'plead_transforming'
+                    AND record_index.principal IS NOT NULL
+                    LEFT JOIN access_control
+                    ON access_control.record = record_index.id
+                    AND access_control.authorized = 'joe'
+                    WHERE template.id = 478
+                    AND (record_index.principal = 'joe' OR access_control.record IS NOT NULL);
+
+             */
+
+                    sb.append("SELECT template.*\n FROM ");
                     sb.append(template);
-                    sb.append(" WHERE id=");
+                    sb.append(" as template ");
+                    joinAccessControl(template, principal, sb);
+                    sb.append("\n WHERE template.id=");
                     sb.append(id);
+                    andAccessControl(principal, sb);
+
                 },
                 (rs, data) -> {
                     while (rs.next()) {
@@ -264,7 +392,39 @@ public class TemplateQuery {
         return the_records;
     }
 
-    public List<RecordEntry2> queryTemplatesRecords(SearchConfig config) {
+    public void whereAccessControl(String principal, StringBuilder sb) {
+        sb.append("\n WHERE (record_index.principal='");
+        sb.append(principal);
+        sb.append("' OR access_control.record IS NOT NULL)");
+    }
+    public void andAccessControl(String principal, StringBuilder sb) {
+        sb.append("\n AND (record_index.principal='");
+        sb.append(principal);
+        sb.append("' OR access_control.record IS NOT NULL)");
+    }
+
+    public void joinAccessControl(String template, String principal, StringBuilder sb) {
+        joinAccessControl(template, principal, sb, "template", "id");
+    }
+
+    public void joinAccessControl(String template, String principal, StringBuilder sb, String label, String id) {
+        sb.append("\n LEFT JOIN record_index ON record_index.key=" + label + "." + id);
+        if (template.startsWith(label)) {
+            sb.append("\n AND record_index.table_name=");
+            sb.append(template);
+        } else {
+            sb.append("\n AND record_index.table_name='");
+            sb.append(template);
+            sb.append("'");
+        }
+        sb.append("\n AND record_index.principal IS NOT NULL");
+        sb.append("\n LEFT JOIN access_control\n ON access_control.record=record_index.id");
+        sb.append("\n AND access_control.authorized='");
+        sb.append(principal);
+        sb.append("'");
+    }
+
+    public List<RecordEntry2> queryTemplatesRecords(SearchConfig config, String principal, boolean includeComposite) {
         String base_relation = config.base_relation;
         String from_date = config.from_date;
         String to_date = config.to_date;
@@ -278,28 +438,99 @@ public class TemplateQuery {
         }
 
 
-        return queryTemplatesRecords(base_relation, from_date, to_date, limit);
+        return queryTemplatesRecords(base_relation, from_date, to_date, limit, principal, includeComposite);
     }
 
-    private List<RecordEntry2> queryTemplatesRecords(String base_relation, String from_date, String to_date, Integer limit) {
+    private List<RecordEntry2> queryTemplatesRecords(String base_relation, String from_date, String to_date, Integer limit, String principal, boolean includeComposite) {
         List<RecordEntry2> linked_records = new LinkedList<>();
+        Set<Integer> seen= new HashSet<>();
 
         querier.do_query(linked_records,
                 null,
                 (sb, data) -> {
-                    sb.append("SELECT * FROM ");
-                    sb.append("search_records_for_" + base_relation + "(").append(from_date).append(",").append(to_date).append(") ");
-                    sb.append("limit ").append(limit);
+                    StringBuffer aggregator= new StringBuffer();
+                    aggregator.append("json_build_array(");
+                    final int[] count0 = {0};
+                    compositeLinker.forEach((k,v) -> {
+                        if (includeComposite) {
+                            count0[0]++;
+                            if (count0[0]>1) {
+                                aggregator.append(",");
+                            }
+                            aggregator.append("json_agg(");
+                            aggregator.append("link").append(count0[0]).append(".composite)");
+                            aggregator.append(",");
+                            aggregator.append("'").append(k).append("'");
+                        }});
+                     aggregator.append(")");
+
+                    sb.append("SELECT search_record.*,record_index.principal,json_agg(ac2.authorized) as authorized,").append(aggregator.toString()).append(" as parent, record_index.hash as hash\n FROM ");
+                    sb.append("search_records_for_" + base_relation + "(").append(from_date).append(",").append(to_date).append(") as search_record ");
+                    joinAccessControl("search_record.table_name", principal, sb, "search_record", "key");
+                    sb.append("\n LEFT JOIN access_control as ac2  ON ac2.record=record_index.id");
+                    final int[] count = {0};
+                    compositeLinker.forEach((k,v) -> {
+                        if (includeComposite) {
+                            count[0]++;
+                            sb.append("\n LEFT JOIN ");
+                            sb.append(v.table);
+                            sb.append(" as link").append(count[0]);
+                            sb.append("\n ON search_record.key=link").append(count[0]).append(".simple");
+                        }
+                    });
+
+                    //sb.append("\n LEFT JOIN plead_transforming_composite_linker as link\n");
+                   // sb.append("\n ON record_index.key=simple");
+                    whereAccessControl(principal, sb);
+                    sb.append("\n group by search_record.id, search_record.created_at, search_record.table_name, search_record.key, record_index.principal, record_index.hash\n");
+                    sb.append("\n limit ").append(limit);
                     System.out.println("sb = " + sb.toString());
                 },
                 (rs, data) -> {
                     while (rs.next()) {
+                        PGobject parent1=rs.getObject("parent", PGobject.class);
+                        Integer parent=null;
+                        String parent_relation=null;
+                        try {
+                            List<Object> parents =(parent1==null)?null:om.readValue(parent1.getValue(), List.class);
+                            if (parents!=null && !parents.isEmpty()) {
+                                parent=((List<Integer>)(parents.get(0))).get(0);
+                                parent_relation=(String)(parents.get(1));
+                            }
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException(e);
+                        }
+                        if (parent!=null && !seen.contains(parent)) {
+                            seen.add(parent);
+                            RecordEntry2 parentRecord = new RecordEntry2();
+                            parentRecord.key = parent;
+                            parentRecord.base_relation = base_relation;
+                            parentRecord.id = rs.getObject("ID", Integer.class);
+                            parentRecord.created_at = rs.getObject("created_at", Timestamp.class).toInstant().toString();
+                            parentRecord.table_name= parent_relation;//rs-.getObject("table_name", String.class)+"_composite"; // HACK
+                            data.add(parentRecord);
+                        }
+
                         RecordEntry2 record = new RecordEntry2();
                         record.key = rs.getObject("key", Integer.class);
                         record.created_at = rs.getObject("created_at", Timestamp.class).toInstant().toString();
                         record.base_relation = base_relation;
                         record.table_name = rs.getObject("table_name", String.class);
                         record.id = rs.getObject("ID", Integer.class);
+                        record.principal = rs.getObject("principal", String.class);
+                        String authorized1 = rs.getString("authorized");
+                        String hash1= rs.getString("hash");
+                        try {
+                            List<String> authorized=(authorized1==null)?null:om.readValue(authorized1.getBytes(), List.class);
+                            Map<String,String> hash=(hash1==null)?null:om.readValue(hash1, Map.class);
+                            if (authorized!=null && !authorized.isEmpty() && authorized.get(0)==null) {
+                                authorized=List.of();
+                            }
+                            record.authorized=authorized;
+                            record.hash=hash;
+                        } catch (IOException e) {
+                            throw new RuntimeException("failed to parse authorized field: " + authorized1, e);
+                        }
 
                         data.add(record);
                     }
@@ -308,16 +539,18 @@ public class TemplateQuery {
         return linked_records;
     }
 
-    public List<RecordEntry2> queryTemplatesRecordsById(String base_relation, Integer id, Integer limit) {
+    public List<RecordEntry2> queryTemplatesRecordsById(String base_relation, Integer id, Integer limit, String principal) {
         List<RecordEntry2> linked_records = new LinkedList<>();
 
         querier.do_query(linked_records,
                 null,
                 (sb, data) -> {
                     sb.append("SELECT * FROM ");
-                    sb.append("search_records_by_id_for_" + base_relation + "(" + id + ") ");
-                    sb.append("limit ").append(limit);
-                    System.out.println("sb = " + sb.toString());
+                    sb.append("search_records_by_id_for_" + base_relation + "(" + id + ") as search_record");
+                    joinAccessControl("search_record.table_name", principal, sb, "search_record", "key");
+                    whereAccessControl(principal, sb);
+                    sb.append("\n limit ").append(limit);
+                    //System.out.println("sb = " + sb.toString());
                 },
                 (rs, data) -> {
                     while (rs.next()) {
@@ -354,6 +587,9 @@ public class TemplateQuery {
         public String created_at;
         public String table_name;
         public Integer id;
+        public String principal;
+        public List<String> authorized;
+        public Map<String, String> hash;
 
 
         @Override
@@ -365,24 +601,32 @@ public class TemplateQuery {
                     ", created_at='" + created_at + '\'' +
                     ", table_name='" + table_name + '\'' +
                     ", id=" + id +
+                    ", principal='" + principal + '\'' +
+                    ", authorized=" + authorized +
+                    ", hash=" + hash +
                     '}';
         }
 
 
-
-
     }
-    public List<Object[]> queryComposite(String template, Integer id, boolean withTitles) {
+    public List<Object[]> queryComposite(String template, Integer id, boolean withTitles, String principal) {
         List<RecordEntry> linked_records = new LinkedList<>();
         TemplateService.Linker linker = compositeLinker.get(template);
 
         querier.do_query(linked_records,
                 null,
                 (sb, data) -> {
+                    sb.append("SELECT * FROM (");
                     sb.append("SELECT * FROM ");
-                    sb.append(linker.table);
-                    sb.append(" WHERE composite=");
+                    sb.append(template); // was linker.table
+                    sb.append(" AS template ");
+                    joinAccessControl(template, principal, sb);
+                    sb.append("\n WHERE key=");
                     sb.append(id);
+                    andAccessControl(principal, sb);
+                    sb.append(") as combo ");
+                    sb.append("\n LEFT JOIN ").append(linker.table).append(" AS linker ");
+                    sb.append(" ON combo.key = linker.composite");
                 },
                 (rs, data) -> {
                     while (rs.next()) {
@@ -403,18 +647,18 @@ public class TemplateQuery {
         List<Object[]> the_records = new LinkedList<>();
         for (RecordEntry linked_record : linked_records) {
             Integer simple = linked_record.key;
-            List<Object[]> simple_records = querySimple(linked_record.table, simple, withTitles);
+            List<Object[]> simple_records = querySimple(linked_record.table, simple, withTitles, principal);
             the_records.addAll(simple_records);
         }
 
         return the_records;
     }
 
-    public List<Object[]> queryTemplates(TableKeyList tableKeyList, boolean withTitles) {
+    public List<Object[]> queryTemplates(TableKeyList tableKeyList, boolean withTitles, String principal) {
         List<Object[]> result = new LinkedList<>();
         for (TableKey tableKey : tableKeyList.key) {
             logger.info("tableKey = " + tableKey);
-            List<Object[]> tmp=query(tableKey.isA, tableKey.ID, withTitles);
+            List<Object[]> tmp=query(tableKey.isA, tableKey.ID, withTitles, principal);
             result.addAll(tmp);
         }
         return result;
@@ -520,6 +764,7 @@ public class TemplateQuery {
                                     }
                                     fun.on (out_templatex + "." +  out_property + " = " + in_templatex  + "." +  in_property )
                                             .and(           unquote(PARAM_PROPERTY) + " = '" + in_property + "'")
+                                            .and(           unquote(PARAM_TEMPLATE) + " = '" + in_templatex + "'")
                                             .and( in_templatex + ".id=" + PARAM_ID);
                                 }
                             }

@@ -7,7 +7,9 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class RoleAuthorizationGenerator implements AuthorizationGenerator {
@@ -17,16 +19,22 @@ public class RoleAuthorizationGenerator implements AuthorizationGenerator {
     static Logger logger = LogManager.getLogger(RoleAuthorizationGenerator.class);
     private final String role;
 
+    static Map<String,UserProfile> profiles= new HashMap<>();
+
+    static public UserProfile getProfile(String id) {
+        return profiles.get(id);
+    }
+
     public RoleAuthorizationGenerator(String role) {
         this.role = role;
     }
 
     @Override
     public Optional<UserProfile> generate(WebContext webContext, SessionStore sessionStore, UserProfile profile) {
-        logger.info("Checking roles claim " +  profile);
+        //logger.info("Checking roles claim " +  profile);
         Object roles = profile.getAttribute("roles");
         if (!(roles instanceof List)) {
-            logger.info("roles claim is null ro not a list");
+            logger.info("roles claim is null or not a list");
             throw new RuntimeException("roles claim is null or not a list");
         } else {
             List<String> rolesList=(List<String>)roles;
@@ -37,6 +45,10 @@ public class RoleAuthorizationGenerator implements AuthorizationGenerator {
                 logger.info("roles claim is correct");
             }
         }
+        profiles.put(profile.getId(),profile);
+        logger.info("profiles " + profile.getId() + " " + profile.getAttribute("preferred_username"));
         return Optional.of(profile);
     }
+
+
 }

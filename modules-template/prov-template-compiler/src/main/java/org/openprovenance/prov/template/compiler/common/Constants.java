@@ -64,6 +64,11 @@ public interface Constants {
     String BEAN_ENACTOR = "BeanEnactor";
     String BEAN_ENACTOR2 = "BeanEnactor2";
     String BEAN_ENACTOR2_COMPOSITE = "BeanEnactor2Composite";
+
+    String BEAN_ENACTOR2_WP = "BeanEnactor4"; //"BeanEnactor2WithPrincipal";
+    String BEAN_ENACTOR2_COMPOSITE_WP = "BeanEnactor4Composite"; //"BeanEnactor2CompositeWithPrincipal";
+    String QUERY_INVOKER2WP = "QueryInvoker4"; //"QueryInvoker2WithPrincipal";
+
     String QUERY_INVOKER = "QueryInvoker";
     String QUERY_INVOKER2 = "QueryInvoker2";
     String BEAN_CHECKER = "BeanChecker";
@@ -135,25 +140,38 @@ public interface Constants {
     String CONFIGURATOR = "configurator";
     String SUB_PACKAGE_LOGGER = "logger";
     String SUB_PACKAGE_INTEGRATOR = "integrator";
+    String SUB_PACKAGE_ACCESS_CONTROL = "access_control";
     String SUB_PACKAGE_COMMON = "common";
     String SUB_PACKAGE_CLIENT = "client";
     String BEAN_PROCESSOR = "BeanProcessor";
     String LOGGER="Logger";
 
+    String principalVar = "principal";
+
+
     String SQL_BEAN_COMPLETER = "SqlBeanCompleter";
     String SQL_BEAN_COMPLETER3 = "SqlBeanCompleter3";
+    String SQL_BEAN_COMPLETER4 = "SqlBeanCompleter4";
     String SQL_COMPOSITE_BEAN_COMPLETER = "SqlCompositeBeanCompleter";
     String SQL_ENACTOR_IMPLEMENTATION = "SqlEnactorImplementation";
     String SQL_ENACTOR_IMPLEMENTATION3 = "SqlEnactorImplementation3";
+    String SQL_ENACTOR_IMPLEMENTATION4 = "SqlEnactorImplementation4";
     String SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3 = "SqlCompositeEnactorImplementation3";
+    String SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4 = "SqlCompositeEnactorImplementation4";
     String SQL_COMPOSITE_ENACTOR_IMPLEMENTATION = "SqlCompositeEnactorImplementation";
     String SQL_COMPOSITE_BEAN_ENACTOR= "SqlCompositeBeanEnactor";
     String SQL_COMPOSITE_BEAN_COMPLETER3 = "SqlCompositeBeanCompleter3";
+    String SQL_COMPOSITE_BEAN_COMPLETER4 = "SqlCompositeBeanCompleter4";
     String SQL_BEAN_ENACTOR= "SqlBeanEnactor";
     String SQL_BEAN_ENACTOR3= "SqlBeanEnactor3";
+    String SQL_BEAN_ENACTOR4= "SqlBeanEnactor4";
     String SQL_COMPOSITE_BEAN_ENACTOR3= "SqlCompositeBeanEnactor3";
+    String SQL_COMPOSITE_BEAN_ENACTOR4= "SqlCompositeBeanEnactor4";
     String SQL_ENACTOR_CONFIGURATOR3= "SqlEnactorConfigurator3";
+    String SQL_ENACTOR_CONFIGURATOR4= "SqlEnactorConfigurator4";
     String SQL_COMPOSITE_ENACTOR_CONFIGURATOR3= "SqlCompositeEnactorConfigurator3";
+    String SQL_COMPOSITE_ENACTOR_CONFIGURATOR4= "SqlCompositeEnactorConfigurator4";
 
 
+    String POST_PROCESS_METHOD_NAME = "postEnactmentProcessing";
 }

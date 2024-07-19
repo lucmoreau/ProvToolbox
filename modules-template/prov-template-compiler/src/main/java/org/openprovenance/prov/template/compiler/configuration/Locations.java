@@ -17,8 +17,10 @@ public class Locations {
     private String config_common_package;
     private String config_backend;
     private String config_integrator_package;
+    private String config_access_control_package;
     private String config_sql_common_backend_package;
     private String config_sql_integration_backend_package;
+    private String config_sql_access_control_backend_package;
     public final String python_dir;
 
 
@@ -32,9 +34,11 @@ public class Locations {
         if (config.package_==null) config.package_=configs.root_package;
         this.config_common_package     = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_COMMON;
         this.config_integrator_package = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_INTEGRATOR;
+        this.config_access_control_package = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_ACCESS_CONTROL;
         this.config_backend            = config.package_;
         this.config_sql_common_backend_package = config_backend + ".sql.common";
         this.config_sql_integration_backend_package = config_backend + ".sql.integration";
+        this.config_sql_access_control_backend_package = config_backend + ".sql.access_control";
     }
 
     public Locations(TemplatesProjectConfiguration configs, String cli_src_dir, String l2p_src_dir) {
@@ -71,6 +75,7 @@ public class Locations {
             case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION:
             case SQL_COMPOSITE_BEAN_ENACTOR:
                 return config_sql_common_backend_package;
+
             case SQL_BEAN_COMPLETER3:
             case SQL_ENACTOR_IMPLEMENTATION3:
             case SQL_COMPOSITE_BEAN_ENACTOR3:
@@ -80,6 +85,21 @@ public class Locations {
             case SQL_ENACTOR_CONFIGURATOR3:
             case SQL_COMPOSITE_ENACTOR_CONFIGURATOR3:
                 return config_sql_integration_backend_package;
+
+            case SQL_BEAN_COMPLETER4:
+            case BEAN_ENACTOR2_COMPOSITE_WP:
+            case BEAN_ENACTOR2_WP:
+            case QUERY_INVOKER2WP:
+            case SQL_ENACTOR_IMPLEMENTATION4:
+            case SQL_BEAN_ENACTOR4:
+            case SQL_ENACTOR_CONFIGURATOR4:
+            case SQL_COMPOSITE_BEAN_ENACTOR4:
+            case SQL_COMPOSITE_ENACTOR_CONFIGURATOR4:
+            case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4:
+            case SQL_COMPOSITE_BEAN_COMPLETER4:
+
+                return config_sql_access_control_backend_package;
+
             case LOGGER:
             case TEMPLATE_BUILDERS:
                 return logger_package;

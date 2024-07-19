@@ -401,7 +401,7 @@ public class TemplateService {
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
-        List<TemplateQuery.RecordEntry2> records = queryTemplate.queryTemplatesRecords(searchConfig, principalAsPreferredUsername);
+        List<TemplateQuery.RecordEntry2> records = queryTemplate.queryTemplatesRecords(searchConfig, principalAsPreferredUsername, true);
 
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader();
         StreamingOutput promise= out -> {

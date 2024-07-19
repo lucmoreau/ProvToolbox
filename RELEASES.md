@@ -9,6 +9,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-template: browsing tab, with links to hash of record and template
 * prov-template-compiler: fixed issue with composite, post processing
 * service-template: hash for composite records
+* service-template: record browser tab now listing composites
 
 `2.0.7`
 * prov-jsonld: fixed context url

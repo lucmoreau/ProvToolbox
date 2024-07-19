@@ -14,6 +14,7 @@ import org.openprovenance.prov.service.readers.SearchConfig;
 import org.openprovenance.prov.template.compiler.sql.QueryBuilder;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
+import org.postgresql.util.PGobject;
 
 
 import java.io.IOException;
@@ -423,7 +424,7 @@ public class TemplateQuery {
         sb.append("'");
     }
 
-    public List<RecordEntry2> queryTemplatesRecords(SearchConfig config, String principal) {
+    public List<RecordEntry2> queryTemplatesRecords(SearchConfig config, String principal, boolean includeComposite) {
         String base_relation = config.base_relation;
         String from_date = config.from_date;
         String to_date = config.to_date;
@@ -437,19 +438,22 @@ public class TemplateQuery {
         }
 
 
-        return queryTemplatesRecords(base_relation, from_date, to_date, limit, principal);
+        return queryTemplatesRecords(base_relation, from_date, to_date, limit, principal, includeComposite);
     }
 
-    private List<RecordEntry2> queryTemplatesRecords(String base_relation, String from_date, String to_date, Integer limit, String principal) {
+    private List<RecordEntry2> queryTemplatesRecords(String base_relation, String from_date, String to_date, Integer limit, String principal, boolean includeComposite) {
         List<RecordEntry2> linked_records = new LinkedList<>();
+        Set<Integer> seen= new HashSet<>();
 
         querier.do_query(linked_records,
                 null,
                 (sb, data) -> {
-                    sb.append("SELECT search_record.*,record_index.principal,json_agg(ac2.authorized) as authorized,record_index.hash as hash\n FROM ");
+                    sb.append("SELECT search_record.*,record_index.principal,json_agg(ac2.authorized) as authorized,json_agg(link.composite) as parent, record_index.hash as hash\n FROM ");
                     sb.append("search_records_for_" + base_relation + "(").append(from_date).append(",").append(to_date).append(") as search_record ");
                     joinAccessControl("search_record.table_name", principal, sb, "search_record", "key");
                     sb.append("\n LEFT JOIN access_control as ac2  ON ac2.record=record_index.id");
+                    sb.append("\n LEFT JOIN plead_transforming_composite_linker as link\n");
+                    sb.append("\n ON record_index.key=simple");
                     whereAccessControl(principal, sb);
                     sb.append("\n group by search_record.id, search_record.created_at, search_record.table_name, search_record.key, record_index.principal, record_index.hash\n");
                     sb.append("\n limit ").append(limit);
@@ -457,6 +461,27 @@ public class TemplateQuery {
                 },
                 (rs, data) -> {
                     while (rs.next()) {
+                        PGobject parent1=rs.getObject("parent", PGobject.class);
+                        Integer parent=null;
+                        try {
+                            List<Integer> parentL =(parent1==null)?null:om.readValue(parent1.getValue(), List.class);
+                            if (parentL!=null && !parentL.isEmpty()) {
+                                parent=parentL.get(0);
+                            }
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException(e);
+                        }
+                        if (parent!=null && !seen.contains(parent)) {
+                            seen.add(parent);
+                            RecordEntry2 parentRecord = new RecordEntry2();
+                            parentRecord.key = parent;
+                            parentRecord.base_relation = base_relation;
+                            parentRecord.id = rs.getObject("ID", Integer.class);
+                            parentRecord.created_at = rs.getObject("created_at", Timestamp.class).toInstant().toString();
+                            parentRecord.table_name = rs.getObject("table_name", String.class)+"_composite"; // HACK
+                            data.add(parentRecord);
+                        }
+
                         RecordEntry2 record = new RecordEntry2();
                         record.key = rs.getObject("key", Integer.class);
                         record.created_at = rs.getObject("created_at", Timestamp.class).toInstant().toString();

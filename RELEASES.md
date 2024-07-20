@@ -4,7 +4,9 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-template: returning hash code and location of submitted record
 * service-template: verifying hash from the command line
 * prov-dot: allows for dot:style to be specified
-* 
+* service-templates: navigation tab: prov and entities
+
+
 `2.0.8`
 * module-tools: prov-template-archetype and prov-toolbox-plugin
 * prov-template-compiler: record index with principal

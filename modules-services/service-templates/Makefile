@@ -71,9 +71,33 @@ test.template:
 	bin/keycloak-get-token.sh
 	curl -i -X GET  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`"   http://localhost:7072/ptl/provapi/template/plead_transforming/480.jsonld
 
+
+get.template:
+	@export VERBOSE=false;bin/keycloak-get-token.sh
+	@curl -s -X GET  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`"   http://localhost:7072/ptl/provapi/template/${TEMPLATE}/${ID}.${EXTENSION}
+
+hash.template:
+	@$(MAKE) get.template TEMPLATE=plead_transforming ID=$(ID) EXTENSION=csv | grep $(TEMPLATE) | sed 's/$(TEMPLATE)/$(ID),$(TEMPLATE)/g' > target/977.csv
+	@perl -p -i -e 'chomp if eof' target/$(ID).csv
+	@openssl dgst -sha3-512 target/$(ID).csv
+
+ex.h.1:
+	@$(MAKE) hash.template ID=977 TEMPLATE=plead_transforming
+
+ex.h.2:
+	@$(MAKE) get.template TEMPLATE=plead_transforming ID=977 EXTENSION=csv | grep "plead" | sed 's/plead/977,plead/g' > target/977.csv
+	@perl -p -i -e 'chomp if eof' target/977.csv
+	@openssl dgst -sha3-512 target/977.csv
+
+
 post.template:
 	bin/keycloak-get-token.sh
-	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" -d @src/test/resources/json/bindings.json -H "Content-type: application/vnd.kcl.prov-template+json" -H "Accept: application/vnd.kcl.prov-template+json" http://localhost:7072/ptl/provapi/statements 
+	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" \
+					-H "Accept-PROV-Hash: SHA3-512" \
+					-d @src/test/resources/json/bindings.json \
+					-H "Content-type: application/vnd.kcl.prov-template+json" \
+					-H "Accept: application/vnd.kcl.prov-template+json" \
+					http://localhost:7072/ptl/provapi/statements
 
 post.template2:
 	bin/keycloak-get-token.sh

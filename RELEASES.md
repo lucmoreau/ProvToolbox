@@ -2,7 +2,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.0.9-SNAPSHOT`
 * service-template: returning hash code and location of submitted record
-* 
+* service-template: verifying hash from the command line
 
 `2.0.8`
 * module-tools: prov-template-archetype and prov-toolbox-plugin

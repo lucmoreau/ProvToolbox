@@ -107,6 +107,7 @@ public class TemplateService {
 
 
     static final List<String> sqlFilesToExecute = List.of("/utils.sql");
+    private final Map<String, Map<String, List<String>>> successors;
 
     public static class Linker {
         public final String table;
@@ -161,11 +162,12 @@ public class TemplateService {
             put("PROV_API", provAPI);
         }};
         this.documentBuilderDispatcher=initializeBeanTable(new org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorWithMap(map,pf));
-        this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om, documentBuilderDispatcher, org.openprovenance.prov.template.library.plead.client.logger.Logger.ioMap);
+        this.successors=initializeBeanTable(new TableConfiguratorForSuccessors(documentBuilderDispatcher));
+        this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om, documentBuilderDispatcher, org.openprovenance.prov.template.library.plead.client.logger.Logger.ioMap, successors);
         this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),templateDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
         this.recordMaker=initializeBeanTable(new TableConfiguratorForObjectRecordMaker(documentBuilderDispatcher));
 
-        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor, this.typeAssignment);
+        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor, this.typeAssignment, this.successors);
 
 
     }

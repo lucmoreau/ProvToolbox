@@ -154,6 +154,11 @@
                     <label for="navigator-id"></label><input type="number" id="navigator-id" class="form-control" value="96">
                     <label for="navigator-template"></label><input type="text" id="navigator-template" class="form-control" value="plead_approving">
                     <label for="navigator-property"></label><input type="text" id="navigator-property" class="form-control" value="approved_pipeline">
+                    <label for="navigator-style"></label><select name="navigator-style" id="navigator-style" class="form-control">
+                        <option value="template">Template Viz</option>
+                        <option value="prov">PROV Viz</option>
+                        <option value="entities">Entities Viz</option>
+                    </select>
                     <p></p>
                     <p></p>
 
@@ -633,13 +638,15 @@
         let template=$('#navigator-template').val();
         let property=$('#navigator-property').val();
         let template_id=$('#navigator-id').val();
+        let style=$('#navigator-style').val();
 
-        console.log("submitNavigate " + template + " " + property + " " + id)
+        console.log("submitNavigate " + template + " " + property + " " + id + " " + style);
 
         let config = {
             template: template,
             property: property,
-            id: template_id
+            id: template_id,
+            style: style
         }
 
         let json_data=JSON.stringify(config)

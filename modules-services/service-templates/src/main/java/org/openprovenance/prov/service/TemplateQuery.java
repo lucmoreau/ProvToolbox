@@ -53,15 +53,17 @@ public class TemplateQuery {
 
 
     static TypeReference<Map<String,Map<String, Map<String, String>>>> typeRef = new TypeReference<>() {};
+    private final Map<String, Map<String, List<String>>> successors;
 
 
-    public TemplateQuery(Querier querier, TemplateDispatcher templateDispatcher, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om, Map<String, FileBuilder> documentBuilderDispatcher, String ioMapString) {
+    public TemplateQuery(Querier querier, TemplateDispatcher templateDispatcher, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om, Map<String, FileBuilder> documentBuilderDispatcher, String ioMapString, Map<String, Map<String, List<String>>> successors) {
         this.querier = querier;
         this.templateDispatcher = templateDispatcher;
         this.compositeLinker = compositeLinker;
         this.om = om;
         this.documentBuilderDispatcher = documentBuilderDispatcher;
         this.ioMap = getIoMap(ioMapString);
+        this.successors = successors;
 
         logger.info("ioMap = " + ioMap);
 
@@ -159,7 +161,7 @@ public class TemplateQuery {
 
     }
 
-    public void generateViz(Integer id, String template, String property, Map<String, Map<String, String>> baseTypes, String principal, OutputStream out) {
+    public void generateViz(Integer id, String template, String property, String style, Map<String, Map<String, String>> baseTypes, String principal, OutputStream out) {
 
         logger.info("generateViz " + id + " " + template + " " + property);
 
@@ -168,7 +170,7 @@ public class TemplateQuery {
         Collections.reverse(templateConnections);
 
 
-        new TemplatesToDot(templateConnections, baseTypes, ioMap, templateDispatcher, pf).convert(null, out, "template_connections");
+        new TemplatesToDot(templateConnections, style, baseTypes, ioMap, templateDispatcher, successors, pf, this, principal).convert(null, out, "template_connections");
     }
 
     final DigestUtils sha512 = new DigestUtils(DigestUtils.getSha3_512Digest());
@@ -312,9 +314,12 @@ public class TemplateQuery {
         return the_records;
     }
 
+    Document constructDocument(Collection<Object[]> the_records) {
+        return constructDocument(documentBuilderDispatcher, the_records);
+    }
 
 
-    public Document constructDocument(Map<String, FileBuilder> documentBuilderDispatcher, List<Object[]> the_records) {
+    public Document constructDocument(Map<String, FileBuilder> documentBuilderDispatcher, Collection<Object[]> the_records) {
             IndexedDocument iDoc = new IndexedDocument(pf, pf.newDocument());
             for (Object[] record : the_records) {
                 FileBuilder builder = documentBuilderDispatcher.get((String)record[0]);
@@ -569,7 +574,7 @@ public class TemplateQuery {
         return linked_records;
     }
 
-    private static class RecordEntry {
+    static class RecordEntry {
         public String table;
         public Integer key;
         @Override
@@ -578,6 +583,19 @@ public class TemplateQuery {
                     "table='" + table + '\'' +
                     ", key=" + key +
                     '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            RecordEntry that = (RecordEntry) o;
+            return Objects.equals(table, that.table) && Objects.equals(key, that.key);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(table, key);
         }
     }
     public static class RecordEntry2 {

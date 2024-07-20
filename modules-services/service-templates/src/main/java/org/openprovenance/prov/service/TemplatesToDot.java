@@ -3,14 +3,14 @@ package org.openprovenance.prov.service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.dot.ProvToDot;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.model.NamespacePrefixMapper.DOT_NS;
 
 
 public class TemplatesToDot extends ProvToDot {
@@ -20,13 +20,23 @@ public class TemplatesToDot extends ProvToDot {
     private final TemplateDispatcher templateDispatcher;
     private final Map<String, Map<String, Map<String, String>>> ioMap;
     private final Map<String, Map<String, String>> baseTypes;
+    private final ProvFactory pf;
+    private final Map<String, Map<String, List<String>>> successors;
+    private final String style;
+    private final TemplateQuery templateQuery;
+    private final String principal;
 
-    public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections, Map<String, Map<String, String>> baseTypes, Map<String, Map<String, Map<String, String>>> ioMap, TemplateDispatcher templateDispatcher, ProvFactory pf) {
+    public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections, String style, Map<String, Map<String, String>> baseTypes, Map<String, Map<String, Map<String, String>>> ioMap, TemplateDispatcher templateDispatcher, Map<String, Map<String, List<String>>> successors, ProvFactory pf, TemplateQuery templateQuery, String principal) {
         super(pf);
+        this.pf=pf;
         this.templateConnections = templateConnections;
         this.templateDispatcher = templateDispatcher;
         this.ioMap = ioMap;
         this.baseTypes = baseTypes;
+        this.successors = successors;
+        this.style=style;
+        this.templateQuery=templateQuery;
+        this.principal=principal;
     }
 
     public static String createHtmlTable(TemplateInfo templateInfo,
@@ -74,7 +84,6 @@ public class TemplatesToDot extends ProvToDot {
 
 
     public void convert(Document graph, OutputStream os, String title) {
-
         try {
             File dotFile=File.createTempFile("temp", ".dot");
             logger.info("dotFile: " + dotFile);
@@ -86,14 +95,102 @@ public class TemplatesToDot extends ProvToDot {
             logger.info("finished conversion to svg");
             @SuppressWarnings("unused")
             boolean resultCode=dotFile.delete();
-
         } catch (IOException e) {
             logger.throwing(e);
             throw new UncheckedException(e);
         }
     }
 
-    public void convert(Document doc, PrintStream out, String title) {
+    public void convert(Document ignore, PrintStream out, String title) {
+        switch (style) {
+            case "template":
+                convert_template(ignore, out, title);
+                break;
+            case "prov":
+                convert_prov(ignore, out, title);
+                break;
+            case "entities":
+                convert_entities(ignore, out, title);
+                break;
+            default:
+                throw new UnsupportedOperationException("style not supported: " + style);
+        }
+    }
+
+    public void convert_prov(Document ignore, PrintStream out, String title) {
+        Set<TemplateQuery.RecordEntry> the_templates = new HashSet<>();
+
+        for (TemplateQuery.TemplateConnection templateConnection : templateConnections) {
+            TemplateQuery.RecordEntry entry_in=new TemplateQuery.RecordEntry();
+            entry_in.table=templateConnection.in_template;
+            entry_in.key=templateConnection.in_id;
+            the_templates.add(entry_in);
+
+            TemplateQuery.RecordEntry entry_out=new TemplateQuery.RecordEntry();
+            entry_out.table=templateConnection.out_template;
+            entry_out.key=templateConnection.out_id;
+            the_templates.add(entry_out);
+        }
+
+        List<Object[]> the_records = new LinkedList<>();
+        for (TemplateQuery.RecordEntry linked_record : the_templates) {
+            Integer simple = linked_record.key;
+            List<Object[]> simple_records = templateQuery.querySimple(linked_record.table, simple, false, principal);
+            the_records.addAll(simple_records);
+        }
+
+        Document result=templateQuery.constructDocument(the_records);
+
+        super.convert(result, out, title);
+
+    }
+
+    public void convert_entities(Document ignore, PrintStream out, String title) {
+        // creates a map from in to out
+        Map<QualifiedName,QualifiedName> map=new HashMap<>();
+        for (TemplateQuery.TemplateConnection templateConnection : templateConnections) {
+            QualifiedName outQn = qualifiedPortNameAsQn(templateConnection.out_template, String.valueOf(templateConnection.out_id), templateConnection.out_property);
+            QualifiedName inQn = qualifiedPortNameAsQn(templateConnection.in_template, String.valueOf(templateConnection.in_id), templateConnection.in_property);
+            map.put(inQn,outQn);
+        }
+
+        Document doc = pf.newDocument();
+
+        Set<QualifiedName> seen=new HashSet<>();
+        for (TemplateQuery.TemplateConnection templateConnection : templateConnections) {
+
+            String template = templateConnection.in_template;
+            String templateId = String.valueOf(templateConnection.in_id);
+            String property = templateConnection.in_property;
+            List<String> next=successors.get(template).get(property);
+            if (next!=null) {
+                for (String n: next) {
+                    QualifiedName older = map.get(qualifiedPortNameAsQn(template, templateId, property));
+                    QualifiedName newer = qualifiedPortNameAsQn(template, templateId, n);
+
+                    if (!seen.contains(older)) {
+                        seen.add(older);
+                        doc.getStatementOrBundle().add(pf.newEntity(older));
+                    }
+                    if (!seen.contains(newer)) {
+                        seen.add(newer);
+                        doc.getStatementOrBundle().add(pf.newEntity(newer));
+                    }
+
+                    List<Attribute> attrs=new LinkedList<>();
+                    attrs.add(pf.newAttribute(pf.newQualifiedName(DOT_NS,"style","dot"), "dashed", pf.getName().XSD_STRING));
+                    WasDerivedFrom edge = pf.newWasDerivedFrom(null,newer, older, null, null, null, attrs);
+                    doc.getStatementOrBundle().add(edge);
+                }
+            }
+
+        }
+
+        super.convert(doc, out, title);
+    }
+
+
+    public void convert_template(Document doc, PrintStream out, String title) {
         if (title!=null) name=title;
         prelude(doc, out);
 
@@ -164,6 +261,9 @@ public class TemplatesToDot extends ProvToDot {
     private String qualifiedPortName(String template, String templateId, String property) {
         return templateId + ":" + portName(template, templateId, property);
     }
+    private QualifiedName qualifiedPortNameAsQn(String template, String templateId, String property) {
+        return pf.newQualifiedName( "/ptl/provapi/template/", template + "/"+ templateId + "/" + property, "ex");
+    }
 
     public void emitTemplate(String template, String templateId, String htmlTable, PrintStream out) {
         StringBuffer sb=new StringBuffer();
@@ -180,6 +280,13 @@ public class TemplatesToDot extends ProvToDot {
         return template+"_"+id;
     }
 
+    private String livePrefix(String relation) {
+        return "/ptl/provapi/live/" + relation+"/" ;
+    }
+
+    private String urlPrefix(String template) {
+        return "/ptl/provapi/template/" + template+"/";
+    }
     private String url(String template, Integer id) {
         return "/ptl/provapi/template/" + template+"/"+id + ".svg";
     }

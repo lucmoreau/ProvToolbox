@@ -45,9 +45,10 @@ public class TemplateLogic {
     private final EnactCsvRecords<Object> enactCsvRecords= new EnactCsvRecords<>();
     private final TemplateQuery templateQuery;
     private final Map<String, Map<String, Set<String>>> typeAssignment;
+    private final Map<String, Map<String, List<String>>> successors;
 
 
-    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor, Map<String, Map<String, Set<String>>> typeAssignment) {
+    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor, Map<String, Map<String, Set<String>>> typeAssignment, Map<String, Map<String, List<String>>> successors) {
         this.pf = pf;
         this.templateDispatcher = templateDispatcher;
         this.documentBuilderDispatcher = documentBuilderDispatcher;
@@ -57,6 +58,7 @@ public class TemplateLogic {
         this.sqlCompositeBeanEnactor = sqlCompositeBeanEnactor;
         this.templateQuery = templateQuery;
         this.typeAssignment = typeAssignment;
+        this.successors = successors;
     }
 
     public List<Object> processIncomingJson(List<Map<String, Object>> entries) {
@@ -177,7 +179,7 @@ public class TemplateLogic {
                                                                         .get(var))))));
 
         logger.info("baseTypes " + baseTypes);
-        templateQuery.generateViz(config.id, config.template, config.property, baseTypes, principal, out);
+        templateQuery.generateViz(config.id, config.template, config.property, config.style, baseTypes, principal, out);
     }
 
 

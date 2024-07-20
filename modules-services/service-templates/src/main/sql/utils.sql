@@ -18,7 +18,7 @@ insert into predecessor_table (template, output, input)
 values
     ('plead_validating', 'score', 'testing_dataset'),
     ('plead_filtering', 'filtered_file', 'file'),
-    ('plead_approving', 'approval_record,', 'pipeline'),
+    ('plead_approving', 'approval_record', 'pipeline'),
     ('plead_approving', 'approval_record', 'score'),
     ('plead_approving', 'approved_pipeline', 'pipeline'),
     ('plead_approving', 'approved_pipeline', 'score'),

@@ -2,6 +2,8 @@
 
 
 # TODO
+- PC1FullTest.java in prov-dot no longer working
+- 
 - templates
   - update expander web page, make it use bindings b1, b2, b3, b4 from webjar.
   - abstract pokemon templates to prov template library

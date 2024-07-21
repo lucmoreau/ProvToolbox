@@ -5,6 +5,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-template: verifying hash from the command line
 * prov-dot: allows for dot:style to be specified
 * service-templates: navigation tab: prov and entities
+* prov-toolbox-js-embedding: support for js builder 
+* module-info introduced for all modules up to toolbox (and prov-toolbox-polyglot)
 
 
 `2.0.8`

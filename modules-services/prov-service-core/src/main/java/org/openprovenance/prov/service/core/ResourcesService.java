@@ -19,8 +19,8 @@ import org.openprovenance.prov.interop.InteropFramework;
 
 import java.io.InputStream;
 
-import static org.openprovenance.prov.interop.InteropMediaType.*;
-import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION_JSONLD;
+import static org.openprovenance.prov.model.interop.InteropMediaType.*;
+import static org.openprovenance.prov.model.interop.InteropMediaType.MEDIA_APPLICATION_JSONLD;
 import static org.openprovenance.prov.service.core.SwaggerTags.RESOURCES;
 
 @Path("")

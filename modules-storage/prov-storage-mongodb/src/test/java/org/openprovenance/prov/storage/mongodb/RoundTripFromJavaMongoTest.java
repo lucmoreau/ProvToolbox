@@ -1,7 +1,7 @@
 package org.openprovenance.prov.storage.mongodb;
 
-import org.openprovenance.prov.core.jsonld11.RoundTripFromJavaJSONLD11Test;
-import org.openprovenance.prov.interop.Formats;
+import org.openprovenance.prov.core.jsonld11.test.RoundTripFromJavaJSONLD11Test;
+import org.openprovenance.prov.model.interop.Formats;
 import org.openprovenance.prov.model.Document;
 
 import java.io.IOException;

@@ -7,8 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import org.openprovenance.prov.interop.ApiUriFragments;
-import org.openprovenance.prov.interop.Formats;
+import org.openprovenance.prov.model.interop.ApiUriFragments;
+import org.openprovenance.prov.model.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
@@ -16,7 +16,6 @@ import org.openprovenance.prov.service.core.readers.VanillaDocumentMessageBodyRe
 import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.client.ClientConfig;
 import org.openprovenance.prov.service.translator.TranslateIT;
-import org.openprovenance.prov.vanilla.ProvFactory;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -34,8 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION_JSONLD;
-import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION;
+import static org.openprovenance.prov.model.interop.InteropMediaType.MEDIA_APPLICATION_JSONLD;
+import static org.openprovenance.prov.model.interop.InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION;
 
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

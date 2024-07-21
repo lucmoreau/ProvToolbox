@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.apache.logging.log4j.core.util.FileUtils.mkdir;
+//import static org.apache.logging.log4j.core.util.FileUtils.mkdir;
 
 public class BatchExecutor {
 
@@ -114,7 +114,11 @@ public class BatchExecutor {
         System.out.println("bindings_path: " + templateTasksBatch.bindings_path);
         System.out.println("output_dir: " + templateTasksBatch.output_dir);
 
-        mkdir(new File(templateTasksBatch.output_dir),true);
+        // create directory
+
+        new File(templateTasksBatch.output_dir).mkdirs();
+
+        //mkdir(new File(templateTasksBatch.output_dir),true);
 
         for (TemplateTasksBatch.ConfigTask task : templateTasksBatch.tasks) {
             task.template_path = TemplateTasksBatch.addBaseDir(inputBasedir, task.template_path);

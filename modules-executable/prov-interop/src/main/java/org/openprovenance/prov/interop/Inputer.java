@@ -6,6 +6,8 @@ import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.interop.Formats;
+import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.notation.ProvDeserialiser;
 
 import java.io.*;
@@ -15,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static org.openprovenance.prov.interop.Formats.ProvFormat.*;
+import static org.openprovenance.prov.model.interop.Formats.ProvFormat.*;
 
 public class Inputer implements InteropMediaType {
     static Logger logger = LogManager.getLogger(Inputer.class);

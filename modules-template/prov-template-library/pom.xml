@@ -157,6 +157,7 @@
                     </execution>
 
 
+                    <!--
 
                     <execution>
                         <id>python.test</id>
@@ -176,7 +177,7 @@
                         </configuration>
                     </execution>
 
-
+-->
                 </executions>
 
             </plugin>

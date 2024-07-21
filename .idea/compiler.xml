@@ -21,6 +21,7 @@
         <module name="prov-service-xplain" />
         <module name="benchmarks" />
         <module name="prov-model" />
+        <module name="prov-toolbox-js-embedding" />
         <module name="modules-executable-provman" />
         <module name="docker-service-templates" />
         <module name="prov-toolbox-plugin" />

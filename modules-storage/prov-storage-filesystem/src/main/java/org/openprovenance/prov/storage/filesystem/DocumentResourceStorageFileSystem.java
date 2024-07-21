@@ -1,7 +1,7 @@
 package org.openprovenance.prov.storage.filesystem;
 
 import org.apache.commons.io.FileUtils;
-import org.openprovenance.prov.interop.Formats;
+import org.openprovenance.prov.model.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;

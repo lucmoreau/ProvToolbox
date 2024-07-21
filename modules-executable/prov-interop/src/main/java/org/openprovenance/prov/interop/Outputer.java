@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.interop.Formats;
+import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.notation.ProvSerialiser;
 
 import java.io.*;
@@ -13,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.openprovenance.prov.interop.Formats.ProvFormat.*;
+import static org.openprovenance.prov.model.interop.Formats.ProvFormat.*;
 
 public class Outputer implements InteropMediaType {
     private final InteropFramework interopFramework;

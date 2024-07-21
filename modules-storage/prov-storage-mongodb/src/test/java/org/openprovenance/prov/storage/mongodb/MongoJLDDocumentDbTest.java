@@ -1,7 +1,7 @@
 package org.openprovenance.prov.storage.mongodb;
 
 import junit.framework.TestCase;
-import org.openprovenance.prov.interop.Formats;
+import org.openprovenance.prov.model.interop.Formats;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Namespace;

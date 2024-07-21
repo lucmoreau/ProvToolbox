@@ -17,6 +17,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.model.interop.Formats;
 import org.openprovenance.prov.template.expander.ExpandAction;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.template.log2prov.interfaces.ProxyClientAccessorInterface;
@@ -109,9 +110,9 @@ public class Template_blockBuilder extends FileBuilder implements ProxyClientAcc
     String __att_consumed_value2="12345";
     String __att_produced_type="test_produced_type";
     Document document=me.generator(__var_agent, __var_produced, __var_b, __var_consumed1, __var_operation, __var_consumed2, __att_operation_type, __att_consumed_value1, __att_produced_value, __att_consumed_value2, __att_produced_type);
-    new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out, document, org.openprovenance.prov.interop.Formats.ProvFormat.PROVN);
+    new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out, document, Formats.ProvFormat.PROVN);
     document=me.make("v0", "v1", "v2", "v3", "v4", "v5", 6, "v7", "v8", 9);
-    new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out, document, org.openprovenance.prov.interop.Formats.ProvFormat.PROVN);
+    new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out, document, Formats.ProvFormat.PROVN);
   }
 
   public Document make(String operation, String operation_type, String agent, String consumed1,

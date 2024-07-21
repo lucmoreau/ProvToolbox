@@ -5,7 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.openprovenance.prov.interop.Formats;
+import org.openprovenance.prov.model.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.model.Document;

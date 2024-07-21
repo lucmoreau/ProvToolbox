@@ -1,7 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
-import com.squareup.javapoet.PoetParser;
 import org.apache.commons.lang3.tuple.Triple;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
@@ -13,6 +12,8 @@ import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
+//import org.openprovenance.prov.template.emitter.PoetParser;
+import org.openprovenance.prov.template.emitter.PoetParser;
 import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import javax.lang.model.element.Modifier;

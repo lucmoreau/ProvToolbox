@@ -1,11 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.openprovenance.prov</groupId>
         <artifactId>modules-tools</artifactId>
-        <version>2.0.9-SNAPSHOT</version>
+        <version>2.1.0</version>
     </parent>
     <artifactId>prov-toolbox-js-embedding</artifactId>
     <name> |---- PROV-TOOLBOX-JS-EMBEDDING</name>
@@ -20,7 +18,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
-            <version>2.0.9-SNAPSHOT</version>
+            <version>2.1.0</version>
         </dependency>
         <!--
         <dependency>
@@ -114,7 +112,7 @@
                                 You can also switch to the classpath here.
                                 -->
                                 <argument>--module-path</argument>
-                                <modulepath/>
+                                <modulepath />
                                 <argument>-m</argument>
                                 <argument>embedding/org.example.embedding.Main</argument>
                             </arguments>
@@ -129,7 +127,7 @@
                         You can also switch to the classpath here.
                         -->
                         <argument>--module-path</argument>
-                        <modulepath/>
+                        <modulepath />
                         <argument>-m</argument>
                         <argument>embedding/org.example.embedding.Main</argument>
                     </arguments>
@@ -195,7 +193,7 @@
                                 </goals>
                                 <configuration>
                                     <executable>${image.path}</executable>
-                                    <arguments/>
+                                    <arguments />
                                 </configuration>
                             </execution>
                         </executions>
@@ -311,7 +309,7 @@
                                     <executable>${java.home}/bin/java</executable>
                                     <arguments>
                                         <argument>--module-path</argument>
-                                        <modulepath/>
+                                        <modulepath />
                                         <argument>-XX:+UnlockExperimentalVMOptions</argument>
                                         <argument>-XX:+EnableJVMCI</argument>
                                         <argument>--upgrade-module-path=${project.build.directory}/compiler/</argument>
@@ -329,7 +327,7 @@
                                     <executable>${java.home}/bin/java</executable>
                                     <arguments>
                                         <argument>--module-path</argument>
-                                        <modulepath/>
+                                        <modulepath />
                                         <argument>-m</argument>
                                         <argument>embedding/org.example.embedding.Main</argument>
                                     </arguments>
@@ -390,7 +388,7 @@
                         </executions>
                         <configuration>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>org.example.embedding.Main</mainClass>
                                 </transformer>
@@ -495,7 +493,7 @@
                 </property>
             </activation>
             <properties>
-                <isolate.platform.suffix></isolate.platform.suffix>
+                <isolate.platform.suffix />
             </properties>
         </profile>
         <!--
@@ -566,7 +564,7 @@
                                         You can also switch to the classpath here.
                                         -->
                                         <argument>--module-path</argument>
-                                        <modulepath/>
+                                        <modulepath />
                                         <argument>-m</argument>
                                         <argument>embedding/org.example.embedding.Main</argument>
                                     </arguments>
@@ -582,7 +580,7 @@
                                 You can also switch to the classpath here.
                                 -->
                                 <argument>--module-path</argument>
-                                <modulepath/>
+                                <modulepath />
                                 <argument>-m</argument>
                                 <argument>embedding/org.example.embedding.Main</argument>
                             </arguments>

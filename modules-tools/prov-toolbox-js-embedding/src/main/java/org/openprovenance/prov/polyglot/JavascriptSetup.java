@@ -24,7 +24,7 @@ public class JavascriptSetup {
         jsBindings.putMember("builder", builder);
         jsBindings.putMember("defs", new DerivationBuilder().getDefinitions( builder));
         jsBindings.putMember("serializer", new Serializer());
-        jsBindings.putMember("name", new pFactory.getName());
+        jsBindings.putMember("name",  pFactory.getName());
 
         context.eval("js", "print(builder);");
     }

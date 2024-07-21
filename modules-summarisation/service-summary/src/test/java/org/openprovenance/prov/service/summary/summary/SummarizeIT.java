@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import org.openprovenance.prov.interop.Formats;
+import org.openprovenance.prov.model.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.service.client.ClientConfig;

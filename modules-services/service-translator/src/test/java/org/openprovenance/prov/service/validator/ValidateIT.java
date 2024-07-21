@@ -12,8 +12,8 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import org.openprovenance.prov.interop.ApiUriFragments;
-import org.openprovenance.prov.interop.Formats.ProvFormat;
+import org.openprovenance.prov.model.interop.ApiUriFragments;
+import org.openprovenance.prov.model.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
@@ -30,7 +30,7 @@ import java.util.HashMap;
 
 
 import static org.openprovenance.prov.interop.InteropFramework.MEDIA_TEXT_HTML;
-import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION_JSON;
+import static org.openprovenance.prov.model.interop.InteropMediaType.MEDIA_APPLICATION_JSON;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ValidateIT extends TestCase implements ApiUriFragments {

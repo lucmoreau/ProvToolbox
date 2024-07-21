@@ -152,10 +152,10 @@ public class ConfigProcessor implements Constants {
         this.compilerBeanEnactor2compositeWP = new CompilerBeanEnactor2CompositeWithPrincipal(pFactory);
     }
 
-    public String readCompilerVersion() {
-        return Configuration.getPropertiesFromClasspath(getClass(),"compiler.properties").getProperty("compiler.version");
-    }
-    final String compilerVersion=readCompilerVersion();
+   // public String readCompilerVersion() {
+   //     return Configuration.getPropertiesFromClasspath(getClass(),"compiler.properties").getProperty("compiler.version");
+ //   }
+ //   final String compilerVersion=readCompilerVersion();
     public int processTemplateGenerationConfig(String template_builder, String inputBaseDir, String outputBaseDir, ProvFactory pFactory) {
         TemplatesProjectConfiguration configs;
 

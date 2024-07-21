@@ -1,6 +1,4 @@
-// Generated automatically by ProvToolbox for template configuration 'template_library'
-// by class org.openprovenance.prov.template.compiler.CompilerTableConfiguratorForTypes, method generateTableConfigurator,
-// in file CompilerTableConfiguratorForTypes.java, at line 34
+
 package org.openprovenance.prov.service;
 
 import org.openprovenance.prov.template.library.plead.client.common.*;

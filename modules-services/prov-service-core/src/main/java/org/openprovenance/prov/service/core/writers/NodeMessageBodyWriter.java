@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.interop.InteropMediaType;
 
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;

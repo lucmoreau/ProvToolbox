@@ -10,7 +10,7 @@ import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Provider;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.interop.InteropMediaType;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -3,7 +3,7 @@ package org.openprovenance.prov.tutorial.tutorial2;
 import java.util.Arrays;
 
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.interop.Formats.ProvFormat;
+import org.openprovenance.prov.model.interop.Formats.ProvFormat;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;

@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.scala.iface.Explainer;
 import org.openprovenance.prov.scala.iface.XFactory;

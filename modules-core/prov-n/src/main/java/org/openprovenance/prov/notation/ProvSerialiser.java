@@ -1,6 +1,6 @@
 package org.openprovenance.prov.notation;
 
-import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import org.openprovenance.prov.vanilla.QualifiedName;
 import org.openprovenance.prov.vanilla.TypedValue;
 
-import java.awt.*;
 import java.io.IOException;
 
 import static org.openprovenance.prov.core.jsonld11.serialization.serial.CustomAttributeValueSerializer.prnt;

@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
-import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.service.core.*;
 
 import java.io.IOException;

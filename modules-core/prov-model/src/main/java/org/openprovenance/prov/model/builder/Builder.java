@@ -36,6 +36,11 @@ public class Builder {
         this.knownAs=new HashMap<>();
     }
 
+    public Builder (ProvFactory pf) {
+        this(pf, pf, pf);
+    }
+
+
     public ActivityBuilder activity() {
         return new ActivityBuilder(this, mc, pf);
     }

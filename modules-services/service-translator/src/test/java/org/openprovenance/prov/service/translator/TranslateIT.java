@@ -2,14 +2,15 @@ package org.openprovenance.prov.service.translator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.interop.ApiUriFragments;
-import org.openprovenance.prov.interop.Formats.ProvFormat;
+import org.openprovenance.prov.model.interop.ApiUriFragments;
+import org.openprovenance.prov.model.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.service.core.readers.VanillaDocumentMessageBodyReader;
 import org.openprovenance.prov.service.client.StringMessageBodyReader;
 import org.openprovenance.prov.service.client.ClientConfig;
 import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
+import org.openprovenance.prov.model.test.RoundTripFromJavaTest;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import jakarta.ws.rs.client.Client;
@@ -20,7 +21,7 @@ import jakarta.ws.rs.core.Response;
 import java.io.InputStream;
 import java.util.*;
 
-import static org.openprovenance.prov.interop.InteropMediaType.*;
+import static org.openprovenance.prov.model.interop.InteropMediaType.*;
 
 
 public class TranslateIT extends RoundTripFromJavaTest implements ApiUriFragments  {

@@ -2,7 +2,7 @@ package org.openprovenance.prov.scala.model.immutable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.model.RoundTripFromJavaTest;
+import org.openprovenance.prov.model.test.RoundTripFromJavaTest;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;

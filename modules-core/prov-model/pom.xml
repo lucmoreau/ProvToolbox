@@ -44,6 +44,7 @@
     </dependencies>
     <properties>
         <log.level>info</log.level>
+        <prov.factory>org.openprovenance.prov.vanilla.ProvFactory</prov.factory>
     </properties>
 
     <build>

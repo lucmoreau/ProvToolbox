@@ -15,7 +15,6 @@ import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.readers.TemplatesVizConfig;
 import org.openprovenance.prov.template.library.plead.Plead_trainingBuilder;
 import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeBeanEnactor4;
-import org.openprovenance.prov.template.library.plead.sql.integration.SqlCompositeBeanEnactor3;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
@@ -25,12 +24,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.service.TemplateService.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 import static org.openprovenance.prov.template.library.plead.sql.access_control.BeanEnactor4.getPrincipal;
 
 public class TemplateLogic {
 
 
+    public static final String HTTP_HEADER_CONTENT_PROV_HASH = "PROV-Hash";
+    public static final String HTTP_HEADER_LOCATION = "Location";
+    public static final String HTTP_HEADER_ACCEPT_PROV_HASH = "Accept-PROV-hash";
     static Logger logger = LogManager.getLogger(TemplateLogic.class);
     private final ProvFactory pf;
     private final TemplateDispatcher templateDispatcher;
@@ -42,9 +45,10 @@ public class TemplateLogic {
     private final EnactCsvRecords<Object> enactCsvRecords= new EnactCsvRecords<>();
     private final TemplateQuery templateQuery;
     private final Map<String, Map<String, Set<String>>> typeAssignment;
+    private final Map<String, Map<String, List<String>>> successors;
 
 
-    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor, Map<String, Map<String, Set<String>>> typeAssignment) {
+    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor, Map<String, Map<String, Set<String>>> typeAssignment, Map<String, Map<String, List<String>>> successors) {
         this.pf = pf;
         this.templateDispatcher = templateDispatcher;
         this.documentBuilderDispatcher = documentBuilderDispatcher;
@@ -54,6 +58,7 @@ public class TemplateLogic {
         this.sqlCompositeBeanEnactor = sqlCompositeBeanEnactor;
         this.templateQuery = templateQuery;
         this.typeAssignment = typeAssignment;
+        this.successors = successors;
     }
 
     public List<Object> processIncomingJson(List<Map<String, Object>> entries) {
@@ -174,7 +179,7 @@ public class TemplateLogic {
                                                                         .get(var))))));
 
         logger.info("baseTypes " + baseTypes);
-        templateQuery.generateViz(config.id, config.template, config.property, baseTypes, principal, out);
+        templateQuery.generateViz(config.id, config.template, config.property, config.style, baseTypes, principal, out);
     }
 
 
@@ -228,26 +233,37 @@ public class TemplateLogic {
         return records;
     }
 
-    public Object postProcessing(int id, String template) {
+    public Object submitPostProcessing(int id, String template) {
         logger.info("postProcessing " + id + " " + template);
 
         String principal=getPrincipal();
         List<Object[]> records = templateQuery.query(template, id, false, principal);
 
+        logger.info("PROV_API " + provAPI);
         logger.info("records " + records.size() + " " + records.stream().map(Arrays::toString).collect(Collectors.joining(",")));
         if (!records.isEmpty()) {
             if (records.size()>1) {
                 Map<String, String> hash = templateQuery.computeHash(template, id, records);
                 templateQuery.updateHash(template, id, hash, principal);
                 logger.info("update hash for " + id + " " + template + ": " + hash);
+                headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH, getContentProvHash(hash));
+                headerInfo.get().put(HTTP_HEADER_LOCATION,provAPI + "/template/" + template + "/" + id);
             } else {
                 Object[] record = records.get(0);
                 Map<String, String> hash = templateQuery.computeHash(template, id, record);
                 templateQuery.updateHash(template, id, hash, principal);
                 logger.info("update hash for " + id + " " + template + ": " + hash);
+                headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH,getContentProvHash(hash));
+                headerInfo.get().put(HTTP_HEADER_LOCATION,provAPI + "/template/" + template + "/" + id);
+
+
             }
         }
-
         return null;
+    }
+    Base64.Encoder encoder = Base64.getEncoder();
+
+    private String getContentProvHash(Map<String, String> hash) {
+        return encoder.encodeToString(templateQuery.makeHashRecord(hash).getBytes());
     }
 }

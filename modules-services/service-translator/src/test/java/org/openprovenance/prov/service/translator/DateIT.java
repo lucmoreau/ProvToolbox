@@ -10,8 +10,8 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import org.openprovenance.prov.interop.ApiUriFragments;
-import org.openprovenance.prov.interop.Formats.ProvFormat;
+import org.openprovenance.prov.model.interop.ApiUriFragments;
+import org.openprovenance.prov.model.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.DateTimeOption;
@@ -28,7 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import static org.openprovenance.prov.interop.InteropMediaType.*;
+import static org.openprovenance.prov.model.interop.InteropMediaType.*;
 import static org.openprovenance.prov.model.DateTimeOption.*;
 import static org.openprovenance.prov.service.core.Constants.*;
 

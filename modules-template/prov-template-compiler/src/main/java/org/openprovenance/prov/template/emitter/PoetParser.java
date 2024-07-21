@@ -1,7 +1,6 @@
-//package org.openprovenance.prov.template.emitter;
-package com.squareup.javapoet;
+package org.openprovenance.prov.template.emitter;
+import com.squareup.javapoet.*;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
-import org.openprovenance.prov.template.emitter.*;
 import org.openprovenance.prov.template.emitter.minilanguage.*;
 import org.openprovenance.prov.template.emitter.minilanguage.Class;
 
@@ -76,6 +75,12 @@ public class PoetParser {
         }
     }
 
+    private List<Statement> parse(CodeBlock codeBlock) {
+        System.out.println("******** Poet code block no longer handled for export to python ****");
+        return List.of();
+    }
+
+    /*
     private List<Statement> parse(CodeBlock codeBlock) {
         CodeBlock.Builder builder = codeBlock.toBuilder();
         List<Statement> statements=new LinkedList<>();
@@ -184,6 +189,8 @@ public class PoetParser {
         }
         return statements;
     }
+    
+     */
 
     private void emitNewline() {
         sb.append("\n");

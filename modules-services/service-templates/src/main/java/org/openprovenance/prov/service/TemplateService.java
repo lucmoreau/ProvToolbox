@@ -15,7 +15,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.service.core.PostService;
@@ -31,22 +31,23 @@ import org.openprovenance.prov.service.security.pac.SecurityConfiguration;
 import org.openprovenance.prov.service.security.pac.Utils;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
 import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeBeanEnactor4;
-import org.openprovenance.prov.template.library.plead.sql.integration.SqlCompositeBeanEnactor3;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.ProvUtilities;
 import org.pac4j.core.profile.UserProfile;
 
 import java.io.*;
+import java.net.URI;
 import java.security.Principal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
 
-import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_IMAGE_SVG_XML;
-import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_TEXT_HTML;
+import static org.openprovenance.prov.model.interop.InteropMediaType.MEDIA_IMAGE_SVG_XML;
+import static org.openprovenance.prov.model.interop.InteropMediaType.MEDIA_TEXT_HTML;
 import static org.openprovenance.prov.service.Storage.getStringFromClasspath;
+import static org.openprovenance.prov.service.TemplateLogic.*;
 import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
 import static org.openprovenance.prov.template.library.plead.client.logger.Logger.initializeBeanTable;
 import static org.openprovenance.prov.template.library.plead.sql.access_control.BeanEnactor4.setPrincipal;
@@ -106,6 +107,7 @@ public class TemplateService {
 
 
     static final List<String> sqlFilesToExecute = List.of("/utils.sql");
+    private final Map<String, Map<String, List<String>>> successors;
 
     public static class Linker {
         public final String table;
@@ -117,6 +119,8 @@ public class TemplateService {
         }
     }
 
+    static final ThreadLocal<Map<String,String>> headerInfo = new ThreadLocal<>().withInitial(HashMap::new);
+
     public TemplateService(PostService ps) {
         this.pf = new ProvFactory();
 
@@ -127,13 +131,13 @@ public class TemplateService {
         ps.addToConfiguration("security.config", securityConfiguration);
 
         Connection conn=storage.setup(postgresHost, postgresUsername, postgresPassword);
-        this.templateDispatcher=new TemplateDispatcher(storage,conn,this::postProcessing);
+        this.templateDispatcher=new TemplateDispatcher(storage,conn,this::submitPostProcessing);
         this.querier =new Querier(storage,conn);
         this.om=new ObjectMapper();
         this.om.enable(SerializationFeature.INDENT_OUTPUT);
         this.om.registerModule(new JavaTimeModule());
 
-        this.sqlCompositeBeanEnactor =new SqlCompositeBeanEnactor4(storage.getQuerier(conn), this::postProcessing);
+        this.sqlCompositeBeanEnactor =new SqlCompositeBeanEnactor4(storage.getQuerier(conn), this::submitPostProcessing);
         //this.sqlCompositeBeanEnactor =new SqlCompositeBeanEnactor3(storage.getQuerier(conn));
 
         this.compositeLinker=new HashMap<>() {{
@@ -158,18 +162,19 @@ public class TemplateService {
             put("PROV_API", provAPI);
         }};
         this.documentBuilderDispatcher=initializeBeanTable(new org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorWithMap(map,pf));
-        this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om, documentBuilderDispatcher, org.openprovenance.prov.template.library.plead.client.logger.Logger.ioMap);
+        this.successors=initializeBeanTable(new TableConfiguratorForSuccessors(documentBuilderDispatcher));
+        this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om, documentBuilderDispatcher, org.openprovenance.prov.template.library.plead.client.logger.Logger.ioMap, successors);
         this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),templateDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
         this.recordMaker=initializeBeanTable(new TableConfiguratorForObjectRecordMaker(documentBuilderDispatcher));
 
-        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor, this.typeAssignment);
+        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor, this.typeAssignment, this.successors);
 
 
     }
 
 
-    private Object postProcessing(Integer i, String s) {
-        return templateLogic.postProcessing(i,s);
+    private Object submitPostProcessing(Integer i, String s) {
+        return templateLogic.submitPostProcessing(i,s);
     };
 
     private void executeStatementsFromFile(Connection conn, String filename) {
@@ -203,6 +208,8 @@ public class TemplateService {
         // set thread specific variable
         setPrincipal(principalAsPreferredUsername);
 
+        String headerAcceptProvHash=headers.getHeaderString(HTTP_HEADER_ACCEPT_PROV_HASH);
+
         logger.info("post statements id: principal " + principal);
 
 
@@ -214,12 +221,24 @@ public class TemplateService {
         } else {
             return utils.composeResponseInternalServerError("unknown input document", new UnsupportedOperationException());
         }
+        String hash= (headerAcceptProvHash==null)?null:headerInfo.get().get(HTTP_HEADER_CONTENT_PROV_HASH);
+        String location= headerInfo.get().get(HTTP_HEADER_LOCATION);
         switch (request.getHeader(HttpHeaders.ACCEPT).toLowerCase()) {
             case InteropMediaType.MEDIA_TEXT_CSV:
-                return ServiceUtils.composeResponseOK(templateLogic.streamOutRecordsToCSV(result)).type(InteropMediaType.MEDIA_TEXT_CSV).build();
+                return ServiceUtils
+                        .composeResponseOK(templateLogic.streamOutRecordsToCSV(result))
+                        .type(InteropMediaType.MEDIA_TEXT_CSV)
+                        .header(HTTP_HEADER_CONTENT_PROV_HASH, hash)
+                        .location((location==null)?null:URI.create(location))
+                        .build();
             case APPLICATION_VND_KCL_PROV_TEMPLATE_JSON:
                 StreamingOutput promise= out -> om.writeValue(out,result);
-                return ServiceUtils.composeResponseOK(promise).type(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON).build();
+                return ServiceUtils
+                        .composeResponseOK(promise)
+                        .type(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)
+                        .header(HTTP_HEADER_CONTENT_PROV_HASH, hash)
+                        .location((location==null)?null:URI.create(location))
+                        .build();
         }
         return utils.composeResponseBadRequest("unknown accept header " + request.getHeader(HttpHeaders.ACCEPT), new UnsupportedOperationException(request.getHeader(HttpHeaders.ACCEPT)));
     }

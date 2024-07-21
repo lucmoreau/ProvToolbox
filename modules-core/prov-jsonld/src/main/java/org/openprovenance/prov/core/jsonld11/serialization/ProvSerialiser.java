@@ -9,7 +9,7 @@ import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomDateSeri
 import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomNamespaceSerializer;
 import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomQualifiedNameSerializer;
 import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomOverridingAttributeSerializer;
-import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.vanilla.QualifiedName;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;

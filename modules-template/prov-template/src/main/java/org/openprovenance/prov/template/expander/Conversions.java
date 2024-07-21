@@ -20,7 +20,7 @@ import static org.openprovenance.prov.template.expander.OldBindings.*;
 
 @Deprecated
 public class Conversions {
-    static OldBindings fromBean(BindingsBean bean, ProvFactory pf) {
+    static public OldBindings fromBean(BindingsBean bean, ProvFactory pf) {
         OldBindings result = new OldBindings(pf);
         Namespace ns = new Namespace(bean.context);
 

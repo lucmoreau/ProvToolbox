@@ -1,11 +1,9 @@
 package org.openprovenance.prov.notation;
 
-import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.TimeZone;
 

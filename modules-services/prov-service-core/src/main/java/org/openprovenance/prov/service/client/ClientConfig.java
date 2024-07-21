@@ -1,11 +1,12 @@
 package org.openprovenance.prov.service.client;
 
 import org.openprovenance.prov.configuration.Configuration;
+import org.openprovenance.prov.model.interop.ApiUriFragments;
 
 import java.util.Objects;
 import java.util.Properties;
 
-public class ClientConfig implements org.openprovenance.prov.interop.ApiUriFragments{
+public class ClientConfig implements ApiUriFragments {
 
 
     public final Properties properties;

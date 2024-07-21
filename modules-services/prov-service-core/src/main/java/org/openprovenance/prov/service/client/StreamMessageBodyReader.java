@@ -1,6 +1,6 @@
 package org.openprovenance.prov.service.client;
 
-import org.openprovenance.prov.interop.Formats.ProvFormat;
+import org.openprovenance.prov.model.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 
 import jakarta.ws.rs.WebApplicationException;

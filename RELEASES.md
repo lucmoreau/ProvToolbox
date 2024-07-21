@@ -1,6 +1,9 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.0.9-SNAPSHOT`
+`2.1.1-SNAPSHOT`
+*
+
+`2.1.0`
 * service-template: returning hash code and location of submitted record
 * service-template: verifying hash from the command line
 * prov-dot: allows for dot:style to be specified

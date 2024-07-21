@@ -1,6 +1,6 @@
 package org.openprovenance.prov.service.core.readers;
 
-import org.openprovenance.prov.interop.Formats.ProvFormat;
+import org.openprovenance.prov.model.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.vanilla.Document;

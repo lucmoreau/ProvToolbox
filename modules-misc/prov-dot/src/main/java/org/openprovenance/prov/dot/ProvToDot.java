@@ -375,6 +375,10 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         if (o!=null && !o.isEmpty()) {
             properties.put(DOT_COLOUR, getStringValue(o.get(0)));
         }
+        o=table.get(DOT_STYLE);
+        if (o!=null && !o.isEmpty()) {
+            properties.put(DOT_STYLE, getStringValue(o.get(0)));
+        }
         o=table.get(DOT_URL);
         if (o!=null && !o.isEmpty()) {
             properties.put("URL", htmlify(getStringValue(o.get(0))));

@@ -1,6 +1,6 @@
 package org.openprovenance.prov.storage.api;
 
-import org.openprovenance.prov.interop.Formats.ProvFormat;
+import org.openprovenance.prov.model.interop.Formats.ProvFormat;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 

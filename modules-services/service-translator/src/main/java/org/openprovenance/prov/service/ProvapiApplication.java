@@ -19,7 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.openprovenance.prov.configuration.Configuration;
-import org.openprovenance.prov.interop.ApiUriFragments;
+import org.openprovenance.prov.model.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
@@ -38,7 +38,7 @@ import org.openprovenance.prov.service.validation.storage.StorageSetup;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.openprovenance.prov.interop.ApiUriFragments.FRAGMENT_PROVAPI;
+import static org.openprovenance.prov.model.interop.ApiUriFragments.FRAGMENT_PROVAPI;
 import static org.openprovenance.prov.service.core.SwaggerTags.*;
 
 @OpenAPIDefinition(

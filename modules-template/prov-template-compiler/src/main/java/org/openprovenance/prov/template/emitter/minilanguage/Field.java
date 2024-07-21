@@ -1,6 +1,6 @@
 package org.openprovenance.prov.template.emitter.minilanguage;
 
-import org.openprovenance.prov.client_copy.Builder;
+//import org.openprovenance.prov.client_copy.Builder;
 import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import javax.lang.model.element.Modifier;
@@ -40,8 +40,8 @@ public class Field {
 
         if (name.equals(A_ARGS_BEAN_CONVERTER)) {
             Lambda lambda = (Lambda) initialiser;
-            List<Parameter> parameters=lambda.parameters;
-            List<Statement> body=lambda.body;
+            List<Parameter> parameters=(lambda==null)?List.of():lambda.parameters;
+            List<Statement> body=(lambda==null)?List.of():lambda.body;
 
             // convert this Java lambda declaration in a Python method definition
             Method method=new Method();

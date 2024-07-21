@@ -3,9 +3,8 @@ package org.openprovenance.prov.core;
 import org.openprovenance.prov.core.xml.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.xml.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.RoundTripFromJavaTest;
+import org.openprovenance.prov.model.test.RoundTripFromJavaTest;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;

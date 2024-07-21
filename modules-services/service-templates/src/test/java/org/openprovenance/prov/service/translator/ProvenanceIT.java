@@ -7,7 +7,7 @@ import jakarta.ws.rs.core.Response;
 import junit.framework.TestCase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.interop.ApiUriFragments;
+import org.openprovenance.prov.model.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.ValidationReportMessageBodyReader;
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import static org.openprovenance.prov.interop.InteropMediaType.*;
+import static org.openprovenance.prov.model.interop.InteropMediaType.*;
 import static org.openprovenance.prov.service.core.Constants.*;
 
 // currently not working, because protected?

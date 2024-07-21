@@ -4,7 +4,6 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 
 import java.io.OutputStream;
-import java.util.Collection;
 
 public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
     private final ProvFactory pFactory;

@@ -15,9 +15,12 @@ import jakarta.ws.rs.core.Variant;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.interop.Formats.ProvFormat;
-import org.openprovenance.prov.interop.Formats.ProvFormatType;
+import org.openprovenance.prov.model.interop.Formats;
+import org.openprovenance.prov.model.interop.Formats.ProvFormat;
+import org.openprovenance.prov.model.interop.Formats.ProvFormatType;
 import org.openprovenance.prov.model.exception.DocumentedUnsupportedCaseException;
+import org.openprovenance.prov.model.interop.Framework;
+import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.rules.Rules;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
@@ -30,7 +33,7 @@ import org.openprovenance.prov.generator.GeneratorDetails;
 import org.openprovenance.prov.generator.GraphGenerator;
 import org.openprovenance.prov.template.json.Bindings;
 
-import static org.openprovenance.prov.interop.Formats.ProvFormat.*;
+import static org.openprovenance.prov.model.interop.Formats.ProvFormat.*;
 
 /**
  * The interoperability framework for PROV, with utility methods to write and read documents to files and streams, 
@@ -42,7 +45,7 @@ import static org.openprovenance.prov.interop.Formats.ProvFormat.*;
  * @author lavm, dtm
  *
  */
-public class InteropFramework implements InteropMediaType, org.openprovenance.prov.model.ProvDocumentWriter,  Framework{
+public class InteropFramework implements InteropMediaType, org.openprovenance.prov.model.ProvDocumentWriter, Framework {
 
     public final static String configFile="config.interop.properties";
     public final static String configuration;

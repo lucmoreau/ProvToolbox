@@ -25,7 +25,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.servlet.http.HttpServletResponse;
 
 
-import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.model.exception.ParserException;
 
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,6 +1,6 @@
 package org.openprovenance.prov.service.summary.writers;
 
-import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.scala.immutable.Document;
 import org.openprovenance.prov.scala.summary.SummaryAPI;
 import org.openprovenance.prov.scala.summary.SummaryConfig;import jakarta.ws.rs.Produces;

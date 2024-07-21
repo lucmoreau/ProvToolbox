@@ -1,7 +1,13 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.0.9-SNAPSHOT`
-* 
+* service-template: returning hash code and location of submitted record
+* service-template: verifying hash from the command line
+* prov-dot: allows for dot:style to be specified
+* service-templates: navigation tab: prov and entities
+* prov-toolbox-js-embedding: support for js builder 
+* module-info introduced for all modules up to toolbox (and prov-toolbox-polyglot)
+
 
 `2.0.8`
 * module-tools: prov-template-archetype and prov-toolbox-plugin

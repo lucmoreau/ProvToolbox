@@ -1,0 +1,10 @@
+[
+  {
+    "name" : "org.graalvm.polyglot.Value",
+    "allPublicMethods" : true
+  },
+  {
+    "name" : "org.example.native_embedding.NativeAPI",
+    "allPublicMethods" : true
+  }
+]

@@ -44,11 +44,10 @@ public class CompilerCommon {
             "wasAttributedTo",
             "wasAssociatedWith",
             "wasGeneratedBy",
-            "used"/*,
+            "used",
+            "actedOnBehalfOf",
             "hadMember",
             "specializationOf"
-
-             */
     };
     private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
@@ -1160,6 +1159,44 @@ public class CompilerCommon {
                     found = processWasGeneratedBy(namedWasGeneratedBy, varCount, found, builder, count, false);
                     if (found) builder.addStatement("table.put($S,map2)", rel);
                     break;
+                case "used":
+                    count = new AtomicInteger();
+                    found=false;
+                    Collection<Used> anonUsed = indexed.getUsed();
+                    Collection<Used> namedUsed = indexed.getNamedUsed().values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                    found = processUsed(anonUsed, varCount, found, builder, count, true);
+                    found = processUsed(namedUsed, varCount, found, builder, count, false);
+                    if (found) builder.addStatement("table.put($S,map2)", rel);
+                    break;
+                case "actedOnBehalfOf":
+                    count = new AtomicInteger();
+                    found=false;
+                    Collection<ActedOnBehalfOf> anonActedOnBehalfOf = indexed.getActedOnBehalfOf();
+                    Collection<ActedOnBehalfOf> namedActedOnBehalfOf = indexed.getNamedActedOnBehalfOf().values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                    found = processActedOnBehalfOf(anonActedOnBehalfOf, varCount, found, builder, count, true);
+                    found = processActedOnBehalfOf(namedActedOnBehalfOf, varCount, found, builder, count, false);
+                    if (found) builder.addStatement("table.put($S,map2)", rel);
+                    break;
+
+                case "specializationOf":
+                    count = new AtomicInteger();
+                    found=false;
+                    Collection<SpecializationOf> anonSpecializationOf = indexed.getSpecializationOf();
+                    Collection<SpecializationOf> namedSpecializationOf = indexed.getNamedSpecializationOf().values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                    found = processSpecializationOf(anonSpecializationOf, varCount, found, builder, count, true);
+                    found = processSpecializationOf(namedSpecializationOf, varCount, found, builder, count, false);
+                    if (found) builder.addStatement("table.put($S,map2)", rel);
+                    break;
+
+                case "hadMember":
+                    count = new AtomicInteger();
+                    found=false;
+                    Collection<HadMember> anonHadMember = indexed.getHadMember();
+                    Collection<HadMember> namedHadMember = indexed.getNamedHadMember().values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                    found = processHadMember(anonHadMember, varCount, found, builder, count, true);
+                    found = processHadMember(namedHadMember, varCount, found, builder, count, false);
+                    if (found) builder.addStatement("table.put($S,map2)", rel);
+                    break;
             }
         }
 
@@ -1172,16 +1209,16 @@ public class CompilerCommon {
     }
 
     private boolean processWasDerivedFrom(Collection<WasDerivedFrom> wdfCollection, HashMap<QualifiedName, Integer> varCount, boolean found, MethodSpec.Builder builder, AtomicInteger count, boolean anon) {
-        for (WasDerivedFrom wdf : wdfCollection) {
-            Integer gen = countIsNull(varCount.get(wdf.getGeneratedEntity()));
-            Integer usd = countIsNull(varCount.get(wdf.getUsedEntity()));
-            Integer act = countIsNull(varCount.get(wdf.getActivity()));
+        for (WasDerivedFrom rel : wdfCollection) {
+            Integer gen = countIsNull(varCount.get(rel.getGeneratedEntity()));
+            Integer usd = countIsNull(varCount.get(rel.getUsedEntity()));
+            Integer act = countIsNull(varCount.get(rel.getActivity()));
             if (gen >= 0) {
                 if (!found) {
                     builder.addStatement("map2 = new $T<>()", HashMap.class);
                     found=true;
                 }
-                String label = getLabel(count.get(), anon, wdf.getId());
+                String label = getLabel(count.get(), anon, rel.getId());
                 builder.addStatement("map2.put($S, (new int[] { $L, $L, $L }))", label, gen, usd, act);
             }
             count.getAndIncrement();
@@ -1189,15 +1226,15 @@ public class CompilerCommon {
         return found;
     }
     private boolean processWasAttributedTo(Collection<WasAttributedTo> watCollection, HashMap<QualifiedName, Integer> varCount, boolean found, MethodSpec.Builder builder, AtomicInteger count, boolean anon) {
-        for (WasAttributedTo wdf : watCollection) {
-            Integer ent = countIsNull(varCount.get(wdf.getEntity()));
-            Integer ag = countIsNull(varCount.get(wdf.getAgent()));
+        for (WasAttributedTo rel : watCollection) {
+            Integer ent = countIsNull(varCount.get(rel.getEntity()));
+            Integer ag = countIsNull(varCount.get(rel.getAgent()));
             if (ent >= 0 && ag >= 0) {
                 if (!found) {
                     builder.addStatement("map2 = new $T<>()", HashMap.class);
                     found=true;
                 }
-                String label = getLabel(count.get(), anon, wdf.getId());
+                String label = getLabel(count.get(), anon, rel.getId());
                 builder.addStatement("map2.put($S, (new int[] { $L, $L}))", label, ent, ag);
             }
             count.getAndIncrement();
@@ -1205,16 +1242,16 @@ public class CompilerCommon {
         return found;
     }
     private boolean processWasAssociatedWith(Collection<WasAssociatedWith> wawCollection, HashMap<QualifiedName, Integer> varCount, boolean found, MethodSpec.Builder builder, AtomicInteger count, boolean anon) {
-        for (WasAssociatedWith wdf : wawCollection) {
-            Integer act = countIsNull(varCount.get(wdf.getActivity()));
-            Integer ag = countIsNull(varCount.get(wdf.getAgent()));
-            Integer pl = countIsNull(varCount.get(wdf.getPlan()));
+        for (WasAssociatedWith rel : wawCollection) {
+            Integer act = countIsNull(varCount.get(rel.getActivity()));
+            Integer ag = countIsNull(varCount.get(rel.getAgent()));
+            Integer pl = countIsNull(varCount.get(rel.getPlan()));
             if (act >= 0 && ag >= 0) {
                 if (!found) {
                     builder.addStatement("map2 = new $T<>()", HashMap.class);
                     found=true;
                 }
-                String label = getLabel(count.get(), anon, wdf.getId());
+                String label = getLabel(count.get(), anon, rel.getId());
                 builder.addStatement("map2.put($S, (new int[] { $L, $L, $L}))", label, act, ag, pl);
             }
             count.getAndIncrement();
@@ -1223,18 +1260,90 @@ public class CompilerCommon {
     }
 
     private boolean processWasGeneratedBy(Collection<WasGeneratedBy> wgbCollection, HashMap<QualifiedName, Integer> varCount, boolean found, MethodSpec.Builder builder, AtomicInteger count, boolean anon) {
-        for (WasGeneratedBy wdf : wgbCollection) {
-            Integer ent = countIsNull(varCount.get(wdf.getEntity()));
-            Integer act = countIsNull(varCount.get(wdf.getActivity()));
+        for (WasGeneratedBy rel : wgbCollection) {
+            Integer ent = countIsNull(varCount.get(rel.getEntity()));
+            Integer act = countIsNull(varCount.get(rel.getActivity()));
             if (ent >= 0 && act >= 0) {
                 if (!found) {
                     builder.addStatement("map2 = new $T<>()", HashMap.class);
                     found=true;
                 }
-                String label = getLabel(count.get(), anon, wdf.getId());
+                String label = getLabel(count.get(), anon, rel.getId());
                 builder.addStatement("map2.put($S, (new int[] { $L, $L}))", label, ent, act);
             }
             count.getAndIncrement();
+        }
+        return found;
+    }
+
+    private boolean processUsed(Collection<Used> usedCollection, HashMap<QualifiedName, Integer> varCount, boolean found, MethodSpec.Builder builder, AtomicInteger count, boolean anon) {
+        for (Used rel : usedCollection) {
+            Integer act = countIsNull(varCount.get(rel.getActivity()));
+            Integer ent = countIsNull(varCount.get(rel.getEntity()));
+            if (act >= 0 && ent >= 0) {
+                if (!found) {
+                    builder.addStatement("map2 = new $T<>()", HashMap.class);
+                    found=true;
+                }
+                String label = getLabel(count.get(), anon, rel.getId());
+                builder.addStatement("map2.put($S, (new int[] { $L, $L}))", label, act, ent);
+            }
+            count.getAndIncrement();
+        }
+        return found;
+    }
+
+    private boolean processActedOnBehalfOf(Collection<ActedOnBehalfOf> aoboCollection, HashMap<QualifiedName, Integer> varCount, boolean found, MethodSpec.Builder builder, AtomicInteger count, boolean anon) {
+        for (ActedOnBehalfOf rel : aoboCollection) {
+            Integer del = countIsNull(varCount.get(rel.getDelegate()));
+            Integer ag = countIsNull(varCount.get(rel.getResponsible()));
+            Integer act = countIsNull(varCount.get(rel.getActivity()));
+            if (del >= 0 && ag >= 0) {
+                if (!found) {
+                    builder.addStatement("map2 = new $T<>()", HashMap.class);
+                    found=true;
+                }
+                String label = getLabel(count.get(), anon, rel.getId());
+                builder.addStatement("map2.put($S, (new int[] { $L, $L, $L}))", label, del, ag, act);
+            }
+            count.getAndIncrement();
+        }
+        return found;
+    }
+
+    private boolean processSpecializationOf(Collection<SpecializationOf> soCollection, HashMap<QualifiedName, Integer> varCount, boolean found, MethodSpec.Builder builder, AtomicInteger count, boolean anon) {
+        for (SpecializationOf rel : soCollection) {
+            Integer spec = countIsNull(varCount.get(rel.getSpecificEntity()));
+            Integer gen = countIsNull(varCount.get(rel.getGeneralEntity()));
+            if (spec >= 0 && gen >= 0) {
+                if (!found) {
+                    builder.addStatement("map2 = new $T<>()", HashMap.class);
+                    found=true;
+                }
+                String label = getLabel(count.get(), anon, null);
+                builder.addStatement("map2.put($S, (new int[] { $L, $L}))", label, spec, gen);
+            }
+            count.getAndIncrement();
+        }
+        return found;
+    }
+
+    private boolean processHadMember(Collection<HadMember> hmCollection, HashMap<QualifiedName, Integer> varCount, boolean found, MethodSpec.Builder builder, AtomicInteger count, boolean anon) {
+        for (HadMember rel : hmCollection) {
+            Integer coll = countIsNull(varCount.get(rel.getCollection()));
+            List<QualifiedName> entities = rel.getEntity();
+            for (QualifiedName entity: entities) {
+                Integer mem = countIsNull(varCount.get(entity));
+                if (coll >= 0 && mem >= 0) {
+                    if (!found) {
+                        builder.addStatement("map2 = new $T<>()", HashMap.class);
+                        found = true;
+                    }
+                    String label = getLabel(count.get(), anon, null); // note labelling is for each member
+                    builder.addStatement("map2.put($S, (new int[] { $L, $L}))", label, coll, mem);
+                }
+                count.getAndIncrement();
+            }
         }
         return found;
     }

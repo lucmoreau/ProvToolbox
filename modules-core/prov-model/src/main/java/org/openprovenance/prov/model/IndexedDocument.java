@@ -146,11 +146,20 @@ public class IndexedDocument implements StatementAction {
     private final HashMap<QualifiedName, Collection<HadMember>> entityHadMemberMap= new HashMap<>();
 
 
-    /** Return all used edges for this graph.
+    /** Return all anonymous used edges for this graph.
      * @return a collection of {@link Used} edges
      * */
     public Collection<Used> getUsed() {
         return anonUsed;
+    }
+
+    /**
+     * Return all named used edges for this graph.
+     *
+     * @return a collection of {@link Used} edges
+     */
+    public Map<QualifiedName, Collection<Used>> getNamedUsed() {
+        return namedUsedMap;
     }
     /** Return all used edges with activity p as an effect.
      * @param p an activity
@@ -234,6 +243,62 @@ public class IndexedDocument implements StatementAction {
     public Map<QualifiedName, Collection<WasAttributedTo>> getNamedWasAttributedTo() {
         return namedWasAttributedToMap;
     }
+
+    /**
+     * Return all anonymous ActedOnBehalfOf edges for this graph.
+     *
+     * @return a collection of {@link ActedOnBehalfOf} edges
+     */
+    public Collection<ActedOnBehalfOf> getActedOnBehalfOf() {
+        return anonActedOnBehalfOf;
+    }
+
+    /**
+     * Return all named ActedOnBehalfOf edges for this graph.
+     *
+     * @return a map of {@link ActedOnBehalfOf} edges
+     */
+    public Map<QualifiedName, Collection<ActedOnBehalfOf>> getNamedActedOnBehalfOf() {
+        return namedActedOnBehalfOfMap;
+    }
+
+    /**
+     * Return all anonymous SpecializationOf edges for this graph.
+     *
+     * @return a collection of {@link SpecializationOf} edges
+     */
+    public Collection<SpecializationOf> getSpecializationOf() {
+        return anonSpecializationOf;
+    }
+
+    /**
+     * Return all named SpecializationOf edges for this graph.
+     *
+     * @return a map of {@link SpecializationOf} edges
+     */
+    public Map<QualifiedName, Collection<SpecializationOf>> getNamedSpecializationOf() {
+        return namedSpecializationOfMap;
+    }
+
+    /**
+     * Return all anonymous HadMember edges for this graph.
+     *
+     * @return a collection of {@link HadMember} edges
+     */
+    public Collection<HadMember> getHadMember() {
+        return anonHadMember;
+    }
+
+    /**
+     * Return all named HadMember edges for this graph.
+     *
+     * @return a map of {@link HadMember} edges
+     */
+    public Map<QualifiedName, Collection<HadMember>> getNamedHadMember() {
+        return namedHadMemberMap;
+    }
+
+
 
 
 

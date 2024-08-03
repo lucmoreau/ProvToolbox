@@ -1,7 +1,7 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.1.1-SNAPSHOT`
-*
+* prov-template-compiler: getRelations method for encoding of template relations
 
 `2.1.0`
 * service-template: returning hash code and location of submitted record

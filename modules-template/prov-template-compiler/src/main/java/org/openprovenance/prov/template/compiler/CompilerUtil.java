@@ -386,6 +386,9 @@ public class CompilerUtil {
     }
 
     static final public ParameterizedTypeName mapIntArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(Integer.class), TypeName.get(int[].class));
+    static final public ParameterizedTypeName mapStringArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeName.get(int[].class));
+    static final public ParameterizedTypeName mapStringMapStringArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), mapStringArrayType);
+    static final public ParameterizedTypeName hashmapStringMapStringArrayType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(String.class), mapStringArrayType);
 
     public Class<?> getJavaTypeForDeclaredType(Map<String, List<Descriptor>> varMap, String key) {
         Descriptor descriptor=varMap.get(key).get(0);

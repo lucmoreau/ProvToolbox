@@ -49,7 +49,7 @@ dck.file:
 	cp ${project.basedir}/target/classes/Dockerfile $(LOCATION_IMAGE)
 
 build:
-	$(DOCKER) build -t ${TARGET_IMAGE} ${LOCATION_IMAGE}
+	$(DOCKER) build --platform linux/amd64 -t ${TARGET_IMAGE} ${LOCATION_IMAGE}
 	$(DOCKER) images
 
 NOW=`date "+%Y-%m-%d-%H-%M"`

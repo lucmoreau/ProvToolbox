@@ -15,6 +15,8 @@ import org.openprovenance.prov.template.descriptors.*;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
@@ -37,6 +39,17 @@ public class CompilerCommon {
     public static final String MARKER_ARRAY = "/*#array#*/";
     public static final String UNKNOWN = "unknown";
     public static final String POST_PROCESSING_VAR = "postProcessing";
+    public static final String[] ALL_RELATIONS = {
+            "wasDerivedFrom",
+            "wasAttributedTo",
+            "wasAssociatedWith",
+            "wasGeneratedBy",
+            "used"/*,
+            "hadMember",
+            "specializationOf"
+
+             */
+    };
     private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
 
@@ -130,6 +143,7 @@ public class CompilerCommon {
             builder.addMethod(generateCommonMethod2PureCsv(templateName, bindingsSchema, consistsOf));
             builder.addMethod(generateCommonMethod3static(bindingsSchema));
             builder.addMethod(generateCommonMethod4static(allVars, bindingsSchema, indexed));
+            builder.addMethod(generateGetRelations(allVars, bindingsSchema, indexed));
             final Pair<MethodSpec, Map<Integer, List<Integer>>> methodSpecMapPair = generateCommonMethod5static(allVars, bindingsSchema, indexed);
             builder.addMethod(methodSpecMapPair.getLeft());
             successorTable=methodSpecMapPair.getRight();
@@ -158,6 +172,10 @@ public class CompilerCommon {
             builder.addField(FieldSpec.builder(int[].class, __NODES_FIELD)
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                     .initializer("__getNodes()")
+                    .build());
+            builder.addField(FieldSpec.builder(mapStringMapStringArrayType, "__relations")
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                    .initializer("__getRelations()")
                     .build());
 
 
@@ -1078,6 +1096,165 @@ public class CompilerCommon {
 
 
         return builder.build();
+    }
+    public MethodSpec generateGetRelations(Set<QualifiedName> allVars, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("__getRelations")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .returns(mapStringMapStringArrayType);
+        compilerUtil.specWithComment(builder);
+
+
+        Map<String, List<Descriptor>> theVar= bindingsSchema.getVar();
+        Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
+
+        int count2 = 0;
+        HashMap<QualifiedName, Integer> varCount = new HashMap<>();
+        for (String key: fieldNames) {
+            count2++;
+            for (QualifiedName qn : allVars) {
+                if (key.equals(qn.getLocalPart())) {
+                    varCount.put(qn, count2);
+                }
+            }
+        }
+
+        builder.addStatement("$T table = new $T<>()", mapStringMapStringArrayType, HashMap.class);
+        builder.addStatement("$T map2", mapStringArrayType);
+        for (String rel: ALL_RELATIONS) {
+            AtomicInteger count;
+            boolean found;
+            switch (rel) {
+                case "wasDerivedFrom":
+                    count = new AtomicInteger();
+                    found=false;
+                    Collection<WasDerivedFrom> anonWasDerivedFrom = indexed.getWasDerivedFrom();
+                    Collection<WasDerivedFrom> namedWasDerivedFrom = indexed.getNamedWasDerivedFrom().values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                    found = processWasDerivedFrom(anonWasDerivedFrom, varCount, found, builder, count, true);
+                    found = processWasDerivedFrom(namedWasDerivedFrom, varCount, found, builder, count, false);
+                    if (found) builder.addStatement("table.put($S,map2)", rel);
+                    break;
+                case "wasAttributedTo":
+                    count = new AtomicInteger();
+                    found=false;
+                    Collection<WasAttributedTo> anonWasAttributedTo = indexed.getWasAttributedTo();
+                    Collection<WasAttributedTo> namedWasAttributedTo = indexed.getNamedWasAttributedTo().values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                    found = processWasAttributedTo(anonWasAttributedTo, varCount, found, builder, count, true);
+                    found = processWasAttributedTo(namedWasAttributedTo, varCount, found, builder, count, false);
+                    if (found) builder.addStatement("table.put($S,map2)", rel);
+                    break;
+                case "wasAssociatedWith":
+                    count = new AtomicInteger();
+                    found=false;
+                    Collection<WasAssociatedWith> anonWasAssociatedWith = indexed.getWasAssociatedWith();
+                    Collection<WasAssociatedWith> namedWasAssociatedWith = indexed.getNamedWasAssociatedWith().values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                    found = processWasAssociatedWith(anonWasAssociatedWith, varCount, found, builder, count, true);
+                    found = processWasAssociatedWith(namedWasAssociatedWith, varCount, found, builder, count, false);
+                    if (found) builder.addStatement("table.put($S,map2)", rel);
+                    break;
+                case "wasGeneratedBy":
+                    count = new AtomicInteger();
+                    found=false;
+                    Collection<WasGeneratedBy> anonWasGeneratedBy = indexed.getWasGeneratedBy();
+                    Collection<WasGeneratedBy> namedWasGeneratedBy = indexed.getNamedWasGeneratedBy().values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                    found = processWasGeneratedBy(anonWasGeneratedBy, varCount, found, builder, count, true);
+                    found = processWasGeneratedBy(namedWasGeneratedBy, varCount, found, builder, count, false);
+                    if (found) builder.addStatement("table.put($S,map2)", rel);
+                    break;
+            }
+        }
+
+
+
+        builder.addStatement("return table");
+
+
+        return builder.build();
+    }
+
+    private boolean processWasDerivedFrom(Collection<WasDerivedFrom> wdfCollection, HashMap<QualifiedName, Integer> varCount, boolean found, MethodSpec.Builder builder, AtomicInteger count, boolean anon) {
+        for (WasDerivedFrom wdf : wdfCollection) {
+            Integer gen = countIsNull(varCount.get(wdf.getGeneratedEntity()));
+            Integer usd = countIsNull(varCount.get(wdf.getUsedEntity()));
+            Integer act = countIsNull(varCount.get(wdf.getActivity()));
+            if (gen >= 0) {
+                if (!found) {
+                    builder.addStatement("map2 = new $T<>()", HashMap.class);
+                    found=true;
+                }
+                String label = getLabel(count.get(), anon, wdf.getId());
+                builder.addStatement("map2.put($S, (new int[] { $L, $L, $L }))", label, gen, usd, act);
+            }
+            count.getAndIncrement();
+        }
+        return found;
+    }
+    private boolean processWasAttributedTo(Collection<WasAttributedTo> watCollection, HashMap<QualifiedName, Integer> varCount, boolean found, MethodSpec.Builder builder, AtomicInteger count, boolean anon) {
+        for (WasAttributedTo wdf : watCollection) {
+            Integer ent = countIsNull(varCount.get(wdf.getEntity()));
+            Integer ag = countIsNull(varCount.get(wdf.getAgent()));
+            if (ent >= 0 && ag >= 0) {
+                if (!found) {
+                    builder.addStatement("map2 = new $T<>()", HashMap.class);
+                    found=true;
+                }
+                String label = getLabel(count.get(), anon, wdf.getId());
+                builder.addStatement("map2.put($S, (new int[] { $L, $L}))", label, ent, ag);
+            }
+            count.getAndIncrement();
+        }
+        return found;
+    }
+    private boolean processWasAssociatedWith(Collection<WasAssociatedWith> wawCollection, HashMap<QualifiedName, Integer> varCount, boolean found, MethodSpec.Builder builder, AtomicInteger count, boolean anon) {
+        for (WasAssociatedWith wdf : wawCollection) {
+            Integer act = countIsNull(varCount.get(wdf.getActivity()));
+            Integer ag = countIsNull(varCount.get(wdf.getAgent()));
+            Integer pl = countIsNull(varCount.get(wdf.getPlan()));
+            if (act >= 0 && ag >= 0) {
+                if (!found) {
+                    builder.addStatement("map2 = new $T<>()", HashMap.class);
+                    found=true;
+                }
+                String label = getLabel(count.get(), anon, wdf.getId());
+                builder.addStatement("map2.put($S, (new int[] { $L, $L, $L}))", label, act, ag, pl);
+            }
+            count.getAndIncrement();
+        }
+        return found;
+    }
+
+    private boolean processWasGeneratedBy(Collection<WasGeneratedBy> wgbCollection, HashMap<QualifiedName, Integer> varCount, boolean found, MethodSpec.Builder builder, AtomicInteger count, boolean anon) {
+        for (WasGeneratedBy wdf : wgbCollection) {
+            Integer ent = countIsNull(varCount.get(wdf.getEntity()));
+            Integer act = countIsNull(varCount.get(wdf.getActivity()));
+            if (ent >= 0 && act >= 0) {
+                if (!found) {
+                    builder.addStatement("map2 = new $T<>()", HashMap.class);
+                    found=true;
+                }
+                String label = getLabel(count.get(), anon, wdf.getId());
+                builder.addStatement("map2.put($S, (new int[] { $L, $L}))", label, ent, act);
+            }
+            count.getAndIncrement();
+        }
+        return found;
+    }
+
+    private String getLabel(int count, boolean anon, QualifiedName id) {
+        String label;
+        if (!anon && id!=null) {
+            label= id.getLocalPart();
+        } else  if (anon && id!=null) {
+            label="--"+ id.getLocalPart()+"--";
+        } else {
+            label="--"+ count +"--";
+        }
+        return label;
+    }
+
+    private Integer countIsNull(Integer integer) {
+        if (integer==null) return -1;
+        return integer;
+
     }
 
     public void calculateTypedSuccessors(Set<QualifiedName> allVars,

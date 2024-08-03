@@ -2,6 +2,11 @@
 
 
 # TODO
+- should not insert delegation if delegate/responsible empty
+-INSERT INTO
+__PROV_DELEGATION (delegate, delegate_rel, responsible, responsible_rel, activity, activity_rel, template, template_id, rel) VALUES
+(,'agent',,'agent',1517,'activity','plead_filtering',152,'--0--');
+
 - PC1FullTest.java in prov-dot no longer working
 - 
 - templates

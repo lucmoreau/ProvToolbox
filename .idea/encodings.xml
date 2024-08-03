@@ -77,8 +77,6 @@
     <file url="file://$PROJECT_DIR$/modules-nf/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-services/docker-service-templates/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-services/docker-service-templates/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/docker-service-translator" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/docker-service-translator/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources" charset="UTF-8" />
@@ -97,12 +95,6 @@
     <file url="file://$PROJECT_DIR$/modules-services/prov-service-translation/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/prov-service-validation/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-services/service-templates/src/main/config" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-services/service-templates/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-services/service-templates/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-services/service-templates/src/main/sql" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-services/service-templates/src/main/templateTasksBatch" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/service-translator" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/service-translator/src/main/config" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/service-translator/src/main/java" charset="UTF-8" />
@@ -111,6 +103,16 @@
     <file url="file://$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/docker-service-templates/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/docker-service-templates/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/service-templates/src/main/config" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/service-templates/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/service-templates/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/service-templates/src/main/sql" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/service-templates/src/main/templateTasksBatch" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java" charset="UTF-8" />

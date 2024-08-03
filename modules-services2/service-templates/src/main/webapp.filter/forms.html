@@ -394,6 +394,11 @@
                                + " <a target='_blank' href='${service.context}/provapi/template/" + name + "/" + ID + ".jsonld'>(jsonld)</a>";
     }
 
+    function createXplainLink(name, ID) {
+        return "Link to <a target='_blank' href='${service.context}/provapi/xplain/template/" + name + "/" + ID + "'   >explanation</a>";
+    }
+
+
     function submitService(jsonSubmit, url, anchor_result_box, anchor_csv, anchor_result_prov_link, enactorp, allRecordsp) {
         console.log("submitService")
 
@@ -441,7 +446,7 @@
                 if (anchor_result_prov_link) {
                     let ID=parsed[0]["ID"];
                     let prov_link = createProvLink(name, ID);
-                    $(anchor_result_prov_link).html(prov_link);
+                    $(anchor_result_prov_link).html(prov_link).append("<p>").append(createXplainLink(name, ID)).append("</p>");
                 }
             }
             $(anchor_result_box).attr('received','true');

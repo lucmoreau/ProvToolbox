@@ -65,7 +65,7 @@ trait QueryInterpreter extends SummaryTypesNames {
   }
 
   def processDocument(document: List[Statement], schema: Schema)(yld: Record => Unit): Unit = {
-    val s = document.iterator
+    val s: Iterator[Statement] = document.iterator
 
     def nextRecord: Record = Record(schema.map { x => val f: RField = s.next(); f }, schema)
 

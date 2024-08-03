@@ -9,17 +9,12 @@
 
 
     <packaging>pom</packaging>
-    <name>|&gt;- MODULES: SERVICES</name>
-    <artifactId>modules-services</artifactId>
+    <name>|&gt;- MODULES: SERVICES2</name>
+    <artifactId>modules-services2</artifactId>
 
     <modules>
-        <module>prov-log</module>
-        <module>prov-service-core</module>
-        <module>prov-service-translation</module>
-        <module>prov-service-validation</module>
-        <module>prov-service-security-pac</module>
-        <module>service-translator</module>
-        <module>docker-service-translator</module>
+        <module>service-templates</module>
+        <module>docker-service-templates</module>
 
     </modules>
 

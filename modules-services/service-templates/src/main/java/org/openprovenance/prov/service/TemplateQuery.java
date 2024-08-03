@@ -67,11 +67,15 @@ public class TemplateQuery {
         this.documentBuilderDispatcher = documentBuilderDispatcher;
         this.ioMap = getIoMap(ioMapString);
         this.successors = successors;
-        this.relationMapping = new RelationMapping(this,templateDispatcher);
+        this.relationMapping = new RelationMapping(this,templateDispatcher,querier);
 
         logger.info("ioMap = " + ioMap);
 
         generateTraversalMethods(querier, this.ioMap);
+    }
+
+    RelationMapping getRelationMapping() {
+        return relationMapping;
     }
 
 
@@ -275,11 +279,6 @@ public class TemplateQuery {
         map.put(SHA_3_512, hash.get(0));
         return map;
     }
-
-    public void mapGraphToRelations(String template, int id, Object[] record) {
-        relationMapping.mapGraphToRelations(template, id, record);
-    }
-
 
 
     static public class TemplateConnection {

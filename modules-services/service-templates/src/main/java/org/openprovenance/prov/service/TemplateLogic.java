@@ -248,18 +248,16 @@ public class TemplateLogic {
                 templateQuery.updateHash(template, id, hash, principal);
                 logger.info("update hash for " + id + " " + template + ": " + hash);
                 headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH, getContentProvHash(hash));
-                headerInfo.get().put(HTTP_HEADER_LOCATION,provAPI + "/template/" + template + "/" + id);
             } else {
                 Object[] record = records.get(0);
                 Map<String, String> hash = templateQuery.computeHash(template, id, record);
-                templateQuery.mapGraphToRelations(template,id,record);
+                templateQuery.getRelationMapping().mapGraphToRelations(template,id,record);
                 templateQuery.updateHash(template, id, hash, principal);
                 logger.info("update hash for " + id + " " + template + ": " + hash);
                 headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH,getContentProvHash(hash));
-                headerInfo.get().put(HTTP_HEADER_LOCATION,provAPI + "/template/" + template + "/" + id);
-
-
             }
+            headerInfo.get().put(HTTP_HEADER_LOCATION,provAPI + "/template/" + template + "/" + id);
+
         }
         return null;
     }

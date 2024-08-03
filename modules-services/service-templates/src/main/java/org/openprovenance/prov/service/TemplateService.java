@@ -20,6 +20,8 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
+import org.openprovenance.prov.service.dispatch.TableConfiguratorForObjectRecordMaker;
+import org.openprovenance.prov.service.dispatch.TableConfiguratorForSuccessors;
 import org.openprovenance.prov.service.readers.TableKeyList;
 import org.openprovenance.prov.service.readers.TableKey;
 import org.openprovenance.prov.service.readers.JsonOrCsv;
@@ -73,19 +75,6 @@ public class TemplateService {
     public static final String postgresUsername=getSystemOrEnvironmentVariableOrDefault(DB_USER, "user");
     public static final String DB_PASS = "TPL_DB_PASS";
     public static final String postgresPassword=getSystemOrEnvironmentVariableOrDefault(DB_PASS,"password");
-
-    //public static final String TPL_KEYCLOAK = "TPL_KEYCLOAK";
-    //public static final String tplKeycloak=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK, "http://localhost:8080/auth/realms/ems");
-    //public static final String TPL_KEYCLOAK_BASEURI = "TPL_KEYCLOAK_BASEURI";
-    //public static final String tplKeycloakBaseuri=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_BASEURI, "http://localhost:8080/auth");
-    //public static final String TPL_KEYCLOAK_USERNAME = "TPL_KEYCLOAK_USERNAME";
-    //public static final String tplKeycloakUsername=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_USERNAME, "user");
-    //public static final String TPL_KEYCLOAK_CLIENTID = "TPL_KEYCLOAK_CLIENTID";
-    //public static final String tplKeycloakClientId=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_CLIENTID, "clientid");
-    //public static final String TPL_KEYCLOAK_CLIENTID_DIRECT = "TPL_KEYCLOAK_CLIENTID_DIRECT";
-    //public static final String getTplKeycloakClientidDirect=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_CLIENTID_DIRECT, "clientid-direct");
-    //public static final String TPL_KEYCLOAK_REALM = "TPL_KEYCLOAK_REALM";
-    //public static final String tplKeycloakRealm=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_REALM, "realm");
 
     public static final String TPL_SECURITY_CONFIG = "TPL_SECURITY_CONFIG";
     public static final String NO_SECURITY_CONFIG = "no-security-config";

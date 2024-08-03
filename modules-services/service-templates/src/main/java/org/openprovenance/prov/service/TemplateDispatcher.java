@@ -4,12 +4,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.client.ProcessorArgsInterface;
 import org.openprovenance.prov.client.RecordsProcessorInterface;
+import org.openprovenance.prov.service.dispatch.ForeignTableConfigurator;
+import org.openprovenance.prov.service.dispatch.Relation0Configurator;
+import org.openprovenance.prov.service.dispatch.RelationConfigurator;
+import org.openprovenance.prov.service.dispatch.SuccessorConfigurator;
 import org.openprovenance.prov.template.library.plead.client.configurator.*;
 import org.openprovenance.prov.template.library.plead.client.logger.TemplateBuilders;
 import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeEnactorConfigurator4;
 import org.openprovenance.prov.template.library.plead.sql.access_control.SqlEnactorConfigurator4;
-import org.openprovenance.prov.template.library.plead.sql.integration.SqlCompositeEnactorConfigurator3;
-import org.openprovenance.prov.template.library.plead.sql.integration.SqlEnactorConfigurator3;
 
 
 import java.sql.Connection;
@@ -38,6 +40,9 @@ public class TemplateDispatcher {
     private final Map<String, Map<String, List<String>>> predecessors;
     private final Map<String, String[]> inputs;
     private final Map<String, String[]> outputs;
+    private final Map<String, String[]> foreignTables;
+    private final Map<String, Map<String, Map<String, List<String>>>> relations;
+    private final Map<String, Map<String, Map<String, int[]>>> relations0;
 
 
     public TemplateDispatcher(Storage storage, Connection conn, BiFunction<Integer, String, Object> postProcessing) {
@@ -45,6 +50,7 @@ public class TemplateDispatcher {
         inputs=initializeBeanTable(new InputsConfigurator());
         outputs = initializeBeanTable(new OutputsConfigurator());
         sqlConverter=initializeBeanTable(new SqlConfigurator());
+        foreignTables=initializeBeanTable(new ForeignTableConfigurator());
         csvConverter=initializeBeanTable(new CsvConfigurator());
         sqlInsert=initializeBeanTable(new SqlInsertConfigurator());
         beanConverter=initializeBeanTable(new ConverterConfigurator());
@@ -55,6 +61,8 @@ public class TemplateDispatcher {
         compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator4(storage.getQuerier(conn), postProcessing));
         //compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator3(storage.getQuerier(conn)));
         successors = initializeBeanTable(new SuccessorConfigurator());
+        relations = initializeBeanTable(new RelationConfigurator());
+        relations0 = initializeBeanTable(new Relation0Configurator());
         predecessors = successors
                 .keySet()
                 .stream()
@@ -115,5 +123,14 @@ public class TemplateDispatcher {
     }
     public Map<String, String[]> getOutputs() {
         return outputs;
+    }
+    public Map<String, String[]> getForeignTables() {
+        return foreignTables;
+    }
+    public Map<String, Map<String, Map<String, List<String>>> > getRelations() {
+        return relations;
+    }
+    public Map<String, Map<String, Map<String, int[]>>> getRelations0() {
+        return relations0;
     }
 }

@@ -39,4 +39,15 @@ public interface StatementOrBundle {
 		PROV_DICTIONARY_MEMBERSHIP
 	}
 
+	Kind[] ALL_RELATIONS = {
+			Kind.PROV_DERIVATION,
+			Kind.PROV_ATTRIBUTION,
+			Kind.PROV_ASSOCIATION,
+			Kind.PROV_GENERATION,
+			Kind.PROV_USAGE,
+			Kind.PROV_DELEGATION,
+			Kind.PROV_MEMBERSHIP,
+			Kind.PROV_SPECIALIZATION
+	};
+
 }

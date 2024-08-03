@@ -1,7 +1,7 @@
 // Generated automatically by ProvToolbox for template configuration 'template_library'
 // by class org.openprovenance.prov.template.compiler.CompilerConfigurations, method generateConfigurator,
 // in file CompilerConfigurations.java, at line 63
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.service.dispatch;
 
 import org.openprovenance.prov.client.ProcessorArgsInterface;
 import org.openprovenance.prov.template.library.plead.client.common.*;

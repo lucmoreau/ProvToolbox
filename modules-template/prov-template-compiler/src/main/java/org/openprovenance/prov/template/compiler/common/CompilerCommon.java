@@ -15,10 +15,10 @@ import org.openprovenance.prov.template.descriptors.*;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.model.StatementOrBundle.ALL_RELATIONS;
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfString;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
@@ -39,7 +39,7 @@ public class CompilerCommon {
     public static final String MARKER_ARRAY = "/*#array#*/";
     public static final String UNKNOWN = "unknown";
     public static final String POST_PROCESSING_VAR = "postProcessing";
-    public static final String[] ALL_RELATIONS = {
+    public static final String[] ALL_RELATIONS_TODELETE = {
             "wasDerivedFrom",
             "wasAttributedTo",
             "wasAssociatedWith",
@@ -1130,11 +1130,11 @@ public class CompilerCommon {
 
         builder.addStatement("$T table = new $T<>()", mapStringMapStringArrayType, HashMap.class);
         builder.addStatement("$T map2", mapStringArrayType);
-        for (String rel: ALL_RELATIONS) {
+        for (StatementOrBundle.Kind rel: ALL_RELATIONS) {
             AtomicInteger count;
             boolean found;
             switch (rel) {
-                case "wasDerivedFrom":
+                case PROV_DERIVATION:
                     count = new AtomicInteger();
                     found=false;
                     Collection<WasDerivedFrom> anonWasDerivedFrom = indexed.getWasDerivedFrom();
@@ -1143,7 +1143,7 @@ public class CompilerCommon {
                     found = processWasDerivedFrom(namedWasDerivedFrom, varCount, found, builder, count, false);
                     if (found) builder.addStatement("table.put($S,map2)", rel);
                     break;
-                case "wasAttributedTo":
+                case PROV_ATTRIBUTION:
                     count = new AtomicInteger();
                     found=false;
                     Collection<WasAttributedTo> anonWasAttributedTo = indexed.getWasAttributedTo();
@@ -1152,7 +1152,7 @@ public class CompilerCommon {
                     found = processWasAttributedTo(namedWasAttributedTo, varCount, found, builder, count, false);
                     if (found) builder.addStatement("table.put($S,map2)", rel);
                     break;
-                case "wasAssociatedWith":
+                case PROV_ASSOCIATION:
                     count = new AtomicInteger();
                     found=false;
                     Collection<WasAssociatedWith> anonWasAssociatedWith = indexed.getWasAssociatedWith();
@@ -1161,7 +1161,7 @@ public class CompilerCommon {
                     found = processWasAssociatedWith(namedWasAssociatedWith, varCount, found, builder, count, false);
                     if (found) builder.addStatement("table.put($S,map2)", rel);
                     break;
-                case "wasGeneratedBy":
+                case PROV_GENERATION:
                     count = new AtomicInteger();
                     found=false;
                     Collection<WasGeneratedBy> anonWasGeneratedBy = indexed.getWasGeneratedBy();
@@ -1170,7 +1170,7 @@ public class CompilerCommon {
                     found = processWasGeneratedBy(namedWasGeneratedBy, varCount, found, builder, count, false);
                     if (found) builder.addStatement("table.put($S,map2)", rel);
                     break;
-                case "used":
+                case PROV_USAGE:
                     count = new AtomicInteger();
                     found=false;
                     Collection<Used> anonUsed = indexed.getUsed();
@@ -1179,7 +1179,7 @@ public class CompilerCommon {
                     found = processUsed(namedUsed, varCount, found, builder, count, false);
                     if (found) builder.addStatement("table.put($S,map2)", rel);
                     break;
-                case "actedOnBehalfOf":
+                case PROV_DELEGATION:
                     count = new AtomicInteger();
                     found=false;
                     Collection<ActedOnBehalfOf> anonActedOnBehalfOf = indexed.getActedOnBehalfOf();
@@ -1189,7 +1189,7 @@ public class CompilerCommon {
                     if (found) builder.addStatement("table.put($S,map2)", rel);
                     break;
 
-                case "specializationOf":
+                case PROV_SPECIALIZATION:
                     count = new AtomicInteger();
                     found=false;
                     Collection<SpecializationOf> anonSpecializationOf = indexed.getSpecializationOf();
@@ -1199,7 +1199,7 @@ public class CompilerCommon {
                     if (found) builder.addStatement("table.put($S,map2)", rel);
                     break;
 
-                case "hadMember":
+                case PROV_MEMBERSHIP:
                     count = new AtomicInteger();
                     found=false;
                     Collection<HadMember> anonHadMember = indexed.getHadMember();

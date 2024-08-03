@@ -1,5 +1,5 @@
 
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.service.dispatch;
 
 import org.openprovenance.prov.template.library.plead.client.common.*;
 import org.openprovenance.prov.template.library.plead.client.configurator.TableConfigurator;

@@ -12,6 +12,7 @@ import org.openprovenance.prov.client.ProcessorArgsInterface;
 import org.openprovenance.prov.client.RecordsProcessorInterface;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.service.core.ServiceUtils;
+import org.openprovenance.prov.service.dispatch.EnactCsvRecords;
 import org.openprovenance.prov.service.readers.TemplatesVizConfig;
 import org.openprovenance.prov.template.library.plead.Plead_trainingBuilder;
 import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeBeanEnactor4;
@@ -251,6 +252,7 @@ public class TemplateLogic {
             } else {
                 Object[] record = records.get(0);
                 Map<String, String> hash = templateQuery.computeHash(template, id, record);
+                templateQuery.mapGraphToRelations(template,id,record);
                 templateQuery.updateHash(template, id, hash, principal);
                 logger.info("update hash for " + id + " " + template + ": " + hash);
                 headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH,getContentProvHash(hash));

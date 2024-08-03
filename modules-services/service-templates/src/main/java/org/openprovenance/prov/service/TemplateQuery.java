@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerSQL.sqlify;
@@ -43,6 +44,7 @@ public class TemplateQuery {
 
     public static final String[] COMPOSITE_LINKER_COLUMNS = new String[]{"composite","simple"};
     public static final String SHA_3_512 = "SHA3-512";
+    public static final String PREFIX_REL = "__";
     private final Querier querier;
     private final ProvFactory pf = new ProvFactory();
     private final TemplateDispatcher templateDispatcher;
@@ -54,6 +56,7 @@ public class TemplateQuery {
 
     static TypeReference<Map<String,Map<String, Map<String, String>>>> typeRef = new TypeReference<>() {};
     private final Map<String, Map<String, List<String>>> successors;
+    private final RelationMapping relationMapping;
 
 
     public TemplateQuery(Querier querier, TemplateDispatcher templateDispatcher, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om, Map<String, FileBuilder> documentBuilderDispatcher, String ioMapString, Map<String, Map<String, List<String>>> successors) {
@@ -64,6 +67,7 @@ public class TemplateQuery {
         this.documentBuilderDispatcher = documentBuilderDispatcher;
         this.ioMap = getIoMap(ioMapString);
         this.successors = successors;
+        this.relationMapping = new RelationMapping(this,templateDispatcher);
 
         logger.info("ioMap = " + ioMap);
 
@@ -271,6 +275,11 @@ public class TemplateQuery {
         map.put(SHA_3_512, hash.get(0));
         return map;
     }
+
+    public void mapGraphToRelations(String template, int id, Object[] record) {
+        relationMapping.mapGraphToRelations(template, id, record);
+    }
+
 
 
     static public class TemplateConnection {

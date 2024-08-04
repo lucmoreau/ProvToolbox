@@ -8,7 +8,7 @@ import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.nlgspec_transformer.defs.callSimplenlgLibrary
 import org.openprovenance.prov.scala.nlgspec_transformer.specTypes.{Phrase, TransformEnvironment}
 import org.openprovenance.prov.scala.primitive.{Keywords, Triple}
-import org.openprovenance.prov.scala.query.QueryInterpreter.{RField, getSeqStatement, getStatement}
+import org.openprovenance.prov.scala.query.QueryInterpreter.{RField, StatementOrNull, getSeqStatement, getStatement, getStatementOrNull}
 import org.openprovenance.prov.scala.summary.TypePropagator
 
 
@@ -64,9 +64,13 @@ class SentenceMaker () {
 
     val te=new TransformEnvironment {
       override val environment: Environment = environment0
-      override val statements: Map[String, Statement] = selected_objects.flatMap{case (s,f) => getStatement(f) match {
+      override val statements: Map[String, Statement] = selected_objects.flatMap{case (s,f) => getStatementOrNull(f) match {
         case None => None
-        case Some(m) => Some((s,m))
+        case Some(m:StatementOrNull) =>
+          m match {
+            case Some(st) => Some((s,st))
+            case None => Some((s,null)) // allowing for null to be returned because of leftjoins
+          }
       }}
       override val seqStatements: Map[String, Seq[Statement]] = selected_objects.flatMap{case (s,f) => getSeqStatement(f) match {
         case None => None

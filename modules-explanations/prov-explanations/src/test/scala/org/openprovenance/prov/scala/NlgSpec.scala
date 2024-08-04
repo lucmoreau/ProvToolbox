@@ -85,7 +85,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     println(entity1)
     val template = SpecLoader.templateImport("src/main/resources/nlg/templates/provbasic/entity1.json")
 
-    val objects: Map[String, RField] = Map("ent" -> entity1)
+    val objects: Map[String, RField] = Map("ent" -> Some(entity1))
 
     val triples=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -118,7 +118,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val template=SpecLoader.templateImport("src/main/resources/nlg/templates/provbasic/activity1.json")
 
-    val objects: Map[String, RField] = Map("act" -> s)
+    val objects: Map[String, RField] = Map("act" -> Some(s))
 
     val triples=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -154,7 +154,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val template=SpecLoader.templateImport("src/main/resources/nlg/templates/provbasic/agent1.json")
 
-    val objects: Map[String, RField] = Map("ag" -> s)
+    val objects: Map[String, RField] = Map("ag" -> Some(s))
 
     val triples=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -186,7 +186,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     println(wat)
     val template=SpecLoader.templateImport("src/main/resources/nlg/templates/provbasic/attribution1.json")
 
-    val objects: Map[String, RField] = Map("attr" -> wat)
+    val objects: Map[String, RField] = Map("attr" -> Some(wat))
 
     val triples=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -218,7 +218,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     println(wdf)
     val template=SpecLoader.templateImport("src/main/resources/nlg/templates/provbasic/derivation1.json")
 
-    val objects: Map[String, RField] = Map("der" -> wdf)
+    val objects: Map[String, RField] = Map("der" -> Some(wdf))
 
     val triples=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -258,7 +258,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
 
 
-    val objects: Map[String, RField] = Map("gen" -> wgb)
+    val objects: Map[String, RField] = Map("gen" -> Some(wgb))
 
     val triples=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -276,7 +276,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     println(wgb2)
 
 
-    val objects2: Map[String, RField] = Map("gen" -> wgb2.asInstanceOf[Statement])
+    val objects2: Map[String, RField] = Map("gen" -> Some(wgb2.asInstanceOf[Statement]))
 
     val triples2=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -311,7 +311,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     val template=SpecLoader.templateImport("src/main/resources/nlg/templates/provbasic/usage1.json")
 
 
-    val objects: Map[String, RField] = Map("usd" -> usd)
+    val objects: Map[String, RField] = Map("usd" -> Some(usd))
 
     val triples2=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -329,7 +329,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     println(usd2)
 
-    val objects2: Map[String, RField] = Map("usd" -> usd2)
+    val objects2: Map[String, RField] = Map("usd" -> Some(usd2))
 
     val triples=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -367,7 +367,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
 
 
-    val objects: Map[String, RField] = Map("wib" -> wib)
+    val objects: Map[String, RField] = Map("wib" -> Some(wib))
 
     val triples2=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -384,7 +384,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     println(wib2)
 
 
-    val objects2: Map[String, RField] = Map("wib" -> wib2)
+    val objects2: Map[String, RField] = Map("wib" -> Some(wib2))
 
     val triples=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -425,7 +425,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
 
 
-    val objects: Map[String, RField] = Map("wsb" -> wsb)
+    val objects: Map[String, RField] = Map("wsb" -> Some(wsb))
 
     val triples2=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -442,7 +442,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     println(wsb2)
 
 
-    val objects2: Map[String, RField] = Map("wsb" -> wsb2)
+    val objects2: Map[String, RField] = Map("wsb" -> Some(wsb2))
 
     val triples=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -480,7 +480,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
 
 
-    val objects: Map[String, RField] = Map("wsb" -> wsb)
+    val objects: Map[String, RField] = Map("wsb" -> Some(wsb))
 
     val triples2=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -497,7 +497,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     println(wsb2)
 
 
-    val objects2: Map[String, RField] = Map("wsb" -> wsb2)
+    val objects2: Map[String, RField] = Map("wsb" -> Some(wsb2))
 
     val triples3=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -535,7 +535,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
 
 
-    val objects: Map[String, RField] = Map("wsb" -> wsb)
+    val objects: Map[String, RField] = Map("wsb" -> Some(wsb))
 
     val triples2=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -552,7 +552,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     println(wsb2)
 
 
-    val objects2: Map[String, RField] = Map("wsb" -> wsb2)
+    val objects2: Map[String, RField] = Map("wsb" -> Some(wsb2))
 
     val triples=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -594,7 +594,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
 
 
-    val objects: Map[String, RField] = Map("web" -> web)
+    val objects: Map[String, RField] = Map("web" -> Some(web))
 
     val triples2=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -610,7 +610,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     println(web2)
 
 
-    val objects2: Map[String, RField] = Map("web" -> web2)
+    val objects2: Map[String, RField] = Map("web" -> Some(web2))
 
     val triples=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -649,7 +649,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
 
 
-    val objects: Map[String, RField] = Map("web" -> wsb.asInstanceOf[Statement])
+    val objects: Map[String, RField] = Map("web" -> Some(wsb.asInstanceOf[Statement]))
 
     val triples2=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -666,7 +666,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     println(wsb2)
 
 
-    val objects2: Map[String, RField] = Map("web" -> wsb2.asInstanceOf[Statement])
+    val objects2: Map[String, RField] = Map("web" -> Some(wsb2.asInstanceOf[Statement]))
 
     val triples=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -705,7 +705,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
 
 
-    val objects: Map[String, RField] = Map("web" -> web)
+    val objects: Map[String, RField] = Map("web" -> Some(web))
 
     val triples2=scala.collection.mutable.Set[primitive.Triple]()
 
@@ -722,7 +722,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     println(web2)
 
 
-    val objects2: Map[String, RField] = Map("web" -> web2)
+    val objects2: Map[String, RField] = Map("web" -> Some(web2))
 
     val triples=scala.collection.mutable.Set[primitive.Triple]()
 

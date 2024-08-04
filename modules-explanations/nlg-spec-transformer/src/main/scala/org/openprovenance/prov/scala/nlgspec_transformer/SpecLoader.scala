@@ -1019,9 +1019,12 @@ object defs  {
             }
           }
           case Some(Result(Some(s), None, None, None)) =>
+            //System.out.println("StringPhrase called " + s)
             Some(StringPhrase(s).asInstanceOf[Phrase with F])
 
           case Some(Result(None, Some(p), None, None)) =>
+            //System.out.println("addModifierToPhrase called " + post_modifiers2);
+           // System.out.println("addModifierToPhrase called " + p);
 
             val m2: Phrase = addFeaturesToPhrase(cfeatures,addModifierToPhrase(post_modifiers2, pre_modifiers2, p))
             val x=m2.transform[Phrase with F](e).map(castToStringPhrase(_)).asInstanceOf[Option[Phrase with F]]
@@ -1029,6 +1032,7 @@ object defs  {
 
           case Some(Result(None, None, Some(m), None)) =>
 
+            //System.out.println("map2phrase called " + post_modifiers2);
             map2phrase(m, post_modifiers2, pre_modifiers2, cfeatures, e).asInstanceOf[Option[Phrase with F]]
 
           case Some(Result(None, None, None, Some(set))) =>

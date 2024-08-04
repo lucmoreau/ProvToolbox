@@ -4,7 +4,7 @@ import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.scala.interop.FileInput
 import org.openprovenance.prov.scala.nf.CommandLine.parseDocument
 import org.openprovenance.prov.scala.nlgspec_transformer.{Environment, SpecLoader}
-import org.openprovenance.prov.scala.query.QueryInterpreter.RField
+import org.openprovenance.prov.scala.query.QueryInterpreter.{RField, StatementOrNull}
 import org.openprovenance.prov.scala.query.{Processor, QConfig, QuerySetup, Record, StatementAccessor, StatementIndexer}
 import org.openprovenance.prov.scala.utilities.OrType.or
 import org.openprovenance.prov.scala.utilities.{WasDerivedFromPlus, WasDerivedFromStar}
@@ -55,7 +55,7 @@ class QFactory {
         val result1: Set[RField] = queryProcessor.toFields(records)
         println("found " + records.size + " records (and " + result1.size + " fields)")
 
-        def convert[T <% Statement or Seq[Statement] or Seq[TypedValue]](t: T): Seq[Statement] = {
+        def convert[T <% StatementOrNull or Seq[Statement] or Seq[TypedValue]](t: T): Seq[Statement] = {
           t.a match {
             case None => t.b match {
               case None => throw new UnsupportedOperationException
@@ -63,7 +63,11 @@ class QFactory {
             }
             case Some(t1) => t1.a match {
               case None => t1.b.get
-              case Some(s) => Seq(s)
+              case Some(s) =>
+                s match {
+                  case None => Seq()
+                  case Some(s) => Seq(s)
+                }
             }
           }
         }

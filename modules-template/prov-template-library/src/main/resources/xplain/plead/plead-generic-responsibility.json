@@ -88,25 +88,29 @@
 							}
 						},
 						{
+							"type": "noun_phrase",
+							"head": {
+								"type": "@funcall",
+								"@object": "file2",
+								"@property": "prov:value",
+								"@function": "noun+identity",
+								"@arg1": "with value",
+								"@optional": "true"
+							}
+						},
+						{
 							"type": "preposition_phrase",
 							"preposition": "with",
 							"noun": {
-								"type": "noun_phrase",
-								"head": "name",
-								"post-modifiers": [
-									{
-										"type": "noun_phrase",
-										"head": {
-											"type": "@funcall",
-											"@object": "file2",
-											"@property": "plead:filename",
-											"@function": "identity",
-											"@optional": "true"
-										}
-									}
-								]
+								"type": "@funcall",
+								"@object": "file2",
+								"@property": "prov:value",
+								"@function": "noun+identity",
+								"@arg1": "value",
+								"@optional": "true"
 							}
 						}
+
 					]
 				}
 			}

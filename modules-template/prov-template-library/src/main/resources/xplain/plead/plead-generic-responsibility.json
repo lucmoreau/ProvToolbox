@@ -77,24 +77,14 @@
 							}
 						},
 						{
-							"type": "noun_phrase",
-							"head": {
+							"type": "preposition_phrase",
+							"preposition": "with",
+							"noun": {
 								"type": "@funcall",
 								"@object": "file2",
 								"@property": "plead:filename",
 								"@function": "noun+identity",
-								"@arg1": "with name",
-								"@optional": "true"
-							}
-						},
-						{
-							"type": "noun_phrase",
-							"head": {
-								"type": "@funcall",
-								"@object": "file2",
-								"@property": "prov:value",
-								"@function": "noun+identity",
-								"@arg1": "with value",
+								"@arg1": "name",
 								"@optional": "true"
 							}
 						},

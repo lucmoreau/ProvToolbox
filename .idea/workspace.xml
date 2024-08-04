@@ -10,6 +10,13 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/SpecLoader.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/SpecLoader.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Primitive.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Primitive.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/nlg/SentenceMaker.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/nlg/SentenceMaker.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/scala/org/openprovenance/prov/scala/NlgSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/scala/org/openprovenance/prov/scala/NlgSpec.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QFactory.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QFactory.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain/plead/plead-generic-responsibility.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain/plead/plead-generic-responsibility.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -1050,7 +1057,7 @@
       <workItem from="1720892703388" duration="154667000" />
       <workItem from="1721594488655" duration="2585000" />
       <workItem from="1722511910036" duration="4626000" />
-      <workItem from="1722614512467" duration="51589000" />
+      <workItem from="1722614512467" duration="62150000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

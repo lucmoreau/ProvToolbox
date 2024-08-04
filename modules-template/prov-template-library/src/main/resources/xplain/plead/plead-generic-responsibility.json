@@ -22,6 +22,9 @@
 		"from engineer a prov:Agent",
 		" join wat1.agent = engineer.id",
 
+		"from aobo1 a prov:ActedOnBehalfOf",
+		" ljoin engineer.id=aobo1.delegate",
+
 
 
 		"where file2[prov:type]    >= 'plead:DataFile'",
@@ -32,6 +35,20 @@
 
 	"sentence": {
 		"type": "clause",
+		"front-modifiers": [
+			{
+				"type": "preposition_phrase",
+				"preposition": "on behalf of",
+				"noun": {
+					"type": "@funcall",
+					"@object": "aobo1",
+					"@field": "responsible",
+					"@function": "noun+identity",
+					"@arg1": "agent",
+					"@optional": "true"
+				}
+			}
+		],
 		"subject": {
 			"type": "noun_phrase",
 			"determiner": "the",

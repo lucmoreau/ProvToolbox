@@ -6,6 +6,9 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates: asynchronous generation of sql for template relations
 * nlg-spec-transformer: better support for pre/post modifiers
 * service-templates: preliminary explanations for templates
+* prov-query: left join support
+* nlg-spec-transformer: support for optional statements returned by left join
+
 
 `2.1.0`
 * service-template: returning hash code and location of submitted record

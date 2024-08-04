@@ -287,7 +287,7 @@ object specTypes {
                 //println(v.getClass)
                 val m=v.asInstanceOf[Map[String,Object]]
 
-                val funcall=new Funcall(Seq(),Seq(), Map())
+                val funcall=new Funcall(Seq(),Seq(), Seq(), Map())
                 funcall.set(Keywords.FUNCTION,m(Keywords.FUNCTION))
                 funcall.set(Keywords.OBJECT,m(Keywords.OBJECT))
                 funcall.set(Keywords.FIELD,m(Keywords.FIELD))
@@ -921,10 +921,12 @@ object defs  {
 
   case class Funcall(@JsonProperty("post-modifiers")
                      post_modifiers: Seq[Phrase]=Seq(),
+                     @JsonProperty("pre-modifiers")
+                     pre_modifiers: Seq[Phrase]=Seq(),
                      @JsonProperty("@args")
                      args:           Seq[Phrase],
                      //@JsonProperty("features")
-                     features:      Features=Map()) extends Phrase with HeadForm with NounForm with VerbForm  with HasFeatures with HasPostModifiers {
+                     features:      Features=Map()) extends Phrase with HeadForm with NounForm with VerbForm  with HasFeatures with HasPostModifiers with HasPreModifiers {
     private val properties = scala.collection.mutable.Map[String,Object]()
 
 
@@ -942,6 +944,7 @@ object defs  {
           l.add(exporter.newValueWithBlock(k.toUpperCase.substring(1), exporter.newBlockWithTextField(v.asInstanceOf[String])))
       }
 
+      pre_modifiersToBlockly(l)
       post_modifiersToBlockly(l)
       featuresToBlockly(l)
       new Block(id, "funcall",null,null,l)
@@ -1000,7 +1003,8 @@ object defs  {
 
         val result: (Option[Result], Set[primitive.Triple]) = Primitive.processFunction(friendlyStatementAccessor, friendlySeqStatementAccessor, properties.toMap, e.environment)
 
-        val modifiers: Seq[Phrase] = nullSeq(post_modifiers).flatMap(s => s.transform[Phrase](e))
+        val post_modifiers2: Seq[Phrase] = nullSeq(post_modifiers).flatMap(s => s.transform[Phrase](e))
+        val pre_modifiers2: Seq[Phrase] = nullSeq(pre_modifiers).flatMap(s => s.transform[Phrase](e))
 
         val cfeatures: Features =getComputedFeatures(nullFeatures(features), e)
 
@@ -1017,13 +1021,14 @@ object defs  {
             Some(StringPhrase(s).asInstanceOf[Phrase with F])
 
           case Some(Result(None, Some(p), None, None)) =>
-            val m2: Phrase = addFeaturesToPhrase(cfeatures,addModifierToPhrase(modifiers, p))
+
+            val m2: Phrase = addFeaturesToPhrase(cfeatures,addModifierToPhrase(post_modifiers2, pre_modifiers2, p))
             val x=m2.transform[Phrase with F](e).map(castToStringPhrase(_)).asInstanceOf[Option[Phrase with F]]
             x
 
           case Some(Result(None, None, Some(m), None)) =>
 
-            map2phrase(m, modifiers, cfeatures, e).asInstanceOf[Option[Phrase with F]]
+            map2phrase(m, post_modifiers2, pre_modifiers2, cfeatures, e).asInstanceOf[Option[Phrase with F]]
 
           case Some(Result(None, None, None, Some(set))) =>
             Some(CoordinatedPhrase(null,set.map(s=>s.toString).map(StringPhrase).toSeq,null,null,Seq(),cfeatures).asInstanceOf[Phrase with F])
@@ -1067,11 +1072,11 @@ object defs  {
     m2
   }
 
-  private def addModifierToPhrase[F <: Phrase](modifiers: Seq[Phrase], p: Phrase) : Phrase = {
+  private def addModifierToPhrase[F <: Phrase](new_post_modifiers: Seq[Phrase], new_pre_modifiers: Seq[Phrase], p: Phrase) : Phrase = {
     val m2 = p match {
-      case m: NounPhrase   => m.copy(post_modifiers = modifiers)
-      case m: VerbPhrase   => m.copy(post_modifiers = modifiers)
-      case m: AdverbPhrase => m.copy(post_modifiers = modifiers)
+      case m: NounPhrase   => m.copy(post_modifiers = m.post_modifiers++new_post_modifiers, pre_modifiers = m.pre_modifiers++new_pre_modifiers)
+      case m: VerbPhrase   => m.copy(post_modifiers = m.post_modifiers++new_post_modifiers, pre_modifiers = m.pre_modifiers++new_pre_modifiers)
+      case m: AdverbPhrase => m.copy(post_modifiers = m.post_modifiers++new_post_modifiers, pre_modifiers = m.pre_modifiers++new_pre_modifiers)
       case m: StringPhrase => m
     }
     m2
@@ -1123,7 +1128,8 @@ object defs  {
   //TODO: do an auto-convert of noun/verb_phrase to String when there is only a head
 
 
-  def map2phrase(m: Map[String, Object], post_modifiers: Seq[Phrase], features2:Features, e: TransformEnvironment): Option[Phrase] = {
+  def map2phrase(m: Map[String, Object], post_modifiers: Seq[Phrase], pre_modifiers: Seq[Phrase], features2:Features, e: TransformEnvironment): Option[Phrase] = {
+
     m("type") match {
       case Constants.NOUN_PHRASE => {
 
@@ -1133,12 +1139,13 @@ object defs  {
         val castAssertedFeatures = assertedFeatures.getOrElse(Map()).asInstanceOf[Features]
 
         val other_post_modifiers: Seq[Phrase] = m.getOrElse("post-modifiers",Seq()).asInstanceOf[Seq[Phrase]].flatMap(s => s.transform[Phrase](e))
+        val other_pre_modifiers: Seq[Phrase] = m.getOrElse("pre-modifiers",Seq()).asInstanceOf[Seq[Phrase]].flatMap(s => s.transform[Phrase](e))
 
         NounPhrase(
           determiner = m.getOrElse("determiner", null).asInstanceOf[String],
           head = m.getOrElse("head", null).asInstanceOf[String],
           modifiers = Seq(),
-          pre_modifiers = Seq(),
+          pre_modifiers = pre_modifiers ++ other_pre_modifiers,
           post_modifiers = post_modifiers ++ other_post_modifiers,
           specifier = m.get("specifier").flatMap(s => StringPhrase(s.asInstanceOf[String]).transform[NounForm](e)),
           complements = Seq(),

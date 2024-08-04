@@ -902,7 +902,7 @@ class TransformSpecsSpec extends AnyFlatSpec with Matchers {
     result should be ("The data Company Co considered for the borrower's loan application is " +
       "the month the borrower's earliest reported credit line was opened, " +
       "the number of mortgage accounts, " +
-      "the number of open credit lines, " +
+      "the number of open credit lines in the borrower's credit file, " +
       "the number of derogatory public records, " +
       "the number of public record bankruptcies, " +
       "total credit revolving balance, " +
@@ -910,15 +910,15 @@ class TransformSpecsSpec extends AnyFlatSpec with Matchers {
       "the borrower's higher FICO score, " +
       "the borrower's lower FICO score, " +
       "the state, " +
-      "the self-reported annual income, " +
+      "the self-reported annual income provided by the borrower during registration, " +
       "type of application, " +
       "employment length in years, " +
       "the self-reported job title, " +
-      "the home ownership status, " +
-      "the listed amount of the loan, " +
+      "the home ownership status provided by the borrower during registration, " +
+      "the listed amount of the loan applied for by the borrower, " +
       "the purpose of the loan, " +
       "the number of payments on the loan, " +
-      "the loan title and " +
+      "the loan title provided by the borrower and " +
       "the address."
 
       )

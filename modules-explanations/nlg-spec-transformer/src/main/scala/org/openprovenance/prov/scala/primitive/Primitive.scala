@@ -459,6 +459,7 @@ object Primitive {
     amap
   }
 
+  /*
   //TODO: do an auto-convert of noun/verb_phrase to String when there is only a head
 
   private def map2phrase(m: Map[String, Object], e: TransformEnvironment): Option[Phrase] = {
@@ -511,6 +512,8 @@ object Primitive {
 
   }
 
+
+   */
 
   def doFun2(function:String, value:Seq[Object], arg1: Seq[Object], arg2: Seq[Object], environment: Environment): Result = {
     //println("doFun2 " + function + " " + value + " " + arg1 + " " + arg2)

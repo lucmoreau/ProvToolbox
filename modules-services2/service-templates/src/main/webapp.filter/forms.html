@@ -104,6 +104,8 @@
                     <h4>Submission Result</h4>
                     <pre id="enact_result" class="pretty"> </pre>
                     <p id="prov_link"></p>
+                    <h4>Explanation</h4>
+                    <p id="prov_xplain"></p>
                 </div>
             </div>
 
@@ -363,6 +365,7 @@
     const HTML_ANCHOR_CSV_RESULT = '#csv_result';
     const HTML_ANCHOR_CSV_LOG = '#csv_log';
     const HTML_ANCHOR_ENACT_RESULT_PROV_LINK = '#prov_link';
+    const HTML_ANCHOR_EXPLANATION_PROV_LINK = '#prov_xplain';
     const HTML_ANCHOR_DOCUMENTATION_IMAGE = '#documentation_image';
     const HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER = "#template-dropdown-composer";
     const HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN = "#template-dropdown-documentation";
@@ -381,7 +384,7 @@
     function submitEnactor(jsonSubmit) {
         $(HTML_ANCHOR_ENACT_RESULT_BOX).html($('<p>'));
         $(HTML_ANCHOR_ENACT_RESULT_BOX).attr('received','false');
-        submitService(jsonSubmit, SUBMISSION_URL, HTML_ANCHOR_ENACT_RESULT_BOX, HTML_ANCHOR_CSV_LOG, HTML_ANCHOR_ENACT_RESULT_PROV_LINK, true,true)
+        submitService(jsonSubmit, SUBMISSION_URL, HTML_ANCHOR_ENACT_RESULT_BOX, HTML_ANCHOR_CSV_LOG, HTML_ANCHOR_ENACT_RESULT_PROV_LINK, HTML_ANCHOR_EXPLANATION_PROV_LINK, true,true)
     }
 
 
@@ -395,11 +398,32 @@
     }
 
     function createXplainLink(name, ID) {
-        return "Link to <a target='_blank' href='${service.context}/provapi/xplain/template/" + name + "/" + ID + "'   >explanation</a>";
+
+        return "Link to <a target='_blank' href='${service.context}/provapi/explanation/template/" + name + "/" + ID + "'   >explanation</a>";
+    }
+
+    // function getExplanation(url,accept,id) sends get request to url with http header Accept-Explanation set to parameter accept, and results added to html element with id
+    function getExplanation(url, accept_explanation, id) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+        };
+        xhr.onload= function() {
+            const response = xhr.responseText;
+            console.log("loaded " + xhr.status);
+            $(id).html(response);
+        }
+        xhr.setRequestHeader("Accept-PROV-explanation", accept_explanation);
+        xhr.setRequestHeader("Accept", "text/plain");
+        xhr.send();
     }
 
 
-    function submitService(jsonSubmit, url, anchor_result_box, anchor_csv, anchor_result_prov_link, enactorp, allRecordsp) {
+    function submitService(jsonSubmit, url, anchor_result_box, anchor_csv, anchor_result_prov_link, anchor_explanation, enactorp, allRecordsp) {
         console.log("submitService")
 
         let csv_data=$(HTML_ANCHOR_CSV_RESULT).text()
@@ -446,8 +470,10 @@
                 if (anchor_result_prov_link) {
                     let ID=parsed[0]["ID"];
                     let prov_link = createProvLink(name, ID);
-                    $(anchor_result_prov_link).html(prov_link).append("<p>").append(createXplainLink(name, ID)).append("</p>");
+                    $(anchor_result_prov_link).html(prov_link).append("<p/>").append("<div id='xplain-id'></div>").append("<p/>");
+                    getExplanation('${service.context}/provapi/explanation/template/' + name + '/' + ID, 'default', anchor_explanation);
                 }
+
             }
             $(anchor_result_box).attr('received','true');
         }

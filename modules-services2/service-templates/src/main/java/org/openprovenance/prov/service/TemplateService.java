@@ -46,8 +46,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
 
-import static org.openprovenance.prov.model.interop.InteropMediaType.MEDIA_IMAGE_SVG_XML;
-import static org.openprovenance.prov.model.interop.InteropMediaType.MEDIA_TEXT_HTML;
+import static org.openprovenance.prov.model.interop.InteropMediaType.*;
 import static org.openprovenance.prov.service.Storage.getStringFromClasspath;
 import static org.openprovenance.prov.service.TemplateLogic.*;
 import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
@@ -358,6 +357,63 @@ public class TemplateService {
     }
 
 
+    @POST
+    @Path("/explanation/templates")
+    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    public Response getExplanation(@Context HttpServletResponse response,
+                                   @Context HttpServletRequest request,
+                                   @Context HttpHeaders headers,
+                                   @Context UriInfo uriInfo,
+                                   TableKeyList tableKey) {
+        String headerAcceptExplanation=headers.getHeaderString(HTTP_HEADER_ACCEPT_PROV_EXPLANATION);
+        if (headerAcceptExplanation==null || headerAcceptExplanation.isEmpty()) {
+            headerAcceptExplanation="default";
+        }
+        return ServiceUtils.composeResponseOK("explanations " + headerAcceptExplanation).type(MediaType.TEXT_PLAIN_TYPE).build();
+    }
+
+    @GET
+    @Path("/explanation/template/{template}/{id}")
+    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Produces({MediaType.TEXT_PLAIN, MEDIA_APPLICATION_JSON})
+    public Response getExplanation(@Context HttpServletResponse response,
+                                   @Context HttpServletRequest request,
+                                   @Context HttpHeaders headers,
+                                   @Context UriInfo uriInfo,
+                                   @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
+                                   @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id
+                                  ) {
+        String headerAcceptExplanation=headers.getHeaderString(HTTP_HEADER_ACCEPT_PROV_EXPLANATION);
+        if (headerAcceptExplanation==null || headerAcceptExplanation.isEmpty()) {
+            headerAcceptExplanation="default";
+        }
+
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+        List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
+        //debugDisplay("records.size ", records.size());
+
+
+        Document doc=queryTemplate.constructDocument(documentBuilderDispatcher,records);
+
+
+        Map<String,String> explanations=templateLogic.generateExplanation(template, id, headerAcceptExplanation, doc);
+
+        switch (request.getHeader(HttpHeaders.ACCEPT).toLowerCase()) {
+            case MediaType.TEXT_PLAIN:
+                StringBuilder sb= new StringBuilder();
+                for (String key: explanations.keySet()) {
+                    sb.append(explanations.get(key)).append("\n");
+                }
+                return ServiceUtils.composeResponseOK(sb.toString()).type(MediaType.TEXT_PLAIN_TYPE).build();
+            case InteropMediaType.MEDIA_APPLICATION_JSON:
+                StreamingOutput promise= out -> om.writeValue(out,explanations);
+                return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_APPLICATION_JSON).build();
+        }
+        return utils.composeResponseBadRequest("unknown accept header " + request.getHeader(HttpHeaders.ACCEPT), new UnsupportedOperationException(request.getHeader(HttpHeaders.ACCEPT)));
+
+    }
 
 
     @POST

@@ -188,6 +188,7 @@ object specTypes {
       }
     }
   }
+
   trait HasComplements {
     val complements: Seq[Phrase]
     def expandComplements(element: PhraseElement): Unit = {

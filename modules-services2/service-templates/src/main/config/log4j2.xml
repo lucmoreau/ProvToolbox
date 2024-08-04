@@ -22,6 +22,16 @@
     <Logger name="org.openprovenance.prov.template" level="info"  additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
+    <Logger name="org.openprovenance.prov.scala.narrator" level="debug"  additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+
+    <Logger name="org.openprovenance.prov.scala.xplain" level="debug"  additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="org.openprovenance.prov.scala.nlg" level="debug"  additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
 
     <Logger name="org.pac4j.oidc" level="info"  additivity="false">
       <AppenderRef ref="Console"/>

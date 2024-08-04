@@ -15,7 +15,7 @@ install.sec:
 	export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TEMPLATES}; export TPL_SECURITY_CONFIG=${TPL_SECURITY_CONFIG_DEFAULT}; mvn -Pjetty,security clean install
 
 jetty:
-	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TEMPLATES}; export TPL_SECURITY_CONFIG=${TPL_SECURITY_CONFIG_DEFAULT}; mvn -Pjetty,security jetty:run-war
+	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TEMPLATES}; export TPL_SECURITY_CONFIG=${TPL_SECURITY_CONFIG_DEFAULT}; export XPLAIN_LEXICON=${XPLAIN_LEXICON}; mvn -Pjetty,security jetty:run-war
 
 jetty.nosec:
 	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TEMPLATES}; unset TPL_SECURITY_CONFIG; mvn -Pjetty,nosecurity jetty:run-war

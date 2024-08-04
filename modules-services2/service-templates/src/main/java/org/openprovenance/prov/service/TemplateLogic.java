@@ -10,7 +10,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.client.ProcessorArgsInterface;
 import org.openprovenance.prov.client.RecordsProcessorInterface;
+import org.openprovenance.prov.model.BeanTraversal;
+import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.scala.iface.Explainer;
+import org.openprovenance.prov.scala.iface.Narrative;
+import org.openprovenance.prov.scala.iface.XFactory;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.dispatch.EnactCsvRecords;
 import org.openprovenance.prov.service.readers.TemplatesVizConfig;
@@ -35,6 +40,7 @@ public class TemplateLogic {
     public static final String HTTP_HEADER_CONTENT_PROV_HASH = "PROV-Hash";
     public static final String HTTP_HEADER_LOCATION = "Location";
     public static final String HTTP_HEADER_ACCEPT_PROV_HASH = "Accept-PROV-hash";
+    public static final String HTTP_HEADER_ACCEPT_PROV_EXPLANATION = "Accept-PROV-explanation";
     static Logger logger = LogManager.getLogger(TemplateLogic.class);
     private final ProvFactory pf;
     private final TemplateDispatcher templateDispatcher;
@@ -265,5 +271,29 @@ public class TemplateLogic {
 
     private String getContentProvHash(Map<String, String> hash) {
         return encoder.encodeToString(templateQuery.makeHashRecord(hash).getBytes());
+    }
+
+    final ProvFactory pFactoryS = org.openprovenance.prov.scala.immutable.ProvFactory.pf();
+    final XFactory factory = new XFactory();
+    final Explainer explainer=factory.makeExplainer();
+    final org.openprovenance.prov.scala.iface.Narrator narrator=factory.makeNarrator();
+
+    public Map<String, String> generateExplanation(String template, Integer id, String headerAcceptExplanation, Document doc) {
+
+        org.openprovenance.prov.scala.immutable.Document sdoc = (org.openprovenance.prov.scala.immutable.Document) new BeanTraversal(pFactoryS, pFactoryS).doAction(doc);
+
+        XplainerConfig config = new XplainerConfig();
+        //scala.collection.immutable.Map<String, Narrative> foo=explainer.explain(sdoc, config);
+        //System.out.println("foo " + foo);
+        scala.collection.immutable.Map<String, scala.collection.immutable.List<String>> result = narrator.getTextOnly(explainer.explain(sdoc, config));
+
+        // convert result to java map
+        Map<String, String> javaResult = new HashMap<>();
+        for (Map.Entry<String, scala.collection.immutable.List<String>> entry : scala.jdk.CollectionConverters.MapHasAsJava(result).asJava().entrySet()) {
+            javaResult.put(entry.getKey(), entry.getValue().mkString("\n"));
+        }
+
+        //result.put("default", "No explanation available for " + template + " " + id);
+        return javaResult;
     }
 }

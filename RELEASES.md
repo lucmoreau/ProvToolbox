@@ -4,6 +4,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: getRelations method for encoding of template relations
 * service-templates: generation of sql for template relations
 * service-templates: asynchronous generation of sql for template relations
+* nlg-spec-transformer: better support for pre/post modifiers
+* service-templates: preliminary explanations for templates
 
 `2.1.0`
 * service-template: returning hash code and location of submitted record

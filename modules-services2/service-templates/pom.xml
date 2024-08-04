@@ -68,6 +68,26 @@
             <version>2.1.1-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-validation</artifactId>
+            <version>2.1.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-model-scala</artifactId>
+            <version>2.1.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-explanations</artifactId>
+            <version>2.1.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -285,12 +305,6 @@
             <version>1.16.1</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-validation</artifactId>
-            <version>2.1.1-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
 
 
     </dependencies>
@@ -379,6 +393,7 @@
         <the.template.sublibrary>-plead</the.template.sublibrary>
         <unsecure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-no-security.xml</unsecure.webxml.location>
         <secure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-with-security.xml</secure.webxml.location>
+        <lexicon.location>/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/nlg-wrapper/target/dictionary/lexAccess2013.data</lexicon.location>
     </properties>
 
 
@@ -637,6 +652,10 @@
                                         <property>
                                             <name>PROV_STORAGE_CONFIG</name>
                                             <value>${project.build.directory}/test-classes/config/storage-configuration-mongodb-redis.json</value>
+                                        </property>
+                                        <property>
+                                            <name>XPLAIN_LEXICON</name>
+                                            <value>${lexicon.location}</value>
                                         </property>
                                         <!--
                                         <property>

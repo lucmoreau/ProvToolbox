@@ -47,7 +47,7 @@ public  class ServiceConfig implements XConfig {
     @Override
     public Seq<String> selected_templates() {
         List<String> templates=new LinkedList<>();
-        if (templates!=null) templates.add(template);
+        if (template!=null) templates.add(template);
         return convertListToSeq(templates);
     }
 

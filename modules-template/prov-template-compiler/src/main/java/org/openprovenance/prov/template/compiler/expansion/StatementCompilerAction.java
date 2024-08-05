@@ -204,14 +204,20 @@ public class StatementCompilerAction implements StatementAction {
         }
         final String generated = local(s.getGeneratedEntity());
         final String used = local(s.getUsedEntity());
-
-
+        final String act = local(s.getActivity());
+        final String generation=local(s.getGeneration());
+        final String usage=local(s.getUsage());
         final String attrs = generateAttributes(s);
-        if ("".equals(attrs)) {
-            builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newWasDerivedFrom($N,$N,$N))", generated, used, localNotBlank(s.getId()), generated, used);
-        } else {
-            builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newWasDerivedFrom($N,$N,$N,nullqn,nullqn,nullqn" + attrs + "))", generated, used, localNotBlank(s.getId()), generated, used);
 
+        if (s.getActivity()==null) {
+            if ("".equals(attrs)) {
+                builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newWasDerivedFrom($N,$N,$N))", generated, used, localNotBlank(s.getId()), generated, used);
+            } else {
+                builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newWasDerivedFrom($N,$N,$N,nullqn,nullqn,nullqn" + attrs + "))", generated, used, localNotBlank(s.getId()), generated, used);
+            }
+        } else {
+            String theAttributes = ("".equals(attrs)) ? ", null" : attrs;
+            builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newWasDerivedFrom($N,$N,$N,$N,$N,$N" + theAttributes + "))", generated, used, localNotBlank(s.getId()), generated, used, act, generation, usage);
         }
     }
 

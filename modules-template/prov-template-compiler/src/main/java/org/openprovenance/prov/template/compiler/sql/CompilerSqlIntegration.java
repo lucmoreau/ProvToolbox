@@ -585,7 +585,7 @@ public class CompilerSqlIntegration {
         mspec.addStatement("$T sb = new $T()", StringBuilder.class, StringBuilder.class);
         mspec.addStatement("composeQuery.accept(sb, bean)");
         mspec.addStatement("String statement = sb.toString()");
-        if(true) mspec.addStatement("System.out.println(\"statement = \" + statement)");
+        if(false) mspec.addStatement("System.out.println(\"statement = \" + statement)");
         mspec.addStatement("$T rs", ResultSet.class);
         mspec.beginControlFlow("try");
         mspec.addStatement("rs = querier.apply(statement)");

@@ -1,0 +1,9 @@
+{
+    "name": "loan",
+    "templates": [
+        "plead-generic-responsibility.json"
+    ],
+    "dictionaries": ["dictionary-plead.json"],
+    "profiles": ["profile1.json"]
+}
+	

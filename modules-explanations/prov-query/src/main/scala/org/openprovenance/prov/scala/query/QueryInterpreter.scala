@@ -4,7 +4,7 @@ import org.openprovenance.prov.scala.immutable.{Other, ProvFactory, QualifiedNam
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.primitive.{Primitive, Result, Triple}
 import org.openprovenance.prov.scala.query.QueryAST.{Schema, toSchema}
-import org.openprovenance.prov.scala.query.QueryInterpreter.{RField, RFields}
+import org.openprovenance.prov.scala.query.QueryInterpreter.{RField, RFields, StatementOrNull}
 import org.openprovenance.prov.scala.query.QuerySetup.qother
 import org.openprovenance.prov.scala.summary.types._
 import org.openprovenance.prov.scala.utilities.OrType
@@ -14,12 +14,26 @@ import scala.collection.mutable
 import scala.util.Try
 
 object QueryInterpreter {
-  type RField = Statement or Seq[Statement] or Seq[TypedValue]
+  type StatementOrNull = Option[Statement]
+  type RField = StatementOrNull or Seq[Statement] or Seq[TypedValue]
   type RFields = Vector[RField]
 
-  def getStatement(f: RField): Option[Statement] = f.a match {
-    case None => None
-    case Some(a) => a.a
+  def getStatementOrNull(f: RField): Option[StatementOrNull] = {
+    f.a match {
+      case None => None
+      case Some(a) => a.a
+    }
+  }
+
+  def getStatement(f: RField): Option[Statement] = {
+
+    f.a match {
+      case None => None
+      case Some(a) => a.a match {
+        case None => None
+        case Some(s) => s
+      }
+    }
   }
 
   def getSeqStatement(f: RField): Option[Seq[Statement]] = f.a match {
@@ -45,7 +59,7 @@ trait QueryInterpreter extends SummaryTypesNames {
    */
 
 
-  def toStatement(f: RField): Statement = Try(f.a.get.a.get).getOrElse[Statement](throw new UnsupportedOperationException("toStatement for " + f))
+  def toStatement(f: RField): Statement = Try(f.a.get.a.get.get).getOrElse[Statement](throw new UnsupportedOperationException("toStatement for " + f))
 
   def toSeqStatement(f: RField): Seq[Statement] = f.a.get.b.get
 
@@ -53,7 +67,7 @@ trait QueryInterpreter extends SummaryTypesNames {
 
   def getValues(f: RField): Option[Seq[TypedValue]] = f.b
 
-
+/*
   def convertToSeqStatement(f: RField): Seq[Statement] = {
     f.a match {
       case None => Seq()
@@ -64,10 +78,12 @@ trait QueryInterpreter extends SummaryTypesNames {
     }
   }
 
-  def processDocument(document: List[Statement], schema: Schema)(yld: Record => Unit): Unit = {
-    val s = document.iterator
+ */
 
-    def nextRecord: Record = Record(schema.map { x => val f: RField = s.next(); f }, schema)
+  def processDocument(document: List[Statement], schema: Schema)(yld: Record => Unit): Unit = {
+    val s: Iterator[Statement] = document.iterator
+
+    def nextRecord: Record = Record(schema.map { x => val f: RField = Some(s.next()); f }, schema)
 
     while (s.hasNext) yld(nextRecord)
   }
@@ -139,7 +155,7 @@ trait QueryInterpreter extends SummaryTypesNames {
 
   def execOpFollowedbyNull(o: Operator)(yld: Record => Unit): Unit = {
     execOp(o)(yld)
-    println("execOpFollowedbyNull  null")
+    //println("execOpFollowedbyNull  null")
     yld(null)
   }
 
@@ -168,14 +184,13 @@ trait QueryInterpreter extends SummaryTypesNames {
         }
 
       case LeftJoin(left, key1, property1, right, key2, property2) =>
-        println(left)
-        println(right)
+        //println(left)
+        //println(right)
         execOp(left) { rec1 =>
           var an_example_of_rec2: Option[Record] = None
           var asuccess: Boolean = false
           execOpFollowedbyNull(right) { rec2 =>
             if (rec2 != null) {
-              an_example_of_rec2 = Some(rec2)
               val v1: (Seq[Object], Set[Triple]) = Primitive.applyField(property1, toStatement(rec1(key1)))
               val v2: (Seq[Object], Set[Triple]) = Primitive.applyField(property2, toStatement(rec2(key2)))
 
@@ -183,12 +198,20 @@ trait QueryInterpreter extends SummaryTypesNames {
               //println("v2: " + v2)
 
               if (v1._1 == v2._1) {
+                an_example_of_rec2 = Some(rec2)
                 asuccess = true
-                yld(Record(rec1.fields ++ rec2.fields, rec1.schema ++ rec2.schema))
+                val record = Record(rec1.fields ++ rec2.fields, rec1.schema ++ rec2.schema)
+                //println("Supplying record (1) " + record)
+                yld(record)
               }
             } else {
-              println("==> End of Stream right " + an_example_of_rec2.head.schema + " " + asuccess)
-              //yld(Record(rec1.fields ++ rec2.fields, rec1.schema ++ rec2.schema))
+              //println("==> End of Stream right " + an_example_of_rec2 + " " + asuccess)
+              if (!asuccess) {
+                val noStatement:StatementOrNull=None;
+                val record = Record(rec1.fields ++ Vector(noStatement), rec1.schema ++ Vector(key2))
+                //println("Supplying record (2) " + record)
+                yld(record)
+              }
             }
           }
         }

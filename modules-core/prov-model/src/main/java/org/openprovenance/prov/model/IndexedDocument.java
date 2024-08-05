@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
@@ -145,11 +146,20 @@ public class IndexedDocument implements StatementAction {
     private final HashMap<QualifiedName, Collection<HadMember>> entityHadMemberMap= new HashMap<>();
 
 
-    /** Return all used edges for this graph.
+    /** Return all anonymous used edges for this graph.
      * @return a collection of {@link Used} edges
      * */
     public Collection<Used> getUsed() {
         return anonUsed;
+    }
+
+    /**
+     * Return all named used edges for this graph.
+     *
+     * @return a collection of {@link Used} edges
+     */
+    public Map<QualifiedName, Collection<Used>> getNamedUsed() {
+        return namedUsedMap;
     }
     /** Return all used edges with activity p as an effect.
      * @param p an activity
@@ -167,12 +177,21 @@ public class IndexedDocument implements StatementAction {
         return entityUsedMap.get(p.getId());
     }
 
-    /** Return all WasGeneratedBy edges for this graph.
+    /** Return all anonymous WasGeneratedBy edges for this graph.
      *
      *  @return a collection of {@link WasGeneratedBy} edges
      *  */
     public Collection<WasGeneratedBy> getWasGeneratedBy() {
         return anonWasGeneratedBy;
+    }
+
+    /**
+     * Return all named WasGeneratedBy edges for this graph.
+     *
+     * @return a map of {@link WasGeneratedBy} edges
+     */
+    public Map<QualifiedName, Collection<WasGeneratedBy>> getNamedWasGeneratedBy() {
+        return namedWasGeneratedByMap;
     }
 
     /** Return all WasGeneratedBy edges with activity p as an effect.
@@ -191,12 +210,97 @@ public class IndexedDocument implements StatementAction {
         return entityWasGeneratedByMap.get(p.getId());
     }
 
-    /** Return all WasDerivedFrom edges for this graph.
-     * @return a collection of {@link WasGeneratedBy} edges
+    /** Return all anonymous WasDerivedFrom edges for this graph.
+     * @return a collection of {@link WasDerivedFrom} edges
      * */
     public Collection<WasDerivedFrom> getWasDerivedFrom() {
         return anonWasDerivedFrom;
     }
+
+    /**
+     * Return all named WasDerivedFrom edges for this graph.
+     *
+     * @return a collection of {@link WasDerivedFrom} edges
+     */
+    public Map<QualifiedName, Collection<WasDerivedFrom>> getNamedWasDerivedFrom() {
+        return namedWasDerivedFromMap;
+    }
+
+    /**
+     * Return all anonymous WasAttributedTo edges for this graph.
+     *
+     * @return a collection of {@link WasDerivedFrom} edges
+     */
+    public Collection<WasAttributedTo> getWasAttributedTo() {
+        return anonWasAttributedTo;
+    }
+
+    /**
+     * Return all named WasAttributedTo edges for this graph.
+     *
+     * @return a collection of {@link WasAttributedTo} edges
+     */
+    public Map<QualifiedName, Collection<WasAttributedTo>> getNamedWasAttributedTo() {
+        return namedWasAttributedToMap;
+    }
+
+    /**
+     * Return all anonymous ActedOnBehalfOf edges for this graph.
+     *
+     * @return a collection of {@link ActedOnBehalfOf} edges
+     */
+    public Collection<ActedOnBehalfOf> getActedOnBehalfOf() {
+        return anonActedOnBehalfOf;
+    }
+
+    /**
+     * Return all named ActedOnBehalfOf edges for this graph.
+     *
+     * @return a map of {@link ActedOnBehalfOf} edges
+     */
+    public Map<QualifiedName, Collection<ActedOnBehalfOf>> getNamedActedOnBehalfOf() {
+        return namedActedOnBehalfOfMap;
+    }
+
+    /**
+     * Return all anonymous SpecializationOf edges for this graph.
+     *
+     * @return a collection of {@link SpecializationOf} edges
+     */
+    public Collection<SpecializationOf> getSpecializationOf() {
+        return anonSpecializationOf;
+    }
+
+    /**
+     * Return all named SpecializationOf edges for this graph.
+     *
+     * @return a map of {@link SpecializationOf} edges
+     */
+    public Map<QualifiedName, Collection<SpecializationOf>> getNamedSpecializationOf() {
+        return namedSpecializationOfMap;
+    }
+
+    /**
+     * Return all anonymous HadMember edges for this graph.
+     *
+     * @return a collection of {@link HadMember} edges
+     */
+    public Collection<HadMember> getHadMember() {
+        return anonHadMember;
+    }
+
+    /**
+     * Return all named HadMember edges for this graph.
+     *
+     * @return a map of {@link HadMember} edges
+     */
+    public Map<QualifiedName, Collection<HadMember>> getNamedHadMember() {
+        return namedHadMemberMap;
+    }
+
+
+
+
 
     /** Return all WasDerivedFrom edges with entity a as a cause.
      *  @param a an entity
@@ -233,10 +337,14 @@ public class IndexedDocument implements StatementAction {
         return activityEffectWasInformedByMap.get(a.getId());
     }
 
-    /** Return all WasAssociatedWith edges for this graph.
+    /** Return all anonymous WasAssociatedWith edges for this graph.
      * @return  a collection of  {@link WasAssociatedWith} edges */
     public Collection<WasAssociatedWith> getWasAssociatedWith() {
         return anonWasAssociatedWith;
+    }
+
+    public Map<QualifiedName, Collection<WasAssociatedWith>> getNamedWasAssociatedWith() {
+        return namedWasAssociatedWithMap;
     }
 
     /** Return all WasAssociatedWith edges with activity p as an effect.

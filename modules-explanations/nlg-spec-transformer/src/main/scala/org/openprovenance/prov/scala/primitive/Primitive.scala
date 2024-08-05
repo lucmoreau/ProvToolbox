@@ -235,7 +235,7 @@ object Primitive {
       case 0 => "zeroth"
       case 1 => "first"
       case 2 => "second"
-      case 3 => "thrid"
+      case 3 => "third"
       case 4 => "fourth"
       case 5 => "fifth"
       case 6 => "sixth"
@@ -282,17 +282,16 @@ object Primitive {
   def  doFun(function:String, values:Seq[Object]): Result = {
     //println("doFun " + function + " " + value)
     function match {
-      case "localname"  => values.head.asInstanceOf[QualifiedName].getLocalPart()
-      case "pluralp"    => if (values.head.toString.endsWith("s")) "plural" else "singular"
-      case "timestring" => values.head.toString
-      case "identity"   => if (values.isEmpty) "NULL" else values.head.toString
-      case "string"     => if (values.isEmpty) "NULL" else unwrap(values.head)
+      case "localname"   => if (values.isEmpty) "NULL" else values.head.asInstanceOf[QualifiedName].getLocalPart()
+      case "identity"    => if (values.isEmpty) "NULL" else values.head.toString
+      case "string"      => if (values.isEmpty) "NULL" else unwrap(values.head)
       case "ordinal"     => if (values.isEmpty) "NULL" else ordinal(values.head)
       case "cardinal"    => if (values.isEmpty) "NULL" else cardinal(values.head)
       case "cardinality" => if (values.isEmpty) "NULL" else cardinality(values.head)
+      case "pluralp"     => if (values.head.toString.endsWith("s")) "plural" else "singular"
+      case "timestring"  => values.head.toString
       case "count"       => values.size + ""
       case "count+cardinality" => cardinality(values.size+"")
-
 
       case "flatten"    =>  values
       case "percentage" => if (values.isEmpty) "NULL" else {
@@ -459,6 +458,7 @@ object Primitive {
     amap
   }
 
+  /*
   //TODO: do an auto-convert of noun/verb_phrase to String when there is only a head
 
   private def map2phrase(m: Map[String, Object], e: TransformEnvironment): Option[Phrase] = {
@@ -511,6 +511,8 @@ object Primitive {
 
   }
 
+
+   */
 
   def doFun2(function:String, value:Seq[Object], arg1: Seq[Object], arg2: Seq[Object], environment: Environment): Result = {
     //println("doFun2 " + function + " " + value + " " + arg1 + " " + arg2)
@@ -607,7 +609,8 @@ object Primitive {
   }
 
   def applyField1(field:String, value:Statement): Option[Object] = {
-    field match {
+    if (value==null) None
+    else field match {
       case "id" => isNull(value.getId())
       case "entity" => value match {
         case wat:WasAttributedTo => isNull(wat.entity)
@@ -653,7 +656,10 @@ object Primitive {
       case "delegate" => value match {
         case aobo:ActedOnBehalfOf => isNull(aobo.delegate)
       }
-      case "responsible" => value match {
+      case "responsible" =>
+        println("responsible" + value)
+
+        value match {
         case aobo:ActedOnBehalfOf => isNull(aobo.responsible)
       }
       case "collection" => value match {

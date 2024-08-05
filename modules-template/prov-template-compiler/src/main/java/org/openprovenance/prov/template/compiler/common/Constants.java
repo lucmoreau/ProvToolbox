@@ -26,6 +26,7 @@ public interface Constants {
     String PROPERTY_ORDER = "propertyOrder";
     String OUTPUTS = "outputs";
     String COMPULSORY_INPUTS = "compulsoryInputs";
+    String FOREIGN_TABLES = "foreignTables";
     String INPUTS = "inputs";
     String PROPERTY_ORDER_METHOD  = "getPropertyOrder";
     String OUTPUTS_METHOD  = "getOutputs";

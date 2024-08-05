@@ -138,4 +138,5 @@ ptm.xp.file1:
 	@$(MAKE) batch.explain.ptm  FILE=transforming BATCH=[plead-generic-responsibility]
 
 ptm.xp.file2:
-	@$(MAKE) batch.explain.ptm  FILE=transforming-composite-1agent BATCH=[plead-generic-responsibility][plead-composite-responsibility][plead-composite-responsibility2]
+	@$(MAKE) batch.explain.ptm  FILE=transforming-composite-1agent BATCH=[plead-generic-responsibility][plead-composite-responsibility][plead-composite-responsibility2][plead-composite-responsibility3]
+	@$(MAKE) batch.explain.ptm  FILE=transforming-composite-1agent2orgs BATCH=[plead-generic-responsibility][plead-composite-responsibility][plead-composite-responsibility2][plead-composite-responsibility3]

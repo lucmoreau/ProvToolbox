@@ -9,21 +9,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/config/log4j2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/config/logging.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/dictionary-plead.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-generic-responsibility.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/profile1.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/template-library.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/prov/transforming-composite-1agent.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/prov/transforming-composite-2agents.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/prov/transforming.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility2.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable-provman/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/main/resources/config/logging.properties" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/resources/config/logging.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Primitive.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Primitive.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/template-library.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/template-library.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

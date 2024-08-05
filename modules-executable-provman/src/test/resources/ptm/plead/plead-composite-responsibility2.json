@@ -32,7 +32,7 @@
 		"  or  file2[prov:type]    >= 'plead:AccuracyScore'",
 		"  or  file2[prov:type]    >= 'sk:Pipeline'",
 
-		"group by file2, engineer, act0, aobo1 aggregate file1 with Seq"
+		"group by file2, engineer, act0 aggregate file1, aobo1 with Seq"
 
 	],
 
@@ -43,12 +43,20 @@
 				"type": "preposition_phrase",
 				"preposition": "on behalf of",
 				"noun": {
-					"type": "@funcall",
-					"@object": "aobo1",
-					"@field": "responsible",
-					"@function": "noun+identity",
-					"@arg1": "agent",
-					"@optional": "true"
+					"type": "coordinated_phrase",
+					"conjunction": "and",
+					"@iterator": {
+						"type": "@iterator",
+						"@variable": "aobo1",
+						"@clause": "coordinates",
+						"@element": {
+							"type": "@funcall",
+							"@object": "aobo1",
+							"@field": "responsible",
+							"@function": "noun+identity",
+							"@arg1": "agent"
+						}
+					}
 				}
 			}
 		],

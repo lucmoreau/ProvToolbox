@@ -155,7 +155,7 @@ trait QueryInterpreter extends SummaryTypesNames {
 
   def execOpFollowedbyNull(o: Operator)(yld: Record => Unit): Unit = {
     execOp(o)(yld)
-    println("execOpFollowedbyNull  null")
+    //println("execOpFollowedbyNull  null")
     yld(null)
   }
 
@@ -184,8 +184,8 @@ trait QueryInterpreter extends SummaryTypesNames {
         }
 
       case LeftJoin(left, key1, property1, right, key2, property2) =>
-        println(left)
-        println(right)
+        //println(left)
+        //println(right)
         execOp(left) { rec1 =>
           var an_example_of_rec2: Option[Record] = None
           var asuccess: Boolean = false
@@ -201,15 +201,15 @@ trait QueryInterpreter extends SummaryTypesNames {
                 an_example_of_rec2 = Some(rec2)
                 asuccess = true
                 val record = Record(rec1.fields ++ rec2.fields, rec1.schema ++ rec2.schema)
-                println("Supplying record (1) " + record)
+                //println("Supplying record (1) " + record)
                 yld(record)
               }
             } else {
-              println("==> End of Stream right " + an_example_of_rec2 + " " + asuccess)
+              //println("==> End of Stream right " + an_example_of_rec2 + " " + asuccess)
               if (!asuccess) {
                 val noStatement:StatementOrNull=None;
                 val record = Record(rec1.fields ++ Vector(noStatement), rec1.schema ++ Vector(key2))
-                println("Supplying record (2) " + record)
+                //println("Supplying record (2) " + record)
                 yld(record)
               }
             }

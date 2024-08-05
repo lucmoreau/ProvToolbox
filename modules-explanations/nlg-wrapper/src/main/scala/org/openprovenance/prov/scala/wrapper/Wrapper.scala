@@ -21,6 +21,7 @@ import simplenlg.realiser.english.Realiser
 
 import java.io.{FileInputStream, FileOutputStream, InputStream, OutputStream}
 import java.util
+import java.util.logging.{Level, Logger}
 
 
 
@@ -31,6 +32,9 @@ object defs {
   val exporter=new BlocklyExport
 
   val lexiconLocation: String = {
+    //See https://stackoverflow.com/questions/9931156/is-there-a-way-to-silence-hsqldb-logging
+    System.setProperty("hsqldb.reconfig_logging", "false")
+    Logger.getLogger("hsqldb.db").setLevel(Level.WARNING)
     val sysProperty= System.getProperty(xplainlexicon)
     if (sysProperty!=null) {
       sysProperty

@@ -27,7 +27,7 @@ public class RelationMapping {
 
     public void mapGraphToRelations(String template, int id, Object[] record) {
         executor.execute(() -> {
-            logger.info("Template: " + template + " " + id);
+            logger.debug("Template: " + template + " " + id);
             Map<String, Map<String, int[]>> templateRelations = templateDispatcher.getRelations0().get(template);
             String[] foreignTables = templateDispatcher.getForeignTables().get(template);
             Collection<BiConsumer<StringBuilder, Object>> queries = new LinkedList<>();
@@ -40,7 +40,7 @@ public class RelationMapping {
             }
             queries.forEach(q ->
                     executor.execute(() -> querier.do_statements(null, null, q)));
-            logger.info("COMPLETED for " + template + " " + id );
+            logger.debug("COMPLETED for " + template + " " + id );
         });
     }
 
@@ -311,10 +311,10 @@ public class RelationMapping {
 
     private String getEntryIfNotMinus1(Object[] record, Integer in) {
         if ((in==null) || (in==-1)) {
-            return "";
+            return "null";
         }
         Object o = record[in];
-        if (o ==null) return "";
+        if (o == null) return "null";
         return o.toString();
     }
     private String getTableIfNotMinus1(Object[] record, Integer in) {
@@ -322,7 +322,7 @@ public class RelationMapping {
             return "";
         }
         Object o = record[in];
-        if (o ==null) return "";
+        if (o == null) return "''";
         return "'" + o.toString() + "'";
     }
 

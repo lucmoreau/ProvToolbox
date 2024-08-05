@@ -246,7 +246,7 @@ public class TemplateLogic {
         String principal=getPrincipal();
         List<Object[]> records = templateQuery.query(template, id, false, principal);
 
-        logger.info("PROV_API " + provAPI);
+        logger.debug("PROV_API " + provAPI);
         logger.info("records " + records.size() + " " + records.stream().map(Arrays::toString).collect(Collectors.joining(",")));
         if (!records.isEmpty()) {
             if (records.size()>1) {

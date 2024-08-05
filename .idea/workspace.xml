@@ -9,17 +9,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/dictionary/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/dictionary/lexAccess2013.script" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/dictionary/lexAccess2013.script.original" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/2.1.2-SNAPSHOT/bundle.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/config/log4j2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/config/logging.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/dictionary-plead.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-generic-responsibility.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/profile1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/template-library.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/prov/transforming-composite-1agent.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/prov/transforming-composite-2agents.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/prov/transforming.provn" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/docker-service-templates/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/docker-service-templates/docker.conf/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/docker.conf/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/docker-service-templates/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/docker-service-templates/src/main/resources/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/src/main/resources/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/docker-service-templates/src/main/resources/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/src/main/resources/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/main/resources/config/logging.properties" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/resources/config/logging.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Primitive.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Primitive.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -172,7 +176,7 @@
     "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services2/docker-service-templates",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-executable-provman/src/test/resources/ptm",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -208,11 +212,11 @@
       <recent name="org.openprovenance.prov.service" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm" />
+      <recent name="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead" />
+      <recent name="$PROJECT_DIR$/modules-executable-provman/src/test/resources/xplain/prov" />
+      <recent name="$PROJECT_DIR$/modules-executable-provman/src/test/resources/xplain" />
       <recent name="$PROJECT_DIR$/modules-services2/docker-service-templates" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain/plead" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain" />
-      <recent name="$PROJECT_DIR$/modules-services2" />
-      <recent name="$PROJECT_DIR$/modules-tools" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain/plead" />

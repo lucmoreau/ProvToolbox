@@ -1,0 +1,16 @@
+document
+prefix act <http://localhost:7072/ptl/provapi/live/activity/>
+prefix ag <http://localhost:7072/ptl/provapi/live/agent/>
+prefix plead <https://plead-project.org/ns/plead#>
+prefix file <http://localhost:7072/ptl/provapi/live/file/>
+entity(file:123,[prov:type = 'plead:DataFile', prov:type = 'plead:CSVFile'])
+entity(file:1940,[prov:type = 'plead:DataFile', prov:type = 'plead:CSVFile', plead:filename = "ddd" %% xsd:string, plead:path = "" %% xsd:string])
+activity(act:1949,-,-,[prov:type = 'plead:TransformingData'])
+agent(ag:1,[prov:type = 'plead:DataEngineer', prov:type = 'prov:Person', prov:type = 'plead:CreditProvider', prov:type = 'prov:Organization'])
+used(act:1949,file:123,-)
+wasGeneratedBy(file:1940,act:1949,-)
+wasDerivedFrom(file:1940, file:123, act:1949, -, -)
+wasAssociatedWith(act:1949,ag:1,-)
+wasAttributedTo(file:1940, ag:1)
+actedOnBehalfOf(ag:1,ag:1,act:1949)
+endDocument

@@ -2,6 +2,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.1.2-SNAPSHOT`
 * docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms
+* provman: testing ptm explanations from command line
 
 `2.1.1`
 * prov-template-compiler: getRelations method for encoding of template relations

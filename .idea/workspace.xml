@@ -9,15 +9,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/dictionary/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/dictionary/lexAccess2013.script" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/dictionary/lexAccess2013.script.original" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/2.1.2-SNAPSHOT/bundle.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/Wrapper.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/Wrapper.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/main/java/org/openprovenance/prov/service/Querier.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/main/java/org/openprovenance/prov/service/Querier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/main/java/org/openprovenance/prov/service/RelationMapping.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/main/java/org/openprovenance/prov/service/RelationMapping.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/main/java/org/openprovenance/prov/service/TemplateLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/main/java/org/openprovenance/prov/service/TemplateLogic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/test/config/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/test/config/log4j2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlIntegration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlIntegration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services2/docker-service-templates/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services2/docker-service-templates/docker.conf/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/docker.conf/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services2/docker-service-templates/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services2/docker-service-templates/src/main/resources/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/src/main/resources/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services2/docker-service-templates/src/main/resources/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/src/main/resources/Makefile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -170,7 +172,7 @@
     "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-library/src/main/resources/xplain/plead",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services2/docker-service-templates",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -206,11 +208,11 @@
       <recent name="org.openprovenance.prov.service" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services2/docker-service-templates" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain/plead" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain" />
       <recent name="$PROJECT_DIR$/modules-services2" />
       <recent name="$PROJECT_DIR$/modules-tools" />
-      <recent name="$PROJECT_DIR$/modules-core/prov-model/src/main/resources/org/openprovenance/prov/model/interop" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain/plead" />

@@ -34,6 +34,11 @@ VOLUME ${upload.directory}
 
 ADD ${origin.project}-${project.version}-secure.war /usr/local/tomcat/webapps/${service.context}.war
 
+RUN mkdir -p /etc/dictionary
+
+ADD lexAccess2013.data   /etc/dictionary/lexAccess2013.data
+ADD lexAccess2013.script /etc/dictionary/lexAccess2013.script
+
 EXPOSE 8080
 
 CMD ["catalina.sh", "run"]

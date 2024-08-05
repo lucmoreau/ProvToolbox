@@ -1,6 +1,9 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.1.1-SNAPSHOT`
+`2.1.2-SNAPSHOT`
+* docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms
+
+`2.1.1`
 * prov-template-compiler: getRelations method for encoding of template relations
 * service-templates: generation of sql for template relations
 * service-templates: asynchronous generation of sql for template relations

@@ -245,3 +245,8 @@ test.issue.215:
 test.metrics:
 	@$(PROVCONVERT) -infile src/test/resources/prov/pc1-full.provn -metrics target/pc1-full-metrics.json
 	@jq . target/pc1-full-metrics.json
+
+test.json.string:
+	@$(PROVCONVERT) -infile src/test/resources/json/string1.json -outfile - -outformat jsonld
+	@$(PROVCONVERT) -infile src/test/resources/json/string2.json -outfile - -outformat jsonld
+	@$(PROVCONVERT) -infile src/test/resources/json/string3.json -outfile - -outformat jsonld

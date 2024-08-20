@@ -27,6 +27,8 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
 
     final ProvFactory pf;
+    private boolean displayAnnotations;
+
     QualifiedName makeSumSize(){
         return pf.newQualifiedName(NamespacePrefixMapper.SUMMARY_NS, "size", NamespacePrefixMapper.SUMMARY_PREFIX);
     }
@@ -291,18 +293,29 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 (! (statement instanceof HasLocation) || ((HasLocation)statement).getLocation().isEmpty())
                 &&
                 (((HasLabel)statement).getLabel().isEmpty())
+                &&
+                (! (statement instanceof Identifiable))
+                &&
+                ((Identifiable) statement).getId() ==null
         ) return;
 
+        QualifiedName statementId = ((Identifiable) statement).getId();
+
         Map<String,String> properties= new HashMap<>();
-        QualifiedName newId=annotationId(((Identifiable)statement).getId(),id);
+        QualifiedName newId=annotationId(statementId,id);
+        boolean qualifiedRelationWithId=statement instanceof Relation && statementId !=null;
+        if (qualifiedRelationWithId) {
+            // update properties, this will be picked up by addAnnotationLabel
+            properties.put("id",statementId.getLocalPart());
+        }
         emitElement(newId,
                 null,
-                addAnnotationShape(statement,addAnnotationColor(statement,addAnnotationLabel(statement,properties))),
+                addAnnotationShape(statement,addAnnotationColor(statement, qualifiedRelationWithId, addAnnotationLabel(statement,properties))),
                 out);
         Map<String,String> linkProperties= new HashMap<>();
         emitRelation(null,
                 qualifiedNameToString(newId),
-                qualifiedNameToString(((Identifiable)statement).getId()),
+                qualifiedNameToString(statementId),
                 addAnnotationLinkProperties(statement,linkProperties),out,true);
     }
 
@@ -470,6 +483,12 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
         StringBuilder label= new StringBuilder();
         label.append("<<TABLE cellpadding=\"0\" border=\"0\">\n");
+        if (properties.get("id")!=null) {
+            label.append("	<TR>\n");
+            label.append("	    <TD align=\"left\">").append("id").append(":</TD>\n");
+            label.append("	    <TD align=\"left\">").append(properties.get("id")).append("</TD>\n");
+            label.append("	</TR>\n");
+        }
         for (Type type: ((HasType)ann).getType()) {
             label.append("	<TR>\n");
             label.append("	    <TD align=\"left\">").append("type").append(":</TD>\n");
@@ -524,6 +543,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         label.append("    </TABLE>>\n");
         properties.put(DOT_LABEL, label.toString());
         properties.put(DOT_FONTSIZE,"10");
+
 
         return properties;
     }
@@ -588,17 +608,14 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
 
 
-    public Map<String,String> addAnnotationColor(HasOther ann, Map<String,String> properties) {
-        if (displayAnnotationColor) {
-            properties.put(DOT_COLOUR,annotationColor(ann));
-            properties.put(DOT_FONTCOLOUR,"black");
-        }
+    public Map<String,String> addAnnotationColor(HasOther ann, boolean qualifiedRelationWithId, Map<String,String> properties) {
+        properties.put(DOT_COLOUR, (qualifiedRelationWithId)? "chocolate4" : annotationColor(ann));
+        properties.put(DOT_FONTCOLOUR, (qualifiedRelationWithId)? "chocolate4" : "black");
         return properties;
     }
 
 
 
-    boolean displayAnnotationColor=true;
 
     public String activityLabel(Activity p) {
         return localnameToString(p.getId());
@@ -704,7 +721,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             }
             properties4.put(DOT_STYLE,"dashed");
             properties4.put(DOT_ARROWHEAD,"none");
-            properties4.put(DOT_COLOUR,"gray");
+            properties4.put(DOT_COLOUR,"chocolate4");
 
             for (QualifiedName other: others) {
                 if (other!=null) {
@@ -714,6 +731,11 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                             properties4,
                             out,
                             true);
+                }
+            }
+            if (displayAnnotations) {
+                if (e instanceof HasOther) {
+                    emitAnnotations(bnid, (HasOther)e, out);
                 }
             }
             emitSpace(null,out);
@@ -1008,12 +1030,24 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     }
 
     public static ProvToDot newProvToDot(ProvFactory pf) {
-        Supplier<ProvUtilities> utilities= ProvUtilitiesForTriangle::new;
-        return new ProvToDot(pf, utilities);
+        return newProvToDot(pf,false);
     }
     public static ProvToDot newProvToDot(ProvFactory pf, List<String> exceptions) {
+        return newProvToDot(pf, exceptions,false);
+    }
+    public static ProvToDot newProvToDot(ProvFactory pf, boolean displayAnnotations) {
+        Supplier<ProvUtilities> utilities= ProvUtilitiesForTriangle::new;
+        return new ProvToDot(pf, utilities).displayAnnotations(displayAnnotations);
+    }
+
+    private ProvToDot displayAnnotations(boolean displayAnnotations) {
+        this.displayAnnotations=displayAnnotations;
+        return this;
+    }
+
+    public static ProvToDot newProvToDot(ProvFactory pf, List<String> exceptions, boolean displayAnnotations) {
         Supplier<ProvUtilities> utilities= () -> new ProvUtilitiesForTriangle(exceptions);
-        return new ProvToDot(pf, utilities);
+        return new ProvToDot(pf, utilities).displayAnnotations(displayAnnotations);
     }
 
 

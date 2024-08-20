@@ -9,23 +9,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/book-action1.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility2.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility3.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility3.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-generic-responsibility.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-generic-responsibility.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/template-library.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/template-library.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/ProvQLParser.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/ProvQLParser.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1008,7 +994,7 @@
       <workItem from="1721594488655" duration="2585000" />
       <workItem from="1722511910036" duration="4626000" />
       <workItem from="1722614512467" duration="65447000" />
-      <workItem from="1724102045058" duration="10727000" />
+      <workItem from="1724102045058" duration="17800000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

@@ -6,6 +6,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * plead-composite-responsibility explanation with aggregate
 * prov-sparql-query: small utility, based on Jena, to run sparql queries on prov-jsonld
 * prov-query: changed syntax of SET aggregator
+* prov-dot: added annotation to qualified relations (requires displayAnnotations to be true)
 
 `2.1.1`
 * prov-template-compiler: getRelations method for encoding of template relations

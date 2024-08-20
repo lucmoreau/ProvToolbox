@@ -153,6 +153,8 @@
     <file url="file://$PROJECT_DIR$/modules-template/prov-template/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/src/main/java" charset="UTF-8" />

@@ -23,7 +23,7 @@
 		" join wat1.agent = engineer.id",
 
 		"from aobo1 a prov:ActedOnBehalfOf",
-		" ljoin engineer.id=aobo1.delegate",
+		" left join engineer.id=aobo1.delegate",
 
 
 
@@ -32,7 +32,7 @@
 		"  or  file2[prov:type]    >= 'plead:AccuracyScore'",
 		"  or  file2[prov:type]    >= 'sk:Pipeline'",
 
-		"group by file2, engineer, act0 aggregate file1, aobo1 with USeq"
+		"group by file2, engineer, act0 aggregate file1, aobo1 with Set"
 
 	],
 

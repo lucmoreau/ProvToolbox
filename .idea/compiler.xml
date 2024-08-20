@@ -48,6 +48,7 @@
         <module name="ProvToolbox-Tutorial3" />
         <module name="ProvToolbox-Tutorial1" />
         <module name="provconvert" />
+        <module name="prov-sparql-query" />
         <module name="service-translator" />
         <module name="prov-service-security-pac" />
         <module name="nlg-spec-transformer" />

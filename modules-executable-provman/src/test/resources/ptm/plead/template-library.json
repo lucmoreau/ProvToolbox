@@ -1,10 +1,11 @@
 {
-    "name": "loan",
+    "name": "pipeline",
     "templates": [
         "plead-generic-responsibility.json",
         "plead-composite-responsibility.json",
         "plead-composite-responsibility2.json",
-        "plead-composite-responsibility3.json"
+        "plead-composite-responsibility3.json",
+        "book-action1.json"
     ],
     "dictionaries": ["dictionary-plead.json"],
     "profiles": ["profile1.json"]

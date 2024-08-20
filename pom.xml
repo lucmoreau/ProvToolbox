@@ -259,6 +259,7 @@
 
 
 			<!-- call by hand, mvn assembly:assembly -->
+			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -269,6 +270,7 @@
 					</descriptors>
 				</configuration>
 			</plugin>
+			-->
 
 		</plugins>
 

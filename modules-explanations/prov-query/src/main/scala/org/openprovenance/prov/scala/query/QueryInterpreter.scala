@@ -247,8 +247,8 @@ trait QueryInterpreter extends SummaryTypesNames {
             case None => doAggregate[Seq[Statement]](keys, agg, parent, yld, fieldUnit0, aggregateFun0, toField0)
             case Some(ref) => doAggregateSort[Seq[Statement]](keys, agg, parent, yld, fieldUnit0, aggregateFun0, toField0, ref)
           }
-          /* next is a unique sequence, ensuring no duplication of statements */
-          case "USeq" => ref match {
+          /* next is a set, ensuring no duplication of statements */
+          case "Set" => ref match {
             case None => doAggregate[Seq[Statement]](keys, agg, parent, yld, fieldUnit0, aggregateFunUnique0, toField0)
             case Some(ref) => doAggregateSort[Seq[Statement]](keys, agg, parent, yld, fieldUnit0, aggregateFunUnique0, toField0, ref)
           }

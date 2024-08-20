@@ -9,14 +9,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility3.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/prov/transforming-composite-1agent2orgs.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/book-action1.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable-provman/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility2.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility3.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-composite-responsibility3.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-generic-responsibility.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/plead-generic-responsibility.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/template-library.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/template-library.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/ProvQLParser.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/ProvQLParser.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,6 +142,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "Application.Reasoning.executor": "Run",
     "Application.TemplatesViz.executor": "Run",
     "JUnit.DateTest.testDate5.executor": "Run",
     "JUnit.DerivationBuilderTest (1).executor": "Run",
@@ -155,7 +165,10 @@
     "JUnit.RoundTripFromJavaJSONLD11Test.executor": "Run",
     "JUnit.RoundTripFromJavaMongoTest.executor": "Run",
     "JUnit.StorageTest.testExample.executor": "Debug",
+    "Makefile Target.go1.executor": "Run",
+    "Makefile Target.go2.executor": "Run",
     "Makefile Target.pkcs12.executor": "Run",
+    "Makefile Target.test.json.string.executor": "Run",
     "Makefile Target.test.metrics.executor": "Run",
     "Makefile Target.test.schema.projects.executor": "Run",
     "Makefile Target.trusted.store.executor": "Run",
@@ -169,7 +182,7 @@
     "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-executable-provman/src/test/resources/ptm/prov",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-sparql-query/src/test/resources",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -205,18 +218,18 @@
       <recent name="org.openprovenance.prov.service" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/prov" />
+      <recent name="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/test/resources" />
+      <recent name="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/resources" />
+      <recent name="$PROJECT_DIR$/modules-tools/prov-sparql-query" />
       <recent name="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead" />
-      <recent name="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm" />
-      <recent name="$PROJECT_DIR$/modules-executable-provman/src/test/resources/xplain/prov" />
-      <recent name="$PROJECT_DIR$/modules-executable-provman/src/test/resources/xplain" />
+      <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/json" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain/plead" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain/plead/old" />
       <recent name="$PROJECT_DIR$/modules-services2" />
       <recent name="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/src/test/resources/org/openprovenance/prov/polyglot" />
-      <recent name="$PROJECT_DIR$/modules-tools" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig" />
@@ -254,7 +267,7 @@
       <recent name="org.openprovenance.prov.notation" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.PC1FullTest.testPC1">
+  <component name="RunManager" selected="Makefile Target.go1">
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -310,11 +323,13 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="PC1FullTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-dot" />
+    <configuration name="Reasoning" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.sparql.Reasoning" />
+      <module name="prov-sparql-query" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules-tools/prov-sparql-query" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.dot.test.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.sparql.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -328,62 +343,6 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.dot.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.dot.test.PC1FullTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PC1FullTest (2)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-n" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.notation.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.notation.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.notation.test.PC1FullTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PC1FullTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-model" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.model.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.test.PC1FullTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -454,32 +413,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StorageTest.testExample" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="service-templates" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.service.storage.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.storage" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.storage.StorageTest" />
-      <option name="METHOD_NAME" value="testExample" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -497,6 +430,24 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="go1" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-tools/prov-sparql-query/Makefile" target="go1" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="go2" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-tools/prov-sparql-query/Makefile" target="go2" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="test.json.string" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.json.string" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
     </configuration>
     <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
@@ -592,21 +543,21 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Application.Reasoning" />
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="JUnit.PC1FullTest" />
-      <item itemvalue="JUnit.PC1FullTest (1)" />
-      <item itemvalue="JUnit.PC1FullTest (2)" />
       <item itemvalue="JUnit.PC1FullTest.testPC1" />
-      <item itemvalue="JUnit.StorageTest.testExample" />
+      <item itemvalue="Makefile Target.go1" />
+      <item itemvalue="Makefile Target.go2" />
+      <item itemvalue="Makefile Target.test.json.string" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Makefile Target.go1" />
+        <item itemvalue="Makefile Target.go2" />
+        <item itemvalue="Application.Reasoning" />
+        <item itemvalue="Makefile Target.test.json.string" />
         <item itemvalue="JUnit.PC1FullTest.testPC1" />
-        <item itemvalue="JUnit.PC1FullTest (1)" />
-        <item itemvalue="JUnit.PC1FullTest (2)" />
-        <item itemvalue="JUnit.PC1FullTest" />
-        <item itemvalue="JUnit.StorageTest.testExample" />
       </list>
     </recent_temporary>
   </component>
@@ -649,8 +600,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
-        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.19072.14" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.19072.14" />
       </set>
     </attachedChunks>
   </component>
@@ -1057,6 +1008,7 @@
       <workItem from="1721594488655" duration="2585000" />
       <workItem from="1722511910036" duration="4626000" />
       <workItem from="1722614512467" duration="65447000" />
+      <workItem from="1724102045058" duration="10727000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

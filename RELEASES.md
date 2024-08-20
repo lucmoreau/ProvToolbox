@@ -4,7 +4,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms
 * provman: testing ptm explanations from command line
 * plead-composite-responsibility explanation with aggregate
-* prov-sparql-query: small utility, based on Jena, to run sparql queries on prov-jsonld documents
+* prov-sparql-query: small utility, based on Jena, to run sparql queries on prov-jsonld
+* prov-query: changed syntax of SET aggregator
 
 `2.1.1`
 * prov-template-compiler: getRelations method for encoding of template relations

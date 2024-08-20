@@ -15,6 +15,7 @@
         <module>prov-toolbox-plugin</module>
         <module>prov-template-archetype</module>
         <module>prov-toolbox-js-embedding</module>
+        <module>prov-sparql-query</module>
     </modules>
 
 

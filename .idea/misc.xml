@@ -53,6 +53,7 @@
         <option value="$PROJECT_DIR$/modules-services/service-templates/pom.xml" />
         <option value="$PROJECT_DIR$/prov-toolbox-plugin/pom.xml" />
         <option value="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tools/prov-sparql-query/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

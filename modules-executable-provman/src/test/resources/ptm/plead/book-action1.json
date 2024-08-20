@@ -17,77 +17,25 @@
 		"from act0 a prov:Activity",
 		" join der1.activity=act0.id",
 
-		"from wat1 a prov:WasAttributedTo",
-		" join file2.id=wat1.entity",
-		"from engineer a prov:Agent",
-		" join wat1.agent = engineer.id",
-
-		"from aobo1 a prov:ActedOnBehalfOf",
-		" left join engineer.id=aobo1.delegate",
-
-
-
-
 		"where file2[prov:type]    >= 'plead:DataFile'",
 		"  or  file2[prov:type]    >= 'plead:AccuracyScore'",
-		"  or  file2[prov:type]    >= 'sk:Pipeline'",
-
-		"group by file2, engineer, act0 aggregate file1, aobo1 with Seq"
+		"  or  file2[prov:type]    >= 'sk:Pipeline'"
 
 	],
 
 	"sentence": {
 		"type": "clause",
-		"front-modifiers": [
-			{
-				"type": "preposition_phrase",
-				"preposition": "on behalf of",
-				"noun": {
-					"type": "coordinated_phrase",
-					"conjunction": "and",
-					"@iterator": {
-						"type": "@iterator",
-						"@variable": "aobo1",
-						"@clause": "coordinates",
-						"@element": {
-							"type": "@funcall",
-							"@object": "aobo1",
-							"@field": "responsible",
-							"@function": "noun+identity",
-							"@arg1": "agent"
-						}
-					}
-				}
-			}
-		],
-		"subject": {
+		"object": {
 			"type": "noun_phrase",
-			"determiner": "the",
 			"head": {
 				"type": "@funcall",
-				"@object": "engineer",
+				"@object": "file1",
 				"@field": "id",
 				"@function": "noun+identity",
-				"@arg1": "engineer"
+				"@arg1": "file"
 			}
 		},
-		"object": {
-			"type": "coordinated_phrase",
-			"conjunction": "and",
-			"@iterator": {
-				"type": "@iterator",
-				"@variable": "file1",
-				"@clause": "coordinates",
-				"@element": {
-					"type": "@funcall",
-					"@object": "file1",
-					"@field": "id",
-					"@function": "noun+identity",
-					"@arg1": "file"
-				}
-			}
-		},
-		"complements": [
+		"indirect_object":
 			{
 				"type": "preposition_phrase",
 				"preposition": "into",
@@ -137,7 +85,7 @@
 					]
 				}
 			}
-		],
+		,
 
 		"verb": {
 			"type": "@funcall",
@@ -150,7 +98,7 @@
 
 		"features" : {
 			"tense": "past",
-			"passive": "false"
+			"passive": "true"
 		}
 
 	},

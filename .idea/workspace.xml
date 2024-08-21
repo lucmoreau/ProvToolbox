@@ -10,7 +10,7 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/DotProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/DotProperties.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/bookptm/DerivationBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/bookptm/DerivationBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -109,7 +109,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
@@ -994,7 +994,7 @@
       <workItem from="1721594488655" duration="2585000" />
       <workItem from="1722511910036" duration="4626000" />
       <workItem from="1722614512467" duration="65447000" />
-      <workItem from="1724102045058" duration="26388000" />
+      <workItem from="1724102045058" duration="31050000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

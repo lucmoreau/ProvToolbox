@@ -13,6 +13,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.vanilla.QualifiedSpecializationOf;
 
+import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS;
+import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
+
 /** Serialisation of  Prov representation to DOT format. */
 public class ProvToDot implements DotProperties,  RecommendedProvVisualProperties, ProvShorthandNames {
 
@@ -278,7 +281,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     }
 
 
-    public void emitAnnotations(String id, HasOther statement, PrintStream out) {
+    public void emitAnnotations(String generatedIdIfUnqualifiedRelation, HasOther statement, PrintStream out) {
 
         if (((statement.getOther()==null)
                 || (statement.getOther().isEmpty())
@@ -294,18 +297,19 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 &&
                 (((HasLabel)statement).getLabel().isEmpty())
                 &&
-                ( (! (statement instanceof Identifiable)) || ((Identifiable) statement).getId() ==null )
+                ( (! (statement instanceof Identifiable)) || ((Identifiable) statement).getId() ==null || statement instanceof Element)
         ) return;
 
         QualifiedName statementId = ((Identifiable) statement).getId();
 
         Map<String,String> properties= new HashMap<>();
-        QualifiedName newId=annotationId(statementId,id);
+        QualifiedName newId=annotationId(statementId,generatedIdIfUnqualifiedRelation);
         boolean qualifiedRelationWithId=statement instanceof Relation && statementId !=null;
         if (qualifiedRelationWithId) {
             // update properties, this will be picked up by addAnnotationLabel
             properties.put("id",statementId.getLocalPart());
         }
+        qualifiedRelationWithId=qualifiedRelationWithId|| !generatedIdIfUnqualifiedRelation.isEmpty();
         emitElement(newId,
                 null,
                 addAnnotationShape(statement,addAnnotationColor(statement, qualifiedRelationWithId, addAnnotationLabel(statement,properties))),
@@ -313,8 +317,10 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         Map<String,String> linkProperties= new HashMap<>();
         emitRelation(null,
                 qualifiedNameToString(newId),
-                qualifiedNameToString(statementId),
-                addAnnotationLinkProperties(statement,linkProperties),out,true);
+                (statementId==null)?generatedIdIfUnqualifiedRelation:qualifiedNameToString(statementId),
+                addAnnotationColor(statement, qualifiedRelationWithId,addAnnotationLinkProperties(statement,linkProperties)),
+                out,
+                true);
     }
 
 
@@ -527,7 +533,8 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         }
         for (Other prop: ann.getOther()) {
 
-            if (prop.getElementName().getNamespaceURI().startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX)) {
+            if (prop.getElementName().getNamespaceURI().startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX) ||
+                    prop.getElementName().getNamespaceURI().equals(PROV_EXT_NS) ) {
                 // no need to display this attribute
                 continue;
             }
@@ -976,28 +983,28 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             }
             if (r instanceof WasAttributedTo) {
                 WasAttributedTo wat = (WasAttributedTo) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(wat, NamespacePrefixMapper.PROV_EXT_NS);
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(wat, PROV_EXT_NS);
                 List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
             }  else if (r instanceof QualifiedSpecializationOf ) {
                 QualifiedSpecializationOf spe = (QualifiedSpecializationOf) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(spe, NamespacePrefixMapper.PROV_EXT_NS);
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(spe, PROV_EXT_NS);
                 List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
             }  else if (r instanceof Used ) {
                 Used usd = (Used) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(usd, NamespacePrefixMapper.PROV_EXT_NS);
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(usd, PROV_EXT_NS);
                 List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
             }  else if (r instanceof WasInformedBy ) {
                 WasInformedBy wib = (WasInformedBy) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(wib, NamespacePrefixMapper.PROV_EXT_NS);
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(wib, PROV_EXT_NS);
                 List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
             } else if (r instanceof WasStartedBy ) {
                 List<QualifiedName> result1=super.getOtherCauses(r);
                 WasStartedBy start = (WasStartedBy) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(start, NamespacePrefixMapper.PROV_EXT_NS);
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(start, PROV_EXT_NS);
                 List<Other> tmp=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 List<QualifiedName> result2=tmp.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
                 if (result1!=null) result2.addAll(result1);
@@ -1005,7 +1012,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             }  else if (r instanceof WasEndedBy ) {
                 List<QualifiedName> result1=super.getOtherCauses(r);
                 WasEndedBy end = (WasEndedBy) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(end, NamespacePrefixMapper.PROV_EXT_NS);
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(end, PROV_EXT_NS);
                 List<Other> tmp=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 List<QualifiedName> result2=tmp.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
                 if (result1!=null) result2.addAll(result1);

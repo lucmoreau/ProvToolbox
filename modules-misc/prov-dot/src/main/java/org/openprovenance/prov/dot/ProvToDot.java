@@ -294,9 +294,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 &&
                 (((HasLabel)statement).getLabel().isEmpty())
                 &&
-                (! (statement instanceof Identifiable))
-                &&
-                ((Identifiable) statement).getId() ==null
+                ( (! (statement instanceof Identifiable)) || ((Identifiable) statement).getId() ==null )
         ) return;
 
         QualifiedName statementId = ((Identifiable) statement).getId();
@@ -686,6 +684,11 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 addColors((HasOther)e,properties2);
             }
             Map<String,String> properties3= new HashMap<>();
+
+            if (e instanceof WasInvalidatedBy) {
+                properties2.put(DOT_TAILPORT,"s");
+                properties3.put(DOT_HEADPORT,"s");
+            }
 
             QualifiedName effect=u.getEffect(e);
             if (effect!=null) {

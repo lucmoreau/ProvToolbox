@@ -7,6 +7,8 @@ public interface DotProperties  {
     String DOT_SHAPE = "shape";
     String DOT_SIDES = "sides";
     String DOT_ARROWHEAD = "arrowhead";
+    String DOT_TAILPORT = "tailport";
+    String DOT_HEADPORT = "headport";
     String DOT_LABEL = "label";
     String DOT_FONTSIZE = "fontsize";
     String DOT_FONTCOLOUR = "fontcolor";

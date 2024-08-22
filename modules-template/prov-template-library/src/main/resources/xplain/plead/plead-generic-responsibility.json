@@ -23,7 +23,7 @@
 		" join wat1.agent = engineer.id",
 
 		"from aobo1 a prov:ActedOnBehalfOf",
-		" ljoin engineer.id=aobo1.delegate",
+		" left join engineer.id=aobo1.delegate",
 
 
 

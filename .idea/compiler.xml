@@ -85,6 +85,9 @@
       <module name="prov-plugin" target="1.5" />
       <module name="prov-scala" target="9" />
       <module name="ProvToolbox-Tutorial2" target="1.5" />
+      <module name="templates" target="1.5" />
+      <module name="templates_cli" target="1.8" />
+      <module name="templates_l2p" target="1.8" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>

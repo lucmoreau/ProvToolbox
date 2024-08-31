@@ -9,10 +9,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/template-library.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/ptm/plead/template-library.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain/plead/plead-generic-responsibility.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain/plead/plead-generic-responsibility.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metabindings/joining2.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metabindings/joining2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/contact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/bin/keycloak-get-token.sh" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/bin/keycloak-get-token.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/contact.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -996,7 +1000,7 @@
       <workItem from="1722511910036" duration="4626000" />
       <workItem from="1722614512467" duration="65447000" />
       <workItem from="1724102045058" duration="36751000" />
-      <workItem from="1724266404903" duration="5830000" />
+      <workItem from="1724266404903" duration="22969000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

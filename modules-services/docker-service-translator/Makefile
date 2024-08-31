@@ -3,7 +3,7 @@ ORIGIN=service-translator
 
 SERVICE=docker-service-translator
 
-
+BUILD_PLATFORM=linux/amd64
 
 TARGET_IMAGE=$(SERVICE).temurin
 LOCATION_IMAGE=$(TARGET_IMAGE)
@@ -13,7 +13,7 @@ EXPORT_IMAGE=provenance/provapi
 
 DOCKER_RUN_DIR=$(HOME)/docker/log-dir
 
-WAR_VERSION=0.9.1-SNAPSHOT
+WAR_VERSION=2.1.2-SNAPSHOT
 WAR_FILE=$(ORIGIN)-$(WAR_VERSION)-docker
 
 
@@ -23,7 +23,9 @@ WAR_FILE=$(ORIGIN)-$(WAR_VERSION)-docker
 DOCKER=sudo /usr/bin/docker
 DOCKER=docker
 
-build.all: mk.dir generate.docker.war copy.war dck.file build
+build.all: mk.dir NO.generate.docker.war alt.copy.war dck.file build
+
+build.all.YES: mk.dir generate.docker.war copy.war dck.file build
 
 mk.dir:
 	mkdir -p $(LOCATION_IMAGE)
@@ -32,16 +34,28 @@ generate.docker.war:
 	rm -f $(LOCATION_IMAGE)/*.war
 	cd /Users/luc/IdeaProjects/ProvToolbox/modules-services/docker-service-translator/../$(ORIGIN) ; mvn clean install -Pdocker
 
+NO.generate.docker.war:
+	@echo "No need to generate docker war"
+
+NO.copy.war:
+	@echo "No need to copy war"
+
+alt.copy.war:
+	cp ${project.build.directory}/$(WAR_FILE).war $(LOCATION_IMAGE)/$(WAR_FILE).war
+
 copy.war:
 	cp /Users/luc/IdeaProjects/ProvToolbox/modules-services/docker-service-translator/../$(ORIGIN)/target/$(WAR_FILE).war $(LOCATION_IMAGE)
 
 dck.file:
-	cp /Users/luc/IdeaProjects/ProvToolbox/modules-services/docker-service-translator/tomcat.open9j.prov/Dockerfile $(LOCATION_IMAGE)
+	cp /Users/luc/IdeaProjects/ProvToolbox/modules-services/docker-service-translator/target/classes/Dockerfile $(LOCATION_IMAGE)
 
 build:
-	$(DOCKER) build -t ${TARGET_IMAGE} ${LOCATION_IMAGE}
+	$(DOCKER) build --platform $(BUILD_PLATFORM) -t ${TARGET_IMAGE} ${LOCATION_IMAGE}
 	$(DOCKER) images
 
+build.mac:
+	$(DOCKER) build --platform linux/arm64/v8 -t ${TARGET_IMAGE}-mac ${LOCATION_IMAGE}
+	$(DOCKER) images
 
 NOW=`date "+%Y-%m-%d-%H-%M"`
 

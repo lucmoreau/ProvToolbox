@@ -10,13 +10,10 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/contact.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/bin/keycloak-get-token.sh" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/bin/keycloak-get-token.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/contact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/test/config/security/openprovenance-auth2-security-config.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/test/config/security/openprovenance-auth2-security-config.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -591,8 +588,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.19072.14" />
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.19072.14" />
+        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.21829.142" />
+        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-IU-242.21829.142" />
       </set>
     </attachedChunks>
   </component>
@@ -1000,7 +997,8 @@
       <workItem from="1722511910036" duration="4626000" />
       <workItem from="1722614512467" duration="65447000" />
       <workItem from="1724102045058" duration="36751000" />
-      <workItem from="1724266404903" duration="22969000" />
+      <workItem from="1724266404903" duration="30616000" />
+      <workItem from="1725525004310" duration="3714000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

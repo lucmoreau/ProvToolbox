@@ -33,8 +33,13 @@ public interface Constants {
     String PROPERTY_PROV_QUALIFIED_SPECIALIZATION = "provext:QualifiedSpecialization";
     String PROPERTY_PROV_QUALIFIED_ALTERNATE = "provext:QualifiedAlternate";
     String PROPERTY_PROV_QUALIFIED_MEMBERSHIP = "provext:QualifiedMembership";
-    String OLD_JSONLD_CONTEXT_URL = "http://openprovenance.org/prov.jsonld";
     String JSONLD_CONTEXT_URL = "https://openprovenance.org/prov-jsonld/context.jsonld";
+    String JSONLDSCHEMA_2024_08_25 = "2024-08-25/jsonldschema.json";
+    String JSONLDCONTEXT_2024_08_25 = "2024-08-25/jsonldcontext.jsonld";
+
+
+    String OLD_JSONLD_CONTEXT_URL = "http://openprovenance.org/prov.jsonld";
+
     String JSONLDSCHEMA_JSON_2024_06_11 = "src/main/resources/2024-06-11/jsonldschema.json";
     String JSONLDSCHEMA_JSON_2020_03_23 = "src/main/resources/2020-03-23/jsonldschema.json";
 

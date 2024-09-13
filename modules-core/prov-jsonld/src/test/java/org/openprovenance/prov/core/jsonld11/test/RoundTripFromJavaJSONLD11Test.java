@@ -8,7 +8,7 @@ import org.openprovenance.prov.model.test.RoundTripFromJavaTest;
 
 import java.io.*;
 
-import static org.openprovenance.prov.core.jsonld11.serialization.Constants.JSONLDSCHEMA_JSON_2024_06_11;
+import static org.openprovenance.prov.core.jsonld11.serialization.Constants.JSONLDSCHEMA_2024_08_25;
 
 public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
 
@@ -83,7 +83,7 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
     }
 
     public String jsonSchemaLocation() {
-        return JSONLDSCHEMA_JSON_2024_06_11;
+        return "src/main/resources/" + JSONLDSCHEMA_2024_08_25;
     }
 
     @Override

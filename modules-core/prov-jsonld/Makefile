@@ -7,7 +7,8 @@ echo:
 	echo $(FILES)
 	echo $(FILES_TO_CHECK)
 
-JSONLD_SCHEMA=src/main/resources/2024-06-11/jsonldschema.json
+#JSONLD_SCHEMA=src/main/resources/2024-06-11/jsonldschema.json
+JSONLD_SCHEMA=src/main/resources/2024-08-25/jsonldschema.json
 
 check.file:
 	@ajv -s $(JSONLD_SCHEMA) -d $(FILE)

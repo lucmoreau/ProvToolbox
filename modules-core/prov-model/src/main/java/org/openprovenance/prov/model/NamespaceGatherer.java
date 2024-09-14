@@ -193,7 +193,8 @@ public class NamespaceGatherer implements StatementAction {
 	}
 
 	public void registerProvExt() {
-		ns.register(PROV_EXT_PREFIX, JSONLD_PROVEXT_NS);
+		// now obsolete because the schema does no
+		//ns.register(PROV_EXT_PREFIX, JSONLD_PROVEXT_NS);
 	}
 
 	@Override

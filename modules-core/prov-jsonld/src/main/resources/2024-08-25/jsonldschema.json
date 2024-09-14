@@ -466,6 +466,6 @@
 		}
 	},
 	"$schema": "http://json-schema.org/draft-07/schema#",
-	"$id": "https://openprovenance.org/prov-jsonld.json",
+	"$id": "https://openprovenance.org/prov-jsonld/schema.json",
 	"$ref": "#/definitions/prov:Document"
 }

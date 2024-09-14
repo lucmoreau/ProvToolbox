@@ -274,7 +274,7 @@
 		    "@type" : "@id"
 		},
 		"entity": {
-		    "@id": "provext:collection",
+		    "@id": "provext:member",
 		    "@type": "@id"
 		}
 	    }

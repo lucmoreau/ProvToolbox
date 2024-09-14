@@ -19,12 +19,12 @@ public interface Constants {
     String PROPERTY_PROV_GENERATION = "Generation";
     String PROPERTY_PROV_ASSOCIATION = "Association";
     String PROPERTY_PROV_ATTRIBUTION = "Attribution";
-    String PROPERTY_PROV_SPECIALIZATION = "provext:Specialization";
-    String PROPERTY_PROV_ALTERNATE = "provext:Alternate";
+    String PROPERTY_PROV_SPECIALIZATION = "Specialization";
+    String PROPERTY_PROV_ALTERNATE = "Alternate";
     String PROPERTY_PROV_DERIVATION = "Derivation";
     String PROPERTY_PROV_COMMUNICATION = "Communication";
     String PROPERTY_PROV_INFLUENCE = "Influence";
-    String PROPERTY_PROV_MEMBERSHIP = "provext:Membership";
+    String PROPERTY_PROV_MEMBERSHIP = "Membership";
     String PROPERTY_PROV_INVALIDATION = "Invalidation";
     String PROPERTY_PROV_START = "Start";
     String PROPERTY_PROV_END = "End";

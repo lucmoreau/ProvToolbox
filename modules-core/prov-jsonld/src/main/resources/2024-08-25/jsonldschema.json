@@ -349,7 +349,7 @@
 				"@type"
 			],
 			"properties": {
-				"@type":      { "pattern": "provext:Alternate" },
+				"@type":      { "pattern": "Alternate" },
 				"@id":        { "$ref": "#/definitions/QualifiedName" },
 				"alternate1": { "$ref": "#/definitions/QualifiedName" },
 				"alternate2": { "$ref": "#/definitions/QualifiedName" },
@@ -367,7 +367,7 @@
 				"@type"
 			],
 			"properties": {
-				"@type":           { "pattern": "provext:Specialization" },
+				"@type":           { "pattern": "Specialization" },
 				"@id":             { "$ref": "#/definitions/QualifiedName" },
 				"generalEntity":   { "$ref": "#/definitions/QualifiedName" },
 				"specificEntity":  { "$ref": "#/definitions/QualifiedName" },
@@ -385,7 +385,7 @@
 				"@type"
 			],
 			"properties": {
-				"@type":       { "pattern": "provext:Membership" },
+				"@type":       { "pattern": "Membership" },
 				"@id":         { "$ref": "#/definitions/QualifiedName" },
 				"entity":      { "$ref": "#/definitions/QualifiedName+" },
 				"collection":  { "$ref": "#/definitions/QualifiedName" },

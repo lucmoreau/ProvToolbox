@@ -1,13 +1,17 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.1.2-SNAPSHOT`
+`2.2.1-SNAPSHOT`
+
+
+`2.2.0`
 * docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms
 * provman: testing ptm explanations from command line
 * plead-composite-responsibility explanation with aggregate
 * prov-sparql-query: small utility, based on Jena, to run sparql queries on prov-jsonld
 * prov-query: changed syntax of SET aggregator
 * prov-dot: added annotation to qualified relations (requires displayAnnotations to be true)
-
+* prov-jsonld: compatibility with prov-jsonld w3c member submission.  As a result, this version will not be able to read previously saved prov-jsonld.
+ 
 `2.1.1`
 * prov-template-compiler: getRelations method for encoding of template relations
 * service-templates: generation of sql for template relations

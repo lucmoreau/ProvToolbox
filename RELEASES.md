@@ -1,7 +1,7 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.2.1-SNAPSHOT`
-
+* 
 
 `2.2.0`
 * docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms

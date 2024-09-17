@@ -9,7 +9,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/license.txt" beforeDir="false" afterPath="$PROJECT_DIR$/license.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/checker.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/checker.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/signer.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/signer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/expander.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/expander.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/rator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/rator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/translator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/translator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/validator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/validator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -995,7 +1006,7 @@
       <workItem from="1724102045058" duration="36751000" />
       <workItem from="1724266404903" duration="30616000" />
       <workItem from="1725525004310" duration="21140000" />
-      <workItem from="1726515019831" duration="214000" />
+      <workItem from="1726515019831" duration="3596000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

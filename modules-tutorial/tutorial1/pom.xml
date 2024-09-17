@@ -15,6 +15,16 @@
         <developer>
             <id>lucmoreau</id>
             <name>Luc Moreau</name>
+            <email>luc.moreau@sussex.ac.uk</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <organization>University of Sussex</organization>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <id>lucmoreau</id>
+            <name>Luc Moreau</name>
             <email>luc.moreau@kcl.ac.uk</email>
             <roles>
                 <role>Developer</role>

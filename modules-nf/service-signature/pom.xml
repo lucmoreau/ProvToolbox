@@ -161,7 +161,7 @@
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
-            <version>3.3.7</version>
+            <version>${webjars.bootstrap.version}</version>
         </dependency>
 
         <dependency>

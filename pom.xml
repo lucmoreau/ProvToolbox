@@ -427,7 +427,7 @@
 
 		<!-- js stuff -->
 		<webjars.jquery.version>3.7.1</webjars.jquery.version>
-		<webjars.bootstrap.version>3.4.0</webjars.bootstrap.version>
+		<webjars.bootstrap.version>3.4.0</webjars.bootstrap.version><!--3.4.0, not working with 5.0.2 -->
 		<webjars.bootstrap.tables.version>1.16.0</webjars.bootstrap.tables.version> <!-- 1.9.1-1 -->
 		<webjars.jquery.csv.version>0.8.3</webjars.jquery.csv.version>
 		<webjars.datatables.version>1.10.25</webjars.datatables.version>

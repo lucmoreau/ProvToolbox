@@ -19,22 +19,25 @@ public interface Constants {
     String PROPERTY_PROV_GENERATION = "Generation";
     String PROPERTY_PROV_ASSOCIATION = "Association";
     String PROPERTY_PROV_ATTRIBUTION = "Attribution";
-    String PROPERTY_PROV_SPECIALIZATION = "provext:Specialization";
-    String PROPERTY_PROV_ALTERNATE = "provext:Alternate";
+    String PROPERTY_PROV_SPECIALIZATION = "Specialization";
+    String PROPERTY_PROV_ALTERNATE = "Alternate";
     String PROPERTY_PROV_DERIVATION = "Derivation";
     String PROPERTY_PROV_COMMUNICATION = "Communication";
     String PROPERTY_PROV_INFLUENCE = "Influence";
-    String PROPERTY_PROV_MEMBERSHIP = "provext:Membership";
+    String PROPERTY_PROV_MEMBERSHIP = "Membership";
     String PROPERTY_PROV_INVALIDATION = "Invalidation";
     String PROPERTY_PROV_START = "Start";
     String PROPERTY_PROV_END = "End";
     String PROPERTY_PROV_DELEGATION = "Delegation";
     String PROPERTY_PROV_BUNDLE = "Bundle";
-    String PROPERTY_PROV_QUALIFIED_SPECIALIZATION = "provext:QualifiedSpecialization";
-    String PROPERTY_PROV_QUALIFIED_ALTERNATE = "provext:QualifiedAlternate";
-    String PROPERTY_PROV_QUALIFIED_MEMBERSHIP = "provext:QualifiedMembership";
-    String OLD_JSONLD_CONTEXT_URL = "http://openprovenance.org/prov.jsonld";
+
     String JSONLD_CONTEXT_URL = "https://openprovenance.org/prov-jsonld/context.jsonld";
+    String JSONLDSCHEMA_2024_08_25 = "2024-08-25/jsonldschema.json";
+    String JSONLDCONTEXT_2024_08_25 = "2024-08-25/jsonldcontext.jsonld";
+
+
+    String OLD_JSONLD_CONTEXT_URL = "http://openprovenance.org/prov.jsonld";
+
     String JSONLDSCHEMA_JSON_2024_06_11 = "src/main/resources/2024-06-11/jsonldschema.json";
     String JSONLDSCHEMA_JSON_2020_03_23 = "src/main/resources/2020-03-23/jsonldschema.json";
 

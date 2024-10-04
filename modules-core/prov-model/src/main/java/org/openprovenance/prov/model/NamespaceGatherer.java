@@ -9,7 +9,7 @@ import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
-import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS;
+import static org.openprovenance.prov.model.NamespacePrefixMapper.JSONLD_PROVEXT_NS;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_PREFIX;
 
 
@@ -193,7 +193,8 @@ public class NamespaceGatherer implements StatementAction {
 	}
 
 	public void registerProvExt() {
-		ns.register(PROV_EXT_PREFIX, PROV_EXT_NS);
+		// now obsolete because the schema does no
+		//ns.register(PROV_EXT_PREFIX, JSONLD_PROVEXT_NS);
 	}
 
 	@Override

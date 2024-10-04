@@ -3,7 +3,7 @@ ORIGIN=${origin.project}
 
 SERVICE=${project.artifactId}
 
-
+BUILD_PLATFORM=linux/amd64
 
 TARGET_IMAGE=$(SERVICE).${docker.java.platform}
 LOCATION_IMAGE=$(TARGET_IMAGE)
@@ -51,7 +51,11 @@ dck.file:
 	cp ${project.basedir}/target/classes/Dockerfile $(LOCATION_IMAGE)
 
 build:
-	$(DOCKER) build -t ${TARGET_IMAGE} ${LOCATION_IMAGE}
+	$(DOCKER) build --platform $(BUILD_PLATFORM) -t ${TARGET_IMAGE} ${LOCATION_IMAGE}
+	$(DOCKER) images
+
+build.mac:
+	$(DOCKER) build --platform linux/arm64/v8 -t ${TARGET_IMAGE}-mac ${LOCATION_IMAGE}
 	$(DOCKER) images
 
 NOW=`date "+%Y-%m-%d-%H-%M"`

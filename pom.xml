@@ -5,7 +5,7 @@
 	<groupId>org.openprovenance.prov</groupId>
 	<artifactId>ProvToolbox</artifactId>
 	<name>ProvToolbox: JVM (Java and Scala) for W3C PROV</name>
-	<version>2.1.1</version>
+	<version>2.2.0</version>
 	<url>https://lucmoreau.github.io/ProvToolbox/</url>
 	<packaging>pom</packaging>
 	<description>Java toolbox to create and convert W3C PROV data model representations.</description>
@@ -14,7 +14,7 @@
 		<connection>scm:git:https://github.com/lucmoreau/ProvToolbox.git</connection>
 		<developerConnection>scm:git:https://github.com/lucmoreau/ProvToolbox.git</developerConnection>
 		<url>https://github.com/lucmoreau/ProvToolbox.git</url>
-		<tag>ProvToolbox-2.1.1</tag>
+		<tag>ProvToolbox-2.2.0</tag>
 	</scm>
 
 	<modules>
@@ -42,6 +42,16 @@
 
 
 	<developers>
+		<developer>
+			<id>lucmoreau</id>
+			<name>Luc Moreau</name>
+			<email>luc.moreau@sussex.ac.uk</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>University of Sussex</organization>
+			<timezone>0</timezone>
+		</developer>
 		<developer>
 			<id>lucmoreau</id>
 			<name>Luc Moreau</name>
@@ -259,6 +269,7 @@
 
 
 			<!-- call by hand, mvn assembly:assembly -->
+			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -269,6 +280,7 @@
 					</descriptors>
 				</configuration>
 			</plugin>
+			-->
 
 		</plugins>
 
@@ -415,7 +427,7 @@
 
 		<!-- js stuff -->
 		<webjars.jquery.version>3.7.1</webjars.jquery.version>
-		<webjars.bootstrap.version>3.4.0</webjars.bootstrap.version>
+		<webjars.bootstrap.version>3.4.0</webjars.bootstrap.version><!--3.4.0, not working with 5.0.2 -->
 		<webjars.bootstrap.tables.version>1.16.0</webjars.bootstrap.tables.version> <!-- 1.9.1-1 -->
 		<webjars.jquery.csv.version>0.8.3</webjars.jquery.csv.version>
 		<webjars.datatables.version>1.10.25</webjars.datatables.version>

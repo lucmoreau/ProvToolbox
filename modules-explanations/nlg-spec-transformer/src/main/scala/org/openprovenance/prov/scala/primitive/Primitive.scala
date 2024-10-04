@@ -656,10 +656,7 @@ object Primitive {
       case "delegate" => value match {
         case aobo:ActedOnBehalfOf => isNull(aobo.delegate)
       }
-      case "responsible" =>
-        println("responsible" + value)
-
-        value match {
+      case "responsible" => value match {
         case aobo:ActedOnBehalfOf => isNull(aobo.responsible)
       }
       case "collection" => value match {

@@ -1,8 +1,10 @@
 DOCUMENTS=src/test/resources/queries/prov/loan
 QUERIES=src/test/resources/queries/queries-loan
-JAVA_OPTS=-Djava.util.logging.config.file=src/main/resource/config/logging.properties
+JAVA_OPTS=-Djava.util.logging.config.file=src/main/resources/config/logging.properties
+JAVA_OPTS2="-Dlog4j.configurationFile=src/test/resources/ptm/config/log4j2.xml -Djava.util.logging.config.file=src/test/resources/ptm/config/logging.properties"
 
 PROVMAN=export JAVA_OPTS=$(JAVA_OPTS); target/appassembler/bin/provmanagement
+PROVMAN2=export JAVA_OPTS=$(JAVA_OPTS2); target/appassembler/bin/provmanagement
 
 mvn.test: test.batch.queries xp.all.file xp.aggregate
 
@@ -126,3 +128,15 @@ kern:
 	$(PROVMAN) kernelize --infile modules-nf/prov-nf/src/test/resources/prov/pc1.provn -t 2 -A true --features target/pc1-feature.json
 kern2:
 	$(PROVMAN) kernelize --infile modules-nf/prov-nf/src/test/resources/prov/pc1.provn -t 2 -A false --features target/pc1-feature2.json
+
+
+batch.explain.ptm:
+	@$(PROVMAN2) explain --infile src/test/resources/ptm/prov/$(FILE).provn --outfile target/narrative-ptm.provn --text target/narrative-ptm.json --language src/test/resources/ptm/plead/template-library.json -s target/simplenlg2.txt --profile=$(PROFILE)  --batch-templates=$(BATCH)
+	@jq . target/narrative-ptm.json
+
+ptm.xp.file1:
+	@$(MAKE) batch.explain.ptm  FILE=transforming BATCH=[plead-generic-responsibility][book-action1]
+
+ptm.xp.file2:
+	@$(MAKE) batch.explain.ptm  FILE=transforming-composite-1agent BATCH=[plead-generic-responsibility][plead-composite-responsibility][plead-composite-responsibility2][plead-composite-responsibility3][book-action1]
+	@$(MAKE) batch.explain.ptm  FILE=transforming-composite-1agent2orgs BATCH=[plead-generic-responsibility][plead-composite-responsibility][plead-composite-responsibility2][plead-composite-responsibility3][book-action1]

@@ -380,6 +380,8 @@ public class DerivationBuilder {
                 .id(defs.XID, "waw11").aka()
                 .activity("a7699")
                 .agent("luc")
+               // .type(defs.Ownership)
+                .role(defs.unpacker)
                 .attr(defs.dotColour, edge1Colour)
                 .build();
 
@@ -395,6 +397,7 @@ public class DerivationBuilder {
         builder.wasAttributedTo()
                 .entity("b34/7")
                 .agent("luc")
+                .type(defs.Recycling)
                 .attrQn(defs.association,"waw11")
                 .attrQn(defs.invalidation,"wib11")
                 .attrQn(defs.activity, "a7699")
@@ -1101,15 +1104,17 @@ public class DerivationBuilder {
         QualifiedName Box          = builder.qn(VOCAB, "Box");
         QualifiedName FPC          = builder.qn(VOCAB, "FPC");
         QualifiedName Ownership    = builder.qn(VOCAB, "Ownership");
+        QualifiedName Recycling   = builder.qn(VOCAB, "Recycling");
         QualifiedName Transporting = builder.qn(VOCAB, "Transporting");
         QualifiedName Weighing     = builder.qn(VOCAB, "Weighing");
-        QualifiedName Packing     = builder.qn(VOCAB, "Packing");
+        QualifiedName Packing      = builder.qn(VOCAB, "Packing");
         QualifiedName PickUp       = builder.qn(VOCAB, "PickUp");
         QualifiedName DropOff      = builder.qn(VOCAB, "DropOff");
         QualifiedName London       = builder.qn(VOCAB, "London");
         QualifiedName Brighton     = builder.qn(VOCAB, "Brighton");
         QualifiedName weight       = builder.qn(VOCAB, "weight");
         QualifiedName driver       = builder.qn(VOCAB, "driver");
+        QualifiedName unpacker     = builder.qn(VOCAB, "unpacker");
         QualifiedName scientist    = builder.qn(VOCAB, "scientist");
         QualifiedName scale        = builder.qn(VOCAB, "scale");
         QualifiedName Instrument   = builder.qn(VOCAB, "Instrument");
@@ -1129,7 +1134,7 @@ public class DerivationBuilder {
 
 
         QualifiedName foaf_name    = builder.qn(FOAF, "name");
-        Definitions result = new Definitions(XID, Box, FPC, Ownership, Transporting, Weighing, Packing, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, scientist, scale, Instrument, specialization, derivation, entity, association, generation, activity, invalidation, usage, dotColour, InsertingElement, InsertingIntoCollection, RemovingElement, RemovingElementFromCollection);
+        Definitions result = new Definitions(XID, Box, FPC, Ownership, Recycling, Transporting, Weighing, Packing, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, unpacker, scientist, scale, Instrument, specialization, derivation, entity, association, generation, activity, invalidation, usage, dotColour, InsertingElement, InsertingIntoCollection, RemovingElement, RemovingElementFromCollection);
         return result;
     }
 
@@ -1138,6 +1143,7 @@ public class DerivationBuilder {
         public final QualifiedName Box;
         public final QualifiedName FPC;
         public final QualifiedName Ownership;
+        public final QualifiedName Recycling;
         public final QualifiedName Transporting;
         public final QualifiedName Weighing;
         public final QualifiedName Packing;
@@ -1148,6 +1154,7 @@ public class DerivationBuilder {
         public final QualifiedName weight;
         public final QualifiedName foaf_name;
         public final QualifiedName driver;
+        public final QualifiedName unpacker;
         public final QualifiedName scientist;
         public final QualifiedName scale;
         public final QualifiedName Instrument;
@@ -1165,11 +1172,12 @@ public class DerivationBuilder {
         public final QualifiedName RemovingElement;
         public final QualifiedName RemovingElementFromCollection;
 
-        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation, QualifiedName usage, QualifiedName dotColour, QualifiedName insertingElement, QualifiedName insertingIntoCollection, QualifiedName removingElement, QualifiedName removingElementFromCollection) {
+        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Recycling, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName unpacker, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation, QualifiedName usage, QualifiedName dotColour, QualifiedName insertingElement, QualifiedName insertingIntoCollection, QualifiedName removingElement, QualifiedName removingElementFromCollection) {
             this.XID = XID;
             this.Box = Box;
             this.FPC = fpc;
             this.Ownership = Ownership;
+            this.Recycling = Recycling;
             this.Transporting = Transporting;
             this.Weighing = Weighing;
             this.Packing = packing;
@@ -1180,6 +1188,7 @@ public class DerivationBuilder {
             this.weight = weight;
             this.foaf_name = foaf_name;
             this.driver = driver;
+            this.unpacker = unpacker;
             this.scientist = scientist;
             this.scale = scale;
             this.Instrument = instrument;

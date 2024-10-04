@@ -3,7 +3,7 @@ ORIGIN=${origin.project}
 
 SERVICE=${project.artifactId}
 
-
+BUILD_PLATFORM=linux/amd64
 
 TARGET_IMAGE=$(SERVICE).${docker.java.platform}
 LOCATION_IMAGE=$(TARGET_IMAGE)
@@ -24,7 +24,7 @@ WAR_FILE=$(ORIGIN)-$(WAR_VERSION)-secure
 DOCKER=sudo /usr/bin/docker
 DOCKER=docker
 
-build.all: mk.dir NO.generate.docker.war alt.copy.war dck.file build
+build.all: mk.dir NO.generate.docker.war copy.war copy.dictionary dck.file build build.mac
 
 mk.dir:
 	mkdir -p $(LOCATION_IMAGE)
@@ -34,23 +34,32 @@ generate.docker.war:
 	cd ${project.basedir}/../$(ORIGIN) ; mvn clean install -Pdocker,jetty
 
 NO.generate.docker.war:
-	@echo "No need to generate docker war"
+	@echo "No need to regenerate docker war"
 
 NO.copy.war:
 	@echo "No need to copy war"
 
-alt.copy.war:
+copy.war:
 	cp ${project.build.directory}/$(WAR_FILE).war $(LOCATION_IMAGE)/$(WAR_FILE).war
 
-copy.war:
+copy.dictionary:
+	cp ${project.build.directory}/dictionary/lexAccess2013.data   $(LOCATION_IMAGE)/lexAccess2013.data
+	cp ${project.build.directory}/dictionary/lexAccess2013.script $(LOCATION_IMAGE)/lexAccess2013.script
+
+old.copy.war:
 	cp ${project.basedir}/../$(ORIGIN)/target/$(WAR_FILE_ORIGINAL).war $(LOCATION_IMAGE)/$(WAR_FILE).war
 
 dck.file:
 	cp ${project.basedir}/target/classes/Dockerfile $(LOCATION_IMAGE)
 
 build:
-	$(DOCKER) build --platform linux/amd64 -t ${TARGET_IMAGE} ${LOCATION_IMAGE}
+	$(DOCKER) build --platform $(BUILD_PLATFORM) -t ${TARGET_IMAGE} ${LOCATION_IMAGE}
 	$(DOCKER) images
+
+build.mac:
+	$(DOCKER) build --platform linux/arm64/v8 -t ${TARGET_IMAGE}-mac ${LOCATION_IMAGE}
+	$(DOCKER) images
+
 
 NOW=`date "+%Y-%m-%d-%H-%M"`
 

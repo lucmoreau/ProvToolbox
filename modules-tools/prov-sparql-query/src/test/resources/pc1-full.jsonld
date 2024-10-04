@@ -1,0 +1,1079 @@
+{
+  "@context" : [ {
+    "xsd" : "http://www.w3.org/2001/XMLSchema#",
+    "prim" : "http://openprovenance.org/primitives#",
+    "prov" : "http://www.w3.org/ns/prov#",
+    "pc1" : "http://www.ipaw.info/pc1/"
+  }, "https://openprovenance.org/prov-jsonld/context-2024-06-19.json"  ],
+  "@graph" : [ {
+    "@type" : "Activity",
+    "@id" : "pc1:a1",
+    "type" : [ "prim:align_warp" ],
+    "label" : [ {
+      "@value" : "align_warp 1"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a2",
+    "type" : [ "prim:align_warp" ],
+    "label" : [ {
+      "@value" : "align_warp 2"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a3",
+    "type" : [ "prim:align_warp" ],
+    "label" : [ {
+      "@value" : "align_warp 3"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a4",
+    "type" : [ "prim:align_warp" ],
+    "label" : [ {
+      "@value" : "align_warp 4"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a5",
+    "type" : [ "prim:reslice" ],
+    "label" : [ {
+      "@value" : "Reslice 1"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a6",
+    "type" : [ "prim:reslice" ],
+    "label" : [ {
+      "@value" : "Reslice 2"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a7",
+    "type" : [ "prim:reslice" ],
+    "label" : [ {
+      "@value" : "Reslice 3"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a8",
+    "type" : [ "prim:reslice" ],
+    "label" : [ {
+      "@value" : "Reslice 4"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a9",
+    "type" : [ "prim:softmean" ],
+    "label" : [ {
+      "@value" : "Softmean"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a10",
+    "type" : [ "prim:slicer" ],
+    "label" : [ {
+      "@value" : "Slicer 1"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a11",
+    "type" : [ "prim:slicer" ],
+    "label" : [ {
+      "@value" : "Slicer 2"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a12",
+    "type" : [ "prim:slicer" ],
+    "label" : [ {
+      "@value" : "Slicer 3"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a13",
+    "type" : [ "prim:convert" ],
+    "label" : [ {
+      "@value" : "Convert 1"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a14",
+    "type" : [ "prim:convert" ],
+    "label" : [ {
+      "@value" : "Convert 2"
+    } ]
+  }, {
+    "@type" : "Activity",
+    "@id" : "pc1:a15",
+    "type" : [ "prim:convert" ],
+    "label" : [ {
+      "@value" : "Convert 3"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e1",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/reference.img"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Reference Image"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e2",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/reference.hdr"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Reference Header"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e5",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/anatomy2.img"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Anatomy I2"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e6",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/anatomy2.hdr"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Anatomy H2"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e3",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/anatomy1.img"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Anatomy I1"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e4",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/anatomy1.hdr"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Anatomy H1"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e7",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/anatomy3.img"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Anatomy I3"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e8",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/anatomy3.hdr"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Anatomy H3"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e9",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/anatomy4.img"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Anatomy I4"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e10",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/anatomy4.hdr"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Anatomy H4"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e11",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/warp1.warp"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Warp Params1"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e12",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/warp2.warp"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Warp Params2"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e13",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/warp3.warp"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Warp Params3"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e14",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/warp4.warp"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Warp Params4"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e15",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/resliced1.img"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Resliced I1"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e16",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/resliced1.hdr"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Resliced H1"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e17",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/resliced2.img"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Resliced I2"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e18",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/resliced2.hdr"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Resliced H2"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e19",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/resliced3.img"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Resliced I3"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e20",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/resliced3.hdr"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Resliced H3"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e21",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/resliced4.img"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Resliced I4"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e22",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/resliced4.hdr"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Resliced H4"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e23",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/atlas.img"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Atlas Image"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e24",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/atlas.hdr"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Atlas Header"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e25",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/atlas-x.pgm"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Atlas X Slice"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e25p",
+    "type" : [ "prim:String" ],
+    "pc1:value" : [ {
+      "@value" : "-x .5"
+    } ],
+    "label" : [ {
+      "@value" : "slicer param 1"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e26",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/atlas-y.pgm"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Atlas Y Slice"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e26p",
+    "type" : [ "prim:String" ],
+    "pc1:value" : [ {
+      "@value" : "-y .5"
+    } ],
+    "label" : [ {
+      "@value" : "slicer param 2"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e27",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/atlas-z.pgm"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Atlas Z Slice"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e27p",
+    "type" : [ "prim:String" ],
+    "pc1:value" : [ {
+      "@value" : "-z .5"
+    } ],
+    "label" : [ {
+      "@value" : "slicer param 3"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e28",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/atlas-x.gif"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Atlas X Graphic"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e29",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/atlas-y.gif"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Atlas Y Graphic"
+    } ]
+  }, {
+    "@type" : "Entity",
+    "@id" : "pc1:e30",
+    "pc1:url" : [ {
+      "@value" : "http://www.ipaw.info/challenge/atlas-z.gif"
+    } ],
+    "type" : [ "prim:FILE" ],
+    "label" : [ {
+      "@value" : "Atlas Z Graphic"
+    } ]
+  }, {
+    "@type" : "Agent",
+    "@id" : "pc1:ag1",
+    "label" : [ {
+      "@value" : "John Doe"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a1",
+    "entity" : "pc1:e3",
+    "role" : [ {
+      "@value" : "img"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a1",
+    "entity" : "pc1:e4",
+    "role" : [ {
+      "@value" : "hdr"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "@id" : "pc1:u3",
+    "activity" : "pc1:a1",
+    "entity" : "pc1:e1",
+    "role" : [ {
+      "@value" : "imgRef"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a1",
+    "entity" : "pc1:e2",
+    "role" : [ {
+      "@value" : "hdrRef"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a2",
+    "entity" : "pc1:e5",
+    "role" : [ {
+      "@value" : "img"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a2",
+    "entity" : "pc1:e6",
+    "role" : [ {
+      "@value" : "hdr"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a2",
+    "entity" : "pc1:e1",
+    "role" : [ {
+      "@value" : "imgRef"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a2",
+    "entity" : "pc1:e2",
+    "role" : [ {
+      "@value" : "hdrRef"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a3",
+    "entity" : "pc1:e7",
+    "role" : [ {
+      "@value" : "img"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a3",
+    "entity" : "pc1:e8",
+    "role" : [ {
+      "@value" : "hdr"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a3",
+    "entity" : "pc1:e1",
+    "role" : [ {
+      "@value" : "imgRef"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a3",
+    "entity" : "pc1:e2",
+    "role" : [ {
+      "@value" : "hdrRef"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a4",
+    "entity" : "pc1:e9",
+    "role" : [ {
+      "@value" : "img"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a4",
+    "entity" : "pc1:e10",
+    "role" : [ {
+      "@value" : "hdr"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a4",
+    "entity" : "pc1:e1",
+    "role" : [ {
+      "@value" : "imgRef"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a4",
+    "entity" : "pc1:e2",
+    "role" : [ {
+      "@value" : "hdrRef"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a5",
+    "entity" : "pc1:e11",
+    "role" : [ {
+      "@value" : "in"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a6",
+    "entity" : "pc1:e12",
+    "role" : [ {
+      "@value" : "in"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a7",
+    "entity" : "pc1:e13",
+    "role" : [ {
+      "@value" : "in"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a8",
+    "entity" : "pc1:e14",
+    "role" : [ {
+      "@value" : "in"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a9",
+    "entity" : "pc1:e15",
+    "role" : [ {
+      "@value" : "i1"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a9",
+    "entity" : "pc1:e16",
+    "role" : [ {
+      "@value" : "h1"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a9",
+    "entity" : "pc1:e17",
+    "role" : [ {
+      "@value" : "i2"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a9",
+    "entity" : "pc1:e18",
+    "role" : [ {
+      "@value" : "h2"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a9",
+    "entity" : "pc1:e19",
+    "role" : [ {
+      "@value" : "i3"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a9",
+    "entity" : "pc1:e20",
+    "role" : [ {
+      "@value" : "h3"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a9",
+    "entity" : "pc1:e21",
+    "role" : [ {
+      "@value" : "i4"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a9",
+    "entity" : "pc1:e22",
+    "role" : [ {
+      "@value" : "h4"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a10",
+    "entity" : "pc1:e23",
+    "role" : [ {
+      "@value" : "img"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a10",
+    "entity" : "pc1:e24",
+    "role" : [ {
+      "@value" : "hdr"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a11",
+    "entity" : "pc1:e23",
+    "role" : [ {
+      "@value" : "img"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a11",
+    "entity" : "pc1:e24",
+    "role" : [ {
+      "@value" : "hdr"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a12",
+    "entity" : "pc1:e23",
+    "role" : [ {
+      "@value" : "img"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a12",
+    "entity" : "pc1:e24",
+    "role" : [ {
+      "@value" : "hdr"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a10",
+    "entity" : "pc1:e25p",
+    "role" : [ {
+      "@value" : "param"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a11",
+    "entity" : "pc1:e26p",
+    "role" : [ {
+      "@value" : "param"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a12",
+    "entity" : "pc1:e27p",
+    "role" : [ {
+      "@value" : "param"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a13",
+    "entity" : "pc1:e25",
+    "role" : [ {
+      "@value" : "in"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a14",
+    "entity" : "pc1:e26",
+    "role" : [ {
+      "@value" : "in"
+    } ]
+  }, {
+    "@type" : "Usage",
+    "activity" : "pc1:a15",
+    "entity" : "pc1:e27",
+    "role" : [ {
+      "@value" : "in"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "@id" : "pc1:wgb1",
+    "entity" : "pc1:e11",
+    "activity" : "pc1:a1",
+    "role" : [ {
+      "@value" : "out"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e12",
+    "activity" : "pc1:a2",
+    "role" : [ {
+      "@value" : "out"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e13",
+    "activity" : "pc1:a3",
+    "role" : [ {
+      "@value" : "out"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e14",
+    "activity" : "pc1:a4",
+    "role" : [ {
+      "@value" : "out"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e15",
+    "activity" : "pc1:a5",
+    "role" : [ {
+      "@value" : "img"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e16",
+    "activity" : "pc1:a5",
+    "role" : [ {
+      "@value" : "hdr"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e17",
+    "activity" : "pc1:a6",
+    "role" : [ {
+      "@value" : "img"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e18",
+    "activity" : "pc1:a6",
+    "role" : [ {
+      "@value" : "hdr"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e19",
+    "activity" : "pc1:a7",
+    "role" : [ {
+      "@value" : "img"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e20",
+    "activity" : "pc1:a7",
+    "role" : [ {
+      "@value" : "hdr"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e21",
+    "activity" : "pc1:a8",
+    "role" : [ {
+      "@value" : "img"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e22",
+    "activity" : "pc1:a8",
+    "role" : [ {
+      "@value" : "hdr"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e23",
+    "activity" : "pc1:a9",
+    "role" : [ {
+      "@value" : "img"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e24",
+    "activity" : "pc1:a9",
+    "role" : [ {
+      "@value" : "hdr"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e25",
+    "activity" : "pc1:a10",
+    "role" : [ {
+      "@value" : "out"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e26",
+    "activity" : "pc1:a11",
+    "role" : [ {
+      "@value" : "out"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e27",
+    "activity" : "pc1:a12",
+    "role" : [ {
+      "@value" : "out"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e28",
+    "activity" : "pc1:a13",
+    "time" : "2024-08-05T11:47:53.664+01:00",
+    "role" : [ {
+      "@value" : "out"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e29",
+    "activity" : "pc1:a14",
+    "time" : "2024-08-05T11:47:53.665+01:00",
+    "role" : [ {
+      "@value" : "out"
+    } ]
+  }, {
+    "@type" : "Generation",
+    "entity" : "pc1:e30",
+    "activity" : "pc1:a15",
+    "time" : "2024-08-05T11:47:53.665+01:00",
+    "role" : [ {
+      "@value" : "out"
+    } ]
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e11",
+    "usedEntity" : "pc1:e1",
+    "activity" : "pc1:a1",
+    "generation" : "pc1:wgb1",
+    "usage" : "pc1:u3"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e11",
+    "usedEntity" : "pc1:e2"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e11",
+    "usedEntity" : "pc1:e3"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e11",
+    "usedEntity" : "pc1:e4"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e12",
+    "usedEntity" : "pc1:e1"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e12",
+    "usedEntity" : "pc1:e2"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e12",
+    "usedEntity" : "pc1:e5"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e12",
+    "usedEntity" : "pc1:e6"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e13",
+    "usedEntity" : "pc1:e1"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e13",
+    "usedEntity" : "pc1:e2"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e13",
+    "usedEntity" : "pc1:e7"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e13",
+    "usedEntity" : "pc1:e8"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e14",
+    "usedEntity" : "pc1:e1"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e14",
+    "usedEntity" : "pc1:e2"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e14",
+    "usedEntity" : "pc1:e9"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e14",
+    "usedEntity" : "pc1:e10"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e15",
+    "usedEntity" : "pc1:e11"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e16",
+    "usedEntity" : "pc1:e11"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e17",
+    "usedEntity" : "pc1:e12"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e18",
+    "usedEntity" : "pc1:e12"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e19",
+    "usedEntity" : "pc1:e13"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e20",
+    "usedEntity" : "pc1:e13"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e21",
+    "usedEntity" : "pc1:e14"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e22",
+    "usedEntity" : "pc1:e14"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e23",
+    "usedEntity" : "pc1:e15"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e23",
+    "usedEntity" : "pc1:e16"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e23",
+    "usedEntity" : "pc1:e17"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e23",
+    "usedEntity" : "pc1:e18"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e23",
+    "usedEntity" : "pc1:e19"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e23",
+    "usedEntity" : "pc1:e20"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e23",
+    "usedEntity" : "pc1:e21"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e23",
+    "usedEntity" : "pc1:e22"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e24",
+    "usedEntity" : "pc1:e15"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e24",
+    "usedEntity" : "pc1:e16"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e24",
+    "usedEntity" : "pc1:e17"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e24",
+    "usedEntity" : "pc1:e18"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e24",
+    "usedEntity" : "pc1:e19"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e24",
+    "usedEntity" : "pc1:e20"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e24",
+    "usedEntity" : "pc1:e21"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e24",
+    "usedEntity" : "pc1:e22"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e25",
+    "usedEntity" : "pc1:e23"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e25",
+    "usedEntity" : "pc1:e24"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e26",
+    "usedEntity" : "pc1:e23"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e26",
+    "usedEntity" : "pc1:e24"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e27",
+    "usedEntity" : "pc1:e23"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e27",
+    "usedEntity" : "pc1:e24"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e28",
+    "usedEntity" : "pc1:e25"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e29",
+    "usedEntity" : "pc1:e26"
+  }, {
+    "@type" : "Derivation",
+    "generatedEntity" : "pc1:e30",
+    "usedEntity" : "pc1:e27"
+  }, {
+    "@type" : "Association",
+    "@id" : "pc1:waw1",
+    "activity" : "pc1:a1",
+    "agent" : "pc1:ag1"
+  } ]
+}

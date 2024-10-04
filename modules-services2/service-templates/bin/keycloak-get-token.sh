@@ -2,7 +2,7 @@
 
 PROV_CREDENTIALS="$HOME/.kclprov"
 TOKEN_DESTINATION="$HOME/.keycloak_token"
-VERBOSE=false
+VERBOSE=true
 
 if [ $# -ne 0 ]; then
   echo 1>&2 "Usage: . $0  "

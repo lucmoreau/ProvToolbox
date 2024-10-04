@@ -229,6 +229,12 @@ trait QueryInterpreter extends SummaryTypesNames {
           c
         }
 
+        // same as aggregateFun0 but ensures
+        def aggregateFunUnique0(a: Aggregate, b: Seq[RField]): Aggregate = {
+          val c: Seq[Statement] = a ++ b.map(f => toStatement(f))
+          c.toSet.toSeq
+        }
+
         def aggregateFun1(a: Seq[Object], b: Seq[RField]): Seq[Object] = {
           val c: Seq[Object] = a ++ b.map(f => toValues(f))
           c
@@ -240,6 +246,11 @@ trait QueryInterpreter extends SummaryTypesNames {
           case "Seq" => ref match {
             case None => doAggregate[Seq[Statement]](keys, agg, parent, yld, fieldUnit0, aggregateFun0, toField0)
             case Some(ref) => doAggregateSort[Seq[Statement]](keys, agg, parent, yld, fieldUnit0, aggregateFun0, toField0, ref)
+          }
+          /* next is a set, ensuring no duplication of statements */
+          case "Set" => ref match {
+            case None => doAggregate[Seq[Statement]](keys, agg, parent, yld, fieldUnit0, aggregateFunUnique0, toField0)
+            case Some(ref) => doAggregateSort[Seq[Statement]](keys, agg, parent, yld, fieldUnit0, aggregateFunUnique0, toField0, ref)
           }
           case "Count" =>
             doCount[Seq[Statement]](keys, agg, parent, yld, fieldUnit0, aggregateFun0, toField0)

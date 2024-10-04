@@ -34,6 +34,9 @@ VOLUME ${upload.directory}
 
 #RUN rm -r -f /usr/local/tomcat/webapps/ROOT
 
+
+
+
 ADD ${origin.project}-${project.version}.war /usr/local/tomcat/webapps/${service.context}.war
 
 EXPOSE 8080

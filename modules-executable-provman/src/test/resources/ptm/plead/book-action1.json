@@ -1,0 +1,115 @@
+
+{
+
+	"select": {"decision":       {"@type": "prov:Entity"}},
+
+	"query": [
+		"prefix plead <https://plead-project.org/ns/plead#>",
+		"prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>",
+
+
+
+		"select * from der1 a prov:WasDerivedFrom",
+		"from file2 a prov:Entity",
+		" join der1.generatedEntity=file2.id",
+		"from file1 a prov:Entity",
+		" join der1.usedEntity=file1.id",
+		"from act0 a prov:Activity",
+		" join der1.activity=act0.id",
+
+		"where file2[prov:type]    >= 'plead:DataFile'",
+		"  or  file2[prov:type]    >= 'plead:AccuracyScore'",
+		"  or  file2[prov:type]    >= 'sk:Pipeline'"
+
+	],
+
+	"sentence": {
+		"type": "clause",
+		"object": {
+			"type": "noun_phrase",
+			"head": {
+				"type": "@funcall",
+				"@object": "file1",
+				"@field": "id",
+				"@function": "noun+identity",
+				"@arg1": "file"
+			}
+		},
+		"indirect_object":
+			{
+				"type": "preposition_phrase",
+				"preposition": "into",
+				"noun": {
+					"type": "@funcall",
+					"@object": "file2",
+					"@property":  "prov:type",
+					"@function": "lookup-type",
+					"@arg1": "noun_phrase",
+					"@arg2": "plead,sk",
+					"post-modifiers": [
+						{
+							"type":"adjective_phrase",
+							"head": {
+								"type": "@funcall",
+								"@object": "file2",
+								"@field":  "id",
+								"@function": "noun+identity",
+								"@arg1": ""
+							}
+						},
+						{
+							"type": "preposition_phrase",
+							"preposition": "with",
+							"noun": {
+								"type": "@funcall",
+								"@object": "file2",
+								"@property": "plead:filename",
+								"@function": "noun+identity",
+								"@arg1": "name",
+								"@optional": "true"
+							}
+						},
+						{
+							"type": "preposition_phrase",
+							"preposition": "with",
+							"noun": {
+								"type": "@funcall",
+								"@object": "file2",
+								"@property": "prov:value",
+								"@function": "noun+identity",
+								"@arg1": "value",
+								"@optional": "true"
+							}
+						}
+
+					]
+				}
+			}
+		,
+
+		"verb": {
+			"type": "@funcall",
+			"@object": "act0",
+			"@property":  "prov:type",
+			"@function": "lookup-type",
+			"@arg1": "verb_phrase",
+			"@arg2": "plead"
+		},
+
+		"features" : {
+			"tense": "past",
+			"passive": "true"
+		}
+
+	},
+
+
+	"context": {
+		"ex": "http://example.org/#",
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"plead": "https://plead-project.org/ns/plead#",
+		"sk": "https://scikit-learn.org/stable/modules/generated/sklearn."
+	}
+
+
+}

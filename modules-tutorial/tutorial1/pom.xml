@@ -3,7 +3,7 @@
     <parent>
         <artifactId>modules-tutorial</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.1.1</version>
+        <version>2.2.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -12,6 +12,16 @@
     <description>ProvToolbox Tutorial 1</description>
 
     <developers>
+        <developer>
+            <id>lucmoreau</id>
+            <name>Luc Moreau</name>
+            <email>luc.moreau@sussex.ac.uk</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <organization>University of Sussex</organization>
+            <timezone>0</timezone>
+        </developer>
         <developer>
             <id>lucmoreau</id>
             <name>Luc Moreau</name>
@@ -46,7 +56,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
-            <version>2.1.1</version>
+            <version>2.2.0</version>
         </dependency>
     </dependencies>
 

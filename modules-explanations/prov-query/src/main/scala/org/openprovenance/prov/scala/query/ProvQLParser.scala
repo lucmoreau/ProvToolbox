@@ -30,14 +30,15 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
 
   def groupClause: Rule[Operator :: HNil, Operator :: HNil] = rule {
     optional("group" ~ WS ~ "by" ~ WS ~ fieldIdList ~ WS ~ "aggregate" ~ WS ~ fieldIdList
-      ~ WS ~ "with" ~ WS ~ (capture("Seq")  | capture("Count") )~ WS ~ optional("order" ~ WS ~ "by" ~ WS ~ ref ~ WS ) ~> makeGroup)
+      ~ WS ~ "with" ~ WS ~ (capture("Seq")  | capture("Set")  | capture("Count") )~ WS ~ optional("order" ~ WS ~ "by" ~ WS ~ ref ~ WS ) ~> makeGroup)
   }
 
   def tableJoinClause: Rule[Operator :: HNil, Operator :: HNil] =
-    rule { tableClause ~ WS ~ ("join" ~ WS ~ joinClause2 ~> makeTableJoin | "ljoin" ~ WS ~ joinClause2 ~> makeTableLJoin)}
+    rule { tableClause ~ WS ~ ("join" ~ WS ~ joinClause2 ~> makeTableJoin | "left" ~ WS ~ "join" ~ WS ~ joinClause2 ~> makeTableLJoin)}
 
   def pred: Rule[HNil, Predicate :: HNil] = rule {
     ref  ~ ( ">=" ~ WS ~ ref ~> makeIncludes ~ WS |
+      "!>=" ~ WS ~ ref ~> makeIncludesNot ~ WS |
       "!>=" ~ WS ~ ref ~> makeIncludesNot ~ WS |
       "="  ~ WS ~ ( ref  ~> makeEq | int_literal  ~> makeEqL)  ~ WS |
       "exists" ~ WS ~> makeExists ~ WS ) ~ optional ( "or" ~ WS ~ pred ~> makeOr )}
@@ -149,6 +150,7 @@ class ProvQLParser (override val input: ParserInput, val ns: Namespace) extends 
   override def makeJoin1:(Operator, Seq[Operator]) => Operator =
     (op, _) => op
 
-  override def makeGroup:(Operator, Seq[String], Seq[String], String, Option[Ref]) => Operator = (op,keys,agg,kind,ref) => Group(toSchema(keys:_*),toSchema(agg:_*),op, kind, ref)
+  override def makeGroup:(Operator, Seq[String], Seq[String], String, Option[Ref]) => Operator =
+    (op,keys,agg,kind,ref) => Group(toSchema(keys:_*),toSchema(agg:_*),op, kind, ref)
 
 }

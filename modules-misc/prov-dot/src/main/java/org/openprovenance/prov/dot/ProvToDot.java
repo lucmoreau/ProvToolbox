@@ -13,6 +13,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.vanilla.QualifiedSpecializationOf;
 
+import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS;
+import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
+
 /** Serialisation of  Prov representation to DOT format. */
 public class ProvToDot implements DotProperties,  RecommendedProvVisualProperties, ProvShorthandNames {
 
@@ -27,6 +30,8 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
 
     final ProvFactory pf;
+    private boolean displayAnnotations;
+
     QualifiedName makeSumSize(){
         return pf.newQualifiedName(NamespacePrefixMapper.SUMMARY_NS, "size", NamespacePrefixMapper.SUMMARY_PREFIX);
     }
@@ -276,7 +281,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     }
 
 
-    public void emitAnnotations(String id, HasOther statement, PrintStream out) {
+    public void emitAnnotations(String generatedIdIfUnqualifiedRelation, HasOther statement, PrintStream out) {
 
         if (((statement.getOther()==null)
                 || (statement.getOther().isEmpty())
@@ -291,19 +296,31 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 (! (statement instanceof HasLocation) || ((HasLocation)statement).getLocation().isEmpty())
                 &&
                 (((HasLabel)statement).getLabel().isEmpty())
+                &&
+                ( (! (statement instanceof Identifiable)) || ((Identifiable) statement).getId() ==null || statement instanceof Element)
         ) return;
 
+        QualifiedName statementId = ((Identifiable) statement).getId();
+
         Map<String,String> properties= new HashMap<>();
-        QualifiedName newId=annotationId(((Identifiable)statement).getId(),id);
+        QualifiedName newId=annotationId(statementId,generatedIdIfUnqualifiedRelation);
+        boolean qualifiedRelationWithId=statement instanceof Relation && statementId !=null;
+        if (qualifiedRelationWithId) {
+            // update properties, this will be picked up by addAnnotationLabel
+            properties.put("id",statementId.getLocalPart());
+        }
+        qualifiedRelationWithId=qualifiedRelationWithId|| !generatedIdIfUnqualifiedRelation.isEmpty();
         emitElement(newId,
                 null,
-                addAnnotationShape(statement,addAnnotationColor(statement,addAnnotationLabel(statement,properties))),
+                addAnnotationShape(statement,addAnnotationColor(statement, qualifiedRelationWithId, addAnnotationLabel(statement,properties))),
                 out);
         Map<String,String> linkProperties= new HashMap<>();
         emitRelation(null,
                 qualifiedNameToString(newId),
-                qualifiedNameToString(((Identifiable)statement).getId()),
-                addAnnotationLinkProperties(statement,linkProperties),out,true);
+                (statementId==null)?generatedIdIfUnqualifiedRelation:qualifiedNameToString(statementId),
+                addAnnotationColor(statement, qualifiedRelationWithId,addAnnotationLinkProperties(statement,linkProperties)),
+                out,
+                true);
     }
 
 
@@ -470,6 +487,12 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
         StringBuilder label= new StringBuilder();
         label.append("<<TABLE cellpadding=\"0\" border=\"0\">\n");
+        if (properties.get("id")!=null) {
+            label.append("	<TR>\n");
+            label.append("	    <TD align=\"left\">").append("id").append(":</TD>\n");
+            label.append("	    <TD align=\"left\">").append(properties.get("id")).append("</TD>\n");
+            label.append("	</TR>\n");
+        }
         for (Type type: ((HasType)ann).getType()) {
             label.append("	<TR>\n");
             label.append("	    <TD align=\"left\">").append("type").append(":</TD>\n");
@@ -510,7 +533,8 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         }
         for (Other prop: ann.getOther()) {
 
-            if (prop.getElementName().getNamespaceURI().startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX)) {
+            if (prop.getElementName().getNamespaceURI().startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX) ||
+                    prop.getElementName().getNamespaceURI().equals(PROV_EXT_NS) ) {
                 // no need to display this attribute
                 continue;
             }
@@ -524,6 +548,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         label.append("    </TABLE>>\n");
         properties.put(DOT_LABEL, label.toString());
         properties.put(DOT_FONTSIZE,"10");
+
 
         return properties;
     }
@@ -588,17 +613,14 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
 
 
-    public Map<String,String> addAnnotationColor(HasOther ann, Map<String,String> properties) {
-        if (displayAnnotationColor) {
-            properties.put(DOT_COLOUR,annotationColor(ann));
-            properties.put(DOT_FONTCOLOUR,"black");
-        }
+    public Map<String,String> addAnnotationColor(HasOther ann, boolean qualifiedRelationWithId, Map<String,String> properties) {
+        properties.put(DOT_COLOUR, (qualifiedRelationWithId)? "chocolate4" : annotationColor(ann));
+        properties.put(DOT_FONTCOLOUR, (qualifiedRelationWithId)? "chocolate4" : "black");
         return properties;
     }
 
 
 
-    boolean displayAnnotationColor=true;
 
     public String activityLabel(Activity p) {
         return localnameToString(p.getId());
@@ -670,6 +692,11 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             }
             Map<String,String> properties3= new HashMap<>();
 
+            if (e instanceof WasInvalidatedBy) {
+                properties2.put(DOT_TAILPORT,"s");
+                properties3.put(DOT_HEADPORT,"s");
+            }
+
             QualifiedName effect=u.getEffect(e);
             if (effect!=null) {
                 emitRelation( e.getKind(),
@@ -704,7 +731,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             }
             properties4.put(DOT_STYLE,"dashed");
             properties4.put(DOT_ARROWHEAD,"none");
-            properties4.put(DOT_COLOUR,"gray");
+            properties4.put(DOT_COLOUR,"chocolate4");
 
             for (QualifiedName other: others) {
                 if (other!=null) {
@@ -714,6 +741,11 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                             properties4,
                             out,
                             true);
+                }
+            }
+            if (displayAnnotations) {
+                if (e instanceof HasOther) {
+                    emitAnnotations(bnid, (HasOther)e, out);
                 }
             }
             emitSpace(null,out);
@@ -951,28 +983,28 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             }
             if (r instanceof WasAttributedTo) {
                 WasAttributedTo wat = (WasAttributedTo) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(wat, NamespacePrefixMapper.PROV_EXT_NS);
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(wat, PROV_EXT_NS);
                 List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
             }  else if (r instanceof QualifiedSpecializationOf ) {
                 QualifiedSpecializationOf spe = (QualifiedSpecializationOf) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(spe, NamespacePrefixMapper.PROV_EXT_NS);
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(spe, PROV_EXT_NS);
                 List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
             }  else if (r instanceof Used ) {
                 Used usd = (Used) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(usd, NamespacePrefixMapper.PROV_EXT_NS);
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(usd, PROV_EXT_NS);
                 List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
             }  else if (r instanceof WasInformedBy ) {
                 WasInformedBy wib = (WasInformedBy) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(wib, NamespacePrefixMapper.PROV_EXT_NS);
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(wib, PROV_EXT_NS);
                 List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
             } else if (r instanceof WasStartedBy ) {
                 List<QualifiedName> result1=super.getOtherCauses(r);
                 WasStartedBy start = (WasStartedBy) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(start, NamespacePrefixMapper.PROV_EXT_NS);
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(start, PROV_EXT_NS);
                 List<Other> tmp=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 List<QualifiedName> result2=tmp.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
                 if (result1!=null) result2.addAll(result1);
@@ -980,7 +1012,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             }  else if (r instanceof WasEndedBy ) {
                 List<QualifiedName> result1=super.getOtherCauses(r);
                 WasEndedBy end = (WasEndedBy) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(end, NamespacePrefixMapper.PROV_EXT_NS);
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(end, PROV_EXT_NS);
                 List<Other> tmp=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 List<QualifiedName> result2=tmp.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
                 if (result1!=null) result2.addAll(result1);
@@ -1008,12 +1040,24 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     }
 
     public static ProvToDot newProvToDot(ProvFactory pf) {
-        Supplier<ProvUtilities> utilities= ProvUtilitiesForTriangle::new;
-        return new ProvToDot(pf, utilities);
+        return newProvToDot(pf,false);
     }
     public static ProvToDot newProvToDot(ProvFactory pf, List<String> exceptions) {
+        return newProvToDot(pf, exceptions,false);
+    }
+    public static ProvToDot newProvToDot(ProvFactory pf, boolean displayAnnotations) {
+        Supplier<ProvUtilities> utilities= ProvUtilitiesForTriangle::new;
+        return new ProvToDot(pf, utilities).displayAnnotations(displayAnnotations);
+    }
+
+    private ProvToDot displayAnnotations(boolean displayAnnotations) {
+        this.displayAnnotations=displayAnnotations;
+        return this;
+    }
+
+    public static ProvToDot newProvToDot(ProvFactory pf, List<String> exceptions, boolean displayAnnotations) {
         Supplier<ProvUtilities> utilities= () -> new ProvUtilitiesForTriangle(exceptions);
-        return new ProvToDot(pf, utilities);
+        return new ProvToDot(pf, utilities).displayAnnotations(displayAnnotations);
     }
 
 

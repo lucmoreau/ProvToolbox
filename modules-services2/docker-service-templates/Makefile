@@ -3,6 +3,7 @@ ORIGIN=service-templates
 
 SERVICE=docker-service-templates
 
+BUILD_PLATFORM=linux/amd64
 
 
 TARGET_IMAGE=$(SERVICE).temurin
@@ -39,8 +40,12 @@ dck.file:
 	cp /Users/luc/IdeaProjects/ProvToolbox/modules-services/docker-service-templates/tomcat.open9j.prov/Dockerfile $(LOCATION_IMAGE)
 
 build:
-	$(DOCKER) build -t ${TARGET_IMAGE} ${LOCATION_IMAGE}
+	$(DOCKER) build --platform $(BUILD_PLATFORM) -t ${TARGET_IMAGE} ${LOCATION_IMAGE}
 	$(DOCKER) images
+
+build.mac:
+	$(MAKE) build BUILD_PLATFORM=linux/arm64/v8 TARGET_IMAGE=$(TARGET_IMAGE)-mac LOCATION_IMAGE=$(LOCATION_IMAGE)
+
 
 
 NOW=`date "+%Y-%m-%d-%H-%M"`

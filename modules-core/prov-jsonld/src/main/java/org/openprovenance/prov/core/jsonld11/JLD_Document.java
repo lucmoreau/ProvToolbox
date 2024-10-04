@@ -37,9 +37,9 @@ public interface JLD_Document {
             @JsonSubTypes.Type(value = Entity.class,             name = Constants.PROPERTY_PROV_ENTITY),
             @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION),
             @JsonSubTypes.Type(value = Bundle.class,             name = Constants.PROPERTY_PROV_BUNDLE),
-            @JsonSubTypes.Type(value = QualifiedSpecializationOf.class,        name = Constants.PROPERTY_PROV_QUALIFIED_SPECIALIZATION),
-            @JsonSubTypes.Type(value = QualifiedAlternateOf.class,             name = Constants.PROPERTY_PROV_QUALIFIED_ALTERNATE),
-            @JsonSubTypes.Type(value = QualifiedHadMember.class,               name = Constants.PROPERTY_PROV_QUALIFIED_MEMBERSHIP)
+            @JsonSubTypes.Type(value = QualifiedSpecializationOf.class,        name = Constants.PROPERTY_PROV_SPECIALIZATION),
+            @JsonSubTypes.Type(value = QualifiedAlternateOf.class,             name = Constants.PROPERTY_PROV_ALTERNATE),
+            @JsonSubTypes.Type(value = QualifiedHadMember.class,               name = Constants.PROPERTY_PROV_MEMBERSHIP)
 
     })
     @JsonProperty("@graph")

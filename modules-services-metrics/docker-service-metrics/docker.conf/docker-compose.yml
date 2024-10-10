@@ -1,0 +1,41 @@
+version: "3.0"
+
+
+services:
+
+  provtranslator:
+    env_file: env_file.env
+    image: docker-service-translator.temurin
+    restart: always
+    ports:
+      - "8080:8080"
+    links:
+      - redis:redis
+      - mongo:mongo
+    environment:
+      - CATALINA_OPTS=-DPROV_STORAGE_CONFIG=/home/pservice/storage-configuration.json
+    volumes:
+      - $FILE_HOME:/home/pservice
+    depends_on:
+      - redis
+      - mongo
+
+
+  redis:
+    env_file: env_file.env
+    image: redis
+    restart: always
+    expose:
+      - 6379
+    volumes:
+      - $REDIS_HOME:/data
+    command: [redis-server, '--appendonly yes']
+
+  mongo:
+    env_file: env_file.env
+    image: mongo
+    restart: always
+    expose:
+      - 27017
+    volumes:
+      - $MONGO_HOME:/data/db

@@ -1,0 +1,56 @@
+document
+
+  prefix tmpl <http://openprovenance.org/tmpl#>
+  prefix var <http://openprovenance.org/var#>
+  prefix vargen <http://openprovenance.org/vargen#>
+
+
+  bundle vargen:logbundle
+    entity(vargen:bundle, [prov:type='prov:Bundle',  tmpl:label='var:bundleName'])
+
+    entity(var:template, [prov:type='tmpl:Template'])
+    entity(var:bindings, [prov:type='tmpl:Bindings'])
+
+    wasDerivedFrom(vargen:bundle, var:template, vargen:activity, -, -, [prov:type='tmpl:Expansion'])
+    wasDerivedFrom(vargen:bundle, var:bindings, vargen:activity, -, -, [prov:type='tmpl:BindingsDerivation'])
+
+    activity(vargen:activity, [prov:type='tmpl:ExpansionActivity'])
+    agent(var:account)
+
+    wasGeneratedBy(vargen:bundle, vargen:activity, -, [tmpl:time='var:time'])
+    used(vargen:activity, var:template, -)
+    used(vargen:activity, var:bindings, -)
+    used(vargen:activity, var:newCompactDocument, -)
+    wasAssociatedWith(vargen:activity,var:account,-)
+
+
+    wasAttributedTo(vargen:bundle, var:account)			  
+
+    entity(var:newDocument, [prov:type='tmpl:Document']) //, tmpl:has_provenance='vargen:logbundle'
+    entity(var:oldDocument, [prov:type='tmpl:Document'])
+    entity(var:superDocument, [prov:type='tmpl:Document'])
+    entity(var:newCompactDocument, [prov:type='tmpl:CompactDocument'])
+    entity(var:oldCompactDocument, [prov:type='tmpl:CompactDocument'])
+
+    hadMember(var:newDocument,vargen:bundle)
+    wasDerivedFrom(var:newDocument,var:oldDocument)
+    wasDerivedFrom(var:newDocument,var:newCompactDocument)
+    wasDerivedFrom(var:newCompactDocument,var:oldCompactDocument)
+    specializationOf(var:newDocument,var:superDocument)
+    specializationOf(var:oldDocument,var:superDocument)
+
+    hadMember(var:newCompactDocument,var:template)
+    hadMember(var:newCompactDocument,var:bindings)
+
+    entity(vargen:logbundle, [prov:type='prov:Bundle', prov:type='tmpl:SelfAttributedBundle', prov:label="post-document"])
+    entity(var:logtemplate, [prov:type='tmpl:Template'])
+    entity(var:logbindings, [prov:type='tmpl:Bindings'])
+    wasGeneratedBy(vargen:logbundle, - , -, [tmpl:time='var:time'])
+    agent(var:logaccount)
+    wasAttributedTo(vargen:logbundle,var:logaccount)
+    wasDerivedFrom(vargen:logbundle, var:logtemplate,- , -, -, [prov:type='tmpl:Expansion'])
+    wasDerivedFrom(vargen:logbundle, var:logbindings,- , -, -, [prov:type='tmpl:BindingsDerivation'])
+
+  endBundle
+
+endDocument

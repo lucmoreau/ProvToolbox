@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %c{2} - %msg%n"/>
+    </Console>
+  </Appenders>
+
+
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="Console"/>
+    </Root>
+
+
+    <Logger name="org.quartz-scheduler" level="info">
+      <AppenderRef ref="Console"/>
+    </Logger>
+
+
+    <Logger name="org.openprovenance.prov.service" level="info">
+      <AppenderRef ref="Console"/>
+    </Logger>
+
+
+  </Loggers>
+</Configuration>
+
+
+<!--
+
+  <category name="org.quartz">   
+    <priority value="WARN"/>   
+    <appender-ref ref="stdout"/>
+  </category> 
+
+  <category name="org.jboss.resteasy">   
+    <priority value="INFO"/>   
+    <appender-ref ref="stdout"/>
+  </category> 
+
+  <category name="org.apache.http">   
+    <priority value="INFO"/>   
+    <appender-ref ref="stdout"/>
+  </category> 
+
+  <category name="org.openprovenance.prov.interop">   
+    <priority value="INFO"/>   
+    <appender-ref ref="stdout"/>
+  </category> 
+
+  <category name="org.hibernate">   
+    <priority value="INFO"/>   
+    <appender-ref ref="stdout"/>
+  </category> 
+
+  <category name="com.wordnik">   
+    <priority value="ALL"/>   
+    <appender-ref ref="stdout"/>
+  </category>
+
+  <root>
+    <priority value="debug"></priority>
+    <appender-ref ref="stdout"/>
+  </root>
+</log4j:configuration>
+-->

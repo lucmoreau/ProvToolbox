@@ -1,0 +1,525 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>modules-services-metrics</artifactId>
+        <groupId>org.openprovenance.prov</groupId>
+        <version>2.2.1-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>service-metrics</artifactId>
+    <name> |---- SERVICE-METRICS</name>
+    <packaging>war</packaging>
+    <description>A REST service for provenance metrics</description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-interop</artifactId>
+            <version>2.2.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-template</artifactId>
+            <version>2.2.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-core</artifactId>
+            <version>2.2.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-translation</artifactId>
+            <version>2.2.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-validation</artifactId>
+            <version>2.2.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-storage-index-redis</artifactId>
+            <version>2.2.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-template-compiler</artifactId>
+            <version>2.2.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-storage-mongodb</artifactId>
+            <version>2.2.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-template-library</artifactId>
+            <version>2.2.1-SNAPSHOT</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-servlet-initializer</artifactId>
+            <version>${resteasy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakarta.servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2-jakarta</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>swagger-ui</artifactId>
+            <version>${webjars.swagger-ui.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>${webjars.jquery.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap-table</artifactId>
+            <version>${webjars.bootstrap.tables.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>${webjars.bootstrap.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>${webjars.fontawesome.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.bowergithub.ajaxorg</groupId>
+            <artifactId>ace-builds</artifactId>
+            <version>${webjars.ace.version}</version>
+        </dependency>
+
+
+        <!-- for testing -->
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-model</artifactId>
+            <version>2.2.1-SNAPSHOT</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>${resteasy.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+
+    </dependencies>
+
+
+
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${war.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-war</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+
+
+                        <configuration>
+                            <classifier />
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <webXml>src/main/webapp.filter/WEB-INF/jetty-web.xml</webXml>
+                            <webappDirectory>${project.build.directory}/${project.build.finalName}-jetty</webappDirectory>
+                            <filters>
+                                <filter>src/main/resources/properties/prov.webapp.config.properties</filter>
+                                <filter>src/main/resources/properties/jetty.webapp.config.properties</filter>
+                            </filters>
+                            <webResources>
+                                <resource>
+                                    <filtering>true</filtering>
+                                    <!-- this is relative to the pom.xml directory -->
+                                    <directory>src/main/webapp.filter</directory>
+                                    <excludes>
+                                        <exclude>WEB-INF/jetty-web.xml</exclude>
+                                        <exclude>WEB-INF/tomcat-web.xml</exclude>
+                                        <exclude>WEB-INF/classes</exclude>
+                                    </excludes>
+                                    <includes>**/*</includes>
+                                </resource>
+                                <resource>
+                                    <filtering>true</filtering>
+                                    <!-- this is relative to the pom.xml directory -->
+                                    <directory>src/main/resources/org</directory>
+                                    <targetPath>WEB-INF/classes/org</targetPath>
+                                </resource>
+                            </webResources>
+
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build-docker-war</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>docker</classifier>
+
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <webXml>src/main/webapp.filter/WEB-INF/tomcat-web.xml</webXml>
+                            <webappDirectory>${project.build.directory}/${project.build.finalName}-tomcat</webappDirectory>
+                            <filters>
+                                <filter>src/main/resources/properties/prov.webapp.config.properties</filter>
+                                <filter>src/main/resources/properties/tomcat.webapp.config.properties</filter>
+                            </filters>
+                            <webResources>
+                                <resource>
+                                    <filtering>true</filtering>
+                                    <!-- this is relative to the pom.xml directory -->
+                                    <directory>src/main/webapp.filter</directory>
+                                    <excludes>
+                                        <exclude>WEB-INF/jetty-web.xml</exclude>
+                                        <exclude>WEB-INF/tomcat-web.xml</exclude>
+                                        <exclude>WEB-INF/classes</exclude>
+                                    </excludes>
+                                    <includes>**/*</includes>
+                                </resource>
+                                <resource>
+                                    <filtering>true</filtering>
+                                    <!-- this is relative to the pom.xml directory -->
+                                    <directory>src/main/resources/org</directory>
+                                    <targetPath>WEB-INF/classes/org</targetPath>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${javadoc.plugin.version}</version>
+                <configuration>
+                    <source>1.9</source>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${jar.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/config</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>log4j2.xml</include>
+                </includes>
+            </resource>
+        </resources>
+
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources/config</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>log4j2.xml</include>
+                </includes>
+            </testResource>
+        </testResources>
+    </build>
+
+    <properties>
+        <service.port>7073</service.port>
+        <service.context>/metrics</service.context>
+        <service.host>localhost</service.host>
+        <service.protocol>http</service.protocol>
+    </properties>
+
+
+    <profiles>
+
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <validation.log.location>target/</validation.log.location>
+                <validation.prov.log.location>target/</validation.prov.log.location>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${failsafe.plugin.version}</version>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <runOrder>alphabetical</runOrder>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>integration-test</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>verify</id>
+                                <goals>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!--
+        <profile>
+            <id>docker</id>
+            <properties>
+                <isdocker>docker</isdocker>
+                <upload.directory>/home/pservice/files/</upload.directory>
+                <validation.log.location>/home/pservice/log/</validation.log.location>
+                <validation.prov.log.location>/home/pservice/log/</validation.prov.log.location>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${surefire.plugin.version}</version>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+-->
+
+
+        <profile>
+            <id>jetty</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-util</artifactId>
+                    <version>${jetty.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.microprofile.config</groupId>
+                    <artifactId>microprofile-config-api</artifactId>
+                    <version>${microprofile.version}</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>${jar.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>test-jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>1.0.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>set-system-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <properties>
+                                        <!--
+                                        <property>
+                                            <name>PSERVICE_MONGO_HOST</name>
+                                            <value>localhost</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_DBNAME</name>
+                                            <value>provtest</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_INDEX</name>
+                                            <value>redis</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_DEL_PERIOD</name>
+                                            <value>600</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_STORAGE</name>
+                                            <value>fs</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_REDIS_HOST</name>
+                                            <value>localhost</value>
+                                        </property>
+                                        <property>
+                                            <name>POSTGRES_HOST</name>
+                                            <name>localhost</name>
+                                        </property>
+                                        -->
+                                        <property>
+                                            <name>RESOURCES_HOST</name>
+                                            <value>${service.protocol}://${service.host}:${service.port}${service.context}/provapi/resources</value>
+                                        </property>
+                                        <property>
+                                            <name>PROV_STORAGE_CONFIG</name>
+                                            <value>${project.build.directory}/test-classes/config/storage-configuration-mongodb-redis.json</value>
+                                        </property>
+                                    </properties>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <version>${jetty.version}</version>
+                        <configuration>
+                            <webApp>
+                                <contextPath>${service.context}</contextPath>
+                                <descriptor>${project.basedir}/src/main/webapp.filter/WEB-INF/jetty-web.xml</descriptor>
+                            </webApp>
+                            <httpConnector>
+                                <port>${service.port}</port>
+                            </httpConnector>
+                            <stopKey>foo</stopKey>
+                            <stopPort>9999</stopPort>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start-jetty</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                                <configuration>
+
+
+
+                                    <!-- -->
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>stop-jetty</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+
+    </profiles>
+
+
+
+
+</project>

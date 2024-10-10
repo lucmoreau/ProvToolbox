@@ -77,6 +77,13 @@
     <file url="file://$PROJECT_DIR$/modules-nf/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/config" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services-metrics/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services-metrics/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/docker-service-translator" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/docker-service-translator/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources" charset="UTF-8" />

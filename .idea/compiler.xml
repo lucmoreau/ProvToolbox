@@ -22,6 +22,7 @@
         <module name="benchmarks" />
         <module name="prov-model" />
         <module name="prov-toolbox-js-embedding" />
+        <module name="service-metrics" />
         <module name="modules-executable-provman" />
         <module name="docker-service-templates" />
         <module name="prov-toolbox-plugin" />
@@ -31,6 +32,7 @@
         <module name="tutorial5" />
         <module name="toolbox" />
         <module name="prov-generator" />
+        <module name="docker-service-metrics" />
         <module name="prov-template-compiler" />
         <module name="prov-service-core" />
         <module name="prov-storage-filesystem" />

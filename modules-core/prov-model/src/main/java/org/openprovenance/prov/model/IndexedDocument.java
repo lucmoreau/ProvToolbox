@@ -1157,6 +1157,19 @@ public class IndexedDocument implements StatementAction {
         }
     }
 
+    public Collection<WasEndedBy> getWasEndedBy() {
+        return anonWasEndedBy;
+    }
+    public Collection<WasInvalidatedBy> getWasInvalidatedBy() {
+        return anonWasInvalidatedBy;
+    }
+
+    public Collection<WasStartedBy> getWasStartedBy() {
+        return anonWasStartedBy;
+    }
+    public Collection<WasInfluencedBy> getWasInfluencedBy() {
+        return anonWasInfluencedBy;
+    }
 
 }
 

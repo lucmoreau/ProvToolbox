@@ -152,9 +152,31 @@ public class Rules {
     public Object getMetrics(Document document, ProvFactory pFactory) {
         IndexedDocument indexedDocument = new IndexedDocument(pFactory, document, true);
         Map<String, Object> res = new HashMap<>();
-        res.put("countDerivationsAndGenerations", countDerivationsAndGenerations(indexedDocument));
-        res.put("countActivitiesWithoutAgent", countActivitiesWithoutAgent(indexedDocument));
-        res.put("countDerivationsAndGenerationsAndUsages", countDerivationsAndGenerationsAndUsages(indexedDocument));
+
+        Map<String, Object> res1 = new HashMap<>();
+        res1.put("countEntities", indexedDocument.getEntities().size());
+        res1.put("countActivities", indexedDocument.getActivities().size());
+        res1.put("countAgents", indexedDocument.getAgents().size());
+        res1.put("countWasGeneratedBy", indexedDocument.getWasGeneratedBy().size());
+        res1.put("countUsed", indexedDocument.getUsed().size());
+        res1.put("countWasAssociatedWith", indexedDocument.getWasAssociatedWith().size());
+        res1.put("countWasAttributedTo", indexedDocument.getWasAttributedTo().size());
+        res1.put("countWasDerivedFrom", indexedDocument.getWasDerivedFrom().size());
+        res1.put("countWasEndedBy", indexedDocument.getWasEndedBy().size());
+        res1.put("countWasInformedBy", indexedDocument.getWasInformedBy().size());
+        res1.put("countWasInvalidatedBy", indexedDocument.getWasInvalidatedBy().size());
+        res1.put("countWasStartedBy", indexedDocument.getWasStartedBy().size());
+        res1.put("countWasInfluencedBy", indexedDocument.getWasInfluencedBy().size());
+        res.put("simpleMetrics", res1);
+
+
+        Map<String, Object> res2 = new HashMap<>();
+        res2.put("countDerivationsAndGenerations", countDerivationsAndGenerations(indexedDocument));
+        res2.put("countActivitiesWithoutAgent", countActivitiesWithoutAgent(indexedDocument));
+        res2.put("countDerivationsAndGenerationsAndUsages", countDerivationsAndGenerationsAndUsages(indexedDocument));
+        res.put("patternMetrics", res2);
+
+
         return res;
     }
 

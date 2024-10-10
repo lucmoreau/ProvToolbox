@@ -125,9 +125,9 @@ aggregate-count2:
 
 
 kern:
-	$(PROVMAN) kernelize --infile modules-nf/prov-nf/src/test/resources/prov/pc1.provn -t 2 -A true --features target/pc1-feature.json
+	$(PROVMAN) kernelize --infile ../modules-nf/prov-nf/src/test/resources/prov/pc1.provn -t 2 -A true --features target/pc1-feature.json
 kern2:
-	$(PROVMAN) kernelize --infile modules-nf/prov-nf/src/test/resources/prov/pc1.provn -t 2 -A false --features target/pc1-feature2.json
+	$(PROVMAN) kernelize --infile ../modules-nf/prov-nf/src/test/resources/prov/pc1.provn -t 2 -A false --features target/pc1-feature2.json
 
 
 batch.explain.ptm:

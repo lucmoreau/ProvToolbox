@@ -9,87 +9,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/docker.conf/.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/docker.conf/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/docker.conf/env_file.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/docker.conf/storage-configuration-mongodb-redis.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/src/main/resources/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/src/main/resources/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/src/test/resources/sculpture.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/license/THIRD-PARTY.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/config/log4j2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/HasProvenanceHeaderFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/ViewService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/org/openprovenance/prov/service/core/config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/properties/jetty.webapp.config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/properties/prov.webapp.config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/properties/tomcat.webapp.config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/templates/post-document.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/templates/provapi/post-document.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/templates/provapi/translate-document.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/templates/put-first-named-document.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/templates/put-named-document.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/webresources/prov/invalid.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/webresources/prov/pc1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/webresources/prov/primer.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b1.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b2.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b3.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b4.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/META-INF/context.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/WEB-INF/classes/org/openprovenance/prov/service/core/config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/WEB-INF/jetty-web.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/WEB-INF/tomcat-web.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/Warning_32.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/about.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/agt_action_success-256.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/agt_action_success-32.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/api.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/button_cancel-32.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/contact.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/expander.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/provservice.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/rator.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/translator.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/validation.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/validationReport.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/validator.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/config/log4j2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/java/org/openprovenance/prov/service/IsDocumentWithFieldsToIgnore.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/java/org/openprovenance/prov/service/ValidationReportMessageBodyReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/java/org/openprovenance/prov/service/template/ExpandIT.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/java/org/openprovenance/prov/service/translator/DateIT.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/java/org/openprovenance/prov/service/translator/ProvenanceIT.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/java/org/openprovenance/prov/service/validator/ValidateIT.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/config/log4j2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/config/storage-configuration-fs-memory.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/config/storage-configuration-fs-redis.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/config/storage-configuration-mongodb-redis.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/dates/date_with_tz_offset.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/dates/date_with_tz_offset.jsonld" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/dates/date_with_tz_offset.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/dates/date_with_tz_offset.provx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/org/openprovenance/prov/interop/config.interop.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/org/openprovenance/prov/service/translator/config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/test-templates/bindings1.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/test-templates/expansion-bindings1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/test-validator/doc-tovalidate.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/test-validator/picaso-file.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/test-validator/picaso-file2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/2.2.1-SNAPSHOT/bundle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/RulesFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/SimpleRulesFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/MetricsCalculator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/MetricsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/scala/org/openprovenance/prov/scala/typemap/IncrementalProcessor.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/tmap2.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/Rules.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/Rules.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/java/org/openprovenance/prov/service/translator/ProvenanceIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/java/org/openprovenance/prov/service/translator/ProvenanceIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/scala/org/openprovenance/prov/scala/typemap/TypeMap.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/scala/org/openprovenance/prov/scala/typemap/TypeMap.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/test/scala/org/openprovenance/prov/scala/typemap/TypeLibraryIssueSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/test/scala/org/openprovenance/prov/scala/typemap/TypeLibraryIssueSpec.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,8 +67,8 @@
         <option value="JavaScript File" />
         <option value="Enum" />
         <option value="Python Script" />
-        <option value="Interface" />
         <option value="module-info" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -162,6 +101,21 @@
     &quot;accountId&quot;: &quot;f75af254-b653-4000-a82a-28cf662d1438&quot;
   }
 }</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+  </component>
   <component name="InvalidFacetManager">
     <ignored-facets>
       <facet id="prov-template-library/invalid/Python" />
@@ -229,8 +183,11 @@
     "JUnit.RoundTripFromJavaJSONLD11Test.executor": "Run",
     "JUnit.RoundTripFromJavaMongoTest.executor": "Run",
     "JUnit.StorageTest.testExample.executor": "Debug",
+    "Makefile Target.go.executor": "Run",
     "Makefile Target.go1.executor": "Run",
     "Makefile Target.go2.executor": "Run",
+    "Makefile Target.kern.executor": "Run",
+    "Makefile Target.kern2.executor": "Run",
     "Makefile Target.pkcs12.executor": "Run",
     "Makefile Target.test.json.string.executor": "Run",
     "Makefile Target.test.metrics.executor": "Run",
@@ -239,6 +196,7 @@
     "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ScalaTest.TypeLibraryIssueSpec.executor": "Run",
     "WebServerToolWindowFactoryState": "false",
     "extract.method.default.visibility": "public",
     "git-widget-placeholder": "development2__0",
@@ -310,18 +268,18 @@
       <recent name="org.openprovenance.prov.template.compiler.common.Constants" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="org.openprovenance.prov.service.translation" />
       <recent name="org.openprovenance.prov.dot" />
       <recent name="org.openprovenance.prov.model" />
       <recent name="org.openprovenance.prov.storage.mongodb" />
       <recent name="org.openprovenance.prov.core.json" />
-      <recent name="org.openprovenance.prov.core" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.service" />
+      <recent name="org.openprovenance.prov.rules" />
       <recent name="org.openprovenance.prov.templates.library" />
       <recent name="org.openprovenance.prov.service.core" />
       <recent name="org.openprovenance.prov.scala.nf" />
-      <recent name="org.openprovenance.prov" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.service.dispatch" />
@@ -331,7 +289,7 @@
       <recent name="org.openprovenance.prov.notation" />
     </key>
   </component>
-  <component name="RunManager" selected="Makefile Target.go1">
+  <component name="RunManager" selected="ScalaTest.TypeLibraryIssueSpec">
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -387,56 +345,6 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="Reasoning" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.sparql.Reasoning" />
-      <module name="prov-sparql-query" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules-tools/prov-sparql-query" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.sparql.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PC1FullTest.testPC1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-dot" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.dot.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.dot.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.dot.test.PC1FullTest" />
-      <option name="METHOD_NAME" value="testPC1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
       <module name="prov-jsonld" />
       <extension name="net.ashald.envfile">
@@ -495,20 +403,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="go" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-summarisation/prov-typemap/Makefile" target="go" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
     <configuration name="go1" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/modules-tools/prov-sparql-query/Makefile" target="go1" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
     </configuration>
-    <configuration name="go2" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-tools/prov-sparql-query/Makefile" target="go2" workingDirectory="" arguments="">
+    <configuration name="kern" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-executable-provman/Makefile" target="kern" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
     </configuration>
-    <configuration name="test.json.string" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.json.string" workingDirectory="" arguments="">
+    <configuration name="kern2" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-executable-provman/Makefile" target="kern2" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
@@ -565,6 +479,33 @@
       <option name="shortenClasspath" value="NONE" />
       <option name="testClassPath" value="org.openprovenance.prov.scala.ModelSpec" />
       <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TypeLibraryIssueSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="prov-typemap" />
+      <option name="VMParameters" value="" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="alternativeJrePath" />
+      <option name="alternativeJrePathEnabled" value="false" />
+      <option name="classpathModifications">
+        <list />
+      </option>
+      <option name="envs">
+        <map />
+      </option>
+      <option name="passParentEnvs" value="true" />
+      <option name="programParameters" value="" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <option name="testKind" value="Class" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <option name="shortenClasspath" value="NONE" />
+      <option name="testClassPath" value="org.openprovenance.prov.scala.typemap.TypeLibraryIssueSpec" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -607,21 +548,21 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Application.Reasoning" />
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="JUnit.PC1FullTest.testPC1" />
+      <item itemvalue="Makefile Target.go" />
+      <item itemvalue="Makefile Target.kern" />
+      <item itemvalue="Makefile Target.kern2" />
       <item itemvalue="Makefile Target.go1" />
-      <item itemvalue="Makefile Target.go2" />
-      <item itemvalue="Makefile Target.test.json.string" />
       <item itemvalue="ScalaTest.ModelSpec" />
+      <item itemvalue="ScalaTest.TypeLibraryIssueSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="ScalaTest.TypeLibraryIssueSpec" />
+        <item itemvalue="Makefile Target.go" />
+        <item itemvalue="Makefile Target.kern" />
+        <item itemvalue="Makefile Target.kern2" />
         <item itemvalue="Makefile Target.go1" />
-        <item itemvalue="Makefile Target.go2" />
-        <item itemvalue="Application.Reasoning" />
-        <item itemvalue="Makefile Target.test.json.string" />
-        <item itemvalue="JUnit.PC1FullTest.testPC1" />
       </list>
     </recent_temporary>
   </component>
@@ -1078,7 +1019,7 @@
       <workItem from="1726515019831" duration="6181000" />
       <workItem from="1727074643815" duration="16527000" />
       <workItem from="1728039245552" duration="620000" />
-      <workItem from="1728504186336" duration="6928000" />
+      <workItem from="1728504186336" duration="30418000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

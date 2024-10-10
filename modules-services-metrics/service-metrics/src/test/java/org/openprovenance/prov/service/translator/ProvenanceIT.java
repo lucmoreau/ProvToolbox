@@ -58,7 +58,7 @@ public class ProvenanceIT extends TestCase implements ApiUriFragments {
 
         System.out.println(escapeGreen(link.getParams().toString()));
 
-        List<String> rels = link.getRels()
+        List<String> rels = link.getRels();
         assertEquals(1, rels.size());
         assertEquals(HAS_PROVENANCE, rels.get(0));
 

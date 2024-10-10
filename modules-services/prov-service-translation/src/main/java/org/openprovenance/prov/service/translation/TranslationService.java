@@ -18,6 +18,8 @@ import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.rules.Rules;
+import org.openprovenance.prov.rules.RulesFactory;
+import org.openprovenance.prov.rules.SimpleRulesFactory;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.service.translation.actions.ActionMetrics;
 import org.openprovenance.prov.service.translation.actions.ActionTranslate;
@@ -45,7 +47,10 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
     private final ServiceUtils utils;
 
 
-	private TranslationService(PostService postService, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
+    private RulesFactory rulesFactory = new SimpleRulesFactory();
+
+
+    private TranslationService(PostService postService, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
         utils=postService.getServiceUtils();
         postService.addToPerformers(PostService.addToList(new ActionTranslate(utils), performers));
         postService.addToPerformers(PostService.addToList(new ActionMetrics(utils), performers));
@@ -223,7 +228,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
             return utils.composeResponseNotFoundDocument(docId);
         }
 
-        Rules rules=new Rules();
+        Rules rules= rulesFactory.newRules();
         Object o=rules.getMetrics(doc, utils.getProvFactory());
 
         StreamingOutput promise= out -> new ObjectMapper().writeValue(out, o);
@@ -232,5 +237,11 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
 
 
     }
+
+    public void setRulesFactory(RulesFactory rulesFactory) {
+        this.rulesFactory = rulesFactory;
+    }
+
+
 
 }

@@ -117,7 +117,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 
 
 		singletons.add(ps);
-		singletons.add(new TranslationService(ps));
+		singletons.add(new MetricsService(ps));
 		singletons.add(new TemplateService(ps));
         singletons.add(new ValidationService(ps));
 		singletons.add(new RandomService(ps));

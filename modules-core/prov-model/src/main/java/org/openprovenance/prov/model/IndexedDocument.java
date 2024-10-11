@@ -300,7 +300,23 @@ public class IndexedDocument implements StatementAction {
 
 
 
+    /**
+     * Return all anonymous AlternateOf edges for this graph.
+     *
+     * @return a collection of {@link AlternateOf} edges
+     */
+    public Collection<AlternateOf> getAlternateOf() {
+        return anonAlternateOf;
+    }
 
+    /**
+     * Return all named AlternateOf edges for this graph.
+     *
+     * @return a map of {@link AlternateOf} edges
+     */
+    public Map<QualifiedName, Collection<AlternateOf>> getNamedAlternateOf() {
+        return namedAlternateOfMap;
+    }
 
     /** Return all WasDerivedFrom edges with entity a as a cause.
      *  @param a an entity

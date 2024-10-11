@@ -1,7 +1,6 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.service.metrics;
 
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;

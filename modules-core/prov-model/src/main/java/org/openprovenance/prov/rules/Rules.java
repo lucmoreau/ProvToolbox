@@ -153,20 +153,23 @@ public class Rules {
         IndexedDocument indexedDocument = new IndexedDocument(pFactory, document, true);
         Map<String, Object> res = new HashMap<>();
 
-        Map<String, Object> res1 = new HashMap<>();
-        res1.put("countEntities", indexedDocument.getEntities().size());
-        res1.put("countActivities", indexedDocument.getActivities().size());
-        res1.put("countAgents", indexedDocument.getAgents().size());
-        res1.put("countWasGeneratedBy", indexedDocument.getWasGeneratedBy().size());
-        res1.put("countUsed", indexedDocument.getUsed().size());
-        res1.put("countWasAssociatedWith", indexedDocument.getWasAssociatedWith().size());
-        res1.put("countWasAttributedTo", indexedDocument.getWasAttributedTo().size());
-        res1.put("countWasDerivedFrom", indexedDocument.getWasDerivedFrom().size());
-        res1.put("countWasEndedBy", indexedDocument.getWasEndedBy().size());
-        res1.put("countWasInformedBy", indexedDocument.getWasInformedBy().size());
-        res1.put("countWasInvalidatedBy", indexedDocument.getWasInvalidatedBy().size());
-        res1.put("countWasStartedBy", indexedDocument.getWasStartedBy().size());
-        res1.put("countWasInfluencedBy", indexedDocument.getWasInfluencedBy().size());
+        SimpleMetrics res1 = new SimpleMetrics();
+        res1.countEntities = indexedDocument.getEntities().size();
+        res1.countActivities = indexedDocument.getActivities().size();
+        res1.countAgents = indexedDocument.getAgents().size();
+        res1.countWasGeneratedBy = indexedDocument.getWasGeneratedBy().size()+indexedDocument.getNamedWasGeneratedBy().keySet().size();
+        res1.countUsed = indexedDocument.getUsed().size()+indexedDocument.getNamedUsed().keySet().size();
+        res1.countWasAssociatedWith = indexedDocument.getWasAssociatedWith().size()+indexedDocument.getNamedWasAssociatedWith().keySet().size();
+        res1.countWasAttributedTo = indexedDocument.getWasAttributedTo().size()+indexedDocument.getNamedWasAttributedTo().keySet().size();
+        res1.countWasDerivedFrom = indexedDocument.getWasDerivedFrom().size()+indexedDocument.getNamedWasDerivedFrom().keySet().size();
+        res1.countWasEndedBy = indexedDocument.getWasEndedBy().size();//+indexedDocument.getNamedWasEndedBy().keySet().size();
+        res1.countWasInformedBy = indexedDocument.getWasInformedBy().size();
+        res1.countWasInvalidatedBy = indexedDocument.getWasInvalidatedBy().size();//+indexedDocument.getNamedWasInvalidatedBy().keySet().size();
+        res1.countWasStartedBy = indexedDocument.getWasStartedBy().size();
+        res1.countWasInfluencedBy = indexedDocument.getWasInfluencedBy().size();
+        res1.countSpecializationOf = indexedDocument.getSpecializationOf().size()+indexedDocument.getNamedSpecializationOf().keySet().size();
+        res1.countAlternateOf = indexedDocument.getAlternateOf().size()+indexedDocument.getNamedAlternateOf().keySet().size();
+        res1.countHadMember = indexedDocument.getHadMember().size()+indexedDocument.getNamedHadMember().keySet().size();
         res.put("simpleMetrics", res1);
 
 

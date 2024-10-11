@@ -9,26 +9,52 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/RulesFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/SimpleRulesFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/MetricsCalculator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/MetricsService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/scala/org/openprovenance/prov/scala/typemap/IncrementalProcessor.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/tmap2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/SimpleMetrics.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsQuery.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/Querier.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/Storage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/TmpTypeMap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/inface/BiConsumerWithException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/inface/FunctionWithException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/properties/prov-metrics.webapp.config.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/sql/metrics.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/java/org/openprovenance/prov/java/typemap/TypeMapProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/module-info.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/interop/ApiUriFragments.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/interop/ApiUriFragments.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/Rules.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/Rules.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/java/org/openprovenance/prov/service/translator/ProvenanceIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/java/org/openprovenance/prov/service/translator/ProvenanceIT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/scala/org/openprovenance/prov/scala/typemap/TypeMap.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/scala/org/openprovenance/prov/scala/typemap/TypeMap.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/test/scala/org/openprovenance/prov/scala/typemap/TypeLibraryIssueSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/test/scala/org/openprovenance/prov/scala/typemap/TypeLibraryIssueSpec.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/HasProvenanceHeaderFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/HasProvenanceHeaderFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/MetricsCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/MetricsService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/ProvapiApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/ViewService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/ViewService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/WEB-INF/jetty-web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/WEB-INF/jetty-web.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/Warning_32.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/about.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/agt_action_success-256.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/agt_action_success-32.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/api.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/api.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/button_cancel-32.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/contact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/expander.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/rator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/rator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/translator.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/validation.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/validationReport.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/validator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/mapper.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/SwaggerTags.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/SwaggerTags.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/jetty-web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/jetty-web.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/WEB-INF/web-no-security.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/WEB-INF/web-no-security.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/WEB-INF/web-with-security.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/WEB-INF/web-with-security.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/scala/org/openprovenance/prov/scala/typemap/IncrementalProcessor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/scala/org/openprovenance/prov/scala/typemap/IncrementalProcessor.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -204,14 +230,14 @@
     "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services-metrics",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services-metrics/service-metrics/src/main/webapp.filter",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.stylelint": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.66091955",
     "run.code.analysis.last.selected.profile": "pProject Default",
@@ -233,25 +259,25 @@
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.service.metrics" />
       <recent name="org.openprovenance.prov.model.builder" />
       <recent name="org.openprovenance.prov.service.core.config" />
       <recent name="org.openprovenance.prov.rules" />
       <recent name="org.openprovenance.prov.service.security" />
-      <recent name="org.openprovenance.prov.service" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter" />
+      <recent name="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics" />
+      <recent name="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/properties" />
       <recent name="$PROJECT_DIR$/modules-services-metrics" />
       <recent name="$PROJECT_DIR$/modules-services-metrics/service-metrics" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/test/resources" />
-      <recent name="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources" />
+      <recent name="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/properties" />
       <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain/plead" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/xplain/plead/old" />
-      <recent name="$PROJECT_DIR$/modules-services2" />
-      <recent name="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/src/test/resources/org/openprovenance/prov/polyglot" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig" />
@@ -282,11 +308,11 @@
       <recent name="org.openprovenance.prov.scala.nf" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="org.openprovenance.prov.service.dispatch" />
+      <recent name="org.openprovenance.prov.service.metrics" />
       <recent name="org.openprovenance.prov.service" />
+      <recent name="org.openprovenance.prov.service.dispatch" />
       <recent name="org.openprovenance.prov.template.compiler" />
       <recent name="org.openprovenance.prov.template.compiler.sql" />
-      <recent name="org.openprovenance.prov.notation" />
     </key>
   </component>
   <component name="RunManager" selected="ScalaTest.TypeLibraryIssueSpec">
@@ -1019,7 +1045,7 @@
       <workItem from="1726515019831" duration="6181000" />
       <workItem from="1727074643815" duration="16527000" />
       <workItem from="1728039245552" duration="620000" />
-      <workItem from="1728504186336" duration="30418000" />
+      <workItem from="1728504186336" duration="59456000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

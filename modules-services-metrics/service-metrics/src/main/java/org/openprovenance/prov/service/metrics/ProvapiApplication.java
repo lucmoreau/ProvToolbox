@@ -1,5 +1,5 @@
 
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.service.metrics;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,7 +28,6 @@ import org.openprovenance.prov.service.core.writers.NodeMessageBodyWriter;
 import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.translation.RandomService;
 import org.openprovenance.prov.service.translation.TemplateService;
-import org.openprovenance.prov.service.translation.TranslationService;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;

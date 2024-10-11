@@ -1,18 +1,51 @@
 package org.openprovenance.prov.scala.typemap
 
+import org.openprovenance.prov.java.typemap.TypeMapProcessor
 import org.openprovenance.prov.scala.immutable.Document
 import org.openprovenance.prov.scala.summary.{Level0Mapper, SummaryDescriptionJson}
 import org.openprovenance.prov.scala.summary.types.ProvType
-import org.openprovenance.prov.scala.typemap.TypeMap.prettyPrintTypeMap
 
 import java.util
 import scala.collection.mutable
+import org.openprovenance.prov.scala.summary.TypePropagator.om;
 
 object IncrementalProcessor {
+  // in a json object, keys are strings, so we need to convert the keys to integers
+  def convert(m: mutable.Map[String, Map[String, Int]]): mutable.Map[Int, Map[ProvType, Int]] = {
+    m.map{case (k,v) => (k.toInt, v.map{case (k1,v1) => (om.readValue(k1,classOf[ProvType]), v1)})}
+  }
+}
 
+class IncrementalProcessor (m: scala.collection.mutable.Map[Int, Map[ProvType,Int]],
+                            s_acc: scala.collection.mutable.Set[Set[ProvType]],
+                            g: scala.collection.mutable.ListBuffer[String]) {
+
+  def this() = {
+    this(scala.collection.mutable.Map[Int, Map[ProvType,Int]](),
+      scala.collection.mutable.Set[Set[ProvType]](),
+      scala.collection.mutable.ListBuffer[String]())
+  }
+
+  def this(m: String, s_acc: String, g: String) = {
+    this(IncrementalProcessor.convert(om.readValue(m, classOf[scala.collection.mutable.Map[String, Map[String,Int]]])),
+      om.readValue(s_acc, classOf[scala.collection.mutable.Set[Set[ProvType]]]),
+      om.readValue(g, classOf[scala.collection.mutable.ListBuffer[String]]))
+  }
+
+  def printme(): Unit = {
+    println(m)
+    println(s_acc)
+    println(g)
+  }
+
+
+
+  /*
   val m = scala.collection.mutable.Map[Int, Map[ProvType,Int]]()
   val s_acc = scala.collection.mutable.Set[Set[ProvType]]()
   val g= scala.collection.mutable.ListBuffer[String]()
+
+   */
 
   val level = 10
 
@@ -54,5 +87,21 @@ object IncrementalProcessor {
 
 
   }
+
+  def getProvType(depth: Int, index: Int): ProvType = {
+    m(depth).find{case (k,v) => v==index}.get._1
+  }
+
+  def process[T](processor: TypeMapProcessor[T]): T = {
+    val tm_map: String =om.writeValueAsString(m.map{case (k,v) => (k.toString, v.map{case (k1,v1) => (om.writeValueAsString(k1), v1)})})
+    val tm_set: String =om.writeValueAsString(s_acc)
+    val tm_ground=om.writeValueAsString(g)
+    processor.process(tm_map, tm_set, tm_ground)
+  }
+  def processMapOfStrings[T](fun:Function[String,T]):T = {
+    fun(om.writeValueAsString(m.map{case (k,v) => (k.toString, v)}))
+  }
+
+
 
 }

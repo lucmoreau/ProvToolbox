@@ -9,52 +9,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/SimpleMetrics.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsQuery.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/Querier.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/Storage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/TmpTypeMap.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/inface/BiConsumerWithException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/inface/FunctionWithException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/properties/prov-metrics.webapp.config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/sql/metrics.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/java/org/openprovenance/prov/java/typemap/TypeMapProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/interop/ApiUriFragments.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/interop/ApiUriFragments.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/Rules.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/Rules.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/HasProvenanceHeaderFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/HasProvenanceHeaderFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/MetricsCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/MetricsService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/ProvapiApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/ViewService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/ViewService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/WEB-INF/jetty-web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/WEB-INF/jetty-web.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/Warning_32.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/agt_action_success-256.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/agt_action_success-32.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/api.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/api.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/button_cancel-32.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/contact.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/expander.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/rator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/rator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/translator.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/validation.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/validationReport.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/validator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/mapper.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/SwaggerTags.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/SwaggerTags.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/jetty-web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/jetty-web.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/WEB-INF/web-no-security.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/WEB-INF/web-no-security.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/WEB-INF/web-with-security.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/WEB-INF/web-with-security.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/scala/org/openprovenance/prov/scala/typemap/IncrementalProcessor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/scala/org/openprovenance/prov/scala/typemap/IncrementalProcessor.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/validator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/validator.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1045,7 +1003,7 @@
       <workItem from="1726515019831" duration="6181000" />
       <workItem from="1727074643815" duration="16527000" />
       <workItem from="1728039245552" duration="620000" />
-      <workItem from="1728504186336" duration="59456000" />
+      <workItem from="1728504186336" duration="61464000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

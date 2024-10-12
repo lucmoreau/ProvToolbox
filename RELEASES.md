@@ -4,6 +4,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java
 * prov-typemap: incremental construction of type map
 * service-metrics: report and plot
+* prov-model: fixed issue in anonymous collection construction in IndexedDocument
 
 `2.2.0`
 * docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms

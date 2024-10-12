@@ -677,7 +677,7 @@ public class IndexedDocument implements StatementAction {
                 }
             }
 
-            if (!found || !found2) {
+            if ((id==null) && (!found || !found2)) {
                 anonRelationCollection.add(statement);
             }
 

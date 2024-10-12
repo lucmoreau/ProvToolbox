@@ -63,8 +63,9 @@ public class Rules {
      * the seventh one indicates the number of those derivations referring to the usage of e1. */
 
     public EntityActivityDerivationCounter countDerivationsAndGenerationsAndUsages(IndexedDocument indexedDocument) {
-        Collection<List<Object>> triangle=new LinkedList<>();
+        Collection<List<Statement>> triangle=new LinkedList<>();
         Collection<Entity> entities=indexedDocument.getEntities();
+        Collection<Activity> activities=indexedDocument.getActivities();
         for (Entity e2:entities) {
             Collection<WasGeneratedBy> wgbCollection = indexedDocument.getWasGeneratedBy(e2);
             if (wgbCollection != null) {
@@ -81,18 +82,14 @@ public class Rules {
                                     Collection<WasDerivedFrom> wdfCollection = indexedDocument.getWasDerivedFromWithCause(e1);//getWasDerivedFromWithEffect(e1);
                                     if (wdfCollection != null) {
                                         for (WasDerivedFrom wdf : wdfCollection) {
-
-
                                             if (e2.getId().equals(wdf.getGeneratedEntity())) {
                                                 triangle.add(List.of(activity, e1, e2, wdf, wgb, usd));
                                             }
-
                                         }
                                     }
                                 }
                             }
                         }
-
                     }
                 }
             }
@@ -107,7 +104,15 @@ public class Rules {
 
         EntityActivityDerivationCounter res=new EntityActivityDerivationCounter();
         res.triangle=triangle.size();
-        for (List<Object> l:triangle) {
+        res.entities=entities.stream().map(Identifiable::getId).collect(Collectors.toSet()).size();
+
+        Set<QualifiedName> allEntityIds=entities.stream().map(Identifiable::getId).collect(Collectors.toSet());
+        indexedDocument.nonRootEntities().forEach(allEntityIds::remove);
+        res.rootEntities=allEntityIds.size();
+        res.activities=activities.stream().map(Identifiable::getId).collect(Collectors.toSet()).size();
+        res.entitiesWithTriangle = triangle.stream().map(l -> ((Entity)l.get(2)).getId()).collect(Collectors.toSet()).size();
+        res.activitiesWithTriangle = triangle.stream().map(l -> ((Activity)l.get(0)).getId()).collect(Collectors.toSet()).size();
+        for (List<Statement> l:triangle) {
             Activity a=(Activity)l.get(0);
             Entity e1=(Entity)l.get(1);
             Entity e2=(Entity)l.get(2);
@@ -142,9 +147,6 @@ public class Rules {
                     break;
             }
         }
-
-        //System.out.println("triangle=" + triangle);
-
         return res;
     }
 

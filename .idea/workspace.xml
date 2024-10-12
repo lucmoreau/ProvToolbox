@@ -9,10 +9,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/Ansi.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/TrafficLight.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/TrafficLightResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/test/TriangleTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/rator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/rator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/validator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/validator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/Rules.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/Rules.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/counters/EntityActivityDerivationCounter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/counters/EntityActivityDerivationCounter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -167,6 +174,8 @@
     "JUnit.RoundTripFromJavaJSONLD11Test.executor": "Run",
     "JUnit.RoundTripFromJavaMongoTest.executor": "Run",
     "JUnit.StorageTest.testExample.executor": "Debug",
+    "JUnit.TriangleTest.executor": "Run",
+    "JUnit.TriangleTest.testTriangle.executor": "Run",
     "Makefile Target.go.executor": "Run",
     "Makefile Target.go1.executor": "Run",
     "Makefile Target.go2.executor": "Run",
@@ -273,7 +282,7 @@
       <recent name="org.openprovenance.prov.template.compiler.sql" />
     </key>
   </component>
-  <component name="RunManager" selected="ScalaTest.TypeLibraryIssueSpec">
+  <component name="RunManager" selected="JUnit.TriangleTest.testTriangle">
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -369,6 +378,58 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TriangleTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-model" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.rules.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model.test" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.test.TriangleTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TriangleTest.testTriangle" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-model" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.rules.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model.test" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.test.TriangleTest" />
+      <option name="METHOD_NAME" value="testTriangle" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -393,20 +454,8 @@
       </makefile>
       <method v="2" />
     </configuration>
-    <configuration name="go1" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-tools/prov-sparql-query/Makefile" target="go1" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
-    </configuration>
     <configuration name="kern" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/modules-executable-provman/Makefile" target="kern" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
-    </configuration>
-    <configuration name="kern2" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-executable-provman/Makefile" target="kern2" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
@@ -533,20 +582,20 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
+      <item itemvalue="JUnit.TriangleTest" />
+      <item itemvalue="JUnit.TriangleTest.testTriangle" />
       <item itemvalue="Makefile Target.go" />
       <item itemvalue="Makefile Target.kern" />
-      <item itemvalue="Makefile Target.kern2" />
-      <item itemvalue="Makefile Target.go1" />
       <item itemvalue="ScalaTest.ModelSpec" />
       <item itemvalue="ScalaTest.TypeLibraryIssueSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.TriangleTest.testTriangle" />
+        <item itemvalue="JUnit.TriangleTest" />
         <item itemvalue="ScalaTest.TypeLibraryIssueSpec" />
         <item itemvalue="Makefile Target.go" />
         <item itemvalue="Makefile Target.kern" />
-        <item itemvalue="Makefile Target.kern2" />
-        <item itemvalue="Makefile Target.go1" />
       </list>
     </recent_temporary>
   </component>
@@ -1003,7 +1052,7 @@
       <workItem from="1726515019831" duration="6181000" />
       <workItem from="1727074643815" duration="16527000" />
       <workItem from="1728039245552" duration="620000" />
-      <workItem from="1728504186336" duration="61464000" />
+      <workItem from="1728504186336" duration="69170000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

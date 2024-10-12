@@ -5,6 +5,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-typemap: incremental construction of type map
 * service-metrics: report and plot
 * prov-model: fixed issue in anonymous collection construction in IndexedDocument
+* prov-model: rules: traffic light for triangles
 
 `2.2.0`
 * docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms

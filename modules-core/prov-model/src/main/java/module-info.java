@@ -24,8 +24,7 @@ module prov.model {
     opens org.openprovenance.prov.model;
     opens org.openprovenance.prov.model.interop;
     opens org.openprovenance.prov.rules;
-
-
+    exports org.openprovenance.prov.rules.counters;
 
 
 }

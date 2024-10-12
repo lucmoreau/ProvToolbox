@@ -84,7 +84,7 @@ public class IndexedDocument implements StatementAction {
     private final HashMap<QualifiedName,Collection<WasAssociatedWith>> namedWasAssociatedWithMap= new HashMap<>();
 
 
-    /* Collection of WasAttributedTo edges that have a given entiy as an
+    /* Collection of WasAttributedTo edges that have a given entity as an
      * effect. */
     private final HashMap<QualifiedName,Collection<WasAttributedTo>> entityWasAttributedToMap= new HashMap<>();
 
@@ -1185,6 +1185,16 @@ public class IndexedDocument implements StatementAction {
     }
     public Collection<WasInfluencedBy> getWasInfluencedBy() {
         return anonWasInfluencedBy;
+    }
+
+    public Collection<QualifiedName> nonRootEntities() {
+        Collection<QualifiedName> effectEntities=new HashSet<>();
+        effectEntities.addAll(entityEffectWasDerivedFromMap.keySet());
+        effectEntities.addAll(entityWasAttributedToMap.keySet());
+        effectEntities.addAll(entityWasGeneratedByMap.keySet());
+        effectEntities.addAll(entityWasInvalidatedByMap.keySet());
+        effectEntities.addAll(entityHadMemberMap.keySet());
+        return effectEntities;
     }
 
 }

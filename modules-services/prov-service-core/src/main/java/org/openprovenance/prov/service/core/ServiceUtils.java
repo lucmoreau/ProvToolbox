@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.*;
+import java.util.function.BiFunction;
 
 
 public class ServiceUtils {
@@ -515,9 +516,10 @@ public class ServiceUtils {
         return o!=null;
     }
 
-    public DocumentResource doProcessStatementsForm(List<InputPart> inputParts,
-                                                    List<InputPart> type) {
-        String storedResourceIdentifier = "";
+    /*
+    Generic processing of a form with a URL field. It can be used to return a document or a document resource
+     */
+    public <DOCUMENT_RESOURCE> DOCUMENT_RESOURCE processURLForm(List<InputPart> inputParts, BiFunctionWithException<InputStream,Formats.ProvFormat, DOCUMENT_RESOURCE, IOException> processor) {
         for (InputPart inputPart : inputParts) {
 
             try {
@@ -527,39 +529,55 @@ public class ServiceUtils {
                 logger.debug("Header " + header.values());
                 logger.debug("Header " + header.keySet());
 
+                // convert the uploaded file to inputstream
+                InputStream inputStream = inputPart.getBody(InputStream.class, null);
 
-                String mybody = inputPart.getBodyAsString();
+                String url = IOUtils.toString(inputStream, Charset.defaultCharset()).trim();
 
-                String mytype = type.get(0).getBodyAsString();
+                //System.out.println("---------- URL " + url);
+                inputStream.close();
 
-                Formats.ProvFormat format = interop.getTypeForFile("." + mytype);
-
-                storedResourceIdentifier=storageManager.newStore(format);
-                logger.debug("storage Id: " + storedResourceIdentifier);
-
-                logger.debug("processStatementsForm: type is " + mytype);
-
-                ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
-
-                try {
-                    DocumentResource dr = index.newResource();
-
-                    dr.setStorageId(storedResourceIdentifier);
-
-                    index.put(dr.getVisibleId(), dr);
-
-                    logger.debug("visible Id: " + dr.getVisibleId());
-
-                    storageManager.copyStringToStore(mybody,format, storedResourceIdentifier);
-                    //FileUtils.write(temp, mybody, StandardCharsets.UTF_8);
-                    // FileUtils.copyInputStreamToFile(inputStream,temp); DOESN'T
-                    // WORK??
-
-                    return dr;
-                } finally {
-                    index.close();
+                if ((url == null) || (url.equals(""))) {
+                    //OK, it's not a URL we have received, let's return null, and try other option
+                    return null;
                 }
 
+                URL theURL = new URL(url);
+                URLConnection conn = interop.connectWithRedirect(theURL);
+                if (conn == null) throw new RuntimeException("Failed to connect to url");
+
+                Formats.ProvFormat format = null;
+                String content_type = conn.getContentType();
+
+                logger.debug("Content-type: " + content_type);
+                if (content_type != null) {
+                    // Need to trim optional parameters
+                    // Content-Type: text/plain; charset=UTF-8
+                    int end = content_type.indexOf(";");
+                    if (end < 0) {
+                        end = content_type.length();
+                    }
+                    String actual_content_type = content_type.substring(0, end).trim();
+                    logger.debug("Found Content-type: " + actual_content_type);
+                    // TODO: might be worth skipping if text/plain as that seems
+                    // to be the default returned by unconfigured web servers
+                    format = interop.mimeTypeRevMap.get(actual_content_type);
+                }
+                logger.debug("Format after Content-type: " + format);
+
+                if (format == null) {
+                    format = interop.getTypeForFile(theURL.toString());
+                }
+                logger.debug("Format after extension: " + format);
+
+
+
+                InputStream content_stream = conn.getInputStream();
+
+                return processor.apply(content_stream, format); //readDocumentResource(content_stream, format);
+
+            } catch (java.net.UnknownHostException e) {
+                throw new UncheckedException("UnknownHostException", e);
             } catch (Throwable e) {
                 e.printStackTrace();
                 throw new ParserException(e);
@@ -569,7 +587,180 @@ public class ServiceUtils {
         throw new RuntimeException("Not properly structured input parts");
     }
 
+    public DocumentResource doProcessURLForm(List<InputPart> inputParts) {
+        return processURLForm(inputParts, this::readDocumentResource);
+    }
 
+    public Document docProcessURLForm(List<InputPart> inputParts) {
+        return processURLForm(inputParts, (content_stream, format) -> interop.readDocument(content_stream,format));
+    }
+
+
+    /*
+
+    public DocumentResource doProcessURLForm(List<InputPart> inputParts) {
+        for (InputPart inputPart : inputParts) {
+
+            try {
+
+                MultivaluedMap<String, String> header = inputPart.getHeaders();
+                logger.debug("Header " + header);
+                logger.debug("Header " + header.values());
+                logger.debug("Header " + header.keySet());
+
+                // convert the uploaded file to inputstream
+                InputStream inputStream = inputPart.getBody(InputStream.class, null);
+
+                String url = IOUtils.toString(inputStream, Charset.defaultCharset()).trim();
+
+                //System.out.println("---------- URL " + url);
+                inputStream.close();
+
+                if ((url == null) || (url.equals(""))) {
+                    //OK, it's not a URL we have received, let's return null, and try other option
+                    return null;
+                }
+
+                URL theURL = new URL(url);
+                URLConnection conn = interop.connectWithRedirect(theURL);
+                if (conn == null) throw new RuntimeException("Failed to connect to url");
+
+                Formats.ProvFormat format = null;
+                String content_type = conn.getContentType();
+
+                logger.debug("Content-type: " + content_type);
+                if (content_type != null) {
+                    // Need to trim optional parameters
+                    // Content-Type: text/plain; charset=UTF-8
+                    int end = content_type.indexOf(";");
+                    if (end < 0) {
+                        end = content_type.length();
+                    }
+                    String actual_content_type = content_type.substring(0, end).trim();
+                    logger.debug("Found Content-type: " + actual_content_type);
+                    // TODO: might be worth skipping if text/plain as that seems
+                    // to be the default returned by unconfigured web servers
+                    format = interop.mimeTypeRevMap.get(actual_content_type);
+                }
+                logger.debug("Format after Content-type: " + format);
+
+                if (format == null) {
+                    format = interop.getTypeForFile(theURL.toString());
+                }
+                logger.debug("Format after extension: " + format);
+
+
+
+                InputStream content_stream = conn.getInputStream();
+
+                return readDocumentResource(content_stream, format);
+
+            } catch (java.net.UnknownHostException e) {
+                throw new UncheckedException("UnknownHostException", e);
+            } catch (Throwable e) {
+                e.printStackTrace();
+                throw new ParserException(e);
+            }
+
+        }
+        throw new RuntimeException("Not properly structured input parts");
+    }
+
+     */
+
+    private DocumentResource readDocumentResource(InputStream content_stream, Formats.ProvFormat format) throws IOException {
+        String storedResourceIdentifier =storageManager.newStore(format);
+        storageManager.copyInputStreamToStore(content_stream, format, storedResourceIdentifier);
+        // FileUtils.copyInputStreamToFile(content_stream, temp);
+
+
+        ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
+        try {
+            DocumentResource dr = index.newResource();
+            dr.setStorageId(storedResourceIdentifier);
+            index.put(dr.getVisibleId(), dr);
+
+
+            logger.debug("storage Id: " + storedResourceIdentifier);
+            logger.debug("visible Id: " + dr.getVisibleId());
+
+
+            return dr;
+        } finally {
+            index.close();
+        }
+    }
+
+/*
+    public Document docProcessURLForm(List<InputPart> inputParts) {
+        for (InputPart inputPart : inputParts) {
+
+            try {
+
+                MultivaluedMap<String, String> header = inputPart.getHeaders();
+                logger.debug("Header " + header);
+                logger.debug("Header " + header.values());
+                logger.debug("Header " + header.keySet());
+
+                // convert the uploaded file to inputstream
+                InputStream inputStream = inputPart.getBody(InputStream.class, null);
+
+                String url = IOUtils.toString(inputStream, Charset.defaultCharset()).trim();
+
+                //System.out.println("---------- URL " + url);
+                inputStream.close();
+
+                if ((url == null) || (url.equals(""))) {
+                    //OK, it's not a URL we have received, let's return null, and try other option
+                    return null;
+                }
+
+                URL theURL = new URL(url);
+                URLConnection conn = interop.connectWithRedirect(theURL);
+                if (conn == null) throw new RuntimeException("Failed to connect to url");
+
+                Formats.ProvFormat format = null;
+                String content_type = conn.getContentType();
+
+                logger.debug("Content-type: " + content_type);
+                if (content_type != null) {
+                    // Need to trim optional parameters
+                    // Content-Type: text/plain; charset=UTF-8
+                    int end = content_type.indexOf(";");
+                    if (end < 0) {
+                        end = content_type.length();
+                    }
+                    String actual_content_type = content_type.substring(0, end).trim();
+                    logger.debug("Found Content-type: " + actual_content_type);
+                    // TODO: might be worth skipping if text/plain as that seems
+                    // to be the default returned by unconfigured web servers
+                    format = interop.mimeTypeRevMap.get(actual_content_type);
+                }
+                logger.debug("Format after Content-type: " + format);
+
+                if (format == null) {
+                    format = interop.getTypeForFile(theURL.toString());
+                }
+                logger.debug("Format after extension: " + format);
+
+                InputStream content_stream = conn.getInputStream();
+
+                Document doc=interop.readDocument(content_stream,format);
+
+                return doc;
+
+            } catch (java.net.UnknownHostException e) {
+                throw new UncheckedException("UnknownHostException", e);
+            } catch (Throwable e) {
+                e.printStackTrace();
+                throw new ParserException(e);
+            }
+
+        }
+        throw new RuntimeException("Not properly structured input parts");
+    }
+
+ */
     public DocumentResource doProcessFileForm(List<InputPart> inputParts) {
         String fileName;
         String storedResourceIdentifier = "";
@@ -638,7 +829,9 @@ public class ServiceUtils {
 
 
 
-    public DocumentResource doProcessURLForm(List<InputPart> inputParts) {
+
+    public DocumentResource doProcessStatementsForm(List<InputPart> inputParts,
+                                                    List<InputPart> type) {
         String storedResourceIdentifier = "";
         for (InputPart inputPart : inputParts) {
 
@@ -649,74 +842,39 @@ public class ServiceUtils {
                 logger.debug("Header " + header.values());
                 logger.debug("Header " + header.keySet());
 
-                // convert the uploaded file to inputstream
-                InputStream inputStream = inputPart.getBody(InputStream.class, null);
 
-                String url = IOUtils.toString(inputStream, Charset.defaultCharset()).trim();
+                String mybody = inputPart.getBodyAsString();
 
-                //System.out.println("---------- URL " + url);
-                inputStream.close();
+                String mytype = type.get(0).getBodyAsString();
 
-                if ((url == null) || (url.equals(""))) {
-                    //OK, it's not a URL we have received, let's return null, and try other option
-                    return null;
-                }
-
-                URL theURL = new URL(url);
-                URLConnection conn = interop.connectWithRedirect(theURL);
-                if (conn == null) throw new RuntimeException("Failed to connect to url");
-
-                Formats.ProvFormat format = null;
-                String content_type = conn.getContentType();
-
-                logger.debug("Content-type: " + content_type);
-                if (content_type != null) {
-                    // Need to trim optional parameters
-                    // Content-Type: text/plain; charset=UTF-8
-                    int end = content_type.indexOf(";");
-                    if (end < 0) {
-                        end = content_type.length();
-                    }
-                    String actual_content_type = content_type.substring(0, end).trim();
-                    logger.debug("Found Content-type: " + actual_content_type);
-                    // TODO: might be worth skipping if text/plain as that seems
-                    // to be the default returned by unconfigured web servers
-                    format = interop.mimeTypeRevMap.get(actual_content_type);
-                }
-                logger.debug("Format after Content-type: " + format);
-
-                if (format == null) {
-                    format = interop.getTypeForFile(theURL.toString());
-                }
-                logger.debug("Format after extension: " + format);
-
+                Formats.ProvFormat format = interop.getTypeForFile("." + mytype);
 
                 storedResourceIdentifier=storageManager.newStore(format);
+                logger.debug("storage Id: " + storedResourceIdentifier);
 
-                InputStream content_stream = conn.getInputStream();
-
-                storageManager.copyInputStreamToStore(content_stream,format, storedResourceIdentifier);
-               // FileUtils.copyInputStreamToFile(content_stream, temp);
-
+                logger.debug("processStatementsForm: type is " + mytype);
 
                 ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
+
                 try {
                     DocumentResource dr = index.newResource();
+
                     dr.setStorageId(storedResourceIdentifier);
+
                     index.put(dr.getVisibleId(), dr);
 
-
-                    logger.debug("storage Id: " + storedResourceIdentifier);
                     logger.debug("visible Id: " + dr.getVisibleId());
 
+                    storageManager.copyStringToStore(mybody,format, storedResourceIdentifier);
+                    //FileUtils.write(temp, mybody, StandardCharsets.UTF_8);
+                    // FileUtils.copyInputStreamToFile(inputStream,temp); DOESN'T
+                    // WORK??
 
                     return dr;
                 } finally {
                     index.close();
                 }
 
-            } catch (java.net.UnknownHostException e) {
-                throw new UncheckedException("UnknownHostException", e);
             } catch (Throwable e) {
                 e.printStackTrace();
                 throw new ParserException(e);
@@ -725,6 +883,87 @@ public class ServiceUtils {
         }
         throw new RuntimeException("Not properly structured input parts");
     }
+
+
+    public Document docProcessStatementsForm(List<InputPart> inputParts,
+                                             List<InputPart> type) {
+        Document doc;
+        for (InputPart inputPart : inputParts) {
+
+            try {
+
+                MultivaluedMap<String, String> header = inputPart.getHeaders();
+                logger.debug("Header " + header);
+                logger.debug("Header " + header.values());
+                logger.debug("Header " + header.keySet());
+
+
+                String mybody = inputPart.getBodyAsString();
+
+                String mytype = type.get(0).getBodyAsString();
+
+                Formats.ProvFormat format = interop.getTypeForFile("." + mytype);
+
+                // new input stream from string mybody
+                InputStream inputStream = new ByteArrayInputStream(mybody.getBytes(StandardCharsets.UTF_8));
+
+                doc=interop.readDocument(inputStream,format);
+
+                return doc;
+
+
+
+            } catch (Throwable e) {
+                e.printStackTrace();
+                throw new ParserException(e);
+            }
+
+        }
+        throw new RuntimeException("Not properly structured input parts");
+    }
+
+
+
+
+    public Document docProcessFileForm(List<InputPart> inputParts) {
+        String fileName;
+        Document doc;
+
+        for (InputPart inputPart : inputParts) {
+
+            try {
+
+                MultivaluedMap<String, String> header = inputPart.getHeaders();
+                logger.debug("Header " + header);
+                logger.debug("Header " + header.values());
+                logger.debug("Header " + header.keySet());
+
+                fileName = getFileName(header);
+                //.out.println("---------- filename " + fileName);
+                if ((fileName == null) || (fileName.equals("")))
+                    return null;
+
+                // convert the uploaded file to inputstream
+                InputStream inputStream = inputPart.getBody(InputStream.class, null);
+
+                // constructs upload file path
+                //fileName = UPLOADED_FILE_PATH + fileName;
+
+                Formats.ProvFormat format = interop.getTypeForFile(fileName);
+
+                doc=interop.readDocument(inputStream,format);
+
+                return doc;
+
+            } catch (Throwable e) {
+                e.printStackTrace();
+                throw new ParserException(e);
+            }
+
+        }
+        throw new RuntimeException("Not properly structured input parts");
+    }
+
 
 
     /**

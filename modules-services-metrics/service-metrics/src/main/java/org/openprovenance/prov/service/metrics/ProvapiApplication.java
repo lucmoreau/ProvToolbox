@@ -106,7 +106,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 
         ServiceUtilsConfig config= storageSetup.makeConfig(factory,sc);
 
-		PostService ps=new PostService(config);
+		PostService ps=new MetricsPostService(config);
 
 		ps.addToConfiguration("storage.config", config.configuration);
 		ps.addToConfiguration("cli.config", intF.getConfig());

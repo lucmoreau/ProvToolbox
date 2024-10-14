@@ -6,6 +6,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-metrics: report and plot
 * prov-model: fixed issue in anonymous collection construction in IndexedDocument
 * prov-model: rules: traffic light for triangles
+* prov-service-core: generic url processing, generating document or document resource.
 
 `2.2.0`
 * docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms

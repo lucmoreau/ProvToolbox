@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 
 public class Rules {
 
+    public static final String PATTERN_METRICS = "patternMetrics";
+    public static final String SIMPLE_METRICS = "simpleMetrics";
+    public static final String COUNT_DERIVATIONS_AND_GENERATIONS_AND_USAGES = "countDerivationsAndGenerationsAndUsages";
     ProvUtilities u = new ProvUtilities();
 
     /** Within a Document,  the method returns threes counts:
@@ -172,14 +175,14 @@ public class Rules {
         res1.countSpecializationOf = indexedDocument.getSpecializationOf().size()+indexedDocument.getNamedSpecializationOf().keySet().size();
         res1.countAlternateOf = indexedDocument.getAlternateOf().size()+indexedDocument.getNamedAlternateOf().keySet().size();
         res1.countHadMember = indexedDocument.getHadMember().size()+indexedDocument.getNamedHadMember().keySet().size();
-        res.put("simpleMetrics", res1);
+        res.put(SIMPLE_METRICS, res1);
 
 
         Map<String, Object> res2 = new HashMap<>();
         res2.put("countDerivationsAndGenerations", countDerivationsAndGenerations(indexedDocument));
         res2.put("countActivitiesWithoutAgent", countActivitiesWithoutAgent(indexedDocument));
-        res2.put("countDerivationsAndGenerationsAndUsages", countDerivationsAndGenerationsAndUsages(indexedDocument));
-        res.put("patternMetrics", res2);
+        res2.put(COUNT_DERIVATIONS_AND_GENERATIONS_AND_USAGES, countDerivationsAndGenerationsAndUsages(indexedDocument));
+        res.put(PATTERN_METRICS, res2);
 
 
         return res;

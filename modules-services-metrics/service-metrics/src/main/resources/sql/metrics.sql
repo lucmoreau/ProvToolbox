@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS metrics
     features  JSON,
     counts    JSON,
     validity  JSON,
+    traffic   JSON,
     created_at timestamp with time zone NOT NULL DEFAULT NOW()
 );
 

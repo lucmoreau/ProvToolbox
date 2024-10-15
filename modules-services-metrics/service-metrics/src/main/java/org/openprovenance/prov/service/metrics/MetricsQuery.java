@@ -4,6 +4,7 @@ import org.openprovenance.prov.rules.SimpleMetrics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MetricsQuery {
     private final Querier querier;
@@ -27,12 +28,13 @@ public class MetricsQuery {
                 });
     }
 
-    public void insertMetrics(String artifact, String url, String features, String counts, String validity) {
-        querier.do_statements(null,
+    public String insertMetrics(String artifact, String url, String features, String counts, String validity, String traffic) {
+        AtomicReference<String> id = new AtomicReference<>();
+        querier.do_query(null,
                 null,
                 (sb, data) -> {
                     sb.append("insert\n");
-                    sb.append("into metrics (artifact, url, features, counts, validity)\n");
+                    sb.append("into metrics (artifact, url, features, counts, validity, traffic)\n");
                     sb.append("values ('");
                     sb.append(artifact);
                     sb.append("', ");
@@ -43,7 +45,50 @@ public class MetricsQuery {
                     sb.append(counts);
                     sb.append("', '");
                     sb.append(validity);
-                    sb.append("');");
+                    sb.append("', '");
+                    sb.append(traffic);
+                    sb.append("')\n");
+                    sb.append("RETURNING ID;");
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        id.set(rs.getString("ID"));
+                    }
+                });
+        return id.get();
+    }
+
+    public SimpleMetrics getMetrics(String id) {
+        SimpleMetrics metrics = new SimpleMetrics();
+        return querier.do_query(metrics,
+                null,
+                (sb, data) -> {
+                    sb.append("SELECT *\n");
+                    sb.append("FROM metrics\n");
+                    sb.append("where ID=");
+                    sb.append(id);
+                    sb.append(";");
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        data.countEntities=Integer.valueOf(rs.getInt("countEntities"));
+                        data.countAgents=rs.getInt("countAgents");
+                        data.countActivities=rs.getInt("countActivities");
+                        data.countUsed=rs.getInt("countUsed");
+                        data.countWasGeneratedBy=rs.getInt("countWasGeneratedBy");
+                        data.countWasDerivedFrom=rs.getInt("countWasDerivedFrom");
+                        data.countWasAssociatedWith=rs.getInt("countWasAssociatedWith");
+                        data.countWasAttributedTo=rs.getInt("countWasAttributedTo");
+                        data.countActedOnBehalfOf=rs.getInt("countActedOnBehalfOf");
+                        data.countWasEndedBy=rs.getInt("countWasEndedBy");
+                        data.countWasInformedBy=rs.getInt("countWasInformedBy");
+                        data.countWasInvalidatedBy=rs.getInt("countWasInvalidatedBy");
+                        data.countWasStartedBy=rs.getInt("countWasStartedBy");
+                        data.countWasInfluencedBy=rs.getInt("countWasInfluencedBy");
+                        data.countSpecializationOf=rs.getInt("countSpecializationOf");
+                        data.countAlternateOf=rs.getInt("countAlternateOf");
+                        data.countHadMember=rs.getInt("countHadMember");
+                    }
                 });
     }
 

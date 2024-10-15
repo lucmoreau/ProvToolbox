@@ -2,6 +2,8 @@ package org.openprovenance.prov.rules;
 
 import org.openprovenance.prov.rules.counters.EntityActivityDerivationCounter;
 
+import java.util.List;
+
 public class TrafficLight implements Ansi {
     // enumeration red, orange, green
     public enum TrafficLightColor {
@@ -65,6 +67,14 @@ public class TrafficLight implements Ansi {
         return new TrafficLightResult(comment, ratio, color);
     }
 
+    public static List<TrafficLightResult> getTrafficLight(EntityActivityDerivationCounter count) {
+        return List.of(
+                forRootEntities(count),
+                forNonRootTriangle(count),
+                forActivitiesTriangle(count),
+                forFullyFormedTriangles(count)
+        );
+    }
 
 
 

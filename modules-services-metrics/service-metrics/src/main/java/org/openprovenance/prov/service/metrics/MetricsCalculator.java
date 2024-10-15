@@ -9,6 +9,9 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.rules.Rules;
 import org.openprovenance.prov.rules.SimpleMetrics;
+import org.openprovenance.prov.rules.TrafficLight;
+import org.openprovenance.prov.rules.TrafficLightResult;
+import org.openprovenance.prov.rules.counters.EntityActivityDerivationCounter;
 import org.openprovenance.prov.scala.typemap.IncrementalProcessor;
 import org.openprovenance.prov.service.validation.ValidationObjectMaker;
 import org.openprovenance.prov.validation.Config;
@@ -16,7 +19,8 @@ import org.openprovenance.prov.validation.Validate;
 import org.openprovenance.prov.validation.report.ValidationReport;
 import scala.Tuple2;
 
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,39 +60,77 @@ public class MetricsCalculator extends Rules {
 
 
 
-        Object simpleMetrics = super.getMetrics(document, pFactory);
-        ValidationReport report;
-
-        try {
-
-        Validate validator = new Validate(Config.newYesToAllConfig(pFactory, new ValidationObjectMaker()));
-
-        report = validator.validate(document);
-
-        report.nonStrictCycle=null;
+        Object metrics = getMetricsOrError(document, pFactory);
+        Object validationReport = getValidationReportOrError(document, pFactory);
+        Object traffic = getTrafficLightOrError(metrics);
 
 
-        Object validity=report;
-        persistTypeMap();
+        try{
 
-            querier.insertMetrics("document",
+
+            String id=querier.insertMetrics("document",
                     null,
                     om.writeValueAsString(features._1),
-                    om.writeValueAsString(simpleMetrics),
-                    om.writeValueAsString(validity));
+                    om.writeValueAsString(metrics),
+                    om.writeValueAsString(validationReport),
+                    om.writeValueAsString(traffic));
+            System.out.println("=========== ID: " + id);
+            persistTypeMap();
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return new HashMap<String, Object>() {{
             put("artifact", "document");
-            put("counts", simpleMetrics);
-            put("features", features._2);
-            if (report!=null) put("validity", report);
+            if (metrics!=null) put("counts", metrics);
+            if (features!=null && features._2!=null) put("features", features._2);
+            if (validationReport!=null) put("validity", validationReport);
         }};
     }
-    
+
+    private Object getTrafficLightOrError(Object metrics) {
+        try {
+            Map<String, Object> m1=(Map<String, Object>) metrics;
+            Map<String, Object> m2=(Map<String, Object>)m1.get(PATTERN_METRICS);
+            EntityActivityDerivationCounter count=(EntityActivityDerivationCounter)m2.get(COUNT_DERIVATIONS_AND_GENERATIONS_AND_USAGES);
+            List<TrafficLightResult> trafficLight= TrafficLight.getTrafficLight(count);
+            return trafficLight;
+        } catch (Throwable e) {
+            HashMap<String,String> trafficError = new HashMap();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            e.printStackTrace(new PrintStream(outputStream));
+            trafficError.put("error", outputStream.toString());
+            return trafficError;
+        }
+    }
+
+    private Object getMetricsOrError(Document document, ProvFactory pFactory) {
+        try {
+            return super.getMetrics(document, pFactory);
+        } catch (Throwable e) {
+            HashMap<String,String> metricsError = new HashMap();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            e.printStackTrace(new PrintStream(outputStream));
+            metricsError.put("error", outputStream.toString());
+            return metricsError;
+        }
+    }
+
+    private Object getValidationReportOrError(Document document, ProvFactory pFactory) {
+        try {
+            ValidationReport validationReport;
+            Validate validator = new Validate(Config.newYesToAllConfig(pFactory, new ValidationObjectMaker()));
+            validationReport = validator.validate(document);
+            validationReport.nonStrictCycle = null;
+            return validationReport;
+        } catch (Throwable e) {
+            HashMap<String,String> validationError = new HashMap();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            e.printStackTrace(new PrintStream(outputStream));
+            validationError.put("error", outputStream.toString());
+            return validationError;
+        }
+    }
+
     public org.openprovenance.prov.scala.summary.types.ProvType getType(int depth, int index) {
         return ip.getProvType(depth, index);
     }

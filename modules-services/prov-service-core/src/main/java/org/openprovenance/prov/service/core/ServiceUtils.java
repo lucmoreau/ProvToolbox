@@ -28,7 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.*;
-import java.util.function.BiFunction;
 
 
 public class ServiceUtils {
@@ -91,7 +90,7 @@ public class ServiceUtils {
         this.pFactory=config.pFactory;
         this.interop=new InteropFramework(config.pFactory);
 
-        this.documentResourceIndex=(ResourceIndex<DocumentResource>)config.extensionMap.get(DocumentResource.getResourceKind());
+        this.documentResourceIndex=(ResourceIndex<DocumentResource>)config.extensionMap.get(org.openprovenance.prov.storage.api.DocumentResource.getResourceKind());
         this.nonDocumentResourceIndex=config.nonDocumentResourceIndex;
         this.nonDocumentResourceStorage=config.nonDocumentResourceStorage;
         this.genericResourceStorageMap=config.genericResourceStorageMap;
@@ -587,14 +586,58 @@ public class ServiceUtils {
         throw new RuntimeException("Not properly structured input parts");
     }
 
+    public <DOCUMENT_RESOURCE> DOCUMENT_RESOURCE processFileForm(List<InputPart> inputParts, BiFunctionWithException<InputStream,Formats.ProvFormat, DOCUMENT_RESOURCE, IOException> processor) {
+        String fileName;
+        DOCUMENT_RESOURCE dr;
+
+        for (InputPart inputPart : inputParts) {
+
+            try {
+
+                MultivaluedMap<String, String> header = inputPart.getHeaders();
+                logger.debug("Header " + header);
+                logger.debug("Header " + header.values());
+                logger.debug("Header " + header.keySet());
+
+                fileName = getFileName(header);
+                //.out.println("---------- filename " + fileName);
+                if ((fileName == null) || (fileName.equals("")))
+                    return null;
+
+                // convert the uploaded file to inputstream
+                InputStream inputStream = inputPart.getBody(InputStream.class, null);
+
+
+                Formats.ProvFormat format = interop.getTypeForFile(fileName);
+
+                dr = processor.apply(inputStream, format);
+
+                return dr;
+
+            } catch (Throwable e) {
+                e.printStackTrace();
+                throw new ParserException(e);
+            }
+
+        }
+        throw new RuntimeException("Not properly structured input parts");
+    }
+
     public DocumentResource doProcessURLForm(List<InputPart> inputParts) {
         return processURLForm(inputParts, this::readDocumentResource);
     }
 
     public Document docProcessURLForm(List<InputPart> inputParts) {
-        return processURLForm(inputParts, (content_stream, format) -> interop.readDocument(content_stream,format));
+        return processURLForm(inputParts, interop::readDocument);
     }
 
+    public DocumentResource doProcessFileForm(List<InputPart> inputParts) {
+        return processFileForm(inputParts, this::readDocumentResource);
+    }
+
+    public Document docProcessFileForm(List<InputPart> inputParts) {
+        return processFileForm(inputParts, interop::readDocument);
+    }
 
 
     private DocumentResource readDocumentResource(InputStream content_stream, Formats.ProvFormat format) throws IOException {
@@ -620,10 +663,35 @@ public class ServiceUtils {
         }
     }
 
+    /*
+    private DocumentResource getDocumentResource(InputStream inputStream, Formats.ProvFormat format) throws IOException {
+        DocumentResource dr;
+        String storedResourceIdentifier =storageManager.newStore(format);
+        ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
 
+        try {
+            dr = index.newResource();
+
+            dr.setStorageId(storedResourceIdentifier);
+
+            index.put(dr.getVisibleId(), dr);
+        } finally {
+            index.close();
+        }
+
+
+        logger.debug("storage Id: " + storedResourceIdentifier);
+        logger.debug("visible Id: " + dr.getVisibleId());
+
+        storageManager.copyInputStreamToStore(inputStream, format,storedResourceIdentifier);
+        return dr;
+    }
+
+     */
+
+/*
     public DocumentResource doProcessFileForm(List<InputPart> inputParts) {
         String fileName;
-        String storedResourceIdentifier = "";
         DocumentResource dr;
 
         for (InputPart inputPart : inputParts) {
@@ -648,7 +716,8 @@ public class ServiceUtils {
 
                 Formats.ProvFormat format = interop.getTypeForFile(fileName);
 
-                storedResourceIdentifier=storageManager.newStore(format);
+
+                String storedResourceIdentifier = storageManager.newStore(format);
 
 
                 ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
@@ -688,6 +757,8 @@ public class ServiceUtils {
     }
 
 
+
+ */
 
 
     public DocumentResource doProcessStatementsForm(List<InputPart> inputParts,
@@ -783,7 +854,7 @@ public class ServiceUtils {
     }
 
 
-
+/*
 
     public Document docProcessFileForm(List<InputPart> inputParts) {
         String fileName;
@@ -824,7 +895,7 @@ public class ServiceUtils {
         throw new RuntimeException("Not properly structured input parts");
     }
 
-
+*/
 
     /**
      * header sample { Content-Type=[image/png], Content-Disposition=[form-data;

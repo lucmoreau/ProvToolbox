@@ -607,11 +607,8 @@ public class ServiceUtils {
                 // convert the uploaded file to inputstream
                 InputStream inputStream = inputPart.getBody(InputStream.class, null);
 
-
                 Formats.ProvFormat format = interop.getTypeForFile(fileName);
-
                 dr = processor.apply(inputStream, format);
-
                 return dr;
 
             } catch (Throwable e) {
@@ -638,23 +635,17 @@ public class ServiceUtils {
 
 
                 String mybody = inputPart.getBodyAsString();
-
                 String mytype = type.get(0).getBodyAsString();
-
                 Formats.ProvFormat format = interop.getTypeForFile("." + mytype);
-
                 return processor.apply(mybody, format, mytype);
 
             } catch (Throwable e) {
                 e.printStackTrace();
                 throw new ParserException(e);
             }
-
         }
         throw new RuntimeException("Not properly structured input parts");
     }
-
-
 
     public DocumentResource doProcessURLForm(List<InputPart> inputParts) {
         return processURLForm(inputParts, this::readDocumentResource);

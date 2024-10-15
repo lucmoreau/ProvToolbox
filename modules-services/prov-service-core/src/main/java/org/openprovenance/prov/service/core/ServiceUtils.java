@@ -623,6 +623,39 @@ public class ServiceUtils {
         throw new RuntimeException("Not properly structured input parts");
     }
 
+
+    public <DOCUMENT_RESOURCE> DOCUMENT_RESOURCE processStatementsForm(List<InputPart> inputParts,
+                                                                       List<InputPart> type,
+                                                                       TriFunctionWithException<String, Formats.ProvFormat, String, DOCUMENT_RESOURCE, IOException> processor) {
+        for (InputPart inputPart : inputParts) {
+
+            try {
+
+                MultivaluedMap<String, String> header = inputPart.getHeaders();
+                logger.debug("Header " + header);
+                logger.debug("Header " + header.values());
+                logger.debug("Header " + header.keySet());
+
+
+                String mybody = inputPart.getBodyAsString();
+
+                String mytype = type.get(0).getBodyAsString();
+
+                Formats.ProvFormat format = interop.getTypeForFile("." + mytype);
+
+                return processor.apply(mybody, format, mytype);
+
+            } catch (Throwable e) {
+                e.printStackTrace();
+                throw new ParserException(e);
+            }
+
+        }
+        throw new RuntimeException("Not properly structured input parts");
+    }
+
+
+
     public DocumentResource doProcessURLForm(List<InputPart> inputParts) {
         return processURLForm(inputParts, this::readDocumentResource);
     }
@@ -639,12 +672,22 @@ public class ServiceUtils {
         return processFileForm(inputParts, interop::readDocument);
     }
 
+    public DocumentResource doProcessStatementsForm(List<InputPart> inputParts,
+                                                    List<InputPart> type) {
+        return processStatementsForm(inputParts, type, this::getDocumentResource);
+    }
+
+    public Document docProcessStatementsForm(List<InputPart> inputParts,
+                                             List<InputPart> type) {
+        return processStatementsForm(inputParts, type, (in, format, mtype) -> {
+            InputStream inputStream = new ByteArrayInputStream(in.getBytes(StandardCharsets.UTF_8));
+            return interop.readDocument(inputStream, format);
+        });
+    }
 
     private DocumentResource readDocumentResource(InputStream content_stream, Formats.ProvFormat format) throws IOException {
         String storedResourceIdentifier =storageManager.newStore(format);
         storageManager.copyInputStreamToStore(content_stream, format, storedResourceIdentifier);
-        // FileUtils.copyInputStreamToFile(content_stream, temp);
-
 
         ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
         try {
@@ -652,10 +695,8 @@ public class ServiceUtils {
             dr.setStorageId(storedResourceIdentifier);
             index.put(dr.getVisibleId(), dr);
 
-
             logger.debug("storage Id: " + storedResourceIdentifier);
             logger.debug("visible Id: " + dr.getVisibleId());
-
 
             return dr;
         } finally {
@@ -663,103 +704,36 @@ public class ServiceUtils {
         }
     }
 
-    /*
-    private DocumentResource getDocumentResource(InputStream inputStream, Formats.ProvFormat format) throws IOException {
-        DocumentResource dr;
-        String storedResourceIdentifier =storageManager.newStore(format);
+    private  DocumentResource getDocumentResource(String mybody, Formats.ProvFormat format, String mytype) throws IOException {
+        String storedResourceIdentifier = "";
+        storedResourceIdentifier=storageManager.newStore(format);
+        logger.debug("storage Id: " + storedResourceIdentifier);
+
+        logger.debug("processStatementsForm: type is " + mytype);
+
         ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
 
         try {
-            dr = index.newResource();
+            DocumentResource dr = index.newResource();
 
             dr.setStorageId(storedResourceIdentifier);
 
             index.put(dr.getVisibleId(), dr);
+
+            logger.debug("visible Id: " + dr.getVisibleId());
+
+            storageManager.copyStringToStore(mybody, format, storedResourceIdentifier);
+            //FileUtils.write(temp, mybody, StandardCharsets.UTF_8);
+            // FileUtils.copyInputStreamToFile(inputStream,temp); DOESN'T
+            // WORK??
+
+            return dr;
         } finally {
             index.close();
         }
-
-
-        logger.debug("storage Id: " + storedResourceIdentifier);
-        logger.debug("visible Id: " + dr.getVisibleId());
-
-        storageManager.copyInputStreamToStore(inputStream, format,storedResourceIdentifier);
-        return dr;
     }
-
-     */
 
 /*
-    public DocumentResource doProcessFileForm(List<InputPart> inputParts) {
-        String fileName;
-        DocumentResource dr;
-
-        for (InputPart inputPart : inputParts) {
-
-            try {
-
-                MultivaluedMap<String, String> header = inputPart.getHeaders();
-                logger.debug("Header " + header);
-                logger.debug("Header " + header.values());
-                logger.debug("Header " + header.keySet());
-
-                fileName = getFileName(header);
-                //.out.println("---------- filename " + fileName);
-                if ((fileName == null) || (fileName.equals("")))
-                    return null;
-
-                // convert the uploaded file to inputstream
-                InputStream inputStream = inputPart.getBody(InputStream.class, null);
-
-                // constructs upload file path
-                //fileName = UPLOADED_FILE_PATH + fileName;
-
-                Formats.ProvFormat format = interop.getTypeForFile(fileName);
-
-
-                String storedResourceIdentifier = storageManager.newStore(format);
-
-
-                ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
-
-                try {
-                    dr = index.newResource();
-
-                    dr.setStorageId(storedResourceIdentifier);
-
-                    index.put(dr.getVisibleId(), dr);
-                } finally {
-                    index.close();
-                }
-
-
-                logger.debug("storage Id: " + storedResourceIdentifier);
-                logger.debug("visible Id: " + dr.getVisibleId());
-
-                storageManager.copyInputStreamToStore(inputStream,format,storedResourceIdentifier);
-                //FileUtils.copyInputStreamToFile(inputStream, temp);
-
-                //System.out.println("----------- Done");
-                String formatString=(format != null) ? format.toString() : "unknown";
-
-
-
-
-                return dr;
-
-            } catch (Throwable e) {
-                e.printStackTrace();
-                throw new ParserException(e);
-            }
-
-        }
-        throw new RuntimeException("Not properly structured input parts");
-    }
-
-
-
- */
-
 
     public DocumentResource doProcessStatementsForm(List<InputPart> inputParts,
                                                     List<InputPart> type) {
@@ -854,49 +828,7 @@ public class ServiceUtils {
     }
 
 
-/*
-
-    public Document docProcessFileForm(List<InputPart> inputParts) {
-        String fileName;
-        Document doc;
-
-        for (InputPart inputPart : inputParts) {
-
-            try {
-
-                MultivaluedMap<String, String> header = inputPart.getHeaders();
-                logger.debug("Header " + header);
-                logger.debug("Header " + header.values());
-                logger.debug("Header " + header.keySet());
-
-                fileName = getFileName(header);
-                //.out.println("---------- filename " + fileName);
-                if ((fileName == null) || (fileName.equals("")))
-                    return null;
-
-                // convert the uploaded file to inputstream
-                InputStream inputStream = inputPart.getBody(InputStream.class, null);
-
-                // constructs upload file path
-                //fileName = UPLOADED_FILE_PATH + fileName;
-
-                Formats.ProvFormat format = interop.getTypeForFile(fileName);
-
-                doc=interop.readDocument(inputStream,format);
-
-                return doc;
-
-            } catch (Throwable e) {
-                e.printStackTrace();
-                throw new ParserException(e);
-            }
-
-        }
-        throw new RuntimeException("Not properly structured input parts");
-    }
-
 */
-
     /**
      * header sample { Content-Type=[image/png], Content-Disposition=[form-data;
      * name="file"; filename="filename.extension"] }

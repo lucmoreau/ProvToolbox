@@ -8,6 +8,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-model: rules: traffic light for triangles
 * prov-service-core: generic url processing, generating document or document resource.
 * prov-service-core: generic file processing, generating document or document resource.
+* prov-service-core: generic statement processing, generating document or document resource.
 * service-metrics: added validation report
 
 `2.2.0`

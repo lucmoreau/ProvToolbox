@@ -13,18 +13,11 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
-import org.openprovenance.prov.model.interop.Formats;
 import org.openprovenance.prov.rules.Rules;
 import org.openprovenance.prov.rules.RulesFactory;
 import org.openprovenance.prov.rules.SimpleRulesFactory;
 import org.openprovenance.prov.service.core.*;
-import org.openprovenance.prov.storage.api.DocumentResource;
-import org.openprovenance.prov.storage.api.ResourceIndex;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
@@ -33,8 +26,12 @@ import java.util.Map;
 public class MetricsPostService extends PostService {
 
     static Logger logger = LogManager.getLogger(MetricsPostService.class);
-    private final RulesFactory rulesFactory = new SimpleRulesFactory();
 
+    private  RulesFactory rulesFactory = new SimpleRulesFactory();
+
+    public void setRulesFactory(RulesFactory rulesFactory) {
+        this.rulesFactory = rulesFactory;
+    }
 
     public MetricsPostService(ServiceUtilsConfig config) {
         super(config);

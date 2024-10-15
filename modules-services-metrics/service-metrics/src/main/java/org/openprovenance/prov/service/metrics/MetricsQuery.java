@@ -27,12 +27,12 @@ public class MetricsQuery {
                 });
     }
 
-    public void insertMetrics(String artifact, String url, String features, String counts) {
+    public void insertMetrics(String artifact, String url, String features, String counts, String validity) {
         querier.do_statements(null,
                 null,
                 (sb, data) -> {
                     sb.append("insert\n");
-                    sb.append("into metrics (artifact, url, features, counts)\n");
+                    sb.append("into metrics (artifact, url, features, counts, validity)\n");
                     sb.append("values ('");
                     sb.append(artifact);
                     sb.append("', ");
@@ -41,6 +41,8 @@ public class MetricsQuery {
                     sb.append(features);
                     sb.append("', '");
                     sb.append(counts);
+                    sb.append("', '");
+                    sb.append(validity);
                     sb.append("');");
                 });
     }

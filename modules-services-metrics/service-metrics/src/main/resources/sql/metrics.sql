@@ -3,8 +3,11 @@ CREATE TABLE IF NOT EXISTS metrics
     ID        SERIAL,
     artifact  TEXT,
     url       TEXT,
+    hash      JSON,
     features  JSON,
-    counts    JSON
+    counts    JSON,
+    validity  JSON,
+    created_at timestamp with time zone NOT NULL DEFAULT NOW()
 );
 
 
@@ -13,7 +16,8 @@ CREATE TABLE IF NOT EXISTS typemap
     ID    SERIAL UNIQUE,
     map   JSON,
     set   JSON,
-    list  JSON
+    list  JSON,
+    created_at timestamp with time zone NOT NULL DEFAULT NOW()
 );
 
 INSERT INTO typemap

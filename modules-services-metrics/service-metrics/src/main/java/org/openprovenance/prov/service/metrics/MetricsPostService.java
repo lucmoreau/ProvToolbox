@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.*;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -19,7 +18,6 @@ import org.openprovenance.prov.rules.SimpleRulesFactory;
 import org.openprovenance.prov.service.core.*;
 
 import java.security.Principal;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -71,9 +69,16 @@ public class MetricsPostService extends PostService {
 
 
                 Rules rules= rulesFactory.newRules();
-                Object o=rules.getMetrics(doc, utils.getProvFactory());
+                MetricsRecord o=(MetricsRecord)rules.computeMetrics(doc, utils.getProvFactory());
+                String id=o.id.toString();
+
+
+                String location = "metrics/" + id + "." + "json";
+                if (true) return utils.composeResponseSeeOther(location).build();
+
 
                 StreamingOutput promise= out -> new ObjectMapper().writeValue(out, o);
+
 
                 return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
 

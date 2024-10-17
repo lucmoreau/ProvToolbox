@@ -620,7 +620,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         }
 
         if (config.metrics != null) {
-            Object data=new Rules().getMetrics(doc, pFactory);
+            Object data=new Rules().computeMetrics(doc, pFactory);
             try {
                 new ObjectMapper().writeValue(new File(config.metrics), data);
                 return 0;

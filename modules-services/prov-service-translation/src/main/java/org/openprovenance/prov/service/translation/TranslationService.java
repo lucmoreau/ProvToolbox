@@ -229,7 +229,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
         }
 
         Rules rules= rulesFactory.newRules();
-        Object o=rules.getMetrics(doc, utils.getProvFactory());
+        Object o=rules.computeMetrics(doc, utils.getProvFactory());
 
         StreamingOutput promise= out -> new ObjectMapper().writeValue(out, o);
 

@@ -154,7 +154,7 @@ public class Rules {
     }
 
 
-    public Object getMetrics(Document document, ProvFactory pFactory) {
+    public Object computeMetrics(Document document, ProvFactory pFactory) {
         IndexedDocument indexedDocument = new IndexedDocument(pFactory, document, true);
         Map<String, Object> res = new HashMap<>();
 
@@ -187,6 +187,7 @@ public class Rules {
 
         return res;
     }
+
 
 
 }

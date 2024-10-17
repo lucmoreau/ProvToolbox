@@ -11,6 +11,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-service-core: generic statement processing, generating document or document resource.
 * service-metrics: added validation report
 * service-metrics: added traffic lights
+* service-metrics: computing composite traffic lights
 
 `2.2.0`
 * docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms

@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.interop.CommandLineArguments.METRICS;
 import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
 
 @Path("")
@@ -54,6 +55,7 @@ public class MetricsService extends TranslationService {
     private final PostService ps;
     private final ServiceUtils utils;
     private final Storage storage;
+    private final MetricsQuery mq;
 
     public MetricsService(PostService ps) {
         super(ps);
@@ -78,7 +80,7 @@ public class MetricsService extends TranslationService {
         }
 
         Querier querier=new Querier(storage, conn);
-        MetricsQuery mq=new MetricsQuery(querier);
+        this.mq=new MetricsQuery(querier);
         metricsCalculator = new MetricsCalculator(mq);
         setRulesFactory(() -> metricsCalculator);
         if (ps instanceof MetricsPostService) {
@@ -89,6 +91,20 @@ public class MetricsService extends TranslationService {
     }
 
 
+    @GET
+    @Path(FRAGMENT_METRICS + "{id}.json")
+    @Tag(name=METRICS)
+    @Produces(MEDIA_APPLICATION_JSON)
+    public Response getMetrics(@Context HttpServletResponse response,
+                               @Context HttpServletRequest request,
+                               @Parameter(name = "id", description = "id", required = true) @PathParam("id") String id) throws IOException {
+
+        MetricsRecord metricsRecord = mq.getMetricsRecord(id);
+        System.out.println("MetricsRecord: " + metricsRecord);
+        StreamingOutput promise = out -> TypePropagator.om().writeValue  (out,metricsRecord);
+
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
+    }
 
     @GET
     @Path(FRAGMENT_PROVTYPEMAP + "/{depth}/{index}")

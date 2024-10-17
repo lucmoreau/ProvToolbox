@@ -1,9 +1,17 @@
 package org.openprovenance.prov.service.metrics;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.rules.SimpleMetrics;
+import org.openprovenance.prov.validation.report.ValidationReport;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MetricsQuery {
@@ -28,7 +36,10 @@ public class MetricsQuery {
                 });
     }
 
-    public String insertMetrics(String artifact, String url, String features, String counts, String validity, String traffic) {
+    final static TypeReference<Map<String,Object>> countMetrics = new TypeReference<>() {};
+    final static TypeReference<Map<String,Integer>> featureMetrics = new TypeReference<>() {};
+
+    public String insertMetricsRecord(String artifact, String url, String features, String counts, String validity, String traffic) {
         AtomicReference<String> id = new AtomicReference<>();
         querier.do_query(null,
                 null,
@@ -56,6 +67,63 @@ public class MetricsQuery {
                     }
                 });
         return id.get();
+    }
+
+    ObjectMapper om=new ObjectMapper();
+
+    public MetricsRecord getMetricsRecord(String id) {
+        MetricsRecord metricsRecord = new MetricsRecord();
+        return querier.do_query(metricsRecord,
+                null,
+                (sb, data) -> {
+                    sb.append("SELECT *\n");
+                    sb.append("FROM metrics\n");
+                    sb.append("where ID=");
+                    sb.append(id);
+                    sb.append(";");
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        data.id=rs.getString("ID");
+                        data.artifact =rs.getString("artifact");
+                        try {
+                            data.metrics=om.readValue(rs.getString("counts"), countMetrics);
+                        } catch (JsonProcessingException e) {
+                            HashMap<String,String> metricsError = new HashMap<>();
+                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                            e.printStackTrace(new PrintStream(outputStream));
+                            metricsError.put("error", outputStream.toString());
+                            data.metrics=metricsError;
+                        }
+                        try {
+                            data.features= om.readValue(rs.getString("features"), featureMetrics);
+                        } catch (JsonProcessingException e) {
+                            HashMap<String,String> featureError = new HashMap<>();
+                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                            e.printStackTrace(new PrintStream(outputStream));
+                            featureError.put("error", outputStream.toString());
+                            data.features=featureError;
+                        }
+                        try {
+                            data.validationReport=om.readValue(rs.getString("validity"), ValidationReport.class);
+                        } catch (JsonProcessingException e) {
+                            HashMap<String,String> validationError = new HashMap<>();
+                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                            e.printStackTrace(new PrintStream(outputStream));
+                            validationError.put("error", outputStream.toString());
+                            data.validationReport=validationError;
+                        }
+                        try {
+                            data.traffic=om.readValue(rs.getString("traffic"), Object.class);
+                        } catch (JsonProcessingException e) {
+                            HashMap<String,String> trafficError = new HashMap<>();
+                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                            e.printStackTrace(new PrintStream(outputStream));
+                            trafficError.put("error", outputStream.toString());
+                            data.traffic=trafficError;
+                        }
+                    }
+                });
     }
 
     public SimpleMetrics getMetrics(String id) {

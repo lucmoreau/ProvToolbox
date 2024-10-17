@@ -1,16 +1,40 @@
 package org.openprovenance.prov.rules;
 
+import java.util.LinkedList;
+import java.util.List;
+
+
+
 public class TrafficLightResult implements Ansi {
+    private final ResultKind kind;
     public String comment;
     public double ratio;
     public TrafficLight.TrafficLightColor color;
     public String colorAsString;
+    public List<TrafficLightResult> subResults=new LinkedList<>();
+
+    static public enum ResultKind {
+        PERCENTAGE, LIGHT
+    }
 
     public TrafficLightResult(String comment, double ratio, TrafficLight.TrafficLightColor color) {
         this.comment=comment;
         this.ratio=ratio;
+        this.kind=ResultKind.PERCENTAGE;
+        if (ratio < 0 || ratio > 100.0) throw new IllegalArgumentException("Ratio out of range: " + ratio);
         this.color=color;
         this.colorAsString=colorAsString(color);
+    }
+
+    public TrafficLightResult(String comment, List<TrafficLightResult> subResults) {
+        this.comment=comment;
+        this.kind=ResultKind.LIGHT;
+        double ratio=subResults.stream().map(TrafficLightResult::valueOf).reduce(0, Integer::sum) * 1.0 / subResults.size();
+        this.ratio=ratio;
+        if (ratio<0 || ratio>3) throw new IllegalArgumentException("Ratio out of range: " + ratio);
+        this.color=colorOf(ratio);
+        this.colorAsString=colorAsString(this.color);
+        this.subResults.addAll(subResults);
     }
 
     public String colorAsString(TrafficLight.TrafficLightColor color) {
@@ -18,7 +42,21 @@ public class TrafficLightResult implements Ansi {
             case RED -> red("red");
             case ORANGE -> orange("orange");
             case GREEN -> green("green");
-            default -> throw new IllegalArgumentException("Unknown color: " + color);
         };
     }
+
+    public int valueOf() {
+        return switch (color) {
+            case RED -> 1;
+            case ORANGE -> 2;
+            case GREEN -> 3;
+        };
+    }
+
+    static public TrafficLight.TrafficLightColor colorOf(double ratio) {
+        if (ratio >= 2.6) return TrafficLight.TrafficLightColor.GREEN;
+        if (ratio < 1.7)  return TrafficLight.TrafficLightColor.RED;
+        return TrafficLight.TrafficLightColor.ORANGE;
+    }
 }
+

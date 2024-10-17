@@ -105,14 +105,16 @@ public class MetricsCalculator extends Rules {
 
             EntityActivityDerivationCounter count=(EntityActivityDerivationCounter)m2.get(COUNT_DERIVATIONS_AND_GENERATIONS_AND_USAGES);
             List<TrafficLightResult> trafficLight= TrafficLight.getTrafficLight(count);
-            TrafficLightResult patternTrafficLightResult=new TrafficLightResult("Pattern", trafficLight);
+            TrafficLightResult patternTrafficLightResult=new TrafficLightResult("Triangle Pattern Rating", trafficLight);
 
-            List<TrafficLightResult> typeTrafficLightSubResults=List.of(new TrafficLightResult("Type1", 66, TrafficLight.TrafficLightColor.ORANGE));
-            TrafficLightResult typeTrafficLightResult=new TrafficLightResult("Type",typeTrafficLightSubResults);
+            List<TrafficLightResult> typeTrafficLightSubResults=List.of(
+                    new TrafficLightResult("Type1", 66, TrafficLight.TrafficLightColor.ORANGE),
+                    new TrafficLightResult("Type2", 70, TrafficLight.TrafficLightColor.GREEN));
+            TrafficLightResult typeTrafficLightResult=new TrafficLightResult("Type Rating",typeTrafficLightSubResults);
 
 
             List<TrafficLightResult> trafficLightSubResults = List.of(patternTrafficLightResult, typeTrafficLightResult);
-            TrafficLightResult overallTrafficLightResult=new TrafficLightResult("Overall",trafficLightSubResults);
+            TrafficLightResult overallTrafficLightResult=new TrafficLightResult("Overall Rating",trafficLightSubResults);
 
             return overallTrafficLightResult;
         } catch (Throwable e) {

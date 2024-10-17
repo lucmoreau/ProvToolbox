@@ -114,7 +114,8 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
             schema = @Schema(implementation = UploadForm.class))
                            MultipartFormDataInput input,
                            @Context HttpHeaders headers,
-                           @Context HttpServletRequest ignoredRequestContext) {
+                           @Context HttpServletRequest ignoredRequestContext,
+                           @Context UriInfo uriInfo) {
         MediaType mediaType = headers.getMediaType();
 
         Principal principal = ignoredRequestContext.getUserPrincipal();

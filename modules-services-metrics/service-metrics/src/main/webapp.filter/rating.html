@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rating</title>
+    <script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+    <link href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<script>
+    var url = document.URL;
+    // extract value of query parameter m
+    var m = url.match(/m=([^&]*)/)[1];
+
+    function symbolFor(color) {
+        if (color === "GREEN") {
+            return "&#128994;";
+        } else if (color === "ORANGE") {
+            return "&#128992;";
+        } else if (color === "RED") {
+            return "&#128308;";
+        } else {
+            return "";
+        }
+    }
+
+    function trafficRepresentation(traffic) {
+        if (traffic.kind === "PERCENTAGE") {
+            return "<b> " + traffic.comment + "</b>: " + traffic.ratio.toFixed(2) + "% " + symbolFor(traffic.color);
+        } else {
+            return "<b> " + traffic.comment + "</b>: " + traffic.ratio.toFixed(2) + "(/3) " +  symbolFor(traffic.color);
+        }
+    }
+
+    // ajax call to obtain json at url m
+    $.ajax({
+        url: m,
+        type: 'GET',
+        success: function(data) {
+
+            var traffic = data.traffic;
+
+            // create nested enumeration of traffic representation for each sublists of traffic
+
+
+            var features = data.features;
+            // pretty print json object contained in features
+            $('#features').append(JSON.stringify(features, null, 2));
+
+            var artifact = data.artifact;
+            $('#artifact').append(artifact);
+
+
+            $('#url').append("<b>URL</b>: <a href=" + m + ">" + m + "</a>");
+
+
+            $('#light').append(trafficRepresentation(traffic));
+
+
+            $('#light').append("<p/>");
+
+            if (traffic.subResults) {
+                $('#light').append("<ul id='sub1'></ul>")
+                for (var i = 0; i < traffic.subResults.length; i++) {
+                    var subResult = traffic.subResults[i];
+                    $('#sub1').append("<li>" + i + ". " + trafficRepresentation(subResult) + "</li>");
+                    $('#sub1').append("<p/>");
+
+                    if (subResult.subResults) {
+                        var loc = "sub2_" + i;
+                        $('#sub1').append("<ul id='" + loc + "'></ul>")
+                        for (var j = 0; j < subResult.subResults.length; j++) {
+                            var subSubResult = subResult.subResults[j];
+                            console.log(subSubResult);
+
+                            var locref = "#" + loc;
+
+                            $(locref).append("<li>" + j + ". " + trafficRepresentation(subSubResult) + "</li>");
+                        }
+                        $('#sub1').append("<p/>");
+
+                    }
+                }
+            }
+
+        }
+    });
+</script>
+<body>
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            <li id="header-rator">      <a href="rator.html">Rate</a></li>
+            <li id="header-mapper">     <a href="mapper.html">Map</a></li>
+            <li id="header-api">        <a href="api.html">API</a></li>
+            <li id="header-about">      <a href="about.html">About</a></li>
+            <li id="header-contact">    <a href="contact.html">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<script>
+    $('#header-rator').addClass("active");
+</script>
+
+<section>
+    <div class="row">
+        <div class="col-sm-8" style="text-align:left;margin-top:10px;margin-bottom:50px">
+            <h2>Report</h2>
+            <p>Type: <span id="artifact" style="color: blue;"></span></p>
+
+            <h3>Raw Data</h3>
+            <div id="url"></div>
+
+            <h3>Ratings</h3>
+            <div id="light"></div>
+
+            <h3>Features</h3>
+            <pre id="features"></pre>
+
+
+        </div>
+    </div>
+</section>
+
+
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+
+<script src="provservice.js"></script>
+<script>
+    $('.dropdown-toggle').dropdown()
+</script>
+
+</body>
+</html>

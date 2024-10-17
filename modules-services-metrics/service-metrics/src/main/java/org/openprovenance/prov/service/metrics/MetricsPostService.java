@@ -16,10 +16,12 @@ import org.openprovenance.prov.rules.Rules;
 import org.openprovenance.prov.rules.RulesFactory;
 import org.openprovenance.prov.rules.SimpleRulesFactory;
 import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.core.rest.ForwardedUriInfo;
 
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MetricsPostService extends PostService {
 
@@ -36,17 +38,23 @@ public class MetricsPostService extends PostService {
     }
 
 
-    public Response submit(@Parameter(name = "form",
-            description = "form to be posted",
-            required = true,
-            schema = @Schema(implementation = UploadForm.class))
+    public Response submit(@Parameter(  name = "form",
+                                        description = "form to be posted",
+                                        required = true,
+                                        schema = @Schema(implementation = UploadForm.class))
                            MultipartFormDataInput input,
                            @Context HttpHeaders headers,
-                           @Context HttpServletRequest ignoredRequestContext) {
+                           @Context HttpServletRequest requestContext,
+                           @Context UriInfo uriInfo) {
+
         MediaType mediaType = headers.getMediaType();
 
-        Principal principal = ignoredRequestContext.getUserPrincipal();
+        Principal principal = requestContext.getUserPrincipal();
         logger.info("principal is " + principal);
+
+
+        System.out.println(uriInfo.getAbsolutePath());
+        System.out.println(uriInfo.getBaseUri());
 
         if (mediaType.toString().startsWith("multipart/form-data")) {
 
@@ -70,11 +78,14 @@ public class MetricsPostService extends PostService {
 
                 Rules rules= rulesFactory.newRules();
                 MetricsRecord o=(MetricsRecord)rules.computeMetrics(doc, utils.getProvFactory());
-                String id=o.id.toString();
+                String id= o.id;
 
 
-                String location = "metrics/" + id + "." + "json";
-                if (true) return utils.composeResponseSeeOther(location).build();
+                String location = new ForwardedUriInfo(uriInfo, new AtomicReference<>(headers)).getBaseUri() + "metrics/" + id + "." + "json";
+
+
+
+                if (true) return utils.composeResponseSeeOther("../rating.html?m=" + location).build();
 
 
                 StreamingOutput promise= out -> new ObjectMapper().writeValue(out, o);

@@ -12,6 +12,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-metrics: added validation report
 * service-metrics: added traffic lights
 * service-metrics: computing composite traffic lights
+* service-metrics: rating report
 
 `2.2.0`
 * docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms

@@ -19,7 +19,7 @@ import java.util.Set;
 
 import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
 
-public class CompilerTest extends TestCase {
+abstract public class CompilerTest extends TestCase {
 
     static final String EX_NS = "http://example.org/";
 

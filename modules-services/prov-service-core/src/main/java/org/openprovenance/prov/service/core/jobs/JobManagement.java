@@ -10,8 +10,8 @@ import java.util.Date;
 
 public class JobManagement {
 	public static final String CURL_TOKEN = "CURL_TOKEN";
-    public static final String LOG_JOB = "logJob";
-    public static final String LOG_URL = "logUrl";
+    public static final String LOG_JOB = "LOG_JOB";
+    public static final String LOG_URL = "LOG_URL";
     public static final String LOG_SOURCE = "logSource";
 	public static final String UTILS_KEY = "utils";
     public static final String DURATION_KEY = "duration";
@@ -110,7 +110,7 @@ public class JobManagement {
         // Trigger the job to run on the next 1 round minute
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity(id, "graph")
-                .startAt(DateBuilder.futureDate(1, IntervalUnit.MINUTE))
+                .startAt(DateBuilder.futureDate(1, IntervalUnit.SECOND))
                 .build();
         try {
             JobManagement.getScheduler().scheduleJob(job, trigger);

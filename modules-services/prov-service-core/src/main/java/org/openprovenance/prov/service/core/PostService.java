@@ -153,7 +153,7 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
                 vr.setExpires(date);
 
                 final ServiceUtils.Action action = utils.getAction(formData);
-                doLog(action, vr);
+                doLog(action, vr, uriInfo);
 
                 logger.debug("trying performers " + performers);
 
@@ -281,7 +281,6 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
         DocumentResource vr = null;
         List<InputPart> inputParts = formData.get("url");
         if (inputParts != null) {
-
             vr = utils.doProcessURLForm(inputParts);
         }
         return vr;
@@ -297,15 +296,22 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
         return vr;
     }
 
-    private void doLog(ServiceUtils.Action action, DocumentResource vr) {
-        doLog(action.toString(), vr);
+    private void doLog(ServiceUtils.Action action, DocumentResource vr, UriInfo uriInfo) {
+        doLog(action.toString(), vr, uriInfo);
     }
 
-    private void doLog(String action, DocumentResource vr) {
+    private void doLog(String action, DocumentResource vr, UriInfo uriInfo) {
         logger.log(ProvLevel.PROV,
                 action + ","
                         + vr.getVisibleId() + ","
                         + vr.getStorageId());
+
+        JobManagement.scheduleCurlJob(vr.getVisibleId(),
+                action + ","
+                        + vr.getVisibleId() + ","
+                        + vr.getStorageId() + ","
+                        + uriInfo.getAbsolutePath() + ","
+                        + "provapi");
     }
 
 

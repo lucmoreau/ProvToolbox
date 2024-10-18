@@ -5,6 +5,7 @@ public interface SwaggerTags {
     String TEMPLATE="template";
     String DOCUMENTS="documents";
     String TYPES="types";
+    String METRICS="metrics";
     String RANDOM="random";
     String VIEW="view";
     String RESOURCES ="resources";

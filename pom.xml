@@ -365,7 +365,7 @@
 		<!-- the jsweet transpiler to generate typescript/js from java code requires version 12 (or older) of java. Set the home here.-->
 		<java12.home>/usr/local/java/jdk-12.0.1.jdk/Contents/Home/</java12.home>
 
-		<java.version>1.8</java.version>
+		<!-- <java.version>1.8</java.version> -->
 
 		<scala.library.version>2.13.13</scala.library.version> <!-- 2.13.12, 2.12.18 -->
 		<scala.plugin.version>4.8.1</scala.plugin.version> <!-- 4.2.0 -->

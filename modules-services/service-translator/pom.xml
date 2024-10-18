@@ -466,6 +466,14 @@
                                             <name>PROV_STORAGE_CONFIG</name>
                                             <value>${project.build.directory}/test-classes/config/storage-configuration-mongodb-redis.json</value>
                                         </property>
+                                        <property>
+                                            <name>LOG_JOB</name>
+                                            <value>true</value>
+                                        </property>
+                                        <property>
+                                            <name>LOG_URL</name>
+                                            <value>http://localhost:7073/metrics/provapi/documents_form/</value>
+                                        </property>
                                     </properties>
                                 </configuration>
                             </execution>

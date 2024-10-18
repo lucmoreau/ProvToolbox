@@ -33,6 +33,7 @@
 		<module>modules-nf</module>
 		<module>modules-explanations</module>
 		<module>modules-services2</module>
+		<module>modules-services-metrics</module>
 
 		<module>modules-executable-provman</module>
 		<module>modules-tools</module>

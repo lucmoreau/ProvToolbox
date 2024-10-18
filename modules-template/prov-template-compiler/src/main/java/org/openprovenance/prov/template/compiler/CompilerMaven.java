@@ -17,6 +17,7 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectC
 
 import javax.lang.model.element.Modifier;
 import java.io.*;
+import java.util.Properties;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.TESTER_FILE;
 
@@ -43,6 +44,8 @@ public class CompilerMaven {
 
         addCompilerDeclaration(model);
         addJunitDependency(model);
+
+        model.addProperty("java12.home", "/usr/local/java/jdk-12.0.1.jdk/Contents/Home/");
 
 
         try {
@@ -83,7 +86,8 @@ public class CompilerMaven {
         }
 
         if (jsweet) {
-            addJSweetDependency(model);
+            addJsweetCall(model);
+            //addJSweetDependency(model);
             //addProvDependency("prov-jsweet-candy-js", model);
             addProvDependency("prov-jsweet-candy-java", model);
         }
@@ -103,6 +107,239 @@ public class CompilerMaven {
             e.printStackTrace();
             return false;
         }
+
+    }
+    public boolean makeSubPomJweet(TemplatesProjectConfiguration configs, String dir, String name, boolean jsweet) {
+        Model model = new Model();
+        model.setArtifactId(name);
+        model.setName(name);
+        model.setPackaging("jar");
+        model.setDescription(configs.description + " (" + name + ") [JSweet Compilation]");
+        Parent parent = new Parent();
+        parent.setArtifactId(configs.name);
+        parent.setGroupId(configs.group);
+        parent.setVersion(configs.version);
+        model.setParent(parent);
+        model.setModelVersion("4.0.0");
+
+
+        if (jsweet) {
+            addJSweetDependency(model);
+            //addProvDependency("prov-jsweet-candy-js", model);
+            addProvDependency("prov-jsweet-candy-java", model);
+        }
+
+  
+        
+
+
+     
+
+        if (false) {
+            addJacksonDependency(model);
+        }
+
+        if (jsweet) {
+            addBuildHelperMavenPlugin(model);
+        }
+
+        try {
+            new File(dir + "/jsweet").mkdirs();
+            new MavenXpp3Writer().write(new FileWriter(dir + "/jsweet/jsweet-pom.xml"), model);
+
+            // get property java12.home from properties file compiler.properties
+
+            Properties properties=Configuration.getPropertiesFromClasspath(this.getClass(),"compiler.properties");
+            String java12Home=properties.getProperty("java12.home");
+
+
+            String script= """
+#!/bin/bash
+export JAVA_HOME="${java12.home}"
+
+mvn -f jsweet/jsweet-pom.xml jsweet:jsweet
+""".replace("${java12.home}", java12Home);
+
+            // write script into file dir + "/jsweet/jsweet.sh"
+            FileWriter fw = new FileWriter(dir + "/jsweet/jsweet.sh");
+            fw.write(script);
+            fw.close();
+
+            // make the script executable
+            new File(dir + "/jsweet/jsweet.sh").setExecutable(true);
+
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+          /*
+       add following plugin to model
+        			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>${antrun.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>check-java12-exists</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<available file="${java12.home}" type="dir" property="java12Exists" />
+							</target>
+							<exportAntProperties>true</exportAntProperties>
+						</configuration>
+					</execution>
+					<execution>
+						<id>antrun-jsweet</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<!--suppress UnresolvedMavenProperty -->
+							<target if="${java12Exists}">
+								<echo message="Java 12 found, doing jsweet compilation" />
+								<exec executable="${project.build.directory}/jsweet/jsweet.sh">
+
+								</exec>
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>antrun.no.jsweet</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<!--suppress UnresolvedMavenProperty -->
+							<target unless="${java12Exists}">
+								<echo message="Java 12 not found, skipping jsweet compilation, no npm test" />
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<echo message="copying generated bundles to dist..." />
+								<copy file="${project.build.directory}/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}/bundle.js" tofile="dist/${project.artifactId}.js" verbose="true" failonerror="false" />
+								<copy file="${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}/bundle.d.ts" tofile="dist/${project.artifactId}.d.ts" verbose="true" failonerror="false" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+         */
+
+    private void addJsweetCall(Model model) {
+        Plugin plugin = new Plugin();
+        plugin.setArtifactId("maven-antrun-plugin");
+        plugin.setGroupId("org.apache.maven.plugins");
+        plugin.setVersion("3.0.0");
+
+        StringBuilder configString = new StringBuilder()
+                .append("<configuration>")
+                .append("<target>")
+                .append("<available file=\"${java12.home}\" type=\"dir\" property=\"java12Exists\" />")
+                .append("</target>")
+                .append("<exportAntProperties>true</exportAntProperties>")
+                .append("</configuration>");
+
+
+
+
+
+        PluginExecution pe1=new PluginExecution();
+        pe1.addGoal("run");
+        pe1.setId("check-java12-exists");
+        pe1.setPhase("generate-sources");
+
+        Xpp3Dom config = null;
+        try {
+            config = Xpp3DomBuilder.build(new StringReader(configString.toString()));
+        } catch (XmlPullParserException | IOException ex) {
+            throw new RuntimeException("Issue creating config for enforcer plugin", ex);
+        }
+        pe1.setConfiguration(config);
+
+        PluginExecution pe2=new PluginExecution();
+        pe2.addGoal("run");
+        pe2.setId("antrun-jsweet");
+        pe2.setPhase("generate-sources");
+
+        StringBuilder configString2 = new StringBuilder()
+                .append("<configuration>")
+                .append("<target if=\"${java12Exists}\">")
+                .append("<echo message=\"Java 12 found, doing jsweet compilation\" />")
+                .append("<exec executable=\"${project.basedir}/jsweet/jsweet.sh\">")
+                .append("</exec>")
+                .append("</target>")
+                .append("</configuration>");
+        try {
+            config = Xpp3DomBuilder.build(new StringReader(configString2.toString()));
+        } catch (XmlPullParserException | IOException ex) {
+            throw new RuntimeException("Issue creating config for enforcer plugin", ex);
+        }
+        pe2.setConfiguration(config);
+
+        PluginExecution pe3=new PluginExecution();
+        pe3.addGoal("run");
+        pe3.setId("antrun.no.jsweet");
+        pe3.setPhase("generate-sources");
+
+        StringBuilder configString3 = new StringBuilder()
+                .append("<configuration>")
+                .append("<target unless=\"${java12Exists}\">")
+                .append("<echo message=\"Java 12 not found, skipping jsweet compilation, no npm test\" />")
+                .append("</target>")
+                .append("</configuration>");
+
+        try {
+            config = Xpp3DomBuilder.build(new StringReader(configString3.toString()));
+        } catch (XmlPullParserException | IOException ex) {
+            throw new RuntimeException("Issue creating config for enforcer plugin", ex);
+        }
+        pe3.setConfiguration(config);
+
+        PluginExecution pe4=new PluginExecution();
+        pe4.addGoal("run");
+        pe4.setPhase("package");
+
+        StringBuilder configString4 = new StringBuilder()
+                .append("<configuration>")
+                .append("<target>")
+                .append("<echo message=\"copying generated bundles to dist...\" />")
+                .append("<copy file=\"${project.build.directory}/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}/bundle.js\" tofile=\"dist/${project.artifactId}.js\" verbose=\"true\" failonerror=\"false\" />")
+                .append("<copy file=\"${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}/bundle.d.ts\" tofile=\"dist/${project.artifactId}.d.ts\" verbose=\"true\" failonerror=\"false\" />")
+                .append("</target>")
+                .append("</configuration>");
+
+        try {
+            config = Xpp3DomBuilder.build(new StringReader(configString4.toString()));
+        } catch (XmlPullParserException | IOException ex) {
+            throw new RuntimeException("Issue creating config for enforcer plugin", ex);
+        }
+        pe4.setConfiguration(config);
+
+        plugin.addExecution(pe1);
+        plugin.addExecution(pe2);
+        plugin.addExecution(pe3);
+        plugin.addExecution(pe4);
+
+        Build b=new Build();
+        b.addPlugin(plugin);
+        model.setBuild(b);
 
     }
 

@@ -8,7 +8,6 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeVariableName;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
@@ -321,6 +320,7 @@ public class ConfigProcessor implements Constants {
 
 
         compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true, compilerCommon.getFoundEscape());
+        compilerMaven.makeSubPomJweet(configs, cli_dir, cli_lib, configs.jsweet);
 
 
         SpecificationFile logger=compilerLogger.generateLogger(configs, locations, LOGGER, getInputOutputMaps());

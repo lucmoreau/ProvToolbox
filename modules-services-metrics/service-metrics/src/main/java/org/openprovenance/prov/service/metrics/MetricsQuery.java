@@ -124,6 +124,16 @@ public class MetricsQuery {
                             trafficError.put("error", outputStream.toString());
                             data.traffic=trafficError;
                         }
+                        try {
+                            data.hash=om.readValue(rs.getString("hash"), Object.class);
+                        } catch (JsonProcessingException e) {
+                            HashMap<String,String> hashError = new HashMap<>();
+                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                            e.printStackTrace(new PrintStream(outputStream));
+                            hashError.put("error", outputStream.toString());
+                            data.hash=hashError;
+                        }
+                        data.created_at=rs.getString("created_at");
                     }
                 });
     }

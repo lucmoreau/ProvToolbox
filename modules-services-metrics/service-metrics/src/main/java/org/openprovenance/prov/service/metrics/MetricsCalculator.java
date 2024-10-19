@@ -87,7 +87,7 @@ public class MetricsCalculator extends Rules {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        MetricsRecord metricsRecord = new MetricsRecord(id, "document", metrics, features._1, validationReport, traffic);
+        MetricsRecord metricsRecord = new MetricsRecord(id, "document", metrics, features._1, validationReport, traffic, hash);
 
         return metricsRecord;
 

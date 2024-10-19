@@ -14,6 +14,9 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-metrics: computing composite traffic lights
 * service-metrics: rating report
 * prov-template-compiler: generated code for jsweet/jsweet.sh to ensure compatibility with latest jdk
+* service-metrics: added signature to metrics
+
+
 
 `2.2.0`
 * docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms

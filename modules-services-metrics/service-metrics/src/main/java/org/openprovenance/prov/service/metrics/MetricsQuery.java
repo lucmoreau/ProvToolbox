@@ -39,13 +39,13 @@ public class MetricsQuery {
     final static TypeReference<Map<String,Object>> countMetrics = new TypeReference<>() {};
     final static TypeReference<Map<String,Integer>> featureMetrics = new TypeReference<>() {};
 
-    public String insertMetricsRecord(String artifact, String url, String features, String counts, String validity, String traffic) {
+    public String insertMetricsRecord(String artifact, String url, String features, String counts, String validity, String traffic, String hash) {
         AtomicReference<String> id = new AtomicReference<>();
         querier.do_query(null,
                 null,
                 (sb, data) -> {
                     sb.append("insert\n");
-                    sb.append("into metrics (artifact, url, features, counts, validity, traffic)\n");
+                    sb.append("into metrics (artifact, url, features, counts, validity, traffic, hash)\n");
                     sb.append("values ('");
                     sb.append(artifact);
                     sb.append("', ");
@@ -58,6 +58,8 @@ public class MetricsQuery {
                     sb.append(validity);
                     sb.append("', '");
                     sb.append(traffic);
+                    sb.append("', '");
+                    sb.append(hash);
                     sb.append("')\n");
                     sb.append("RETURNING ID;");
                 },

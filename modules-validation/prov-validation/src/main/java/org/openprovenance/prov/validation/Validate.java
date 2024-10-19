@@ -59,8 +59,12 @@ public class Validate {
 	final Gensym g;
 
 	public Validate(Config config) {
+		this(config, false);
+	}
+
+	public Validate(Config config, boolean staticGensym) {
 		this.config = config;
-		this.ind = new Indexer(config.p, config.om);
+		this.ind = new Indexer(config.p, config.om, staticGensym);
 		this.p=ind.p;
 		this.name=p.getName();
 		this.g=ind.g;

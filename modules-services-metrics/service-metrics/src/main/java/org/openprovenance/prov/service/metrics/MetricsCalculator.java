@@ -14,6 +14,7 @@ import org.openprovenance.prov.rules.TrafficLightResult;
 import org.openprovenance.prov.rules.counters.EntityActivityDerivationCounter;
 import org.openprovenance.prov.scala.summary.TypePropagator;
 import org.openprovenance.prov.scala.typemap.IncrementalProcessor;
+import org.openprovenance.prov.service.signature.SignatureService;
 import org.openprovenance.prov.service.validation.ValidationObjectMaker;
 import org.openprovenance.prov.validation.Config;
 import org.openprovenance.prov.validation.Validate;
@@ -26,14 +27,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.openprovenance.prov.service.metrics.MetricsPostService.getSignature;
+
 public class MetricsCalculator extends Rules {
     final private static Logger logger = LogManager.getLogger(MetricsCalculator.class);
 
     final IncrementalProcessor ip;
     private final MetricsQuery querier;
     private final InteropFramework interop;
+    private final SignatureService signatureService;
 
-    public MetricsCalculator(MetricsQuery querier) {
+    public MetricsCalculator(MetricsQuery querier, SignatureService signatureService) {
         this.querier=querier;
         if (querier==null) {
             ip=new IncrementalProcessor();
@@ -44,6 +48,7 @@ public class MetricsCalculator extends Rules {
             //ip.printme();
         }
         this.interop=new InteropFramework();
+        this.signatureService=signatureService;
     }
 
     ObjectMapper om=new ObjectMapper();
@@ -64,6 +69,7 @@ public class MetricsCalculator extends Rules {
         Object metrics = getMetricsOrError(document, pFactory);
         Object validationReport = getValidationReportOrError(document, pFactory);
         Object traffic = getTrafficLightOrError(metrics);
+        Object hash= getSignature(signatureService,document);
 
         String id=null;
 
@@ -73,7 +79,8 @@ public class MetricsCalculator extends Rules {
                     TypePropagator.om().writeValueAsString(features._2),
                     om.writeValueAsString(metrics),
                     om.writeValueAsString(validationReport),
-                    om.writeValueAsString(traffic));
+                    om.writeValueAsString(traffic),
+                    om.writeValueAsString(hash));
             System.out.println("=========== ID: " + id);
 
             persistTypeMap();
@@ -172,6 +179,7 @@ public class MetricsCalculator extends Rules {
     public List<SimpleMetrics> getTypeMapReport() {
         return querier.getTypeMapReport();
     }
+
 
 
 

@@ -81,7 +81,7 @@ public class MetricsService extends TranslationService {
 
         Querier querier=new Querier(storage, conn);
         this.mq=new MetricsQuery(querier);
-        metricsCalculator = new MetricsCalculator(mq);
+        metricsCalculator = new MetricsCalculator(mq, ((ps instanceof MetricsPostService)?((MetricsPostService)ps).getSignatureService():null));
         setRulesFactory(() -> metricsCalculator);
         if (ps instanceof MetricsPostService) {
             ((MetricsPostService)ps).setRulesFactory(() -> metricsCalculator);

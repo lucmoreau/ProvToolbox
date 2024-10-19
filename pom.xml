@@ -378,7 +378,7 @@
 		<scala.parser.comb.version>1.1.2</scala.parser.comb.version>
 		<parboiled.version>2.5.0</parboiled.version>
 
-		<xmlsec.version>2.1.4</xmlsec.version> <!--2.0.6 -->
+		<xmlsec.version>4.0.2</xmlsec.version> <!--2.1.4 -->
 
 		<!-- web services -->
 
@@ -447,7 +447,7 @@
 		<!-- jaxb -->
 		<jaxb.runtime.version>2.3.1</jaxb.runtime.version> <!-- now glassfish implementation -->
 
-		<xmlsec.version>2.1.7</xmlsec.version> <!--2.1.4, 2.0.6 -->
+		<old.stuff.xmlsec.version>2.1.7</old.stuff.xmlsec.version> <!--2.1.4, 2.0.6 -->
 
 		<!-- older jaxb stuff -->
 

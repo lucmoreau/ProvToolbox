@@ -35,6 +35,7 @@ public class StorageSetup {
         logger.info("Configuration --- " + configuration);
         switch (configuration.index) {
             case "redis":
+                logger.info("Using Redis " + configuration.index);
                 initRedis(utilsConfig, configuration);
                 break;
             case "memory":

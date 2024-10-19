@@ -17,14 +17,14 @@ module prov.model {
     exports org.openprovenance.prov.model.builder;
     exports org.openprovenance.prov.configuration;
     exports org.openprovenance.prov.rules;
-
+    exports org.openprovenance.prov.rules.counters;
     exports org.openprovenance.apache.commons.lang;
+    exports org.openprovenance.apache.commons.lang.builder;
 
     opens org.openprovenance.prov.vanilla;
     opens org.openprovenance.prov.model;
     opens org.openprovenance.prov.model.interop;
     opens org.openprovenance.prov.rules;
-    exports org.openprovenance.prov.rules.counters;
 
 
 }

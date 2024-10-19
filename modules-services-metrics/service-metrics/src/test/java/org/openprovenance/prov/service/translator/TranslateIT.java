@@ -23,8 +23,8 @@ import java.util.*;
 
 import static org.openprovenance.prov.model.interop.InteropMediaType.*;
 
-
-public class TranslateIT extends RoundTripFromJavaTest implements ApiUriFragments  {
+// no storage layer configured to process this.
+abstract public class TranslateIT extends RoundTripFromJavaTest implements ApiUriFragments  {
 
     final static Logger logger = LogManager.getLogger(TranslateIT.class);
     final static ClientConfig config=new ClientConfig(TranslateIT.class);

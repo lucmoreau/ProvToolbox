@@ -23,6 +23,7 @@ import org.openprovenance.prov.model.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.core.config.NoStorageConfiguration;
 import org.openprovenance.prov.service.core.config.StorageConfiguration;
 import org.openprovenance.prov.service.core.writers.NodeMessageBodyWriter;
 import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
@@ -31,8 +32,8 @@ import org.openprovenance.prov.service.translation.TemplateService;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
+import org.openprovenance.prov.service.translation.storage.StorageSetup;
 import org.openprovenance.prov.service.validation.ValidationService;
-import org.openprovenance.prov.service.validation.storage.StorageSetup;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -87,7 +88,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 	private final Set<Object> singletons = new HashSet<>();
 
 
-	StorageConfiguration sc = StorageConfiguration.loadConfiguration();
+	StorageConfiguration sc = new NoStorageConfiguration();
 
 
 

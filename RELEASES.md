@@ -15,7 +15,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-metrics: rating report
 * prov-template-compiler: generated code for jsweet/jsweet.sh to ensure compatibility with latest jdk
 * service-metrics: added signature to metrics
-
+* validator: fixed issue with namespaces declaration in validation report
 
 
 `2.2.0`

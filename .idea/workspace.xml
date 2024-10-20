@@ -9,15 +9,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/issue/expansion.provn" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlNfBean.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlNfBean.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsPostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsPostService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsQuery.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsRecord.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/translator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/translator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/mutable/Model.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/mutable/Model.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationServiceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Validate.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Validate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/ValidationReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/ValidationReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/json/ValidationReportInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/json/ValidationReportInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/CoreValidateTester.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/CoreValidateTester.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ValidateTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ValidateTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -176,6 +177,8 @@
     "JUnit.StorageTest.testExample.executor": "Debug",
     "JUnit.TriangleTest.executor": "Run",
     "JUnit.TriangleTest.testTriangle.executor": "Run",
+    "JUnit.ValidateTest.testFailingDocumentExpansion.executor": "Run",
+    "JUnit.ValidateTest.testFailingDocumentPicaso.executor": "Run",
     "Makefile Target.go.executor": "Run",
     "Makefile Target.go1.executor": "Run",
     "Makefile Target.go2.executor": "Run",
@@ -283,7 +286,7 @@
       <recent name="org.openprovenance.prov.service.dispatch" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.CompilerTest.testCompiler1">
+  <component name="RunManager" selected="JUnit.ValidateTest.testFailingDocumentPicaso">
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -405,32 +408,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TriangleTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-model" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.rules.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.test.TriangleTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="TriangleTest.testTriangle" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-model" />
       <extension name="coverage">
@@ -452,6 +429,58 @@
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.model.test" />
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.test.TriangleTest" />
       <option name="METHOD_NAME" value="testTriangle" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ValidateTest.testFailingDocumentExpansion" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-validation" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.validation.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.validation" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.validation.ValidateTest" />
+      <option name="METHOD_NAME" value="testFailingDocumentExpansion" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ValidateTest.testFailingDocumentPicaso" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-validation" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.validation.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.validation" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.validation.ValidateTest" />
+      <option name="METHOD_NAME" value="testFailingDocumentPicaso" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -537,33 +566,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TypeLibraryIssueSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
-      <module name="prov-typemap" />
-      <option name="VMParameters" value="" />
-      <option name="allowRunningInParallel" value="false" />
-      <option name="alternativeJrePath" />
-      <option name="alternativeJrePathEnabled" value="false" />
-      <option name="classpathModifications">
-        <list />
-      </option>
-      <option name="envs">
-        <map />
-      </option>
-      <option name="passParentEnvs" value="true" />
-      <option name="programParameters" value="" />
-      <option name="projectPathOnTarget" />
-      <option name="selectedOptions">
-        <list />
-      </option>
-      <option name="testKind" value="Class" />
-      <option name="workingDirectory" value="$PROJECT_DIR$" />
-      <option name="shortenClasspath" value="NONE" />
-      <option name="testClassPath" value="org.openprovenance.prov.scala.typemap.TypeLibraryIssueSpec" />
-      <option name="workingDirectory" value="$PROJECT_DIR$" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <option name="VMParameters" value="" />
       <option name="allowRunningInParallel" value="false" />
@@ -604,19 +606,19 @@
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
       <item itemvalue="JUnit.CompilerTest.testCompiler1" />
-      <item itemvalue="JUnit.TriangleTest" />
+      <item itemvalue="JUnit.ValidateTest.testFailingDocumentExpansion" />
+      <item itemvalue="JUnit.ValidateTest.testFailingDocumentPicaso" />
       <item itemvalue="JUnit.TriangleTest.testTriangle" />
       <item itemvalue="Makefile Target.test.log" />
       <item itemvalue="ScalaTest.ModelSpec" />
-      <item itemvalue="ScalaTest.TypeLibraryIssueSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.ValidateTest.testFailingDocumentPicaso" />
+        <item itemvalue="JUnit.ValidateTest.testFailingDocumentExpansion" />
         <item itemvalue="JUnit.CompilerTest.testCompiler1" />
         <item itemvalue="Makefile Target.test.log" />
         <item itemvalue="JUnit.TriangleTest.testTriangle" />
-        <item itemvalue="JUnit.TriangleTest" />
-        <item itemvalue="ScalaTest.TypeLibraryIssueSpec" />
       </list>
     </recent_temporary>
   </component>
@@ -1075,7 +1077,7 @@
       <workItem from="1728039245552" duration="620000" />
       <workItem from="1728504186336" duration="101220000" />
       <workItem from="1729105189635" duration="34450000" />
-      <workItem from="1729241210944" duration="33386000" />
+      <workItem from="1729241210944" duration="43111000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

@@ -9,14 +9,22 @@ import java.util.List;
 import java.util.Set;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
 
+import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
+import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
+import org.openprovenance.prov.model.Bundle;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.validation.report.Dependencies;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.validation.report.ValidationReport;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.scala.immutable.Parser;
+
+import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.JSONLD_CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.getAttributes;
 
 
 public abstract class CoreValidateTester extends TestCase {
@@ -28,6 +36,8 @@ public abstract class CoreValidateTester extends TestCase {
     static Logger logger = LogManager.getLogger(CoreValidateTester.class);
 
     protected static Set<String> checkedSet = new HashSet<String> ();
+    private ObjectMapper objectMapper=new ObjectMapper();
+
 
 
     public void testUnification(String file, int strictCycles, int nonStrictCycles, List<Integer> failed,
@@ -81,16 +91,32 @@ public abstract class CoreValidateTester extends TestCase {
 
         File f = new File(file);
         org.openprovenance.prov.scala.immutable.Document d = Parser.readDocument(file);
-        Document b = pf.newDocument(d);
+        // create a deep copy of document d
+
+        Document b = new org.openprovenance.prov.scala.mutable.ProvFactory().newDocument(d);
+
+        //Document b = pf.newDocument(d);
         String out = "target/complete-" + f.getName();
         String report = "target/report-" + f.getName();
+        // replace extension by .json
+        report = report.replaceFirst("\\.[^.]*$", ".json");
         doTestValidate(b, out, report);
     }
 
+    ProvDeserialiser deserial = new ProvDeserialiser();
+    ProvSerialiser serial = new ProvSerialiser();
 
     public void doTestValidate(Document b, String out, String reportFile) throws java.io.IOException {
 
         report=new Validate(Config.newYesToAllConfig(pf, new ValidationObjectMaker())).validate(b);
+
+
+
+        //serial.getMapper().writeValue(new File(reportFile), report);
+
+       // getAttributes().get().remove(JSONLD_CONTEXT_KEY_NAMESPACE);
+      //  deserial.getMapper().readValue(new File(reportFile), ValidationReport.class);
+
 
     }
 

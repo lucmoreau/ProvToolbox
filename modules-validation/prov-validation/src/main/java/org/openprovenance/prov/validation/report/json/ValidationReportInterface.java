@@ -2,7 +2,9 @@ package org.openprovenance.prov.validation.report.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.openprovenance.prov.model.QualifiedName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomQualifiedNameDeserializer;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.validation.report.Dependencies;
 import org.openprovenance.prov.validation.report.MergeReport;
 import org.openprovenance.prov.validation.report.SpecializationReport;
@@ -13,6 +15,9 @@ import java.util.List;
 @JsonPropertyOrder({ "@context"})
 
 public interface ValidationReportInterface {
+    @JsonProperty("@context")
+    Namespace getNamespace();
+
     List<Dependencies> getCycle();
 
     List<Dependencies> getNonStrictCycle();
@@ -29,5 +34,6 @@ public interface ValidationReportInterface {
 
     boolean isDeposited();
 
-    QualifiedName getId();
+    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+    org.openprovenance.prov.vanilla.QualifiedName getId();
 }

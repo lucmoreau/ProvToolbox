@@ -95,26 +95,28 @@ public class Validate {
 		return inf;
 	}
 
-	public ValidationReport validate(Document b) throws java.io.IOException {
-		Pair<ValidationReport,Document> res=validate(u.getStatement(b),true);
+	public ValidationReport validate(Document inDocument) throws java.io.IOException {
+		Pair<ValidationReport,Document> result=validate(u.getStatement(inDocument),true, inDocument.getNamespace());
 
-		ValidationReport report=res.car;
-		Document doc = res.cdr;
-
-
+		ValidationReport report=result.car;
+		Document outDocument = result.cdr;
 
 
-		for (Bundle bu: u.getNamedBundle(b)) {
+
+
+		for (Bundle bu: u.getNamedBundle(inDocument)) {
 			List<Statement> statments= bu.getStatement();
 			Validate validator=new Validate(config);
-			Pair<ValidationReport,Document> buRes=validator.validate(statments,false);
+			Pair<ValidationReport,Document> buRes=validator.validate(statments,false, bu.getNamespace());
 			ValidationReport buRep=buRes.car;
-			buRep.setId(bu.getId());
+			QualifiedName id = bu.getId();
+			org.openprovenance.prov.vanilla.QualifiedName qnId=new org.openprovenance.prov.vanilla.QualifiedName(id.getNamespaceURI(),id.getLocalPart(),id.getPrefix());
+			buRep.setId(qnId);
 			report.getValidationReport().add(buRep);
 
 			Bundle bundle=u.getNamedBundle(buRes.cdr).get(0);
 
-			List<StatementOrBundle> ll=doc.getStatementOrBundle();
+			List<StatementOrBundle> ll=outDocument.getStatementOrBundle();
 			ll.add(bundle);
 
 
@@ -126,20 +128,20 @@ public class Validate {
 			ll.add(p.newWasDerivedFrom((QualifiedName)null, bundle.getId(), bu.getId()));
 
 			// chain namespaces
-			bundle.getNamespace().setParent(doc.getNamespace());
+			bundle.getNamespace().setParent(outDocument.getNamespace());
 
 		}
 
-		Namespace.withThreadNamespace(doc.getNamespace());
+		Namespace.withThreadNamespace(outDocument.getNamespace());
 
 
 
-		new Cleanup(u).cleanup(config, u.getStatement(doc), u.getNamedBundle(doc));
+		new Cleanup(u).cleanup(config, u.getStatement(outDocument), u.getNamedBundle(outDocument));
 
 		return report;
 	}
 
-	public Pair<ValidationReport,Document> validate(List<Statement> statements, boolean isDocument)
+	public Pair<ValidationReport,Document> validate(List<Statement> statements, boolean isDocument, Namespace namespace)
 			throws
 			java.io.IOException {
 
@@ -233,6 +235,10 @@ public class Validate {
 			i++;
 		}
 		report = getReport();
+
+
+		//LUC
+		if (true) report.setNamespace(namespace);
 
 
 		//logger.debug("serializeing report\n");

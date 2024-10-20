@@ -9,7 +9,9 @@ import jakarta.ws.rs.ext.Provider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
+import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
 import org.openprovenance.prov.validation.report.ValidationReport;
+import org.openprovenance.prov.validation.report.json.ValidationReportInterface;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +44,8 @@ public class ValidationReportMessageBodyReader implements MessageBodyReader<Vali
 
         logger.info("readFrom() returning ValidationReport");
         ObjectMapper mapper= new ProvDeserialiser().getMapper();
-        mapper.addMixIn(ValidationReport.class,  IsDocumentWithFieldsToIgnore.class);
+        //mapper.addMixIn(ValidationReport.class,  IsDocumentWithFieldsToIgnore.class);
+        mapper.addMixIn(ValidationReport.class,  ValidationReportInterface.class);
 
         logger.info("readFrom() mixin set");
 
@@ -51,6 +54,10 @@ public class ValidationReportMessageBodyReader implements MessageBodyReader<Vali
 
         report=mapper.readValue(is,ValidationReport.class);
         logger.info("readFrom() done");
+
+        new ProvSerialiser().getMapper().writeValue(System.out, report);
+        System.out.println();
+
 
     	return report;	       
 

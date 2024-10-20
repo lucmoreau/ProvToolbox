@@ -9,16 +9,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/issue/expansion.provn" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/mutable/Model.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/mutable/Model.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationServiceUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Validate.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Validate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/ValidationReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/ValidationReport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/json/ValidationReportInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/json/ValidationReportInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/CoreValidateTester.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/CoreValidateTester.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ValidateTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ValidateTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/IsDocumentWithFieldsToIgnore.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/IsDocumentWithFieldsToIgnore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/ValidationReportMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/ValidationReportMessageBodyReader.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1077,7 +1070,7 @@
       <workItem from="1728039245552" duration="620000" />
       <workItem from="1728504186336" duration="101220000" />
       <workItem from="1729105189635" duration="34450000" />
-      <workItem from="1729241210944" duration="43111000" />
+      <workItem from="1729241210944" duration="44182000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

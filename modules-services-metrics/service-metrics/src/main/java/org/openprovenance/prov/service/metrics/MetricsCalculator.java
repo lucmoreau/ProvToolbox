@@ -22,12 +22,14 @@ import org.openprovenance.prov.validation.report.ValidationReport;
 import scala.Tuple2;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.openprovenance.prov.service.metrics.MetricsPostService.getSignature;
+import static org.openprovenance.prov.service.validation.ValidationService.serializeValidationReportAsString;
 
 public class MetricsCalculator extends Rules {
     final private static Logger logger = LogManager.getLogger(MetricsCalculator.class);
@@ -73,7 +75,7 @@ public class MetricsCalculator extends Rules {
                     null,
                     TypePropagator.om().writeValueAsString(features),
                     om.writeValueAsString(metrics),
-                    om.writeValueAsString(validationReport),
+                    serializeValidatiorReportOrErrorAsString(validationReport),
                     om.writeValueAsString(traffic),
                     om.writeValueAsString(hash));
 
@@ -87,6 +89,10 @@ public class MetricsCalculator extends Rules {
         }
 
         return new MetricsRecord(id, "document", metrics, features, validationReport, traffic, hash);
+    }
+
+    public String serializeValidatiorReportOrErrorAsString(Object validationReport) throws JsonProcessingException {
+        return (validationReport instanceof ValidationReport) ? serializeValidationReportAsString((ValidationReport) validationReport) : om.writeValueAsString(validationReport);
     }
 
     private Object getFeatures(Document document) {

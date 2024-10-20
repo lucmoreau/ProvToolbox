@@ -4,15 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.rules.SimpleMetrics;
-import org.openprovenance.prov.validation.report.ValidationReport;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static org.openprovenance.prov.service.validation.ValidationService.deserializeValidationReport;
 
 public class MetricsQuery {
     private final Querier querier;
@@ -134,8 +136,8 @@ public class MetricsQuery {
                             data.features=featureError;
                         }
                         try {
-                            data.validationReport=om.readValue(rs.getString("validity"), ValidationReport.class);
-                        } catch (JsonProcessingException e) {
+                            data.validationReport=deserializeValidationReport(rs.getString("validity"));
+                        } catch (IOException e) {
                             HashMap<String,String> validationError = new HashMap<>();
                             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                             e.printStackTrace(new PrintStream(outputStream));

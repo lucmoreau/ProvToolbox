@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
+import static org.openprovenance.prov.service.validation.ValidationService.serializeValidationReport;
 
 @Path("")
 public class MetricsService extends TranslationService {
@@ -99,8 +100,8 @@ public class MetricsService extends TranslationService {
                                @Parameter(name = "id", description = "id", required = true) @PathParam("id") String id) throws IOException {
 
         MetricsRecord metricsRecord = mq.getMetricsRecord(id);
-        System.out.println("MetricsRecord: " + metricsRecord);
-        StreamingOutput promise = out -> TypePropagator.om().writeValue  (out,metricsRecord);
+        logger.debug("MetricsRecord: " + metricsRecord);
+        StreamingOutput promise = out -> serializeValidationReport(metricsRecord,out);  // note the special serializer to support validation reports
 
         return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
     }

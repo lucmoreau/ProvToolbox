@@ -43,6 +43,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.fasterxml.jackson.core.StreamReadConstraints.DEFAULT_MAX_NUM_LEN;
+
 public class MetricsPostService extends PostService {
 
     static Logger logger = LogManager.getLogger(MetricsPostService.class);
@@ -169,6 +171,8 @@ public class MetricsPostService extends PostService {
         DocumentProxyFromStatements nfDoc= Normalizer.fusion(d3);
         return nfDoc;
     }
+
+;
 
     static public Object getSignature(SignatureService signatureService, org.openprovenance.prov.model.Document doc) {
         try {

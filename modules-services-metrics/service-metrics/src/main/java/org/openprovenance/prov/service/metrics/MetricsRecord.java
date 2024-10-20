@@ -12,7 +12,7 @@ public class MetricsRecord {
     public  Object hash;
     public  String created_at;
 
-    public MetricsRecord(String id, String artifact, Object metrics, Map<String, Integer> features, Object validationReport, Object traffic, Object hash) {
+    public MetricsRecord(String id, String artifact, Object metrics, Object features, Object validationReport, Object traffic, Object hash) {
         this.id = id;
         this.artifact = artifact;
         this.metrics = metrics;

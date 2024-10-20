@@ -137,7 +137,7 @@ object XmlNfBean {
   //  if (q==null) null else q.getUri()
   //}
    def uriIfNotNull(qs: Set[QualifiedName]): Set[String] = {
-    if (qs==null) Set[String]() else qs.flatten(q => if (q.namespaceURI.startsWith(Gensym.VAL_URI)) None else Some(q.getUri()))
+    if (qs==null) Set[String]() else qs.flatten(q => if (q==null || q.namespaceURI.startsWith(Gensym.VAL_URI)) None else Some(q.getUri()))
   } 
    
   def timeOrNullOld(time: Option[XMLGregorianCalendar]): XMLGregorianCalendar = {

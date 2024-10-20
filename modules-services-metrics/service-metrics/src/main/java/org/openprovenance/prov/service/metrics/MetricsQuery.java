@@ -73,6 +73,7 @@ public class MetricsQuery {
 
     ObjectMapper om=new ObjectMapper();
 
+
     public MetricsRecord getMetricsRecord(String id) {
         MetricsRecord metricsRecord = new MetricsRecord();
         return querier.do_query(metricsRecord,

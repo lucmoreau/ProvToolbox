@@ -18,6 +18,7 @@ import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.service.core.jobs.JobManagement;
+import org.openprovenance.prov.service.core.rest.ForwardedUriInfo;
 import org.openprovenance.prov.storage.api.DocumentResource;
 import org.quartz.SchedulerException;
 
@@ -28,6 +29,7 @@ import jakarta.ws.rs.core.*;
 import java.io.InputStream;
 import java.security.Principal;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Path("")
 public class PostService implements Constants, InteropMediaType, SwaggerTags, ApiUriFragments {
@@ -153,7 +155,7 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
                 vr.setExpires(date);
 
                 final ServiceUtils.Action action = utils.getAction(formData);
-                doLog(action, vr, uriInfo);
+                doLog(action, vr, uriInfo, headers);
 
                 logger.debug("trying performers " + performers);
 
@@ -296,11 +298,11 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
         return vr;
     }
 
-    private void doLog(ServiceUtils.Action action, DocumentResource vr, UriInfo uriInfo) {
-        doLog(action.toString(), vr, uriInfo);
+    private void doLog(ServiceUtils.Action action, DocumentResource vr, UriInfo uriInfo, HttpHeaders headers) {
+        doLog(action.toString(), vr, uriInfo, headers);
     }
 
-    private void doLog(String action, DocumentResource vr, UriInfo uriInfo) {
+    private void doLog(String action, DocumentResource vr, UriInfo uriInfo, HttpHeaders headers) {
         logger.log(ProvLevel.PROV,
                 action + ","
                         + vr.getVisibleId() + ","
@@ -310,7 +312,7 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
                 action + ","
                         + vr.getVisibleId() + ","
                         + vr.getStorageId() + ","
-                        + uriInfo.getAbsolutePath() + ","
+                        + new ForwardedUriInfo(uriInfo, new AtomicReference<>(headers)).getAbsolutePath() + ","
                         + "provapi");
     }
 

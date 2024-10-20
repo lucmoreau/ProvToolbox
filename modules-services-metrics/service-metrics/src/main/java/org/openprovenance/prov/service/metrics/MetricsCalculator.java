@@ -58,14 +58,9 @@ public class MetricsCalculator extends Rules {
     @Override
     public Object computeMetrics(Document document, ProvFactory pFactory) {
 
+        // extract all metrics, intercept all exceptions and return them as part of the result
 
-        Tuple2<Map<String, Integer>, Map<List<Tuple2<Integer, Integer>>, Integer>> features=ip.process(document);
-
-        System.out.println("Features: " + features._1);
-        System.out.println("Features: " + features._2);
-
-
-
+        Object features = getFeatures(document);
         Object metrics = getMetricsOrError(document, pFactory);
         Object validationReport = getValidationReportOrError(document, pFactory);
         Object traffic = getTrafficLightOrError(metrics);
@@ -76,7 +71,7 @@ public class MetricsCalculator extends Rules {
         try{
             id=querier.insertMetricsRecord("document",
                     null,
-                    TypePropagator.om().writeValueAsString(features._2),
+                    TypePropagator.om().writeValueAsString(features),
                     om.writeValueAsString(metrics),
                     om.writeValueAsString(validationReport),
                     om.writeValueAsString(traffic),
@@ -87,7 +82,7 @@ public class MetricsCalculator extends Rules {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        MetricsRecord metricsRecord = new MetricsRecord(id, "document", metrics, features._1, validationReport, traffic, hash);
+        MetricsRecord metricsRecord = new MetricsRecord(id, "document", metrics, features, validationReport, traffic, hash);
 
         return metricsRecord;
 
@@ -105,10 +100,32 @@ public class MetricsCalculator extends Rules {
          */
     }
 
+    private Object getFeatures(Document document) {
+        try {
+            logger.info("getFeatures");
+            Tuple2<Map<String, Integer>, Map<List<Tuple2<Integer, Integer>>, Integer>> features = ip.process(document);
+            logger.info("Features: " + features._1);
+            logger.info("Features: " + features._2);
+            return features._2;
+        } catch (Throwable e) {
+            HashMap<String,String> featuresError = new HashMap<>();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            e.printStackTrace(new PrintStream(outputStream));
+            featuresError.put("error", outputStream.toString());
+            return featuresError;
+        }
+    }
+
     private Object getTrafficLightOrError(Object metrics) {
         try {
             Map<String, Object> m1=(Map<String, Object>) metrics;
             Map<String, Object> m2=(Map<String, Object>)m1.get(PATTERN_METRICS);
+
+            if (m2==null) {
+                return new HashMap<String,String>() {{
+                    put("error", "No pattern metrics found");
+                }};
+            }
 
             EntityActivityDerivationCounter count=(EntityActivityDerivationCounter)m2.get(COUNT_DERIVATIONS_AND_GENERATIONS_AND_USAGES);
             List<TrafficLightResult> trafficLight= TrafficLight.getTrafficLight(count);

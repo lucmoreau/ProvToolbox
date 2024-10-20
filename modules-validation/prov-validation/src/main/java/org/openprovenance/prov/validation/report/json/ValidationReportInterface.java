@@ -17,6 +17,10 @@ import java.util.List;
 public interface ValidationReportInterface {
     @JsonProperty("@context")
     Namespace getNamespace();
+    @JsonProperty("@context")
+    void setNamespace(Namespace namespace);
+
+
 
     List<Dependencies> getCycle();
 

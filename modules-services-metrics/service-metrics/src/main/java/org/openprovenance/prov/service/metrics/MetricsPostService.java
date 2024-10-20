@@ -111,13 +111,13 @@ public class MetricsPostService extends PostService {
 
 
 
-                if (true) return utils.composeResponseSeeOther("../rating.html?m=" + location).build();
+                return utils.composeResponseSeeOther("../rating.html?m=" + location).build();
 
 
-                StreamingOutput promise= out -> new ObjectMapper().writeValue(out, o);
+                //StreamingOutput promise= out -> new ObjectMapper().writeValue(out, o);
 
 
-                return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
+                //return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
 
             } catch (UncheckedException e) {
                 return utils.composeResponseBadRequest("URI problem (" + e.getCause() + ")", e);

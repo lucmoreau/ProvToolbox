@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.interop.CommandLineArguments.METRICS;
 import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
 
 @Path("")
@@ -154,16 +153,16 @@ public class MetricsService extends TranslationService {
             description = "ProvType as a JSON object. ",
             responses = { @ApiResponse(responseCode = "200", description = "Representation of provtype"),
                     @ApiResponse(responseCode = "404", description = "Type not found") })
-    public Response getTypeMapReport(@Context HttpServletResponse response,
-                                     @Context HttpServletRequest request,
-                                     @Parameter(name = "ext", description = "extension", required = true) @PathParam("ext") String extension) throws IOException {
+    public Response getAllMetricsReport(@Context HttpServletResponse response,
+                                        @Context HttpServletRequest request,
+                                        @Parameter(name = "ext", description = "extension", required = true) @PathParam("ext") String extension) throws IOException {
 
         if ("csv".equals(extension)) {
 
             StreamingOutput promise = out -> {
                 out.write(SimpleMetrics.headers().getBytes());
                 out.write("\n".getBytes());
-                metricsCalculator.getTypeMapReport().forEach(x -> {
+                metricsCalculator.getAllMetricsReport().forEach(x -> {
                     try {
                         out.write(x.toCsv().getBytes());
                         out.write("\n".getBytes());
@@ -176,7 +175,7 @@ public class MetricsService extends TranslationService {
 
             return ServiceUtils.composeResponseOK(promise).type(MEDIA_TEXT_CSV).build();
         } else {
-            StreamingOutput promise = out -> TypePropagator.om().writeValue(out, metricsCalculator.getTypeMapReport());
+            StreamingOutput promise = out -> TypePropagator.om().writeValue(out, metricsCalculator.getAllMetricsReport());
             return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
         }
 
@@ -191,10 +190,10 @@ public class MetricsService extends TranslationService {
             description = "ProvType as a JSON object. ",
             responses = { @ApiResponse(responseCode = "200", description = "Representation of provtype"),
                     @ApiResponse(responseCode = "404", description = "Type not found") })
-    public Response getTypeMapSummary(@Context HttpServletResponse response,
-                                     @Context HttpServletRequest request) throws IOException {
+    public Response getMetricsSummary(@Context HttpServletResponse response,
+                                      @Context HttpServletRequest request) throws IOException {
 
-        List<SimpleMetrics> report=metricsCalculator.getTypeMapReport();
+        List<SimpleMetrics> report=metricsCalculator.getAllMetricsReport();
         Map<String,List<Integer>> summary=new HashMap<>();
         summary.put("countEntities", report.stream().map(x -> x.countEntities).collect(Collectors.toList()));
         summary.put("countActivities", report.stream().map(x -> x.countActivities).collect(Collectors.toList()));

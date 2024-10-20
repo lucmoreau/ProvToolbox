@@ -43,7 +43,7 @@ public class MetricsCalculator extends Rules {
             ip=new IncrementalProcessor();
         } else {
             TmpTypeMap tmp = querier.getTypeMap();
-            //logger.info("Loaded type map: " + tmp.map);
+            logger.info("Loaded type map: " + tmp.ID);
             ip=new IncrementalProcessor(tmp.map,tmp.set,tmp.list);
             //ip.printme();
         }
@@ -76,28 +76,17 @@ public class MetricsCalculator extends Rules {
                     om.writeValueAsString(validationReport),
                     om.writeValueAsString(traffic),
                     om.writeValueAsString(hash));
+
             System.out.println("=========== ID: " + id);
 
-            persistTypeMap();
+            String mapId=persistTypeMap();
+            System.out.println("=========== mapId: " + mapId);
+
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        MetricsRecord metricsRecord = new MetricsRecord(id, "document", metrics, features, validationReport, traffic, hash);
 
-        return metricsRecord;
-
-        /*
-        String finalId = id;
-        return new HashMap<String, Object>() {{
-            put("artifact", "document");
-            put("id", finalId);
-            if (metrics!=null) put("counts", metrics);
-            if (features!=null && features._2!=null) put("features", features._2);
-            if (validationReport!=null) put("validity", validationReport);
-            if (traffic!=null) put("traffic", traffic);
-        }};
-
-         */
+        return new MetricsRecord(id, "document", metrics, features, validationReport, traffic, hash);
     }
 
     private Object getFeatures(Document document) {
@@ -182,10 +171,11 @@ public class MetricsCalculator extends Rules {
         return ip.getProvType(depth, index);
     }
 
-    public void persistTypeMap() {
-        ip.process((map, set, list) -> {
-            querier.updateTypeMap(map, set, list);
-            return null;
+    public String persistTypeMap() {
+        return ip.process((map, set, list) -> {
+            //querier.updateTypeMap(map, set, list);
+            String id=querier.insertTypeMap(map, set, list);
+            return id;
         });
     }
 
@@ -193,8 +183,8 @@ public class MetricsCalculator extends Rules {
         return ip.processMapOfStrings( x -> x);
     }
 
-    public List<SimpleMetrics> getTypeMapReport() {
-        return querier.getTypeMapReport();
+    public List<SimpleMetrics> getAllMetricsReport() {
+        return querier.getAllMetricsReport();
     }
 
 

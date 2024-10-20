@@ -21,8 +21,10 @@ CREATE TABLE IF NOT EXISTS typemap
     created_at timestamp with time zone NOT NULL DEFAULT NOW()
 );
 
-INSERT INTO typemap
-(id, map, set, list)
-SELECT 1, '{}', '[]', '[]'
-ON CONFLICT DO NOTHING;
+-- Insert a default typemap if typemap is empty
+INSERT INTO typemap (map, set, list)
+SELECT '{}'::json, '[]'::json, '[]'::json
+WHERE NOT EXISTS (SELECT * FROM typemap);
+
+
 

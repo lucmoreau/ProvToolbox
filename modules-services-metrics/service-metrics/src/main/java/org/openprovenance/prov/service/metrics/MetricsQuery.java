@@ -36,6 +36,32 @@ public class MetricsQuery {
                 });
     }
 
+    public String insertTypeMap(String map, String set, String list) {
+        AtomicReference<String> id = new AtomicReference<>();
+        querier.do_query(null,
+                null,
+                (sb, data) -> {
+                    sb.append("INSERT INTO typemap (map, set, list) \n");
+
+                    sb.append(" values ('");
+                    sb.append(map);
+                    sb.append("', '");
+                    sb.append(set);
+                    sb.append("', '");
+                    sb.append(list);
+                    sb.append("')\n");
+                    sb.append(" RETURNING ID;");
+
+
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        id.set(rs.getString("ID"));
+                    }
+                });
+        return id.get();
+    }
+
     final static TypeReference<Map<String,Object>> countMetrics = new TypeReference<>() {};
     final static TypeReference<Map<String,Integer>> featureMetrics = new TypeReference<>() {};
 
@@ -173,7 +199,7 @@ public class MetricsQuery {
                 });
     }
 
-    public TmpTypeMap getTypeMap() {
+    public TmpTypeMap getTypeMap1() {
         TmpTypeMap tmp = new TmpTypeMap();
         return querier.do_query(tmp,
                 null,
@@ -191,8 +217,26 @@ public class MetricsQuery {
                 });
     }
 
+    public TmpTypeMap getTypeMap() {
+        TmpTypeMap tmp = new TmpTypeMap();
+        return querier.do_query(tmp,
+                null,
+                (sb, data) -> {
+                    sb.append("SELECT *\n");
+                    sb.append("FROM typemap\n");
+                    sb.append("ORDER by created_at DESC LIMIT 1;");
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        data.ID=rs.getString("ID");
+                        data.map=rs.getString("map");
+                        data.set=rs.getString("set");
+                        data.list=rs.getString("list");
+                    }
+                });
+    }
 
-    public List<SimpleMetrics> getTypeMapReport() {
+    public List<SimpleMetrics> getAllMetricsReport() {
         List<SimpleMetrics> report=new ArrayList<>();
         return querier.do_query(report,
                 null,

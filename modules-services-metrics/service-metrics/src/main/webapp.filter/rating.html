@@ -25,11 +25,17 @@
         }
     }
 
+    function fixed(x,n) {
+        return Number.parseFloat(x).toFixed(n);
+    }
+
+
+
     function trafficRepresentation(traffic) {
         if (traffic.kind === "PERCENTAGE") {
-            return "<b> " + traffic.comment + "</b>: " + traffic.ratio.toFixed(2) + "% " + symbolFor(traffic.color);
+            return "<b> " + traffic.comment + "</b>: " + fixed(traffic.ratio,2) + "% " + symbolFor(traffic.color);
         } else {
-            return "<b> " + traffic.comment + "</b>: " + traffic.ratio.toFixed(2) + "(/3) " +  symbolFor(traffic.color);
+            return "<b> " + traffic.comment + "</b>: " + fixed(traffic.ratio,2) + "(/3) " +  symbolFor(traffic.color);
         }
     }
 

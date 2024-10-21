@@ -7,29 +7,36 @@ import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.SpecializationOf;
+import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.rules.Rules;
 import org.openprovenance.prov.rules.SimpleMetrics;
 import org.openprovenance.prov.rules.TrafficLight;
 import org.openprovenance.prov.rules.TrafficLightResult;
 import org.openprovenance.prov.rules.counters.EntityActivityDerivationCounter;
 import org.openprovenance.prov.scala.summary.TypePropagator;
+import org.openprovenance.prov.scala.summary.types.ProvType;
 import org.openprovenance.prov.scala.typemap.IncrementalProcessor;
 import org.openprovenance.prov.service.signature.SignatureService;
 import org.openprovenance.prov.service.validation.ValidationObjectMaker;
 import org.openprovenance.prov.validation.Config;
 import org.openprovenance.prov.validation.Validate;
+import org.openprovenance.prov.validation.report.Dependencies;
+import org.openprovenance.prov.validation.report.MergeReport;
+import org.openprovenance.prov.validation.report.TypeOverlap;
 import org.openprovenance.prov.validation.report.ValidationReport;
+import scala.Function1;
 import scala.Tuple2;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.service.metrics.MetricsPostService.getSignature;
-import static org.openprovenance.prov.service.validation.ValidationService.serializeValidationReportAsString;
+import static org.openprovenance.prov.validation.report.json.Serialization.registerMissingNamespace;
+import static org.openprovenance.prov.validation.report.json.Serialization.serializeValidationReportAsString;
 
 public class MetricsCalculator extends Rules {
     final private static Logger logger = LogManager.getLogger(MetricsCalculator.class);
@@ -65,7 +72,7 @@ public class MetricsCalculator extends Rules {
         Object features = getFeatures(document);
         Object metrics = getMetricsOrError(document, pFactory);
         Object validationReport = getValidationReportOrError(document, pFactory);
-        Object traffic = getTrafficLightOrError(metrics);
+        Object traffic = getTrafficLightOrError(metrics,validationReport,features);
         Object hash= getSignature(signatureService,document);
 
         String id=null;
@@ -92,7 +99,12 @@ public class MetricsCalculator extends Rules {
     }
 
     public String serializeValidatiorReportOrErrorAsString(Object validationReport) throws JsonProcessingException {
-        return (validationReport instanceof ValidationReport) ? serializeValidationReportAsString((ValidationReport) validationReport) : om.writeValueAsString(validationReport);
+        if (validationReport instanceof ValidationReport) {
+            registerMissingNamespace((ValidationReport) validationReport);
+            return serializeValidationReportAsString((ValidationReport) validationReport);
+        } else {
+            return om.writeValueAsString(validationReport);
+        }
     }
 
     private Object getFeatures(Document document) {
@@ -111,7 +123,7 @@ public class MetricsCalculator extends Rules {
         }
     }
 
-    private Object getTrafficLightOrError(Object metrics) {
+    private Object getTrafficLightOrError(Object metrics, Object validationReport, Object features) {
         try {
             Map<String, Object> m1=(Map<String, Object>) metrics;
             Map<String, Object> m2=(Map<String, Object>)m1.get(PATTERN_METRICS);
@@ -123,16 +135,24 @@ public class MetricsCalculator extends Rules {
             }
 
             EntityActivityDerivationCounter count=(EntityActivityDerivationCounter)m2.get(COUNT_DERIVATIONS_AND_GENERATIONS_AND_USAGES);
-            List<TrafficLightResult> trafficLight= TrafficLight.getTrafficLight(count);
+            List<TrafficLightResult> trafficLight = TrafficLight.getTrafficLightForCounts(count);
             TrafficLightResult patternTrafficLightResult=new TrafficLightResult("Triangle Pattern Rating", trafficLight);
+
+
+            List<TrafficLightResult> trafficLightForValidation=new LinkedList<>();
+            if (validationReport instanceof ValidationReport) {
+                trafficLightForValidation.addAll(getTrafficLightForValidation((ValidationReport)validationReport));
+            }
+            TrafficLightResult patternTrafficLightValidationResult=new TrafficLightResult("Validation Rating", trafficLightForValidation);
 
             List<TrafficLightResult> typeTrafficLightSubResults=List.of(
                     new TrafficLightResult("Type1", 66, TrafficLight.TrafficLightColor.ORANGE),
                     new TrafficLightResult("Type2", 70, TrafficLight.TrafficLightColor.GREEN));
-            TrafficLightResult typeTrafficLightResult=new TrafficLightResult("Type Rating",typeTrafficLightSubResults);
+            List<TrafficLightResult> res=getTrafficLightForType(features);
+            TrafficLightResult typeTrafficLightResult=new TrafficLightResult("Type Rating",res);
 
 
-            List<TrafficLightResult> trafficLightSubResults = List.of(patternTrafficLightResult, typeTrafficLightResult);
+            List<TrafficLightResult> trafficLightSubResults = List.of(patternTrafficLightResult, patternTrafficLightValidationResult, typeTrafficLightResult);
             TrafficLightResult overallTrafficLightResult=new TrafficLightResult("Overall Rating",trafficLightSubResults);
 
             return overallTrafficLightResult;
@@ -143,6 +163,132 @@ public class MetricsCalculator extends Rules {
             trafficError.put("error", outputStream.toString());
             return trafficError;
         }
+    }
+
+    private List<TrafficLightResult> getTrafficLightForType(Object featuresObject) {
+        if (featuresObject==null || !(featuresObject instanceof Map) || ((Map)featuresObject).get("error")!=null) {
+            logger.info("No features found");
+            return new LinkedList<>();
+        }
+
+        Map<List<Tuple2<Integer, Integer>>, Integer> reconstructedFeatures=(  Map<List<Tuple2<Integer, Integer>>, Integer>) featuresObject;
+
+        scala.collection.immutable.Map<scala.collection.immutable.Set<ProvType>, Object> scalaFeatures = ip.backToScala(reconstructedFeatures);
+        int issues1=ip.countEntitiesWithoutAttribution(scalaFeatures);
+
+        int entitiesNumber=ip.countEntities(scalaFeatures);
+
+        List<TrafficLightResult> trafficLightForType=new LinkedList<>();
+        trafficLightForType.add(forEntityAttribution(issues1, entitiesNumber));
+
+        return trafficLightForType;
+
+    }
+
+    public TrafficLightResult forEntityAttribution (int entitiesWithoutAttibution, int totalEntities) {
+
+        double ratio=100.0 * entitiesWithoutAttibution / totalEntities;
+        String comment="Percentage Entities Without Attribution"; // wat or wgb/waw
+        TrafficLight.TrafficLightColor color;
+        if (ratio>=60) {
+            color = TrafficLight.TrafficLightColor.RED;
+        } else if (ratio>=30) {
+            color = TrafficLight.TrafficLightColor.ORANGE;
+        } else {
+            color = TrafficLight.TrafficLightColor.GREEN;
+        }
+        return new TrafficLightResult(comment, ratio, color);
+
+    }
+
+    private List<TrafficLightResult> getTrafficLightForValidation(ValidationReport validationReport) {
+        List<TrafficLightResult> trafficLightForValidation=new LinkedList<>();
+
+        List<Dependencies> dependencies1 = (validationReport.getCycle()!=null)? validationReport.getCycle(): new LinkedList<>();
+        getTrafficLightForValidationDerivationCycle("Derivation Cycle", dependencies1, trafficLightForValidation);
+
+        List<SpecializationOf> specializations = (validationReport.getSpecializationReport()!=null)? validationReport.getSpecializationReport().getSpecializationOf(): new LinkedList<>();
+        getTrafficLightForValidationIssues("Specialization Not reflexive", specializations, trafficLightForValidation);
+
+        List<MergeReport> failedMerges = (validationReport.getFailedMerge()!=null)? validationReport.getFailedMerge(): new LinkedList<>();
+        getTrafficLightForValidationIssues("Failed Merges", failedMerges, trafficLightForValidation);
+
+        List<TypeOverlap> typeOverlaps = (validationReport.getTypeOverlap()!=null)? validationReport.getTypeOverlap(): new LinkedList<>();
+        getTrafficLightForValidationIssues("Type Overlaps", typeOverlaps, trafficLightForValidation);
+
+        return trafficLightForValidation;
+    }
+
+    private void getTrafficLightForValidationDerivationCycle(String heading, List<Dependencies> dependencies, List<TrafficLightResult> trafficLightForValidation) {
+        Set<Set<Statement>> dependenciesAsSets= dependencies.stream().map(dep -> new HashSet<>(dep.getStatement())).collect(Collectors.toSet());
+        int count = dependenciesAsSets.size();
+        TrafficLight.TrafficLightColor colour;
+        double ratio=100.0;
+        switch (count) {
+            case 0:
+                colour=TrafficLight.TrafficLightColor.GREEN;
+                break;
+            case 1:
+                colour=TrafficLight.TrafficLightColor.ORANGE;
+                ratio=60.0;
+                break;
+            case 2:
+                colour=TrafficLight.TrafficLightColor.ORANGE;
+                ratio=50.0;
+                break;
+            case 3:
+                colour=TrafficLight.TrafficLightColor.RED;
+                ratio=40.0;
+                break;
+            case 4:
+                colour=TrafficLight.TrafficLightColor.RED;
+                ratio=30.0;
+                break;
+            case 5:
+                colour=TrafficLight.TrafficLightColor.RED;
+                ratio=20.0;
+                break;
+            default:
+                colour=TrafficLight.TrafficLightColor.RED;
+                ratio=10.0;
+                break;
+        }
+        trafficLightForValidation.add(new TrafficLightResult(heading, ratio, colour));
+    }
+    private void getTrafficLightForValidationIssues(String heading, List<?> specializations, List<TrafficLightResult> trafficLightForValidation) {
+        int count = specializations.size();
+        TrafficLight.TrafficLightColor colour;
+        double ratio=100.0;
+        switch (count) {
+            case 0:
+                colour=TrafficLight.TrafficLightColor.GREEN;
+                break;
+            case 1:
+                colour=TrafficLight.TrafficLightColor.ORANGE;
+                ratio=60.0;
+                break;
+            case 2:
+                colour=TrafficLight.TrafficLightColor.ORANGE;
+                ratio=50.0;
+                break;
+            case 3:
+                colour=TrafficLight.TrafficLightColor.RED;
+                ratio=40.0;
+                break;
+            case 4:
+                colour=TrafficLight.TrafficLightColor.RED;
+                ratio=30.0;
+                break;
+            case 5:
+                colour=TrafficLight.TrafficLightColor.RED;
+                ratio=20.0;
+                break;
+            default:
+                colour=TrafficLight.TrafficLightColor.RED;
+                ratio=10.0;
+                break;
+        }
+        trafficLightForValidation.add(new TrafficLightResult(heading, ratio, colour));
     }
 
     private Object getMetricsOrError(Document document, ProvFactory pFactory) {

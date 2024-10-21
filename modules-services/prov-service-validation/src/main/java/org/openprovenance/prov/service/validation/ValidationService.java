@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.openprovenance.prov.service.validation.ActionValidate.REPORT_KEY;
+import static org.openprovenance.prov.validation.report.json.Mapper.getValidationReportMapper;
 
 
 @Path("")
@@ -339,31 +340,5 @@ public class ValidationService  implements Constants,InteropMediaType, SwaggerTa
     }
 
 
-
-    public static void serializeValidationReport(Object report, OutputStream out) throws IOException {
-
-        ObjectMapper mapper= new ProvSerialiser().getMapper();
-        mapper.addMixIn(ValidationReport.class,  ValidationReportInterface.class);
-        mapper.writeValue(out,report);
-    }
-    public static String serializeValidationReportAsString(ValidationReport report) throws JsonProcessingException {
-
-        ObjectMapper mapper= new ProvSerialiser().getMapper();
-        mapper.addMixIn(ValidationReport.class,  ValidationReportInterface.class);
-        String s = mapper.writeValueAsString(report);
-        System.out.println("SERIALIZED REPORT: " + s);
-        return s;
-    }
-
-    public static ValidationReport deserializeValidationReport(InputStream in) throws IOException {
-        ObjectMapper mapper= new ProvDeserialiser().getMapper();
-        mapper.addMixIn(ValidationReport.class,  ValidationReportInterface.class);
-        return mapper.readValue(in, ValidationReport.class);
-    }
-    public static ValidationReport deserializeValidationReport(String in) throws IOException {
-        ObjectMapper mapper= new ProvDeserialiser().getMapper();
-        mapper.addMixIn(ValidationReport.class,  ValidationReportInterface.class);
-        return mapper.readValue(in, ValidationReport.class);
-    }
 
 }

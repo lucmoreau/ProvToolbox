@@ -24,6 +24,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 
+import static org.openprovenance.prov.validation.report.json.Serialization.registerMissingNamespace;
+
 
 public class ValidationServiceUtils  extends ServiceUtils {
 
@@ -173,8 +175,7 @@ public class ValidationServiceUtils  extends ServiceUtils {
 
 			//store report.json
 
-			report.getNamespace().register("val", "http://foo.foo/");
-			System.out.println("report.getNamespace()=" + report.getNamespace());
+			registerMissingNamespace(report);
 			reportStorage.serializeObjectToStore(report,jsonReportStorageId);
 
 

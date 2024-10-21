@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
-import static org.openprovenance.prov.service.validation.ValidationService.serializeValidationReport;
+import static org.openprovenance.prov.validation.report.json.Serialization.serializeValidationReport;
 
 @Path("")
 public class MetricsService extends TranslationService {

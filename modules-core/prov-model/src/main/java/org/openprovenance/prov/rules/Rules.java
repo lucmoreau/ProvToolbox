@@ -98,9 +98,9 @@ public class Rules {
             }
         }
 
-        indexedDocument.checkActivityUsedMap();
-        indexedDocument.checkEntityWasGeneratedByMap();
-        indexedDocument.checkEntityCauseWasDerivedFromMap();
+        //indexedDocument.checkActivityUsedMap();
+        //indexedDocument.checkEntityWasGeneratedByMap();
+        //indexedDocument.checkEntityCauseWasDerivedFromMap();
 
         //System.out.println(indexedDocument.entityCauseWasDerivedFromMap);
         System.out.println("=====");

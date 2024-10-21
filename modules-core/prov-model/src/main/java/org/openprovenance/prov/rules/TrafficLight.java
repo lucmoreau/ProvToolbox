@@ -67,7 +67,7 @@ public class TrafficLight implements Ansi {
         return new TrafficLightResult(comment, ratio, color);
     }
 
-    public static List<TrafficLightResult> getTrafficLight(EntityActivityDerivationCounter count) {
+    public static List<TrafficLightResult> getTrafficLightForCounts(EntityActivityDerivationCounter count) {
         return List.of(
                 forRootEntities(count),
                 forNonRootTriangle(count),

@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.metrics;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.rules.SimpleMetrics;
@@ -8,13 +9,11 @@ import org.openprovenance.prov.rules.SimpleMetrics;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.service.validation.ValidationService.deserializeValidationReport;
+import static org.openprovenance.prov.validation.report.json.Serialization.deserializeValidationReport;
 
 public class MetricsQuery {
     private final Querier querier;
@@ -126,13 +125,18 @@ public class MetricsQuery {
                             metricsError.put("error", outputStream.toString());
                             data.metrics=metricsError;
                         }
+                        String featuresString= rs.getString("features");
                         try {
-                            data.features= om.readValue(rs.getString("features"), featureMetrics);
+                            data.features= om.readValue(featuresString, featureMetrics);
+                        } catch (StreamConstraintsException e) {
+                            Map<String,String> featureError = new HashMap<>();
+                            featureError.put("error",featuresString);
+                            data.features=featureError;
                         } catch (JsonProcessingException e) {
-                            HashMap<String,String> featureError = new HashMap<>();
+                            Map<String,List<String>> featureError = new HashMap<>();
                             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                             e.printStackTrace(new PrintStream(outputStream));
-                            featureError.put("error", outputStream.toString());
+                            featureError.put("error", Arrays.stream(outputStream.toString().split("\n")).collect(Collectors.toList()));
                             data.features=featureError;
                         }
                         try {

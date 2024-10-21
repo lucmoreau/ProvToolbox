@@ -3,11 +3,13 @@ package org.openprovenance.prov.scala.typemap
 import org.openprovenance.prov.java.typemap.TypeMapProcessor
 import org.openprovenance.prov.scala.immutable.Document
 import org.openprovenance.prov.scala.summary.{Level0Mapper, SummaryDescriptionJson}
-import org.openprovenance.prov.scala.summary.types.ProvType
+import org.openprovenance.prov.scala.summary.types.{Ag, Ent, ProvType, Wat, Waw, Wgb}
 
 import java.util
 import scala.collection.mutable
-import org.openprovenance.prov.scala.summary.TypePropagator.om;
+import org.openprovenance.prov.scala.summary.TypePropagator.om
+
+import scala.jdk.CollectionConverters.{ListHasAsScala, MapHasAsScala};
 
 object IncrementalProcessor {
   // in a json object, keys are strings, so we need to convert the keys to integers
@@ -84,9 +86,53 @@ class IncrementalProcessor (m: scala.collection.mutable.Map[Int, Map[ProvType,In
     // convert to java map
     import scala.jdk.CollectionConverters._
     (features.map{case (k,i) => (k, Integer.valueOf(i))}.asJava, features1.map{case (k,i) => k.map(p => (Integer.valueOf(p._1), Integer.valueOf(p._2))).asJava -> Integer.valueOf(i)}.asJava)
-
-
   }
+
+  def reconstructFeatures(features: util.Map[String, Integer]): Map[Set[ProvType], Int] = {
+    val theTypeMap: Map[Int, Map[Int, ProvType]] =m.map{case (k,v) => (k, v.map{case (k1,v1) => (v1,k1)})}.toMap
+
+    val parsedFeatures: Map[List[(Int, Int)], Int] =features.asScala.map{case (k,v) => (om.readValue(k,classOf[List[(Int,Int)]]),v.toInt)}.toMap
+
+    parsedFeatures.map { case (l, v) => (l.map { case (d, i) => theTypeMap(d)(i) }.toSet, v) }
+  }
+
+  def backToScala(features: util.Map[util.List[(Integer, Integer)], Integer]) : Map[Set[ProvType], Int] = {
+    val theTypeMap: Map[Int, Map[Int, ProvType]] =m.map{case (k,v) => (k, v.map{case (k1,v1) => (v1,k1)})}.toMap
+
+    features
+      .asScala
+      .map{case (k,v) => (k.asScala.map(p => (p._1.toInt, p._2.toInt)).toSeq -> v.toInt)}
+      .map{ case (l, v) => (l.map { case (d, i) => theTypeMap(d)(i) }.toSet, v)}.toMap
+  }
+
+  def selectEntitiesWithoutAttribution(features: Map[Set[ProvType], Int]): Map[Set[ProvType],Int] = {
+    features.filter{case (k,v)
+    => k.contains(Ent()) &&
+      !k.contains(Wat(Set(Ag()))) &&
+      !containsWgbThenWaw(k)}.map{case (k,i) => (k, i)}.toMap
+  }
+
+  def containsWgbThenWaw(feat: Set[ProvType]): Boolean = {
+    val indirectAttribution=
+      feat
+      .filter(x => x.isInstanceOf[Wgb])
+      .collect(x => x.asInstanceOf[Wgb])
+      .filter{ case Wgb(t) => t.contains(Waw(Set(Ag()))) } // check does not work if plan
+    indirectAttribution.foreach(x => println("indirect attribution: " + x))
+    indirectAttribution.nonEmpty
+    }
+
+  def countEntitiesWithoutAttribution(features: Map[Set[ProvType], Int]): Int = {
+    val selected = selectEntitiesWithoutAttribution(features)
+    selected.foreach(x => println("no attribution: " + x))
+    selected.values.sum
+  }
+
+  def countEntities(features: Map[Set[ProvType], Int]): Int = {
+    features.filter{case (k,v) => k.contains(Ent())}.values.sum
+  }
+
+
 
   def getProvType(depth: Int, index: Int): ProvType = {
     m(depth).find{case (k,v) => v==index}.get._1

@@ -9,11 +9,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/json/Serialization.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/Rules.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/Rules.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/TrafficLight.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/TrafficLight.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsCalculator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsQuery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/rating.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/rating.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationServiceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/scala/org/openprovenance/prov/scala/typemap/IncrementalProcessor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/src/main/scala/org/openprovenance/prov/scala/typemap/IncrementalProcessor.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,9 +58,9 @@
         <option value="Enum" />
         <option value="Python Script" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="HTML File" />
         <option value="module-info" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -1072,7 +1078,7 @@
       <workItem from="1728039245552" duration="620000" />
       <workItem from="1728504186336" duration="101220000" />
       <workItem from="1729105189635" duration="34450000" />
-      <workItem from="1729241210944" duration="50534000" />
+      <workItem from="1729241210944" duration="67445000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

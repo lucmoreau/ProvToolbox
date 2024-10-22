@@ -13,30 +13,33 @@ public class TrafficLightResult implements Ansi {
     public String colorAsString;
     public List<TrafficLightResult> subResults=new LinkedList<>();
     public double weight=1.0;
+    public String explanation;
 
     public enum ResultKind {
         PERCENTAGE, COMPOSITE, ABSOLUTE
     }
 
-    public TrafficLightResult(String comment, double ratio, TrafficLight.TrafficLightColor color) {
+    public TrafficLightResult(String comment, double ratio, TrafficLight.TrafficLightColor color, String explanation) {
         this.comment=comment;
         this.ratio=ratio;
         this.kind=ResultKind.PERCENTAGE;
         if (ratio < 0 || ratio > 100.0) throw new IllegalArgumentException("Ratio out of range: " + ratio);
         this.color=color;
         this.colorAsString=colorAsString(color);
+        this.explanation=explanation;
     }
 
-    public TrafficLightResult(String comment, double ratio, ResultKind kind, TrafficLight.TrafficLightColor color) {
+    public TrafficLightResult(String comment, double ratio, ResultKind kind, TrafficLight.TrafficLightColor color, String explanation) {
         this.comment=comment;
         this.ratio=ratio;
         this.kind=kind;
         this.color=color;
+        this.explanation=explanation;
         this.colorAsString=colorAsString(color);
     }
 
 
-    public TrafficLightResult(String comment, List<TrafficLightResult> subResults) {
+    public TrafficLightResult(String comment, List<TrafficLightResult> subResults, String explanation) {
         this.comment=comment;
         this.kind=ResultKind.COMPOSITE;
         double ratio=subResults.stream().map(r -> r.valueOf() * r.weight).reduce(0.0, Double::sum) * 1.0 / subResults.stream().map(r -> r.weight).reduce(0.0, Double::sum);
@@ -44,6 +47,7 @@ public class TrafficLightResult implements Ansi {
         if (ratio<0 || ratio>3) throw new IllegalArgumentException("Ratio out of range: " + ratio);
         this.color=colorOf(ratio);
         this.colorAsString=colorAsString(this.color);
+        this.explanation=explanation;
         this.subResults.addAll(subResults);
     }
 

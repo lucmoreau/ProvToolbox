@@ -183,6 +183,12 @@
             <version>${webjars.ace.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>popper.js</artifactId>
+            <version>${webjars.popper.version}</version>
+        </dependency>
+
 
         <!-- for testing -->
 

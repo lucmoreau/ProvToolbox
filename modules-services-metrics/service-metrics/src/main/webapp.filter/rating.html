@@ -33,11 +33,11 @@
 
     function trafficRepresentation(traffic) {
         if (traffic.kind === "PERCENTAGE") {
-            return "<b> " + traffic.comment + "</b>: " + fixed(traffic.ratio, 2) + "% " + symbolFor(traffic.color) + " [Weight: " + fixed(traffic.weight,2) + "]";
+            return "<span data-toggle='tooltip' data-trigger='click' data-html='true' title='<b>" + traffic.comment + "</b><p>" + traffic.explanation + "'><b> " + traffic.comment + "</b>: " + fixed(traffic.ratio, 2) + "% " + symbolFor(traffic.color) + " [Weight: " + fixed(traffic.weight,2) + "]</span>";
         } else if (traffic.kind === "ABSOLUTE") {
-            return "<b> " + traffic.comment + "</b>: " + fixed(traffic.ratio,2) + " " +  symbolFor(traffic.color) + " [Weight: " + fixed(traffic.weight,2) + "]";;
+            return "<span data-toggle='tooltip' data-trigger='click' data-html='true' title='<b>" + traffic.comment + "</b><p>" + traffic.explanation + "'><b> " + traffic.comment + "</b>: " + fixed(traffic.ratio,2) + " " +  symbolFor(traffic.color) + " [Weight: " + fixed(traffic.weight,2) + "]";;
         } else if (traffic.kind === "COMPOSITE") {
-            return "<b> " + traffic.comment + "</b>: " + fixed(traffic.ratio,2) + "(/3) " +  symbolFor(traffic.color) + " [Weight: " + fixed(traffic.weight,2) + "]";;
+            return "<span data-toggle='tooltip' data-trigger='click' data-html='true' title='<b>" + traffic.comment + "</b><p>" + traffic.explanation + "'><b> " + traffic.comment + "</b>: " + fixed(traffic.ratio,2) + "(/3) " +  symbolFor(traffic.color) + " [Weight: " + fixed(traffic.weight,2) + "]";;
         } else {
             // error
             return "<b> " + traffic.comment + "</b>: unknown kind  " + traffic.kind;
@@ -94,6 +94,10 @@
                     }
                 }
             }
+
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
 
         }
     });

@@ -19,6 +19,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-metrics: inserting (instead of overriding) type maps to maintain full history
 * service-metrics: type rating: traffic light for (lack of) attribution
 * service-metrics: type rating: traffic light for derivation length
+* service-metrics: added weight to traffic lights
 
 `2.2.0`
 * docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms

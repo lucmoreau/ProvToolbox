@@ -12,8 +12,9 @@ public class TrafficLightResult implements Ansi {
     public TrafficLight.TrafficLightColor color;
     public String colorAsString;
     public List<TrafficLightResult> subResults=new LinkedList<>();
+    public double weight=1.0;
 
-    static public enum ResultKind {
+    public enum ResultKind {
         PERCENTAGE, COMPOSITE, ABSOLUTE
     }
 
@@ -38,7 +39,7 @@ public class TrafficLightResult implements Ansi {
     public TrafficLightResult(String comment, List<TrafficLightResult> subResults) {
         this.comment=comment;
         this.kind=ResultKind.COMPOSITE;
-        double ratio=subResults.stream().map(TrafficLightResult::valueOf).reduce(0, Integer::sum) * 1.0 / subResults.size();
+        double ratio=subResults.stream().map(r -> r.valueOf() * r.weight).reduce(0.0, Double::sum) * 1.0 / subResults.stream().map(r -> r.weight).reduce(0.0, Double::sum);
         this.ratio=ratio;
         if (ratio<0 || ratio>3) throw new IllegalArgumentException("Ratio out of range: " + ratio);
         this.color=colorOf(ratio);
@@ -67,5 +68,6 @@ public class TrafficLightResult implements Ansi {
         if (ratio < 1.7)  return TrafficLight.TrafficLightColor.RED;
         return TrafficLight.TrafficLightColor.ORANGE;
     }
+
 }
 

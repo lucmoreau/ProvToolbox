@@ -203,7 +203,9 @@ public class MetricsCalculator extends Rules {
         } else {
             color = TrafficLight.TrafficLightColor.RED;
         }
-        return new TrafficLightResult(comment, length, TrafficLightResult.ResultKind.ABSOLUTE, color);
+        TrafficLightResult trafficLightResult = new TrafficLightResult(comment, length, TrafficLightResult.ResultKind.ABSOLUTE, color);
+        trafficLightResult.weight=1.0/3.0*2.0;
+        return trafficLightResult;
     }
 
     public TrafficLightResult forEntityAttribution (int entitiesWithoutAttribution, int totalEntities) {

@@ -219,8 +219,7 @@
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<version>${javadoc.plugin.version}</version>
 						<configuration>
-							<source>11</source>
-
+							<source>15</source>
 						</configuration>
 						<executions>
 							<execution>

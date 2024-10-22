@@ -1,6 +1,8 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.2.1-SNAPSHOT`
+`2.2.2-SNAPSHOT`
+
+`2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java
 * prov-typemap: incremental construction of type map
 * service-metrics: report and plot

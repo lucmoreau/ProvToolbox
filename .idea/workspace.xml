@@ -10,12 +10,7 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/TrafficLightResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/rules/TrafficLightResult.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsQuery.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics/MetricsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/mapper.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/mapper.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/rating.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter/rating.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -195,7 +190,7 @@
     "ScalaTest.TypeLibraryIssueSpec.executor": "Run",
     "WebServerToolWindowFactoryState": "false",
     "extract.method.default.visibility": "public",
-    "git-widget-placeholder": "development2__0",
+    "git-widget-placeholder": "release",
     "jdk.selected.JAVA_MODULE": "17",
     "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
@@ -1096,7 +1091,7 @@
       <workItem from="1728039245552" duration="620000" />
       <workItem from="1728504186336" duration="101220000" />
       <workItem from="1729105189635" duration="34450000" />
-      <workItem from="1729241210944" duration="84428000" />
+      <workItem from="1729241210944" duration="84788000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

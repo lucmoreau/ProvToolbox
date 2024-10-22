@@ -84,7 +84,7 @@ public class IndexedDocument implements StatementAction {
     private final HashMap<QualifiedName,Collection<WasAssociatedWith>> namedWasAssociatedWithMap= new HashMap<>();
 
 
-    /* Collection of WasAttributedTo edges that have a given entiy as an
+    /* Collection of WasAttributedTo edges that have a given entity as an
      * effect. */
     private final HashMap<QualifiedName,Collection<WasAttributedTo>> entityWasAttributedToMap= new HashMap<>();
 
@@ -300,7 +300,23 @@ public class IndexedDocument implements StatementAction {
 
 
 
+    /**
+     * Return all anonymous AlternateOf edges for this graph.
+     *
+     * @return a collection of {@link AlternateOf} edges
+     */
+    public Collection<AlternateOf> getAlternateOf() {
+        return anonAlternateOf;
+    }
 
+    /**
+     * Return all named AlternateOf edges for this graph.
+     *
+     * @return a map of {@link AlternateOf} edges
+     */
+    public Map<QualifiedName, Collection<AlternateOf>> getNamedAlternateOf() {
+        return namedAlternateOfMap;
+    }
 
     /** Return all WasDerivedFrom edges with entity a as a cause.
      *  @param a an entity
@@ -661,7 +677,7 @@ public class IndexedDocument implements StatementAction {
                 }
             }
 
-            if (!found || !found2) {
+            if ((id==null) && (!found || !found2)) {
                 anonRelationCollection.add(statement);
             }
 
@@ -1157,6 +1173,29 @@ public class IndexedDocument implements StatementAction {
         }
     }
 
+    public Collection<WasEndedBy> getWasEndedBy() {
+        return anonWasEndedBy;
+    }
+    public Collection<WasInvalidatedBy> getWasInvalidatedBy() {
+        return anonWasInvalidatedBy;
+    }
+
+    public Collection<WasStartedBy> getWasStartedBy() {
+        return anonWasStartedBy;
+    }
+    public Collection<WasInfluencedBy> getWasInfluencedBy() {
+        return anonWasInfluencedBy;
+    }
+
+    public Collection<QualifiedName> nonRootEntities() {
+        Collection<QualifiedName> effectEntities=new HashSet<>();
+        effectEntities.addAll(entityEffectWasDerivedFromMap.keySet());
+        effectEntities.addAll(entityWasAttributedToMap.keySet());
+        effectEntities.addAll(entityWasGeneratedByMap.keySet());
+        effectEntities.addAll(entityWasInvalidatedByMap.keySet());
+        effectEntities.addAll(entityHadMemberMap.keySet());
+        return effectEntities;
+    }
 
 }
 

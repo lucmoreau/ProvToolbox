@@ -2005,12 +2005,12 @@ object Normalizer {
 
   def index_membership(ss: Set[Statement], key: Statement=>Any, activeKey: Any=>Boolean, equiv_init: Set[Set[QualifiedName]]): (Map[IndexingPair, Set[Statement]], Map[QualifiedName, Set[QualifiedName]]) = {
 
-    val index=makeIndex(ss,key,activeKey)
+    val index: Map[IndexingPair, Set[Statement]] =makeIndex(ss,key,activeKey)
 
     //val equiv=index.values.flatMap{_.flatMap(_.idSets())}
-    val equiv=applyPartition(index)
+    val equiv: Iterable[Set[QualifiedName]] =applyPartition(index)
 
-    val psi=makeMembership(equiv ++ equiv_init)
+    val psi: Map[QualifiedName, Set[QualifiedName]] =makeMembership(equiv ++ equiv_init)
 
     (index,psi)
   }
@@ -2121,10 +2121,10 @@ object Normalizer {
 
 
   def fusion(doc: org.openprovenance.prov.scala.immutable.Document): DocumentProxyFromStatements  = {
-    val ss=doc.statements().map(x => inNormalForm(x)).toSet
-    val bs=fusionBundles(doc.bundles().map(x => inNormalFormBundle(x)).toSet)
+    val ss: Set[Statement] =doc.statements().map(x => inNormalForm(x)).toSet
+    val bs: Set[Bundle] =fusionBundles(doc.bundles().map(x => inNormalFormBundle(x)).toSet)
 
-    val ss2=fusion(ss,None)
+    val ss2: Set[Statement] =fusion(ss,None)
 
     bs.foreach { b => b.namespace.setParent(doc.namespace) }
     new DocumentProxyFromStatements(ss2,bs,doc.namespace)

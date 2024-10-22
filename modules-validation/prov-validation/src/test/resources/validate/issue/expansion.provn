@@ -1,0 +1,24 @@
+document
+bundle uuid:d442708c-144b-43be-b86d-5b0556f0b641
+prefix ex <http://example.org/#>
+prefix uuid <urn:uuid:>
+
+agent(ex:ag1)
+entity(ex:input_1,[prov:value = "4" %% xsd:int])
+entity(ex:input_2,[prov:value = "5" %% xsd:int])
+entity(ex:output1,[prov:type = 'ex:Result11', prov:type = 'ex:Result12', prov:value = "1" %% xsd:int])
+entity(ex:output2,[prov:type = 'ex:Result2', prov:value = "2" %% xsd:int])
+activity(ex:operation1)
+used(ex:operation1,ex:input_1,-)
+used(ex:operation1,ex:input_2,-)
+wasGeneratedBy(ex:output1,ex:operation1,-)
+wasGeneratedBy(ex:output2,ex:operation1,-)
+wasDerivedFrom(ex:output1, ex:input_1, ex:operation1, -, -)
+wasDerivedFrom(ex:output2, ex:input_1, ex:operation1, -, -)
+wasDerivedFrom(ex:output1, ex:input_2, ex:operation1, -, -)
+wasDerivedFrom(ex:output2, ex:input_2, ex:operation1, -, -)
+wasAssociatedWith(ex:operation1,ex:ag1,-)
+wasAttributedTo(ex:output1, ex:ag1)
+wasAttributedTo(ex:output2, ex:ag1)
+endBundle
+endDocument

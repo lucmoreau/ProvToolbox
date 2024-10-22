@@ -5,7 +5,7 @@
 	<groupId>org.openprovenance.prov</groupId>
 	<artifactId>ProvToolbox</artifactId>
 	<name>ProvToolbox: JVM (Java and Scala) for W3C PROV</name>
-	<version>2.2.0</version>
+	<version>2.2.1</version>
 	<url>https://lucmoreau.github.io/ProvToolbox/</url>
 	<packaging>pom</packaging>
 	<description>Java toolbox to create and convert W3C PROV data model representations.</description>
@@ -14,7 +14,7 @@
 		<connection>scm:git:https://github.com/lucmoreau/ProvToolbox.git</connection>
 		<developerConnection>scm:git:https://github.com/lucmoreau/ProvToolbox.git</developerConnection>
 		<url>https://github.com/lucmoreau/ProvToolbox.git</url>
-		<tag>ProvToolbox-2.2.0</tag>
+		<tag>ProvToolbox-2.2.1</tag>
 	</scm>
 
 	<modules>
@@ -33,6 +33,7 @@
 		<module>modules-nf</module>
 		<module>modules-explanations</module>
 		<module>modules-services2</module>
+		<module>modules-services-metrics</module>
 
 		<module>modules-executable-provman</module>
 		<module>modules-tools</module>
@@ -218,8 +219,7 @@
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<version>${javadoc.plugin.version}</version>
 						<configuration>
-							<source>11</source>
-
+							<source>15</source>
 						</configuration>
 						<executions>
 							<execution>
@@ -290,8 +290,9 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${compiler.plugin.version}</version>
+
 					<configuration>
-						<release>11</release>
+						<release>15</release>
 					</configuration>
 				</plugin>
 
@@ -365,7 +366,7 @@
 		<!-- the jsweet transpiler to generate typescript/js from java code requires version 12 (or older) of java. Set the home here.-->
 		<java12.home>/usr/local/java/jdk-12.0.1.jdk/Contents/Home/</java12.home>
 
-		<java.version>1.8</java.version>
+		<!-- <java.version>1.8</java.version> -->
 
 		<scala.library.version>2.13.13</scala.library.version> <!-- 2.13.12, 2.12.18 -->
 		<scala.plugin.version>4.8.1</scala.plugin.version> <!-- 4.2.0 -->
@@ -376,7 +377,7 @@
 		<scala.parser.comb.version>1.1.2</scala.parser.comb.version>
 		<parboiled.version>2.5.0</parboiled.version>
 
-		<xmlsec.version>2.1.4</xmlsec.version> <!--2.0.6 -->
+		<xmlsec.version>4.0.2</xmlsec.version> <!--2.1.4 -->
 
 		<!-- web services -->
 
@@ -445,7 +446,7 @@
 		<!-- jaxb -->
 		<jaxb.runtime.version>2.3.1</jaxb.runtime.version> <!-- now glassfish implementation -->
 
-		<xmlsec.version>2.1.7</xmlsec.version> <!--2.1.4, 2.0.6 -->
+		<old.stuff.xmlsec.version>2.1.7</old.stuff.xmlsec.version> <!--2.1.4, 2.0.6 -->
 
 		<!-- older jaxb stuff -->
 

@@ -24,6 +24,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 
+import static org.openprovenance.prov.validation.report.json.Serialization.registerMissingNamespace;
+
 
 public class ValidationServiceUtils  extends ServiceUtils {
 
@@ -170,15 +172,24 @@ public class ValidationServiceUtils  extends ServiceUtils {
 			// save this
 			index.put(vr.getVisibleId(), vr);
 
+
+			//store report.json
+
+			registerMissingNamespace(report);
+			reportStorage.serializeObjectToStore(report,jsonReportStorageId);
+
+
+			// for XML Serialisation, remove all namespaces
+			report.setNamespace(null);
+			report.getValidationReport().forEach(r -> r.setNamespace(null));
+
+
 			//store report.xml
 			ByteArrayOutputStream baos=new ByteArrayOutputStream();
 			utils.getConfig().serialiser.serialiseObject(baos,report,"ignore", false);
 			nonDocumentResourceStorage.copyStringToStore(baos.toString(),reportStorageId);
 
-			//store report.json
-			ns.register("val", "http://foo.foo/");
-			report.setNamespace(ns);  //NOTE: not saved in xml version for now
-			reportStorage.serializeObjectToStore(report,jsonReportStorageId);
+
 
 			//store matrix.txt
 			String matrix = constraints.getMatrix().displayMatrix2();

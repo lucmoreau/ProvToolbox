@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 
 public class Rules {
 
+    public static final String PATTERN_METRICS = "patternMetrics";
+    public static final String SIMPLE_METRICS = "simpleMetrics";
+    public static final String COUNT_DERIVATIONS_AND_GENERATIONS_AND_USAGES = "countDerivationsAndGenerationsAndUsages";
     ProvUtilities u = new ProvUtilities();
 
     /** Within a Document,  the method returns threes counts:
@@ -63,8 +66,9 @@ public class Rules {
      * the seventh one indicates the number of those derivations referring to the usage of e1. */
 
     public EntityActivityDerivationCounter countDerivationsAndGenerationsAndUsages(IndexedDocument indexedDocument) {
-        Collection<List<Object>> triangle=new LinkedList<>();
+        Collection<List<Statement>> triangle=new LinkedList<>();
         Collection<Entity> entities=indexedDocument.getEntities();
+        Collection<Activity> activities=indexedDocument.getActivities();
         for (Entity e2:entities) {
             Collection<WasGeneratedBy> wgbCollection = indexedDocument.getWasGeneratedBy(e2);
             if (wgbCollection != null) {
@@ -81,33 +85,37 @@ public class Rules {
                                     Collection<WasDerivedFrom> wdfCollection = indexedDocument.getWasDerivedFromWithCause(e1);//getWasDerivedFromWithEffect(e1);
                                     if (wdfCollection != null) {
                                         for (WasDerivedFrom wdf : wdfCollection) {
-
-
                                             if (e2.getId().equals(wdf.getGeneratedEntity())) {
                                                 triangle.add(List.of(activity, e1, e2, wdf, wgb, usd));
                                             }
-
                                         }
                                     }
                                 }
                             }
                         }
-
                     }
                 }
             }
         }
 
-        indexedDocument.checkActivityUsedMap();
-        indexedDocument.checkEntityWasGeneratedByMap();
-        indexedDocument.checkEntityCauseWasDerivedFromMap();
+        //indexedDocument.checkActivityUsedMap();
+        //indexedDocument.checkEntityWasGeneratedByMap();
+        //indexedDocument.checkEntityCauseWasDerivedFromMap();
 
         //System.out.println(indexedDocument.entityCauseWasDerivedFromMap);
         System.out.println("=====");
 
         EntityActivityDerivationCounter res=new EntityActivityDerivationCounter();
         res.triangle=triangle.size();
-        for (List<Object> l:triangle) {
+        res.entities=entities.stream().map(Identifiable::getId).collect(Collectors.toSet()).size();
+
+        Set<QualifiedName> allEntityIds=entities.stream().map(Identifiable::getId).collect(Collectors.toSet());
+        indexedDocument.nonRootEntities().forEach(allEntityIds::remove);
+        res.rootEntities=allEntityIds.size();
+        res.activities=activities.stream().map(Identifiable::getId).collect(Collectors.toSet()).size();
+        res.entitiesWithTriangle = triangle.stream().map(l -> ((Entity)l.get(2)).getId()).collect(Collectors.toSet()).size();
+        res.activitiesWithTriangle = triangle.stream().map(l -> ((Activity)l.get(0)).getId()).collect(Collectors.toSet()).size();
+        for (List<Statement> l:triangle) {
             Activity a=(Activity)l.get(0);
             Entity e1=(Entity)l.get(1);
             Entity e2=(Entity)l.get(2);
@@ -142,21 +150,44 @@ public class Rules {
                     break;
             }
         }
-
-        //System.out.println("triangle=" + triangle);
-
         return res;
     }
 
 
-    public Object getMetrics(Document document, ProvFactory pFactory) {
+    public Object computeMetrics(Document document, ProvFactory pFactory) {
         IndexedDocument indexedDocument = new IndexedDocument(pFactory, document, true);
         Map<String, Object> res = new HashMap<>();
-        res.put("countDerivationsAndGenerations", countDerivationsAndGenerations(indexedDocument));
-        res.put("countActivitiesWithoutAgent", countActivitiesWithoutAgent(indexedDocument));
-        res.put("countDerivationsAndGenerationsAndUsages", countDerivationsAndGenerationsAndUsages(indexedDocument));
+
+        SimpleMetrics res1 = new SimpleMetrics();
+        res1.countEntities = indexedDocument.getEntities().size();
+        res1.countActivities = indexedDocument.getActivities().size();
+        res1.countAgents = indexedDocument.getAgents().size();
+        res1.countWasGeneratedBy = indexedDocument.getWasGeneratedBy().size()+indexedDocument.getNamedWasGeneratedBy().keySet().size();
+        res1.countUsed = indexedDocument.getUsed().size()+indexedDocument.getNamedUsed().keySet().size();
+        res1.countWasAssociatedWith = indexedDocument.getWasAssociatedWith().size()+indexedDocument.getNamedWasAssociatedWith().keySet().size();
+        res1.countWasAttributedTo = indexedDocument.getWasAttributedTo().size()+indexedDocument.getNamedWasAttributedTo().keySet().size();
+        res1.countWasDerivedFrom = indexedDocument.getWasDerivedFrom().size()+indexedDocument.getNamedWasDerivedFrom().keySet().size();
+        res1.countWasEndedBy = indexedDocument.getWasEndedBy().size();//+indexedDocument.getNamedWasEndedBy().keySet().size();
+        res1.countWasInformedBy = indexedDocument.getWasInformedBy().size();
+        res1.countWasInvalidatedBy = indexedDocument.getWasInvalidatedBy().size();//+indexedDocument.getNamedWasInvalidatedBy().keySet().size();
+        res1.countWasStartedBy = indexedDocument.getWasStartedBy().size();
+        res1.countWasInfluencedBy = indexedDocument.getWasInfluencedBy().size();
+        res1.countSpecializationOf = indexedDocument.getSpecializationOf().size()+indexedDocument.getNamedSpecializationOf().keySet().size();
+        res1.countAlternateOf = indexedDocument.getAlternateOf().size()+indexedDocument.getNamedAlternateOf().keySet().size();
+        res1.countHadMember = indexedDocument.getHadMember().size()+indexedDocument.getNamedHadMember().keySet().size();
+        res.put(SIMPLE_METRICS, res1);
+
+
+        Map<String, Object> res2 = new HashMap<>();
+        res2.put("countDerivationsAndGenerations", countDerivationsAndGenerations(indexedDocument));
+        res2.put("countActivitiesWithoutAgent", countActivitiesWithoutAgent(indexedDocument));
+        res2.put(COUNT_DERIVATIONS_AND_GENERATIONS_AND_USAGES, countDerivationsAndGenerationsAndUsages(indexedDocument));
+        res.put(PATTERN_METRICS, res2);
+
+
         return res;
     }
+
 
 
 }

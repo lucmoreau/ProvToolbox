@@ -235,3 +235,8 @@ test.syntax1:
 	@curl -i -X POST  -H "Content-Type: multipart/form-data"  -Ftype=provn -Fstatements=@target/contents.provn -Ftranslate=turtle  $(WEBSERVICE) #| grep Location | awk '{ print $$2 }' > target/location.txt
 #--trace-ascii target/output.txt
 	curl -X GET -i `cat target/location.txt`
+
+
+test.log:
+	curl --fail -H "Authorization: Token null" -F source=provapi -F url=http://localhost:7071/service/provapi/documents/r113806.jsonld    http://localhost:7073/metrics/provapi/documents_form/
+#	curl -H "Authorization: Token null" -F source=provapi -F uri=http://localhost:7071/service/provapi/documents/r113804.jsonld http://localhost:7073/metrics/provapi/documents_form/

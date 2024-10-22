@@ -22,6 +22,10 @@
       <AppenderRef ref="Console"/>
     </Logger>
 
+    <Logger name="org.openprovenance.prov.service.core.jobs" level="debug">
+      <AppenderRef ref="Console"/>
+    </Logger>
+
 
   </Loggers>
 </Configuration>

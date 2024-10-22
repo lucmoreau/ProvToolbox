@@ -60,6 +60,11 @@ class UtilsSignature {
 
   }
 
+  def sign(in: InputStream, out: OutputStream): Unit = {
+    val config: Config= Config(outfiles = List(StreamOutput(out)), infile = StreamInput(in))
+    sign(config)
+  }
+
   def signature(config: Config): Unit = {
     val (cert, baos) = sign1(config)
 

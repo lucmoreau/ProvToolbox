@@ -1,14 +1,18 @@
 package org.openprovenance.prov.validation.report;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
 import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
 import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
+import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.apache.commons.lang.builder.Equals;
 import org.openprovenance.apache.commons.lang.builder.HashCode;
 import org.openprovenance.apache.commons.lang.builder.ToString;
+import org.openprovenance.prov.vanilla.QualifiedName;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -46,14 +50,13 @@ import java.util.List;
  * 
  */
 
-
 public class ValidationReport implements Equals, HashCode, ToString {
-    Namespace namespace;
+    private Namespace namespace;
+
 
     public Namespace getNamespace() {
         return namespace;
     };
-
     public void setNamespace(Namespace namespace) {
         this.namespace = namespace;
     }
@@ -70,7 +73,7 @@ public class ValidationReport implements Equals, HashCode, ToString {
     public MalformedStatements malformedStatements;
     public boolean deposited;
     public Document document;
-    public QualifiedName id;
+    public org.openprovenance.prov.vanilla.QualifiedName id;
 
     /**
      * Gets the value of the cycle property.
@@ -393,21 +396,14 @@ public class ValidationReport implements Equals, HashCode, ToString {
      *     {@link QName }
      *     
      */
-    public QualifiedName getId() {
-        return id;
+    public org.openprovenance.prov.vanilla.QualifiedName getId() {
+        return this.id;
     }
 
-    /**
-     * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QName }
-     *     
-     */
-    public void setId(QualifiedName value) {
-        this.id = value;
+    public void setId(QualifiedName qnId) {
+        id=qnId;
     }
+
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {
         if (!(object instanceof ValidationReport)) {
@@ -529,7 +525,7 @@ public class ValidationReport implements Equals, HashCode, ToString {
             toStringBuilder.append("document", theDocument);
         }
         {
-            QualifiedName theId;
+            org.openprovenance.prov.vanilla.QualifiedName theId;
             theId = this.getId();
             toStringBuilder.append("id", theId);
         }
@@ -540,7 +536,6 @@ public class ValidationReport implements Equals, HashCode, ToString {
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }
-
 
 
 }

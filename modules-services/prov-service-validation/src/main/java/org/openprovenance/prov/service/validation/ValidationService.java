@@ -1,11 +1,15 @@
 package org.openprovenance.prov.service.validation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
+import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
@@ -23,6 +27,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import org.openprovenance.prov.validation.report.ValidationReport;
+import org.openprovenance.prov.validation.report.json.ValidationReportInterface;
+
 import java.io.*;
 import java.util.Base64;
 import java.util.LinkedList;
@@ -30,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.openprovenance.prov.service.validation.ActionValidate.REPORT_KEY;
+import static org.openprovenance.prov.validation.report.json.Mapper.getValidationReportMapper;
 
 
 @Path("")
@@ -330,7 +338,6 @@ public class ValidationService  implements Constants,InteropMediaType, SwaggerTa
 
         return ServiceUtils.composeResponseOK(Base64.getDecoder().decode(matrixBase64)).type("image/png").build();
     }
-
 
 
 

@@ -24,10 +24,10 @@ import java.util.Map;
 
 public class StorageSetup extends org.openprovenance.prov.service.translation.storage.StorageSetup {
 
-    static Logger logger = LogManager.getLogger(StorageSetup.class);
+    private final static Logger logger = LogManager.getLogger(StorageSetup.class);
 
     @Override
-    public ServiceUtilsConfig withMongoDb(ServiceUtilsConfig utilsConfig2, ProvFactory factory, StorageConfiguration configuration) {
+    protected ServiceUtilsConfig withMongoDb(ServiceUtilsConfig utilsConfig2, ProvFactory factory, StorageConfiguration configuration) {
         ServiceUtilsConfig utilsConfig=super.withMongoDb(utilsConfig2, factory,configuration);
 
         // extends configuration with this service storage requirements
@@ -57,7 +57,7 @@ public class StorageSetup extends org.openprovenance.prov.service.translation.st
 
 
     @Override
-    public ServiceUtilsConfig withFileSystem(ServiceUtilsConfig utilsConfig2, ProvFactory factory, StorageConfiguration configuration) {
+    protected ServiceUtilsConfig withFileSystem(ServiceUtilsConfig utilsConfig2, ProvFactory factory, StorageConfiguration configuration) {
         ServiceUtilsConfig utilsConfig=super.withFileSystem(utilsConfig2, factory, configuration);
 
         utilsConfig.genericResourceStorageMap.put(ActionValidate.REPORT_KEY,new NonDocumentGenericResourceStorageFileSystem<>(Mapper.getValidationReportMapper(), ValidationReport.class, new File(configuration.uploaded_filepath)));
@@ -68,7 +68,7 @@ public class StorageSetup extends org.openprovenance.prov.service.translation.st
 
 
     @Override
-    public Map<String, ResourceIndex<?>> initInMemory(ServiceUtilsConfig config, StorageConfiguration configuration) {
+    protected Map<String, ResourceIndex<?>> initInMemory(ServiceUtilsConfig config, StorageConfiguration configuration) {
         Map<String, ResourceIndex<?>> extensionMap = super.initInMemory(config, configuration);
         ResourceIndex<?> di=extensionMap.get(DocumentResource.getResourceKind());
         extensionMap.put(ValidationResource.getResourceKind(),  new ValidationResourceIndexInMemory((DocumentResourceIndexInMemory)di, ValidationResourceIndexInMemory.factory));
@@ -77,7 +77,7 @@ public class StorageSetup extends org.openprovenance.prov.service.translation.st
 
 
     @Override
-    public Map<String, ResourceIndex<?>> initRedis(ServiceUtilsConfig config, StorageConfiguration configuration) {
+    protected Map<String, ResourceIndex<?>> initRedis(ServiceUtilsConfig config, StorageConfiguration configuration) {
         Map<String, ResourceIndex<?>> extensionMap = super.initRedis(config, configuration);
         ResourceIndex<?> di=extensionMap.get(DocumentResource.getResourceKind());
         extensionMap.put(ValidationResource.getResourceKind(), new RedisValidationResourceIndex((RedisDocumentResourceIndex) di,RedisValidationResourceIndex.factory));

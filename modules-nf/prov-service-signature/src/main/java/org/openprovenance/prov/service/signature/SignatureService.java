@@ -175,7 +175,7 @@ public class SignatureService implements Constants, InteropMediaType {
         }
     }
     
-    static class KeyAndCert {
+    public static class KeyAndCert {
         public KeyAndCert(Key cryptoKey, X509Certificate cert) {
             this.cryptoKey=cryptoKey;
             this.cert=cert;
@@ -184,23 +184,20 @@ public class SignatureService implements Constants, InteropMediaType {
         public X509Certificate cert;
     }
 
-    public ByteArrayOutputStream signatureForNormalFormDocumentProxy(DocumentProxyFromStatements nfDoc, KeyAndCert kac) throws KeyStoreException,
-                                                                                                        IOException,
-                                                                                                        NoSuchAlgorithmException,
-                                                                                                        CertificateException,
-                                                                                                        FileNotFoundException,
-                                                                                                        UnrecoverableKeyException {
+    public ByteArrayOutputStream signatureForNormalFormDocumentProxy(DocumentProxyFromStatements nfDoc, KeyAndCert kac)
+            throws KeyStoreException,
+            IOException,
+            NoSuchAlgorithmException,
+            CertificateException,
+            UnrecoverableKeyException {
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
-        
-        
         PipedInputStream pipeIn=XmlNfBean.serializeToPipe(nfDoc,"123");
         XmlSignature.doSign( XmlSignature.toStreamReader(pipeIn), baos, kac.cryptoKey, kac.cert);
         return baos;
     }
 
     public KeyAndCert getKeyAndCertificate() throws KeyStoreException, IOException,
-                                             NoSuchAlgorithmException, CertificateException,
-                                             FileNotFoundException, UnrecoverableKeyException {
+                                             NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException {
         KeyStore keyStore;
 
         keyStore = KeyStore.getInstance("jks");

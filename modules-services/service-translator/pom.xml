@@ -2,7 +2,7 @@
     <parent>
         <artifactId>modules-services</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.2.0</version>
+        <version>2.2.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -17,55 +17,55 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
-            <version>2.2.0</version>
+            <version>2.2.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template</artifactId>
-            <version>2.2.0</version>
+            <version>2.2.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-core</artifactId>
-            <version>2.2.0</version>
+            <version>2.2.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-translation</artifactId>
-            <version>2.2.0</version>
+            <version>2.2.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-validation</artifactId>
-            <version>2.2.0</version>
+            <version>2.2.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-index-redis</artifactId>
-            <version>2.2.0</version>
+            <version>2.2.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template-compiler</artifactId>
-            <version>2.2.0</version>
+            <version>2.2.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-mongodb</artifactId>
-            <version>2.2.0</version>
+            <version>2.2.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template-library</artifactId>
-            <version>2.2.0</version>
+            <version>2.2.1</version>
         </dependency>
 
 
@@ -154,7 +154,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>2.2.0</version>
+            <version>2.2.1</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
@@ -465,6 +465,14 @@
                                         <property>
                                             <name>PROV_STORAGE_CONFIG</name>
                                             <value>${project.build.directory}/test-classes/config/storage-configuration-mongodb-redis.json</value>
+                                        </property>
+                                        <property>
+                                            <name>LOG_JOB</name>
+                                            <value>true</value>
+                                        </property>
+                                        <property>
+                                            <name>LOG_URL</name>
+                                            <value>http://localhost:7073/metrics/provapi/documents_form/</value>
                                         </property>
                                     </properties>
                                 </configuration>

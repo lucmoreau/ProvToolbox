@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>ProvValidator</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<style type="text/css">
+		body {
+			padding-left: 5px;
+		}
+		.sidebar-nav {
+			padding: 9px 0;
+		}
+	</style>
+	<script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+	<link rel="stylesheet" href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+
+
+</head>
+
+<body>
+
+<script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+<script src="${service.context}/webjars/datatables.net/${webjars.datatables.version}/js/jquery.dataTables.min.js" type="text/javascript" charset="utf8" ></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+
+
+<nav class="navbar navbar-inverse">
+	<div class="container-fluid">
+		<ul class="nav navbar-nav">
+			<li id="header-rator">      <a href="rator.html">Rate</a></li>
+			<li id="header-mapper">     <a href="mapper.html">Map</a></li>
+			<li id="header-api">        <a href="api.html">API</a></li>
+			<li id="header-about">      <a href="about.html">About</a></li>
+			<li id="header-contact">    <a href="contact.html">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<script>
+	$('#header-mapper').addClass("active");
+</script>
+
+<section>
+	<div class="row">
+		<div class="col-sm-12">
+			<div id="plot"></div>
+		</div>
+
+		<div class="col-sm-12">
+			<div id="trafficplot"></div>
+		</div>
+
+		<div class="col-sm-12" style="text-align:center;margin-top:80px;margin-bottom:50px">
+			<!-- display table from csv file obtained from url /typemap/report -->
+			<table id="metrics_list"
+				   class="display"
+				   style="width:100%">
+
+			</table>
+
+
+
+		</div>
+
+		<!--
+
+		<div class="col-sm-4" id="what-do-we?" style="text-align:left; width:350px; font-size: 90%; " >
+			<p style="font-size: 90%; "><b>What do we store?</b></p>
+			<p style="font-size: 90%; ">With this service, you can validate PROV representations or translate them into other representations.  This service does not store the PROV representations that you submit, but it stores <em>Collected Data</em> (our generic term for web access logs, provenance metrics, validation reports, provenance digest and anonymous summaries).</p>
+			<p style="font-size: 90%; "><b>Agreement</b></p>
+			<p style="font-size: 90%; ">By pressing the validate/translate buttons, you agree with the terms and conditions  of this service (for full details, <a href="https://openprovenance.org/ethics/provenance-web-services/consent-form-anonymous-users.html">see ethics application</a>). Specifically, you agree for <em>Collected Data</em> being stored and used for research purpose by University of Sussex; you also agree that no guarantees are provided as to the correctness of the validation/analysis results. The information we capture is anonymous and we will not seek to try and identify users from  IP addresses. Given this, we provide no mechanism by which logged information can be erased.</p>
+		</div>
+
+		-->
+
+
+	</div>
+
+</section>
+
+
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+
+<script src="provservice.js"></script>
+<script>
+	function doSummaryPlot() {
+		let url = `${service.context}/provapi/typemap/summary.json`
+		// ajax call to get the data
+		$.ajax({
+			url: url,
+			type: 'GET',
+			dataType: 'json',
+			success: function (data) {
+				console.log(data)
+				let trace1 = {
+					y: data.countEntities,
+					type: 'box',
+					name: 'entity',
+					boxpoints: 'all'
+				}
+				let trace2 = {
+					y: data.countAgents,
+					type: 'box',
+					name: 'agent',
+					boxpoints: 'all'
+				}
+				let trace3 = {
+					y: data.countActivities,
+					type: 'box',
+					name: 'activity',
+					boxpoints: 'all'
+				}
+				let trace4 = {
+					y: data.countWasDerivedFrom,
+					type: 'box',
+					name: 'derivation',
+					boxpoints: 'all'
+				}
+				let trace5 = {
+					y: data.countWasGeneratedBy,
+					type: 'box',
+					name: 'generation',
+					boxpoints: 'all'
+				}
+				let trace6 = {
+					y: data.countUsed,
+					type: 'box',
+					name: 'usage',
+					boxpoints: 'all'
+				}
+
+
+				let traces = [trace1, trace2, trace3, trace4, trace5, trace6]
+
+				let layout = {
+					title: 'PROV Element Distribution',
+					type: 'log'
+				}
+				Plotly.newPlot('plot', traces, layout)
+			}
+		});
+	}
+	function doTrafficSummaryPlot() {
+		let url = `${service.context}/provapi/typemap/traffic.json`
+		// ajax call to get the data
+		$.ajax({
+			url: url,
+			type: 'GET',
+			dataType: 'json',
+			success: function (data) {
+				console.log(data)
+				// create a list with color properties for each traffic light in data
+				var colorList=[]
+				for (var i = 0; i < data.length; i++) {
+					colorList.push(data[i].color)
+				}
+
+
+				lightsList=[]
+				namesList=['Triangle Pattern Rating', 'Validation Rating', 'Type Rating']
+				for (var j = 0; j < namesList.length; j++) {
+					let tmplist=[]
+					for (var i = 0; i < data.length; i++) {
+						// in data[i] select subResults[j] such that comment is x
+						// then select color
+
+						for (var l=0; l<data[i].subResults.length; l++) {
+							if (data[i].subResults[l].comment === namesList[j]) {
+								tmplist.push(data[i].subResults[l].color)
+							}
+						}
+					}
+					lightsList.push(tmplist)
+				}
+				console.log(colorList)
+
+				let trace1 = {
+					x: ['red', 'orange', 'green'],
+					y: [colorList.filter(x => x === 'RED').length, colorList.filter(x => x === 'ORANGE').length, colorList.filter(x => x === 'GREEN').length],
+					type: 'bar',
+					name: 'Overall'
+				}
+
+				traces=[]
+				traces.push(trace1)
+
+				for (var j = 0; j < namesList.length; j++) {
+					let tracej = {
+						x: ['red', 'orange', 'green'],
+						y: [lightsList[j].filter(x => x === 'RED').length, lightsList[j].filter(x => x === 'ORANGE').length, lightsList[j].filter(x => x === 'GREEN').length],
+						type: 'bar',
+						name: namesList[j].replace('Rating','')
+					}
+					traces.push(tracej);
+				}
+
+
+				let layout = {
+					title: 'Traffic Light Distribution',
+					type: 'log',
+					barmode: 'group'
+				}
+				Plotly.newPlot('trafficplot', traces, layout)
+			}
+		});
+	}
+	doSummaryPlot();
+	doTrafficSummaryPlot();
+
+</script>
+<script>
+	$('.dropdown-toggle').dropdown()
+
+
+	function loadTypeMapData() {
+		let url=`${service.context}/provapi/typemap/report.json`
+		console.log("typemap/report " + url)
+
+
+		let id='#metrics_list'
+
+
+		$(id).DataTable( {
+			destroy: true,
+			ajax: {
+				url: url,
+				dataSrc: ''
+			},
+			datatype: "csv",
+			columns: [
+				{
+					title: 'entity',
+					data: 'countEntities'
+				},
+				{
+					title: 'agent',
+					data: 'countAgents'
+				},
+				{
+					title: 'activity',
+					data: 'countActivities'
+				},
+				{ title: 'derivation',  data: 'countWasDerivedFrom'},
+				{ title: 'generation',  data: 'countWasGeneratedBy'},
+				{ title: 'invalidation',data: 'countWasInvalidatedBy'},
+				{ title: 'usage',       data: 'countUsed'},
+				{ title: 'association', data: 'countWasAssociatedWith'},
+				{ title: 'attribution', data: 'countWasAttributedTo'},
+				{ title: 'start',       data: 'countWasStartedBy'},
+				{ title: 'end',         data: 'countWasEndedBy'},
+				{ title: 'influence',   data: 'countWasInfluencedBy'},
+				{ title: 'communication',data: 'countWasInformedBy'},
+				{ title: 'influence',   data: 'countWasInfluencedBy'},
+
+				{ title: 'delegation',  data: 'countActedOnBehalfOf'},
+				{ title: 'specialization', data: 'countSpecializationOf'},
+				{ title: 'alternate',   data: 'countAlternateOf'},
+				{ title: 'collection',  data: 'countHadMember'}
+
+				]
+
+		} );
+
+	}
+
+	loadTypeMapData();
+
+</script>
+
+</body>
+</html>

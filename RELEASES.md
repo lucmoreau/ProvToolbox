@@ -1,7 +1,27 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.2.1-SNAPSHOT`
-* 
+`2.2.2-SNAPSHOT`
+
+`2.2.1`
+* service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java
+* prov-typemap: incremental construction of type map
+* service-metrics: report and plot
+* prov-model: fixed issue in anonymous collection construction in IndexedDocument
+* prov-model: rules: traffic light for triangles
+* prov-service-core: generic url processing, generating document or document resource.
+* prov-service-core: generic file processing, generating document or document resource.
+* prov-service-core: generic statement processing, generating document or document resource.
+* service-metrics: added validation report
+* service-metrics: added traffic lights
+* service-metrics: computing composite traffic lights
+* service-metrics: rating report
+* prov-template-compiler: generated code for jsweet/jsweet.sh to ensure compatibility with latest jdk
+* service-metrics: added signature to metrics
+* validator: fixed issue with namespaces declaration in validation report
+* service-metrics: inserting (instead of overriding) type maps to maintain full history
+* service-metrics: type rating: traffic light for (lack of) attribution
+* service-metrics: type rating: traffic light for derivation length
+* service-metrics: added weight to traffic lights
 
 `2.2.0`
 * docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms

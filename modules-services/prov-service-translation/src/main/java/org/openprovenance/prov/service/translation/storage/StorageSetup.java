@@ -23,12 +23,11 @@ import org.openprovenance.prov.storage.redis.RedisTemplateResourceIndex;
 
 import java.io.File;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 public class StorageSetup {
 
-    static Logger logger = LogManager.getLogger(StorageSetup.class);
+    private static final Logger logger = LogManager.getLogger(StorageSetup.class);
 
     public ServiceUtilsConfig makeConfig(ProvFactory factory, StorageConfiguration configuration) {
         ServiceUtilsConfig utilsConfig = new ServiceUtilsConfig(configuration);
@@ -36,10 +35,13 @@ public class StorageSetup {
         logger.info("Configuration --- " + configuration);
         switch (configuration.index) {
             case "redis":
+                logger.info("Using Redis " + configuration.index);
                 initRedis(utilsConfig, configuration);
                 break;
             case "memory":
                 initInMemory(utilsConfig, configuration);
+                break;
+            case "none":
                 break;
             default:
                 throw new IllegalArgumentException("Unknown index type: " + configuration.index);
@@ -54,13 +56,15 @@ public class StorageSetup {
             case "fs":
                 withFileSystem(utilsConfig,factory,configuration);
                 break;
+            case "none":
+                break;
             default:
                 throw new IllegalArgumentException("Unknown storage type: " + configuration.storage);
         }
         return utilsConfig;
     }
 
-    public ServiceUtilsConfig withMongoDb(ServiceUtilsConfig utilsConfig, ProvFactory factory, StorageConfiguration configuration) {
+    protected ServiceUtilsConfig withMongoDb(ServiceUtilsConfig utilsConfig, ProvFactory factory, StorageConfiguration configuration) {
 
         final String mongoHost = configuration.mongo_host;
         final String mongoDbName = configuration.dbname;
@@ -73,7 +77,7 @@ public class StorageSetup {
     }
 
 
-    public ServiceUtilsConfig withFileSystem(ServiceUtilsConfig utilsConfig, ProvFactory factory, StorageConfiguration configuration) {
+    protected ServiceUtilsConfig withFileSystem(ServiceUtilsConfig utilsConfig, ProvFactory factory, StorageConfiguration configuration) {
         File uploadLocation = new File(configuration.uploaded_filepath);
         utilsConfig.storageManager=new DocumentResourceStorageFileSystem(factory, uploadLocation);
         ProvSerialiser serial = new ProvSerialiser();
@@ -83,7 +87,7 @@ public class StorageSetup {
     }
 
 
-    public Map<String, ResourceIndex<?>> initInMemory(ServiceUtilsConfig config, StorageConfiguration configuration) {
+    protected Map<String, ResourceIndex<?>> initInMemory(ServiceUtilsConfig config, StorageConfiguration configuration) {
         Map<String, ResourceIndex<?>> extensionMap = config.extensionMap;
         DocumentResourceIndexInMemory di=new DocumentResourceIndexInMemory();
         extensionMap.put(DocumentResource.getResourceKind(), di);
@@ -92,7 +96,7 @@ public class StorageSetup {
     }
 
 
-    public Map<String, ResourceIndex<?>> initRedis(ServiceUtilsConfig config, StorageConfiguration configuration) {
+    protected Map<String, ResourceIndex<?>> initRedis(ServiceUtilsConfig config, StorageConfiguration configuration) {
         Map<String, ResourceIndex<?>> extensionMap = config.extensionMap;
         RedisDocumentResourceIndex di=new RedisDocumentResourceIndex(configuration.redis_host, configuration.redis_port);
         extensionMap.put(DocumentResource.getResourceKind(), di);

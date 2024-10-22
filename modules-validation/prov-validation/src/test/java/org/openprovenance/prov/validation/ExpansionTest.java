@@ -45,7 +45,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 
-	Indexer ind = new Indexer(pFactory, new ValidationObjectMaker());
+	Indexer ind = new Indexer(pFactory, new ValidationObjectMaker(), true);
 
 
 	Config config = Config.newYesToAllConfig(pFactory, new ValidationObjectMaker());

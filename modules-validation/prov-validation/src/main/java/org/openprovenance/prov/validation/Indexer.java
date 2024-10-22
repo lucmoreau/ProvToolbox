@@ -27,9 +27,9 @@ public class Indexer {
 
 
 
-	public Indexer(ProvFactory p, ObjectMaker om) {
+	public Indexer(ProvFactory p, ObjectMaker om, boolean staticGensym) {
 		this.p=p;
-		this.g = new Gensym(namespace, p,om);
+		this.g = new Gensym(namespace, p,om, staticGensym);
 		registerNamespaces(namespace);
 		this.merger = new Merger(p, u, qualifiedNameMismatch, this);
         mentionOfTable = new Hashtable<>();

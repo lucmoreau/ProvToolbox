@@ -26,6 +26,7 @@ module prov.template.compiler {
     exports org.openprovenance.prov.template.log2prov;
 
     opens org.openprovenance.prov.template.compiler.util;
+    opens org.openprovenance.prov.template.compiler;
     opens schema;
 
 }

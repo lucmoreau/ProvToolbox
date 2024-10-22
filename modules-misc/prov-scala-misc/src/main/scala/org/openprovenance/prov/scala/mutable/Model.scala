@@ -1699,7 +1699,8 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         val b=new Bundle
         b.id=id
         b.setNamespace(namespace)
-        b.setStatement(new util.LinkedList[Statement](statements));
+
+        b.setStatement(new util.LinkedList[Statement](statements.stream().map(x => newStatement(x.asInstanceOf[org.openprovenance.prov.model.Statement])).collect(Collectors.toList())));
         b
     }
 

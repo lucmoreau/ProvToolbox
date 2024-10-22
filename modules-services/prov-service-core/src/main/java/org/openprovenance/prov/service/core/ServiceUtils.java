@@ -90,7 +90,7 @@ public class ServiceUtils {
         this.pFactory=config.pFactory;
         this.interop=new InteropFramework(config.pFactory);
 
-        this.documentResourceIndex=(ResourceIndex<DocumentResource>)config.extensionMap.get(DocumentResource.getResourceKind());
+        this.documentResourceIndex=(ResourceIndex<DocumentResource>)config.extensionMap.get(org.openprovenance.prov.storage.api.DocumentResource.getResourceKind());
         this.nonDocumentResourceIndex=config.nonDocumentResourceIndex;
         this.nonDocumentResourceStorage=config.nonDocumentResourceStorage;
         this.genericResourceStorageMap=config.genericResourceStorageMap;
@@ -515,131 +515,11 @@ public class ServiceUtils {
         return o!=null;
     }
 
-    public DocumentResource doProcessStatementsForm(List<InputPart> inputParts,
-                                                    List<InputPart> type) {
-        String storedResourceIdentifier = "";
-        for (InputPart inputPart : inputParts) {
+    /*
+    Generic processing of a form with a URL field. It can be used to return a document or a document resource
+     */
+    public <DOCUMENT_RESOURCE> DOCUMENT_RESOURCE processURLForm(List<InputPart> inputParts, BiFunctionWithException<InputStream, Formats.ProvFormat, DOCUMENT_RESOURCE, IOException> processor) {
 
-            try {
-
-                MultivaluedMap<String, String> header = inputPart.getHeaders();
-                logger.debug("Header " + header);
-                logger.debug("Header " + header.values());
-                logger.debug("Header " + header.keySet());
-
-
-                String mybody = inputPart.getBodyAsString();
-
-                String mytype = type.get(0).getBodyAsString();
-
-                Formats.ProvFormat format = interop.getTypeForFile("." + mytype);
-
-                storedResourceIdentifier=storageManager.newStore(format);
-                logger.debug("storage Id: " + storedResourceIdentifier);
-
-                logger.debug("processStatementsForm: type is " + mytype);
-
-                ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
-
-                try {
-                    DocumentResource dr = index.newResource();
-
-                    dr.setStorageId(storedResourceIdentifier);
-
-                    index.put(dr.getVisibleId(), dr);
-
-                    logger.debug("visible Id: " + dr.getVisibleId());
-
-                    storageManager.copyStringToStore(mybody,format, storedResourceIdentifier);
-                    //FileUtils.write(temp, mybody, StandardCharsets.UTF_8);
-                    // FileUtils.copyInputStreamToFile(inputStream,temp); DOESN'T
-                    // WORK??
-
-                    return dr;
-                } finally {
-                    index.close();
-                }
-
-            } catch (Throwable e) {
-                e.printStackTrace();
-                throw new ParserException(e);
-            }
-
-        }
-        throw new RuntimeException("Not properly structured input parts");
-    }
-
-
-    public DocumentResource doProcessFileForm(List<InputPart> inputParts) {
-        String fileName;
-        String storedResourceIdentifier = "";
-        DocumentResource dr;
-
-        for (InputPart inputPart : inputParts) {
-
-            try {
-
-                MultivaluedMap<String, String> header = inputPart.getHeaders();
-                logger.debug("Header " + header);
-                logger.debug("Header " + header.values());
-                logger.debug("Header " + header.keySet());
-
-                fileName = getFileName(header);
-                //.out.println("---------- filename " + fileName);
-                if ((fileName == null) || (fileName.equals("")))
-                    return null;
-
-                // convert the uploaded file to inputstream
-                InputStream inputStream = inputPart.getBody(InputStream.class, null);
-
-                // constructs upload file path
-                //fileName = UPLOADED_FILE_PATH + fileName;
-
-                Formats.ProvFormat format = interop.getTypeForFile(fileName);
-
-                storedResourceIdentifier=storageManager.newStore(format);
-
-
-                ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
-
-                try {
-                    dr = index.newResource();
-
-                    dr.setStorageId(storedResourceIdentifier);
-
-                    index.put(dr.getVisibleId(), dr);
-                } finally {
-                    index.close();
-                }
-
-
-                logger.debug("storage Id: " + storedResourceIdentifier);
-                logger.debug("visible Id: " + dr.getVisibleId());
-
-                storageManager.copyInputStreamToStore(inputStream,format,storedResourceIdentifier);
-                //FileUtils.copyInputStreamToFile(inputStream, temp);
-
-                //System.out.println("----------- Done");
-                String formatString=(format != null) ? format.toString() : "unknown";
-
-
-
-
-                return dr;
-
-            } catch (Throwable e) {
-                e.printStackTrace();
-                throw new ParserException(e);
-            }
-
-        }
-        throw new RuntimeException("Not properly structured input parts");
-    }
-
-
-
-    public DocumentResource doProcessURLForm(List<InputPart> inputParts) {
-        String storedResourceIdentifier = "";
         for (InputPart inputPart : inputParts) {
 
             try {
@@ -664,7 +544,7 @@ public class ServiceUtils {
 
                 URL theURL = new URL(url);
                 URLConnection conn = interop.connectWithRedirect(theURL);
-                if (conn == null) throw new RuntimeException("Failed to connect to url");
+                if (conn == null) throw new RuntimeException("Failed to connect to url " + theURL);
 
                 Formats.ProvFormat format = null;
                 String content_type = conn.getContentType();
@@ -691,29 +571,8 @@ public class ServiceUtils {
                 logger.debug("Format after extension: " + format);
 
 
-                storedResourceIdentifier=storageManager.newStore(format);
+                return processor.apply(conn.getInputStream(), format);
 
-                InputStream content_stream = conn.getInputStream();
-
-                storageManager.copyInputStreamToStore(content_stream,format, storedResourceIdentifier);
-               // FileUtils.copyInputStreamToFile(content_stream, temp);
-
-
-                ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
-                try {
-                    DocumentResource dr = index.newResource();
-                    dr.setStorageId(storedResourceIdentifier);
-                    index.put(dr.getVisibleId(), dr);
-
-
-                    logger.debug("storage Id: " + storedResourceIdentifier);
-                    logger.debug("visible Id: " + dr.getVisibleId());
-
-
-                    return dr;
-                } finally {
-                    index.close();
-                }
 
             } catch (java.net.UnknownHostException e) {
                 throw new UncheckedException("UnknownHostException", e);
@@ -724,6 +583,147 @@ public class ServiceUtils {
 
         }
         throw new RuntimeException("Not properly structured input parts");
+    }
+
+
+    public <DOCUMENT_RESOURCE> DOCUMENT_RESOURCE processFileForm(List<InputPart> inputParts, BiFunctionWithException<InputStream,Formats.ProvFormat, DOCUMENT_RESOURCE, IOException> processor) {
+        String fileName;
+        DOCUMENT_RESOURCE dr;
+
+        for (InputPart inputPart : inputParts) {
+
+            try {
+
+                MultivaluedMap<String, String> header = inputPart.getHeaders();
+                logger.debug("Header " + header);
+                logger.debug("Header " + header.values());
+                logger.debug("Header " + header.keySet());
+
+                fileName = getFileName(header);
+                //.out.println("---------- filename " + fileName);
+                if ((fileName == null) || (fileName.equals("")))
+                    return null;
+
+                // convert the uploaded file to inputstream
+                InputStream inputStream = inputPart.getBody(InputStream.class, null);
+
+                Formats.ProvFormat format = interop.getTypeForFile(fileName);
+                dr = processor.apply(inputStream, format);
+                return dr;
+
+            } catch (Throwable e) {
+                e.printStackTrace();
+                throw new ParserException(e);
+            }
+
+        }
+        throw new RuntimeException("Not properly structured input parts");
+    }
+
+
+    public <DOCUMENT_RESOURCE> DOCUMENT_RESOURCE processStatementsForm(List<InputPart> inputParts,
+                                                                       List<InputPart> type,
+                                                                       TriFunctionWithException<String, Formats.ProvFormat, String, DOCUMENT_RESOURCE, IOException> processor) {
+        for (InputPart inputPart : inputParts) {
+
+            try {
+
+                MultivaluedMap<String, String> header = inputPart.getHeaders();
+                logger.debug("Header " + header);
+                logger.debug("Header " + header.values());
+                logger.debug("Header " + header.keySet());
+
+
+                String mybody = inputPart.getBodyAsString();
+                String mytype = type.get(0).getBodyAsString();
+                Formats.ProvFormat format = interop.getTypeForFile("." + mytype);
+                return processor.apply(mybody, format, mytype);
+
+            } catch (Throwable e) {
+                e.printStackTrace();
+                throw new ParserException(e);
+            }
+        }
+        throw new RuntimeException("Not properly structured input parts");
+    }
+
+    public DocumentResource doProcessURLForm(List<InputPart> inputParts) {
+        return processURLForm(inputParts, this::readDocumentResource);
+    }
+
+    public Document docProcessURLForm(List<InputPart> inputParts) {
+        return processURLForm(inputParts, interop::readDocument);
+    }
+
+    public DocumentResource doProcessFileForm(List<InputPart> inputParts) {
+        return processFileForm(inputParts, this::readDocumentResource);
+    }
+
+    public Document docProcessFileForm(List<InputPart> inputParts) {
+        return processFileForm(inputParts, interop::readDocument);
+    }
+
+    public DocumentResource doProcessStatementsForm(List<InputPart> inputParts,
+                                                    List<InputPart> type) {
+        return processStatementsForm(inputParts, type, this::getDocumentResource);
+    }
+
+    public Document docProcessStatementsForm(List<InputPart> inputParts,
+                                             List<InputPart> type) {
+        return processStatementsForm(inputParts, type, (in, format, mtype) -> {
+            InputStream inputStream = new ByteArrayInputStream(in.getBytes(StandardCharsets.UTF_8));
+            return interop.readDocument(inputStream, format);
+        });
+    }
+
+    private DocumentResource readDocumentResource(InputStream content_stream, Formats.ProvFormat format) throws IOException {
+        String storedResourceIdentifier = storageManager.newStore(format);
+        storageManager.copyInputStreamToStore(content_stream, format, storedResourceIdentifier);
+
+        ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
+        try {
+            DocumentResource dr = index.newResource();
+            dr.setStorageId(storedResourceIdentifier);
+            index.put(dr.getVisibleId(), dr);
+
+            logger.debug("storage Id: " + storedResourceIdentifier);
+            logger.debug("visible Id: " + dr.getVisibleId());
+
+            //JobManagement.scheduleCurlJob(dr.getVisibleId(), "test");
+
+            return dr;
+        } finally {
+            index.close();
+        }
+    }
+
+    private  DocumentResource getDocumentResource(String mybody, Formats.ProvFormat format, String mytype) throws IOException {
+        String storedResourceIdentifier = "";
+        storedResourceIdentifier=storageManager.newStore(format);
+        logger.debug("storage Id: " + storedResourceIdentifier);
+
+        logger.debug("processStatementsForm: type is " + mytype);
+
+        ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
+
+        try {
+            DocumentResource dr = index.newResource();
+
+            dr.setStorageId(storedResourceIdentifier);
+
+            index.put(dr.getVisibleId(), dr);
+
+            logger.debug("visible Id: " + dr.getVisibleId());
+
+            storageManager.copyStringToStore(mybody, format, storedResourceIdentifier);
+            //FileUtils.write(temp, mybody, StandardCharsets.UTF_8);
+            // FileUtils.copyInputStreamToFile(inputStream,temp); DOESN'T
+            // WORK??
+
+            return dr;
+        } finally {
+            index.close();
+        }
     }
 
 

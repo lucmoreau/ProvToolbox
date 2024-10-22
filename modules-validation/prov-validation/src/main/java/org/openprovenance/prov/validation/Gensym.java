@@ -22,7 +22,7 @@ import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
 
 public class Gensym {
-    final UUID gensym;
+    public static final UUID uniqueGensym=UUID.nameUUIDFromBytes("466c7d9d-7fbf-4c47-b416-d2c71633ad04".getBytes());
     final String this_VAL_URI;
     final Namespace namespace;
     final ProvFactory pFactory;
@@ -31,12 +31,13 @@ public class Gensym {
     final public static String VAL_URI = "http://openprovenance.org/validation/";
     private final ObjectMaker om;
 
-    public Gensym(Namespace namespace, ProvFactory pFactory, ObjectMaker om) {
+    static public final UUID Agensym = UUID.randomUUID();
+
+    public Gensym(Namespace namespace, ProvFactory pFactory, ObjectMaker om, boolean staticGensym) {
     	this.pFactory=pFactory;
         this.namespace=namespace;
         UUID gensym = UUID.randomUUID();
-        this.gensym = gensym;
-        this.this_VAL_URI = VAL_URI + gensym + "#";
+        this.this_VAL_URI = VAL_URI + (staticGensym? uniqueGensym: gensym) + "#";
         this.om=om;
     }
 

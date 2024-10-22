@@ -22,19 +22,23 @@
         <module name="benchmarks" />
         <module name="prov-model" />
         <module name="prov-toolbox-js-embedding" />
+        <module name="service-metrics" />
         <module name="modules-executable-provman" />
         <module name="docker-service-templates" />
         <module name="prov-toolbox-plugin" />
+        <module name="templates_l2p" />
         <module name="prov-scala-misc" />
         <module name="prov-model-scala" />
         <module name="tutorial5" />
         <module name="toolbox" />
         <module name="prov-generator" />
+        <module name="docker-service-metrics" />
         <module name="prov-template-compiler" />
         <module name="prov-service-core" />
         <module name="prov-storage-filesystem" />
         <module name="demo" />
         <module name="prov-jsonld-xml" />
+        <module name="templates_cli" />
         <module name="prov-typemap" />
         <module name="prov-validation" />
         <module name="prov-storage-index-redis" />
@@ -83,9 +87,6 @@
       <module name="prov-plugin" target="1.5" />
       <module name="prov-scala" target="9" />
       <module name="ProvToolbox-Tutorial2" target="1.5" />
-      <module name="templates" target="1.5" />
-      <module name="templates_cli" target="1.8" />
-      <module name="templates_l2p" target="1.8" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>

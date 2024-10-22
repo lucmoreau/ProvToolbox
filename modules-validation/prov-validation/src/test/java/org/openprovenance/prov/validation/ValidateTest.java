@@ -789,6 +789,11 @@ public class ValidateTest extends CoreValidateTester {
         doTestValidate("src/test/resources/validate/issue/picaso.provn");
     }
 
+    public void testFailingDocumentExpansion() throws java.io.IOException {
+        doTestValidate("src/test/resources/validate/issue/expansion.provn");
+    }
+
+
     public void NOtestValidateAmir() throws java.io.IOException {
         doTestValidate("/home/lavm/Downloads/amir.provn");
     }

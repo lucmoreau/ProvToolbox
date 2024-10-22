@@ -9,6 +9,7 @@ import org.apache.logging.log4j.{LogManager, Logger}
 import org.openprovenance.apache.commons.lang.StringEscapeUtils
 import org.openprovenance.prov.model
 import org.openprovenance.prov.model.Namespace
+import org.openprovenance.prov.validation.Gensym
 import org.openprovenance.prov.nf.xml
 import org.openprovenance.prov.nf.xml.Attr
 import org.openprovenance.prov.scala.immutable.Attribute.split3
@@ -36,7 +37,7 @@ object Transformer {
         var transformer:javax.xml.transform.Transformer=null
         try {
             transformer = factory.newTransformer(xslStream)
-            System.out.println("***** Loading xsl file")
+            //System.out.println("***** Loading xsl file")
         } catch {
           case e: TransformerConfigurationException => e.printStackTrace()
         }
@@ -129,13 +130,14 @@ object XmlNfBean {
   
   def ifNull[T](q: Seq[T]): Seq[T] = {
     if (q==null) Seq[T]() else q
-  } 
-
-  def uriIfNotNull(q: QualifiedName): String = {
-    if (q==null) null else q.getUri()
   }
-   def uriIfNotNull(q: Set[QualifiedName]): Set[String] = {
-    if (q==null) Set[String]() else q.map(_.getUri())
+
+
+  //def uriIfNotNull(q: QualifiedName): String = {
+  //  if (q==null) null else q.getUri()
+  //}
+   def uriIfNotNull(qs: Set[QualifiedName]): Set[String] = {
+    if (qs==null) Set[String]() else qs.flatten(q => if (q==null || q.namespaceURI.startsWith(Gensym.VAL_URI)) None else Some(q.getUri()))
   } 
    
   def timeOrNullOld(time: Option[XMLGregorianCalendar]): XMLGregorianCalendar = {
@@ -692,9 +694,9 @@ object XmlNfBean {
       val thread = new Thread {
     	  override def run(): Unit = {
     		  try {
-    			  System.err.println("documentProxySerialiser.Thread: start")
+    			  //System.err.println("documentProxySerialiser.Thread: start")
     			  toXMLWithStream(sw_out,nfDoc,prefixes,id)
-    			  System.err.println("documentProxySerialiser.Thread: end")
+    			  //System.err.println("documentProxySerialiser.Thread: end")
     			  pipe_out.close()
     		  } catch {
     		  case e: Throwable => {
@@ -706,7 +708,7 @@ object XmlNfBean {
     	  }
       }
       thread.start()
-      System.err.println("documentProxySerialiser: starting transform")
+      //System.err.println("documentProxySerialiser: starting transform")
       try {
     	  Transformer.transformer.transform(stream_in,stream_out)
       } catch {
@@ -726,7 +728,7 @@ object XmlNfBean {
     	  
       }
       }
-      System.err.println("documentProxySerialiser: ending transform")
+      //System.err.println("documentProxySerialiser: ending transform")
 
     } else {
     	val sw_out = Transformer.xmlOutputFactory.createXMLStreamWriter(out)
@@ -783,9 +785,9 @@ object XmlNfBean {
 	  val (in,out)=pipe()
     val thread = new Thread {
         override def run(): Unit = {
-            println("serializeToPipe: in thread")
+            //println("serializeToPipe: in thread")
             toXMLOutputStreamForSignature(d,out,id)
-            println("serializeToPipe: finished thread")
+            //println("serializeToPipe: finished thread")
             out.close()
         }
     }

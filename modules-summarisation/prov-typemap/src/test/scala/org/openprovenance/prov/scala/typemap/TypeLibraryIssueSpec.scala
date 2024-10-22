@@ -5,7 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 
-abstract class TypeLibraryIssueSpec extends AnyFlatSpec with Matchers {
+class TypeLibraryIssueSpec extends AnyFlatSpec with Matchers {
 
 
   "a Type Library " should " be constructed " in {

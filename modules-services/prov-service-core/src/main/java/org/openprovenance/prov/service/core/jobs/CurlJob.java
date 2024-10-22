@@ -35,20 +35,24 @@ public class CurlJob implements Job {
                 graphId=graphId+"_expanded";
             }
 
+            String theTrueUrl=source.replace("documents_form/","documents/")+  graphId + ".jsonld";
+
 
             String [] curl_cmd=new String[] {
                     "curl",  "--fail",
-                    "-H", "Authorization: Token " + token,
-                    "-F", "source=" + logSource,
-                    "-F", "uri=https://openprovenance.org/services/provapi/documents/" + graphId,
-                    "-F", "prov_format=" + source.toLowerCase(),
-                    "-F", "content=@" + filename,
+                    "-H",
+                    "Authorization: Token " + token,
+                    "-F",
+                    "source=" + logSource,
+                    "-F",
+                    "url=" + theTrueUrl,
                     logUrl};
 
             System.out.println(">curl cmd:\n" );
             for (String str: curl_cmd) {
                 System.out.println(str);
             }
+
 
             Process process = runtime.exec(curl_cmd);
             InputStream is=process.getInputStream();

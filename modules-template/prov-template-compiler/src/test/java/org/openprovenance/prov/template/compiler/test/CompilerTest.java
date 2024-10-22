@@ -103,7 +103,7 @@ public class CompilerTest extends TestCase {
         String java12Home=new JavaVersion().getJava12Home();
         if (java12Home!=null) {
 
-            execute(new String[]{"mvn", "clean", "install"}, "target/libs/templates", java12Home);
+            execute(new String[]{"mvn", "clean", "install"}, "target/libs/templates", null);
             //execute(new String[] {"mvn", "clean", "install"},"target/libs/templates", null);
 
             final String theExamplarJsonFile = cli_dir + "/target/example_template_block.json";

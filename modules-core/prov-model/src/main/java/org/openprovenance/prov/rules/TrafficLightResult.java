@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public class TrafficLightResult implements Ansi {
-    public final ResultKind kind;
+    public ResultKind kind;
     public String comment;
     public double ratio;
     public TrafficLight.TrafficLightColor color;
@@ -18,6 +18,8 @@ public class TrafficLightResult implements Ansi {
     public enum ResultKind {
         PERCENTAGE, COMPOSITE, ABSOLUTE
     }
+
+    public TrafficLightResult(){}
 
     public TrafficLightResult(String comment, double ratio, TrafficLight.TrafficLightColor color, String explanation) {
         this.comment=comment;
@@ -49,6 +51,17 @@ public class TrafficLightResult implements Ansi {
         this.colorAsString=colorAsString(this.color);
         this.explanation=explanation;
         this.subResults.addAll(subResults);
+    }
+
+    public TrafficLightResult(String comment, String explanation, double ratio) {
+        this.comment=comment;
+        this.kind=ResultKind.COMPOSITE;
+        this.ratio=ratio;
+        if (ratio<0 || ratio>3) throw new IllegalArgumentException("Ratio out of range: " + ratio);
+        this.color=colorOf(ratio);
+        this.colorAsString=colorAsString(this.color);
+        this.explanation=explanation;
+
     }
 
     public String colorAsString(TrafficLight.TrafficLightColor color) {

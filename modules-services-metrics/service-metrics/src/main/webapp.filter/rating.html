@@ -57,7 +57,12 @@
 
             var features = data.features;
             // pretty print json object contained in features
-            $('#features').append(JSON.stringify(features, null, 2));
+
+            if (features && features.error ) {
+                $('#features').append("Failed to calculate features. Likely cause is malformed prov expressions.");
+            } else {
+                $('#features').append(JSON.stringify(features, null, 2));
+            }
 
             var artifact = data.artifact;
             $('#artifact').append(artifact);

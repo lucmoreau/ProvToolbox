@@ -51,6 +51,10 @@
 			<div id="plot"></div>
 		</div>
 
+		<div class="col-sm-12">
+			<div id="trafficplot"></div>
+		</div>
+
 		<div class="col-sm-12" style="text-align:center;margin-top:80px;margin-bottom:50px">
 			<!-- display table from csv file obtained from url /typemap/report -->
 			<table id="metrics_list"
@@ -141,7 +145,72 @@
 			}
 		});
 	}
+	function doTrafficSummaryPlot() {
+		let url = `${service.context}/provapi/typemap/traffic.json`
+		// ajax call to get the data
+		$.ajax({
+			url: url,
+			type: 'GET',
+			dataType: 'json',
+			success: function (data) {
+				console.log(data)
+				// create a list with color properties for each traffic light in data
+				var colorList=[]
+				for (var i = 0; i < data.length; i++) {
+					colorList.push(data[i].color)
+				}
+
+
+				lightsList=[]
+				namesList=['Triangle Pattern Rating', 'Validation Rating', 'Type Rating']
+				for (var j = 0; j < namesList.length; j++) {
+					let tmplist=[]
+					for (var i = 0; i < data.length; i++) {
+						// in data[i] select subResults[j] such that comment is x
+						// then select color
+
+						for (var l=0; l<data[i].subResults.length; l++) {
+							if (data[i].subResults[l].comment === namesList[j]) {
+								tmplist.push(data[i].subResults[l].color)
+							}
+						}
+					}
+					lightsList.push(tmplist)
+				}
+				console.log(colorList)
+
+				let trace1 = {
+					x: ['red', 'orange', 'green'],
+					y: [colorList.filter(x => x === 'RED').length, colorList.filter(x => x === 'ORANGE').length, colorList.filter(x => x === 'GREEN').length],
+					type: 'bar',
+					name: 'Overall'
+				}
+
+				traces=[]
+				traces.push(trace1)
+
+				for (var j = 0; j < namesList.length; j++) {
+					let tracej = {
+						x: ['red', 'orange', 'green'],
+						y: [lightsList[j].filter(x => x === 'RED').length, lightsList[j].filter(x => x === 'ORANGE').length, lightsList[j].filter(x => x === 'GREEN').length],
+						type: 'bar',
+						name: namesList[j].replace('Rating','')
+					}
+					traces.push(tracej);
+				}
+
+
+				let layout = {
+					title: 'Traffic Light Distribution',
+					type: 'log',
+					barmode: 'group'
+				}
+				Plotly.newPlot('trafficplot', traces, layout)
+			}
+		});
+	}
 	doSummaryPlot();
+	doTrafficSummaryPlot();
 
 </script>
 <script>

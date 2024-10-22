@@ -32,11 +32,15 @@ import java.io.PrintStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.List.of;
 import static org.openprovenance.prov.validation.report.json.Serialization.registerMissingNamespace;
 import static org.openprovenance.prov.validation.report.json.Serialization.serializeValidationReportAsString;
 
 public class MetricsCalculator extends Rules {
     final private static Logger logger = LogManager.getLogger(MetricsCalculator.class);
+    public static final String TRIANGLE_PATTERN_RATING = "Triangle Pattern Rating";
+    public static final String VALIDATION_RATING = "Validation Rating";
+    public static final String TYPE_RATING = "Type Rating";
 
     final IncrementalProcessor ip;
     private final MetricsQuery querier;
@@ -139,7 +143,7 @@ public class MetricsCalculator extends Rules {
             EntityActivityDerivationCounter count=(EntityActivityDerivationCounter)m2.get(COUNT_DERIVATIONS_AND_GENERATIONS_AND_USAGES);
             List<TrafficLightResult> trafficLight = TrafficLight.getTrafficLightForCounts(count);
             String explanation="This composite metrics is a weighted sum of traffic lights for various metrics related to triangles.";
-            TrafficLightResult patternTrafficLightResult=new TrafficLightResult("Triangle Pattern Rating", trafficLight, explanation);
+            TrafficLightResult patternTrafficLightResult=new TrafficLightResult(TRIANGLE_PATTERN_RATING, trafficLight, explanation);
 
 
             List<TrafficLightResult> trafficLightForValidation=new LinkedList<>();
@@ -147,15 +151,21 @@ public class MetricsCalculator extends Rules {
                 trafficLightForValidation.addAll(getTrafficLightForValidation((ValidationReport)validationReport));
             }
             String explanation2="This composite metrics is a weighted sum of traffic lights for various validation issues.";
-            TrafficLightResult patternTrafficLightValidationResult=new TrafficLightResult("Validation Rating", trafficLightForValidation, explanation2);
+            TrafficLightResult patternTrafficLightValidationResult=new TrafficLightResult(VALIDATION_RATING, trafficLightForValidation, explanation2);
 
 
-            List<TrafficLightResult> res=getTrafficLightForType(features);
-            String explanation3="This composite metrics is a weighted sum of traffic lights for various type issues.";
-            TrafficLightResult typeTrafficLightResult=new TrafficLightResult("Type Rating",res, explanation3);
+            TrafficLightResult typeTrafficLightResult;
+            if (problematicMeasure(features)) {
+                String explanation3 = "No type information was obtained.";
+                typeTrafficLightResult = new TrafficLightResult(TYPE_RATING, explanation3, 0.0);
+            } else {
+                List<TrafficLightResult> res = getTrafficLightForType(features);
+                String explanation3 = "This composite metrics is a weighted sum of traffic lights for various type issues.";
+                typeTrafficLightResult = new TrafficLightResult(TYPE_RATING, res, explanation3);
+            }
 
 
-            List<TrafficLightResult> trafficLightSubResults = List.of(patternTrafficLightResult, patternTrafficLightValidationResult, typeTrafficLightResult);
+            List<TrafficLightResult> trafficLightSubResults = of(patternTrafficLightResult, patternTrafficLightValidationResult, typeTrafficLightResult);
             String overallExplanation="This composite metrics is a weighted sum of traffic lights for various metrics related to patterns, validation and types.";
             TrafficLightResult overallTrafficLightResult=new TrafficLightResult("Overall Rating",trafficLightSubResults,overallExplanation);
 
@@ -169,8 +179,12 @@ public class MetricsCalculator extends Rules {
         }
     }
 
+    boolean problematicMeasure(Object measure) {
+        return (measure==null || !(measure instanceof Map) || ((Map)measure).get("error")!=null);
+    }
+
     private List<TrafficLightResult> getTrafficLightForType(Object featuresObject) {
-        if (featuresObject==null || !(featuresObject instanceof Map) || ((Map)featuresObject).get("error")!=null) {
+        if (problematicMeasure(featuresObject)) {
             logger.info("No features found");
             return new LinkedList<>();
         }
@@ -366,6 +380,10 @@ public class MetricsCalculator extends Rules {
 
     public List<SimpleMetrics> getAllMetricsReport() {
         return querier.getAllMetricsReport();
+    }
+
+    public List<TrafficLightResult> getAllTrafficLightReport() {
+        return querier.getAllTrafficLightReport();
     }
 
     public Object getSignature(SignatureService signatureService, org.openprovenance.prov.model.Document doc) {

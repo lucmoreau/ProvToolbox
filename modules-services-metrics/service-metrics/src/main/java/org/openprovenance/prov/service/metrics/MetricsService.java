@@ -16,6 +16,7 @@ import jakarta.ws.rs.core.StreamingOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.rules.SimpleMetrics;
+import org.openprovenance.prov.rules.TrafficLightResult;
 import org.openprovenance.prov.scala.summary.TypePropagator;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
@@ -217,10 +218,24 @@ public class MetricsService extends TranslationService {
 
         StreamingOutput promise = out -> TypePropagator.om().writeValue(out, summary);
         return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
-
-
-
     }
+
+    @GET
+    @Path(FRAGMENT_PROVTYPEMAP + "/traffic.json")
+    @Tag(name=TYPES)
+    @Produces({ MEDIA_APPLICATION_JSON})
+    @Operation(summary = "obtain traffic light report",
+            description = "Traffic lights as a JSON object. ",
+            responses = { @ApiResponse(responseCode = "200", description = "Representation of traffic lights"),
+                    @ApiResponse(responseCode = "404", description = "Type not found") })
+    public Response getMetricsTraffic(@Context HttpServletResponse response,
+                                      @Context HttpServletRequest request) throws IOException {
+
+        List<TrafficLightResult> report=metricsCalculator.getAllTrafficLightReport();
+        StreamingOutput promise = out -> TypePropagator.om().writeValue(out, report);
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
+    }
+
 
 
 }

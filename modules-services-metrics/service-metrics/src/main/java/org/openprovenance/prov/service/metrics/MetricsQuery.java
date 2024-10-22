@@ -5,10 +5,13 @@ import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.rules.SimpleMetrics;
+import org.openprovenance.prov.rules.TrafficLightResult;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -114,61 +117,65 @@ public class MetricsQuery {
                 },
                 (rs, data) -> {
                     while (rs.next()) {
-                        data.id=rs.getString("ID");
-                        data.artifact =rs.getString("artifact");
-                        try {
-                            data.metrics=om.readValue(rs.getString("counts"), countMetrics);
-                        } catch (JsonProcessingException e) {
-                            HashMap<String,String> metricsError = new HashMap<>();
-                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                            e.printStackTrace(new PrintStream(outputStream));
-                            metricsError.put("error", outputStream.toString());
-                            data.metrics=metricsError;
-                        }
-                        String featuresString= rs.getString("features");
-                        try {
-                            data.features= om.readValue(featuresString, featureMetrics);
-                        } catch (StreamConstraintsException e) {
-                            Map<String,String> featureError = new HashMap<>();
-                            featureError.put("error",featuresString);
-                            data.features=featureError;
-                        } catch (JsonProcessingException e) {
-                            Map<String,List<String>> featureError = new HashMap<>();
-                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                            e.printStackTrace(new PrintStream(outputStream));
-                            featureError.put("error", Arrays.stream(outputStream.toString().split("\n")).collect(Collectors.toList()));
-                            data.features=featureError;
-                        }
-                        try {
-                            data.validationReport=deserializeValidationReport(rs.getString("validity"));
-                        } catch (IOException e) {
-                            HashMap<String,String> validationError = new HashMap<>();
-                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                            e.printStackTrace(new PrintStream(outputStream));
-                            validationError.put("error", outputStream.toString());
-                            data.validationReport=validationError;
-                        }
-                        try {
-                            data.traffic=om.readValue(rs.getString("traffic"), Object.class);
-                        } catch (JsonProcessingException e) {
-                            HashMap<String,String> trafficError = new HashMap<>();
-                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                            e.printStackTrace(new PrintStream(outputStream));
-                            trafficError.put("error", outputStream.toString());
-                            data.traffic=trafficError;
-                        }
-                        try {
-                            data.hash=om.readValue(rs.getString("hash"), Object.class);
-                        } catch (JsonProcessingException e) {
-                            HashMap<String,String> hashError = new HashMap<>();
-                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                            e.printStackTrace(new PrintStream(outputStream));
-                            hashError.put("error", outputStream.toString());
-                            data.hash=hashError;
-                        }
-                        data.created_at=rs.getString("created_at");
+                        updateMetricsBean(rs, data);
                     }
                 });
+    }
+
+    private void updateMetricsBean(ResultSet rs, MetricsRecord data) throws SQLException {
+        data.id= rs.getString("ID");
+        data.artifact = rs.getString("artifact");
+        try {
+            data.metrics=om.readValue(rs.getString("counts"), countMetrics);
+        } catch (JsonProcessingException e) {
+            HashMap<String,String> metricsError = new HashMap<>();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            e.printStackTrace(new PrintStream(outputStream));
+            metricsError.put("error", outputStream.toString());
+            data.metrics=metricsError;
+        }
+        String featuresString= rs.getString("features");
+        try {
+            data.features= om.readValue(featuresString, featureMetrics);
+        } catch (StreamConstraintsException e) {
+            Map<String,String> featureError = new HashMap<>();
+            featureError.put("error",featuresString);
+            data.features=featureError;
+        } catch (JsonProcessingException e) {
+            Map<String,List<String>> featureError = new HashMap<>();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            e.printStackTrace(new PrintStream(outputStream));
+            featureError.put("error", Arrays.stream(outputStream.toString().split("\n")).collect(Collectors.toList()));
+            data.features=featureError;
+        }
+        try {
+            data.validationReport=deserializeValidationReport(rs.getString("validity"));
+        } catch (IOException e) {
+            HashMap<String,String> validationError = new HashMap<>();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            e.printStackTrace(new PrintStream(outputStream));
+            validationError.put("error", outputStream.toString());
+            data.validationReport=validationError;
+        }
+        try {
+            data.traffic=om.readValue(rs.getString("traffic"), Object.class);
+        } catch (JsonProcessingException e) {
+            HashMap<String,String> trafficError = new HashMap<>();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            e.printStackTrace(new PrintStream(outputStream));
+            trafficError.put("error", outputStream.toString());
+            data.traffic=trafficError;
+        }
+        try {
+            data.hash=om.readValue(rs.getString("hash"), Object.class);
+        } catch (JsonProcessingException e) {
+            HashMap<String,String> hashError = new HashMap<>();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            e.printStackTrace(new PrintStream(outputStream));
+            hashError.put("error", outputStream.toString());
+            data.hash=hashError;
+        }
+        data.created_at= rs.getString("created_at");
     }
 
     public SimpleMetrics getMetrics(String id) {
@@ -284,4 +291,30 @@ public class MetricsQuery {
                     }
                 });
     }
+
+    public List<TrafficLightResult> getAllTrafficLightReport() {
+        List<TrafficLightResult> report=new ArrayList<>();
+        return querier.do_query(report,
+                null,
+                (sb, data) -> {
+                    sb.append("""
+                    select traffic
+                    FROM metrics
+                """);
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        try {
+                            //System.out.println(rs.getString("ID"));
+                            TrafficLightResult traffic=om.readValue(rs.getString("traffic"), TrafficLightResult.class);
+                            data.add(traffic);
+                        } catch (Throwable e) {
+                            String explanation = "No traffic information was obtained.";
+                            TrafficLightResult traffic = new TrafficLightResult("Traffic Rating", explanation, 0.0);
+                            //data.add(traffic);
+                        }
+                    }
+                });
+    }
+
 }

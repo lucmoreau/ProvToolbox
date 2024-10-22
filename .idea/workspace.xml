@@ -9,8 +9,78 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-n/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-summary-explanations/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/benchmarks/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/prov-dot/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/prov-generator/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/roundtrip/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-service-signature/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-log/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-security-pac/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services2/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services2/service-templates/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-summarisation/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/2.2.1/bundle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-sparql-query/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-template-archetype/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial3/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial4/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-validation/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/release.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

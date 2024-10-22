@@ -1,0 +1,20 @@
+document
+prefix ex <http://example.org/>
+
+entity(ex:e1)
+entity(ex:e2)
+wasDerivedFrom(ex:e2, ex:e1)
+entity(ex:e3)
+wasDerivedFrom(ex:e3, ex:e2)
+entity(ex:e4)
+wasDerivedFrom(ex:e4, ex:e3)
+entity(ex:e5)
+wasDerivedFrom(ex:e5, ex:e4)
+entity(ex:e6)
+wasDerivedFrom(ex:e6, ex:e5)
+entity(ex:e7)
+wasDerivedFrom(ex:e7, ex:e6)
+entity(ex:e8)
+wasDerivedFrom(ex:e8, ex:e7)
+
+endDocument

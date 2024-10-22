@@ -3,7 +3,7 @@ package org.openprovenance.prov.scala.typemap
 import org.openprovenance.prov.java.typemap.TypeMapProcessor
 import org.openprovenance.prov.scala.immutable.Document
 import org.openprovenance.prov.scala.summary.{Level0Mapper, SummaryDescriptionJson}
-import org.openprovenance.prov.scala.summary.types.{Ag, Ent, ProvType, Wat, Waw, Wgb}
+import org.openprovenance.prov.scala.summary.types.{Ag, Ent, ProvType, Wat, Waw, Wdf, Wgb}
 
 import java.util
 import scala.collection.mutable
@@ -130,6 +130,27 @@ class IncrementalProcessor (m: scala.collection.mutable.Map[Int, Map[ProvType,In
 
   def countEntities(features: Map[Set[ProvType], Int]): Int = {
     features.filter{case (k,v) => k.contains(Ent())}.values.sum
+  }
+
+  def countAverageDerivationPathLength(features: Map[Set[ProvType], Int]): Double = {
+    val entities: Map[Set[ProvType], Int] = features.filter{case (k,v) => k.contains(Ent())}
+    //println("entities: " + entities)
+    val pathsFrequency: Seq[(Set[Int], Int)] = entities.map{case (k,v) => (allDerivationPaths(k).removedAll(Set(0)),v)}.toSeq
+    //println("pathsFrequency: " + pathsFrequency)
+    val pathsFrequency2: Seq[(Int, Int)] = pathsFrequency.flatMap{case (k,v) => k.map(i => (i,v))}
+    //println("pathsFrequency2: " + pathsFrequency2)
+
+    val average: Double = pathsFrequency2.map{case (k,v) => k * v}.sum.toDouble / pathsFrequency2.map{case (k,v) => v}.sum
+    average
+  }
+
+  def allDerivationPaths(types: Set[ProvType]) : Set[Int] = {
+    types.flatMap(t => {
+      t match {
+        case Wdf(s,a) => allDerivationPaths(s.asInstanceOf[Set[ProvType]]).map(i => i + 1)
+        case _ => Set(0)
+      }
+    })
   }
 
 

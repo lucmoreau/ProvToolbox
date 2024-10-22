@@ -18,6 +18,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * validator: fixed issue with namespaces declaration in validation report
 * service-metrics: inserting (instead of overriding) type maps to maintain full history
 * service-metrics: type rating: traffic light for (lack of) attribution
+* service-metrics: type rating: traffic light for derivation length
 
 `2.2.0`
 * docker-service-templates: deployed dictionary for explanations, build for intel and arm platforms

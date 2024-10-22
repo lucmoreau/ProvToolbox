@@ -25,16 +25,13 @@ import org.openprovenance.prov.validation.report.Dependencies;
 import org.openprovenance.prov.validation.report.MergeReport;
 import org.openprovenance.prov.validation.report.TypeOverlap;
 import org.openprovenance.prov.validation.report.ValidationReport;
-import scala.Function1;
 import scala.Tuple2;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.service.metrics.MetricsPostService.getSignature;
 import static org.openprovenance.prov.validation.report.json.Serialization.registerMissingNamespace;
 import static org.openprovenance.prov.validation.report.json.Serialization.serializeValidationReportAsString;
 
@@ -58,6 +55,11 @@ public class MetricsCalculator extends Rules {
         }
         this.interop=new InteropFramework();
         this.signatureService=signatureService;
+    }
+
+
+    MetricsCalculator() {
+        this(new DummyMetricsQuery(),null);
     }
 
     ObjectMapper om=new ObjectMapper();
@@ -178,16 +180,35 @@ public class MetricsCalculator extends Rules {
 
         int entitiesNumber=ip.countEntities(scalaFeatures);
 
+        double der=ip.countAverageDerivationPathLength(scalaFeatures);
+
+        System.out.println("Average Derivation Path Length: " + der);
+
+
         List<TrafficLightResult> trafficLightForType=new LinkedList<>();
         trafficLightForType.add(forEntityAttribution(issues1, entitiesNumber));
+        trafficLightForType.add(forDerivations(der));
 
         return trafficLightForType;
 
     }
 
-    public TrafficLightResult forEntityAttribution (int entitiesWithoutAttibution, int totalEntities) {
+    private TrafficLightResult forDerivations(double length) {
+        String comment="Average Derivation length";
+        TrafficLight.TrafficLightColor color;
+        if (length>=2.5) {
+            color = TrafficLight.TrafficLightColor.GREEN;
+        } else if (length>=1) {
+            color = TrafficLight.TrafficLightColor.ORANGE;
+        } else {
+            color = TrafficLight.TrafficLightColor.RED;
+        }
+        return new TrafficLightResult(comment, length, TrafficLightResult.ResultKind.ABSOLUTE, color);
+    }
 
-        double ratio=100.0 * entitiesWithoutAttibution / totalEntities;
+    public TrafficLightResult forEntityAttribution (int entitiesWithoutAttribution, int totalEntities) {
+
+        double ratio=100.0 * entitiesWithoutAttribution / totalEntities;
         String comment="Percentage Entities Without Attribution"; // wat or wgb/waw
         TrafficLight.TrafficLightColor color;
         if (ratio>=60) {
@@ -339,7 +360,9 @@ public class MetricsCalculator extends Rules {
         return querier.getAllMetricsReport();
     }
 
-
+    public Object getSignature(SignatureService signatureService, org.openprovenance.prov.model.Document doc) {
+        return MetricsPostService.getSignature(signatureService, doc);
+    }
 
 
 }

@@ -14,7 +14,7 @@ public class TrafficLightResult implements Ansi {
     public List<TrafficLightResult> subResults=new LinkedList<>();
 
     static public enum ResultKind {
-        PERCENTAGE, COMPOSITE
+        PERCENTAGE, COMPOSITE, ABSOLUTE
     }
 
     public TrafficLightResult(String comment, double ratio, TrafficLight.TrafficLightColor color) {
@@ -25,6 +25,15 @@ public class TrafficLightResult implements Ansi {
         this.color=color;
         this.colorAsString=colorAsString(color);
     }
+
+    public TrafficLightResult(String comment, double ratio, ResultKind kind, TrafficLight.TrafficLightColor color) {
+        this.comment=comment;
+        this.ratio=ratio;
+        this.kind=kind;
+        this.color=color;
+        this.colorAsString=colorAsString(color);
+    }
+
 
     public TrafficLightResult(String comment, List<TrafficLightResult> subResults) {
         this.comment=comment;

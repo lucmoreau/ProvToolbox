@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.openprovenance.prov</groupId>
+	<artifactId>ProvToolbox</artifactId>
+	<name>ProvToolbox: JVM (Java and Scala) for W3C PROV</name>
+	<version>2.2.1-SNAPSHOT</version>
+	<url>https://lucmoreau.github.io/ProvToolbox/</url>
+	<packaging>pom</packaging>
+	<description>Java toolbox to create and convert W3C PROV data model representations.</description>
+
+	<scm>
+		<connection>scm:git:https://github.com/lucmoreau/ProvToolbox.git</connection>
+		<developerConnection>scm:git:https://github.com/lucmoreau/ProvToolbox.git</developerConnection>
+		<url>https://github.com/lucmoreau/ProvToolbox.git</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<modules>
+		<module>modules-core</module>
+		<module>modules-misc</module>
+
+		<module>modules-template</module>
+		<module>modules-executable</module>
+		<module>modules-storage</module>
+
+		<module>modules-tutorial</module>
+
+		<module>modules-validation</module>
+		<module>modules-services</module>
+		<module>modules-summarisation</module>
+		<module>modules-nf</module>
+		<module>modules-explanations</module>
+		<module>modules-services2</module>
+		<module>modules-services-metrics</module>
+
+		<module>modules-executable-provman</module>
+		<module>modules-tools</module>
+
+
+	</modules>
+
+
+	<developers>
+		<developer>
+			<id>lucmoreau</id>
+			<name>Luc Moreau</name>
+			<email>luc.moreau@sussex.ac.uk</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>University of Sussex</organization>
+			<timezone>0</timezone>
+		</developer>
+		<developer>
+			<id>lucmoreau</id>
+			<name>Luc Moreau</name>
+			<email>luc.moreau@kcl.ac.uk</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>King's College London</organization>
+			<timezone>0</timezone>
+		</developer>
+		<developer>
+			<id>lucmoreau</id>
+			<name>Luc Moreau</name>
+			<email>l.moreau@ecs.soton.ac.uk</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>University of Southampton</organization>
+			<timezone>0</timezone>
+		</developer>
+		<developer>
+			<id>lavm</id>
+			<name>Luc Moreau</name>
+			<email>lavm@ecs.soton.ac.uk</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>University of Southampton</organization>
+			<timezone>0</timezone>
+		</developer>
+		<developer>
+			<id>trungdong</id>
+			<name>Trung Dong</name>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>University of Southampton</organization>
+			<timezone>0</timezone>
+		</developer>
+		<developer>
+			<id>mikejewell</id>
+			<name>Mike Jewell</name>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>University of Southampton</organization>
+			<timezone>0</timezone>
+		</developer>
+		<developer>
+			<id>jamalhussein</id>
+			<name>Jamal Hussein</name>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>University of Southampton</organization>
+			<timezone>0</timezone>
+		</developer>
+	</developers>
+
+	<distributionManagement>
+		<!-- use the following if you're not using a snapshot version. -->
+		<!--    <repository>
+              <id>repo</id>
+              <name>Repository Name</name>
+              <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/maven-releases</url>
+            </repository>
+        -->
+
+		<!-- use the following if you ARE using a snapshot version. -->
+		<!-- <snapshotRepository>
+          <id>snapshot-repo</id>
+          <name>Snapshot Repository</name>
+          <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/maven-snapshots</url>
+        </snapshotRepository> -->
+
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+
+		<site>
+			<id>websites1.ecs.soton.ac.uk</id>
+			<name>Site Deployment location</name>
+			<url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/site/prov</url>
+		</site>
+	</distributionManagement>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>license.txt</url>
+		</license>
+	</licenses>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.1.0</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.13</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${javadoc.plugin.version}</version>
+						<configuration>
+							<source>15</source>
+						</configuration>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>2.5</version>
+			</extension>
+		</extensions>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-scm-plugin</artifactId>
+				<version>${scm.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.scm</groupId>
+						<artifactId>maven-scm-provider-gitexe</artifactId>
+						<version>${scm.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${javadoc.plugin.version}</version>
+				<configuration>
+					<source>1.8</source>
+				</configuration>
+			</plugin>
+
+
+			<!-- call by hand, mvn assembly:assembly -->
+			<!--
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>${assembly.plugin.version}</version>
+				<configuration>
+					<descriptors>
+						<descriptor>src/resources/assembly/assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</plugin>
+			-->
+
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${compiler.plugin.version}</version>
+
+					<configuration>
+						<release>15</release>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>appassembler-maven-plugin</artifactId>
+					<version>2.1.0</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>3.6.1</version> <!--3.6.0 -->
+				</plugin>
+
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.3</version>
+
+					<configuration>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<preparationGoals>clean install</preparationGoals>
+						<useReleaseProfile>false</useReleaseProfile>
+						<releaseProfiles>release</releaseProfiles>
+						<goals>deploy</goals>
+					</configuration>
+
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.scm</groupId>
+							<artifactId>maven-scm-provider-gitexe</artifactId>
+							<version>${scm.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+
+	</build>
+
+	<properties>
+		<!-- maven config -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+
+
+		<!-- maven plugins -->
+
+		<compiler.plugin.version>3.13.0</compiler.plugin.version> <!--3.8.1 -->
+		<javadoc.plugin.version>3.6.3</javadoc.plugin.version> <!-- 3.1.1 -->
+		<jar.plugin.version>3.3.0</jar.plugin.version>
+		<war.plugin.version>3.4.0</war.plugin.version> <!-- 3.3.1 -->
+		<exec.plugin.version>3.2.0</exec.plugin.version> <!-- 3.1.0 -->
+		<assembly.plugin.version>3.7.1</assembly.plugin.version> <!-- 3.0.0 -->
+		<antrun.plugin.version>3.1.0</antrun.plugin.version> <!-- 3.1.0 -->
+		<surefire.plugin.version>3.2.5</surefire.plugin.version> <!-- 3.1.2 -->
+		<failsafe.plugin.version>3.2.5</failsafe.plugin.version> <!-- 3.1.2 -->
+		<exec.plugin.version>3.2.0</exec.plugin.version> <!-- 3.1.0 -->
+		<dependency.plugin.version>3.6.1</dependency.plugin.version> <!-- 3.1.2 -->
+		<jsweet.plugin.version>3.1.0</jsweet.plugin.version>
+		<build.helper.plugin.version>3.5.0</build.helper.plugin.version> <!-- 3.0.0 -->
+
+		<!-- java, scala, jsweet-->
+
+		<jsweet.core.version>6.3.0</jsweet.core.version>
+
+		<!-- the jsweet transpiler to generate typescript/js from java code requires version 12 (or older) of java. Set the home here.-->
+		<java12.home>/usr/local/java/jdk-12.0.1.jdk/Contents/Home/</java12.home>
+
+		<!-- <java.version>1.8</java.version> -->
+
+		<scala.library.version>2.13.13</scala.library.version> <!-- 2.13.12, 2.12.18 -->
+		<scala.plugin.version>4.8.1</scala.plugin.version> <!-- 4.2.0 -->
+		<scalatest.version>3.2.18</scalatest.version> <!-- 3.2.17, 3.1.4, 3.1.0-RC3 -->
+		<scalatest.mvn.plugin.version>2.2.0</scalatest.mvn.plugin.version>
+		<scala.parallel.collection.version>1.0.4</scala.parallel.collection.version>
+		<scala.binary.version>2.13</scala.binary.version>
+		<scala.parser.comb.version>1.1.2</scala.parser.comb.version>
+		<parboiled.version>2.5.0</parboiled.version>
+
+		<xmlsec.version>4.0.2</xmlsec.version> <!--2.1.4 -->
+
+		<!-- web services -->
+
+		<jetty.version>11.0.20</jetty.version> <!-- 11.0.20, 11.0.16, 10.0.15, 9.4.52.v20230823, 9.4.20.v20190813 --> <!-- not work 11.0.7 requires upgrade to servlet 5 -->
+
+		<resteasy.version>6.2.8.Final</resteasy.version>  <!-- 6.2.5.Final, 4.7.9.Final, 4.3.0.Final -->  <!-- not working 5.0.8.Final -->
+		<microprofile.version>3.0.3</microprofile.version>
+	<!--	<servletapi.version>4.0.0</servletapi.version> -->
+		<jakarta.servlet.version>5.0.0</jakarta.servlet.version>
+		<jakarta.ws.rs.version>3.1.0</jakarta.ws.rs.version>
+		<jakarta.xml.bind.version>4.0.0</jakarta.xml.bind.version>  <!-- 3.0.1 -->
+
+		<pac4j.version>5.7.4</pac4j.version> <!-- lombok? 6.0.2 -->
+
+		<swagger.version>2.2.15</swagger.version> <!-- 2.0.8 -->
+
+		<httpcomponents.version>4.5.14</httpcomponents.version>
+
+
+		<woodstox.version>5.1.0</woodstox.version>
+
+		<!-- key packages -->
+
+		<junit.version>4.13.2</junit.version>
+		<quartz.version>2.3.2</quartz.version>
+		<spring.version>2.7.6</spring.version> <!-- 2.3.11.RELEASE -->
+
+
+
+
+
+
+		<jackson.version>2.17.1</jackson.version><!--2.15.2, 2.14.2, 2.11.2, 2.9.9 -->
+		<poet.version>1.13.0</poet.version> <!--1.11.1 -->
+
+		<scm.version>1.3</scm.version>
+
+		<!-- log4j -->
+		<log4j.version>2.23.1</log4j.version> <!-- 2.20.0, 2.17.1 -->
+		<slf4j.version>2.0.12</slf4j.version>  <!-- 2.0.9 -->
+
+		<!-- apache commons stuff -->
+
+		<commons.io.version>2.15.1</commons.io.version>  <!-- 2.8.0 -->
+		<commons.csv.version>1.10.0</commons.csv.version>
+		<commons.text.version>1.11.0</commons.text.version><!-- 1.10.0 -->
+		<commons.cli.version>1.6.0</commons.cli.version> <!-- 1.5.0 -->
+
+		<!-- js stuff -->
+		<webjars.jquery.version>3.7.1</webjars.jquery.version>
+		<webjars.bootstrap.version>3.4.0</webjars.bootstrap.version><!--3.4.0, not working with 5.0.2 -->
+		<webjars.bootstrap.tables.version>1.16.0</webjars.bootstrap.tables.version> <!-- 1.9.1-1 -->
+		<webjars.jquery.csv.version>0.8.3</webjars.jquery.csv.version>
+		<webjars.datatables.version>1.10.25</webjars.datatables.version>
+		<webjars.datatables.net-scroller.version>2.0.2</webjars.datatables.net-scroller.version>
+		<webjars.underscore.version>1.13.6</webjars.underscore.version>
+		<webjars.jsoneditor.version>5.32.5</webjars.jsoneditor.version>
+		<webjars.popper.version>1.15.0</webjars.popper.version>
+		<webjars.j4ts.version>2.0.0</webjars.j4ts.version>
+		<webjars.fontawesome.version>4.7.0</webjars.fontawesome.version>
+		<webjars.ace.version>1.4.5</webjars.ace.version>
+		<webjars.swagger-ui.version>5.6.1</webjars.swagger-ui.version> <!-- 4.1.3 3.51.2, 3.42.0-->
+
+
+
+		<!-- jaxb -->
+		<jaxb.runtime.version>2.3.1</jaxb.runtime.version> <!-- now glassfish implementation -->
+
+		<old.stuff.xmlsec.version>2.1.7</old.stuff.xmlsec.version> <!--2.1.4, 2.0.6 -->
+
+		<!-- older jaxb stuff -->
+
+		<jaxb.impl.version>2.3.1</jaxb.impl.version>  <!-- 2.2.11, 2.2.6 -->
+		<jaxb.api.version>2.3.1</jaxb.api.version>   <!-- 2.2.12, 2.2.4 -->
+		<jaxb.xjc.version>2.2.4</jaxb.xjc.version>
+		<jaxb.common.version>0.4.1.5</jaxb.common.version>
+		<maven.jaxb.plugin.version>0.8.2</maven.jaxb.plugin.version>
+
+		<!-- hibernate -->
+		<hibernate.version>4.3.10.Final</hibernate.version>
+		<hibernate3.plugin.version>3.0</hibernate3.plugin.version>
+
+		<!-- hsqldb -->
+		<hsqldb.version>2.3.2</hsqldb.version>
+
+		<!-- postgres -->
+		<postgres.version>42.2.27</postgres.version>
+
+		<!-- redis -->
+		<redis.version>2.8.1</redis.version>
+	</properties>
+
+
+
+</project>

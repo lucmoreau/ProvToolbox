@@ -9,8 +9,148 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-core/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-n/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-summary-explanations/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/benchmarks/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/prov-dot/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/prov-generator/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/roundtrip/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-service-signature/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-log/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-security-pac/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services2/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services2/service-templates/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-summarisation/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-sparql-query/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-template-archetype/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial3/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial4/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-validation/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml.releaseBackup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/release.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-explanations/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-summary-explanations/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-summary-explanations/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/benchmarks/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/benchmarks/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-generator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-generator/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/roundtrip/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/roundtrip/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-service-signature/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-service-signature/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-signature/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-signature/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/docker-service-metrics/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services-metrics/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services-metrics/service-metrics/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services-metrics/service-metrics/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-log/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-log/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-security-pac/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-security-pac/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-validation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services2/docker-service-templates/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/docker-service-templates/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services2/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-api/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-summarisation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-summarisation/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-typemap/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-typemap/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-sparql-query/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-sparql-query/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-template-archetype/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-template-archetype/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial3/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial3/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial4/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial4/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -1092,7 +1232,7 @@
       <workItem from="1728039245552" duration="620000" />
       <workItem from="1728504186336" duration="101220000" />
       <workItem from="1729105189635" duration="34450000" />
-      <workItem from="1729241210944" duration="85116000" />
+      <workItem from="1729241210944" duration="85345000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

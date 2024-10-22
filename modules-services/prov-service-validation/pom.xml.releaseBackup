@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>org.openprovenance.prov</groupId>
+    <artifactId>modules-services</artifactId>
+    <version>2.2.1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>prov-service-validation</artifactId>
+  <name>|---- PROV-SERVICE-VALIDATION</name>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-validation</artifactId>
+      <version>2.2.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-service-core</artifactId>
+      <version>2.2.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-service-translation</artifactId>
+      <version>2.2.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-log</artifactId>
+      <version>2.2.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-interop</artifactId>
+      <version>2.2.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>${jakarta.servlet.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-jaxrs2-jakarta</artifactId>
+      <version>${swagger.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.plugin.version}</version>
+        <configuration>
+          <source>1.9</source>
+          <target>1.9</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${javadoc.plugin.version}</version>
+        <configuration>
+          <source>1.8</source>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

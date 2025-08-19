@@ -277,6 +277,7 @@ public class TemplateService {
     }
 
     public String getPrincipalAsPreferredUsername(Principal principal) {
+        if (principal==null) return "nil";
         String principalAsPreferredUsername= principal.getName();
         UserProfile profile = RoleAuthorizationGenerator.getProfile(principal.getName());
         if (profile!=null) {

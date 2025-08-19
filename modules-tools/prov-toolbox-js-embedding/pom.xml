@@ -10,7 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <graalvm.version>24.1.0</graalvm.version>
+        <graalvm.version>24.1.0</graalvm.version> <!-- 24.1.0 -->
     </properties>
 
     <dependencies>
@@ -161,7 +161,7 @@
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
-                        <version>0.10.2</version>
+                        <version>0.11.0</version><!-- 0.10.2 -->
                         <extensions>true</extensions>
                         <executions>
                             <execution>
@@ -298,7 +298,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.6.0</version>
+                        <version>3.5.1</version> <!--1.6.0 -->
                         <executions>
                             <execution>
                                 <id>default-cli</id>
@@ -356,7 +356,7 @@
                                 <configuration>
                                     <archive>
                                         <manifest>
-                                            <mainClass>org.example.embedding.Main</mainClass>
+                                            <mainClass>org.openprovenance.prov.polyglot.Embedding</mainClass>
                                         </manifest>
                                     </archive>
                                     <descriptors>

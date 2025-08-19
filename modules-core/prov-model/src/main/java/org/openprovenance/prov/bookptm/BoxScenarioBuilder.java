@@ -9,7 +9,7 @@ import org.openprovenance.prov.model.builder.Prefix;
 
 import static org.openprovenance.prov.model.NamespacePrefixMapper.*;
 
-public class DerivationBuilder {
+public class BoxScenarioBuilder {
 
     static final String VOCAB_NS_URI = "http://example.org/ns/";
     static final String EX_IDS_URI = "http://example.org/id/";
@@ -24,147 +24,12 @@ public class DerivationBuilder {
     protected final String edge3Colour;
 
 
-    public DerivationBuilder() {
+    public BoxScenarioBuilder() {
         edge1Colour = "red";
         edge2Colour = "blue";
         edge3Colour = "gold";
     }
 
-    public Document makeDocument_Transporting() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        transportingDescription(builder, defs);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_TransportingFullTriangle() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        transportingDescriptionFullTriangle(builder, defs);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_Weighing() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        weighingDescription(builder, defs, true);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_TransportingAttribution() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        transportingAttribution(builder, defs, true);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_Attribution() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        attributionDescription(builder, defs, true);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_AttributionFullTriangle() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        attributionDescriptionFullTriangle(builder, defs, true);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_Attribution2FullTriangle() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        attributionDescription2FullTriangle(builder, defs, true);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_Specialization() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        specializationDescription(builder, defs, true);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_SpecializationFullTriangle() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        specializationDescriptionFullTriangle(builder, defs, true);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_CommunicationFullTriangle() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        communicationDescriptionFullTriangle(builder, defs, true);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_StartPartialTriangle() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        startDescriptionPartialTriangle(builder, defs, true);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_EndPartialTriangle() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        endDescriptionPartialTriangle(builder, defs, true);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_InsertElementIntoCollection() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        insertElementIntoCollection(builder, defs, true);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_RemoveElementFromCollection() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        removeElementFromCollection(builder, defs, true);
-        Document doc=builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_singleElement() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        singleElementInDocument(builder, defs, true);
-        Document doc = builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_exampleBundleInDocument() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        exampleBundleInDocument(builder, defs, true);
-        Document doc = builder.build();
-        return doc;
-    }
-
-    public Document makeDocument_exampleSelfReferentialBundleInDocument() {
-        Builder builder = new Builder(pFactory, pFactory, pFactory);
-        Definitions defs = getDefinitions(builder);
-        exampleSelfReferentialBundleInDocument(builder, defs, true);
-        Document doc = builder.build();
-        return doc;
-    }
 
     public Document makeDerivation() {
         Builder builder = new Builder(pFactory, pFactory, pFactory);
@@ -175,11 +40,15 @@ public class DerivationBuilder {
 
         Definitions defs = getDefinitions(builder);
 
-        transportingDescription(builder, defs);
+        attributionDescriptionFullTriangle(builder, defs, true);
 
-        attributionDescription(builder, defs, false);
+        weighing1Description(builder, defs, false);
 
-        weighingDescription(builder, defs, false);
+
+        transportingDescription(builder, defs, false);
+
+
+        weighing2Description(builder, defs, false);
 
         transportingAttribution(builder, defs, false);
 
@@ -189,38 +58,16 @@ public class DerivationBuilder {
         return doc;
     }
 
-    private void attributionDescription(Builder builder, Definitions defs, boolean standalone) {
-
-        if (standalone) {
-
-            builder.entity()
-                    .id(defs.XID, "b34/5").aka()
-                    .type(defs.Box)
-                    .label("a box")
-                    .build();
-        }
-
-        builder.agent()
-                .id(defs.XID, AG_401_Alice).aka()
-                .type(name.PROV_PERSON)
-                .attr(defs.foaf_name, "Alice")
-                .build();
-
-        builder.wasAttributedTo()
-                .entity("b34/5")
-                .agent(AG_401_Alice)
-                .type(defs.Ownership)
-                .build();
-    }
 
     private void attributionDescriptionFullTriangle(Builder builder, Definitions defs, boolean standalone) {
 
         if (standalone) {
 
             builder.entity()
-                    .id(defs.XID, "b34/5").aka()
+                    .id(defs.XID, "b34/4").aka()
                     .type(defs.Box)
                     .label("a box")
+                    .location(defs.London)
                     .build();
         }
 
@@ -252,7 +99,7 @@ public class DerivationBuilder {
 
         builder.wasGeneratedBy()
                 .id(defs.XID, "wgb0").aka()
-                .entity("b34/5")
+                .entity("b34/4")
                 .activity("a7667")
                 .attr(defs.dotColour, edge2Colour)
                 .build();
@@ -271,7 +118,7 @@ public class DerivationBuilder {
 
         builder.wasDerivedFrom()
                 .id(defs.XID, "deriv1").aka()
-                .generatedEntity("b34/5")
+                .generatedEntity("b34/4")
                 .usedEntity("fpc045")
                 .activity("a7667")
                 .generation("wgb0")
@@ -281,7 +128,7 @@ public class DerivationBuilder {
 
         builder.wasDerivedFrom()
                 .id(defs.XID, "deriv2").aka()
-                .generatedEntity("b34/5")
+                .generatedEntity("b34/4")
                 .usedEntity("bks643")
                 .activity("a7667")
                 .generation("wgb0")
@@ -294,123 +141,91 @@ public class DerivationBuilder {
                 .id(defs.XID, "waw1").aka()
                 .activity("a7667")
                 .agent(AG_401_Alice)
-                .attr(defs.dotColour, edge1Colour)
+               // .attr(defs.dotColour, edge1Colour)
                 .build();
 
 
         builder.wasAttributedTo()
-                .entity("b34/5")
+                .entity("b34/4")
                 .agent(AG_401_Alice)
                 .type(defs.Ownership)
                 .attrQn(defs.association,"waw1")
                 .attrQn(defs.generation,"wgb0")
                 .attrQn(defs.activity, "a7667")
-                .attr(defs.dotColour, edge3Colour)
+              // .attr(defs.dotColour, edge3Colour)
                 .build();
     }
 
-    private void attributionDescription2FullTriangle(Builder builder, Definitions defs, boolean standalone) {
 
+    public void weighing1Description(Builder builder, Definitions defs, boolean standalone) {
 
-
-        builder.entity()
-                .id(defs.XID, "b34/7").aka()
-                .type(defs.Box)
-                .build();
-
-
-        builder.entity()
-                .id(defs.XID, "crdbrd843").aka()
-                .label("cardboard")
-                .build();
-
-        builder.entity()
-                .id(defs.XID, "bks644").aka()
-                //.type(defs.Books)
-                .label("books")
-                .build();
-
-
-        builder.agent()
-                .id(defs.XID, AG_401_Alice).aka()
-                .type(name.PROV_PERSON)
-                .attr(defs.foaf_name, "Alice")
-                .build();
+        if (standalone) {
+            builder.entity()
+                    .id(defs.XID, "b34/4").aka()
+                    .type(defs.Box)
+                    .label("a box")
+                    .build();
+        }
 
         builder.activity()
-                .id(defs.XID, "a7699").aka()
-                .label("unpacking activity")
+                .id(defs.XID, "a7522").aka()
+                .label("weighing activity")
+                .type(defs.Weighing)
+                .build();
+
+        builder.entity()
+                .id(defs.XID, "b34/5").aka()
+                .type(defs.Box)
+                .label("a weighted box")
+                .attr(defs.weight, "10kg")
                 .build();
 
         builder.wasGeneratedBy()
-                .id(defs.XID, "wgb11").aka()
-                .entity("bks644")
-                .activity("a7699")
-                .build();
-
-        builder.wasGeneratedBy()
-                .id(defs.XID, "wgb12").aka()
-                .entity("crdbrd843")
-                .activity("a7699")
+                .entity("b34/5")
+                .activity("a7522")
                 .build();
 
         builder.used()
-                .id(defs.XID, "used11").aka()
-                .activity("a7699")
-                .entity("b34/7")
-                .build();
-
-
-        builder.wasDerivedFrom()
-                .id(defs.XID, "deriv11").aka()
-                .generatedEntity("bks644")
-                .usedEntity("b34/7")
-                .activity("a7699")
-                .generation("wgb11")
-                .usage("used11")
+                .activity("a7522")
+                .entity("b34/4")
                 .build();
 
         builder.wasDerivedFrom()
-                .id(defs.XID, "deriv12").aka()
-                .generatedEntity("crdbrd843")
-                .usedEntity("b34/7")
-                .activity("a7699")
-                .generation("wgb12")
-                .usage("used11")
+                .generatedEntity("b34/5")
+                .usedEntity("b34/4")
+                .type(defs.Weighing)
+                .activity("a7522")
                 .build();
 
+        if (standalone) {
+            builder.agent()
+                    .id(defs.XID, AG_401_Alice).aka()
+                    .type(name.PROV_PERSON)
+                    .attr(defs.foaf_name, "Alice")
+                    .build();
+
+        }
 
         builder.wasAssociatedWith()
-                .id(defs.XID, "waw11").aka()
-                .activity("a7699")
+                .activity("a7522")
                 .agent(AG_401_Alice)
-               // .type(defs.Ownership)
-                .role(defs.unpacker)
-                .attr(defs.dotColour, edge1Colour)
+                .role(defs.scientist)
                 .build();
 
-        builder.wasInvalidatedBy()
-                .id(defs.XID, "wib11").aka()
-                .entity("b34/7")
-                .activity("a7699")
-                .attr(defs.dotColour, edge2Colour)
-
+        builder.agent()
+                .id(defs.XID, "scale77").aka()
+                .type(defs.Instrument)
                 .build();
 
-
-        builder.wasAttributedTo()
-                .entity("b34/7")
-                .agent(AG_401_Alice)
-                .type(defs.Recycling)
-                .attrQn(defs.association,"waw11")
-                .attrQn(defs.invalidation,"wib11")
-                .attrQn(defs.activity, "a7699")
-                .attr(defs.dotColour, edge3Colour)
+        builder.wasAssociatedWith()
+                .activity("a7522")
+                .agent("scale77")
+                .role(defs.scale)
                 .build();
+
     }
 
-
-    public void weighingDescription(Builder builder, Definitions defs, boolean standalone) {
+    public void weighing2Description(Builder builder, Definitions defs, boolean standalone) {
 
         if (standalone) {
             builder.entity()
@@ -450,15 +265,17 @@ public class DerivationBuilder {
                 .activity("a7588")
                 .build();
 
-        builder.agent()
-                .id(defs.XID, "alice").aka()
-                .type(name.PROV_PERSON)
-                .attr(defs.foaf_name, "Alice")
-                .build();
+        if (standalone) {
+            builder.agent()
+                    .id(defs.XID, AG_401_Alice).aka()
+                    .type(name.PROV_PERSON)
+                    .attr(defs.foaf_name, "Alice")
+                    .build();
+        }
 
         builder.wasAssociatedWith()
                 .activity("a7588")
-                .agent("alice")
+                .agent(AG_401_Alice)
                 .role(defs.scientist)
                 .build();
 
@@ -475,14 +292,16 @@ public class DerivationBuilder {
 
     }
 
-    private void transportingDescription(Builder builder, Definitions defs) {
-        builder.entity()
-                .id(defs.XID, "b34/5").aka()
-                .type(defs.Box)
-                .label("a box somewhere")
-                .location(defs.London)
-                .attr(defs.weight, "10kg")
-                .build();
+    private void transportingDescription(Builder builder, Definitions defs, boolean standalone) {
+
+        if (standalone) {
+            builder.entity()
+                    .id(defs.XID, "b34/5").aka()
+                    .type(defs.Box)
+                    .label("a box somewhere")
+                    .attr(defs.weight, "10kg")
+                    .build();
+        }
 
         builder.entity()
                 .id(defs.XID, "b34/6").aka()
@@ -521,64 +340,6 @@ public class DerivationBuilder {
                 .time("2024-07-16T10:20:00")
                 .label("pick up at origin")
                 .build();
-    }
-
-    private void transportingDescriptionFullTriangle(Builder builder, Definitions defs) {
-        builder.entity()
-                .id(defs.XID, "b34/5").aka()
-                .type(defs.Box)
-                .label("a box somewhere")
-                .location(defs.London)
-                .attr(defs.weight, "10kg")
-                .build();
-
-        builder.entity()
-                .id(defs.XID, "b34/6").aka()
-                .type(defs.Box)
-                .label("a box elsewhere")
-                .location(defs.Brighton)
-                .build();
-
-        builder.activity()
-                .id(defs.XID, "a7543").aka()
-                .label("some activity")
-                .type(defs.Transporting)
-                .start("2024-07-16T10:05:00")
-                .end("2024-07-16T12:47:00")
-                .build();
-
-        builder.wasGeneratedBy()
-                .id(defs.XID, "wgb1").aka()
-                .entity("b34/6")
-                .activity("a7543")
-                .type(defs.DropOff)
-                .time("2024-07-16T11:58:00")
-                .label("drop-off at destination")
-                .attr(defs.dotColour, edge1Colour)
-
-                .build();
-
-        builder.used()
-                .id(defs.XID, "used1").aka()
-                .activity("a7543")
-                .entity("b34/5")
-                .type(defs.PickUp)
-                .time("2024-07-16T10:20:00")
-                .label("pick up at origin")
-                .attr(defs.dotColour, edge2Colour)
-
-                .build();
-
-        builder.wasDerivedFrom()
-                .generatedEntity("b34/6")
-                .usedEntity("b34/5")
-                .type(defs.Transporting)
-                .activity("a7543")
-                .generation("wgb1")
-                .usage("used1")
-                .attr(defs.dotColour, edge3Colour)
-                .build();
-
     }
 
 
@@ -620,10 +381,16 @@ public class DerivationBuilder {
         if (standalone) {
 
             builder.entity()
+                    .id(defs.XID, "b34/4").aka()
+                    .type(defs.Box)
+                    .label("a box")
+                    .location(defs.London)
+                    .build();
+
+            builder.entity()
                     .id(defs.XID, "b34/5").aka()
                     .type(defs.Box)
                     .label("a box somewhere")
-                    .location(defs.London)
                     .attr(defs.weight, "10kg")
                     .build();
 
@@ -646,6 +413,12 @@ public class DerivationBuilder {
                 .type(defs.Box)
                 .label("a box")
                 .build();
+
+        builder.specializationOf()
+                .generalEntity("b34")
+                .specificEntity("b34/4")
+                .build();
+
 
         builder.specializationOf()
                 .generalEntity("b34")
@@ -680,7 +453,7 @@ public class DerivationBuilder {
                     .generatedEntity("b34/6")
                     .usedEntity("b34/5")
                     .type(defs.Transporting)
-                    .attr(defs.dotColour, edge2Colour)
+                 //   .attr(defs.dotColour, edge2Colour)
                     .build();
         }
 
@@ -694,7 +467,7 @@ public class DerivationBuilder {
                 .id(defs.XID,"spe1").aka()
                 .generalEntity("b34")
                 .specificEntity("b34/5")
-                .attr(defs.dotColour, edge1Colour)
+              //  .attr(defs.dotColour, edge1Colour)
                 .build();
 
         builder.specializationOf()
@@ -703,7 +476,7 @@ public class DerivationBuilder {
                 .attrQn(defs.specialization,"spe1")
                 .attrQn(defs.derivation,"deriv1")
                 .attrQn(defs.entity, "b34/5")
-                .attr(defs.dotColour, edge3Colour)
+               // .attr(defs.dotColour, edge3Colour)
                 .build();
     }
 
@@ -1094,10 +867,10 @@ public class DerivationBuilder {
 
 
     public Definitions getDefinitions(Builder builder) {
-        Prefix VOCAB  = builder.prefix(DerivationBuilder.VOCAB);
+        Prefix VOCAB  = builder.prefix(BoxScenarioBuilder.VOCAB);
         Prefix XID    = builder.prefix("xid");
         Prefix FOAF    = builder.prefix("foaf");
-        Prefix PROVEXT = builder.prefix(DerivationBuilder.PROVEXT);
+        Prefix PROVEXT = builder.prefix(BoxScenarioBuilder.PROVEXT);
         Prefix DOT    = builder.prefix(DOT_PREFIX);
         builder.prefix(VOCAB, VOCAB_NS_URI);
         builder.prefix(XID, EX_IDS_URI);

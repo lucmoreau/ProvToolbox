@@ -1,6 +1,8 @@
 package org.openprovenance.prov.sparql;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class CommandLine {
 
@@ -18,7 +20,7 @@ public class CommandLine {
         String outfile=null;
         String informat=null;
         String outformat=null;
-        String query=null;
+        List<String> query=new LinkedList<>();
         String ontology=null;
 
         for (int i=0; i<args.length; i++) {
@@ -35,7 +37,7 @@ public class CommandLine {
                 outformat=args[i+1];
             }
             if (args[i].equals("-query")) {
-                query=args[i+1];
+                query.add(args[i+1]);
             }
             if (args[i].equals("-ontology")) {
                 ontology=args[i+1];

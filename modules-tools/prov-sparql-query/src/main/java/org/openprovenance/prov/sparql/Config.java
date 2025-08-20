@@ -1,12 +1,14 @@
 package org.openprovenance.prov.sparql;
 
+import java.util.List;
+
 public class Config {
 
     private String infile;
     private String outfile;
     private String informat;
     private String outformat;
-    private String query;
+    private List<String> query;
     private String ontology;
 
     public void setInfile(String infile) {
@@ -25,7 +27,7 @@ public class Config {
         this.outformat = outformat;
     }
 
-    public void setQuery(String query) {
+    public void setQuery(List<String> query) {
         this.query = query;
     }
 
@@ -49,7 +51,7 @@ public class Config {
         return outformat;
     }
 
-    public String getQuery() {
+    public List<String> getQuery() {
         return query;
     }
 

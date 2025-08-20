@@ -9,16 +9,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/bookptm/BoxScenarioBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/bookptm/DerivationBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/bookptm/DerivationBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/WEB-INF/web-with-security.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/WEB-INF/web-with-security.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/prov-sparql-query/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-sparql-query/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/src/test/resources/org/openprovenance/prov/polyglot/js/builder.js" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/src/test/resources/org/openprovenance/prov/polyglot/js/builder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/java/org/openprovenance/prov/sparql/CommandLine.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/java/org/openprovenance/prov/sparql/CommandLine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/java/org/openprovenance/prov/sparql/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/java/org/openprovenance/prov/sparql/Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/java/org/openprovenance/prov/sparql/Reasoning.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/java/org/openprovenance/prov/sparql/Reasoning.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1123,7 +1117,7 @@
       <workItem from="1750101648853" duration="3000" />
       <workItem from="1750391946965" duration="574000" />
       <workItem from="1750392587000" duration="590000" />
-      <workItem from="1755168278374" duration="18601000" />
+      <workItem from="1755168278374" duration="23712000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

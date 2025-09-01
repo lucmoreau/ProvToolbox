@@ -4,14 +4,14 @@
     "definitions": {
         "ProvFormat": {
             "type": "string",
-            "enum": ["provn", "prov-jsonld", "svg", "png", "pdf"]
+            "enum": ["provn", "prov-jsonld", "jsonld","svg", "png", "pdf"]
         },
         "Task": {
             "type": "object",
             "properties": {
                 "type": {
                     "type": "string",
-                    "enum": ["expansion", "merge"]
+                    "enum": ["instantiation", "merge"]
                 },
                 "description": {
                     "type": "string"
@@ -38,6 +38,9 @@
                 "hasProvenance": {
                     "type": "string"
                 },
+                "addOutputDirToInputPath": {
+                    "type": "boolean"
+                },
                 "copyinput": {
                     "type": "boolean"
                 },
@@ -58,7 +61,6 @@
                 "type",
                 "input",
                 "output",
-                "bindings",
                 "formats"
             ],
             "additionalProperties": false

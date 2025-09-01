@@ -2,6 +2,7 @@
 
 
 # TODO
+- script.sh in prov-template-compiler needs to point to the proper library
 - should not insert delegation if delegate/responsible empty
 -INSERT INTO
 __PROV_DELEGATION (delegate, delegate_rel, responsible, responsible_rel, activity, activity_rel, template, template_id, rel) VALUES

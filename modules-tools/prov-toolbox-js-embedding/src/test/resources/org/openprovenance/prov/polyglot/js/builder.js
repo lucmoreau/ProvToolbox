@@ -3,18 +3,18 @@ print('*** Hello ProvToolbox!');
 
 var doc = builder
     .entity()
-    .id(defs.XID,"e1").aka()
+    .id(defs.XID,"b34/5").aka()
     .build()
 
     .agent()
-    .id(defs.XID, "bob").aka()
+    .id(defs.XID, "ag401").aka()
     .type(name.PROV_PERSON)
-    .attr(defs.foaf_name, "Bob")
+    .attr(defs.foaf_name, "Alice")
     .build()
 
     .wasAttributedTo()
-    .entity("e1")
-    .agent("bob")
+    .entity("b34/5")
+    .agent("ag401")
     .build()
 
 

@@ -10,6 +10,8 @@ import org.openprovenance.prov.template.expander.Expand;
 import org.openprovenance.prov.template.json.Bindings;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBean;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBuilder;
+import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_mergingBean;
+import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_mergingBuilder;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -18,11 +20,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.lang.Math.abs;
+
 //import static org.apache.logging.log4j.core.util.FileUtils.mkdir;
 
 public class BatchExecutor {
 
-    private final Map<String, org.openprovenance.prov.model.ProvSerialiser> serializerMap=new HashMap<>();
+    private final Map<String, org.openprovenance.prov.model.ProvSerialiser> serializerMap;
+    private final Map<String, org.openprovenance.prov.model.ProvDeserialiser> deserializerMap;
     static Logger logger = LogManager.getLogger(BatchExecutor.class);
     static private final ProvFactory pf= org.openprovenance.prov.vanilla.ProvFactory.getFactory();
     static final private ObjectMapper om = new ObjectMapper();
@@ -30,30 +35,45 @@ public class BatchExecutor {
 
 
     public BatchExecutor() {
-        initializeSerializerDispatcher();
+        Pair<Map<String, ProvSerialiser>, Map<String, ProvDeserialiser>> pair=initializeSerializerDispatcher();
+        serializerMap=pair.getLeft();
+        deserializerMap=pair.getRight();
+        deserialiser=deserializerMap.get("provn");
     }
 
-    public void initializeSerializerDispatcher()  {
+    public BatchExecutor(Map<String, org.openprovenance.prov.model.ProvSerialiser> serializerMap,
+                         Map<String, org.openprovenance.prov.model.ProvDeserialiser> deserializerMap) {
+        this.serializerMap=serializerMap;
+        this.deserializerMap=deserializerMap;
+        deserialiser=deserializerMap.get("provn");
+    }
+
+    public Pair<Map<String, ProvSerialiser>, Map<String, ProvDeserialiser>> initializeSerializerDispatcher()  {
+        Map<String, org.openprovenance.prov.model.ProvSerialiser> serializerMap=new HashMap<>();
+        Map<String, org.openprovenance.prov.model.ProvDeserialiser> deserializerMap=new HashMap<>();
+
         try {
             Class<?> c = Class.forName("org.openprovenance.prov.notation.ProvSerialiser");
             Constructor<?> cons = c.getConstructor(ProvFactory.class);
             ProvSerialiser serialiser = (ProvSerialiser) cons.newInstance(pf);
-            this.serializerMap.put("provn", serialiser);
+            serializerMap.put("provn", serialiser);
 
             c = Class.forName("org.openprovenance.prov.dot.ProvSerialiser");
             cons = c.getConstructor(ProvFactory.class, String.class);
             ProvSerialiser serialiser2 = (ProvSerialiser) cons.newInstance(pf, "png");
-            this.serializerMap.put("png", serialiser2);
+            serializerMap.put("png", serialiser2);
 
             ProvSerialiser serialiser3 = (ProvSerialiser) cons.newInstance(pf, "svg");
-            this.serializerMap.put("svg", serialiser3);
+            serializerMap.put("svg", serialiser3);
 
             c = Class.forName("org.openprovenance.prov.notation.ProvDeserialiser");
             cons = c.getConstructor(ProvFactory.class);
-            this.deserialiser = (ProvDeserialiser) cons.newInstance(pf);
+            deserializerMap.put("provn", (ProvDeserialiser) cons.newInstance(pf));
+            return Pair.of(serializerMap, deserializerMap);
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             logger.throwing(e);
         }
+        return null;
     }
 
     public static TemplateTasksBatch load(String configurationPath, ObjectMapper objectMapper) {
@@ -131,7 +151,7 @@ public class BatchExecutor {
             logger.info("task: " + task);
 
             switch (task.type) {
-                case "expansion":
+                case "instantiation":
                     executeExpandTask(templateTasksBatch, task, variableMap);
                     break;
                 case "merge":
@@ -150,7 +170,8 @@ public class BatchExecutor {
 
     }
 
-    Ptm_expandingBuilder builder=new Ptm_expandingBuilder();
+    Ptm_expandingBuilder expandBuilder =new Ptm_expandingBuilder();
+    Ptm_mergingBuilder mergeBuilder =new Ptm_mergingBuilder();
     public void executeExpandTask(TemplateTasksBatch templateTasksBatch, TemplateTasksBatch.ConfigTask task, Map<String, String> variableMap) throws IOException {
         Pair<FileInputStream,File> pair=findFileinDirs2(templateTasksBatch.bindings_path, task.bindings);
         String bindingsFilename=pair.getRight().getAbsolutePath();
@@ -164,7 +185,8 @@ public class BatchExecutor {
         List<String> template_path = (task.template_path ==null)? templateTasksBatch.template_path : task.template_path;
         Pair<FileInputStream, File> fileinDirs = findFileinDirs2(template_path, task.input);
 
-        long secondsSince2023_01_01 = (System.currentTimeMillis() - 1672531200000L)/1000;
+        long secondsSince2023_01_01 = (System.currentTimeMillis() - 1672531200000L);
+        String time=pf.newTimeNow().toString();
 
         List<String> loggedRecords=new LinkedList<>();
 
@@ -175,7 +197,7 @@ public class BatchExecutor {
             if (task.copyinput != null && task.copyinput) {
                 serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + task.input.replace(".provn","."+format)), format, doc, false);
             }
-            String csvRecord = createExpansionCsvRecord(task, format, fileinDirs, secondsSince2023_01_01);
+            String csvRecord = createExpansionCsvRecord(task, format, fileinDirs, time, secondsSince2023_01_01);
             loggedRecords.add(csvRecord);
         }
 
@@ -196,17 +218,30 @@ public class BatchExecutor {
         }
     }
 
-    private String createExpansionCsvRecord(TemplateTasksBatch.ConfigTask task, String format, Pair<FileInputStream, File> fileinDirs, long secondsSince2023_01_01) {
+    private String createExpansionCsvRecord(TemplateTasksBatch.ConfigTask task, String format, Pair<FileInputStream, File> fileinDirs, String time, long secondsSince2023_01_01) {
         Ptm_expandingBean bean=new Ptm_expandingBean();
         bean.bindings= task.bindings;
         bean.provenance=task.hasProvenance;
-        bean.time=pf.newTimeNow().toString();
+        bean.time=time;
         bean.template= fileinDirs.getRight().getName();
         bean.document= task.output + "." + format;
-        bean.expanding=Long.valueOf(secondsSince2023_01_01).intValue();
+        bean.expanding=abs(Long.valueOf(secondsSince2023_01_01).intValue());
 
-        return bean.process(builder.args2csv());
+        return bean.process(expandBuilder.args2csv());
     }
+
+    private String createMergeCsvRecord(TemplateTasksBatch.ConfigTask task, String format, Pair<FileInputStream, File> fileinDirs1, Pair<FileInputStream, File> fileinDirs2, String time, long secondsSince2023_01_01) {
+        Ptm_mergingBean bean=new Ptm_mergingBean();
+        bean.provenance=task.hasProvenance;
+        bean.time=time;
+        bean.template1= fileinDirs1.getRight().getName();
+        bean.template2= fileinDirs2.getRight().getName();
+        bean.document= task.output + "." + format;
+        bean.merging=abs(Long.valueOf(secondsSince2023_01_01).intValue());
+
+        return bean.process(mergeBuilder.args2csv());
+    }
+
 
     public void executeMergeTask(TemplateTasksBatch templateTasksBatch, TemplateTasksBatch.ConfigTask task, Map<String, String> variableMap) throws IOException {
 
@@ -218,12 +253,30 @@ public class BatchExecutor {
             updatedTemplatePath.addAll(task.template_path);
             updatedTemplatePath.addAll(templateTasksBatch.template_path);
         }
-        Document doc1 = deserialise(findFileinDirs(updatedTemplatePath, task.input));
-        Document doc2 = deserialise(findFileinDirs(updatedTemplatePath, task.input2));
+        Pair<FileInputStream,File> fileinDirs1 = findFileinDirs2(updatedTemplatePath, task.input);
+        Pair<FileInputStream,File> fileinDirs2 = findFileinDirs2(updatedTemplatePath, task.input2);
+        Document doc1 = deserialise(fileinDirs1.getLeft());
+        Document doc2 = deserialise(fileinDirs2.getLeft());
+        List<String> loggedRecords=new LinkedList<>();
+
+        long secondsSince2023_01_01 = (System.currentTimeMillis() - 1672531200000L);
+        String time=pf.newTimeNow().toString();
+
+
         Document doc3=new IndexedDocument(pf,doc1,false).merge(doc2).toDocument();
         for (String format: task.formats) {
             serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + task.output + "." + format), format, doc3, false);
+
+
+
+            String csvRecord = createMergeCsvRecord(task, format, fileinDirs1,fileinDirs2, time, secondsSince2023_01_01);
+            loggedRecords.add(csvRecord);
         }
+
+
+        exportProvenanceAsCsv(templateTasksBatch, task, loggedRecords);
+
+
         // option to clean up tmp file
         if (task.clean2!=null && task.clean2) {
             for (String format: task.formats) {

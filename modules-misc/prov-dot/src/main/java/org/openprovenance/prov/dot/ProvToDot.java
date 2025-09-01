@@ -31,6 +31,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
     final ProvFactory pf;
     private boolean displayAnnotations;
+    private boolean displayQualifiedRelation=false;
 
     QualifiedName makeSumSize(){
         return pf.newQualifiedName(NamespacePrefixMapper.SUMMARY_NS, "size", NamespacePrefixMapper.SUMMARY_PREFIX);
@@ -52,6 +53,11 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     public void setMaxStringLength(Integer maxStringLength) {
         this.maxStringLength = maxStringLength;
     }
+
+    public void qualifiedRelation() {
+        this.displayQualifiedRelation = true;
+    }
+
 
 
     public ProvToDot(ProvFactory pf) {

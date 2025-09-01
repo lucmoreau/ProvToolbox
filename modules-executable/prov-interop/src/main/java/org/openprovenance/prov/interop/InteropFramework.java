@@ -679,7 +679,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 if (config.bindingsVersion == 3) {
                     Bindings inBindings;
                     try {
-                        inBindings = new ObjectMapper().readValue(new File(config.bindings), Bindings.class);
+                        inBindings = config.bindings.equals("-")?
+                                new ObjectMapper().readValue(System.in, Bindings.class):
+                                new ObjectMapper().readValue(new File(config.bindings), Bindings.class);
                     } catch (IOException e) {
                         throw new InteropException("problem parsing bindings file " + config.bindings, e);
                     }

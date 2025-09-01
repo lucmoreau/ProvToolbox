@@ -3,9 +3,9 @@
 	"name": "template_library",
 	"destination": "target",
 	"description": "PROV templates for prov template management",
-	"version": "0.1.0",
+	"version": "2.2.2-SNAPSHOT",
 	"root_package": "org.openprovenance.prov.template.library.ptm",
-	"script": "tmp_run",
+	"script": "ptm_run",
 	"script_dir": "target/bin",
 	"python_dir": "target/generated-python",
 	"integrator": true,
@@ -22,6 +22,14 @@
 			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/ptm/ptm-expanding.provn",
 			"package": "org.openprovenance.prov.template.library.ptm",
 			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-expanding.json"
+		},
+
+		{
+			"@type": "simple",
+			"name": "ptm_merging",
+			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/ptm/ptm-merging.provn",
+			"package": "org.openprovenance.prov.template.library.ptm",
+			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-merging.json"
 		},
 		{
 			"@type": "simple",

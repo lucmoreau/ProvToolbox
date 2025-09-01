@@ -5,7 +5,7 @@
 
 
 
-export CLASSPATH_PREFIX=$HOME/.m2/repository/${GROUP}/${NAME}_l2p/${VERSION}/${NAME}_l2p-${VERSION}.jar:$HOME/.m2/repository/${GROUP}/${NAME}_cli/${VERSION}/${NAME}_cli-${VERSION}.jar
+export CLASSPATH_PREFIX=$HOME/.m2/repository/${GROUP}/${NAME}/${VERSION}/${NAME}-${VERSION}.jar:$HOME/.m2/repository/${GROUP}/${NAME}_l2p/${VERSION}/${NAME}_l2p-${VERSION}.jar:$HOME/.m2/repository/${GROUP}/${NAME}_cli/${VERSION}/${NAME}_cli-${VERSION}.jar
 
 PROVCONVERT=./provconvert
 

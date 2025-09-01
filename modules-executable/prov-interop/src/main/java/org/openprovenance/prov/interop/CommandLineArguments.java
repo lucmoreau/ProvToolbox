@@ -37,6 +37,7 @@ public class CommandLineArguments implements ErrorCodes {
     public static final String GENORDER = "genorder";
     public static final String ALLEXPANDED = "allexpanded";
     public static final String FORMATS = "formats";
+    public static final String QUALIFIED = "qualified";
     public static final String INFORMAT = "informat";
     public static final String OUTFORMAT = "outformat";
     public static final String BINDFORMAT = "bindformat";
@@ -131,6 +132,7 @@ public class CommandLineArguments implements ErrorCodes {
         Option allexpanded = new Option(ALLEXPANDED, ALLEXPANDED, false, "In template expansion, generate term if all variables are bound.");
 
         Option formats = new Option(FORMATS, FORMATS, false, "list supported formats");
+        Option displayQualifiedRelation = new Option(QUALIFIED, QUALIFIED, false, "display qualified relations in dot output");
 
         Option informat = Option.builder(INFORMAT)
                 .argName("string")
@@ -257,6 +259,7 @@ public class CommandLineArguments implements ErrorCodes {
         options.addOption(genorder);
         options.addOption(allexpanded);
         options.addOption(formats);
+        options.addOption(displayQualifiedRelation);
         options.addOption(informat);
         options.addOption(outformat);
         options.addOption(bindformat);
@@ -318,6 +321,7 @@ public class CommandLineArguments implements ErrorCodes {
         int bindingsVersion=3; // change default is now 3
         boolean addOrderp=false;
         boolean listFormatsp = false;
+        boolean displayQualifiedRelation=false;
         boolean allexpanded=false;
         boolean builder=false;
         String template_builder=null;
@@ -356,6 +360,7 @@ public class CommandLineArguments implements ErrorCodes {
             if (line.hasOption(ALLEXPANDED)) allexpanded=true;
 
             if (line.hasOption(FORMATS))      listFormatsp = true;
+            if (line.hasOption(QUALIFIED))    displayQualifiedRelation=true;
             if (line.hasOption(COMPARE))      compare    = line.getOptionValue(COMPARE);
             if (line.hasOption(COMPAREOUT))   compareOut    = line.getOptionValue(COMPAREOUT);
             if (line.hasOption(BINDINGS_VERSION))   {
@@ -437,7 +442,8 @@ public class CommandLineArguments implements ErrorCodes {
                                                 config,
                                                 dateTime,
                                                 timeZone,
-                                                metrics);
+                                                metrics,
+                                                displayQualifiedRelation);
             InteropFramework interop=new InteropFramework(commandLineArguments,
                                                           InteropFramework.getDefaultFactory());
             if (listFormatsp) {
@@ -494,11 +500,12 @@ public class CommandLineArguments implements ErrorCodes {
     public final DateTimeOption dateTime;
     public final TimeZone timeZone;
     public final String metrics;
+    public final boolean displayQualifiedRelation;
 
     public CommandLineArguments(String verbose, String debug, String logfile,
                                 String infile, String informat, String outfile, String outformat, String namespaces, String title,
                                 String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, boolean builder, String template_builder, String packge, String location, String generator,
-                                String index, String merge, String flatten, String compare, String compareOut, String log2prov, boolean log2kernel, boolean config, DateTimeOption dateTime, TimeZone timeZone, String metrics) {
+                                String index, String merge, String flatten, String compare, String compareOut, String log2prov, boolean log2kernel, boolean config, DateTimeOption dateTime, TimeZone timeZone, String metrics, boolean displayQualifiedRelation) {
         this.verbose=verbose;
         this.debug=debug;
         this.logfile=logfile;
@@ -531,6 +538,7 @@ public class CommandLineArguments implements ErrorCodes {
         this.dateTime=dateTime;
         this.timeZone=timeZone;
         this.metrics=metrics;
+        this.displayQualifiedRelation=displayQualifiedRelation;
         
     }
     public CommandLineArguments() {
@@ -566,7 +574,7 @@ public class CommandLineArguments implements ErrorCodes {
         this.dateTime=DateTimeOption.PRESERVE;
         this.timeZone=null;
         this.metrics=null;
-
+        this.displayQualifiedRelation=false;
     }
     
 }

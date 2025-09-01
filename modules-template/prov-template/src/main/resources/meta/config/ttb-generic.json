@@ -7,7 +7,7 @@
 
     "tasks": [
         {
-            "type": "expansion",
+            "type": "instantiation",
             "input": "transforming1.provn",
             "output": "forking2",
             "bindings": "forking2.json",
@@ -16,7 +16,7 @@
             "hasProvenance": "prov-forking2.prov-csv"
         },
         {
-            "type": "expansion",
+            "type": "instantiation",
             "input": "transforming1.provn",
             "output": "joining2",
             "bindings": "joining2.json",
@@ -24,7 +24,7 @@
             "hasProvenance": "prov-joining2.prov-csv"
         },
         {
-            "type": "expansion",
+            "type": "instantiation",
             "input": "transforming1.provn",
             "output": "parallel2",
             "bindings": "parallel2.json",
@@ -32,7 +32,7 @@
             "hasProvenance": "prov-parallel2.prov-csv"
         },
         {
-            "type": "expansion",
+            "type": "instantiation",
             "input": "transforming1.provn",
             "output": "product2-2",
             "bindings": "product2-2.json",
@@ -41,7 +41,7 @@
 
         },
         {
-            "type": "expansion",
+            "type": "instantiation",
             "input": "joining2.provn",
             "template_path": ["target/generated-templates/org/openprovenance/prov/templates/generic"],
             "output": "binaryop",

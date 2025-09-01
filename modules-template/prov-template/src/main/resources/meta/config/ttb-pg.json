@@ -7,7 +7,7 @@
 
     "tasks": [
         {
-            "type": "expansion",
+            "type": "instantiation",
             "input": "operation.provn",
             "output": "pg-capturing",
             "bindings": "pg-capturing.json",
@@ -16,7 +16,7 @@
 
         },
         {
-            "type": "expansion",
+            "type": "instantiation",
             "input": "operation.provn",
             "output": "pg-dropping",
             "bindings": "pg-dropping.json",
@@ -25,7 +25,7 @@
 
         },
         {
-            "type": "expansion",
+            "type": "instantiation",
             "input": "operation.provn",
             "output": "pg-ballcollecting",
             "bindings": "pg-ballcollecting.json",

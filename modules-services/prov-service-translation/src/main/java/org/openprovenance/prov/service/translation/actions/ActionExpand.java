@@ -75,7 +75,7 @@ public class ActionExpand implements ActionPerformer {
             String bindings = inputParts.get(0).getBodyAsString();
             //logger.debug("bindings " + bindings);
 
-            Document expanded = expandTemplateWithBindings(templateDocument, tr, bindings);
+            Document expanded = instantiateTemplateWithBindings(templateDocument, tr, bindings);
 
             DocumentResource theTemplate = index.getAncestor().newResource();  // This is also thread safe!
             final String originalStorageId = tr.getStorageId();
@@ -101,25 +101,36 @@ public class ActionExpand implements ActionPerformer {
         }
     }
 
-    private Document expandTemplateWithBindings(Document templateDocument, TemplateResource tr, String bindingsString) throws IOException {
-        Pair<Document,Bindings> pair = expandTemplate(templateDocument, new ByteArrayInputStream(bindingsString.getBytes(StandardCharsets.UTF_8)), om, utils.getProvFactory());
+    private Document instantiateTemplateWithBindings(Document templateDocument, TemplateResource tr, String bindingsString) throws IOException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(bindingsString.getBytes(StandardCharsets.UTF_8));
+        Bindings inBindings = Bindings.fromStream(om,inputStream);
+        Pair<Document,Bindings> pair= instantiateTemplate(templateDocument, inBindings, utils.getProvFactory());
+        //Pair<Document,Bindings> pair = expandTemplate(templateDocument, inputStream, om, utils.getProvFactory());
         Document expanded = pair.getLeft();
-        Bindings bindings = pair.getRight();
-        storeBindings(tr, bindings);
+        Bindings outBindings = pair.getRight();
+        storeBindings(tr, outBindings);
         return expanded;
     }
 
-    public
-    static Pair<Document,Bindings> expandTemplate (
+    public static Pair<Document,Bindings> expandTemplate (
                          Document templateDocument,
                          InputStream inputStream,
                          ObjectMapper om,
                          ProvFactory pFactory)
             throws IOException {
         Bindings bindings = Bindings.fromStream(om,inputStream);
-        Expand myExpand=new Expand(pFactory);
-        Document expanded = myExpand.expander(templateDocument, bindings);
-        return Pair.of(expanded,bindings);
+        return instantiateTemplate(templateDocument, bindings, pFactory);
+    }
+
+    public
+    static Pair<Document, Bindings> instantiateTemplate(
+                   Document templateDocument,
+                   Bindings bindings,
+                   ProvFactory pFactory)
+    {
+        Expand anExpander=new Expand(pFactory);
+        Document expanded = anExpander.expander(templateDocument, bindings);
+        return Pair.of(expanded, bindings);
     }
 
     private void storeBindings(TemplateResource tr, Bindings bean) throws IOException {

@@ -9,10 +9,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-merging.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm_copy/client/common/Ptm_mergingBean.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm_copy/client/common/Ptm_mergingBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm_copy/client/common/Ptm_mergingProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm_copy/client/integrator/Ptm_mergingInputs.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm_copy/client/integrator/Ptm_mergingIntegrator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm_copy/client/integrator/Ptm_mergingIntegratorBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm_copy/client/integrator/Ptm_mergingOutputs.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/ptmbindings/ptm-merging.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/java/org/openprovenance/prov/sparql/CommandLine.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/java/org/openprovenance/prov/sparql/CommandLine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/java/org/openprovenance/prov/sparql/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/java/org/openprovenance/prov/sparql/Config.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/java/org/openprovenance/prov/sparql/Reasoning.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-sparql-query/src/main/java/org/openprovenance/prov/sparql/Reasoning.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/bookptm/DerivationBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/bookptm/DerivationBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/AttributeProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/AttributeProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ModelConstructorExtension.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ModelConstructorExtension.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/Outputer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/Outputer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/actions/ActionExpand.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/actions/ActionExpand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/script.sh" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/script.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/tp_ptm.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/tp_ptm.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/meta/BatchExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/meta/BatchExecutor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/jsonschema/ttb-schema.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/jsonschema/ttb-schema.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/ttb-generic.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/ttb-generic.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/ttb-pg.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/ttb-pg.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/ttb-plead.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/ttb-plead.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/ttb-ptm.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/ttb-ptm.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/src/test/resources/org/openprovenance/prov/polyglot/js/builder.js" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/src/test/resources/org/openprovenance/prov/polyglot/js/builder.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,19 +113,8 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.scala" root0="SKIP_HIGHLIGHTING" />
+    <setting file="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.17.1/jackson-databind-2.17.1.jar!/com/fasterxml/jackson/databind/ObjectMapper.class" root0="SKIP_INSPECTION" />
+    <setting file="jar://$MAVEN_REPOSITORY$/org/apache/jena/jena-arq/5.1.0/jena-arq-5.1.0.jar!/org/apache/jena/query/ResultSetFormatter.class" root0="SKIP_INSPECTION" />
   </component>
   <component name="InvalidFacetManager">
     <ignored-facets>
@@ -141,80 +157,80 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;Application.Reasoning.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TemplatesViz.executor&quot;: &quot;Run&quot;,
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;JUnit.CompilerTest.testCompiler1.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DateTest.testDate5.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DerivationBuilderTest (1).executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DerivationBuilderTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DerivationBuilderTest.testBuild (1).executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DerivationBuilderTest.testBuild.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DerivationBuilderTest.testOther.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ExpandIT.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MetricsTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MetricsTest.testMetrics.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PC1FullTest (1).executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PC1FullTest (2).executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PC1FullTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PC1FullTest.testPC1.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadTest.testPlead1 (1).executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadTest.testPlead1.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadTest.testPleadLocal.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadTest.testPleadRemote.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadWorkflowIT.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadWorkflowIT.testPleadLocal.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadWorkflowIT.testPleadRemote.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.RoundTripFromJavaJSONLD11Test.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.RoundTripFromJavaMongoTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.StorageTest.testExample.executor&quot;: &quot;Debug&quot;,
-    &quot;JUnit.TriangleTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TriangleTest.testTriangle.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ValidateTest.testFailingDocumentExpansion.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ValidateTest.testFailingDocumentPicaso.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.go.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.go1.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.go2.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.kern.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.kern2.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.pkcs12.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.test.json.string.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.test.log.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.test.metrics.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.test.schema.projects.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.trusted.store.executor&quot;: &quot;Run&quot;,
-    &quot;Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;ScalaTest.TypeLibraryIssueSpec.executor&quot;: &quot;Run&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;extract.method.default.visibility&quot;: &quot;public&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;development2__0&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;js.last.introduce.type&quot;: &quot;CONST&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_directory_selection&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-services-metrics/service-metrics/src/test/resources/metrics&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.stylelint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.stylelint&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.66091955&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;scala_project_settings_configurable.last_selected_tab_index&quot;: &quot;0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.ApplicationConfigurable&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "Application.Reasoning.executor": "Run",
+    "Application.TemplatesViz.executor": "Run",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "JUnit.CompilerTest.testCompiler1.executor": "Run",
+    "JUnit.DateTest.testDate5.executor": "Run",
+    "JUnit.DerivationBuilderTest (1).executor": "Run",
+    "JUnit.DerivationBuilderTest.executor": "Run",
+    "JUnit.DerivationBuilderTest.testBuild (1).executor": "Run",
+    "JUnit.DerivationBuilderTest.testBuild.executor": "Run",
+    "JUnit.DerivationBuilderTest.testOther.executor": "Run",
+    "JUnit.ExpandIT.executor": "Run",
+    "JUnit.MetricsTest.executor": "Run",
+    "JUnit.MetricsTest.testMetrics.executor": "Run",
+    "JUnit.PC1FullTest (1).executor": "Run",
+    "JUnit.PC1FullTest (2).executor": "Run",
+    "JUnit.PC1FullTest.executor": "Run",
+    "JUnit.PC1FullTest.testPC1.executor": "Run",
+    "JUnit.PleadTest.testPlead1 (1).executor": "Run",
+    "JUnit.PleadTest.testPlead1.executor": "Run",
+    "JUnit.PleadTest.testPleadLocal.executor": "Run",
+    "JUnit.PleadTest.testPleadRemote.executor": "Run",
+    "JUnit.PleadWorkflowIT.executor": "Run",
+    "JUnit.PleadWorkflowIT.testPleadLocal.executor": "Run",
+    "JUnit.PleadWorkflowIT.testPleadRemote.executor": "Run",
+    "JUnit.RoundTripFromJavaJSONLD11Test.executor": "Run",
+    "JUnit.RoundTripFromJavaMongoTest.executor": "Run",
+    "JUnit.StorageTest.testExample.executor": "Debug",
+    "JUnit.TriangleTest.executor": "Run",
+    "JUnit.TriangleTest.testTriangle.executor": "Run",
+    "JUnit.ValidateTest.testFailingDocumentExpansion.executor": "Run",
+    "JUnit.ValidateTest.testFailingDocumentPicaso.executor": "Run",
+    "Makefile Target.go.executor": "Run",
+    "Makefile Target.go1.executor": "Run",
+    "Makefile Target.go2.executor": "Run",
+    "Makefile Target.kern.executor": "Run",
+    "Makefile Target.kern2.executor": "Run",
+    "Makefile Target.pkcs12.executor": "Run",
+    "Makefile Target.test.json.string.executor": "Run",
+    "Makefile Target.test.log.executor": "Run",
+    "Makefile Target.test.metrics.executor": "Run",
+    "Makefile Target.test.schema.projects.executor": "Run",
+    "Makefile Target.trusted.store.executor": "Run",
+    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ScalaTest.TypeLibraryIssueSpec.executor": "Run",
+    "WebServerToolWindowFactoryState": "false",
+    "extract.method.default.visibility": "public",
+    "git-widget-placeholder": "development2__0",
+    "jdk.selected.JAVA_MODULE": "17",
+    "js.last.introduce.type": "CONST",
+    "kotlin-language-version-configured": "true",
+    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm_copy/client/integrator",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.stylelint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.stylelint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.66091955",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "scala_project_settings_configurable.last_selected_tab_index": "0",
+    "settings.editor.selected.configurable": "com.github.copilot.settings.ApplicationConfigurable",
+    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings module-name="prov-template-compiler">
@@ -234,11 +250,11 @@
       <recent name="org.openprovenance.prov.service.security" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/test/resources/metrics" />
-      <recent name="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources" />
-      <recent name="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/webapp.filter" />
-      <recent name="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/java/org/openprovenance/prov/service/metrics" />
-      <recent name="$PROJECT_DIR$/modules-services-metrics/service-metrics/src/main/resources/properties" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm_copy/client/integrator" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm_copy/client/common" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/ptm" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/ptmbindings" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/target/prov-template-library/templates/org/openprovenance/prov/templates/ptm" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources" />
@@ -298,6 +314,34 @@
       <option name="MAIN_CLASS_NAME" value="" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
+      <option name="VMParameters" value="" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="alternativeJrePath" />
+      <option name="alternativeJrePathEnabled" value="false" />
+      <option name="classpathModifications">
+        <list />
+      </option>
+      <option name="envFilePaths">
+        <list />
+      </option>
+      <option name="envs">
+        <map />
+      </option>
+      <option name="passParentEnvs" value="true" />
+      <option name="programParameters" value="" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <option name="testKind" value="Class" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <option name="shortenClasspath" value="NONE" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -589,34 +633,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
-      <option name="VMParameters" value="" />
-      <option name="allowRunningInParallel" value="false" />
-      <option name="alternativeJrePath" />
-      <option name="alternativeJrePathEnabled" value="false" />
-      <option name="classpathModifications">
-        <list />
-      </option>
-      <option name="envFilePaths">
-        <list />
-      </option>
-      <option name="envs">
-        <map />
-      </option>
-      <option name="passParentEnvs" value="true" />
-      <option name="programParameters" value="" />
-      <option name="projectPathOnTarget" />
-      <option name="selectedOptions">
-        <list />
-      </option>
-      <option name="testKind" value="Class" />
-      <option name="workingDirectory" value="$PROJECT_DIR$" />
-      <option name="shortenClasspath" value="NONE" />
-      <option name="workingDirectory" value="$PROJECT_DIR$" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
       <deployment type="docker-compose.yml">
         <settings />
@@ -636,7 +652,6 @@
       <item itemvalue="JUnit.MetricsTest.testMetrics" />
       <item itemvalue="JUnit.ValidateTest.testFailingDocumentExpansion" />
       <item itemvalue="JUnit.ValidateTest.testFailingDocumentPicaso" />
-      <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
@@ -1117,7 +1132,11 @@
       <workItem from="1750101648853" duration="3000" />
       <workItem from="1750391946965" duration="574000" />
       <workItem from="1750392587000" duration="590000" />
-      <workItem from="1755168278374" duration="23712000" />
+      <workItem from="1755168278374" duration="27885000" />
+      <workItem from="1756206575782" duration="10338000" />
+      <workItem from="1756293126834" duration="3320000" />
+      <workItem from="1756365861093" duration="19945000" />
+      <workItem from="1756711468280" duration="13764000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

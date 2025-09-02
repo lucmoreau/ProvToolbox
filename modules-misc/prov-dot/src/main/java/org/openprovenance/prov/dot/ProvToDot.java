@@ -741,7 +741,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
             for (QualifiedName other: others) {
                 if (other!=null) {
-                    emitRelation(  e.getKind(),
+                    emitRelation(e.getKind(),
                             bnid,
                             qualifiedNameToString(other),
                             properties4,
@@ -997,6 +997,13 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 Hashtable<String, List<Other>> attributes=attributesWithNamespace(spe, PROV_EXT_NS);
                 List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+            }  else if (r instanceof WasAssociatedWith ) {
+                WasAssociatedWith waw = (WasAssociatedWith) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(waw, PROV_EXT_NS);
+                List<Other> str=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                List<QualifiedName> result = str.stream().map(x -> (QualifiedName) x.getValue()).collect(Collectors.toList());
+                result.addAll(super.getOtherCauses(r));
+                return result;
             }  else if (r instanceof Used ) {
                 Used usd = (Used) r;
                 Hashtable<String, List<Other>> attributes=attributesWithNamespace(usd, PROV_EXT_NS);
@@ -1037,7 +1044,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                     result.add(der.getActivity());
                 }
                 return result;
-            } else if (r instanceof WasGeneratedBy || r instanceof WasAssociatedWith || r instanceof SpecializationOf | r instanceof WasInvalidatedBy ) {
+            } else if (r instanceof WasGeneratedBy || r instanceof SpecializationOf | r instanceof WasInvalidatedBy ) {
                 return Collections.emptyList();
             } else {
                 return super.getOtherCauses(r);

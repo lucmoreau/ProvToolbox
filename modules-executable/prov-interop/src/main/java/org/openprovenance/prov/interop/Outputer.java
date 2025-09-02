@@ -23,7 +23,13 @@ public class Outputer implements InteropMediaType {
     private final boolean displayQualifiedRelation;
     Integer maxStringLength = 100;
 
+    public Map<Formats.ProvFormat, SerializerFunction> getSerializerMap() {
+        return serializerMap;
+    }
+
     final private Map<Formats.ProvFormat, SerializerFunction> serializerMap;
+
+
 
 
     public Outputer(InteropFramework interopFramework, ProvFactory pFactory) {

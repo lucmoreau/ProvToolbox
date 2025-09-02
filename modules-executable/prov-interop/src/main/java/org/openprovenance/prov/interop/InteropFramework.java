@@ -59,6 +59,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         defaultFactory= dynamicallyLoadFactory(factoryClass);
     }
 
+
     static ProvFactory dynamicallyLoadFactory(String factory) {
         Class<?> clazz=null;
         try {
@@ -91,14 +92,15 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
     final ProvFactory pFactory;
 
-    private final Hashtable<ProvFormat, String> extensionMap;
-    public final Hashtable<String, Formats.ProvFormat> extensionRevMap;
-    private final Hashtable<Formats.ProvFormat, String> mimeTypeMap;
-    public final Hashtable<String, Formats.ProvFormat> mimeTypeRevMap;
-    private final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
+    final private Hashtable<ProvFormat, String> extensionMap;
+    final public Hashtable<String, Formats.ProvFormat> extensionRevMap;
+    final private Hashtable<Formats.ProvFormat, String> mimeTypeMap;
+    final public Hashtable<String, Formats.ProvFormat> mimeTypeRevMap;
+    final private Hashtable<ProvFormat, ProvFormatType> provTypeMap;
     final private CommandLineArguments config;
     final private Map<ProvFormat, DeserializerFunction> deserializerMap;
     final private Map<ProvFormat, DeserializerFunction2> deserializerMap2;
+    final private Map<ProvFormat, SerializerFunction> serializerMap;
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses the factory declared in the configuration file as its default factory.
@@ -130,6 +132,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         this.inputer = new Inputer(this, pFactory);
         this.deserializerMap=this.inputer.deserializerMap;
         this.deserializerMap2=this.inputer.deserializerMap2;
+        this.serializerMap=this.outputer.getSerializerMap();
 
 
     }
@@ -803,6 +806,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
     public Map<ProvFormat, DeserializerFunction2> getDeserializerMap2() {
         return deserializerMap2;
+    }
+
+    public Map<ProvFormat, SerializerFunction> getSerializerMap() {
+        return serializerMap;
     }
 
     /*

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.expander.meta;
+package org.openprovenance.prov.template.expander.ttf;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.Document;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.lang.Math.abs;
-import static org.openprovenance.prov.template.expander.meta.BatchExecutor.*;
+import static org.openprovenance.prov.template.expander.ttf.BatchExecutor.*;
 
 public class InstanteTask implements ConfigTask {
     public String type;

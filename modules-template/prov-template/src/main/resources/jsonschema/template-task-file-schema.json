@@ -6,7 +6,86 @@
             "type": "string",
             "enum": ["provn", "prov-jsonld", "jsonld","svg", "png", "pdf"]
         },
-        "Task": {
+        "InstantiateTask": {
+            "type": "object",
+            "properties": {
+                "type": { "const": "instantiate" },
+                "description": { "type": "string" },
+                "input": { "type": "string" },
+                "bindings": { "type": "string" },
+                "output": { "type": "string" },
+                "formats": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/ProvFormat" }
+                },
+
+                "hasProvenance": {
+                    "type": "string"
+                },
+                "addOutputDirToInputPath": {
+                    "type": "boolean"
+                },
+                "copyinput": {
+                    "type": "boolean"
+                },
+                "clean2": {
+                    "type": "boolean"
+                },
+                "template_path": {
+                    "type": "array",
+                    "items": [
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "minItems": 1
+                }
+            },
+            "required": ["type", "output", "formats"],
+            "additionalProperties": false
+        },
+        "MergeTask": {
+            "type": "object",
+            "properties": {
+                "type": { "const": "merge" },
+                "description": { "type": "string" },
+                "inputs": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1
+                },
+                "output": { "type": "string" },
+                "formats": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/ProvFormat" }
+                },
+
+                "hasProvenance": {
+                    "type": "string"
+                },
+                "addOutputDirToInputPath": {
+                    "type": "boolean"
+                },
+                "copyinput": {
+                    "type": "boolean"
+                },
+                "clean2": {
+                    "type": "boolean"
+                },
+                "template_path": {
+                    "type": "array",
+                    "items": [
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "minItems": 1
+                }
+            },
+            "required": ["type", "inputs", "output", "formats"],
+            "additionalProperties": false
+        },
+        "OLDTask": {
             "type": "object",
             "properties": {
                 "type": {
@@ -108,7 +187,10 @@
         "tasks": {
             "type": "array",
             "items": {
-                "$ref": "#/definitions/Task"
+                "oneOf": [
+                    { "$ref": "#/definitions/InstantiateTask" },
+                    { "$ref": "#/definitions/MergeTask" }
+                ]
             },
             "minItems": 1
         }

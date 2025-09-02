@@ -1,4 +1,4 @@
-package org.openprovenance.plugin.ttb;
+package org.openprovenance.plugin.ttf;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -15,19 +15,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-/** Validation of a Template Tasks Batch (TTB) */
+/** Validation of a Template Tasks File (TTF) */
 
-@Mojo(name = "validate-ttb", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
+@Mojo(name = "validate-ttf", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
 public class TtbSchemaValidator extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    @Parameter(property = "validate-ttb.warning", defaultValue = "false")
+    @Parameter(property = "validate-ttf.warning", defaultValue = "false")
     private boolean warning;
 
 
-    @Parameter(property = "validate-ttb.args")
+    @Parameter(property = "validate-ttf.args")
     private List<String> args = new ArrayList<>();
 
     public void execute() throws MojoExecutionException {
@@ -47,7 +47,7 @@ public class TtbSchemaValidator extends AbstractMojo {
             // create a path for the temp file in the system's default temporary-file directory
             Path tempFilePath = Paths.get(System.getProperty("java.io.tmpdir"), tempFileName);
 
-            IOUtils.copy(Expand.class.getClassLoader().getResourceAsStream("jsonschema/ttb-schema.json"), Files.newOutputStream(tempFilePath));
+            IOUtils.copy(Expand.class.getClassLoader().getResourceAsStream("jsonschema/template-task-file-schema.json"), Files.newOutputStream(tempFilePath));
 
             for (String arg : args) {
 

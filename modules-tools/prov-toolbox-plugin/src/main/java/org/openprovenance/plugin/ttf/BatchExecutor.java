@@ -1,4 +1,4 @@
-package org.openprovenance.plugin.ttb;
+package org.openprovenance.plugin.ttf;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -14,25 +14,25 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-@Mojo(name = "execute-ttb", defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
+@Mojo(name = "execute-ttf", defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
 public class BatchExecutor extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    @Parameter(property = "execute-ttb.baseDir")
+    @Parameter(property = "execute-ttf.baseDir")
     private String baseDir;
-    @Parameter(property = "execute-ttb.inputBaseDir")
+    @Parameter(property = "execute-ttf.inputBaseDir")
     private String inputBaseDir;
-    @Parameter(property = "execute-ttb.outputBaseDir")
+    @Parameter(property = "execute-ttf.outputBaseDir")
     private String outputBaseDir;
 
 
-    @Parameter(property = "execute-ttb.configs", required = true)
+    @Parameter(property = "execute-ttf.configs", required = true)
     private List<String> configs = new ArrayList<>();
 
     public void execute() throws MojoExecutionException {
-        String className= org.openprovenance.prov.template.expander.meta.BatchExecutor.class.getName();
+        String className= org.openprovenance.prov.template.expander.ttf.BatchExecutor.class.getName();
 
         try {
             if ((baseDir!=null) && (inputBaseDir!=null)) {

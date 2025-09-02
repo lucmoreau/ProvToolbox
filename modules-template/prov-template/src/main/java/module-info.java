@@ -12,7 +12,7 @@ module prov.template {
     exports org.openprovenance.prov.template.json.deserializer;
     exports org.openprovenance.prov.template.expander;
     exports org.openprovenance.prov.template.expander.exception;
-    exports org.openprovenance.prov.template.expander.meta;
+    exports org.openprovenance.prov.template.expander.ttf;
     exports org.openprovenance.prov.template.expander.deprecated;
 
 }

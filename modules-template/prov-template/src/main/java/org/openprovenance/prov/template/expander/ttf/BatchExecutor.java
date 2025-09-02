@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.expander.meta;
+package org.openprovenance.prov.template.expander.ttf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.tuple.Pair;
@@ -6,8 +6,6 @@ import org.apache.commons.text.StringSubstitutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBuilder;
-import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_mergingBuilder;
 
 import java.io.*;
 import java.lang.reflect.Constructor;

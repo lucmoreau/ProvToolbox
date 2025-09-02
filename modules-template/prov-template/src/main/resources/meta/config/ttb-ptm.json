@@ -7,7 +7,7 @@
 
     "tasks": [
         {
-            "type": "instantiation",
+            "type": "instantiate",
             "input": "parallel2.provn",
             "output": "ptm-expanding",
             "bindings": "ptm-expanding.json",
@@ -16,7 +16,7 @@
 
         },
         {
-            "type": "instantiation",
+            "type": "instantiate",
             "input": "parallel2.provn",
             "output": "ptm-merging",
             "bindings": "ptm-merging.json",
@@ -25,7 +25,7 @@
 
         },
         {
-            "type": "instantiation",
+            "type": "instantiate",
             "input": "parallel2.provn",
             "output": "ptm-mexpanding",
             "bindings": "ptm-mexpanding.json",

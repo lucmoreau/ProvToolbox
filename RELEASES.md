@@ -4,8 +4,9 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template: added ptm-merging template
 * prov-template-library: added ptm-merging template
 * prov-template: updated BatchExecutor to create provenance when merging templates
-  prov-template: refactored BatchExecutor to support two different tasks for instantiation and merge
-* 
+* prov-template: refactored BatchExecutor to support two different tasks for instantiation and merge
+* prov-template: merge tasks now supporting a list of input files
+ 
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java
 * prov-typemap: incremental construction of type map

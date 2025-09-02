@@ -13,14 +13,14 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
 
 public class MergeTask implements ConfigTask {
     public String type;
     public String description;
-    public String input;
-    public String input2;
+    public List<String> inputs;
     public List<String> template_path;
     public String output;
     public String bindings;
@@ -40,8 +40,7 @@ public class MergeTask implements ConfigTask {
         return "MergeTask{" +
                 "type='" + type + '\'' +
                 ", description='" + description + '\'' +
-                ", input='" + input + '\'' +
-                ", input2='" + input2 + '\'' +
+                ", inputs='" + inputs + '\'' +
                 ", template_path=" + template_path +
                 ", output='" + output + '\'' +
                 ", bindings='" + bindings + '\'' +
@@ -77,24 +76,43 @@ public class MergeTask implements ConfigTask {
             updatedTemplatePath.addAll(template_path);
             updatedTemplatePath.addAll(templateTasksBatch.template_path);
         }
-        Pair<FileInputStream,File> fileinDirs1 = executor.findFileinDirs2(updatedTemplatePath, input);
-        Pair<FileInputStream,File> fileinDirs2 = executor.findFileinDirs2(updatedTemplatePath, input2);
-        Document doc1 = executor.deserialise(fileinDirs1.getLeft());
-        Document doc2 = executor.deserialise(fileinDirs2.getLeft());
+        List<Pair<FileInputStream,File>> fileinDirs=inputs.stream().map(input -> {;
+            try {
+                return executor.findFileinDirs2(updatedTemplatePath, input);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList());
+        //Pair<FileInputStream,File> fileinDirs1 = executor.findFileinDirs2(updatedTemplatePath, input);
+        //Pair<FileInputStream,File> fileinDirs2 = executor.findFileinDirs2(updatedTemplatePath, input2);
+        List<Document> docs=fileinDirs.stream().map(fd -> {
+            return executor.deserialise(fd.getLeft());
+        }).collect(Collectors.toList());
+
+       //Document doc1 = executor.deserialise(fileinDirs1.getLeft());
+        //Document doc2 = executor.deserialise(fileinDirs2.getLeft());
         List<String> loggedRecords=new LinkedList<>();
 
         long secondsSince2023_01_01 = (System.currentTimeMillis() - 1672531200000L);
         String time=executor.pf.newTimeNow().toString();
 
+        IndexedDocument iDocument=new IndexedDocument(executor.pf,new org.openprovenance.prov.vanilla.Document(),false);
+        for (Document doc: docs) {
+            iDocument.merge(doc);
+        }
 
-        Document doc3=new IndexedDocument(executor.pf,doc1,false).merge(doc2).toDocument();
-        for (String format: formats) {
-            executor.serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + output + "." + format), format, doc3, false);
+        Document doc3=iDocument.toDocument();
+        Pair<FileInputStream,File> fileinDirs1 = fileinDirs.get(0);
+
+        for (int i=1; i<fileinDirs.size(); i++) {
+            Pair<FileInputStream, File> fileinDirs2 = fileinDirs.get(i);
 
 
-
-            String csvRecord = createMergeCsvRecord(format, fileinDirs1,fileinDirs2, time, secondsSince2023_01_01);
-            loggedRecords.add(csvRecord);
+            for (String format : formats) {
+                executor.serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + output + "." + format), format, doc3, false);
+                String csvRecord = createMergeCsvRecord(format, fileinDirs1, fileinDirs2, time, secondsSince2023_01_01);
+                loggedRecords.add(csvRecord);
+            }
         }
 
 
@@ -103,10 +121,14 @@ public class MergeTask implements ConfigTask {
 
         // option to clean up tmp file
         if (clean2!=null && clean2) {
-            for (String format: formats) {
-                for (String dir : updatedTemplatePath) {
-                    File f = new File(dir + "/" + input2.replace(".provn", "." + format));
-                    if (f.exists()) f.delete();
+            for (int i=1; i<fileinDirs.size(); i++) {
+                Pair<FileInputStream, File> fileinDirs2 = fileinDirs.get(i);
+                String input2=fileinDirs2.getRight().getName();
+                for (String format: formats) {
+                    for (String dir : updatedTemplatePath) {
+                        File f = new File(dir + "/" + input2.replace(".provn", "." + format));
+                        if (f.exists()) f.delete();
+                    }
                 }
             }
         }

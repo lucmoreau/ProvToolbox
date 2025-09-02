@@ -18,7 +18,7 @@ public class TemplateTasksBatch {
             include = JsonTypeInfo.As.PROPERTY,
             property = "type")
     @JsonSubTypes(value = {
-            @JsonSubTypes.Type(value = InstantiationTask.class, name = "instantiation"),
+            @JsonSubTypes.Type(value = InstanteTask.class, name = "instantiate"),
             @JsonSubTypes.Type(value = MergeTask.class, name = "merge")
     })
     public List<ConfigTask> tasks;

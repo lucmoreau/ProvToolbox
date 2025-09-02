@@ -15,7 +15,7 @@ import java.util.Map;
 import static java.lang.Math.abs;
 import static org.openprovenance.prov.template.expander.meta.BatchExecutor.*;
 
-public class InstantiationTask implements ConfigTask {
+public class InstanteTask implements ConfigTask {
     public String type;
     public String description;
     public String input;

@@ -10,12 +10,10 @@ import org.apache.maven.project.MavenProject;
 import org.openprovenance.prov.interop.DeserializerFunction;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.SerializerFunction;
-import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvDeserialiser;
 import org.openprovenance.prov.model.ProvSerialiser;
 import org.openprovenance.prov.model.interop.Formats;
 
-import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -82,21 +80,14 @@ public class BatchExecutor extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         InteropFramework interop= new InteropFramework();
 
-        Map<Formats.ProvFormat, DeserializerFunction> deserializerMap1=interop.getDeserializerMap();
         Map<String, ProvDeserialiser> deserializerMap2=new HashMap<>();
-        for (Formats.ProvFormat k: deserializerMap1.keySet()) {
-            deserializerMap2.put(interop.getExtensionMap().get(k),deserializerMap1.get(k).apply());
-        }
-        Map<Formats.ProvFormat, SerializerFunction> serializerMap1=interop.getSerializerMap();
         Map<String, ProvSerialiser> serializerMap2=new HashMap<>();
-        for (Formats.ProvFormat k: serializerMap1.keySet()) {
-            serializerMap2.put(interop.getExtensionMap().get(k),
-                    (out, document, formatted) -> serializerMap1.get(k).apply().serialiseDocument(out,document,formatted));
-
-        }
 
 
-       // String className= org.openprovenance.prov.template.expander.ttf.BatchExecutor.class.getName();
+        interop.populateSerializerDeserializerMaps(deserializerMap2, serializerMap2);
+
+
+        // String className= org.openprovenance.prov.template.expander.ttf.BatchExecutor.class.getName();
 
         try {
             if ((baseDir!=null) && (inputBaseDir!=null)) {
@@ -139,4 +130,6 @@ public class BatchExecutor extends AbstractMojo {
             throw new MojoExecutionException("Failed to execute execute-ttf " , e);
         }
     }
+
+
 }

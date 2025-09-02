@@ -12,7 +12,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-jsonld: support for QualifiedSpecialization
 * prov-model: IndexedDocument, merge, support for QualifiedSpecialization
 * prov-template: BatchExecutor taking InteropFramework serialisers/deserialisers as input       
-* module-tools: BatchExecutor taking InteropFramework serialisers/deserialisers as input       
+* module-tools: BatchExecutor taking InteropFramework serialisers/deserialisers as input    
+* prov-template-process executable, using latest BatchExecutor
 
  
 `2.2.1`

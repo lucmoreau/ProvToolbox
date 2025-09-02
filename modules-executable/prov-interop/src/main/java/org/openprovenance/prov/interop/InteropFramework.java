@@ -903,6 +903,20 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return inputer.readDocumentFromFile(filename);
     }
 
+    public void populateSerializerDeserializerMaps(Map<String, ProvDeserialiser> deserializerMap2, Map<String, ProvSerialiser> serializerMap2) {
+        Map<Formats.ProvFormat, DeserializerFunction> deserializerMap1= getDeserializerMap();
+        for (Formats.ProvFormat k: deserializerMap1.keySet()) {
+            deserializerMap2.put(getExtensionMap().get(k),deserializerMap1.get(k).apply());
+        }
+        Map<Formats.ProvFormat, SerializerFunction> serializerMap1= getSerializerMap();
+        for (Formats.ProvFormat k: serializerMap1.keySet()) {
+            serializerMap2.put(getExtensionMap().get(k),
+                    (out, document, formatted) -> serializerMap1.get(k).apply().serialiseDocument(out,document,formatted));
+
+        }
+    }
+
+
 
 
 }

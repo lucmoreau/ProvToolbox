@@ -7,6 +7,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template: refactored BatchExecutor to support two different tasks for instantiation and merge
 * prov-template: merge tasks now supporting a list of input files
 * prov-template: renamed ttb to ttf as per book
+* prov-template: updated ttf schema
  
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java

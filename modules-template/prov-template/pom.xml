@@ -81,7 +81,7 @@
                             <executable>ajv</executable>
                             <arguments>
                                 <argument>-s</argument>
-                                <argument>src/main/resources/jsonschema/template-task-file-schema.json</argument>
+                                <argument>src/main/resources/jsonschema/template-transformation-file-schema.json</argument>
                                 <argument>-d</argument>
                                 <argument>src/main/resources/meta/config/ttf-generic.json</argument>
                             </arguments>
@@ -97,7 +97,7 @@
                             <executable>ajv</executable>
                             <arguments>
                                 <argument>-s</argument>
-                                <argument>src/main/resources/jsonschema/template-task-file-schema.json</argument>
+                                <argument>src/main/resources/jsonschema/template-transformation-file-schema.json</argument>
                                 <argument>-d</argument>
                                 <argument>src/main/resources/meta/config/ttf-plead.json</argument>
                             </arguments>
@@ -113,7 +113,7 @@
                             <executable>ajv</executable>
                             <arguments>
                                 <argument>-s</argument>
-                                <argument>src/main/resources/jsonschema/template-task-file-schema.json</argument>
+                                <argument>src/main/resources/jsonschema/template-transformation-file-schema.json</argument>
                                 <argument>-d</argument>
                                 <argument>src/main/resources/meta/config/ttf-ptm.json</argument>
                             </arguments>
@@ -129,7 +129,7 @@
                             <executable>ajv</executable>
                             <arguments>
                                 <argument>-s</argument>
-                                <argument>src/main/resources/jsonschema/template-task-file-schema.json</argument>
+                                <argument>src/main/resources/jsonschema/template-transformation-file-schema.json</argument>
                                 <argument>-d</argument>
                                 <argument>src/main/resources/meta/config/ttf-pg.json</argument>
                             </arguments>

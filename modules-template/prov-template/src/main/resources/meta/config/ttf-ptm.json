@@ -8,7 +8,7 @@
     "tasks": [
         {
             "type": "instantiate",
-            "input": "parallel2.provn",
+            "template": "parallel2.provn",
             "output": "ptm-expanding",
             "bindings": "ptm-expanding.json",
             "formats": ["provn", "png"],
@@ -17,7 +17,7 @@
         },
         {
             "type": "instantiate",
-            "input": "parallel2.provn",
+            "template": "parallel2.provn",
             "output": "ptm-merging",
             "bindings": "ptm-merging.json",
             "formats": ["provn", "png"],
@@ -26,7 +26,7 @@
         },
         {
             "type": "instantiate",
-            "input": "parallel2.provn",
+            "template": "parallel2.provn",
             "output": "ptm-mexpanding",
             "bindings": "ptm-mexpanding.json",
             "formats": ["provn", "png"],

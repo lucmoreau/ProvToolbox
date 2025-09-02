@@ -8,7 +8,7 @@
     "tasks": [
         {
             "type": "instantiate",
-            "input": "transforming1.provn",
+            "template": "transforming1.provn",
             "output": "forking2",
             "bindings": "forking2.json",
             "formats": ["provn", "png", "svg"],
@@ -17,7 +17,7 @@
         },
         {
             "type": "instantiate",
-            "input": "transforming1.provn",
+            "template": "transforming1.provn",
             "output": "joining2",
             "bindings": "joining2.json",
             "formats": ["provn", "png", "svg"],
@@ -25,7 +25,7 @@
         },
         {
             "type": "instantiate",
-            "input": "transforming1.provn",
+            "template": "transforming1.provn",
             "output": "parallel2",
             "bindings": "parallel2.json",
             "formats": ["provn", "png", "svg"],
@@ -33,7 +33,7 @@
         },
         {
             "type": "instantiate",
-            "input": "transforming1.provn",
+            "template": "transforming1.provn",
             "output": "product2-2",
             "bindings": "product2-2.json",
             "formats": ["provn", "png", "svg"],
@@ -42,7 +42,7 @@
         },
         {
             "type": "instantiate",
-            "input": "joining2.provn",
+            "template": "joining2.provn",
             "template_path": ["target/generated-templates/org/openprovenance/prov/templates/generic"],
             "output": "binaryop",
             "bindings": "binaryop.json",

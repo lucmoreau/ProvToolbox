@@ -8,7 +8,7 @@
     "tasks": [
         {
             "type": "instantiate",
-            "input": "transforming1.provn",
+            "template": "transforming1.provn",
             "output": "plead-transforming",
             "bindings": "plead-transforming.json",
             "formats": ["provn", "png"],
@@ -16,7 +16,7 @@
         },
         {
             "type": "instantiate",
-            "input": "transforming1.provn",
+            "template": "transforming1.provn",
             "output": "plead-validating",
             "bindings": "plead-validating.json",
             "formats": ["provn", "png"],
@@ -24,7 +24,7 @@
         },
         {
             "type": "instantiate",
-            "input": "transforming1.provn",
+            "template": "transforming1.provn",
             "output": "plead-training",
             "bindings": "plead-training.json",
             "formats": ["provn", "png"],
@@ -32,7 +32,7 @@
         },
         {
             "type": "instantiate",
-            "input": "transforming1.provn",
+            "template": "transforming1.provn",
             "output": "plead-filtering",
             "bindings": "plead-filtering.json",
             "formats": ["provn", "png"],
@@ -40,7 +40,7 @@
         },
         {
             "type": "instantiate",
-            "input": "product2-2.provn",
+            "template": "product2-2.provn",
             "template_path": ["target/generated-templates/org/openprovenance/prov/templates/generic"],
             "output": "plead-approving",
             "bindings": "plead-approving.json",
@@ -49,7 +49,7 @@
         },
         {
             "type": "instantiate",
-            "input": "forking2.provn",
+            "template": "forking2.provn",
             "template_path": ["target/generated-templates/org/openprovenance/prov/templates/generic"],
             "output": "plead-splitting",
             "bindings": "plead-splitting.json",

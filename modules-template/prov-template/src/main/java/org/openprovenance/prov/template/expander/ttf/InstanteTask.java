@@ -18,7 +18,7 @@ import static org.openprovenance.prov.template.expander.ttf.BatchExecutor.*;
 public class InstanteTask implements ConfigTask {
     public String type;
     public String description;
-    public String input;
+    public String template;
     public List<String> template_path;
     public String output;
     public String bindings;
@@ -36,7 +36,7 @@ public class InstanteTask implements ConfigTask {
         return "ExpandTask{" +
                 "type='" + type + '\'' +
                 ", description='" + description + '\'' +
-                ", input='" + input + '\'' +
+                ", template='" + template + '\'' +
                 ", template_path=" + template_path +
                 ", output='" + output + '\'' +
                 ", bindings='" + bindings + '\'' +
@@ -74,7 +74,7 @@ public class InstanteTask implements ConfigTask {
 
         Expand expand = new Expand(pf, false, false);
         List<String> the_template_path = (template_path==null)? templateTasksBatch.template_path : template_path;
-        Pair<FileInputStream, File> fileinDirs = executor.findFileinDirs2(the_template_path, input);
+        Pair<FileInputStream, File> fileinDirs = executor.findFileinDirs2(the_template_path, template);
 
         long secondsSince2023_01_01 = (System.currentTimeMillis() - 1672531200000L);
         String time=pf.newTimeNow().toString();
@@ -86,7 +86,7 @@ public class InstanteTask implements ConfigTask {
             String documentFilename = templateTasksBatch.output_dir + "/" + output + "." + format;
             executor.serialize(new FileOutputStream(documentFilename), format, doc, false);
             if (copyinput != null && copyinput) {
-                executor.serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + input.replace(".provn","."+format)), format, doc, false);
+                executor.serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + template.replace(".provn","."+format)), format, doc, false);
             }
             String csvRecord = createExpansionCsvRecord(format, fileinDirs, time, secondsSince2023_01_01);
             loggedRecords.add(csvRecord);

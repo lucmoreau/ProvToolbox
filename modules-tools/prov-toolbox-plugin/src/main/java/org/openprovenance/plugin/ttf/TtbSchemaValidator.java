@@ -47,7 +47,7 @@ public class TtbSchemaValidator extends AbstractMojo {
             // create a path for the temp file in the system's default temporary-file directory
             Path tempFilePath = Paths.get(System.getProperty("java.io.tmpdir"), tempFileName);
 
-            IOUtils.copy(Expand.class.getClassLoader().getResourceAsStream("jsonschema/template-task-file-schema.json"), Files.newOutputStream(tempFilePath));
+            IOUtils.copy(Expand.class.getClassLoader().getResourceAsStream("jsonschema/template-transformation-file-schema.json"), Files.newOutputStream(tempFilePath));
 
             for (String arg : args) {
 

@@ -10,6 +10,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template: updated ttf schema
 * ProvToDot: added option to display qualified relations and annotations on edges 
 * prov-jsonld: support for QualifiedSpecialization
+* prov-model: IndexedDocument, merge, support for QualifiedSpecialization
  
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java

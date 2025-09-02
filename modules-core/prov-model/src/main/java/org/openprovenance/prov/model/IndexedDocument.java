@@ -123,6 +123,12 @@ public class IndexedDocument implements StatementAction {
     private final Collection<SpecializationOf> anonSpecializationOf= new LinkedList<>();
     private final HashMap<QualifiedName, Collection<SpecializationOf>> genericEntitySpecializationOfMap= new HashMap<>();
 
+
+    private final HashMap<QualifiedName, Collection<QualifiedSpecializationOf>> namedQualifiedSpecializationOfMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<QualifiedSpecializationOf>> specificEntityQualifiedSpecializationOfMap= new HashMap<>();
+    private final Collection<QualifiedSpecializationOf> anonQualifiedSpecializationOf= new LinkedList<>();
+    private final HashMap<QualifiedName, Collection<QualifiedSpecializationOf>> genericEntityQualifiedSpecializationOfMap= new HashMap<>();
+
     private final Collection<AlternateOf> anonAlternateOf= new LinkedList<>();
     private final HashMap<QualifiedName, Collection<AlternateOf>> namedAlternateOfMap= new HashMap<>();
     private final HashMap<QualifiedName, Collection<AlternateOf>> entityCauseAlternateOfMap= new HashMap<>();
@@ -587,6 +593,9 @@ public class IndexedDocument implements StatementAction {
     public SpecializationOf add(SpecializationOf spec) {
         return add(spec, 2, anonSpecializationOf, namedSpecializationOfMap, specificEntitySpecializationOfMap, genericEntitySpecializationOfMap);
     }
+    public QualifiedSpecializationOf add(QualifiedSpecializationOf spec) {
+        return add(spec, 2, anonQualifiedSpecializationOf, namedQualifiedSpecializationOfMap, specificEntityQualifiedSpecializationOfMap, genericEntityQualifiedSpecializationOfMap);
+    }
     public AlternateOf add(AlternateOf alt) {
         return add(alt, 2, anonAlternateOf, namedAlternateOfMap, entityEffectAlternateOfMap,entityCauseAlternateOfMap);
     }
@@ -872,6 +881,10 @@ public class IndexedDocument implements StatementAction {
         }
 
         statementOrBundle.addAll(anonSpecializationOf);
+        statementOrBundle.addAll(anonQualifiedSpecializationOf);
+        for (Collection<QualifiedSpecializationOf> c: namedQualifiedSpecializationOfMap.values()) {
+            statementOrBundle.addAll(c);
+        }
         statementOrBundle.addAll(anonAlternateOf);
         statementOrBundle.addAll(anonHadMember);
 

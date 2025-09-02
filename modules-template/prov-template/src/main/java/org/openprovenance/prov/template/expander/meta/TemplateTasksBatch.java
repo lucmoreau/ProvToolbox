@@ -1,5 +1,8 @@
 package org.openprovenance.prov.template.expander.meta;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.util.List;
 
 public class TemplateTasksBatch {
@@ -8,6 +11,16 @@ public class TemplateTasksBatch {
     public String output_dir;
 
     public List<String> variableMaps;
+
+    // jackson annotation to allow polymorphic deserialization for ExpandTask and MergeTask
+    @JsonTypeInfo(
+            use = JsonTypeInfo.Id.NAME,
+            include = JsonTypeInfo.As.PROPERTY,
+            property = "type")
+    @JsonSubTypes(value = {
+            @JsonSubTypes.Type(value = InstantiationTask.class, name = "instantiation"),
+            @JsonSubTypes.Type(value = MergeTask.class, name = "merge")
+    })
     public List<ConfigTask> tasks;
 
     public static List<String> addBaseDir(String basedir, List<String> directories) {
@@ -31,41 +44,6 @@ public class TemplateTasksBatch {
     }
 
 
-    //@JsonPropertyOrder({"type", "src", "output", "bindings", "formats"})
-    public static class ConfigTask {
-        public String type;
-        public String description;
-        public String input;
-        public String input2;
-        public List<String> template_path;
-        public String output;
-        public String bindings;
-        public List<String> formats;
-        public Boolean copyinput;
-        public Boolean clean2;
-        public String hasProvenance;
-        public List<String> variableMaps;
-        public boolean addOutputDirToInputPath=false;
-
-        @Override
-        public String toString() {
-            return "ConfigTask{" +
-                    "type='" + type + '\'' +
-                    ", description='" + description + '\'' +
-                    ", input='" + input + '\'' +
-                    ", input2='" + input2 + '\'' +
-                    ", template_path=" + template_path +
-                    ", output='" + output + '\'' +
-                    ", bindings='" + bindings + '\'' +
-                    ", formats=" + formats +
-                    ", copyinput=" + copyinput +
-                    ", clean2=" + clean2 +
-                    ", hasProvenance='" + hasProvenance + '\'' +
-                    ", variableMaps=" + variableMaps +
-                    ", addOutputDirToInputPath=" + addOutputDirToInputPath +
-                    '}';
-        }
-    }
 
     @Override
     public String toString() {

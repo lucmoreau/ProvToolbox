@@ -15,7 +15,7 @@ import java.util.Map;
 import static java.lang.Math.abs;
 import static org.openprovenance.prov.template.expander.ttf.BatchExecutor.*;
 
-public class InstanteTask implements ConfigTask {
+public class InstantiateTask implements ConfigTask {
     public String type;
     public String description;
     public String template;
@@ -81,7 +81,9 @@ public class InstanteTask implements ConfigTask {
 
         List<String> loggedRecords=new LinkedList<>();
 
-        Document doc=expand.expander(executor.deserialise(fileinDirs.getLeft()), executor.om.readValue(is, Bindings.class));
+        // extract extension from filename
+        String informat = executor.getFormat(fileinDirs.getRight());
+        Document doc=expand.expander(executor.deserialise(fileinDirs.getLeft(),informat), executor.om.readValue(is, Bindings.class));
         for (String format: formats) {
             String documentFilename = templateTasksBatch.output_dir + "/" + output + "." + format;
             executor.serialize(new FileOutputStream(documentFilename), format, doc, false);
@@ -97,6 +99,8 @@ public class InstanteTask implements ConfigTask {
 
 
     }
+
+
 
     private String createExpansionCsvRecord(String format, Pair<FileInputStream, File> fileinDirs, String time, long secondsSince2023_01_01) {
         Ptm_expandingBean bean=new Ptm_expandingBean();

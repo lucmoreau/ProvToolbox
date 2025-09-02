@@ -11,6 +11,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * ProvToDot: added option to display qualified relations and annotations on edges 
 * prov-jsonld: support for QualifiedSpecialization
 * prov-model: IndexedDocument, merge, support for QualifiedSpecialization
+* prov-template: BatchExecutor taking InteropFramework serialisers/deserialisers as input       
  
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java

@@ -25,21 +25,18 @@ public class BatchExecutor {
     static Logger logger = LogManager.getLogger(BatchExecutor.class);
     static final ProvFactory pf= org.openprovenance.prov.vanilla.ProvFactory.getFactory();
     final ObjectMapper om = new ObjectMapper();
-    private ProvDeserialiser deserialiser;
 
 
     public BatchExecutor() {
         Pair<Map<String, ProvSerialiser>, Map<String, ProvDeserialiser>> pair=initializeSerializerDispatcher();
         serializerMap=pair.getLeft();
         deserializerMap=pair.getRight();
-        deserialiser=deserializerMap.get("provn");
     }
 
     public BatchExecutor(Map<String, org.openprovenance.prov.model.ProvSerialiser> serializerMap,
                          Map<String, org.openprovenance.prov.model.ProvDeserialiser> deserializerMap) {
         this.serializerMap=serializerMap;
         this.deserializerMap=deserializerMap;
-        deserialiser=deserializerMap.get("provn");
     }
 
     public Pair<Map<String, ProvSerialiser>, Map<String, ProvDeserialiser>> initializeSerializerDispatcher()  {
@@ -198,9 +195,9 @@ public class BatchExecutor {
         return is;
     }
 
-    public Document deserialise(FileInputStream fileInputStream) {
+    public Document deserialise(FileInputStream fileInputStream, String format) {
         try {
-            return deserialiser.deserialiseDocument(fileInputStream);
+            return deserializerMap.get(format).deserialiseDocument(fileInputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -213,12 +210,17 @@ public class BatchExecutor {
 
 
     public static void main(String [] args) {
-        System.out.println("Executor: " + Arrays.toString(args));
         BatchExecutor executor=new BatchExecutor();
-        // find the position of string "-configs" in args
+        executor.execute(args);
+    }
+
+    public void execute(String[] args) {
+        System.out.println("Executor: " + Arrays.toString(args));
+       // find the position of string "-configs" in args
+
         int pos=0;
         boolean found=false;
-        for (int i=0; i<args.length; i++) {
+        for (int i = 0; i< args.length; i++) {
             if (args[i].equals("-configs")) {
                 pos=i;
                 found=true;
@@ -235,21 +237,29 @@ public class BatchExecutor {
             inputBaseDir="";
             outputBaseDir="";
         } else if (pos==1) {
-            inputBaseDir=args[0];
-            outputBaseDir=args[0];
+            inputBaseDir= args[0];
+            outputBaseDir= args[0];
         } else  {
-            inputBaseDir=args[0];
-            outputBaseDir=args[1];
+            inputBaseDir= args[0];
+            outputBaseDir= args[1];
         }
-
 
 
         // for all args starting with second execute
 
-        for (int i=pos+1; i<args.length; i++) {
-            executor.execute(inputBaseDir, outputBaseDir, args[i]);
+        for (int i = pos+1; i< args.length; i++) {
+            this.execute(inputBaseDir, outputBaseDir, args[i]);
         }
+    }
 
-
+    String getFormat(File file) throws IOException {
+        String informat= file.getName();
+        int lastDot=informat.lastIndexOf('.');
+        if (lastDot>0) {
+            informat=informat.substring(lastDot+1);
+        } else {
+            throw new IOException("Cannot find extension for file "+ file.getAbsolutePath());
+        }
+        return informat;
     }
 }

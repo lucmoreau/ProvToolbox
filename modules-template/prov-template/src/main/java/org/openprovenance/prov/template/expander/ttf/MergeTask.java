@@ -86,7 +86,12 @@ public class MergeTask implements ConfigTask {
         //Pair<FileInputStream,File> fileinDirs1 = executor.findFileinDirs2(updatedTemplatePath, input);
         //Pair<FileInputStream,File> fileinDirs2 = executor.findFileinDirs2(updatedTemplatePath, input2);
         List<Document> docs=fileinDirs.stream().map(fd -> {
-            return executor.deserialise(fd.getLeft());
+            try {
+                String informat = executor.getFormat(fd.getRight());
+                return executor.deserialise(fd.getLeft(),informat);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }).collect(Collectors.toList());
 
        //Document doc1 = executor.deserialise(fileinDirs1.getLeft());

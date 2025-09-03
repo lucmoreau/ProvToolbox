@@ -14,6 +14,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template: BatchExecutor taking InteropFramework serialisers/deserialisers as input       
 * module-tools: BatchExecutor taking InteropFramework serialisers/deserialisers as input    
 * prov-template-process executable, using latest BatchExecutor
+* prov-model: fixed issue with QualifiedSpecialization in ProvUtilities
 
  
 `2.2.1`

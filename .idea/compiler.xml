@@ -80,10 +80,12 @@
     <bytecodeTargetLevel>
       <module name="arti" target="11" />
       <module name="modules-executable (1)" target="1.5" />
+      <module name="modules-tutorial" target="1.5" />
       <module name="mojos" target="11" />
       <module name="prov-jsonld-xml (1)" target="11" />
       <module name="prov-plugin" target="1.5" />
       <module name="prov-scala" target="9" />
+      <module name="prov-template-compiler" target="15" />
       <module name="ProvToolbox-Tutorial2" target="1.5" />
       <module name="templates" target="1.5" />
       <module name="templates_cli" target="1.8" />

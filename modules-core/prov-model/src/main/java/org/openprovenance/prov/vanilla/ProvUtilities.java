@@ -178,35 +178,5 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         }
     }
 
-/*
-        if (attributes != null) {
-            split(attributes,
-                    labels,
-                    types,
-                    values,
-                    locations,
-                    roles,
-                    others);
-
-
-            location.addAll(locations);
-            type.addAll(types);
-            role.addAll(roles);
-            for (Collection<Other> col : others.values())
-                other.addAll(col);
-
-            for (Label lab : labels) {
-                label.add((LangString) lab.value);
-            }
-            if (value != null) {
-                for (Value val : values) {
-                    value[0] = val;
-                    break;
-                }
-            }
-        }
-
- */
-
 
 }

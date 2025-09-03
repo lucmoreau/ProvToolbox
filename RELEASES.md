@@ -16,6 +16,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-process executable, using latest BatchExecutor
 * prov-model: fixed issue with QualifiedSpecialization in ProvUtilities
 * prov-template: fixed issue with QualifiedSpecialization in Instantiation
+* prov-model, prov-template, prov-dot: support for QualifiedHadMember
 
  
 `2.2.1`

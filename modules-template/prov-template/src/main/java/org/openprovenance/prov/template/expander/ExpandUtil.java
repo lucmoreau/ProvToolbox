@@ -68,7 +68,9 @@ public class ExpandUtil {
     	case PROV_GENERATION: return 3;
     	case PROV_INFLUENCE: return 3;
     	case PROV_INVALIDATION: return 3;
-    	case PROV_MEMBERSHIP: return 2;
+    	case PROV_MEMBERSHIP: {
+            return (s instanceof QualifiedRelation)? 3:2;
+        }
     	case PROV_MENTION: return 3;
     	case PROV_SPECIALIZATION: {
                 return (s instanceof QualifiedRelation)? 3:2;

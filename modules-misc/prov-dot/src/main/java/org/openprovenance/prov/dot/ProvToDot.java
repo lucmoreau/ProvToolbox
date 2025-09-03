@@ -11,6 +11,7 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.openprovenance.prov.vanilla.QualifiedHadMember;
 import org.openprovenance.prov.vanilla.QualifiedSpecializationOf;
 
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS;
@@ -992,12 +993,21 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 Hashtable<String, List<Other>> attributes=attributesWithNamespace(wat, PROV_EXT_NS);
                 List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
-            }  else if (r instanceof QualifiedSpecializationOf ) {
-                QualifiedSpecializationOf spe = (QualifiedSpecializationOf) r;
-                Hashtable<String, List<Other>> attributes=attributesWithNamespace(spe, PROV_EXT_NS);
-                List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
-                return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
-            }  else if (r instanceof WasAssociatedWith ) {
+            }  else if (r instanceof WasDerivedFrom ) {
+                WasDerivedFrom der = (WasDerivedFrom) r;
+
+                List<QualifiedName> result=new LinkedList<>();
+                if (der.getGeneration()!=null) {
+                    result.add(der.getGeneration());
+                }
+                if (der.getUsage()!=null) {
+                    result.add(der.getUsage());
+                }
+                if (der.getActivity()!=null) {
+                    result.add(der.getActivity());
+                }
+                return result;
+            } else if (r instanceof WasAssociatedWith ) {
                 WasAssociatedWith waw = (WasAssociatedWith) r;
                 Hashtable<String, List<Other>> attributes=attributesWithNamespace(waw, PROV_EXT_NS);
                 List<Other> str=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
@@ -1030,20 +1040,16 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 List<QualifiedName> result2=tmp.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
                 if (result1!=null) result2.addAll(result1);
                 return result2;
-            }  else if (r instanceof WasDerivedFrom ) {
-                WasDerivedFrom der = (WasDerivedFrom) r;
-
-                List<QualifiedName> result=new LinkedList<>();
-                if (der.getGeneration()!=null) {
-                    result.add(der.getGeneration());
-                }
-                if (der.getUsage()!=null) {
-                    result.add(der.getUsage());
-                }
-                if (der.getActivity()!=null) {
-                    result.add(der.getActivity());
-                }
-                return result;
+            }  else if (r instanceof QualifiedSpecializationOf ) {
+                QualifiedSpecializationOf spe = (QualifiedSpecializationOf) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(spe, PROV_EXT_NS);
+                List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
+            }  else if (r instanceof QualifiedHadMember) {
+                QualifiedHadMember mem = (QualifiedHadMember) r;
+                Hashtable<String, List<Other>> attributes=attributesWithNamespace(mem, PROV_EXT_NS);
+                List<Other> result=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                return result.stream().map(x -> (QualifiedName)x.getValue()).collect(Collectors.toList());
             } else if (r instanceof WasGeneratedBy || r instanceof SpecializationOf | r instanceof WasInvalidatedBy ) {
                 return Collections.emptyList();
             } else {

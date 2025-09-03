@@ -129,6 +129,13 @@ public class IndexedDocument implements StatementAction {
     private final Collection<QualifiedSpecializationOf> anonQualifiedSpecializationOf= new LinkedList<>();
     private final HashMap<QualifiedName, Collection<QualifiedSpecializationOf>> genericEntityQualifiedSpecializationOfMap= new HashMap<>();
 
+    private final HashMap<QualifiedName, Collection<QualifiedHadMember>> namedQualifiedHadMemberMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<QualifiedHadMember>> collectionQualifiedHadMemberMap= new HashMap<>();
+    private final Collection<QualifiedHadMember> anonQualifiedHadMember= new LinkedList<>();
+    private final HashMap<QualifiedName, Collection<QualifiedHadMember>> entityQualifiedHadMemberMap= new HashMap<>();
+
+
+
     private final Collection<AlternateOf> anonAlternateOf= new LinkedList<>();
     private final HashMap<QualifiedName, Collection<AlternateOf>> namedAlternateOfMap= new HashMap<>();
     private final HashMap<QualifiedName, Collection<AlternateOf>> entityCauseAlternateOfMap= new HashMap<>();
@@ -596,6 +603,9 @@ public class IndexedDocument implements StatementAction {
     public QualifiedSpecializationOf add(QualifiedSpecializationOf spec) {
         return add(spec, 2, anonQualifiedSpecializationOf, namedQualifiedSpecializationOfMap, specificEntityQualifiedSpecializationOfMap, genericEntityQualifiedSpecializationOfMap);
     }
+    public QualifiedHadMember add(QualifiedHadMember spec) {
+        return add(spec, 2, anonQualifiedHadMember, namedQualifiedHadMemberMap, collectionQualifiedHadMemberMap, entityQualifiedHadMemberMap);
+    }
     public AlternateOf add(AlternateOf alt) {
         return add(alt, 2, anonAlternateOf, namedAlternateOfMap, entityEffectAlternateOfMap,entityCauseAlternateOfMap);
     }
@@ -886,7 +896,11 @@ public class IndexedDocument implements StatementAction {
             statementOrBundle.addAll(c);
         }
         statementOrBundle.addAll(anonAlternateOf);
+
         statementOrBundle.addAll(anonHadMember);
+        for (Collection<QualifiedHadMember> c: namedQualifiedHadMemberMap.values()) {
+            statementOrBundle.addAll(c);
+        }
 
         statementOrBundle.addAll(anonWasInvalidatedBy);
         for (Collection<WasInvalidatedBy> c: namedWasInvalidatedByMap.values()) {

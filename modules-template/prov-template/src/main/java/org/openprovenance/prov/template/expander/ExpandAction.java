@@ -629,6 +629,7 @@ public class ExpandAction implements StatementAction {
     public void doAction(SpecializationOf s) {
         SpecializationOf res = pf.newSpecializationOf(s.getSpecificEntity(), s.getGeneralEntity());
 
+
         QualifiedName spe = res.getSpecificEntity();
         boolean updated0 = setExpand(res, spe, 0);
         QualifiedName gen = res.getGeneralEntity();
@@ -649,15 +650,17 @@ public class ExpandAction implements StatementAction {
     public void doAction(QualifiedSpecializationOf s) {
         QualifiedSpecializationOf res = pf.newQualifiedSpecializationOf(s.getId(),s.getSpecificEntity(), s.getGeneralEntity(),null);
 
+        QualifiedName id = res.getId();
+        boolean updated0 = setExpand(res, id, 0);
         QualifiedName spe = res.getSpecificEntity();
-        boolean updated0 = setExpand(res, spe, 0);
+        boolean updated1 = setExpand(res, spe, 1);
         QualifiedName gen = res.getGeneralEntity();
-        boolean updated1 = setExpand(res, gen, 1);
-        boolean updated2 = expandAttributes(s, res);
+        boolean updated2 = setExpand(res, gen, 2);
+        boolean updated3 = expandAttributes(s, res);
 
         @SuppressWarnings("unused")
-        boolean updated = updated0 || updated1 || updated2;
-        boolean allUpdated = updated0 && updated1 && updated2;
+        boolean updated = updated0 || updated1 || updated2 || updated3;
+        boolean allUpdated = updated0 && updated1 && updated2 && updated3;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);

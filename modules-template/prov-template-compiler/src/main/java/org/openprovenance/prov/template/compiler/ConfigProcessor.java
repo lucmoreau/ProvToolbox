@@ -366,11 +366,14 @@ public class ConfigProcessor implements Constants {
 
 
         if (configs.integrator) {
-            SpecificationFile inputOutputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(configs, locations, integrator_package, true,integrator_dir, INPUT_OUTPUT_PROCESSOR + DOT_JAVA_EXTENSION);
+            SpecificationFile inputOutputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(configs, locations, integrator_package, CompilerInputOutputProcessor.ProcessorType.INPUT_OUTPUT,integrator_dir, INPUT_OUTPUT_PROCESSOR + DOT_JAVA_EXTENSION);
             inputOutputProcessor.save();
 
-            SpecificationFile inputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(configs, locations, integrator_package, false, integrator_dir, INPUT_PROCESSOR + DOT_JAVA_EXTENSION);
+            SpecificationFile inputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(configs, locations, integrator_package, CompilerInputOutputProcessor.ProcessorType.INPUT, integrator_dir, INPUT_PROCESSOR + DOT_JAVA_EXTENSION);
             inputProcessor.save();
+
+            SpecificationFile outputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(configs, locations, integrator_package, CompilerInputOutputProcessor.ProcessorType.OUTPUT, integrator_dir, OUTPUT_PROCESSOR + DOT_JAVA_EXTENSION);
+            outputProcessor.save();
 
             SpecificationFile templateInvoker = compilerTemplateInvoker.generateTemplateInvoker(configs, locations, TEMPLATE_INVOKER);
             templateInvoker.save();

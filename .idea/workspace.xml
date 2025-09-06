@@ -10,14 +10,13 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvUtilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvUtilities.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ProvUtilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ProvUtilities.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandAction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerInputOutputProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerInputOutputProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,7 +127,7 @@
   &quot;associatedIndex&quot;: 0
 }</component>
   <component name="ProjectId" id="1Sn3wNZbfFqwhTxNiyaVJ58yqRM" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+  <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -292,34 +291,6 @@
       <option name="MAIN_CLASS_NAME" value="" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
-      <option name="VMParameters" value="" />
-      <option name="allowRunningInParallel" value="false" />
-      <option name="alternativeJrePath" />
-      <option name="alternativeJrePathEnabled" value="false" />
-      <option name="classpathModifications">
-        <list />
-      </option>
-      <option name="envFilePaths">
-        <list />
-      </option>
-      <option name="envs">
-        <map />
-      </option>
-      <option name="passParentEnvs" value="true" />
-      <option name="programParameters" value="" />
-      <option name="projectPathOnTarget" />
-      <option name="selectedOptions">
-        <list />
-      </option>
-      <option name="testKind" value="Class" />
-      <option name="workingDirectory" value="$PROJECT_DIR$" />
-      <option name="shortenClasspath" value="NONE" />
-      <option name="workingDirectory" value="$PROJECT_DIR$" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -611,6 +582,34 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
+      <option name="VMParameters" value="" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="alternativeJrePath" />
+      <option name="alternativeJrePathEnabled" value="false" />
+      <option name="classpathModifications">
+        <list />
+      </option>
+      <option name="envFilePaths">
+        <list />
+      </option>
+      <option name="envs">
+        <map />
+      </option>
+      <option name="passParentEnvs" value="true" />
+      <option name="programParameters" value="" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <option name="testKind" value="Class" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <option name="shortenClasspath" value="NONE" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
       <deployment type="docker-compose.yml">
         <settings />
@@ -630,6 +629,7 @@
       <item itemvalue="JUnit.MetricsTest.testMetrics" />
       <item itemvalue="JUnit.ValidateTest.testFailingDocumentExpansion" />
       <item itemvalue="JUnit.ValidateTest.testFailingDocumentPicaso" />
+      <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
@@ -680,8 +680,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26574.91" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26574.91" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
       </set>
     </attachedChunks>
   </component>
@@ -1115,7 +1115,9 @@
       <workItem from="1756293126834" duration="3320000" />
       <workItem from="1756365861093" duration="19945000" />
       <workItem from="1756711468280" duration="48370000" />
-      <workItem from="1756920383352" duration="3652000" />
+      <workItem from="1756920383352" duration="11449000" />
+      <workItem from="1757130104480" duration="1231000" />
+      <workItem from="1757132890517" duration="7937000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

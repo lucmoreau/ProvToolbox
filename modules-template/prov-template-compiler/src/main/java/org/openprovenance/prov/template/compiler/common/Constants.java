@@ -17,6 +17,7 @@ public interface Constants {
     String LOGGER_INTERFACE = "LoggerInterface";
     String INPUT_OUTPUT_PROCESSOR = "InputOutputProcessor";
     String INPUT_PROCESSOR = "InputProcessor";
+    String OUTPUT_PROCESSOR = "OutputProcessor";
     String TEMPLATE_INVOKER = "TemplateInvoker";
     String PROCESSOR_ARGS_INTERFACE = "ProcessorArgsInterface";
     String RECORDS_PROCESSOR_INTERFACE = "RecordsProcessorInterface";

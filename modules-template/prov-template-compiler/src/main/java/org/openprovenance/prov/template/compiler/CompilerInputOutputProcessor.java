@@ -10,10 +10,14 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectC
 
 import javax.lang.model.element.Modifier;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.INPUT_OUTPUT_PROCESSOR;
-import static org.openprovenance.prov.template.compiler.common.Constants.INPUT_PROCESSOR;
+import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerInputOutputProcessor {
+    public enum ProcessorType {
+        INPUT,
+        OUTPUT,
+        INPUT_OUTPUT
+    }
     private final CompilerUtil compilerUtil;
 
     public CompilerInputOutputProcessor(ProvFactory pFactory) {
@@ -21,10 +25,18 @@ public class CompilerInputOutputProcessor {
     }
 
 
-    SpecificationFile generateInputOutputProcessor(TemplatesProjectConfiguration configs, Locations locations, String package_, boolean ioConverter, String directory, String fileName) {
+    SpecificationFile generateInputOutputProcessor(TemplatesProjectConfiguration configs, Locations locations, String package_, ProcessorType ioConverter, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit((ioConverter)?INPUT_OUTPUT_PROCESSOR:INPUT_PROCESSOR);
+
+        String interfaceName = switch (ioConverter) {
+            case INPUT_OUTPUT -> INPUT_OUTPUT_PROCESSOR;
+            case INPUT -> INPUT_PROCESSOR;
+            case OUTPUT -> OUTPUT_PROCESSOR;
+        };
+
+
+        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(interfaceName);
 
 
 
@@ -34,10 +46,18 @@ public class CompilerInputOutputProcessor {
 
             final ClassName inputClassName = ClassName.get(package_, inputsNameClass);
             final ClassName outputClassName = ClassName.get(package_, outputsNameClass);
+            final ClassName returnedClassName = switch (ioConverter) {
+                case INPUT_OUTPUT, OUTPUT -> outputClassName;
+                case INPUT -> inputClassName;
+            };
+            final ClassName receivedClassName = switch (ioConverter) {
+                case OUTPUT -> outputClassName;
+                case INPUT, INPUT_OUTPUT -> inputClassName;
+            };
             MethodSpec mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                    .addParameter(ParameterSpec.builder(inputClassName,"bean").build())
-                    .returns((ioConverter)?outputClassName:inputClassName)
+                    .addParameter(ParameterSpec.builder(receivedClassName,"bean").build())
+                    .returns(returnedClassName)
                     .build();
 
             builder.addMethod(mspec);

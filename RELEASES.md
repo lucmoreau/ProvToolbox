@@ -17,6 +17,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-model: fixed issue with QualifiedSpecialization in ProvUtilities
 * prov-template: fixed issue with QualifiedSpecialization in Instantiation
 * prov-model, prov-template, prov-dot: support for QualifiedHadMember
+* prov-template-compiler: generation of OutputProcessor interface
 
  
 `2.2.1`

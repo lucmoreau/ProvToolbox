@@ -26,6 +26,7 @@
         <module name="modules-executable-provman" />
         <module name="docker-service-templates" />
         <module name="prov-toolbox-plugin" />
+        <module name="templates_l2p" />
         <module name="prov-scala-misc" />
         <module name="prov-model-scala" />
         <module name="tutorial5" />
@@ -37,6 +38,7 @@
         <module name="prov-storage-filesystem" />
         <module name="demo" />
         <module name="prov-jsonld-xml" />
+        <module name="templates_cli" />
         <module name="prov-typemap" />
         <module name="prov-validation" />
         <module name="prov-storage-index-redis" />
@@ -80,12 +82,10 @@
     <bytecodeTargetLevel>
       <module name="arti" target="11" />
       <module name="modules-executable (1)" target="1.5" />
-      <module name="modules-tutorial" target="1.5" />
       <module name="mojos" target="11" />
       <module name="prov-jsonld-xml (1)" target="11" />
       <module name="prov-plugin" target="1.5" />
       <module name="prov-scala" target="9" />
-      <module name="prov-template-compiler" target="15" />
       <module name="ProvToolbox-Tutorial2" target="1.5" />
       <module name="templates" target="1.5" />
       <module name="templates_cli" target="1.8" />

@@ -514,7 +514,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     files = inputer.readIndexFile(new File(config.merge));
                 }
                 //System.err.println("files to merge " + files);
-                for (Inputer.ToRead something : files) {
+                for (Inputer.ToRead something: files) {
                     iDoc.merge(inputer.readDocument(something));
                 }
 

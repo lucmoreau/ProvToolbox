@@ -31,8 +31,10 @@
         <module name="tutorial5" />
         <module name="toolbox" />
         <module name="prov-generator" />
+        <module name="app-template-service" />
         <module name="docker-service-metrics" />
         <module name="prov-template-compiler" />
+        <module name="app-template-library" />
         <module name="prov-service-core" />
         <module name="prov-storage-filesystem" />
         <module name="demo" />

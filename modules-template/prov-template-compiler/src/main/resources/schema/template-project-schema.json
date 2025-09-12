@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Templates Project Schema",
+    "description": "Project Template Catalogue Schema",
     "definitions": {
         "SimpleTemplateDescriptor": {
             "type": "object",

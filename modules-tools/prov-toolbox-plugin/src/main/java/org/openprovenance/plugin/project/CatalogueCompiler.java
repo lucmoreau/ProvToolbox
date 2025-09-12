@@ -14,20 +14,20 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mojo(name = "generate-template-project", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
-public class TemplateProjectExecutor extends AbstractMojo {
+@Mojo(name = "compile-catalogue", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+public class CatalogueCompiler extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    @Parameter(property = "generate-template-project.baseDir")
+    @Parameter(property = "compile-catalogue.baseDir")
     private String baseDir;
-    @Parameter(property = "generate-template-project.inputBaseDir")
+    @Parameter(property = "compile-catalogue.inputBaseDir")
     private String inputBaseDir;
-    @Parameter(property = "generate-template-project.outputBaseDir")
+    @Parameter(property = "compile-catalogue.outputBaseDir")
     private String outputBaseDir;
 
-    @Parameter(property = "generate-template-project.configs", required = true)
+    @Parameter(property = "compile-catalogue.configs", required = true)
     private List<String> configs = new ArrayList<>();
 
     public void execute() throws MojoExecutionException {

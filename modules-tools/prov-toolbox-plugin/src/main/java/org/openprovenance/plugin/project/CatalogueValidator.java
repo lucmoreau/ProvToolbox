@@ -17,17 +17,17 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mojo(name = "validate-template-project", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
-public class TemplateProjectSchemaValidator extends AbstractMojo {
+@Mojo(name = "validate-catalogue", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
+public class CatalogueValidator extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    @Parameter(property = "validate-template-project.warning", defaultValue = "false")
+    @Parameter(property = "validate-catalogue.warning", defaultValue = "false")
     private boolean warning;
 
 
-    @Parameter(property = "validate-template-project.args")
+    @Parameter(property = "validate-catalogue.args")
     private List<String> args = new ArrayList<>();
 
     public void execute() throws MojoExecutionException {

@@ -1,11 +1,8 @@
 package org.openprovenance.prov.templates.library;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.template.library.plead.client.integrator.*;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class PleadWorkflow {
@@ -15,12 +12,12 @@ public class PleadWorkflow {
     Integer engineer=222;
     Integer manager=333;
 
-    private final InputOutputProcessor templateInvoker;
+    private final InputOutputProcessor templateInstantiation;
 
     private final ProvFactory pf = ProvFactory.getFactory();
 
-    public PleadWorkflow(InputOutputProcessor templateInvoker, List<Object> inputs, List<Object> outputs) {
-        this.templateInvoker = templateInvoker;
+    public PleadWorkflow(InputOutputProcessor templateInstantiation, List<Object> inputs, List<Object> outputs) {
+        this.templateInstantiation = templateInstantiation;
         this.inputs = inputs;
         this.outputs = outputs;
     }
@@ -43,7 +40,7 @@ public class PleadWorkflow {
         transformingInputs.end = end;
 
         if (inputs!=null) inputs.add(transformingInputs);
-        Plead_transformingOutputs transformingOutputs = templateInvoker.process(transformingInputs);
+        Plead_transformingOutputs transformingOutputs = templateInstantiation.process(transformingInputs);
         if (outputs!=null) outputs.add(transformingOutputs);
 
         Plead_filteringInputs filteringInputs = new Plead_filteringInputs();
@@ -60,7 +57,7 @@ public class PleadWorkflow {
         filteringInputs.end = end;
 
         if (inputs!=null) inputs.add(filteringInputs);
-        Plead_filteringOutputs filteringOutputs = templateInvoker.process(filteringInputs);
+        Plead_filteringOutputs filteringOutputs = templateInstantiation.process(filteringInputs);
         if (outputs!=null) outputs.add(filteringOutputs);
 
         Plead_splittingInputs splittingInputs = new Plead_splittingInputs();
@@ -73,7 +70,7 @@ public class PleadWorkflow {
         splittingInputs.time = pf.newTimeNow().toString();
 
         if (inputs!=null) inputs.add(splittingInputs);
-        Plead_splittingOutputs splittingOutputs = templateInvoker.process(splittingInputs);
+        Plead_splittingOutputs splittingOutputs = templateInstantiation.process(splittingInputs);
         if (outputs!=null) outputs.add(splittingOutputs);
 
         Plead_trainingInputs trainingInputs = new Plead_trainingInputs();
@@ -85,7 +82,7 @@ public class PleadWorkflow {
         trainingInputs.time = pf.newTimeNow().toString();
 
         if (inputs!=null) inputs.add(trainingInputs);
-        Plead_trainingOutputs trainingOutputs = templateInvoker.process(trainingInputs);
+        Plead_trainingOutputs trainingOutputs = templateInstantiation.process(trainingInputs);
         if (outputs!=null) outputs.add(trainingOutputs);
 
         Plead_validatingInputs validatingInputs = new Plead_validatingInputs();
@@ -98,7 +95,7 @@ public class PleadWorkflow {
         validatingInputs.time = pf.newTimeNow().toString();
 
         if (inputs!=null) inputs.add(validatingInputs);
-        Plead_validatingOutputs validatingOutputs = templateInvoker.process(validatingInputs);
+        Plead_validatingOutputs validatingOutputs = templateInstantiation.process(validatingInputs);
         if (outputs!=null) outputs.add(validatingOutputs);
 
         Plead_approvingInputs approvingInputs = new Plead_approvingInputs();
@@ -112,7 +109,7 @@ public class PleadWorkflow {
         approvingInputs.time = pf.newTimeNow().toString();
 
         if (inputs!=null) inputs.add(approvingInputs);
-        Plead_approvingOutputs approvingOutputs = templateInvoker.process(approvingInputs);
+        Plead_approvingOutputs approvingOutputs = templateInstantiation.process(approvingInputs);
         if (outputs!=null) outputs.add(approvingOutputs);
 
     }

@@ -141,13 +141,10 @@ public class DescriptorUtils {
     }
 
     public <T> T getFromDescriptor(Descriptor descriptor, Function<AttributeDescriptor,T> af, Function<NameDescriptor,T> nf) {
-        switch (descriptor.getDescriptorType()) {
-            case ATTRIBUTE:
-                return af.apply(((AttributeDescriptorList) descriptor).getItems().get(0));
-            case NAME:
-                return nf.apply((NameDescriptor) descriptor);
-        }
-        throw new UnsupportedOperationException("never reaching this point");
+        return switch (descriptor.getDescriptorType()) {
+            case ATTRIBUTE -> af.apply(((AttributeDescriptorList) descriptor).getItems().get(0));
+            case NAME      -> nf.apply((NameDescriptor) descriptor);
+        };
     }
 
     public String getSqlType(String key, TemplateBindingsSchema templateBindingsSchema) {
@@ -178,4 +175,29 @@ public class DescriptorUtils {
         }
         return theOutputs;
     }
+
+    public Optional<String> getNameVariable(String var, Descriptor descriptor) {
+        return getFromDescriptor(descriptor, (ad)->Optional.empty(), (nd)->Optional.of(var));
+    }
+    public Optional<String> getAttributeVariable(String var, Descriptor descriptor) {
+        return getFromDescriptor(descriptor, (ad)->Optional.of(var), (nd)->Optional.empty() );
+    }
+
+    public List<String> getNameVariables(TemplateBindingsSchema templateBindingsSchema) {
+        List<String> res=new ArrayList<>();
+        for (String key: fieldNames(templateBindingsSchema)) {
+            getNameVariable(key, templateBindingsSchema.getVar().get(key).get(0)).ifPresent(res::add);
+        }
+        return res;
+    }
+
+    public List<String> getAttributeVariables(TemplateBindingsSchema templateBindingsSchema) {
+        List<String> res=new ArrayList<>();
+        for (String key: fieldNames(templateBindingsSchema)) {
+            getAttributeVariable(key, templateBindingsSchema.getVar().get(key).get(0)).ifPresent(res::add);
+        }
+        return res;
+    }
+
+
 }

@@ -18,6 +18,7 @@ import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.Descriptor;
+import org.openprovenance.prov.template.descriptors.DescriptorUtils;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import org.openprovenance.prov.template.expander.ExpandAction;
@@ -130,7 +131,7 @@ public class CompilerExpansionBuilder {
 
         builder.addMethod(compilerUtil.generateConstructor2(vmap));
 
-        builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindings_schema));
+        builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindings_schema, bindingsSchema));
 
 
         builder.addMethod(compilerCommon.generateNameAccessor(templateName));
@@ -170,7 +171,7 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public MethodSpec generateTemplateGenerator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, JsonNode bindings_schema) {
+    public MethodSpec generateTemplateGenerator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
 
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("generator")
@@ -179,6 +180,9 @@ public class CompilerExpansionBuilder {
 
         compilerUtil.specWithComment(builder);
 
+        Map<String, List<Descriptor>> theVars=bindingsSchema.getVar();
+        DescriptorUtils utils=new DescriptorUtils();
+
 
 
         builder
@@ -186,19 +190,27 @@ public class CompilerExpansionBuilder {
                 .addStatement("$T attrs=null", StatementCompilerAction.cl_collectionOfAttributes)
                 .addStatement("$T __C_document = pf.newDocument()", Document.class);
         for (QualifiedName q : allVars) {
-            builder.addParameter(QualifiedName.class, q.getLocalPart());
+            if (theVars.containsKey(q.getLocalPart()) || (ExpandUtil.isGensymVariable(q))) {
+                builder.addParameter(QualifiedName.class, q.getLocalPart());
+            }
         }
         for (QualifiedName q : allAtts) {
             if (allVars.contains(q)) {
                 // no need to redeclare
             } else {
-                builder.addParameter(Object.class, q.getLocalPart()); // without type declaration, any object may be accepted, assuming this is not a q also in allVars.
+                if (theVars.containsKey(q.getLocalPart()) || (ExpandUtil.isGensymVariable(q)) ) {
+                    builder.addParameter(Object.class, q.getLocalPart()); // without type declaration, any object may be accepted, assuming this is not a q also in allVars, and it's a declared variable.
+                }
             }
         }
         for (QualifiedName q : allVars) {
             if (ExpandUtil.isGensymVariable(q)) {
                 final String vgen = q.getLocalPart();
                 builder.addStatement("if ($N==null) $N=$T.getUUIDQualifiedName2(pf)", vgen, vgen, ExpandAction.class);
+            } else {
+                if (!theVars.containsKey(q.getLocalPart())) {
+                    builder.addStatement("$T $N=null", QualifiedName.class, q.getLocalPart());
+                }
             }
         }
 
@@ -601,6 +613,8 @@ public class CompilerExpansionBuilder {
 
         compilerUtil.specWithComment(builder);
 
+        Map<String, List<Descriptor>> theVars=bindingsSchema.getVar();
+
         builder
                 .addStatement("$T __C_document = null", Document.class)
                 .addStatement("$T __C_ns = new Namespace()", Namespace.class)
@@ -650,11 +664,15 @@ public class CompilerExpansionBuilder {
                 // TODO: check if it was a gensym, because then i can generate it!
                 builder.addStatement("$T $N=null", QualifiedName.class, newName);
             }
-            if (first) {
-                first = false;
-                args = newName;
-            } else {
-                args = args + ", " + newName;
+
+
+            if (theVars.containsKey(key) || (ExpandUtil.isGensymVariable(q))) {
+                if (first) {
+                    first = false;
+                    args = newName;
+                } else {
+                    args = args + ", " + newName;
+                }
             }
         }
 
@@ -670,11 +688,13 @@ public class CompilerExpansionBuilder {
                     newName = compilerUtil.attPrefix(key);
                     builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
                 }
-                if (first) {
-                    first = false;
-                    args = newName;
-                } else {
-                    args = args + ", " + newName;
+                if (entry != null && !(entry instanceof MissingNode)) { // if not entry, then don't add to list of arguments
+                    if (first) {
+                        first = false;
+                        args = newName;
+                    } else {
+                        args = args + ", " + newName;
+                    }
                 }
             }
         }
@@ -911,6 +931,8 @@ public class CompilerExpansionBuilder {
 
         compilerUtil.specWithComment(builder);
 
+        Map<String, List<Descriptor>> theVars=bindingsSchema.getVar();
+
         builder
                 .addStatement("$T fr=$T.dynamicLoad()", Framework.class, Framework.class)
                 .addStatement("$T pf=fr.getFactory()", ProvFactory.class)
@@ -919,7 +941,9 @@ public class CompilerExpansionBuilder {
 
 
         for (QualifiedName q : allVars) {
-            builder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, compilerUtil.varPrefix(q.getLocalPart()), "http://example.org/", q.getLocalPart(), "ex");
+            if (theVars.get(q.getLocalPart())!=null || (ExpandUtil.isGensymVariable(q))) {
+                builder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, compilerUtil.varPrefix(q.getLocalPart()), "http://example.org/", q.getLocalPart(), "ex");
+            }
         }
 
         JsonNode the_var2 = (bindings_schema == null) ? null : bindings_schema.get("var");
@@ -945,24 +969,28 @@ public class CompilerExpansionBuilder {
         boolean first = true;
         Set<String> seen = new HashSet<>();
         for (QualifiedName q : allVars) {
-            if (first) {
-                first = false;
-                args = compilerUtil.varPrefix(q.getLocalPart());
-            } else {
-                args = args + ", " + compilerUtil.varPrefix(q.getLocalPart());
+            if (theVars.get(q.getLocalPart())!=null || (ExpandUtil.isGensymVariable(q))) {
+                if (first) {
+                    first = false;
+                    args = compilerUtil.varPrefix(q.getLocalPart());
+                } else {
+                    args = args + ", " + compilerUtil.varPrefix(q.getLocalPart());
+                }
+                seen.add(q.getLocalPart());
             }
-            seen.add(q.getLocalPart());
         }
 
 
         for (QualifiedName q : allAtts) {
-            if (!(seen.contains(q.getLocalPart()))) {
-                final String key = compilerUtil.attPrefix(q.getLocalPart());
-                if (first) {
-                    first = false;
-                    args = key;
-                } else {
-                    args = args + ", " + key;
+            if (theVars.get(q.getLocalPart())!=null || (ExpandUtil.isGensymVariable(q))) {
+                if (!(seen.contains(q.getLocalPart()))) {
+                    final String key = compilerUtil.attPrefix(q.getLocalPart());
+                    if (first) {
+                        first = false;
+                        args = key;
+                    } else {
+                        args = args + ", " + key;
+                    }
                 }
             }
         }
@@ -981,6 +1009,7 @@ public class CompilerExpansionBuilder {
             int count = 0;
             while (iter.hasNext()) {
                 String key = iter.next();
+
                 if (first) {
                     first = false;
                     args = compilerUtil.createExamplar(the_var, key, count++, pFactory);

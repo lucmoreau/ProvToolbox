@@ -19,7 +19,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-model, prov-template, prov-dot: support for QualifiedHadMember
 * prov-template-compiler: generation of OutputProcessor interface
 * prov-toolbox-plugin: renamed goals, validate-catalogue and compile-catalogue
-
+* prov-template-compiler: fixed issue with variables in template and not in bindings
  
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java

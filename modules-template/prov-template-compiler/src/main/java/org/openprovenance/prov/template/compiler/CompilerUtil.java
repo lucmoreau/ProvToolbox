@@ -448,28 +448,18 @@ public class CompilerUtil {
     }
 
     private Class<? extends Serializable> getClassForType(String keyType) {
-        switch (keyType) {
-            case "xsd:int":
-                return Integer.class;
-            case "xsd:long":
-                return Long.class;
-            case "xsd:string":
-                return String.class;
-            case "xsd:boolean":
-                return Boolean.class;
-            case "xsd:float":
-                return Float.class;
-            case "xsd:double":
-                return Double.class;
-            case "xsd:dateTime":
-                return String.class;
-            case "xsd:date":
-                return String.class;
-            case "json":
-                return String.class;
-            default:
-                throw new UnsupportedOperationException("getClassForType " + keyType);
-        }
+        return switch (keyType) {
+            case "xsd:int" -> Integer.class;
+            case "xsd:long" -> Long.class;
+            case "xsd:string" -> String.class;
+            case "xsd:boolean" -> Boolean.class;
+            case "xsd:float" -> Float.class;
+            case "xsd:double" -> Double.class;
+            case "xsd:dateTime" -> String.class;
+            case "xsd:date" -> String.class;
+            case "json" -> String.class;
+            default -> throw new UnsupportedOperationException("getClassForType " + keyType);
+        };
     }
 
     public Class<?> getJavaDocumentTypeForDeclaredType(Map<String, List<Descriptor>> theVar, String key) {
@@ -588,9 +578,9 @@ public class CompilerUtil {
     }
 
 
-    public String generateExampleForType(String declaredType, String localPart, ProvFactory pFactory) {
+    public String generateExampleForType(String declaredType, String varName, ProvFactory pFactory) {
         if (declaredType == null) {
-            return "test1_" + localPart;
+            return "test1_" + varName;
         } else {
             switch (declaredType) {
                 case "xsd:date":
@@ -602,7 +592,7 @@ public class CompilerUtil {
                 case "xsd:int":
                     return "12345";
                 default:
-                    return "test2_" + localPart;
+                    return "test2_" + varName;
             }
         }
     }

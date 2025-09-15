@@ -318,12 +318,16 @@ public class StatementCompilerAction implements StatementAction {
 
                              */
 
-                            builder.addStatement("if ($N!=null) attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
-                                    localPart,
-                                    vmap.get(element),
-                                    localPart,
-                                    localPart);
+                            if (vmap.get(element)!=null) {
 
+                                builder.addStatement("if ($N!=null) attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
+                                        localPart,
+                                        vmap.get(element),
+                                        localPart,
+                                        localPart);
+                            } else {
+                                System.out.println("Warning: attribute element " + element + " not in vmap");
+                            }
 
                         } else {
                             builder.addStatement("attrs.add(pf.newAttribute($N,$N,$N))",

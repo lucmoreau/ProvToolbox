@@ -81,12 +81,12 @@ public class CompilerCommon {
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
 
-        return generateCommonLib_aux(configs, locations, allVars,allAtts,name, templateName, packageName, bindingsSchema, indexed, beanKind, fileName, consistsOf);
+        return generateCommonLib_aux(configs, locations, allVars, name, templateName, packageName, bindingsSchema, indexed, beanKind, fileName, consistsOf);
 
     }
 
 
-    Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib_aux(TemplatesProjectConfiguration configs, Locations locations, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, BeanKind beanKind, String fileName, String consistsOf) {
+    Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib_aux(TemplatesProjectConfiguration configs, Locations locations, Set<QualifiedName> allVars, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, BeanKind beanKind, String fileName, String consistsOf) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = generateClassInit(name, Constants.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName), Constants.BUILDER, templateName);
@@ -189,7 +189,7 @@ public class CompilerCommon {
             builder.addMethod(generateFactoryMethodWithBean(templateName, packageName, bindingsSchema));
 
             builder.addMethod(generateNewBean(templateName, packageName));
-            builder.addMethod(generateExamplarBean(allVars, allAtts, templateName, packageName, bindingsSchema));
+            builder.addMethod(generateExamplarBean(templateName, packageName, bindingsSchema));
 
 
 
@@ -1789,74 +1789,73 @@ public class CompilerCommon {
 
 
 
-    public MethodSpec generateExamplarBean(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String template, String packge, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateExamplarBean(String template, String packge, TemplateBindingsSchema bindingsSchema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("examplar")
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.STATIC)
-                .returns(ClassName.get(packge,compilerUtil.commonNameClass(template)));
+                .returns(ClassName.get(packge, compilerUtil.commonNameClass(template)));
 
         compilerUtil.specWithComment(builder);
 
+        builder.addStatement("$T bean=new $T()", ClassName.get(packge, compilerUtil.commonNameClass(template)), ClassName.get(packge, compilerUtil.commonNameClass(template)));
 
-        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
-        Collection<String> variables=descriptorUtils.fieldNames(bindingsSchema);
+        Map<String, List<Descriptor>> theVars = bindingsSchema.getVar();
+        //Collection<String> variables=descriptorUtils.fieldNames(bindingsSchema);
 
-
-        builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.commonNameClass(template)),ClassName.get(packge,compilerUtil.commonNameClass(template)));
-
-        for (QualifiedName q : allVars) {
-            List<Descriptor> descriptors = theVar.get(q.getLocalPart());
-            Descriptor qDescriptor = (descriptors==null)? null: descriptors.get(0);
-            String idType=(qDescriptor==null)? null : descriptorUtils.getFromDescriptor(qDescriptor, AttributeDescriptor::getType, NameDescriptor::getType);
-            Object examplar=(qDescriptor==null)? null : descriptorUtils.getFromDescriptor(qDescriptor, AttributeDescriptor::getExamplar, NameDescriptor::getExamplar);
+        Collection<String> nameVariables = descriptorUtils.getNameVariables(bindingsSchema);
+        Collection<String> attrVariables = descriptorUtils.getAttributeVariables(bindingsSchema);
 
 
-            for (String key3: variables) {
-                if (q.getLocalPart().equals(key3)) {
-                    if (idType==null) {
-                        builder.addStatement("bean.$N=$S", q.getLocalPart(), "example_" + q.getLocalPart());
-                    } else {
-                        String example = (examplar==null)?compilerUtil.generateExampleForType(idType, q.getLocalPart(), pFactory):examplar.toString();
-                        Class<?> declaredJavaType=compilerUtil.getJavaTypeForDeclaredType(theVar, key3);
+        for (String aVar : nameVariables) {
+            List<Descriptor> descriptors = theVars.get(aVar);
+            Descriptor qDescriptor = (descriptors == null) ? null : descriptors.get(0);
+            String idType = (qDescriptor == null) ? null : descriptorUtils.getFromDescriptor(qDescriptor, AttributeDescriptor::getType, NameDescriptor::getType);
+            Object examplar = (qDescriptor == null) ? null : descriptorUtils.getFromDescriptor(qDescriptor, AttributeDescriptor::getExamplar, NameDescriptor::getExamplar);
 
-                        final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
-                        if (converter == null) {
-                            builder.addStatement("bean.$N=$S",  q.getLocalPart(), example);
-                        } else {
-                            builder.addStatement("bean.$N=$N($S)",  q.getLocalPart(), converter, example);
-                        }
-                    }
+
+            if (idType == null) {
+                builder.addStatement("bean.$N=$S", aVar, "example_" + aVar);
+            } else {
+                String example = (examplar == null) ? compilerUtil.generateExampleForType(idType, aVar, pFactory) : examplar.toString();
+                Class<?> declaredJavaType = compilerUtil.getJavaTypeForDeclaredType(theVars, aVar);
+
+                final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+                if (converter == null) {
+                    builder.addStatement("bean.$N=$S", aVar, example);
+                } else {
+                    builder.addStatement("bean.$N=$N($S)", aVar, converter, example);
                 }
             }
+
+
         }
 
 
+        for (String aVar : attrVariables) {
 
-
-        for (QualifiedName q : allAtts) {
             String declaredType = null;
             Class<?> declaredJavaType = null;
-            Object examplar=null;
+            Object examplar = null;
 
-            for (String key3: variables) {
+            Descriptor qDescriptor = null;
 
-                if (q.getLocalPart().equals(key3)) {
-                    declaredType = compilerUtil.getDeclaredType(theVar, key3);
-                    declaredJavaType=compilerUtil.getJavaTypeForDeclaredType(theVar, key3);
-                    List<Descriptor> descriptors = theVar.get(q.getLocalPart());
-                    Descriptor qDescriptor = (descriptors==null)? null: descriptors.get(0);
-                    examplar=(qDescriptor==null)? null : descriptorUtils.getFromDescriptor(qDescriptor, AttributeDescriptor::getExamplar, NameDescriptor::getExamplar);
+            declaredType = compilerUtil.getDeclaredType(theVars, aVar);
+            declaredJavaType = compilerUtil.getJavaTypeForDeclaredType(theVars, aVar);
+            List<Descriptor> descriptors = theVars.get(aVar);
+            qDescriptor = (descriptors == null) ? null : descriptors.get(0);
+            examplar = (qDescriptor == null) ? null : descriptorUtils.getFromDescriptor(qDescriptor, AttributeDescriptor::getExamplar, NameDescriptor::getExamplar);
 
+
+            if (qDescriptor != null) { // only generate code if there is a descriptor!
+
+                String example = (examplar != null) ? examplar.toString() : compilerUtil.generateExampleForType(declaredType, aVar, pFactory);
+
+                final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+                if (converter == null) {
+                    builder.addStatement("bean.$N=$S", aVar, example);
+                } else {
+                    builder.addStatement("bean.$N=$N($S)", aVar, converter, example);
                 }
-            }
-
-            String example = (examplar!=null)? examplar.toString(): compilerUtil.generateExampleForType(declaredType, q.getLocalPart(), pFactory);
-
-            final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
-            if (converter == null) {
-                builder.addStatement("bean.$N=$S",  q.getLocalPart(), example);
-            } else {
-                builder.addStatement("bean.$N=$N($S)",  q.getLocalPart(), converter, example);
             }
         }
 
@@ -1864,6 +1863,7 @@ public class CompilerCommon {
         builder.addStatement("return bean");
 
         return builder.build();
+
     }
 
 

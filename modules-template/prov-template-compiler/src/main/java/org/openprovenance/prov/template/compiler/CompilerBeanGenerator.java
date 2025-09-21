@@ -61,6 +61,7 @@ public class CompilerBeanGenerator {
         }
 
         String packge=locations.getFilePackage(beanDirection);
+        String processorPackage=locations.getFilePackage(BEAN_PROCESSOR);
         switch (beanDirection) {
             case INPUTS:
                 builder.addJavadoc(" that only contains the input of this template.");
@@ -136,8 +137,8 @@ public class CompilerBeanGenerator {
             }
         }
 
-        if (beanKind==BeanKind.SIMPLE && beanDirection==BeanDirection.COMMON) {
-            MethodSpec mbuild = generateInvokeProcessor(templateName, packge, bindingsSchema, null);
+        if (beanKind==BeanKind.SIMPLE ) {
+            MethodSpec mbuild = generateInvokeProcessor(templateName, processorPackage, bindingsSchema, null, beanDirection);
             builder.addMethod(mbuild);
 
         } else if (beanKind==BeanKind.COMPOSITE) {
@@ -149,7 +150,7 @@ public class CompilerBeanGenerator {
             }
 
             if (beanDirection==BeanDirection.COMMON) {
-                MethodSpec mbuild = generateInvokeProcessor(templateName, packge, bindingsSchema, ELEMENTS);
+                MethodSpec mbuild = generateInvokeProcessor(templateName, processorPackage, bindingsSchema, ELEMENTS, beanDirection);
                 builder.addMethod(mbuild);
             }
 
@@ -310,7 +311,49 @@ public class CompilerBeanGenerator {
         return ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(template)),typeT);
     }
 
-    public MethodSpec generateInvokeProcessor(String template, String packge, TemplateBindingsSchema bindingsSchema, String elements) {
+    public MethodSpec generateInvokeProcessor(String template, String processorPackage, TemplateBindingsSchema bindingsSchema, String elements, BeanDirection beanDirection) {
+
+        Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
+        if (fieldNames.contains(PROCESSOR_PARAMETER_NAME)) {
+            throw new IllegalStateException("Template " + template + " contains variable " + PROCESSOR_PARAMETER_NAME + " " + fieldNames);
+        }
+
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.PROCESSOR_PROCESS_METHOD_NAME)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(typeT)
+                .addTypeVariable(typeT);
+
+        builder.addParameter(processorClassType(template,processorPackage), PROCESSOR_PARAMETER_NAME);
+
+        Collection<String> actualFieldNames;
+        if (elements!=null) {
+            actualFieldNames=new LinkedList<>(fieldNames);
+            actualFieldNames.add(elements);
+        } else {
+            actualFieldNames=fieldNames;
+        }
+
+        if (beanDirection==BeanDirection.COMMON) {
+            builder.addStatement("return $N.$N($L)", PROCESSOR_PARAMETER_NAME, Constants.PROCESSOR_PROCESS_METHOD_NAME,
+                    CodeBlock.join(actualFieldNames.stream().map(field ->
+                            CodeBlock.of("$N", field)).collect(Collectors.toList()), ","));
+        } else if (beanDirection==BeanDirection.INPUTS) {
+            builder.addStatement("return $N.$N($L)", PROCESSOR_PARAMETER_NAME, Constants.PROCESSOR_PROCESS_METHOD_NAME,
+                    CodeBlock.join(actualFieldNames.stream().map(field ->
+                            descriptorUtils.isInput(field,bindingsSchema)?CodeBlock.of("$N", field):CodeBlock.of("null")).collect(Collectors.toList()), ","));
+        } else if (beanDirection==BeanDirection.OUTPUTS) {
+            builder.addStatement("return $N.$N($L)", PROCESSOR_PARAMETER_NAME, Constants.PROCESSOR_PROCESS_METHOD_NAME,
+                    CodeBlock.join(actualFieldNames.stream().map(field ->
+                            descriptorUtils.isOutput(field,bindingsSchema)?CodeBlock.of("$N", field):CodeBlock.of("null")).collect(Collectors.toList()), ","));
+        } else {
+            throw new IllegalStateException("Unexpected value: " + beanDirection);
+        }
+
+        return builder.build();
+
+    }
+
+    public MethodSpec generateInputInvokeProcessor(String template, String packge, TemplateBindingsSchema bindingsSchema, String elements) {
 
         Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
         if (fieldNames.contains(PROCESSOR_PARAMETER_NAME)) {
@@ -334,11 +377,13 @@ public class CompilerBeanGenerator {
 
         builder.addStatement("return $N.$N($L)", PROCESSOR_PARAMETER_NAME, Constants.PROCESSOR_PROCESS_METHOD_NAME,
                 CodeBlock.join(actualFieldNames.stream().map(field ->
-                        CodeBlock.of("$N", field)).collect(Collectors.toList()), ","));
+                        descriptorUtils.isInput(field,bindingsSchema)?CodeBlock.of("$N", field):CodeBlock.of("null")).collect(Collectors.toList()), ","));
 
         return builder.build();
 
     }
+
+
 
 
     public void generateSimpleConfigsWithVariants(Locations locations, TemplatesProjectConfiguration configs) {

@@ -583,7 +583,7 @@ public class IndexedDocument implements StatementAction {
         return add(wgb, 3, anonWasGeneratedBy, namedWasGeneratedByMap, entityWasGeneratedByMap, activityWasGeneratedByMap);
     }
     public WasDerivedFrom add(WasDerivedFrom wdf) {
-        return add(wdf, 5, anonWasDerivedFrom, namedWasDerivedFromMap, entityEffectWasDerivedFromMap, entityCauseWasDerivedFromMap);
+        return add(wdf, 2, anonWasDerivedFrom, namedWasDerivedFromMap, entityEffectWasDerivedFromMap, entityCauseWasDerivedFromMap);
     }
     public WasAssociatedWith add(WasAssociatedWith waw) {
         return add(waw, 3, anonWasAssociatedWith, namedWasAssociatedWithMap, activityWasAssociatedWithMap, agentWasAssociatedWithMap);

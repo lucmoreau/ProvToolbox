@@ -381,7 +381,7 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
 
     public void testGeneration1() {
         WasGeneratedBy gen = pFactory.newWasGeneratedBy(q("gen1"), q("e1"),
-                                                        null, null);
+                                                        null, (QualifiedName)null);
         makeDocAndTest(gen, "target/generation1");
     }
 

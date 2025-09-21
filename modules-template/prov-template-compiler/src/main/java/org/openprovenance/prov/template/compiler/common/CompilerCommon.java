@@ -372,9 +372,9 @@ public class CompilerCommon {
         return method;
     }
 
-    public static CodeBlock makeParamsList(Collection<String> variables, Map<String, List<Descriptor>> var, CompilerUtil compilerUtil) {
-        return CodeBlock.join(variables.stream().map(variable ->
-                CodeBlock.of("$T $N", compilerUtil.getJavaTypeForDeclaredType(var, variable), Constants.GENERATED_VAR_PREFIX + variable)).collect(Collectors.toList()), ", ");
+    public static CodeBlock makeParamsList(Collection<String> variables, Map<String, List<Descriptor>> theVars, CompilerUtil compilerUtil) {
+        return CodeBlock.join(variables.stream().filter((v) -> theVars.containsKey(v) && theVars.get(v)!=null).map(variable ->
+                    CodeBlock.of("$T $N", compilerUtil.getJavaTypeForDeclaredType(theVars, variable), Constants.GENERATED_VAR_PREFIX + variable)).collect(Collectors.toList()), ", ");
     }
     public static CodeBlock makeParamsListComposite(Collection<String> variables, Map<String, List<Descriptor>> var, CompilerUtil compilerUtil, ParameterizedTypeName listBeanType) {
         return CodeBlock.join(variables.stream().map(variable ->

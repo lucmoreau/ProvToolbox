@@ -7,6 +7,7 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 
 import com.squareup.javapoet.ClassName;
@@ -20,6 +21,7 @@ import static org.openprovenance.prov.template.compiler.expansion.StatementTypeA
 public class StatementCompilerAction implements StatementAction {
 
     private final JsonNode bindings_schema;
+    private final TemplateBindingsSchema bindingsSchema;
     private Collection<QualifiedName> allVars;
     private Collection<QualifiedName> allAtts;
     private Builder builder;
@@ -34,7 +36,7 @@ public class StatementCompilerAction implements StatementAction {
     static final TypeName  cl_linkedListOfAttributes = ParameterizedTypeName.get(cl_linkedList, cl_attribute);
     public static final TypeName  cl_collectionOfAttributes = ParameterizedTypeName.get(cl_collection, cl_attribute);
 
-    public StatementCompilerAction(ProvFactory pFactory, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema) {
+    public StatementCompilerAction(ProvFactory pFactory, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
         this.pFactory=pFactory;
         this.allVars=allVars;
         this.allAtts=allAtts;
@@ -42,6 +44,7 @@ public class StatementCompilerAction implements StatementAction {
         this.target=target;
         this.vmap=vmap;
         this.bindings_schema=bindings_schema;
+        this.bindingsSchema=bindingsSchema;
     }
 
     public String local(QualifiedName id) {
@@ -98,7 +101,7 @@ public class StatementCompilerAction implements StatementAction {
     @Override
     public void doAction(WasGeneratedBy s) {
         //TODO time
-        builder.addStatement("if ($N!=null) " + target + ".add(pf.newWasGeneratedBy($N,$N,$N))", local(s.getEntity()), local(s.getId()), local(s.getEntity()), local(s.getActivity()));
+        builder.addStatement("if ($N!=null) " + target + ".add(pf.newWasGeneratedBy($N,$N,$N,null" + generateAttributes(s) + "))", local(s.getEntity()), local(s.getId()), local(s.getEntity()), local(s.getActivity()));
 
     }
 
@@ -306,7 +309,7 @@ public class StatementCompilerAction implements StatementAction {
                     if (reservedElement(element)) {
                         doReservedAttributeAction(builder, element, vq, typeq);
                     } else {
-                        if (ExpandUtil.isVariable(vq)) {
+                        if (ExpandUtil.isVariable(vq))  {
                             // use attribute variables (expected to be of type Object) and calculates its type as a QualifiedName dynamically.
                             String localPart = vq.getLocalPart();
 
@@ -327,6 +330,15 @@ public class StatementCompilerAction implements StatementAction {
                                         localPart);
                             } else {
                                 System.out.println("Warning: attribute element " + element + " not in vmap");
+
+                                builder.addComment("Warning: attribute element " + element + " not in vmap");
+                                builder.addStatement("if (($N!=null) && ($N!=null)) attrs.add(pf.newAttribute(($T)$N,$N,vc.getXsdType($N)))",
+                                        element.getLocalPart(),
+                                        localPart,
+                                        QualifiedName.class,
+                                        element.getLocalPart(),
+                                        localPart,
+                                        localPart);
                             }
 
                         } else {
@@ -507,7 +519,7 @@ public class StatementCompilerAction implements StatementAction {
         builder.addStatement(target + ".add($N)", id_);
 
         String target2 = id_+".getStatement()";
-        StatementCompilerAction action2=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, target2, bindings_schema);
+        StatementCompilerAction action2=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, target2, bindings_schema, bindingsSchema);
         
         for (Statement s: bun.getStatement()) {
             provUtilities.doAction(s, action2);

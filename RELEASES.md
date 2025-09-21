@@ -20,7 +20,12 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: generation of OutputProcessor interface
 * prov-toolbox-plugin: renamed goals, validate-catalogue and compile-catalogue
 * prov-template-compiler: fixed issue with variables in template and not in bindings
- 
+* prov-template-compiler: process method for Input and Output beans
+* prov-template-compiler: generation of local enactor (CompilerBeanLocalEnactor2)
+* modules-core: add new method newWasGeneratedBy to support template compiler
+* prov-template-compiler: allow for null declaration in bindings
+
+
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java
 * prov-typemap: incremental construction of type map

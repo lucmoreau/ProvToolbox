@@ -105,6 +105,7 @@ public class Locations {
                 return logger_package;
 
             case BEAN_ENACTOR2:
+            case BEAN_LOCAL_ENACTOR2:
             case BEAN_ENACTOR2_COMPOSITE:
             case TEMPLATE_INVOKER:
             case INPUT_OUTPUT_PROCESSOR:

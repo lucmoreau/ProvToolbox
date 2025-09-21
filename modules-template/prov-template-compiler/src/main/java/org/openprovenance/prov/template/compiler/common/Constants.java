@@ -66,6 +66,7 @@ public interface Constants {
     String BEAN_ENACTOR = "BeanEnactor";
     String BEAN_ENACTOR2 = "BeanEnactor2";
     String BEAN_ENACTOR2_COMPOSITE = "BeanEnactor2Composite";
+    String BEAN_LOCAL_ENACTOR2="BeanLocalEnactor2";
 
     String BEAN_ENACTOR2_WP = "BeanEnactor4"; //"BeanEnactor2WithPrincipal";
     String BEAN_ENACTOR2_COMPOSITE_WP = "BeanEnactor4Composite"; //"BeanEnactor2CompositeWithPrincipal";
@@ -176,4 +177,5 @@ public interface Constants {
 
 
     String POST_PROCESS_METHOD_NAME = "postEnactmentProcessing";
+    String OUT_BEAN = "out";
 }

@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class DescriptorUtils {
     public void setupDeserializer(ObjectMapper om) {
@@ -41,12 +43,14 @@ public class DescriptorUtils {
         return descriptor.getVar().keySet().iterator();
     }
     public Collection<String> fieldNames(TemplateBindingsSchema descriptor) {
-        return descriptor.getVar().keySet();
+        Map<String, List<Descriptor>> theVars = descriptor.getVar();
+        return theVars.keySet().stream().filter((v) -> theVars.containsKey(v) && theVars.get(v)!=null).collect(Collectors.toList());
     }
 
     public boolean isOutput(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var=templateBindingsSchema.getVar().get(key);
-        if (var==null) throw new NullPointerException("isOutput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        if (var == null) return false;
+        // if (var==null) throw new NullPointerException("isOutput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
         Descriptor descriptor=var.get(0);
         Function<AttributeDescriptor, Boolean> af=(ad)->OutputFieldValue.isOutput(ad.getOutput());
         Function<NameDescriptor, Boolean> nf=(nd)->OutputFieldValue.isOutput(nd.getOutput());
@@ -54,7 +58,8 @@ public class DescriptorUtils {
     }
     public boolean hasOutput(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var=templateBindingsSchema.getVar().get(key);
-        if (var==null) throw new NullPointerException("hasOutput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        if (var == null) return false;
+        //if (var==null) throw new NullPointerException("hasOutput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
         Descriptor descriptor=var.get(0);
         Function<AttributeDescriptor, Boolean> af=(ad)->OutputFieldValue.hasOutput(ad.getOutput());
         Function<NameDescriptor, Boolean> nf=(nd)->OutputFieldValue.hasOutput(nd.getOutput());
@@ -62,8 +67,8 @@ public class DescriptorUtils {
     }
     public boolean isOutputName(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var = templateBindingsSchema.getVar().get(key);
-        if (var == null)
-            throw new NullPointerException("isOutputName could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        if (var == null) return false;
+        //if (var == null)throw new NullPointerException("isOutputName could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
         Descriptor descriptor = var.get(0);
         Function<AttributeDescriptor, Boolean> af = (ad) -> false;
         Function<NameDescriptor, Boolean> nf = (nd) -> OutputFieldValue.isOutput(nd.getOutput());
@@ -71,8 +76,9 @@ public class DescriptorUtils {
     }
     public Optional<String> getSqlTable(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var = templateBindingsSchema.getVar().get(key);
-        if (var == null)
-            throw new NullPointerException("getSqlTable could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+
+        if (var == null) return Optional.empty();
+            //throw new NullPointerException("getSqlTable could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
         Descriptor descriptor = var.get(0);
         Function<AttributeDescriptor, Optional<String>> af = (ad) -> Optional.empty();
         Function<NameDescriptor, Optional<String>> nf = (nd) -> Optional.ofNullable(nd.getTable());
@@ -81,8 +87,8 @@ public class DescriptorUtils {
 
     public Optional<AttributeDescriptor.SqlForeign> getOutputSqlForeign(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var = templateBindingsSchema.getVar().get(key);
-        if (var == null)
-            throw new NullPointerException("getOutputSqlForeign could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        if (var == null) return Optional.empty();
+            //throw new NullPointerException("getOutputSqlForeign could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
         Descriptor descriptor = var.get(0);
         Function<AttributeDescriptor, Optional<AttributeDescriptor.SqlForeign>> af = (ad) -> Optional.ofNullable(ad.getSqlForeign());
         Function<NameDescriptor, Optional<AttributeDescriptor.SqlForeign>> nf = (nd) -> Optional.empty();
@@ -125,7 +131,7 @@ public class DescriptorUtils {
     }
     public boolean isInput(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var=templateBindingsSchema.getVar().get(key);
-        if (var==null) throw new NullPointerException("isInput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        if (var==null) return false; //throw new NullPointerException("isInput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
         Descriptor descriptor=var.get(0);
         Function<AttributeDescriptor, Boolean> af=(ad)->InputFieldValue.isInput(ad.getInput());
         Function<NameDescriptor, Boolean> nf=(nd)->InputFieldValue.isInput(nd.getInput());

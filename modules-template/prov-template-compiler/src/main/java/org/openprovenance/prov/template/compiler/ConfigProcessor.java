@@ -78,6 +78,8 @@ public class ConfigProcessor implements Constants {
     private final CompilerTypeConverter compilerTypeConverter ;
     private final CompilerBeanEnactor compilerBeanEnactor;
     private final CompilerBeanEnactor2 compilerBeanEnactor2 ;
+    private final CompilerBeanLocalEnactor2 compilerBeanLocalEnactor2 ;
+
     private final CompilerBeanEnactor2WithPrincipal compilerBeanEnactor2WP ;
     private final CompilerSqlIntegration compilerSqlIntegration;
     private final CompilerBeanEnactor2Composite compilerBeanEnactor2composite;
@@ -127,6 +129,7 @@ public class ConfigProcessor implements Constants {
         this.compilerClientTest =new CompilerClientTest(pFactory);
         this.compilerTemplateInvoker = new CompilerTemplateInvoker(pFactory);
         this.compilerBeanEnactor2 = new CompilerBeanEnactor2(pFactory);
+        this.compilerBeanLocalEnactor2 = new CompilerBeanLocalEnactor2(pFactory);
         this.compilerBeanEnactor2WP = new CompilerBeanEnactor2WithPrincipal(pFactory);
         this.compilerBeanEnactor2composite = new CompilerBeanEnactor2Composite(pFactory);
         this.compilerBeanEnactor = new CompilerBeanEnactor(pFactory);
@@ -267,6 +270,7 @@ public class ConfigProcessor implements Constants {
         Map<String, List<Descriptor>> vars=config.getVar();
         for (String var: vars.keySet()) {
             List<Descriptor> descriptors=vars.get(var);
+            if (descriptors==null) continue;
             for (Descriptor descriptor: descriptors) {
                 if (descriptor instanceof NameDescriptor) {
                     NameDescriptor nd=(NameDescriptor) descriptor;
@@ -398,6 +402,8 @@ public class ConfigProcessor implements Constants {
             SpecificationFile beanEnactor2 = compilerBeanEnactor2.generateBeanEnactor2(configs, locations, BEAN_ENACTOR2);
             beanEnactor2.save();
 
+            SpecificationFile beanLocalEnactor2 = compilerBeanLocalEnactor2.generateBeanLocalEnactor2(configs, locations, BEAN_LOCAL_ENACTOR2);
+            beanLocalEnactor2.save();
             SpecificationFile beanEnactor2WP = compilerBeanEnactor2WP.generateBeanEnactor2WithPrincipal(configs, locations, BEAN_ENACTOR2_WP);
             beanEnactor2WP.save();
 

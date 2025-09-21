@@ -8,6 +8,7 @@ import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
+import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 import org.openprovenance.prov.template.expander.exception.MissingAttributeValue;
 
@@ -33,6 +34,7 @@ public class StatementTypeAction implements StatementAction {
     private final Map<String, Collection<String>> unknownTypes;
     private final Builder mbuilder;
     private final CompilerUtil compilerUtil;
+    private final TemplateBindingsSchema bindingsSchema;
 
     private Set<QualifiedName> allVars;
     private Set<QualifiedName> allAtts;
@@ -42,7 +44,7 @@ public class StatementTypeAction implements StatementAction {
     final public QualifiedName PROV_EXT_NS_ID;
 
 
-    public StatementTypeAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, Builder mbuilder, CompilerUtil compilerUtil) {
+    public StatementTypeAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, Builder mbuilder, CompilerUtil compilerUtil) {
         this.pFactory=pFactory;
         this.allVars=allVars;
         this.allAtts=allAtts;
@@ -50,6 +52,7 @@ public class StatementTypeAction implements StatementAction {
         //this.target=target;
         this.vmap=vmap;
         this.bindings_schema=bindings_schema;
+        this.bindingsSchema=bindingsSchema;
         this.knownTypes=knownTypes;
         this.unknownTypes=unknownTypes;
         this.mbuilder=mbuilder;
@@ -339,12 +342,14 @@ public class StatementTypeAction implements StatementAction {
                 QualifiedName qn=(QualifiedName) value;
                 if (ExpandUtil.isVariable(qn)) {
                     String key=qn.getLocalPart();
-                    final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
-                    mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new HashSet<>())",s.getId().getLocalPart());
-                    if (atype.equals(QualifiedName.class)) {
-                        mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).addAll($N.apply($N.getUri(), $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
-                    } else {
-                        mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).addAll($N.apply($N, $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
+                    if (bindingsSchema.getVar().containsKey(key) && (bindingsSchema.getVar().get(key)!=null)) {
+                        final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
+                        mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new HashSet<>())", s.getId().getLocalPart());
+                        if (atype.equals(QualifiedName.class)) {
+                            mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).addAll($N.apply($N.getUri(), $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
+                        } else {
+                            mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).addAll($N.apply($N, $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
+                        }
                     }
                 } else {
                     mbuilder.addStatement("knownTypeMap.computeIfAbsent($N, k -> new HashSet<>())",s.getId().getLocalPart());
@@ -432,34 +437,36 @@ public class StatementTypeAction implements StatementAction {
                 QualifiedName qn=(QualifiedName) value;
                 if (ExpandUtil.isVariable(qn)) {
                     String key=qn.getLocalPart();
-                    final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
-                    mbuilder.addStatement("idata.computeIfAbsent($N, k -> new $T<>())",s.getId().getLocalPart(), HashMap.class);
-                    if (atype.equals(QualifiedName.class)) {
-                       //mbuilder.addStatement("if ($N!=null) idata.get($N).addAll($N.apply($N.getUri(), $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
-                        mbuilder.beginControlFlow("if /* option 1 */ ($N!=null)",key);
-                        String pairVariable="p";
-                        String pairVariable2="p2";
-                        mbuilder.addStatement("$T $N=$N.apply($N.getUri(), $N.getUri(), $S))", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, key, s.getId().getLocalPart(), attributeUri);
-                        CodeBlock.Builder subBuilder = CodeBlock.builder();
-                        subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, collectionClass);
-                        subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(), pairVariable2, pairVariable2);
-                        mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
-                        mbuilder.addCode(subBuilder.build());
-                        mbuilder.endControlFlow(")");
-                        mbuilder.endControlFlow();
-                    } else {
-                        //mbuilder.addStatement("if ($N!=null) idata.get($N).addAll($N.apply($N, $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
-                        mbuilder.beginControlFlow("if /* option 2 */ ($N!=null)",key);
-                        String pairVariable="p";
-                        String pairVariable2="p2";
-                        mbuilder.addStatement("$T $N=$N.apply($N,  $N.getUri(), $S)", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, key,  s.getId().getLocalPart(), attributeUri);
-                        CodeBlock.Builder subBuilder = CodeBlock.builder();
-                        subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, collectionClass);
-                        subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(),  pairVariable2, pairVariable2);
-                        mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
-                        mbuilder.addCode(subBuilder.build());
-                        mbuilder.endControlFlow(")");
-                        mbuilder.endControlFlow();
+                    if (bindingsSchema.getVar().containsKey(key) && (bindingsSchema.getVar().get(key)!=null)) {
+                        final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
+                        mbuilder.addStatement("idata.computeIfAbsent($N, k -> new $T<>())", s.getId().getLocalPart(), HashMap.class);
+                        if (atype.equals(QualifiedName.class)) {
+                            //mbuilder.addStatement("if ($N!=null) idata.get($N).addAll($N.apply($N.getUri(), $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
+                            mbuilder.beginControlFlow("if /* option 1 */ ($N!=null)", key);
+                            String pairVariable = "p";
+                            String pairVariable2 = "p2";
+                            mbuilder.addStatement("$T $N=$N.apply($N.getUri(), $N.getUri(), $S))", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, key, s.getId().getLocalPart(), attributeUri);
+                            CodeBlock.Builder subBuilder = CodeBlock.builder();
+                            subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())", s.getId().getLocalPart(), pairVariable2, collectionClass);
+                            subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(), pairVariable2, pairVariable2);
+                            mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
+                            mbuilder.addCode(subBuilder.build());
+                            mbuilder.endControlFlow(")");
+                            mbuilder.endControlFlow();
+                        } else {
+                            //mbuilder.addStatement("if ($N!=null) idata.get($N).addAll($N.apply($N, $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
+                            mbuilder.beginControlFlow("if /* option 2 */ ($N!=null)", key);
+                            String pairVariable = "p";
+                            String pairVariable2 = "p2";
+                            mbuilder.addStatement("$T $N=$N.apply($N,  $N.getUri(), $S)", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, key, s.getId().getLocalPart(), attributeUri);
+                            CodeBlock.Builder subBuilder = CodeBlock.builder();
+                            subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())", s.getId().getLocalPart(), pairVariable2, collectionClass);
+                            subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(), pairVariable2, pairVariable2);
+                            mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
+                            mbuilder.addCode(subBuilder.build());
+                            mbuilder.endControlFlow(")");
+                            mbuilder.endControlFlow();
+                        }
                     }
                 } else {
                     mbuilder.addStatement("// option 3");
@@ -630,7 +637,7 @@ public class StatementTypeAction implements StatementAction {
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
         registerBundle(bun.getId());
-        StatementTypeAction action2=new StatementTypeAction(pFactory, allVars, allAtts, vmap, null, null, bindings_schema, knownTypes, unknownTypes, mbuilder, compilerUtil);
+        StatementTypeAction action2=new StatementTypeAction(pFactory, allVars, allAtts, vmap, null, null, bindings_schema, bindingsSchema, knownTypes, unknownTypes, mbuilder, compilerUtil);
         
         for (Statement s: bun.getStatement()) {
             provUtilities.doAction(s, action2);

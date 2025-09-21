@@ -391,6 +391,9 @@ public class CompilerUtil {
     static final public ParameterizedTypeName hashmapStringMapStringArrayType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(String.class), mapStringArrayType);
 
     public Class<?> getJavaTypeForDeclaredType(Map<String, List<Descriptor>> varMap, String key) {
+       if (!varMap.containsKey(key))
+           throw new UnsupportedOperationException("no value associated with key '" + key + "'");
+
         Descriptor descriptor=varMap.get(key).get(0);
         switch (descriptor.getDescriptorType()) {
             case ATTRIBUTE:
@@ -495,11 +498,13 @@ public class CompilerUtil {
         }
     }
 
-    public void generateSpecializedParameters(MethodSpec.Builder builder, JsonNode the_var) {
+    public void generateSpecializedParameters(MethodSpec.Builder builder, JsonNode the_var, Map<String, List<Descriptor>> theVars) {
         Iterator<String> iter = the_var.fieldNames();
         while (iter.hasNext()) {
             String key = iter.next();
-            builder.addParameter(getJavaTypeForDeclaredType(the_var, key), key);
+            if (theVars.get(key)!=null) {
+                builder.addParameter(getJavaTypeForDeclaredType(the_var, key), key);
+            }
         }
     }
     public void generateDocumentSpecializedParameters(MethodSpec.Builder builder, Map<String, List<Descriptor>> theVar, Collection<String> variables) {
@@ -510,7 +515,7 @@ public class CompilerUtil {
     public boolean isVariableDenotingQualifiedName(String key, JsonNode the_var) {
         final JsonNode entry = the_var.path(key);
 
-        return entry != null && !(entry instanceof MissingNode) && ( entry.get(0).get("@id") != null);
+        return entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode) && ( entry.get(0).get("@id") != null);
     }
 
     public boolean isVariableDenotingQualifiedName(String key, Map<String, List<Descriptor>> theVar) {
@@ -519,12 +524,14 @@ public class CompilerUtil {
 
 
 
-    public String generateArgumentsListForCall(JsonNode the_var, Map<String,String> translator) {
+    public String generateArgumentsListForCall(JsonNode the_var, Map<String,String> translator, Map<String, List<Descriptor>> var) {
         Iterator<String> iter = the_var.fieldNames();
         boolean first = true;
         String args = "";
         while (iter.hasNext()) {
             String key = iter.next();
+            if (!var.containsKey(key)) continue;
+            if (var.get(key)==null) continue;
 
             if (first) {
                 first = false;
@@ -556,7 +563,7 @@ public class CompilerUtil {
             String key = iter.next();
 
             final JsonNode entry = the_var.path(key);
-            if (entry != null && !(entry instanceof MissingNode)) {
+            if (entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode)) {
                 JsonNode firstNode = entry.get(0);
                 if (firstNode instanceof ArrayNode) {
                     firstNode = ((ArrayNode) firstNode).get(0);

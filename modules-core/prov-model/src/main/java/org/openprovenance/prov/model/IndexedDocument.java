@@ -52,12 +52,10 @@ public class IndexedDocument implements StatementAction {
     private final HashMap<QualifiedName,Collection<Used>> namedUsedMap= new HashMap<>();
 
 
-    /* Collection of WasGeneratedBy edges that have a given activity as a
-     * cause. */
+    /* Collection of WasGeneratedBy edges that have a given activity as a cause. */
     private final HashMap<QualifiedName,Collection<WasGeneratedBy>> activityWasGeneratedByMap= new HashMap<>();
 
-    /* Collection of WasGeneratedBy edges that have a given entity as an
-     * effect. */
+    /* Collection of WasGeneratedBy edges that have a given entity as an effect. */
     private final HashMap<QualifiedName,Collection<WasGeneratedBy>> entityWasGeneratedByMap= new HashMap<>();
     private final Collection<WasGeneratedBy> anonWasGeneratedBy= new LinkedList<>();
     private final HashMap<QualifiedName,Collection<WasGeneratedBy>> namedWasGeneratedByMap= new HashMap<>();
@@ -66,8 +64,7 @@ public class IndexedDocument implements StatementAction {
     /* Collection of WasDerivedFrom edges that have a given entity as a cause. */
     private final HashMap<QualifiedName,Collection<WasDerivedFrom>> entityCauseWasDerivedFromMap= new HashMap<>();
 
-    /* Collection of WasDerivedFrom edges that have a given entity as an
-     * effect. */
+    /* Collection of WasDerivedFrom edges that have a given entity as an effect. */
     private final HashMap<QualifiedName,Collection<WasDerivedFrom>> entityEffectWasDerivedFromMap= new HashMap<>();
     private final Collection<WasDerivedFrom> anonWasDerivedFrom= new LinkedList<>();
     private final HashMap<QualifiedName,Collection<WasDerivedFrom>> namedWasDerivedFromMap= new HashMap<>();
@@ -77,8 +74,7 @@ public class IndexedDocument implements StatementAction {
      * effect. */
     private final HashMap<QualifiedName,Collection<WasAssociatedWith>> activityWasAssociatedWithMap= new HashMap<>();
 
-    /* Collection of WasAssociatedWith edges that have a given agent as a
-     * cause. */
+    /* Collection of WasAssociatedWith edges that have a given agent as a cause. */
     private final HashMap<QualifiedName,Collection<WasAssociatedWith>> agentWasAssociatedWithMap= new HashMap<>();
     private final Collection<WasAssociatedWith> anonWasAssociatedWith= new LinkedList<>();
     private final HashMap<QualifiedName,Collection<WasAssociatedWith>> namedWasAssociatedWithMap= new HashMap<>();

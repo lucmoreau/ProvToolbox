@@ -458,8 +458,11 @@ public class StatementCompilerAction implements StatementAction {
 
     @Override
     public void doAction(QualifiedSpecializationOf s) {
-        // TODO Auto-generated method stub
-        
+        final String specific = local(s.getSpecificEntity());
+        final String general = local(s.getGeneralEntity());
+        final String attrs = generateAttributes(s);
+        final String theAttributes = ("".equals(attrs)) ? ", null" : attrs;
+        builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newQualifiedSpecializationOf($N,$N,$N" + theAttributes + "))", specific, general, localNotBlank(s.getId()), specific, general);
     }
 
     @Override

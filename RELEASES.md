@@ -24,6 +24,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: generation of local enactor (CompilerBeanLocalEnactor2)
 * modules-core: add new method newWasGeneratedBy to support template compiler
 * prov-template-compiler: allow for null declaration in bindings
+* prov-template-compiler: compiler support for QualifiedSpecializationOf
 
 
 `2.2.1`

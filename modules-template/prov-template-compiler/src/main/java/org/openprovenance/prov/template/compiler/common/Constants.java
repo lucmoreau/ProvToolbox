@@ -78,6 +78,7 @@ public interface Constants {
     String BEAN_CHECKER2 = "BeanChecker2";
     String DELEGATOR = "Delegator";
     String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
+    String RELATION0_CONFIGURATOR = "Relation0Configurator";
     String INPUTS_CONFIGURATOR = "InputsConfigurator";
     String OUTPUTS_CONFIGURATOR = "OutputsConfigurator";
     String PROCESS_METHOD_NAME = "process";

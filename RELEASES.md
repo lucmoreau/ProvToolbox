@@ -25,6 +25,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * modules-core: add new method newWasGeneratedBy to support template compiler
 * prov-template-compiler: allow for null declaration in bindings
 * prov-template-compiler: compiler support for QualifiedSpecializationOf
+* prov-template-compiler: CompilerConfigurations: generate Relation0Configurator
 
 
 `2.2.1`

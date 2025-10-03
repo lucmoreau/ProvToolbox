@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.client.ProcessorArgsInterface;
 import org.openprovenance.prov.client.RecordsProcessorInterface;
 import org.openprovenance.prov.service.dispatch.ForeignTableConfigurator;
-import org.openprovenance.prov.service.dispatch.Relation0Configurator;
 import org.openprovenance.prov.service.dispatch.RelationConfigurator;
 import org.openprovenance.prov.service.dispatch.SuccessorConfigurator;
 import org.openprovenance.prov.template.library.plead.client.configurator.*;

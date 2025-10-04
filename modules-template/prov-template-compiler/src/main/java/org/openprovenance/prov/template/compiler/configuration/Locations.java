@@ -126,6 +126,7 @@ public class Locations {
             case SQL_INSERT_CONFIGURATOR:
             case PROPERTY_ORDER_CONFIGURATOR:
             case RELATION0_CONFIGURATOR:
+            case RELATION_CONFIGURATOR:
             case OUTPUTS_CONFIGURATOR:
             case INPUTS_CONFIGURATOR:
             case SQL_CONFIGURATOR:

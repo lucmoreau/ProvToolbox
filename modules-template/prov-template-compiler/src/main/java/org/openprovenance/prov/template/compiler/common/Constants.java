@@ -79,6 +79,7 @@ public interface Constants {
     String DELEGATOR = "Delegator";
     String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
     String RELATION0_CONFIGURATOR = "Relation0Configurator";
+    String RELATION_CONFIGURATOR = "RelationConfigurator";
     String INPUTS_CONFIGURATOR = "InputsConfigurator";
     String OUTPUTS_CONFIGURATOR = "OutputsConfigurator";
     String PROCESS_METHOD_NAME = "process";

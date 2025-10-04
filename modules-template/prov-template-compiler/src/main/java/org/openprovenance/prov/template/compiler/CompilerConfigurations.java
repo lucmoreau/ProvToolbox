@@ -25,6 +25,7 @@ public class CompilerConfigurations {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
+    static final TypeVariableName PARAMETRIC_T=TypeVariableName.get("T");
     public static final ParameterizedTypeName processorOfString = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"ProcessorArgsInterface"), TypeName.get(String.class));
     static final ParameterizedTypeName processorOfUnknown = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"ProcessorArgsInterface"), TypeVariableName.get("?"));
     static final TypeName stringArray = ArrayTypeName.get(String[].class);
@@ -34,9 +35,12 @@ public class CompilerConfigurations {
     static final ParameterizedTypeName mapString2MapString2StringArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), mapString2StringArray);
     static final ParameterizedTypeName mapString2MapString2IntArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), mapString2IntArray);
 
+    static final ParameterizedTypeName FunctionOfString2StringArray = ParameterizedTypeName.get(ClassName.get(java.util.function.BiFunction.class), mapString2MapString2IntArray, stringArray, PARAMETRIC_T);
+
+    static final String CONVERTER_VAR="converter";
 
 
-    String enactorVar = "beanEnactor";
+    static final String ENACTOR_VAR = "beanEnactor";
 
 
     public SpecificationFile generateConfigurator(TemplatesProjectConfiguration configs,
@@ -46,13 +50,15 @@ public class CompilerConfigurations {
                                                   QuintetConsumer<String, MethodSpec.Builder, TypeName, TypeName, TypeName> generator,
                                                   String generatorMethod,
                                                   BeanDirection direction,
-                                                  TypeName beanProcessor,
+                                                  TypeName constructParameterType,
+                                                  String constructorParameter,
+                                                  TypeVariableName parametericType,
                                                   boolean defaultBehaviour,
                                                   String beanPackage,
                                                   BeanDirection outDirection,
                                                   String directory,
                                                   String fileName) {
-        return generateConfigurator(configs, locations, theConfiguratorName, typeName, generator, generatorMethod, direction, beanProcessor, defaultBehaviour, beanPackage, outDirection, directory, fileName, null);
+        return generateConfigurator(configs, locations, theConfiguratorName, typeName, generator, generatorMethod, direction, constructParameterType, constructorParameter, parametericType, defaultBehaviour, beanPackage, outDirection, directory, fileName, null);
     }
 
     public SpecificationFile generateConfigurator(TemplatesProjectConfiguration configs,
@@ -62,7 +68,9 @@ public class CompilerConfigurations {
                                                   QuintetConsumer<String, MethodSpec.Builder, TypeName, TypeName, TypeName> generator,
                                                   String generatorMethod,
                                                   BeanDirection direction,
-                                                  TypeName beanProcessor,
+                                                  TypeName constructParameterType,
+                                                  String constructorParameter,
+                                                  TypeVariableName parametericType,
                                                   boolean defaultBehaviour,
                                                   String beanPackage,
                                                   BeanDirection outDirection,
@@ -77,15 +85,18 @@ public class CompilerConfigurations {
         TypeSpec.Builder builder = compilerUtil.generateClassInit(theConfiguratorName);
         builder.addJavadoc("The table configurator $N\n", theConfiguratorName);
 
+
+        if (parametericType!=null)  builder.addTypeVariable(parametericType);
+
         // the following in only used for the enactorConfigurator
-        if (beanProcessor!=null) {
-            builder.addField(beanProcessor, enactorVar, Modifier.FINAL, Modifier.PRIVATE);
+        if (constructParameterType!=null && constructorParameter!=null) {
+            builder.addField(constructParameterType, constructorParameter, Modifier.FINAL, Modifier.PRIVATE);
             MethodSpec.Builder cspec= MethodSpec.constructorBuilder()
                     .addModifiers(Modifier.PUBLIC)
-                    .addParameter(ParameterSpec.builder(beanProcessor, enactorVar).build());
+                    .addParameter(ParameterSpec.builder(constructParameterType, constructorParameter).build());
             compilerUtil.specWithComment(cspec);
 
-            cspec.addStatement("this.$N=$N", enactorVar, enactorVar);
+            cspec.addStatement("this.$N=$N", constructorParameter, constructorParameter);
             builder.addMethod(cspec.build());
         }
 
@@ -152,33 +163,36 @@ public class CompilerConfigurations {
     }
 
     public SpecificationFile generateRelation0Configurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, mapString2MapString2IntArray, this::generateRelation0, "generateRelation0Configurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, mapString2MapString2IntArray, this::generateRelation0, "generateRelation0Configurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
+    }
+    public SpecificationFile generateRelationConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName, PARAMETRIC_T, this::generateRelation, "generateRelationConfigurator", BeanDirection.COMMON, FunctionOfString2StringArray, CONVERTER_VAR, PARAMETRIC_T, false, null, BeanDirection.COMMON, directory, fileName);
     }
 
     public SpecificationFile generateSqlConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfString, this::generateMethodRecord2SqlConverter, "generateSqlConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfString, this::generateMethodRecord2SqlConverter, "generateSqlConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generatePropertyOrderConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, stringArray, this::generatePropertyOrder, "generatePropertyOrderConfigurator", BeanDirection.COMMON, null, true, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, stringArray, this::generatePropertyOrder, "generatePropertyOrderConfigurator", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateInputsConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, stringArray, this::generateInputPropertyOrder, "generateInputsConfigurator", BeanDirection.COMMON, null, true, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, stringArray, this::generateInputPropertyOrder, "generateInputsConfigurator", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateOutputsConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, stringArray, this::generateOutputPropertyOrder, "generateOutputsConfigurator", BeanDirection.COMMON, null, true, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, stringArray, this::generateOutputPropertyOrder, "generateOutputsConfigurator", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateCsvConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfString, this::generateMethodRecord2CsvConverter, "generateCsvConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfString, this::generateMethodRecord2CsvConverter, "generateCsvConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateBuilderConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, ClassName.get(CLIENT_PACKAGE,"Builder"), this::generateReturnSelf, "generateBuilderConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, ClassName.get(CLIENT_PACKAGE,"Builder"), this::generateReturnSelf, "generateBuilderConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
 
     public SpecificationFile generateSqlInsertConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, ClassName.get(String.class), this::generateSqlInsert, "generateSqlInsertConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, ClassName.get(String.class), this::generateSqlInsert, "generateSqlInsertConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateConverterConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodRecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodRecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateRecord2RecordConfiguration(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         Consumer<TypeSpec.Builder> optionalCode=
@@ -192,14 +206,14 @@ public class CompilerConfigurations {
                                         .build())
                                 .build());
         TypeName record2recordType=ClassName.get(locations.getFilePackage(RECORD_2_RECORD_CONFIGURATOR), RECORD_2_RECORD_CONFIGURATOR+"."+RECORD_2_RECORD);
-        return  generateConfigurator(configs, locations, theConfiguratorName, record2recordType, this::generateMethodRecord2RecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON, directory, fileName, optionalCode);
+        return  generateConfigurator(configs, locations, theConfiguratorName, record2recordType, this::generateMethodRecord2RecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName, optionalCode);
     }
     public SpecificationFile generateEnactorConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor, "generateEnactorConfigurator", BeanDirection.COMMON, compilerUtil.getClass(BEAN_PROCESSOR,locations), false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor, "generateEnactorConfigurator", BeanDirection.COMMON, compilerUtil.getClass(BEAN_PROCESSOR,locations), ENACTOR_VAR, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
 
     public SpecificationFile generateEnactorConfigurator2(TemplatesProjectConfiguration configs, String theConfiguratorName, String integrator_package, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor2, "generateEnactorConfigurator2", BeanDirection.INPUTS, ClassName.get(locations.getFilePackage(INPUT_OUTPUT_PROCESSOR),INPUT_OUTPUT_PROCESSOR), false, integrator_package,BeanDirection.OUTPUTS, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor2, "generateEnactorConfigurator2", BeanDirection.INPUTS, ClassName.get(locations.getFilePackage(INPUT_OUTPUT_PROCESSOR),INPUT_OUTPUT_PROCESSOR), ENACTOR_VAR, null, false, integrator_package,BeanDirection.OUTPUTS, directory, fileName);
     }
 
     public void generateMethodRecord2SqlConverter(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
@@ -213,6 +227,9 @@ public class CompilerConfigurations {
     }
     public void generateRelation0(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $T.__relations", className);
+    }
+    public void generateRelation(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
+        mspec.addStatement("return $N.apply($T.__relations, $N.getPropertyOrder())", CONVERTER_VAR, className, builderParameter);
     }
     public void generateInputPropertyOrder(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.getInputs()", builderParameter);
@@ -236,7 +253,7 @@ public class CompilerConfigurations {
         mspec.addStatement("$N<$T> enactor=(array) -> {\n" +
                 "                    $T bean=beanConverter.process(array);\n" +
                 "                    return $N.process(bean);\n" +
-                "                }", PROCESSOR_ARGS_INTERFACE, beanType,beanType,enactorVar);
+                "                }", PROCESSOR_ARGS_INTERFACE, beanType,beanType, ENACTOR_VAR);
         mspec.addStatement("return enactor");
     }
     public void generateMethodEnactor2(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName inputBeanType, TypeName outputBeanType) {
@@ -248,7 +265,7 @@ public class CompilerConfigurations {
         mspec.addStatement("$N<$T> enactor=(array) -> {\n" +
                 "                    $T bean=beanConverter.process(array);\n" +
                 "                    return $N.process(bean);\n" +
-                "                }", PROCESSOR_ARGS_INTERFACE, outputBeanType,inputBeanType,enactorVar);
+                "                }", PROCESSOR_ARGS_INTERFACE, outputBeanType,inputBeanType, ENACTOR_VAR);
         mspec.addStatement("return enactor");
     }
 

@@ -27,6 +27,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: compiler support for QualifiedSpecializationOf
 * prov-template-compiler: CompilerConfigurations: generate Relation0Configurator
 * prov-template-compiler: CompilerConfigurations: generate RelationConfigurator
+* prov-template-compiler: CompilerConfigurations: generate BuilderProcessorConfigurator
 
 
 `2.2.1`

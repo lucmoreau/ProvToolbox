@@ -35,7 +35,8 @@ public class CompilerConfigurations {
     static final ParameterizedTypeName mapString2MapString2StringArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), mapString2StringArray);
     static final ParameterizedTypeName mapString2MapString2IntArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), mapString2IntArray);
 
-    static final ParameterizedTypeName FunctionOfString2StringArray = ParameterizedTypeName.get(ClassName.get(java.util.function.BiFunction.class), mapString2MapString2IntArray, stringArray, PARAMETRIC_T);
+    static final ParameterizedTypeName BiFunctionOfString2StringArray = ParameterizedTypeName.get(ClassName.get(java.util.function.BiFunction.class), mapString2MapString2IntArray, stringArray, PARAMETRIC_T);
+    static final ParameterizedTypeName FunctionOfString2StringArray = ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ClassName.get(CLIENT_PACKAGE,BUILDER_INTERFACE), PARAMETRIC_T);
 
     static final String CONVERTER_VAR="converter";
 
@@ -166,7 +167,10 @@ public class CompilerConfigurations {
         return  generateConfigurator(configs, locations, theConfiguratorName, mapString2MapString2IntArray, this::generateRelation0, "generateRelation0Configurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateRelationConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, PARAMETRIC_T, this::generateRelation, "generateRelationConfigurator", BeanDirection.COMMON, FunctionOfString2StringArray, CONVERTER_VAR, PARAMETRIC_T, false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, PARAMETRIC_T, this::generateRelation, "generateRelationConfigurator", BeanDirection.COMMON, BiFunctionOfString2StringArray, CONVERTER_VAR, PARAMETRIC_T, false, null, BeanDirection.COMMON, directory, fileName);
+    }
+    public SpecificationFile generateBuilderProcessorConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName, PARAMETRIC_T, this::generateBuilderProcessor, "generateBuilderProcessorConfigurator", BeanDirection.COMMON, FunctionOfString2StringArray, PROCESSOR, PARAMETRIC_T, false, null, BeanDirection.COMMON, directory, fileName);
     }
 
     public SpecificationFile generateSqlConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
@@ -230,6 +234,9 @@ public class CompilerConfigurations {
     }
     public void generateRelation(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.apply($T.__relations, $N.getPropertyOrder())", CONVERTER_VAR, className, builderParameter);
+    }
+    public void generateBuilderProcessor(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
+        mspec.addStatement("return $N.apply($N)", PROCESSOR, builderParameter);
     }
     public void generateInputPropertyOrder(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.getInputs()", builderParameter);

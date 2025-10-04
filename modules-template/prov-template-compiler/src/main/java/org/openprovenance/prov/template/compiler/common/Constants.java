@@ -80,6 +80,7 @@ public interface Constants {
     String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
     String RELATION0_CONFIGURATOR = "Relation0Configurator";
     String RELATION_CONFIGURATOR = "RelationConfigurator";
+    String BUILDER_PROCESSOR_CONFIGURATOR = "BuilderProcessorConfigurator";
     String INPUTS_CONFIGURATOR = "InputsConfigurator";
     String OUTPUTS_CONFIGURATOR = "OutputsConfigurator";
     String PROCESS_METHOD_NAME = "process";

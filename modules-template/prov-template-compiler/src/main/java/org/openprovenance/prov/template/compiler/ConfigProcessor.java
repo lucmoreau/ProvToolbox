@@ -514,6 +514,9 @@ public class ConfigProcessor implements Constants {
         SpecificationFile configurationRelation= compilerConfigurations.generateRelationConfigurator(configs,RELATION_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(RELATION_CONFIGURATOR)), RELATION_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationRelation.save();
 
+        SpecificationFile configurationBuilderProcessor= compilerConfigurations.generateBuilderProcessorConfigurator(configs,BUILDER_PROCESSOR_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(BUILDER_PROCESSOR_CONFIGURATOR)), BUILDER_PROCESSOR_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        configurationBuilderProcessor.save();
+
         SpecificationFile configurationCsv= compilerConfigurations.generateCsvConfigurator(configs,CSV_CONFIGURATOR, locations,locations.convertToDirectory(locations.getFilePackage(CSV_CONFIGURATOR)), CSV_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationCsv.save();
 

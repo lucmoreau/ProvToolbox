@@ -127,6 +127,7 @@ public class Locations {
             case PROPERTY_ORDER_CONFIGURATOR:
             case RELATION0_CONFIGURATOR:
             case RELATION_CONFIGURATOR:
+            case BUILDER_PROCESSOR_CONFIGURATOR:
             case OUTPUTS_CONFIGURATOR:
             case INPUTS_CONFIGURATOR:
             case SQL_CONFIGURATOR:

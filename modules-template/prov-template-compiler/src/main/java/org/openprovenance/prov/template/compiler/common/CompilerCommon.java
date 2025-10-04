@@ -108,6 +108,7 @@ public class CompilerCommon {
         builder.addField(generateFieldPropertyOrder(bindingsSchema));
         builder.addMethod(generateCommonMethodGetNodes(beanKind));
         builder.addMethod(generateCommonMethodGetSuccessors(beanKind));
+        builder.addMethod(generateCommonMethodGetForeign(beanKind));
         builder.addMethod(generateCommonMethodGetTypedSuccessors(beanKind));
         builder.addMethod(generateRecordCsvProcessorMethod(beanKind));
         compilerSQL.generateSQLstatements(builder, templateName, bindingsSchema, beanKind);
@@ -1026,6 +1027,21 @@ public class CompilerCommon {
             generateUnsupportedException(builder);
         } else {
             builder.addStatement("return __successors");
+        }
+        return builder.build();
+    }
+
+
+    public MethodSpec generateCommonMethodGetForeign(BeanKind beanKind) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(GET_FOREIGN)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(ArrayTypeName.of(String.class));
+        compilerUtil.specWithComment(builder);
+
+        if (beanKind.equals(BeanKind.COMPOSITE)) {
+            generateUnsupportedException(builder);
+        } else {
+            builder.addStatement("return $N",Constants.FOREIGN_TABLES);
         }
         return builder.build();
     }

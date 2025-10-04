@@ -209,6 +209,11 @@ public class CompilerLogger {
                 .returns(CompilerUtil.mapIntArrayType);
         builder.addMethod(builder3b.build());
 
+        MethodSpec.Builder builder3c = MethodSpec.methodBuilder(Constants.GET_FOREIGN)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(ArrayTypeName.of(String.class));
+        builder.addMethod(builder3c.build());
+
         MethodSpec.Builder builder4 = MethodSpec.methodBuilder(Constants.GET_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(String.class);

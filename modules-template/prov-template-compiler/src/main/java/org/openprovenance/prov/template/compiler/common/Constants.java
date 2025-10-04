@@ -181,4 +181,5 @@ public interface Constants {
 
     String POST_PROCESS_METHOD_NAME = "postEnactmentProcessing";
     String OUT_BEAN = "out";
+    String GET_FOREIGN = "getForeign";
 }

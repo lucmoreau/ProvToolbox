@@ -121,6 +121,7 @@ public class Locations {
             case TABLE_CONFIGURATOR+"ForTypes":
             case TABLE_CONFIGURATOR+WITH_MAP:
             case TABLE_CONFIGURATOR+"ForTypes"+WITH_MAP:
+            case OBJECT_RECORD_MAKER_CONFIGURATOR:
             case CONVERTER_CONFIGURATOR:
             case BUILDER_CONFIGURATOR:
             case SQL_INSERT_CONFIGURATOR:

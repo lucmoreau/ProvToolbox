@@ -81,6 +81,7 @@ public interface Constants {
     String RELATION0_CONFIGURATOR = "Relation0Configurator";
     String RELATION_CONFIGURATOR = "RelationConfigurator";
     String BUILDER_PROCESSOR_CONFIGURATOR = "BuilderProcessorConfigurator";
+    String OBJECT_RECORD_MAKER_CONFIGURATOR = "ObjectRecordMakerConfigurator";
     String INPUTS_CONFIGURATOR = "InputsConfigurator";
     String OUTPUTS_CONFIGURATOR = "OutputsConfigurator";
     String PROCESS_METHOD_NAME = "process";
@@ -134,8 +135,9 @@ public interface Constants {
     String PROPERTY_COLUMN = "property";
     String CREATED_AT_COLUMN = "created_at";
     String PROCESSOR = "_processor";
+    String DISPATCHER_VAR = "_dispatcher";
     String DOCUMENT_BUILDER_DISPATCHER = "documentBuilderDispatcher";
-    String TEMPLATE_BUILDER_VARIABLE = "templateBuilder";
+    String TEMPLATE_BUILDER_VARIABLE = "_templateBuilder";
     String TEMPLATE_BUILDERS = "TemplateBuilders";
     String PROPERTY_MAP = "propertyMap";
     String INPUT = "input";

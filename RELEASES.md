@@ -29,6 +29,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: CompilerConfigurations: generate RelationConfigurator
 * prov-template-compiler: CompilerConfigurations: generate BuilderProcessorConfigurator
 * prov-template-compiler: CompilerCommon: getForeign for Builder
+* prov-template-compiler: CompilerConfigurations: generator for ObjectRecordMaker
 
 
 `2.2.1`

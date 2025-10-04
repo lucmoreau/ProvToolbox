@@ -4,6 +4,7 @@ import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.log2prov.FileBuilder;
 
 import javax.lang.model.element.Modifier;
 
@@ -37,6 +38,10 @@ public class CompilerConfigurations {
 
     static final ParameterizedTypeName BiFunctionOfString2StringArray = ParameterizedTypeName.get(ClassName.get(java.util.function.BiFunction.class), mapString2MapString2IntArray, stringArray, PARAMETRIC_T);
     static final ParameterizedTypeName FunctionOfString2StringArray = ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ClassName.get(CLIENT_PACKAGE,BUILDER_INTERFACE), PARAMETRIC_T);
+
+    static final ParameterizedTypeName FunctionOfObjectArray2ObjectArray = ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ArrayTypeName.get(Object[].class), ArrayTypeName.get(Object[].class));
+
+    static final ParameterizedTypeName MapString2FileBuilder= ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), ClassName.get(FileBuilder.class));
 
     static final String CONVERTER_VAR="converter";
 
@@ -106,6 +111,7 @@ public class CompilerConfigurations {
 
         for (TemplateCompilerConfig config : configs.templates) {
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
+
             final String inBeanNameClass = compilerUtil.beanNameClass(config.name, direction);
             final String outBeanNameClass = compilerUtil.beanNameClass(config.name, outDirection);
             locations.updateWithConfig(config);
@@ -173,6 +179,10 @@ public class CompilerConfigurations {
         return  generateConfigurator(configs, locations, theConfiguratorName, PARAMETRIC_T, this::generateBuilderProcessor, "generateBuilderProcessorConfigurator", BeanDirection.COMMON, FunctionOfString2StringArray, PROCESSOR, PARAMETRIC_T, false, null, BeanDirection.COMMON, directory, fileName);
     }
 
+    public SpecificationFile generateObjectRecordMakerConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName, FunctionOfObjectArray2ObjectArray, new WrapperClass(locations)::generateObjectRecordMaker, "generateObjectRecordMakerConfigurator", BeanDirection.COMMON, MapString2FileBuilder, DISPATCHER_VAR, null, false, null, BeanDirection.COMMON, directory, fileName);
+    }
+
     public SpecificationFile generateSqlConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, processorOfString, this::generateMethodRecord2SqlConverter, "generateSqlConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
@@ -238,6 +248,30 @@ public class CompilerConfigurations {
     public void generateBuilderProcessor(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.apply($N)", PROCESSOR, builderParameter);
     }
+
+    static class WrapperClass {
+        private final Locations locations;
+
+        public void generateObjectRecordMaker(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
+
+            final String backendPackage = locations.getFileBackendPackage("_ignoreMe");
+
+            System.out.println("backendPackage is "+backendPackage);
+
+            String backendBuilder = className.toString();
+            // return suffix after last dot
+            final int pos = backendBuilder.lastIndexOf('.');
+            backendBuilder = backendBuilder.substring(pos + 1);
+
+            mspec.addStatement("$T $N=($T) $N.get(builder.getName())", ClassName.get(backendPackage,backendBuilder), TEMPLATE_BUILDER_VARIABLE, ClassName.get(backendPackage,backendBuilder), DISPATCHER_VAR);
+            mspec.addStatement("return record -> $N.make(record, $N.getTypedRecord())", TEMPLATE_BUILDER_VARIABLE, TEMPLATE_BUILDER_VARIABLE);
+        }
+
+        WrapperClass(Locations locations) {
+            this.locations = locations;
+        }
+    }
+
     public void generateInputPropertyOrder(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.getInputs()", builderParameter);
     }

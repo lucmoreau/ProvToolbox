@@ -31,6 +31,7 @@ import org.openprovenance.prov.service.readers.TemplatesVizConfig;
 import org.openprovenance.prov.service.security.pac.RoleAuthorizationGenerator;
 import org.openprovenance.prov.service.security.pac.SecurityConfiguration;
 import org.openprovenance.prov.service.security.pac.Utils;
+import org.openprovenance.prov.template.library.plead.client.configurator.ObjectRecordMakerConfigurator;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
 import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeBeanEnactor4;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
@@ -153,7 +154,8 @@ public class TemplateService {
         this.successors=initializeBeanTable(new TableConfiguratorForSuccessors(documentBuilderDispatcher));
         this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om, documentBuilderDispatcher, org.openprovenance.prov.template.library.plead.client.logger.Logger.ioMap, successors);
         this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),templateDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
-        this.recordMaker=initializeBeanTable(new TableConfiguratorForObjectRecordMaker(documentBuilderDispatcher));
+        //this.recordMaker=initializeBeanTable(new TableConfiguratorForObjectRecordMaker(documentBuilderDispatcher));
+        this.recordMaker=initializeBeanTable(new ObjectRecordMakerConfigurator(documentBuilderDispatcher));
 
         this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor, this.typeAssignment, this.successors);
 

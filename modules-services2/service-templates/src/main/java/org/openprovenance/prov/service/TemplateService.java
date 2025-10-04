@@ -20,8 +20,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
-import org.openprovenance.prov.service.dispatch.TableConfiguratorForObjectRecordMaker;
-import org.openprovenance.prov.service.dispatch.TableConfiguratorForSuccessors;
+import org.openprovenance.prov.service.dispatch.SuccessorConfigurator;
 import org.openprovenance.prov.service.readers.TableKeyList;
 import org.openprovenance.prov.service.readers.TableKey;
 import org.openprovenance.prov.service.readers.JsonOrCsv;
@@ -151,7 +150,7 @@ public class TemplateService {
             put("PROV_API", provAPI);
         }};
         this.documentBuilderDispatcher=initializeBeanTable(new org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorWithMap(map,pf));
-        this.successors=initializeBeanTable(new TableConfiguratorForSuccessors(documentBuilderDispatcher));
+        this.successors=initializeBeanTable(new SuccessorConfigurator());
         this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om, documentBuilderDispatcher, org.openprovenance.prov.template.library.plead.client.logger.Logger.ioMap, successors);
         this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),templateDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
         //this.recordMaker=initializeBeanTable(new TableConfiguratorForObjectRecordMaker(documentBuilderDispatcher));

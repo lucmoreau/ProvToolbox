@@ -42,6 +42,7 @@ import java.io.*;
 import java.net.URI;
 import java.security.Principal;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
@@ -119,7 +120,8 @@ public class TemplateService {
         ps.addToConfiguration("security.config", securityConfiguration);
 
         Connection conn=storage.setup(postgresHost, postgresUsername, postgresPassword);
-        this.templateDispatcher=new TemplateDispatcher(storage,conn,this::submitPostProcessing);
+        Function<String, ResultSet> aquerier = storage.getQuerier(conn);
+        this.templateDispatcher=new TemplateDispatcher(aquerier,this::submitPostProcessing);
         this.querier =new Querier(storage,conn);
         this.om=new ObjectMapper();
         this.om.enable(SerializationFeature.INDENT_OUTPUT);

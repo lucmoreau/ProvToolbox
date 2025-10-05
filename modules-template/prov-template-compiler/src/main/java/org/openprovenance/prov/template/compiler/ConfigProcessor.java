@@ -96,6 +96,7 @@ public class ConfigProcessor implements Constants {
     private final CompilerCommon compilerCommon;
     private final CompilerExpansionBuilder compilerExpansionBuilder;
     private final CompilerBuilderInit compilerBuilderInit;
+    private final CompilerCatalogueDispatcher compilerCatalogueDispatcher;
     private final CompilerTypeManagement compilerTypeManagement;
     private final CompilerTypedRecord compilerTypedRecord;
     private final CompilerBeanGenerator compilerBeanGenerator;
@@ -152,6 +153,7 @@ public class ConfigProcessor implements Constants {
         this.compilerSqlIntegration = new CompilerSqlIntegration(pFactory);
         this.compilerQueryInvokerWithPrincipal = new CompilerQueryInvokerWithPrincipal(pFactory);
         this.compilerBeanEnactor2compositeWP = new CompilerBeanEnactor2CompositeWithPrincipal(pFactory);
+        this.compilerCatalogueDispatcher=new CompilerCatalogueDispatcher(pFactory);
     }
 
    // public String readCompilerVersion() {
@@ -303,6 +305,11 @@ public class ConfigProcessor implements Constants {
 
         SpecificationFile init=compilerBuilderInit.generateInitializer(configs, locations, init_dir, INIT + DOT_JAVA_EXTENSION);
         init.save();
+
+        SpecificationFile catalogueDispatcher=compilerCatalogueDispatcher.generateCatalogueDispatcher(configs, locations, init_dir, CATALOGUE_DISPATCHER + DOT_JAVA_EXTENSION);
+        catalogueDispatcher.save();
+
+
 
         SpecificationFile testfile=compilerMaven.generateTestFile_l2p(configs, l2p_test_dir, TESTER_FILE+ DOT_JAVA_EXTENSION);
         testfile.save();

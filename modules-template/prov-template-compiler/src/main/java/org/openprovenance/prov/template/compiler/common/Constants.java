@@ -8,6 +8,7 @@ public interface Constants {
     String GET_NODES_METHOD = "getNodes";
     String BUILDER_INTERFACE = "Builder";
     String INIT = "Init";
+    String CATALOGUE_DISPATCHER = "CatalogueDispatcher";
     String BUILDERS = "builders";
     String TYPEMANAGERS = "typeManagers";
     String PF = "pf";
@@ -184,4 +185,5 @@ public interface Constants {
     String POST_PROCESS_METHOD_NAME = "postEnactmentProcessing";
     String OUT_BEAN = "out";
     String GET_FOREIGN = "getForeign";
+    String QUERIER_VAR = "querier";
 }

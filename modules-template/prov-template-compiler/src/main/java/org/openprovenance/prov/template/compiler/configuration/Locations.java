@@ -155,6 +155,7 @@ public class Locations {
 
             case SQL_INTERFACE:
                 return Constants.CLIENT_PACKAGE;
+
         }
         throw new UnsupportedOperationException("Unknown file " + file);
     }

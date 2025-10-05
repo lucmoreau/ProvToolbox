@@ -29,9 +29,11 @@ public class CompilerConfigurations {
     static final TypeVariableName PARAMETRIC_T=TypeVariableName.get("T");
     public static final ParameterizedTypeName processorOfString = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"ProcessorArgsInterface"), TypeName.get(String.class));
     static final ParameterizedTypeName processorOfUnknown = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"ProcessorArgsInterface"), TypeVariableName.get("?"));
-    static final TypeName stringArray = ArrayTypeName.get(String[].class);
+    public static final TypeName stringArray = ArrayTypeName.get(String[].class);
     static final TypeName intArray = ArrayTypeName.get(int[].class);
     static final ParameterizedTypeName mapString2StringArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), stringArray);
+    static final ParameterizedTypeName mapString2IntegerList = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(Integer.class)));
+    static final ParameterizedTypeName mapString2StringList = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(String.class)));
     static final ParameterizedTypeName mapString2IntArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), intArray);
     static final ParameterizedTypeName mapString2MapString2StringArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), mapString2StringArray);
     static final ParameterizedTypeName mapString2MapString2IntArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), mapString2IntArray);

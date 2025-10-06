@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
@@ -72,7 +73,8 @@ public class CompilerCatalogueDispatcher {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.CATALOGUE_DISPATCHER);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.CATALOGUE_DISPATCHER).addSuperinterface(ClassName.get(CatalogueDispatcherInterface.class));
+
 
         MethodSpec.Builder cspec = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)

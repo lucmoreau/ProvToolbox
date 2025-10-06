@@ -11,6 +11,7 @@ import javax.lang.model.element.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,9 +27,15 @@ public class CompilerConfigurations {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
+
+    static public final ParameterizedTypeName functionObjArrayTo (TypeName returnType) {
+        return ParameterizedTypeName.get(ClassName.get(Function.class), ArrayTypeName.of(Object.class), returnType);
+    }
+
     static final TypeVariableName PARAMETRIC_T=TypeVariableName.get("T");
-    public static final ParameterizedTypeName processorOfString = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"ProcessorArgsInterface"), TypeName.get(String.class));
-    static final ParameterizedTypeName processorOfUnknown = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"ProcessorArgsInterface"), TypeVariableName.get("?"));
+    public static final ParameterizedTypeName processorOfStringOLD = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"ProcessorArgsInterface"), TypeName.get(String.class));
+    public static final ParameterizedTypeName processorOfString = functionObjArrayTo(TypeName.get(String.class));
+    static final ParameterizedTypeName processorOfUnknown = functionObjArrayTo(TypeVariableName.get("?"));
     public static final TypeName stringArray = ArrayTypeName.get(String[].class);
     static final TypeName intArray = ArrayTypeName.get(int[].class);
     static final ParameterizedTypeName mapString2StringArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), stringArray);
@@ -287,16 +294,16 @@ public class CompilerConfigurations {
         mspec.addStatement("return $N.aRecord2BeanConverter", builderParameter);
     }
     public void generateMethodRecord2RecordConverter(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
-        mspec.addStatement("return x -> builder.aRecord2BeanConverter.process(x).process(builder.aArgs2RecordConverter())");
+        mspec.addStatement("return x -> builder.aRecord2BeanConverter.apply(x).process(builder.aArgs2RecordConverter())");
     }
     public void generateMethodEnactor(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
-        mspec.addStatement("$N<$T> beanConverter=$N.aRecord2BeanConverter", PROCESSOR_ARGS_INTERFACE, beanType, builderParameter);
+        mspec.addStatement("$T beanConverter=$N.aRecord2BeanConverter", functionObjArrayTo(beanType), builderParameter);
 
 
-        mspec.addStatement("$N<$T> enactor=(array) -> {\n" +
-                "                    $T bean=beanConverter.process(array);\n" +
+        mspec.addStatement("$T enactor=(array) -> {\n" +
+                "                    $T bean=beanConverter.apply(array);\n" +
                 "                    return $N.process(bean);\n" +
-                "                }", PROCESSOR_ARGS_INTERFACE, beanType,beanType, ENACTOR_VAR);
+                "                }", functionObjArrayTo(beanType),beanType, ENACTOR_VAR);
         mspec.addStatement("return enactor");
     }
     public void generateMethodEnactor2(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName inputBeanType, TypeName outputBeanType) {
@@ -304,11 +311,11 @@ public class CompilerConfigurations {
         mspec.addComment("Generated Automatically by ProvToolbox method $N.$N()", getClass().getName(), "generateMethodEnactor2");
 
 
-        mspec.addStatement("$N<$T> beanConverter=$N.getIntegrator().aRecord2InputsConverter", PROCESSOR_ARGS_INTERFACE, inputBeanType, builderParameter);
-        mspec.addStatement("$N<$T> enactor=(array) -> {\n" +
-                "                    $T bean=beanConverter.process(array);\n" +
+        mspec.addStatement("$T beanConverter=$N.getIntegrator().aRecord2InputsConverter", functionObjArrayTo(inputBeanType), builderParameter);
+        mspec.addStatement("$T enactor=(array) -> {\n" +
+                "                    $T bean=beanConverter.apply(array);\n" +
                 "                    return $N.process(bean);\n" +
-                "                }", PROCESSOR_ARGS_INTERFACE, outputBeanType,inputBeanType, ENACTOR_VAR);
+                "                }", functionObjArrayTo(outputBeanType),inputBeanType, ENACTOR_VAR);
         mspec.addStatement("return enactor");
     }
 

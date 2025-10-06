@@ -187,7 +187,7 @@ public class TemplateQuery {
 
         StringBuilder sb=new StringBuilder();
         sb.append(id).append(",");
-        sb.append(templateDispatcher.getCsvConverter().get((String)record[0]).process(record));
+        sb.append(templateDispatcher.getCsvConverter().get((String)record[0]).apply(record));
 
         String csv = sb.toString();
         String hash2=sha512.digestAsHex(csv);
@@ -202,7 +202,7 @@ public class TemplateQuery {
         sb.append(id).append(",").append(template).append(",").append(records.size());
         for (Object[] record: records) {
             sb.append("\n");
-            sb.append(templateDispatcher.getCsvConverter().get((String)record[0]).process(record));
+            sb.append(templateDispatcher.getCsvConverter().get((String)record[0]).apply(record));
         }
 
         String csv = sb.toString();

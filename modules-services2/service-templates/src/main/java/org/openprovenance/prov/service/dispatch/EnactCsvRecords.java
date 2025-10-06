@@ -5,7 +5,6 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
-import org.openprovenance.prov.client.ProcessorArgsInterface;
 import org.openprovenance.prov.client.RecordsProcessorInterface;
 
 import java.io.IOException;
@@ -13,6 +12,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class EnactCsvRecords<T> {
@@ -20,11 +20,11 @@ public class EnactCsvRecords<T> {
 
 
 
-    public List<T> process(CSVParser parser, Map<String, ProcessorArgsInterface<T>> enactors, Map<String,  RecordsProcessorInterface<T>> enactors_N) throws IOException {
+    public List<T> process(CSVParser parser, Map<String, Function<Object[],T>> enactors, Map<String,  RecordsProcessorInterface<T>> enactors_N) throws IOException {
         return process(parser.getRecords(),enactors,enactors_N);
     }
 
-    public List<T> process(Collection<CSVRecord> records, Map<String, ProcessorArgsInterface<T>> enactors, Map<String,  RecordsProcessorInterface<T>> enactors_N) {
+    public List<T> process(Collection<CSVRecord> records, Map<String, Function<Object[],T>> enactors, Map<String,  RecordsProcessorInterface<T>> enactors_N) {
 
         List<T> populatedRecords=new LinkedList<>();
 
@@ -32,7 +32,7 @@ public class EnactCsvRecords<T> {
         int size0=record0.size();
         Object[] args0=new Object[size0];
         String method = populateRecordAndExtractMethod(record0, size0, args0);
-        ProcessorArgsInterface<T> processor_1=enactors.get(method);
+        Function<Object[],T> processor_1=enactors.get(method);
 
         // NOTE
         // distinguish the processor for a single record (enactors.get(method)) from the processor for N (enactors_N.get(method)).
@@ -42,7 +42,7 @@ public class EnactCsvRecords<T> {
                 int size = record.size();
                 Object[] args = new Object[size];
                 populateRecordAndExtractMethod(record, size, args);
-                populatedRecords.add(processor_1.process(args));
+                populatedRecords.add(processor_1.apply(args));
             }
         } else {
             RecordsProcessorInterface<T> processor_N=enactors_N.get(method);

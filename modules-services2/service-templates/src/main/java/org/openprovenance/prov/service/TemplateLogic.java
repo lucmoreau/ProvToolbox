@@ -8,7 +8,6 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.client.ProcessorArgsInterface;
 import org.openprovenance.prov.client.RecordsProcessorInterface;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
@@ -28,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.service.TemplateService.*;
@@ -75,13 +75,13 @@ public class TemplateLogic {
         final String isA=(String) entries.get(0).get(IS_A);
         List<Object> recordsResult=new LinkedList<>();
         Map<String, String[]> properties= templateDispatcher.getPropertyOrder();
-        Map<String, ProcessorArgsInterface<?>> enactorConverters= templateDispatcher.getEnactorConverter();
+        Map<String, Function<Object[], ?>> enactorConverters= templateDispatcher.getEnactorConverter();
         Map<String, RecordsProcessorInterface<?>> compositeEnactorConverters= templateDispatcher.getCompositeEnactorConverter();
 
 
 
         String[] props=properties.get(isA);
-        ProcessorArgsInterface<?> enactor=enactorConverters.get(isA);
+        Function<Object[], ?> enactor=enactorConverters.get(isA);
 
 
         if (enactor!=null) {
@@ -89,7 +89,7 @@ public class TemplateLogic {
             for (Map<String, Object> entry : entries) {
                 Object[] array = convertToArray(entry, props);
                 //debugDisplay("array ", array) ;
-                recordsResult.add(enactor.process(array));
+                recordsResult.add(enactor.apply(array));
             }
         } else {
             for (Map<String, Object> composite : entries) {
@@ -141,8 +141,8 @@ public class TemplateLogic {
 
     public List<Object> processIncomingCsv(CSVParser csv) {
         Collection<CSVRecord> collection=csv.getRecords();
-        Map<String, ProcessorArgsInterface<?>> enactors = templateDispatcher.getEnactorConverter();
-        Map<String, ProcessorArgsInterface<Object>> enactors2= enactors.entrySet().stream().filter(e->e.getValue()!=null).collect(Collectors.toMap(Map.Entry::getKey, e -> (ProcessorArgsInterface<Object>) e.getValue()));
+        Map<String, Function<Object[], ?>> enactors = templateDispatcher.getEnactorConverter();
+        Map<String, Function<Object[], Object>> enactors2= enactors.entrySet().stream().filter(e->e.getValue()!=null).collect(Collectors.toMap(Map.Entry::getKey, e -> (Function<Object[],Object>) e.getValue()));
 
         Map<String, RecordsProcessorInterface<?>> compositeEnactors= templateDispatcher.getCompositeEnactorConverter();
         Map<String, RecordsProcessorInterface<Object>> compositeEnactors2= compositeEnactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (RecordsProcessorInterface<Object>) e.getValue()));

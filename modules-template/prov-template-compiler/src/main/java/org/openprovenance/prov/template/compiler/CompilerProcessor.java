@@ -51,7 +51,6 @@ public class CompilerProcessor {
         CodeBlock.Builder jdoc = CodeBlock.builder();
         String docString=bindingsSchema.getDocumentation();
 
-        String retString = "@return not specified";
         jdoc.add(docString==null? "No @documentation": docString);
         jdoc.add("\n\n");
 
@@ -86,6 +85,8 @@ public class CompilerProcessor {
 
         }
 
+        //jdoc.add("@param &lt;$T&gt; type variable for the result of processor\n", typeT);
+
 
 
         if (consistsOf!=null) {
@@ -94,7 +95,7 @@ public class CompilerProcessor {
             jdoc.add("@param $N: to do \n", Constants.ELEMENTS);
         }
 
-        jdoc.add(retString);
+        jdoc.add("@return &lt;$T&gt;\n",typeT);
 
         mbuilder.addJavadoc(jdoc.build());
 

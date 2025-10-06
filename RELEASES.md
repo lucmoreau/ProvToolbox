@@ -30,7 +30,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: CompilerConfigurations: generate BuilderProcessorConfigurator
 * prov-template-compiler: CompilerCommon: getForeign for Builder
 * prov-template-compiler: CompilerConfigurations: generator for ObjectRecordMaker
-* prov-template-compiler: CompilerCatalogueDispatcher: generating CatalogueDispatcher for template service
+* prov-template-compiler: CompilerCatalogueDispatcher: generating CatalogueDispatcher for template serviceompiler: CompilerCatalogueDispatcher: generating CatalogueDispatcher for template service
+* prov-template-compiler: replaced PROCESSOR_ARGS<T> by Function<Object[],T> 
 
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java

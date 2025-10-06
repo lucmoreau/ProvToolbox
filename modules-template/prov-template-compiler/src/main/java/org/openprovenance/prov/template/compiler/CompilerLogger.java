@@ -219,8 +219,9 @@ public class CompilerLogger {
                 .returns(String.class);
         builder.addMethod(builder4.build());
 
-        TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
+       //TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
 
+        TypeName myType=functionObjArrayTo(ClassName.get(String.class));
         MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.RECORD_CSV_PROCESSOR_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .addParameter(ParameterSpec.builder(ArrayTypeName.of(Object.class),"record").build())
@@ -335,7 +336,7 @@ public class CompilerLogger {
 
     }
 
-    public SpecificationFile generateProcessorArgsInterface(TemplatesProjectConfiguration configs, String directory, String fileName) {
+    public SpecificationFile OLDgenerateProcessorArgsInterface(TemplatesProjectConfiguration configs, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(PROCESSOR_ARGS_INTERFACE,  CompilerUtil.typeT);

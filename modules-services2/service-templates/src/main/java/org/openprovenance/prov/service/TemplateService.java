@@ -259,7 +259,7 @@ public class TemplateService {
         if (extension.equals("csv")) {
             List<Object> ll=new LinkedList<>();
             for (Object[] record: records) {
-                String csv=templateDispatcher.getCsvConverter().get(template).process(record);
+                String csv=templateDispatcher.getCsvConverter().get(template).apply(record);
                 ll.add(csv);
                 ll.add("\n");
             }

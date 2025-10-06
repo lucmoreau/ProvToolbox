@@ -2,7 +2,6 @@ package org.openprovenance.prov.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.client.ProcessorArgsInterface;
 import org.openprovenance.prov.client.RecordsProcessorInterface;
 import org.openprovenance.prov.service.dispatch.ForeignTableConfigurator;
 import org.openprovenance.prov.service.dispatch.RelationConfigurator;
@@ -30,11 +29,11 @@ public class TemplateDispatcher {
 
 
     private final Map<String,String[]> propertyOrder;
-    private final Map<String, ProcessorArgsInterface<String>> sqlConverter;
+    private final Map<String, Function<Object[], String>> sqlConverter;
     private final Map<String, String> sqlInsert;
-    private final Map<String, ProcessorArgsInterface<String>> csvConverter;
-    private final Map<String, ProcessorArgsInterface<?>> beanConverter;
-    private final Map<String, ProcessorArgsInterface<?>> enactorConverter;
+    private final Map<String, Function<Object[], String>> csvConverter;
+    private final Map<String, Function<Object[], ?>> beanConverter;
+    private final Map<String, Function<Object[], ?>> enactorConverter;
     private final Map<String, RecordsProcessorInterface<?>> compositeEnactorConverter;
     private final Map<String, Map<String, List<String>>> successors;
     private final Map<String, Map<String, List<String>>> predecessors;
@@ -85,15 +84,15 @@ public class TemplateDispatcher {
         return propertyOrder;
     }
 
-    public Map<String, ProcessorArgsInterface<String>> getSqlConverter() {
+    public Map<String, Function<Object[], String>> getSqlConverter() {
         return sqlConverter;
     }
 
-    public Map<String, ProcessorArgsInterface<String>> getCsvConverter() {
+    public Map<String, Function<Object[], String>> getCsvConverter() {
         return csvConverter;
     }
 
-    public Map<String, ProcessorArgsInterface<?>> getBeanConverter() {
+    public Map<String, Function<Object[], ?>> getBeanConverter() {
         return beanConverter;
     }
 
@@ -101,7 +100,7 @@ public class TemplateDispatcher {
         return sqlInsert;
     }
 
-    public Map<String, ProcessorArgsInterface<?>> getEnactorConverter() {
+    public Map<String, Function<Object[], ?>> getEnactorConverter() {
         return enactorConverter;
     }
 

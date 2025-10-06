@@ -54,6 +54,7 @@ public class CompilerCatalogueDispatcher {
 
     public static Set<String> integratorRequired= new HashSet<>(List.of("inputs", "outputs"));
     public static Set<String> storageRequired= new HashSet<>(List.of("enactorConverter", "compositeEnactorConverter"));
+    public static Set<String> sqlRelated= new HashSet<>(List.of("sqlConverter", "sqlInsert"));
 
 
     private final CompilerUtil compilerUtil;
@@ -72,9 +73,6 @@ public class CompilerCatalogueDispatcher {
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.CATALOGUE_DISPATCHER);
-
-
-        //builder.addField(ProvFactory.class, Constants.PF, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
 
         MethodSpec.Builder cspec = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
@@ -127,10 +125,14 @@ public class CompilerCatalogueDispatcher {
                             ClassName.get(configs.root_package, CATALOGUE_DISPATCHER));
 
                 } else {
-                    cspec.addStatement("this.$N=$T.initializeBeanTable(new $T())",
-                            data,
-                            ClassName.get(locations.getFilePackage(Constants.LOGGER), Constants.LOGGER),
-                            ClassName.get(locations.getFilePackage(configurator), configurator));
+                    if (sqlRelated.contains(data) && configs.sqlFile==null) {
+                        cspec.addStatement("this.$N=null /* no sql file*/", data);
+                    } else {
+                        cspec.addStatement("this.$N=$T.initializeBeanTable(new $T())",
+                                data,
+                                ClassName.get(locations.getFilePackage(Constants.LOGGER), Constants.LOGGER),
+                                ClassName.get(locations.getFilePackage(configurator), configurator));
+                    }
                 }
 
             }
@@ -143,7 +145,11 @@ public class CompilerCatalogueDispatcher {
             if (storageRequired.contains(data)) {
                 getterSpec.addStatement("if ($N==null) throw new $T(\"non initialized field $N\")", data, IllegalStateException.class, data);
             }
-            getterSpec.addStatement("return $N", data);
+            if (configs.sqlFile==null && storageRequired.contains(data)) {
+                getterSpec.addStatement("return null", data);
+            } else {
+                getterSpec.addStatement("return $N", data);
+            }
             builder.addMethod(getterSpec.build());
 
 

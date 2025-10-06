@@ -4,10 +4,11 @@ package org.openprovenance.prov.model.interop;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public interface CatalogueDispatcherInterface {
+public interface CatalogueDispatcherInterface<T> {
 
 
     Map<String, String[]> getOutputs();
@@ -39,4 +40,11 @@ public interface CatalogueDispatcherInterface {
     Map<String, Function<List<Object[]>, ?>> getCompositeEnactorConverter();
 
     Map<String, Map<String, Map<String, int[]>>> getRelation0();
+
+    Map<String, T> getDocumentBuilderDispatcher();
+
+    Map<String, Map<String, Set<String>>> getTypeAssignment();
+
+    Map<String, Function<Object[], Object[]>> getRecordMaker() ;
+
 }

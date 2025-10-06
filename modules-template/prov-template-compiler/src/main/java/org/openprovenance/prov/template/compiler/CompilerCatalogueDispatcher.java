@@ -5,6 +5,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.log2prov.FileBuilder;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerCompositeConfigurations.recordsProcessorOfUnknown;
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.*;
+import static org.openprovenance.prov.template.compiler.CompilerUtil.mapString2StringType;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerCatalogueDispatcher {
@@ -20,6 +22,10 @@ public class CompilerCatalogueDispatcher {
 
     static final ParameterizedTypeName FunctionStringResultSet = ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ClassName.get(String.class), ClassName.get(java.sql.ResultSet.class));
     static final ParameterizedTypeName BiFunctionIntegerStringObject=ParameterizedTypeName.get(ClassName.get(java.util.function.BiFunction.class), ClassName.get(Integer.class), ClassName.get(String.class), ClassName.get(Object.class));
+
+    //  Function<Object[], Object[]>
+    static final ParameterizedTypeName FunctionObjArray2ObjArray= ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ArrayTypeName.of(ClassName.get(Object.class)), ArrayTypeName.of(ClassName.get(Object.class)));
+
 
     public static Map<String,String> dataConfiguratorMap=new java.util.HashMap<>() {{
         put(PROPERTY_ORDER, PROPERTY_ORDER_CONFIGURATOR);
@@ -34,6 +40,9 @@ public class CompilerCatalogueDispatcher {
         put("successors", BUILDER_PROCESSOR_CONFIGURATOR);
         put("enactorConverter", SQL_ENACTOR_CONFIGURATOR4);
         put("compositeEnactorConverter", SQL_COMPOSITE_ENACTOR_CONFIGURATOR4);
+        put("documentBuilderDispatcher", TABLE_CONFIGURATOR + WITH_MAP);
+        put("typeAssignment", TABLE_CONFIGURATOR + "ForTypes" + WITH_MAP);
+        put("recordMaker", OBJECT_RECORD_MAKER_CONFIGURATOR);
 
 
     }};
@@ -50,6 +59,11 @@ public class CompilerCatalogueDispatcher {
         put("successors", mapOf(mapString2StringList));
         put("enactorConverter", mapOf(processorOfUnknown));
         put("compositeEnactorConverter", mapOf(recordsProcessorOfUnknown));
+        put("documentBuilderDispatcher", mapOf(ClassName.get(FileBuilder.class)));
+        put("typeAssignment", mapOf(mapOf(ParameterizedTypeName.get(ClassName.get(Set.class),ClassName.get(String.class)))));
+        put("recordMaker", mapOf(FunctionObjArray2ObjArray));
+
+
     }};
 
 
@@ -73,13 +87,15 @@ public class CompilerCatalogueDispatcher {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.CATALOGUE_DISPATCHER).addSuperinterface(ClassName.get(CatalogueDispatcherInterface.class));
+        TypeSpec.Builder builder = compilerUtil
+                .generateClassInit(Constants.CATALOGUE_DISPATCHER)
+                .addSuperinterface(ParameterizedTypeName.get(ClassName.get(CatalogueDispatcherInterface.class), ClassName.get(FileBuilder.class)));
 
 
         MethodSpec.Builder cspec = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(Object.class, QUERIER_VAR)
-                .addParameter(Object.class, POST_PROCESSING_VAR);
+                .addParameter(mapString2StringType, "map")
+                .addParameter(ProvFactory.class, "pf");
         compilerUtil.specWithComment(cspec);
 
         for (String data: dataConfiguratorMap.keySet()) {
@@ -126,6 +142,21 @@ public class CompilerCatalogueDispatcher {
                             ClassName.get(locations.getFilePackage(configurator), configurator),
                             ClassName.get(configs.root_package, CATALOGUE_DISPATCHER));
 
+                } else if ("documentBuilderDispatcher".equals(data)) {
+                    cspec.addStatement("this.$N=$T.initializeBeanTable(new $T(map,pf))",
+                            data,
+                            ClassName.get(locations.getFilePackage(Constants.LOGGER), Constants.LOGGER),
+                            ClassName.get(locations.getFilePackage(configurator), configurator));
+                } else if ("typeAssignment".equals(data)) {
+                    cspec.addStatement("this.$N=$T.initializeBeanTable(new $T(map,propertyOrder,documentBuilderDispatcher,pf))",
+                            data,
+                            ClassName.get(locations.getFilePackage(Constants.LOGGER), Constants.LOGGER),
+                            ClassName.get(locations.getFilePackage(configurator), configurator));
+                } else if ("recordMaker".equals(data)) {
+                    cspec.addStatement("this.$N=$T.initializeBeanTable(new $T(documentBuilderDispatcher))",
+                            data,
+                            ClassName.get(locations.getFilePackage(Constants.LOGGER), Constants.LOGGER),
+                            ClassName.get(locations.getFilePackage(configurator), configurator));
                 } else {
                     if (sqlRelated.contains(data) && configs.sqlFile==null) {
                         cspec.addStatement("this.$N=null /* no sql file*/", data);

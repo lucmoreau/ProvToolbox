@@ -121,7 +121,7 @@ public class CompilerTableConfiguratorForTypes {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage = configs.root_package + ".configurator";
+        String myPackage = locations.getFilePackage(tableClassName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

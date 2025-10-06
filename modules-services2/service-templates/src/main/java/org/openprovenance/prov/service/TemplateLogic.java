@@ -8,7 +8,6 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.client.RecordsProcessorInterface;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
@@ -76,7 +75,7 @@ public class TemplateLogic {
         List<Object> recordsResult=new LinkedList<>();
         Map<String, String[]> properties= templateDispatcher.getPropertyOrder();
         Map<String, Function<Object[], ?>> enactorConverters= templateDispatcher.getEnactorConverter();
-        Map<String, RecordsProcessorInterface<?>> compositeEnactorConverters= templateDispatcher.getCompositeEnactorConverter();
+        Map<String, Function<List<Object[]>,?>> compositeEnactorConverters= templateDispatcher.getCompositeEnactorConverter();
 
 
 
@@ -111,9 +110,9 @@ public class TemplateLogic {
 
                 System.out.println("need composite converter for " + isA);
                 System.out.println("need composite converter for " + compositeEnactorConverters);
-                RecordsProcessorInterface<?> compositeEnactor = compositeEnactorConverters.get(isA);
+                Function<List<Object[]>,?> compositeEnactor = compositeEnactorConverters.get(isA);
                 System.out.println("found composite converter for " + compositeEnactor);
-                Object res=compositeEnactor.process(objects);
+                Object res=compositeEnactor.apply(objects);
                 debugDisplay("found result " , res);
                 recordsResult.add(res);
             }
@@ -144,8 +143,8 @@ public class TemplateLogic {
         Map<String, Function<Object[], ?>> enactors = templateDispatcher.getEnactorConverter();
         Map<String, Function<Object[], Object>> enactors2= enactors.entrySet().stream().filter(e->e.getValue()!=null).collect(Collectors.toMap(Map.Entry::getKey, e -> (Function<Object[],Object>) e.getValue()));
 
-        Map<String, RecordsProcessorInterface<?>> compositeEnactors= templateDispatcher.getCompositeEnactorConverter();
-        Map<String, RecordsProcessorInterface<Object>> compositeEnactors2= compositeEnactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (RecordsProcessorInterface<Object>) e.getValue()));
+        Map<String, Function<List<Object[]>,?>> compositeEnactors= templateDispatcher.getCompositeEnactorConverter();
+        Map<String, Function<List<Object[]>,Object>> compositeEnactors2= compositeEnactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (Function<List<Object[]>,Object>) e.getValue()));
         List<Object> newRecords=enactCsvRecords.process(collection, enactors2, compositeEnactors2);
 
         return newRecords;

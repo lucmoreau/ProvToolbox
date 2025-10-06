@@ -5,7 +5,6 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
-import org.openprovenance.prov.client.RecordsProcessorInterface;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -20,11 +19,11 @@ public class EnactCsvRecords<T> {
 
 
 
-    public List<T> process(CSVParser parser, Map<String, Function<Object[],T>> enactors, Map<String,  RecordsProcessorInterface<T>> enactors_N) throws IOException {
+    public List<T> process(CSVParser parser, Map<String, Function<Object[],T>> enactors, Map<String,  Function<List<Object[]>,T>> enactors_N) throws IOException {
         return process(parser.getRecords(),enactors,enactors_N);
     }
 
-    public List<T> process(Collection<CSVRecord> records, Map<String, Function<Object[],T>> enactors, Map<String,  RecordsProcessorInterface<T>> enactors_N) {
+    public List<T> process(Collection<CSVRecord> records, Map<String, Function<Object[],T>> enactors, Map<String,  Function<List<Object[]>,T>> enactors_N) {
 
         List<T> populatedRecords=new LinkedList<>();
 
@@ -45,7 +44,7 @@ public class EnactCsvRecords<T> {
                 populatedRecords.add(processor_1.apply(args));
             }
         } else {
-            RecordsProcessorInterface<T> processor_N=enactors_N.get(method);
+            Function<List<Object[]>,T> processor_N=enactors_N.get(method);
             if (processor_N!=null) {
                 List<Object[]> ll = records.stream().map(record -> {
                     int size = record.size();
@@ -53,7 +52,7 @@ public class EnactCsvRecords<T> {
                     populateRecordAndExtractMethod(record, size, args);
                     return args;
                 }).collect(Collectors.toList());
-                T populatedRecords0 = processor_N.process(ll);
+                T populatedRecords0 = processor_N.apply(ll);
                 populatedRecords.add(populatedRecords0);
             } else {
                 throw new EnactorException("Unknown method " + method, method);

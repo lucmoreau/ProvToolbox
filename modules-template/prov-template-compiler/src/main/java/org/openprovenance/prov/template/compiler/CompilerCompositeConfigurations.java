@@ -7,6 +7,9 @@ import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
 
+import java.util.List;
+import java.util.function.Function;
+
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerCompositeConfigurations {
@@ -76,7 +79,10 @@ public class CompilerCompositeConfigurations {
 
     }
 
-    static final ParameterizedTypeName recordsProcessorOfUnknown = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"RecordsProcessorInterface"), TypeVariableName.get("?"));
+    static public final ParameterizedTypeName functionListObjArrayTo (TypeName returnType) {
+        return ParameterizedTypeName.get(ClassName.get(Function.class), ParameterizedTypeName.get(ClassName.get(List.class),ArrayTypeName.of(Object.class)), returnType);
+    }
+    static final ParameterizedTypeName recordsProcessorOfUnknown = functionListObjArrayTo(TypeVariableName.get("?"));
 
     public SpecificationFile generateCompositeEnactorConfigurator(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         return  generateCompositeConfigurator(configs, locations, recordsProcessorOfUnknown, this::generateMethodEnactor, "generateCompositeConfigurator", compilerUtil.getClass(BEAN_PROCESSOR, locations), fileName);
@@ -84,13 +90,13 @@ public class CompilerCompositeConfigurations {
 
 
     public void generateMethodEnactor(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
-        mspec.addStatement("$N<$T> beanConverter=$N.aRecord2BeanConverter", RECORDS_PROCESSOR_INTERFACE, beanType, builderParameter);
+        mspec.addStatement("$T beanConverter=$N.aRecord2BeanConverter", functionListObjArrayTo(beanType), builderParameter);
 
 
-        mspec.addStatement("$N<$T> enactor=(array) -> {\n" +
-                "                    $T bean=beanConverter.process(array);\n" +
+        mspec.addStatement("$T enactor=(array) -> {\n" +
+                "                    $T bean=beanConverter.apply(array);\n" +
                 "                    return $N.process(bean);\n" +
-                "                }", RECORDS_PROCESSOR_INTERFACE, beanType,beanType,enactorVar);
+                "                }", functionListObjArrayTo(beanType),beanType,enactorVar);
         mspec.addStatement("return enactor");
     }
 
@@ -159,13 +165,13 @@ public class CompilerCompositeConfigurations {
     }
 
     public void generateMethodEnactor2(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName inBeanType, TypeName outBeanType) {
-        mspec.addStatement("$N<$T> beanConverter=$N.getIntegrator().aRecord2InputsConverter", RECORDS_PROCESSOR_INTERFACE, inBeanType, builderParameter);
+        mspec.addStatement("$T beanConverter=$N.getIntegrator().aRecord2InputsConverter", functionListObjArrayTo(inBeanType), builderParameter);
 
 
-        mspec.addStatement("$N<$T> enactor=(array) -> {\n" +
-                "                    $T bean=beanConverter.process(array);\n" +
+        mspec.addStatement("$T enactor=(array) -> {\n" +
+                "                    $T bean=beanConverter.apply(array);\n" +
                 "                    return $N.process(bean);\n" +
-                "                }", RECORDS_PROCESSOR_INTERFACE, outBeanType,inBeanType,enactorVar);
+                "                }", functionListObjArrayTo(outBeanType),inBeanType,enactorVar);
         mspec.addStatement("return enactor");
     }
 

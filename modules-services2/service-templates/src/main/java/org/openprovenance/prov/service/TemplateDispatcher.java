@@ -2,7 +2,6 @@ package org.openprovenance.prov.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.client.RecordsProcessorInterface;
 import org.openprovenance.prov.service.dispatch.ForeignTableConfigurator;
 import org.openprovenance.prov.service.dispatch.RelationConfigurator;
 import org.openprovenance.prov.service.dispatch.SuccessorConfigurator;
@@ -34,7 +33,7 @@ public class TemplateDispatcher {
     private final Map<String, Function<Object[], String>> csvConverter;
     private final Map<String, Function<Object[], ?>> beanConverter;
     private final Map<String, Function<Object[], ?>> enactorConverter;
-    private final Map<String, RecordsProcessorInterface<?>> compositeEnactorConverter;
+    private final Map<String, Function<List<Object[]>,?>> compositeEnactorConverter;
     private final Map<String, Map<String, List<String>>> successors;
     private final Map<String, Map<String, List<String>>> predecessors;
     private final Map<String, String[]> inputs;
@@ -104,7 +103,7 @@ public class TemplateDispatcher {
         return enactorConverter;
     }
 
-    public Map<String, RecordsProcessorInterface<?>> getCompositeEnactorConverter() {
+    public Map<String, Function<List<Object[]>,?>> getCompositeEnactorConverter() {
         return compositeEnactorConverter;
     }
 

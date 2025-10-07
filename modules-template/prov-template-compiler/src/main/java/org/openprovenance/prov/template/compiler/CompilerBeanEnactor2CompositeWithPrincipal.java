@@ -8,6 +8,7 @@ import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
 
+import static org.openprovenance.prov.template.compiler.CompilerBeanEnactor2WithPrincipal.SupplierOfString;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.sql.CompilerSqlIntegration.BIFUN;
 
@@ -52,11 +53,12 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER)
                 .addParameter(inputProcessorClass, "checker")
-                .addParameter(BIFUN, "postProcessing");
+                .addParameter(BIFUN, "postProcessing")
+                .addParameter(SupplierOfString, PRINCIPAL_MANAGER_VAR);
         compilerUtil.specWithComment(cbuilder3);
 
         cbuilder3
-                .addStatement("super($N,$N,$N)", Constants.REALISER, "checker","postProcessing")
+                .addStatement("super($N,$N,$N, $N)", Constants.REALISER, "checker","postProcessing", PRINCIPAL_MANAGER_VAR)
                 .addStatement("this.$N = $N", Constants.REALISER, Constants.REALISER)
                 .addStatement("this.$N = $N", "checker", "checker")
                 .addStatement("this.$N = postProcessing", "postProcessing");

@@ -12,11 +12,13 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectC
 
 import javax.lang.model.element.Modifier;
 
+import static org.openprovenance.prov.template.compiler.CompilerCatalogueDispatcher.SupplierOfString;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.sql.CompilerSqlIntegration.BIFUN;
 
 public class CompilerBeanEnactor2WithPrincipal {
     private final CompilerUtil compilerUtil;
+    static final ParameterizedTypeName SupplierOfString= ParameterizedTypeName.get(ClassName.get(java.util.function.Supplier.class), ClassName.get(String.class));
 
     public CompilerBeanEnactor2WithPrincipal(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
@@ -97,6 +99,7 @@ public class CompilerBeanEnactor2WithPrincipal {
                 .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
                 .addParameter(ParameterSpec.builder(typeResult,"rs").build())
                 .addParameter(ParameterSpec.builder(BIFUN,"postProcessing").build())
+
                 .returns(beanCompleterClass);
         inface.addMethod(method5.build());
 
@@ -109,6 +112,7 @@ public class CompilerBeanEnactor2WithPrincipal {
         builder.addField(inputProcessorClass,"checker",Modifier.FINAL, Modifier.PRIVATE);
         builder.addField(BIFUN,"postProcessing",Modifier.FINAL, Modifier.PRIVATE);
 
+        /*
         // add Field   static private final ThreadLocal<String> principal= ThreadLocal.withInitial(() -> "unknown");
         final TypeName THREAD_LOCAL_STRING=ParameterizedTypeName.get(ClassName.get(ThreadLocal.class), ClassName.get(String.class));
         FieldSpec.Builder principalField=FieldSpec.builder(THREAD_LOCAL_STRING, principalVar, Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL).initializer("$T.withInitial(() ->  $S)", ThreadLocal.class, CompilerCommon.UNKNOWN);
@@ -128,22 +132,26 @@ public class CompilerBeanEnactor2WithPrincipal {
                 .addStatement("return $N.get()", principalVar);
         builder.addMethod(getPrincipal.build());
 
+         */
 
         builder.addField(THIS_ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PRIVATE);
+        builder.addField(SupplierOfString, PRINCIPAL_MANAGER_VAR, Modifier.FINAL, Modifier.PRIVATE);
 
 
         MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(THIS_ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER)
                 .addParameter(inputProcessorClass, "checker")
-                .addParameter(BIFUN, "postProcessing");
+                .addParameter(BIFUN, "postProcessing")
+                .addParameter(SupplierOfString, PRINCIPAL_MANAGER_VAR);
         compilerUtil.specWithComment(cbuilder3);
 
         cbuilder3
                 .addStatement("super($N,$N)", Constants.REALISER, "checker")
                 .addStatement("this.$N = $N", Constants.REALISER, Constants.REALISER)
                 .addStatement("this.$N = $N", "checker", "checker")
-                .addStatement("this.$N = $N", "postProcessing", "postProcessing");
+                .addStatement("this.$N = $N", "postProcessing", "postProcessing")
+                .addStatement("this.$N = $N", PRINCIPAL_MANAGER_VAR, PRINCIPAL_MANAGER_VAR);
 
         builder.addMethod(cbuilder3.build());
 
@@ -167,7 +175,7 @@ public class CompilerBeanEnactor2WithPrincipal {
                 mspec.addStatement("return $N.generic_enact(new $T(),bean,\n" +
                         "                b -> checker.process(b),\n" +
                         "                (sb,b) -> new $T(sb,$N.get()).process(b),\n" +
-                        "                (rs,b) -> $N.beanCompleterFactory(rs,postProcessing).process(b))", Constants.REALISER, outputClassName, queryInvokerClass, principalVar, Constants.REALISER);
+                        "                (rs,b) -> $N.beanCompleterFactory(rs,postProcessing).process(b))", Constants.REALISER, outputClassName, queryInvokerClass, PRINCIPAL_MANAGER_VAR, Constants.REALISER);
 
             builder.addMethod(mspec.build());
         }

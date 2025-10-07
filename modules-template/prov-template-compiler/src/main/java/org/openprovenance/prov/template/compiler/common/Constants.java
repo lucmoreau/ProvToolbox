@@ -186,4 +186,6 @@ public interface Constants {
     String OUT_BEAN = "out";
     String GET_FOREIGN = "getForeign";
     String QUERIER_VAR = "querier";
+    String GET_PRINCIPAL_VAR = "getPrincipal";
+    String PRINCIPAL_MANAGER_VAR = "principalManager";
 }

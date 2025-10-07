@@ -306,7 +306,7 @@ public class ConfigProcessor implements Constants {
         SpecificationFile init=compilerBuilderInit.generateInitializer(configs, locations, init_dir, INIT + DOT_JAVA_EXTENSION);
         init.save();
 
-        SpecificationFile catalogueDispatcher=compilerCatalogueDispatcher.generateCatalogueDispatcher(configs, locations, init_dir, CATALOGUE_DISPATCHER + DOT_JAVA_EXTENSION);
+        SpecificationFile catalogueDispatcher=compilerCatalogueDispatcher.generateCatalogueDispatcher(configs, getInputOutputMaps(), locations, init_dir, CATALOGUE_DISPATCHER + DOT_JAVA_EXTENSION);
         catalogueDispatcher.save();
 
 

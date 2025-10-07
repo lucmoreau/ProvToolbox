@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 import static org.openprovenance.prov.template.compiler.CompilerCompositeConfigurations.recordsProcessorOfUnknown;
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.*;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.mapString2StringType;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerCatalogueDispatcher {
@@ -25,7 +27,8 @@ public class CompilerCatalogueDispatcher {
 
     //  Function<Object[], Object[]>
     static final ParameterizedTypeName FunctionObjArray2ObjArray= ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ArrayTypeName.of(ClassName.get(Object.class)), ArrayTypeName.of(ClassName.get(Object.class)));
-
+   // Supplier<String>
+    static final ParameterizedTypeName SupplierOfString= ParameterizedTypeName.get(ClassName.get(java.util.function.Supplier.class), ClassName.get(String.class));
 
     public static Map<String,String> dataConfiguratorMap=new java.util.HashMap<>() {{
         put(PROPERTY_ORDER, PROPERTY_ORDER_CONFIGURATOR);
@@ -83,7 +86,7 @@ public class CompilerCatalogueDispatcher {
 
 
 
-    SpecificationFile generateCatalogueDispatcher(TemplatesProjectConfiguration configs, Locations locations, String directory, String fileName) {
+    SpecificationFile generateCatalogueDispatcher(TemplatesProjectConfiguration configs, Map<String, Map<String, Map<String, String>>> inputOutputMaps, Locations locations, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
@@ -114,12 +117,13 @@ public class CompilerCatalogueDispatcher {
                 compilerUtil.specWithComment(initSpec);
                 initSpec.addParameter(FunctionStringResultSet, QUERIER_VAR);
                 initSpec.addParameter(BiFunctionIntegerStringObject, POST_PROCESSING_VAR);
-                initSpec.addStatement("this.$N=$T.$N(new $T($N,$N))",
+                initSpec.addParameter(SupplierOfString, GET_PRINCIPAL_VAR);
+                initSpec.addStatement("this.$N=$T.$N(new $T($N,$N,$N))",
                         data,
                         ClassName.get(locations.getFilePackage(Constants.LOGGER), Constants.LOGGER),
                         ("compositeEnactorConverter".equals(data))?"initializeCompositeBeanTable":"initializeBeanTable",
                         ClassName.get(locations.getFilePackage(configurator), configurator),
-                        QUERIER_VAR,POST_PROCESSING_VAR);
+                        QUERIER_VAR,POST_PROCESSING_VAR, GET_PRINCIPAL_VAR);
                 builder.addMethod(initSpec.build());
 
             } else {
@@ -171,25 +175,32 @@ public class CompilerCatalogueDispatcher {
             }
 
 
-            MethodSpec.Builder getterSpec = MethodSpec.methodBuilder("get" + capitalizeFirstLetter(data))
-                    .returns(typeName)
-                    .addModifiers(Modifier.PUBLIC);
-            compilerUtil.specWithComment(getterSpec);
-            if (storageRequired.contains(data)) {
-                getterSpec.addStatement("if ($N==null) throw new $T(\"non initialized field $N\")", data, IllegalStateException.class, data);
-            }
-            if (configs.sqlFile==null && storageRequired.contains(data)) {
-                getterSpec.addStatement("return null", data);
-            } else {
-                getterSpec.addStatement("return $N", data);
-            }
+            MethodSpec.Builder getterSpec = createGetterBuilder(configs, data, typeName);
             builder.addMethod(getterSpec.build());
+
 
 
 
         }
 
         builder.addMethod(cspec.build());
+
+
+
+        try {
+            builder.addField(FieldSpec
+                    .builder(  ClassName.get(String.class), "ioMap", Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL)
+                    .initializer("$S", objectMapper.writeValueAsString(inputOutputMaps))
+                    .build());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        MethodSpec.Builder getterSpec = createGetterBuilder(configs, "ioMap", ClassName.get(String.class));
+        builder.addMethod(getterSpec.build());
+
+
 
 
         // construct MethodSpec for
@@ -236,6 +247,22 @@ public class CompilerCatalogueDispatcher {
         JavaFile myfile = compilerUtil.specWithComment(theCatalogueDispatcher, configs, configs.root_package, stackTraceElement);
 
         return new SpecificationFile(myfile, directory, fileName, configs.root_package);
+    }
+
+    private MethodSpec.Builder createGetterBuilder(TemplatesProjectConfiguration configs, String data, TypeName typeName) {
+        MethodSpec.Builder getterSpec = MethodSpec.methodBuilder("get" + capitalizeFirstLetter(data))
+                .returns(typeName)
+                .addModifiers(Modifier.PUBLIC);
+        compilerUtil.specWithComment(getterSpec);
+        if (storageRequired.contains(data)) {
+            getterSpec.addStatement("if ($N==null) throw new $T(\"non initialized field $N\")", data, IllegalStateException.class, data);
+        }
+        if (configs.sqlFile==null && storageRequired.contains(data)) {
+            getterSpec.addStatement("return null", data);
+        } else {
+            getterSpec.addStatement("return $N", data);
+        }
+        return getterSpec;
     }
 
     public String capitalizeFirstLetter(String s) {

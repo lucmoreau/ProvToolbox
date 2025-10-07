@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface CatalogueDispatcherInterface<T> {
 
@@ -26,7 +27,8 @@ public interface CatalogueDispatcherInterface<T> {
     Map<String, String[]> getForeignTables();
 
     void initEnactorConverter(Function<String, ResultSet> querier,
-                              BiFunction<Integer, String, Object> postProcessing);
+                              BiFunction<Integer, String, Object> postProcessing,
+                              Supplier<String> principalSupplier);
 
     Map<String, Function<Object[], ?>> getEnactorConverter();
 
@@ -35,7 +37,8 @@ public interface CatalogueDispatcherInterface<T> {
     Map<String, Function<Object[], ?>> getBeanConverter();
 
     void initCompositeEnactorConverter(Function<String, ResultSet> querier,
-                                       BiFunction<Integer, String, Object> postProcessing);
+                                       BiFunction<Integer, String, Object> postProcessing,
+                                       Supplier<String> principalSupplier);
 
     Map<String, Function<List<Object[]>, ?>> getCompositeEnactorConverter();
 
@@ -46,5 +49,7 @@ public interface CatalogueDispatcherInterface<T> {
     Map<String, Map<String, Set<String>>> getTypeAssignment();
 
     Map<String, Function<Object[], Object[]>> getRecordMaker() ;
+
+    String getIoMap();
 
 }

@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.compiler.sql;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.exception.UncheckedException;
@@ -25,6 +24,7 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerSqlIntegration {
     private final CompilerUtil compilerUtil;
+    static final ParameterizedTypeName SupplierOfString= ParameterizedTypeName.get(ClassName.get(java.util.function.Supplier.class), ClassName.get(String.class));
 
     public CompilerSqlIntegration(ProvFactory pFactory) {
         this.compilerUtil = new CompilerUtil(pFactory);
@@ -1015,7 +1015,8 @@ public class CompilerSqlIntegration {
         // constructor
         MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier");
+                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier")
+                .addParameter(SupplierOfString,PRINCIPAL_MANAGER_VAR);
         constructor.addStatement("super(new  $T(querier), new $T())", ClassName.get(locations.getFilePackage(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3), Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3), ClassName.get(locations.getFilePackage(Constants.BEAN_CHECKER2), Constants.BEAN_CHECKER2));
         builder.addMethod(constructor.build());
 
@@ -1054,8 +1055,9 @@ public class CompilerSqlIntegration {
         MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
-        constructor.addStatement("super(new  $T(querier), new $T(), $N)", ClassName.get(locations.getFilePackage(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4), Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4), ClassName.get(locations.getFilePackage(Constants.BEAN_CHECKER2), Constants.BEAN_CHECKER2), CompilerCommon.POST_PROCESSING_VAR);
+                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR)
+                .addParameter(SupplierOfString,PRINCIPAL_MANAGER_VAR);
+        constructor.addStatement("super(new  $T(querier), new $T(), $N, $N)", ClassName.get(locations.getFilePackage(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4), Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4), ClassName.get(locations.getFilePackage(Constants.BEAN_CHECKER2), Constants.BEAN_CHECKER2), CompilerCommon.POST_PROCESSING_VAR, PRINCIPAL_MANAGER_VAR);
         builder.addMethod(constructor.build());
 
 
@@ -1495,8 +1497,9 @@ public class CompilerSqlIntegration {
         MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
-        constructor.addStatement("super(new  $T(querier), new $T(),$N)", ClassName.get(locations.getFilePackage(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4), Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4), ClassName.get(locations.getFilePackage(Constants.BEAN_CHECKER2), Constants.BEAN_CHECKER2), CompilerCommon.POST_PROCESSING_VAR);
+                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR)
+                .addParameter(SupplierOfString,PRINCIPAL_MANAGER_VAR);
+        constructor.addStatement("super(new  $T(querier), new $T(),$N, $N)", ClassName.get(locations.getFilePackage(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4), Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4), ClassName.get(locations.getFilePackage(Constants.BEAN_CHECKER2), Constants.BEAN_CHECKER2), CompilerCommon.POST_PROCESSING_VAR, PRINCIPAL_MANAGER_VAR);
         builder.addMethod(constructor.build());
 
         TypeSpec theClass = builder.build();
@@ -1555,8 +1558,9 @@ public class CompilerSqlIntegration {
         MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
-        constructor.addStatement("super(new  $T($N,$N))", ClassName.get(locations.getFilePackage(Constants.SQL_COMPOSITE_BEAN_ENACTOR4), Constants.SQL_COMPOSITE_BEAN_ENACTOR4), "querier", CompilerCommon.POST_PROCESSING_VAR);
+                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR)
+                .addParameter(SupplierOfString,PRINCIPAL_MANAGER_VAR);
+        constructor.addStatement("super(new  $T($N,$N,$N))", ClassName.get(locations.getFilePackage(Constants.SQL_COMPOSITE_BEAN_ENACTOR4), Constants.SQL_COMPOSITE_BEAN_ENACTOR4), "querier", CompilerCommon.POST_PROCESSING_VAR, PRINCIPAL_MANAGER_VAR);
         builder.addMethod(constructor.build());
 
         TypeSpec theClass = builder.build();
@@ -1590,8 +1594,9 @@ public class CompilerSqlIntegration {
         // constructor
         MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier");
-        constructor.addStatement("super(new  $T(querier))", ClassName.get(locations.getFilePackage(Constants.SQL_BEAN_ENACTOR3), Constants.SQL_BEAN_ENACTOR3));
+                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier")
+                .addParameter(SupplierOfString,PRINCIPAL_MANAGER_VAR);
+        constructor.addStatement("super(new  $T(querier,$N))", ClassName.get(locations.getFilePackage(Constants.SQL_BEAN_ENACTOR3), Constants.SQL_BEAN_ENACTOR3), PRINCIPAL_MANAGER_VAR);
         builder.addMethod(constructor.build());
 
         TypeSpec theClass = builder.build();
@@ -1615,8 +1620,9 @@ public class CompilerSqlIntegration {
         MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
-        constructor.addStatement("super(new  $T($N,$N))", ClassName.get(locations.getFilePackage(Constants.SQL_BEAN_ENACTOR4), Constants.SQL_BEAN_ENACTOR4), "querier", CompilerCommon.POST_PROCESSING_VAR);
+                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR)
+                .addParameter(SupplierOfString,PRINCIPAL_MANAGER_VAR);
+        constructor.addStatement("super(new  $T($N,$N,$N))", ClassName.get(locations.getFilePackage(Constants.SQL_BEAN_ENACTOR4), Constants.SQL_BEAN_ENACTOR4), "querier", CompilerCommon.POST_PROCESSING_VAR, PRINCIPAL_MANAGER_VAR);
         builder.addMethod(constructor.build());
 
         TypeSpec theClass = builder.build();

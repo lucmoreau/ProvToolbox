@@ -690,7 +690,7 @@
                                 <id>start-jetty</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
-                                    <goal>start</goal>
+                                    <goal>start-war</goal>
                                 </goals>
                                 <configuration>
 
@@ -711,7 +711,17 @@
                         </executions>
                     </plugin>
                 </plugins>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/properties</directory>
+                        <filtering>true</filtering>
+                        <includes>
+                            <include>prov-template-library.webapp.config.properties</include>
+                        </includes>
+                    </resource>
+                </resources>
             </build>
+
         </profile>
 
 

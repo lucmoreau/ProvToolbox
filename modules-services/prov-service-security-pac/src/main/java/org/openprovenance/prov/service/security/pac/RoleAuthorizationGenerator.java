@@ -39,8 +39,8 @@ public class RoleAuthorizationGenerator implements AuthorizationGenerator {
         } else {
             List<String> rolesList=(List<String>)roles;
             if (!rolesList.contains(role)) {
-                logger.info("roles claim does not contain editor");
-                throw new RuntimeException("roles claim does not contain editor");
+                logger.info("roles claim does not contain " + role + " " + rolesList);
+                throw new RuntimeException("roles claim does not contain " + role + " " + rolesList);
             } else {
                 logger.info("roles claim is correct");
             }

@@ -13,6 +13,7 @@
     <artifactId>modules-services2</artifactId>
 
     <modules>
+        <module>service-templates-core</module>
         <module>service-templates</module>
         <module>docker-service-templates</module>
 

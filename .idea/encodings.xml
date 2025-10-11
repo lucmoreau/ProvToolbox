@@ -112,6 +112,11 @@
     <file url="file://$PROJECT_DIR$/modules-services/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services2/docker-service-templates/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services2/docker-service-templates/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/service-templates-core/src/main/config" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/service-templates-core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/service-templates-core/src/main/sql" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services2/service-templates-core/src/main/webapp.filter" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services2/service-templates/src/main/config" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services2/service-templates/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services2/service-templates/src/main/resources" charset="UTF-8" />

@@ -56,7 +56,6 @@
         <module name="service-translator" />
         <module name="prov-service-security-pac" />
         <module name="nlg-spec-transformer" />
-        <module name="service-templates" />
         <module name="prov-summarisation" />
         <module name="prov-service-validation" />
         <module name="prov-interop-light" />
@@ -68,6 +67,7 @@
         <module name="prov-dot" />
         <module name="prov-storage-mongodb" />
         <module name="prov-jsweet-candy-java" />
+        <module name="service-templates-core" />
         <module name="prov-query" />
         <module name="prov-template-archetype" />
         <module name="roundtrip" />
@@ -92,6 +92,7 @@
       <module name="prov-plugin" target="1.5" />
       <module name="prov-scala" target="9" />
       <module name="ProvToolbox-Tutorial2" target="1.5" />
+      <module name="service-templates" target="15" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>

@@ -35,6 +35,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: replaced RecordsProcessorInterface<T> by Function<List<Object[]>,T>
 * prov-template-compiler: introduced CatalogueDispatcher interface
 * prov-template-compiler: moved principal mangement out of generated code
+* service-templates-core: first version
 
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java

@@ -9,8 +9,12 @@
         </requiredProperty>
         <requiredProperty key="templateLibraryVersion">
         </requiredProperty>
+        <requiredProperty key="templateSubLibrary">
+        </requiredProperty>
         <requiredProperty key="templateLibraryServiceName"/>
         <requiredProperty key="cataloguePackage"/>
+        <requiredProperty key="loggerConstructor"/>
+        <requiredProperty key="jdbcURL"/>
     </requiredProperties>
 
     <fileSets>

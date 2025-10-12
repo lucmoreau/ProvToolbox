@@ -8,7 +8,7 @@
     <meta content="utf-8"/>
     <title>${symbol_dollar}{pom.form.dashboard.title}</title>
     <link rel="stylesheet" href="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/css/bootstrap.css" />
-    <link rel="stylesheet" href="${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{project.version}/css/provtemplate.css" />
+    <link rel="stylesheet" href="${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/css/provtemplate.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="${symbol_dollar}{service.context}/webjars/font-awesome/${symbol_dollar}{webjars.fontawesome.version}/css/font-awesome.min.css"/>
     <link rel="stylesheet" type="text/css"  href="${symbol_dollar}{service.context}/webjars/swagger-ui/${symbol_dollar}{webjars.swagger-ui.version}/swagger-ui.css" >
@@ -32,8 +32,8 @@
 <script src="${symbol_dollar}{service.context}/webjars/j4ts/${symbol_dollar}{webjars.j4ts.version}/bundle.js"></script>
 
 
-<script src="${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{project.version}/js/bundle.js"></script>
-<script src="${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{project.version}/js/TemplateManager.js"></script>
+<script src="${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/js/bundle.js"></script>
+<script src="${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/js/TemplateManager.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-sha3@0.8.0/src/sha3.js"></script>
 
 <style>
@@ -270,7 +270,7 @@
                                                     <i class="icon-ok"></i>  generic.binaryop (old)</a>
                                                 </li>
                                                 -->
-                                                <li><a href="${symbol_pound}" onclick="updateRootURLInputBox('${symbol_dollar}{service.context}/webjars/prov-template-library/${symbol_dollar}{project.version}/templates/org/openprovenance/prov/templates/generic/binaryop.provn')">
+                                                <li><a href="${symbol_pound}" onclick="updateRootURLInputBox('${symbol_dollar}{service.context}/webjars/prov-template-library/${symbol_dollar}{pom.the.template.library.version}/templates/org/openprovenance/prov/templates/generic/binaryop.provn')">
                                                     <i class="icon-ok"></i>  generic/binaryop</a>
                                                 </li>
 
@@ -374,8 +374,8 @@
     const HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN = "${symbol_pound}template-dropdown-documentation";
 
     const SUBMISSION_URL = '${symbol_dollar}{service.context}/provapi/statements/';
-    const SCHEMA_URL = "${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{project.version}/schema/schema${symbol_dollar}{the.template.sublibrary}.json";
-    const DOC_URL = "${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{project.version}/html/doc${symbol_dollar}{the.template.sublibrary}.html";
+    const SCHEMA_URL = "${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/schema/schema${symbol_dollar}{the.template.sublibrary}.json";
+    const DOC_URL = "${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/html/doc${symbol_dollar}{the.template.sublibrary}.html";
 
     const logger=new ${symbol_dollar}{logger.constructor}();
     const builders=logger.getBuilders()

@@ -16,9 +16,9 @@ import static org.openprovenance.prov.configuration.Configuration.getPropertiesF
 public class Storage {
     static Logger logger = LogManager.getLogger(Storage.class);
 
-    public Connection setup(String host, String username, String password) {
+    public Connection setup(String url, String username, String password) {
         //host="localhost"; // "localhost
-        String url = "jdbc:postgresql://" + host + ":5432/bookptm?sslmode=disable";
+        //String url = "jdbc:postgresql://" + host + ":5432/bookptm?sslmode=disable";
         Properties props = new Properties();
         props.setProperty("user", username);
         props.setProperty("password", password);
@@ -35,28 +35,6 @@ public class Storage {
         }
 
     }
-    static final String version;
-
-    public static final String PROV_SUSTAINABILITY_WEBAPP_CONFIG_PROPERTIES = "/properties/the-template-library.webapp.config.properties";
-
-    static {
-        Properties properties=getPropertiesFromClasspath(Storage.class, PROV_SUSTAINABILITY_WEBAPP_CONFIG_PROPERTIES);
-        System.out.println(Storage.class.getClassLoader().getResource(PROV_SUSTAINABILITY_WEBAPP_CONFIG_PROPERTIES));
-        System.out.println("DB properties: " + properties);
-        if (properties==null) {
-            // load properties from default absolute file path
-            properties = new Properties();
-            try {
-                properties.load(new FileInputStream("/Users/luc/git-papers/papers/book-ptm/project/service-book/target/classes/properties/the-template-library.webapp.config.properties"));
-                System.out.println(properties);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        version=properties.getProperty("project.version");
-
-    }
-
 
     public static String getStringFromClasspath(Class<?> clazz, String propFileName) {
         try {

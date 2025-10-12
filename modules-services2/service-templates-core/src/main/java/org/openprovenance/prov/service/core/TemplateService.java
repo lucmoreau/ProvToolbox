@@ -59,8 +59,6 @@ public class TemplateService {
     public static final String provHost =getSystemOrEnvironmentVariableOrDefault(TPL_HOST, "http://localhost:8080/ems");
     public static final String PROV_API = "PROV_API";
     public static final String provAPI =getSystemOrEnvironmentVariableOrDefault(PROV_API, "http://localhost:8080/ems/provapi");
-    public static final String POSTGRES_HOST = "POSTGRES_HOST";
-    public static final String postgresHost=System.getProperty(POSTGRES_HOST, "localhost");
     public static final String DB_USER = "TPL_DB_USER";
     public static final String postgresUsername=getSystemOrEnvironmentVariableOrDefault(DB_USER, "user");
     public static final String DB_PASS = "TPL_DB_PASS";
@@ -158,7 +156,13 @@ public class TemplateService {
 
         ps.addToConfiguration("security.config", securityConfiguration);
 
-        Connection conn=storage.setup(postgresHost, postgresUsername, postgresPassword);
+        this.templateConfiguration=(NO_TEMPLATE_CONFIG.equals(templateConfig))?new HashMap<>():readTemplateConfiguration(templateConfig);
+
+        String fullClassName=templateConfiguration.get("catalogue.package")+".CatalogueDispatcher";
+        String sqlInitializer=templateConfiguration.get("sql.initializer");
+        String jdbcURL=templateConfiguration.get("jdbc.url");
+
+        Connection conn=storage.setup(jdbcURL, postgresUsername, postgresPassword);
         Function<String, ResultSet> queryExecutor = storage.queryExecutor(conn);
 
         HashMap<String,String> map=new HashMap<>() {{
@@ -166,10 +170,7 @@ public class TemplateService {
             put("PROV_API", provAPI);
         }};
 
-         this.templateConfiguration=(NO_TEMPLATE_CONFIG.equals(templateConfig))?new HashMap<>():readTemplateConfiguration(templateConfig);
 
-        String fullClassName=templateConfiguration.get("catalogue.package")+".CatalogueDispatcher";
-        String sqlInitializer=templateConfiguration.get("sql.initializer");
 
         // dynamically load class org.openprovenance.bk.physical.CatalogueDispatcher with map and pf as arguments;
         BiFunction<Object, org.openprovenance.prov.model.ProvFactory, CatalogueDispatcherInterface> factory=dynamicallyLoadClass(fullClassName, CatalogueDispatcherInterface.class);

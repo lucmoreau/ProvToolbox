@@ -28,7 +28,10 @@ archetype.generate.book:
     	-DtemplateLibraryArtifactId=template-intro1 \
     	-DtemplateLibraryVersion=0.1.0-SNAPSHOT \
     	-DtemplateLibraryServiceName=ServiceBookPTM \
-    	-DcataloguePackage=org.openprovenance.bk.physical
+    	-DcataloguePackage=org.openprovenance.bk.physical \
+    	-DtemplateSubLibrary=-transport \
+    	-DloggerConstructor=org.openprovenance.bk.physical.client.logger.Logger \
+    	-DjdbcURL="jdbc:postgresql://localhost:5432/bookptm?sslmode=disable"
 
 
 
@@ -45,7 +48,11 @@ archetype.generate.tpl:
     	-DtemplateLibraryArtifactId=prov-template-library \
     	-DtemplateLibraryVersion=2.2.2-SNAPSHOT \
     	-DtemplateLibraryServiceName=ServiceTemplateLibary \
-    	-DcataloguePackage=org.openprovenance.prov.template.library.plead
+    	-DcataloguePackage=org.openprovenance.prov.template.library.plead \
+    	-DtemplateSubLibrary=-plead \
+    	-DloggerConstructor=org.openprovenance.prov.template.library.plead.client.logger.Logger \
+	    -DjdbcURL="jdbc:postgresql://localhost:5432/templates?sslmode=disable"
+
 
 
 

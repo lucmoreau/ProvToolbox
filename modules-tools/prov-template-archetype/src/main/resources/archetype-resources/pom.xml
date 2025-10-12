@@ -128,6 +128,19 @@
 
 
         <dependency>
+            <groupId>org.jsweet</groupId>
+            <artifactId>j4ts</artifactId>
+            <version>${webjars.j4ts.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jsweet</groupId>
+                    <artifactId>jsweet-transpiler</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgres.version}</version>
@@ -298,12 +311,13 @@
         <pom.service.protocol>http</pom.service.protocol>
         <pom.the.template.library>${templateLibraryArtifactId}</pom.the.template.library>
         <pom.the.template.library.version>${templateLibraryVersion}</pom.the.template.library.version>
-        <pom.the.template.sublibrary>-plead</pom.the.template.sublibrary>
+        <pom.the.template.sublibrary>${templateSubLibrary}</pom.the.template.sublibrary>
         <pom.templates.button.label>Book Templates</pom.templates.button.label>
         <pom.project.version>${project.version}</pom.project.version>
         <pom.catalogue.package>${cataloguePackage}</pom.catalogue.package>
+        <pom.jdbc.url>${jdbcURL}</pom.jdbc.url>
         <pom.form.dashboard.title>Book Templates Dashboard ${project.version}</pom.form.dashboard.title>
-        <pom.logger.constructor>org.openprovenance.bk.physical.client.logger.Logger</pom.logger.constructor>
+        <pom.logger.constructor>${loggerConstructor}</pom.logger.constructor>
         <unsecure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-no-security.xml</unsecure.webxml.location>
         <secure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-with-security.xml</secure.webxml.location>
         <lexicon.location>/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/nlg-wrapper/target/dictionary/lexAccess2013.data</lexicon.location>

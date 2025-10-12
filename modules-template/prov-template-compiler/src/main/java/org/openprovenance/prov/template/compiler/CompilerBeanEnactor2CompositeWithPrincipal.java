@@ -40,6 +40,7 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
 
         builder.addField(inputProcessorClass,"checker",Modifier.FINAL, Modifier.PRIVATE);
         builder.addField(BIFUN, "postProcessing", Modifier.FINAL, Modifier.PRIVATE);
+        builder.addField(SupplierOfString, PRINCIPAL_MANAGER_VAR, Modifier.FINAL, Modifier.PRIVATE);
 
 
 
@@ -61,7 +62,8 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
                 .addStatement("super($N,$N,$N, $N)", Constants.REALISER, "checker","postProcessing", PRINCIPAL_MANAGER_VAR)
                 .addStatement("this.$N = $N", Constants.REALISER, Constants.REALISER)
                 .addStatement("this.$N = $N", "checker", "checker")
-                .addStatement("this.$N = postProcessing", "postProcessing");
+                .addStatement("this.$N = postProcessing", "postProcessing")
+                .addStatement("this.$N = $N", PRINCIPAL_MANAGER_VAR, PRINCIPAL_MANAGER_VAR);
 
         builder.addMethod(cbuilder3.build());
 
@@ -87,8 +89,8 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
 
                 mspec.addStatement("return $N.generic_enact(new $T(),bean,\n" +
                         "                b -> checker.process(b),\n" +
-                        "                (sb,b) -> new $T(sb,true,$N()).process(b),\n" +
-                        "                (rs,b) -> $N.beanCompleterFactory(rs,new Object[1],postProcessing).process(b))", Constants.REALISER, outputClassName, queryInvokerClass, "getPrincipal", Constants.REALISER);
+                        "                (sb,b) -> new $T(sb,true,$N.get()).process(b),\n" +
+                        "                (rs,b) -> $N.beanCompleterFactory(rs,new Object[1],postProcessing).process(b))", Constants.REALISER, outputClassName, queryInvokerClass, PRINCIPAL_MANAGER_VAR, Constants.REALISER);
 
                 builder.addMethod(mspec.build());
             }

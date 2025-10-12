@@ -14,7 +14,6 @@ import java.util.function.Function;
 import static org.openprovenance.prov.configuration.Configuration.getPropertiesFromClasspath;
 
 public class Storage {
-    public static final String SQL_FILE_NAME ;
     static Logger logger = LogManager.getLogger(Storage.class);
 
     public Connection setup(String host, String username, String password) {
@@ -55,14 +54,13 @@ public class Storage {
             }
         }
         version=properties.getProperty("project.version");
-        SQL_FILE_NAME= "/META-INF/resources/webjars/template-intro1/" + version + "/sql/prov-template-library-transport.sql";
-        logger.info("SQL file: " + SQL_FILE_NAME);
+
     }
 
 
     public static String getStringFromClasspath(Class<?> clazz, String propFileName) {
         try {
-            return IOUtils.resourceToString(propFileName, Charset.defaultCharset());
+            return IOUtils.resourceToString(propFileName, Charset.defaultCharset(), clazz.getClassLoader());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -70,8 +68,10 @@ public class Storage {
     }
 
 
-    public boolean initializeDB(Connection conn) throws SQLException {
-        String statements=getStringFromClasspath(this.getClass(), SQL_FILE_NAME);
+    public boolean initializeDB(Connection conn, String sqlInitializer) throws SQLException {
+        String statements=getStringFromClasspath(this.getClass(), sqlInitializer);
+        System.out.println("**************** Initializing DB with script: " + sqlInitializer);
+        System.out.println(statements);
         return executeStatements(conn, statements);
     }
 
@@ -81,10 +81,6 @@ public class Storage {
         }
     }
 
-    public void executeQuery(Connection conn) throws SQLException {
-        String statements=getStringFromClasspath(this.getClass(), SQL_FILE_NAME);
-        executeQuery(conn, statements);
-    }
 
     public ResultSet executeQuery(Connection conn, String statements) throws SQLException {
         Statement st = conn.createStatement();

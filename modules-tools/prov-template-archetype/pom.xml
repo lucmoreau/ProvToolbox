@@ -10,7 +10,7 @@
     <packaging>maven-archetype</packaging>
     <name> |---- PROV-TEMPLATE-ARCHETYPE</name>
 
-    <description>Archetype used to generate rest application based on jaxrs 2.1</description>
+    <description>prov-template-archetype: a service for a template library</description>
 
     <build>
         <extensions>
@@ -24,6 +24,7 @@
 
     <properties>
         <archetype-packaging.version>3.1.1</archetype-packaging.version>
+        <archetype.test.skip>true</archetype.test.skip>
     </properties>
 
 </project>

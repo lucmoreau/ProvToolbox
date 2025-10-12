@@ -9,7 +9,7 @@
 
   <filter>
     <filter-name>HasProvenanceHeaderFilter</filter-name>
-    <filter-class>org.openprovenance.prov.service.core.HasProvenanceHeaderFilter</filter-class>
+    <filter-class>org.openprovenance.prov.service.HasProvenanceHeaderFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>HasProvenanceHeaderFilter</filter-name>

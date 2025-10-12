@@ -1,0 +1,5 @@
+
+{
+    "catalogue.package": "${pom.catalogue.package}",
+    "sql.initializer": "/META-INF/resources/webjars/${pom.the.template.library}/${pom.the.template.library.version}/sql/prov-template-library${pom.the.template.sublibrary}.sql"
+}

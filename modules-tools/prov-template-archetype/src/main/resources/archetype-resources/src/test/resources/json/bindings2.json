@@ -1,0 +1,22 @@
+[{
+    "isA": "plead_transforming_composite",
+    "count": 2,
+    "type": "plead_transforming",
+    "__elements": [
+        {
+            "isA": "plead_transforming",
+            "transformed_file": -1,
+            "filename": "file",
+            "file": 17,
+            "transforming": -2
+        },
+        {
+            "isA": "plead_transforming",
+            "transformed_file": -1,
+            "filename": "file",
+            "file": 30,
+            "transforming": -2
+        }
+    ]
+}]
+

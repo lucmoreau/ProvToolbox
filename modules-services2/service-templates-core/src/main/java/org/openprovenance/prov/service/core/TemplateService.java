@@ -169,9 +169,10 @@ public class TemplateService {
          this.templateConfiguration=(NO_TEMPLATE_CONFIG.equals(templateConfig))?new HashMap<>():readTemplateConfiguration(templateConfig);
 
         String fullClassName=templateConfiguration.get("catalogue.package")+".CatalogueDispatcher";
+        String sqlInitializer=templateConfiguration.get("sql.initializer");
 
         // dynamically load class org.openprovenance.bk.physical.CatalogueDispatcher with map and pf as arguments;
-        BiFunction<Object, org.openprovenance.prov.model.ProvFactory, CatalogueDispatcherInterface> factory=dynamicallyLoadClass("org.openprovenance.bk.physical.CatalogueDispatcher", CatalogueDispatcherInterface.class);
+        BiFunction<Object, org.openprovenance.prov.model.ProvFactory, CatalogueDispatcherInterface> factory=dynamicallyLoadClass(fullClassName, CatalogueDispatcherInterface.class);
 
         CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher=factory.apply(map,pf);
         catalogueDispatcher.initEnactorConverter(queryExecutor,this::submitPostProcessing, principalManager::getPrincipal);
@@ -190,7 +191,7 @@ public class TemplateService {
 
         if (conn!=null) {
             try {
-                boolean anyResult=storage.initializeDB(conn);
+                boolean anyResult=storage.initializeDB(conn,sqlInitializer);
                 logger.info("DB initialized. Any results? " + anyResult);
 
                 sqlFilesToExecute.forEach(file -> executeStatementsFromFile(conn,file));

@@ -4,8 +4,8 @@ OUT=target/primer
 
 PROV_CREDENTIALS=~/.kclprov
 
-SERVICE_PORT=7075
-SERVICE_CONTEXT=book
+SERVICE_PORT=${servicePort}
+SERVICE_CONTEXT=${serviceContext}
 SERVICE_HOST=localhost
 SERVICE_PROTOCOL=http
 

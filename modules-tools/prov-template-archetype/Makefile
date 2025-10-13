@@ -6,9 +6,9 @@ run.book:
 	@mkdir -p $(DEPLOY_DIR)
 	@cd $(DEPLOY_DIR); make -f ../Makefile archetype.generate.book
 
-run.tpl:
+run.ptl:
 	@mkdir -p $(DEPLOY_DIR)
-	@cd $(DEPLOY_DIR); make -f ../Makefile ARTIFACT_ID=artif2 archetype.generate.tpl
+	@cd $(DEPLOY_DIR); make -f ../Makefile ARTIFACT_ID=artif2 archetype.generate.ptl
 
 
 GROUP_ID=org.example
@@ -31,11 +31,13 @@ archetype.generate.book:
     	-DcataloguePackage=org.openprovenance.bk.physical \
     	-DtemplateSubLibrary=-transport \
     	-DloggerConstructor=org.openprovenance.bk.physical.client.logger.Logger \
-    	-DjdbcURL="jdbc:postgresql://localhost:5432/bookptm?sslmode=disable"
+    	-DjdbcURL="jdbc:postgresql://localhost:5432/bookptm?sslmode=disable" \
+    	-DserviceContext=/book \
+    	-DservicePort=7075 \
 
 
 
-archetype.generate.tpl:
+archetype.generate.ptl:
 	@echo "Generating project $(GROUP_ID):$(ARTIFACT_ID):$(VERSION)"
 	@mvn archetype:generate \
         -DgroupId=$(GROUP_ID) \
@@ -51,7 +53,9 @@ archetype.generate.tpl:
     	-DcataloguePackage=org.openprovenance.prov.template.library.plead \
     	-DtemplateSubLibrary=-plead \
     	-DloggerConstructor=org.openprovenance.prov.template.library.plead.client.logger.Logger \
-	    -DjdbcURL="jdbc:postgresql://localhost:5432/templates?sslmode=disable"
+	    -DjdbcURL="jdbc:postgresql://localhost:5432/templates?sslmode=disable" \
+	    -DserviceContext=/ptl \
+	    -DservicePort=7076
 
 
 

@@ -86,6 +86,7 @@
       <module name="arti" target="11" />
       <module name="demo (1)" target="1.5" />
       <module name="modules-executable (1)" target="1.5" />
+      <module name="modules-tutorial" target="1.5" />
       <module name="mojos" target="11" />
       <module name="prov-jsonld-xml (1)" target="11" />
       <module name="prov-plugin" target="1.5" />

@@ -1,5 +1,5 @@
 {
-    "callbackUrl": "http://localhost:7075/book/callback",
+    "callbackUrl": "http://localhost:${pom.service.port}${pom.service.context}/callback",
 
     "configurations": {
 
@@ -8,7 +8,7 @@
             "clientId": "ptm-indirect",
             "realm": "prov",
             "baseUri": "https://openprovenance.susx.ac.uk/auth",
-            "callbackUrl": "http://localhost:7075/book/callback"
+            "callbackUrl": "http://localhost:${pom.service.port}${pom.service.context}/callback"
         },
 
         "DirectBearerAuthClient": {

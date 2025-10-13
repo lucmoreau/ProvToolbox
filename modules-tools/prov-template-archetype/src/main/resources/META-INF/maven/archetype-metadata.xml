@@ -15,6 +15,8 @@
         <requiredProperty key="cataloguePackage"/>
         <requiredProperty key="loggerConstructor"/>
         <requiredProperty key="jdbcURL"/>
+        <requiredProperty key="serviceContext"/>
+        <requiredProperty key="servicePort"/>
     </requiredProperties>
 
     <fileSets>

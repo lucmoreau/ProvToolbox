@@ -305,8 +305,8 @@
     </build>
 
     <properties>
-        <pom.service.port>7075</pom.service.port>
-        <pom.service.context>/book</pom.service.context>
+        <pom.service.port>${servicePort}</pom.service.port>
+        <pom.service.context>${serviceContext}</pom.service.context>
         <pom.service.host>localhost</pom.service.host>
         <pom.service.protocol>http</pom.service.protocol>
         <pom.the.template.library>${templateLibraryArtifactId}</pom.the.template.library>
@@ -322,7 +322,7 @@
         <secure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-with-security.xml</secure.webxml.location>
         <lexicon.location>/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/nlg-wrapper/target/dictionary/lexAccess2013.data</lexicon.location>
         <template.config.location>target/test-classes/template-config.json</template.config.location>
-        <security.config.location>/Users/luc/git-papers/papers/book-ptm/project/service-book/src/test/config/security/openprovenance-auth2-security-config.json</security.config.location>
+        <security.config.location>target/test-classes/security/openprovenance-auth2-security-config.json</security.config.location>
     </properties>
 
 

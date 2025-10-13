@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.openprovenance.prov</groupId>
         <artifactId>modules-tools</artifactId>
-        <version>2.2.2-SNAPSHOT</version>
+        <version>${provtoolboxVersion}</version>
     </parent>
 
 
@@ -12,7 +12,7 @@
     <groupId>${groupId}</groupId>
     <name>|---- ${templateLibraryServiceName}</name>
     <packaging>war</packaging>
-    <description>A REST service for the Book Provenance Template Management</description>
+    <description>A REST service for Provenance Template Management</description>
     <version>${version}</version>
 
 
@@ -21,9 +21,8 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>service-templates-core</artifactId>
-            <version>2.2.2-SNAPSHOT</version>
+            <version>${provtoolboxVersion}</version>
         </dependency>
-
 
         <dependency>
             <groupId>${templateLibraryGroupId}</groupId>
@@ -36,8 +35,6 @@
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>${log4j.version}</version>
         </dependency>
-
-
 
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -57,7 +54,6 @@
             <artifactId>swagger-ui</artifactId>
             <version>${webjars.swagger-ui.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.webjars</groupId>
@@ -152,7 +148,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>2.2.2-SNAPSHOT</version>
+            <version>${provtoolboxVersion}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
@@ -163,7 +159,6 @@
             <version>${resteasy.version}</version>
             <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -224,13 +219,8 @@
 
     </dependencies>
 
-
-
-
     <build>
         <plugins>
-
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -252,6 +242,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -279,9 +270,7 @@
                 <targetPath>${project.build.directory}/webapp.filtered</targetPath>
                 <filtering>true</filtering>
             </resource>
-
         </resources>
-
 
         <testResources>
             <testResource>
@@ -623,9 +612,6 @@
 
             </build>
         </profile>
-
-
-
     </profiles>
 
 

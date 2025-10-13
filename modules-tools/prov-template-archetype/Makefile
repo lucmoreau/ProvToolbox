@@ -1,6 +1,6 @@
 
 DEPLOY_DIR=target
-
+PROVTOOLBOX_VERSION=2.2.2-SNAPSHOT
 
 run.book:
 	@mkdir -p $(DEPLOY_DIR)
@@ -18,6 +18,7 @@ VERSION=0.1-SNAPSHOT
 archetype.generate.book:
 	@echo "Generating project $(GROUP_ID):$(ARTIFACT_ID):$(VERSION)"
 	@mvn archetype:generate \
+		-DprovtoolboxVersion=$(PROVTOOLBOX_VERSION) \
         -DgroupId=$(GROUP_ID) \
         -DartifactId=$(ARTIFACT_ID) \
         -Dversion=$(VERSION) \
@@ -40,6 +41,7 @@ archetype.generate.book:
 archetype.generate.ptl:
 	@echo "Generating project $(GROUP_ID):$(ARTIFACT_ID):$(VERSION)"
 	@mvn archetype:generate \
+ 		-DprovtoolboxVersion=$(PROVTOOLBOX_VERSION) \
         -DgroupId=$(GROUP_ID) \
         -DartifactId=$(ARTIFACT_ID) \
         -Dversion=$(VERSION) \

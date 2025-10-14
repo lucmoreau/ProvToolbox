@@ -20,6 +20,26 @@
                 <version>${archetype-packaging.version}</version>
             </extension>
         </extensions>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>**/pom.xml</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/pom.xml</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
     <properties>

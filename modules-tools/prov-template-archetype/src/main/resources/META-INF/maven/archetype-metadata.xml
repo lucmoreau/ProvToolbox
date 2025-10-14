@@ -17,7 +17,9 @@
         <requiredProperty key="jdbcURL"/>
         <requiredProperty key="serviceContext"/>
         <requiredProperty key="servicePort"/>
-        <requiredProperty key="provtoolboxVersion"/>
+        <requiredProperty key="provtoolboxVersion">
+            <defaultValue>${project.version}</defaultValue>
+        </requiredProperty>
     </requiredProperties>
 
     <fileSets>

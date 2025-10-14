@@ -1,14 +1,17 @@
+FILE=./target/classes/provtoolbox.version
+PROVTOOLBOX_VERSION=$(shell cat $(FILE))
 
 DEPLOY_DIR=target
-PROVTOOLBOX_VERSION=2.2.2-SNAPSHOT
 
 run.book:
+	@echo "run.book: Using provtoolbox version $(PROVTOOLBOX_VERSION)"
 	@mkdir -p $(DEPLOY_DIR)
-	@cd $(DEPLOY_DIR); make -f ../Makefile archetype.generate.book
+	@$(MAKE) archetype.generate.book
 
 run.ptl:
+	@echo "run.ptl: Using provtoolbox version $(PROVTOOLBOX_VERSION)"
 	@mkdir -p $(DEPLOY_DIR)
-	@cd $(DEPLOY_DIR); make -f ../Makefile ARTIFACT_ID=artif2 archetype.generate.ptl
+	@$(MAKE) ARTIFACT_ID=artif2 archetype.generate.ptl
 
 
 GROUP_ID=org.example
@@ -17,14 +20,13 @@ VERSION=0.1-SNAPSHOT
 
 archetype.generate.book:
 	@echo "Generating project $(GROUP_ID):$(ARTIFACT_ID):$(VERSION)"
-	@mvn archetype:generate \
-		-DprovtoolboxVersion=$(PROVTOOLBOX_VERSION) \
+	@cd $(DEPLOY_DIR); mvn archetype:generate \
         -DgroupId=$(GROUP_ID) \
         -DartifactId=$(ARTIFACT_ID) \
         -Dversion=$(VERSION) \
         -DarchetypeGroupId=org.openprovenance.prov \
         -DarchetypeArtifactId=prov-template-archetype \
-    	-DarchetypeVersion=2.2.2-SNAPSHOT \
+    	-DarchetypeVersion=$(PROVTOOLBOX_VERSION) \
     	-DtemplateLibraryGroupId=org.openprovenance.bookptm \
     	-DtemplateLibraryArtifactId=template-intro1 \
     	-DtemplateLibraryVersion=0.1.0-SNAPSHOT \
@@ -40,17 +42,16 @@ archetype.generate.book:
 
 archetype.generate.ptl:
 	@echo "Generating project $(GROUP_ID):$(ARTIFACT_ID):$(VERSION)"
-	@mvn archetype:generate \
- 		-DprovtoolboxVersion=$(PROVTOOLBOX_VERSION) \
+	@cd $(DEPLOY_DIR); mvn archetype:generate \
         -DgroupId=$(GROUP_ID) \
         -DartifactId=$(ARTIFACT_ID) \
         -Dversion=$(VERSION) \
         -DarchetypeGroupId=org.openprovenance.prov \
         -DarchetypeArtifactId=prov-template-archetype \
-    	-DarchetypeVersion=2.2.2-SNAPSHOT \
+    	-DarchetypeVersion=$(PROVTOOLBOX_VERSION) \
     	-DtemplateLibraryGroupId=org.openprovenance.prov \
     	-DtemplateLibraryArtifactId=prov-template-library \
-    	-DtemplateLibraryVersion=2.2.2-SNAPSHOT \
+    	-DtemplateLibraryVersion=$(PROVTOOLBOX_VERSION) \
     	-DtemplateLibraryServiceName=ServiceTemplateLibary \
     	-DcataloguePackage=org.openprovenance.prov.template.library.plead \
     	-DtemplateSubLibrary=-plead \

@@ -30,6 +30,8 @@
                 </includes>
                 <excludes>
                     <exclude>**/pom.xml</exclude>
+                    <exclude>**/Makefile</exclude>
+                    <exclude>**/Dockerfile</exclude>
                 </excludes>
             </resource>
             <resource>
@@ -37,6 +39,8 @@
                 <filtering>false</filtering>
                 <includes>
                     <include>**/pom.xml</include>
+                    <include>**/Makefile</include>
+                    <include>**/Dockerfile</include>
                 </includes>
             </resource>
         </resources>

@@ -36,7 +36,7 @@ archetype.generate.book:
     	-DloggerConstructor=org.openprovenance.bk.physical.client.logger.Logger \
     	-DjdbcURL="jdbc:postgresql://localhost:5432/bookptm?sslmode=disable" \
     	-DserviceContext=/book \
-    	-DservicePort=7075 \
+    	-DservicePort=7075
 
 
 

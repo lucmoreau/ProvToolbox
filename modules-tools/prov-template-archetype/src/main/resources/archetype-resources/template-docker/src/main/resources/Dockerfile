@@ -5,7 +5,8 @@
 #FROM tomcat:9-jdk12-adoptopenjdk-openj9
 #FROM tomcat:9-jdk11-temurin-jammy
 #FROM tomcat:10.1.13-jdk17-temurin-jammy
-FROM tomcat:10.1.24-jdk21-temurin-jammy
+#FROM tomcat:10.1.24-jdk21-temurin-jammy
+FROM tomcat:10.1.48-jdk25-temurin-noble
 
 
 MAINTAINER Luc Moreau "luc.moreau@sussex.ac.uk"

@@ -24,6 +24,8 @@ archetype.generate.book:
         -DgroupId=$(GROUP_ID) \
         -DartifactId=$(ARTIFACT_ID) \
         -Dversion=$(VERSION) \
+        -Dpom.ProjectArtifactId=$(ARTIFACT_ID) \
+        -DProjectArtifactId=$(ARTIFACT_ID) \
         -DarchetypeGroupId=org.openprovenance.prov \
         -DarchetypeArtifactId=prov-template-archetype \
     	-DarchetypeVersion=$(PROVTOOLBOX_VERSION) \

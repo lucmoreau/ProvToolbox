@@ -8,9 +8,9 @@
 
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>${artifactId}</artifactId>
+    <artifactId>${ProjectArtifactId}-service</artifactId>
     <groupId>${groupId}</groupId>
-    <name>|---- ${templateLibraryServiceName}</name>
+    <name>|---- ${ProjectArtifactId}-service</name>
     <packaging>war</packaging>
     <description>A REST service for Provenance Template Management</description>
     <version>${version}</version>

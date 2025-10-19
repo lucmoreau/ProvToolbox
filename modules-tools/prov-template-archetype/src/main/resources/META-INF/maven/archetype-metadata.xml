@@ -3,6 +3,8 @@
                       xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.2.0"
                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <requiredProperties>
+        <requiredProperty key="ProjectArtifactId">
+        </requiredProperty>
         <requiredProperty key="templateLibraryGroupId">
         </requiredProperty>
         <requiredProperty key="templateLibraryArtifactId">
@@ -23,7 +25,7 @@
     </requiredProperties>
 
     <modules>
-        <module name="template-service" id="template-service" dir="template-service">
+        <module name="${pom.ProjectArtifactId}-service" id="${pom.ProjectArtifactId}-service" dir="template-service">
             <fileSets>
                 <fileSet filtered="true" encoding="UTF-8">
                     <directory>src/main/config</directory>
@@ -124,7 +126,7 @@
                 </fileSet>
             </fileSets>
         </module>
-        <module name="template-service-docker" id="template-service-docker" dir="template-service-docker">
+        <module name="${pom.ProjectArtifactId}-docker" id="${pom.ProjectArtifactId}-docker" dir="template-docker">
             <fileSets>
                 <fileSet filtered="true" encoding="UTF-8">
                     <directory>src/main/config</directory>
@@ -139,13 +141,6 @@
                         <include>Dockerfile</include>
                     </includes>
                 </fileSet>
-                <fileSet filtered="true" encoding="UTF-8">
-                    <directory>src/main/webapp.filter</directory>
-                    <includes>
-                        <include>**/*.xml</include>
-                        <include>**/*.html</include>
-                    </includes>
-                </fileSet>
                 <fileSet encoding="UTF-8">
                     <directory>src/main/resources</directory>
                     <includes>
@@ -153,37 +148,12 @@
                         <include>**/*.provn</include>
                     </includes>
                 </fileSet>
-                <fileSet encoding="UTF-8">
-                    <directory>src/main/webapp.filter</directory>
-                    <includes>
-                        <include>**/*.ico</include>
-                        <include>**/*.js</include>
-                    </includes>
-                </fileSet>
-                <fileSet encoding="UTF-8">
-                    <directory>src/main/sql</directory>
-                    <includes>
-                        <include>**/*.sql</include>
-                    </includes>
-                </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/test/java</directory>
-                    <includes>
-                        <include>**/*.java</include>
-                    </includes>
-                </fileSet>
+
                 <fileSet filtered="true" encoding="UTF-8">
                     <directory>src/test/resources</directory>
                     <includes>
                         <include>**/*.xml</include>
                         <include>**/*.properties</include>
-                        <include>**/*.provn</include>
-                    </includes>
-                </fileSet>
-                <fileSet filtered="true" encoding="UTF-8">
-                    <directory>src/test/config</directory>
-                    <includes>
-                        <include>**/*.xml</include>
                     </includes>
                 </fileSet>
                 <fileSet encoding="UTF-8">
@@ -196,27 +166,9 @@
                     </includes>
                 </fileSet>
                 <fileSet encoding="UTF-8">
-                    <directory>src/test/config</directory>
+                    <directory>docker.conf</directory>
                     <includes>
-                        <include>**/*.json</include>
-                    </includes>
-                </fileSet>
-                <fileSet filtered="true" encoding="UTF-8">
-                    <directory>src/license</directory>
-                    <includes>
-                        <include>**/*.properties</include>
-                    </includes>
-                </fileSet>
-                <fileSet filtered="true" encoding="UTF-8">
-                    <directory>java-old/org</directory>
-                    <includes>
-                        <include>**/*.java</include>
-                    </includes>
-                </fileSet>
-                <fileSet encoding="UTF-8">
-                    <directory>bin</directory>
-                    <includes>
-                        <include>**/*.sh</include>
+                        <include>**/*</include>
                     </includes>
                 </fileSet>
                 <fileSet encoding="UTF-8">

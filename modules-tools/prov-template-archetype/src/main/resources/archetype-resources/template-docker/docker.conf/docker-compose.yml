@@ -41,9 +41,8 @@ services:
 
   provtemplates:
     env_file: env_file.env
-    image: docker-service-templates.temurin-mac
+    image: docker-service-templates.temurin
     restart: always
-    platform: linux/arm64/v8
     ports:
       - "8080:8080"
     links:

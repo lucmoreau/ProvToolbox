@@ -12,7 +12,7 @@ LOCATION_IMAGE=$(TARGET_IMAGE)
 
 EXPORT_IMAGE=provenance/templates
 
-DOCKER_RUN_DIR=$(HOME)/docker/log-dir
+DOCKER_RUN_DIR=$(HOME)/docker/ptm
 
 WAR_VERSION=2.0.6-SNAPSHOT
 WAR_FILE=$(ORIGIN)-$(WAR_VERSION)-docker
@@ -59,18 +59,18 @@ tag:
 push:
 	$(MAKE) -f target/classes/Makefile push
 
+CATALINA_OPTS=-DPROV_STORAGE_CONFIG=/home/pservice/file/storage-configuration.json -DPOSTGRES_HOST=postgres16 -DTPL_DB_USER=${TPM_DB_USER} -DTPL_DB_PASS=${TPM_DB_PASS} -DTPL_SECURITY_CONFIG=/home/pservice/file/openprovenance-auth2-security-config.json  -DTPL_HOST=http://localhost:8080/ptl -DPROV_API=http://localhost:8080/ptl/provapi -DXPLAIN_LEXICON=/etc/dictionary/lexAccess2013.data
 
 run.8080:
 	$(MAKE) setup.dir
-	$(DOCKER) run -ti  -p 8080:8080  -i -v $(DOCKER_RUN_DIR):/home/pservice -t ${TARGET_IMAGE}
+	$(DOCKER) run -ti  -p 8080:8080  -i -v $(DOCKER_RUN_DIR):/home/pservice   -e CATALINA_OPTS="$(CATALINA_OPTS)" -t ${TARGET_IMAGE}
+
 run.9090:
 	$(MAKE) setup.dir
 	$(DOCKER) run -ti  -p 9090:8080  -i -v $(DOCKER_RUN_DIR):/home/pservice -t ${TARGET_IMAGE}
 
 setup.dir:
 	mkdir -p $(DOCKER_RUN_DIR)/database $(DOCKER_RUN_DIR)/files $(DOCKER_RUN_DIR)/log
-
-
 
 run.bash:
 	$(DOCKER) run -ti  -p 9090:8080  -i -v $(DOCKER_RUN_DIR):/home/pservice -t ${TARGET_IMAGE} /bin/bash

@@ -3,6 +3,8 @@
 #From
 #https://graspingtech.com/docker-compose-postgresql/
 
+echo "Database creating $TPM_DB_NAME .... "
+
 set -e
 export PGPASSWORD=$POSTGRES_PASSWORD;
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$TPM_DB_NAME" <<-EOSQL

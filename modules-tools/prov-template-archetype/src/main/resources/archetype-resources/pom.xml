@@ -8,16 +8,16 @@
 
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>${artifactId}-root</artifactId>
+    <artifactId>${ProjectArtifactId}-root</artifactId>
     <groupId>${groupId}</groupId>
-    <name>|---- ${templateLibraryServiceName}-Root</name>
+    <name>|---- ${ProjectArtifactId}-root</name>
     <packaging>pom</packaging>
     <description>A project for Provenance Template Management</description>
     <version>${version}</version>
 
     <modules>
         <module>template-service</module>
-        <module>template-service-docker</module>
+        <module>template-docker</module>
     </modules>
 
 
@@ -44,7 +44,7 @@
         <security.config.location>target/test-classes/security/openprovenance-auth2-security-config.json</security.config.location>
     </properties>
 
-    
+
 
 
 </project>

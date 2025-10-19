@@ -8,16 +8,15 @@
 
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>${ProjectArtifactId}-root</artifactId>
+    <artifactId>${rootArtifactId}-root</artifactId>
     <groupId>${groupId}</groupId>
-    <name>|---- ${ProjectArtifactId}-root</name>
+    <name>|---- ${rootArtifactId}-root</name>
     <packaging>pom</packaging>
     <description>A project for Provenance Template Management</description>
     <version>${version}</version>
 
     <modules>
-        <module>template-service</module>
-        <module>template-docker</module>
+
     </modules>
 
 

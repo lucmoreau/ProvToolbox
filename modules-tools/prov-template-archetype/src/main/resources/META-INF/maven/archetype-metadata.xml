@@ -3,8 +3,6 @@
                       xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.2.0"
                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <requiredProperties>
-        <requiredProperty key="ProjectArtifactId">
-        </requiredProperty>
         <requiredProperty key="templateLibraryGroupId">
         </requiredProperty>
         <requiredProperty key="templateLibraryArtifactId">
@@ -25,7 +23,7 @@
     </requiredProperties>
 
     <modules>
-        <module name="${pom.ProjectArtifactId}-service" id="${pom.ProjectArtifactId}-service" dir="template-service">
+        <module name="${rootArtifactId}-service" id="${rootArtifactId}-service" dir="__rootArtifactId__-service">
             <fileSets>
                 <fileSet filtered="true" encoding="UTF-8">
                     <directory>src/main/config</directory>
@@ -126,7 +124,7 @@
                 </fileSet>
             </fileSets>
         </module>
-        <module name="${pom.ProjectArtifactId}-docker" id="${pom.ProjectArtifactId}-docker" dir="template-docker">
+        <module name="${rootArtifactId}-docker" id="${rootArtifactId}-docker" dir="__rootArtifactId__-docker">
             <fileSets>
                 <fileSet filtered="true" encoding="UTF-8">
                     <directory>src/main/config</directory>
@@ -165,7 +163,7 @@
                         <include>**/*.jsonld</include>
                     </includes>
                 </fileSet>
-                <fileSet encoding="UTF-8">
+                <fileSet filtered="true" encoding="UTF-8">
                     <directory>docker.conf</directory>
                     <includes>
                         <include>**/*</include>

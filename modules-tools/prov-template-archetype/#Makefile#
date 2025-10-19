@@ -23,7 +23,7 @@ archetype.generate.book:
 	@cd $(DEPLOY_DIR); mvn archetype:generate \
         -DgroupId=$(GROUP_ID) \
         -DartifactId=$(ARTIFACT_ID) \
-        -Dversion=$(VERSION) \
+        -Dversion=$(VERSION) \        -Dpom.ProjectArtifactId=$(ARTIFACT_ID) \
         -DProjectArtifactId=$(ARTIFACT_ID) \
         -DarchetypeGroupId=org.openprovenance.prov \
         -DarchetypeArtifactId=prov-template-archetype \

@@ -194,7 +194,9 @@
                     console.log("myUrl");
                     console.log(myUrl);
                     // delete the substring that follows ${symbol_pound} in the URL
-                    myUrl=myUrl.substring(0, myUrl.lastIndexOf('${symbol_pound}'));
+                    if (myUrl.lastIndexOf('${symbol_pound}')>0) {
+                        myUrl = myUrl.substring(0, myUrl.lastIndexOf('${symbol_pound}'));
+                    }
                     // delete the substring that follows the last / in the URL
                     myUrl=myUrl.substring(0, myUrl.lastIndexOf('/'));
 

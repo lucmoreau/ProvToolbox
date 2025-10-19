@@ -6,8 +6,8 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>${ProjectArtifactId}-docker</artifactId>
-    <name>|---- ${ProjectArtifactId}-docker</name>
+    <artifactId>${rootArtifactId}-docker</artifactId>
+    <name>|---- ${rootArtifactId}-docker</name>
     <packaging>jar</packaging>
     <description>A Docker image for the Templates service</description>
     <version>${version}</version>
@@ -16,7 +16,7 @@
 
     <properties>
         <service.context>ptl</service.context>
-        <origin.project>${ProjectArtifactId}-service</origin.project>
+        <origin.project>${rootArtifactId}-service</origin.project>
         <docker.java.platform>temurin</docker.java.platform>
         <upload.directory>/home/pservice/files</upload.directory>  <!-- same folder as in docker profile in service-translator -->
         <cached.dictionary.folder>${basedir}/dictionary</cached.dictionary.folder>
@@ -76,7 +76,7 @@
                     <artifactItems>
                         <artifactItem>
                             <groupId>${groupId}</groupId>
-                            <artifactId>${ProjectArtifactId}-service</artifactId>
+                            <artifactId>${rootArtifactId}-service</artifactId>
                             <version>${version}</version>
                             <classifier>secure</classifier>
                             <type>war</type>

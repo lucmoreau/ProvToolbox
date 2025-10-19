@@ -9,6 +9,7 @@
 
   <display-name>Provenance Template Service</display-name>
 
+    <!--
     <listener>
         <listener-class>
             org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap
@@ -28,6 +29,7 @@
         <servlet-name>ProvapiApplication</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+    -->
 
   <filter>
     <filter-name>HasProvenanceHeaderFilter</filter-name>

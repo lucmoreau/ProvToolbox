@@ -59,7 +59,7 @@ tag:
 push:
 	$(MAKE) -f target/classes/Makefile push
 
-CATALINA_OPTS=-DPROV_STORAGE_CONFIG=/home/pservice/file/storage-configuration.json -DPOSTGRES_HOST=postgres16 -DTPL_DB_USER=${TPM_DB_USER} -DTPL_DB_PASS=${TPM_DB_PASS} -DTPL_SECURITY_CONFIG=/home/pservice/file/openprovenance-auth2-security-config.json  -DTPL_HOST=http://localhost:8080/ptl -DPROV_API=http://localhost:8080/ptl/provapi -DXPLAIN_LEXICON=/etc/dictionary/lexAccess2013.data
+CATALINA_OPTS=-DPROV_STORAGE_CONFIG=/home/pservice/file/storage-configuration.json -DPOSTGRES_HOST=postgres16 -DTPL_DB_USER=${TPM_DB_USER} -DTPL_DB_PASS=${TPM_DB_PASS} -DTPL_SECURITY_CONFIG=/home/pservice/file/openprovenance-auth2-security-config.json  -DTPL_HOST=http://localhost:8080/ptl -DPROV_API=http://localhost:8080/ptl/provapi -DXPLAIN_LEXICON=/etc/dictionary/lexAccess2013.data  -DTEMPLATE_CONFIG=${project.basedir}/./${rootArtifactId}/target/test-classes/template-config.json
 
 run.8080:
 	$(MAKE) setup.dir

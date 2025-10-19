@@ -33,7 +33,7 @@ VOLUME ${upload.directory}
 
 #RUN rm -r -f /usr/local/tomcat/webapps/ROOT
 
-ADD ${origin.project}-${version}-secure.war /usr/local/tomcat/webapps/${service.context}.war
+ADD ${origin.project}-${version}-secure.war /usr/local/tomcat/webapps${serviceContext}.war
 
 RUN mkdir -p /etc/dictionary
 

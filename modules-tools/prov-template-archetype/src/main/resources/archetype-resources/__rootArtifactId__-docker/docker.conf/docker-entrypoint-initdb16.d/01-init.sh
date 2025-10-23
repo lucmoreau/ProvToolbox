@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 #From
 #https://graspingtech.com/docker-compose-postgresql/

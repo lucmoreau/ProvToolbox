@@ -137,6 +137,7 @@
                     <includes>
                         <include>Makefile</include>
                         <include>Dockerfile</include>
+                        <include>env_file.env</include>
                     </includes>
                 </fileSet>
                 <fileSet encoding="UTF-8">
@@ -169,7 +170,7 @@
                         <include>**/*</include>
                     </includes>
                 </fileSet>
-                <fileSet encoding="UTF-8">
+                <fileSet filtered="true" encoding="UTF-8">
                     <includes>
                         <include>Makefile</include>
                         <include>.gitignore</include>

@@ -1,3 +1,5 @@
 tomcat.alpine.prov/service-translator-0.8.1-SNAPSHOT-docker.war
 
 tomcat.open9j.prov/service-translator-0.8.1-SNAPSHOT-docker.war
+
+${project.artifactId}.${docker.java.platform}

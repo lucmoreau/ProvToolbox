@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <artifactId>modules-services2</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.2.2-SNAPSHOT</version>
+        <artifactId>modules-tools</artifactId>
+        <version>${provtoolboxVersion}</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -32,8 +32,6 @@
             </resource>
         </resources>
 
-
-
         <plugins>
 
             <plugin>
@@ -57,7 +55,6 @@
                     </execution>
                 </executions>
             </plugin>
-
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -87,7 +84,6 @@
                 </configuration>
             </plugin>
 
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -103,38 +99,36 @@
                 </configuration>
             </plugin>
 
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy file="${project.basedir}/docker.conf/gitignore"
+                                      tofile="${project.basedir}/docker.conf/.gitignore"
+                                      overwrite="false"/>
+                                <copy file="${project.build.directory}/classes/env_file.env"
+                                      tofile="${project.basedir}/docker.conf/env_file.env"
+                                      overwrite="true"/>
+                                <copy file="${project.build.directory}/classes/env_file.env"
+                                      tofile="${project.basedir}/docker.conf/.env"
+                                      overwrite="true"/>
+                                <chmod file="${project.basedir}/docker.conf/docker-entrypoint-initdb16.d/01-init.sh" perm="755"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
 
-
-
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <version>${antrun.plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>ant-contrib</groupId>
-                            <artifactId>ant-contrib</artifactId>
-                            <version>1.0b3</version>
-                            <exclusions>
-                                <exclusion>
-                                    <groupId>ant</groupId>
-                                    <artifactId>ant</artifactId>
-                                </exclusion>
-                            </exclusions>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.ant</groupId>
-                            <artifactId>ant-nodeps</artifactId>
-                            <version>1.8.1</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
 
 </project>

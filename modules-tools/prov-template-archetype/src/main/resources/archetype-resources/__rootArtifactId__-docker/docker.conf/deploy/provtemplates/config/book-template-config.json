@@ -1,0 +1,6 @@
+
+{
+    "catalogue.package": "org.openprovenance.bk.physical",
+    "jdbc.url": "jdbc:postgresql://postgres16:5432/templates?sslmode=disable",
+    "sql.initializer": "/META-INF/resources/webjars/template-intro1/0.1.0-SNAPSHOT/sql/prov-template-library-transport.sql"
+}

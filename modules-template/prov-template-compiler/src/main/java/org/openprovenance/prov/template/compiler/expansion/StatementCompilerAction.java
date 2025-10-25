@@ -67,23 +67,23 @@ public class StatementCompilerAction implements StatementAction {
 		if (start == null) {
 			if (end == null) {
 				builder.addStatement(
-						"if ($N!=null) " + target + ".add(pf.newActivity($N,null,null" + generateAttributes(s) + "))",
+						"if ($N!=null) " + target + ".add(pf.newActivity($N,null,null" + generateAttributesAlways(s) + "))",
 						var, var);
 			} else {
 				builder.addStatement("if ($N!=null) " + target
 						+ ".add(pf.newActivity($N,null,($N==null)?null:pf.newISOTime($N.toString())"
-						+ generateAttributes(s) + "))", var, var, end, end);
+						+ generateAttributesAlways(s) + "))", var, var, end, end);
 			}
 		} else {
 			if (end == null) {
 				builder.addStatement("if ($N!=null) " + target
 						+ ".add(pf.newActivity($N,($N==null)?null:pf.newISOTime($N.toString()),null"
-						+ generateAttributes(s) + "))", var, var, start, start);
+						+ generateAttributesAlways(s) + "))", var, var, start, start);
 			} else {
 				builder.addStatement("if ($N!=null) " + target
 						+ ".add(pf.newActivity($N,($N==null)?null:pf.newISOTime($N.toString()),"
 						+ "($N==null)?null:pf.newISOTime($N.toString())"
-						+ generateAttributes(s) + "))", var, var, start, start,end,end);
+						+ generateAttributesAlways(s) + "))", var, var, start, start,end,end);
 			}
 		}
 

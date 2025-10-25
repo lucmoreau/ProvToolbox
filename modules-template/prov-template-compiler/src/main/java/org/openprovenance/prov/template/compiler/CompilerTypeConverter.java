@@ -59,6 +59,11 @@ public class CompilerTypeConverter {
                 .addParameter(String.class,"col")
                 .returns(typeT)
                 .build());
+        inface.addMethod(MethodSpec.methodBuilder("getBoolean")
+                .addModifiers(Modifier.ABSTRACT,Modifier.PUBLIC)
+                .addParameter(String.class,"col")
+                .returns(typeT)
+                .build());
         builder.addType(inface.build());
 
 
@@ -123,6 +128,7 @@ public class CompilerTypeConverter {
         put("integer", "getObject");
         put("double precision", "getObject");
         put("timestamptz", "getTimestamp");
+        put("boolean", "getBoolean");
     }};
 
 

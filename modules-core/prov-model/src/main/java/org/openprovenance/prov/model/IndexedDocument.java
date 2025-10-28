@@ -468,6 +468,13 @@ public class IndexedDocument implements StatementAction {
             existing2.getLocation().addAll(set2);
         }
 
+        if (existing instanceof HasRole) {
+            HasRole existing2=(HasRole) existing;
+            Set<Role> set2=new HashSet<>(((HasRole)newElement).getRole());
+            set2.removeAll(existing2.getRole());
+            existing2.getRole().addAll(set2);
+        }
+
         Set<Type> set3=new HashSet<Type>(newElement.getType());
         set3.removeAll(existing.getType());
         existing.getType().addAll(set3);

@@ -60,8 +60,7 @@ public class CompilerBeanGenerator {
                 break;
         }
 
-        String packge=locations.getFilePackage(beanDirection);
-        String processorPackage=locations.getFilePackage(BEAN_PROCESSOR);
+
         switch (beanDirection) {
             case INPUTS:
                 builder.addJavadoc(" that only contains the input of this template.");
@@ -76,7 +75,6 @@ public class CompilerBeanGenerator {
             default:
                 throw new IllegalStateException("Unexpected value: " + beanDirection);
         }
-        String directory = locations.convertToDirectory(packge);
 
         if (sharing!=null) {
             builder.addJavadoc("\n This includes shared variables $N.", sharing.toString());
@@ -137,6 +135,9 @@ public class CompilerBeanGenerator {
             }
         }
 
+        String packge=locations.getFilePackage(beanDirection);
+        String processorPackage=locations.getFilePackage(BEAN_PROCESSOR);
+
         if (beanKind==BeanKind.SIMPLE ) {
             MethodSpec mbuild = generateInvokeProcessor(templateName, processorPackage, bindingsSchema, null, beanDirection);
             builder.addMethod(mbuild);
@@ -163,6 +164,8 @@ public class CompilerBeanGenerator {
 
         TypeSpec spec = builder.build();
 
+
+        String directory = locations.convertToDirectory(packge);
 
         JavaFile myfile = compilerUtil.specWithComment(spec, templateName, packge, stackTraceElement);
 

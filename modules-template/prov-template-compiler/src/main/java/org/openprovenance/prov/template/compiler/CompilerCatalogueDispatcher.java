@@ -102,8 +102,18 @@ public class CompilerCatalogueDispatcher {
         compilerUtil.specWithComment(cspec);
 
         for (String data: dataConfiguratorMap.keySet()) {
-            if (!configs.integrator && integratorRequired.contains(data)) continue;
-            if (configs.sqlFile==null && storageRequired.contains(data)) continue;
+            if (!configs.integrator && (integratorRequired.contains(data) || storageRequired.contains(data))) {
+                builder.addMethod(createNullGetterBuilder(data, dataTypeMap.get(data)).build());
+                if (storageRequired.contains(data)) {
+                    builder.addMethod(createNullInitBuilder(data).build());
+                }
+                continue;
+            };
+            if (configs.sqlFile==null && storageRequired.contains(data)) {
+                builder.addMethod(createNullGetterBuilder(data, dataTypeMap.get(data)).build());
+                builder.addMethod(createNullInitBuilder(data).build());
+                continue;
+            };
 
             String configurator = dataConfiguratorMap.get(data);
             TypeName typeName = dataTypeMap.get(data);
@@ -264,6 +274,30 @@ public class CompilerCatalogueDispatcher {
         }
         return getterSpec;
     }
+
+    private MethodSpec.Builder createNullGetterBuilder(String data, TypeName typeName) {
+        MethodSpec.Builder getterSpec = MethodSpec.methodBuilder("get" + capitalizeFirstLetter(data))
+                .returns(typeName)
+                .addModifiers(Modifier.PUBLIC);
+        compilerUtil.specWithComment(getterSpec);
+        getterSpec.addStatement("return null", data);
+        return getterSpec;
+    }
+
+
+    private MethodSpec.Builder createNullInitBuilder(String data) {
+        MethodSpec.Builder initSpec = MethodSpec.methodBuilder("init" + capitalizeFirstLetter(data))
+                .returns(void.class)
+                .addModifiers(Modifier.PUBLIC);
+        compilerUtil.specWithComment(initSpec);
+        initSpec.addComment("null sqlFile or false integrator flag");
+        initSpec.addParameter(FunctionStringResultSet, QUERIER_VAR);
+        initSpec.addParameter(BiFunctionIntegerStringObject, POST_PROCESSING_VAR);
+        initSpec.addParameter(SupplierOfString, GET_PRINCIPAL_VAR);
+        initSpec.addStatement("return");
+        return initSpec;
+    }
+
 
     public String capitalizeFirstLetter(String s) {
         return s.substring(0,1).toUpperCase()+s.substring(1);

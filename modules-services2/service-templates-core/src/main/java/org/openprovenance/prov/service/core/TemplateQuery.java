@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerSQL.sqlify;
@@ -189,7 +190,13 @@ public class TemplateQuery {
 
         StringBuilder sb=new StringBuilder();
         sb.append(id).append(",");
-        sb.append(templateDispatcher.getCsvConverter().get((String)record[0]).apply(record));
+        Function<Object[], String> fun = templateDispatcher.getCsvConverter().get((String) record[0]);
+        if (fun==null) {
+            logger.warn("no csv converter for template " + template);
+            sb.append("no csv converter");
+        } else {
+            sb.append(fun.apply(record));
+        }
 
         String csv = sb.toString();
         String hash2=sha512.digestAsHex(csv);

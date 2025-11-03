@@ -130,9 +130,9 @@ public class CompilerCatalogueDispatcher {
                 initSpec.addParameter(SupplierOfString, GET_PRINCIPAL_VAR);
                 initSpec.addStatement("this.$N=$T.$N(new $T($N,$N,$N))",
                         data,
-                        ClassName.get(locations.getFilePackage(Constants.LOGGER), Constants.LOGGER),
+                        ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
                         ("compositeEnactorConverter".equals(data))?"initializeCompositeBeanTable":"initializeBeanTable",
-                        ClassName.get(locations.getFilePackage(configurator), configurator),
+                        ClassName.get(locations.getFilePackage(configs.name,configurator), configurator),
                         QUERIER_VAR,POST_PROCESSING_VAR, GET_PRINCIPAL_VAR);
                 builder.addMethod(initSpec.build());
 
@@ -145,40 +145,40 @@ public class CompilerCatalogueDispatcher {
                 if ("foreignTables".equals(data)) {
                     cspec.addStatement("this.$N=$T.initializeBeanTable(new $T<>($T::getForeign))",
                             data,
-                            ClassName.get(locations.getFilePackage(Constants.LOGGER), Constants.LOGGER),
-                            ClassName.get(locations.getFilePackage(configurator), configurator),
+                            ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
+                            ClassName.get(locations.getFilePackage(configs.name,configurator), configurator),
                             ClassName.get(CLIENT_PACKAGE, BUILDER_INTERFACE));
 
                 } else if ("successors".equals(data)) {
                     cspec.addStatement("this.$N=$T.initializeBeanTable(new $T<>($T::process))",
                             data,
-                            ClassName.get(locations.getFilePackage(Constants.LOGGER), Constants.LOGGER),
-                            ClassName.get(locations.getFilePackage(configurator), configurator),
+                            ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
+                            ClassName.get(locations.getFilePackage(configs.name,configurator), configurator),
                             ClassName.get(configs.root_package, CATALOGUE_DISPATCHER));
 
                 } else if ("documentBuilderDispatcher".equals(data)) {
                     cspec.addStatement("this.$N=$T.initializeBeanTable(new $T(map,pf))",
                             data,
-                            ClassName.get(locations.getFilePackage(Constants.LOGGER), Constants.LOGGER),
-                            ClassName.get(locations.getFilePackage(configurator), configurator));
+                            ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
+                            ClassName.get(locations.getFilePackage(configs.name,configurator), configurator));
                 } else if ("typeAssignment".equals(data)) {
                     cspec.addStatement("this.$N=$T.initializeBeanTable(new $T(map,propertyOrder,documentBuilderDispatcher,pf))",
                             data,
-                            ClassName.get(locations.getFilePackage(Constants.LOGGER), Constants.LOGGER),
-                            ClassName.get(locations.getFilePackage(configurator), configurator));
+                            ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
+                            ClassName.get(locations.getFilePackage(configs.name,configurator), configurator));
                 } else if ("recordMaker".equals(data)) {
                     cspec.addStatement("this.$N=$T.initializeBeanTable(new $T(documentBuilderDispatcher))",
                             data,
-                            ClassName.get(locations.getFilePackage(Constants.LOGGER), Constants.LOGGER),
-                            ClassName.get(locations.getFilePackage(configurator), configurator));
+                            ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
+                            ClassName.get(locations.getFilePackage(configs.name,configurator), configurator));
                 } else {
                     if (sqlRelated.contains(data) && configs.sqlFile==null) {
                         cspec.addStatement("this.$N=null /* no sql file*/", data);
                     } else {
                         cspec.addStatement("this.$N=$T.initializeBeanTable(new $T())",
                                 data,
-                                ClassName.get(locations.getFilePackage(Constants.LOGGER), Constants.LOGGER),
-                                ClassName.get(locations.getFilePackage(configurator), configurator));
+                                ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
+                                ClassName.get(locations.getFilePackage(configs.name,configurator), configurator));
                     }
                 }
 

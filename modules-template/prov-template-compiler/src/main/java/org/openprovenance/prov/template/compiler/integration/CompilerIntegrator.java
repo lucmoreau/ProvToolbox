@@ -63,11 +63,11 @@ public class CompilerIntegrator {
                     builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArray(TO_INPUTS+extension, consistsOf, integrator_package, tbs, INPUTS, extension, shared));
 
                     // we assume a single variant for now
-                    builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, locations.getFilePackage(logger), logger, INPUTS, extension, shared));
+                    builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, locations.getFilePackage(templateName,logger), logger, INPUTS, extension, shared));
 
                 });
             } else {
-                builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, locations.getFilePackage(logger), logger, INPUTS, null, null));
+                builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, locations.getFilePackage(templateName,logger), logger, INPUTS, null, null));
             }
 
         }

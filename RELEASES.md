@@ -37,6 +37,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: moved principal mangement out of generated code
 * service-templates-core: first version
 * prov-template-archetype: first version
+* prov-template-compiler: changed Locations to better manager packages of generated code
 
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java

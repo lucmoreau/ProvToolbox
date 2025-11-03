@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Set;
 
 import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
@@ -79,9 +80,27 @@ public class CompilerTest extends TestCase {
         new File(cli_webjar_templates_dir).mkdirs();
 
 
-        Locations locations=new Locations(configs,cli_src_dir, l2p_src_dir);
+        HashMap<String, String> packages = new HashMap<>();
+        packages.put(config.name, config.package_);
+        packages.put(configs.name, configs.root_package);
+        System.out.println("#### packages: " + packages);
 
-        locations.updateWithConfig(config);
+        Locations locations=new Locations(configs, packages, cli_src_dir, l2p_src_dir);
+
+
+        /*
+                if (config.package_==null) config.package_=configs.root_package;
+                this.config_common_package     = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_COMMON;
+                this.config_integrator_package = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_INTEGRATOR;
+                this.config_access_control_package = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_ACCESS_CONTROL;
+                this.config_backend            = config.package_;
+                this.config_sql_common_backend_package = config_backend + ".sql.common";
+                this.config_sql_integration_backend_package = config_backend + ".sql.integration";
+                this.config_sql_access_control_backend_package = config_backend + ".sql.access_control";
+
+
+
+         */
 
         if (TemplateConfigurationEnum.isSimple(config)) {
 

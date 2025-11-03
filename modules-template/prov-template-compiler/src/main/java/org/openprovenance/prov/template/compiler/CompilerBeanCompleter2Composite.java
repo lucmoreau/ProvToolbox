@@ -50,7 +50,6 @@ public class CompilerBeanCompleter2Composite {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            locations.updateWithConfig(config);
             if (config instanceof SimpleTemplateCompilerConfig) continue;
             CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig) config;
             String consistsOf=config1.consistsOf;
@@ -60,8 +59,8 @@ public class CompilerBeanCompleter2Composite {
             final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
             final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
 
-            final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
-            MethodSpec.Builder mspec = createProcessMethod(consistsOf, locations.getFilePackage(BeanDirection.OUTPUTS), outputClassName, true);
+            final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputBeanNameClass);
+            MethodSpec.Builder mspec = createProcessMethod(consistsOf, locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputClassName, true);
             builder.addMethod(mspec.build());
 
 
@@ -70,7 +69,7 @@ public class CompilerBeanCompleter2Composite {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

@@ -34,10 +34,10 @@ public class CompilerBeanLocalEnactor2 {
         builder.addModifiers(Modifier.ABSTRACT);
 
 
-        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(Constants.QUERY_INVOKER2), Constants.QUERY_INVOKER2);
+        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(configs.name, Constants.QUERY_INVOKER2), Constants.QUERY_INVOKER2);
 
-        ClassName ioProcessorClass = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), INPUT_OUTPUT_PROCESSOR);
-        ClassName inputProcessorClass = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), INPUT_PROCESSOR);
+        ClassName ioProcessorClass = ClassName.get(locations.getBeansPackage(configs.name, BeanDirection.OUTPUTS), INPUT_OUTPUT_PROCESSOR);
+        ClassName inputProcessorClass = ClassName.get(locations.getBeansPackage(configs.name, BeanDirection.OUTPUTS), INPUT_PROCESSOR);
         builder.addSuperinterface(ioProcessorClass);
 
 
@@ -64,12 +64,10 @@ public class CompilerBeanLocalEnactor2 {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            locations.updateWithConfig(config);
-
             final String outputNameClass = compilerUtil.outputsNameClass(config.name);
             final String inputNameClass = compilerUtil.inputsNameClass(config.name);
-            final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputNameClass);
-            final ClassName inputClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), inputNameClass);
+            final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputNameClass);
+            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), inputNameClass);
 
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC)
@@ -114,7 +112,7 @@ public class CompilerBeanLocalEnactor2 {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage= locations.getFilePackage(fileName);
+        String myPackage= locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

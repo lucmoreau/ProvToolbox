@@ -87,6 +87,7 @@ public class CompilerExpansionBuilder {
 
         JavaFile myfile = compilerUtil.specWithComment(theInterface, templateName, packge, stackTraceElement);
 
+        System.out.println("******* " + fileName + " " + packge);
         return new SpecificationFile(myfile, directory, fileName, packge);
     }
 
@@ -136,7 +137,7 @@ public class CompilerExpansionBuilder {
 
         builder.addMethod(compilerCommon.generateNameAccessor(templateName));
 
-        builder.addMethod(compilerCommon.commonAccessorGenerator(templateName,locations.getFilePackage(BeanDirection.COMMON)));
+        builder.addMethod(compilerCommon.commonAccessorGenerator(templateName,locations.getBeansPackage(templateName, BeanDirection.COMMON)));
 
         builder.addMethod(typeManagerGenerator(templateName,packge));
        // builder.addMethod(compilerClient.typePropagateGenerator(templateName,packge));

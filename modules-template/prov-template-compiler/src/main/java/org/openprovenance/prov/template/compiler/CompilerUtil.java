@@ -37,6 +37,7 @@ import org.openprovenance.prov.template.log2prov.FileBuilder;
 //import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.TypeSpec.Builder;
 
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.addBaseDirIfRelative;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
@@ -359,10 +360,30 @@ public class CompilerUtil {
         return bindings_schema;
     }
 
+
+    Map<String,TemplateBindingsSchema> bindingsSchemaCache=new HashMap<>();
+
+
     public TemplateBindingsSchema getBindingsSchema(SimpleTemplateCompilerConfig config) {
-        TemplateBindingsSchema bindingsSchema = getBindingsSchema(config.bindings);
-        return bindingsSchema;
+        if (bindingsSchemaCache.containsKey(config.bindings)) {
+            return bindingsSchemaCache.get(config.bindings);
+        } else {
+            TemplateBindingsSchema bindingsSchema = getBindingsSchema(config.bindings);
+            bindingsSchemaCache.put(config.bindings, bindingsSchema);
+            return bindingsSchema;
+        }
     }
+
+    public TemplateBindingsSchema getBindingsSchema(SimpleTemplateCompilerConfig config, String baseDir) {
+        if (bindingsSchemaCache.containsKey(config.bindings)) {
+            return bindingsSchemaCache.get(config.bindings);
+        } else {
+            TemplateBindingsSchema bindingsSchema = getBindingsSchema(addBaseDirIfRelative(config.bindings,baseDir));
+            bindingsSchemaCache.put(config.bindings, bindingsSchema);
+            return bindingsSchema;
+        }
+    }
+
 
 
     public TemplateBindingsSchema getBindingsSchema(String bindings) {
@@ -388,7 +409,6 @@ public class CompilerUtil {
     static final public ParameterizedTypeName mapIntArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(Integer.class), TypeName.get(int[].class));
     static final public ParameterizedTypeName mapStringArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeName.get(int[].class));
     static final public ParameterizedTypeName mapStringMapStringArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), mapStringArrayType);
-    static final public ParameterizedTypeName hashmapStringMapStringArrayType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(String.class), mapStringArrayType);
 
     public Class<?> getJavaTypeForDeclaredType(Map<String, List<Descriptor>> varMap, String key) {
        if (!varMap.containsKey(key))
@@ -853,8 +873,15 @@ public class CompilerUtil {
         return exception.getStackTrace()[2];
     }
 
+    /*
     public ClassName getClass(String name, Locations locations) {
         return ClassName.get(locations.getFilePackage(name), name);
+    }
+
+     */
+
+    public ClassName getClass(String configName, String name, Locations locations) {
+        return ClassName.get(locations.getFilePackage(configName, name), name);
     }
 
 

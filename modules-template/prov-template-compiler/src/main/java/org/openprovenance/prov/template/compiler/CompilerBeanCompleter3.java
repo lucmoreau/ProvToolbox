@@ -28,7 +28,7 @@ public class CompilerBeanCompleter3 {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_COMPLETER3);
 
-        builder.superclass(ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2));
+        builder.superclass(ClassName.get(locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2));
         builder.addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);
 
         MethodSpec.Builder cbuilder2= MethodSpec.constructorBuilder();
@@ -70,14 +70,13 @@ public class CompilerBeanCompleter3 {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            locations.updateWithConfig(config);
             if  (config instanceof SimpleTemplateCompilerConfig) {
                 if (composeeTemplates.contains(config.name)) {
 
 
                     final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
-                    final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
+                    final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputBeanNameClass);
                     MethodSpec.Builder mspec = createSimpleProcessMethod(outputClassName,config.name);
 
                     builder.addMethod(mspec.build());
@@ -88,7 +87,7 @@ public class CompilerBeanCompleter3 {
                 CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
-                final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
+                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputBeanNameClass);
 
                 MethodSpec.Builder mspec = createCompositeProcessMethod(config.name,outputClassName);
                 builder.addMethod(mspec.build());
@@ -100,7 +99,7 @@ public class CompilerBeanCompleter3 {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

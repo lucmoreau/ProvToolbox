@@ -3,7 +3,6 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
-import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
@@ -12,7 +11,6 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectC
 
 import javax.lang.model.element.Modifier;
 
-import static org.openprovenance.prov.template.compiler.CompilerCatalogueDispatcher.SupplierOfString;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.sql.CompilerSqlIntegration.BIFUN;
 
@@ -30,22 +28,22 @@ public class CompilerBeanEnactor2WithPrincipal {
 
 
         // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
-        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2)+"."+ Constants.BEAN_ENACTOR2, Constants.ENACTOR_IMPLEMENTATION), typeResult);
+        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR2)+"."+ Constants.BEAN_ENACTOR2, Constants.ENACTOR_IMPLEMENTATION), typeResult);
         // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
-        final TypeName THIS_ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2_WP)+"."+ Constants.BEAN_ENACTOR2_WP, Constants.ENACTOR_IMPLEMENTATION), typeResult);
+        final TypeName THIS_ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR2_WP)+"."+ Constants.BEAN_ENACTOR2_WP, Constants.ENACTOR_IMPLEMENTATION), typeResult);
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_ENACTOR2_WP);
         // add superclass BeanEnactor2
-        builder.superclass(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2), Constants.BEAN_ENACTOR2), typeResult));
+        builder.superclass(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR2), Constants.BEAN_ENACTOR2), typeResult));
         builder.addModifiers(Modifier.ABSTRACT);
         builder.addTypeVariable(typeResult);
 
 
-        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(Constants.QUERY_INVOKER2WP), Constants.QUERY_INVOKER2WP);
-        ClassName beanCompleterClass = ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2);
+        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(configs.name,Constants.QUERY_INVOKER2WP), Constants.QUERY_INVOKER2WP);
+        ClassName beanCompleterClass = ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2);
 
-        ClassName ioProcessorClass = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), INPUT_OUTPUT_PROCESSOR);
-        ClassName inputProcessorClass = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), INPUT_PROCESSOR);
+        ClassName ioProcessorClass = ClassName.get(locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR), INPUT_OUTPUT_PROCESSOR);
+        ClassName inputProcessorClass = ClassName.get(locations.getFilePackage(configs.name, INPUT_PROCESSOR), INPUT_PROCESSOR);
         builder.addSuperinterface(ioProcessorClass);
 
 
@@ -158,12 +156,24 @@ public class CompilerBeanEnactor2WithPrincipal {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            locations.updateWithConfig(config);
+            /*
+                    if (config.package_==null) config.package_=configs.root_package;
+                    this.config_common_package     = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_COMMON;
+                    this.config_integrator_package = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_INTEGRATOR;
+                    this.config_access_control_package = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_ACCESS_CONTROL;
+                    this.config_backend            = config.package_;
+                    this.config_sql_common_backend_package = config_backend + ".sql.common";
+                    this.config_sql_integration_backend_package = config_backend + ".sql.integration";
+                    this.config_sql_access_control_backend_package = config_backend + ".sql.access_control";
+
+
+
+             */
 
             final String outputNameClass = compilerUtil.outputsNameClass(config.name);
             final String inputNameClass = compilerUtil.inputsNameClass(config.name);
-            final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputNameClass);
-            final ClassName inputClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), inputNameClass);
+            final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputNameClass);
+            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), inputNameClass);
 
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC)
@@ -183,7 +193,7 @@ public class CompilerBeanEnactor2WithPrincipal {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage= locations.getFilePackage(fileName);
+        String myPackage= locations.getFilePackage(configs.name,fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

@@ -89,20 +89,19 @@ public class CompilerBeanCompleter2 {
         builder.addMethod(cbuilder3.build());
 
         for (TemplateCompilerConfig config : configs.templates) {
-            locations.updateWithConfig(config);
             if  (config instanceof SimpleTemplateCompilerConfig) {
                 TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
                 final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
 
-                final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
+                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputBeanNameClass);
                 MethodSpec.Builder mspec = createProcessMethod(config.name, bindingsSchema, outputClassName, true);
 
                 builder.addMethod(mspec.build());
 
 
-                final ClassName inputClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), inputBeanNameClass);
+                final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), inputBeanNameClass);
                 MethodSpec.Builder mspec2 = createProcessMethod(config.name, bindingsSchema, inputClassName, false);
                 builder.addMethod(mspec2.build());
             } else {
@@ -110,9 +109,9 @@ public class CompilerBeanCompleter2 {
                 String consistOf=config1.consistsOf;
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
-                final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
+                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputBeanNameClass);
                 String composeeName=compilerUtil.outputsNameClass(consistOf);
-                ClassName composeeClass=ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS),composeeName);
+                ClassName composeeClass=ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS),composeeName);
 
                 MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                         .addModifiers(Modifier.PUBLIC)
@@ -145,7 +144,7 @@ public class CompilerBeanCompleter2 {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

@@ -42,8 +42,7 @@ public class CompilerLogger {
         for (TemplateCompilerConfig config : configs.templates) {
            // if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), templateNameClass);
             FieldSpec fspec = FieldSpec.builder(className, Constants.GENERATED_VAR_PREFIX + config.name)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                     .initializer("$N $T()", "new", className)
@@ -65,7 +64,6 @@ public class CompilerLogger {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            locations.updateWithConfig(config);
             if (config instanceof SimpleTemplateCompilerConfig) {
                 builder.addMethod(generateStaticLogMethod((SimpleTemplateCompilerConfig) config, locations));
                 builder.addMethod(generateStaticBeanMethod((SimpleTemplateCompilerConfig) config, locations));
@@ -77,16 +75,16 @@ public class CompilerLogger {
 
         builder.addField(FieldSpec
                 .builder(builderMapType, "simpleBuilders", Modifier.STATIC, Modifier.PUBLIC)
-                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(BUILDER_CONFIGURATOR), BUILDER_CONFIGURATOR))
+                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(configs.name, BUILDER_CONFIGURATOR), BUILDER_CONFIGURATOR))
                 .build());
         builder.addField(FieldSpec
                 .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfUnknown), "simpleBeanConverters", Modifier.STATIC, Modifier.PUBLIC)
-                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(CONVERTER_CONFIGURATOR),CONVERTER_CONFIGURATOR))
+                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(configs.name, CONVERTER_CONFIGURATOR),CONVERTER_CONFIGURATOR))
                 .build());
 
         builder.addField(FieldSpec
                 .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfString), "simpleCSvConverters", Modifier.STATIC, Modifier.PUBLIC)
-                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(CSV_CONFIGURATOR),CSV_CONFIGURATOR))
+                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(configs.name, CSV_CONFIGURATOR),CSV_CONFIGURATOR))
                 // python conversion does not support javadoc .addJavadoc("generated Automatically by ProvToolbox ($N.$N())", this.getClass().getSimpleName(), "generateLogger")
                 .build());
 
@@ -102,7 +100,7 @@ public class CompilerLogger {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage = locations.getFilePackage(fileName);
+        String myPackage = locations.getFilePackage(configs.name, fileName);
         String directory = locations.convertToDirectory(myPackage);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
@@ -132,7 +130,7 @@ public class CompilerLogger {
         compilerUtil.specWithComment(builder);
 
 
-        builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(TABLE_CONFIGURATOR), TABLE_CONFIGURATOR), TypeVariableName.get("T")), "configurator");
+        builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, TABLE_CONFIGURATOR), TABLE_CONFIGURATOR), TypeVariableName.get("T")), "configurator");
 
         builder.addStatement("$T $N=$N $T()",mapType, A_TABLE_VAR,"new", mapType2);
 
@@ -152,7 +150,7 @@ public class CompilerLogger {
     }
 
     private MethodSpec generateInitializeCompositeBeanTableMethod(TemplatesProjectConfiguration configs, Locations locations) {
-        ParameterizedTypeName parameterType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(COMPOSITE_TABLE_CONFIGURATOR), COMPOSITE_TABLE_CONFIGURATOR), typeT);
+        ParameterizedTypeName parameterType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, COMPOSITE_TABLE_CONFIGURATOR), COMPOSITE_TABLE_CONFIGURATOR), typeT);
 
         CodeBlock.Builder jdoc = CodeBlock.builder();
         jdoc.add("Initialize a table of composite bean builders\n");
@@ -304,7 +302,7 @@ public class CompilerLogger {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(beanCreatorName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
-                .returns(ClassName.get(locations.getFilePackage(BeanDirection.COMMON),compilerUtil.commonNameClass(config.name)));
+                .returns(ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON),compilerUtil.commonNameClass(config.name)));
 
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 

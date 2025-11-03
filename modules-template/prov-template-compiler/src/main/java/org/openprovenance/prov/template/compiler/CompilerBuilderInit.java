@@ -46,10 +46,9 @@ public class CompilerBuilderInit {
         block.addStatement("$N = new String[$L]", Constants.TYPEMANAGERS, size);
         int count=0;
         for (TemplateCompilerConfig config: configs.templates) {
-            locations.updateWithConfig(config);
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
-            block.addStatement("$N[$L]=$S", Constants.BUILDERS,count,locations.getFileBackendPackage(config.name)+"."+compilerUtil.templateNameClass(config.name));
-            block.addStatement("$N[$L]=$S", Constants.TYPEMANAGERS,count,locations.getFileBackendPackage(config.name)+"."+compilerUtil.templateNameClass(config.name)+"TypeManagement");
+            block.addStatement("$N[$L]=$S", Constants.BUILDERS,count,locations.getBackendPackage(config.name)+"."+compilerUtil.templateNameClass(config.name));
+            block.addStatement("$N[$L]=$S", Constants.TYPEMANAGERS,count,locations.getBackendPackage(config.name)+"."+compilerUtil.templateNameClass(config.name)+"TypeManagement");
             count++;
         }
         block.addStatement("pf=$T.getFactory()", org.openprovenance.prov.vanilla.ProvFactory.class);

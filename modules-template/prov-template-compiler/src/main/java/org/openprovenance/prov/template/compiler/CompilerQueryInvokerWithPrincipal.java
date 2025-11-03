@@ -37,9 +37,9 @@ public class CompilerQueryInvokerWithPrincipal {
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.QUERY_INVOKER2WP);
 
 
-        builder.addSuperinterface(ClassName.get(locations.getFilePackage(INPUT_PROCESSOR), INPUT_PROCESSOR));
+        builder.addSuperinterface(ClassName.get(locations.getFilePackage(configs.name, INPUT_PROCESSOR), INPUT_PROCESSOR));
 
-        ClassName queryInvoke2Class=ClassName.get(locations.getFilePackage(QUERY_INVOKER2), QUERY_INVOKER2);
+        ClassName queryInvoke2Class=ClassName.get(locations.getFilePackage(configs.name, QUERY_INVOKER2), QUERY_INVOKER2);
 
 
         builder.addField(StringBuilder.class, sbVar, Modifier.FINAL);
@@ -79,9 +79,8 @@ public class CompilerQueryInvokerWithPrincipal {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
-            locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), beanNameClass);
-            final ClassName inputClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), inputsNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), beanNameClass);
+            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), inputsNameClass);
 
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
@@ -106,7 +105,7 @@ public class CompilerQueryInvokerWithPrincipal {
         TypeSpec theLogger = builder.build();
 
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 
@@ -302,8 +301,8 @@ public class CompilerQueryInvokerWithPrincipal {
             }
         }
         mspec.beginControlFlow("for ($T $N: $N.$N)",
-                                  (withBean)?ClassName.get(locations.getFilePackage(BeanDirection.COMMON), compilerUtil.commonNameClass(compositeConfig.consistsOf))
-                                            :ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), compilerUtil.beanNameClass(compositeConfig.consistsOf, BeanDirection.INPUTS, "_1")),
+                                  (withBean)?ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), compilerUtil.commonNameClass(compositeConfig.consistsOf))
+                                            :ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), compilerUtil.beanNameClass(compositeConfig.consistsOf, BeanDirection.INPUTS, "_1")),
                                   variableBean1,
                                   variableBean,
                                   ELEMENTS);

@@ -5,7 +5,7 @@
     "description": "PROV template demo",
     "version": "0.1.0",
     "script": "example_run",
-    "root_package": "org.example.templates.block",
+    "root_package": "org.example.templates.catalogue",
     "script_dir": "target/libs/bin",
     "python_dir": "target/libs/python",
     "jsweet": true,

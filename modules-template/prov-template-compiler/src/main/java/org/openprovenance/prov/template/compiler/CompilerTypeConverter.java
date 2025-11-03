@@ -30,7 +30,7 @@ public class CompilerTypeConverter {
     SpecificationFile generateTypeConverter(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        ParameterizedTypeName getterOfT=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.TYPE_CONVERTER), Constants.TYPE_CONVERTER+"."+Constants.GETTER),typeT);
+        ParameterizedTypeName getterOfT=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, Constants.TYPE_CONVERTER), Constants.TYPE_CONVERTER+"."+Constants.GETTER),typeT);
 
 
 
@@ -81,8 +81,7 @@ public class CompilerTypeConverter {
             TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            locations.updateWithConfig(config);
-            final ClassName templateClass = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
+            final ClassName templateClass = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), templateNameClass);
             MethodSpec.Builder mspec = createProcessMethod(bindingsSchema, templateClass);
             builder.addMethod(mspec.build());
         }
@@ -90,7 +89,7 @@ public class CompilerTypeConverter {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

@@ -31,7 +31,7 @@ public class CompilerBeanCompleter {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_COMPLETER);
 
-        builder.addSuperinterface(compilerUtil.getClass(Constants.BEAN_PROCESSOR, locations));
+        builder.addSuperinterface(compilerUtil.getClass(configs.name, Constants.BEAN_PROCESSOR, locations));
 
         builder.addField(CompilerUtil.mapType,"m", Modifier.FINAL);
 
@@ -95,8 +95,8 @@ public class CompilerBeanCompleter {
         for (TemplateCompilerConfig config : configs.templates) {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
-            locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), beanNameClass);
+
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), beanNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())
@@ -122,7 +122,7 @@ public class CompilerBeanCompleter {
                 CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
                 String consistOf=config1.consistsOf;
                 String composeeName=compilerUtil.commonNameClass(consistOf);
-                ClassName composeeClass=ClassName.get(locations.getFilePackage(BeanDirection.COMMON),composeeName);
+                ClassName composeeClass=ClassName.get(locations.getBeansPackage(config1.name, BeanDirection.COMMON),composeeName);
 
                 mspec.addStatement("boolean nextExists=true");
                 mspec.beginControlFlow("for ($T composee: $N.$N)", composeeClass, BEAN_VAR, ELEMENTS);
@@ -146,7 +146,7 @@ public class CompilerBeanCompleter {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

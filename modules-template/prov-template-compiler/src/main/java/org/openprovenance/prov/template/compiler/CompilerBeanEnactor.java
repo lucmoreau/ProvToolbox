@@ -32,9 +32,9 @@ public class CompilerBeanEnactor {
         builder.addTypeVariable(typeResult);
 
 
-        ClassName queryInvokerClass  = compilerUtil.getClass(QUERY_INVOKER,  locations);
-        ClassName beanCompleterClass = compilerUtil.getClass(BEAN_COMPLETER, locations);
-        ClassName beanProcessorClass = compilerUtil.getClass(BEAN_PROCESSOR, locations);
+        ClassName queryInvokerClass  = ClassName.get(locations.getFilePackage(configs.name,QUERY_INVOKER), QUERY_INVOKER);
+        ClassName beanCompleterClass = ClassName.get(locations.getFilePackage(configs.name,BEAN_COMPLETER), BEAN_COMPLETER);
+        ClassName beanProcessorClass = ClassName.get(locations.getFilePackage(configs.name,BEAN_PROCESSOR), BEAN_PROCESSOR);
         builder.addSuperinterface(beanProcessorClass);
 
 
@@ -68,7 +68,7 @@ public class CompilerBeanEnactor {
 
 
         // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
-        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(BEAN_ENACTOR)+"."+ Constants.BEAN_ENACTOR, Constants.ENACTOR_IMPLEMENTATION), typeResult);
+        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,BEAN_ENACTOR)+"."+ Constants.BEAN_ENACTOR, Constants.ENACTOR_IMPLEMENTATION), typeResult);
 
         builder.addField(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PROTECTED);
 
@@ -84,14 +84,12 @@ public class CompilerBeanEnactor {
 
         builder.addMethod(cbuilder3.build());
 
-        String packge=locations.getFilePackage(BeanDirection.COMMON);
 
 
         for (TemplateCompilerConfig config : configs.templates) {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
-            locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(packge, beanNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), beanNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .addParameter(ParameterSpec.builder(className,"bean").build())
@@ -110,9 +108,8 @@ public class CompilerBeanEnactor {
 
         TypeSpec theLogger = builder.build();
 
-
+        String packge=locations.getBeansPackage(configs.name, BeanDirection.COMMON);
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, packge, stackTraceElement);
-
         return new SpecificationFile(myfile, locations.convertToDirectory(packge), fileName+DOT_JAVA_EXTENSION, packge);
 
     }

@@ -135,11 +135,11 @@ public class CompilerBeanGenerator {
             }
         }
 
-        String packge=locations.getFilePackage(beanDirection);
-        String processorPackage=locations.getFilePackage(BEAN_PROCESSOR);
+        String beanPackge=locations.getBeansPackage(templateName, beanDirection);
+        String beanProcessorPackage=locations.getBeansPackage(templateName, BeanDirection.COMMON);
 
         if (beanKind==BeanKind.SIMPLE ) {
-            MethodSpec mbuild = generateInvokeProcessor(templateName, processorPackage, bindingsSchema, null, beanDirection);
+            MethodSpec mbuild = generateInvokeProcessor(templateName, beanProcessorPackage, bindingsSchema, null, beanDirection);
             builder.addMethod(mbuild);
 
         } else if (beanKind==BeanKind.COMPOSITE) {
@@ -151,12 +151,12 @@ public class CompilerBeanGenerator {
             }
 
             if (beanDirection==BeanDirection.COMMON) {
-                MethodSpec mbuild = generateInvokeProcessor(templateName, processorPackage, bindingsSchema, ELEMENTS, beanDirection);
+                MethodSpec mbuild = generateInvokeProcessor(templateName, beanProcessorPackage, bindingsSchema, ELEMENTS, beanDirection);
                 builder.addMethod(mbuild);
             }
 
-            generateCompositeList(consistOf, packge, builder, beanDirection, variant, sharing);
-            generateCompositeListExtender(consistOf, packge, builder, beanDirection, variant, sharing);
+            generateCompositeList(consistOf, beanPackge, builder, beanDirection, variant, sharing);
+            generateCompositeListExtender(consistOf, beanPackge, builder, beanDirection, variant, sharing);
 
 
         }
@@ -165,14 +165,14 @@ public class CompilerBeanGenerator {
         TypeSpec spec = builder.build();
 
 
-        String directory = locations.convertToDirectory(packge);
+        String directory = locations.convertToDirectory(beanPackge);
 
-        JavaFile myfile = compilerUtil.specWithComment(spec, templateName, packge, stackTraceElement);
+        JavaFile myfile = compilerUtil.specWithComment(spec, templateName, beanPackge, stackTraceElement);
 
         if (locations.python_dir==null) {
-            return new SpecificationFile(myfile, directory, fileName, packge);
+            return new SpecificationFile(myfile, directory, fileName, beanPackge);
         } else {
-            return newSpecificationFiles(compilerUtil, locations, spec, templateName, stackTraceElement, myfile, directory, fileName, packge, null);
+            return newSpecificationFiles(compilerUtil, locations, spec, templateName, stackTraceElement, myfile, directory, fileName, beanPackge, null);
         }
     }
 

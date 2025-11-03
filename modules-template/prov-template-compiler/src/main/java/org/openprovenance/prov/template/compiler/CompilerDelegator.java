@@ -28,7 +28,7 @@ public class CompilerDelegator {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.DELEGATOR);
 
-        ClassName beanProcessorClass = compilerUtil.getClass(BEAN_PROCESSOR, locations);
+        ClassName beanProcessorClass = compilerUtil.getClass(configs.name, BEAN_PROCESSOR, locations);
         builder.addSuperinterface(beanProcessorClass);
 
         builder.addJavadoc("Delegator for processing beans\n");
@@ -54,8 +54,7 @@ public class CompilerDelegator {
         for (TemplateCompilerConfig config : configs.templates) {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
-            locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), beanNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), beanNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC)  // this one is not final!
                     .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())
@@ -73,7 +72,7 @@ public class CompilerDelegator {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

@@ -30,8 +30,8 @@ public class CompilerBeanProcessor {
         for (TemplateCompilerConfig config : configs.templates) {
             //if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
-            locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), beanNameClass);
+            //locations.updateWithConfig(config);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), beanNameClass);
             MethodSpec mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                     .addParameter(ParameterSpec.builder(className,"bean").build())
@@ -44,7 +44,7 @@ public class CompilerBeanProcessor {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

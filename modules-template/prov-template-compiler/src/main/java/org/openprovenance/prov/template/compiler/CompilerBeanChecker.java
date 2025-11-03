@@ -31,13 +31,13 @@ public class CompilerBeanChecker {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(fileName);
 
-        String packageForBeans;
+        String packageForBeanProcessor;
         if (direction==BeanDirection.COMMON) {
-            packageForBeans=locations.getFilePackage(Constants.BEAN_PROCESSOR);
-            builder.addSuperinterface(ClassName.get(packageForBeans, Constants.BEAN_PROCESSOR));
+            packageForBeanProcessor=locations.getFilePackage(configs.name, Constants.BEAN_PROCESSOR);
+            builder.addSuperinterface(ClassName.get(packageForBeanProcessor, Constants.BEAN_PROCESSOR));
         } else {
-            packageForBeans=locations.getFilePackage(INPUT_PROCESSOR);
-            builder.addSuperinterface(ClassName.get(packageForBeans, INPUT_PROCESSOR));
+            packageForBeanProcessor=locations.getFilePackage(configs.name, INPUT_PROCESSOR);
+            builder.addSuperinterface(ClassName.get(packageForBeanProcessor, INPUT_PROCESSOR));
         }
 
         MethodSpec.Builder mspec0 = MethodSpec.methodBuilder(Constants.NOT_NULL_METHOD)
@@ -59,7 +59,8 @@ public class CompilerBeanChecker {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            builder.addMethod(generateCheckerMethod(config.name, null, config, direction, packageForBeans, null));
+            String packageForBeans2=locations.getBeansPackage(config.name, direction);
+            builder.addMethod(generateCheckerMethod(config.name, null, config, direction, packageForBeans2, null));
         }
 
         if (variantTable!=null) {
@@ -77,7 +78,7 @@ public class CompilerBeanChecker {
                                     SimpleTemplateCompilerConfig sConfig = (SimpleTemplateCompilerConfig) config;
                                     SimpleTemplateCompilerConfig sConfig2 = sConfig.cloneAsInstanceInComposition(templateName + extension, null);
 
-                                    builder.addMethod(generateCheckerMethod(templateName , extension, sConfig2, direction, packageForBeans, sharing));
+                                    builder.addMethod(generateCheckerMethod(templateName , extension, sConfig2, direction, packageForBeanProcessor, sharing));
 
                                 }
                         );
@@ -89,7 +90,7 @@ public class CompilerBeanChecker {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name,fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 
@@ -97,7 +98,7 @@ public class CompilerBeanChecker {
     }
 
     public MethodSpec generateCheckerMethod(String templateName, String extension, TemplateCompilerConfig config, BeanDirection direction, String packageForBeans, List<String> sharing) {
-        final String beanNameClass = compilerUtil.beanNameClass(templateName, direction,extension);
+        final String beanNameClass = compilerUtil.beanNameClass(templateName, direction, extension);
 
         final ClassName className = ClassName.get(packageForBeans, beanNameClass);
         MethodSpec.Builder mspec = MethodSpec.methodBuilder(PROCESS_METHOD_NAME)

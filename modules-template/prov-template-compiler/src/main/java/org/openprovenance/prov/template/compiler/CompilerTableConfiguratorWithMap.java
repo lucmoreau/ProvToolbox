@@ -34,10 +34,9 @@ public class CompilerTableConfiguratorWithMap {
         String originalTableClassName=(compositeOnly)? Constants.COMPOSITE_TABLE_CONFIGURATOR : Constants.TABLE_CONFIGURATOR;
         String tableClassName=originalTableClassName+WITH_MAP;
 
-        String directory=locations.convertToDirectory(l2p_src_dir,"configurator");
 
         TypeSpec.Builder builder =  compilerUtil.generateClassInit(tableClassName);
-        builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(originalTableClassName), originalTableClassName), ClassName.get(FileBuilder.class)));
+        builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, originalTableClassName), originalTableClassName), ClassName.get(FileBuilder.class)));
 
         builder.addField(mapString2StringType, "map", Modifier.PRIVATE, Modifier.FINAL);
 
@@ -52,8 +51,7 @@ public class CompilerTableConfiguratorWithMap {
 
         for (TemplateCompilerConfig config : configs.templates) {
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), templateNameClass);
 
             MethodSpec.Builder mspec_builder = MethodSpec.methodBuilder(config.name)
                     .addModifiers(Modifier.PUBLIC)
@@ -89,7 +87,9 @@ public class CompilerTableConfiguratorWithMap {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage = locations.getFilePackage(tableClassName);
+        //String myPackage = locations.getFilePackage(configs.name, tableClassName);
+        String myPackage = locations.getConfiguratorBackendPackage(configs.name);
+        String directory=locations.convertToDirectory(l2p_src_dir,"");
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

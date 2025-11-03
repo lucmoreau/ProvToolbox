@@ -35,8 +35,7 @@ public class CompilerTableConfigurator {
         for (TemplateCompilerConfig config : configs.templates) {
             if (!compositeOnly || !(config instanceof SimpleTemplateCompilerConfig) ) {
                 final String templateNameClass = compilerUtil.templateNameClass(config.name);
-                locations.updateWithConfig(config);
-                final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
+                final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), templateNameClass);
                 MethodSpec mspec = MethodSpec.methodBuilder(config.name)
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                         .addParameter(ParameterSpec.builder(className, "builder").build())
@@ -49,7 +48,7 @@ public class CompilerTableConfigurator {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage = locations.getFilePackage(tableClassName);
+        String myPackage = locations.getFilePackage(configs.name, tableClassName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

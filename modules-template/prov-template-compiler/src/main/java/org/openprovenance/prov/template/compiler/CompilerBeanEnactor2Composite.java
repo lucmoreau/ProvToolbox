@@ -3,7 +3,6 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
-import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
@@ -28,10 +27,10 @@ public class CompilerBeanEnactor2Composite {
         builder.addJavadoc("Ensures that composite beans are given an ID\n");
 
 
-        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(Constants.QUERY_INVOKER2), Constants.QUERY_INVOKER2);
-        ParameterizedTypeName beanEnactor2Class = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2), Constants.BEAN_ENACTOR2), typeResult);
+        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(configs.name, Constants.QUERY_INVOKER2), Constants.QUERY_INVOKER2);
+        ParameterizedTypeName beanEnactor2Class = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2), Constants.BEAN_ENACTOR2), typeResult);
 
-        ClassName inputProcessorClass = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), INPUT_PROCESSOR);
+        ClassName inputProcessorClass = ClassName.get(locations.getFilePackage(configs.name, INPUT_PROCESSOR), INPUT_PROCESSOR);
         builder.superclass(beanEnactor2Class);
 
 
@@ -40,7 +39,7 @@ public class CompilerBeanEnactor2Composite {
 
 
         // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
-        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2)+"."+ Constants.BEAN_ENACTOR2, Constants.ENACTOR_IMPLEMENTATION), typeResult);
+        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR2)+"."+ Constants.BEAN_ENACTOR2, Constants.ENACTOR_IMPLEMENTATION), typeResult);
 
         builder.addField(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PRIVATE);
 
@@ -61,14 +60,13 @@ public class CompilerBeanEnactor2Composite {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            locations.updateWithConfig(config);
             if (config instanceof CompositeTemplateCompilerConfig) {
 
 
                 final String outputNameClass = compilerUtil.outputsNameClass(config.name);
                 final String inputNameClass = compilerUtil.inputsNameClass(config.name);
-                final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputNameClass);
-                final ClassName inputClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), inputNameClass);
+                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputNameClass);
+                final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), inputNameClass);
 
                 MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                         .addModifiers(Modifier.PUBLIC)
@@ -90,7 +88,7 @@ public class CompilerBeanEnactor2Composite {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage= locations.getFilePackage(fileName);
+        String myPackage= locations.getFilePackage(configs.name,fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

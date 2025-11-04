@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
@@ -44,8 +45,8 @@ public class CompilerInputOutputProcessor {
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
             final String outputsNameClass = compilerUtil.outputsNameClass(config.name);
 
-            final ClassName inputClassName = ClassName.get(package_, inputsNameClass);
-            final ClassName outputClassName = ClassName.get(package_, outputsNameClass);
+            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), inputsNameClass);
+            final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), outputsNameClass);
             final ClassName returnedClassName = switch (ioConverter) {
                 case INPUT_OUTPUT, OUTPUT -> outputClassName;
                 case INPUT -> inputClassName;

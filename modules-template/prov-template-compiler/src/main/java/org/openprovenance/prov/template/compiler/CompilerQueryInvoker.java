@@ -295,8 +295,8 @@ public class CompilerQueryInvoker {
             }
         }
         mspec.beginControlFlow("for ($T $N: $N.$N)",
-                                  (withBean)?ClassName.get(locations.getBeansPackage(configs.name, BeanDirection.COMMON), compilerUtil.commonNameClass(compositeConfig.consistsOf))
-                                            :ClassName.get(locations.getBeansPackage(configs.name, BeanDirection.INPUTS), compilerUtil.beanNameClass(compositeConfig.consistsOf, BeanDirection.INPUTS, "_1")),
+                                  (withBean)?ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), compilerUtil.commonNameClass(compositeConfig.consistsOf))
+                                            :ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), compilerUtil.beanNameClass(compositeConfig.consistsOf, BeanDirection.INPUTS, "_1")),
                                   variableBean1,
                                   variableBean,
                                   ELEMENTS);

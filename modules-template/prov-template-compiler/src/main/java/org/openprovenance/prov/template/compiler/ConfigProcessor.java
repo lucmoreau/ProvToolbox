@@ -766,7 +766,7 @@ public class ConfigProcessor implements Constants {
             }
 
 
-            String integratorPackage = locations.getBeansPackage(configs.name, BeanDirection.OUTPUTS);
+            String integratorPackage = locations.getBeansPackage(templateName, BeanDirection.OUTPUTS);
             String integratorDir = locations.convertToDirectory(integratorPackage);
             if (!inComposition) {
                 SpecificationFile spec3 = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.COMMON, null, null, null, bean + DOT_JAVA_EXTENSION);
@@ -850,7 +850,7 @@ public class ConfigProcessor implements Constants {
                     }
                 }
 
-                Pair<SpecificationFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(configs, locations, doc, bn, templateName, locations.getBeansPackage(configs.name, BeanDirection.COMMON), bindingsSchema2, indexed, BeanKind.COMPOSITE, bn + DOT_JAVA_EXTENSION,consistsOf);
+                Pair<SpecificationFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(configs, locations, doc, bn, templateName, locations.getBeansPackage(templateName, BeanDirection.COMMON), bindingsSchema2, indexed, BeanKind.COMPOSITE, bn + DOT_JAVA_EXTENSION,consistsOf);
                 if (tmp.getLeft()!=null) {
                     SpecificationFile spec2 = tmp.getLeft();
                     val3 = val3 & spec2.save();

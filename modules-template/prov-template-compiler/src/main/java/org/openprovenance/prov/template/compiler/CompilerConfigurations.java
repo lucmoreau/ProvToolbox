@@ -189,7 +189,7 @@ public class CompilerConfigurations {
     }
 
     public SpecificationFile generateObjectRecordMakerConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, FunctionOfObjectArray2ObjectArray, new WrapperClass(locations,configs.name)::generateObjectRecordMaker, "generateObjectRecordMakerConfigurator", BeanDirection.COMMON, MapString2FileBuilder, DISPATCHER_VAR, null, false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, FunctionOfObjectArray2ObjectArray, new WrapperClass(locations)::generateObjectRecordMaker, "generateObjectRecordMakerConfigurator", BeanDirection.COMMON, MapString2FileBuilder, DISPATCHER_VAR, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
 
     public SpecificationFile generateSqlConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
@@ -236,7 +236,7 @@ public class CompilerConfigurations {
     }
 
     public SpecificationFile generateEnactorConfigurator2(TemplatesProjectConfiguration configs, String theConfiguratorName, String integrator_package, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor2, "generateEnactorConfigurator2", BeanDirection.INPUTS, ClassName.get(locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR),INPUT_OUTPUT_PROCESSOR), ENACTOR_VAR, null, false, integrator_package,BeanDirection.OUTPUTS, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, new WrapperClass2(locations,this)::generateMethodEnactor2, "generateEnactorConfigurator2", BeanDirection.INPUTS, ClassName.get(locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR),INPUT_OUTPUT_PROCESSOR), ENACTOR_VAR, null, false, integrator_package,BeanDirection.OUTPUTS, directory, fileName);
     }
 
     public void generateMethodRecord2SqlConverter(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
@@ -260,9 +260,8 @@ public class CompilerConfigurations {
 
     static class WrapperClass {
         private final Locations locations;
-        private final String name;
 
-        public void generateObjectRecordMaker(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
+        public void generateObjectRecordMaker(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName outType) {
 
             final String backendPackage = locations.getBackendPackage(name);
 
@@ -277,11 +276,31 @@ public class CompilerConfigurations {
             mspec.addStatement("return record -> $N.make(record, $N.getTypedRecord())", TEMPLATE_BUILDER_VARIABLE, TEMPLATE_BUILDER_VARIABLE);
         }
 
-        WrapperClass(Locations locations, String name) {
+        WrapperClass(Locations locations) {
             this.locations = locations;
-            this.name=name;
         }
     }
+
+
+    static class WrapperClass2 {
+        private final Locations locations;
+        private final CompilerConfigurations compilerConfigurations;
+
+        public void generateMethodEnactor2(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName _inType, TypeName _outType) {
+            String inPackage=locations.getBeansPackage(name, BeanDirection.INPUTS);
+            TypeName inType=ClassName.get(inPackage,_inType.toString().substring(_inType.toString().lastIndexOf('.')+1));
+            String outPackage=locations.getBeansPackage(name, BeanDirection.OUTPUTS);
+            TypeName outType=ClassName.get(inPackage,_outType.toString().substring(_outType.toString().lastIndexOf('.')+1));
+
+            compilerConfigurations.generateMethodEnactor2(builderParameter, name, mspec, className, inType, outType);
+        }
+
+        WrapperClass2(Locations locations, CompilerConfigurations compilerConfigurations) {
+            this.locations = locations;
+            this.compilerConfigurations = compilerConfigurations;
+        }
+    }
+
 
     public void generateInputPropertyOrder(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.getInputs()", builderParameter);
@@ -311,7 +330,6 @@ public class CompilerConfigurations {
     public void generateMethodEnactor2(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName inputBeanType, TypeName outputBeanType) {
 
         mspec.addComment("Generated Automatically by ProvToolbox method $N.$N()", getClass().getName(), "generateMethodEnactor2");
-
 
         mspec.addStatement("$T beanConverter=$N.getIntegrator().aRecord2InputsConverter", functionObjArrayTo(inputBeanType), builderParameter);
         mspec.addStatement("$T enactor=(array) -> {\n" +

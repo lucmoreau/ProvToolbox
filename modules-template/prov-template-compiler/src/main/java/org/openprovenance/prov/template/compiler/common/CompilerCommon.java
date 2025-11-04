@@ -208,6 +208,8 @@ public class CompilerCommon {
             builder.addMethod(generateNullInputsMethod());
 
         }
+        
+        builder.addMethod(generateIsCompositeOfMethod(consistsOf,beanKind));
 
 
         String directory = locations.convertToDirectory(packageName);
@@ -240,6 +242,20 @@ public class CompilerCommon {
              */
         }
         return Pair.of(specFile, successorTable);
+    }
+
+    private MethodSpec generateIsCompositeOfMethod(String consistsOf, BeanKind beanKind) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("isCompositeOf")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(String.class);
+        compilerUtil.specWithComment(builder);
+
+        if (beanKind==BeanKind.COMPOSITE) {
+            builder.addStatement("return $S", consistsOf);
+        } else {
+            builder.addStatement("return null");
+        }
+        return builder.build();
     }
 
 

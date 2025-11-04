@@ -656,6 +656,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
                         TemplatesProjectConfiguration configs = new TemplatesProjectConfiguration();
                         //FIXME: configs not initialized!!
+                        Map<String, String> packages = new HashMap<>();
                         Locations locations = new Locations(configs, packages, null, null);
 
 

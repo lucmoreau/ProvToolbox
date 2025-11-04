@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
 import org.openprovenance.prov.template.library.plead.client.integrator.*;
+import org.openprovenance.prov.template.library.plead.integrator.InputOutputProcessor;
 
 import java.util.HashMap;
 import java.util.LinkedList;

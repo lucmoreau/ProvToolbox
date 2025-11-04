@@ -2,7 +2,7 @@ package org.openprovenance.prov.service.template;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.template.library.plead.client.integrator.TemplateInvoker;
+import org.openprovenance.prov.template.library.plead.integrator.TemplateInvoker;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.Collections;

@@ -1,6 +1,7 @@
 package org.openprovenance.prov.templates.library;
 
 import org.openprovenance.prov.template.library.plead.client.integrator.*;
+import org.openprovenance.prov.template.library.plead.integrator.InputOutputProcessor;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import java.util.List;

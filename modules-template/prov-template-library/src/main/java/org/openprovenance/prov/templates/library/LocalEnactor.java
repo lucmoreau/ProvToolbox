@@ -1,6 +1,7 @@
 package org.openprovenance.prov.templates.library;
 
 import org.openprovenance.prov.template.library.plead.client.integrator.*;
+import org.openprovenance.prov.template.library.plead.integrator.InputOutputProcessor;
 
 public abstract class LocalEnactor implements InputOutputProcessor {
 

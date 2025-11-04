@@ -405,7 +405,8 @@ public class ConfigProcessor implements Constants {
         SpecificationFile beanProcessor=compilerBeanProcessor.generateBeanProcessor(configs, locations, BEAN_PROCESSOR);
         beanProcessor.save();
 
-        String integrator_package = locations.getBeansPackage(configs.name, BeanDirection.OUTPUTS);
+        //String integrator_package = locations.getBeansPackage(configs.name, BeanDirection.OUTPUTS);
+        String integrator_package = locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR);
         String integrator_dir=locations.convertToDirectory(integrator_package);
 
 

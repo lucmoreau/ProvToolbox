@@ -5,6 +5,8 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 
 import java.io.File;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
@@ -14,12 +16,7 @@ public class Locations {
     final private TemplatesProjectConfiguration configs;
     final private String l2p_src_dir;
     private final Map<String, String> packages;
-
     public final String python_dir;
-
-
-
-
 
 
     static final String CONFIG2_EXTENSION = "2";
@@ -30,8 +27,6 @@ public class Locations {
         this.l2p_src_dir=l2p_src_dir;
         this.python_dir=configs.python_dir;
         this.packages=packages;
-
-
     }
 
 
@@ -142,24 +137,11 @@ public class Locations {
         throw new UnsupportedOperationException("Unknown file " + file);
     }
 
-
-    /*
-    @Deprecated
-    public String getFilePackage(BeanDirection dir) {
-        switch (dir) {
-            case INPUTS:    return config_integrator_package;
-            case OUTPUTS:   return config_integrator_package;
-            case COMMON:    return config_common_package;
-        }
-        throw new IllegalStateException("never here");
-    }
-
-     */
     public String getBeansPackage(String name, BeanDirection dir) {
         return switch (dir) {
-            case INPUTS -> getIntegratorPackage(name);
-            case OUTPUTS -> getIntegratorPackage(name);
-            case COMMON -> getCommonPackage(name);
+            case INPUTS -> getClientIntegratorPackage(name);
+            case OUTPUTS -> getClientIntegratorPackage(name);
+            case COMMON -> getClientCommonPackage(name);
         };
     }
 
@@ -168,25 +150,36 @@ public class Locations {
     }
 
     public String getBackendPackage(String name) {
-        return  packages.getOrDefault(name, NODEFAULT_FOR +name);
-        //return "org.example.templates.block";
+        return getPackageForTemplate(name);
     }
-
 
     public String getConfiguratorBackendPackage(String name) {
         return getBackendPackage(name) + ".configurator";
     }
 
     private String getIntegratorPackage(String name) {
-        return packages.getOrDefault(name, NODEFAULT_FOR +name) + "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_INTEGRATOR;
+        return getPackageForTemplate(name) +  "." + Constants.SUB_PACKAGE_INTEGRATOR;
+    }
+
+    private String getClientIntegratorPackage(String name) {
+        return getPackageForTemplate(name) + "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_INTEGRATOR;
     }
 
     private String getCommonPackage(String name) {
-        return packages.getOrDefault(name, NODEFAULT_FOR +name) +"." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_COMMON;
+        return getPackageForTemplate(name) + "." + Constants.SUB_PACKAGE_COMMON;
+    }
+
+    private String getClientCommonPackage(String name) {
+        return getPackageForTemplate(name) +"." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_COMMON;
+    }
+
+    private String getPackageForTemplate(String name) {
+        //return packages.getOrDefault(name, NODEFAULT_FOR + name);
+        return Optional.ofNullable(packages.get(name)).orElseThrow(() -> new NoSuchElementException("No package defined for template " + name));
     }
 
     private String getConfiguratorPackage(String name) {
-        return packages.getOrDefault(name, NODEFAULT_FOR +name)  + "." + Constants.SUB_PACKAGE_CLIENT + "." + CONFIGURATOR;
+        return getPackageForTemplate(name) + "." + CONFIGURATOR;
     }
 
     private String getConfiguratorPackage2(String name) {

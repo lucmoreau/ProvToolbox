@@ -33,8 +33,8 @@ public class CompilerBeanEnactor2 {
         ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(configs.name, Constants.QUERY_INVOKER2), Constants.QUERY_INVOKER2);
         ClassName beanCompleterClass = ClassName.get(locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2);
 
-        ClassName ioProcessorClass = ClassName.get(locations.getBeansPackage(configs.name, BeanDirection.OUTPUTS), INPUT_OUTPUT_PROCESSOR);
-        ClassName inputProcessorClass = ClassName.get(locations.getBeansPackage(configs.name, BeanDirection.OUTPUTS), INPUT_PROCESSOR);
+        ClassName ioProcessorClass = ClassName.get(locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR), INPUT_OUTPUT_PROCESSOR);
+        ClassName inputProcessorClass = ClassName.get(locations.getFilePackage(configs.name, INPUT_PROCESSOR), INPUT_PROCESSOR);
         builder.addSuperinterface(ioProcessorClass);
 
 

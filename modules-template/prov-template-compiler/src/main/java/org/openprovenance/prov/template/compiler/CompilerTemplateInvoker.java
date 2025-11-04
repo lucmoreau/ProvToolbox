@@ -27,7 +27,7 @@ public class CompilerTemplateInvoker {
 
     SpecificationFile generateTemplateInvoker(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(TEMPLATE_INVOKER).addSuperinterface(ClassName.get(locations.getBeansPackage(configs.name, BeanDirection.INPUTS),INPUT_OUTPUT_PROCESSOR)).addModifiers(Modifier.ABSTRACT);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(TEMPLATE_INVOKER).addSuperinterface(ClassName.get(locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR),INPUT_OUTPUT_PROCESSOR)).addModifiers(Modifier.ABSTRACT);
 
 
 

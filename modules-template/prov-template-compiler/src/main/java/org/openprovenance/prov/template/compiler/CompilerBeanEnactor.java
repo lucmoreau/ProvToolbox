@@ -108,7 +108,7 @@ public class CompilerBeanEnactor {
 
         TypeSpec theLogger = builder.build();
 
-        String packge=locations.getBeansPackage(configs.name, BeanDirection.COMMON);
+        String packge=locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR);
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, packge, stackTraceElement);
         return new SpecificationFile(myfile, locations.convertToDirectory(packge), fileName+DOT_JAVA_EXTENSION, packge);
 

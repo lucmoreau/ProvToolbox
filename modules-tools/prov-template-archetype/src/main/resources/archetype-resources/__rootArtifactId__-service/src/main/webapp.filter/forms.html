@@ -337,9 +337,11 @@
 
     function constructMenusConfiguration() {
         let profile = {}
+        let composites = {}
         for (var indx in builders) {
             const builder = builders[indx]
             let name = builder.getName()
+            let consistOf = builder.isCompositeOf()
             if (typeof builder.getCompulsoryInputs !== "undefined") { //not selecting composite
                 let compusolryFields = ["isA"].concat(builder.getCompulsoryInputs());
                 let optionalFields = diff(builder.getInputs(), builder.getCompulsoryInputs());
@@ -347,16 +349,23 @@
                     compulsory: compusolryFields,
                     optional: optionalFields
                 }
-            } else {
-                console.log("composite " + name)
+            }
+            if (consistOf != null) {
+                console.log("composite " + name + " consists of " + consistOf)
                 profile[name] = {
-                    compulsory: ["isA","__elements"],
+                    compulsory: ["isA", "__elements"],
                     optional: diff(builder.getPropertyOrder(), ["isA"])
                 }
-                profile[name].compulsory=profile[name].compulsory.concat(profile["plead_transforming"].compulsory.map(x => ["__element", x]));
+                composites[name] = consistOf
             }
         }
-        //console.log(profile)
+
+        // now process composites to add compulsory fields from their components
+        for (var name in composites) {
+            let consistOf = composites[name];
+            profile[name].compulsory = profile[name].compulsory.concat(profile[consistOf].compulsory.map(x => ["__element", x]));
+        }
+
         return profile;
     }
 

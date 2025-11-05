@@ -40,21 +40,17 @@ import org.openprovenance.prov.service.security.pac.Utils;
 import org.openprovenance.prov.template.library.plead.configurator.ObjectRecordMakerConfigurator;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
-import org.openprovenance.prov.template.service.dispatch.SuccessorConfigurator;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.ProvUtilities;
 import org.pac4j.core.profile.UserProfile;
 
 import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.security.Principal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static org.openprovenance.prov.model.interop.InteropMediaType.*;
@@ -109,21 +105,7 @@ public class TemplateService {
 
 
     static final List<String> sqlFilesToExecute = List.of("/utils.sql");
-    private final Map<String, Map<String, List<String>>> successors;
 
-    /*
-    public static class Linker {
-        public final String table;
-        public final String linked;
-
-        public Linker(String table, String linked) {
-            this.table = table;
-            this.linked = linked;
-        }
-    }
-
-
-     */
 
     public Map<String,String> readTemplateConfiguration(String configFileName) {
         try {
@@ -132,30 +114,6 @@ public class TemplateService {
             throw new RuntimeException(e);
         }
     }
-
-    // reflect type for Map<String,String>
-
-    static Map<String,String> typeDescriptor=new HashMap<>();
-
-    @SuppressWarnings("unchecked")
-    static <T> BiFunction<Object,org.openprovenance.prov.model.ProvFactory,T> dynamicallyLoadClass(String factory, Class<T> iface) {
-        Class<?> clazz;
-        try {
-            clazz = Class.forName(factory);
-            Constructor<?> method=clazz.getConstructor(Map.class, org.openprovenance.prov.model.ProvFactory.class);
-            return (m,pf) -> {
-                try {
-                    return (T) method.newInstance(m,pf);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-            };
-        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationError e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 
     static final ThreadLocal<Map<String,String>> headerInfo = new ThreadLocal<>().withInitial(HashMap::new);
 
@@ -172,7 +130,6 @@ public class TemplateService {
         ps.addToConfiguration("security.config", securityConfiguration);
         this.templateConfiguration=(NO_TEMPLATE_CONFIG.equals(templateConfig))?new HashMap<>():readTemplateConfiguration(templateConfig);
 
-        String fullClassName=templateConfiguration.get("catalogue.package")+".CatalogueDispatcher";
         String sqlInitializer=templateConfiguration.get("sql.initializer");
         String jdbcURL=templateConfiguration.get("jdbc.url");
 
@@ -212,21 +169,10 @@ public class TemplateService {
         catalogueDispatcher.initCompositeEnactorConverter(queryExecutor,this::submitPostProcessing, principalManager::getPrincipal);
 
         this.documentBuilderDispatcher=initializeBeanTable(new org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorWithMap(map,pf));
-        this.successors=initializeBeanTable(new SuccessorConfigurator());
         this.queryTemplate=new TemplateQuery(querier, catalogueDispatcher, principalManager, compositeLinker, om);
         this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),catalogueDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
-        //this.recordMaker=initializeBeanTable(new TableConfiguratorForObjectRecordMaker(documentBuilderDispatcher));
         this.recordMaker=initializeBeanTable(new ObjectRecordMakerConfigurator(documentBuilderDispatcher));
-
         this.templateLogic=new TemplateLogic(pf,queryTemplate,catalogueDispatcher,principalManager,utils, om);
-
-
-        // dynamically load class org.openprovenance.bk.physical.CatalogueDispatcher with map and pf as arguments;
-        BiFunction<Object, org.openprovenance.prov.model.ProvFactory, CatalogueDispatcherInterface> factory=dynamicallyLoadClass(fullClassName, CatalogueDispatcherInterface.class);
-
-        Querier querier = new Querier(storage, conn);
-
-
     }
 
 

@@ -1,12 +1,12 @@
 package org.openprovenance.prov.service.storage;
 
-import org.openprovenance.prov.template.service.Storage;
+import org.openprovenance.prov.service.core.Storage;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static org.openprovenance.prov.template.service.Storage.displayResultSet;
+import static org.openprovenance.prov.service.core.Storage.displayResultSet;
 
 public class StorageTest extends junit.framework.TestCase {
 

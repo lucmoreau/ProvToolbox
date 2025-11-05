@@ -23,12 +23,16 @@ import org.openprovenance.prov.model.interop.PrincipalManager;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.template.library.plead.CatalogueDispatcher;
-import org.openprovenance.prov.template.service.dispatch.SuccessorConfigurator;
-import org.openprovenance.prov.template.service.readers.TableKey;
-import org.openprovenance.prov.template.service.readers.TableKeyList;
-import org.openprovenance.prov.template.service.readers.JsonOrCsv;
-import org.openprovenance.prov.template.service.readers.SearchConfig;
-import org.openprovenance.prov.template.service.readers.TemplatesVizConfig;
+import org.openprovenance.prov.service.core.readers.TableKey;
+import org.openprovenance.prov.service.core.readers.TableKeyList;
+import org.openprovenance.prov.service.core.readers.JsonOrCsv;
+import org.openprovenance.prov.service.core.readers.SearchConfig;
+import org.openprovenance.prov.service.core.readers.TemplatesVizConfig;
+import org.openprovenance.prov.service.core.TemplateQuery;
+import org.openprovenance.prov.service.core.TemplateLogic;
+import org.openprovenance.prov.service.core.Querier;
+import org.openprovenance.prov.service.core.Storage;
+import org.openprovenance.prov.service.core.TemplateService.Linker;
 
 import org.openprovenance.prov.service.security.pac.RoleAuthorizationGenerator;
 import org.openprovenance.prov.service.security.pac.SecurityConfiguration;
@@ -36,6 +40,7 @@ import org.openprovenance.prov.service.security.pac.Utils;
 import org.openprovenance.prov.template.library.plead.configurator.ObjectRecordMakerConfigurator;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
+import org.openprovenance.prov.template.service.dispatch.SuccessorConfigurator;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.ProvUtilities;
 import org.pac4j.core.profile.UserProfile;
@@ -53,10 +58,10 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static org.openprovenance.prov.model.interop.InteropMediaType.*;
-import static org.openprovenance.prov.template.service.Storage.getStringFromClasspath;
+import static org.openprovenance.prov.service.core.TemplateLogic.*;
+import static org.openprovenance.prov.service.core.Storage.getStringFromClasspath;
 import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
 import static org.openprovenance.prov.template.library.plead.client.logger.Logger.initializeBeanTable;
-import static org.openprovenance.prov.template.service.TemplateLogic.*;
 
 @Path("")
 public class TemplateService {
@@ -106,6 +111,7 @@ public class TemplateService {
     static final List<String> sqlFilesToExecute = List.of("/utils.sql");
     private final Map<String, Map<String, List<String>>> successors;
 
+    /*
     public static class Linker {
         public final String table;
         public final String linked;
@@ -116,6 +122,8 @@ public class TemplateService {
         }
     }
 
+
+     */
 
     public Map<String,String> readTemplateConfiguration(String configFileName) {
         try {
@@ -172,7 +180,7 @@ public class TemplateService {
 
         Function<String, ResultSet> queryExecutor = storage.queryExecutor(conn);
 
-        Function<String, ResultSet> aquerier = storage.getQuerier(conn);
+        //Function<String, ResultSet> aquerier = storage.getQuerier(conn);
         this.querier =new Querier(storage,conn);
 
         //this.sqlCompositeBeanEnactor =new SqlCompositeBeanEnactor3(storage.getQuerier(conn));
@@ -205,12 +213,12 @@ public class TemplateService {
 
         this.documentBuilderDispatcher=initializeBeanTable(new org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorWithMap(map,pf));
         this.successors=initializeBeanTable(new SuccessorConfigurator());
-        this.queryTemplate=new TemplateQuery(querier, catalogueDispatcher, compositeLinker, om, documentBuilderDispatcher, org.openprovenance.prov.template.library.plead.client.logger.Logger.ioMap, successors);
+        this.queryTemplate=new TemplateQuery(querier, catalogueDispatcher, principalManager, compositeLinker, om);
         this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),catalogueDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
         //this.recordMaker=initializeBeanTable(new TableConfiguratorForObjectRecordMaker(documentBuilderDispatcher));
         this.recordMaker=initializeBeanTable(new ObjectRecordMakerConfigurator(documentBuilderDispatcher));
 
-        this.templateLogic=new TemplateLogic(pf,queryTemplate,catalogueDispatcher,null,documentBuilderDispatcher, principalManager, utils,om, this.typeAssignment, this.successors);
+        this.templateLogic=new TemplateLogic(pf,queryTemplate,catalogueDispatcher,principalManager,utils, om);
 
 
         // dynamically load class org.openprovenance.bk.physical.CatalogueDispatcher with map and pf as arguments;

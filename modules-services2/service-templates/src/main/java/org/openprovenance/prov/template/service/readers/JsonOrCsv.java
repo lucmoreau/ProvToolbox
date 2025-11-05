@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.core.readers;
+package org.openprovenance.prov.template.service.readers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.csv.CSVParser;

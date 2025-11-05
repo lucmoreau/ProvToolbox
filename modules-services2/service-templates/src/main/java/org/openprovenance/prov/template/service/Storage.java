@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -13,12 +13,12 @@ import java.util.function.Function;
 import static org.openprovenance.prov.configuration.Configuration.getPropertiesFromClasspath;
 
 public class Storage {
-    public static final String SQL_FILE_NAME ;
     static Logger logger = LogManager.getLogger(Storage.class);
 
-    public Connection setup(String host, String username, String password) {
+    public Connection setup(String url, String username, String password) {
         //host="localhost"; // "localhost
-        String url = "jdbc:postgresql://" + host + ":5432/templates?sslmode=disable";
+        //String url = "jdbc:postgresql://" + host + ":5432/templates?sslmode=disable";
+        logger.info("Setting up connection to "+url);
         Properties props = new Properties();
         props.setProperty("user", username);
         props.setProperty("password", password);
@@ -42,8 +42,6 @@ public class Storage {
     static {
         Properties properties=getPropertiesFromClasspath(Storage.class, PROV_SUSTAINABILITY_WEBAPP_CONFIG_PROPERTIES);
         version=properties.getProperty("project.version");
-        SQL_FILE_NAME= "/META-INF/resources/webjars/prov-template-library/" + version + "/sql/prov-template-library-plead.sql";
-        logger.info("SQL file: " + SQL_FILE_NAME);
     }
 
 
@@ -57,10 +55,12 @@ public class Storage {
     }
 
 
-    public boolean initializeDB(Connection conn) throws SQLException {
-        String statements=getStringFromClasspath(this.getClass(), SQL_FILE_NAME);
+    public boolean initializeDB(Connection conn, String sqlInitializer) throws SQLException {
+        String statements=getStringFromClasspath(this.getClass(), sqlInitializer);
+        System.out.println("**************** Initializing DB with script: " + sqlInitializer);
         return executeStatements(conn, statements);
     }
+
 
     public boolean executeStatements(Connection conn, String statements) throws SQLException {
         try (Statement st = conn.createStatement()) {
@@ -68,10 +68,20 @@ public class Storage {
         }
     }
 
-    public void executeQuery(Connection conn) throws SQLException {
-        String statements=getStringFromClasspath(this.getClass(), SQL_FILE_NAME);
-        executeQuery(conn, statements);
+
+
+    public Function<String,ResultSet> queryExecutor(Connection conn) {
+        return (String statement) -> {
+            //logger.info("Executing query: " + statement);
+            try {
+                return executeQuery(conn, statement);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        };
     }
+
 
     public ResultSet executeQuery(Connection conn, String statements) throws SQLException {
         Statement st = conn.createStatement();

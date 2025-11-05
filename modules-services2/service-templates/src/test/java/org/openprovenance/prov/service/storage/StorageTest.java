@@ -1,12 +1,12 @@
 package org.openprovenance.prov.service.storage;
 
-import org.openprovenance.prov.service.Storage;
+import org.openprovenance.prov.template.service.Storage;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static org.openprovenance.prov.service.Storage.displayResultSet;
+import static org.openprovenance.prov.template.service.Storage.displayResultSet;
 
 public class StorageTest extends junit.framework.TestCase {
 
@@ -44,7 +44,7 @@ public class StorageTest extends junit.framework.TestCase {
 
         Storage storage = new Storage();
 
-        Connection conn=storage.setup("localhost", "luc", "admin");
+        Connection conn=storage.setup("jdbc:postgresql://localhost:5432/templates?sslmode=disable", "luc", "admin");
 
 
         System.out.println("<<<<<");

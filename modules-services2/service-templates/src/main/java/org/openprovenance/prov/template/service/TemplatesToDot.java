@@ -1,10 +1,12 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.dot.ProvToDot;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.UncheckedException;
+import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
+import org.openprovenance.prov.template.log2prov.FileBuilder;
 
 import java.io.*;
 import java.util.*;
@@ -17,7 +19,7 @@ public class TemplatesToDot extends ProvToDot {
 
     private static final Logger logger = LogManager.getLogger(TemplatesToDot.class);
     private final List<TemplateQuery.TemplateConnection> templateConnections;
-    private final TemplateDispatcher templateDispatcher;
+    private final CatalogueDispatcherInterface<FileBuilder> templateDispatcher;
     private final Map<String, Map<String, Map<String, String>>> ioMap;
     private final Map<String, Map<String, String>> baseTypes;
     private final ProvFactory pf;
@@ -26,7 +28,7 @@ public class TemplatesToDot extends ProvToDot {
     private final TemplateQuery templateQuery;
     private final String principal;
 
-    public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections, String style, Map<String, Map<String, String>> baseTypes, Map<String, Map<String, Map<String, String>>> ioMap, TemplateDispatcher templateDispatcher, Map<String, Map<String, List<String>>> successors, ProvFactory pf, TemplateQuery templateQuery, String principal) {
+    public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections, String style, Map<String, Map<String, String>> baseTypes, Map<String, Map<String, Map<String, String>>> ioMap, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, Map<String, Map<String, List<String>>> successors, ProvFactory pf, TemplateQuery templateQuery, String principal) {
         super(pf);
         this.pf=pf;
         this.templateConnections = templateConnections;

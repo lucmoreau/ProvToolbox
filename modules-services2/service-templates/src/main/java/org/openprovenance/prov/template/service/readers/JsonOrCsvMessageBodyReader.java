@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.core.readers;
+package org.openprovenance.prov.template.service.readers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-import static org.openprovenance.prov.service.TemplateService.APPLICATION_VND_KCL_PROV_TEMPLATE_JSON;
+import static org.openprovenance.prov.template.service.TemplateService.APPLICATION_VND_KCL_PROV_TEMPLATE_JSON;
 @Provider
 @Consumes({InteropMediaType.MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON})
 public class JsonOrCsvMessageBodyReader implements MessageBodyReader<JsonOrCsv> {

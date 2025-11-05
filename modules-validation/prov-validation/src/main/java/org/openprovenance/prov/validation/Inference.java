@@ -66,7 +66,7 @@ public class Inference {
 				QualifiedName generationId = g.newId((WasGeneratedBy) null);
 				WasGeneratedBy wgb = p.newWasGeneratedBy(generationId,
 						entityId,
-						null, null);
+						null);
 				String generationUri = generationId.getUri();
 				indexer.wasGeneratedByTable.put(generationUri, wgb);
 				ee.addGenerationKey(generationUri);

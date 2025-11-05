@@ -1,9 +1,9 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.service.core.inface.BiConsumerWithException;
+import org.openprovenance.prov.template.service.inface.BiConsumerWithException;
 
 import java.io.IOException;
 import java.io.InputStream;

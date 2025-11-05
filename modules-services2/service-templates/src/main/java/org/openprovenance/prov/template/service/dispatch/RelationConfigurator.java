@@ -1,7 +1,6 @@
-package org.openprovenance.prov.service.core.dispatch;
+package org.openprovenance.prov.template.service.dispatch;
 
 import org.openprovenance.prov.template.library.plead.client.common.*;
-import org.openprovenance.prov.template.library.plead.client.configurator.TableConfigurator;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-public class RelationConfigurator extends org.openprovenance.prov.template.library.plead.client.configurator.RelationConfigurator<Map<String, Map<String, List<String>>>> {
+public class RelationConfigurator extends org.openprovenance.prov.template.library.plead.configurator.RelationConfigurator<Map<String, Map<String, List<String>>>> {
 
     public RelationConfigurator(BiFunction<Map<String, Map<String, int[]>>, String[], Map<String, Map<String, List<String>>>> converter) {
         super(converter);

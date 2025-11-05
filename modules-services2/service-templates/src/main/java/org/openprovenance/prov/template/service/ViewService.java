@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

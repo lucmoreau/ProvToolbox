@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,44 +15,48 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
 import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.interop.PrincipalManager;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
-import org.openprovenance.prov.service.core.dispatch.SuccessorConfigurator;
-import org.openprovenance.prov.service.core.readers.TableKeyList;
-import org.openprovenance.prov.service.core.readers.TableKey;
-import org.openprovenance.prov.service.core.readers.JsonOrCsv;
-import org.openprovenance.prov.service.core.readers.SearchConfig;
-import org.openprovenance.prov.service.core.readers.TemplatesVizConfig;
+import org.openprovenance.prov.template.library.plead.CatalogueDispatcher;
+import org.openprovenance.prov.template.service.dispatch.SuccessorConfigurator;
+import org.openprovenance.prov.template.service.readers.TableKey;
+import org.openprovenance.prov.template.service.readers.TableKeyList;
+import org.openprovenance.prov.template.service.readers.JsonOrCsv;
+import org.openprovenance.prov.template.service.readers.SearchConfig;
+import org.openprovenance.prov.template.service.readers.TemplatesVizConfig;
 
 import org.openprovenance.prov.service.security.pac.RoleAuthorizationGenerator;
 import org.openprovenance.prov.service.security.pac.SecurityConfiguration;
 import org.openprovenance.prov.service.security.pac.Utils;
-import org.openprovenance.prov.template.library.plead.client.configurator.ObjectRecordMakerConfigurator;
+import org.openprovenance.prov.template.library.plead.configurator.ObjectRecordMakerConfigurator;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
-import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeBeanEnactor4;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.ProvUtilities;
 import org.pac4j.core.profile.UserProfile;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.security.Principal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static org.openprovenance.prov.model.interop.InteropMediaType.*;
-import static org.openprovenance.prov.service.Storage.getStringFromClasspath;
-import static org.openprovenance.prov.service.TemplateLogic.*;
+import static org.openprovenance.prov.template.service.Storage.getStringFromClasspath;
 import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
 import static org.openprovenance.prov.template.library.plead.client.logger.Logger.initializeBeanTable;
-import static org.openprovenance.prov.template.library.plead.sql.access_control.BeanEnactor4.setPrincipal;
+import static org.openprovenance.prov.template.service.TemplateLogic.*;
 
 @Path("")
 public class TemplateService {
@@ -60,7 +64,7 @@ public class TemplateService {
     public static final String APPLICATION_VND_KCL_PROV_TEMPLATE_JSON = "application/vnd.kcl.prov-template+json";
     private final PostService ps;
     private final ServiceUtils utils;
-    private final TemplateDispatcher templateDispatcher;
+    private final CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher;
     private final ObjectMapper om;
     private final Storage storage;
     final ProvFactory pf;
@@ -82,9 +86,11 @@ public class TemplateService {
     public static final Utils secUtils=new Utils();
     public static final SecurityConfiguration securityConfiguration=(NO_SECURITY_CONFIG.equals(tplSecurityConfig))?null:secUtils.readSecurityConfiguration(tplSecurityConfig);
 
+    public static final String TEMPLATE_CONFIG = "TEMPLATE_CONFIG";
+    public static final String NO_TEMPLATE_CONFIG = "no-template-config";
+    public static final String templateConfig=getSystemOrEnvironmentVariableOrDefault(TEMPLATE_CONFIG, NO_TEMPLATE_CONFIG);
 
     private final TemplateLogic templateLogic;
-    private final SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor;
 
     private final Querier querier;
     private final TemplateQuery queryTemplate;
@@ -92,7 +98,9 @@ public class TemplateService {
     private final Map<String, Map<String, Set<String>>> typeAssignment;
     private final Map<String, Function<Object[], Object[]>> recordMaker;
 
+    private final PrincipalManager principalManager;
 
+    private final Map<String, String> templateConfiguration;
 
 
     static final List<String> sqlFilesToExecute = List.of("/utils.sql");
@@ -108,26 +116,65 @@ public class TemplateService {
         }
     }
 
+
+    public Map<String,String> readTemplateConfiguration(String configFileName) {
+        try {
+            return (Map<String, String>) om.readValue(new File(configFileName), Map.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // reflect type for Map<String,String>
+
+    static Map<String,String> typeDescriptor=new HashMap<>();
+
+    @SuppressWarnings("unchecked")
+    static <T> BiFunction<Object,org.openprovenance.prov.model.ProvFactory,T> dynamicallyLoadClass(String factory, Class<T> iface) {
+        Class<?> clazz;
+        try {
+            clazz = Class.forName(factory);
+            Constructor<?> method=clazz.getConstructor(Map.class, org.openprovenance.prov.model.ProvFactory.class);
+            return (m,pf) -> {
+                try {
+                    return (T) method.newInstance(m,pf);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            };
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationError e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     static final ThreadLocal<Map<String,String>> headerInfo = new ThreadLocal<>().withInitial(HashMap::new);
 
     public TemplateService(PostService ps) {
         this.pf = new ProvFactory();
-
-        this.ps = ps;
-        this.utils = ps.getServiceUtils();
-        this.storage=new Storage();
-
-        ps.addToConfiguration("security.config", securityConfiguration);
-
-        Connection conn=storage.setup(postgresHost, postgresUsername, postgresPassword);
-        Function<String, ResultSet> aquerier = storage.getQuerier(conn);
-        this.templateDispatcher=new TemplateDispatcher(aquerier,this::submitPostProcessing);
-        this.querier =new Querier(storage,conn);
         this.om=new ObjectMapper();
         this.om.enable(SerializationFeature.INDENT_OUTPUT);
         this.om.registerModule(new JavaTimeModule());
+        this.ps = ps;
+        this.utils = ps.getServiceUtils();
+        this.storage=new Storage();
+        this.principalManager =new PrincipalManager();
 
-        this.sqlCompositeBeanEnactor =new SqlCompositeBeanEnactor4(storage.getQuerier(conn), this::submitPostProcessing);
+        ps.addToConfiguration("security.config", securityConfiguration);
+        this.templateConfiguration=(NO_TEMPLATE_CONFIG.equals(templateConfig))?new HashMap<>():readTemplateConfiguration(templateConfig);
+
+        String fullClassName=templateConfiguration.get("catalogue.package")+".CatalogueDispatcher";
+        String sqlInitializer=templateConfiguration.get("sql.initializer");
+        String jdbcURL=templateConfiguration.get("jdbc.url");
+
+        Connection conn=storage.setup(jdbcURL, postgresUsername, postgresPassword);
+
+        Function<String, ResultSet> queryExecutor = storage.queryExecutor(conn);
+
+        Function<String, ResultSet> aquerier = storage.getQuerier(conn);
+        this.querier =new Querier(storage,conn);
+
         //this.sqlCompositeBeanEnactor =new SqlCompositeBeanEnactor3(storage.getQuerier(conn));
 
         this.compositeLinker=new HashMap<>() {{
@@ -138,7 +185,7 @@ public class TemplateService {
 
         if (conn!=null) {
             try {
-                boolean anyResult=storage.initializeDB(conn);
+                boolean anyResult=storage.initializeDB(conn,sqlInitializer);
                 logger.info("DB initialized. Any results? " + anyResult);
 
                 sqlFilesToExecute.forEach(file -> executeStatementsFromFile(conn,file));
@@ -151,14 +198,25 @@ public class TemplateService {
             put("PROV_HOST", provHost);
             put("PROV_API", provAPI);
         }};
+
+        catalogueDispatcher=new CatalogueDispatcher(map,pf);
+        catalogueDispatcher.initEnactorConverter(queryExecutor,this::submitPostProcessing, principalManager::getPrincipal);
+        catalogueDispatcher.initCompositeEnactorConverter(queryExecutor,this::submitPostProcessing, principalManager::getPrincipal);
+
         this.documentBuilderDispatcher=initializeBeanTable(new org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorWithMap(map,pf));
         this.successors=initializeBeanTable(new SuccessorConfigurator());
-        this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om, documentBuilderDispatcher, org.openprovenance.prov.template.library.plead.client.logger.Logger.ioMap, successors);
-        this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),templateDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
+        this.queryTemplate=new TemplateQuery(querier, catalogueDispatcher, compositeLinker, om, documentBuilderDispatcher, org.openprovenance.prov.template.library.plead.client.logger.Logger.ioMap, successors);
+        this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),catalogueDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
         //this.recordMaker=initializeBeanTable(new TableConfiguratorForObjectRecordMaker(documentBuilderDispatcher));
         this.recordMaker=initializeBeanTable(new ObjectRecordMakerConfigurator(documentBuilderDispatcher));
 
-        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor, this.typeAssignment, this.successors);
+        this.templateLogic=new TemplateLogic(pf,queryTemplate,catalogueDispatcher,null,documentBuilderDispatcher, principalManager, utils,om, this.typeAssignment, this.successors);
+
+
+        // dynamically load class org.openprovenance.bk.physical.CatalogueDispatcher with map and pf as arguments;
+        BiFunction<Object, org.openprovenance.prov.model.ProvFactory, CatalogueDispatcherInterface> factory=dynamicallyLoadClass(fullClassName, CatalogueDispatcherInterface.class);
+
+        Querier querier = new Querier(storage, conn);
 
 
     }
@@ -197,8 +255,7 @@ public class TemplateService {
         Principal principal = request.getUserPrincipal();
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
         // set thread specific variable
-        setPrincipal(principalAsPreferredUsername);
-
+        principalManager.setPrincipal(principalAsPreferredUsername);
         String headerAcceptProvHash=headers.getHeaderString(HTTP_HEADER_ACCEPT_PROV_HASH);
 
         logger.info("post statements id: principal " + principal);
@@ -259,7 +316,7 @@ public class TemplateService {
         if (extension.equals("csv")) {
             List<Object> ll=new LinkedList<>();
             for (Object[] record: records) {
-                String csv=templateDispatcher.getCsvConverter().get(template).apply(record);
+                String csv= catalogueDispatcher.getCsvConverter().get(template).apply(record);
                 ll.add(csv);
                 ll.add("\n");
             }
@@ -319,7 +376,7 @@ public class TemplateService {
 
         List<Object> selections=new LinkedList<>();
         for (Object[] record: records) {
-            int index=java.util.Arrays.asList(templateDispatcher.getPropertyOrder().get(template)).indexOf(variable);
+            int index=java.util.Arrays.asList(catalogueDispatcher.getPropertyOrder().get(template)).indexOf(variable);
             Object[] objectRecord=recordMaker.get(template).apply(record);
             selections.add(objectRecord[index]);
         }
@@ -557,7 +614,7 @@ public class TemplateService {
             //logger.info("property " + property);
             //logger.info("record " + java.util.Arrays.asList(record));
 
-            int index=java.util.Arrays.asList(templateDispatcher.getPropertyOrder().get(template)).indexOf(property);
+            int index=java.util.Arrays.asList(catalogueDispatcher.getPropertyOrder().get(template)).indexOf(property);
             Object[] objectRecord=recordMaker.get(template).apply(record);
             selections.add(objectRecord[index]);
         }

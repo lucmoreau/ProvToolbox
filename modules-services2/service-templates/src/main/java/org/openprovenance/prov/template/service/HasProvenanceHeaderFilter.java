@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;

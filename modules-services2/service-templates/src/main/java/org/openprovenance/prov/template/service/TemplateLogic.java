@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,12 +11,13 @@ import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
+import org.openprovenance.prov.model.interop.PrincipalManager;
 import org.openprovenance.prov.scala.iface.Explainer;
-import org.openprovenance.prov.scala.iface.Narrative;
 import org.openprovenance.prov.scala.iface.XFactory;
 import org.openprovenance.prov.service.core.ServiceUtils;
-import org.openprovenance.prov.service.core.dispatch.EnactCsvRecords;
-import org.openprovenance.prov.service.core.readers.TemplatesVizConfig;
+import org.openprovenance.prov.template.service.dispatch.EnactCsvRecords;
+import org.openprovenance.prov.template.service.readers.TemplatesVizConfig;
 import org.openprovenance.prov.template.library.plead.Plead_trainingBuilder;
 import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeBeanEnactor4;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
@@ -29,9 +30,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.service.TemplateService.*;
+import static org.openprovenance.prov.template.service.TemplateService.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
-import static org.openprovenance.prov.template.library.plead.sql.access_control.BeanEnactor4.getPrincipal;
 
 public class TemplateLogic {
 
@@ -42,29 +42,30 @@ public class TemplateLogic {
     public static final String HTTP_HEADER_ACCEPT_PROV_EXPLANATION = "Accept-PROV-explanation";
     static Logger logger = LogManager.getLogger(TemplateLogic.class);
     private final ProvFactory pf;
-    private final TemplateDispatcher templateDispatcher;
+    private final  CatalogueDispatcherInterface<FileBuilder> templateDispatcher;
     private final Map<String, FileBuilder> documentBuilderDispatcher;
     private final ServiceUtils utils;
     private final ObjectMapper om;
-    private final SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor;
 
     private final EnactCsvRecords<Object> enactCsvRecords= new EnactCsvRecords<>();
     private final TemplateQuery templateQuery;
     private final Map<String, Map<String, Set<String>>> typeAssignment;
     private final Map<String, Map<String, List<String>>> successors;
+    private final PrincipalManager principalManager;
 
 
-    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor4 sqlCompositeBeanEnactor, Map<String, Map<String, Set<String>>> typeAssignment, Map<String, Map<String, List<String>>> successors) {
+    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om, Map<String, Map<String, Set<String>>> typeAssignment, Map<String, Map<String, List<String>>> successors) {
         this.pf = pf;
         this.templateDispatcher = templateDispatcher;
         this.documentBuilderDispatcher = documentBuilderDispatcher;
         this.utils = utils;
         this.om = om;
         om.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
-        this.sqlCompositeBeanEnactor = sqlCompositeBeanEnactor;
         this.templateQuery = templateQuery;
         this.typeAssignment = typeAssignment;
         this.successors = successors;
+        this.principalManager = principalManager;
+
     }
 
     public List<Object> processIncomingJson(List<Map<String, Object>> entries) {
@@ -242,7 +243,7 @@ public class TemplateLogic {
     public Object submitPostProcessing(int id, String template) {
         logger.info("postProcessing " + id + " " + template);
 
-        String principal=getPrincipal();
+        String principal=principalManager.getPrincipal();
         List<Object[]> records = templateQuery.query(template, id, false, principal);
 
         logger.debug("PROV_API " + provAPI);

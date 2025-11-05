@@ -1,11 +1,11 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.service.core.dispatch.ForeignTableConfigurator;
-import org.openprovenance.prov.service.core.dispatch.RelationConfigurator;
-import org.openprovenance.prov.service.core.dispatch.SuccessorConfigurator;
-import org.openprovenance.prov.template.library.plead.client.configurator.*;
+import org.openprovenance.prov.template.service.dispatch.ForeignTableConfigurator;
+import org.openprovenance.prov.template.service.dispatch.RelationConfigurator;
+import org.openprovenance.prov.template.service.dispatch.SuccessorConfigurator;
+import org.openprovenance.prov.template.library.plead.configurator.*;
 import org.openprovenance.prov.template.library.plead.client.logger.TemplateBuilders;
 import org.openprovenance.prov.template.library.plead.sql.access_control.SqlCompositeEnactorConfigurator4;
 import org.openprovenance.prov.template.library.plead.sql.access_control.SqlEnactorConfigurator4;
@@ -55,8 +55,10 @@ public class TemplateDispatcher {
         successors = initializeBeanTable(new SuccessorConfigurator());
         relations = initializeBeanTable(new RelationConfigurator());
         relations0 = initializeBeanTable(new Relation0Configurator());
-        enactorConverter=initializeBeanTable(new SqlEnactorConfigurator4(querier, postProcessing));
-        compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator4(querier, postProcessing));
+        //enactorConverter=initializeBeanTable(new SqlEnactorConfigurator4(querier, postProcessing));
+        //compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator4(querier, postProcessing));
+        enactorConverter=null;
+        compositeEnactorConverter=null;
 
         predecessors = successors
                 .keySet()

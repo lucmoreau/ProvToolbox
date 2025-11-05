@@ -1,8 +1,10 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
+import org.openprovenance.prov.template.log2prov.FileBuilder;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -17,9 +19,9 @@ public class RelationMapping {
     ExecutorService executor = Executors.newFixedThreadPool(3);
 
     private final TemplateQuery templateQuery;
-    private final TemplateDispatcher templateDispatcher;
+    private final CatalogueDispatcherInterface<FileBuilder> templateDispatcher;
 
-    public RelationMapping(TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Querier querier) {
+    public RelationMapping(TemplateQuery templateQuery, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, Querier querier) {
         this.templateQuery = templateQuery;
         this.templateDispatcher = templateDispatcher;
         this.querier = querier;
@@ -28,7 +30,7 @@ public class RelationMapping {
     public void mapGraphToRelations(String template, int id, Object[] record) {
         executor.execute(() -> {
             logger.debug("Template: " + template + " " + id);
-            Map<String, Map<String, int[]>> templateRelations = templateDispatcher.getRelations0().get(template);
+            Map<String, Map<String, int[]>> templateRelations = templateDispatcher.getRelation0().get(template);
             String[] foreignTables = templateDispatcher.getForeignTables().get(template);
             Collection<BiConsumer<StringBuilder, Object>> queries = new LinkedList<>();
             if (templateRelations != null) {

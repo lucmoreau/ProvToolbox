@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.core.dispatch;
+package org.openprovenance.prov.template.service.dispatch;
 
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;

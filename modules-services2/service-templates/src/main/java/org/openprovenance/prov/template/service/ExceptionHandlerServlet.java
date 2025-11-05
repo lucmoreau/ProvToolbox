@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 import java.io.*;
 import java.util.*;
 import jakarta.servlet.*;

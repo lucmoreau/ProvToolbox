@@ -1,5 +1,5 @@
 
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 
 
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
@@ -30,6 +30,10 @@ import org.openprovenance.prov.service.translation.TranslationService;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import org.openprovenance.prov.service.translation.storage.StorageSetup;
+import org.openprovenance.prov.template.service.readers.JsonOrCsvMessageBodyReader;
+import org.openprovenance.prov.template.service.readers.SearchConfigMessageBodyReader;
+import org.openprovenance.prov.template.service.readers.TableKeyListMessageBodyReader;
+import org.openprovenance.prov.template.service.readers.TemplatesVizConfigMessageBodyReader;
 
 
 import java.util.HashSet;

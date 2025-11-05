@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.core.inface;
+package org.openprovenance.prov.template.service.inface;
 
 import java.sql.SQLException;
 

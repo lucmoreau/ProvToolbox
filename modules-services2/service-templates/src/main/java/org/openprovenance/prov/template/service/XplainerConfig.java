@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 
 import org.openprovenance.prov.scala.interop.Input;
 import org.openprovenance.prov.scala.interop.Output;

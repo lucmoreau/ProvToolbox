@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -8,9 +8,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
-import org.openprovenance.prov.service.core.readers.TableKey;
-import org.openprovenance.prov.service.core.readers.TableKeyList;
-import org.openprovenance.prov.service.core.readers.SearchConfig;
+import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
+import org.openprovenance.prov.template.service.readers.TableKey;
+import org.openprovenance.prov.template.service.readers.TableKeyList;
+import org.openprovenance.prov.template.service.readers.SearchConfig;
 import org.openprovenance.prov.template.compiler.sql.QueryBuilder;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
@@ -47,7 +48,7 @@ public class TemplateQuery {
     public static final String PREFIX_REL = "__";
     private final Querier querier;
     private final ProvFactory pf = new ProvFactory();
-    private final TemplateDispatcher templateDispatcher;
+    private final CatalogueDispatcherInterface<FileBuilder> templateDispatcher;
     private final Map<String, TemplateService.Linker> compositeLinker;
     private final ObjectMapper om;
     private final Map<String, Map<String, Map<String, String>>> ioMap;
@@ -59,7 +60,7 @@ public class TemplateQuery {
     private final RelationMapping relationMapping;
 
 
-    public TemplateQuery(Querier querier, TemplateDispatcher templateDispatcher, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om, Map<String, FileBuilder> documentBuilderDispatcher, String ioMapString, Map<String, Map<String, List<String>>> successors) {
+    public TemplateQuery(Querier querier, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om, Map<String, FileBuilder> documentBuilderDispatcher, String ioMapString, Map<String, Map<String, List<String>>> successors) {
         this.querier = querier;
         this.templateDispatcher = templateDispatcher;
         this.compositeLinker = compositeLinker;

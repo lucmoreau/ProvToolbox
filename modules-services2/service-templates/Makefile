@@ -1,6 +1,7 @@
 FILE=/home/lavm/workspace/validation-project/prov-validation/src/test/resources/pc1-full.xml
 URL=https://raw.github.com/lucmoreau/ProvToolbox/master/prov-n/src/test/resources/prov/primer.pn
 OUT=target/primer
+TEMPLATE_CONFIG=/Users/luc/IdeaProjects/ProvToolbox/modules-services2/service-templates/src/test/config/plead-template-config.json
 
 PROV_CREDENTIALS=~/.kclprov
 
@@ -15,7 +16,7 @@ install.sec:
 	export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TEMPLATES}; export TPL_SECURITY_CONFIG=${TPL_SECURITY_CONFIG_DEFAULT}; mvn -Pjetty,security clean install
 
 jetty:
-	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TEMPLATES}; export TPL_SECURITY_CONFIG=${TPL_SECURITY_CONFIG_DEFAULT}; export XPLAIN_LEXICON=${XPLAIN_LEXICON}; mvn -Pjetty,security jetty:run-war
+	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TEMPLATES}; export TPL_SECURITY_CONFIG=${TPL_SECURITY_CONFIG_DEFAULT}; export XPLAIN_LEXICON=${XPLAIN_LEXICON};  export TEMPLATE_CONFIG=${TEMPLATE_CONFIG}; mvn -Pjetty,security jetty:run-war
 
 jetty.nosec:
 	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_TEMPLATES}; unset TPL_SECURITY_CONFIG; mvn -Pjetty,nosecurity jetty:run-war

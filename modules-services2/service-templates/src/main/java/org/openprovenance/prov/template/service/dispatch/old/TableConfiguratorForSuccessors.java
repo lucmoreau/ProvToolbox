@@ -1,8 +1,8 @@
 
-package org.openprovenance.prov.service.core.dispatch.old;
+package org.openprovenance.prov.template.service.dispatch.old;
 
 import org.openprovenance.prov.template.library.plead.client.common.*;
-import org.openprovenance.prov.template.library.plead.client.configurator.TableConfigurator;
+import org.openprovenance.prov.template.library.plead.configurator.TableConfigurator;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 
 import java.util.Arrays;

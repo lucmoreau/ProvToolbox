@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.template.service;
 
 
 import org.apache.logging.log4j.LogManager;
@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.service.TemplateService.*;
+import static org.openprovenance.prov.template.service.TemplateService.*;
 
 import org.openprovenance.prov.service.security.pac.SecurityConfiguration;
 import org.openprovenance.prov.service.security.pac.Utils;

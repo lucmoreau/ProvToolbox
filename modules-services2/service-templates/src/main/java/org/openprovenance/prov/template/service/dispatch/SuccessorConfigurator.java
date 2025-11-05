@@ -1,11 +1,11 @@
-package org.openprovenance.prov.service.core.dispatch;
+package org.openprovenance.prov.template.service.dispatch;
 
 import org.openprovenance.prov.client.Builder;
 import org.openprovenance.prov.template.library.plead.client.common.*;
-import org.openprovenance.prov.template.library.plead.client.configurator.BuilderConfigurator;
-import org.openprovenance.prov.template.library.plead.client.configurator.BuilderProcessorConfigurator;
-import org.openprovenance.prov.template.library.plead.client.configurator.RelationConfigurator;
-import org.openprovenance.prov.template.library.plead.client.configurator.TableConfigurator;
+import org.openprovenance.prov.template.library.plead.configurator.BuilderConfigurator;
+import org.openprovenance.prov.template.library.plead.configurator.BuilderProcessorConfigurator;
+import org.openprovenance.prov.template.library.plead.configurator.RelationConfigurator;
+import org.openprovenance.prov.template.library.plead.configurator.TableConfigurator;
 
 import java.util.Arrays;
 import java.util.List;

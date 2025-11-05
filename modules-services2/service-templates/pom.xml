@@ -394,6 +394,8 @@
         <unsecure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-no-security.xml</unsecure.webxml.location>
         <secure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-with-security.xml</secure.webxml.location>
         <lexicon.location>/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/nlg-wrapper/target/dictionary/lexAccess2013.data</lexicon.location>
+        <template.config.location>${project.basedir}/src/test/config/plead-template-config.json</template.config.location>
+
     </properties>
 
 
@@ -657,6 +659,11 @@
                                             <name>XPLAIN_LEXICON</name>
                                             <value>${lexicon.location}</value>
                                         </property>
+                                        <property>
+                                            <name>TEMPLATE_CONFIG</name>
+                                            <value>${template.config.location}</value>
+                                        </property>
+
                                         <!--
                                         <property>
                                             <name>TPL_SECURITY_CONFIG</name>

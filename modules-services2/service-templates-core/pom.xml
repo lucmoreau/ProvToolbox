@@ -9,7 +9,7 @@
     <artifactId>service-templates-core</artifactId>
     <name> |---- SERVICE-TEMPLATES-CORE</name>
     <packaging>jar</packaging>
-    <description>A REST service for Provenance Template Management</description>
+    <description>Functionality for a REST service for Provenance Template Management</description>
 
 
     <dependencies>
@@ -133,25 +133,7 @@
             <version>${postgres.version}</version>
         </dependency>
 
-
-        <!-- following two dependencies required to address: warning:
-        Unable to load io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider -->
-
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.1.76.Final</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-resolver-dns-native-macos</artifactId>
-            <version>4.1.76.Final</version>
-            <classifier>osx-aarch_64</classifier>
-            <scope>test</scope>
-        </dependency>
-
+        <!-- for getSha3_512Digest -->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>

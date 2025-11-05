@@ -204,14 +204,11 @@
             <version>2.1.5</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.webjars.bower</groupId>
             <artifactId>jquery-csv</artifactId>
             <version>0.8.3</version>
         </dependency>
-
-
 
         <dependency>
             <groupId>org.jsweet</groupId>
@@ -289,22 +286,24 @@
             </exclusions>
         </dependency>
         <!-- following two dependencies required to address: warning:
-        Unable to load io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider -->
+        Unable to load io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider
 
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.76.Final</version>
+            <version>${netty.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-resolver-dns-native-macos</artifactId>
-            <version>4.1.76.Final</version>
+            <version>${netty.version}</version>
             <classifier>osx-aarch_64</classifier>
             <scope>test</scope>
         </dependency>
+        -->
+
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>

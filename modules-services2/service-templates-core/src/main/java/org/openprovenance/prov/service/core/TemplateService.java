@@ -144,10 +144,20 @@ public class TemplateService {
         }};
 
 
+        storageInitialize(conn, sqlInitializer);
 
-        if (conn!=null) {
+        this.documentBuilderDispatcher=catalogueDispatcher.getDocumentBuilderDispatcher();
+        this.recordMaker=catalogueDispatcher.getRecordMaker();
+        this.queryTemplate=new TemplateQuery(querier, this.catalogueDispatcher, principalManager, compositeLinker, om);
+        this.templateLogic=new TemplateLogic(pf,queryTemplate, this.catalogueDispatcher, principalManager, utils, om);
+
+
+    }
+
+    public void storageInitialize(Connection conn, String sqlInitializer) {
+        if (conn !=null) {
             try {
-                boolean anyResult=storage.initializeDB(conn,sqlInitializer);
+                boolean anyResult=storage.initializeDB(conn, sqlInitializer);
                 logger.info("DB initialized. Any results? " + anyResult);
 
                 sqlFilesToExecute.forEach(file -> executeStatementsFromFile(conn,file));
@@ -156,13 +166,6 @@ public class TemplateService {
                 e.printStackTrace();
             }
         }
-
-        this.documentBuilderDispatcher=catalogueDispatcher.getDocumentBuilderDispatcher();
-        this.recordMaker=catalogueDispatcher.getRecordMaker();
-        this.queryTemplate=new TemplateQuery(querier, this.catalogueDispatcher, principalManager, compositeLinker, om);
-        this.templateLogic=new TemplateLogic(pf,queryTemplate, this.catalogueDispatcher, principalManager, utils, om);
-
-
     }
 
     public Connection storageSetup(String jdbcURL) {

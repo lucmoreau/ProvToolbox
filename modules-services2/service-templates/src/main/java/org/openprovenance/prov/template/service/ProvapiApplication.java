@@ -83,72 +83,26 @@ import static org.openprovenance.prov.service.core.SwaggerTags.*;
 
 
 @ApplicationPath(FRAGMENT_PROVAPI)
-public class ProvapiApplication extends Application implements ApiUriFragments {
+public class ProvapiApplication extends org.openprovenance.prov.service.core.ProvapiApplication {
 
 	static Logger logger = LogManager.getLogger(ProvapiApplication.class);
 
 
-	private final Set<Object> singletons = new HashSet<>();
-
-	public final StorageSetup storageSetup = new StorageSetup();
-
 	public ProvapiApplication() {
-		logger.info("ProvapiApplication constructor ... start");
-		InteropFramework intF=new InteropFramework();
-		final ProvFactory factory = InteropFramework.getDefaultFactory();
 
+        super();
+        logger.info("ProvapiApplication (service-templates) constructor ... start");
 
-		StorageConfiguration sc = StorageConfiguration.loadConfiguration();
-
-		ServiceUtilsConfig config= storageSetup.makeConfig(factory, sc);
-
-		PostService ps=new PostService(config);
-
-		ps.addToConfiguration("storage.config", config.configuration);
-		ps.addToConfiguration("cli.config", intF.getConfig());
-		ps.addToConfiguration("version", Configuration.toolboxVersion);
-		ps.addToConfiguration("long.version", Configuration.longToolboxVersion);
-
-
-
-		singletons.add(ps);
-		singletons.add(new TranslationService(ps));
-		singletons.add(new org.openprovenance.prov.service.translation.TemplateService(ps));
-		singletons.add(new TemplateService(ps));
-		singletons.add(new ResourcesService());
-
-
-		singletons.add(new OpenApiResource());
-		singletons.add(new AcceptHeaderOpenApiResource());
-		singletons.add(new JsonOrCsvMessageBodyReader());
-		singletons.add(new TableKeyListMessageBodyReader());
-		singletons.add(new TemplatesVizConfigMessageBodyReader());
-		singletons.add(new SearchConfigMessageBodyReader());
-
-
-
-		singletons.add(new VanillaDocumentMessageBodyWriter(new InteropFramework()));
-		singletons.add(new NodeMessageBodyWriter());
-
-		//singletons.add(new HasProvenanceHeaderFilter());
-		
-	    CorsFilter corsFilter = new CorsFilter();
-        corsFilter.getAllowedOrigins().add("*");
-        corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
-        singletons.add(corsFilter);
-
-
-
-		logger.info("ProvapiApplication constructor ... completion");
+		logger.info("ProvapiApplication (service-templates) constructor ... completion");
 
 
 	}
 
+    @Override
+    public org.openprovenance.prov.service.core.TemplateService newTemplateService(PostService ps) {
+        return new TemplateService(ps);
+    }
 
-	@Override
-	public Set<Object> getSingletons() {
-		return singletons;
-	}
 
 	
 }

@@ -83,12 +83,12 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 	static Logger logger = LogManager.getLogger(ProvapiApplication.class);
 
 
-	private final Set<Object> singletons = new HashSet<>();
+	protected final Set<Object> singletons = new HashSet<>();
 
 	public final StorageSetup storageSetup = new StorageSetup();
 
 	public ProvapiApplication() {
-		logger.info("ProvapiApplication constructor ... start");
+		logger.info("ProvapiApplication (service-templates-core) constructor ... start");
 		InteropFramework intF=new InteropFramework();
 		final ProvFactory factory = InteropFramework.getDefaultFactory();
 
@@ -110,7 +110,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 		singletons.add(ps);
 		singletons.add(new TranslationService(ps));
 		singletons.add(new org.openprovenance.prov.service.translation.TemplateService(ps));
-		singletons.add(new TemplateService(ps));
+		singletons.add(newTemplateService(ps));
 		singletons.add(new ResourcesService());
 
 
@@ -135,13 +135,17 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 
 
 
-		logger.info("ProvapiApplication constructor ... completion");
+		logger.info("ProvapiApplication (service-templates-core) constructor ... completion");
 
 
 	}
 
+    public TemplateService newTemplateService(PostService ps) {
+        return new TemplateService(ps);
+    }
 
-	@Override
+
+    @Override
 	public Set<Object> getSingletons() {
 		return singletons;
 	}

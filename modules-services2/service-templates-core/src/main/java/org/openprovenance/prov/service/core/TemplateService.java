@@ -56,47 +56,43 @@ public class TemplateService {
     static Logger logger = LogManager.getLogger(TemplateService.class);
     public static final String APPLICATION_VND_KCL_PROV_TEMPLATE_JSON = "application/vnd.kcl.prov-template+json";
     public static final String TPL_HOST = "TPL_HOST";
-    public static final String provHost =getSystemOrEnvironmentVariableOrDefault(TPL_HOST, "http://localhost:8080/ems");
     public static final String PROV_API = "PROV_API";
     public static final String provAPI =getSystemOrEnvironmentVariableOrDefault(PROV_API, "http://localhost:8080/ems/provapi");
     public static final String DB_USER = "TPL_DB_USER";
-    public static final String postgresUsername=getSystemOrEnvironmentVariableOrDefault(DB_USER, "user");
     public static final String DB_PASS = "TPL_DB_PASS";
-    public static final String postgresPassword=getSystemOrEnvironmentVariableOrDefault(DB_PASS,"password");
 
     public static final String TPL_SECURITY_CONFIG = "TPL_SECURITY_CONFIG";
     public static final String NO_SECURITY_CONFIG = "no-security-config";
     public static final String tplSecurityConfig=getSystemOrEnvironmentVariableOrDefault(TPL_SECURITY_CONFIG, NO_SECURITY_CONFIG);
     public static final Utils secUtils=new Utils();
     public static final SecurityConfiguration securityConfiguration=(NO_SECURITY_CONFIG.equals(tplSecurityConfig))?null:secUtils.readSecurityConfiguration(tplSecurityConfig);
-
     public static final String TEMPLATE_CONFIG = "TEMPLATE_CONFIG";
     public static final String NO_TEMPLATE_CONFIG = "no-template-config";
     public static final String templateConfig=getSystemOrEnvironmentVariableOrDefault(TEMPLATE_CONFIG, NO_TEMPLATE_CONFIG);
+    public static final List<String> sqlFilesToExecute = List.of("/utils.sql");
 
 
 
-    private final PostService ps;
-    private final ServiceUtils utils;
-    private final CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher;
-    private final ObjectMapper om;
-    private final Storage storage;
-    final ProvFactory pf;
-    private final Map<String, FileBuilder> documentBuilderDispatcher;
+    protected final PostService ps;
+    protected final ServiceUtils utils;
+    protected final CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher;
+    protected final ObjectMapper om;
+    protected final Storage storage;
+    protected final ProvFactory pf;
+    protected final Map<String, FileBuilder> documentBuilderDispatcher;
+    protected final TemplateLogic templateLogic;
+    protected final TemplateQuery queryTemplate;
+    protected final Map<String, Linker> compositeLinker;
+    protected final Map<String, Function<Object[], Object[]>> recordMaker;
+    protected final PrincipalManager principalManager;
+    protected final Map<String, String> templateConfiguration;
+    protected final Querier querier;
+    protected final HashMap<String, String> map;
+    protected final String postgresUsername=getSystemOrEnvironmentVariableOrDefault(DB_USER, "user");
+    protected final String postgresPassword=getSystemOrEnvironmentVariableOrDefault(DB_PASS,"password");
+    protected final String provHost =getSystemOrEnvironmentVariableOrDefault(TPL_HOST, "http://localhost:8080/ems");
 
 
-    private final TemplateLogic templateLogic;
-
-    private final TemplateQuery queryTemplate;
-    private final Map<String, Linker> compositeLinker;
-    private final Map<String, Function<Object[], Object[]>> recordMaker;
-
-
-
-
-    static final List<String> sqlFilesToExecute = List.of("/utils.sql");
-    private final PrincipalManager principalManager;
-    private final Map<String, String> templateConfiguration;
 
     public static class Linker {
         public final String table;
@@ -109,39 +105,7 @@ public class TemplateService {
     }
 
 
-    public Map<String,String> readTemplateConfiguration(String configFileName) {
-        try {
-            return (Map<String, String>) om.readValue(new File(configFileName), Map.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    // reflect type for Map<String,String>
-
-    static Map<String,String> typeDescriptor=new HashMap<>();
-
-    @SuppressWarnings("unchecked")
-    static <T> BiFunction<Object,org.openprovenance.prov.model.ProvFactory,T> dynamicallyLoadClass(String factory, Class<T> iface) {
-        Class<?> clazz;
-        try {
-            clazz = Class.forName(factory);
-            Constructor<?> method=clazz.getConstructor(Map.class, ProvFactory.class);
-            return (m,pf) -> {
-                try {
-                    return (T) method.newInstance(m,pf);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-            };
-        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationError e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-    static final ThreadLocal<Map<String,String>> headerInfo = new ThreadLocal<>().withInitial(HashMap::new);
+    protected static final ThreadLocal<Map<String,String>> headerInfo = new ThreadLocal<>().withInitial(HashMap::new);
 
     public TemplateService(PostService ps) {
         this.pf = new org.openprovenance.prov.vanilla.ProvFactory();
@@ -162,26 +126,17 @@ public class TemplateService {
         String sqlInitializer=templateConfiguration.get("sql.initializer");
         String jdbcURL=templateConfiguration.get("jdbc.url");
 
-        Connection conn=storage.setup(jdbcURL, postgresUsername, postgresPassword);
+        Connection conn=storageSetup(jdbcURL);
         Function<String, ResultSet> queryExecutor = storage.queryExecutor(conn);
 
-        HashMap<String,String> map=new HashMap<>() {{
-            put("PROV_HOST", provHost);
-            put("PROV_API", provAPI);
-        }};
-
+        this.map= createMapForVariableSubstitution();
 
 
         // dynamically load class org.openprovenance.bk.physical.CatalogueDispatcher with map and pf as arguments;
         BiFunction<Object, org.openprovenance.prov.model.ProvFactory, CatalogueDispatcherInterface> factory=dynamicallyLoadClass(fullClassName, CatalogueDispatcherInterface.class);
 
-        CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher=factory.apply(map,pf);
-        catalogueDispatcher.initEnactorConverter(queryExecutor,this::submitPostProcessing, principalManager::getPrincipal);
-        catalogueDispatcher.initCompositeEnactorConverter(queryExecutor,this::submitPostProcessing, principalManager::getPrincipal);
-
-        this.catalogueDispatcher =catalogueDispatcher;
-
-        Querier querier = new Querier(storage, conn);
+        this.catalogueDispatcher = getCatalogueDispatcher(factory, this.map, queryExecutor);
+        this.querier = new Querier(storage, conn);
 
 
         this.compositeLinker=new HashMap<>() {{
@@ -210,12 +165,30 @@ public class TemplateService {
 
     }
 
+    public Connection storageSetup(String jdbcURL) {
+        return storage.setup(jdbcURL, postgresUsername, postgresPassword);
+    }
 
-    private Object submitPostProcessing(Integer i, String s) {
+    public HashMap<String, String> createMapForVariableSubstitution() {
+        return new HashMap<>() {{
+            put("PROV_HOST", provHost);
+            put("PROV_API", provAPI);
+        }};
+    }
+
+    public CatalogueDispatcherInterface<FileBuilder> getCatalogueDispatcher(BiFunction<Object, ProvFactory, CatalogueDispatcherInterface> factory, HashMap<String, String> map, Function<String, ResultSet> queryExecutor) {
+        CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher= factory.apply(map,pf);
+        catalogueDispatcher.initEnactorConverter(queryExecutor,this::submitPostProcessing, principalManager::getPrincipal);
+        catalogueDispatcher.initCompositeEnactorConverter(queryExecutor,this::submitPostProcessing, principalManager::getPrincipal);
+        return catalogueDispatcher;
+    }
+
+
+    public Object submitPostProcessing(Integer i, String s) {
         return templateLogic.submitPostProcessing(i,s);
     };
 
-    private void executeStatementsFromFile(Connection conn, String filename) {
+    public void executeStatementsFromFile(Connection conn, String filename) {
         boolean anyResult;
         String statements=getStringFromClasspath(this.getClass(), filename);
         try {
@@ -399,7 +372,7 @@ public class TemplateService {
     }
 
 
-    private void debugDisplay(String msg, Object object) {
+    public void debugDisplay(String msg, Object object) {
         try {
             System.out.println(msg + om.writeValueAsString(object));
         } catch (JsonProcessingException e) {
@@ -719,6 +692,37 @@ public class TemplateService {
         }
         return extension;
     }
+
+
+    @SuppressWarnings("unchecked")
+    static <T> BiFunction<Object,org.openprovenance.prov.model.ProvFactory,T> dynamicallyLoadClass(String factory, Class<T> iface) {
+        Class<?> clazz;
+        try {
+            clazz = Class.forName(factory);
+            Constructor<?> method=clazz.getConstructor(Map.class, ProvFactory.class);
+            return (m,pf) -> {
+                try {
+                    return (T) method.newInstance(m,pf);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            };
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationError e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public Map<String,String> readTemplateConfiguration(String configFileName) {
+        try {
+            return (Map<String, String>) om.readValue(new File(configFileName), Map.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
 
 }

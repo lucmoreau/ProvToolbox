@@ -3,8 +3,6 @@ package org.openprovenance.prov.template.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,11 +13,11 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
 import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.interop.PrincipalManager;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.template.library.plead.CatalogueDispatcher;
@@ -29,18 +27,9 @@ import org.openprovenance.prov.service.core.readers.JsonOrCsv;
 import org.openprovenance.prov.service.core.readers.SearchConfig;
 import org.openprovenance.prov.service.core.readers.TemplatesVizConfig;
 import org.openprovenance.prov.service.core.TemplateQuery;
-import org.openprovenance.prov.service.core.TemplateLogic;
-import org.openprovenance.prov.service.core.Querier;
-import org.openprovenance.prov.service.core.Storage;
-import org.openprovenance.prov.service.core.TemplateService.Linker;
 
 import org.openprovenance.prov.service.security.pac.RoleAuthorizationGenerator;
-import org.openprovenance.prov.service.security.pac.SecurityConfiguration;
-import org.openprovenance.prov.service.security.pac.Utils;
-import org.openprovenance.prov.template.library.plead.configurator.ObjectRecordMakerConfigurator;
-import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
-import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.ProvUtilities;
 import org.pac4j.core.profile.UserProfile;
 
@@ -51,100 +40,32 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static org.openprovenance.prov.model.interop.InteropMediaType.*;
 import static org.openprovenance.prov.service.core.TemplateLogic.*;
 import static org.openprovenance.prov.service.core.Storage.getStringFromClasspath;
-import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
-import static org.openprovenance.prov.template.library.plead.client.logger.Logger.initializeBeanTable;
+
 
 @Path("")
-public class TemplateService {
+public class TemplateService extends org.openprovenance.prov.service.core.TemplateService {
     static Logger logger = LogManager.getLogger(TemplateService.class);
-    public static final String APPLICATION_VND_KCL_PROV_TEMPLATE_JSON = "application/vnd.kcl.prov-template+json";
-    private final PostService ps;
-    private final ServiceUtils utils;
-    private final CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher;
-    private final ObjectMapper om;
-    private final Storage storage;
-    final ProvFactory pf;
-    private final Map<String, FileBuilder> documentBuilderDispatcher;
-    public static final String TPL_HOST = "TPL_HOST";
-    public static final String provHost =getSystemOrEnvironmentVariableOrDefault(TPL_HOST, "http://localhost:8080/ems");
-    public static final String PROV_API = "PROV_API";
-    public static final String provAPI =getSystemOrEnvironmentVariableOrDefault(PROV_API, "http://localhost:8080/ems/provapi");
-    public static final String POSTGRES_HOST = "POSTGRES_HOST";
-    public static final String postgresHost=System.getProperty(POSTGRES_HOST, "localhost");
-    public static final String DB_USER = "TPL_DB_USER";
-    public static final String postgresUsername=getSystemOrEnvironmentVariableOrDefault(DB_USER, "user");
-    public static final String DB_PASS = "TPL_DB_PASS";
-    public static final String postgresPassword=getSystemOrEnvironmentVariableOrDefault(DB_PASS,"password");
+    private final String jdbcURL;
 
-    public static final String TPL_SECURITY_CONFIG = "TPL_SECURITY_CONFIG";
-    public static final String NO_SECURITY_CONFIG = "no-security-config";
-    public static final String tplSecurityConfig=getSystemOrEnvironmentVariableOrDefault(TPL_SECURITY_CONFIG, NO_SECURITY_CONFIG);
-    public static final Utils secUtils=new Utils();
-    public static final SecurityConfiguration securityConfiguration=(NO_SECURITY_CONFIG.equals(tplSecurityConfig))?null:secUtils.readSecurityConfiguration(tplSecurityConfig);
-
-    public static final String TEMPLATE_CONFIG = "TEMPLATE_CONFIG";
-    public static final String NO_TEMPLATE_CONFIG = "no-template-config";
-    public static final String templateConfig=getSystemOrEnvironmentVariableOrDefault(TEMPLATE_CONFIG, NO_TEMPLATE_CONFIG);
-
-    private final TemplateLogic templateLogic;
-
-    private final Querier querier;
-    private final TemplateQuery queryTemplate;
-    private final Map<String, Linker> compositeLinker;
-    private final Map<String, Map<String, Set<String>>> typeAssignment;
-    private final Map<String, Function<Object[], Object[]>> recordMaker;
-
-    private final PrincipalManager principalManager;
-
-    private final Map<String, String> templateConfiguration;
-
-
-    static final List<String> sqlFilesToExecute = List.of("/utils.sql");
-
-
-    public Map<String,String> readTemplateConfiguration(String configFileName) {
-        try {
-            return (Map<String, String>) om.readValue(new File(configFileName), Map.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    static final ThreadLocal<Map<String,String>> headerInfo = new ThreadLocal<>().withInitial(HashMap::new);
 
     public TemplateService(PostService ps) {
-        this.pf = new ProvFactory();
-        this.om=new ObjectMapper();
-        this.om.enable(SerializationFeature.INDENT_OUTPUT);
-        this.om.registerModule(new JavaTimeModule());
-        this.ps = ps;
-        this.utils = ps.getServiceUtils();
-        this.storage=new Storage();
-        this.principalManager =new PrincipalManager();
+        super(ps);
 
         ps.addToConfiguration("security.config", securityConfiguration);
-        this.templateConfiguration=(NO_TEMPLATE_CONFIG.equals(templateConfig))?new HashMap<>():readTemplateConfiguration(templateConfig);
 
         String sqlInitializer=templateConfiguration.get("sql.initializer");
         String jdbcURL=templateConfiguration.get("jdbc.url");
 
-        Connection conn=storage.setup(jdbcURL, postgresUsername, postgresPassword);
+        this.jdbcURL=jdbcURL;
 
-        Function<String, ResultSet> queryExecutor = storage.queryExecutor(conn);
 
-        //Function<String, ResultSet> aquerier = storage.getQuerier(conn);
-        this.querier =new Querier(storage,conn);
-
-        //this.sqlCompositeBeanEnactor =new SqlCompositeBeanEnactor3(storage.getQuerier(conn));
-
-        this.compositeLinker=new HashMap<>() {{
-            put("plead_transforming_composite", new Linker("plead_transforming_composite_linker", "plead_transforming"));
-        }};
+        Connection conn=storageSetup(jdbcURL);
 
 
 
@@ -159,39 +80,33 @@ public class TemplateService {
                 e.printStackTrace();
             }
         }
-        HashMap<String,String> map=new HashMap<>() {{
+
+    }
+
+    @Override
+    public Connection storageSetup(String jdbcURL) {
+        return storage.setup(jdbcURL, postgresUsername, postgresPassword);
+    }
+
+
+    @Override
+    public CatalogueDispatcherInterface<FileBuilder> getCatalogueDispatcher(BiFunction<Object, ProvFactory, CatalogueDispatcherInterface> factory, HashMap<String, String> map, Function<String, ResultSet> queryExecutor) {
+        CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher=new CatalogueDispatcher(map,pf);
+        catalogueDispatcher.initEnactorConverter(queryExecutor,this::submitPostProcessing, principalManager::getPrincipal);
+        catalogueDispatcher.initCompositeEnactorConverter(queryExecutor,this::submitPostProcessing, principalManager::getPrincipal);
+        return catalogueDispatcher;
+    }
+
+
+    @Override
+    public HashMap<String, String> createMapForVariableSubstitution() {
+        return new HashMap<>() {{
             put("PROV_HOST", provHost);
             put("PROV_API", provAPI);
         }};
-
-        catalogueDispatcher=new CatalogueDispatcher(map,pf);
-        catalogueDispatcher.initEnactorConverter(queryExecutor,this::submitPostProcessing, principalManager::getPrincipal);
-        catalogueDispatcher.initCompositeEnactorConverter(queryExecutor,this::submitPostProcessing, principalManager::getPrincipal);
-
-        this.documentBuilderDispatcher=initializeBeanTable(new org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorWithMap(map,pf));
-        this.queryTemplate=new TemplateQuery(querier, catalogueDispatcher, principalManager, compositeLinker, om);
-        this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),catalogueDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
-        this.recordMaker=initializeBeanTable(new ObjectRecordMakerConfigurator(documentBuilderDispatcher));
-        this.templateLogic=new TemplateLogic(pf,queryTemplate,catalogueDispatcher,principalManager,utils, om);
     }
 
-
-    private Object submitPostProcessing(Integer i, String s) {
-        return templateLogic.submitPostProcessing(i,s);
-    };
-
-    private void executeStatementsFromFile(Connection conn, String filename) {
-        boolean anyResult;
-        String statements=getStringFromClasspath(this.getClass(), filename);
-        try {
-            anyResult=storage.executeStatements(conn,statements);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        logger.info("DB processing file " + filename + ". Any results? " + anyResult);
-    }
-
-
+/*
     @POST
     @Path("/statements")
     @Tag(name = "template")
@@ -290,17 +205,6 @@ public class TemplateService {
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
     }
 
-    public String getPrincipalAsPreferredUsername(Principal principal) {
-        if (principal==null) return "nil";
-        String principalAsPreferredUsername= principal.getName();
-        UserProfile profile = RoleAuthorizationGenerator.getProfile(principal.getName());
-        if (profile!=null) {
-            String tmp= (String) profile.getAttribute("preferred_username");
-            if (tmp!=null) principalAsPreferredUsername=tmp;
-        }
-        return principalAsPreferredUsername;
-    }
-
 
     @GET
     @Path("/template/{template}/{id}/{variable:\\w+}{extension:(\\.\\w+)?}")
@@ -362,14 +266,6 @@ public class TemplateService {
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
     }
 
-
-    private void debugDisplay(String msg, Object object) {
-        try {
-            System.out.println(msg + om.writeValueAsString(object));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
 
     @POST
@@ -665,24 +561,8 @@ public class TemplateService {
 
     }
 
-    private String determineOptionalExtension(HttpHeaders headers, String extension) {
-        if (extension ==null || extension.isEmpty()) {
-            if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION))) {
-                extension ="provn";
-            } else if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(InteropMediaType.MEDIA_APPLICATION_JSONLD))) {
-                extension ="jsonld";
-            } else if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(MEDIA_IMAGE_SVG_XML))) {
-                extension ="svg";
-            } else if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(MEDIA_TEXT_HTML))) {
-                extension ="svg";
-            } else {
-                extension ="jsonld";
-            }
-        } else {
-            extension = extension.substring(1);
-        }
-        return extension;
-    }
+ */
+
 
 
 }

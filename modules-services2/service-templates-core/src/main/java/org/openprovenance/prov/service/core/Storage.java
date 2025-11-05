@@ -49,7 +49,7 @@ public class Storage {
     public boolean initializeDB(Connection conn, String sqlInitializer) throws SQLException {
         String statements=getStringFromClasspath(this.getClass(), sqlInitializer);
         System.out.println("**************** Initializing DB with script: " + sqlInitializer);
-        System.out.println(statements);
+       // System.out.println(statements);
         return executeStatements(conn, statements);
     }
 

@@ -1012,7 +1012,8 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 Hashtable<String, List<Other>> attributes=attributesWithNamespace(waw, PROV_EXT_NS);
                 List<Other> str=attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                 List<QualifiedName> result = str.stream().map(x -> (QualifiedName) x.getValue()).collect(Collectors.toList());
-                result.addAll(super.getOtherCauses(r));
+                List<QualifiedName> otherCauses = super.getOtherCauses(r);
+                if (otherCauses!=null) result.addAll(otherCauses);
                 return result;
             }  else if (r instanceof Used ) {
                 Used usd = (Used) r;

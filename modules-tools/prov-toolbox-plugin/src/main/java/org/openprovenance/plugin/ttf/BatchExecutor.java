@@ -53,8 +53,8 @@ public class BatchExecutor extends AbstractMojo {
             for (int i = 0; i < classpathElements.size(); i++) {
                 urls[i] = new URL("file://" + classpathElements.get(i));
             }
-            System.out.println("urls=" + urls);
-            System.out.println("className=" + className);
+           // System.out.println("urls=" + urls);
+           // System.out.println("className=" + className);
             List<String> finalList=new LinkedList<>();
             if (baseDir!=null) {
                 finalList.add(baseDir);
@@ -67,7 +67,7 @@ public class BatchExecutor extends AbstractMojo {
             finalList.add("-configs");
             finalList.addAll(configs);
 
-            System.out.println("configs:=" + finalList);
+            //System.out.println("configs:=" + finalList);
             URLClassLoader loader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
             Class<?> clazz = Class.forName(className, true, loader);
             Method method = clazz.getMethod("main", String[].class);
@@ -102,7 +102,7 @@ public class BatchExecutor extends AbstractMojo {
             for (int i = 0; i < classpathElements.size(); i++) {
                 urls[i] = new URL("file://" + classpathElements.get(i));
             }
-            System.out.println("urls=" + urls);
+            //System.out.println("urls=" + urls);
             //System.out.println("className=" + className);
             List<String> finalList=new LinkedList<>();
             if (baseDir!=null) {
@@ -116,7 +116,7 @@ public class BatchExecutor extends AbstractMojo {
             finalList.add("-configs");
             finalList.addAll(configs);
 
-            System.out.println("configs:=" + finalList);
+            //System.out.println("configs:=" + finalList);
             //URLClassLoader loader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
             org.openprovenance.prov.template.expander.ttf.BatchExecutor executor=new org.openprovenance.prov.template.expander.ttf.BatchExecutor( serializerMap2, deserializerMap2);
             //Class<?> clazz = Class.forName(className, true, loader);

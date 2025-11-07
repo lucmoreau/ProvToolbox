@@ -19,6 +19,7 @@ public class TemplatesProjectConfiguration {
     public String documentation;
 
     public String root_package;
+    public String variableCheck;
 
     public String script;
     public String script_dir;
@@ -42,6 +43,7 @@ public class TemplatesProjectConfiguration {
                 ", description='" + description + '\'' +
                 ", documentation='" + documentation + '\'' +
                 ", root_package='" + root_package + '\'' +
+                ", variableCheck='" + variableCheck + '\'' +
                 ", script='" + script + '\'' +
                 ", script_dir='" + script_dir + '\'' +
                 ", python_dir='" + python_dir + '\'' +

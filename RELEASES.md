@@ -41,7 +41,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: added generated method isCompositeOf in Builder
 * prov-template-archetype: support for compulsory properties in forms.html for composites
 * service-templates: refactored to rely on service-templates-core
-
+* prov-template: template variable syntax checker
 
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java

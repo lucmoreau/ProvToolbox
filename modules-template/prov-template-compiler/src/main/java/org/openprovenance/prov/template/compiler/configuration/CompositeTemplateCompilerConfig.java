@@ -14,6 +14,7 @@ public class CompositeTemplateCompilerConfig extends TemplateCompilerConfig {
                 ", sharing=" + sharing +
                 ", type_='" + type_ + '\'' +
                 ", name='" + name + '\'' +
+                ", fullQualifiedName='" + fullQualifiedName + '\'' +
                 ", package_='" + package_ + '\'' +
                 '}';
     }

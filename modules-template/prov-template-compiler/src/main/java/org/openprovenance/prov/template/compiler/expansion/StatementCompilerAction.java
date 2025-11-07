@@ -313,13 +313,6 @@ public class StatementCompilerAction implements StatementAction {
                             // use attribute variables (expected to be of type Object) and calculates its type as a QualifiedName dynamically.
                             String localPart = vq.getLocalPart();
 
-                            /*
-                            System.out.println("vq " + vq);
-                            System.out.println("local " + localPart);
-                            System.out.println("eleemnt " + element);
-                            System.out.println("vmap.eleemnt " +  vmap.get(element));
-
-                             */
 
                             if (vmap.get(element)!=null) {
 
@@ -329,9 +322,9 @@ public class StatementCompilerAction implements StatementAction {
                                         localPart,
                                         localPart);
                             } else {
-                                System.out.println("Warning: attribute element " + element + " not in vmap");
+                                System.out.println("Warning: " + element.getPrefix() + ":" + element.getLocalPart() + " not declared");
 
-                                builder.addComment("Warning: attribute element " + element + " not in vmap");
+                                builder.addComment("Warning: " + element.getPrefix() + ":" + element.getLocalPart() + " not declared");
                                 builder.addStatement("if (($N!=null) && ($N!=null)) attrs.add(pf.newAttribute(($T)$N,$N,vc.getXsdType($N)))",
                                         element.getLocalPart(),
                                         localPart,

@@ -87,7 +87,6 @@ public class CompilerExpansionBuilder {
 
         JavaFile myfile = compilerUtil.specWithComment(theInterface, templateName, packge, stackTraceElement);
 
-        System.out.println("******* " + fileName + " " + packge);
         return new SpecificationFile(myfile, directory, fileName, packge);
     }
 

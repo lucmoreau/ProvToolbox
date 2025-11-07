@@ -8,10 +8,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeVariableName;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.openprovenance.prov.model.Bundle;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.IndexedDocument;
-import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
@@ -26,6 +23,9 @@ import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
+import org.openprovenance.prov.template.utils.ProvVariables;
+import org.openprovenance.prov.template.utils.StatementChecker;
+import org.openprovenance.prov.template.utils.VariableChecker;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -108,6 +108,8 @@ public class ConfigProcessor implements Constants {
         descriptorUtils = new DescriptorUtils();
         descriptorUtils.setupDeserializer(objectMapper);
     }
+
+    private Optional<StatementChecker> statementChecker;
 
 
     public ConfigProcessor(ProvFactory pFactory) {
@@ -192,9 +194,16 @@ public class ConfigProcessor implements Constants {
 
             Map<String, String> packages = findAllPackagesInConfigurations(configs, inputBaseDir);
 
-            System.out.println("++++++++++++++++++++++ Packages: " + objectMapper.writeValueAsString(packages));
+            //System.out.println("++++++++++++++++++++++ Packages: " + objectMapper.writeValueAsString(packages));
 
             Locations locations=new Locations(configs,packages,cli_src_dir,l2p_src_dir);
+
+            if (configs.variableCheck!=null) {
+                ProvVariables pv=objectMapper.readValue(new File(addBaseDirIfRelative(configs.variableCheck, inputBaseDir)), ProvVariables.class);
+                this.statementChecker=Optional.of(new StatementChecker(new VariableChecker(pv)));
+            } else {
+                this.statementChecker=Optional.empty();
+            }
 
 
             for (TemplateCompilerConfig aconfig: configs.templates) {
@@ -644,7 +653,9 @@ public class ConfigProcessor implements Constants {
             IllegalAccessException,
             IllegalArgumentException,
             InvocationTargetException, FileNotFoundException {
-        return compilerUtil.readDocumentFromFile(config.template);
+        Document document = compilerUtil.readDocumentFromFile(config.template);
+        statementChecker.ifPresent(sc -> new ProvUtilities().forAllStatementOrBundle(document.getStatementOrBundle(), sc));
+        return document;
     }
 
     public void doGenerateServerForEntry(SimpleTemplateCompilerConfig config, TemplatesProjectConfiguration configs, Locations locations, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {

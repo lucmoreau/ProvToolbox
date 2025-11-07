@@ -265,8 +265,6 @@ public class CompilerConfigurations {
 
             final String backendPackage = locations.getBackendPackage(name);
 
-            System.out.println("backendPackage is "+backendPackage);
-
             String backendBuilder = className.toString();
             // return suffix after last dot
             final int pos = backendBuilder.lastIndexOf('.');

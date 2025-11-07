@@ -502,7 +502,7 @@ public class TemplateQuery {
                     whereAccessControl(principal, sb);
                     sb.append("${symbol_escape}n group by search_record.id, search_record.created_at, search_record.table_name, search_record.key, record_index.principal, record_index.hash${symbol_escape}n");
                     sb.append("${symbol_escape}n limit ").append(limit);
-                    System.out.println("sb = " + sb.toString());
+                    //System.out.println("sb = " + sb.toString());
                 },
                 (rs, data) -> {
                     while (rs.next()) {

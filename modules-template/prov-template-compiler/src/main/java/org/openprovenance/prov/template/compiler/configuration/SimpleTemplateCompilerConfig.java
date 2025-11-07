@@ -28,6 +28,7 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
         return "SimpleTemplateCompilerConfig{" +
                 "@type='" + type_ + '\'' +
                 ", name='" + name + '\'' +
+                ", fullQualifiedName='" + fullQualifiedName + '\'' +
                 ", template='" + template + '\'' +
                 ", package_='" + package_ + '\'' +
                 ", bindings='" + bindings + '\'' +

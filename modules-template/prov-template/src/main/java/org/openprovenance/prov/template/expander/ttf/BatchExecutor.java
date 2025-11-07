@@ -83,7 +83,7 @@ public class BatchExecutor {
                 configurationPath = inputBasedir + "/" + configurationPath;
             }
 
-            System.out.println("In executor " + configurationPath);
+            logger.debug("In executor " + configurationPath);
 
             TemplateTasksBatch templateTasksBatch = load(configurationPath, om);
 
@@ -93,7 +93,7 @@ public class BatchExecutor {
             if (templateTasksBatch.variableMaps!=null) {
                 interpretRelativeDirectoriesInVariableMaps(inputBasedir, templateTasksBatch, localdir);
                 for (String variableMapPath: templateTasksBatch.variableMaps) {
-                    System.out.println("loading variable map " +  variableMapPath);
+                    logger.debug("loading variable map " +  variableMapPath);
                     variableMap.putAll(om.readValue(new FileInputStream(variableMapPath), Map.class));
                 }
             }
@@ -121,9 +121,9 @@ public class BatchExecutor {
         logger.info("output_dir: " + templateTasksBatch.output_dir);
 
 
-        System.out.println("template_path: " + templateTasksBatch.template_path);
-        System.out.println("bindings_path: " + templateTasksBatch.bindings_path);
-        System.out.println("output_dir: " + templateTasksBatch.output_dir);
+    //    System.out.println("template_path: " + templateTasksBatch.template_path);
+      //  System.out.println("bindings_path: " + templateTasksBatch.bindings_path);
+      //  System.out.println("output_dir: " + templateTasksBatch.output_dir);
 
         // create directory
 
@@ -215,7 +215,7 @@ public class BatchExecutor {
     }
 
     public void execute(String[] args) {
-        System.out.println("Executor: " + Arrays.toString(args));
+       // System.out.println("Executor: " + Arrays.toString(args));
        // find the position of string "-configs" in args
 
         int pos=0;

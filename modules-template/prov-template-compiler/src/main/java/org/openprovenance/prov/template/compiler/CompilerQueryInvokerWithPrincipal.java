@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.openprovenance.prov.template.compiler.CompilerBeanCompleter2Composite.getSimpleConfig;
 import static org.openprovenance.prov.template.compiler.CompilerQueryInvoker.CONVERT_TO_NON_NULLABLE_TEXT;
 import static org.openprovenance.prov.template.compiler.CompilerQueryInvoker.CONVERT_TO_NULLABLE_TEXT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
@@ -79,8 +80,8 @@ public class CompilerQueryInvokerWithPrincipal {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
-            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), beanNameClass);
-            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), inputsNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), beanNameClass);
+            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputsNameClass);
 
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
@@ -296,13 +297,17 @@ public class CompilerQueryInvokerWithPrincipal {
 
         SimpleTemplateCompilerConfig composee=null;
         for (TemplateCompilerConfig c: configs.templates) {
-            if (compositeConfig.consistsOf.equals(c.name)) {
+            if (compositeConfig.consistsOf.equals(c.fullyQualifiedName)) {
                 composee=(SimpleTemplateCompilerConfig) c;
             }
         }
+
+        // Luc, this seems the same as composee above.
+        TemplateCompilerConfig simpleConfig=getSimpleConfig(configs,compositeConfig.consistsOf);
+
         mspec.beginControlFlow("for ($T $N: $N.$N)",
-                                  (withBean)?ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), compilerUtil.commonNameClass(compositeConfig.consistsOf))
-                                            :ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), compilerUtil.beanNameClass(compositeConfig.consistsOf, BeanDirection.INPUTS, "_1")),
+                                  (withBean)?ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), compilerUtil.commonNameClass(simpleConfig.name))
+                                            :ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), compilerUtil.beanNameClass(simpleConfig.name, BeanDirection.INPUTS, "_1")),
                                   variableBean1,
                                   variableBean,
                                   ELEMENTS);

@@ -11,6 +11,9 @@
                 "name": {
                     "type": "string"
                 },
+                "fullyQualifiedName": {
+                    "type": "string"
+                },
                 "template": {
                     "type": "string"
                 },
@@ -37,6 +40,9 @@
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "fullyQualifiedName": {
                     "type": "string"
                 },
                 "consistsOf": {

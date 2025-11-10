@@ -6,6 +6,8 @@ import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
+import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import static org.openprovenance.prov.template.compiler.CompilerBeanCompleter2Composite.getSimpleConfig;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.typeT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
@@ -34,7 +37,7 @@ public class CompilerProcessor {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public SpecificationFile generateProcessor(Locations locations, String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator, String fileName, String consistsOf) {
+    public SpecificationFile generateProcessor(TemplatesProjectConfiguration configs, Locations locations, String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator, String fileName, String consistsOf) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = generateProcessorClassInit(inIntegrator ? compilerUtil.integratorNameClass(templateName) : compilerUtil.processorNameClass(templateName));
@@ -90,7 +93,8 @@ public class CompilerProcessor {
 
 
         if (consistsOf!=null) {
-            final TypeName listType=ParameterizedTypeName.get(ClassName.get(List.class),ClassName.get(packge, compilerUtil.beanNameClass(consistsOf, BeanDirection.COMMON)));
+            TemplateCompilerConfig simpleConfig=getSimpleConfig(configs,consistsOf);
+            final TypeName listType=ParameterizedTypeName.get(ClassName.get(List.class),ClassName.get(packge, compilerUtil.beanNameClass(simpleConfig.name, BeanDirection.COMMON)));
             mbuilder.addParameter(listType, Constants.ELEMENTS);
             jdoc.add("@param $N: to do \n", Constants.ELEMENTS);
         }

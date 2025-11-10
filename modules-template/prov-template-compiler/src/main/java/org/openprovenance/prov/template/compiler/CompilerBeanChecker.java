@@ -59,14 +59,14 @@ public class CompilerBeanChecker {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            String packageForBeans2=locations.getBeansPackage(config.name, direction);
+            String packageForBeans2=locations.getBeansPackage(config.fullyQualifiedName, direction);
             builder.addMethod(generateCheckerMethod(config.name, null, config, direction, packageForBeans2, null));
         }
 
         if (variantTable!=null) {
             variantTable.keySet().forEach(
-                    templateName -> {
-                        Map<String, Triple<String, List<String>, TemplateBindingsSchema>> allVariants = variantTable.get(templateName);
+                    templateFullyQualifiedName -> {
+                        Map<String, Triple<String, List<String>, TemplateBindingsSchema>> allVariants = variantTable.get(templateFullyQualifiedName);
                         allVariants.keySet().forEach(
                                 shared -> {
                                     Triple<String, List<String>, TemplateBindingsSchema> triple = allVariants.get(shared);
@@ -74,12 +74,12 @@ public class CompilerBeanChecker {
                                     List<String> sharing = triple.getMiddle();
                                     TemplateBindingsSchema tbs=triple.getRight();
 
-                                    TemplateCompilerConfig config = Arrays.stream(configs.templates).filter(c -> Objects.equals(c.name, templateName)).findFirst().get();
+                                    TemplateCompilerConfig config = Arrays.stream(configs.templates).filter(c -> Objects.equals(c.fullyQualifiedName, templateFullyQualifiedName)).findFirst().get();
                                     SimpleTemplateCompilerConfig sConfig = (SimpleTemplateCompilerConfig) config;
-                                    SimpleTemplateCompilerConfig sConfig2 = sConfig.cloneAsInstanceInComposition(templateName + extension, null);
-                                    String packageForBeans2=locations.getBeansPackage(config.name, direction);
+                                    SimpleTemplateCompilerConfig sConfig2 = sConfig.cloneAsInstanceInComposition(sConfig.name + extension, templateFullyQualifiedName + extension, null);
+                                    String packageForBeans2=locations.getBeansPackage(config.fullyQualifiedName, direction);
 
-                                    builder.addMethod(generateCheckerMethod(templateName , extension, sConfig2, direction, packageForBeans2, sharing));
+                                    builder.addMethod(generateCheckerMethod(sConfig.name , extension, sConfig2, direction, packageForBeans2, sharing));
 
                                 }
                         );

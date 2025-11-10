@@ -28,7 +28,7 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
         return "SimpleTemplateCompilerConfig{" +
                 "@type='" + type_ + '\'' +
                 ", name='" + name + '\'' +
-                ", fullQualifiedName='" + fullQualifiedName + '\'' +
+                ", fullyQualifiedName='" + fullyQualifiedName + '\'' +
                 ", template='" + template + '\'' +
                 ", package_='" + package_ + '\'' +
                 ", bindings='" + bindings + '\'' +
@@ -41,11 +41,12 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
     @JsonIgnore
     public List<String> sharing;
 
-    public SimpleTemplateCompilerConfig cloneAsInstanceInComposition(String newName, List<String> sharing) {
+    public SimpleTemplateCompilerConfig cloneAsInstanceInComposition(String newName, String newFullQualifiedName, List<String> sharing) {
         SimpleTemplateCompilerConfig clone= new SimpleTemplateCompilerConfig();
         clone.template=template;
         clone.type_=type_;
         clone.name= newName; //this.name +"_shared";
+        clone.fullyQualifiedName=newFullQualifiedName; //this.fullyQualifiedName+"._shared";
         clone.package_=package_;
         clone.bindings=bindings;
         clone.inComposition=true;

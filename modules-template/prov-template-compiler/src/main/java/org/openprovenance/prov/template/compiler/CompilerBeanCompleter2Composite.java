@@ -8,6 +8,9 @@ import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import static org.openprovenance.prov.template.compiler.CompilerUtil.listMapType;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.mapType;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
@@ -57,10 +60,12 @@ public class CompilerBeanCompleter2Composite {
 
 
             final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
-            final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
 
-            final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputBeanNameClass);
-            MethodSpec.Builder mspec = createProcessMethod(consistsOf, locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputClassName, true);
+            // find simple config name for consistsOf
+            TemplateCompilerConfig simpleConfig= getSimpleConfig(configs, consistsOf);
+
+            final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
+            MethodSpec.Builder mspec = createProcessMethod(simpleConfig.name, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputClassName, true);
             builder.addMethod(mspec.build());
 
 
@@ -75,6 +80,12 @@ public class CompilerBeanCompleter2Composite {
 
         return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
 
+    }
+
+    static public TemplateCompilerConfig getSimpleConfig(TemplatesProjectConfiguration configs, String consistsOf) {
+        return Arrays.stream(configs.templates)
+                .filter(c -> Objects.equals(c.fullyQualifiedName, consistsOf))
+                .findFirst().get();
     }
 
     private MethodSpec.Builder createProcessMethod(String consistsOf, String integrator_package, ClassName cutputClassName, boolean isOutput) {

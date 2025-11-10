@@ -37,7 +37,6 @@ public class CompilerBeanLocalEnactor2 {
         ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(configs.name, Constants.QUERY_INVOKER2), Constants.QUERY_INVOKER2);
 
         ClassName ioProcessorClass = ClassName.get(locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR), INPUT_OUTPUT_PROCESSOR);
-        ClassName inputProcessorClass = ClassName.get(locations.getBeansPackage(configs.name, BeanDirection.OUTPUTS), INPUT_PROCESSOR);
         builder.addSuperinterface(ioProcessorClass);
 
 
@@ -66,8 +65,8 @@ public class CompilerBeanLocalEnactor2 {
         for (TemplateCompilerConfig config : configs.templates) {
             final String outputNameClass = compilerUtil.outputsNameClass(config.name);
             final String inputNameClass = compilerUtil.inputsNameClass(config.name);
-            final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputNameClass);
-            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), inputNameClass);
+            final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputNameClass);
+            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputNameClass);
 
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC)

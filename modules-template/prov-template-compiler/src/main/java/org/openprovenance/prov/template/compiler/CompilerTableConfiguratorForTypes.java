@@ -56,7 +56,7 @@ public class CompilerTableConfiguratorForTypes {
 
         for (TemplateCompilerConfig config : configs.templates) {
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), templateNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
 
             MethodSpec.Builder mspec_builder = MethodSpec.methodBuilder(config.name)
                     .addModifiers(Modifier.PUBLIC)
@@ -77,11 +77,11 @@ public class CompilerTableConfiguratorForTypes {
                 mspec_builder.addStatement("return $N", builderVar);
 
                  */
-                ClassName builderClass=ClassName.get(locations.getBackendPackage(config.name),compilerUtil.templateNameClass(config.name));
+                ClassName builderClass=ClassName.get(locations.getBackendPackage(config.fullyQualifiedName),compilerUtil.templateNameClass(config.name));
 
-                mspec_builder.addStatement("$T $N=$N.get($S)", stringArrayType, "properties", PROPERTY_ORDER, config.name);
+                mspec_builder.addStatement("$T $N=$N.get($S)", stringArrayType, "properties", PROPERTY_ORDER, config.fullyQualifiedName);
 
-                mspec_builder.addStatement("$T $N = ($T) $N.get($S)", builderClass, TEMPLATE_BUILDER_VARIABLE, builderClass, DOCUMENT_BUILDER_DISPATCHER, config.name);
+                mspec_builder.addStatement("$T $N = ($T) $N.get($S)", builderClass, TEMPLATE_BUILDER_VARIABLE, builderClass, DOCUMENT_BUILDER_DISPATCHER, config.fullyQualifiedName);
 
                 mspec_builder.addStatement("$T $N=$N.make($N.getTypedRecord())", Object[].class, "record2", TEMPLATE_BUILDER_VARIABLE, TEMPLATE_BUILDER_VARIABLE);
 

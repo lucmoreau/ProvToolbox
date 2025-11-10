@@ -19,7 +19,6 @@ module prov.template.compiler {
     requires prov.template;
 
 
-
     exports org.openprovenance.prov.template.compiler;
     exports org.openprovenance.prov.template.compiler.configuration;
     exports org.openprovenance.prov.template.compiler.util;

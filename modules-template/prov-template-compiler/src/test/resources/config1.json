@@ -16,6 +16,7 @@
         {
             "@type": "simple",
             "name": "template_block",
+            "fullyQualifiedName": "org.example.TemplateBlock",
             "template": "src/test/resources/templates/generic_binaryop.provn",
             "package": "org.example.templates.block",
             "bindings": "src/test/resources/templates/generic_binaryop_b1.json"

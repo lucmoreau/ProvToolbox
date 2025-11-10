@@ -30,7 +30,7 @@ public class CompilerTemplateBuilders {
 
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
 
-            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), templateNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
             FieldSpec fspec = FieldSpec.builder(className, config.name + "Builder")
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .initializer(LOGGER + "." + Constants.GENERATED_VAR_PREFIX + config.name)

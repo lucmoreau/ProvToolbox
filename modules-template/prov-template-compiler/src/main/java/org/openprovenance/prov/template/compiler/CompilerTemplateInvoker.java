@@ -35,8 +35,8 @@ public class CompilerTemplateInvoker {
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
             final String outputsNameClass = compilerUtil.outputsNameClass(config.name);
 
-            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), inputsNameClass);
-            final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputsNameClass);
+            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputsNameClass);
+            final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputsNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC)
                     .addParameter(ParameterSpec.builder(inputClassName, BEAN).build())

@@ -42,7 +42,7 @@ public class CompilerLogger {
         for (TemplateCompilerConfig config : configs.templates) {
            // if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), templateNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
             FieldSpec fspec = FieldSpec.builder(className, Constants.GENERATED_VAR_PREFIX + config.name)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                     .initializer("$N $T()", "new", className)
@@ -137,7 +137,7 @@ public class CompilerLogger {
         for (TemplateCompilerConfig config : configs.templates) {
 
             String thisBuilderName = Constants.GENERATED_VAR_PREFIX + config.name;
-            builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
+            builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getFullyQualifiedName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
 
 
         }
@@ -173,7 +173,7 @@ public class CompilerLogger {
         for (TemplateCompilerConfig config : configs.templates) {
             if (!(config instanceof SimpleTemplateCompilerConfig)) {
                 String thisBuilderName = Constants.GENERATED_VAR_PREFIX + config.name;
-                builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
+                builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getFullyQualifiedName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
             }
         }
 
@@ -302,7 +302,7 @@ public class CompilerLogger {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(beanCreatorName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
-                .returns(ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON),compilerUtil.commonNameClass(config.name)));
+                .returns(ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON),compilerUtil.commonNameClass(config.name)));
 
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 

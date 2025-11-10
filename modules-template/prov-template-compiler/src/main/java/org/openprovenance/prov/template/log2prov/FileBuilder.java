@@ -168,7 +168,8 @@ abstract public class FileBuilder {
     }
 
     abstract public String getName();
-    
+    abstract public String getFullyQualifiedName();
+
     public static boolean registerBuilders(String[] builders, org.openprovenance.prov.model.ProvFactory pf) {
         boolean ok=true;
         for (String builder: builders) {

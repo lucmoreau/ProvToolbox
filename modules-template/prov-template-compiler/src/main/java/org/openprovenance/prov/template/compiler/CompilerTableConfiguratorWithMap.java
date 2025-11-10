@@ -51,7 +51,7 @@ public class CompilerTableConfiguratorWithMap {
 
         for (TemplateCompilerConfig config : configs.templates) {
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), templateNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
 
             MethodSpec.Builder mspec_builder = MethodSpec.methodBuilder(config.name)
                     .addModifiers(Modifier.PUBLIC)

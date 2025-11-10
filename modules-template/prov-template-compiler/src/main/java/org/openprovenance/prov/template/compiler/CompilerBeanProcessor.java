@@ -31,7 +31,7 @@ public class CompilerBeanProcessor {
             //if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
             //locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), beanNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), beanNameClass);
             MethodSpec mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                     .addParameter(ParameterSpec.builder(className,"bean").build())

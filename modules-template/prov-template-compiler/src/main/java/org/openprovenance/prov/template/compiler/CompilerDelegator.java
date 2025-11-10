@@ -54,7 +54,7 @@ public class CompilerDelegator {
         for (TemplateCompilerConfig config : configs.templates) {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
-            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), beanNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), beanNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC)  // this one is not final!
                     .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())

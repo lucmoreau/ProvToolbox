@@ -91,7 +91,7 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public SpecificationFile generateBuilderSpecification(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
+    public SpecificationFile generateBuilderSpecification(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String templateFullyQualifiedName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -101,7 +101,7 @@ public class CompilerExpansionBuilder {
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
-        return generateBuilderSpecification_aux(configs, locations, doc, new ArrayList<>(allVars), new ArrayList<>(allAtts), name, templateName, packge, bindings_schema, bindingsSchema, successorTable, directory, fileName);
+        return generateBuilderSpecification_aux(configs, locations, doc, new ArrayList<>(allVars), new ArrayList<>(allAtts), name, templateName, templateFullyQualifiedName, packge, bindings_schema, bindingsSchema, successorTable, directory, fileName);
 
     }
 
@@ -122,7 +122,7 @@ public class CompilerExpansionBuilder {
         return builder.build();
     }
 
-    SpecificationFile generateBuilderSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
+    SpecificationFile generateBuilderSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String templateFullyQualifiedName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassBuilder2(name);
@@ -135,8 +135,9 @@ public class CompilerExpansionBuilder {
 
 
         builder.addMethod(compilerCommon.generateNameAccessor(templateName));
+        builder.addMethod(compilerCommon.generateFullyQualifiedNameAccessor(templateFullyQualifiedName));
 
-        builder.addMethod(compilerCommon.commonAccessorGenerator(templateName,locations.getBeansPackage(templateName, BeanDirection.COMMON)));
+        builder.addMethod(compilerCommon.commonAccessorGenerator(templateName,locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON)));
 
         builder.addMethod(typeManagerGenerator(templateName,packge));
        // builder.addMethod(compilerClient.typePropagateGenerator(templateName,packge));

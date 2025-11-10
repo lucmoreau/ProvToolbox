@@ -175,7 +175,7 @@ public class Locations {
 
     private String getPackageForTemplate(String name) {
         //return packages.getOrDefault(name, NODEFAULT_FOR + name);
-        return Optional.ofNullable(packages.get(name)).orElseThrow(() -> new NoSuchElementException("No package defined for template " + name));
+        return Optional.ofNullable(packages.get(name)).orElseThrow(() -> new NoSuchElementException("No package defined for template " + name + ": " + packages));
     }
 
     private String getConfiguratorPackage(String name) {

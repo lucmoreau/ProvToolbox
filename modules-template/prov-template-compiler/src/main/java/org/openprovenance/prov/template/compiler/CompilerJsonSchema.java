@@ -32,6 +32,7 @@ public class CompilerJsonSchema {
 
     public void generateJSonSchemaEnd(String jsonschema, String root_dir) {
 
+
         new File(root_dir).mkdirs();
 
         final String path = root_dir + "/" + jsonschema;
@@ -56,7 +57,7 @@ public class CompilerJsonSchema {
         return res;
     }
 
-    public void generateJSonSchema(String templateName, TemplateBindingsSchema bindingsSchema, String consistsOf, String idPrefix, List<String> sharing) {
+    public void generateJSonSchema(String templateName, String templateFullyQualifiedName, TemplateBindingsSchema bindingsSchema, String consistsOf, String idPrefix, List<String> sharing) {
 
 
         Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
@@ -64,7 +65,7 @@ public class CompilerJsonSchema {
 
 
         Map<String, Object> aSchema = new HashMap<>();
-        aSchema.put(get$id(), idPrefix + templateName);
+        aSchema.put(get$id(), idPrefix + templateFullyQualifiedName);
         aSchema.put("type", "object");
 
         Map<String, Object> properties = new HashMap<>();
@@ -78,7 +79,7 @@ public class CompilerJsonSchema {
 
             requiredProperties.add(key);
             Map<String, Object> atype = new HashMap<>();
-            atype.put(get$id(), idPrefix +templateName+"/properties/"+key);
+            atype.put(get$id(), idPrefix +templateFullyQualifiedName+"/properties/"+key);
             atype.put("title", title(key));
             final String jsonType = convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName());
             atype.put("type", jsonType);
@@ -108,14 +109,13 @@ public class CompilerJsonSchema {
             String elementKey = ELEMENTS;
             requiredProperties.add(elementKey);
             Map<String, Object> atype2 = new HashMap<>();
-            atype2.put(get$id(), idPrefix + templateName + "/properties/" + elementKey);
+            atype2.put(get$id(), idPrefix + templateFullyQualifiedName + "/properties/" + elementKey);
             atype2.put("title", title(elementKey));
             atype2.put("type", "array");
 
             // jsonform does not support $ref in items, so we need to expand the schema
 
             Map<String,Object>subschema= (Map<String, Object>) ((Map<String,Object>)jsonSchemaAsAMap.get("definitions")).get(consistsOf);
-
 
             Map<String, Object> subschema2 = (subschema==null)? new HashMap<>(): new HashMap<>(subschema);
             // note: the $id are not correct
@@ -143,32 +143,37 @@ public class CompilerJsonSchema {
 
         }
 
+       // if (templateFullyQualifiedName==null) {
+       //     System.out.println("### Warning: fully qualified name not provided for template " + templateName + ", using template name as fully qualified name");
+//templateFullyQualifiedName = templateName;
+       // }
+
 
 
         String key="isA";
         Map<String, Object> atype = new HashMap<>();
-        atype.put(get$id(), idPrefix +templateName+"/properties/"+key);
+        atype.put(get$id(), idPrefix +templateFullyQualifiedName+"/properties/"+key);
         atype.put("title", title(key));
         atype.put("type", "string");
         atype.put("readOnly", "true");
-        atype.put("default", templateName);
-        atype.put("pattern", "^" + templateName + "$");
+        atype.put("default", templateFullyQualifiedName);
+        atype.put("pattern", "^" + templateFullyQualifiedName + "$");
         properties.put(key, atype);
         atype.put("required", true);
 
-        jsonSchemaAsAMap.put("properties", Map.of("isA", Map.of("type", "string", "pattern", "^template_block$"))); // Luc Allow more templates
+        jsonSchemaAsAMap.put("properties", Map.of("isA", Map.of("type", "string", "pattern", "^" + templateFullyQualifiedName + "$"))); // Luc Allow more templates
 
 
         aSchema.put("required", requiredProperties);
         aSchema.put("additionalProperties", false);
-        ((Map<String,Object>)jsonSchemaAsAMap.get("definitions")).put(templateName, aSchema);
+        ((Map<String,Object>)jsonSchemaAsAMap.get("definitions")).put(templateFullyQualifiedName, aSchema);
 
         Map<String,Object> ifThenBlock=new HashMap<>();
         Map<String,Object> ifBlock=new HashMap<>();
         ifThenBlock.put("if",ifBlock);
-        ifThenBlock.put("then", Map.of("$ref", idPrefix + templateName));
+        ifThenBlock.put("then", Map.of("$ref", idPrefix + templateFullyQualifiedName));
         ifBlock.put("type", "object");
-        ifBlock.put("properties", Map.of("isA", Map.of("const", templateName)));
+        ifBlock.put("properties", Map.of("isA", Map.of("const", templateFullyQualifiedName)));
 
         ((List<Map<String,Object>>)jsonSchemaAsAMap.get("allOf")).add(ifThenBlock);
 

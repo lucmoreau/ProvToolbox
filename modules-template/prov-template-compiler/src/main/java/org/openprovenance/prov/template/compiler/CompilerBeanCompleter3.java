@@ -76,7 +76,7 @@ public class CompilerBeanCompleter3 {
 
                     final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
-                    final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputBeanNameClass);
+                    final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
                     MethodSpec.Builder mspec = createSimpleProcessMethod(outputClassName,config.name);
 
                     builder.addMethod(mspec.build());
@@ -87,7 +87,7 @@ public class CompilerBeanCompleter3 {
                 CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
-                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputBeanNameClass);
+                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
 
                 MethodSpec.Builder mspec = createCompositeProcessMethod(config.name,outputClassName);
                 builder.addMethod(mspec.build());

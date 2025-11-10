@@ -75,8 +75,8 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
 
                 final String outputNameClass = compilerUtil.outputsNameClass(config.name);
                 final String inputNameClass = compilerUtil.inputsNameClass(config.name);
-                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputNameClass);
-                final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), inputNameClass);
+                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputNameClass);
+                final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputNameClass);
 
                 MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                         .addModifiers(Modifier.PUBLIC)

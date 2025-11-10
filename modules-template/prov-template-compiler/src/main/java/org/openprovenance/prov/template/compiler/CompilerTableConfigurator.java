@@ -35,7 +35,7 @@ public class CompilerTableConfigurator {
         for (TemplateCompilerConfig config : configs.templates) {
             if (!compositeOnly || !(config instanceof SimpleTemplateCompilerConfig) ) {
                 final String templateNameClass = compilerUtil.templateNameClass(config.name);
-                final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), templateNameClass);
+                final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
                 MethodSpec mspec = MethodSpec.methodBuilder(config.name)
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                         .addParameter(ParameterSpec.builder(className, "builder").build())

@@ -123,7 +123,7 @@ public class CompilerConfigurations {
 
             final String inBeanNameClass = compilerUtil.beanNameClass(config.name, direction);
             final String outBeanNameClass = compilerUtil.beanNameClass(config.name, outDirection);
-            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), templateNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
             String builderParameter = "builder";
 
             CodeBlock.Builder jdoc = CodeBlock.builder();
@@ -141,11 +141,11 @@ public class CompilerConfigurations {
             if (config instanceof SimpleTemplateCompilerConfig || defaultBehaviour) {
 
                 generator.accept(builderParameter,
-                                 config.name,
+                                 config.fullyQualifiedName,
                                  mspec,
                                 className,
-                                ClassName.get((direction==BeanDirection.COMMON)? locations.getBeansPackage(config.name, BeanDirection.COMMON) : beanPackage, inBeanNameClass),
-                                ClassName.get((direction==BeanDirection.COMMON)? locations.getBeansPackage(config.name, BeanDirection.COMMON) : beanPackage, outBeanNameClass)
+                                ClassName.get((direction==BeanDirection.COMMON)? locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) : beanPackage, inBeanNameClass),
+                                ClassName.get((direction==BeanDirection.COMMON)? locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) : beanPackage, outBeanNameClass)
                         );
             } else {
                 mspec.addStatement("return$Nnull", "/*null*/");
@@ -261,9 +261,9 @@ public class CompilerConfigurations {
     static class WrapperClass {
         private final Locations locations;
 
-        public void generateObjectRecordMaker(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName outType) {
+        public void generateObjectRecordMaker(String builderParameter, String fullyQualifiedName, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName outType) {
 
-            final String backendPackage = locations.getBackendPackage(name);
+            final String backendPackage = locations.getBackendPackage(fullyQualifiedName);
 
             String backendBuilder = className.toString();
             // return suffix after last dot
@@ -284,13 +284,13 @@ public class CompilerConfigurations {
         private final Locations locations;
         private final CompilerConfigurations compilerConfigurations;
 
-        public void generateMethodEnactor2(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName _inType, TypeName _outType) {
-            String inPackage=locations.getBeansPackage(name, BeanDirection.INPUTS);
+        public void generateMethodEnactor2(String builderParameter, String fullyQualifiedName, MethodSpec.Builder mspec, TypeName className, TypeName _inType, TypeName _outType) {
+            String inPackage=locations.getBeansPackage(fullyQualifiedName, BeanDirection.INPUTS);
             TypeName inType=ClassName.get(inPackage,_inType.toString().substring(_inType.toString().lastIndexOf('.')+1));
-            String outPackage=locations.getBeansPackage(name, BeanDirection.OUTPUTS);
+            String outPackage=locations.getBeansPackage(fullyQualifiedName, BeanDirection.OUTPUTS);
             TypeName outType=ClassName.get(inPackage,_outType.toString().substring(_outType.toString().lastIndexOf('.')+1));
 
-            compilerConfigurations.generateMethodEnactor2(builderParameter, name, mspec, className, inType, outType);
+            compilerConfigurations.generateMethodEnactor2(builderParameter, fullyQualifiedName, mspec, className, inType, outType);
         }
 
         WrapperClass2(Locations locations, CompilerConfigurations compilerConfigurations) {
@@ -315,7 +315,7 @@ public class CompilerConfigurations {
     public void generateMethodRecord2RecordConverter(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return x -> builder.aRecord2BeanConverter.apply(x).process(builder.aArgs2RecordConverter())");
     }
-    public void generateMethodEnactor(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
+    public void generateMethodEnactor(String builderParameter, String _name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("$T beanConverter=$N.aRecord2BeanConverter", functionObjArrayTo(beanType), builderParameter);
 
 
@@ -325,7 +325,7 @@ public class CompilerConfigurations {
                 "                }", functionObjArrayTo(beanType),beanType, ENACTOR_VAR);
         mspec.addStatement("return enactor");
     }
-    public void generateMethodEnactor2(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName inputBeanType, TypeName outputBeanType) {
+    public void generateMethodEnactor2(String builderParameter, String _name, MethodSpec.Builder mspec, TypeName className, TypeName inputBeanType, TypeName outputBeanType) {
 
         mspec.addComment("Generated Automatically by ProvToolbox method $N.$N()", getClass().getName(), "generateMethodEnactor2");
 

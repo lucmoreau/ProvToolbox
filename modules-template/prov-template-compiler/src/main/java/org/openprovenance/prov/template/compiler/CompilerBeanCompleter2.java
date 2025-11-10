@@ -9,6 +9,7 @@ import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
 
+import static org.openprovenance.prov.template.compiler.CompilerBeanCompleter2Composite.getSimpleConfig;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
@@ -95,13 +96,13 @@ public class CompilerBeanCompleter2 {
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
                 final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
 
-                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputBeanNameClass);
+                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
                 MethodSpec.Builder mspec = createProcessMethod(config.name, bindingsSchema, outputClassName, true);
 
                 builder.addMethod(mspec.build());
 
 
-                final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), inputBeanNameClass);
+                final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputBeanNameClass);
                 MethodSpec.Builder mspec2 = createProcessMethod(config.name, bindingsSchema, inputClassName, false);
                 builder.addMethod(mspec2.build());
             } else {
@@ -109,9 +110,11 @@ public class CompilerBeanCompleter2 {
                 String consistOf=config1.consistsOf;
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
-                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputBeanNameClass);
-                String composeeName=compilerUtil.outputsNameClass(consistOf);
-                ClassName composeeClass=ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS),composeeName);
+                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
+
+                TemplateCompilerConfig simpleConfig=getSimpleConfig(configs, consistOf);
+                String composeeName=compilerUtil.outputsNameClass(simpleConfig.name);
+                ClassName composeeClass=ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS),composeeName);
 
                 MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                         .addModifiers(Modifier.PUBLIC)

@@ -9,6 +9,7 @@ import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
 
+import static org.openprovenance.prov.template.compiler.CompilerBeanCompleter2Composite.getSimpleConfig;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerBeanCompleter {
@@ -96,7 +97,7 @@ public class CompilerBeanCompleter {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
 
-            final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), beanNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), beanNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())
@@ -121,8 +122,11 @@ public class CompilerBeanCompleter {
 
                 CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
                 String consistOf=config1.consistsOf;
-                String composeeName=compilerUtil.commonNameClass(consistOf);
-                ClassName composeeClass=ClassName.get(locations.getBeansPackage(config1.name, BeanDirection.COMMON),composeeName);
+
+                TemplateCompilerConfig simpleConfig=getSimpleConfig(configs,config1.consistsOf);
+
+                String composeeName=compilerUtil.commonNameClass(simpleConfig.name);
+                ClassName composeeClass=ClassName.get(locations.getBeansPackage(config1.fullyQualifiedName, BeanDirection.COMMON),composeeName);
 
                 mspec.addStatement("boolean nextExists=true");
                 mspec.beginControlFlow("for ($T composee: $N.$N)", composeeClass, BEAN_VAR, ELEMENTS);

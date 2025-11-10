@@ -81,7 +81,7 @@ public class CompilerTest extends TestCase {
 
 
         HashMap<String, String> packages = new HashMap<>();
-        packages.put(config.name, config.package_);
+        packages.put(config.fullyQualifiedName, config.package_);
         packages.put(configs.name, configs.root_package);
         System.out.println("#### packages: " + packages);
 

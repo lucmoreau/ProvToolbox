@@ -55,14 +55,14 @@ public class CompilerCompositeConfigurations {
             if (!(config instanceof SimpleTemplateCompilerConfig )) {
                 final String templateNameClass = compilerUtil.templateNameClass(config.name);
                 final String beanNameClass = compilerUtil.commonNameClass(config.name);
-                final ClassName className = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), templateNameClass);
+                final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
                 String builderParameter = "builder";
                 MethodSpec.Builder mspec = MethodSpec.methodBuilder(config.name)
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addParameter(ParameterSpec.builder(className, builderParameter).build())
                         .returns(typeName);
                 compilerUtil.specWithComment(mspec);
-                generator.accept(builderParameter, mspec, className, ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), beanNameClass));
+                generator.accept(builderParameter, mspec, className, ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), beanNameClass));
                 builder.addMethod(mspec.build());
             }
 
@@ -135,14 +135,14 @@ public class CompilerCompositeConfigurations {
                 final String beanNameClass = compilerUtil.commonNameClass(config.name);
                 final String inputNameClass = compilerUtil.inputsNameClass(config.name);
                 final String outputNameClass = compilerUtil.outputsNameClass(config.name);
-                final ClassName commonClassName = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), templateNameClass);
+                final ClassName commonClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
                 String builderParameter = "builder";
                 MethodSpec.Builder mspec = MethodSpec.methodBuilder(config.name)
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addParameter(ParameterSpec.builder(commonClassName, builderParameter).build())
                         .returns(typeName);
                 compilerUtil.specWithComment(mspec);
-                generator.accept(builderParameter, mspec, commonClassName, ClassName.get(locations.getBeansPackage(config.name, BeanDirection.INPUTS), inputNameClass), ClassName.get(locations.getBeansPackage(config.name, BeanDirection.OUTPUTS), outputNameClass));
+                generator.accept(builderParameter, mspec, commonClassName, ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputNameClass), ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputNameClass));
                 builder.addMethod(mspec.build());
             }
 

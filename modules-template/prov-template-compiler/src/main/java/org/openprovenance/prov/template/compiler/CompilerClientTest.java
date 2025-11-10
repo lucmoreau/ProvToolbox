@@ -41,7 +41,7 @@ public class CompilerClientTest {
         for (TemplateCompilerConfig config: configs.templates) {
             String bn=compilerUtil.templateNameClass(config.name);
             mbuilder.addStatement("System.setOut(new java.io.PrintStream(\"target/example_" + config.name + ".json\"))");
-            mbuilder.addStatement("Object $N=$T.examplar()", resvar+count, ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), bn));
+            mbuilder.addStatement("Object $N=$T.examplar()", resvar+count, ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), bn));
             mbuilder.addStatement("new $T().writeValue(System.out,$N)",  ObjectMapper.class, resvar+count);
             count++;
         }

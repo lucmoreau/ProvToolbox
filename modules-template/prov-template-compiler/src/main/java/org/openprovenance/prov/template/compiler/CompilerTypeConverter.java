@@ -81,7 +81,7 @@ public class CompilerTypeConverter {
             TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            final ClassName templateClass = ClassName.get(locations.getBeansPackage(config.name, BeanDirection.COMMON), templateNameClass);
+            final ClassName templateClass = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
             MethodSpec.Builder mspec = createProcessMethod(bindingsSchema, templateClass);
             builder.addMethod(mspec.build());
         }

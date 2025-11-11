@@ -83,9 +83,11 @@ public class CompilerTest extends TestCase {
         HashMap<String, String> packages = new HashMap<>();
         packages.put(config.fullyQualifiedName, config.package_);
         packages.put(configs.name, configs.root_package);
+        HashMap<String, String> shortNames = new HashMap<>();
+        shortNames.put(config.fullyQualifiedName, config.name);
         System.out.println("#### packages: " + packages);
 
-        Locations locations=new Locations(configs, packages, cli_src_dir, l2p_src_dir);
+        Locations locations=new Locations(configs, packages, shortNames, cli_src_dir, l2p_src_dir);
 
 
         /*

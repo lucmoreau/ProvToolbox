@@ -52,4 +52,5 @@ public interface CatalogueDispatcherInterface<T> {
 
     String getIoMap();
 
+    String getShortNames();
 }

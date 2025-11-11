@@ -98,6 +98,14 @@ public class TemplateService {
         public final String table;
         public final String linked;
 
+        @Override
+        public String toString() {
+            return "Linker{" +
+                    "table='" + table + '\'' +
+                    ", linked='" + linked + '\'' +
+                    '}';
+        }
+
         public Linker(String table, String linked) {
             this.table = table;
             this.linked = linked;
@@ -141,6 +149,10 @@ public class TemplateService {
 
         this.compositeLinker=new HashMap<>() {{
             put("plead_transforming_composite", new Linker("plead_transforming_composite_linker", "plead_transforming"));
+            put("packing_composite", new Linker("packing_composite_linker", "packing"));
+            put("org.openprovenance.templates.physical.PackingComposite", new Linker("packing_composite_linker", "packing"));
+            put("unpacking_composite", new Linker("unpacking_composite_linker", "unpacking"));
+            put("org.openprovenance.templates.physical.UnpackingComposite", new Linker("unpacking_composite_linker", "unpacking"));
         }};
 
 
@@ -188,6 +200,7 @@ public class TemplateService {
 
 
     public Object submitPostProcessing(Integer i, String s) {
+        if (i==null) i=-69;
         return templateLogic.submitPostProcessing(i,s);
     };
 

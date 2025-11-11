@@ -202,6 +202,10 @@ public class CompilerCatalogueDispatcher {
                     .builder(  ClassName.get(String.class), "ioMap", Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL)
                     .initializer("$S", objectMapper.writeValueAsString(inputOutputMaps))
                     .build());
+            builder.addField(FieldSpec
+                    .builder(  ClassName.get(String.class), "shortNames", Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL)
+                    .initializer("$S", objectMapper.writeValueAsString(locations.getShortNames()))
+                    .build());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -209,7 +213,8 @@ public class CompilerCatalogueDispatcher {
 
         MethodSpec.Builder getterSpec = createGetterBuilder(configs, "ioMap", ClassName.get(String.class));
         builder.addMethod(getterSpec.build());
-
+        MethodSpec.Builder getterSpec2 = createGetterBuilder(configs, "shortNames", ClassName.get(String.class));
+        builder.addMethod(getterSpec2.build());
 
 
 

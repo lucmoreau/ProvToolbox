@@ -89,7 +89,7 @@ public class CompilerBeanCompleter3 {
 
                 final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
 
-                MethodSpec.Builder mspec = createCompositeProcessMethod(config.name,outputClassName);
+                MethodSpec.Builder mspec = createCompositeProcessMethod(config.fullyQualifiedName,outputClassName);
                 builder.addMethod(mspec.build());
 
             }
@@ -123,7 +123,7 @@ public class CompilerBeanCompleter3 {
         return mspec;
     }
 
-    private MethodSpec.Builder createCompositeProcessMethod(String template, ClassName outputClassName) {
+    private MethodSpec.Builder createCompositeProcessMethod(String templateFullyQualifiedName, ClassName outputClassName) {
         MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
@@ -133,7 +133,7 @@ public class CompilerBeanCompleter3 {
 
         mspec.addStatement("$T result=super.$N($N)", outputClassName, Constants.PROCESS_METHOD_NAME, BEAN_VAR);
         mspec.addStatement("result.ID=getValueFromLocation()");
-        mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, "result", template);
+        mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, "result", templateFullyQualifiedName);
 
         mspec.addStatement("return $N", "result");
         mspec.addAnnotation(Override.class);

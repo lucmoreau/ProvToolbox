@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer;
 import org.openprovenance.prov.template.compiler.util.CompilerException;
 import org.openprovenance.prov.template.descriptors.*;
@@ -19,7 +20,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
-import static org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer.findExtrasValuesForRelation;
 import static org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer.getTheSqlType;
 
 public class CompilerSQL {
@@ -517,13 +517,13 @@ public class CompilerSQL {
      */
 
 
-    public void generateSQLInsertFunction(String jsonschema, String templateName, String consistOf, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared, Map<String, Map<String, Map<String, String>>> inputOutputMaps, List<String> search) {
-        new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertFunction(jsonschema,templateName, consistOf, root_dir,templateBindingsSchema,shared);
+    public void generateSQLInsertFunction(String jsonschema, String templateName, Locations locations, String consistOf, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared, Map<String, Map<String, Map<String, String>>> inputOutputMaps, List<String> search) {
+        new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertFunction(jsonschema,templateName, consistOf, locations, root_dir,templateBindingsSchema,shared);
 
         if (shared!=null && !shared.isEmpty()) {
             new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateInsertIntoSharedRelation(templateName, templateBindingsSchema, shared);
-            new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertArrayFunction(templateName, consistOf, templateBindingsSchema, shared);
-            new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertCompositeAndLinkerFunction(templateName, consistOf, templateBindingsSchema, shared);
+            new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertArrayFunction(templateName, consistOf, locations, templateBindingsSchema, shared);
+            new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertCompositeAndLinkerFunction(templateName, consistOf, locations, templateBindingsSchema, shared);
 
             if (consistOf!=null) {
                 generateSQLCompositeAndLinkerTable(templateName);
@@ -549,9 +549,9 @@ public class CompilerSQL {
 
          */
                 new CompilerSqlComposer(pFactory, tableKey, functionDeclarations, arrayFunctionDeclarations)
-                        .generateSQLSearchRecordFunction(baseRelation, groupedTemplatesWithBaseRelation, templateName, consistOf, root_dir, templateBindingsSchema, shared);
+                        .generateSQLSearchRecordFunction(baseRelation, groupedTemplatesWithBaseRelation, templateName, locations, consistOf, root_dir, templateBindingsSchema, shared);
                 new CompilerSqlComposer(pFactory, tableKey, functionDeclarations, arrayFunctionDeclarations)
-                        .generateSQLSearchRecordByIdFunction(baseRelation, groupedTemplatesWithBaseRelation, templateName, consistOf, root_dir, templateBindingsSchema, shared);
+                        .generateSQLSearchRecordByIdFunction(baseRelation, groupedTemplatesWithBaseRelation, templateName, locations, consistOf, root_dir, templateBindingsSchema, shared);
 
             }
         }

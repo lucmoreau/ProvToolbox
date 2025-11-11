@@ -656,11 +656,14 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
                         TemplatesProjectConfiguration configs = new TemplatesProjectConfiguration();
                         //FIXME: configs not initialized!!
+                        logger.error("WARNING: project configuration not initialized, using empty configuration");
                         Map<String, String> packages = new HashMap<>();
-                        Locations locations = new Locations(configs, packages, null, null);
+                        Map<String, String> shortNames = new HashMap<>();
+                        Locations locations = new Locations(configs, packages, shortNames, null, null);
 
+                        logger.error("WARNING: private short name instead of qualified name");
 
-                        cp.generate(doc, locations, config.template, config.packge, config.outfile, config.location, config.location, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
+                        cp.generate(doc, locations, config.template, config.template, config.packge, config.outfile, config.location, config.location, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
                         return CommandLineArguments.STATUS_OK;
 
                     } catch (IOException e) {

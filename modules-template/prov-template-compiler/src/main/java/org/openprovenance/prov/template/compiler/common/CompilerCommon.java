@@ -143,8 +143,8 @@ public class CompilerCommon {
             builder.addMethod(generateApplyMethod(templateName, packageName));
 
 
-            builder.addMethod(generateLoggerMethod(templateName, bindingsSchema));
-            builder.addMethod(generateCommonMethod2PureCsv(templateName, bindingsSchema, consistsOf));
+            builder.addMethod(generateLoggerMethod(templateName, templateFullyQualifiedName, bindingsSchema));
+            builder.addMethod(generateCommonMethod2PureCsv(templateName, templateFullyQualifiedName, bindingsSchema, consistsOf));
             builder.addMethod(generateCommonMethod3static(bindingsSchema));
             builder.addMethod(generateCommonMethod4static(allVars, bindingsSchema, indexed));
             builder.addMethod(generateGetRelations(allVars, bindingsSchema, indexed));
@@ -206,7 +206,7 @@ public class CompilerCommon {
             builder.addMethod(generateNewBean(templateName, packageName));
 
             builder.addField(generateField4aArgs2CsvConverter(name,templateName,packageName));
-            builder.addMethod(generateCommonMethod2PureCsv(templateName, bindingsSchema, consistsOf));
+            builder.addMethod(generateCommonMethod2PureCsv(templateName, templateFullyQualifiedName, bindingsSchema, consistsOf));
             builder.addMethod(generateCommonCSVConverterMethod_aux(configs, locations, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
             builder.addMethod(generateNullOutputsMethod());
             builder.addMethod(generateNullInputsMethod());
@@ -284,11 +284,11 @@ public class CompilerCommon {
         return builder.build();
     }
 
-    public MethodSpec generateLoggerMethod(String template, TemplateBindingsSchema bindingsSchema) {
-        return generateLoggerMethod(template, bindingsSchema, true, null);
+    public MethodSpec generateLoggerMethod(String template, String templateFullyQualifiedName, TemplateBindingsSchema bindingsSchema) {
+        return generateLoggerMethod(template, templateFullyQualifiedName, bindingsSchema, true, null);
     }
-    public MethodSpec generateCommonMethod2PureCsv(String template, TemplateBindingsSchema bindingsSchema, String consistsOf) {
-        return generateLoggerMethod(template, bindingsSchema, false, consistsOf);
+    public MethodSpec generateCommonMethod2PureCsv(String template, String templateFullyQualifiedName, TemplateBindingsSchema bindingsSchema, String consistsOf) {
+        return generateLoggerMethod(template, templateFullyQualifiedName, bindingsSchema, false, consistsOf);
     }
 
     public MethodSpec generateCommonCSVConverterMethod_aux(TemplatesProjectConfiguration configs, Locations locations, String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, String consistsOf, String loggerPackage, String logger) {
@@ -837,7 +837,7 @@ public class CompilerCommon {
     }
 
 
-    public MethodSpec generateLoggerMethod(String template, TemplateBindingsSchema bindingsSchema, boolean legacy, String consistOf) {
+    public MethodSpec generateLoggerMethod(String template, String templateFullyQualifiedName, TemplateBindingsSchema bindingsSchema, boolean legacy, String consistOf) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(compilerUtil.loggerName(template) + (legacy ? "_impure" : ""))
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class);
@@ -869,7 +869,7 @@ public class CompilerCommon {
         builder.addJavadoc(jdoc.build());
 
 
-        String constant = (legacy? "[" : "") + StringEscapeUtils.escapeCsv(template);
+        String constant = (legacy? "[" : "") + StringEscapeUtils.escapeCsv(templateFullyQualifiedName);
         for (String key: fieldNames) {
 
             final String newName = compilerUtil.generateNewNameForVariable(key);

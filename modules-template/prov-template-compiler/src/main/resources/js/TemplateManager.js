@@ -85,7 +85,7 @@ class TemplateManager {
         }
         console.log(bean);
         var csv = bean.process(builder.aArgs2CsVConverter);
-        values["isA"]=builder.getName();
+        values["isA"]=builder.getFullyQualifiedName();
         return [csv,values]; // note: i am only exporting the populated values, as opposed to the whole bean
     }
 
@@ -262,8 +262,8 @@ class TemplateManager {
         const names = [];
         const table = {};
         this.builders.forEach(function (f) {
-            names.push(f.getName());
-            table[f.getName()] = f;
+            names.push(f.getFullyQualifiedName());
+            table[f.getFullyQualifiedName()] = f;
         });
         this.names = names;
         return table;

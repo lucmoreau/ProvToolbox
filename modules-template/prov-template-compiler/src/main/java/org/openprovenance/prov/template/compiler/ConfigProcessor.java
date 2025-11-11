@@ -192,11 +192,13 @@ public class ConfigProcessor implements Constants {
             new File(cli_webjar_bindings_dir).mkdirs();
             new File(cli_webjar_templates_dir).mkdirs();
 
-            Map<String, String> packages = findAllPackagesInConfigurations(configs, inputBaseDir);
+            Pair<Map<String, String>, Map<String, String>> packages_shortnames_pair = findAllPackagesInConfigurations(configs, inputBaseDir);
+            Map<String, String> packages = packages_shortnames_pair.getLeft();
+            Map<String, String> shortNames = packages_shortnames_pair.getRight();
 
             //System.out.println("++++++++++++++++++++++ Packages: " + objectMapper.writeValueAsString(packages));
 
-            Locations locations=new Locations(configs,packages,cli_src_dir,l2p_src_dir);
+            Locations locations=new Locations(configs, packages, shortNames, cli_src_dir, l2p_src_dir);
 
             if (configs.variableCheck!=null) {
                 ProvVariables pv=objectMapper.readValue(new File(addBaseDirIfRelative(configs.variableCheck, inputBaseDir)), ProvVariables.class);
@@ -259,7 +261,7 @@ public class ConfigProcessor implements Constants {
 
             doGenerateClientAndProject(configs, locations, cli_lib, cli_dir, cli_src_dir);
 
-            System.out.println(objectMapper.writeValueAsString(getInputOutputMaps()));
+            //System.out.println(objectMapper.writeValueAsString(getInputOutputMaps()));
 
 
         } catch (IOException e) {
@@ -268,11 +270,14 @@ public class ConfigProcessor implements Constants {
         return 0;
     }
 
-    private Map<String, String> findAllPackagesInConfigurations(TemplatesProjectConfiguration configs, String inputBaseDir) {
+    private Pair<Map<String, String>,Map<String, String>> findAllPackagesInConfigurations(TemplatesProjectConfiguration configs, String inputBaseDir) {
         Map<String,String> packages=new HashMap<>();
+        Map<String,String> shortNames=new HashMap<>();
         packages.put(configs.name, configs.root_package);
 
         for (TemplateCompilerConfig aconfig: configs.templates) {
+            shortNames.put(aconfig.fullyQualifiedName, aconfig.name);
+
             if (TemplateConfigurationEnum.isSimple(aconfig)) {
                 SimpleTemplateCompilerConfig config= (SimpleTemplateCompilerConfig) aconfig;
                 TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config,inputBaseDir);
@@ -315,7 +320,7 @@ public class ConfigProcessor implements Constants {
                 }
             }
         }
-        return packages;
+        return Pair.of(packages, shortNames);
     }
 
     static String addBaseDirIfRelative(String template_builder, String baseDir) {
@@ -827,7 +832,7 @@ public class ConfigProcessor implements Constants {
 
                 if (configs.sqlFile!=null) {
                     compilerSQL.generateSQL(templateName, bindingsSchema);
-                    compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList(), getInputOutputMaps(), configs.search);
+                    compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, locations, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList(), getInputOutputMaps(), configs.search);
                     compilerSQL.generateSQLPrimitiveTables(sqlTables,bindingsSchema);
                 }
             }
@@ -843,7 +848,7 @@ public class ConfigProcessor implements Constants {
                 compilerJsonSchema.generateJSonSchema(templateName+"_1", templateFullyQualifiedName+"_1", bindingsSchema, null, "#/definitions/", null);
 
 
-                if (configs.sqlFile!=null) compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing, getInputOutputMaps(), configs.search);
+                if (configs.sqlFile!=null) compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, locations, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing, getInputOutputMaps(), configs.search);
 
                 SimpleTemplateCompilerConfig config = new SimpleTemplateCompilerConfig();
                 config.name = compositeBeanNameClass;

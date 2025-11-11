@@ -20,13 +20,15 @@ public class Locations {
 
 
     static final String CONFIG2_EXTENSION = "2";
+    private final Map<String, String> shortNames;
 
-    public Locations(TemplatesProjectConfiguration configs, Map<String, String> packages, String cli_src_dir, String l2p_src_dir) {
+    public Locations(TemplatesProjectConfiguration configs, Map<String, String> packages, Map<String, String> shortNames, String cli_src_dir, String l2p_src_dir) {
         this.configs=configs;
         this.cli_src_dir=cli_src_dir;
         this.l2p_src_dir=l2p_src_dir;
         this.python_dir=configs.python_dir;
         this.packages=packages;
+        this.shortNames=shortNames;
     }
 
 
@@ -198,4 +200,7 @@ public class Locations {
         return getBackendPackage(name) + ".sql.access_control";
     }
 
+    public Map<String, String> getShortNames() {
+        return shortNames;
+    }
 }

@@ -57,9 +57,13 @@ public class TemplateQuery {
 
 
     static TypeReference<Map<String,Map<String, Map<String, String>>>> typeRef = new TypeReference<>() {};
+    static TypeReference<Map<String, String>> typeRef2 = new TypeReference<>() {};
     private final Map<String, Map<String, List<String>>> successors;
     private final RelationMapping relationMapping;
-
+    private final Map<String, String[]> propertyOrder;
+    private final Map<String, String[]> simplePropertyOrder;
+    private final Map<String, String> shortNames;
+    private final Map<String, String> longNames;
 
     public TemplateQuery(Querier querier, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om) {
         this.querier = querier;
@@ -67,13 +71,35 @@ public class TemplateQuery {
         this.compositeLinker = compositeLinker;
         this.om = om;
         this.documentBuilderDispatcher = templateDispatcher.getDocumentBuilderDispatcher();
-        this.ioMap = getIoMap(templateDispatcher.getIoMap());
+        Map<String, String> shortNames = getShortNames(templateDispatcher.getShortNames());
+        this.shortNames=shortNames;
+        this.longNames=shortNames.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        this.ioMap = shortenNames(getIoMap(templateDispatcher.getIoMap()), shortNames);
         this.successors = templateDispatcher.getSuccessors();
         this.relationMapping = new RelationMapping(this,templateDispatcher,querier);
 
+        //System.out.println("**** longNames " + longNames);
+
         logger.info("ioMap = " + ioMap);
+        propertyOrder = templateDispatcher.getPropertyOrder();
+        simplePropertyOrder = propertyOrder.entrySet().stream().collect(Collectors.toMap(x -> shortNames.get(x.getKey()), Map.Entry::getValue));
+
 
         generateTraversalMethods(querier, this.ioMap);
+    }
+
+    private Map<String, Map<String, Map<String, String>>> shortenNames(Map<String, Map<String, Map<String, String>>> ioMap,
+                                                                       Map<String, String> shortNames) {
+
+        Map<String, Map<String, Map<String, String>>> res=new HashMap<>();
+        res.put(INPUT,
+                ioMap.get(INPUT).entrySet().stream().collect(Collectors.toMap(
+                        e -> shortNames.get(e.getKey()), Map.Entry::getValue)));
+        res.put(OUTPUT,
+                ioMap.get(OUTPUT).entrySet().stream().collect(Collectors.toMap(
+                        e -> shortNames.get(e.getKey()), Map.Entry::getValue)));
+
+        return res;
     }
 
     RelationMapping getRelationMapping() {
@@ -365,7 +391,7 @@ public class TemplateQuery {
 
     public List<Object[]> querySimple(String template, Integer id, boolean withTitles, String principal) {
         List<Object[]> the_records = new LinkedList<>();
-        String[] propertyOrder=templateDispatcher.getPropertyOrder().get(template);
+        String[] propertyOrder= simplePropertyOrder.get(template);
         //System.out.println("propertyOrder = " + Arrays.toString(propertyOrder));
         querier.do_query(the_records,
                 null,
@@ -397,7 +423,7 @@ public class TemplateQuery {
                 (rs, data) -> {
                     while (rs.next()) {
                         Object[] record = new Object[propertyOrder.length];
-                        record[0]=template;
+                        record[0]=longNames.get(template);
                         for (int i = 1; i < record.length; i++) {
                             // ISSUE, these are the sql names, not the property names
                             String columnLabel = sqlify(propertyOrder[i]);
@@ -433,10 +459,10 @@ public class TemplateQuery {
         sb.append("\n LEFT JOIN record_index ON record_index.key=" + label + "." + id);
         if (template.startsWith(label)) {
             sb.append("\n AND record_index.table_name=");
-            sb.append(template);
+            sb.append(shortNames.get(template));
         } else {
             sb.append("\n AND record_index.table_name='");
-            sb.append(template);
+            sb.append(shortNames.get(template));
             sb.append("'");
         }
         sb.append("\n AND record_index.principal IS NOT NULL");
@@ -648,12 +674,14 @@ public class TemplateQuery {
         List<RecordEntry> linked_records = new LinkedList<>();
         TemplateService.Linker linker = compositeLinker.get(template);
 
+        //System.out.println("linker = " + linker);
+
         querier.do_query(linked_records,
                 null,
                 (sb, data) -> {
                     sb.append("SELECT * FROM (");
                     sb.append("SELECT * FROM ");
-                    sb.append(template); // was linker.table
+                    sb.append(shortNames.get(template));
                     sb.append(" AS template ");
                     joinAccessControl(template, principal, sb);
                     sb.append("\n WHERE key=");
@@ -712,7 +740,16 @@ public class TemplateQuery {
         }
     }
 
-    public String generateBackwardTemplateTraversal(Map<String,Map<String, Map<String, String>>> ioMap) {
+    public  Map<String, String> getShortNames(String shortNamesString) {
+        try {
+            return om.readValue(shortNamesString, typeRef2);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+        public String generateBackwardTemplateTraversal(Map<String,Map<String, Map<String, String>>> ioMap) {
         String backwardTraversalFunctionName="backwardTraversal";
 
         Map<String,?> funParams=new LinkedHashMap<>() {{
@@ -816,6 +853,13 @@ public class TemplateQuery {
 
     private Map<String, Map<String, String>> filterMapAccordingToTable(String table, Map<String, Map<String, String>> input) {
         return input.keySet().stream().collect(Collectors.toMap(k -> k, k -> input.get(k).keySet().stream().filter(k2 -> input.get(k).get(k2).equals(table)).collect(Collectors.toMap(k2 -> k2, k2 -> input.get(k).get(k2)))));
+    }
+
+    private Map<String, Map<String, String>> trimKeys(Map<String, Map<String, String>> inputs) {
+        return inputs.entrySet().stream().collect(Collectors.toMap(
+                e -> e.getKey().contains(".") ? e.getKey().substring(e.getKey().lastIndexOf(".")+1) : e.getKey(),
+                Map.Entry::getValue
+        ));
     }
 
 }

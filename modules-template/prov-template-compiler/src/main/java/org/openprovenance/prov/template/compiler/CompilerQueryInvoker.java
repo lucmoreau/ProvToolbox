@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.openprovenance.prov.template.compiler.CompilerBeanCompleter2Composite.getSimpleConfig;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerQueryInvoker {
@@ -297,11 +296,11 @@ public class CompilerQueryInvoker {
         }
 
         // Luc, this seems the same as composee above.
-        TemplateCompilerConfig simpleConfig=getSimpleConfig(configs,compositeConfig.consistsOf);
+        String shortConsistsOf=locations.getShortNames().get(compositeConfig.consistsOf);
 
         mspec.beginControlFlow("for ($T $N: $N.$N)",
-                                  (withBean)?ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), compilerUtil.commonNameClass(simpleConfig.name))
-                                            :ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), compilerUtil.beanNameClass(simpleConfig.name, BeanDirection.INPUTS, "_1")),
+                                  (withBean)?ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), compilerUtil.commonNameClass(shortConsistsOf))
+                                            :ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.INPUTS, "_1")),
                                   variableBean1,
                                   variableBean,
                                   ELEMENTS);

@@ -10,9 +10,9 @@ import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import javax.lang.model.element.Modifier;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import static org.openprovenance.prov.template.compiler.CompilerBeanCompleter2Composite.getSimpleConfig;
 import static org.openprovenance.prov.template.compiler.CompilerQueryInvoker.CONVERT_TO_NON_NULLABLE_TEXT;
 import static org.openprovenance.prov.template.compiler.CompilerQueryInvoker.CONVERT_TO_NULLABLE_TEXT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
@@ -303,11 +303,11 @@ public class CompilerQueryInvokerWithPrincipal {
         }
 
         // Luc, this seems the same as composee above.
-        TemplateCompilerConfig simpleConfig=getSimpleConfig(configs,compositeConfig.consistsOf);
+        String shortName=locations.getShortNames().get(compositeConfig.consistsOf);
 
         mspec.beginControlFlow("for ($T $N: $N.$N)",
-                                  (withBean)?ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), compilerUtil.commonNameClass(simpleConfig.name))
-                                            :ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), compilerUtil.beanNameClass(simpleConfig.name, BeanDirection.INPUTS, "_1")),
+                                  (withBean)?ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), compilerUtil.commonNameClass(shortName))
+                                            :ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), compilerUtil.beanNameClass(shortName, BeanDirection.INPUTS, "_1")),
                                   variableBean1,
                                   variableBean,
                                   ELEMENTS);

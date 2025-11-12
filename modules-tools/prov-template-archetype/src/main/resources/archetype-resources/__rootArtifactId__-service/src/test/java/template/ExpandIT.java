@@ -210,19 +210,19 @@ public class ExpandIT extends TestCase implements ApiUriFragments {
     }
 
     public void setAuthoriser(String authoriser, String username, String password, String clientid) {
-        System.out.println("*** setAuthoriser: authoriser " + authoriser + " username " + username + " password " + password + " clientid " + clientid);
+        logger.debug("*** setAuthoriser: authoriser " + authoriser + " username " + username + " password " + password + " clientid " + clientid);
         this.authoriser=authoriser;
         this.username=username;
         this.password=password;
         this.clientid=clientid;
         if ((authoriser!=null)&&(username!=null)&&(password!=null)&&(clientid!=null)) {
-            System.out.println("*** Setting authoriser, username and password " + authoriser);
+            logger.debug("*** Setting authoriser, username and password " + authoriser);
             this.accessToken=getAccessTokenValue(authoriser,username, password, clientid);
         } else {
-            System.out.println("*** No authoriser, username or password " + authoriser + " " + username + " " + password);
+            logger.debug("*** No authoriser, username or password " + authoriser + " " + username + " " + password);
             this.accessToken=null;
         }
-        System.out.println("*** Access token: " + accessToken);
+        logger.debug("*** Access token: " + accessToken);
     }
 
     static final Map<String,String> environment=System.getenv();

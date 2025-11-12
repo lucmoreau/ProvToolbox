@@ -6,7 +6,6 @@ import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
@@ -16,9 +15,9 @@ import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import javax.lang.model.element.Modifier;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
-import static org.openprovenance.prov.template.compiler.CompilerBeanCompleter2Composite.getSimpleConfig;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.typeT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
@@ -93,8 +92,8 @@ public class CompilerProcessor {
 
 
         if (consistsOf!=null) {
-            TemplateCompilerConfig simpleConfig=getSimpleConfig(configs,consistsOf);
-            final TypeName listType=ParameterizedTypeName.get(ClassName.get(List.class),ClassName.get(packge, compilerUtil.beanNameClass(simpleConfig.name, BeanDirection.COMMON)));
+            String shortConsistsOf=locations.getShortNames().get(consistsOf);
+            final TypeName listType=ParameterizedTypeName.get(ClassName.get(List.class),ClassName.get(packge, compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.COMMON)));
             mbuilder.addParameter(listType, Constants.ELEMENTS);
             jdoc.add("@param $N: to do \n", Constants.ELEMENTS);
         }

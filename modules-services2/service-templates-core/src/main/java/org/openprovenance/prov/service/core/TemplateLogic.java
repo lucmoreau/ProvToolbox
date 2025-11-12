@@ -104,12 +104,12 @@ public class TemplateLogic {
                 //debugDisplay("founds objects " , objects);
 
 
-                System.out.println("need composite converter for " + isA);
-                System.out.println("need composite converter for " + compositeEnactorConverters);
+                //System.out.println("need composite converter for " + isA);
+                //System.out.println("need composite converter for " + compositeEnactorConverters);
                 Function<List<Object[]>,?> compositeEnactor = compositeEnactorConverters.get(isA);
-                System.out.println("found composite converter for " + compositeEnactor);
+                //System.out.println("found composite converter for " + compositeEnactor);
                 Object res=compositeEnactor.apply(objects);
-                debugDisplay("found result " , res);
+                //debugDisplay("found result " , res);
                 recordsResult.add(res);
             }
         }

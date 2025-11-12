@@ -19,7 +19,7 @@ import java.lang.reflect.Type;
 public class TemplatesVizConfigMessageBodyReader implements MessageBodyReader<TemplatesVizConfig> {
 
     public TemplatesVizConfigMessageBodyReader() {
-        System.out.println("TemplatesVizConfigMessageBodyReader ....");
+       // System.out.println("TemplatesVizConfigMessageBodyReader ....");
     }
 
     public String trimCharSet(MediaType mediaType) {

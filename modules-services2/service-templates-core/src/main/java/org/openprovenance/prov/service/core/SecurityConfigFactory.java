@@ -58,7 +58,7 @@ public class SecurityConfigFactory implements ConfigFactory {
         config.addAuthorizer("defaultAuthorizer", new RequireAnyRoleAuthorizer("provwriter"));
         config.addAuthorizer("csrf", new CsrfAuthorizer());
         logger.info("Config created " + config.getAuthorizers());
-        System.out.println("--- Config created " + config);
+        //System.out.println("--- Config created " + config);
         return config;
     }
 

@@ -94,7 +94,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 
 
 		StorageConfiguration sc = StorageConfiguration.loadConfiguration();
-        System.out.println("===== Storage configuration: " + sc);
+        logger.info("Storage configuration: " + sc);
 
 		ServiceUtilsConfig config= storageSetup.makeConfig(factory, sc);
 

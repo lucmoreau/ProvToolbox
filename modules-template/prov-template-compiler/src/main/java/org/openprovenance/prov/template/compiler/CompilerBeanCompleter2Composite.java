@@ -8,9 +8,6 @@ import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
 
-import java.util.Arrays;
-import java.util.Objects;
-
 import static org.openprovenance.prov.template.compiler.CompilerUtil.listMapType;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.mapType;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
@@ -62,10 +59,10 @@ public class CompilerBeanCompleter2Composite {
             final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
             // find simple config name for consistsOf
-            TemplateCompilerConfig simpleConfig= getSimpleConfig(configs, consistsOf);
+            String shortName=locations.getShortNames().get(consistsOf);
 
             final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
-            MethodSpec.Builder mspec = createProcessMethod(simpleConfig.name, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputClassName, true);
+            MethodSpec.Builder mspec = createProcessMethod(shortName, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputClassName, true);
             builder.addMethod(mspec.build());
 
 
@@ -82,11 +79,14 @@ public class CompilerBeanCompleter2Composite {
 
     }
 
+    /*
     static public TemplateCompilerConfig getSimpleConfig(TemplatesProjectConfiguration configs, String consistsOf) {
         return Arrays.stream(configs.templates)
                 .filter(c -> Objects.equals(c.fullyQualifiedName, consistsOf))
                 .findFirst().get();
     }
+
+     */
 
     private MethodSpec.Builder createProcessMethod(String consistsOf, String integrator_package, ClassName cutputClassName, boolean isOutput) {
         MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
@@ -106,22 +106,6 @@ public class CompilerBeanCompleter2Composite {
 
 
         mspec.endControlFlow();
-
-        /*
-
-        for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
-            if (isOutput && descriptorUtils.isOutput(key, bindingsSchema)) {
-                Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-                mspec.addStatement("bean.$N= getter.get($N.class,$S)", key, cl.getSimpleName(), key);
-            } else {
-                if (!isOutput && descriptorUtils.isInput(key, bindingsSchema)) {
-                    Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-                    mspec.addStatement("bean.$N= getter.get($N.class,$S)", key, cl.getSimpleName(), key);
-                }
-            }
-        }
-
-         */
 
         mspec.addStatement("return $N", BEAN_VAR);
         return mspec;

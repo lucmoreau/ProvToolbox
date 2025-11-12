@@ -19,7 +19,7 @@ import java.lang.reflect.Type;
 public class TableKeyListMessageBodyReader implements MessageBodyReader<TableKeyList> {
 
     public TableKeyListMessageBodyReader() {
-        System.out.println("TableKeyListMessageBodyReader ....");
+        //System.out.println("TableKeyListMessageBodyReader ....");
     }
 
     public String trimCharSet(MediaType mediaType) {

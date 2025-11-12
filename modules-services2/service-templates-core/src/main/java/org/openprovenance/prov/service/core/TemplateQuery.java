@@ -705,7 +705,7 @@ public class TemplateQuery {
                     }
                 });
 
-        System.out.println("linked_records = " + linked_records);
+        //System.out.println("linked_records = " + linked_records);
 
         List<Object[]> the_records = new LinkedList<>();
         for (RecordEntry linked_record : linked_records) {

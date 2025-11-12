@@ -9,7 +9,6 @@ import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
 
-import static org.openprovenance.prov.template.compiler.CompilerBeanCompleter2Composite.getSimpleConfig;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerBeanCompleter {
@@ -121,11 +120,9 @@ public class CompilerBeanCompleter {
                 compilerUtil.specWithComment(mspec);
 
                 CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
-                String consistOf=config1.consistsOf;
 
-                TemplateCompilerConfig simpleConfig=getSimpleConfig(configs,config1.consistsOf);
-
-                String composeeName=compilerUtil.commonNameClass(simpleConfig.name);
+                String shortConsistsOf=locations.getShortNames().get(config1.consistsOf);
+                String composeeName=compilerUtil.commonNameClass(shortConsistsOf);
                 ClassName composeeClass=ClassName.get(locations.getBeansPackage(config1.fullyQualifiedName, BeanDirection.COMMON),composeeName);
 
                 mspec.addStatement("boolean nextExists=true");

@@ -26,7 +26,7 @@ import static org.openprovenance.prov.service.core.TemplateService.APPLICATION_V
 public class JsonOrCsvMessageBodyReader implements MessageBodyReader<JsonOrCsv> {
 
     public JsonOrCsvMessageBodyReader() {
-        System.out.println("JsonOrCsvMessageBodyReader ....");
+       // System.out.println("JsonOrCsvMessageBodyReader ....");
     }
 
     public String trimCharSet(MediaType mediaType) {

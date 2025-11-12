@@ -12,7 +12,6 @@ import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
-//import org.openprovenance.prov.template.emitter.PoetParser;
 import org.openprovenance.prov.template.emitter.PoetParser;
 import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
@@ -21,7 +20,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.template.compiler.CompilerBeanCompleter2Composite.getSimpleConfig;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
@@ -160,8 +158,8 @@ public class CompilerBeanGenerator {
                 builder.addMethod(mbuild);
             }
 
-            generateCompositeList(consistOf, beanPackge, configs, builder, beanDirection, variant, sharing);
-            generateCompositeListExtender(configs, consistOf, beanPackge, builder, beanDirection, variant, sharing);
+            generateCompositeList(consistOf, beanPackge, locations, builder, beanDirection, variant, sharing);
+            generateCompositeListExtender(consistOf, beanPackge, locations, builder, beanDirection, variant, sharing);
 
 
         }
@@ -246,10 +244,10 @@ public class CompilerBeanGenerator {
 
     static final ParameterizedTypeName classOfUnknown = ParameterizedTypeName.get(ClassName.get(Class.class), TypeVariableName.get("?"));
 
-    private void generateCompositeList(String templateName, String packge, TemplatesProjectConfiguration configs, TypeSpec.Builder builder, BeanDirection beanDirection, String variant, List<String> sharing) {
-        TemplateCompilerConfig simpleConfig=getSimpleConfig(configs, templateName);
+    private void generateCompositeList(String templateName, String packge, Locations locations, TypeSpec.Builder builder, BeanDirection beanDirection, String variant, List<String> sharing) {
 
-        String name = compilerUtil.beanNameClass(simpleConfig.name, beanDirection, variant);
+        String shortName=locations.getShortNames().get(templateName);
+        String name = compilerUtil.beanNameClass(shortName, beanDirection, variant);
 
         ClassName consistsOfClass = ClassName.get(packge, name);
         ParameterizedTypeName elementList=ParameterizedTypeName.get(ClassName.get(List.class), consistsOfClass);
@@ -306,9 +304,9 @@ public class CompilerBeanGenerator {
 
 
 
-    private void generateCompositeListExtender(TemplatesProjectConfiguration configs, String templateName, String packge, TypeSpec.Builder builder, BeanDirection beanDirection, String variant, List<String> sharing) {
-        TemplateCompilerConfig simpleConfig=getSimpleConfig(configs, templateName);
-        String name = compilerUtil.beanNameClass(simpleConfig.name, beanDirection, variant);
+    private void generateCompositeListExtender(String templateName, String packge, Locations locations, TypeSpec.Builder builder, BeanDirection beanDirection, String variant, List<String> sharing) {
+        String shortName=locations.getShortNames().get(templateName);
+        String name = compilerUtil.beanNameClass(shortName, beanDirection, variant);
         MethodSpec.Builder mbuilder=
                 MethodSpec.methodBuilder(ADD_ELEMENTS)
                         .addModifiers(Modifier.PUBLIC)

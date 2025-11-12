@@ -23,8 +23,8 @@ public class Storage {
         props.setProperty("user", username);
         props.setProperty("password", password);
         props.setProperty("ssl", "false");
-        System.out.println("DB url: " + url);
-        System.out.println("DB props: " + props);
+        logger.info("DB url: " + url);
+        logger.info("DB props: " + props);
         try {
             Class.forName("org.postgresql.Driver");  // added this, since https://stackoverflow.com/questions/1911253/the-infamous-java-sql-sqlexception-no-suitable-driver-found
             Connection conn = DriverManager.getConnection(url, props);
@@ -48,7 +48,7 @@ public class Storage {
 
     public boolean initializeDB(Connection conn, String sqlInitializer) throws SQLException {
         String statements=getStringFromClasspath(this.getClass(), sqlInitializer);
-        System.out.println("**************** Initializing DB with script: " + sqlInitializer);
+        logger.info("*** Initializing DB with script: " + sqlInitializer);
        // System.out.println(statements);
         return executeStatements(conn, statements);
     }

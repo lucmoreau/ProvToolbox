@@ -36,10 +36,10 @@ public class WebTemplateInvoker extends TemplateInvoker {
         this.password=password;
         this.clientid=clientid;
         if ((authoriser!=null)&&(username!=null)&&(password!=null)&&(clientid!=null)) {
-            System.out.println("*** Setting authoriser, username and password " + authoriser);
+            logger.debug("*** Setting authoriser, username and password " + authoriser);
             this.accessToken=si.getAccessTokenValue(authoriser,username, password, clientid);
         } else {
-            System.out.println("*** No authoriser, username or password " + authoriser + " " + username + " " + password);
+            logger.debug("*** No authoriser, username or password " + authoriser + " " + username + " " + password);
             this.accessToken=null;
         }
     }

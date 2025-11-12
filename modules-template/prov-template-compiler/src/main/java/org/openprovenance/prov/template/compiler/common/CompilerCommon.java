@@ -20,7 +20,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.model.StatementOrBundle.ALL_RELATIONS;
-import static org.openprovenance.prov.template.compiler.CompilerBeanCompleter2Composite.getSimpleConfig;
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfString;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
@@ -188,7 +187,7 @@ public class CompilerCommon {
             builder.addMethod(generateCompulsoryInputsMethod());
             builder.addMethod(generateInputsMethod());
 
-            builder.addMethod(generateFactoryMethodToBeanWithArray(configs,"toBean", templateName, packageName, bindingsSchema, BeanDirection.COMMON, null, null));
+            builder.addMethod(generateFactoryMethodToBeanWithArray(configs,locations,"toBean", templateName, packageName, bindingsSchema, BeanDirection.COMMON, null, null));
 
 
             builder.addMethod(generateFactoryMethodWithBean(templateName, packageName, bindingsSchema));
@@ -314,13 +313,14 @@ public class CompilerCommon {
         Collection<String> actualVariables;
         CodeBlock paramsList;
 
-        TemplateCompilerConfig simpleConfig=null;
+        String shortConsistsOf=null;
 
         if (beanKind==BeanKind.COMPOSITE) {
-            simpleConfig=getSimpleConfig(configs, consistsOf);
+            shortConsistsOf=locations.getShortNames().get(consistsOf);
+
             actualVariables = new LinkedList<>(variables);
             actualVariables.add(ELEMENTS);
-            String beanNameClass = compilerUtil.beanNameClass(simpleConfig.name, BeanDirection.COMMON);
+            String beanNameClass = compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.COMMON);
             ParameterizedTypeName listBeanType=ParameterizedTypeName.get(ClassName.get(List.class),ClassName.get(packge,beanNameClass));
             paramsList= makeParamsListComposite(actualVariables, var, compilerUtil, listBeanType);
         } else {
@@ -338,18 +338,18 @@ public class CompilerCommon {
             String[] variableArray = variables.toArray(new String[]{});
 
 
-            String beanNameClass = compilerUtil.beanNameClass(simpleConfig.name, BeanDirection.COMMON);
+            String beanNameClass = compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.COMMON);
             lambda.beginControlFlow("for ($T $N: $N) ", ClassName.get(packge,beanNameClass), VAR_ELEMENT, Constants.GENERATED_VAR_PREFIX + ELEMENTS);
             ClassName loggerClassName = ClassName.get(loggerPackage, logger);
 
-            ParameterizedTypeName parametericInterface=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(simpleConfig.name)), TypeName.get(Object[].class));
+            ParameterizedTypeName parametericInterface=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(shortConsistsOf)), TypeName.get(Object[].class));
             ParameterizedTypeName parametericInterface2=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(consistsOf)), TypeVariableName.get("?"));
 
             lambda.addStatement("$T $N=$T.$N.$N()",
                     parametericInterface,
                     "processor",
                     loggerClassName,
-                    Constants.GENERATED_VAR_PREFIX + simpleConfig.name,
+                    Constants.GENERATED_VAR_PREFIX + shortConsistsOf,
                     Constants.ARGS2RECORD_CONVERTER);
 
             lambda.addStatement("// the following line generates ts error: Untyped function calls may not accept type arguments.");
@@ -1776,10 +1776,10 @@ public class CompilerCommon {
 
         return method;
     }
-    public MethodSpec generateFactoryMethodToBeanWithArray(TemplatesProjectConfiguration configs, String toBean, String template, String packge, TemplateBindingsSchema bindingsSchema, BeanDirection direction, String extension, List<String> shared) {
+    public MethodSpec generateFactoryMethodToBeanWithArray(TemplatesProjectConfiguration configs, Locations locations, String toBean, String template, String packge, TemplateBindingsSchema bindingsSchema, BeanDirection direction, String extension, List<String> shared) {
         if (extension!=null) {
-            TemplateCompilerConfig simpleConfig=getSimpleConfig(configs,template);
-            template=simpleConfig.name;
+            String shortName=locations.getShortNames().get(template);
+            template=shortName;
         }
         MethodSpec.Builder builder = MethodSpec.methodBuilder(toBean)
                 .addModifiers(Modifier.PUBLIC)

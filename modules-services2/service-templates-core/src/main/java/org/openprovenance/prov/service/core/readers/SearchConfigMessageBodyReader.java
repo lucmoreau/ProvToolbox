@@ -19,7 +19,7 @@ import java.lang.reflect.Type;
 public class SearchConfigMessageBodyReader implements MessageBodyReader<SearchConfig> {
 
     public SearchConfigMessageBodyReader() {
-        System.out.println("SearchConfigMessageBodyReader ....");
+        //System.out.println("SearchConfigMessageBodyReader ....");
     }
 
     public String trimCharSet(MediaType mediaType) {

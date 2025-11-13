@@ -58,7 +58,6 @@ public class CompilerBeanCompleter2Composite {
 
             final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
-            // find simple config name for consistsOf
             String shortName=locations.getShortNames().get(consistsOf);
 
             final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);

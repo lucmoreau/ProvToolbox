@@ -66,6 +66,7 @@ public class CompilerUtil {
     static final TypeName setStringT=ParameterizedTypeName.get(ClassName.get(Set.class),ClassName.get(String.class));
     static final TypeName mapQualifiedName2StringSetType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(QualifiedName.class),setStringT);
     static final TypeName mapString2StringSetType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),setStringT);
+    static final TypeName mapStringIntInt=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(Integer.class),ClassName.get(Integer.class)));
 
     public CompilerUtil(ProvFactory pFactory) {
         this.pFactory=pFactory;
@@ -122,6 +123,13 @@ public class CompilerUtil {
             return inputsNameClass(templateName)+extension;
         } else {
             return inputsNameClass(templateName);
+        }
+    }
+    public String outputsNameClass(String templateName,String extension) {
+        if (extension!=null) {
+            return outputsNameClass(templateName)+extension;
+        } else {
+            return outputsNameClass(templateName);
         }
     }
     public String processorNameClass(String templateName) {

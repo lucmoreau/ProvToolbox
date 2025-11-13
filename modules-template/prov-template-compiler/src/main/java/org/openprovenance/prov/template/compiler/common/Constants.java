@@ -188,4 +188,5 @@ public interface Constants {
     String QUERIER_VAR = "querier";
     String GET_PRINCIPAL_VAR = "getPrincipal";
     String PRINCIPAL_MANAGER_VAR = "principalManager";
+    String MAP_VAR="map";
 }

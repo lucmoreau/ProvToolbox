@@ -9,7 +9,6 @@ import org.openprovenance.prov.template.compiler.CompilerSQL;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.*;
 
@@ -40,16 +39,7 @@ public class CompilerCommon {
     public static final String MARKER_ARRAY = "/*#array#*/";
     public static final String UNKNOWN = "unknown";
     public static final String POST_PROCESSING_VAR = "postProcessing";
-    public static final String[] ALL_RELATIONS_TODELETE = {
-            "wasDerivedFrom",
-            "wasAttributedTo",
-            "wasAssociatedWith",
-            "wasGeneratedBy",
-            "used",
-            "actedOnBehalfOf",
-            "hadMember",
-            "specializationOf"
-    };
+
     private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
 
@@ -210,6 +200,9 @@ public class CompilerCommon {
             builder.addMethod(generateNullOutputsMethod());
             builder.addMethod(generateNullInputsMethod());
 
+            builder.addMethod(generateArgsToRecordMethodComposite(configs, locations, templateName, packageName, compilerUtil.loggerName(templateName), bindingsSchema, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
+            builder.addField(generateField4aArgs2Records(name,templateName,packageName));
+
         }
         
         builder.addMethod(generateIsCompositeOfMethod(consistsOf,beanKind));
@@ -245,6 +238,95 @@ public class CompilerCommon {
              */
         }
         return Pair.of(specFile, successorTable);
+    }
+
+    private MethodSpec generateArgsToRecordMethodComposite(TemplatesProjectConfiguration configs,
+                                                           Locations locations,
+                                                           String templateName,
+                                                           String packageName,
+                                                           String loggerName,
+                                                           TemplateBindingsSchema bindingsSchema,
+                                                           String consistsOf,
+                                                           String loggerPackage,
+                                                           String logger) {
+
+        final TypeName processorClassName = processorClassType(templateName, packageName,ArrayTypeName.of(Object[].class));
+        final TypeName processorClassNameNotParametrised = processorClassType(templateName, packageName);
+
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(ARGS_2_RECORDS)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(processorClassName);
+
+        compilerUtil.specWithComment(builder);
+
+        //builder.addStatement("$T $N=$N", ClassName.get(packageName,compilerUtil.processorNameClass(templateName)), SELF_VAR, "this");
+        Map<String, List<Descriptor>> var = bindingsSchema.getVar();
+
+
+
+        Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
+
+        CodeBlock.Builder lambda=CodeBlock.builder();
+        Collection<String> actualVariables;
+        CodeBlock paramsList;
+
+        String shortConsistsOf=locations.getShortNames().get(consistsOf);
+
+        actualVariables = new LinkedList<>(variables);
+        actualVariables.add(ELEMENTS);
+        String beanNameClass = compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.COMMON);
+        ParameterizedTypeName listBeanType=ParameterizedTypeName.get(ClassName.get(List.class),ClassName.get(packageName,beanNameClass));
+        paramsList= makeParamsListComposite(actualVariables, var, compilerUtil, listBeanType);
+
+
+        lambda.add("($L) -> $N {\n", paramsList, MARKER_LAMBDA_BODY).indent();
+        ClassName loggerClassName = ClassName.get(loggerPackage, logger);
+
+
+        lambda.addStatement("$T $N=new Object[$N.size()+1][]", ArrayTypeName.of(Object[].class), "_result", Constants.GENERATED_VAR_PREFIX + ELEMENTS);
+
+        String[] variableArray = variables.toArray(new String[]{});
+
+        lambda.addStatement("int _i_=1");
+
+        lambda.addStatement("$N[0]=new Object[] {$S, $N.size(), null}", "_result", "compositeThingie", Constants.GENERATED_VAR_PREFIX + ELEMENTS);
+
+        lambda.beginControlFlow("for ($T $N: $N) ", ClassName.get(packageName,beanNameClass), VAR_ELEMENT, Constants.GENERATED_VAR_PREFIX + ELEMENTS);
+
+        ParameterizedTypeName parametericInterface=ParameterizedTypeName.get(ClassName.get(packageName,compilerUtil.processorNameClass(shortConsistsOf)), TypeName.get(Object[].class));
+        ParameterizedTypeName parametericInterface2=ParameterizedTypeName.get(ClassName.get(packageName,compilerUtil.processorNameClass(consistsOf)), TypeVariableName.get("?"));
+
+        lambda.addStatement("$T $N=$T.$N.$N()",
+                parametericInterface,
+                "processor",
+                loggerClassName,
+                Constants.GENERATED_VAR_PREFIX + shortConsistsOf,
+                Constants.ARGS2RECORD_CONVERTER);
+
+        lambda.addStatement("// the following line generates ts error: Untyped function calls may not accept type arguments.");
+
+        lambda.addStatement("$T $N=$N.$N($N)",
+                Object[].class,
+                VAR_OBJECTS,
+                VAR_ELEMENT,
+                "process",
+                "processor");
+
+        lambda.addStatement("$N[_i_]= $N", "_result", VAR_OBJECTS);
+        lambda.addStatement("_i_++");
+        lambda.endControlFlow();
+        lambda.addStatement("return $N", "_result");
+        lambda.unindent().add("}; $N", MARKER_LAMBDA_END);
+
+
+        // note, poet builder does not accept nested statement codeblock, so instead of adding a statement, we add a codeblock
+        builder.addCode("return $N $L", MARKER_LAMBDA, lambda.build());
+
+
+
+
+        return builder.build();
+
     }
 
     private MethodSpec generateIsCompositeOfMethod(String consistsOf, BeanKind beanKind) {
@@ -529,6 +611,14 @@ public class CompilerCommon {
         FieldSpec.Builder fbuilder=FieldSpec.builder(processorClassName, Constants.A_ARGS_CSV_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
         fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aArgs2CsvConverter()");
         fbuilder.initializer("$N()", Constants.ARGS_CSV_CONVERSION_METHOD);
+        return fbuilder.build();
+    }
+
+    private FieldSpec generateField4aArgs2Records(String name, String templateName, String packge) {
+        final TypeName processorClassName = processorClassType(templateName, packge,ArrayTypeName.of(Object[].class));
+        FieldSpec.Builder fbuilder=FieldSpec.builder(processorClassName, Constants.ARGS2RECORD_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
+        fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aArgs2Records()");
+        fbuilder.initializer("$N()", Constants.ARGS_2_RECORDS);
         return fbuilder.build();
     }
 

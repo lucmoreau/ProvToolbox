@@ -20,12 +20,14 @@ public class CatalogueCompiler extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    @Parameter(property = "compile-catalogue.baseDir")
-    private String baseDir;
+
     @Parameter(property = "compile-catalogue.inputBaseDir")
     private String inputBaseDir;
     @Parameter(property = "compile-catalogue.outputBaseDir")
     private String outputBaseDir;
+    @Parameter(property = "compile-catalogue.templateLibraryPath")
+    private String templateLibraryPath;
+
 
     @Parameter(property = "compile-catalogue.configs", required = true)
     private List<String> configs = new ArrayList<>();
@@ -34,15 +36,14 @@ public class CatalogueCompiler extends AbstractMojo {
         String className= ConfigProcessor.class.getName();
         try {
 
-            if ((baseDir!=null) && (inputBaseDir!=null)) {
-                throw new MojoExecutionException("Both baseDir and inputBaseDir are defined");
+            if (inputBaseDir==null) {
+                throw new MojoExecutionException("Input Basedir is null");
             }
-            if ((baseDir!=null) && (outputBaseDir!=null)) {
-                throw new MojoExecutionException("Both baseDir and outputBaseDir are defined");
+            if (outputBaseDir==null) {
+                throw new MojoExecutionException("Output Basedir is null");
             }
-            if (baseDir!=null) {
-                inputBaseDir=baseDir;
-                outputBaseDir=baseDir;
+            if (templateLibraryPath==null) {
+                throw new MojoExecutionException("Template Library Path is null");
             }
 
             List<String> classpathElements = project.getCompileClasspathElements();
@@ -58,10 +59,12 @@ public class CatalogueCompiler extends AbstractMojo {
 
 
             for (String config : configs) {
-                String [] argArray=new String[3];
+                String [] argArray=new String[4];
                 argArray[0]=config;
                 argArray[1]=inputBaseDir;
                 argArray[2]=outputBaseDir;
+                argArray[3]=templateLibraryPath;
+
 
                 URLClassLoader loader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
                 Class<?> clazz = Class.forName(className, true, loader);
@@ -69,8 +72,8 @@ public class CatalogueCompiler extends AbstractMojo {
                 method.invoke(null, (Object) argArray);  // cast is necessary to avoid varargs issues
 
             }
-        } catch (Exception e) {
-            throw new MojoExecutionException("Failed to execute class ", e);
+        } catch (Throwable e) {
+            throw new MojoExecutionException("\nCatalogueCompiler: Failed to compile catalogue\n", e);
         }
     }
 }

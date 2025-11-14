@@ -1,16 +1,20 @@
 package org.openprovenance.prov.template.compiler.configuration;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.util.TemplateIndex;
+import org.openprovenance.prov.template.compiler.util.TemplateIndexPath;
 
 import java.io.File;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class Locations {
+    Logger logger = LogManager.getLogger(Locations.class);
     public static final String NODEFAULT_FOR = "nodefault.for.";
     final private String cli_src_dir;
     final private TemplatesProjectConfiguration configs;
@@ -21,14 +25,17 @@ public class Locations {
 
     static final String CONFIG2_EXTENSION = "2";
     private final Map<String, String> shortNames;
+    private final TemplateIndexPath templateLibraryPath;
+    private final Map<String, String> templateLocations=new HashMap<>();
 
-    public Locations(TemplatesProjectConfiguration configs, Map<String, String> packages, Map<String, String> shortNames, String cli_src_dir, String l2p_src_dir) {
+    public Locations(TemplatesProjectConfiguration configs, Map<String, String> packages, Map<String, String> shortNames, List<String> templateLibraryPath, String cli_src_dir, String l2p_src_dir) {
         this.configs=configs;
         this.cli_src_dir=cli_src_dir;
         this.l2p_src_dir=l2p_src_dir;
         this.python_dir=configs.python_dir;
         this.packages=packages;
         this.shortNames=shortNames;
+        this.templateLibraryPath =new TemplateIndexPath(templateLibraryPath.stream().map(loc-> new TemplateIndex(loc,true)).collect(Collectors.toList()));
     }
 
 
@@ -202,5 +209,18 @@ public class Locations {
 
     public Map<String, String> getShortNames() {
         return shortNames;
+    }
+
+    public TemplateIndexPath getTemplateLibraryPath() {
+        return templateLibraryPath;
+    }
+
+    public void registerLocation(String template, String location) {
+        logger.info("Registering template location: template=" + template + ", location=" + location);
+        templateLocations.put(template, location);
+    }
+    public String getTemplateLocation(String template) {
+        logger.info("Getting template location: template=" + template);
+        return templateLocations.get(template);
     }
 }

@@ -189,4 +189,5 @@ public interface Constants {
     String GET_PRINCIPAL_VAR = "getPrincipal";
     String PRINCIPAL_MANAGER_VAR = "principalManager";
     String MAP_VAR="map";
+    String ARGS_2_RECORDS = "args2Records";
 }

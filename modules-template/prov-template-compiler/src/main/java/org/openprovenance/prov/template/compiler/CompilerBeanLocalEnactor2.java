@@ -118,6 +118,8 @@ public class CompilerBeanLocalEnactor2 {
                 }
 
                 mspec.addStatement("$N.$N.forEach(in1 -> $N.$N($N(in1,$N)))", "bean", ELEMENTS, OUT_BEAN, ADD_ELEMENTS, Constants.PROCESS_METHOD_NAME, MAP_VAR);
+                mspec.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, "ID", "template/" + config1.name, "template/" + config1.name);
+
                 mspec.addStatement("return $N",     OUT_BEAN);
 
 

@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
@@ -87,26 +88,16 @@ public class CompilerTest extends TestCase {
         shortNames.put(config.fullyQualifiedName, config.name);
         System.out.println("#### packages: " + packages);
 
-        Locations locations=new Locations(configs, packages, shortNames, cli_src_dir, l2p_src_dir);
+        List<String> templatePath=List.of("src/test/resources/templates");
 
+        Locations locations=new Locations(configs, packages, shortNames, templatePath, cli_src_dir, l2p_src_dir);
 
-        /*
-                if (config.package_==null) config.package_=configs.root_package;
-                this.config_common_package     = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_COMMON;
-                this.config_integrator_package = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_INTEGRATOR;
-                this.config_access_control_package = config.package_+ "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_ACCESS_CONTROL;
-                this.config_backend            = config.package_;
-                this.config_sql_common_backend_package = config_backend + ".sql.common";
-                this.config_sql_integration_backend_package = config_backend + ".sql.integration";
-                this.config_sql_access_control_backend_package = config_backend + ".sql.access_control";
-
-
-
-         */
 
         if (TemplateConfigurationEnum.isSimple(config)) {
 
             SimpleTemplateCompilerConfig aconfig=(SimpleTemplateCompilerConfig)config;
+
+            // note, given that we have not built the Interop framework, we have to read the document ourselves
             cp.doGenerateServerForEntry1(u.readDocument(aconfig.template, pf), aconfig, configs, locations, cli_src_dir, l2p_src_dir, cli_webjar_dir);
             FileUtils.copyFileToDirectory(new File(aconfig.template), new File(cli_webjar_templates_dir));
             FileUtils.copyFileToDirectory(new File(aconfig.bindings), new File(cli_webjar_bindings_dir));

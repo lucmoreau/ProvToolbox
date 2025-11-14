@@ -19,6 +19,8 @@ import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagemen
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
 import org.openprovenance.prov.template.compiler.integration.CompilerIntegrator;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlIntegration;
+import org.openprovenance.prov.template.compiler.util.TemplateExtension;
+import org.openprovenance.prov.template.compiler.util.TemplateIndexPath;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
@@ -158,12 +160,9 @@ public class ConfigProcessor implements Constants {
         this.compilerCatalogueDispatcher=new CompilerCatalogueDispatcher(pFactory);
     }
 
-   // public String readCompilerVersion() {
-   //     return Configuration.getPropertiesFromClasspath(getClass(),"compiler.properties").getProperty("compiler.version");
- //   }
- //   final String compilerVersion=readCompilerVersion();
-    public int processTemplateGenerationConfig(String template_builder, String inputBaseDir, String outputBaseDir, ProvFactory pFactory) {
+    public int processTemplateGenerationConfig(String template_builder, String inputBaseDir, String outputBaseDir, String templatePathString, ProvFactory pFactory) {
         TemplatesProjectConfiguration configs;
+
 
         try {
             configs = objectMapper.readValue(new File(addBaseDirIfRelative(template_builder, inputBaseDir)), TemplatesProjectConfiguration.class);
@@ -198,7 +197,10 @@ public class ConfigProcessor implements Constants {
 
             //System.out.println("++++++++++++++++++++++ Packages: " + objectMapper.writeValueAsString(packages));
 
-            Locations locations=new Locations(configs, packages, shortNames, cli_src_dir, l2p_src_dir);
+            List<String> templatePath= List.of(templatePathString.split(":"));
+            System.out.println("---> Using template path: " + templatePath);
+
+            Locations locations=new Locations(configs, packages, shortNames, templatePath, cli_src_dir, l2p_src_dir);
 
             if (configs.variableCheck!=null) {
                 ProvVariables pv=objectMapper.readValue(new File(addBaseDirIfRelative(configs.variableCheck, inputBaseDir)), ProvVariables.class);
@@ -211,10 +213,10 @@ public class ConfigProcessor implements Constants {
             for (TemplateCompilerConfig aconfig: configs.templates) {
                 if (TemplateConfigurationEnum.isSimple(aconfig)) {
                     SimpleTemplateCompilerConfig config=(SimpleTemplateCompilerConfig) aconfig;
-                    config.template=addBaseDirIfRelative(config.template, inputBaseDir);
+                    //config.template=addBaseDirIfRelative(config.template, inputBaseDir); it's no longer a file but a name an index
                     config.bindings=addBaseDirIfRelative(config.bindings, inputBaseDir);
                     doGenerateServerForEntry(config, configs, locations, cli_src_dir, l2p_src_dir, pFactory, cli_webjar_dir);
-                    FileUtils.copyFileToDirectory(new File(config.template), new File(cli_webjar_templates_dir));
+                    FileUtils.copyFileToDirectory(new File(locations.getTemplateLocation(config.template)), new File(cli_webjar_templates_dir));
                     FileUtils.copyFileToDirectory(new File(config.bindings), new File(cli_webjar_bindings_dir));
                 } else {
                     CompositeTemplateCompilerConfig config=(CompositeTemplateCompilerConfig) aconfig;
@@ -231,7 +233,7 @@ public class ConfigProcessor implements Constants {
 
                             //System.out.println("==> Found " + aconfig2);
                             SimpleTemplateCompilerConfig sc=(SimpleTemplateCompilerConfig) aconfig2;
-                            sc.template=addBaseDirIfRelative(sc.template, inputBaseDir);
+                            //sc.template=addBaseDirIfRelative(sc.template, inputBaseDir);
                             sc.bindings=addBaseDirIfRelative(sc.bindings, inputBaseDir);
                             SimpleTemplateCompilerConfig sc2=sc.cloneAsInstanceInComposition(config.name, config.fullyQualifiedName, config.sharing);
                             doGenerateServerForEntry(config, sc2, configs, locations, cli_src_dir, l2p_src_dir, cli_webjar_dir);
@@ -666,16 +668,19 @@ public class ConfigProcessor implements Constants {
     }
 
 
-    public Document readDocumentFromFile(SimpleTemplateCompilerConfig config) throws ClassNotFoundException,
-            NoSuchMethodException,
-            SecurityException,
-            InstantiationException,
-            IllegalAccessException,
-            IllegalArgumentException,
-            InvocationTargetException, FileNotFoundException {
-        Document document = compilerUtil.readDocumentFromFile(config.template);
-        statementChecker.ifPresent(sc -> new ProvUtilities().forAllStatementOrBundle(document.getStatementOrBundle(), sc));
-        return document;
+    public Document readTemplateFromLibraryPath(SimpleTemplateCompilerConfig config, TemplateIndexPath libraryPath, Locations locations)  {
+        //Document document = compilerUtil.readDocumentFromFile(config.template);
+        try {
+            String absolutePath = libraryPath.getStrict(config.template, TemplateExtension.preferredExtensions());
+            Document document = compilerUtil.readDocumentFromFile(absolutePath);
+            locations.registerLocation(config.template, absolutePath);
+            statementChecker.ifPresent(sc -> new ProvUtilities().forAllStatementOrBundle(document.getStatementOrBundle(), sc));
+            return document;
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException | FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public void doGenerateServerForEntry(SimpleTemplateCompilerConfig config, TemplatesProjectConfiguration configs, Locations locations, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {
@@ -686,15 +691,14 @@ public class ConfigProcessor implements Constants {
 
         Document doc;
         try {
-            doc = readDocumentFromFile(config);
+            doc = readTemplateFromLibraryPath(config,locations.getTemplateLibraryPath(), locations);
             generate(doc, locations, config.name, config.fullyQualifiedName, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, config.sharing, null, configs);
-        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
-                | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException | FileNotFoundException e) {
-            System.out.println("could not find Interop Framework");
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
             System.out.println(Arrays.asList("doc", config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", bindings_schema));
+            throw new RuntimeException("ConfigProcessor.doGenerateServerForEntry() exception: " , e);
+
         }
     }
 
@@ -704,15 +708,14 @@ public class ConfigProcessor implements Constants {
 
         Document doc;
         try {
-            doc = readDocumentFromFile(config);
+            doc = readTemplateFromLibraryPath(config,locations.getTemplateLibraryPath(), locations);
             generate(doc, locations, config.name, config.fullyQualifiedName, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, compositeTemplateCompilerConfig.sharing, compositeTemplateCompilerConfig.consistsOf, configs);
-        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
-                | InstantiationException | IllegalAccessException | IllegalArgumentException
-                 | InvocationTargetException | FileNotFoundException e) {
-            System.out.println("could not find Interop Framework");
+        } catch (SecurityException
+                 | IllegalArgumentException e) {
             e.printStackTrace();
 
             System.out.println(Arrays.asList("doc", config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", bindings_schema));
+            throw new RuntimeException("ConfigProcessor.doGenerateServerForEntry() exception: " , e);
         }
     }
 
@@ -723,7 +726,8 @@ public class ConfigProcessor implements Constants {
             generate(doc, locations, config.name, config.fullyQualifiedName, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, config.sharing, null, configs);
         } catch (SecurityException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new RuntimeException("ConfigProcessor.doGenerateServerForEntry2() exception: " , e);
+
         }
     }
 
@@ -973,15 +977,16 @@ public class ConfigProcessor implements Constants {
     public static void main(String [] args) {
         //System.out.println(Arrays.asList(args));
 
-        if (args.length!=3 && args.length!=2) {
+        if (args.length!=4) {
             // display args
-            throw new IllegalArgumentException("Usage: ConfigProcessor <config-file> <inputBaseDir> <outputBaseDir>");
+            throw new IllegalArgumentException("Usage: ConfigProcessor <config-file> <inputBaseDir> <outputBaseDir> <templatePath> ");
         }
         org.openprovenance.prov.vanilla.ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
         ConfigProcessor cp=new ConfigProcessor(pf);
         String inputBaseDir=args[1];
-        String outputBaseDir=(args.length==3)?args[2]:inputBaseDir;
-        cp.processTemplateGenerationConfig(args[0],inputBaseDir, outputBaseDir,pf);
+        String outputBaseDir=args[2];
+        String templatePath=args[3];
+        cp.processTemplateGenerationConfig(args[0],inputBaseDir, outputBaseDir, templatePath, pf);
     }
 
 }

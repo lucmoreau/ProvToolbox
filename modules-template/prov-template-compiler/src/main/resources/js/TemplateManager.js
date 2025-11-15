@@ -76,6 +76,9 @@ class TemplateManager {
             if (k===ELEMENTS) {
                 var subBeans = [];
                 for (const i in values[k]) {
+                    // we had to introduce get and size method to the prototype. They need to be skipped here
+                    if ((i==="get") || (i==="size")) continue;
+                    console.log("populate sub element " + i);
                     subBeans.push(this.populateSubBean(values["type"], values[k][i]));
                 }
                 bean[k] = subBeans;
@@ -84,8 +87,9 @@ class TemplateManager {
             }
         }
         console.log(bean);
-        var csv = bean.process(builder.aArgs2CsVConverter);
         values["isA"]=builder.getFullyQualifiedName();
+
+        var csv = bean.process(builder.aArgs2CsVConverter);
         return [csv,values]; // note: i am only exporting the populated values, as opposed to the whole bean
     }
 
@@ -98,7 +102,7 @@ class TemplateManager {
             bean[k] = values[k];
         }
         console.log(bean);
-        values["isA"]=builder.getName();
+        values["isA"]=builder.getFullyQualifiedName();
         return bean; // note: i am only exporting the populated values, as opposed to the whole bean
     }
 

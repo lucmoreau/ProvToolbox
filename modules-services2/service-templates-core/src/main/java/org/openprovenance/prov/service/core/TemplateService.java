@@ -95,8 +95,8 @@ public class TemplateService {
 
 
     public static class Linker {
-        public final String table;
-        public final String linked;
+        public String table;
+        public String linked;
 
         @Override
         public String toString() {
@@ -105,6 +105,8 @@ public class TemplateService {
                     ", linked='" + linked + '\'' +
                     '}';
         }
+
+        public Linker() {}
 
         public Linker(String table, String linked) {
             this.table = table;
@@ -147,6 +149,17 @@ public class TemplateService {
         this.querier = new Querier(storage, conn);
 
 
+        try {
+            this.compositeLinker= om.readValue(this.catalogueDispatcher.getLinkers(), om.getTypeFactory().constructMapType(HashMap.class, String.class, Linker.class));
+
+
+
+        } catch (JsonProcessingException e) {
+            logger.error("Failed to read linker table from catalogue", this.catalogueDispatcher.getLinkers());
+            throw new RuntimeException("Failed to read linker table from catalogue", e);
+        }
+
+        /*
         this.compositeLinker=new HashMap<>() {{
             put("plead_transforming_composite", new Linker("plead_transforming_composite_linker", "plead_transforming"));
             put("packing_composite", new Linker("packing_composite_linker", "packing"));
@@ -155,6 +168,8 @@ public class TemplateService {
             put("org.openprovenance.templates.physical.UnpackingComposite", new Linker("unpacking_composite_linker", "unpacking"));
         }};
 
+
+         */
 
         storageInitialize(conn, sqlInitializer);
 

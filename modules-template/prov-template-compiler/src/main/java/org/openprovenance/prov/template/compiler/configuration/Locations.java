@@ -27,6 +27,7 @@ public class Locations {
     private final Map<String, String> shortNames;
     private final TemplateIndexPath templateLibraryPath;
     private final Map<String, String> templateLocations=new HashMap<>();
+    private final Map<String, Map<String,String>> linkerTableDeclarations=new HashMap<>();
 
     public Locations(TemplatesProjectConfiguration configs, Map<String, String> packages, Map<String, String> shortNames, List<String> templateLibraryPath, String cli_src_dir, String l2p_src_dir) {
         this.configs=configs;
@@ -222,5 +223,15 @@ public class Locations {
     public String getTemplateLocation(String template) {
         logger.info("Getting template location: template=" + template);
         return templateLocations.get(template);
+    }
+
+    public void addLinkerTableDeclaration(String templateFullyQualifiedName, String template_linker, String consistOf) {
+        linkerTableDeclarations.put(templateFullyQualifiedName, new HashMap<>() {{
+            put("table", template_linker);
+            put("linked", getShortNames().get(consistOf));
+        }});
+    }
+    public Map<String, Map<String, String>> getLinkerTableDeclarations() {
+        return linkerTableDeclarations;
     }
 }

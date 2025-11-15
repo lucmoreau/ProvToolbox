@@ -836,7 +836,7 @@ public class ConfigProcessor implements Constants {
 
                 if (configs.sqlFile!=null) {
                     compilerSQL.generateSQL(templateName, bindingsSchema);
-                    compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, locations, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList(), getInputOutputMaps(), configs.search);
+                    compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, templateFullyQualifiedName, locations, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList(), getInputOutputMaps(), configs.search);
                     compilerSQL.generateSQLPrimitiveTables(sqlTables,bindingsSchema);
                 }
             }
@@ -852,7 +852,7 @@ public class ConfigProcessor implements Constants {
                 compilerJsonSchema.generateJSonSchema(templateName+"_1", templateFullyQualifiedName+"_1", bindingsSchema, null, "#/definitions/", null);
 
 
-                if (configs.sqlFile!=null) compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, locations, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing, getInputOutputMaps(), configs.search);
+                if (configs.sqlFile!=null) compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, templateFullyQualifiedName, locations, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing, getInputOutputMaps(), configs.search);
 
                 SimpleTemplateCompilerConfig config = new SimpleTemplateCompilerConfig();
                 config.name = compositeBeanNameClass;

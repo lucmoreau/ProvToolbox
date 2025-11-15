@@ -78,7 +78,7 @@ public class TemplateQuery {
         this.successors = templateDispatcher.getSuccessors();
         this.relationMapping = new RelationMapping(this,templateDispatcher,querier);
 
-        //System.out.println("**** longNames " + longNames);
+        System.out.println("**** shortNames " + shortNames);
 
         logger.info("ioMap = " + ioMap);
         propertyOrder = templateDispatcher.getPropertyOrder();
@@ -410,6 +410,9 @@ public class TemplateQuery {
                     AND (record_index.principal = 'joe' OR access_control.record IS NOT NULL);
 
              */
+
+                    sb.append("\n--- " + shortNames.get(template));
+                    sb.append("\n--- " + template + "\n");
 
                     sb.append("SELECT template.*\n FROM ");
                     sb.append(template);

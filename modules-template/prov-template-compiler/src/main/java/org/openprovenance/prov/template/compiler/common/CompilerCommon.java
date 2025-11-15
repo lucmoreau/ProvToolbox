@@ -421,7 +421,13 @@ public class CompilerCommon {
 
 
             String beanNameClass = compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.COMMON);
-            lambda.beginControlFlow("for ($T $N: $N) ", ClassName.get(packge,beanNameClass), VAR_ELEMENT, Constants.GENERATED_VAR_PREFIX + ELEMENTS);
+            // Does not convert well to JS with JSweet
+            // lambda.beginControlFlow("for ($T $N: $N) ", ClassName.get(packge,beanNameClass), VAR_ELEMENT, Constants.GENERATED_VAR_PREFIX + ELEMENTS);
+            // instead:
+            lambda.beginControlFlow("for (int $N=0; $N< $N.size(); $N++) ", _I_, _I_, Constants.GENERATED_VAR_PREFIX + ELEMENTS, _I_);
+            lambda.addStatement("$T $N=$N.get($N)", ClassName.get(packge,beanNameClass), VAR_ELEMENT, Constants.GENERATED_VAR_PREFIX + ELEMENTS, _I_);
+
+
             ClassName loggerClassName = ClassName.get(loggerPackage, logger);
 
             ParameterizedTypeName parametericInterface=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(shortConsistsOf)), TypeName.get(Object[].class));

@@ -71,7 +71,7 @@ public class CompilerBeanCompleter3 {
 
         for (TemplateCompilerConfig config : configs.templates) {
             if  (config instanceof SimpleTemplateCompilerConfig) {
-                if (composeeTemplates.contains(config.name)) {
+                if (composeeTemplates.contains(config.fullyQualifiedName)) {
 
 
                     final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
@@ -133,6 +133,7 @@ public class CompilerBeanCompleter3 {
 
         mspec.addStatement("$T result=super.$N($N)", outputClassName, Constants.PROCESS_METHOD_NAME, BEAN_VAR);
         mspec.addStatement("result.ID=getValueFromLocation()");
+        mspec.addStatement("System.out.println($S+result.ID+$S)", "Assigned ID in completer: ", "  " + templateFullyQualifiedName);
         mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, "result", templateFullyQualifiedName);
 
         mspec.addStatement("return $N", "result");

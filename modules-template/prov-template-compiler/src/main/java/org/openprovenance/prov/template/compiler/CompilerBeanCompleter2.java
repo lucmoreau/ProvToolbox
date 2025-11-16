@@ -96,13 +96,13 @@ public class CompilerBeanCompleter2 {
                 final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
 
                 final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
-                MethodSpec.Builder mspec = createProcessMethod(config.name, bindingsSchema, outputClassName, true);
+                MethodSpec.Builder mspec = createProcessMethod(config.name, config.fullyQualifiedName, bindingsSchema, outputClassName, true);
 
                 builder.addMethod(mspec.build());
 
 
                 final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputBeanNameClass);
-                MethodSpec.Builder mspec2 = createProcessMethod(config.name, bindingsSchema, inputClassName, false);
+                MethodSpec.Builder mspec2 = createProcessMethod(config.name, config.fullyQualifiedName, bindingsSchema, inputClassName, false);
                 builder.addMethod(mspec2.build());
             } else {
                 CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
@@ -154,7 +154,7 @@ public class CompilerBeanCompleter2 {
     }
 
 
-    private MethodSpec.Builder createProcessMethod(String template, TemplateBindingsSchema bindingsSchema, ClassName outputClassName, boolean isOutput) {
+    private MethodSpec.Builder createProcessMethod(String template, String fullyQualifiedName, TemplateBindingsSchema bindingsSchema, ClassName outputClassName, boolean isOutput) {
         MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
@@ -164,7 +164,8 @@ public class CompilerBeanCompleter2 {
 
         if (isOutput) {
             mspec.addStatement("$N.ID= getter.get(Integer.class,$S)", BEAN_VAR, "ID");
-            mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, BEAN_VAR, template);
+            //mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, BEAN_VAR, template);
+            mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, BEAN_VAR, fullyQualifiedName);
         }
 
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {

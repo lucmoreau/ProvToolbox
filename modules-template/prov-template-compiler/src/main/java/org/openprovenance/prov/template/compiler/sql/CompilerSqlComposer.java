@@ -388,7 +388,10 @@ public class CompilerSqlComposer {
         Map<String,Object> inserted_values1= new LinkedHashMap<>();
         inserted_values1.put("bean",  unquote("null"));
         inserted_values1.put("count",  ((Function<PrettyPrinter, QueryBuilder>) (pp) -> QueryBuilder.select("count(ID)").apply(pp).from(INSERTED_CONSISTS_OF)));
-        inserted_values1.put("type",   "plead_transforming");
+        // LUC
+        System.out.println("----> templateName=" + templateName);
+        System.out.println("----> consistOf=" + consistOf);
+        inserted_values1.put("type",   consistOf);
 
         String finalTemplateName = templateName;
         cteValues2.put(THE_RECORD, pp -> new QueryBuilder(pp).insertInto(finalTemplateName).values(inserted_values1).returning(Collections.singleton("ID")));

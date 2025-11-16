@@ -86,6 +86,8 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
 
                 compilerUtil.specWithComment(mspec);
 
+                mspec.addStatement("System.out.println(\"LUC Processing composite bean for: $T\" )", inputClassName);
+
                 mspec.addStatement("return $N.generic_enact(new $T(),bean,\n" +
                         "                b -> checker.process(b),\n" +
                         "                (sb,b) -> new $T(sb,true,$N.get()).process(b),\n" +

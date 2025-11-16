@@ -821,6 +821,8 @@ public class CompilerSqlIntegration {
                 .addParameter(Object[].class, "extra")
                 .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
 
+        method3.addStatement("System.out.println(\"LUC In beanCompleterFactory 4 with extra of length \" + (extra==null?0:extra.length));");
+
         method3.addStatement("return new $T(rs,$N)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_COMPLETER4), Constants.SQL_BEAN_COMPLETER4),CompilerCommon.POST_PROCESSING_VAR);
         builder.addMethod(method3.build());
 
@@ -830,6 +832,8 @@ public class CompilerSqlIntegration {
                 .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
                 .addParameter(ResultSet.class, "rs")
                 .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
+
+        method4.addStatement("System.out.println(\"LUC In beanCompleterFactory 4 without extra\");");
 
         method4.addStatement("return new $T(rs,$N)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_COMPLETER4), Constants.SQL_BEAN_COMPLETER4),CompilerCommon.POST_PROCESSING_VAR);
         builder.addMethod(method4.build());
@@ -1227,6 +1231,8 @@ public class CompilerSqlIntegration {
                 .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
                 .addParameter(ResultSet.class, "rs")
                 .addParameter(Object[].class, "extra");
+        method2.addStatement("System.out.println(\"LUCXXX In beanCompleterFactory 4 with extra of length \" + (extra==null?0:extra.length));");
+
         method2.addStatement("return new $T(rs, extra)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_COMPLETER4), Constants.SQL_COMPOSITE_BEAN_COMPLETER4));
         builder.addMethod(method2.build());
 
@@ -1238,6 +1244,8 @@ public class CompilerSqlIntegration {
                 .addParameter(ResultSet.class, "rs")
                 .addParameter(Object[].class, "extra")
                 .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
+        method3.addStatement("System.out.println(\"LUC YYYY In beanCompleterFactory 4 with extra of length \" + (extra==null?0:extra.length));");
+
         method3.addStatement("return new $T(rs, extra,postProcessing)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_COMPLETER4), Constants.SQL_COMPOSITE_BEAN_COMPLETER4));
         builder.addMethod(method3.build());
 
@@ -1248,6 +1256,8 @@ public class CompilerSqlIntegration {
                 .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
                 .addParameter(ResultSet.class, "rs")
                 .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
+        method3.addStatement("System.out.println(\"LUC YYYY In beanCompleterFactory No extra\");");
+
         method4.addStatement("return new $T(rs,postProcessing)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_COMPLETER4), Constants.SQL_COMPOSITE_BEAN_COMPLETER4));
         builder.addMethod(method4.build());
 
@@ -1368,8 +1378,10 @@ public class CompilerSqlIntegration {
         // method
         MethodSpec.Builder method3 = MethodSpec.methodBuilder("setValueInLocation")
                 .addModifiers(Modifier.PUBLIC);
+        method3.addStatement("System.out.println(\"LUC WWWW In setValueInLocation with extra of length \" + (extra==null?0:extra.length));");
         method3.beginControlFlow("if (extra != null)");
         method3.addStatement("int parent = getter.get(Integer.class, PARENT_COLUMN)");
+        method3.addStatement("System.out.println(\"LUC LUC Setting parent to \" + parent);");
         method3.addStatement("extra[0]= parent");
         method3.endControlFlow();
         builder.addMethod(method3.build());

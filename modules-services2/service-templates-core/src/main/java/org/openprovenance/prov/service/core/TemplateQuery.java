@@ -232,9 +232,9 @@ public class TemplateQuery {
         return map;
     }
 
-    public Map<String, String> computeHash(String template, int id, List<Object[]> records) {
+    public Map<String, String> computeHash(String templateFullyQualifiedName, int id, List<Object[]> records) {
         StringBuilder sb=new StringBuilder();
-        sb.append(id).append(",").append(template).append(",").append(records.size());
+        sb.append(id).append(",").append(templateFullyQualifiedName).append(",").append(records.size());
         for (Object[] record: records) {
             sb.append("\n");
             sb.append(templateDispatcher.getCsvConverter().get((String)record[0]).apply(record));
@@ -249,7 +249,7 @@ public class TemplateQuery {
     }
 
 
-    public void updateHash(String template, int id, Map<String,String> hash, String principal) {
+    public void updateHash(String shortName, int id, Map<String,String> hash, String principal) {
         querier.do_statements(null,
                 null,
                 (sb, data) -> {
@@ -262,7 +262,7 @@ public class TemplateQuery {
                     sb.append(principal);
                     sb.append("'");
                     sb.append(" AND table_name='");
-                    sb.append(template);
+                    sb.append(shortName);
                     sb.append("'");
                 });
     }
@@ -377,11 +377,11 @@ public class TemplateQuery {
             return iDoc.toDocument();
         }
 
-    public List<Object[]> query(String template, Integer id, boolean withTitles, String principal) {
-        if (isComposite(template)) {
-            return queryComposite(template, id, withTitles, principal);
+    public List<Object[]> query(String fullyQualifiedName, Integer id, boolean withTitles, String principal) {
+        if (isComposite(fullyQualifiedName)) {
+            return queryComposite(fullyQualifiedName, id, withTitles, principal);
         } else {
-            return querySimple(template, id, withTitles, principal);
+            return querySimple(fullyQualifiedName, id, withTitles, principal);
         }
     }
 
@@ -389,9 +389,10 @@ public class TemplateQuery {
         return compositeLinker.containsKey(template);
     }
 
-    public List<Object[]> querySimple(String template, Integer id, boolean withTitles, String principal) {
+    public List<Object[]> querySimple(String templateFullyQualifiedName, Integer id, boolean withTitles, String principal) {
+        logger.info("querySimple templateFullyQualifiedName=" + templateFullyQualifiedName + " id=" + id + " principal=" + principal);
         List<Object[]> the_records = new LinkedList<>();
-        String[] propertyOrder= simplePropertyOrder.get(template);
+        String[] propertyOrder= this.propertyOrder.get(templateFullyQualifiedName);
         //System.out.println("propertyOrder = " + Arrays.toString(propertyOrder));
         querier.do_query(the_records,
                 null,
@@ -411,13 +412,13 @@ public class TemplateQuery {
 
              */
 
-                    sb.append("\n--- " + shortNames.get(template));
-                    sb.append("\n--- " + template + "\n");
+                    sb.append("\n--- " + shortNames.get(templateFullyQualifiedName));
+                    sb.append("\n--- " + templateFullyQualifiedName + "\n");
 
                     sb.append("SELECT template.*\n FROM ");
-                    sb.append(template);
+                    sb.append(shortNames.get(templateFullyQualifiedName));
                     sb.append(" as template ");
-                    joinAccessControl(template, principal, sb);
+                    joinAccessControl(templateFullyQualifiedName, principal, sb);
                     sb.append("\n WHERE template.id=");
                     sb.append(id);
                     andAccessControl(principal, sb);
@@ -426,7 +427,7 @@ public class TemplateQuery {
                 (rs, data) -> {
                     while (rs.next()) {
                         Object[] record = new Object[propertyOrder.length];
-                        record[0]=longNames.get(template);
+                        record[0]=templateFullyQualifiedName;
                         for (int i = 1; i < record.length; i++) {
                             // ISSUE, these are the sql names, not the property names
                             String columnLabel = sqlify(propertyOrder[i]);
@@ -454,18 +455,18 @@ public class TemplateQuery {
         sb.append("' OR access_control.record IS NOT NULL)");
     }
 
-    public void joinAccessControl(String template, String principal, StringBuilder sb) {
-        joinAccessControl(template, principal, sb, "template", "id");
+    public void joinAccessControl(String templateFullyQualifiedName, String principal, StringBuilder sb) {
+        joinAccessControl(templateFullyQualifiedName, principal, sb, "template", "id");
     }
 
-    public void joinAccessControl(String template, String principal, StringBuilder sb, String label, String id) {
-        sb.append("\n LEFT JOIN record_index ON record_index.key=" + label + "." + id);
-        if (template.startsWith(label)) {
+    public void joinAccessControl(String templateFullyQualifiedName, String principal, StringBuilder sb, String label, String id) {
+        sb.append("\n LEFT JOIN record_index ON record_index.key=").append(label).append(".").append(id);
+        if (templateFullyQualifiedName.startsWith(label)) {  // TOCHECK, this seems always false with full qualified name
             sb.append("\n AND record_index.table_name=");
-            sb.append(shortNames.get(template));
+            sb.append(shortNames.get(templateFullyQualifiedName));
         } else {
             sb.append("\n AND record_index.table_name='");
-            sb.append(shortNames.get(template));
+            sb.append(shortNames.get(templateFullyQualifiedName));
             sb.append("'");
         }
         sb.append("\n AND record_index.principal IS NOT NULL");
@@ -673,9 +674,9 @@ public class TemplateQuery {
 
 
     }
-    public List<Object[]> queryComposite(String template, Integer id, boolean withTitles, String principal) {
+    public List<Object[]> queryComposite(String templateFullyQualifiedName, Integer id, boolean withTitles, String principal) {
         List<RecordEntry> linked_records = new LinkedList<>();
-        TemplateService.Linker linker = compositeLinker.get(template);
+        TemplateService.Linker linker = compositeLinker.get(templateFullyQualifiedName);
 
         //System.out.println("linker = " + linker);
 
@@ -684,9 +685,9 @@ public class TemplateQuery {
                 (sb, data) -> {
                     sb.append("SELECT * FROM (");
                     sb.append("SELECT * FROM ");
-                    sb.append(shortNames.get(template));
+                    sb.append(shortNames.get(templateFullyQualifiedName));
                     sb.append(" AS template ");
-                    joinAccessControl(template, principal, sb);
+                    joinAccessControl(templateFullyQualifiedName, principal, sb);
                     sb.append("\n WHERE key=");
                     sb.append(id);
                     andAccessControl(principal, sb);
@@ -713,7 +714,7 @@ public class TemplateQuery {
         List<Object[]> the_records = new LinkedList<>();
         for (RecordEntry linked_record : linked_records) {
             Integer simple = linked_record.key;
-            List<Object[]> simple_records = querySimple(linked_record.table, simple, withTitles, principal);
+            List<Object[]> simple_records = querySimple(longNames.get(linked_record.table), simple, withTitles, principal);
             the_records.addAll(simple_records);
         }
 
@@ -751,8 +752,11 @@ public class TemplateQuery {
         }
     }
 
+    public Map<String, String> getShortNames() {
+        return shortNames;
+    }
 
-        public String generateBackwardTemplateTraversal(Map<String,Map<String, Map<String, String>>> ioMap) {
+    public String generateBackwardTemplateTraversal(Map<String,Map<String, Map<String, String>>> ioMap) {
         String backwardTraversalFunctionName="backwardTraversal";
 
         Map<String,?> funParams=new LinkedHashMap<>() {{

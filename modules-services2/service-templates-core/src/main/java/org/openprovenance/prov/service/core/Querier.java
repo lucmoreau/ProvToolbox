@@ -30,7 +30,7 @@ public class Querier  {
         StringBuilder sb=new StringBuilder();
         composeQuery.accept(sb,data);
         String statement=sb.toString();
-        //logger.info("Executing statement: " + statement);
+        logger.info("Executing query: " + statement);
         ResultSet rs;
         try {
             rs=storage.executeQuery(conn,statement);
@@ -50,7 +50,7 @@ public class Querier  {
         StringBuilder sb=new StringBuilder();
         composeQuery.accept(sb,data);
         String statement=sb.toString();
-        //logger.info("Executing statement: " + statement);
+        logger.info("Executing statement: " + statement);
         boolean rs;
         try {
             rs=storage.executeStatements(conn,statement);

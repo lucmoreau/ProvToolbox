@@ -48,9 +48,10 @@ public class TemplateLogic {
     private final Map<String, Map<String, Set<String>>> typeAssignment;
     private final Map<String, Map<String, List<String>>> successors;
     private final PrincipalManager principalManager;
+    private final Map<String, String> shortNames;
 
 
-    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om) {
+    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om) {
         this.pf = pf;
         this.templateDispatcher = templateDispatcher;
         this.documentBuilderDispatcher = templateDispatcher.getDocumentBuilderDispatcher();
@@ -61,6 +62,7 @@ public class TemplateLogic {
         this.typeAssignment = templateDispatcher.getTypeAssignment();
         this.successors = templateDispatcher.getSuccessors();
         this.principalManager = principalManager;
+        this.shortNames=shortNames;
     }
 
     public List<Object> processIncomingJson(List<Map<String, Object>> entries) {
@@ -242,29 +244,29 @@ public class TemplateLogic {
         return records;
     }
 
-    public Object submitPostProcessing(int id, String template) {
-        logger.info("postProcessing " + id + " " + template);
+    public Object submitPostProcessing(int id, String templateFullyQualifiedName) {
+        logger.info("postProcessing " + id + " " + templateFullyQualifiedName);
 
         String principal=principalManager.getPrincipal();
-        List<Object[]> records = templateQuery.query(template, id, false, principal);
+        List<Object[]> records = templateQuery.query(templateFullyQualifiedName, id, false, principal);
 
         logger.debug("PROV_API " + provAPI);
         logger.info("records " + records.size() + " " + records.stream().map(Arrays::toString).collect(Collectors.joining(",")));
         if (!records.isEmpty()) {
             if (records.size()>1) {
-                Map<String, String> hash = templateQuery.computeHash(template, id, records);
-                templateQuery.updateHash(template, id, hash, principal);
-                logger.info("update hash for " + id + " " + template + ": " + hash);
+                Map<String, String> hash = templateQuery.computeHash(templateFullyQualifiedName, id, records);
+                templateQuery.updateHash(shortNames.get(templateFullyQualifiedName), id, hash, principal);
+                logger.info("update hash for " + id + " " + templateFullyQualifiedName + ": " + hash);
                 headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH, getContentProvHash(hash));
             } else {
                 Object[] record = records.get(0);
-                Map<String, String> hash = templateQuery.computeHash(template, id, record);
-                templateQuery.getRelationMapping().mapGraphToRelations(template,id,record);
-                templateQuery.updateHash(template, id, hash, principal);
-                logger.info("update hash for " + id + " " + template + ": " + hash);
+                Map<String, String> hash = templateQuery.computeHash(templateFullyQualifiedName, id, record);
+                templateQuery.getRelationMapping().mapGraphToRelations(templateFullyQualifiedName,id,record);
+                templateQuery.updateHash(shortNames.get(templateFullyQualifiedName), id, hash, principal);
+                logger.info("update hash for " + id + " " + templateFullyQualifiedName + ": " + hash);
                 headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH,getContentProvHash(hash));
             }
-            headerInfo.get().put(HTTP_HEADER_LOCATION,provAPI + "/template/" + template + "/" + id);
+            headerInfo.get().put(HTTP_HEADER_LOCATION,provAPI + "/template/" + templateFullyQualifiedName + "/" + id);
 
         }
         return null;

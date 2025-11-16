@@ -176,7 +176,7 @@ public class TemplateService {
         this.documentBuilderDispatcher=catalogueDispatcher.getDocumentBuilderDispatcher();
         this.recordMaker=catalogueDispatcher.getRecordMaker();
         this.queryTemplate=new TemplateQuery(querier, this.catalogueDispatcher, principalManager, compositeLinker, om);
-        this.templateLogic=new TemplateLogic(pf,queryTemplate, this.catalogueDispatcher, principalManager, utils, om);
+        this.templateLogic=new TemplateLogic(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om);
 
 
     }
@@ -214,9 +214,10 @@ public class TemplateService {
     }
 
 
-    public Object submitPostProcessing(Integer i, String s) {
+    public Object submitPostProcessing(Integer i, String templateFullyQualifiedName) {
+        logger.info("submitPostProcessing called with i=" + i + " templateFullyQualifiedName=" + templateFullyQualifiedName);
         if (i==null) i=-69;
-        return templateLogic.submitPostProcessing(i,s);
+        return templateLogic.submitPostProcessing(i,templateFullyQualifiedName);
     };
 
     public void executeStatementsFromFile(Connection conn, String filename) {

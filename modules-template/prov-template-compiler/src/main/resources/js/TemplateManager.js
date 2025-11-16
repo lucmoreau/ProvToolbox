@@ -74,12 +74,14 @@ class TemplateManager {
         console.log("populateBean")
         for (const k in values) {
             if (k===ELEMENTS) {
-                var subBeans = [];
+                // note, how we have to use a java ArrayList here, rather than []
+                var subBeans = new java.util.ArrayList();
                 for (const i in values[k]) {
                     // we had to introduce get and size method to the prototype. They need to be skipped here
-                    if ((i==="get") || (i==="size")) continue;
+                    //if ((i==="get") || (i==="size")) continue;
                     console.log("populate sub element " + i);
-                    subBeans.push(this.populateSubBean(values["type"], values[k][i]));
+                    // note how we use the ArrayList's add method here, rather than push
+                    subBeans.add(this.populateSubBean(values["type"], values[k][i]));
                 }
                 bean[k] = subBeans;
             } else {

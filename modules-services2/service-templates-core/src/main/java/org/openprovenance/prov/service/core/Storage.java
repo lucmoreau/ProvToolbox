@@ -55,6 +55,7 @@ public class Storage {
 
     public boolean executeStatements(Connection conn, String statements) throws SQLException {
         try (Statement st = conn.createStatement()) {
+            logger.info("Executing statements: " + statements);
             return st.execute(statements);
         }
     }
@@ -62,7 +63,7 @@ public class Storage {
 
     public ResultSet executeQuery(Connection conn, String statements) throws SQLException {
         Statement st = conn.createStatement();
-        //logger.info("Executing query: " + statements);
+        logger.info("Executing query: " + statements);
         ResultSet rs = st.executeQuery(statements);
         //displayResultSet(rs);
         return rs;

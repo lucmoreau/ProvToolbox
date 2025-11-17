@@ -19,8 +19,8 @@ import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagemen
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
 import org.openprovenance.prov.template.compiler.integration.CompilerIntegrator;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlIntegration;
-import org.openprovenance.prov.template.compiler.util.TemplateExtension;
-import org.openprovenance.prov.template.compiler.util.TemplateIndexPath;
+import org.openprovenance.prov.template.utils.TemplateExtension;
+import org.openprovenance.prov.template.utils.TemplateIndexPath;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;

@@ -4,8 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.util.TemplateIndex;
-import org.openprovenance.prov.template.compiler.util.TemplateIndexPath;
+import org.openprovenance.prov.template.utils.TemplateIndex;
+import org.openprovenance.prov.template.utils.TemplateIndexPath;
 
 import java.io.File;
 import java.util.*;

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.compiler.util;
+package org.openprovenance.prov.template.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

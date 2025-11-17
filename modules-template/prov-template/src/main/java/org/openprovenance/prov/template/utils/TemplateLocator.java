@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.compiler.util;
+package org.openprovenance.prov.template.utils;
 
 import java.util.List;
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.compiler.util;
+package org.openprovenance.prov.template.utils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

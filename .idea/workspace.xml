@@ -9,18 +9,71 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/tp_plead.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/TemplateLocatorException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/TemplateProvenanceLocator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/templates/generic/index.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/templates/index.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/Querier.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/Querier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/Storage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/Storage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateLogic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateQuery.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanCompleter2.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanCompleter2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanCompleter3.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanCompleter3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanEnactor2CompositeWithPrincipal.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanEnactor2CompositeWithPrincipal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlIntegration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlIntegration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/js/TemplateManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/js/TemplateManager.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/tp_pg.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/tp_pg.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/tp_ptm.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/tp_ptm.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/BatchExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/BatchExecutor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/ConfigTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/ConfigTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/InstantiateTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/InstantiateTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/MergeTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/MergeTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/TemplateExtension.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/TemplateExtension.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/TemplateIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/TemplateIndex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/TemplateIndexPath.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/TemplateIndexPath.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/TemplateLocator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/TemplateLocator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/common-ns.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/ttfs/common-ns.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/ttf-generic.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/ttfs/ttf-generic.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/ttf-pg.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/ttfs/ttf-pg.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/ttf-plead.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/ttfs/ttf-plead.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/ttf-ptm.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/ttfs/ttf-ptm.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metabindings/binaryop.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/generic/binaryop.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metabindings/forking2.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/generic/forking2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metabindings/joining2.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/generic/joining2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metabindings/parallel2.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/generic/parallel2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metabindings/product2-2.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/generic/product2-2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/extending-collection.png" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/templates/generic/extending-collection.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/extending-collection.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/templates/generic/extending-collection.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/operation.png" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/templates/generic/operation.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/operation.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/templates/generic/operation.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/transforming1.png" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/templates/generic/transforming1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/transforming1.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/templates/generic/transforming1.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/updating-entity.png" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/templates/generic/updating-entity.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/updating-entity.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/templates/generic/updating-entity.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pg-bindings/pg-ballcollecting.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/pg/pg-ballcollecting.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pg-bindings/pg-capturing.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/pg/pg-capturing.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pg-bindings/pg-dropping.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/pg/pg-dropping.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-approving.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/plead/plead-approving.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-filtering.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/plead/plead-filtering.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-splitting.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/plead/plead-splitting.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-training.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/plead/plead-training.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-transforming.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/plead/plead-transforming.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-validating.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/plead/plead-validating.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/ptmbindings/ptm-expanding.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/ptm/ptm-expanding.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/ptmbindings/ptm-merging.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/ptm/ptm-merging.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/ptmbindings/ptm-mexpanding.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/ptm/ptm-mexpanding.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/ExpandTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/ExpandTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/GroupingsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/GroupingsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/a_template.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates2/a_template.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template1.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates2/template1.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template10.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates2/template10.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template2.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates2/template2.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template20.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates2/template20.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template21.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates2/template21.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template22.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates2/template22.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template23.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates2/template23.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template24.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates2/template24.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template25.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates2/template25.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template3.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates2/template3.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/BatchExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/BatchExecutor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,6 +115,7 @@
         <option value="module-info" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="Exception" />
       </list>
     </option>
   </component>
@@ -138,81 +192,81 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;Application.Reasoning.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TemplatesViz.executor&quot;: &quot;Run&quot;,
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;JUnit.CompilerTest.testCompiler1.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DateTest.testDate5.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DerivationBuilderTest (1).executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DerivationBuilderTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DerivationBuilderTest.testBuild (1).executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DerivationBuilderTest.testBuild.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DerivationBuilderTest.testOther.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ExpandIT.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MetricsTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MetricsTest.testMetrics.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderingTest.testConstraintsSpecialization1.executor&quot;: &quot;Debug&quot;,
-    &quot;JUnit.PC1FullTest (1).executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PC1FullTest (2).executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PC1FullTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PC1FullTest.testPC1.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadTest.testPlead1 (1).executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadTest.testPlead1.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadTest.testPleadLocal.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadTest.testPleadRemote.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadWorkflowIT.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadWorkflowIT.testPleadLocal.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PleadWorkflowIT.testPleadRemote.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.RoundTripFromJavaJSONLD11Test.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.RoundTripFromJavaMongoTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.StorageTest.testExample.executor&quot;: &quot;Debug&quot;,
-    &quot;JUnit.TriangleTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TriangleTest.testTriangle.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ValidateTest.testFailingDocumentExpansion.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ValidateTest.testFailingDocumentPicaso.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.go.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.go1.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.go2.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.kern.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.kern2.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.pkcs12.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.test.json.string.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.test.log.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.test.metrics.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.test.schema.projects.executor&quot;: &quot;Run&quot;,
-    &quot;Makefile Target.trusted.store.executor&quot;: &quot;Run&quot;,
-    &quot;Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;ScalaTest.TypeLibraryIssueSpec.executor&quot;: &quot;Run&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;extract.method.default.visibility&quot;: &quot;public&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;development2__0&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;js.last.introduce.type&quot;: &quot;CONST&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_directory_selection&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-services2/service-templates/src/test/config&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.stylelint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.stylelint&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.66091955&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;scala_project_settings_configurable.last_selected_tab_index&quot;: &quot;0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "Application.Reasoning.executor": "Run",
+    "Application.TemplatesViz.executor": "Run",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "JUnit.CompilerTest.testCompiler1.executor": "Run",
+    "JUnit.DateTest.testDate5.executor": "Run",
+    "JUnit.DerivationBuilderTest (1).executor": "Run",
+    "JUnit.DerivationBuilderTest.executor": "Run",
+    "JUnit.DerivationBuilderTest.testBuild (1).executor": "Run",
+    "JUnit.DerivationBuilderTest.testBuild.executor": "Run",
+    "JUnit.DerivationBuilderTest.testOther.executor": "Run",
+    "JUnit.ExpandIT.executor": "Run",
+    "JUnit.MetricsTest.executor": "Run",
+    "JUnit.MetricsTest.testMetrics.executor": "Run",
+    "JUnit.OrderingTest.testConstraintsSpecialization1.executor": "Debug",
+    "JUnit.PC1FullTest (1).executor": "Run",
+    "JUnit.PC1FullTest (2).executor": "Run",
+    "JUnit.PC1FullTest.executor": "Run",
+    "JUnit.PC1FullTest.testPC1.executor": "Run",
+    "JUnit.PleadTest.testPlead1 (1).executor": "Run",
+    "JUnit.PleadTest.testPlead1.executor": "Run",
+    "JUnit.PleadTest.testPleadLocal.executor": "Run",
+    "JUnit.PleadTest.testPleadRemote.executor": "Run",
+    "JUnit.PleadWorkflowIT.executor": "Run",
+    "JUnit.PleadWorkflowIT.testPleadLocal.executor": "Run",
+    "JUnit.PleadWorkflowIT.testPleadRemote.executor": "Run",
+    "JUnit.RoundTripFromJavaJSONLD11Test.executor": "Run",
+    "JUnit.RoundTripFromJavaMongoTest.executor": "Run",
+    "JUnit.StorageTest.testExample.executor": "Debug",
+    "JUnit.TriangleTest.executor": "Run",
+    "JUnit.TriangleTest.testTriangle.executor": "Run",
+    "JUnit.ValidateTest.testFailingDocumentExpansion.executor": "Run",
+    "JUnit.ValidateTest.testFailingDocumentPicaso.executor": "Run",
+    "Makefile Target.go.executor": "Run",
+    "Makefile Target.go1.executor": "Run",
+    "Makefile Target.go2.executor": "Run",
+    "Makefile Target.kern.executor": "Run",
+    "Makefile Target.kern2.executor": "Run",
+    "Makefile Target.pkcs12.executor": "Run",
+    "Makefile Target.test.json.string.executor": "Run",
+    "Makefile Target.test.log.executor": "Run",
+    "Makefile Target.test.metrics.executor": "Run",
+    "Makefile Target.test.schema.projects.executor": "Run",
+    "Makefile Target.trusted.store.executor": "Run",
+    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ScalaTest.TypeLibraryIssueSpec.executor": "Run",
+    "WebServerToolWindowFactoryState": "false",
+    "extract.method.default.visibility": "public",
+    "git-widget-placeholder": "development2__0",
+    "jdk.selected.JAVA_MODULE": "17",
+    "js.last.introduce.type": "CONST",
+    "kotlin-language-version-configured": "true",
+    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template/src/main/resources/ttfs",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.stylelint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.stylelint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.66091955",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "scala_project_settings_configurable.last_selected_tab_index": "0",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings module-name="prov-template-compiler">
@@ -232,18 +286,18 @@
       <recent name="org.openprovenance.prov.service.core.config" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/ttfs" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config" />
       <recent name="$PROJECT_DIR$/modules-services2/service-templates/src/test/config" />
       <recent name="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-docker/docker.conf/deploy/provtemplates/config" />
       <recent name="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-docker/src/main/resources" />
-      <recent name="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/template-service-docker" />
-      <recent name="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/template-service" />
-      <recent name="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/oldstuff" />
-      <recent name="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/java-old/org/openprovenance/prov/service" />
-      <recent name="$PROJECT_DIR$/modules-services2/service-templates/src/main/java/org/openprovenance/prov/template/service" />
-      <recent name="$PROJECT_DIR$/modules-services2/service-templates/src/main/java/org/openprovenance/prov/template/service/core" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/templates" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/pg" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/plead" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/ptm" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/config" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig" />
@@ -274,11 +328,11 @@
       <recent name="org.openprovenance.prov.scala.nf" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.template.utils" />
       <recent name="org.openprovenance.prov.template.compiler" />
       <recent name="org.openprovenance.prov.model.interop" />
       <recent name="org.openprovenance.plugin.toolbox" />
       <recent name="org.openprovenance.prov.template.expander.meta" />
-      <recent name="org.openprovenance.prov.bookptm" />
     </key>
   </component>
   <component name="RunManager" selected="JUnit.OrderingTest.testConstraintsSpecialization1">
@@ -1130,7 +1184,8 @@
       <workItem from="1760182058790" duration="24147000" />
       <workItem from="1760370464975" duration="203326000" />
       <workItem from="1762791328447" duration="62691000" />
-      <workItem from="1763121485776" duration="42744000" />
+      <workItem from="1763121485776" duration="47219000" />
+      <workItem from="1763380296994" duration="37483000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

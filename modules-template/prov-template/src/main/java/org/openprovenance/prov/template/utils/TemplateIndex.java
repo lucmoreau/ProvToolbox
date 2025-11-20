@@ -43,10 +43,21 @@ public final class TemplateIndex {
 
     public void addEntry(String templateId, String format, String filepath)  {
         try {
-            persist(this.templateDir, this.index);
             this.index.putIfAbsent(templateId, new TemplateLocator());
             TemplateLocator locator=this.index.get(templateId);
             locator.set(format, filepath);
+            persist(this.templateDir, this.index);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void addProvenanceEntry(String templateId, String format, String filepath)  {
+
+        try {
+            this.index.putIfAbsent(templateId, new TemplateLocator());
+            TemplateLocator locator=this.index.get(templateId);
+            locator.setProvenance(TemplateExtension.from(format), filepath);
+            persist(this.templateDir, this.index);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -175,6 +186,14 @@ public final class TemplateIndex {
 
         try (Stream<Path> stream = Files.walk(templatesDir)) {
             stream.filter(Files::isRegularFile)
+                    .filter(p -> {
+                        String fileName = p.getFileName().toString();
+                        int dot = fileName.lastIndexOf('.');
+                        if (dot < 0) return false;
+                        String ext = fileName.substring(dot + 1).toLowerCase(Locale.ROOT);
+                        //System.out.println("Found file with extension: " + TemplateExtension.extensions);
+                        return TemplateExtension.extensions.stream().anyMatch(e -> e.equals(ext));
+                    })
                     .forEach(p -> {
                         String fileName = p.getFileName().toString();
                         if (indexFilenames.contains(fileName)) return;
@@ -235,5 +254,9 @@ public final class TemplateIndex {
     @Override
     public String toString() {
         return "<<indx::" + templateDir.toString() + ">>";
+    }
+
+    public Path relativize(Path documentPath) {
+        return templateDir.relativize(documentPath);
     }
 }

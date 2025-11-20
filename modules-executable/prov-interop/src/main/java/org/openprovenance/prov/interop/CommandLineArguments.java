@@ -51,7 +51,7 @@ public class CommandLineArguments implements ErrorCodes {
     public static final String TEMPLATE_BUILDER = "templatebuilder";
     public static final String LOG2PROV = "log2prov";
     public static final String LOG2KERNEL = "log2kernel";
-    public static final String CONFIG = "config";
+    public static final String CONFIG = "ttfs";
     public static final String DATE_TIME = "dateTime";
     public static final String TIMEZONE = "timeZone";
 

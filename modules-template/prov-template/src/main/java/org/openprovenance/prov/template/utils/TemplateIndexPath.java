@@ -89,4 +89,11 @@ public final class TemplateIndexPath {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Template ID not found in any template library index: " + templateId));
     }
+
+    @Override
+    public String toString() {
+        return "TemplateIndexPath{" +
+                "indices=" + indices +
+                '}';
+    }
 }

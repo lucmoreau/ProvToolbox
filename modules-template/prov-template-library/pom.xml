@@ -118,6 +118,8 @@
                                 <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
                                 <argument>src/main/resources/config/tp_plead.json</argument>
                                 <argument>${project.basedir}</argument>
+                                <argument>${project.basedir}</argument>
+                                <argument>${project.build.directory}/prov-template-library/templates</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -134,6 +136,8 @@
                                 <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
                                 <argument>src/main/resources/config/tp_ptm.json</argument>
                                 <argument>${project.basedir}</argument>
+                                <argument>${project.basedir}</argument>
+                                <argument>${project.build.directory}/prov-template-library/templates</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -152,6 +156,8 @@
                                 <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
                                 <argument>src/main/resources/config/tp_pg.json</argument>
                                 <argument>${project.basedir}</argument>
+                                <argument>${project.basedir}</argument>
+                                <argument>${project.build.directory}/prov-template-library/templates</argument>
                             </arguments>
                         </configuration>
                     </execution>

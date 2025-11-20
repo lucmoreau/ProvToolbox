@@ -5,11 +5,15 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_mergingBean;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_mergingBuilder;
+import org.openprovenance.prov.template.utils.TemplateExtension;
+import org.openprovenance.prov.template.utils.TemplateIndex;
+import org.openprovenance.prov.template.utils.TemplateIndexPath;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +80,12 @@ public class MergeTask implements ConfigTask {
             updatedTemplatePath.addAll(template_path);
             updatedTemplatePath.addAll(templateTasksBatch.template_path);
         }
+
+        TemplateIndexPath templateLibraryPath =new TemplateIndexPath(updatedTemplatePath.stream().map(loc-> new TemplateIndex(loc,true)).collect(Collectors.toList()));
+        System.out.println("MergeTask: templateLibraryPath=" + templateLibraryPath);
+
+
+        /*
         List<Pair<FileInputStream,File>> fileinDirs=inputs.stream().map(input -> {;
             try {
                 return executor.findFileinDirs2(updatedTemplatePath, input);
@@ -83,12 +93,25 @@ public class MergeTask implements ConfigTask {
                 throw new RuntimeException(e);
             }
         }).collect(Collectors.toList());
+
+         */
+
+        List<File> foundTemplates=inputs.stream().map(input -> {
+            String foundTemplate=templateLibraryPath.getStrict(input, TemplateExtension.preferredExtensions());
+            File templateFile=new File(foundTemplate);
+            return templateFile;
+        }).collect(Collectors.toList());
+
+        System.out.println("MergeTask: foundTemplate=" + foundTemplates);
+
+
         //Pair<FileInputStream,File> fileinDirs1 = executor.findFileinDirs2(updatedTemplatePath, input);
         //Pair<FileInputStream,File> fileinDirs2 = executor.findFileinDirs2(updatedTemplatePath, input2);
-        List<Document> docs=fileinDirs.stream().map(fd -> {
+        List<Document> docs=foundTemplates.stream().map(fd -> {
             try {
-                String informat = executor.getFormat(fd.getRight());
-                return executor.deserialise(fd.getLeft(),informat);
+                String informat = executor.getFormat(fd);
+
+                return executor.deserialise(new FileInputStream(fd),informat);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -107,28 +130,34 @@ public class MergeTask implements ConfigTask {
         }
 
         Document doc3=iDocument.toDocument();
-        Pair<FileInputStream,File> fileinDirs1 = fileinDirs.get(0);
+        File file1 = foundTemplates.get(0);
 
-        for (int i=1; i<fileinDirs.size(); i++) {
-            Pair<FileInputStream, File> fileinDirs2 = fileinDirs.get(i);
+        TemplateIndex outputIndex=new TemplateIndex(templateTasksBatch.output_dir, true);
+
+
+        for (int i=1; i<foundTemplates.size(); i++) {
+            File file2 = foundTemplates.get(i);
 
 
             for (String format : formats) {
+                Path documentPath = Path.of(templateTasksBatch.output_dir, output + "." + format);
+
+                outputIndex.addEntry(output,format, outputIndex.relativize(documentPath).toString());
+
                 executor.serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + output + "." + format), format, doc3, false);
-                String csvRecord = createMergeCsvRecord(format, fileinDirs1, fileinDirs2, time, secondsSince2023_01_01);
+                String csvRecord = createMergeCsvRecord(format, file1, file2, time, secondsSince2023_01_01);
                 loggedRecords.add(csvRecord);
             }
         }
 
-
-        executor.exportProvenanceAsCsv(templateTasksBatch, this, loggedRecords);
+        executor.exportProvenanceAsCsv(templateTasksBatch, this, output, outputIndex, loggedRecords);
 
 
         // option to clean up tmp file
         if (clean2!=null && clean2) {
-            for (int i=1; i<fileinDirs.size(); i++) {
-                Pair<FileInputStream, File> fileinDirs2 = fileinDirs.get(i);
-                String input2=fileinDirs2.getRight().getName();
+            for (int i=1; i<foundTemplates.size(); i++) {
+                File file_i = foundTemplates.get(i);
+                String input2=file_i.getName();
                 for (String format: formats) {
                     for (String dir : updatedTemplatePath) {
                         File f = new File(dir + "/" + input2.replace(".provn", "." + format));
@@ -140,12 +169,12 @@ public class MergeTask implements ConfigTask {
     }
 
 
-    private String createMergeCsvRecord(String format, Pair<FileInputStream, File> fileinDirs1, Pair<FileInputStream, File> fileinDirs2, String time, long secondsSince2023_01_01) {
+    private String createMergeCsvRecord(String format, File fileinDirs1, File fileinDirs2, String time, long secondsSince2023_01_01) {
         Ptm_mergingBean bean=new Ptm_mergingBean();
         bean.provenance=hasProvenance;
         bean.time=time;
-        bean.template1= fileinDirs1.getRight().getName();
-        bean.template2= fileinDirs2.getRight().getName();
+        bean.template1= fileinDirs1.getName();
+        bean.template2= fileinDirs2.getName();
         bean.document= output + "." + format;
         bean.merging=abs(Long.valueOf(secondsSince2023_01_01).intValue());
 

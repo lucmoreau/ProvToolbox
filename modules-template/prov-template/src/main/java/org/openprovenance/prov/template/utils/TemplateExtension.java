@@ -1,6 +1,8 @@
 package org.openprovenance.prov.template.utils;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public enum TemplateExtension {
     JSONLD("jsonld"),
@@ -8,7 +10,8 @@ public enum TemplateExtension {
     JSON("json"),
     PNG("png"),
     SVG("svg"),
-    PROVCSV("prov-csv");
+    PROVCSV("prov-csv"),
+    HAS_PROVENANCE("hasProvenance");
 
     private final String id;
 
@@ -20,6 +23,8 @@ public enum TemplateExtension {
     public String toString() {
         return id;
     }
+
+    static List<String> extensions= Arrays.stream(TemplateExtension.values()).map(Object::toString).collect(Collectors.toList());
 
     public static TemplateExtension from(String s) {
         if (s == null) {

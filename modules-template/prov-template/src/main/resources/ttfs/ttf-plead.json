@@ -1,0 +1,64 @@
+{
+    "template_path": ["src/main/resources/templates"],
+    "bindings_path": ["src/main/resources/bindings/plead"],
+    "output_dir": ".",
+
+    "variableMaps": ["./common-ns.json"],
+
+    "tasks": [
+        {
+            "type": "instantiate",
+            "template": "org/openprovenance/templates/generic/transforming1",
+            "output": "org/openprovenance/templates/generic/plead-transforming",
+            "bindings": "plead-transforming.json",
+            "formats": ["jsonld", "provn", "png"],
+            "hasProvenance": "org/openprovenance/templates/plead/prov/prov-plead-transforming.prov-csv"
+        },
+        {
+            "type": "instantiate",
+            "template": "org/openprovenance/templates/generic/transforming1",
+            "output": "org/openprovenance/templates/plead/plead-validating",
+            "bindings": "plead-validating.json",
+            "formats": ["provn", "png"],
+            "hasProvenance": "org/openprovenance/templates/plead/prov/prov-plead-validating.prov-csv"
+        },
+        {
+            "type": "instantiate",
+            "template": "org/openprovenance/templates/generic/transforming1",
+            "output": "org/openprovenance/templates/plead/plead-training",
+            "bindings": "plead-training.json",
+            "formats": [ "provn", "png"],
+            "hasProvenance": "org/openprovenance/templates/plead/prov/prov-plead-training.prov-csv"
+        },
+        {
+            "type": "instantiate",
+            "template": "org/openprovenance/templates/generic/transforming1",
+            "output": "org/openprovenance/templates/plead/plead-filtering",
+            "bindings": "plead-filtering.json",
+            "formats": ["provn", "png"],
+            "hasProvenance": "org/openprovenance/templates/plead/prov/prov-plead-filtering.prov-csv"
+        },
+        {
+            "type": "instantiate",
+            "template": "org/openprovenance/templates/generic/product2-2",
+            "template_path": ["target/generated-templates"],
+            "output": "org/openprovenance/templates/plead/plead-approving",
+            "bindings": "plead-approving.json",
+            "formats": ["provn", "png"],
+            "hasProvenance": "org/openprovenance/templates/plead/prov/prov-plead-approving.prov-csv"
+        },
+        {
+            "type": "instantiate",
+            "template": "org/openprovenance/templates/generic/forking2",
+            "template_path": ["target/generated-templates"],
+            "output": "org/openprovenance/templates/plead/plead-splitting",
+            "bindings": "plead-splitting.json",
+            "formats": ["provn", "png"],
+            "hasProvenance": "org/openprovenance/templates/plead/prov/prov-plead-splitting.prov-csv"
+        }
+    ]
+
+
+}
+
+

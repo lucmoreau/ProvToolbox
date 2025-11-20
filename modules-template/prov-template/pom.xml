@@ -62,6 +62,12 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-jsonld</artifactId>
+            <version>2.2.2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -91,7 +97,7 @@
                                 <argument>-s</argument>
                                 <argument>src/main/resources/jsonschema/template-transformation-file-schema.json</argument>
                                 <argument>-d</argument>
-                                <argument>src/main/resources/meta/config/ttf-generic.json</argument>
+                                <argument>src/main/resources/ttfs/ttf-generic.json</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -107,7 +113,7 @@
                                 <argument>-s</argument>
                                 <argument>src/main/resources/jsonschema/template-transformation-file-schema.json</argument>
                                 <argument>-d</argument>
-                                <argument>src/main/resources/meta/config/ttf-plead.json</argument>
+                                <argument>src/main/resources/ttfs/ttf-plead.json</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -123,7 +129,7 @@
                                 <argument>-s</argument>
                                 <argument>src/main/resources/jsonschema/template-transformation-file-schema.json</argument>
                                 <argument>-d</argument>
-                                <argument>src/main/resources/meta/config/ttf-ptm.json</argument>
+                                <argument>src/main/resources/ttfs/ttf-ptm.json</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -139,7 +145,7 @@
                                 <argument>-s</argument>
                                 <argument>src/main/resources/jsonschema/template-transformation-file-schema.json</argument>
                                 <argument>-d</argument>
-                                <argument>src/main/resources/meta/config/ttf-pg.json</argument>
+                                <argument>src/main/resources/ttfs/ttf-pg.json</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -153,12 +159,12 @@
                             <mainClass>org.openprovenance.prov.template.expander.ttf.BatchExecutor</mainClass>
                             <arguments>
                                 <argument>${project.basedir}</argument>
-                                <argument>${project.build.directory}</argument>
+                                <argument>${project.build.directory}/generated-templates</argument>
                                 <argument>-configs</argument>
-                                <argument>src/main/resources/meta/config/ttf-generic.json</argument>
-                                <argument>src/main/resources/meta/config/ttf-plead.json</argument>
-                                <argument>src/main/resources/meta/config/ttf-ptm.json</argument>
-                                <argument>src/main/resources/meta/config/ttf-pg.json</argument>
+                                <argument>src/main/resources/ttfs/ttf-generic.json</argument>
+                                <argument>src/main/resources/ttfs/ttf-plead.json</argument>
+                                <argument>src/main/resources/ttfs/ttf-ptm.json</argument>
+                                <argument>src/main/resources/ttfs/ttf-pg.json</argument>
                             </arguments>
                         </configuration>
 

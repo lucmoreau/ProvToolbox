@@ -6,11 +6,17 @@ import org.openprovenance.prov.template.expander.Expand;
 import org.openprovenance.prov.template.json.Bindings;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBean;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBuilder;
+import org.openprovenance.prov.template.utils.TemplateExtension;
+import org.openprovenance.prov.template.utils.TemplateIndex;
+import org.openprovenance.prov.template.utils.TemplateIndexPath;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
 import static org.openprovenance.prov.template.expander.ttf.BatchExecutor.*;
@@ -64,6 +70,19 @@ public class InstantiateTask implements ConfigTask {
             template_path.add(templateTasksBatch.output_dir);
         }
 
+        List<String> updatedTemplatePath;
+        if (template_path ==null) {
+            updatedTemplatePath= templateTasksBatch.template_path;
+        } else {
+            updatedTemplatePath=new LinkedList<>();
+            updatedTemplatePath.addAll(template_path);
+            updatedTemplatePath.addAll(templateTasksBatch.template_path);
+        }
+
+        TemplateIndexPath templateLibraryPath =new TemplateIndexPath(updatedTemplatePath.stream().map(loc-> new TemplateIndex(loc,true)).collect(Collectors.toList()));
+        System.out.println("InstantiateTask: templateLibraryPath=" + templateLibraryPath);
+
+
         Pair<FileInputStream, File> pair=executor.findFileinDirs2(templateTasksBatch.bindings_path, bindings);
         String bindingsFilename=pair.getRight().getAbsolutePath();
 
@@ -73,41 +92,53 @@ public class InstantiateTask implements ConfigTask {
         InputStream is=substituteVariablesInFile(variableMap, bindingsFilename);
 
         Expand expand = new Expand(pf, false, false);
-        List<String> the_template_path = (template_path==null)? templateTasksBatch.template_path : template_path;
-        Pair<FileInputStream, File> fileinDirs = executor.findFileinDirs2(the_template_path, template);
+
+        String foundTemplate=templateLibraryPath.getStrict(template, TemplateExtension.preferredExtensions());
+        File templateFile=new File(foundTemplate);
+
+
+        System.out.println("InstantiateTask: foundTemplate=" + foundTemplate);
+        //Pair<FileInputStream, File> fileinDirs = executor.findFileinDirs2(the_template_path, template);
+        //System.out.println("InstantiateTask: fileInDirs=" + fileinDirs.getRight().getAbsolutePath());
 
         long secondsSince2023_01_01 = (System.currentTimeMillis() - 1672531200000L);
         String time=pf.newTimeNow().toString();
 
         List<String> loggedRecords=new LinkedList<>();
 
+        TemplateIndex outputIndex=new TemplateIndex(templateTasksBatch.output_dir, true);
+
         // extract extension from filename
-        String informat = executor.getFormat(fileinDirs.getRight());
-        Document doc=expand.expander(executor.deserialise(fileinDirs.getLeft(),informat), executor.om.readValue(is, Bindings.class));
+        String informat = executor.getFormat(templateFile);
+        Document doc=expand.expander(executor.deserialise(new FileInputStream(templateFile),informat), executor.om.readValue(is, Bindings.class));
         for (String format: formats) {
-            String documentFilename = templateTasksBatch.output_dir + "/" + output + "." + format;
-            executor.serialize(new FileOutputStream(documentFilename), format, doc, false);
+            Path documentPath = Path.of(templateTasksBatch.output_dir, output + "." + format);
+
+            outputIndex.addEntry(output,format, outputIndex.relativize(documentPath).toString());
+            Files.createDirectories(documentPath.getParent());
+            executor.serialize(new FileOutputStream(documentPath.toFile()), format, doc, false);
             if (copyinput != null && copyinput) {
                 executor.serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + template.replace(".provn","."+format)), format, doc, false);
+                outputIndex.addEntry(template, format, template.replace(".provn","."+format));
             }
-            String csvRecord = createExpansionCsvRecord(format, fileinDirs, time, secondsSince2023_01_01);
+            String csvRecord = createExpansionCsvRecord(format, template, time, secondsSince2023_01_01);
             loggedRecords.add(csvRecord);
         }
 
 
-        executor.exportProvenanceAsCsv(templateTasksBatch, this, loggedRecords);
+        executor.exportProvenanceAsCsv(templateTasksBatch, this, output, outputIndex, loggedRecords);
 
 
     }
 
 
 
-    private String createExpansionCsvRecord(String format, Pair<FileInputStream, File> fileinDirs, String time, long secondsSince2023_01_01) {
+    private String createExpansionCsvRecord(String format, String templateFile, String time, long secondsSince2023_01_01) {
         Ptm_expandingBean bean=new Ptm_expandingBean();
         bean.bindings= bindings;
         bean.provenance=hasProvenance;
         bean.time=time;
-        bean.template= fileinDirs.getRight().getName();
+        bean.template= templateFile;
         bean.document= output + "." + format;
         bean.expanding=abs(Long.valueOf(secondsSince2023_01_01).intValue());
 

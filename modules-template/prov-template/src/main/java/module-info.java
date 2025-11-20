@@ -10,6 +10,7 @@ module prov.template {
     requires prov.model;
     requires java.xml;
 
+
     exports org.openprovenance.prov.template.utils;
     exports org.openprovenance.prov.template.json;
     exports org.openprovenance.prov.template.json.deserializer;

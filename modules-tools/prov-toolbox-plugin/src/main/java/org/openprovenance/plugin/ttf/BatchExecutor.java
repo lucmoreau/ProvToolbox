@@ -125,7 +125,7 @@ public class BatchExecutor extends AbstractMojo {
             //method.invoke(null, (Object) argsArray);  // cast is necessary to avoid varargs issues
             executor.execute(argsArray);
 
-        } catch (DependencyResolutionRequiredException | MalformedURLException e) {
+        } catch (RuntimeException | DependencyResolutionRequiredException | MalformedURLException e) {
             e.printStackTrace();
             throw new MojoExecutionException("Failed to execute execute-ttf " , e);
         }

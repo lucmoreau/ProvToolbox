@@ -1,20 +1,20 @@
 package org.openprovenance.prov.template.utils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TemplateLocator {
+public class TemplateProvenanceLocator {
     private String jsonld;
     private String json;
     private String provn;
     private String png;
     private String svg;
-    private String provCsv;
-    private TemplateProvenanceLocator hasProvenance;
+    private String provcsv;
 
-    public TemplateLocator() { }
+    public TemplateProvenanceLocator() { }
 
     public String getJsonld() {
         return jsonld;
@@ -40,7 +40,6 @@ public class TemplateLocator {
         this.provn = provn;
     }
 
-
     public String getPng() {
         return png;
     }
@@ -58,24 +57,17 @@ public class TemplateLocator {
     }
 
     public String getProvCsv() {
-        return provCsv;
+        return provcsv;
     }
 
-    public void setProvCsv(String provCsv) {
-        this.provCsv = provCsv;
+    public void setProvCsv(String provcsv) {
+        this.provcsv = provcsv;
     }
 
-    public TemplateProvenanceLocator getHasProvenance() {
-        return hasProvenance;
-    }
-
-    public void setHasProvenance(TemplateProvenanceLocator hasProvenance) {
-        this.hasProvenance = hasProvenance;
-    }
 
     public String get(TemplateExtension extension) {
         if (extension == null) {
-            throw new TemplateLocatorException("get(): Extension cannot be null");
+            throw new TemplateLocatorException("Extension cannot be null");
         }
         return switch (extension) {
             case JSONLD -> getJsonld();
@@ -84,22 +76,7 @@ public class TemplateLocator {
             case PNG -> getPng();
             case SVG -> getSvg();
             case PROVCSV -> getProvCsv();
-            case HAS_PROVENANCE -> throw new TemplateLocatorException("get(): Cannot get HAS_PROVENANCE path from TemplateLocator");
-        };
-    }
-
-    public String getProvenance(TemplateExtension extension) {
-        if (extension == null) {
-            throw new TemplateLocatorException("getProvenance(): Extension cannot be null");
-        }
-        return switch (extension) {
-            case JSONLD -> getHasProvenance().getJsonld();
-            case PROVN -> getHasProvenance().getProvn();
-            case JSON -> getHasProvenance().getJson();
-            case PNG -> getHasProvenance().getPng();
-            case SVG -> getHasProvenance().getSvg();
-            case PROVCSV -> getHasProvenance().getProvCsv();
-            case HAS_PROVENANCE -> throw new TemplateLocatorException("getProvenance(): Cannot get HAS_PROVENANCE path from TemplateLocator");
+            case HAS_PROVENANCE -> throw new TemplateLocatorException("get: cannot get HAS_PROVENANCE from TemplateProvenanceLocator");
         };
     }
 
@@ -119,26 +96,6 @@ public class TemplateLocator {
             case SVG -> setSvg(path);
             case JSON -> setJson(path);
             case PROVCSV -> setProvCsv(path);
-            case HAS_PROVENANCE -> throw new TemplateLocatorException("Cannot set HAS_PROVENANCE path in TemplateLocator");
-        }
-    }
-
-
-    public void setProvenance(TemplateExtension extension, String path) {
-        if (extension == null) {
-            throw new TemplateLocatorException("setProvenance(): Extension cannot be null");
-        }
-        if (getHasProvenance() == null) {
-            setHasProvenance(new TemplateProvenanceLocator());
-        }
-        switch (extension) {
-            case JSONLD -> getHasProvenance().setJsonld(path);
-            case PROVN -> getHasProvenance().setProvn(path);
-            case PNG -> getHasProvenance().setPng(path);
-            case SVG -> getHasProvenance().setSvg(path);
-            case JSON -> getHasProvenance().setJson(path);
-            case PROVCSV -> getHasProvenance().setProvCsv(path);
-            case HAS_PROVENANCE -> throw new TemplateLocatorException("Cannot set HAS_PROVENANCE path in TemplateLocator");
         }
     }
 
@@ -153,11 +110,13 @@ public class TemplateLocator {
 
     @Override
     public String toString() {
-        return "TemplateLocator{" +
+        return "TemplateProvenanceLocator{" +
                 "jsonld='" + jsonld + '\'' +
+                ", json='" + json + '\'' +
                 ", provn='" + provn + '\'' +
                 ", png='" + png + '\'' +
                 ", svg='" + svg + '\'' +
+                ", provcsv='" + provcsv + '\'' +
                 '}';
     }
 }

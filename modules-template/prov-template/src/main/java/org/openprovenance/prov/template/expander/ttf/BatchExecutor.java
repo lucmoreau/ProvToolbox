@@ -6,17 +6,21 @@ import org.apache.commons.text.StringSubstitutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.template.utils.TemplateExtension;
+import org.openprovenance.prov.template.utils.TemplateIndex;
+import org.openprovenance.prov.template.utils.TemplateIndexPath;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
 
-//import static org.apache.logging.log4j.core.util.FileUtils.mkdir;
 
 public class BatchExecutor {
 
@@ -60,6 +64,10 @@ public class BatchExecutor {
             c = Class.forName("org.openprovenance.prov.notation.ProvDeserialiser");
             cons = c.getConstructor(ProvFactory.class);
             deserializerMap.put("provn", (ProvDeserialiser) cons.newInstance(pf));
+
+            c = Class.forName("org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser");
+            cons = c.getConstructor();
+            serializerMap.put("jsonld", (ProvSerialiser) cons.newInstance());
             return Pair.of(serializerMap, deserializerMap);
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             logger.throwing(e);
@@ -98,6 +106,7 @@ public class BatchExecutor {
                 }
             }
             templateTasksBatch.template_path = templateTasksBatch.template_path.stream().map(s -> (s.startsWith("."))? localdir+s.substring(1):s).collect(Collectors.toList());
+
             return execute(templateTasksBatch, inputBasedir, outputBasedir, variableMap);
         } catch (Exception e) {
             logger.error("Error while executing", e);
@@ -115,6 +124,11 @@ public class BatchExecutor {
         templateTasksBatch.template_path = TemplateTasksBatch.addBaseDir(inputBasedir, templateTasksBatch.template_path);
         templateTasksBatch.bindings_path = TemplateTasksBatch.addBaseDir(inputBasedir, templateTasksBatch.bindings_path);
         templateTasksBatch.output_dir = TemplateTasksBatch.addBaseDir(outputBasedir, templateTasksBatch.output_dir);
+
+        TemplateIndexPath templateLibraryPath =new TemplateIndexPath(templateTasksBatch.template_path.stream().map(loc-> new TemplateIndex(loc,true)).collect(Collectors.toList()));
+
+
+
 
         logger.info("template_path: " + templateTasksBatch.template_path);
         logger.info("bindings_path: " + templateTasksBatch.bindings_path);
@@ -148,14 +162,21 @@ public class BatchExecutor {
     }
 
 
-    void exportProvenanceAsCsv(TemplateTasksBatch templateTasksBatch, ConfigTask task, List<String> loggedRecords) throws IOException {
+    void exportProvenanceAsCsv(TemplateTasksBatch templateTasksBatch, ConfigTask task, String template, TemplateIndex outputIndex, List<String> loggedRecords) throws IOException {
+        System.out.println("**** exporting provenance as PROV-CSV to " + task.hasProvenance() + " for index " + outputIndex + " template " + template);
         if (task.hasProvenance()!=null) {
+            Path documentPath = Path.of(templateTasksBatch.output_dir, task.hasProvenance());
+            Files.createDirectories(documentPath.getParent());
             try (FileOutputStream fos = new FileOutputStream(templateTasksBatch.output_dir + "/" + task.hasProvenance())) {
                 for (String csvRecord: loggedRecords) {
                     fos.write(csvRecord.getBytes(StandardCharsets.UTF_8));
                     fos.write("\n".getBytes(StandardCharsets.UTF_8));
                 }
             }
+            if (outputIndex!=null) {
+                outputIndex.addProvenanceEntry(template, TemplateExtension.PROVCSV.toString(), task.hasProvenance());
+            }
+
         }
     }
 

@@ -115,7 +115,7 @@ public class ExpandTest extends TestCase {
         OldBindings bindings1 = bindingsBuilder.makeBindings1();
 
 
-        expandAndCheck("src/test/resources/templates/template1.provn",
+        expandAndCheck("src/test/resources/templates2/template1.provn",
                 "target/expanded1.provn",
                 bindings1,
                 "target/bindings1.provn",
@@ -129,7 +129,7 @@ public class ExpandTest extends TestCase {
         OldBindings bindings2 = bindingsBuilder.makeBindings2();
 
 
-        expandAndCheck("src/test/resources/templates/template2.provn",
+        expandAndCheck("src/test/resources/templates2/template2.provn",
                 "target/expanded2.provn",
                 bindings2,
                 "target/bindings2.provn",
@@ -143,7 +143,7 @@ public class ExpandTest extends TestCase {
         OldBindings bindings3 = bindingsBuilder.makeBindings3();
 
 
-        expandAndCheck("src/test/resources/templates/template3.provn",
+        expandAndCheck("src/test/resources/templates2/template3.provn",
                 "target/expanded3.provn",
                 bindings3,
                 "target/bindings3.provn",
@@ -159,7 +159,7 @@ public class ExpandTest extends TestCase {
         OldBindings bindings20 = bindingsBuilder.makeBindings20();
 
 
-        expandAndCheck("src/test/resources/templates/template20.provn",
+        expandAndCheck("src/test/resources/templates2/template20.provn",
                 "target/expanded20.provn",
                 bindings20,
                 "target/bindings20.provn",
@@ -175,7 +175,7 @@ public class ExpandTest extends TestCase {
         OldBindings bindings21 = bindingsBuilder.makeBindings21();
 
 
-        expandAndCheck("src/test/resources/templates/template21.provn",
+        expandAndCheck("src/test/resources/templates2/template21.provn",
                 "target/expanded21.provn",
                 bindings21,
                 "target/bindings21.provn",
@@ -191,7 +191,7 @@ public class ExpandTest extends TestCase {
         OldBindings bindings22 = bindingsBuilder.makeBindings22();
 
 
-        expandAndCheck("src/test/resources/templates/template22.provn",
+        expandAndCheck("src/test/resources/templates2/template22.provn",
                 "target/expanded22.provn",
                 bindings22,
                 "target/bindings22.provn",
@@ -207,7 +207,7 @@ public class ExpandTest extends TestCase {
         OldBindings bindings23 = bindingsBuilder.makebindinsg23();
 
 
-        expandAndCheck("src/test/resources/templates/template23.provn",
+        expandAndCheck("src/test/resources/templates2/template23.provn",
                 "target/expanded23.provn",
                 bindings23,
                 "target/bindings23.provn",
@@ -221,7 +221,7 @@ public class ExpandTest extends TestCase {
     public void testExpand25() throws IOException {
         OldBindings bindings25a = bindingsBuilder.makeBindings25a();
 
-            expandAndCheck("src/test/resources/templates/template25.provn",
+            expandAndCheck("src/test/resources/templates2/template25.provn",
                     "target/expanded25a.provn",
                     bindings25a,
                     "target/bindings25a.provn",
@@ -230,7 +230,7 @@ public class ExpandTest extends TestCase {
 
         OldBindings bindings25b = bindingsBuilder.makeBindings25b();
 
-        expandAndCheck("src/test/resources/templates/template25.provn",
+        expandAndCheck("src/test/resources/templates2/template25.provn",
                 "target/expanded25b.provn",
                 bindings25b,
                 "target/bindings25b.provn",
@@ -245,7 +245,7 @@ public class ExpandTest extends TestCase {
         OldBindings bindings10=bindingsBuilder.makeBindings10();
 
 
-        expandAndCheck("src/test/resources/templates/template10.provn",
+        expandAndCheck("src/test/resources/templates2/template10.provn",
                 "target/expanded10.provn",
                 bindings10,
                 "target/bindings10.provn",
@@ -260,7 +260,7 @@ public class ExpandTest extends TestCase {
     public void testExpandQualifiedName() throws IOException {
 
 
-        expandAndCheck("src/test/resources/templates/a_template.provn",
+        expandAndCheck("src/test/resources/templates2/a_template.provn",
                 "src/test/resources/bindings_as_prov/a_bindings.provn",
                     "src/test/resources/bindings/a_bindings.json",
                 "target/a_expanded_template.provn");

@@ -162,8 +162,8 @@ public class BatchExecutor {
     }
 
 
-    void exportProvenanceAsCsv(TemplateTasksBatch templateTasksBatch, ConfigTask task, String template, TemplateIndex outputIndex, List<String> loggedRecords) throws IOException {
-        System.out.println("**** exporting provenance as PROV-CSV to " + task.hasProvenance() + " for index " + outputIndex + " template " + template);
+    void exportProvenanceAsCsv(TemplateTasksBatch templateTasksBatch, ConfigTask task, String templateId, TemplateIndex outputIndex, List<String> loggedRecords) throws IOException {
+        System.out.println("**** exporting provenance as PROV-CSV to " + task.hasProvenance() + " for index " + outputIndex + " template " + templateId);
         if (task.hasProvenance()!=null) {
             Path documentPath = Path.of(templateTasksBatch.output_dir, task.hasProvenance());
             Files.createDirectories(documentPath.getParent());
@@ -174,7 +174,7 @@ public class BatchExecutor {
                 }
             }
             if (outputIndex!=null) {
-                outputIndex.addProvenanceEntry(template, TemplateExtension.PROVCSV.toString(), task.hasProvenance());
+                outputIndex.addProvenanceEntry(templateId, TemplateExtension.PROVCSV.toString(), task.hasProvenance());
             }
 
         }

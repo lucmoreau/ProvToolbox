@@ -46,6 +46,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: LocalEnactor for composites
 * prov-template-compiler: support for template library paths
 * prov-template-compiler: generate linker tables
+* prov-template: fully qualified names for outputs
 
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java

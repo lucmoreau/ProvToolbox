@@ -27,6 +27,7 @@ public class InstantiateTask implements ConfigTask {
     public String template;
     public List<String> template_path;
     public String output;
+    public String outputFullyQualifiedName;
     public String bindings;
     public List<String> formats;
     public Boolean copyinput;
@@ -79,6 +80,9 @@ public class InstantiateTask implements ConfigTask {
             updatedTemplatePath.addAll(templateTasksBatch.template_path);
         }
 
+        String outputId=(outputFullyQualifiedName ==null)?output: outputFullyQualifiedName;
+
+
         TemplateIndexPath templateLibraryPath =new TemplateIndexPath(updatedTemplatePath.stream().map(loc-> new TemplateIndex(loc,true)).collect(Collectors.toList()));
         System.out.println("InstantiateTask: templateLibraryPath=" + templateLibraryPath);
 
@@ -114,7 +118,7 @@ public class InstantiateTask implements ConfigTask {
         for (String format: formats) {
             Path documentPath = Path.of(templateTasksBatch.output_dir, output + "." + format);
 
-            outputIndex.addEntry(output,format, outputIndex.relativize(documentPath).toString());
+            outputIndex.addEntry(outputId,format, outputIndex.relativize(documentPath).toString());
             Files.createDirectories(documentPath.getParent());
             executor.serialize(new FileOutputStream(documentPath.toFile()), format, doc, false);
             if (copyinput != null && copyinput) {
@@ -126,7 +130,7 @@ public class InstantiateTask implements ConfigTask {
         }
 
 
-        executor.exportProvenanceAsCsv(templateTasksBatch, this, output, outputIndex, loggedRecords);
+        executor.exportProvenanceAsCsv(templateTasksBatch, this, outputId, outputIndex, loggedRecords);
 
 
     }

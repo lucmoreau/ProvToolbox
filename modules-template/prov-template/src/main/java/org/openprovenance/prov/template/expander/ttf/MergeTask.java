@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.expander.ttf;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_mergingBean;
@@ -27,6 +26,7 @@ public class MergeTask implements ConfigTask {
     public List<String> inputs;
     public List<String> template_path;
     public String output;
+    public String outputFullyQualifiedName;
     public String bindings;
     public List<String> formats;
     public Boolean copyinput;
@@ -134,6 +134,7 @@ public class MergeTask implements ConfigTask {
 
         TemplateIndex outputIndex=new TemplateIndex(templateTasksBatch.output_dir, true);
 
+        String outputId=(outputFullyQualifiedName ==null)?output: outputFullyQualifiedName;
 
         for (int i=1; i<foundTemplates.size(); i++) {
             File file2 = foundTemplates.get(i);
@@ -142,7 +143,7 @@ public class MergeTask implements ConfigTask {
             for (String format : formats) {
                 Path documentPath = Path.of(templateTasksBatch.output_dir, output + "." + format);
 
-                outputIndex.addEntry(output,format, outputIndex.relativize(documentPath).toString());
+                outputIndex.addEntry(outputId,format, outputIndex.relativize(documentPath).toString());
 
                 executor.serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + output + "." + format), format, doc3, false);
                 String csvRecord = createMergeCsvRecord(format, file1, file2, time, secondsSince2023_01_01);
@@ -150,7 +151,7 @@ public class MergeTask implements ConfigTask {
             }
         }
 
-        executor.exportProvenanceAsCsv(templateTasksBatch, this, output, outputIndex, loggedRecords);
+        executor.exportProvenanceAsCsv(templateTasksBatch, this, outputId, outputIndex, loggedRecords);
 
 
         // option to clean up tmp file

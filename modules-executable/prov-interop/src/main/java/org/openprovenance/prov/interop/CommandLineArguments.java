@@ -12,6 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.DateTimeOption;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TimeZone;
 
 public class CommandLineArguments implements ErrorCodes {
@@ -54,6 +56,9 @@ public class CommandLineArguments implements ErrorCodes {
     public static final String CONFIG = "ttfs";
     public static final String DATE_TIME = "dateTime";
     public static final String TIMEZONE = "timeZone";
+    public static final String TEMPLATE_LIBRARY = "templateLibrary";
+    public static final String INPUT_BASED_DIR="inputBaseDir";
+    public static final String OUTPUT_BASED_DIR="outputBaseDir";
 
     public static final String METRICS = "metrics";
 
@@ -239,7 +244,28 @@ public class CommandLineArguments implements ErrorCodes {
 
 
         Option config = new Option(CONFIG, CONFIG, false, "get configuration");
-    
+
+        Option templateLibrary = Option.builder(TEMPLATE_LIBRARY)
+                .argName("path")
+                .hasArgs()
+                .desc("add given path(s) to template library paths")
+                .longOpt(TEMPLATE_LIBRARY)
+                .build();
+        Option inputBasedDir = Option.builder(INPUT_BASED_DIR)
+                .argName("directory")
+                .hasArg()
+                .desc("input base directory for relative paths")
+                .longOpt(INPUT_BASED_DIR)
+                .build();
+
+        Option outputBasedDir = Option.builder(OUTPUT_BASED_DIR)
+                .argName("directory")
+                .hasArg()
+                .desc("output base directory for relative paths")
+                .longOpt(OUTPUT_BASED_DIR)
+                .build();
+
+
         Options options = new Options();
 
         options.addOption(help);
@@ -277,6 +303,9 @@ public class CommandLineArguments implements ErrorCodes {
         options.addOption(dateTime);
         options.addOption(timeZone);
         options.addOption(metrics);
+        options.addOption(templateLibrary);
+        options.addOption(outputBasedDir);
+        options.addOption(inputBasedDir);
 
         return options;
 
@@ -331,6 +360,10 @@ public class CommandLineArguments implements ErrorCodes {
         DateTimeOption dateTime=DateTimeOption.UTC;
         TimeZone timeZone=null;
         String metrics=null;
+        List<String> templateLibraryPath = null;
+        String inputBaseDir=null;
+        String outputBaseDir=null;
+
 
 
         try {
@@ -409,6 +442,18 @@ public class CommandLineArguments implements ErrorCodes {
                 }
             }
 
+            if (line.hasOption(TEMPLATE_LIBRARY)) {
+                String[] vals = line.getOptionValues(TEMPLATE_LIBRARY);
+                if (vals != null) {
+                    templateLibraryPath = java.util.Arrays.asList(vals);
+                }
+            }
+            if (line.hasOption(INPUT_BASED_DIR)) {
+                inputBaseDir = line.getOptionValue(INPUT_BASED_DIR);
+            }
+            if (line.hasOption(OUTPUT_BASED_DIR)) {
+                outputBaseDir = line.getOptionValue(OUTPUT_BASED_DIR);
+            }
 
             final CommandLineArguments commandLineArguments
                     = new CommandLineArguments( verbose,
@@ -443,7 +488,10 @@ public class CommandLineArguments implements ErrorCodes {
                                                 dateTime,
                                                 timeZone,
                                                 metrics,
-                                                displayQualifiedRelation);
+                                                displayQualifiedRelation,
+                                                inputBaseDir,
+                                                outputBaseDir,
+                                                templateLibraryPath);
             InteropFramework interop=new InteropFramework(commandLineArguments,
                                                           InteropFramework.getDefaultFactory());
             if (listFormatsp) {
@@ -501,11 +549,15 @@ public class CommandLineArguments implements ErrorCodes {
     public final TimeZone timeZone;
     public final String metrics;
     public final boolean displayQualifiedRelation;
+    public List<String> templateLibraryPath = null;
+    public String inputBaseDir=null;
+    public String outputBaseDir=null;
 
     public CommandLineArguments(String verbose, String debug, String logfile,
                                 String infile, String informat, String outfile, String outformat, String namespaces, String title,
                                 String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, boolean builder, String template_builder, String packge, String location, String generator,
-                                String index, String merge, String flatten, String compare, String compareOut, String log2prov, boolean log2kernel, boolean config, DateTimeOption dateTime, TimeZone timeZone, String metrics, boolean displayQualifiedRelation) {
+                                String index, String merge, String flatten, String compare, String compareOut, String log2prov, boolean log2kernel, boolean config, DateTimeOption dateTime, TimeZone timeZone, String metrics, boolean displayQualifiedRelation,
+                                String inputBaseDir, String outputBaseDir, List<String> templateLibraryPath) {
         this.verbose=verbose;
         this.debug=debug;
         this.logfile=logfile;
@@ -539,6 +591,9 @@ public class CommandLineArguments implements ErrorCodes {
         this.timeZone=timeZone;
         this.metrics=metrics;
         this.displayQualifiedRelation=displayQualifiedRelation;
+        this.inputBaseDir=inputBaseDir;
+        this.outputBaseDir=outputBaseDir;
+        this.templateLibraryPath=templateLibraryPath;
         
     }
     public CommandLineArguments() {
@@ -575,6 +630,9 @@ public class CommandLineArguments implements ErrorCodes {
         this.timeZone=null;
         this.metrics=null;
         this.displayQualifiedRelation=false;
+        this.inputBaseDir=null;
+        this.outputBaseDir=null;
+        this.templateLibraryPath=new LinkedList<>();
     }
     
 }

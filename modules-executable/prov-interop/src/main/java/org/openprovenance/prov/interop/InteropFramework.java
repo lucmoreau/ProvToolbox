@@ -528,7 +528,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         } else if (config.template_builder!=null) {
             ConfigProcessor cp=new ConfigProcessor(pFactory);
             // At the moment, the assumption is that base dir is the current directory
-            return cp.processTemplateGenerationConfig(config.template_builder, ".", ".", ".", pFactory);
+            if (config.inputBaseDir==null) {
+                config.inputBaseDir=".";
+            }
+            if (config.outputBaseDir==null) {
+                config.outputBaseDir=".";
+            }
+            return cp.processTemplateGenerationConfig(config.template_builder, config.inputBaseDir, config.outputBaseDir, config.templateLibraryPath, pFactory);
 
         } else if (config.log2prov!=null) {
             try {

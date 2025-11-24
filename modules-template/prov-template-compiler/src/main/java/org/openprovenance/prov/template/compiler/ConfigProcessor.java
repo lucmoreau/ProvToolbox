@@ -160,7 +160,7 @@ public class ConfigProcessor implements Constants {
         this.compilerCatalogueDispatcher=new CompilerCatalogueDispatcher(pFactory);
     }
 
-    public int processTemplateGenerationConfig(String template_builder, String inputBaseDir, String outputBaseDir, String templatePathString, ProvFactory pFactory) {
+    public int processTemplateGenerationConfig(String template_builder, String inputBaseDir, String outputBaseDir, List<String> templatePath, ProvFactory pFactory) {
         TemplatesProjectConfiguration configs;
 
 
@@ -197,7 +197,7 @@ public class ConfigProcessor implements Constants {
 
             //System.out.println("++++++++++++++++++++++ Packages: " + objectMapper.writeValueAsString(packages));
 
-            List<String> templatePath= List.of(templatePathString.split(":"));
+            //List<String> templatePath= List.of(templatePathString.split(":"));
             //System.out.println("---> Using template path: " + templatePath);
 
             Locations locations=new Locations(configs, packages, shortNames, templatePath, cli_src_dir, l2p_src_dir);
@@ -986,7 +986,8 @@ public class ConfigProcessor implements Constants {
         ConfigProcessor cp=new ConfigProcessor(pf);
         String inputBaseDir=args[1];
         String outputBaseDir=args[2];
-        String templatePath=args[3];
+        List<String> templatePath=Arrays.asList(args[3].split(":"));
+
         cp.processTemplateGenerationConfig(args[0],inputBaseDir, outputBaseDir, templatePath, pf);
     }
 

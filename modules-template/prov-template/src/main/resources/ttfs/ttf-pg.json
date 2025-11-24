@@ -8,29 +8,29 @@
     "tasks": [
         {
             "type": "instantiate",
-            "template": "org/openprovenance/templates/generic/operation",
-            "output": "org/openprovenance/templates/pg/pg-capturing",
+            "template": "org/openprovenance/prov/templates/generic/operation",
+            "output": "org/openprovenance/prov/templates/pg/pg-capturing",
             "bindings": "pg-capturing.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "org/openprovenance/templates/pg/prov/prov-pg-capturing.prov-csv"
+            "hasProvenance": "org/openprovenance/prov/templates/pg/prov/prov-pg-capturing.prov-csv"
 
         },
         {
             "type": "instantiate",
-            "template": "org/openprovenance/templates/generic/operation",
-            "output": "org/openprovenance/templates/pg/pg-dropping",
+            "template": "org/openprovenance/prov/templates/generic/operation",
+            "output": "org/openprovenance/prov/templates/pg/pg-dropping",
             "bindings": "pg-dropping.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "org/openprovenance/templates/pg/prov/prov-pg-dropping.prov-csv"
+            "hasProvenance": "org/openprovenance/prov/templates/pg/prov/prov-pg-dropping.prov-csv"
 
         },
         {
             "type": "instantiate",
-            "template": "org/openprovenance/templates/generic/operation",
-            "output": "org/openprovenance/templates/pg/pg-ballcollecting",
+            "template": "org/openprovenance/prov/templates/generic/operation",
+            "output": "org/openprovenance/prov/templates/pg/pg-ballcollecting",
             "bindings": "pg-ballcollecting.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "org/openprovenance/templates/pg/prov/prov-pg-ballcollecting.prov-csv"
+            "hasProvenance": "org/openprovenance/prov/templates/pg/prov/prov-pg-ballcollecting.prov-csv"
 
         }
     ]

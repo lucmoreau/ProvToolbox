@@ -296,6 +296,7 @@ public class CompilerUtil {
             Document doc=(Document)method.invoke(interop,file);
             return doc;
         } catch (java.lang.ClassNotFoundException e) {
+            e.printStackTrace();
             //System.out.println("could not find Interop Framework, falling back on provn");
             return new ProvDeserialiser(pFactory).deserialiseDocument(new FileInputStream(file));
         }

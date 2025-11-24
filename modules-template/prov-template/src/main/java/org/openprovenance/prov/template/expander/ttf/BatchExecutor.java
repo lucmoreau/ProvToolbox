@@ -163,7 +163,7 @@ public class BatchExecutor {
 
 
     void exportProvenanceAsCsv(TemplateTasksBatch templateTasksBatch, ConfigTask task, String templateId, TemplateIndex outputIndex, List<String> loggedRecords) throws IOException {
-        System.out.println("**** exporting provenance as PROV-CSV to " + task.hasProvenance() + " for index " + outputIndex + " template " + templateId);
+        //System.out.println("**** exporting provenance as PROV-CSV to " + task.hasProvenance() + " for index " + outputIndex + " template " + templateId);
         if (task.hasProvenance()!=null) {
             Path documentPath = Path.of(templateTasksBatch.output_dir, task.hasProvenance());
             Files.createDirectories(documentPath.getParent());

@@ -8,46 +8,46 @@
     "tasks": [
         {
             "type": "instantiate",
-            "template": "org/openprovenance/templates/generic/transforming1",
-            "output": "org/openprovenance/templates/generic/forking2",
+            "template": "org/openprovenance/prov/templates/generic/transforming1",
+            "output": "org/openprovenance/prov/templates/generic/forking2",
             "bindings": "forking2.json",
             "formats": ["provn", "png", "svg"],
             "copyinput": false,
-            "hasProvenance": "org/openprovenance/templates/generic/prov/prov-forking2.prov-csv"
+            "hasProvenance": "org/openprovenance/prov/templates/generic/prov/prov-forking2.prov-csv"
         },
         {
             "type": "instantiate",
-            "template": "org/openprovenance/templates/generic/transforming1",
-            "output": "org/openprovenance/templates/generic/joining2",
+            "template": "org/openprovenance/prov/templates/generic/transforming1",
+            "output": "org/openprovenance/prov/templates/generic/joining2",
             "bindings": "joining2.json",
             "formats": ["provn", "png", "svg"],
-            "hasProvenance": "org/openprovenance/templates/generic/prov/prov-joining2.prov-csv"
+            "hasProvenance": "org/openprovenance/prov/templates/generic/prov/prov-joining2.prov-csv"
         },
         {
             "type": "instantiate",
-            "template": "org/openprovenance/templates/generic/transforming1",
-            "output": "org/openprovenance/templates/generic/parallel2",
+            "template": "org/openprovenance/prov/templates/generic/transforming1",
+            "output": "org/openprovenance/prov/templates/generic/parallel2",
             "bindings": "parallel2.json",
             "formats": ["provn", "png", "svg"],
-            "hasProvenance": "org/openprovenance/templates/generic/prov/prov-parallel2.prov-csv"
+            "hasProvenance": "org/openprovenance/prov/templates/generic/prov/prov-parallel2.prov-csv"
         },
         {
             "type": "instantiate",
-            "template": "org/openprovenance/templates/generic/transforming1",
-            "output": "org/openprovenance/templates/generic/product2-2",
+            "template": "org/openprovenance/prov/templates/generic/transforming1",
+            "output": "org/openprovenance/prov/templates/generic/product2-2",
             "bindings": "product2-2.json",
             "formats": ["provn", "png", "svg"],
-            "hasProvenance": "org/openprovenance/templates/generic/prov/prov-product2-2.prov-csv"
+            "hasProvenance": "org/openprovenance/prov/templates/generic/prov/prov-product2-2.prov-csv"
 
         },
         {
             "type": "instantiate",
-            "template": "org/openprovenance/templates/generic/joining2",
+            "template": "org/openprovenance/prov/templates/generic/joining2",
             "template_path": ["target/generated-templates"],
-            "output": "org/openprovenance/templates/generic/binaryop",
+            "output": "org/openprovenance/prov/templates/generic/binaryop",
             "bindings": "binaryop.json",
             "formats": ["provn", "png", "svg"],
-            "hasProvenance": "org/openprovenance/templates/generic/prov/prov-binaryop.prov-csv"
+            "hasProvenance": "org/openprovenance/prov/templates/generic/prov/prov-binaryop.prov-csv"
         }
     ]
 

@@ -25,6 +25,11 @@
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-interop</artifactId>
+            <version>2.2.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template-compiler</artifactId>
             <version>2.2.2-SNAPSHOT</version>
         </dependency>

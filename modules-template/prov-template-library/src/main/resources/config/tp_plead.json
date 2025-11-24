@@ -19,7 +19,7 @@
         {
             "@type": "simple",
             "name": "plead_transforming",
-            "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadTransforming",
+            "fullyQualifiedName": "org/openprovenance/prov/templates/plead/plead-transforming",
             "template": "org/openprovenance/prov/templates/plead/plead-transforming",
             "package": "org.openprovenance.prov.template.library.plead",
             "bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-transforming.json"
@@ -70,7 +70,7 @@
             "@type": "composite",
             "name": "plead_transforming_composite",
             "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadTransformingComposite",
-            "consistsOf": "org.openprovenance.prov.template.library.plead.PleadTransforming",
+            "consistsOf": "org/openprovenance/prov/templates/plead/plead-transforming",
             "package": "org.openprovenance.prov.template.library.plead",
             "sharing": ["transformed_file", "transforming"]
         }

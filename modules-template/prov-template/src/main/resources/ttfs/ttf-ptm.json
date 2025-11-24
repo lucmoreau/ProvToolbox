@@ -8,29 +8,29 @@
     "tasks": [
         {
             "type": "instantiate",
-            "template": "org/openprovenance/templates/generic/parallel2",
-            "output": "org/openprovenance/templates/ptm/ptm-expanding",
+            "template": "org/openprovenance/prov/templates/generic/parallel2",
+            "output": "org/openprovenance/prov/templates/ptm/ptm-expanding",
             "bindings": "ptm-expanding.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "org/openprovenance/templates/ptm/prov/prov-ptm-expanding.prov-csv"
+            "hasProvenance": "org/openprovenance/prov/templates/ptm/prov/prov-ptm-expanding.prov-csv"
 
         },
         {
             "type": "instantiate",
-            "template": "org/openprovenance/templates/generic/parallel2",
-            "output": "org/openprovenance/templates/ptm/ptm-merging",
+            "template": "org/openprovenance/prov/templates/generic/parallel2",
+            "output": "org/openprovenance/prov/templates/ptm/ptm-merging",
             "bindings": "ptm-merging.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "org/openprovenance/templates/ptm/prov/prov-ptm-merging.prov-csv"
+            "hasProvenance": "org/openprovenance/prov/templates/ptm/prov/prov-ptm-merging.prov-csv"
 
         },
         {
             "type": "instantiate",
-            "template": "org/openprovenance/templates/generic/parallel2",
-            "output": "org/openprovenance/templates/ptm/ptm-mexpanding",
+            "template": "org/openprovenance/prov/templates/generic/parallel2",
+            "output": "org/openprovenance/prov/templates/ptm/ptm-mexpanding",
             "bindings": "ptm-mexpanding.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "org/openprovenance/templates/ptm/prov/prov-ptm-mexpanding.prov-csv"
+            "hasProvenance": "org/openprovenance/prov/templates/ptm/prov/prov-ptm-mexpanding.prov-csv"
 
         }
     ]

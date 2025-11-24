@@ -198,7 +198,7 @@ public class ConfigProcessor implements Constants {
             //System.out.println("++++++++++++++++++++++ Packages: " + objectMapper.writeValueAsString(packages));
 
             List<String> templatePath= List.of(templatePathString.split(":"));
-            System.out.println("---> Using template path: " + templatePath);
+            //System.out.println("---> Using template path: " + templatePath);
 
             Locations locations=new Locations(configs, packages, shortNames, templatePath, cli_src_dir, l2p_src_dir);
 
@@ -749,6 +749,7 @@ public class ConfigProcessor implements Constants {
             if (consistsOf==null) buildJoinTable(templateFullyQualifiedName, bindingsSchema);
 
 
+            //System.out.println("Generating for template: " + templateName + " fully qualified name: " + templateFullyQualifiedName + " package: " + packageName );
             IndexedDocument indexed = makeIndexedDocument(doc);
             u.getBundle(doc).get(0).getStatement().clear();
             u.getBundle(doc).get(0).getStatement().addAll(u.getStatement(indexed.toDocument()));

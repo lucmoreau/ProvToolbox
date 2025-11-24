@@ -88,7 +88,7 @@ public class CompilerTest extends TestCase {
         shortNames.put(config.fullyQualifiedName, config.name);
         System.out.println("#### packages: " + packages);
 
-        List<String> templatePath=List.of("src/test/resources/templates");
+        List<String> templatePath=List.of("src/test/resources/templates3");
 
         Locations locations=new Locations(configs, packages, shortNames, templatePath, cli_src_dir, l2p_src_dir);
 

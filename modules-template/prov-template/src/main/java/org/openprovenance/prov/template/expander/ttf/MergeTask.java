@@ -82,7 +82,7 @@ public class MergeTask implements ConfigTask {
         }
 
         TemplateIndexPath templateLibraryPath =new TemplateIndexPath(updatedTemplatePath.stream().map(loc-> new TemplateIndex(loc,true)).collect(Collectors.toList()));
-        System.out.println("MergeTask: templateLibraryPath=" + templateLibraryPath);
+        //System.out.println("MergeTask: templateLibraryPath=" + templateLibraryPath);
 
 
         /*
@@ -102,7 +102,7 @@ public class MergeTask implements ConfigTask {
             return templateFile;
         }).collect(Collectors.toList());
 
-        System.out.println("MergeTask: foundTemplate=" + foundTemplates);
+        //System.out.println("MergeTask: foundTemplate=" + foundTemplates);
 
 
         //Pair<FileInputStream,File> fileinDirs1 = executor.findFileinDirs2(updatedTemplatePath, input);
@@ -122,9 +122,9 @@ public class MergeTask implements ConfigTask {
         List<String> loggedRecords=new LinkedList<>();
 
         long secondsSince2023_01_01 = (System.currentTimeMillis() - 1672531200000L);
-        String time=executor.pf.newTimeNow().toString();
+        String time= BatchExecutor.pf.newTimeNow().toString();
 
-        IndexedDocument iDocument=new IndexedDocument(executor.pf,new org.openprovenance.prov.vanilla.Document(),false);
+        IndexedDocument iDocument=new IndexedDocument(BatchExecutor.pf,new org.openprovenance.prov.vanilla.Document(),false);
         for (Document doc: docs) {
             iDocument.merge(doc);
         }

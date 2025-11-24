@@ -84,7 +84,7 @@ public class InstantiateTask implements ConfigTask {
 
 
         TemplateIndexPath templateLibraryPath =new TemplateIndexPath(updatedTemplatePath.stream().map(loc-> new TemplateIndex(loc,true)).collect(Collectors.toList()));
-        System.out.println("InstantiateTask: templateLibraryPath=" + templateLibraryPath);
+        //System.out.println("InstantiateTask: templateLibraryPath=" + templateLibraryPath);
 
 
         Pair<FileInputStream, File> pair=executor.findFileinDirs2(templateTasksBatch.bindings_path, bindings);
@@ -101,7 +101,7 @@ public class InstantiateTask implements ConfigTask {
         File templateFile=new File(foundTemplate);
 
 
-        System.out.println("InstantiateTask: foundTemplate=" + foundTemplate);
+        //System.out.println("InstantiateTask: foundTemplate=" + foundTemplate);
         //Pair<FileInputStream, File> fileinDirs = executor.findFileinDirs2(the_template_path, template);
         //System.out.println("InstantiateTask: fileInDirs=" + fileinDirs.getRight().getAbsolutePath());
 

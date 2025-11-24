@@ -659,7 +659,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                         logger.error("WARNING: project configuration not initialized, using empty configuration");
                         Map<String, String> packages = new HashMap<>();
                         Map<String, String> shortNames = new HashMap<>();
-                        Locations locations = new Locations(configs, packages, shortNames, null, null);
+                        List<String> templateLibraryPath = List.of(".");
+                        Locations locations = new Locations(configs, packages, shortNames, templateLibraryPath, null, null);
 
                         logger.error("WARNING: private short name instead of qualified name");
 

@@ -20,7 +20,7 @@
     <fileSets>
         <fileSet>
             <directory>${project.build.directory}/generated-templates</directory>
-            <outputDirectory>prov-template-library/templates/</outputDirectory>
+            <outputDirectory>${mini.template.library.folder}/templates/</outputDirectory>
             <fileMode>755</fileMode>
             <excludes>
                 <exclude>**/assembly.xml</exclude>
@@ -32,7 +32,7 @@
 
         <fileSet>
             <directory>${project.basedir}/src/main/resources/meta/metatemplates</directory>
-            <outputDirectory>prov-template-library/templates/org/openprovenance/prov/templates/meta/</outputDirectory>
+            <outputDirectory>${mini.template.library.folder}/templates/org/openprovenance/prov/templates/meta/</outputDirectory>
             <fileMode>755</fileMode>
             <excludes>
                 <exclude>**/assembly.xml</exclude>
@@ -44,7 +44,7 @@
 
         <fileSet>
             <directory>${project.basedir}/src/main/resources/meta/metabindings</directory>
-            <outputDirectory>prov-template-library/mbindings/org/openprovenance/prov/templates/meta/generic</outputDirectory>
+            <outputDirectory>${mini.template.library.folder}/mbindings/org/openprovenance/prov/templates/meta/generic</outputDirectory>
             <fileMode>755</fileMode>
             <excludes>
                 <exclude>**/assembly.xml</exclude>
@@ -56,7 +56,7 @@
 
         <fileSet>
             <directory>${project.basedir}/src/main/resources/meta/pleadbindings</directory>
-            <outputDirectory>prov-template-library/mbindings/org/openprovenance/prov/templates/meta/plead</outputDirectory>
+            <outputDirectory>${mini.template.library.folder}/mbindings/org/openprovenance/prov/templates/meta/plead</outputDirectory>
             <fileMode>755</fileMode>
             <excludes>
                 <exclude>**/assembly.xml</exclude>
@@ -68,7 +68,7 @@
 
         <fileSet>
             <directory>${project.basedir}/src/main/resources/meta/ptmbindings</directory>
-            <outputDirectory>prov-template-library/mbindings/org/openprovenance/prov/templates/meta/ptm</outputDirectory>
+            <outputDirectory>${mini.template.library.folder}/mbindings/org/openprovenance/prov/templates/meta/ptm</outputDirectory>
             <fileMode>755</fileMode>
             <excludes>
                 <exclude>**/assembly.xml</exclude>

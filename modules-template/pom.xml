@@ -19,4 +19,8 @@
         <module>prov-template-library</module>
     </modules>
 
+    <properties>
+        <mini.template.library.folder>mini-template-library</mini.template.library.folder>
+    </properties>
+
 </project>

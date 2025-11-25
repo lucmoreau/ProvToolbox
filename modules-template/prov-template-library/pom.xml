@@ -43,10 +43,11 @@
     </dependencies>
 
     <properties>
-        <meta-inf-webjars>META-INF/resources/webjars</meta-inf-webjars>
         <package.name>template_library</package.name>
         <package.name.cli>${package.name}_cli</package.name.cli>
         <package.name.l2p>${package.name}_l2p</package.name.l2p>
+        <meta-inf-prefix>META-INF/resources/webjars</meta-inf-prefix>
+        <meta-inf.webjars>${meta-inf-prefix}/${project.artifactId}/${project.version}</meta-inf.webjars>
     </properties>
 
     <build>
@@ -124,7 +125,7 @@
                                 <argument>src/main/resources/config/tp_plead.json</argument>
                                 <argument>${project.basedir}</argument>
                                 <argument>${project.basedir}</argument>
-                                <argument>${project.build.directory}/prov-template-library/templates</argument>
+                                <argument>${project.build.directory}/${mini.template.library.folder}/templates</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -142,7 +143,7 @@
                                 <argument>src/main/resources/config/tp_ptm.json</argument>
                                 <argument>${project.basedir}</argument>
                                 <argument>${project.basedir}</argument>
-                                <argument>${project.build.directory}/prov-template-library/templates</argument>
+                                <argument>${project.build.directory}/${mini.template.library.folder}/templates</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -162,7 +163,7 @@
                                 <argument>src/main/resources/config/tp_pg.json</argument>
                                 <argument>${project.basedir}</argument>
                                 <argument>${project.basedir}</argument>
-                                <argument>${project.build.directory}/prov-template-library/templates</argument>
+                                <argument>${project.build.directory}/${mini.template.library.folder}/templates</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -322,32 +323,32 @@
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/js</directory>
-                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/js</targetPath>
+                                    <targetPath>${meta-inf.webjars}/js</targetPath>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/js</directory>
-                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/js</targetPath>
+                                    <targetPath>${meta-inf.webjars}/js</targetPath>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/ts</directory>
-                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/ts</targetPath>
+                                    <targetPath>${meta-inf.webjars}/ts</targetPath>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/bindings</directory>
-                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/bindings</targetPath>
+                                    <targetPath>${meta-inf.webjars}/bindings</targetPath>
                                 </resource>
                                 <resource>
-                                    <directory>${project.build.directory}/prov-template-library/templates</directory>
-                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/templates</targetPath>
+                                    <directory>${project.build.directory}/${mini.template.library.folder}/templates</directory>
+                                    <targetPath>${meta-inf.webjars}/templates</targetPath>
                                 </resource>
                                 <resource>
-                                    <directory>${project.build.directory}/prov-template-library/mbindings</directory>
-                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/mbindings</targetPath>
+                                    <directory>${project.build.directory}/${mini.template.library.folder}/mbindings</directory>
+                                    <targetPath>${meta-inf.webjars}/mbindings</targetPath>
                                 </resource>
 
                                 <resource>
                                     <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/css</directory>
-                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/css</targetPath>
+                                    <targetPath>${meta-inf.webjars}/css</targetPath>
                                     <includes>
                                         <include>*.css</include>
                                     </includes>
@@ -355,7 +356,7 @@
 
                                 <resource>
                                     <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/resources</directory>
-                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/schema</targetPath>
+                                    <targetPath>${meta-inf.webjars}/schema</targetPath>
                                     <includes>
                                         <include>*.json</include>
                                     </includes>
@@ -363,7 +364,7 @@
 
                                 <resource>
                                     <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/resources</directory>
-                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/sql</targetPath>
+                                    <targetPath>${meta-inf.webjars}/sql</targetPath>
                                     <includes>
                                         <include>*.sql</include>
                                     </includes>
@@ -371,8 +372,8 @@
 
 
                                 <resource>
-                                    <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/resources/${meta-inf-webjars}/${package.name.cli}/0.1.0/html</directory>
-                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/html</targetPath>
+                                    <directory>${project.build.directory}/${package.name}/${package.name.cli}/src/main/resources/${meta-inf-prefix}/${package.name.cli}/0.1.0/html</directory>
+                                    <targetPath>${meta-inf.webjars}/html</targetPath>
                                     <includes>
                                         <include>*.html</include>
                                     </includes>

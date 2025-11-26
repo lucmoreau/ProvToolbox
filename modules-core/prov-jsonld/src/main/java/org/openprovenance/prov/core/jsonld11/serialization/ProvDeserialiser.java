@@ -9,13 +9,11 @@ import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomAttributeDeserializer;
-import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomBundleDeserializer;
-import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomNamespaceDeserializer;
-import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomXMLGregorianCalendarDeserializer;
+import org.openprovenance.prov.core.jsonld11.serialization.deserial.*;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.vanilla.Bundle;
 import org.openprovenance.prov.vanilla.Document;
@@ -98,6 +96,7 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
         MapType mapType2 = typeFactory.constructMapType(HashMap.class, String.class, Object.class);
         ArrayType arrayType=typeFactory.constructArrayType(mapType2);
 
+        module.addKeyDeserializer(QualifiedName.class, new CustomKeyDeserializer());
         module.addDeserializer(Namespace.class, newCustomNamespaceDeserializer(arrayType));
         module.addDeserializer(Bundle.class, new CustomBundleDeserializer());
         module.addDeserializer(Attribute.class, new CustomAttributeDeserializer());

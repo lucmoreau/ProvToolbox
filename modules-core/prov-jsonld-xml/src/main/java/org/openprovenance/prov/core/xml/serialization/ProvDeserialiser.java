@@ -5,12 +5,10 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.openprovenance.prov.core.xml.serialization.deserial.CustomAttributeSetDeserializer;
-import org.openprovenance.prov.core.xml.serialization.deserial.CustomBundleDeserializer;
-import org.openprovenance.prov.core.xml.serialization.deserial.CustomXMLGregorianCalendarDeserializer;
-import org.openprovenance.prov.core.xml.serialization.deserial.StatementsHandler;
+import org.openprovenance.prov.core.xml.serialization.deserial.*;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.vanilla.Bundle;
 import org.openprovenance.prov.vanilla.Document;
 import org.openprovenance.prov.vanilla.ProvFactory;
@@ -68,6 +66,8 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
         module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
         module.addDeserializer(XMLGregorianCalendar.class, new CustomXMLGregorianCalendarDeserializer(dateTimeOption,optionalTimeZone));
         module.addDeserializer(Bundle.class, new CustomBundleDeserializer());
+        module.addKeyDeserializer(QualifiedName.class, new CustomKeyDeserializer());
+
         mapper.registerModule(module);
         provMixin.addProvMixin(mapper);
         return mapper;

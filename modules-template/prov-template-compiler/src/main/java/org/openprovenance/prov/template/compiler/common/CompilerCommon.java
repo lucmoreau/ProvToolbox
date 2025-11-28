@@ -95,6 +95,8 @@ public class CompilerCommon {
 
         builder.addMethod(generateNameAccessor(templateName));
         builder.addMethod(generateFullyQualifiedNameAccessor(templateFullyQualifiedName));
+        builder.addMethod(generateTemplateNameAccessor(templateFullyQualifiedName,locations));
+        builder.addMethod(generateCBindingsAccessor(templateFullyQualifiedName,locations));
 
         builder.addMethod(generatePropertyOrderMethod());
 
@@ -124,7 +126,7 @@ public class CompilerCommon {
         }
 
         if (beanKind==BeanKind.SIMPLE) {
-            builder.addMethod(generateCommonCSVConverterMethod_aux(configs, locations, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
+            builder.addMethod(generateCommonCSVConverterMethod_aux(locations, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
             builder.addMethod(generateCommonSQLConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
             builder.addMethod(generateArgsToRecordMethod(templateName, packageName, bindingsSchema));
             builder.addMethod(generateProcessorConverter(templateName, packageName, bindingsSchema, BeanDirection.COMMON));
@@ -177,7 +179,7 @@ public class CompilerCommon {
             builder.addMethod(generateCompulsoryInputsMethod());
             builder.addMethod(generateInputsMethod());
 
-            builder.addMethod(generateFactoryMethodToBeanWithArray(configs,locations,"toBean", templateName, packageName, bindingsSchema, BeanDirection.COMMON, null, null));
+            builder.addMethod(generateFactoryMethodToBeanWithArray(locations,"toBean", templateName, packageName, bindingsSchema, BeanDirection.COMMON, null, null));
 
 
             builder.addMethod(generateFactoryMethodWithBean(templateName, packageName, bindingsSchema));
@@ -196,11 +198,11 @@ public class CompilerCommon {
 
             builder.addField(generateField4aArgs2CsvConverter(name,templateName,packageName));
             builder.addMethod(generateCommonMethod2PureCsv(templateName, templateFullyQualifiedName, bindingsSchema, consistsOf));
-            builder.addMethod(generateCommonCSVConverterMethod_aux(configs, locations, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
+            builder.addMethod(generateCommonCSVConverterMethod_aux(locations, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
             builder.addMethod(generateNullOutputsMethod());
             builder.addMethod(generateNullInputsMethod());
 
-            builder.addMethod(generateArgsToRecordMethodComposite(configs, locations, templateName, packageName, compilerUtil.loggerName(templateName), bindingsSchema, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
+            builder.addMethod(generateArgsToRecordMethodComposite(locations, templateName, packageName, compilerUtil.loggerName(templateName), bindingsSchema, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
             builder.addField(generateField4aArgs2Records(name,templateName,packageName));
 
         }
@@ -240,8 +242,7 @@ public class CompilerCommon {
         return Pair.of(specFile, successorTable);
     }
 
-    private MethodSpec generateArgsToRecordMethodComposite(TemplatesProjectConfiguration configs,
-                                                           Locations locations,
+    private MethodSpec generateArgsToRecordMethodComposite(Locations locations,
                                                            String templateName,
                                                            String packageName,
                                                            String loggerName,
@@ -345,9 +346,9 @@ public class CompilerCommon {
 
 
     public MethodSpec generateNameAccessor(String templateName) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("getName")
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(GET_NAME)
                 .addModifiers(Modifier.PUBLIC)
-                //.addAnnotation(Override.class)
+               // .addAnnotation(Override.class)
                 .returns(String.class);
         compilerUtil.specWithComment(builder);
 
@@ -355,7 +356,7 @@ public class CompilerCommon {
         return builder.build();
     }
     public MethodSpec generateFullyQualifiedNameAccessor(String fullyQualifiedTemplateName) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("getFullyQualifiedName")
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(GET_FULLY_QUALIFIED_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 //.addAnnotation(Override.class)
                 .returns(String.class);
@@ -365,6 +366,27 @@ public class CompilerCommon {
         return builder.build();
     }
 
+    public MethodSpec generateTemplateNameAccessor(String fullyQualifiedTemplateName, Locations locations) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(GET_TEMPLATE_NAME)
+                .addModifiers(Modifier.PUBLIC)
+                //.addAnnotation(Override.class)
+                .returns(String.class);
+        compilerUtil.specWithComment(builder);
+        builder.addStatement("return $S", locations.getTemplateRegistrations().get(fullyQualifiedTemplateName));
+        return builder.build();
+    }
+
+    public MethodSpec generateCBindingsAccessor(String fullyQualifiedTemplateName, Locations locations) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(GET_CBINDINGS)
+                .addModifiers(Modifier.PUBLIC)
+                //.addAnnotation(Override.class)
+                .returns(String.class);
+        compilerUtil.specWithComment(builder);
+        builder.addStatement("return $S", locations.getCbindingsRegistrations().get(fullyQualifiedTemplateName));
+        return builder.build();
+    }
+
+
     public MethodSpec generateLoggerMethod(String template, String templateFullyQualifiedName, TemplateBindingsSchema bindingsSchema) {
         return generateLoggerMethod(template, templateFullyQualifiedName, bindingsSchema, true, null);
     }
@@ -372,7 +394,7 @@ public class CompilerCommon {
         return generateLoggerMethod(template, templateFullyQualifiedName, bindingsSchema, false, consistsOf);
     }
 
-    public MethodSpec generateCommonCSVConverterMethod_aux(TemplatesProjectConfiguration configs, Locations locations, String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, String consistsOf, String loggerPackage, String logger) {
+    public MethodSpec generateCommonCSVConverterMethod_aux(Locations locations, String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, String consistsOf, String loggerPackage, String logger) {
         final TypeName processorClassName = processorClassType(template, packge,ClassName.get(String.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.ARGS_CSV_CONVERSION_METHOD)
@@ -1872,7 +1894,7 @@ public class CompilerCommon {
 
         return method;
     }
-    public MethodSpec generateFactoryMethodToBeanWithArray(TemplatesProjectConfiguration configs, Locations locations, String toBean, String template, String packge, TemplateBindingsSchema bindingsSchema, BeanDirection direction, String extension, List<String> shared) {
+    public MethodSpec generateFactoryMethodToBeanWithArray(Locations locations, String toBean, String template, String packge, TemplateBindingsSchema bindingsSchema, BeanDirection direction, String extension, List<String> shared) {
         if (extension!=null) {
             String shortName=locations.getShortNames().get(template);
             template=shortName;

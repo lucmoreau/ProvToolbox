@@ -359,9 +359,9 @@ public class CompilerUtil {
 
     public JsonNode get_bindings_schema(SimpleTemplateCompilerConfig config) {
         JsonNode bindings_schema=null;
-        if (config.bindings != null) {
+        if (config.cbindings != null) {
             try {
-                bindings_schema = objectMapper.readTree(new File(config.bindings));
+                bindings_schema = objectMapper.readTree(new File(config.cbindings));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -374,21 +374,21 @@ public class CompilerUtil {
 
 
     public TemplateBindingsSchema getBindingsSchema(SimpleTemplateCompilerConfig config) {
-        if (bindingsSchemaCache.containsKey(config.bindings)) {
-            return bindingsSchemaCache.get(config.bindings);
+        if (bindingsSchemaCache.containsKey(config.cbindings)) {
+            return bindingsSchemaCache.get(config.cbindings);
         } else {
-            TemplateBindingsSchema bindingsSchema = getBindingsSchema(config.bindings);
-            bindingsSchemaCache.put(config.bindings, bindingsSchema);
+            TemplateBindingsSchema bindingsSchema = getBindingsSchema(config.cbindings);
+            bindingsSchemaCache.put(config.cbindings, bindingsSchema);
             return bindingsSchema;
         }
     }
 
     public TemplateBindingsSchema getBindingsSchema(SimpleTemplateCompilerConfig config, String baseDir) {
-        if (bindingsSchemaCache.containsKey(config.bindings)) {
-            return bindingsSchemaCache.get(config.bindings);
+        if (bindingsSchemaCache.containsKey(config.cbindings)) {
+            return bindingsSchemaCache.get(config.cbindings);
         } else {
-            TemplateBindingsSchema bindingsSchema = getBindingsSchema(addBaseDirIfRelative(config.bindings,baseDir));
-            bindingsSchemaCache.put(config.bindings, bindingsSchema);
+            TemplateBindingsSchema bindingsSchema = getBindingsSchema(addBaseDirIfRelative(config.cbindings,baseDir));
+            bindingsSchemaCache.put(config.cbindings, bindingsSchema);
             return bindingsSchema;
         }
     }

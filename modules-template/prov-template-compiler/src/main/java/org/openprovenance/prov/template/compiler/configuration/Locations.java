@@ -28,6 +28,8 @@ public class Locations {
     private final TemplateIndexPath templateLibraryPath;
     private final Map<String, String> templateLocations=new HashMap<>();
     private final Map<String, Map<String,String>> linkerTableDeclarations=new HashMap<>();
+    private final Map<String,String> templateRegistrations=new HashMap<>();
+    private final Map<String,String> cbindingsRegistrations=new HashMap<>();
 
     public Locations(TemplatesProjectConfiguration configs, Map<String, String> packages, Map<String, String> shortNames, List<String> templateLibraryPath, String cli_src_dir, String l2p_src_dir) {
         this.configs=configs;
@@ -233,5 +235,18 @@ public class Locations {
     }
     public Map<String, Map<String, String>> getLinkerTableDeclarations() {
         return linkerTableDeclarations;
+    }
+
+    public void registerTemplate(String fullyQualifiedName, String template) {
+        templateRegistrations.put(fullyQualifiedName, template);
+    }
+    public Map<String, String> getTemplateRegistrations() {
+        return templateRegistrations;
+    }
+    public void registerCBindings(String fullyQualifiedName, String cbindings) {
+        cbindingsRegistrations.put(fullyQualifiedName, cbindings);
+    }
+    public Map<String, String> getCbindingsRegistrations() {
+        return cbindingsRegistrations;
     }
 }

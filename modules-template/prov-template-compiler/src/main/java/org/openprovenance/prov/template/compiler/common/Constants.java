@@ -15,6 +15,9 @@ public interface Constants {
     String GET_SUCCESSOR_METHOD = "getSuccessors";
     String GET_TYPED_SUCCESSOR_METHOD = "getTypedSuccessors";
     String GET_NAME = "getName";
+    String GET_FULLY_QUALIFIED_NAME = "getFullyQualifiedName";
+    String GET_TEMPLATE_NAME = "getTemplateName";
+    String GET_CBINDINGS = "getCBindings";
     String LOGGER_INTERFACE = "LoggerInterface";
     String INPUT_OUTPUT_PROCESSOR = "InputOutputProcessor";
     String INPUT_PROCESSOR = "InputProcessor";

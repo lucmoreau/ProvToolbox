@@ -9,11 +9,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/webjar/MyParameter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/webjar/WebjarPreparer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/webjar/configs/BindingsConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/webjar/configs/CBindingsConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/webjar/configs/CssConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/webjar/configs/HtmlConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/webjar/configs/JsConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/webjar/configs/SchemaConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/webjar/configs/SqlConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/webjar/configs/TemplateConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/webjar/configs/TsConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/assembly.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/assembly.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerDocumentation.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerDocumentation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/CompilerCommon.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/CompilerCommon.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/configuration/Locations.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/configuration/Locations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/configuration/SimpleTemplateCompilerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/configuration/SimpleTemplateCompilerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/integration/CompilerIntegrator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/integration/CompilerIntegrator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/js/TemplateManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/js/TemplateManager.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template/compiler/test/CompilerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template/compiler/test/CompilerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/project/CatalogueValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/project/CatalogueValidator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,8 +76,8 @@
         <option value="HTML File" />
         <option value="module-info" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="Exception" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -161,6 +183,7 @@
     "JUnit.PleadWorkflowIT.testPleadLocal.executor": "Run",
     "JUnit.PleadWorkflowIT.testPleadRemote.executor": "Run",
     "JUnit.RoundTripFromJavaJSONLD11Test.executor": "Run",
+    "JUnit.RoundTripFromJavaJSONTest (1).executor": "Run",
     "JUnit.RoundTripFromJavaMongoTest.executor": "Run",
     "JUnit.StorageTest.testExample.executor": "Debug",
     "JUnit.TriangleTest.executor": "Run",
@@ -203,7 +226,7 @@
     "run.code.analysis.last.selected.profile": "pProject Default",
     "scala_project_settings_configurable.last_selected_tab_index": "0",
     "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
+    "ts.external.directory.path": "/Users/luc/Library/Application Support/JetBrains/IntelliJIdea2025.2/plugins/javascript-plugin/jsLanguageServicesImpl/external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -219,11 +242,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.plugin.webjar" />
       <recent name="org.openprovenance.prov.template.utils" />
       <recent name="org.openprovenance.prov.rules" />
       <recent name="org.openprovenance.prov.service.metrics" />
       <recent name="org.openprovenance.prov.model.builder" />
-      <recent name="org.openprovenance.prov.service.core.config" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/ttfs" />
@@ -268,14 +291,14 @@
       <recent name="org.openprovenance.prov.scala.nf" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.plugin.webjar.configs" />
+      <recent name="org.openprovenance.plugin.webjar" />
       <recent name="org.openprovenance.prov.template.utils" />
       <recent name="org.openprovenance.prov.template.compiler" />
       <recent name="org.openprovenance.prov.model.interop" />
-      <recent name="org.openprovenance.plugin.toolbox" />
-      <recent name="org.openprovenance.prov.template.expander.meta" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.OrderingTest.testConstraintsSpecialization1">
+  <component name="RunManager" selected="JUnit.RoundTripFromJavaJSONTest (1)">
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -360,58 +383,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MetricsTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="service-metrics" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.service.metrics.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.metrics" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.metrics.MetricsTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MetricsTest.testMetrics" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="service-metrics" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.service.metrics.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.metrics" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.metrics.MetricsTest" />
-      <option name="METHOD_NAME" value="testMetrics" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="OrderingTest.testConstraintsSpecialization1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-validation" />
       <extension name="coverage">
@@ -438,51 +409,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
+    <configuration name="PC1FullTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-jsonld" />
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
-      <module name="prov-jsonld" />
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ValidateTest.testFailingDocumentPicaso" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-validation" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.validation.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.core.json.test.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -496,10 +427,102 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.validation" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.validation.ValidateTest" />
-      <option name="METHOD_NAME" value="testFailingDocumentPicaso" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json.test" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.test.PC1FullTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoundTripFromJavaJSONLD11Test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-jsonld" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.core.jsonld11.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.jsonld11.test" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.jsonld11.test.RoundTripFromJavaJSONLD11Test" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoundTripFromJavaJSONTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-jsonld" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.core.json.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json.test" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.test.RoundTripFromJavaJSONTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
+      <module name="prov-jsonld" />
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
+      <module name="prov-jsonld" />
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -623,20 +646,20 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
+      <item itemvalue="JUnit.PC1FullTest" />
+      <item itemvalue="JUnit.RoundTripFromJavaJSONLD11Test" />
+      <item itemvalue="JUnit.RoundTripFromJavaJSONTest (1)" />
       <item itemvalue="JUnit.OrderingTest.testConstraintsSpecialization1" />
       <item itemvalue="JUnit.DerivationBuilderTest.testBuild" />
-      <item itemvalue="JUnit.MetricsTest" />
-      <item itemvalue="JUnit.MetricsTest.testMetrics" />
-      <item itemvalue="JUnit.ValidateTest.testFailingDocumentPicaso" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.RoundTripFromJavaJSONTest (1)" />
+        <item itemvalue="JUnit.RoundTripFromJavaJSONLD11Test" />
+        <item itemvalue="JUnit.PC1FullTest" />
         <item itemvalue="JUnit.OrderingTest.testConstraintsSpecialization1" />
         <item itemvalue="JUnit.DerivationBuilderTest.testBuild" />
-        <item itemvalue="JUnit.MetricsTest" />
-        <item itemvalue="JUnit.MetricsTest.testMetrics" />
-        <item itemvalue="JUnit.ValidateTest.testFailingDocumentPicaso" />
       </list>
     </recent_temporary>
   </component>
@@ -1125,7 +1148,8 @@
       <workItem from="1760370464975" duration="203326000" />
       <workItem from="1762791328447" duration="62691000" />
       <workItem from="1763121485776" duration="47219000" />
-      <workItem from="1763380296994" duration="74724000" />
+      <workItem from="1763380296994" duration="104538000" />
+      <workItem from="1764151233491" duration="26636000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

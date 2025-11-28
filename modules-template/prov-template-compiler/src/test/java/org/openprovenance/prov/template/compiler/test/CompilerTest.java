@@ -97,10 +97,14 @@ public class CompilerTest extends TestCase {
 
             SimpleTemplateCompilerConfig aconfig=(SimpleTemplateCompilerConfig)config;
 
+            locations.registerTemplate(aconfig.fullyQualifiedName,aconfig.template);
+            locations.registerCBindings(config.fullyQualifiedName, aconfig.cbindings);
+
+
             // note, given that we have not built the Interop framework, we have to read the document ourselves
             cp.doGenerateServerForEntry1(u.readDocument(aconfig.template, pf), aconfig, configs, locations, cli_src_dir, l2p_src_dir, cli_webjar_dir);
             FileUtils.copyFileToDirectory(new File(aconfig.template), new File(cli_webjar_templates_dir));
-            FileUtils.copyFileToDirectory(new File(aconfig.bindings), new File(cli_webjar_bindings_dir));
+            FileUtils.copyFileToDirectory(new File(aconfig.cbindings), new File(cli_webjar_bindings_dir));
         } else {
             throw new UnsupportedOperationException(" Type is " + config);
         }

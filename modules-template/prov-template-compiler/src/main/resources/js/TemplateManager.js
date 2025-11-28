@@ -40,11 +40,16 @@ class TemplateManager {
         this.profile=profileValue;
         console.log(this.profile);
         this.csv_result='#csv_result';
-        this.filenameConverter={};
+        this.imageConverter={};
+        this.cbindingsConverter={};
     }
 
     setFilenameConverter(obj) {
-        this.filenameConverter=obj;
+        this.imageConverter=obj;
+    }
+
+    setCBindingsConverter(obj) {
+        this.cbindingsConverter=obj;
     }
 
     setImageUrlPrefix(location)  {
@@ -53,7 +58,9 @@ class TemplateManager {
     setImageLocation(location)  {
         this.image_location=location;
     }
-
+    setCBindingsUrlPrefix(location)  {
+        this.cbindings_url_prefix=location;
+    }
     setCsvResult(location) {
         this.csv_result = location;
     }
@@ -292,7 +299,7 @@ class TemplateManager {
         $.get(this.docUrl, function(html_string) {
             $('#tmp_div').html(html_string)
             $.each(myself.names, function(i, k) {
-                myself.documentationSnippets[k]=$("#template_" + k).html();
+                myself.documentationSnippets[k]=$("#template_" + k.replaceAll('\.','_')).html();
             })
             //console.log(myself.documentationSnippets);
 
@@ -319,10 +326,16 @@ class TemplateManager {
         $('#documentation').html(this.documentationSnippets[template]);
 
         if (this.image_location && this.image_url_prefix)  {
-            let img=$('<img/>').attr("src", this.image_url_prefix + (this.filenameConverter[template] || template) + ".png");
+            const image_file = this.imageConverter[template];
+            console.log("looking for image file " + image_file);
+            let img=$('<img/>').attr("src", this.image_url_prefix + image_file);
             $(this.image_location).html(img);
             console.log("added image at " + this.image_location);
             console.log(img);
+            if (this.cbindings_url_prefix) {
+                let cbindingsLnk = $('<a/>').attr("href", this.cbindings_url_prefix + "/" + this.cbindingsConverter[template]).text(this.cbindingsConverter[template]);
+                $(this.image_location).append(cbindingsLnk);
+            }
         }
     }
 

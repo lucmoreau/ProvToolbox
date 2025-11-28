@@ -231,6 +231,20 @@ public class CompilerLogger {
                 .returns(String[].class);
         builder.addMethod(builder6.build());
 
+
+        MethodSpec.Builder builder7 = MethodSpec.methodBuilder(Constants.GET_TEMPLATE_NAME)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(String.class);
+        builder.addMethod(builder7.build());
+
+        MethodSpec.Builder builder8 = MethodSpec.methodBuilder(GET_FULLY_QUALIFIED_NAME)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(String.class);
+        builder.addMethod(builder8.build());
+
+
+
+
         TypeSpec theInterface = builder.build();
 
         JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, Constants.CLIENT_PACKAGE, stackTraceElement);

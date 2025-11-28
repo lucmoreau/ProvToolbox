@@ -214,10 +214,11 @@ public class ConfigProcessor implements Constants {
                 if (TemplateConfigurationEnum.isSimple(aconfig)) {
                     SimpleTemplateCompilerConfig config=(SimpleTemplateCompilerConfig) aconfig;
                     //config.template=addBaseDirIfRelative(config.template, inputBaseDir); it's no longer a file but a name an index
-                    config.bindings=addBaseDirIfRelative(config.bindings, inputBaseDir);
+                    config.cbindings =addBaseDirIfRelative(config.cbindings, inputBaseDir);
+                    locations.registerLocation(config.fullyQualifiedName,config.template);
                     doGenerateServerForEntry(config, configs, locations, cli_src_dir, l2p_src_dir, pFactory, cli_webjar_dir);
                     FileUtils.copyFileToDirectory(new File(locations.getTemplateLocation(config.template)), new File(cli_webjar_templates_dir));
-                    FileUtils.copyFileToDirectory(new File(config.bindings), new File(cli_webjar_bindings_dir));
+                    FileUtils.copyFileToDirectory(new File(config.cbindings), new File(cli_webjar_bindings_dir));
                 } else {
                     CompositeTemplateCompilerConfig config=(CompositeTemplateCompilerConfig) aconfig;
 
@@ -234,7 +235,7 @@ public class ConfigProcessor implements Constants {
                             //System.out.println("==> Found " + aconfig2);
                             SimpleTemplateCompilerConfig sc=(SimpleTemplateCompilerConfig) aconfig2;
                             //sc.template=addBaseDirIfRelative(sc.template, inputBaseDir);
-                            sc.bindings=addBaseDirIfRelative(sc.bindings, inputBaseDir);
+                            sc.cbindings =addBaseDirIfRelative(sc.cbindings, inputBaseDir);
                             SimpleTemplateCompilerConfig sc2=sc.cloneAsInstanceInComposition(config.name, config.fullyQualifiedName, config.sharing);
                             doGenerateServerForEntry(config, sc2, configs, locations, cli_src_dir, l2p_src_dir, cli_webjar_dir);
                         }
@@ -674,6 +675,9 @@ public class ConfigProcessor implements Constants {
             String absolutePath = libraryPath.getStrict(config.template, TemplateExtension.preferredExtensions());
             Document document = compilerUtil.readDocumentFromFile(absolutePath);
             locations.registerLocation(config.template, absolutePath);
+            locations.registerTemplate(config.fullyQualifiedName, config.template);
+            locations.registerCBindings(config.fullyQualifiedName, config.cbindings);
+
             statementChecker.ifPresent(sc -> new ProvUtilities().forAllStatementOrBundle(document.getStatementOrBundle(), sc));
             return document;
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
@@ -859,7 +863,7 @@ public class ConfigProcessor implements Constants {
                 config.name = compositeBeanNameClass;
                 config.package_ = packageName;
 
-                config.bindings = OPENPROVENANCE_COMPOSITE_BEAN_JSON; //"openprovenance:composite-bean.json";
+                config.cbindings = OPENPROVENANCE_COMPOSITE_BEAN_JSON; //"openprovenance:composite-bean.json";
                 config.template = "openprovenance:composite-bean.provn";
                 TemplateBindingsSchema bindingsSchema2 = compilerUtil.getBindingsSchema(config);
 
@@ -906,11 +910,11 @@ public class ConfigProcessor implements Constants {
             if (!inComposition) {
                 final String cli_webjar_html_dir = cli_webjar_dir + "/html";
                 new File(cli_webjar_html_dir).mkdirs();
-                compilerDocumentation.generateDocumentation(documentation, templateName, cli_webjar_html_dir, bindingsSchema, null);
+                compilerDocumentation.generateDocumentation(documentation, templateName, templateFullyQualifiedName, cli_webjar_html_dir, bindingsSchema, null);
             } else {
                 final String cli_webjar_html_dir = cli_webjar_dir + "/html";
                 new File(cli_webjar_html_dir).mkdirs();
-                compilerDocumentation.generateDocumentation(documentation, templateName, cli_webjar_html_dir, bindingsSchema, sharing);
+                compilerDocumentation.generateDocumentation(documentation, templateName, templateFullyQualifiedName, cli_webjar_html_dir, bindingsSchema, sharing);
             }
 
 

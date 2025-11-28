@@ -30,6 +30,7 @@ public class CatalogueValidator extends AbstractMojo {
     @Parameter(property = "validate-catalogue.args")
     private List<String> args = new ArrayList<>();
 
+
     public void execute() throws MojoExecutionException {
         try {
             List<String> classpathElements = project.getCompileClasspathElements();
@@ -66,7 +67,7 @@ public class CatalogueValidator extends AbstractMojo {
 
 
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new MojoExecutionException("Failed to execute class ", e);
         }
     }

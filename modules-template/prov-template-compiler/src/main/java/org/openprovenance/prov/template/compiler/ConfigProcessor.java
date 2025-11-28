@@ -160,7 +160,7 @@ public class ConfigProcessor implements Constants {
         this.compilerCatalogueDispatcher=new CompilerCatalogueDispatcher(pFactory);
     }
 
-    public int processTemplateGenerationConfig(String template_builder, String inputBaseDir, String outputBaseDir, List<String> templatePath, ProvFactory pFactory) {
+    public int processTemplateGenerationConfig(String template_builder, String inputBaseDir, String cbindingsBaseDir, String outputBaseDir, List<String> templatePath, ProvFactory pFactory) {
         TemplatesProjectConfiguration configs;
 
 
@@ -191,7 +191,7 @@ public class ConfigProcessor implements Constants {
             new File(cli_webjar_bindings_dir).mkdirs();
             new File(cli_webjar_templates_dir).mkdirs();
 
-            Pair<Map<String, String>, Map<String, String>> packages_shortnames_pair = findAllPackagesInConfigurations(configs, inputBaseDir);
+            Pair<Map<String, String>, Map<String, String>> packages_shortnames_pair = findAllPackagesInConfigurations(configs, cbindingsBaseDir);
             Map<String, String> packages = packages_shortnames_pair.getLeft();
             Map<String, String> shortNames = packages_shortnames_pair.getRight();
 
@@ -214,7 +214,9 @@ public class ConfigProcessor implements Constants {
                 if (TemplateConfigurationEnum.isSimple(aconfig)) {
                     SimpleTemplateCompilerConfig config=(SimpleTemplateCompilerConfig) aconfig;
                     //config.template=addBaseDirIfRelative(config.template, inputBaseDir); it's no longer a file but a name an index
-                    config.cbindings =addBaseDirIfRelative(config.cbindings, inputBaseDir);
+                    locations.registerCBindings(config.fullyQualifiedName, config.cbindings);
+                    System.out.println("Processing template configuration with cbindings: " + config.cbindings);
+                    config.cbindings =addBaseDirIfRelative(config.cbindings, cbindingsBaseDir);
                     locations.registerLocation(config.fullyQualifiedName,config.template);
                     doGenerateServerForEntry(config, configs, locations, cli_src_dir, l2p_src_dir, pFactory, cli_webjar_dir);
                     FileUtils.copyFileToDirectory(new File(locations.getTemplateLocation(config.template)), new File(cli_webjar_templates_dir));
@@ -273,7 +275,7 @@ public class ConfigProcessor implements Constants {
         return 0;
     }
 
-    private Pair<Map<String, String>,Map<String, String>> findAllPackagesInConfigurations(TemplatesProjectConfiguration configs, String inputBaseDir) {
+    private Pair<Map<String, String>,Map<String, String>> findAllPackagesInConfigurations(TemplatesProjectConfiguration configs, String cbindingsBaseDir) {
         Map<String,String> packages=new HashMap<>();
         Map<String,String> shortNames=new HashMap<>();
         packages.put(configs.name, configs.root_package);
@@ -283,7 +285,7 @@ public class ConfigProcessor implements Constants {
 
             if (TemplateConfigurationEnum.isSimple(aconfig)) {
                 SimpleTemplateCompilerConfig config= (SimpleTemplateCompilerConfig) aconfig;
-                TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config,inputBaseDir);
+                TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config,cbindingsBaseDir);
                 String aPackage = config.package_;
                 if (aPackage==null) {
                     packages.put(config.fullyQualifiedName, configs.root_package);
@@ -300,7 +302,7 @@ public class ConfigProcessor implements Constants {
                         found=true;
                         SimpleTemplateCompilerConfig sc = (SimpleTemplateCompilerConfig) aconfig2;
                         SimpleTemplateCompilerConfig sc2 = sc.cloneAsInstanceInComposition(config.name, sc.fullyQualifiedName, config.sharing);
-                        TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema(sc2,inputBaseDir);
+                        TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema(sc2,cbindingsBaseDir);
                         String aPackage = sc2.package_;
 
                         if (aPackage==null) {
@@ -676,7 +678,6 @@ public class ConfigProcessor implements Constants {
             Document document = compilerUtil.readDocumentFromFile(absolutePath);
             locations.registerLocation(config.template, absolutePath);
             locations.registerTemplate(config.fullyQualifiedName, config.template);
-            locations.registerCBindings(config.fullyQualifiedName, config.cbindings);
 
             statementChecker.ifPresent(sc -> new ProvUtilities().forAllStatementOrBundle(document.getStatementOrBundle(), sc));
             return document;
@@ -982,17 +983,18 @@ public class ConfigProcessor implements Constants {
     public static void main(String [] args) {
         //System.out.println(Arrays.asList(args));
 
-        if (args.length!=4) {
+        if (args.length!=5) {
             // display args
-            throw new IllegalArgumentException("Usage: ConfigProcessor <config-file> <inputBaseDir> <outputBaseDir> <templatePath> ");
+            throw new IllegalArgumentException("Usage: ConfigProcessor <config-file> <inputBaseDir>  <cbindingsBaseDir>  <outputBaseDir> <templatePath> ");
         }
         org.openprovenance.prov.vanilla.ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
         ConfigProcessor cp=new ConfigProcessor(pf);
         String inputBaseDir=args[1];
-        String outputBaseDir=args[2];
-        List<String> templatePath=Arrays.asList(args[3].split(":"));
+        String cbindingsBaseDir=args[2];
+        String outputBaseDir=args[3];
+        List<String> templatePath=Arrays.asList(args[4].split(":"));
 
-        cp.processTemplateGenerationConfig(args[0],inputBaseDir, outputBaseDir, templatePath, pf);
+        cp.processTemplateGenerationConfig(args[0],inputBaseDir, cbindingsBaseDir, outputBaseDir, templatePath, pf);
     }
 
 }

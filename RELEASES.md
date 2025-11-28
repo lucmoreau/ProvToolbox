@@ -50,6 +50,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * provconvert: support for template library path
 * ProvToolbox: upgrade to jackson 2.18.5, and then 2.19.4
 * prov-toolbox-plugin: prepare-webjar goal
+* prov-template-compiler: introduced cbindingsDir
 
 
 `2.2.1`

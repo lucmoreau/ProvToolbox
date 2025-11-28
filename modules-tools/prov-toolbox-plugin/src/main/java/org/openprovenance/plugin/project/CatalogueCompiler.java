@@ -25,6 +25,8 @@ public class CatalogueCompiler extends AbstractMojo {
     private String inputBaseDir;
     @Parameter(property = "compile-catalogue.outputBaseDir")
     private String outputBaseDir;
+    @Parameter(property = "compile-catalogue.cbindingsBaseDir")
+    private String cbindingsBaseDir;
     @Parameter(property = "compile-catalogue.templateLibraries", required = true)
     private List<String> templateLibrary =new ArrayList<>();
 
@@ -41,6 +43,10 @@ public class CatalogueCompiler extends AbstractMojo {
             }
             if (outputBaseDir==null) {
                 throw new MojoExecutionException("Output Basedir is null");
+            }
+
+            if (cbindingsBaseDir==null) {
+                throw new MojoExecutionException("CBindings Basedir is null");
             }
             if (templateLibrary.isEmpty()) {
                 throw new MojoExecutionException("Template Library Path is empty");
@@ -59,12 +65,13 @@ public class CatalogueCompiler extends AbstractMojo {
 
 
             for (String config : configs) {
-                String [] argArray=new String[4];
+                String [] argArray=new String[5];
                 argArray[0]=config;
                 argArray[1]=inputBaseDir;
-                argArray[2]=outputBaseDir;
+                argArray[2]=cbindingsBaseDir;
+                argArray[3]=outputBaseDir;
                 // make a single string from the list of template library paths, separated by :
-                argArray[3]=String.join(":", templateLibrary);
+                argArray[4]=String.join(":", templateLibrary);
 
 
                 URLClassLoader loader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());

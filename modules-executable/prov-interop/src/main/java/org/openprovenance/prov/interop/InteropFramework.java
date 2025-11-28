@@ -534,7 +534,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             if (config.outputBaseDir==null) {
                 config.outputBaseDir=".";
             }
-            return cp.processTemplateGenerationConfig(config.template_builder, config.inputBaseDir, config.outputBaseDir, config.templateLibraryPath, pFactory);
+            return cp.processTemplateGenerationConfig(config.template_builder, config.inputBaseDir, config.inputBaseDir, config.outputBaseDir, config.templateLibraryPath, pFactory);
 
         } else if (config.log2prov!=null) {
             try {

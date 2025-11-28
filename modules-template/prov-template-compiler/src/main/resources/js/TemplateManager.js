@@ -333,8 +333,8 @@ class TemplateManager {
             console.log("added image at " + this.image_location);
             console.log(img);
             if (this.cbindings_url_prefix) {
-                let cbindingsLnk = $('<a/>').attr("href", this.cbindings_url_prefix + "/" + this.cbindingsConverter[template]).text(this.cbindingsConverter[template]);
-                $(this.image_location).append(cbindingsLnk);
+                let cbindingsLnk = $('<a/>').attr("href", this.cbindings_url_prefix + this.cbindingsConverter[template]).text(this.cbindingsConverter[template]);
+                $(this.image_location).append($('<p/>')).append(cbindingsLnk);
             }
         }
     }

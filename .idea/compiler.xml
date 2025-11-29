@@ -99,6 +99,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="benchmarks" options="" />
+      <module name="prov-toolbox-js-embedding" options="" />
     </option>
   </component>
 </project>

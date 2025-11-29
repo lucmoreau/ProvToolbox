@@ -340,19 +340,20 @@
 
 		<!-- maven plugins -->
 
-		<compiler.plugin.version>3.13.0</compiler.plugin.version> <!--3.8.1 -->
+		<compiler.plugin.version>3.14.1</compiler.plugin.version> <!--3.13.0, 3.8.1 -->
 		<javadoc.plugin.version>3.6.3</javadoc.plugin.version> <!-- 3.1.1 -->
 		<jar.plugin.version>3.3.0</jar.plugin.version>
 		<war.plugin.version>3.4.0</war.plugin.version> <!-- 3.3.1 -->
-		<exec.plugin.version>3.2.0</exec.plugin.version> <!-- 3.1.0 -->
+		<exec.plugin.version>3.6.2</exec.plugin.version> <!-- 3.2.0, 3.1.0 -->
 		<assembly.plugin.version>3.7.1</assembly.plugin.version> <!-- 3.0.0 -->
 		<antrun.plugin.version>3.1.0</antrun.plugin.version> <!-- 3.1.0 -->
-		<surefire.plugin.version>3.2.5</surefire.plugin.version> <!-- 3.1.2 -->
+		<surefire.plugin.version>3.5.4</surefire.plugin.version> <!-- 3.2.5, 3.1.2 -->
 		<failsafe.plugin.version>3.2.5</failsafe.plugin.version> <!-- 3.1.2 -->
 		<exec.plugin.version>3.2.0</exec.plugin.version> <!-- 3.1.0 -->
 		<dependency.plugin.version>3.6.1</dependency.plugin.version> <!-- 3.1.2 -->
 		<jsweet.plugin.version>3.1.0</jsweet.plugin.version>
 		<build.helper.plugin.version>3.5.0</build.helper.plugin.version> <!-- 3.0.0 -->
+        <shade.plugin.version>3.6.1</shade.plugin.version>
 
 		<!-- java, scala, jsweet-->
 

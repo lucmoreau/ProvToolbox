@@ -9,7 +9,6 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
 
     public String template;
 
-    @JsonProperty("bindings")
     public String cbindings;
 
     @Override

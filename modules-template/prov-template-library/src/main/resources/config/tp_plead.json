@@ -18,60 +18,60 @@
 
         {
             "@type": "simple",
-            "name": "plead_transforming",
             "fullyQualifiedName": "org/openprovenance/prov/templates/plead/plead-transforming",
-            "template": "org/openprovenance/prov/templates/plead/plead-transforming",
+            "name": "plead_transforming",
             "package": "org.openprovenance.prov.template.library.plead",
-            "bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-transforming.json"
+            "template": "org/openprovenance/prov/templates/plead/plead-transforming",
+            "cbindings": "org/openprovenance/prov/templates/plead/plead-transforming.json"
         },
 
         {
             "@type": "simple",
-            "name": "plead_filtering",
             "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadFiltering",
+            "name": "plead_filtering",
+            "package": "org.openprovenance.prov.template.library.plead",
             "template": "org/openprovenance/prov/templates/plead/plead-filtering",
-            "package": "org.openprovenance.prov.template.library.plead",
-            "bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-filtering.json"
+            "cbindings": "org/openprovenance/prov/templates/plead/plead-filtering.json"
         },
         {
             "@type": "simple",
-            "name": "plead_training",
             "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadTraining",
+            "name": "plead_training",
+            "package": "org.openprovenance.prov.template.library.plead",
             "template": "org/openprovenance/prov/templates/plead/plead-training",
-            "package": "org.openprovenance.prov.template.library.plead",
-            "bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-training.json"
+            "cbindings": "org/openprovenance/prov/templates/plead/plead-training.json"
         },
         {
             "@type": "simple",
-            "name": "plead_validating",
             "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadValidating",
+            "name": "plead_validating",
+            "package": "org.openprovenance.prov.template.library.plead",
             "template": "org/openprovenance/prov/templates/plead/plead-validating",
-            "package": "org.openprovenance.prov.template.library.plead",
-            "bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-validating.json"
+            "cbindings": "org/openprovenance/prov/templates/plead/plead-validating.json"
         },
         {
             "@type": "simple",
-            "name": "plead_approving",
             "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadApproving",
-            "template": "org/openprovenance/prov/templates/plead/plead-approving",
+            "name": "plead_approving",
             "package": "org.openprovenance.prov.template.library.plead",
-            "bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-approving.json"
+            "template": "org/openprovenance/prov/templates/plead/plead-approving",
+            "cbindings": "org/openprovenance/prov/templates/plead/plead-approving.json"
         },
         {
             "@type": "simple",
-            "name": "plead_splitting",
             "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadSplitting",
-            "template": "org/openprovenance/prov/templates/plead/plead-splitting",
+            "name": "plead_splitting",
             "package": "org.openprovenance.prov.template.library.plead",
-            "bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-splitting.json"
+            "template": "org/openprovenance/prov/templates/plead/plead-splitting",
+            "cbindings": "org/openprovenance/prov/templates/plead/plead-splitting.json"
         },
 
         {
             "@type": "composite",
-            "name": "plead_transforming_composite",
             "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadTransformingComposite",
-            "consistsOf": "org/openprovenance/prov/templates/plead/plead-transforming",
+            "name": "plead_transforming_composite",
             "package": "org.openprovenance.prov.template.library.plead",
+            "consistsOf": "org/openprovenance/prov/templates/plead/plead-transforming",
             "sharing": ["transformed_file", "transforming"]
         }
     ],

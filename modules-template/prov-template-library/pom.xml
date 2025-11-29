@@ -124,6 +124,7 @@
                                 <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
                                 <argument>src/main/resources/config/tp_plead.json</argument>
                                 <argument>${project.basedir}</argument>
+                                <argument>${project.basedir}/src/main/resources/cbindings</argument>
                                 <argument>${project.basedir}</argument>
                                 <argument>${project.build.directory}/${mini.template.library.folder}/templates</argument>
                             </arguments>
@@ -142,6 +143,7 @@
                                 <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
                                 <argument>src/main/resources/config/tp_ptm.json</argument>
                                 <argument>${project.basedir}</argument>
+                                <argument>${project.basedir}/src/main/resources/cbindings</argument>
                                 <argument>${project.basedir}</argument>
                                 <argument>${project.build.directory}/${mini.template.library.folder}/templates</argument>
                             </arguments>
@@ -162,6 +164,7 @@
                                 <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
                                 <argument>src/main/resources/config/tp_pg.json</argument>
                                 <argument>${project.basedir}</argument>
+                                <argument>${project.basedir}/src/main/resources/cbindings</argument>
                                 <argument>${project.basedir}</argument>
                                 <argument>${project.build.directory}/${mini.template.library.folder}/templates</argument>
                             </arguments>
@@ -219,8 +222,8 @@
                                         <include name="**/*" />
                                     </fileset>
                                 </move>
-                                <copy todir="${project.build.directory}/bindings">
-                                    <fileset dir="src/main/resources/bindings">
+                                <copy todir="${project.build.directory}/cbindings">
+                                    <fileset dir="src/main/resources/cbindings">
                                         <include name="**/*" />
                                     </fileset>
                                 </copy>
@@ -334,8 +337,8 @@
                                     <targetPath>${meta-inf.webjars}/ts</targetPath>
                                 </resource>
                                 <resource>
-                                    <directory>${project.build.directory}/bindings</directory>
-                                    <targetPath>${meta-inf.webjars}/bindings</targetPath>
+                                    <directory>${project.build.directory}/cbindings</directory>
+                                    <targetPath>${meta-inf.webjars}/cbindings</targetPath>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/${mini.template.library.folder}/templates</directory>

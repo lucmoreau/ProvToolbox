@@ -15,11 +15,11 @@
     "templates" : [
         {
             "@type": "simple",
-            "name": "template_block",
             "fullyQualifiedName": "org.example.TemplateBlock",
-            "template": "src/test/resources/templates3/generic_binaryop.provn",
+            "name": "template_block",
             "package": "org.example.templates.block",
-            "bindings": "src/test/resources/templates3/generic_binaryop_b1.json"
+            "template": "src/test/resources/templates3/generic_binaryop.provn",
+            "cbindings": "src/test/resources/templates3/generic_binaryop_b1.json"
 
         }
     ]

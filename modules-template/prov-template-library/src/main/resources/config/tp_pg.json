@@ -17,19 +17,19 @@
 
         {
             "@type": "simple",
-            "name": "pg_capturing",
             "fullyQualifiedName": "org.openprovenance.prov.template.library.pg.PgCapturing",
-            "template": "org/openprovenance/prov/templates/pg/pg-capturing",
+            "name": "pg_capturing",
             "package": "org.openprovenance.prov.template.library.pg",
-            "bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/pg/pg-capturing.json"
+            "template": "org/openprovenance/prov/templates/pg/pg-capturing",
+            "cbindings": "org/openprovenance/prov/templates/pg/pg-capturing.json"
         },
         {
             "@type": "simple",
-            "name": "pg_ballcollecting",
             "fullyQualifiedName": "org.openprovenance.prov.template.library.pg.PgBallcollecting",
-            "template": "org/openprovenance/prov/templates/pg/pg-ballcollecting",
+            "name": "pg_ballcollecting",
             "package": "org.openprovenance.prov.template.library.pg",
-            "bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/pg/pg-ballcollecting.json"
+            "template": "org/openprovenance/prov/templates/pg/pg-ballcollecting",
+            "cbindings": "org/openprovenance/prov/templates/pg/pg-ballcollecting.json"
         }
     ]
 }

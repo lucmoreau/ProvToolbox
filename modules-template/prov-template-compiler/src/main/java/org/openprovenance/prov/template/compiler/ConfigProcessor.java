@@ -215,7 +215,6 @@ public class ConfigProcessor implements Constants {
                     SimpleTemplateCompilerConfig config=(SimpleTemplateCompilerConfig) aconfig;
                     //config.template=addBaseDirIfRelative(config.template, inputBaseDir); it's no longer a file but a name an index
                     locations.registerCBindings(config.fullyQualifiedName, config.cbindings);
-                    System.out.println("Processing template configuration with cbindings: " + config.cbindings);
                     config.cbindings =addBaseDirIfRelative(config.cbindings, cbindingsBaseDir);
                     locations.registerLocation(config.fullyQualifiedName,config.template);
                     doGenerateServerForEntry(config, configs, locations, cli_src_dir, l2p_src_dir, pFactory, cli_webjar_dir);

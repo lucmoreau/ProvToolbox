@@ -22,7 +22,7 @@
             "fullyQualifiedName": "org.openprovenance.prov.template.library.ptm.PtmExpanding",
 			"template": "org/openprovenance/prov/templates/ptm/ptm-expanding",
 			"package": "org.openprovenance.prov.template.library.ptm",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-expanding.json"
+			"cbindings": "org/openprovenance/prov/templates/ptm/ptm-expanding.json"
 		},
 
 		{
@@ -31,7 +31,7 @@
             "fullyQualifiedName": "org.openprovenance.prov.template.library.ptm.PtmMerging",
 			"template": "org/openprovenance/prov/templates/ptm/ptm-merging",
 			"package": "org.openprovenance.prov.template.library.ptm",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-merging.json"
+			"cbindings": "org/openprovenance/prov/templates/ptm/ptm-merging.json"
 		},
 		{
 			"@type": "simple",
@@ -39,7 +39,7 @@
             "fullyQualifiedName": "org.openprovenance.prov.template.library.ptm.PtmMexpanding",
 			"template": "org/openprovenance/prov/templates/ptm/ptm-mexpanding",
 			"package": "org.openprovenance.prov.template.library.ptm",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-mexpanding.json"
+			"cbindings": "org/openprovenance/prov/templates/ptm/ptm-mexpanding.json"
 		}
 
 	],

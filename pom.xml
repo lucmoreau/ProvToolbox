@@ -343,16 +343,15 @@
 		<compiler.plugin.version>3.14.1</compiler.plugin.version> <!--3.13.0, 3.8.1 -->
 		<javadoc.plugin.version>3.12.0</javadoc.plugin.version> <!-- 3.6.3, 3.1.1 -->
 		<jar.plugin.version>3.3.0</jar.plugin.version>
-		<war.plugin.version>3.4.0</war.plugin.version> <!-- 3.3.1 -->
+		<war.plugin.version>3.5.1</war.plugin.version> <!-- 3.4.0, 3.3.1 -->
 		<exec.plugin.version>3.6.2</exec.plugin.version> <!-- 3.2.0, 3.1.0 -->
 		<assembly.plugin.version>3.7.1</assembly.plugin.version> <!-- 3.0.0 -->
-		<antrun.plugin.version>3.1.0</antrun.plugin.version> <!-- 3.1.0 -->
+		<antrun.plugin.version>3.2.0</antrun.plugin.version> <!-- 3.1.0 -->
 		<surefire.plugin.version>3.5.4</surefire.plugin.version> <!-- 3.2.5, 3.1.2 -->
-		<failsafe.plugin.version>3.2.5</failsafe.plugin.version> <!-- 3.1.2 -->
-		<exec.plugin.version>3.2.0</exec.plugin.version> <!-- 3.1.0 -->
-		<dependency.plugin.version>3.6.1</dependency.plugin.version> <!-- 3.1.2 -->
+		<failsafe.plugin.version>3.5.4</failsafe.plugin.version> <!-- 3.2.5, 3.1.2 -->
+		<dependency.plugin.version>3.9.0</dependency.plugin.version> <!-- 3.6.1, 3.1.2 -->
 		<jsweet.plugin.version>3.1.0</jsweet.plugin.version>
-		<build.helper.plugin.version>3.5.0</build.helper.plugin.version> <!-- 3.0.0 -->
+		<build.helper.plugin.version>3.6.1</build.helper.plugin.version> <!-- 3.5.0, 3.0.0 -->
         <shade.plugin.version>3.6.1</shade.plugin.version>
 
         <maven.model.version>3.9.11</maven.model.version> <!-- 3.6.1 -->
@@ -368,12 +367,12 @@
 
 		<scala.library.version>2.13.18</scala.library.version> <!-- 2.13.13, 2.13.12, 2.12.18 -->
 		<scala.plugin.version>4.9.7</scala.plugin.version> <!-- 4.8.1, 4.2.0 -->
-		<scalatest.version>3.2.18</scalatest.version> <!-- 3.2.17, 3.1.4, 3.1.0-RC3 -->
+		<scalatest.version>3.2.19</scalatest.version> <!-- 3.2.18 3.2.17, 3.1.4, 3.1.0-RC3 -->
 		<scalatest.mvn.plugin.version>2.2.0</scalatest.mvn.plugin.version>
 		<scala.parallel.collection.version>1.0.4</scala.parallel.collection.version>
 		<scala.binary.version>2.13</scala.binary.version>
-		<scala.parser.comb.version>1.1.2</scala.parser.comb.version>
-		<parboiled.version>2.5.0</parboiled.version>
+		<scala.parser.comb.version>2.4.0</scala.parser.comb.version> <!-- 1.1.2 -->
+		<parboiled.version>2.5.1</parboiled.version> <!-- 2.5.0 -->
 
 		<xmlsec.version>4.0.2</xmlsec.version> <!--2.1.4 -->
 
@@ -385,7 +384,7 @@
 		<microprofile.version>3.0.3</microprofile.version>
 	<!--	<servletapi.version>4.0.0</servletapi.version> -->
 		<jakarta.servlet.version>5.0.0</jakarta.servlet.version>
-		<jakarta.ws.rs.version>3.1.0</jakarta.ws.rs.version>
+		<jakarta.ws.rs.version>3.1.0</jakarta.ws.rs.version> <!-- 3.1.0 -->
 		<jakarta.xml.bind.version>4.0.0</jakarta.xml.bind.version>  <!-- 3.0.1 -->
 
 		<pac4j.version>5.7.4</pac4j.version> <!-- lombok? 6.0.2 -->
@@ -417,16 +416,16 @@
 		<scm.version>1.3</scm.version>
 
 		<!-- log4j -->
-		<log4j.version>2.23.1</log4j.version> <!-- 2.20.0, 2.17.1 -->
-		<slf4j.version>2.0.12</slf4j.version>  <!-- 2.0.9 -->
+		<log4j.version>2.25.2</log4j.version> <!-- 2.23.1, 2.20.0, 2.17.1 -->
+		<slf4j.version>2.0.17</slf4j.version>  <!-- 2.0.12, 2.0.9 -->
 
 		<!-- apache commons stuff -->
 
-		<commons.io.version>2.15.1</commons.io.version>  <!-- 2.8.0 -->
-		<commons.csv.version>1.10.0</commons.csv.version>
-		<commons.text.version>1.11.0</commons.text.version><!-- 1.10.0 -->
-		<commons.cli.version>1.6.0</commons.cli.version> <!-- 1.5.0 -->
-        <commons.collections.version>4.4</commons.collections.version> <!--4.4 -->
+		<commons.io.version>2.21.0</commons.io.version>  <!-- 2.15.1, 2.8.0 -->
+		<commons.csv.version>1.14.1</commons.csv.version> <!-- 1.10.0 -->
+		<commons.text.version>1.14.0</commons.text.version><!-- 1.11.0, 1.10.0 -->
+		<commons.cli.version>1.11.0</commons.cli.version> <!--  1.6.0, 1.5.0 -->
+        <commons.collections.version>4.5.0</commons.collections.version> <!--4.4 -->
         <commons.lang3.version>3.20.0</commons.lang3.version> <!-- 3.18.0 -->
 
 		<!-- js stuff -->

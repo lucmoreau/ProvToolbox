@@ -51,7 +51,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * ProvToolbox: upgrade to jackson 2.18.5, and then 2.19.4
 * prov-toolbox-plugin: prepare-webjar goal
 * prov-template-compiler: introduced cbindingsDir
-
+* prov-template-compiler: removed dependency on java 12, but introduced MAVEN_OPTS to support jsweet
 
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java

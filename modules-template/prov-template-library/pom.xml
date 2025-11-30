@@ -231,44 +231,21 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>check.java12.exists</id>
+                        <id>antrun-jsweet</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
                         <configuration>
                             <target>
-                                <available file="${java12.home}" type="dir" property="java12Exists" />
-                            </target>
-                            <exportAntProperties>true</exportAntProperties>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>antrun.jsweet</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <target if="${java12Exists}">
-                                <echo message="Java 12 found, doing jsweet compilation" />
-                                <exec executable="${project.build.directory}/jsweet/jsweet.sh">
-
+                                <echo message="Running JSweet by calling mvn with MAVEN_OPTS" />
+                                <exec executable="mvn">
+                                    <env key="MAVEN_OPTS" value="--add-opens jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-opens jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED --add-opens jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED"/>
+                                    <arg value="-Dlibrary.source=${project.build.directory}/generated-sources/${package.name.cli}"/>
+                                    <arg value="-f" />
+                                    <arg value="${project.build.directory}/jsweet/pom-jsweet.xml" />
+                                    <arg value="jsweet:jsweet" />
                                 </exec>
-                            </target>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>antrun.no.jsweet</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <target unless="${java12Exists}">
-                                <echo message="Java 12 not found, skipping jsweet compilation, no npm test" />
                             </target>
                         </configuration>
                     </execution>
@@ -280,7 +257,7 @@
                         </goals>
                         <configuration>
                             <!--suppress UnresolvedMavenProperty -->
-                            <target name="do.run.test" if="${java12Exists}">
+                            <target name="do.run.test">
                                 <exec executable="npm" dir="${project.basedir}">
                                     <arg value="test" />
                                 </exec>

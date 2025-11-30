@@ -9,8 +9,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/jsweet/jsweet-with-maven-opts.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/jsweet/jsweet-with-maven-opts.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateLogic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/jsweet/jsweet.sh" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/jsweet/jsweet.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template/compiler/test/CompilerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template/compiler/test/CompilerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -196,7 +204,7 @@
     "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template/src/main/resources/ttfs",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-jsweet-candy-java/src/main/jsweet",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -232,11 +240,11 @@
       <recent name="org.openprovenance.prov.model.builder" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/jsweet" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/jsweet" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/ttfs" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config" />
       <recent name="$PROJECT_DIR$/modules-services2/service-templates/src/test/config" />
-      <recent name="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-docker/docker.conf/deploy/provtemplates/config" />
-      <recent name="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-docker/src/main/resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/templates" />
@@ -1134,7 +1142,7 @@
       <workItem from="1763380296994" duration="104538000" />
       <workItem from="1764151233491" duration="48995000" />
       <workItem from="1764495913540" duration="80000" />
-      <workItem from="1764496048730" duration="3622000" />
+      <workItem from="1764496048730" duration="6063000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

@@ -341,7 +341,7 @@
 		<!-- maven plugins -->
 
 		<compiler.plugin.version>3.14.1</compiler.plugin.version> <!--3.13.0, 3.8.1 -->
-		<javadoc.plugin.version>3.6.3</javadoc.plugin.version> <!-- 3.1.1 -->
+		<javadoc.plugin.version>3.12.0</javadoc.plugin.version> <!-- 3.6.3, 3.1.1 -->
 		<jar.plugin.version>3.3.0</jar.plugin.version>
 		<war.plugin.version>3.4.0</war.plugin.version> <!-- 3.3.1 -->
 		<exec.plugin.version>3.6.2</exec.plugin.version> <!-- 3.2.0, 3.1.0 -->
@@ -424,6 +424,8 @@
 		<commons.csv.version>1.10.0</commons.csv.version>
 		<commons.text.version>1.11.0</commons.text.version><!-- 1.10.0 -->
 		<commons.cli.version>1.6.0</commons.cli.version> <!-- 1.5.0 -->
+        <commons.collections.version>4.4</commons.collections.version> <!--4.4 -->
+        <commons.lang3.version>3.20.0</commons.lang3.version> <!-- 3.18.0 -->
 
 		<!-- js stuff -->
 		<webjars.jquery.version>3.7.1</webjars.jquery.version>

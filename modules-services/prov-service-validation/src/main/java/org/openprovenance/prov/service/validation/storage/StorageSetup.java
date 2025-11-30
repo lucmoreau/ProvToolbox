@@ -3,6 +3,7 @@ package org.openprovenance.prov.service.validation.storage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mongojack.internal.MongoJackModule;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.ServiceUtilsConfig;
 import org.openprovenance.prov.service.core.config.StorageConfiguration;
@@ -33,7 +34,7 @@ public class StorageSetup extends org.openprovenance.prov.service.translation.st
         // extends configuration with this service storage requirements
 
         ObjectMapper mapper= Mapper.getValidationReportMapper();
-        mapper.registerModule(org.mongojack.internal.MongoJackModule.INSTANCE);
+        mapper.registerModule(MongoJackModule.DEFAULT_MODULE_INSTANCE);
 
         final String mongoHost = configuration.mongo_host;
         final String mongoDbName = configuration.dbname;

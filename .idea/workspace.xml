@@ -9,10 +9,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/mutable/Model.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/mutable/Model.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomNamespaceSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomNamespaceSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-explanations/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/nlg/SentenceMaker.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/nlg/SentenceMaker.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/NlgService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/NlgService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/storage/StorageSetup.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/storage/StorageSetup.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/CSVWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/CSVWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/DocumentWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/DocumentWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoAsciiBlobStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoAsciiBlobStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoCSVResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoCSVResourceStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoGenericResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoGenericResourceStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoNonDocumentResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoNonDocumentResourceStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/TypeWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/TypeWrapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -148,6 +164,12 @@
     "JUnit.ExpandIT.executor": "Run",
     "JUnit.MetricsTest.executor": "Run",
     "JUnit.MetricsTest.testMetrics.executor": "Run",
+    "JUnit.MongoBindingsDbTest.executor": "Run",
+    "JUnit.MongoBindingsDbTest.testMongoStorage.executor": "Run",
+    "JUnit.MongoCSVDbTest.executor": "Run",
+    "JUnit.MongoCSVDbTest.testMongoStorage.executor": "Run",
+    "JUnit.MongoJLDDocumentDbTest.executor": "Run",
+    "JUnit.MongoJLDDocumentDbTest.testMongoStorage.executor": "Run",
     "JUnit.OrderingTest.testConstraintsSpecialization1.executor": "Debug",
     "JUnit.PC1FullTest (1).executor": "Run",
     "JUnit.PC1FullTest (2).executor": "Run",
@@ -168,6 +190,7 @@
     "JUnit.TriangleTest.testTriangle.executor": "Run",
     "JUnit.ValidateTest.testFailingDocumentExpansion.executor": "Run",
     "JUnit.ValidateTest.testFailingDocumentPicaso.executor": "Run",
+    "JUnit.mongoDb2Test.executor": "Run",
     "Makefile Target.go.executor": "Run",
     "Makefile Target.go1.executor": "Run",
     "Makefile Target.go2.executor": "Run",
@@ -181,6 +204,7 @@
     "Makefile Target.trusted.store.executor": "Run",
     "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "ScalaTest.TypeLibraryIssueSpec.executor": "Run",
@@ -198,7 +222,7 @@
     "node.js.selected.package.stylelint": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.66091955",
     "run.code.analysis.last.selected.profile": "pProject Default",
@@ -276,7 +300,7 @@
       <recent name="org.openprovenance.prov.model.interop" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.RoundTripFromJavaJSONTest (1)">
+  <component name="RunManager" selected="JUnit.RoundTripFromJavaMongoTest">
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -335,11 +359,11 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="DerivationBuilderTest.testBuild" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-n" />
+    <configuration name="MongoBindingsDbTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-storage-mongodb" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.notation.test.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.storage.mongodb.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -353,71 +377,19 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.notation.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.notation.test.DerivationBuilderTest" />
-      <option name="METHOD_NAME" value="testBuild" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="OrderingTest.testConstraintsSpecialization1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-validation" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.validation.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.validation" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.validation.OrderingTest" />
-      <option name="METHOD_NAME" value="testConstraintsSpecialization1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PC1FullTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-jsonld" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.core.json.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.test.PC1FullTest" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.storage.mongodb" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.storage.mongodb.MongoBindingsDbTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RoundTripFromJavaJSONLD11Test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-jsonld" />
+    <configuration name="MongoBindingsDbTest.testMongoStorage" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-storage-mongodb" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.core.jsonld11.test.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.storage.mongodb.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -431,19 +403,19 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.jsonld11.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.jsonld11.test.RoundTripFromJavaJSONLD11Test" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.storage.mongodb" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.storage.mongodb.MongoBindingsDbTest" />
+      <option name="METHOD_NAME" value="testMongoStorage" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RoundTripFromJavaJSONTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-jsonld" />
+    <configuration name="MongoJLDDocumentDbTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-storage-mongodb" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.core.json.test.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.storage.mongodb.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -457,8 +429,8 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.test.RoundTripFromJavaJSONTest" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.storage.mongodb" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.storage.mongodb.MongoJLDDocumentDbTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
@@ -499,6 +471,32 @@
       </extension>
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoundTripFromJavaMongoTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-storage-mongodb" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.storage.mongodb.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.storage.mongodb" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.storage.mongodb.RoundTripFromJavaMongoTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
@@ -517,6 +515,32 @@
         </ENTRIES>
       </extension>
       <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="mongoDb2Test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-storage-mongodb" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.storage.mongodb.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.storage.mongodb" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.storage.mongodb.mongoDb2Test" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
@@ -624,20 +648,20 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="JUnit.PC1FullTest" />
-      <item itemvalue="JUnit.RoundTripFromJavaJSONLD11Test" />
-      <item itemvalue="JUnit.RoundTripFromJavaJSONTest (1)" />
-      <item itemvalue="JUnit.OrderingTest.testConstraintsSpecialization1" />
-      <item itemvalue="JUnit.DerivationBuilderTest.testBuild" />
+      <item itemvalue="JUnit.MongoBindingsDbTest" />
+      <item itemvalue="JUnit.MongoBindingsDbTest.testMongoStorage" />
+      <item itemvalue="JUnit.MongoJLDDocumentDbTest" />
+      <item itemvalue="JUnit.RoundTripFromJavaMongoTest" />
+      <item itemvalue="JUnit.mongoDb2Test" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.RoundTripFromJavaJSONTest (1)" />
-        <item itemvalue="JUnit.RoundTripFromJavaJSONLD11Test" />
-        <item itemvalue="JUnit.PC1FullTest" />
-        <item itemvalue="JUnit.OrderingTest.testConstraintsSpecialization1" />
-        <item itemvalue="JUnit.DerivationBuilderTest.testBuild" />
+        <item itemvalue="JUnit.RoundTripFromJavaMongoTest" />
+        <item itemvalue="JUnit.MongoBindingsDbTest.testMongoStorage" />
+        <item itemvalue="JUnit.MongoBindingsDbTest" />
+        <item itemvalue="JUnit.mongoDb2Test" />
+        <item itemvalue="JUnit.MongoJLDDocumentDbTest" />
       </list>
     </recent_temporary>
   </component>
@@ -680,8 +704,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28238.7" />
       </set>
     </attachedChunks>
   </component>
@@ -1127,7 +1151,9 @@
       <workItem from="1762791328447" duration="62691000" />
       <workItem from="1763121485776" duration="47219000" />
       <workItem from="1763380296994" duration="104538000" />
-      <workItem from="1764151233491" duration="37939000" />
+      <workItem from="1764151233491" duration="48995000" />
+      <workItem from="1764495913540" duration="80000" />
+      <workItem from="1764496048730" duration="2533000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -1447,5 +1473,13 @@
     <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.core.*</FILTER>
     </SUITE>
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>

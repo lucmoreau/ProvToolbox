@@ -71,6 +71,7 @@ public class  ProvSerialiser implements org.openprovenance.prov.model.ProvSerial
     }
 
     public ObjectMapper customize(ObjectMapper mapper) {
+        mapper.getFactory().setCodec(mapper);
 
         SimpleModule module =
                 new SimpleModule("CustomKindSerializer",
@@ -78,7 +79,7 @@ public class  ProvSerialiser implements org.openprovenance.prov.model.ProvSerial
 
         module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
         module.addSerializer(XMLGregorianCalendar.class, new CustomDateSerializer());
-        module.addSerializer(Namespace.class, new CustomNamespaceSerializer(embedContext));
+        module.addSerializer(Namespace.class, new CustomNamespaceSerializer(embedContext,mapper));
         mapper.registerModule(module);
 
         // See https://www.baeldung.com/jackson-serialize-field-custom-criteria#2-custom-serializer

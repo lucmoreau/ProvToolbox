@@ -1,15 +1,17 @@
 package org.openprovenance.prov.storage.mongodb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
+import com.mongodb.ConnectionString;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.DeleteResult;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.mongojack.DBUpdate;
-import org.mongojack.JacksonDBCollection;
-import org.mongojack.WriteResult;
+import org.bson.UuidRepresentation;
+import org.mongojack.JacksonMongoCollection;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.interop.Formats;
@@ -31,8 +33,8 @@ import static org.openprovenance.prov.core.jsonld11.serialization.deserial.Custo
 public class MongoDocumentResourceStorage implements ResourceStorage, Constants {
     private static final Logger logger = LogManager.getLogger(MongoDocumentResourceStorage.class);
 
-    private final DB db;
-    private final JacksonDBCollection<DocumentWrapper, String> documentCollection;
+    private final MongoDatabase db;
+    private final JacksonMongoCollection<DocumentWrapper> documentCollection;
     private final ProvSerialiser serialiser;
     private final ProvDeserialiser deserialiser;
 
@@ -42,7 +44,6 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     private final ObjectMapper mapper;
     final ProvFactory factory = ProvFactory.getFactory();
-    private final DBCollection collection;
 
     public MongoDocumentResourceStorage(String dbname) {
         this("localhost", dbname);
@@ -50,44 +51,41 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     public MongoDocumentResourceStorage(String host, String dbname) {
         //System.out.println("Creating a client");
-        MongoClient mongoClient = new MongoClient(host, 27017);
-        DB db = mongoClient.getDB(dbname);
+
+        com.mongodb.client.MongoClient mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
+        MongoDatabase db = mongoClient.getDatabase(dbname);
         this.db=db;
 
-        collection=db.getCollection(COLLECTION_DOCUMENTS);
-
         this.mapper=new ObjectMapper();
-        mapper.registerModule(org.mongojack.internal.MongoJackModule.INSTANCE);
+        mapper.registerModule(org.mongojack.internal.MongoJackModule.DEFAULT_MODULE_INSTANCE);
 
         this.serialiser=new ProvSerialiser(mapper, false);
         serialiser.customize(mapper);
 
         this.deserialiser=new ProvDeserialiser(mapper);
 
+        MongoCollection<DocumentWrapper> collection=db.getCollection(COLLECTION_DOCUMENTS,DocumentWrapper.class);
+        this.documentCollection = JacksonMongoCollection.builder().withObjectMapper(mapper).build(collection,DocumentWrapper.class, UuidRepresentation.STANDARD);
 
-        JacksonDBCollection<DocumentWrapper, String> documentCollection = JacksonDBCollection.wrap(collection, DocumentWrapper.class, String.class, mapper);
-        this.documentCollection=documentCollection;
     }
 
-    JacksonDBCollection<DocumentWrapper, String> newDocumentCollection(DateTimeOption dateTimeOption, TimeZone optionalTimeZone) {
+    JacksonMongoCollection<DocumentWrapper> newDocumentCollection(DateTimeOption dateTimeOption, TimeZone optionalTimeZone) {
         ObjectMapper mapper=new ObjectMapper();
-        mapper.registerModule(org.mongojack.internal.MongoJackModule.INSTANCE);
-
+        mapper.registerModule(org.mongojack.internal.MongoJackModule.DEFAULT_MODULE_INSTANCE);
 
         // this call updates the mapper with custom deserialisers
         ProvDeserialiser deserialiser=new ProvDeserialiser(mapper, dateTimeOption, optionalTimeZone);
 
-
-        JacksonDBCollection<DocumentWrapper, String> documentCollection = JacksonDBCollection.wrap(collection, DocumentWrapper.class, String.class, mapper);
-        return JacksonDBCollection.wrap(collection, DocumentWrapper.class, String.class, mapper);
+        MongoCollection<DocumentWrapper> collection=db.getCollection(COLLECTION_DOCUMENTS,DocumentWrapper.class);
+        return JacksonMongoCollection.builder().withObjectMapper(mapper).build(collection,DocumentWrapper.class,UuidRepresentation.STANDARD);
     }
 
 
     @Override
     public String newStore(Formats.ProvFormat format) throws IOException {
         DocumentWrapper dw=new DocumentWrapper();
-        WriteResult<DocumentWrapper, String> result=documentCollection.insert(dw);
-        String id = result.getSavedId();
+        documentCollection.insert(dw);
+        String id = dw.getId();
         return id;
     }
 
@@ -145,12 +143,12 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     @Override
     public void writeDocument(String id, Document doc, Formats.ProvFormat format) {
         logger.debug("writeDocument " + id + " " + doc);
-        documentCollection.updateById(id, DBUpdate.set("document", doc));
+        documentCollection.updateById(id, Updates.set("document", doc));
     }
 
     @Override
     public boolean delete(String storageId) {
-        WriteResult<DocumentWrapper, String> result=documentCollection.removeById(storageId);
-        return result.getN()==1;
+        DeleteResult result=documentCollection.removeById(storageId);
+        return result.getDeletedCount()==1;
     }
 }

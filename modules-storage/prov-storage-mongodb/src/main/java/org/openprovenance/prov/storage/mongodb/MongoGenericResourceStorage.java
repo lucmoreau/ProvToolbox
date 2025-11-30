@@ -1,14 +1,16 @@
 package org.openprovenance.prov.storage.mongodb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
+import com.mongodb.ConnectionString;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.DeleteResult;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.mongojack.DBUpdate;
-import org.mongojack.JacksonDBCollection;
-import org.mongojack.WriteResult;
+import org.bson.UuidRepresentation;
+import org.mongojack.JacksonMongoCollection;
 import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 
 import java.io.IOException;
@@ -20,11 +22,11 @@ import java.util.function.Supplier;
 public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericResourceStorage<TYPE>, Constants {
 
 
-    private final DB db;
+    private final MongoDatabase db;
 
     private static Logger logger = LogManager.getLogger(MongoGenericResourceStorage.class);
 
-    private final JacksonDBCollection<TypeWrapper<TYPE>, String> genericCollection;
+    private final JacksonMongoCollection<TypeWrapper<TYPE>> genericCollection;
 
     private final ObjectMapper mapper;
     private final Class<TYPE> cl;
@@ -37,8 +39,9 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
 
     public MongoGenericResourceStorage(String host, String dbname, String collectionName, ObjectMapper mapper, Class<TYPE> cl, Supplier<TypeWrapper<TYPE>> wmake) {
 
-        MongoClient mongoClient = new MongoClient(host, 27017);
-        DB db = mongoClient.getDB(dbname);
+
+        com.mongodb.client.MongoClient mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
+        MongoDatabase db = mongoClient.getDatabase(dbname);
         this.db=db;
 
         this.cl=cl;
@@ -47,9 +50,10 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
         TypeWrapper<TYPE> instance=wmake.get();
         Class<TypeWrapper<TYPE>> wrapperClass = (Class<TypeWrapper<TYPE>>) instance.getClass();
 
-        DBCollection generic=db.getCollection(collectionName);
-        mapper.registerModule(org.mongojack.internal.MongoJackModule.INSTANCE);
-        this.genericCollection = JacksonDBCollection.wrap(generic, wrapperClass, String.class, mapper);
+        mapper.registerModule(org.mongojack.internal.MongoJackModule.DEFAULT_MODULE_INSTANCE);
+
+        MongoCollection<TypeWrapper<TYPE>> generic=db.getCollection(collectionName,wrapperClass);
+        this.genericCollection = JacksonMongoCollection.builder().withObjectMapper(mapper).build(generic,wrapperClass, UuidRepresentation.STANDARD);
         this.mapper=mapper;
     }
 
@@ -60,8 +64,8 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
     @Override
     public String newStore(String _suggestedExtension, String _mimeType) {
         TypeWrapper<TYPE> gw= wmake.get();
-        WriteResult<TypeWrapper<TYPE>, String> result= genericCollection.insert(gw);
-        String id = result.getSavedId();
+        genericCollection.insert(gw);
+        String id = gw.getId();
         return id;
     }
 
@@ -80,7 +84,7 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
     @Override
     public void serializeObjectToStore(TYPE o, String id) {
         logger.debug("serializeObjectToStore " + id);
-        genericCollection.updateById(id, DBUpdate.set(TypeWrapper.VALUE, o));
+        genericCollection.updateById(id, Updates.set(TypeWrapper.VALUE, o));
     }
 
     @Override
@@ -100,7 +104,7 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
 
     @Override
     public boolean delete(String storageId) {
-        WriteResult<TypeWrapper<TYPE>, String> result=genericCollection.removeById(storageId);
-        return result.getN()==1;
+        DeleteResult result=genericCollection.removeById(storageId);
+        return result.getDeletedCount()==1;
     }
 }

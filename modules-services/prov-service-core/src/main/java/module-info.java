@@ -11,6 +11,6 @@ module prov.service.core {
     requires prov.storage.api;
     requires prov.log;
     requires prov.storage.filesystem;
-    requires quartz;
+    requires org.quartz;
     requires resteasy.multipart.provider;
 }

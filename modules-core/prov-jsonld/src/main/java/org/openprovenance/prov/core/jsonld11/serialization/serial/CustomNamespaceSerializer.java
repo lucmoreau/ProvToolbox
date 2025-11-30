@@ -18,16 +18,21 @@ import static org.openprovenance.prov.core.jsonld11.serialization.Constants.JSON
 public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
     public static final String JSONLD_DEFAULT_NAMESPACE = "@base";
     private final boolean embedContext;
+    private final ObjectMapper mapper;
 
-    public CustomNamespaceSerializer(boolean embedContext) {
+    public CustomNamespaceSerializer(boolean embedContext, ObjectMapper mapper) {
         super(Namespace.class);
         this.embedContext=embedContext;
+        this.mapper=mapper;
     }
 
+    /*
     protected CustomNamespaceSerializer(Class<Namespace> t) {
         super(t);
         this.embedContext=false;
     }
+
+     */
 
     static Map<String, Object> embeddedContext;
 
@@ -63,6 +68,9 @@ public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
         } else {
             theContext[1]= Constants.JSONLD_CONTEXT_URL;
         }
+        // set codec to serialize an array, was required for Mongo-storage.
+        jsonGenerator.setCodec(mapper);
+
         jsonGenerator.writeObject(theContext);
     }
 }

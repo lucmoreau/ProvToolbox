@@ -1,7 +1,10 @@
 package org.openprovenance.prov.storage.mongodb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.*;
+import com.mongodb.BasicDBObject;
+import com.mongodb.ConnectionString;
+import com.mongodb.client.*;
+import com.mongodb.client.result.DeleteResult;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -15,9 +18,10 @@ https://howtodoinjava.com/mongodb/java-mongodb-getsave-image-using-gridfs-apis/
 
 
 public class MongoNonDocumentResourceStorage implements NonDocumentResourceStorage, Constants {
-    private static Logger logger = LogManager.getLogger(MongoNonDocumentResourceStorage.class);
+    private static final Logger logger = LogManager.getLogger(MongoNonDocumentResourceStorage.class);
 
-    private final DB db;
+    private final MongoDatabase db;
+    private final MongoCollection<BasicDBObject> collection;
 
     public MongoNonDocumentResourceStorage(String dbname) {
         this("localhost", dbname);
@@ -25,24 +29,28 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
 
     public MongoNonDocumentResourceStorage(String host, String dbname) {
 
-        MongoClient mongoClient = new MongoClient(host, 27017);
 
-        DB db = mongoClient.getDB(dbname);
+        MongoClient mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
+        MongoDatabase db = mongoClient.getDatabase(dbname);
+
         this.db=db;
-        db.createCollection(COLLECTION_FILES, null);
+        MongoCollection<BasicDBObject> collection=db.getCollection(COLLECTION_FILES,BasicDBObject.class);
+
+        this.collection=collection;
     }
 
-    public MongoNonDocumentResourceStorage(DB db) {
+    public MongoNonDocumentResourceStorage(MongoDatabase db) {
         this.db=db;
+        MongoCollection<BasicDBObject> collection=db.getCollection(COLLECTION_FILES,BasicDBObject.class);
+        this.collection=collection;
     }
     
     @Override
     public String newStore(String suggestedExtension, String mimeType) throws IOException {
-        DBCollection collection = db.getCollection(COLLECTION_FILES);
         BasicDBObject document = new BasicDBObject();
         document.put(KEY_EXTENSION,suggestedExtension);
         document.put(KEY_MIME_TYPE,mimeType);
-        WriteResult result=collection.insert(document);
+        collection.insertOne(document);
         ObjectId id = (ObjectId)document.get( "_id" );
         return id.toHexString();
     }
@@ -55,21 +63,19 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
         copyStringToStore(baos.toString(),id);
     }
 
-    public DBObject findDocumentById(DBCollection collection, String id) {
+    public BasicDBObject findDocumentById(MongoCollection<BasicDBObject> collection, String id) {
         logger.debug("findDocumentById: " + id);
 
         BasicDBObject query = new BasicDBObject();
         query.put("_id", new ObjectId(id));
 
-        DBObject dbObj = collection.findOne(query);
-        return dbObj;
+        FindIterable<BasicDBObject> iter = collection.find(query);
+        return iter.first();
     }
 
     @Override
     public void copyStringToStore(CharSequence str, String id) throws IOException {
         logger.debug("copyStringToStore: " + id);
-
-        DBCollection collection = db.getCollection(COLLECTION_FILES);
 
         BasicDBObject query = new BasicDBObject();
         query.put("_id",new ObjectId(id));
@@ -80,7 +86,7 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
         BasicDBObject updateObject = new BasicDBObject();
         updateObject.put("$set", newDocument);
 
-        collection.update(query, updateObject);
+        collection.updateOne(query, updateObject);
     }
 
     @Override
@@ -90,13 +96,12 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
 
     @Override
     public void copyStoreToOutputStream(String id, OutputStream outputStream) throws IOException {
-        DBCollection collection = db.getCollection(COLLECTION_FILES);
 
         BasicDBObject query = new BasicDBObject();
         query.put("_id",new ObjectId(id));
 
-        DBCursor result=collection.find(query);
-        String contents=(String) result.next().get(KEY_CONTENTS);
+        FindIterable<BasicDBObject> result=collection.find(query);
+        String contents=(String) result.first().get(KEY_CONTENTS);
 
         new PrintStream(outputStream).print(contents);
     }
@@ -108,12 +113,11 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
 
     @Override
     public boolean delete(String storageId) {
-        DBCollection collection = db.getCollection(COLLECTION_FILES);
 
         BasicDBObject query = new BasicDBObject();
         query.put("_id",new ObjectId(storageId));
 
-        WriteResult res=collection.remove(query);
-        return res!=null;
+        DeleteResult res=collection.deleteOne(query);
+        return res.getDeletedCount()==1;
     }
 }

@@ -208,35 +208,6 @@ public class TemplateLogic {
         return value.stream().max(Comparator.comparingInt(this::colorValue)).orElse("none");
     }
 
-    /**
-
-    private Map<String, Set<String>> plead_trainingLevel0() {
-        String [] propertyOrder=templateDispatcher.getPropertyOrder().get("plead_training");
-        Plead_trainingBuilder plead_trainingBuilder = (Plead_trainingBuilder) documentBuilderDispatcher.get("plead_training");
-        Object[] record2=plead_trainingBuilder.make(plead_trainingBuilder.getTypedRecord()); //new Plead_trainingBuilderTypedRecord());
-        Map<QualifiedName, Set<String>> knownTypeMap=new HashMap<>();
-
-        plead_trainingBuilder.make(plead_trainingBuilder.getTypeManager(knownTypeMap, new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>()));
-        Map<String,Set<String>> propertyMap=new HashMap<>();
-        for (int i=0; i<record2.length; i++) {
-            String property=propertyOrder[i];
-            Object value=record2[i];
-            if (value instanceof QualifiedName) {
-                propertyMap.put(property, knownTypeMap.get((QualifiedName) value));
-            }
-        }
-
-
-        Map<String, Set<String>> propertyMap2=typeAssignment.get("plead_training");
-
-        System.out.println("propertyMap " + propertyMap);
-        System.out.println("propertyMap2 " + propertyMap2);
-
-
-        return propertyMap;
-    }
-
-     */
 
     public List<TemplateQuery.RecordEntry2> generateLiveNode(String relation, Integer id, String principal) {
         List<TemplateQuery.RecordEntry2> records=templateQuery.queryTemplatesRecordsById(relation, id, 30, principal);

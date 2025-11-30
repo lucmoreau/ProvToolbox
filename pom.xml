@@ -355,6 +355,8 @@
 		<build.helper.plugin.version>3.5.0</build.helper.plugin.version> <!-- 3.0.0 -->
         <shade.plugin.version>3.6.1</shade.plugin.version>
 
+        <maven.model.version>3.9.11</maven.model.version> <!-- 3.6.1 -->
+
 		<!-- java, scala, jsweet-->
 
 		<jsweet.core.version>6.3.0</jsweet.core.version>
@@ -364,8 +366,8 @@
 
 		<!-- <java.version>1.8</java.version> -->
 
-		<scala.library.version>2.13.13</scala.library.version> <!-- 2.13.12, 2.12.18 -->
-		<scala.plugin.version>4.8.1</scala.plugin.version> <!-- 4.2.0 -->
+		<scala.library.version>2.13.18</scala.library.version> <!-- 2.13.13, 2.13.12, 2.12.18 -->
+		<scala.plugin.version>4.9.7</scala.plugin.version> <!-- 4.8.1, 4.2.0 -->
 		<scalatest.version>3.2.18</scalatest.version> <!-- 3.2.17, 3.1.4, 3.1.0-RC3 -->
 		<scalatest.mvn.plugin.version>2.2.0</scalatest.mvn.plugin.version>
 		<scala.parallel.collection.version>1.0.4</scala.parallel.collection.version>

@@ -19,8 +19,10 @@
         <module name="prov-n" />
         <module name="docker-service-translator" />
         <module name="prov-service-xplain" />
+        <module name="templates_cli (1)" />
         <module name="benchmarks" />
         <module name="prov-model" />
+        <module name="templates_l2p (1)" />
         <module name="prov-toolbox-js-embedding" />
         <module name="service-metrics" />
         <module name="modules-executable-provman" />

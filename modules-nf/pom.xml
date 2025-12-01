@@ -14,6 +14,7 @@
         <module>prov-nf</module>
         <module>prov-signature</module>
         <module>prov-service-signature</module>
+        <module>service-signature</module>
     </modules>
 
 

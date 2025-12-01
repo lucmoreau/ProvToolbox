@@ -23,38 +23,4 @@
 
     </modules>
 
-
-<!--
-    <profiles>
-        <profile>
-            <id>local</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <isdocker />
-                <upload.directory>target/</upload.directory>
-                <validation.log.location>target/</validation.log.location>
-                <validation.prov.log.location>target/</validation.prov.log.location>
-                <hsqldb.location>target/test-database/database</hsqldb.location>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>${war.plugin.version}</version>
-                        <configuration>
-                            <failOnMissingWebXml>false</failOnMissingWebXml>
-                            <classifier />
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-    </profiles>
-    -->
-
-
 </project>

@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>ProvChecker</title>
+    <title>ProvTranslator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+
 
     <style type="text/css">
         body {
@@ -14,32 +15,25 @@
         .sidebar-nav {
             padding: 9px 0;
         }
-        a.disabled {
-            pointer-events: none;
-            cursor: default;
-        }
     </style>
-    <script src="../webjars/jquery/3.3.1/jquery.min.js"></script>
-    <link href="../webjars/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+    <link href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
-
-
 <body>
+
+
+
 
 
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <ul class="nav navbar-nav">
-            <li id="header-validator">  <a href="validator"  class="disabled">Validate</a></li>
-            <li id="header-translator"> <a href="translator" class="disabled">Translate</a></li>
-            <li id="header-expander">   <a href="expander"   class="disabled">Expand</a></li>
-            <li id="header-signer">     <a href="signer">Sign</a></li>
-            <li id="header-checker">    <a href="checker">Check</a></li>
-            <li id="header-api">        <a href="api">API</a></li>
-            <li id="header-about">      <a href="about"     class="disabled">About</a></li>
-            <li id="header-contact">    <a href="contact"   class="disabled">Contact</a></li>
+            <li id="header-translator"> <a href="translator.html" class="disabled">Translate</a></li>
+            <li id="header-signer">     <a href="signer.html" class="disabled">Sign</a></li>
+            <li id="header-checker">    <a href="checker.html" >Check</a></li>
+            <li id="header-api">        <a href="api.html" class="disabled">API</a></li>
         </ul>
     </div>
 </nav>
@@ -136,9 +130,9 @@
 
 </section>
 
-<script src="../webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
 
-<script src="../js/provservice.js"></script>
+<script src="provservice.js"></script>
 <script>
     $('.dropdown-toggle').dropdown()
 </script>

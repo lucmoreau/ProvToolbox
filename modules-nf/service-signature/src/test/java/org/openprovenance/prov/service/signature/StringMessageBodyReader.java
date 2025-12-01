@@ -1,7 +1,6 @@
 package org.openprovenance.prov.service.signature;
 
 import org.apache.commons.io.IOUtils;
-import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 
 import jakarta.ws.rs.WebApplicationException;
@@ -9,6 +8,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Provider;
+import org.openprovenance.prov.model.interop.Formats;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +24,7 @@ public class StringMessageBodyReader implements MessageBodyReader<String> {
 							  Annotation[] annotations, MediaType mediaType) {
 		InteropFramework intF=new InteropFramework();
 
-		ProvFormat format=intF.mimeTypeRevMap.get(mediaType.toString());
+		Formats.ProvFormat format=intF.mimeTypeRevMap.get(mediaType.toString());
 		//System.out.println("*** Supported format " + format + " for type " + type + " given media type " + mediaType.toString()  + " " + intF.mimeTypeRevMap);
 		return format!=null;
 	}

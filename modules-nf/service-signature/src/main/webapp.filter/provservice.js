@@ -41,15 +41,3 @@ function updateRootBindingsBox(url){
         }, "text");
     }
 }
-
-
-
-//// narrative
-
-
-function updateXplainTemplateInputBox(val){
-    document.getElementById("the-xplain-templates").value = val;
-}
-function updateXplainProfileInputBox(val){
-    document.getElementById("the-xplain-profiles").value = val;
-}

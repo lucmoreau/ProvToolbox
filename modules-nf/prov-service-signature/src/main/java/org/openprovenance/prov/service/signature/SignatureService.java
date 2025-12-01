@@ -54,6 +54,7 @@ import org.openprovenance.prov.scala.nf.xml.XmlSignature;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+import static org.openprovenance.prov.model.interop.ApiUriFragments.FRAGMENT_DOCUMENTS;
 
 
 @Path("")
@@ -83,7 +84,7 @@ public class SignatureService implements Constants, InteropMediaType {
 
     
     @GET
-    @Path("/documents/{docId}/nf")
+    @Path(FRAGMENT_DOCUMENTS + "{docId}/nf")
     @Tag(name="sig")
     @Operation(summary = "Normal form Document", description = "",
 	           responses = { @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
@@ -93,6 +94,8 @@ public class SignatureService implements Constants, InteropMediaType {
                               @Parameter(name = HEADER_PARAM_ACCEPT, description = "Accept header parameter", example = "application/json,text/xml,application/xml",
                               required = false) @HeaderParam(HEADER_PARAM_ACCEPT) String accept) {
 
+
+        System.out.println("Requesting normal form for document " + msg);
 
         final ResourceIndex<DocumentResource> index = utils.getDocumentResourceIndex().getIndex();
         try {
@@ -135,7 +138,7 @@ public class SignatureService implements Constants, InteropMediaType {
     String keypass=(keystoreKeyPassProperty==null)? "ckpass" : keystoreKeyPassProperty;
  
     @GET
-    @Path("/documents/{docId}/signed")
+    @Path(FRAGMENT_DOCUMENTS + "{docId}/signed")
     @Operation(summary = "Signed Document", description = "",
 	       responses = { @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
     @Tag(name="sig")
@@ -218,7 +221,7 @@ public class SignatureService implements Constants, InteropMediaType {
 
     
     @GET
-    @Path("/documents/{docId}/signature")
+    @Path(FRAGMENT_DOCUMENTS + "{docId}/signature")
     @Operation(summary = "Signature object", description = "",
            // , responseClass = "org.openprovenance.prov.xml.Document"
            responses = { @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
@@ -277,7 +280,7 @@ public class SignatureService implements Constants, InteropMediaType {
     
     
     @GET
-    @Path("/documents/{docId}/check")
+    @Path(FRAGMENT_DOCUMENTS + "{docId}/check")
     @Operation(summary = "Signed Document", description = "",
                responses = { @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
     @Tag(name="sig")

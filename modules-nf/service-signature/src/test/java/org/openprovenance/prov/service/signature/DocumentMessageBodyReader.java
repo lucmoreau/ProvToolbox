@@ -1,8 +1,8 @@
 package org.openprovenance.prov.service.signature;
 
-import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.interop.Formats;
 import org.openprovenance.prov.vanilla.Document;
 
 import jakarta.ws.rs.WebApplicationException;
@@ -33,7 +33,7 @@ public class DocumentMessageBodyReader implements MessageBodyReader<Document> {
 							  Annotation[] annotations, MediaType mediaType) {
 		InteropFramework intF=new InteropFramework(pf);
 
-		ProvFormat format=intF.mimeTypeRevMap.get(trimCharSet(mediaType));
+        Formats.ProvFormat format=intF.mimeTypeRevMap.get(trimCharSet(mediaType));
 		//System.out.println("*** Supported format " + format + " for type " + type + " given media type " + mediaType.toString()  + " " + intF.mimeTypeRevMap);
 		return format!=null;
 	}
@@ -45,11 +45,11 @@ public class DocumentMessageBodyReader implements MessageBodyReader<Document> {
 							 InputStream is) throws IOException,
 			WebApplicationException {
 		InteropFramework intF=new InteropFramework(pf);
-		ProvFormat format=intF.mimeTypeRevMap.get(trimCharSet(mediaType));
+        Formats.ProvFormat format=intF.mimeTypeRevMap.get(trimCharSet(mediaType));
 		//System.out.println("--->>>> Found " + format);
 
 		InteropFramework interop=new InteropFramework(org.openprovenance.prov.vanilla.ProvFactory.getFactory());
-		Document doc=(Document)interop.deserialiseDocument(is,format);
+		Document doc=(Document)interop.readDocument(is,format);
 		return doc;
 	}
 

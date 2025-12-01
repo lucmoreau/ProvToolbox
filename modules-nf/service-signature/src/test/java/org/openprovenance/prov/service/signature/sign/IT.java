@@ -7,11 +7,12 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 import org.openprovenance.prov.configuration.Configuration;
-import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.ProvDocumentWriter;
+import org.openprovenance.prov.model.interop.Formats;
 import org.openprovenance.prov.notation.ProvSerialiser;
-import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
+import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.signature.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.signature.MapMessageBodyReader;
 import org.openprovenance.prov.vanilla.ProvFactory;
@@ -26,6 +27,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -34,15 +36,24 @@ import java.util.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class IT extends TestCase implements TerminalColors {
-    public static final String TEMPLATES = "batch:[data.sources2],[automatic.decision3,human.decision1],[responsibility6],[inclusion3],[performance4],[relevancy2],[exclusion1]";
-    public static final String PROFILE_LN_BORROWER_NOUN = "ln:borrower-noun";
     static Logger logger = LogManager.getLogger(IT.class);
     final private VanillaDocumentMessageBodyWriter bodyWriter;
 
 
     public IT(String name) {
         super(name);
-        this.bodyWriter = new VanillaDocumentMessageBodyWriter(new ProvSerialiser(new ProvFactory()));
+        ProvDocumentWriter writer=new ProvDocumentWriter() {
+            @Override
+            public void writeDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
+                new ProvSerialiser(new ProvFactory()).serialiseDocument(out,document,formatted);
+            }
+
+            @Override
+            public Collection<String> mediaTypes() {
+                return List.of();
+            }
+        };
+        this.bodyWriter = new VanillaDocumentMessageBodyWriter(writer);
 
     }
 
@@ -56,17 +67,20 @@ public class IT extends TestCase implements TerminalColors {
     }
 
 
-    static String port= Configuration.getPropertiesFromClasspath(IT.class,"config.properties").getProperty("service.port");
-    
-    String postURL ="http://localhost:" + port + "/provapi/documents/";
+    public static final Properties propertiesFromClassPath = Configuration.getPropertiesFromClasspath(IT.class, "config.properties");
+    static String port= propertiesFromClassPath.getProperty("service.port");
+    static String context= propertiesFromClassPath.getProperty("service.context");
+    static String host= propertiesFromClassPath.getProperty("service.host");
+
+    String postURL ="http://" + host + ":" + port + context  + "/provapi/documents_form/";
     
 
     public static HashMap<String, String> table=new HashMap<String, String>();
      
 
     public void testSignature() throws IOException {
-        testSignature("src/test/resources/test-misc/primer.provn", "gKjWKISumUaGeBOx+D1vHUpzRmWGzofaamyMnu4Yuc95KGVu06knnu9FlK6Rn0lRVe8A47ajSsBkkDtIF6YBd5ZHpqkvIxn71LTdaoZ9r1O8rxnCRDFgf05qDNGEc5qPJocP8vH6GQB0KshSHuCrYGQGknGqf+1P/zP/fh19jTjYTu2Gf6txW3kSTkqTx8IKApvRGsw3a/85nl7/+0DQp80c+Q9QFnb//HbXrBfZ0uAm0QumkB8d3rc6IW7gXn8qg1LZbgH25MpQW3/W7vDDbjjjIXEUn278BeLRBI2KPAc10TqA6bTGwDy9bdTeja+em/SSrxElpU4pIj99SFbqgg==");
-        testSignature("src/test/resources/test-explain/128350251.provn", "Pi/yrG8QuU9DpHwuZcBXBC2bMNA3xjqUu+czrtskrGG6S13iGLF/9561ThFZUUBNGfp5uoXExF2aDwep0vV9t+YVryP/xbB3Wg/bMNQ4ewbSwt9wjO54sNze19poqcHgrSGBHkhjONka5sNdVjKFcYnLea81p87vbVMA1AAtikadiL6/T+xw1pVSpisbUqBWatwNkW2UHlFkNCGJdg+hzw5Q2aXj8vLPhg/BKLqAdGrjFpMTCX8keI6F03F4mgyRw39Wyt/cpVsytP37TY5I+eGfSND4NTk34GeTwu6F57TKT5p5dBcVV1pyCPXiWtvHMSJZTqWCO7CF6ynyWhunhA==");
+        testSignature("src/test/resources/test-misc/primer.provn", "bP8g6/hj8JcL+ukoTostpLr/Q9qywiC6l2WQpuwtolbwTRN8ZS/aidtoi8Q7nsNWtUkCR0Qbti8sH/2GIz1BJWt/IFHQew3KzWHyhlulvQyi1gMpdDvIgbJ42/o+Y3mYJJwa5cynkrwCVpflxyafn7GgxqjqoAtihADYW7FYy3y5rur2GHWhSGmdxHKEyViTP+/habTQ7RsZ0HDArTuDDyUjRvNmQB9NLMMbVOMCLSBGSNmPMXpbybgmuN5M6+xQTdMoMP73u9qdFF8m8kQ2zT2RfbcInTMCXdlzM4RXf0y9rCcCibGjnKeht13a7l17B027PWnU4K+SuGxLC/78vg==");
+        testSignature("src/test/resources/test-explain/128350251.provn", "BnGx5QOj2p7KxQjxl47nDvE5aQIj+eqoAXaptsmT/i+SRb73IwXVXFReveda9JSO++wi9KpX5YVoJddLgasbxP//Oo4jNEpGntb4O0j3OJNA/SD1BHaBwJQdaqIdMRPtx4knld9gWxFD844pCfIi9rBk6gD++gGTNVMeL5EFo08CtAWpXZ9PcFS7kQYa+5ILz9PfGSphZ33oUfaDAkc+boJhPCuQ8+FoxMfxuwcgPXjrvOKfWIGVv79crvVr4fJqQYE03+iohHSII9AU3p/M6W/2WKw9wdOQjtpgdJgvdwcT+BZ+ksv/YDm2GtqMhIIVb2qOiDt2C0USjnz/sngt+Q==");
         testNF("src/test/resources/test-misc/primer.provn", "target/nf-primer.xml");
         testNF("src/test/resources/test-explain/128350251.provn", "target/nf-128350251.xml");
         testSigned("src/test/resources/test-misc/primer.provn", "target/signed-primer.xml");
@@ -76,7 +90,7 @@ public class IT extends TestCase implements TerminalColors {
    
 
    
-    public void testSignature(String file, String sig) throws IOException {
+    public void testSignature(String file, String sig) {
         
         logger.debug("/////////////////////////////////// testAction");
 
@@ -112,7 +126,7 @@ public class IT extends TestCase implements TerminalColors {
         logger.debug("/////////////////////////////////// testAction");
 
 
-        logger.debug("*** action 1");
+        logger.debug("*** action NF1");
         String location= doPostStatements_nf(postURL,file);
         assertNotNull("location", location);
         table.put("location", location);
@@ -183,7 +197,7 @@ public class IT extends TestCase implements TerminalColors {
         assertNotNull(" document (" + file + ") is not null", doc);
 
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
-        intF.writeDocument(baos, Formats.ProvFormat.PROVN, doc);
+        intF.writeDocument(baos, doc, Formats.ProvFormat.PROVN);
         String s=baos.toString();
 
         Client client = ClientBuilder.newBuilder().build();
@@ -198,9 +212,9 @@ public class IT extends TestCase implements TerminalColors {
         output.addFormData("type",      "provn",    MediaType.TEXT_PLAIN_TYPE);
         output.addFormData("sign",      "Signature",   MediaType.TEXT_PLAIN_TYPE);
 
-        logger.debug("Form is " +output);
 
         Response response=target.request().post(Entity.entity(output, MediaType.MULTIPART_FORM_DATA_TYPE));
+
 
         String location=response.getHeaderString("Location");
         client.close();
@@ -216,7 +230,7 @@ public class IT extends TestCase implements TerminalColors {
         assertNotNull(" document (" + file + ") is not null", doc);
 
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
-        intF.writeDocument(baos, Formats.ProvFormat.PROVN, doc);
+        intF.writeDocument(baos, doc, Formats.ProvFormat.PROVN);
         String s=baos.toString();
 
         Client client = ClientBuilder.newBuilder().build();
@@ -249,7 +263,7 @@ public class IT extends TestCase implements TerminalColors {
         assertNotNull(" document (" + file + ") is not null", doc);
 
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
-        intF.writeDocument(baos, Formats.ProvFormat.PROVN, doc);
+        intF.writeDocument(baos, doc, Formats.ProvFormat.PROVN);
         String s=baos.toString();
 
         Client client = ClientBuilder.newBuilder().build();
@@ -301,7 +315,6 @@ public class IT extends TestCase implements TerminalColors {
         Response response=target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.entity(output, MediaType.MULTIPART_FORM_DATA_TYPE));
 
         String location=response.getHeaderString("Location");
-        System.out.println("*** write " + location);
         client.close();
 
 

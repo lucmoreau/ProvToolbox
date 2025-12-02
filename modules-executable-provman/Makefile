@@ -6,7 +6,8 @@ JAVA_OPTS2="-Dlog4j.configurationFile=src/test/resources/ptm/config/log4j2.xml -
 PROVMAN=export JAVA_OPTS=$(JAVA_OPTS); target/appassembler/bin/provmanagement
 PROVMAN2=export JAVA_OPTS=$(JAVA_OPTS2); target/appassembler/bin/provmanagement
 
-mvn.test: test.batch.queries xp.all.file xp.aggregate
+mvn.test:
+	-$(MAKE) test.batch.queries xp.all.file xp.aggregate
 
 test.batch.queries:
 	$(PROVMAN) batch --infile src/test/resources/batch/queries.txt --outfile ignore --parallel true

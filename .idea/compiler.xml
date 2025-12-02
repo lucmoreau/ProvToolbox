@@ -11,6 +11,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="prov-jsonld-xml (1)" />
         <module name="prov-nf" />
+        <module name="service-xplain" />
         <module name="prov-template-library" />
         <module name="prov-storage-api" />
         <module name="prov-explanations" />
@@ -95,6 +96,7 @@
       <module name="prov-plugin" target="1.5" />
       <module name="prov-scala" target="9" />
       <module name="ProvToolbox-Tutorial2" target="1.5" />
+      <module name="templates (1)" target="1.5" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>

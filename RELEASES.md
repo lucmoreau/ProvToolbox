@@ -52,6 +52,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-toolbox-plugin: prepare-webjar goal
 * prov-template-compiler: introduced cbindingsDir
 * prov-template-compiler: removed dependency on java 12, but introduced MAVEN_OPTS to support jsweet
+* service-xplain: rescued service (from provman project): interactive demonstrator of explanations
 
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java

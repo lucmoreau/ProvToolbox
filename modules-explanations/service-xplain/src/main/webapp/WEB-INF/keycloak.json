@@ -1,0 +1,9 @@
+{
+    "realm": "xplain",
+    "resource": "assistant",
+    "auth-server-url": "https://openprovenance.org/auth",
+    "ssl-required": "${KEYCLOAK_SSL_REQUIRED}",
+    "public-client": true,
+    "confidential-port": 443
+}
+

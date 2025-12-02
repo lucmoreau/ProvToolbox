@@ -1,0 +1,1163 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PROV Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+
+    <!--      .nested > .nav-pills > .active > a, .nested> .nav-pills > .active > a:hover{
+        background-color: orange;
+      }
+
+      .nestedb > .nav-pills > .active > a, .nestedb> .nav-pills > .active > a:hover{
+        background-color: red;
+      }
+  -->
+
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+
+      pre .pretty {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+      .pretty .string { color: green; }
+      .pretty .uri { color: darkolivegreen; }
+      .pretty .number { color: darkorange; }
+      .pretty .boolean { color: blue; }
+      .pretty .symbol { color: blue; }
+      .pretty .indent { color: #23ff51; }
+      .pretty .null { color: magenta; }
+      .pretty .operator { color: red; }
+      .pretty .key { color: red; }
+      .pretty .date { color: red; }
+      .pretty .feature { color: saddlebrown; }
+      .pretty .attribute { color: skyblue; }
+      .pretty .category { color: green; }
+      .pretty .provkeyword { color: saddlebrown; }
+      .pretty .querykeyword { color: coral;  font-weight: bold; }
+      .pretty .phrasekeyword { color: coral;  font-weight: bold; }
+      .pretty .snlgkeyword { color: saddlebrown; font-weight: bold; }
+      .pretty .templatekeyword { color: royalblue; font-weight: bold; text-decoration: underline; font-variant: small-caps;}
+
+      .active .navbar-brand {
+	  color: white;
+      }
+
+
+      .provelement_IGNORE:hover {
+        background-color: gold;
+      }
+
+      #top_xplain {display: none; }
+
+    </style>
+
+    <script type="text/javascript" src="/xplain/webjars/jquery/3.3.1/jquery.min.js"></script>
+
+    
+    <link rel="stylesheet" type="text/css" href="/xplain/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/xplain/webjars/bootstrap-table/1.9.1/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="/xplain/webjars/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+
+  </head>
+
+  <body>
+    <section class="round">
+
+
+
+
+
+      <div class="container">
+
+
+        <div class="document-block">
+          <ul class="nav nav-tabs" id="topTabs">
+            <li class="nav-item"><a href="#top_newdocument" class="nav-link repr"><i class="fa fa-plus-square"></i> Document</a></li>
+            <li class="nav-item disabled" id="top_doc"><a href="#top_document"	 class="nav-link repr"><i class="fa fa-file-o"></i> Document</a></li>
+            <li class="nav-item disabled" id="top_newxplain"><a href="#top_newexplanation" class="nav-link repr"><i class="fa fa-plus-square"></i> Explanation</a></li>
+            <li class="nav-item disabled" id="top_xplain"><a href="#top_explanation" 	 class="nav-link repr"><i class="fa fa-cog"></i> Explanation</a></li>
+          </ul>
+
+
+          <div class="tab-content" id="all-tab-contents">
+            <div id="top_newdocument" class="tab-pane fade">
+              <div class="mybreadcrumb"><em>Document: not specified</em></div>
+
+              <form enctype="multipart/form-data" name="myForm">
+                <table>
+                  <tr>
+                    <td><input name="file" type="file" /></td>
+                  </tr>
+                  <tr>
+                    <td><input type="button" value="upload" id="upload-document-button"/></td>
+                  </tr>
+                </table>
+              </form>
+              <progress></progress>
+            </div>
+
+
+            <div id="top_document" class="tab-pane fade">
+              <div class="mybreadcrumb"><em>Document: not specified</em></div>
+
+              <ul class="nav nav-pills" id="myTabs">
+                <li class="nav-item disabled"><a href="#menu_provn"	  class="nav-link repr"   data-url=".provn" data-verbatim="true" data-provn="true">PROV-N</a></li>
+                <li class="nav-item disabled"><a href="#menu_json" 	  class="nav-link repr"   data-url=".json"  data-verbatim="true" data-json="true">JSON</a></li>
+                <li class="nav-item disabled"><a href="#menu_jsonld"  class="nav-link repr"   data-url=".jsonld" data-verbatim="true" data-json="true">JSON-LD</a></li>
+                <li class="nav-item disabled"><a href="#menu_svg"  	  class="nav-link repr"   data-url=".svg">SVG</a></li>
+              </ul>
+
+              <div class="tab-content">
+                <div id="menu_provn" class="tab-pane fade provn_code" ace-mode="ace/mode/provn" ace-theme="ace/theme/chrome">
+                </div>
+                <div id="menu_json" class="tab-pane fade">
+                </div>
+                <div id="menu_jsonld" class="tab-pane fade">
+                </div>
+                <div id="menu_svg" class="tab-pane fade">
+                </div>
+                <div id="menu_pdf" class="tab-pane fade">
+                </div>
+              </div>
+            </div>
+
+
+            <div id="top_explanation" class="tab-pane fade" data-document="">
+              <div class="mybreadcrumb">Document: <em>not specified</em></div>
+
+              <ul class="nav nav-pills" id="myExplanationTabs">
+                <li class="nav-item disabled"><a href="#menu_xpl_config"  class="nav-link repr"  data-url="/config" data-verbatim="true" data-json="true">Config</a></li>
+                <li class="nav-item disabled"><a href="#menu_xpl_json"	  class="nav-link repr"  data-url=""  data-verbatim="true" data-json="true">JSON</a></li>
+                <li class="nav-item disabled"><a href="#menu_xpl_html"    class="nav-link repr"  data-url=""  data-html="true">HTML</a></li>
+                <li class="nav-item disabled"><a href="#menu_xpl_anim"    class="nav-link repr animtab"  data-url="">ANIM</a></li>
+              </ul>
+
+              <div class="tab-content">
+                <div id="menu_xpl_config" class="tab-pane fade">
+                </div>
+                <div id="menu_xpl_provn" class="tab-pane fade">
+                </div>
+                <div id="menu_xpl_json" class="tab-pane fade">
+                </div>
+                <div id="menu_xpl_html" class="tab-pane fade">
+                </div>
+                <div id="menu_xpl_anim" class="tab-pane fade">
+                  <div class="row">
+                    <div class="col-xs-8 left">left
+                    </div>
+                    <div class="col-xs-4 right">right
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="top_newexplanation" class="tab-pane fade">
+
+              <div class="mybreadcrumb">Document: <em>not specified</em></div>
+
+
+              <form enctype="multipart/form-data" name="myExplanationForm">
+                <table style="margin-left: auto; margin-right: auto;">
+
+                  <tr>
+                    <td>Explanation plans:</td>
+                    <td>
+                      <div class="input-append btn-group">
+                        <input id="the-xplain-templates" type="text" name="xplain-template" class="input-large" style="width:300px; "  />
+
+                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                          <span class="caret"></span>
+                        </a>
+
+
+                        <ul class="dropdown-menu">
+                          <li>Explanation Plans</li>
+                          <li><a href="#" onclick="updateXplainTemplateInputBox('batch:[plead.cs-1a],[plead.cs-1b],[plead.cs-1c],[plead.cs-1d],[plead.cs-4a],[plead.cs-4b],[plead.cs-4c],[plead.cs-4d],[plead.cs-5a],[plead.cs-5b],[plead.cs-5c],[plead.cs-5d]')">
+                            <i class="icon-ok"></i> credit scoring (1)</a>
+                          </li>
+                          <li><a href="#" onclick="updateXplainTemplateInputBox('batch:[plead.cs-2a],[plead.cs-2b],[plead.cs-2c],[plead.cs-2d],[plead.cs-3a],[plead.cs-3b],[plead.cs-3c],[plead.cs-6a],[plead.cs-6b],[plead.cs-6c]')">
+                            <i class="icon-ok"></i> credit scoring (2)</a>
+                          </li>
+                          <li class="divider"></li>
+                          <li><a href="#" onclick="updateXplainTemplateInputBox('batch:[plead.erasure.accept2a],[plead.erasure.accept2b],[plead.erasure.reject],[plead.rectification.accept2a],[plead.rectification.accept2b],[plead.rectification.reject]')">
+                            <i class="icon-ok"></i> erasure/rectification</a>
+                          </li>
+                          <!--
+                          <li><a href="#" onclick="updateXplainTemplateInputBox('batch:[data.sources2],[automatic.decision3,human.decision1],[responsibility6],[inclusion3],[performance4],[relevancy2],[exclusion1]')">
+                            <i class="icon-ok"></i> loan templates</a>
+                          </li>
+                          <li><a href="#" onclick="updateXplainTemplateInputBox('human.decision1')">
+                            <i class="icon-ok"></i> human.decision1</a>
+                          </li>
+                          -->
+                          <li class="divider"></li>
+                          <li><a href="#" onclick="updateXplainTemplateInputBox('')"><i class="icon-trash"></i> Clear</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Explanation profiles:</td>
+                    <td>
+                      <div class="input-append btn-group">
+                        <input id="the-xplain-profiles" type="text" name="xplain-profile" class="input-large" style="width:300px; "  />
+
+                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                          <span class="caret"></span>
+                        </a>
+
+
+                        <ul class="dropdown-menu">
+                          <li>Explanation Profiles</li>
+                          <li><a href="#" onclick="updateXplainProfileInputBox('ln:company-pronoun-1,ln:borrower-person2')">
+                            <i class="icon-ok"></i> ln:company-pronoun-1,ln:borrower-person2</a>
+                          </li>
+                          <li><a href="#" onclick="updateXplainProfileInputBox('ln:borrower-noun')">
+                            <i class="icon-ok"></i> ln:borrower-noun</a>
+                          </li>
+                          <li><a href="#" onclick="updateXplainProfileInputBox('ln:borrower-person1')">
+                            <i class="icon-ok"></i> ln:borrower-person1</a>
+                          </li>
+                          <li><a href="#" onclick="updateXplainProfileInputBox('ln:borrower-person2')">
+                            <i class="icon-ok"></i> ln:borrower-person2</a>
+                          </li>
+                          <li><a href="#" onclick="updateXplainProfileInputBox('ln:borrower-person3-f')">
+                            <i class="icon-ok"></i> ln:borrower-person3-f</a>
+                          </li>
+                          <li><a href="#" onclick="updateXplainProfileInputBox('xxx')">
+                            <i class="icon-ok"></i> xxx</a>
+                          </li>
+                          <li class="divider"></li>
+                          <li><a href="#" onclick="updateXplainProfileInputBox('')"><i class="icon-trash"></i> Clear</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Tab id:</td>
+                    <td>
+                      <div class="input-append btn-group">
+                        <input id="the-xplain-name" type="text" name="xplain-name" class="input-large" style="width:300px; "  />
+                      </div>
+                    </td>
+                  <tr>
+                    <td><input type="button" value="load" id="upload-explanation-configuration"/></td>
+                  </tr>
+                </table>
+              </form>
+              <progress></progress>
+
+              <div class="explanation-redirect">Explanation: <em>not specified</em></div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+
+    <script>
+      $(':file').on('change', function () {
+        var file = this.files[0];
+
+        if (file.size > 1024 * 1024 * 10) {
+          alert('max upload size is 10M');
+        }
+
+        console.log("found file " + file.name);
+
+      });
+
+      $('#upload-document-button').on('click', function () {
+
+        var formData=new FormData($('form')[0]);
+        formData.append('upload','upload');
+
+        var redirectURL=null;
+
+        var mybutton=$(this);
+        var xhr = new XMLHttpRequest();
+        var url = '/xplain/provapi/documents_form/';
+        xhr.open('POST', url, true);
+        xhr.onprogress = function(event) {
+          console.log(event);
+          if (xhr.responseURL === url) {
+            console.log('got what we wanted, hooray!');
+          }
+          else {
+            if (redirectURL==null) {
+              redirectURL=xhr.responseURL;
+              redirectURL=redirectURL.substr(0,redirectURL.lastIndexOf('.'));
+              console.log('We were redirected from', url, 'to', redirectURL);
+              var lnk=$('<a>').attr('id','current-document').attr('href',redirectURL).addClass('current-document').append(redirectURL);
+              $('.mybreadcrumb').empty();
+              $('.mybreadcrumb').append("Document: ").append(lnk);
+              $('#top_explanation').attr('data-document',redirectURL);
+              $.each($('#myTabs .nav-link'), function (index,obj) {
+                $(obj).attr('data-url',redirectURL + $(obj).attr('data-url'));
+              });
+              $('#top_doc').removeClass("disabled");
+              $('#top_newxplain').removeClass("disabled");
+              $('#top_document').find('li').removeClass("disabled");
+
+            }
+          }
+        };
+        xhr.onerror= function(xhr,event) {
+          console.log("error with " + event);
+        };
+        xhr.onabort= function(xhr,event) {
+          console.log("abort with " + event);
+        };
+        xhr.setRequestHeader("ACCEPT", "text/provenance-notation");  // Note, we set this accept in full knowledge that this is
+        // an acceptable type, which will lead to a further redirect, we then trim '.prov' at the end of the URI.
+        xhr.send(formData);
+
+
+
+
+      });
+
+      var explanationcount=1;
+
+      $('#upload-explanation-configuration').on('click', function () {
+
+
+
+        var template = document.getElementById('the-xplain-templates').value;
+        console.log("templates: " + template);
+        if (template.length <= 0) {
+          return false;
+        }
+
+
+        var profile = document.getElementById('the-xplain-profiles').value;
+        console.log("profiles: " + profile);
+
+        var explanation_name= document.getElementById('the-xplain-name').value;
+
+
+        var createdURL=null;
+
+        var payload = {
+          "template": template,
+          "profile": profile
+        };
+
+
+        //console.log(e);
+        //var result = JSON.parse(e.target.result);
+        //var formatted = JSON.stringify(result, null, 2);
+        //document.getElementById('result').value = formatted;
+
+        const xhr = new XMLHttpRequest();
+        const currentDoc = $('#current-document').attr('href');
+        console.log("currentDoc is " + currentDoc);
+        const url = currentDoc + '/explanationdetails/';
+
+        const formatted = JSON.stringify(payload, null, 2);
+
+        console.log("posting payload " + formatted + "  to url " + url);
+
+
+
+        xhr.open('POST', url, true);
+
+        xhr.onprogress = function(event) {
+          console.log(event);
+          if (xhr.responseURL === null /*url*/ ) {
+            console.log('got what we wanted, hooray!');
+          }
+          else {
+            if (createdURL==null) {
+              createdURL=xhr.getResponseHeader("Location")
+              //redirectURL=redirectURL.substr(0,redirectURL.lastIndexOf('.'));
+
+              var newcount=explanationcount++;
+              var newname=(explanation_name===null || explanation_name==="")?null:explanation_name
+
+              console.log('Explanation: created at ', url);
+              const lnk = $('<a>').addClass('current-explanation').attr('id', 'current-explanation' + newcount).attr('href', createdURL).append(createdURL);
+              $('.explanation-redirect').empty();
+              $('.explanation-redirect').append("Explanation: ").append(lnk.clone());
+
+              const aNewTab = $('#top_xplain').clone();
+              $(aNewTab).attr('id',$(aNewTab).attr('id') + newcount);
+              var childLink=$(aNewTab).find('a');
+              $(childLink).attr('href',$(childLink).attr('href')+newcount);
+              if (newname==null) {
+                $(childLink).append(newcount);
+              } else {
+                $(childLink).html("<i class=\"fa fa-plus-square\"></i> ");
+                $(childLink).append(newname);
+                $(childLink).append(newcount);
+              }
+              $(childLink).click(showToplevelTabFunction);
+              $('#top_xplain').parent().append(aNewTab);
+              $(aNewTab).removeClass("disabled");
+
+
+              const aNewTabContent = $('#top_explanation').clone();
+              $(aNewTabContent).attr('id',$(aNewTabContent).attr('id') + newcount);
+              $(aNewTabContent).attr('count',newcount);
+              $(aNewTabContent).addClass('explanation');
+              $('#all-tab-contents').append(aNewTabContent);
+              $(aNewTabContent).find('.tab-pane').each(function(id,pane) {
+                $(pane).attr('id',$(pane).attr('id') + newcount);
+              });
+              $.each($(aNewTabContent).find('.nav-pills'),function(id,pills) {
+                $(pills).attr('id',$(pills).attr('id') + newcount);
+              });
+              $.each($(aNewTabContent).find('a'),function(id,lnk) {
+                $(lnk).attr('href', $(lnk).attr('href') + newcount);
+                if ($(lnk).hasClass('animtab')) {
+                  $(lnk).click(showAnimInnerTabFunction);
+                } else {
+                  $(lnk).click(showInnerTabFunction("inner" + newcount));
+                }
+              });
+              $(aNewTabContent).find('li').removeClass('disabled');
+
+
+              $(aNewTabContent).find('.mybreadcrumb').append(" Explanation: ").append(lnk);
+
+              $.each($(aNewTabContent).find('.mybreadcrumb .current-document'), function(i,l) {
+                $(this).attr('id', $(this).attr('id') + newcount);
+              });
+              $.each($(aNewTabContent).find('.nav-link'), function (index,obj) {
+                $(obj).attr('data-url',createdURL + $(obj).attr('data-url'));
+              });
+
+
+            }
+          }
+        };
+
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.setRequestHeader("ACCEPT", "application/json");
+        xhr.send(formatted);
+
+        console.log("submitted post request");
+
+
+
+      });
+
+      function updateXplainTemplateInputBox(val){
+        document.getElementById("the-xplain-templates").value = val;
+      }
+      function updateXplainProfileInputBox(val){
+        document.getElementById("the-xplain-profiles").value = val;
+      }
+
+
+      function showToplevelTabFunction (e) {
+        e.preventDefault();
+        if ($(this).parent().hasClass("disabled")) {
+          return false;
+        }
+        var pane = $(this);
+        $(pane).tab('show');
+      }
+
+      function showInnerTabFunction (lab) {
+        return function (e) {
+          e.preventDefault();
+          if ($(this).hasClass("disabled")) {
+            return false;
+          }
+          console.log("***** showInnerTabFunction with tab label " + lab);
+
+          var pane = $(this);
+          var href = $(this).attr('href');
+          doLoadContent(pane, href,lab);
+          $(pane).tab('show');
+        }
+      }
+
+      function showAnimInnerTabFunction (e) {
+        e.preventDefault();
+        if ($(this).hasClass("disabled")) {
+          return false;
+        }
+        var pane = $(this);
+        var href = $(this).attr('href');
+        doAnimLoadContent(pane,href);
+        $(pane).tab('show');
+      }
+
+      function displayPrettyHtmlWithNestedTabs(json, tabid, toextend) {
+        let hook = $('<div>');
+        let ul = $('<ul class="nav nav-pills">');
+        let tabs = $('<div class="tab-content">');
+
+        $.each(json, function (key, value) {
+          const cleanKey = key.replace(/\./g, '_').replace(/,/g, '_');
+          const tab_cleanKey = tabid + "_" + "tab_" + cleanKey;
+          ul.append($('<li>').append($('<a class="nav-link">').attr("data-toggle", "tab").attr("href", "#" + tab_cleanKey).text(key)));
+          const mytab = $('<div class="tab-pane fade nested">').attr("id", tab_cleanKey);
+
+          const ul2 = $('<ul class="nav nav-pills">');
+          const tabs2 = $('<div class="tab-content">');
+
+          const query_temp = [];
+          $.each(value.templates, function (id, template) {
+            query_temp.push(escapeHTMLChars(template.query));
+          });
+          if (query_temp.length > 0) {
+            // console.log(query_temp);
+            value.query = query_temp.join("\n");
+            value.query = JSON.parse(value.query);
+            value.query = value.query.join("\n");
+            // console.log("query is " + value.query);
+            // console.log("query done")
+          }
+          $.each(value, function (nestedKey, nestedValue) {
+            const nested_tab_cleanKey = tab_cleanKey + "_" + nestedKey;
+
+            ul2.append($('<li>').append($('<a class="nav-link">').attr("data-toggle", "tab").attr("href", "#" + nested_tab_cleanKey).text(nestedKey)));
+            const mytab2 = $('<div class="tab-pane fade nestedb">').attr("id", nested_tab_cleanKey);
+
+            var added = false;
+
+            if (nestedKey === "query") {
+              $(mytab2).append(nestedValue);
+              added = true;
+            } else {
+              $.each(nestedValue, function (ind, entry) {
+                added = true;
+                if (typeof entry != 'string') {
+                  entry = JSON.stringify(entry, undefined, 2);
+                }
+                if (nestedKey === "templates") {
+                  $(mytab2).append(escapeHTMLChars(entry));
+                } else {
+                  $(mytab2).append(entry);
+                }
+              });
+            }
+
+            if (!added) {
+              mytab2.append("Explanation: no entry for " + key + " and " + nestedKey);
+            } else {
+              if (nestedKey === "sentences") {
+              } else {
+                const elem = $('<pre>').addClass('code');
+                $(mytab2).addClass("pretty");
+
+                if (nestedKey === "snlgs") {
+                  $(mytab2).attr("data-json", "true")
+                  $(elem).html(syntaxHighlight_snlg($(mytab2).html()));
+                } else if (nestedKey === "templates") {
+                  $(mytab2).attr("data-json", "true");
+                  $(elem).html(syntaxHighlight_template($(mytab2).html()));
+                } else if (nestedKey === "trees") {
+                  $(mytab2).attr("data-verbatim", "true");
+                  $(elem).html(syntaxHighlight_snlgtree($(mytab2).html()));
+                } else if (nestedKey === "query") {
+                  $(mytab2).attr("data-verbatim", "true");
+                  $(elem).html(syntaxHighlight_provquery($(mytab2).html()));
+                }
+                $(mytab2).html(elem);
+
+              }
+
+            }
+            tabs2.append(mytab2);
+
+
+          });
+          mytab.append(ul2);
+          mytab.append(tabs2);
+          tabs.append(mytab);
+        });
+        hook.append(ul);
+        hook.append(tabs);
+        $(toextend).html(hook);
+
+        $('.provelement').off("removing any handler");
+        $('.provelement').hover(function () {
+          var myid = $(this).attr('data-id');
+          $(this).css("background-color", "gold");
+          console.log("*** hover: entering " + myid);
+
+        }, function () {
+          $(this).css("background-color", "white");
+          var myid = $(this).attr('data-id');
+          console.log(" *** hover: exiting " + myid);
+        })
+      }
+
+
+
+      function displayPrettyHtmlWithNestedTabsForSentencesOnly(json, tabid, toextend) {
+        var hook = $('<div>');
+        var ul = $('<ul class="nav nav-pills">');
+        var tabs = $('<div class="tab-content">');
+
+        $.each(json, function (key, value) {
+          var cleanKey = key.replace(/\./g, '_').replace(/,/g, '_');
+          var tab_cleanKey = tabid + "_" + cleanKey;
+          ul.append($('<li>').append($('<a class="nav-link">').attr("data-toggle", "tab").attr("href", "#" + tab_cleanKey).text(key)));
+          var mytab = $('<div class="tab-pane fade nested">').attr("id", tab_cleanKey);
+
+          var ul2=$('<ul class="nav nav-pills">');
+          var tabs2 = $('<div class="tab-content">');
+
+          $.each(value, function (ind, entry) {
+            if (typeof entry != 'string') {
+              entry = JSON.stringify(entry, undefined, 2);
+            }
+
+            $(mytab).append(entry);
+
+          });
+
+
+          mytab.append(ul2);
+          mytab.append(tabs2);
+          tabs.append(mytab);
+
+
+        });
+
+        hook.append(ul);
+        hook.append(tabs);
+        $(toextend).html(hook);
+
+          $('.provelement').off("removing any handler");
+          $('.provelement').hover(function () {
+              var myid = $(this).attr('data-id');
+              $(this).css("background-color", "gold");
+              darken_prov_objects_with_id('menu_xpl_anim1',myid);
+          }, function () {
+              $(this).css("background-color", "white");
+              var myid = $(this).attr('data-id');
+              lighten_prov_objects_with_id('menu_xpl_anim1',myid);
+
+          })
+      }
+
+      function loadContentsForMultipleExplanations(toextend, result, verbatim, prettyjson, prettyprovn, prettyhtml, tabid) {
+        console.log("+++++++++ loading data-content");
+        $(toextend).attr("data-content", result);
+        if (verbatim && !prettyjson) {
+          if (prettyprovn) {
+            $(toextend).html(syntaxHighlight_provn(escapeHTMLChars(result)));
+            $(toextend).addClass("pretty");
+          } else {
+            $(toextend).html(escapeHTMLChars(result));
+          }
+          /* TOEXPLORE HOW TO MAKE THIS WORK
+                        qsa(".provn_code").forEach(function (codeEl) {
+                          highlight(codeEl, {
+                            mode: codeEl.getAttribute('ace-mode'),
+                            theme: codeEl.getAttribute('ace-theme'),
+                            startLineNumber: 1,
+                            showGutter: codeEl.getAttribute("ace-gutter"),
+                            trim: true
+                          }, function (highlighted) {});
+                        });
+
+
+              */
+        } else if (prettyjson) {
+          $(toextend).html(syntaxHighlight_json(JSON.stringify(JSON.parse(result), null, 2)));
+          $(toextend).addClass("pretty");
+        } else if (prettyhtml) {
+          console.log("prettyhtml");
+          var json = JSON.parse(result);
+          //console.log(json);
+
+          displayPrettyHtmlWithNestedTabs(json, tabid, toextend);
+        }
+      }
+
+      function doLoadContent(pane,href,tabid) {
+        var url=$(pane).attr("data-url");
+        var verbatim=$(pane).attr("data-verbatim");
+        var prettyjson=$(pane).attr("data-json");
+        var prettyprovn=$(pane).attr("data-provn");
+        var prettyhtml=$(pane).attr("data-html");
+        var toextend;
+        if (verbatim) {
+          var elem=$('<pre>').addClass('code');
+          $(href).html(elem);
+          toextend=elem;
+        } else {
+          toextend=href;
+        }
+        // ajax load from data-url
+        $(toextend).load(url,function(result,status,jqXHR){
+          if (status==="error") {
+            //console.log(result);
+            if (!verbatim) {
+              var elem=$('<pre>').addClass('code');
+              $(href).html(elem);
+              toextend=elem;
+            }
+            var json
+            try {
+              json=JSON.parse(result);
+            } catch (e) {
+              if (typeof result==="undefined") {
+                json={}
+              } else {
+                json = result.toString();
+              }
+            }
+
+            $(toextend).html("<p><em>There was an error loading content.</em></p><p>Error code: " + json.status + " (" + json.error + ") </p><br/><br/>" + syntaxHighlight_json(JSON.stringify(json,null,2)));
+            $(toextend).addClass("pretty");
+            if (json.status===401) {
+              console.log("updated token");
+              if (keycloak) {
+                console.log("updated token " + keycloak);
+              }
+            }
+          } else {
+              $(toextend).addClass('multi_explanation_pane');
+              loadContentsForMultipleExplanations(toextend, result, verbatim, prettyjson, prettyprovn, prettyhtml, tabid);
+          }
+        }) ;
+      }
+
+      var PROV_BLUE = "#9fb1fc";
+      var PROV_ORANGE = "#fdb266";
+      var PROV_YELLOW= "#fffc87";
+      var PROV_LIGHT_BLUE = "#E4FAFC"       //"LightSkyBlue";
+      var PROV_LIGHT_ORANGE = "#FDE9D4"     //"Bisque";
+      var PROV_LIGHT_YELLOW = "#F9FDEB"     //"LightYellow";
+
+
+      function initLightener() {
+          var res={}
+          res[PROV_BLUE]=PROV_LIGHT_BLUE
+          res[PROV_ORANGE]=PROV_LIGHT_ORANGE
+          res[PROV_YELLOW]=PROV_LIGHT_YELLOW
+          return res
+      }
+      function initDarkener() {
+          var res={}
+          res[PROV_LIGHT_BLUE]=PROV_BLUE
+          res[PROV_LIGHT_ORANGE]=PROV_ORANGE
+          res[PROV_LIGHT_YELLOW]=PROV_YELLOW
+          return res
+      }
+      var PROV_COLOR_LIGHTENER=initLightener()
+
+      var PROV_COLOR_DARKENER=initDarkener()
+
+      function lighten_fill (value) {
+          var newColor=PROV_COLOR_LIGHTENER[$(value).attr("fill")]
+          if (newColor) {
+              $(value).attr("fill",newColor)
+          }
+      }
+      function darken_fill (value) {
+          var newColor=PROV_COLOR_DARKENER[$(value).attr("fill")]
+          if (newColor) {
+              $(value).attr("fill",newColor)
+          }
+      }
+
+
+      function lighten_prov_objects(toextend) {
+          $.each($(toextend).find('polygon'), function (idx, value) {
+              lighten_fill(value)
+          });
+          $.each($(toextend).find('ellipse'), function (idx, value) {
+              lighten_fill(value);
+          });
+      }
+      function darken_prov_objects(toextend) {
+          $.each($(toextend).find('polygon'), function (idx, value) {
+              darken_fill(value)
+          });
+          $.each($(toextend).find('ellipse'), function (idx, value) {
+              darken_fill(value);
+          });
+      }
+
+      function lighten_prov_objects_with_id(toextend,id) {
+          var query = '.left a[*|href="' + id + '"]';
+          var elements=document.querySelectorAll(query)
+          elements.forEach(function(element) {
+              lighten_prov_objects(element);
+          });
+      }
+      function darken_prov_objects_with_id(toextend,id) {
+          var query = '.left a[*|href="' + id + '"]';
+          var elements=document.querySelectorAll(query)
+          elements.forEach(function(element) {
+              darken_prov_objects(element);
+          });
+      }
+
+      function isProvObject(obj) {
+          var val1=PROV_COLOR_LIGHTENER[$(obj).attr("fill")]
+          var val2=PROV_COLOR_DARKENER[$(obj).attr("fill")]
+          return val1 || val2
+      }
+
+      function shapeToLink(obj) {
+          return $(obj).parent().attr('xlink:href');
+      }
+
+      function highlightExplanationSection(myid) {
+          colorExplanationSection(myid,"gold");
+      }
+      function turnoffExplanationSection(myid) {
+          colorExplanationSection(myid,"white");
+      }
+      function colorExplanationSection(myid,color) {
+          $('.provelement[data-id="' + myid + '"]').css("background-color", color);
+      }
+
+      function listeners_for_prov_objects(toextend) {
+          var objects=[];
+          $.each($(toextend).find('polygon'), function (idx, value) {
+              if (isProvObject(value)) objects.push(value)
+          });
+          $.each($(toextend).find('ellipse'), function (idx, value) {
+              if (isProvObject(value)) objects.push(value)
+          });
+
+          $.each(objects, function (id, obj) {
+              $(obj).hover(function () {
+                  var myid = shapeToLink(this);
+                  highlightExplanationSection(myid);
+                  darken_prov_objects_with_id('menu_xpl_anim1',myid);
+
+              }, function () {
+                  var myid = shapeToLink(this);
+                  turnoffExplanationSection(myid);
+                  lighten_prov_objects_with_id('menu_xpl_anim1',myid);
+              });
+          })
+      }
+
+      function insert_svg_function_for_parent (toextend) {
+          return function  (result,status,jqXHR) {
+              if (status==="error") {
+
+                  var json
+                  try {
+                      json = JSON.parse(result);
+                  } catch (e) {
+                      json=result.toString();
+                  }
+                  $(toextend).html("<p><em>There was an error loading content.</em></p><p>Error code: " + json.status + " (" + json.error + ") </p><br/><br/>" + syntaxHighlight_json(JSON.stringify(json,null,2)));
+                  $(toextend).addClass("pretty");
+                  if (json.status===401) {
+                      console.log("updated token");
+                  }
+              } else {
+                  $(toextend).find('svg').attr('width','100%').attr('height','100%');
+
+                  lighten_prov_objects(toextend);
+                  listeners_for_prov_objects(toextend);
+
+              }
+          }
+      }
+
+      function doAnimLoadContent(pane,href) {
+
+
+        console.log(pane);
+        console.log(href);
+
+        var url = $('#top_explanation').attr('data-document');
+
+
+        var toextend = $(href).find('.left');
+        $(toextend).load(url + "/animation.svg", insert_svg_function_for_parent(toextend));
+
+
+        console.log('luc1 ' + href);
+        var this_explanation_tab = $(href).closest('.explanation');
+        console.log(this_explanation_tab);
+        console.log('luc2');
+        var this_explanation_url = $(this_explanation_tab).find('.current-explanation').attr('href')
+        console.log(this_explanation_url);
+
+        $.getJSON(this_explanation_url, function (theContent) {
+          console.log(JSON.toString(theContent));
+
+
+
+          //var theContent = $('.multi_explanation_pane.active').attr('data-content');
+          //var theId = $('.multi_explanation_pane.active').attr('id');
+          var theId=href.substring(1);
+          console.log("theId: " + theId); //menu_xpl_html1
+
+          console.log("anim " + theContent);
+
+          var all_sentences = {}
+
+          //var theContent2 = JSON.parse(theContent)
+          //console.log(theContent2);
+          $.each(theContent, function (key, value) {
+            all_sentences[key] = value.sentences;
+          });
+
+
+          var toextend2 = $(href).find('.right');
+
+          displayPrettyHtmlWithNestedTabsForSentencesOnly(all_sentences, theId, toextend2);
+
+
+        });
+      }
+
+
+
+      function escapeHTMLChars(json) {
+        if (typeof json != 'string') {
+          json = JSON.stringify(json, undefined, 2);
+        }
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json;
+      }
+
+      function syntaxHighlight_template(json) {
+      //  if (typeof json != 'string') {
+       //   json = JSON.stringify(json, undefined, 2);
+      //  }
+      //  json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+          var cls = 'number';
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = 'key';
+            } else {
+              cls = 'string';
+            }
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/null/.test(match)) {
+            cls = 'null';
+          }
+          if (cls=='string') {
+            if (/"clause|noun_phrase|verb_phrase|adjective_phrase|coordinated_phrase|preposition_phrase|type"/.test(match)) {
+              cls = 'snlgkeyword';
+            }
+          }
+          if (cls=='key') {
+            if (/^"query|sentence|name|select|context|where"/.test(match)) {
+              cls='templatekeyword';
+            }
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        });
+      }
+
+      function syntaxHighlight_snlg(json) {
+        if (typeof json != 'string') {
+          json = JSON.stringify(json, undefined, 2);
+        }
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+          var cls = 'number';
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = 'key';
+            } else {
+              cls = 'string';
+            }
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/null/.test(match)) {
+            cls = 'null';
+          }
+          if (cls=='string') {
+            if (/"clause|noun_phrase|verb_phrase|adjective_phrase|coordinated_phrase|preposition_phrase|type"/.test(match)) {
+              cls='snlgkeyword';
+            }
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        });
+      }
+
+
+      function syntaxHighlight_json(json) {
+        if (typeof json != 'string') {
+          json = JSON.stringify(json, undefined, 2);
+        }
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+          var cls = 'number';
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = 'key';
+            } else {
+              cls = 'string';
+            }
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/null/.test(match)) {
+            cls = 'null';
+          }
+          if (cls=='key') {
+            if (/^"(wasGeneratedBy|prov:)|wasAssociatedWith|used|wasDerivedFrom|wasAttributedTo|specializationOf|alternateOf|entity|agent|activity|type|\$|actedOnBehalfOf/.test(match)) {
+              cls='provkeyword';
+            }
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        });
+      }
+
+
+      function syntaxHighlight_provn(code) {
+        console.log("in syntaxHighlight_provn");
+        //code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return code.replace(/(&lt;.*&gt;)|((\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d+([.]\d+)?)|([a-zA-Z0-9]+(:[a-zA-Z0-9_\/.]+)?))/g, function (match) {
+          var cls = 'string';
+          if (/(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))/.test(match)) {
+              cls = 'date';
+          } else if (/&lt;.*&gt;/.test(match)) {
+            cls = 'uri';
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/^[+-]?\d+([.]\d+)?$/.test(match)) {
+            cls = 'number';
+          } else if (/(([a-zA-Z0-9])+:[a-zA-Z0-9_\/.]+?)/.test(match)) {
+            if (/^prov/.test(match)) {
+              cls = 'provkeyword';
+            } else {
+              cls = 'symbol';
+            }
+          } else if (/null/.test(match)) {
+            cls = 'null';
+          } else if (/document|endDocument|prefix|wasGeneratedBy|wasAssociatedWith|used|wasDerivedFrom|wasAttributedTo|specializationOf|alternateOf|entity|agent|activity|actedOnBehalfOf/.test(match)) {
+              cls='provkeyword';
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        });
+      }
+
+
+      function syntaxHighlight_provquery(code) {
+        console.log("in syntaxHighlight_provquery");
+        //code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return code.replace(/(&lt;.*&gt;)|((\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|=|&gt;=|(\d+([.]\d+)?)|([a-zA-Z0-9]+(:[a-zA-Z0-9_\/.]+)?))/g, function (match) {
+          var cls = 'string';
+          if (/(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))/.test(match)) {
+            cls = 'date';
+          } else if (/&lt;.*&gt;/.test(match)) {
+            cls = 'uri';
+          } else if (/=/.test(match)) {
+            cls = 'operator';
+          } else if (/&gt;/.test(match)) {
+            cls = 'operator';
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/^[+-]?\d+([.]\d+)?$/.test(match)) {
+            cls = 'number';
+          } else if (/(([a-zA-Z0-9])+:[a-zA-Z0-9_\/.]+?)/.test(match)) {
+            if (/^prov/.test(match)) {
+              cls = 'provkeyword';
+            } else {
+              cls = 'symbol';
+            }
+          } else if (/null/.test(match)) {
+            cls = 'null';
+          } else if (/document|endDocument|prefix|wasGeneratedBy|wasAssociatedWith|used|wasDerivedFrom|wasAttributedTo|specializationOf|alternateOf|entity|agent|activity|actedOnBehalfOf/.test(match)) {
+            cls='provkeyword';
+          } else if (/select|join|aggregate|where|and|from|group|by|prefix|with/.test(match)) {
+            cls='querykeyword';
+          } else if (/^a$/.test(match)) {
+            cls='querykeyword';
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        });
+      }
+
+
+      function syntaxHighlight_snlgtree(code) {
+        console.log("in syntaxHighlight_snlgtree");
+        //code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return code.replace(/(&lt;.*&gt;)|((\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|=|&gt;=|(\d+([.]\d+)?)|([a-zA-Z0-9_]+(:[a-zA-Z0-9_\/.]+)?))/g, function (match) {
+          var cls = 'string';
+          if (/(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))/.test(match)) {
+            cls = 'date';
+          } else if (/&lt;.*&gt;/.test(match)) {
+            cls = 'uri';
+          } else if (/^[\|\-\\]*$/.test(match)) {
+            cls = 'indent';
+          } else if (/^=$/.test(match)) {
+            cls = 'operator';
+          } else if (/&gt;/.test(match)) {
+            cls = 'operator';
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/^[+-]?\d+([.]\d+)?$/.test(match)) {
+            cls = 'number';
+          } else if (/(([a-zA-Z0-9_])+:[a-zA-Z0-9_\/.]+?)/.test(match)) {
+            if (/^prov/.test(match)) {
+              cls = 'provkeyword';
+            } else {
+              cls = 'symbol';
+            }
+          } else if (/null/.test(match)) {
+            cls = 'null';
+          } else if (/document|endDocument|prefix|wasGeneratedBy|wasAssociatedWith|used|wasDerivedFrom|wasAttributedTo|specializationOf|alternateOf|entity|agent|activity|actedOnBehalfOf/.test(match)) {
+            cls='provkeyword';
+          } else if (/PhraseElement|StringElement|WordElement/.test(match)) {
+            cls='phrasekeyword';
+          } else if (/^(PREPOSITIONAL_PHRASE|VERB_PHRASE|NOUN_PHRASE|VERB|CLAUSE|DETERMINER)$/.test(match)) {
+            cls='category';
+          } if (/^(SINGULAR|NEUTER|SUBJECT|SUBORDINATE|REGULAR|OBJECT)$/.test(match)) {
+            cls='symbol';
+          } else if (/^(specifier|category|base|realisation|features)$/.test(match)) {
+            cls='attribute';
+          } if (/^(head|number|gender|acronym|discourse_function|default_infl)$/.test(match)) {
+            cls='feature';
+          } else if (/^a$/.test(match)) {
+            cls='querykeyword';
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        });
+      }
+
+
+
+      $(document).ready(function(){
+        $('#myTabs a').click(showInnerTabFunction(null));
+
+        $('#topTabs a').click(showToplevelTabFunction);
+      });
+
+    </script>
+
+
+    <script type="text/javascript" src="/xplain/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/xplain/webjars/bootstrap-table/1.9.1/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="/xplain/webjars/ace-builds/src-min-noconflict/ace.js"></script>
+    <script type="text/javascript" src="/xplain/webjars/ace-builds/src-min-noconflict/ext-static_highlight.js"></script>
+
+    <script>
+      var highlight = ace.require("ace/ext/static_highlight")
+      var dom = ace.require("ace/lib/dom")
+      function qsa(sel) {
+        return [].slice.call(document.querySelectorAll(sel));
+      }
+
+    </script>
+  </body>
+</html>

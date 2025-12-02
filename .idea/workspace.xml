@@ -9,55 +9,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/config/log4j2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/resources/properties/jetty.webapp.config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/resources/properties/prov.webapp.config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/resources/properties/tomcat.webapp.config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/WEB-INF/classes/org/openprovenance/prov/service/core/config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/WEB-INF/jetty-web.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/WEB-INF/tomcat-web.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/resources/prov/invalid.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/resources/prov/pc1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/resources/prov/primer.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/translator.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/test/config/log4j2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/test/resources/config/storage-configuration-mongodb-redis.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-service-signature/src/main/java/org/openprovenance/prov/service/signature/SignatureService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-service-signature/src/main/java/org/openprovenance/prov/service/signature/SignatureService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/java/org/openprovenance/prov/service/summary/DocumentMessageBodyReader.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/java/org/openprovenance/prov/service/summary/EnvironmentVariables.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/java/org/openprovenance/prov/service/summary/NFXMLDocumentMessageBodyWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/java/org/openprovenance/prov/service/summary/NFXMLDocumentMessageBodyWriter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/java/org/openprovenance/prov/service/summary/SignApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/java/org/openprovenance/prov/service/summary/SignApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/java/org/openprovenance/prov/service/summary/StorageConfiguration.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/java/org/openprovenance/prov/service/summary/ViewApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/java/org/openprovenance/prov/service/summary/ViewService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/api.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/api.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/checker.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/checker.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/js/provservice.js" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/provservice.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/resources/prov/128350251.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/resources/prov/128350251.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/resources/prov/invalid.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/resources/webresources/prov/invalid.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/resources/prov/pc1.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/resources/webresources/prov/pc1.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/resources/prov/primer.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/resources/webresources/prov/primer.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/resources/templates/org/openprovenance/generic/binaryop/1.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/resources/templates/org/openprovenance/generic/binaryop/1.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/resources/templates/org/openprovenance/generic/binaryop/1/b1.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/resources/templates/org/openprovenance/generic/binaryop/1/b1.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/resources/templates/org/openprovenance/generic/binaryop/1/b2.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/resources/templates/org/openprovenance/generic/binaryop/1/b2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/resources/templates/org/openprovenance/generic/binaryop/1/b3.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/resources/templates/org/openprovenance/generic/binaryop/1/b3.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/resources/templates/org/openprovenance/generic/binaryop/1/b4.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/resources/templates/org/openprovenance/generic/binaryop/1/b4.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp/signer.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/signer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/test/java/org/openprovenance/prov/service/signature/DocumentMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/test/java/org/openprovenance/prov/service/signature/DocumentMessageBodyReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/test/java/org/openprovenance/prov/service/signature/StreamMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/test/java/org/openprovenance/prov/service/signature/StreamMessageBodyReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/test/java/org/openprovenance/prov/service/signature/StringMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/test/java/org/openprovenance/prov/service/signature/StringMessageBodyReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/test/java/org/openprovenance/prov/service/signature/sign/IT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/test/java/org/openprovenance/prov/service/signature/sign/IT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/src/test/resources/org/openprovenance/prov/service/signature/sign/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/src/test/resources/org/openprovenance/prov/service/signature/sign/config.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/Wrapper.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/Wrapper.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/scala/nlg/wrapper/PhraseSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/scala/nlg/wrapper/PhraseSpec.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -244,7 +205,7 @@
     "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-nf/service-signature/src/main/webapp.filter",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/service-xplain/src/main/resources",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -280,11 +241,11 @@
       <recent name="org.openprovenance.prov.model.builder" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-explanations/service-xplain/src/main/resources" />
       <recent name="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter" />
       <recent name="$PROJECT_DIR$/modules-nf/service-signature/src/main/resources" />
       <recent name="$PROJECT_DIR$/modules-nf/service-signature/src/main/webapp.filter/resources" />
       <recent name="$PROJECT_DIR$/modules-nf/service-signature/src/main/config" />
-      <recent name="$PROJECT_DIR$/modules-nf/service-signature/src/test/config" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-nf/service-signature/src/main/resources" />

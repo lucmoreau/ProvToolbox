@@ -146,7 +146,7 @@
 
 
     <properties>
-        <service.port>7075</service.port>
+        <service.port>7078</service.port>
         <service.context>/sum</service.context>
         <service.host>localhost</service.host>
         <service.protocol>http</service.protocol>

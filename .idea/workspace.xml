@@ -9,16 +9,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/2024-08-25/jsonldschema-notab.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/Wrapper.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/Wrapper.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/scala/nlg/wrapper/PhraseSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/scala/nlg/wrapper/PhraseSpec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/service-xplain/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/service-xplain/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/BatchExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/BatchExecutor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/TtbSchemaValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/TtbSchemaValidator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial3/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial3/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial4/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial4/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,6 +185,7 @@
     "JUnit.ValidateTest.testFailingDocumentExpansion.executor": "Run",
     "JUnit.ValidateTest.testFailingDocumentPicaso.executor": "Run",
     "JUnit.mongoDb2Test.executor": "Run",
+    "Makefile Target.check.schema.spec.executor": "Run",
     "Makefile Target.go.executor": "Run",
     "Makefile Target.go1.executor": "Run",
     "Makefile Target.go2.executor": "Run",
@@ -290,7 +295,7 @@
       <recent name="org.openprovenance.prov.model.interop" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.IT">
+  <component name="RunManager" selected="Makefile Target.check.schema.spec">
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -369,32 +374,6 @@
       </extension>
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.signature.sign" />
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.signature.sign.IT" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MongoBindingsDbTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-storage-mongodb" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.storage.mongodb.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.storage.mongodb" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.storage.mongodb.MongoBindingsDbTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
@@ -511,31 +490,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="mongoDb2Test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-storage-mongodb" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.storage.mongodb.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.storage.mongodb" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.storage.mongodb.mongoDb2Test" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="check.schema.spec" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-core/prov-jsonld/Makefile" target="check.schema.spec" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="go" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-core/prov-jsonld/Makefile" target="go" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
     </configuration>
     <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
@@ -639,19 +604,19 @@
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
       <item itemvalue="JUnit.IT" />
-      <item itemvalue="JUnit.MongoBindingsDbTest" />
       <item itemvalue="JUnit.MongoBindingsDbTest.testMongoStorage" />
       <item itemvalue="JUnit.RoundTripFromJavaMongoTest" />
-      <item itemvalue="JUnit.mongoDb2Test" />
+      <item itemvalue="Makefile Target.check.schema.spec" />
+      <item itemvalue="Makefile Target.go" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Makefile Target.check.schema.spec" />
+        <item itemvalue="Makefile Target.go" />
         <item itemvalue="JUnit.IT" />
         <item itemvalue="JUnit.RoundTripFromJavaMongoTest" />
         <item itemvalue="JUnit.MongoBindingsDbTest.testMongoStorage" />
-        <item itemvalue="JUnit.MongoBindingsDbTest" />
-        <item itemvalue="JUnit.mongoDb2Test" />
       </list>
     </recent_temporary>
   </component>

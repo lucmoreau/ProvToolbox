@@ -200,7 +200,7 @@
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.13</version>
+						<version>1.7.0</version> <!-- 1.6.13 -->
 						<extensions>true</extensions>
 						<configuration>
 							<serverId>ossrh</serverId>
@@ -277,6 +277,9 @@
 			</plugin>
 			-->
 
+
+
+
 		</plugins>
 
 		<pluginManagement>
@@ -345,7 +348,7 @@
 		<jar.plugin.version>3.3.0</jar.plugin.version>
 		<war.plugin.version>3.5.1</war.plugin.version> <!-- 3.4.0, 3.3.1 -->
 		<exec.plugin.version>3.6.2</exec.plugin.version> <!-- 3.2.0, 3.1.0 -->
-		<assembly.plugin.version>3.7.1</assembly.plugin.version> <!-- 3.0.0 -->
+		<assembly.plugin.version>3.8.0</assembly.plugin.version> <!-- 3.7.1, 3.0.0 -->
 		<antrun.plugin.version>3.2.0</antrun.plugin.version> <!-- 3.1.0 -->
 		<surefire.plugin.version>3.5.4</surefire.plugin.version> <!-- 3.2.5, 3.1.2 -->
 		<failsafe.plugin.version>3.5.4</failsafe.plugin.version> <!-- 3.2.5, 3.1.2 -->
@@ -374,7 +377,7 @@
 		<scala.parser.comb.version>2.4.0</scala.parser.comb.version> <!-- 1.1.2 -->
 		<parboiled.version>2.5.1</parboiled.version> <!-- 2.5.0 -->
 
-		<xmlsec.version>4.0.2</xmlsec.version> <!--2.1.4 -->
+		<xmlsec.version>4.0.4</xmlsec.version> <!--4.0.2, 2.1.4 -->
 
 		<!-- web services -->
 

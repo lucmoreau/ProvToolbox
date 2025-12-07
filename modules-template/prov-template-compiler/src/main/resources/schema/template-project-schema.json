@@ -147,6 +147,9 @@
         "documentation": {
             "type": "string"
         },
+        "variableCheck": {
+            "type": "string"
+        },
         "sqlFile": {
             "type": "string"
         },

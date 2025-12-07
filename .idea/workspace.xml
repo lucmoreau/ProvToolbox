@@ -9,20 +9,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/2024-08-25/jsonldschema-notab.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/service-xplain/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/service-xplain/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/BatchExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/BatchExecutor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/TtbSchemaValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/TtbSchemaValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial3/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial3/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial4/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial4/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/schema/template-project-schema.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/schema/template-project-schema.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

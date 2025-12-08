@@ -390,7 +390,7 @@
 		<jakarta.ws.rs.version>3.1.0</jakarta.ws.rs.version> <!-- 3.1.0 -->
 		<jakarta.xml.bind.version>4.0.0</jakarta.xml.bind.version>  <!-- 3.0.1 -->
 
-		<pac4j.version>5.7.4</pac4j.version> <!-- lombok? 6.0.2 -->
+		<pac4j.version>5.7.8</pac4j.version> <!-- 5.7.4, lombok? 6.0.2 -->
 
 		<swagger.version>2.2.41</swagger.version> <!-- 2.2.15, 2.0.8 -->
 

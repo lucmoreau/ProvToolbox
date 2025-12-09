@@ -61,6 +61,11 @@ public class BatchExecutor {
             ProvSerialiser serialiser3 = (ProvSerialiser) cons.newInstance(pf, "svg");
             serializerMap.put("svg", serialiser3);
 
+            c = Class.forName("org.openprovenance.prov.dot.ProvSerialiser");
+            cons = c.getConstructor(ProvFactory.class, String.class, Integer.class, boolean.class);
+            ProvSerialiser serialiser4 = (ProvSerialiser) cons.newInstance(pf, "png", 20, true);
+            serializerMap.put("qualified.png", serialiser4);
+
             c = Class.forName("org.openprovenance.prov.notation.ProvDeserialiser");
             cons = c.getConstructor(ProvFactory.class);
             deserializerMap.put("provn", (ProvDeserialiser) cons.newInstance(pf));
@@ -68,6 +73,7 @@ public class BatchExecutor {
             c = Class.forName("org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser");
             cons = c.getConstructor();
             serializerMap.put("jsonld", (ProvSerialiser) cons.newInstance());
+            System.out.println("serializerMap: " + serializerMap.keySet());
             return Pair.of(serializerMap, deserializerMap);
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             logger.throwing(e);

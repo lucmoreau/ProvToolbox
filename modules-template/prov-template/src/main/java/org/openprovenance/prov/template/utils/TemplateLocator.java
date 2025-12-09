@@ -11,6 +11,7 @@ public class TemplateLocator {
     private String provn;
     private String png;
     private String svg;
+    private String qualifiedPng;
     private String provCsv;
     private TemplateProvenanceLocator hasProvenance;
 
@@ -65,6 +66,14 @@ public class TemplateLocator {
         this.provCsv = provCsv;
     }
 
+    public String getQualifiedPng() {
+        return qualifiedPng;
+    }
+
+    public void setQualifiedPng(String qualifiedPng) {
+        this.qualifiedPng = qualifiedPng;
+    }
+
     public TemplateProvenanceLocator getHasProvenance() {
         return hasProvenance;
     }
@@ -84,6 +93,7 @@ public class TemplateLocator {
             case PNG -> getPng();
             case SVG -> getSvg();
             case PROVCSV -> getProvCsv();
+            case QUALIFIED_PNG -> getQualifiedPng();
             case HAS_PROVENANCE -> throw new TemplateLocatorException("get(): Cannot get HAS_PROVENANCE path from TemplateLocator");
         };
     }
@@ -99,6 +109,7 @@ public class TemplateLocator {
             case PNG -> getHasProvenance().getPng();
             case SVG -> getHasProvenance().getSvg();
             case PROVCSV -> getHasProvenance().getProvCsv();
+            case QUALIFIED_PNG -> getHasProvenance().getQualifiedPng();
             case HAS_PROVENANCE -> throw new TemplateLocatorException("getProvenance(): Cannot get HAS_PROVENANCE path from TemplateLocator");
         };
     }
@@ -119,6 +130,7 @@ public class TemplateLocator {
             case SVG -> setSvg(path);
             case JSON -> setJson(path);
             case PROVCSV -> setProvCsv(path);
+            case QUALIFIED_PNG -> setQualifiedPng(path);
             case HAS_PROVENANCE -> throw new TemplateLocatorException("Cannot set HAS_PROVENANCE path in TemplateLocator");
         }
     }
@@ -138,6 +150,7 @@ public class TemplateLocator {
             case SVG -> getHasProvenance().setSvg(path);
             case JSON -> getHasProvenance().setJson(path);
             case PROVCSV -> getHasProvenance().setProvCsv(path);
+            case QUALIFIED_PNG -> getHasProvenance().setQualifiedPng(path);
             case HAS_PROVENANCE -> throw new TemplateLocatorException("Cannot set HAS_PROVENANCE path in TemplateLocator");
         }
     }
@@ -155,9 +168,13 @@ public class TemplateLocator {
     public String toString() {
         return "TemplateLocator{" +
                 "jsonld='" + jsonld + '\'' +
+                ", json='" + json + '\'' +
                 ", provn='" + provn + '\'' +
                 ", png='" + png + '\'' +
                 ", svg='" + svg + '\'' +
+                ", qualifiedPng='" + qualifiedPng + '\'' +
+                ", provCsv='" + provCsv + '\'' +
+                ", hasProvenance=" + hasProvenance +
                 '}';
     }
 }

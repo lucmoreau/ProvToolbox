@@ -9,6 +9,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvDeserialiser;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvSerialiser;
 
 import java.net.MalformedURLException;
@@ -46,6 +47,9 @@ public class BatchExecutor extends AbstractMojo {
 
 
         interop.populateSerializerDeserializerMaps(deserializerMap2, serializerMap2);
+
+        org.openprovenance.prov.dot.ProvSerialiser dotSerial=new org.openprovenance.prov.dot.ProvSerialiser(org.openprovenance.prov.vanilla.ProvFactory.getFactory(), "png", 20, true);
+        serializerMap2.put("qualified.png", dotSerial);
 
         if (debug) {
             getLog().info(getClass().getName());

@@ -10,6 +10,7 @@ public enum TemplateExtension {
     JSON("json"),
     PNG("png"),
     SVG("svg"),
+    QUALIFIED_PNG("qualified.png"),
     PROVCSV("prov-csv"),
     HAS_PROVENANCE("hasProvenance");
 
@@ -24,7 +25,7 @@ public enum TemplateExtension {
         return id;
     }
 
-    static List<String> extensions= Arrays.stream(TemplateExtension.values()).map(Object::toString).collect(Collectors.toList());
+    static final List<String> extensions= Arrays.stream(TemplateExtension.values()).map(Object::toString).collect(Collectors.toList());
 
     public static TemplateExtension from(String s) {
         if (s == null) {

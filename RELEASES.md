@@ -53,6 +53,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: introduced cbindingsDir
 * prov-template-compiler: removed dependency on java 12, but introduced MAVEN_OPTS to support jsweet
 * service-xplain: rescued service (from provman project): interactive demonstrator of explanations
+* prov-template: qualified.png as a type of serialization displaying all qualified relations
 
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java

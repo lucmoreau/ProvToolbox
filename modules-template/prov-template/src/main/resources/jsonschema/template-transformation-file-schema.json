@@ -4,7 +4,7 @@
     "definitions": {
         "ProvFormat": {
             "type": "string",
-            "enum": ["provn", "prov-jsonld", "jsonld","svg", "png", "pdf"]
+            "enum": ["provn", "prov-jsonld", "jsonld","svg", "png", "pdf", "qualified.png"]
         },
         "InstantiateTask": {
             "type": "object",

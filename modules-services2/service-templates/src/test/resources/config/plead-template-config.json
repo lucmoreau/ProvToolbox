@@ -2,5 +2,5 @@
 {
     "catalogue.package": "org.openprovenance.prov.template.library.plead",
     "jdbc.url": "jdbc:postgresql://localhost:5432/templates?sslmode=disable",
-    "sql.initializer": "/META-INF/resources/webjars/prov-template-library/2.2.2/sql/prov-template-library-plead.sql"
+    "sql.initializer": "/META-INF/resources/webjars/prov-template-library/${project.version}/sql/prov-template-library-plead.sql"
 }

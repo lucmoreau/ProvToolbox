@@ -1,0 +1,208 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>modules-services2</artifactId>
+        <groupId>org.openprovenance.prov</groupId>
+        <version>2.2.2-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>service-templates-core</artifactId>
+    <name> |---- SERVICE-TEMPLATES-CORE</name>
+    <packaging>jar</packaging>
+    <description>Functionality for a REST service for Provenance Template Management</description>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-interop</artifactId>
+            <version>2.2.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-template</artifactId>
+            <version>2.2.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-core</artifactId>
+            <version>2.2.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-translation</artifactId>
+            <version>2.2.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-security-pac</artifactId>
+            <version>2.2.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-storage-index-redis</artifactId>
+            <version>2.2.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-template-compiler</artifactId>
+            <version>2.2.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-storage-mongodb</artifactId>
+            <version>2.2.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-validation</artifactId>
+            <version>2.2.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-model-scala</artifactId>
+            <version>2.2.2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-explanations</artifactId>
+            <version>2.2.2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-servlet-initializer</artifactId>
+            <version>${resteasy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakarta.servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2-jakarta</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgres.version}</version>
+        </dependency>
+
+        <!-- for getSha3_512Digest -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.16.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+
+    </dependencies>
+
+
+
+
+    <build>
+        <plugins>
+
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${javadoc.plugin.version}</version>
+                <configuration>
+                    <source>1.9</source>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>16</source>
+                    <target>16</target>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/sql</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/config</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>log4j2.xml</include>
+                </includes>
+            </resource>
+        </resources>
+
+    </build>
+
+    <properties>
+        <service.port>7075</service.port>
+        <service.context>/book</service.context>
+        <service.host>localhost</service.host>
+        <service.protocol>http</service.protocol>
+        <the.template.library>template-intro1</the.template.library>
+        <the.template.sublibrary>-transport</the.template.sublibrary>
+        <templates.button.label>Book Templates</templates.button.label>
+        <form.dashboard.title>Book Templates Dashboard ${project.version}</form.dashboard.title>
+        <logger.constructor>org.openprovenance.bk.physical.client.logger.Logger</logger.constructor>
+        <unsecure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-no-security.xml</unsecure.webxml.location>
+        <secure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-with-security.xml</secure.webxml.location>
+        <lexicon.location>/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/nlg-wrapper/target/dictionary/lexAccess2013.data</lexicon.location>
+        <template.config.location>/Users/luc/git-papers/papers/book-ptm/project/service-book/src/test/config/template-config.json</template.config.location>
+        <security.config.location>/Users/luc/git-papers/papers/book-ptm/project/service-book/src/test/config/security/openprovenance-auth2-security-config.json</security.config.location>
+    </properties>
+
+
+</project>

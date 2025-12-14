@@ -1,12 +1,12 @@
 package org.openprovenance.prov.template.expander.ttf;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_mergingBean;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_mergingBuilder;
-import org.openprovenance.prov.template.utils.TemplateExtension;
-import org.openprovenance.prov.template.utils.TemplateIndex;
-import org.openprovenance.prov.template.utils.TemplateIndexPath;
+import org.openprovenance.prov.template.utils.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
@@ -34,6 +35,7 @@ public class MergeTask implements ConfigTask {
     public String hasProvenance;
     public List<String> variableMaps;
     public boolean addOutputDirToInputPath=false;
+    public String variableCheck;
 
 
     static private final Ptm_mergingBuilder mergeBuilder =new Ptm_mergingBuilder();
@@ -44,9 +46,10 @@ public class MergeTask implements ConfigTask {
         return "MergeTask{" +
                 "type='" + type + '\'' +
                 ", description='" + description + '\'' +
-                ", inputs='" + inputs + '\'' +
+                ", inputs=" + inputs +
                 ", template_path=" + template_path +
                 ", output='" + output + '\'' +
+                ", outputFullyQualifiedName='" + outputFullyQualifiedName + '\'' +
                 ", bindings='" + bindings + '\'' +
                 ", formats=" + formats +
                 ", copyinput=" + copyinput +
@@ -54,6 +57,7 @@ public class MergeTask implements ConfigTask {
                 ", hasProvenance='" + hasProvenance + '\'' +
                 ", variableMaps=" + variableMaps +
                 ", addOutputDirToInputPath=" + addOutputDirToInputPath +
+                ", variableCheck='" + variableCheck + '\'' +
                 '}';
     }
 
@@ -150,6 +154,18 @@ public class MergeTask implements ConfigTask {
                 loggedRecords.add(csvRecord);
             }
         }
+
+        Optional<StatementChecker> statementChecker;
+
+        if (variableCheck!=null) {
+            ProvVariables pv=new ObjectMapper().readValue(new File(TemplateTasksBatch.addBaseDir(inputBasedir, variableCheck)), ProvVariables.class);
+            statementChecker= Optional.of(new StatementChecker(new VariableChecker(pv)));
+        } else {
+            statementChecker=Optional.empty();
+        }
+        statementChecker.ifPresent(sc -> System.out.println("***** Variable Checker: " + sc));
+        statementChecker.ifPresent(sc -> new ProvUtilities().forAllStatementOrBundle(doc3.getStatementOrBundle(), sc));
+
 
         executor.exportProvenanceAsCsv(templateTasksBatch, this, outputId, outputIndex, loggedRecords);
 

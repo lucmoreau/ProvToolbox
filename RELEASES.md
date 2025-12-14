@@ -1,6 +1,8 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.2.2-SNAPSHOT`
+`2.2.3-SNAPSHOT`
+
+`2.2.2`
 * prov-template: added ptm-merging template
 * prov-template-library: added ptm-merging template
 * prov-template: updated BatchExecutor to create provenance when merging templates
@@ -54,7 +56,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: removed dependency on java 12, but introduced MAVEN_OPTS to support jsweet
 * service-xplain: rescued service (from provman project): interactive demonstrator of explanations
 * prov-template: qualified.png as a type of serialization displaying all qualified relations
-
+* prov-template: optional variableCheck to instantiation and merge tasks
+* 
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java
 * prov-typemap: incremental construction of type map

@@ -40,6 +40,9 @@
                         }
                     ],
                     "minItems": 1
+                },
+                "variableCheck": {
+                    "type": "string"
                 }
             },
             "required": ["type", "template", "bindings", "output", "formats"],
@@ -82,6 +85,9 @@
                         }
                     ],
                     "minItems": 1
+                },
+                "variableCheck": {
+                    "type": "string"
                 }
             },
             "required": ["type", "inputs", "output", "formats"],

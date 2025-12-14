@@ -9,6 +9,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/release.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
@@ -193,7 +194,7 @@
     "ScalaTest.TypeLibraryIssueSpec.executor": "Run",
     "WebServerToolWindowFactoryState": "false",
     "extract.method.default.visibility": "public",
-    "git-widget-placeholder": "development2__0",
+    "git-widget-placeholder": "release",
     "jdk.selected.JAVA_MODULE": "17",
     "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",

@@ -126,13 +126,13 @@
           <id>snapshot-repo</id>
           <name>Snapshot Repository</name>
           <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/maven-snapshots</url>
-        </snapshotRepository> -->
+        </snapshotRepository> 
 
 		<snapshotRepository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
-
+-->
 	</distributionManagement>
 
 	<licenses>

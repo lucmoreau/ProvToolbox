@@ -247,7 +247,7 @@
 				<dependencies>
 					<dependency>
 						<groupId>org.apache.maven.scm</groupId>
-						<artifactId>maven-scm-provider-gitexe</artifactId>
+						<artifactId>maven-scm-provider-jgit</artifactId>
 						<version>${scm.version}</version>
 					</dependency>
 				</dependencies>

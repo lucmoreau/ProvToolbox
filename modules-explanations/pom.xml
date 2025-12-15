@@ -18,7 +18,7 @@
         <module>prov-explanations</module>
         <module>prov-service-xplain</module>
         <module>prov-summary-explanations</module>
-        <!--<module>service-xplain</module>-->
+        <module>service-xplain</module>
     </modules>
 
 

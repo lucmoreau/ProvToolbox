@@ -9,10 +9,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/2.2.3-SNAPSHOT/bundle.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/service-xplain/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/service-xplain/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/service-xplain/src/main/webapp/editor.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/service-xplain/src/main/webapp/editor.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/service-xplain/src/main/webapp/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/service-xplain/src/main/webapp/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

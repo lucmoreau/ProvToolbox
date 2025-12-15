@@ -1,25 +1,180 @@
-<archetype-descriptor
-        xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0 https://maven.apache.org/xsd/archetype-descriptor-1.1.0.xsd"
-        name="multi-module">
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.2.0 https://maven.apache.org/xsd/archetype-descriptor-1.2.0.xsd" name="service-book"
+                      xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.2.0"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <requiredProperties>
+        <requiredProperty key="templateLibraryGroupId">
+        </requiredProperty>
+        <requiredProperty key="templateLibraryArtifactId">
+        </requiredProperty>
+        <requiredProperty key="templateLibraryVersion">
+        </requiredProperty>
+        <requiredProperty key="templateSubLibrary">
+        </requiredProperty>
+        <requiredProperty key="templateLibraryServiceName"/>
+        <requiredProperty key="cataloguePackage"/>
+        <requiredProperty key="loggerConstructor"/>
+        <requiredProperty key="jdbcURL"/>
+        <requiredProperty key="serviceContext"/>
+        <requiredProperty key="servicePort"/>
+        <requiredProperty key="provtoolboxVersion">
+            <defaultValue>${project.version}</defaultValue>
+        </requiredProperty>
+    </requiredProperties>
+
     <modules>
-        <module name="app-template-library" id="app-template-library" dir="app-template-library">
+        <module name="${rootArtifactId}-service" id="${rootArtifactId}-service" dir="__rootArtifactId__-service">
             <fileSets>
-                <fileSet filtered="true" packaged="true">
-                    <directory>src/main/java</directory>
+                <fileSet filtered="true" encoding="UTF-8">
+                    <directory>src/main/config</directory>
+                    <includes>
+                        <include>**/*.xml</include>
+                    </includes>
                 </fileSet>
-                <fileSet>
+                <fileSet filtered="true" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                    <includes>
+                        <include>**/*.properties</include>
+                    </includes>
+                </fileSet>
+                <fileSet filtered="true" encoding="UTF-8">
+                    <directory>src/main/webapp.filter</directory>
+                    <includes>
+                        <include>**/*.xml</include>
+                        <include>**/*.html</include>
+                    </includes>
+                </fileSet>
+                <fileSet encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                    <includes>
+                        <include>**/*.json</include>
+                        <include>**/*.provn</include>
+                    </includes>
+                </fileSet>
+                <fileSet encoding="UTF-8">
+                    <directory>src/main/webapp.filter</directory>
+                    <includes>
+                        <include>**/*.ico</include>
+                        <include>**/*.js</include>
+                    </includes>
+                </fileSet>
+                <fileSet encoding="UTF-8">
+                    <directory>src/main/sql</directory>
+                    <includes>
+                        <include>**/*.sql</include>
+                    </includes>
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
                     <directory>src/test/java</directory>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                </fileSet>
+                <fileSet filtered="true" encoding="UTF-8">
+                    <directory>src/test/resources</directory>
+                    <includes>
+                        <include>**/*.xml</include>
+                        <include>**/*.properties</include>
+                    </includes>
+                </fileSet>
+                <fileSet filtered="true" encoding="UTF-8">
+                    <directory>src/test/config</directory>
+                    <includes>
+                        <include>**/*.xml</include>
+                    </includes>
+                </fileSet>
+                <fileSet encoding="UTF-8">
+                    <directory>src/test/resources</directory>
+                    <includes>
+                        <include>**/*.provx</include>
+                        <include>**/*.json</include>
+                        <include>**/*.provn</include>
+                        <include>**/*.jsonld</include>
+                    </includes>
+                </fileSet>
+                <fileSet encoding="UTF-8">
+                    <directory>src/test/config</directory>
+                    <includes>
+                        <include>**/*.json</include>
+                    </includes>
+                </fileSet>
+                <fileSet filtered="true" encoding="UTF-8">
+                    <directory>src/license</directory>
+                    <includes>
+                        <include>**/*.properties</include>
+                    </includes>
+                </fileSet>
+                <fileSet filtered="true" encoding="UTF-8">
+                    <directory>java-old/org</directory>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                </fileSet>
+                <fileSet encoding="UTF-8">
+                    <directory>bin</directory>
+                    <includes>
+                        <include>**/*.sh</include>
+                    </includes>
+                </fileSet>
+                <fileSet encoding="UTF-8">
+                    <includes>
+                        <include>Makefile</include>
+                        <include>.gitignore</include>
+                    </includes>
                 </fileSet>
             </fileSets>
         </module>
-        <module name="app-template-service" id="app-template-service" dir="app-template-service">
+        <module name="${rootArtifactId}-docker" id="${rootArtifactId}-docker" dir="__rootArtifactId__-docker">
             <fileSets>
-                <fileSet filtered="true" packaged="true">
-                    <directory>src/main/resources</directory>
+                <fileSet filtered="true" encoding="UTF-8">
+                    <directory>src/main/config</directory>
+                    <includes>
+                        <include>**/*.xml</include>
+                    </includes>
                 </fileSet>
-                <fileSet>
+                <fileSet filtered="true" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                    <includes>
+                        <include>Makefile</include>
+                        <include>Dockerfile</include>
+                        <include>env_file.env</include>
+                    </includes>
+                </fileSet>
+                <fileSet encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                    <includes>
+                        <include>**/*.json</include>
+                        <include>**/*.provn</include>
+                    </includes>
+                </fileSet>
+
+                <fileSet filtered="true" encoding="UTF-8">
                     <directory>src/test/resources</directory>
+                    <includes>
+                        <include>**/*.xml</include>
+                        <include>**/*.properties</include>
+                    </includes>
+                </fileSet>
+                <fileSet encoding="UTF-8">
+                    <directory>src/test/resources</directory>
+                    <includes>
+                        <include>**/*.provx</include>
+                        <include>**/*.json</include>
+                        <include>**/*.provn</include>
+                        <include>**/*.jsonld</include>
+                    </includes>
+                </fileSet>
+                <fileSet filtered="true" encoding="UTF-8">
+                    <directory>docker.conf</directory>
+                    <includes>
+                        <include>**/*</include>
+                    </includes>
+                </fileSet>
+                <fileSet filtered="true" encoding="UTF-8">
+                    <includes>
+                        <include>Makefile</include>
+                        <include>.gitignore</include>
+                    </includes>
                 </fileSet>
             </fileSets>
         </module>

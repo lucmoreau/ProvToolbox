@@ -36,7 +36,11 @@ public interface JLD_Bundle extends JLD_Identifiable, HasKind {
             @JsonSubTypes.Type(value = Activity.class,           name = Constants.PROPERTY_PROV_ACTIVITY),
             @JsonSubTypes.Type(value = Agent.class,              name = Constants.PROPERTY_PROV_AGENT),
             @JsonSubTypes.Type(value = Entity.class,             name = Constants.PROPERTY_PROV_ENTITY),
-            @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION)
+            @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION),
+            @JsonSubTypes.Type(value = QualifiedSpecializationOf.class,        name = Constants.PROPERTY_PROV_SPECIALIZATION),
+            @JsonSubTypes.Type(value = QualifiedAlternateOf.class,             name = Constants.PROPERTY_PROV_ALTERNATE),
+            @JsonSubTypes.Type(value = QualifiedHadMember.class,               name = Constants.PROPERTY_PROV_MEMBERSHIP)
+
     })
     @JsonProperty("@graph")
     List<Statement> getStatement();

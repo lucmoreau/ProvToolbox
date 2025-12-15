@@ -55,9 +55,9 @@
             "type": "array",
             "items": {
                 "anyOf": [
-                    { "$ref": "#/definitions/QualifiedName" },
                     { "$ref": "#/definitions/An@value" },
                     { "$ref": "#/definitions/An@id" },
+                    { "$ref": "#/definitions/QualifiedName" },
                     { "$ref": "#/definitions/lang_string" }
                 ]
             }
@@ -154,7 +154,7 @@
         "var": {
             "type": "object",
             "patternProperties": {
-                "^(.*)$": { "$ref": "#/definitions/ValuesOrIds" }
+                "^[^:\\[\\]()/\\\\,\\-]+$": { "$ref": "#/definitions/ValuesOrIds" }
             }
         },
         "vargen": {

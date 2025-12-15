@@ -15,7 +15,7 @@ public class AttributeProcessor {
 
     
     final private Hashtable<String,Hashtable<String,List<Other>>> namespaceIndex=
-        new Hashtable<String,Hashtable<String,List<Other>>>();
+            new Hashtable<>();
     
     
     final private List<Other> attributes;
@@ -29,11 +29,7 @@ public class AttributeProcessor {
     public Hashtable<String,List<Other>> attributesWithNamespace(String namespace) {
 
 
-        Hashtable<String,List<Other>> result=namespaceIndex.get(namespace);
-        if (result==null) {
-            result=new Hashtable<String,List<Other>>();
-            namespaceIndex.put(namespace,result);
-        }
+        Hashtable<String, List<Other>> result = namespaceIndex.computeIfAbsent(namespace, k -> new Hashtable<>());
 
         for (Other attribute: attributes) {
             
@@ -41,7 +37,7 @@ public class AttributeProcessor {
             if (namespace.equals(name.getNamespaceURI())) {
                 List<Other> ll=result.get(name.getLocalPart());
                 if (ll==null) {
-                    List<Other> tmp=new LinkedList<Other>();
+                    List<Other> tmp= new LinkedList<>();
                     tmp.add(attribute);
                     result.put(name.getLocalPart(),tmp);
                 } else {

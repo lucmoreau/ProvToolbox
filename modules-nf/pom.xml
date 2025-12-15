@@ -3,7 +3,7 @@
     <parent>
         <artifactId>ProvToolbox</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.2.1</version>
+        <version>2.2.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,6 +14,7 @@
         <module>prov-nf</module>
         <module>prov-signature</module>
         <module>prov-service-signature</module>
+        <module>service-signature</module>
     </modules>
 
 

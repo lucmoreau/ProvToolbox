@@ -1,0 +1,120 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:web="https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0" metadata-complete="true">
+
+  <display-name>Provenance Template Service</display-name>
+
+    <!--
+    <listener>
+        <listener-class>
+            org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap
+        </listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>ProvapiApplication</servlet-name>
+        <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>org.openprovenance.prov.service.core.ProvapiApplication</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProvapiApplication</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+    -->
+
+  <filter>
+    <filter-name>HasProvenanceHeaderFilter</filter-name>
+    <filter-class>org.openprovenance.prov.service.core.HasProvenanceHeaderFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>HasProvenanceHeaderFilter</filter-name>
+    <url-pattern>/webjars/*</url-pattern>
+  </filter-mapping>
+
+
+
+  <filter>
+    <filter-name>callbackFilter</filter-name>
+    <filter-class>org.pac4j.jee.filter.CallbackFilter</filter-class>
+    <init-param>
+      <param-name>defaultUrl</param-name>
+      <param-value>/</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>callbackFilter</filter-name>
+    <url-pattern>/callback</url-pattern>
+  </filter-mapping>
+
+
+  <filter>
+    <filter-name>OidcFilter</filter-name>
+    <filter-class>org.pac4j.jee.filter.SecurityFilter</filter-class>
+    <init-param>
+      <param-name>configFactory</param-name>
+      <param-value>org.openprovenance.prov.service.core.SecurityConfigFactory</param-value>
+    </init-param>
+
+    <init-param>
+      <param-name>clients</param-name>
+      <param-value>KeycloakOidcClient,DirectBearerAuthClient</param-value> <!-- DirectBearerAuthClient,KeycloakOidcClient -->
+    </init-param>
+    <init-param>
+      <param-name>authorizers</param-name>
+      <param-value>isAuthenticated</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>OidcFilter</filter-name>
+    <url-pattern>/provapi/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>OidcFilter</filter-name>
+    <url-pattern>/forms.html</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>OidcFilter</filter-name>
+    <url-pattern>/expander.html</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>OidcFilter</filter-name>
+    <url-pattern>/api.html</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+
+
+  <!--
+
+  <servlet>
+    <servlet-name>ExceptionHandler</servlet-name>
+    <servlet-class>org.openprovenance.prov.service.ExceptionHandler</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExceptionHandler</servlet-name>
+    <url-pattern>/ExceptionHandler</url-pattern>
+  </servlet-mapping>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/ExceptionHandler</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/ExceptionHandler</location>
+  </error-page>
+  -->
+
+</web-app>

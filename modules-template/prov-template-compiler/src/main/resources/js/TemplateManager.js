@@ -40,11 +40,16 @@ class TemplateManager {
         this.profile=profileValue;
         console.log(this.profile);
         this.csv_result='#csv_result';
-        this.filenameConverter={};
+        this.imageConverter={};
+        this.cbindingsConverter={};
     }
 
     setFilenameConverter(obj) {
-        this.filenameConverter=obj;
+        this.imageConverter=obj;
+    }
+
+    setCBindingsConverter(obj) {
+        this.cbindingsConverter=obj;
     }
 
     setImageUrlPrefix(location)  {
@@ -53,7 +58,9 @@ class TemplateManager {
     setImageLocation(location)  {
         this.image_location=location;
     }
-
+    setCBindingsUrlPrefix(location)  {
+        this.cbindings_url_prefix=location;
+    }
     setCsvResult(location) {
         this.csv_result = location;
     }
@@ -74,9 +81,14 @@ class TemplateManager {
         console.log("populateBean")
         for (const k in values) {
             if (k===ELEMENTS) {
-                var subBeans = [];
+                // note, how we have to use a java ArrayList here, rather than []
+                var subBeans = new java.util.ArrayList();
                 for (const i in values[k]) {
-                    subBeans.push(this.populateSubBean(values["type"], values[k][i]));
+                    // we had to introduce get and size method to the prototype. They need to be skipped here
+                    //if ((i==="get") || (i==="size")) continue;
+                    console.log("populate sub element " + i);
+                    // note how we use the ArrayList's add method here, rather than push
+                    subBeans.add(this.populateSubBean(values["type"], values[k][i]));
                 }
                 bean[k] = subBeans;
             } else {
@@ -84,8 +96,9 @@ class TemplateManager {
             }
         }
         console.log(bean);
+        values["isA"]=builder.getFullyQualifiedName();
+
         var csv = bean.process(builder.aArgs2CsVConverter);
-        values["isA"]=builder.getName();
         return [csv,values]; // note: i am only exporting the populated values, as opposed to the whole bean
     }
 
@@ -98,7 +111,7 @@ class TemplateManager {
             bean[k] = values[k];
         }
         console.log(bean);
-        values["isA"]=builder.getName();
+        values["isA"]=builder.getFullyQualifiedName();
         return bean; // note: i am only exporting the populated values, as opposed to the whole bean
     }
 
@@ -262,8 +275,8 @@ class TemplateManager {
         const names = [];
         const table = {};
         this.builders.forEach(function (f) {
-            names.push(f.getName());
-            table[f.getName()] = f;
+            names.push(f.getFullyQualifiedName());
+            table[f.getFullyQualifiedName()] = f;
         });
         this.names = names;
         return table;
@@ -286,7 +299,7 @@ class TemplateManager {
         $.get(this.docUrl, function(html_string) {
             $('#tmp_div').html(html_string)
             $.each(myself.names, function(i, k) {
-                myself.documentationSnippets[k]=$("#template_" + k).html();
+                myself.documentationSnippets[k]=$("#template_" + k.replaceAll('\.','_')).html();
             })
             //console.log(myself.documentationSnippets);
 
@@ -313,10 +326,16 @@ class TemplateManager {
         $('#documentation').html(this.documentationSnippets[template]);
 
         if (this.image_location && this.image_url_prefix)  {
-            let img=$('<img/>').attr("src", this.image_url_prefix + (this.filenameConverter[template] || template) + ".png");
+            const image_file = this.imageConverter[template];
+            console.log("looking for image file " + image_file);
+            let img=$('<img/>').attr("src", this.image_url_prefix + image_file);
             $(this.image_location).html(img);
             console.log("added image at " + this.image_location);
             console.log(img);
+            if (this.cbindings_url_prefix) {
+                let cbindingsLnk = $('<a/>').attr("href", this.cbindings_url_prefix + this.cbindingsConverter[template]).text(this.cbindingsConverter[template]);
+                $(this.image_location).append($('<p/>')).append(cbindingsLnk);
+            }
         }
     }
 

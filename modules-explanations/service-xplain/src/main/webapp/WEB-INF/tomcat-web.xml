@@ -1,0 +1,50 @@
+
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
+    <module-name>assistant</module-name>
+
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>editor</web-resource-name>
+            <url-pattern>/xplain/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>editor</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>webjars</web-resource-name>
+            <url-pattern>/webjars/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>editor</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>this is ignored currently</realm-name>
+    </login-config>
+
+    <security-role>
+        <role-name>admin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>user</role-name>
+    </security-role>
+    <security-role>
+        <role-name>uma_authorization</role-name>
+    </security-role>
+    <security-role>
+        <role-name>editor</role-name>
+    </security-role>
+
+</web-app>
+

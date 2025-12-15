@@ -1,0 +1,94 @@
+{
+    "var": {
+        "document": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/doc123-456.provn",
+                "@documentation": "The document resulting from template merging",
+                "@input": "false",
+                "@output": "true",
+                "@sql.table": "file"
+            }
+        ],
+        "provenance": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/prov-doc123-456.prov-csv",
+                "@documentation": "The provenance of the document resulting from the template merging",
+                "@input": "false",
+                "@output": "true",
+                "@sql.table": "file"
+            }
+        ],
+        "template1": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/template123.provn",
+                "@documentation": "The first template to be merged",
+                "@input": "compulsory",
+                "@output": "false",
+                "@sql.table": "file"
+            }
+        ],
+        "template2": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/template345.json",
+                "@documentation": "The second template to be merged",
+                "@input": "compulsory",
+                "@output": "false",
+                "@sql.table": "file"
+            }
+        ],
+        "agent": [
+            {
+                "@id": "ag:*",
+                "@type": "xsd:int",
+                "@documentation": "The agent controlling the merge",
+                "@input": "optional"
+            }
+        ],
+        "merging": [
+            {
+                "@id": "act:*",
+                "@type": "xsd:int",
+                "@documentation": "The activity of merging the templates",
+                "@output": "true",
+                "@sql.table": "activity"
+            }
+        ],
+        "email": [
+            [
+                {
+                    "@value": "mail:*",
+                    "@type": "xsd:string",
+                    "@examplar": "luc.moreau@kcl.ac.uk",
+                    "@documentation": "The agent's email",
+                    "@input": "optional"
+                }
+            ]
+        ],
+        "time": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the transformed file is created",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ]
+    },
+    "context": {
+        "ag":  "${PROV_API}/live/agent/",
+        "act": "${PROV_API}/live/activity/",
+        "file": "${PROV_API}/live/file/"
+    },
+    "template": "TODO template",
+    "@documentation": "TODO doc."
+}

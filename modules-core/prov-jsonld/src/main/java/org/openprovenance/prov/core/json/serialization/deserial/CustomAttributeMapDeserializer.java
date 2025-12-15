@@ -27,6 +27,10 @@ public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
         super(vc);
 
     }
+    public CustomAttributeMapDeserializer() {
+        super(QualifiedName.class);
+    }
+
 
     @Override
     public Map deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException {

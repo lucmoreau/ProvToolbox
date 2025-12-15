@@ -2,6 +2,7 @@
 
 
 # TODO
+- script.sh in prov-template-compiler needs to point to the proper library
 - should not insert delegation if delegate/responsible empty
 -INSERT INTO
 __PROV_DELEGATION (delegate, delegate_rel, responsible, responsible_rel, activity, activity_rel, template, template_id, rel) VALUES
@@ -72,3 +73,5 @@ Caused by: java.lang.ClassCastException: class java.lang.Long cannot be cast to 
 	at org.quartz.core.JobRunShell.run(JobRunShell.java:202) ~[quartz-2.3.2.jar:?]
 
 ```
+
+

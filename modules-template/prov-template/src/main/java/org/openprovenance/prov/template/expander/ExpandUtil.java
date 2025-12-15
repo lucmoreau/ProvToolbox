@@ -8,15 +8,11 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.Bundle;
-import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.StatementOrBundle.Kind;
-import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
-import org.openprovenance.prov.model.ProvUtilities;
+
+import static org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_START;
 
 public class ExpandUtil {
     static Logger logger = LogManager.getLogger(ExpandUtil.class);
@@ -72,9 +68,13 @@ public class ExpandUtil {
     	case PROV_GENERATION: return 3;
     	case PROV_INFLUENCE: return 3;
     	case PROV_INVALIDATION: return 3;
-    	case PROV_MEMBERSHIP: return 2;
+    	case PROV_MEMBERSHIP: {
+            return (s instanceof QualifiedRelation)? 3:2;
+        }
     	case PROV_MENTION: return 3;
-    	case PROV_SPECIALIZATION: return 2;
+    	case PROV_SPECIALIZATION: {
+                return (s instanceof QualifiedRelation)? 3:2;
+        }
     	case PROV_START: return 4;
     	case PROV_USAGE: return 3;
     	default:

@@ -5,7 +5,7 @@
     "description": "PROV template demo",
     "version": "0.1.0",
     "script": "example_run",
-    "root_package": "org.example.templates.block",
+    "root_package": "org.example.templates.catalogue",
     "script_dir": "target/libs/bin",
     "python_dir": "target/libs/python",
     "jsweet": true,
@@ -15,10 +15,11 @@
     "templates" : [
         {
             "@type": "simple",
+            "fullyQualifiedName": "org.example.TemplateBlock",
             "name": "template_block",
-            "template": "src/test/resources/templates/generic_binaryop.provn",
             "package": "org.example.templates.block",
-            "bindings": "src/test/resources/templates/generic_binaryop_b1.json"
+            "template": "src/test/resources/templates3/generic_binaryop.provn",
+            "cbindings": "src/test/resources/templates3/generic_binaryop_b1.json"
 
         }
     ]

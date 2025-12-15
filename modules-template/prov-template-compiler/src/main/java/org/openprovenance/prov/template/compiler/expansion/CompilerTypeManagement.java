@@ -121,7 +121,7 @@ public class CompilerTypeManagement {
         compilerUtil.generateDocumentSpecializedParameters(mbuilder, theVar, variables);
 
 
-        StatementTypeAction action = new StatementTypeAction(pFactory, allVars, allAtts, null, null, "__C_document.getStatementOrBundle()", bindings_schema, knownTypes, unknownTypes, mbuilder,compilerUtil);
+        StatementTypeAction action = new StatementTypeAction(pFactory, allVars, allAtts, null, null, "__C_document.getStatementOrBundle()", bindings_schema, bindingsSchema, knownTypes, unknownTypes, mbuilder,compilerUtil);
         for (StatementOrBundle s : doc.getStatementOrBundle()) {
             u.doAction(s, action);
         }

@@ -1,18 +1,21 @@
 package org.openprovenance.prov.storage.mongodb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
+import com.mongodb.ConnectionString;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.DeleteResult;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.mongojack.DBUpdate;
-import org.mongojack.JacksonDBCollection;
-import org.mongojack.WriteResult;
+import org.bson.UuidRepresentation;
+import org.mongojack.JacksonMongoCollection;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
 import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 
@@ -23,18 +26,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorage<Collection<CSVRecord>>, Constants {
+    private static final Logger logger = LogManager.getLogger(MongoCSVResourceStorage.class);
 
 
     public static final String CSV_ENTRY = "csv";
-    private final DB db;
+    private final MongoDatabase db;
 
-    private static Logger logger = LogManager.getLogger(MongoCSVResourceStorage.class);
 
-    private final JacksonDBCollection<CSVWrapper, String> csvCollection;
+    private final JacksonMongoCollection<CSVWrapper> csvCollection;
 
     private final ObjectMapper mapper;
 
@@ -43,22 +45,20 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
     }
     public MongoCSVResourceStorage(String host, String dbname, ObjectMapper mapper) {
 
-        MongoClient mongoClient = new MongoClient(host, 27017);
-        DB db = mongoClient.getDB(dbname);
-        this.db=db;
-
-        DBCollection collection=db.getCollection(COLLECTION_CSV);
-        mapper.registerModule(org.mongojack.internal.MongoJackModule.INSTANCE);
-        JacksonDBCollection<CSVWrapper, String> bindingsCollection = JacksonDBCollection.wrap(collection, CSVWrapper.class, String.class, mapper);
-        this.csvCollection =bindingsCollection;
+        MongoClient mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
+        MongoDatabase db = mongoClient.getDatabase(dbname);
+        mapper.registerModule(org.mongojack.internal.MongoJackModule.DEFAULT_MODULE_INSTANCE);
+        MongoCollection<CSVWrapper> generic=db.getCollection(COLLECTION_CSV,CSVWrapper.class);
+        this.csvCollection = JacksonMongoCollection.builder().withObjectMapper(mapper).build(generic,CSVWrapper.class, UuidRepresentation.STANDARD);
         this.mapper=mapper;
+        this.db=db;
     }
 
     @Override
     public String newStore(String _suggestedExtension, String _mimeType) throws IOException {
         CSVWrapper cw=new CSVWrapper();
-        WriteResult<CSVWrapper, String> result= csvCollection.insert(cw);
-        String id = result.getSavedId();
+        csvCollection.insertOne(cw);
+        String id = cw.getId();
         return id;
     }
 
@@ -81,7 +81,7 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
         }
         List<?>[] array=result.toArray(new List<?> [0]);
 
-        csvCollection.updateById(id, DBUpdate.set(CSV_ENTRY, array));
+        csvCollection.updateById(id, Updates.set(CSV_ENTRY, array));
     }
 
     public void serializeObjectToStore(Iterator<CSVRecord> iterator, String id) throws IOException {
@@ -93,7 +93,7 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
         }
         List<?>[] array=result.toArray(new List<?> [0]);
 
-        csvCollection.updateById(id, DBUpdate.set("csv", array));
+        csvCollection.updateById(id, Updates.set(CSV_ENTRY, array));
     }
 
     public static List<String> toList(CSVRecord rec) {
@@ -145,7 +145,7 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
 
     @Override
     public boolean delete(String storageId) {
-        WriteResult<CSVWrapper, String> result=csvCollection.removeById(storageId);
-        return result.getN()==1;
+        DeleteResult result=csvCollection.removeById(storageId);
+        return result.getDeletedCount()==1;
     }
 }

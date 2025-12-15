@@ -406,7 +406,7 @@ entitySet
 
 // { !$qn.text.contains("prov:") }?
 extensibilityExpression
-	:	qn=QUALIFIED_NAME { System.out.println("extensibility: qnameDisabled " + qnameDisabled + " " + $qn.text); }  '(' id0=optionalIdentifier extensibilityArgument ( ','  extensibilityArgument)* attr=optionalAttributeValuePairs ')'
+	:	qn=QUALIFIED_NAME  '(' id0=optionalIdentifier extensibilityArgument ( ','  extensibilityArgument)* attr=optionalAttributeValuePairs ')'
       -> {$attr.tree==null}?
          ^(EXT ^(ID QUALIFIED_NAME) ^(ID $id0?) extensibilityArgument* ^(ATTRIBUTES))
       -> ^(EXT ^(ID QUALIFIED_NAME) ^(ID $id0?) extensibilityArgument* optionalAttributeValuePairs)

@@ -90,7 +90,12 @@ public class Template_blockBuilder extends FileBuilder implements ProxyClientAcc
     return "template_block";
   }
 
-  // Luc Hand edited
+    @Override
+    public String getFullyQualifiedName() {
+        return "org.openprovenance.prov.storage.mongodb.Template_blockBuilder";
+    }
+
+    // Luc Hand edited
   public Object getClientBuilder() {
     return new String[0];
   }

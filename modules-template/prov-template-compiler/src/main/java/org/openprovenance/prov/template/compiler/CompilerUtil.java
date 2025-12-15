@@ -37,6 +37,7 @@ import org.openprovenance.prov.template.log2prov.FileBuilder;
 //import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.TypeSpec.Builder;
 
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.addBaseDirIfRelative;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
@@ -65,6 +66,7 @@ public class CompilerUtil {
     static final TypeName setStringT=ParameterizedTypeName.get(ClassName.get(Set.class),ClassName.get(String.class));
     static final TypeName mapQualifiedName2StringSetType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(QualifiedName.class),setStringT);
     static final TypeName mapString2StringSetType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),setStringT);
+    static final TypeName mapStringIntInt=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(Integer.class),ClassName.get(Integer.class)));
 
     public CompilerUtil(ProvFactory pFactory) {
         this.pFactory=pFactory;
@@ -121,6 +123,13 @@ public class CompilerUtil {
             return inputsNameClass(templateName)+extension;
         } else {
             return inputsNameClass(templateName);
+        }
+    }
+    public String outputsNameClass(String templateName,String extension) {
+        if (extension!=null) {
+            return outputsNameClass(templateName)+extension;
+        } else {
+            return outputsNameClass(templateName);
         }
     }
     public String processorNameClass(String templateName) {
@@ -287,6 +296,7 @@ public class CompilerUtil {
             Document doc=(Document)method.invoke(interop,file);
             return doc;
         } catch (java.lang.ClassNotFoundException e) {
+            e.printStackTrace();
             //System.out.println("could not find Interop Framework, falling back on provn");
             return new ProvDeserialiser(pFactory).deserialiseDocument(new FileInputStream(file));
         }
@@ -349,9 +359,9 @@ public class CompilerUtil {
 
     public JsonNode get_bindings_schema(SimpleTemplateCompilerConfig config) {
         JsonNode bindings_schema=null;
-        if (config.bindings != null) {
+        if (config.cbindings != null) {
             try {
-                bindings_schema = objectMapper.readTree(new File(config.bindings));
+                bindings_schema = objectMapper.readTree(new File(config.cbindings));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -359,10 +369,30 @@ public class CompilerUtil {
         return bindings_schema;
     }
 
+
+    Map<String,TemplateBindingsSchema> bindingsSchemaCache=new HashMap<>();
+
+
     public TemplateBindingsSchema getBindingsSchema(SimpleTemplateCompilerConfig config) {
-        TemplateBindingsSchema bindingsSchema = getBindingsSchema(config.bindings);
-        return bindingsSchema;
+        if (bindingsSchemaCache.containsKey(config.cbindings)) {
+            return bindingsSchemaCache.get(config.cbindings);
+        } else {
+            TemplateBindingsSchema bindingsSchema = getBindingsSchema(config.cbindings);
+            bindingsSchemaCache.put(config.cbindings, bindingsSchema);
+            return bindingsSchema;
+        }
     }
+
+    public TemplateBindingsSchema getBindingsSchema(SimpleTemplateCompilerConfig config, String baseDir) {
+        if (bindingsSchemaCache.containsKey(config.cbindings)) {
+            return bindingsSchemaCache.get(config.cbindings);
+        } else {
+            TemplateBindingsSchema bindingsSchema = getBindingsSchema(addBaseDirIfRelative(config.cbindings,baseDir));
+            bindingsSchemaCache.put(config.cbindings, bindingsSchema);
+            return bindingsSchema;
+        }
+    }
+
 
 
     public TemplateBindingsSchema getBindingsSchema(String bindings) {
@@ -388,9 +418,11 @@ public class CompilerUtil {
     static final public ParameterizedTypeName mapIntArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(Integer.class), TypeName.get(int[].class));
     static final public ParameterizedTypeName mapStringArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeName.get(int[].class));
     static final public ParameterizedTypeName mapStringMapStringArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), mapStringArrayType);
-    static final public ParameterizedTypeName hashmapStringMapStringArrayType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(String.class), mapStringArrayType);
 
     public Class<?> getJavaTypeForDeclaredType(Map<String, List<Descriptor>> varMap, String key) {
+       if (!varMap.containsKey(key))
+           throw new UnsupportedOperationException("no value associated with key '" + key + "'");
+
         Descriptor descriptor=varMap.get(key).get(0);
         switch (descriptor.getDescriptorType()) {
             case ATTRIBUTE:
@@ -448,28 +480,18 @@ public class CompilerUtil {
     }
 
     private Class<? extends Serializable> getClassForType(String keyType) {
-        switch (keyType) {
-            case "xsd:int":
-                return Integer.class;
-            case "xsd:long":
-                return Long.class;
-            case "xsd:string":
-                return String.class;
-            case "xsd:boolean":
-                return Boolean.class;
-            case "xsd:float":
-                return Float.class;
-            case "xsd:double":
-                return Double.class;
-            case "xsd:dateTime":
-                return String.class;
-            case "xsd:date":
-                return String.class;
-            case "json":
-                return String.class;
-            default:
-                throw new UnsupportedOperationException("getClassForType " + keyType);
-        }
+        return switch (keyType) {
+            case "xsd:int" -> Integer.class;
+            case "xsd:long" -> Long.class;
+            case "xsd:string" -> String.class;
+            case "xsd:boolean" -> Boolean.class;
+            case "xsd:float" -> Float.class;
+            case "xsd:double" -> Double.class;
+            case "xsd:dateTime" -> String.class;
+            case "xsd:date" -> String.class;
+            case "json" -> String.class;
+            default -> throw new UnsupportedOperationException("getClassForType " + keyType);
+        };
     }
 
     public Class<?> getJavaDocumentTypeForDeclaredType(Map<String, List<Descriptor>> theVar, String key) {
@@ -505,11 +527,13 @@ public class CompilerUtil {
         }
     }
 
-    public void generateSpecializedParameters(MethodSpec.Builder builder, JsonNode the_var) {
+    public void generateSpecializedParameters(MethodSpec.Builder builder, JsonNode the_var, Map<String, List<Descriptor>> theVars) {
         Iterator<String> iter = the_var.fieldNames();
         while (iter.hasNext()) {
             String key = iter.next();
-            builder.addParameter(getJavaTypeForDeclaredType(the_var, key), key);
+            if (theVars.get(key)!=null) {
+                builder.addParameter(getJavaTypeForDeclaredType(the_var, key), key);
+            }
         }
     }
     public void generateDocumentSpecializedParameters(MethodSpec.Builder builder, Map<String, List<Descriptor>> theVar, Collection<String> variables) {
@@ -520,7 +544,7 @@ public class CompilerUtil {
     public boolean isVariableDenotingQualifiedName(String key, JsonNode the_var) {
         final JsonNode entry = the_var.path(key);
 
-        return entry != null && !(entry instanceof MissingNode) && ( entry.get(0).get("@id") != null);
+        return entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode) && ( entry.get(0).get("@id") != null);
     }
 
     public boolean isVariableDenotingQualifiedName(String key, Map<String, List<Descriptor>> theVar) {
@@ -529,12 +553,14 @@ public class CompilerUtil {
 
 
 
-    public String generateArgumentsListForCall(JsonNode the_var, Map<String,String> translator) {
+    public String generateArgumentsListForCall(JsonNode the_var, Map<String,String> translator, Map<String, List<Descriptor>> var) {
         Iterator<String> iter = the_var.fieldNames();
         boolean first = true;
         String args = "";
         while (iter.hasNext()) {
             String key = iter.next();
+            if (!var.containsKey(key)) continue;
+            if (var.get(key)==null) continue;
 
             if (first) {
                 first = false;
@@ -566,7 +592,7 @@ public class CompilerUtil {
             String key = iter.next();
 
             final JsonNode entry = the_var.path(key);
-            if (entry != null && !(entry instanceof MissingNode)) {
+            if (entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode)) {
                 JsonNode firstNode = entry.get(0);
                 if (firstNode instanceof ArrayNode) {
                     firstNode = ((ArrayNode) firstNode).get(0);
@@ -588,9 +614,9 @@ public class CompilerUtil {
     }
 
 
-    public String generateExampleForType(String declaredType, String localPart, ProvFactory pFactory) {
+    public String generateExampleForType(String declaredType, String varName, ProvFactory pFactory) {
         if (declaredType == null) {
-            return "test1_" + localPart;
+            return "test1_" + varName;
         } else {
             switch (declaredType) {
                 case "xsd:date":
@@ -602,7 +628,7 @@ public class CompilerUtil {
                 case "xsd:int":
                     return "12345";
                 default:
-                    return "test2_" + localPart;
+                    return "test2_" + varName;
             }
         }
     }
@@ -856,8 +882,15 @@ public class CompilerUtil {
         return exception.getStackTrace()[2];
     }
 
+    /*
     public ClassName getClass(String name, Locations locations) {
         return ClassName.get(locations.getFilePackage(name), name);
+    }
+
+     */
+
+    public ClassName getClass(String configName, String name, Locations locations) {
+        return ClassName.get(locations.getFilePackage(configName, name), name);
     }
 
 

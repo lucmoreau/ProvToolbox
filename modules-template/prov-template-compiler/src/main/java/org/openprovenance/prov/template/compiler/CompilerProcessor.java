@@ -6,6 +6,7 @@ import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
@@ -14,6 +15,7 @@ import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import javax.lang.model.element.Modifier;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.typeT;
@@ -34,7 +36,7 @@ public class CompilerProcessor {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public SpecificationFile generateProcessor(Locations locations, String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator, String fileName, String consistsOf) {
+    public SpecificationFile generateProcessor(TemplatesProjectConfiguration configs, Locations locations, String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator, String fileName, String consistsOf) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = generateProcessorClassInit(inIntegrator ? compilerUtil.integratorNameClass(templateName) : compilerUtil.processorNameClass(templateName));
@@ -51,7 +53,6 @@ public class CompilerProcessor {
         CodeBlock.Builder jdoc = CodeBlock.builder();
         String docString=bindingsSchema.getDocumentation();
 
-        String retString = "@return not specified";
         jdoc.add(docString==null? "No @documentation": docString);
         jdoc.add("\n\n");
 
@@ -86,15 +87,18 @@ public class CompilerProcessor {
 
         }
 
+        //jdoc.add("@param &lt;$T&gt; type variable for the result of processor\n", typeT);
+
 
 
         if (consistsOf!=null) {
-            final TypeName listType=ParameterizedTypeName.get(ClassName.get(List.class),ClassName.get(packge, compilerUtil.beanNameClass(consistsOf, BeanDirection.COMMON)));
+            String shortConsistsOf=locations.getShortNames().get(consistsOf);
+            final TypeName listType=ParameterizedTypeName.get(ClassName.get(List.class),ClassName.get(packge, compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.COMMON)));
             mbuilder.addParameter(listType, Constants.ELEMENTS);
             jdoc.add("@param $N: to do \n", Constants.ELEMENTS);
         }
 
-        jdoc.add(retString);
+        jdoc.add("@return &lt;$T&gt;\n",typeT);
 
         mbuilder.addJavadoc(jdoc.build());
 

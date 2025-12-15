@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<Context path="/xplain">
+
+    <Valve className="org.apache.catalina.valves.RemoteIpValve"
+           remoteIpHeader="x-forwarded-for"
+           proxiesHeader="x-forwarded-by"
+           protocolHeader="x-forwarded-proto" />
+    <!-- internalProxies="192\.168\.0\.10|192\.168\.0\.11|172\.19\.0\.2|172\.19\.0\.3|172\.19\.0\.4|172\.19\.0\.4|172\.19\.0\.6|172\.19\.0\.7|172\.19\.0\.8|172\.19\.0\.9" -->
+
+    <Valve className="org.keycloak.adapters.tomcat.KeycloakAuthenticatorValve"/>
+</Context>

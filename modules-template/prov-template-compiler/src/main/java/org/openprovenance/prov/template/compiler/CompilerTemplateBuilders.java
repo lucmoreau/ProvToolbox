@@ -29,8 +29,8 @@ public class CompilerTemplateBuilders {
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
 
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
+
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
             FieldSpec fspec = FieldSpec.builder(className, config.name + "Builder")
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .initializer(LOGGER + "." + Constants.GENERATED_VAR_PREFIX + config.name)
@@ -41,7 +41,7 @@ public class CompilerTemplateBuilders {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

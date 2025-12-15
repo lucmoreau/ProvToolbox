@@ -34,9 +34,9 @@ public class CompilerQueryInvoker {
         TypeSpec.Builder builder = compilerUtil.generateClassInit((withBean)?Constants.QUERY_INVOKER:Constants.QUERY_INVOKER2);
 
         if (withBean) {
-            builder.addSuperinterface(compilerUtil.getClass(BEAN_PROCESSOR,locations));
+            builder.addSuperinterface(compilerUtil.getClass(configs.name, BEAN_PROCESSOR,locations));
         } else {
-            builder.addSuperinterface(ClassName.get(locations.getFilePackage(INPUT_PROCESSOR), INPUT_PROCESSOR));
+            builder.addSuperinterface(ClassName.get(locations.getFilePackage(configs.name, INPUT_PROCESSOR), INPUT_PROCESSOR));
         }
 
 
@@ -69,9 +69,8 @@ public class CompilerQueryInvoker {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
-            locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), beanNameClass);
-            final ClassName inputClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), inputsNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), beanNameClass);
+            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputsNameClass);
 
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
@@ -174,7 +173,7 @@ public class CompilerQueryInvoker {
         TypeSpec theLogger = builder.build();
 
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 
@@ -291,13 +290,17 @@ public class CompilerQueryInvoker {
 
         SimpleTemplateCompilerConfig composee=null;
         for (TemplateCompilerConfig c: configs.templates) {
-            if (compositeConfig.consistsOf.equals(c.name)) {
+            if (compositeConfig.consistsOf.equals(c.fullyQualifiedName)) {
                 composee=(SimpleTemplateCompilerConfig) c;
             }
         }
+
+        // Luc, this seems the same as composee above.
+        String shortConsistsOf=locations.getShortNames().get(compositeConfig.consistsOf);
+
         mspec.beginControlFlow("for ($T $N: $N.$N)",
-                                  (withBean)?ClassName.get(locations.getFilePackage(BeanDirection.COMMON), compilerUtil.commonNameClass(compositeConfig.consistsOf))
-                                            :ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), compilerUtil.beanNameClass(compositeConfig.consistsOf, BeanDirection.INPUTS, "_1")),
+                                  (withBean)?ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), compilerUtil.commonNameClass(shortConsistsOf))
+                                            :ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.INPUTS, "_1")),
                                   variableBean1,
                                   variableBean,
                                   ELEMENTS);
@@ -309,7 +312,7 @@ public class CompilerQueryInvoker {
                 .endControlFlow();
 
 
-        if (composee==null) throw new IllegalStateException("No composee found " + compositeConfig.consistsOf);
+        if (composee==null) throw new IllegalStateException("No composee found " + compositeConfig.consistsOf + " for composite " + compositeConfig.fullyQualifiedName);
 
         simpleQueryInvokerEmbedded(configs,composee,foundSpecialTypes,sbVar,mspec, variableBean1,compositeConfig.sharing);
 

@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import org.openprovenance.prov.core.json.serialization.deserial.CustomAttributeSetDeserializer;
-import org.openprovenance.prov.core.json.serialization.deserial.CustomBundleDeserializer;
-import org.openprovenance.prov.core.json.serialization.deserial.CustomKindDeserializer;
-import org.openprovenance.prov.core.json.serialization.deserial.CustomXMLGregorianCalendarDeserializer;
+import org.openprovenance.prov.core.json.serialization.deserial.*;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.vanilla.Bundle;
@@ -80,7 +77,6 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
                 new SimpleModule("CustomKindSerializer", new Version(1, 0, 0, null, null, null));
 
         module.addDeserializer(org.openprovenance.prov.model.StatementOrBundle.Kind.class, new CustomKindDeserializer());
-
 
         TypeFactory typeFactory = mapper.getTypeFactory();
 

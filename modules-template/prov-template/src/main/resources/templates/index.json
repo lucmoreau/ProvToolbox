@@ -1,0 +1,18 @@
+{
+  "org/openprovenance/prov/templates/generic/extending-collection" : {
+    "provn" : "generic/extending-collection.provn",
+    "png" : "generic/extending-collection.png"
+  },
+  "org/openprovenance/prov/templates/generic/operation" : {
+    "provn" : "generic/operation.provn",
+    "png" : "generic/operation.png"
+  },
+  "org/openprovenance/prov/templates/generic/updating-entity" : {
+    "provn" : "generic/updating-entity.provn",
+    "png" : "generic/updating-entity.png"
+  },
+  "org/openprovenance/prov/templates/generic/transforming1" : {
+    "provn" : "generic/transforming1.provn",
+    "png" : "generic/transforming1.png"
+  }
+}

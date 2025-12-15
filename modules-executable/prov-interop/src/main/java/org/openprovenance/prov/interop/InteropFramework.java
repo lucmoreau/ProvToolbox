@@ -59,6 +59,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         defaultFactory= dynamicallyLoadFactory(factoryClass);
     }
 
+
     static ProvFactory dynamicallyLoadFactory(String factory) {
         Class<?> clazz=null;
         try {
@@ -91,14 +92,15 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
     final ProvFactory pFactory;
 
-    private final Hashtable<ProvFormat, String> extensionMap;
-    public final Hashtable<String, Formats.ProvFormat> extensionRevMap;
-    private final Hashtable<Formats.ProvFormat, String> mimeTypeMap;
-    public final Hashtable<String, Formats.ProvFormat> mimeTypeRevMap;
-    private final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
+    final private Hashtable<ProvFormat, String> extensionMap;
+    final public Hashtable<String, Formats.ProvFormat> extensionRevMap;
+    final private Hashtable<Formats.ProvFormat, String> mimeTypeMap;
+    final public Hashtable<String, Formats.ProvFormat> mimeTypeRevMap;
+    final private Hashtable<ProvFormat, ProvFormatType> provTypeMap;
     final private CommandLineArguments config;
     final private Map<ProvFormat, DeserializerFunction> deserializerMap;
     final private Map<ProvFormat, DeserializerFunction2> deserializerMap2;
+    final private Map<ProvFormat, SerializerFunction> serializerMap;
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses the factory declared in the configuration file as its default factory.
@@ -130,6 +132,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         this.inputer = new Inputer(this, pFactory);
         this.deserializerMap=this.inputer.deserializerMap;
         this.deserializerMap2=this.inputer.deserializerMap2;
+        this.serializerMap=this.outputer.getSerializerMap();
 
 
     }
@@ -511,7 +514,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     files = inputer.readIndexFile(new File(config.merge));
                 }
                 //System.err.println("files to merge " + files);
-                for (Inputer.ToRead something : files) {
+                for (Inputer.ToRead something: files) {
                     iDoc.merge(inputer.readDocument(something));
                 }
 
@@ -525,7 +528,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         } else if (config.template_builder!=null) {
             ConfigProcessor cp=new ConfigProcessor(pFactory);
             // At the moment, the assumption is that base dir is the current directory
-            return cp.processTemplateGenerationConfig(config.template_builder, ".", ".", pFactory);
+            if (config.inputBaseDir==null) {
+                config.inputBaseDir=".";
+            }
+            if (config.outputBaseDir==null) {
+                config.outputBaseDir=".";
+            }
+            return cp.processTemplateGenerationConfig(config.template_builder, config.inputBaseDir, config.inputBaseDir, config.outputBaseDir, config.templateLibraryPath, pFactory);
 
         } else if (config.log2prov!=null) {
             try {
@@ -653,10 +662,15 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
                         TemplatesProjectConfiguration configs = new TemplatesProjectConfiguration();
                         //FIXME: configs not initialized!!
-                        Locations locations = new Locations(configs, null, null);
+                        logger.error("WARNING: project configuration not initialized, using empty configuration");
+                        Map<String, String> packages = new HashMap<>();
+                        Map<String, String> shortNames = new HashMap<>();
+                        List<String> templateLibraryPath = List.of(".");
+                        Locations locations = new Locations(configs, packages, shortNames, templateLibraryPath, null, null);
 
+                        logger.error("WARNING: private short name instead of qualified name");
 
-                        cp.generate(doc, locations, config.template, config.packge, config.outfile, config.location, config.location, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
+                        cp.generate(doc, locations, config.template, config.template, config.packge, config.outfile, config.location, config.location, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
                         return CommandLineArguments.STATUS_OK;
 
                     } catch (IOException e) {
@@ -679,7 +693,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 if (config.bindingsVersion == 3) {
                     Bindings inBindings;
                     try {
-                        inBindings = new ObjectMapper().readValue(new File(config.bindings), Bindings.class);
+                        inBindings = config.bindings.equals("-")?
+                                new ObjectMapper().readValue(System.in, Bindings.class):
+                                new ObjectMapper().readValue(new File(config.bindings), Bindings.class);
                     } catch (IOException e) {
                         throw new InteropException("problem parsing bindings file " + config.bindings, e);
                     }
@@ -803,6 +819,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return deserializerMap2;
     }
 
+    public Map<ProvFormat, SerializerFunction> getSerializerMap() {
+        return serializerMap;
+    }
+
     /*
 
     Reading document
@@ -893,6 +913,20 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     public Document readDocumentFromFile(String filename) {
         return inputer.readDocumentFromFile(filename);
     }
+
+    public void populateSerializerDeserializerMaps(Map<String, ProvDeserialiser> deserializerMap2, Map<String, ProvSerialiser> serializerMap2) {
+        Map<Formats.ProvFormat, DeserializerFunction> deserializerMap1= getDeserializerMap();
+        for (Formats.ProvFormat k: deserializerMap1.keySet()) {
+            deserializerMap2.put(getExtensionMap().get(k),deserializerMap1.get(k).apply());
+        }
+        Map<Formats.ProvFormat, SerializerFunction> serializerMap1= getSerializerMap();
+        for (Formats.ProvFormat k: serializerMap1.keySet()) {
+            serializerMap2.put(getExtensionMap().get(k),
+                    (out, document, formatted) -> serializerMap1.get(k).apply().serialiseDocument(out,document,formatted));
+
+        }
+    }
+
 
 
 

@@ -1,0 +1,44 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>Provenance Template Service</display-name>
+
+
+  <filter>
+    <filter-name>HasProvenanceHeaderFilter</filter-name>
+    <filter-class>org.openprovenance.prov.service.core.HasProvenanceHeaderFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>HasProvenanceHeaderFilter</filter-name>
+    <url-pattern>/webjars/*</url-pattern>
+  </filter-mapping>
+
+
+
+  <!--
+
+  <servlet>
+    <servlet-name>ExceptionHandler</servlet-name>
+    <servlet-class>org.openprovenance.prov.service.ExceptionHandler</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExceptionHandler</servlet-name>
+    <url-pattern>/ExceptionHandler</url-pattern>
+  </servlet-mapping>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/ExceptionHandler</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/ExceptionHandler</location>
+  </error-page>
+  -->
+
+</web-app>

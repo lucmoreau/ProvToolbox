@@ -1,0 +1,18 @@
+{
+  "extending-collection" : {
+    "provn" : "extending-collection.provn",
+    "png" : "extending-collection.png"
+  },
+  "operation" : {
+    "provn" : "operation.provn",
+    "png" : "operation.png"
+  },
+  "updating-entity" : {
+    "provn" : "updating-entity.provn",
+    "png" : "updating-entity.png"
+  },
+  "transforming1" : {
+    "provn" : "transforming1.provn",
+    "png" : "transforming1.png"
+  }
+}

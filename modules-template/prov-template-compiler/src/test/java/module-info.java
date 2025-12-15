@@ -1,6 +1,6 @@
 module prov.template.compiler.test{
     requires com.fasterxml.jackson.databind;
-    requires json.schema.validator;
+    requires com.networknt.schema;
     requires junit;
     requires org.apache.commons.io;
     requires prov.model;

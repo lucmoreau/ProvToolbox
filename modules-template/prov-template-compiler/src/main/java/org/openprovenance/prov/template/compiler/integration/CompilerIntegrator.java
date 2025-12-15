@@ -13,6 +13,7 @@ import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
@@ -38,7 +39,7 @@ public class CompilerIntegrator {
         this.compilerUtil = new CompilerUtil(pFactory);
     }
 
-    public SpecificationFile generateIntegrator(Locations locations, String templateName, String integrator_package, TemplateBindingsSchema bindingsSchema, String logger, BeanKind beanKind, String consistsOf, String directory, String fileName) {
+    public SpecificationFile generateIntegrator(TemplatesProjectConfiguration configs, Locations locations, String templateName, String templateFullyQualifiedName, String integrator_package, TemplateBindingsSchema bindingsSchema, String logger, BeanKind beanKind, String consistsOf, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(compilerUtil.integratorBuilderNameClass(templateName));
@@ -46,7 +47,7 @@ public class CompilerIntegrator {
 
         if (beanKind==BeanKind.SIMPLE) {
             builder.addMethod(compilerCommon.generateProcessorConverter(templateName, integrator_package, bindingsSchema, OUTPUTS));
-            builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArray(TO_INPUTS, templateName, integrator_package, bindingsSchema, INPUTS, null, null));
+            builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArray(locations, TO_INPUTS, templateName, integrator_package, bindingsSchema, INPUTS, null, null));
             builder.addField(compilerCommon.generateField4aBeanConverter2(TO_INPUTS, templateName, integrator_package, A_RECORD_INPUTS_CONVERTER, INPUTS));
 
 
@@ -60,19 +61,22 @@ public class CompilerIntegrator {
                     String extension=triple.getLeft();
                     TemplateBindingsSchema tbs=triple.getRight();
                     List<String> shared=triple.getMiddle();
-                    builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArray(TO_INPUTS+extension, consistsOf, integrator_package, tbs, INPUTS, extension, shared));
+                    builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArray(locations, TO_INPUTS+extension, consistsOf, integrator_package, tbs, INPUTS, extension, shared));
 
                     // we assume a single variant for now
-                    builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, locations.getFilePackage(logger), logger, INPUTS, extension, shared));
+                    builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, locations.getFilePackage(templateName,logger), logger, INPUTS, extension, shared));
 
                 });
             } else {
-                builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, locations.getFilePackage(logger), logger, INPUTS, null, null));
+                builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, locations.getFilePackage(templateName,logger), logger, INPUTS, null, null));
             }
 
         }
 
         builder.addMethod(compilerCommon.generateNameAccessor(templateName));
+        builder.addMethod(compilerCommon.generateFullyQualifiedNameAccessor(templateFullyQualifiedName));
+        builder.addMethod(compilerCommon.generateTemplateNameAccessor(templateFullyQualifiedName,locations));
+        builder.addMethod(compilerCommon.generateCBindingsAccessor(templateFullyQualifiedName,locations));
 
 
 

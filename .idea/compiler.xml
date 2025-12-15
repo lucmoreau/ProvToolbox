@@ -11,6 +11,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="prov-jsonld-xml (1)" />
         <module name="prov-nf" />
+        <module name="service-xplain" />
         <module name="prov-template-library" />
         <module name="prov-storage-api" />
         <module name="prov-explanations" />
@@ -19,8 +20,10 @@
         <module name="prov-n" />
         <module name="docker-service-translator" />
         <module name="prov-service-xplain" />
+        <module name="templates_cli (1)" />
         <module name="benchmarks" />
         <module name="prov-model" />
+        <module name="templates_l2p (1)" />
         <module name="prov-toolbox-js-embedding" />
         <module name="service-metrics" />
         <module name="modules-executable-provman" />
@@ -32,8 +35,10 @@
         <module name="tutorial5" />
         <module name="toolbox" />
         <module name="prov-generator" />
+        <module name="app-template-service" />
         <module name="docker-service-metrics" />
         <module name="prov-template-compiler" />
+        <module name="app-template-library" />
         <module name="prov-service-core" />
         <module name="prov-storage-filesystem" />
         <module name="demo" />
@@ -66,6 +71,7 @@
         <module name="prov-dot" />
         <module name="prov-storage-mongodb" />
         <module name="prov-jsweet-candy-java" />
+        <module name="service-templates-core" />
         <module name="prov-query" />
         <module name="prov-template-archetype" />
         <module name="roundtrip" />
@@ -80,19 +86,24 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="app-template-library" target="11" />
+      <module name="app-template-service" target="11" />
       <module name="arti" target="11" />
+      <module name="demo (1)" target="1.5" />
       <module name="modules-executable (1)" target="1.5" />
       <module name="mojos" target="11" />
       <module name="prov-jsonld-xml (1)" target="11" />
       <module name="prov-plugin" target="1.5" />
       <module name="prov-scala" target="9" />
       <module name="ProvToolbox-Tutorial2" target="1.5" />
+      <module name="templates (1)" target="1.5" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="benchmarks" options="" />
+      <module name="prov-toolbox-js-embedding" options="" />
     </option>
   </component>
 </project>

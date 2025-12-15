@@ -10,11 +10,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import nlg.wrapper.Block;
 import nlg.wrapper.Root;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
+
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.interop.InteropFramework;
@@ -387,15 +390,18 @@ public class NlgService implements Constants, InteropMediaType, SwaggerTags {
     final ObjectMapper objectMapper = new ObjectMapper();
 
     public Map<?,?> doPost(String url, String requestBody) throws IOException {
-        HttpClient httpClient = HttpClientBuilder.create().build();
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
-        HttpPost request = new HttpPost(url);
-        StringEntity responseBody = new StringEntity(requestBody);
-        request.addHeader("content-type",  APPLICATION_JSON);
-        request.addHeader("accept",  APPLICATION_JSON);
-        request.setEntity(responseBody);
-        HttpResponse response = httpClient.execute(request);
-        return objectMapper.readValue(response.getEntity().getContent(), Map.class);
+            HttpPost request = new HttpPost(url);
+            StringEntity responseBody = new StringEntity(requestBody);
+            request.addHeader("content-type", APPLICATION_JSON);
+            request.addHeader("accept", APPLICATION_JSON);
+            request.setEntity(responseBody);
+            try (CloseableHttpResponse response = httpClient.execute(request)) {
+                return objectMapper.readValue(response.getEntity().getContent(), Map.class);
+            }
+        }
+
 
     }
 

@@ -43,11 +43,6 @@ public class Reasoning {
         }
 
 
-        String sparqlQueryFile=config.getQuery();  // The SPARQL query
-
-        // Step 0: Load the query
-        String sparqlQuery = new String(Files.readAllBytes(Paths.get(sparqlQueryFile)));
-
         // Step 1: Load the ontology model
         OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
         RDFDataMgr.read(ontModel, ontologyFile, Lang.TURTLE);
@@ -65,23 +60,49 @@ public class Reasoning {
 
         // display tuples in inferred model
 
+        int queryCount=config.getQuery().size()-1;
+        int queryIndex=0;
+        for (String q: config.getQuery()) {
+
+            //System.out.println("SPARQL query: " + q);
+
+            // Step 0: Load the query
+            String sparqlQuery = new String(Files.readAllBytes(Paths.get(q)));
 
 
-        // Step 5: Execute the SPARQL query on the inferred model
-        Query query = QueryFactory.create(sparqlQuery);
-        try (QueryExecution qexec = QueryExecutionFactory.create(query, infModel)) {
-            ResultSet results = qexec.execSelect();
+            // Step 5: Execute the SPARQL query on the inferred model
+            Query query = QueryFactory.create(sparqlQuery);
 
-            // Step 6: Output results
-            //ResultSetFormatter.outputAsJSON(System.out,results);
-            if (outFormat.equals(JSON)) {
-                ResultSetFormatter.outputAsJSON(System.out, results);
-            } else if (outFormat.equals(XML)) {
-                ResultSetFormatter.outputAsXML(System.out, results);
+            if (queryIndex==queryCount) {
+                try (QueryExecution qexec = QueryExecutionFactory.create(query, infModel)) {
+                    ResultSet results = qexec.execSelect();
+
+                    // Step 6: Output results
+                    //ResultSetFormatter.outputAsJSON(System.out,results);
+                    if (outFormat.equals(JSON)) {
+                        ResultSetFormatter.outputAsJSON(System.out, results);
+                    } else if (outFormat.equals(XML)) {
+                        ResultSetFormatter.outputAsXML(System.out, results);
+                    } else {
+                        ResultSetFormatter.out(System.out, results, query);
+                    }
+                    ;
+
+                }
             } else {
-                ResultSetFormatter.out(System.out, results, query);
+                try (QueryExecution qexec = QueryExecutionFactory.create(query, infModel)) {
+                    Model m=qexec.execConstruct();
+                    infModel.add(m);
+                    //System.out.println("Construct result = " + m.toString());
+                }
             }
+
+            queryIndex++;
         }
+
+
+
+
     }
 
     public static void main(String[] args) throws IOException {

@@ -28,7 +28,7 @@ public class CompilerBeanCompleter3 {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_COMPLETER3);
 
-        builder.superclass(ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2));
+        builder.superclass(ClassName.get(locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2));
         builder.addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);
 
         MethodSpec.Builder cbuilder2= MethodSpec.constructorBuilder();
@@ -70,14 +70,13 @@ public class CompilerBeanCompleter3 {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            locations.updateWithConfig(config);
             if  (config instanceof SimpleTemplateCompilerConfig) {
-                if (composeeTemplates.contains(config.name)) {
+                if (composeeTemplates.contains(config.fullyQualifiedName)) {
 
 
                     final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
-                    final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
+                    final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
                     MethodSpec.Builder mspec = createSimpleProcessMethod(outputClassName,config.name);
 
                     builder.addMethod(mspec.build());
@@ -88,9 +87,9 @@ public class CompilerBeanCompleter3 {
                 CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
-                final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
+                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
 
-                MethodSpec.Builder mspec = createCompositeProcessMethod(config.name,outputClassName);
+                MethodSpec.Builder mspec = createCompositeProcessMethod(config.fullyQualifiedName,outputClassName);
                 builder.addMethod(mspec.build());
 
             }
@@ -100,7 +99,7 @@ public class CompilerBeanCompleter3 {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 
@@ -124,7 +123,7 @@ public class CompilerBeanCompleter3 {
         return mspec;
     }
 
-    private MethodSpec.Builder createCompositeProcessMethod(String template, ClassName outputClassName) {
+    private MethodSpec.Builder createCompositeProcessMethod(String templateFullyQualifiedName, ClassName outputClassName) {
         MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
@@ -134,7 +133,8 @@ public class CompilerBeanCompleter3 {
 
         mspec.addStatement("$T result=super.$N($N)", outputClassName, Constants.PROCESS_METHOD_NAME, BEAN_VAR);
         mspec.addStatement("result.ID=getValueFromLocation()");
-        mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, "result", template);
+        mspec.addStatement("System.out.println($S+result.ID+$S)", "Assigned ID in completer: ", "  " + templateFullyQualifiedName);
+        mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, "result", templateFullyQualifiedName);
 
         mspec.addStatement("return $N", "result");
         mspec.addAnnotation(Override.class);

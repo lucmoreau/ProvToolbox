@@ -12,8 +12,7 @@ import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Provider;
 
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.interop.Formats.ProvFormat;
-import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.interop.Formats;
 
 @Provider
 public class StreamMessageBodyReader implements MessageBodyReader<InputStream> {
@@ -23,7 +22,7 @@ public class StreamMessageBodyReader implements MessageBodyReader<InputStream> {
 							  Annotation[] annotations, MediaType mediaType) {
 		InteropFramework intF=new InteropFramework();
 
-		ProvFormat format=intF.mimeTypeRevMap.get(mediaType.toString());
+		Formats.ProvFormat format=intF.mimeTypeRevMap.get(mediaType.toString());
 		//System.out.println("*** Supported format " + format + " for type " + type + " given media type " + mediaType.toString()  + " " + intF.mimeTypeRevMap);
 		return format!=null;
 	}

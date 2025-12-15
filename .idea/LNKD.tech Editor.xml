@@ -178,6 +178,11 @@
   <component name="http://lnkd.tech/editor#GraphVisibilityConfig">
     <option name="visibility">
       <map>
+        <entry key="DOCUMENTATION">
+          <value>
+            <Visibility />
+          </value>
+        </entry>
         <entry key="GENERAL">
           <value>
             <Visibility />

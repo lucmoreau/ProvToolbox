@@ -2,10 +2,10 @@ module prov.template.compiler {
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
+
     requires com.squareup.javapoet;
     requires java.compiler;
     requires java.sql;
-    requires json.schema.validator;
     requires maven.model;
     requires org.apache.commons.csv;
     requires org.apache.commons.io;
@@ -17,7 +17,7 @@ module prov.template.compiler {
     requires prov.model;
     requires prov.notation;
     requires prov.template;
-
+    requires com.networknt.schema;
 
     exports org.openprovenance.prov.template.compiler;
     exports org.openprovenance.prov.template.compiler.configuration;

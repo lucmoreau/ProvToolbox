@@ -14,6 +14,8 @@ abstract public class TemplateCompilerConfig {
     public String type_;
     @JsonProperty("name")
     public String name;
+    @JsonProperty("fullyQualifiedName")
+    public String fullyQualifiedName;
     @JsonProperty("package")
     public String package_;
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
 import org.openprovenance.prov.service.client.ClientConfig;
-import org.openprovenance.prov.template.library.plead.client.integrator.InputOutputProcessor;
+import org.openprovenance.prov.template.library.plead.integrator.InputOutputProcessor;
 import org.openprovenance.prov.templates.library.LocalEnactor;
 import org.openprovenance.prov.templates.library.PleadWorkflow;
 

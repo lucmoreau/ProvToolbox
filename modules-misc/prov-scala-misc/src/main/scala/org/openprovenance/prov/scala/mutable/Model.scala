@@ -1707,8 +1707,8 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     /** Factory method for Key-entity entries. Key-entity entries are used to identify the members of a dictionary.
      *
      * @param key    indexing the entity in the dictionary
-     * @param entity a {@link QualifiedName} denoting an entity
-     * @return an instance of {@link Entry}
+     * @param entity a {@link model.QualifiedName} denoting an entity
+     * @return an instance of {@link model.Entry}
      */
     override def newEntry(key: model.Key, entity: model.QualifiedName): model.Entry = {
         throw new UnsupportedOperationException("Entry not supported")

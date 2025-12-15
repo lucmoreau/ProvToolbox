@@ -54,6 +54,7 @@ object defs {
 
   val nlgFactory: NLGFactory =new NLGFactory(lexicon)
 
+
   case class Template(select: Object, query: Array[String], sentence: Phrase)
 
 

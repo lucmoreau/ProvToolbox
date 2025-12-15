@@ -1,14 +1,17 @@
 package org.openprovenance.prov.storage.mongodb;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
+import com.mongodb.ConnectionString;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.DeleteResult;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.mongojack.DBUpdate;
-import org.mongojack.JacksonDBCollection;
-import org.mongojack.WriteResult;
+import org.bson.UuidRepresentation;
+import org.mongojack.JacksonMongoCollection;
 import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 
 import java.io.ByteArrayOutputStream;
@@ -19,12 +22,11 @@ import java.io.OutputStream;
 
 public class MongoAsciiBlobStorage implements NonDocumentGenericResourceStorage<String>, Constants {
 
+    private static final Logger logger = LogManager.getLogger(MongoAsciiBlobStorage.class);
 
-    private final DB db;
+    private final MongoDatabase db;
 
-    private static Logger logger = LogManager.getLogger(MongoAsciiBlobStorage.class);
-
-    private final JacksonDBCollection<AsciiWrapper, String> genericCollection;
+    private final JacksonMongoCollection<AsciiWrapper> genericCollection;
 
     private final String collectionName;
 
@@ -34,19 +36,20 @@ public class MongoAsciiBlobStorage implements NonDocumentGenericResourceStorage<
 
     public MongoAsciiBlobStorage(String host, String dbname, String collectionName) {
 
-        MongoClient mongoClient = new MongoClient(host, 27017);
-        DB db = mongoClient.getDB(dbname);
+        MongoClient mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
+        MongoDatabase db = mongoClient.getDatabase(dbname);
         this.db=db;
         this.collectionName=collectionName;
 
-        DBCollection generic=db.getCollection(collectionName);
-        this.genericCollection = JacksonDBCollection.wrap(generic, AsciiWrapper.class, String.class);
+        MongoCollection<AsciiWrapper> generic=db.getCollection(collectionName,AsciiWrapper.class);
+        this.genericCollection = JacksonMongoCollection.builder().build(generic,AsciiWrapper.class, UuidRepresentation.STANDARD);
     }
 
     @Override
     public String newStore(String _suggestedExtension, String _mimeType) {
-        WriteResult<AsciiWrapper, String> result= genericCollection.insert(new AsciiWrapper());
-        String id = result.getSavedId();
+        AsciiWrapper asciiWrapper = new AsciiWrapper();
+        genericCollection.insert(asciiWrapper);
+        String id = asciiWrapper.getId();
         return id;
     }
 
@@ -66,7 +69,7 @@ public class MongoAsciiBlobStorage implements NonDocumentGenericResourceStorage<
     public void serializeObjectToStore(String o, String id) {
         logger.debug("serializeObjectToStore " + id);
         logger.debug("serializeObjectToStore " + o);
-        genericCollection.updateById(id, DBUpdate.set(TypeWrapper.VALUE, o));
+        genericCollection.updateById(id, Updates.set(TypeWrapper.VALUE, o));
     }
 
     @Override
@@ -83,8 +86,7 @@ public class MongoAsciiBlobStorage implements NonDocumentGenericResourceStorage<
 
     @Override
     public boolean delete(String storageId) {
-        WriteResult<AsciiWrapper, String> result=genericCollection.removeById(storageId);
-        return result.getN()==1;
-
+        DeleteResult result=genericCollection.removeById(storageId);
+        return result.getDeletedCount()==1;
     }
 }

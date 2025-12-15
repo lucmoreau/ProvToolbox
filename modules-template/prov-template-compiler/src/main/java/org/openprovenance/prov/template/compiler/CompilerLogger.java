@@ -7,6 +7,8 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.descriptors.Descriptor;
+import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
@@ -40,8 +42,7 @@ public class CompilerLogger {
         for (TemplateCompilerConfig config : configs.templates) {
            // if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
             FieldSpec fspec = FieldSpec.builder(className, Constants.GENERATED_VAR_PREFIX + config.name)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                     .initializer("$N $T()", "new", className)
@@ -63,7 +64,6 @@ public class CompilerLogger {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            locations.updateWithConfig(config);
             if (config instanceof SimpleTemplateCompilerConfig) {
                 builder.addMethod(generateStaticLogMethod((SimpleTemplateCompilerConfig) config, locations));
                 builder.addMethod(generateStaticBeanMethod((SimpleTemplateCompilerConfig) config, locations));
@@ -75,16 +75,16 @@ public class CompilerLogger {
 
         builder.addField(FieldSpec
                 .builder(builderMapType, "simpleBuilders", Modifier.STATIC, Modifier.PUBLIC)
-                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(BUILDER_CONFIGURATOR), BUILDER_CONFIGURATOR))
+                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(configs.name, BUILDER_CONFIGURATOR), BUILDER_CONFIGURATOR))
                 .build());
         builder.addField(FieldSpec
                 .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfUnknown), "simpleBeanConverters", Modifier.STATIC, Modifier.PUBLIC)
-                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(CONVERTER_CONFIGURATOR),CONVERTER_CONFIGURATOR))
+                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(configs.name, CONVERTER_CONFIGURATOR),CONVERTER_CONFIGURATOR))
                 .build());
 
         builder.addField(FieldSpec
                 .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfString), "simpleCSvConverters", Modifier.STATIC, Modifier.PUBLIC)
-                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(CSV_CONFIGURATOR),CSV_CONFIGURATOR))
+                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(configs.name, CSV_CONFIGURATOR),CSV_CONFIGURATOR))
                 // python conversion does not support javadoc .addJavadoc("generated Automatically by ProvToolbox ($N.$N())", this.getClass().getSimpleName(), "generateLogger")
                 .build());
 
@@ -100,7 +100,7 @@ public class CompilerLogger {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage = locations.getFilePackage(fileName);
+        String myPackage = locations.getFilePackage(configs.name, fileName);
         String directory = locations.convertToDirectory(myPackage);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
@@ -130,14 +130,14 @@ public class CompilerLogger {
         compilerUtil.specWithComment(builder);
 
 
-        builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(TABLE_CONFIGURATOR), TABLE_CONFIGURATOR), TypeVariableName.get("T")), "configurator");
+        builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, TABLE_CONFIGURATOR), TABLE_CONFIGURATOR), TypeVariableName.get("T")), "configurator");
 
         builder.addStatement("$T $N=$N $T()",mapType, A_TABLE_VAR,"new", mapType2);
 
         for (TemplateCompilerConfig config : configs.templates) {
 
             String thisBuilderName = Constants.GENERATED_VAR_PREFIX + config.name;
-            builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
+            builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getFullyQualifiedName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
 
 
         }
@@ -150,7 +150,7 @@ public class CompilerLogger {
     }
 
     private MethodSpec generateInitializeCompositeBeanTableMethod(TemplatesProjectConfiguration configs, Locations locations) {
-        ParameterizedTypeName parameterType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(COMPOSITE_TABLE_CONFIGURATOR), COMPOSITE_TABLE_CONFIGURATOR), typeT);
+        ParameterizedTypeName parameterType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, COMPOSITE_TABLE_CONFIGURATOR), COMPOSITE_TABLE_CONFIGURATOR), typeT);
 
         CodeBlock.Builder jdoc = CodeBlock.builder();
         jdoc.add("Initialize a table of composite bean builders\n");
@@ -173,7 +173,7 @@ public class CompilerLogger {
         for (TemplateCompilerConfig config : configs.templates) {
             if (!(config instanceof SimpleTemplateCompilerConfig)) {
                 String thisBuilderName = Constants.GENERATED_VAR_PREFIX + config.name;
-                builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
+                builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getFullyQualifiedName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
             }
         }
 
@@ -207,13 +207,19 @@ public class CompilerLogger {
                 .returns(CompilerUtil.mapIntArrayType);
         builder.addMethod(builder3b.build());
 
+        MethodSpec.Builder builder3c = MethodSpec.methodBuilder(Constants.GET_FOREIGN)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(ArrayTypeName.of(String.class));
+        builder.addMethod(builder3c.build());
+
         MethodSpec.Builder builder4 = MethodSpec.methodBuilder(Constants.GET_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(String.class);
         builder.addMethod(builder4.build());
 
-        TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
+       //TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
 
+        TypeName myType=functionObjArrayTo(ClassName.get(String.class));
         MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.RECORD_CSV_PROCESSOR_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .addParameter(ParameterSpec.builder(ArrayTypeName.of(Object.class),"record").build())
@@ -224,6 +230,20 @@ public class CompilerLogger {
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(String[].class);
         builder.addMethod(builder6.build());
+
+
+        MethodSpec.Builder builder7 = MethodSpec.methodBuilder(Constants.GET_TEMPLATE_NAME)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(String.class);
+        builder.addMethod(builder7.build());
+
+        MethodSpec.Builder builder8 = MethodSpec.methodBuilder(GET_FULLY_QUALIFIED_NAME)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(String.class);
+        builder.addMethod(builder8.build());
+
+
+
 
         TypeSpec theInterface = builder.build();
 
@@ -268,22 +288,25 @@ public class CompilerLogger {
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_documentation = bindings_schema.get("@documentation");
         JsonNode the_return = bindings_schema.get("@return");
-        compilerUtil.generateSpecializedParameters(builder, the_var);
+        compilerUtil.generateSpecializedParameters(builder, the_var, compilerUtil.getBindingsSchema(config).getVar());
         compilerUtil.generateSpecializedParametersJavadoc(builder, the_var, the_documentation, the_return);
 
-        CodeBlock argsList = convertToArgsList(the_var);
+        CodeBlock argsList = convertToArgsList(the_var,compilerUtil.getBindingsSchema(config));
 
 
         builder.addStatement("return $N.$N().$N($L)", Constants.GENERATED_VAR_PREFIX + config.name, Constants.ARGS_CSV_CONVERSION_METHOD, "process",argsList);
         return builder.build();
     }
 
-    public static CodeBlock convertToArgsList(JsonNode the_var) {
+    public static CodeBlock convertToArgsList(JsonNode the_var, TemplateBindingsSchema bindingsSchema) {
         List<String> variables=new LinkedList<>();
+        Map<String, List<Descriptor>> theVars=bindingsSchema.getVar();
         Iterator<String> iter = the_var.fieldNames();
         while (iter.hasNext()) {
             String key = iter.next();
-            variables.add(key);
+            if (theVars.containsKey(key) && theVars.get(key)!=null) {
+                variables.add(key);
+            }
         }
         return makeArgsList(variables);
     }
@@ -293,18 +316,18 @@ public class CompilerLogger {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(beanCreatorName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
-                .returns(ClassName.get(locations.getFilePackage(BeanDirection.COMMON),compilerUtil.commonNameClass(config.name)));
+                .returns(ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON),compilerUtil.commonNameClass(config.name)));
 
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_documentation = bindings_schema.get("@documentation");
         JsonNode the_return = bindings_schema.get("@return");
-        compilerUtil.generateSpecializedParameters(builder, the_var);
+        compilerUtil.generateSpecializedParameters(builder, the_var,compilerUtil.getBindingsSchema(config).getVar());
         compilerUtil.generateSpecializedParametersJavadoc(builder, the_var, the_documentation, the_return);
 
 
-        CodeBlock argsList = convertToArgsList(the_var);
+        CodeBlock argsList = convertToArgsList(the_var, compilerUtil.getBindingsSchema(config));
 
         builder.addStatement("return $N.$N." + "$N" +  "($L)", Constants.GENERATED_VAR_PREFIX + config.name, Constants.A_ARGS_BEAN_CONVERTER, "process", argsList);
 
@@ -325,7 +348,7 @@ public class CompilerLogger {
 
     }
 
-    public SpecificationFile generateProcessorArgsInterface(TemplatesProjectConfiguration configs, String directory, String fileName) {
+    public SpecificationFile OLDgenerateProcessorArgsInterface(TemplatesProjectConfiguration configs, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(PROCESSOR_ARGS_INTERFACE,  CompilerUtil.typeT);

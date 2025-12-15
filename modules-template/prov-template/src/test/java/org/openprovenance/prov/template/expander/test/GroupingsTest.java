@@ -39,17 +39,17 @@ public class GroupingsTest extends TestCase {
 
 
     public void testGroupings1() {
-        Groupings grps=getGroupings("src/test/resources/templates/template20.provn");
+        Groupings grps=getGroupings("src/test/resources/templates2/template20.provn");
         assertEquals(2, grps.size());
     }
 
     public void testGroupings2(){
-        Groupings grps=getGroupings("src/test/resources/templates/template21.provn");
+        Groupings grps=getGroupings("src/test/resources/templates2/template21.provn");
         assertEquals(1, grps.size());
     }
 
     public void testGroupings3() {
-        Groupings grps=getGroupings("src/test/resources/templates/template24.provn");
+        Groupings grps=getGroupings("src/test/resources/templates2/template24.provn");
         assertEquals(1, grps.size());
     }
 

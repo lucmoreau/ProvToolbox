@@ -4,6 +4,7 @@ ORIGIN=${origin.project}
 SERVICE=${project.artifactId}
 
 BUILD_PLATFORM=linux/amd64
+#BUILD_PLATFORM=linux/arm64/v8
 
 TARGET_IMAGE=$(SERVICE).${docker.java.platform}
 LOCATION_IMAGE=$(TARGET_IMAGE)

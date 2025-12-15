@@ -619,6 +619,33 @@ public class ExpandAction implements StatementAction {
 
     }
 
+
+    @Override
+    public void doAction(QualifiedHadMember s) {
+        QualifiedHadMember res = pf.newQualifiedHadMember(s.getId(),s.getCollection(), s.getEntity(),null);
+
+        QualifiedName id = res.getId();
+        boolean updated0 = setExpand(res, id, 0);
+        QualifiedName col = res.getCollection();
+        boolean updated1 = setExpand(res, col, 1);
+        List<QualifiedName> ent = res.getEntity();
+        if (ent.size() > 1) {
+            throw new UnsupportedOperationException("can't expand QualfiedHadMember with more than one members");
+        }
+        boolean updated2 = setExpand(res, ent.get(0), 2);
+        boolean updated3 = expandAttributes(s, res);
+
+        boolean updated = updated0 || updated1 || updated2 || updated3;
+        boolean allUpdated = updated0 && updated1 && updated2 && updated3;
+        allExpanded=allExpanded && allUpdated;
+        if (!allUpdatedRequired || allUpdated) {
+            ll.add(res);
+        }
+        if (updated) addOrderAttribute(res);
+
+    }
+
+
     @Override
     public void doAction(MentionOf s) {
         // TODO Auto-generated method stub
@@ -628,6 +655,8 @@ public class ExpandAction implements StatementAction {
     @Override
     public void doAction(SpecializationOf s) {
         SpecializationOf res = pf.newSpecializationOf(s.getSpecificEntity(), s.getGeneralEntity());
+
+
 
         QualifiedName spe = res.getSpecificEntity();
         boolean updated0 = setExpand(res, spe, 0);
@@ -649,15 +678,17 @@ public class ExpandAction implements StatementAction {
     public void doAction(QualifiedSpecializationOf s) {
         QualifiedSpecializationOf res = pf.newQualifiedSpecializationOf(s.getId(),s.getSpecificEntity(), s.getGeneralEntity(),null);
 
+        QualifiedName id = res.getId();
+        boolean updated0 = setExpand(res, id, 0);
         QualifiedName spe = res.getSpecificEntity();
-        boolean updated0 = setExpand(res, spe, 0);
+        boolean updated1 = setExpand(res, spe, 1);
         QualifiedName gen = res.getGeneralEntity();
-        boolean updated1 = setExpand(res, gen, 1);
-        boolean updated2 = expandAttributes(s, res);
+        boolean updated2 = setExpand(res, gen, 2);
+        boolean updated3 = expandAttributes(s, res);
 
         @SuppressWarnings("unused")
-        boolean updated = updated0 || updated1 || updated2;
-        boolean allUpdated = updated0 && updated1 && updated2;
+        boolean updated = updated0 || updated1 || updated2 || updated3;
+        boolean allUpdated = updated0 && updated1 && updated2 && updated3;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
             ll.add(res);
@@ -683,32 +714,6 @@ public class ExpandAction implements StatementAction {
             ll.add(res);
         }
         if (updated) addOrderAttribute(res);
-
-    }
-    
-    @Override
-    public void doAction(QualifiedHadMember s) {
-        QualifiedHadMember res = pf.newQualifiedHadMember(s.getId(),s.getCollection(), s.getEntity(),null);
-
-        QualifiedName col = res.getCollection();
-        boolean updated0 = setExpand(res, col, 0);
-        List<QualifiedName> ent = res.getEntity();
-        if (ent.size() > 1) {
-            throw new UnsupportedOperationException("can't expand QualfiedHadMember with more than one members");
-        }
-        boolean updated1 = setExpand(res, ent.get(0), 1);
-        boolean updated2 = expandAttributes(s, res);
-
-        // .out.println("FIXME: to do , expand entities"); //FIXME
-
-        boolean updated = updated0 || updated1|| updated2;
-        boolean allUpdated = updated0 && updated1 && updated2;
-        allExpanded=allExpanded && allUpdated;
-        if (!allUpdatedRequired || allUpdated) {
-            ll.add(res);
-        }
-        if (updated) addOrderAttribute(res);
-        // TODO Auto-generated method stub
 
     }
 

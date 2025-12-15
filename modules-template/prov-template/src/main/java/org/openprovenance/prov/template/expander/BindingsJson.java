@@ -83,6 +83,9 @@ public class BindingsJson {
             boolean single_value=true;
 
             Descriptors descriptors = var.get(key);
+            if (descriptors==null || descriptors.values==null) {
+                throw new IllegalArgumentException("Missing variable " + key + " in bindings " + var);
+            };
             for (Descriptor descriptor: descriptors.values) {
 
                 SingleDescriptors wrapped;

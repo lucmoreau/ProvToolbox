@@ -55,6 +55,7 @@
         <option value="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/pom.xml" />
         <option value="$PROJECT_DIR$/modules-tools/prov-sparql-query/pom.xml" />
         <option value="$PROJECT_DIR$/modules-services-metrics/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-explanations/service-xplain/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
@@ -73,7 +74,7 @@
   <component name="ProjectResources">
     <resource url="http://www.w3.org/ns/prov#" location="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="17" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="temurin-25" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
 </project>

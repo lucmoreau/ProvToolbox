@@ -11,6 +11,7 @@ JSONLD_SCHEMA=src/main/resources/2024-08-25/jsonldschema.json
 JSONLD_CONTEXT=src/main/resources/2024-08-25/jsonldcontext.jsonld
 
 PUBLIC_JSONLD_SCHEMA=https://openprovenance.org/prov-jsonld/schema.json
+PUBLIC_JSONLD_SCHEMA=https://www.w3.org/submissions/2024/SUBM-prov-jsonld-20240825/schema.json
 PUBLIC_JSONLD_CONTEXT=https://openprovenance.org/prov-jsonld/context.jsonld
 
 
@@ -23,7 +24,8 @@ target/%.jsonld.check: target/%.jsonld
 	@-$(MAKE) FILE=$< check.file
 
 
-go: check.schema.spec check.context.spec $(FILES_TO_CHECK)
+
+schema.test: check.schema.spec check.context.spec $(FILES_TO_CHECK)
 
 check.schema.spec:
 	curl -s -o target/public-schema.json $(PUBLIC_JSONLD_SCHEMA)

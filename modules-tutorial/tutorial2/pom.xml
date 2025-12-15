@@ -3,7 +3,7 @@
     <parent>
         <artifactId>modules-tutorial</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.2.1</version>
+        <version>2.2.2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
         </dependency>
     </dependencies>
 
@@ -113,7 +113,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2-beta-3</version>
+                <version>${assembly.plugin.version}</version>
                 <!-- there exists a more recent version, but it sets wrong
                      permission on directory
                      https://jira.codehaus.org/browse/MASSEMBLY-449 -->

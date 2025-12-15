@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Templates Project Schema",
+    "description": "Project Template Catalogue Schema",
     "definitions": {
         "SimpleTemplateDescriptor": {
             "type": "object",
@@ -8,25 +8,31 @@
                 "@type": {
                     "type": "string"
                 },
-                "name": {
+                "fullyQualifiedName": {
                     "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                },
+                "package": {
+                    "type": "string",
+                    "pattern": "^(?:([A-Za-z_][A-Za-z0-9_]*)(?:\\.[A-Za-z_][A-Za-z0-9_]*)*|https?:\\/\\/\\S+)$"
                 },
                 "template": {
                     "type": "string"
                 },
-                "package": {
-                    "type": "string"
-                },
-                "bindings": {
+                "cbindings": {
                     "type": "string"
                 }
             },
             "required": [
                 "@type",
+                "fullyQualifiedName",
                 "name",
                 "template",
                 "package",
-                "bindings"
+                "cbindings"
             ],
             "additionalProperties": false
         },
@@ -36,13 +42,16 @@
                 "@type": {
                     "type": "string"
                 },
+                "fullyQualifiedName": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
-                "consistsOf": {
+                "package": {
                     "type": "string"
                 },
-                "package": {
+                "consistsOf": {
                     "type": "string"
                 },
                 "sharing": {
@@ -59,9 +68,10 @@
             },
             "required": [
                 "@type",
+                "fullyQualifiedName",
                 "name",
-                "consistsOf",
                 "package",
+                "consistsOf",
                 "sharing"
             ],
             "additionalProperties": false
@@ -135,6 +145,9 @@
             "type": "string"
         },
         "documentation": {
+            "type": "string"
+        },
+        "variableCheck": {
             "type": "string"
         },
         "sqlFile": {

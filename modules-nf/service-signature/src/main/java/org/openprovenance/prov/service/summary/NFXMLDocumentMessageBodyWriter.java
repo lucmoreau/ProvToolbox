@@ -1,8 +1,8 @@
 package org.openprovenance.prov.service.summary;
 
-import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.interop.Formats;
+import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import org.openprovenance.prov.scala.nf.DocumentProxyFromStatements;
@@ -122,7 +122,7 @@ public class NFXMLDocumentMessageBodyWriter implements MessageBodyWriter<Documen
                         MultivaluedMap<String, Object> httpHeaders,
                         OutputStream out) throws IOException, WebApplicationException {
         InteropFramework intF=new InteropFramework(ProvFactory.getFactory());
-        ProvFormat format=intF.mimeTypeRevMap.get(trimCharSet(mediaType));
+        Formats.ProvFormat format=intF.mimeTypeRevMap.get(trimCharSet(mediaType));
 
         System.out.println(" ---- NF writeTo doc " + format + " " + mediaType);
         

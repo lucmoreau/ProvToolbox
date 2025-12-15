@@ -361,7 +361,7 @@ public class TreeTraversal {
 
 
             case PROV_NParser.KEYS:
-                List<Key> keys=new LinkedList<Key>();
+                List<Key> keys= new LinkedList<>();
                 for (int i=0; i< ast.getChildCount(); i++) {
                     Object o=convert(ast.getChild(i));
                     if (o instanceof LangString) {
@@ -416,7 +416,7 @@ public class TreeTraversal {
             /* Component 6 */
 
             case PROV_NParser.EXT:
-                System.out.println("FOUND Extension " + ast);
+                //System.out.println("FOUND Extension " + ast);
                 Object extName=convert(ast.getChild(0));
                 uidTree=ast.getChild(1);
                 if (uidTree.getChildCount()>0) {
@@ -627,6 +627,7 @@ public class TreeTraversal {
     }
 
     public Object newExtension(Object extName, QualifiedName uid, List<Object> args, Object optionalAttributes) {
+
 
         /*
         System.out.println("FOUND Extension naem " + extName);

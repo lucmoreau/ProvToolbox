@@ -27,7 +27,7 @@ public class CompilerTemplateInvoker {
 
     SpecificationFile generateTemplateInvoker(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(TEMPLATE_INVOKER).addSuperinterface(ClassName.get(locations.getFilePackage(BeanDirection.INPUTS),INPUT_OUTPUT_PROCESSOR)).addModifiers(Modifier.ABSTRACT);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(TEMPLATE_INVOKER).addSuperinterface(ClassName.get(locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR),INPUT_OUTPUT_PROCESSOR)).addModifiers(Modifier.ABSTRACT);
 
 
 
@@ -35,8 +35,8 @@ public class CompilerTemplateInvoker {
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
             final String outputsNameClass = compilerUtil.outputsNameClass(config.name);
 
-            final ClassName inputClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), inputsNameClass);
-            final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputsNameClass);
+            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputsNameClass);
+            final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputsNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC)
                     .addParameter(ParameterSpec.builder(inputClassName, BEAN).build())
@@ -48,11 +48,11 @@ public class CompilerTemplateInvoker {
             ClassName completerClass;
 
             if (config instanceof SimpleTemplateCompilerConfig) {
-                completerClass = ClassName.get(locations.getFilePackage(BEAN_COMPLETER2), BEAN_COMPLETER2);
+                completerClass = ClassName.get(locations.getFilePackage(configs.name, BEAN_COMPLETER2), BEAN_COMPLETER2);
                 mspec.addStatement("return $N($T.class, $N, (m, o) -> new $T(m).process(o))", GENERIC_POST_AND_RETURN, outputClassName, BEAN, completerClass);
 
             } else {
-                completerClass = ClassName.get(locations.getFilePackage(COMPOSITE_BEAN_COMPLETER2), COMPOSITE_BEAN_COMPLETER2);
+                completerClass = ClassName.get(locations.getFilePackage(configs.name, COMPOSITE_BEAN_COMPLETER2), COMPOSITE_BEAN_COMPLETER2);
                 mspec.addStatement("return $N($T.class, $N, (m, o) -> {o.$N=new $T<>(); return new $T(m).process(o); })", GENERIC_POST_AND_RETURN, outputClassName, BEAN, ELEMENTS, LinkedList.class, completerClass);
 
             }
@@ -83,7 +83,7 @@ public class CompilerTemplateInvoker {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

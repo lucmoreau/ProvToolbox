@@ -964,7 +964,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return newWasGeneratedBy(id, entity,null, activity);
 	}
 
-	public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy wgb) {
+    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName entity, QualifiedName activity, XMLGregorianCalendar time) {
+        return newWasGeneratedBy(id, entity, activity, time, null);
+    }
+
+
+    public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy wgb) {
 		return newWasGeneratedBy(wgb.getId(), wgb.getEntity(), wgb.getActivity(), wgb.getTime(), getAllAttributes(wgb));
 	}
 

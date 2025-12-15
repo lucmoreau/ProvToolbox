@@ -15,6 +15,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
@@ -79,16 +81,30 @@ public class CompilerTest extends TestCase {
         new File(cli_webjar_templates_dir).mkdirs();
 
 
-        Locations locations=new Locations(configs,cli_src_dir, l2p_src_dir);
+        HashMap<String, String> packages = new HashMap<>();
+        packages.put(config.fullyQualifiedName, config.package_);
+        packages.put(configs.name, configs.root_package);
+        HashMap<String, String> shortNames = new HashMap<>();
+        shortNames.put(config.fullyQualifiedName, config.name);
+        System.out.println("#### packages: " + packages);
 
-        locations.updateWithConfig(config);
+        List<String> templatePath=List.of("src/test/resources/templates3");
+
+        Locations locations=new Locations(configs, packages, shortNames, templatePath, cli_src_dir, l2p_src_dir);
+
 
         if (TemplateConfigurationEnum.isSimple(config)) {
 
             SimpleTemplateCompilerConfig aconfig=(SimpleTemplateCompilerConfig)config;
+
+            locations.registerTemplate(aconfig.fullyQualifiedName,aconfig.template);
+            locations.registerCBindings(config.fullyQualifiedName, aconfig.cbindings);
+
+
+            // note, given that we have not built the Interop framework, we have to read the document ourselves
             cp.doGenerateServerForEntry1(u.readDocument(aconfig.template, pf), aconfig, configs, locations, cli_src_dir, l2p_src_dir, cli_webjar_dir);
             FileUtils.copyFileToDirectory(new File(aconfig.template), new File(cli_webjar_templates_dir));
-            FileUtils.copyFileToDirectory(new File(aconfig.bindings), new File(cli_webjar_bindings_dir));
+            FileUtils.copyFileToDirectory(new File(aconfig.cbindings), new File(cli_webjar_bindings_dir));
         } else {
             throw new UnsupportedOperationException(" Type is " + config);
         }
@@ -99,48 +115,44 @@ public class CompilerTest extends TestCase {
         cp.generateSQLEnd(configs,cli_src_dir);
         cp.generateDocumentationEnd(configs,cli_webjar_dir);
 
-        //System.out.println("#### Invoking maven " + path);
-        String java12Home=new JavaVersion().getJava12Home();
-        if (java12Home!=null) {
 
-            execute(new String[]{"mvn", "clean", "install"}, "target/libs/templates", null);
-            //execute(new String[] {"mvn", "clean", "install"},"target/libs/templates", null);
 
-            final String theExamplarJsonFile = cli_dir + "/target/example_template_block.json";
-            final String templateJsonSchema = cli_dir + "/src/main/resources/" + configs.jsonschema;
+        execute(new String[]{"mvn", "clean", "install"}, "target/libs/templates");
+        //execute(new String[] {"mvn", "clean", "install"},"target/libs/templates", null);
 
-            System.out.println("#### jq test " + theExamplarJsonFile);
-            execute(new String[]{"jq", ".", theExamplarJsonFile}, ".", null);
+        final String theExamplarJsonFile = cli_dir + "/target/example_template_block.json";
+        final String templateJsonSchema = cli_dir + "/src/main/resources/" + configs.jsonschema;
 
-            //TODO: LUC: cannot make this work on travis
-            //execute(new String[] {"/usr/local/bin/ajv", "-s", templateJsonSchema, "-d", theExamplarJsonFile},".");
+        System.out.println("#### jq test " + theExamplarJsonFile);
+        execute(new String[]{"jq", ".", theExamplarJsonFile}, ".");
 
-            com.networknt.schema.JsonSchema schema = cp.getCompilerJsonSchema().setupJsonSchemaFromClasspathV7("schema/json-schema-v7.json");
-            Set<ValidationMessage> result = cp.getCompilerJsonSchema().checkSchema(schema, templateJsonSchema);
-            System.out.println(result);
+        //TODO: LUC: cannot make this work on travis
+        //execute(new String[] {"/usr/local/bin/ajv", "-s", templateJsonSchema, "-d", theExamplarJsonFile},".");
 
-            System.out.println("#### checking schema compatibility for " + theExamplarJsonFile);
-            com.networknt.schema.JsonSchema schema2 = cp.getCompilerJsonSchema().setupJsonSchemaFromFile(templateJsonSchema);
-            Set<ValidationMessage> result2 = cp.getCompilerJsonSchema().checkSchema(schema2, theExamplarJsonFile);
-            System.out.println(result2);
-        } else {
-            System.out.println("#### Skipping transpiling because no java12 was configured " + path);
-        }
+        com.networknt.schema.JsonSchema schema = cp.getCompilerJsonSchema().setupJsonSchemaFromClasspathV7("schema/json-schema-v7.json");
+        Set<ValidationMessage> result = cp.getCompilerJsonSchema().checkSchema(schema, templateJsonSchema);
+        System.out.println(result);
+
+        System.out.println("#### checking schema compatibility for " + theExamplarJsonFile);
+        com.networknt.schema.JsonSchema schema2 = cp.getCompilerJsonSchema().setupJsonSchemaFromFile(templateJsonSchema);
+        Set<ValidationMessage> result2 = cp.getCompilerJsonSchema().checkSchema(schema2, theExamplarJsonFile);
+        System.out.println(result2);
+
 
 
     }
 
-    public static void execute(String [] command, String where, String javaHome) {
+    public static void execute(String [] command, String where) {
 
         try {
             Runtime rt = Runtime.getRuntime();
-            String home=System.getProperty("java.home");
-            if (javaHome!=null) {
-                home=javaHome;
-                System.out.println("###### Using JAVA_HOME=" + home);
-            }
+
             String path=System.getenv("PATH");
-            Process pr = rt.exec(command, new String[] {"JAVA_HOME=" + home, "PATH="+path}, new File(where));
+            String[] envp = {
+                    "MAVEN_OPTS=--add-opens jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-opens jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED --add-opens jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+                    "PATH=" + path
+            };
+            Process pr = rt.exec(command, envp, new File(where));
             BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
             String line=null;
             while((line=input.readLine()) != null) {

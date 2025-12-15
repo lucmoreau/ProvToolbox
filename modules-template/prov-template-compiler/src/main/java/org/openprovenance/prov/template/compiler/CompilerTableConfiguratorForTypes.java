@@ -34,10 +34,9 @@ public class CompilerTableConfiguratorForTypes {
         String originalTableClassName=(compositeOnly)? COMPOSITE_TABLE_CONFIGURATOR:TABLE_CONFIGURATOR;
         String tableClassName=originalTableClassName+"ForTypes"+WITH_MAP;
 
-        String directory=locations.convertToDirectory(l2p_src_dir,"configurator");
 
         TypeSpec.Builder builder =  compilerUtil.generateClassInit(tableClassName);
-        builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(originalTableClassName), originalTableClassName), mapString2StringSetType));
+        builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, originalTableClassName), originalTableClassName), mapString2StringSetType));
 
         builder.addField(mapString2StringType, "map", Modifier.PRIVATE, Modifier.FINAL);
         builder.addField(mapString2StringArrayType, PROPERTY_ORDER, Modifier.PRIVATE, Modifier.FINAL);
@@ -57,8 +56,7 @@ public class CompilerTableConfiguratorForTypes {
 
         for (TemplateCompilerConfig config : configs.templates) {
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
+            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
 
             MethodSpec.Builder mspec_builder = MethodSpec.methodBuilder(config.name)
                     .addModifiers(Modifier.PUBLIC)
@@ -79,11 +77,11 @@ public class CompilerTableConfiguratorForTypes {
                 mspec_builder.addStatement("return $N", builderVar);
 
                  */
-                ClassName builderClass=ClassName.get(locations.getFileBackendPackage("ignoreMe"),compilerUtil.templateNameClass(config.name));
+                ClassName builderClass=ClassName.get(locations.getBackendPackage(config.fullyQualifiedName),compilerUtil.templateNameClass(config.name));
 
-                mspec_builder.addStatement("$T $N=$N.get($S)", stringArrayType, "properties", PROPERTY_ORDER, config.name);
+                mspec_builder.addStatement("$T $N=$N.get($S)", stringArrayType, "properties", PROPERTY_ORDER, config.fullyQualifiedName);
 
-                mspec_builder.addStatement("$T $N = ($T) $N.get($S)", builderClass, TEMPLATE_BUILDER_VARIABLE, builderClass, DOCUMENT_BUILDER_DISPATCHER, config.name);
+                mspec_builder.addStatement("$T $N = ($T) $N.get($S)", builderClass, TEMPLATE_BUILDER_VARIABLE, builderClass, DOCUMENT_BUILDER_DISPATCHER, config.fullyQualifiedName);
 
                 mspec_builder.addStatement("$T $N=$N.make($N.getTypedRecord())", Object[].class, "record2", TEMPLATE_BUILDER_VARIABLE, TEMPLATE_BUILDER_VARIABLE);
 
@@ -121,7 +119,8 @@ public class CompilerTableConfiguratorForTypes {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage = configs.root_package + ".configurator";
+        String myPackage = locations.getConfiguratorBackendPackage(configs.name);
+        String directory=locations.convertToDirectory(l2p_src_dir,"");
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 

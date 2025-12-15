@@ -89,30 +89,30 @@ public class CompilerBeanCompleter2 {
         builder.addMethod(cbuilder3.build());
 
         for (TemplateCompilerConfig config : configs.templates) {
-            locations.updateWithConfig(config);
             if  (config instanceof SimpleTemplateCompilerConfig) {
                 TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
                 final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
 
-                final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
-                MethodSpec.Builder mspec = createProcessMethod(config.name, bindingsSchema, outputClassName, true);
+                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
+                MethodSpec.Builder mspec = createProcessMethod(config.name, config.fullyQualifiedName, bindingsSchema, outputClassName, true);
 
                 builder.addMethod(mspec.build());
 
 
-                final ClassName inputClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), inputBeanNameClass);
-                MethodSpec.Builder mspec2 = createProcessMethod(config.name, bindingsSchema, inputClassName, false);
+                final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputBeanNameClass);
+                MethodSpec.Builder mspec2 = createProcessMethod(config.name, config.fullyQualifiedName, bindingsSchema, inputClassName, false);
                 builder.addMethod(mspec2.build());
             } else {
                 CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
-                String consistOf=config1.consistsOf;
-                final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
-                final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
-                String composeeName=compilerUtil.outputsNameClass(consistOf);
-                ClassName composeeClass=ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS),composeeName);
+                final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
+                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
+
+                String shortConsistsOf=locations.getShortNames().get(config1.consistsOf);
+                String composeeName=compilerUtil.outputsNameClass(shortConsistsOf);
+                ClassName composeeClass=ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS),composeeName);
 
                 MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                         .addModifiers(Modifier.PUBLIC)
@@ -145,7 +145,7 @@ public class CompilerBeanCompleter2 {
 
         TypeSpec theLogger = builder.build();
 
-        String myPackage=locations.getFilePackage(fileName);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 
@@ -154,7 +154,7 @@ public class CompilerBeanCompleter2 {
     }
 
 
-    private MethodSpec.Builder createProcessMethod(String template, TemplateBindingsSchema bindingsSchema, ClassName outputClassName, boolean isOutput) {
+    private MethodSpec.Builder createProcessMethod(String template, String fullyQualifiedName, TemplateBindingsSchema bindingsSchema, ClassName outputClassName, boolean isOutput) {
         MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
@@ -164,7 +164,8 @@ public class CompilerBeanCompleter2 {
 
         if (isOutput) {
             mspec.addStatement("$N.ID= getter.get(Integer.class,$S)", BEAN_VAR, "ID");
-            mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, BEAN_VAR, template);
+            //mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, BEAN_VAR, template);
+            mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, BEAN_VAR, fullyQualifiedName);
         }
 
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {

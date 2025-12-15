@@ -3,9 +3,9 @@
 	"name": "template_library",
 	"destination": "target",
 	"description": "PROV templates for prov template management",
-	"version": "0.1.0",
+	"version": "2.2.2-SNAPSHOT",
 	"root_package": "org.openprovenance.prov.template.library.ptm",
-	"script": "tmp_run",
+	"script": "ptm_run",
 	"script_dir": "target/bin",
 	"python_dir": "target/generated-python",
 	"integrator": true,
@@ -19,16 +19,27 @@
 		{
 			"@type": "simple",
 			"name": "ptm_expanding",
-			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/ptm/ptm-expanding.provn",
+            "fullyQualifiedName": "org.openprovenance.prov.template.library.ptm.PtmExpanding",
+			"template": "org/openprovenance/prov/templates/ptm/ptm-expanding",
 			"package": "org.openprovenance.prov.template.library.ptm",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-expanding.json"
+			"cbindings": "org/openprovenance/prov/templates/ptm/ptm-expanding.json"
+		},
+
+		{
+			"@type": "simple",
+			"name": "ptm_merging",
+            "fullyQualifiedName": "org.openprovenance.prov.template.library.ptm.PtmMerging",
+			"template": "org/openprovenance/prov/templates/ptm/ptm-merging",
+			"package": "org.openprovenance.prov.template.library.ptm",
+			"cbindings": "org/openprovenance/prov/templates/ptm/ptm-merging.json"
 		},
 		{
 			"@type": "simple",
 			"name": "ptm_mexpanding",
-			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/ptm/ptm-mexpanding.provn",
+            "fullyQualifiedName": "org.openprovenance.prov.template.library.ptm.PtmMexpanding",
+			"template": "org/openprovenance/prov/templates/ptm/ptm-mexpanding",
 			"package": "org.openprovenance.prov.template.library.ptm",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-mexpanding.json"
+			"cbindings": "org/openprovenance/prov/templates/ptm/ptm-mexpanding.json"
 		}
 
 	],

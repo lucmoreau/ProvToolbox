@@ -1,0 +1,23 @@
+{
+    "callbackUrl": "http://localhost:7075/book/callback",
+
+    "configurations": {
+
+        "KeycloakOidcClient": {
+            "@type": "KeycloakOidcClient",
+            "clientId": "assistant",
+            "realm": "xplain",
+            "baseUri": "https://openprovenance.org/auth",
+            "callbackUrl": "http://localhost:7075/book/callback"
+        },
+
+        "DirectBearerAuthClient": {
+            "@type": "DirectBearerAuthClient",
+            "clientId": "assistant-direct",
+            "realm": "xplain",
+            "baseUri": "https://openprovenance.org/auth",
+            "signaturePublicKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArBXZHKcxTGSQXyg0rQPDcUky8aYrWjXxzuQUL5yGsdJHww2YKhXa1QfLNzVRozkViLyvelGK3VmdcshTaQIFL9JAaFZwGbOjJMZBWm4K/PdwrK0Rnt81rO+ZY+8/cN67wMd76BUkPAbpjdSi9KV/LoNGxUPVe0SxcSVB++2E0RNBdGW243MDfRAfsILPULwC443ryc2C3CnGE2OIJ/qsIg6gMdTdD9DYZ7hTMvFXJgHbs/WHZ4yXC/kW1OXHMglJYuUUh7luGpQ6r3yleQiBfT19mW/MuQRh73LfGbVVY5Wl9HBr21XYQSLsvyE6JYLiIOPhSa/jcujEJv2/rxR95QIDAQAB",
+            "role": "editor"
+        }
+    }
+}

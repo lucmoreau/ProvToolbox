@@ -8,15 +8,20 @@ public interface Constants {
     String GET_NODES_METHOD = "getNodes";
     String BUILDER_INTERFACE = "Builder";
     String INIT = "Init";
+    String CATALOGUE_DISPATCHER = "CatalogueDispatcher";
     String BUILDERS = "builders";
     String TYPEMANAGERS = "typeManagers";
     String PF = "pf";
     String GET_SUCCESSOR_METHOD = "getSuccessors";
     String GET_TYPED_SUCCESSOR_METHOD = "getTypedSuccessors";
     String GET_NAME = "getName";
+    String GET_FULLY_QUALIFIED_NAME = "getFullyQualifiedName";
+    String GET_TEMPLATE_NAME = "getTemplateName";
+    String GET_CBINDINGS = "getCBindings";
     String LOGGER_INTERFACE = "LoggerInterface";
     String INPUT_OUTPUT_PROCESSOR = "InputOutputProcessor";
     String INPUT_PROCESSOR = "InputProcessor";
+    String OUTPUT_PROCESSOR = "OutputProcessor";
     String TEMPLATE_INVOKER = "TemplateInvoker";
     String PROCESSOR_ARGS_INTERFACE = "ProcessorArgsInterface";
     String RECORDS_PROCESSOR_INTERFACE = "RecordsProcessorInterface";
@@ -65,6 +70,7 @@ public interface Constants {
     String BEAN_ENACTOR = "BeanEnactor";
     String BEAN_ENACTOR2 = "BeanEnactor2";
     String BEAN_ENACTOR2_COMPOSITE = "BeanEnactor2Composite";
+    String BEAN_LOCAL_ENACTOR2="BeanLocalEnactor2";
 
     String BEAN_ENACTOR2_WP = "BeanEnactor4"; //"BeanEnactor2WithPrincipal";
     String BEAN_ENACTOR2_COMPOSITE_WP = "BeanEnactor4Composite"; //"BeanEnactor2CompositeWithPrincipal";
@@ -76,6 +82,10 @@ public interface Constants {
     String BEAN_CHECKER2 = "BeanChecker2";
     String DELEGATOR = "Delegator";
     String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
+    String RELATION0_CONFIGURATOR = "Relation0Configurator";
+    String RELATION_CONFIGURATOR = "RelationConfigurator";
+    String BUILDER_PROCESSOR_CONFIGURATOR = "BuilderProcessorConfigurator";
+    String OBJECT_RECORD_MAKER_CONFIGURATOR = "ObjectRecordMakerConfigurator";
     String INPUTS_CONFIGURATOR = "InputsConfigurator";
     String OUTPUTS_CONFIGURATOR = "OutputsConfigurator";
     String PROCESS_METHOD_NAME = "process";
@@ -129,8 +139,9 @@ public interface Constants {
     String PROPERTY_COLUMN = "property";
     String CREATED_AT_COLUMN = "created_at";
     String PROCESSOR = "_processor";
+    String DISPATCHER_VAR = "_dispatcher";
     String DOCUMENT_BUILDER_DISPATCHER = "documentBuilderDispatcher";
-    String TEMPLATE_BUILDER_VARIABLE = "templateBuilder";
+    String TEMPLATE_BUILDER_VARIABLE = "_templateBuilder";
     String TEMPLATE_BUILDERS = "TemplateBuilders";
     String PROPERTY_MAP = "propertyMap";
     String INPUT = "input";
@@ -175,4 +186,12 @@ public interface Constants {
 
 
     String POST_PROCESS_METHOD_NAME = "postEnactmentProcessing";
+    String OUT_BEAN = "out";
+    String GET_FOREIGN = "getForeign";
+    String QUERIER_VAR = "querier";
+    String GET_PRINCIPAL_VAR = "getPrincipal";
+    String PRINCIPAL_MANAGER_VAR = "principalManager";
+    String MAP_VAR="map";
+    String ARGS_2_RECORDS = "args2Records";
+    String _I_ = "_i_";
 }

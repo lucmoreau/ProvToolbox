@@ -162,7 +162,7 @@ public class Expansion {
         }
 
         public void doAction(QualifiedSpecializationOf spec) {
-            expansion_specializationOf(config, spec);
+            expansion_qualifiedSecializationOf(config, spec);
         }
 
         public void doAction(QualifiedHadMember mem) {
@@ -362,6 +362,23 @@ public class Expansion {
             return;
         }
         if (!checkEntityArgument(config, spec, 1)) {
+            malformedExpression(spec);
+            return;
+        }
+        typeChecker.addInferredType(spec.getGeneralEntity(),Types.entityURI);
+        typeChecker.addInferredType(spec.getSpecificEntity(),Types.entityURI);
+
+    }
+
+
+    public void expansion_qualifiedSecializationOf(Config config,
+                                                   SpecializationOf spec) {
+
+        if (!checkEntityArgument(config, spec, 1)) {
+            malformedExpression(spec);
+            return;
+        }
+        if (!checkEntityArgument(config, spec, 2)) {
             malformedExpression(spec);
             return;
         }

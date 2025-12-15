@@ -20,15 +20,23 @@ import static org.openprovenance.prov.model.interop.Formats.ProvFormat.*;
 public class Outputer implements InteropMediaType {
     private final InteropFramework interopFramework;
     private final ProvFactory pFactory;
+    private final boolean displayQualifiedRelation;
     Integer maxStringLength = 100;
 
+    public Map<Formats.ProvFormat, SerializerFunction> getSerializerMap() {
+        return serializerMap;
+    }
+
     final private Map<Formats.ProvFormat, SerializerFunction> serializerMap;
+
+
 
 
     public Outputer(InteropFramework interopFramework, ProvFactory pFactory) {
         this.interopFramework = interopFramework;
         this.pFactory=pFactory;
         this.serializerMap=createSerializerMap();
+        this.displayQualifiedRelation=interopFramework.getConfig().displayQualifiedRelation;
     }
 
     /**
@@ -94,11 +102,11 @@ public class Outputer implements InteropMediaType {
                 ));
 
         serializer.putAll(
-                Map.of(JPEG, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(JPEG), maxStringLength),
-                        SVG, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(SVG),  maxStringLength),
-                        PDF, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(PDF),  maxStringLength),
-                        PNG, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(PNG),  maxStringLength),
-                        DOT, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(DOT),  maxStringLength)
+                Map.of(JPEG, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(JPEG), maxStringLength, displayQualifiedRelation),
+                        SVG, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(SVG),  maxStringLength, displayQualifiedRelation),
+                        PDF, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(PDF),  maxStringLength, displayQualifiedRelation),
+                        PNG, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(PNG),  maxStringLength, displayQualifiedRelation),
+                        DOT, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(DOT),  maxStringLength, displayQualifiedRelation)
                 ));
 
         return serializer;
@@ -107,7 +115,7 @@ public class Outputer implements InteropMediaType {
     void setMaxStringLength(Integer maxStringLength) {
         this.maxStringLength = maxStringLength;
         serializerMap.put(
-                SVG, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(SVG), maxStringLength));
+                SVG, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(SVG), maxStringLength, displayQualifiedRelation));
     }
 
     /**

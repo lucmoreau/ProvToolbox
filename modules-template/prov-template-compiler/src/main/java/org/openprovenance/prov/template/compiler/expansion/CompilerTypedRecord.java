@@ -67,7 +67,7 @@ public class CompilerTypedRecord {
 
         compilerUtil.generateDocumentSpecializedParameters(mbuilder, theVar, variables);
 
-        String allArgs= compilerUtil.generateArgumentsListForCall(the_var,null);
+        String allArgs= compilerUtil.generateArgumentsListForCall(the_var,null, bindingsSchema.getVar());
 
 
 

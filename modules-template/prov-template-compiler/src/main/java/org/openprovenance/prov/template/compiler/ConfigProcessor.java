@@ -8,10 +8,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeVariableName;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.openprovenance.prov.model.Bundle;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.IndexedDocument;
-import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
@@ -22,10 +19,15 @@ import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagemen
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
 import org.openprovenance.prov.template.compiler.integration.CompilerIntegrator;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlIntegration;
+import org.openprovenance.prov.template.utils.TemplateExtension;
+import org.openprovenance.prov.template.utils.TemplateIndexPath;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
+import org.openprovenance.prov.template.utils.ProvVariables;
+import org.openprovenance.prov.template.utils.StatementChecker;
+import org.openprovenance.prov.template.utils.VariableChecker;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -78,6 +80,8 @@ public class ConfigProcessor implements Constants {
     private final CompilerTypeConverter compilerTypeConverter ;
     private final CompilerBeanEnactor compilerBeanEnactor;
     private final CompilerBeanEnactor2 compilerBeanEnactor2 ;
+    private final CompilerBeanLocalEnactor2 compilerBeanLocalEnactor2 ;
+
     private final CompilerBeanEnactor2WithPrincipal compilerBeanEnactor2WP ;
     private final CompilerSqlIntegration compilerSqlIntegration;
     private final CompilerBeanEnactor2Composite compilerBeanEnactor2composite;
@@ -94,6 +98,7 @@ public class ConfigProcessor implements Constants {
     private final CompilerCommon compilerCommon;
     private final CompilerExpansionBuilder compilerExpansionBuilder;
     private final CompilerBuilderInit compilerBuilderInit;
+    private final CompilerCatalogueDispatcher compilerCatalogueDispatcher;
     private final CompilerTypeManagement compilerTypeManagement;
     private final CompilerTypedRecord compilerTypedRecord;
     private final CompilerBeanGenerator compilerBeanGenerator;
@@ -105,6 +110,8 @@ public class ConfigProcessor implements Constants {
         descriptorUtils = new DescriptorUtils();
         descriptorUtils.setupDeserializer(objectMapper);
     }
+
+    private Optional<StatementChecker> statementChecker;
 
 
     public ConfigProcessor(ProvFactory pFactory) {
@@ -127,6 +134,7 @@ public class ConfigProcessor implements Constants {
         this.compilerClientTest =new CompilerClientTest(pFactory);
         this.compilerTemplateInvoker = new CompilerTemplateInvoker(pFactory);
         this.compilerBeanEnactor2 = new CompilerBeanEnactor2(pFactory);
+        this.compilerBeanLocalEnactor2 = new CompilerBeanLocalEnactor2(pFactory);
         this.compilerBeanEnactor2WP = new CompilerBeanEnactor2WithPrincipal(pFactory);
         this.compilerBeanEnactor2composite = new CompilerBeanEnactor2Composite(pFactory);
         this.compilerBeanEnactor = new CompilerBeanEnactor(pFactory);
@@ -149,14 +157,12 @@ public class ConfigProcessor implements Constants {
         this.compilerSqlIntegration = new CompilerSqlIntegration(pFactory);
         this.compilerQueryInvokerWithPrincipal = new CompilerQueryInvokerWithPrincipal(pFactory);
         this.compilerBeanEnactor2compositeWP = new CompilerBeanEnactor2CompositeWithPrincipal(pFactory);
+        this.compilerCatalogueDispatcher=new CompilerCatalogueDispatcher(pFactory);
     }
 
-   // public String readCompilerVersion() {
-   //     return Configuration.getPropertiesFromClasspath(getClass(),"compiler.properties").getProperty("compiler.version");
- //   }
- //   final String compilerVersion=readCompilerVersion();
-    public int processTemplateGenerationConfig(String template_builder, String inputBaseDir, String outputBaseDir, ProvFactory pFactory) {
+    public int processTemplateGenerationConfig(String template_builder, String inputBaseDir, String cbindingsBaseDir, String outputBaseDir, List<String> templatePath, ProvFactory pFactory) {
         TemplatesProjectConfiguration configs;
+
 
         try {
             configs = objectMapper.readValue(new File(addBaseDirIfRelative(template_builder, inputBaseDir)), TemplatesProjectConfiguration.class);
@@ -185,41 +191,57 @@ public class ConfigProcessor implements Constants {
             new File(cli_webjar_bindings_dir).mkdirs();
             new File(cli_webjar_templates_dir).mkdirs();
 
+            Pair<Map<String, String>, Map<String, String>> packages_shortnames_pair = findAllPackagesInConfigurations(configs, cbindingsBaseDir);
+            Map<String, String> packages = packages_shortnames_pair.getLeft();
+            Map<String, String> shortNames = packages_shortnames_pair.getRight();
 
-            Locations locations=new Locations(configs,cli_src_dir,l2p_src_dir);
+            //System.out.println("++++++++++++++++++++++ Packages: " + objectMapper.writeValueAsString(packages));
+
+            //List<String> templatePath= List.of(templatePathString.split(":"));
+            //System.out.println("---> Using template path: " + templatePath);
+
+            Locations locations=new Locations(configs, packages, shortNames, templatePath, cli_src_dir, l2p_src_dir);
+
+            if (configs.variableCheck!=null) {
+                ProvVariables pv=objectMapper.readValue(new File(addBaseDirIfRelative(configs.variableCheck, inputBaseDir)), ProvVariables.class);
+                this.statementChecker=Optional.of(new StatementChecker(new VariableChecker(pv)));
+            } else {
+                this.statementChecker=Optional.empty();
+            }
 
 
             for (TemplateCompilerConfig aconfig: configs.templates) {
                 if (TemplateConfigurationEnum.isSimple(aconfig)) {
                     SimpleTemplateCompilerConfig config=(SimpleTemplateCompilerConfig) aconfig;
-                    config.template=addBaseDirIfRelative(config.template, inputBaseDir);
-                    config.bindings=addBaseDirIfRelative(config.bindings, inputBaseDir);
-                    locations.updateWithConfig(config);
+                    //config.template=addBaseDirIfRelative(config.template, inputBaseDir); it's no longer a file but a name an index
+                    locations.registerCBindings(config.fullyQualifiedName, config.cbindings);
+                    config.cbindings =addBaseDirIfRelative(config.cbindings, cbindingsBaseDir);
+                    locations.registerLocation(config.fullyQualifiedName,config.template);
                     doGenerateServerForEntry(config, configs, locations, cli_src_dir, l2p_src_dir, pFactory, cli_webjar_dir);
-                    FileUtils.copyFileToDirectory(new File(config.template), new File(cli_webjar_templates_dir));
-                    FileUtils.copyFileToDirectory(new File(config.bindings), new File(cli_webjar_bindings_dir));
+                    FileUtils.copyFileToDirectory(new File(locations.getTemplateLocation(config.template)), new File(cli_webjar_templates_dir));
+                    FileUtils.copyFileToDirectory(new File(config.cbindings), new File(cli_webjar_bindings_dir));
                 } else {
                     CompositeTemplateCompilerConfig config=(CompositeTemplateCompilerConfig) aconfig;
 
 
 
-                    String simple=config.consistsOf;
+                    String composedTemplate=config.consistsOf;
                     List<String> sharing=config.sharing;
                     boolean found=false;
                     //System.out.println("==> Found " + config);
                     for (TemplateCompilerConfig aconfig2: configs.templates) {
-                        if (Objects.equals(aconfig2.name, simple)) {
+                        if (Objects.equals(aconfig2.fullyQualifiedName, composedTemplate)) {
                             found=true;
 
                             //System.out.println("==> Found " + aconfig2);
                             SimpleTemplateCompilerConfig sc=(SimpleTemplateCompilerConfig) aconfig2;
-                            sc.template=addBaseDirIfRelative(sc.template, inputBaseDir);
-                            sc.bindings=addBaseDirIfRelative(sc.bindings, inputBaseDir);
-                            SimpleTemplateCompilerConfig sc2=sc.cloneAsInstanceInComposition(config.name,config.sharing);
+                            //sc.template=addBaseDirIfRelative(sc.template, inputBaseDir);
+                            sc.cbindings =addBaseDirIfRelative(sc.cbindings, inputBaseDir);
+                            SimpleTemplateCompilerConfig sc2=sc.cloneAsInstanceInComposition(config.name, config.fullyQualifiedName, config.sharing);
                             doGenerateServerForEntry(config, sc2, configs, locations, cli_src_dir, l2p_src_dir, cli_webjar_dir);
                         }
                     }
-                    if (!found) throw new UnsupportedOperationException("Composite template configuration referencing unknown template " + simple);
+                    if (!found) throw new UnsupportedOperationException("Composite template configuration (" + config.fullyQualifiedName + ") referencing unknown template " + composedTemplate);
                 }
             }
 
@@ -243,7 +265,7 @@ public class ConfigProcessor implements Constants {
 
             doGenerateClientAndProject(configs, locations, cli_lib, cli_dir, cli_src_dir);
 
-            System.out.println(objectMapper.writeValueAsString(getInputOutputMaps()));
+            //System.out.println(objectMapper.writeValueAsString(getInputOutputMaps()));
 
 
         } catch (IOException e) {
@@ -252,7 +274,60 @@ public class ConfigProcessor implements Constants {
         return 0;
     }
 
-    private String addBaseDirIfRelative(String template_builder, String baseDir) {
+    private Pair<Map<String, String>,Map<String, String>> findAllPackagesInConfigurations(TemplatesProjectConfiguration configs, String cbindingsBaseDir) {
+        Map<String,String> packages=new HashMap<>();
+        Map<String,String> shortNames=new HashMap<>();
+        packages.put(configs.name, configs.root_package);
+
+        for (TemplateCompilerConfig aconfig: configs.templates) {
+            shortNames.put(aconfig.fullyQualifiedName, aconfig.name);
+
+            if (TemplateConfigurationEnum.isSimple(aconfig)) {
+                SimpleTemplateCompilerConfig config= (SimpleTemplateCompilerConfig) aconfig;
+                TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config,cbindingsBaseDir);
+                String aPackage = config.package_;
+                if (aPackage==null) {
+                    packages.put(config.fullyQualifiedName, configs.root_package);
+                } else {
+                    packages.put(config.fullyQualifiedName, aPackage);
+                }
+            } else {
+                CompositeTemplateCompilerConfig config=(CompositeTemplateCompilerConfig) aconfig;
+                String composedTemplate=config.consistsOf;
+                boolean found=false;
+
+                for (TemplateCompilerConfig aconfig2: configs.templates) {
+                    if (Objects.equals(aconfig2.fullyQualifiedName, composedTemplate)) {
+                        found=true;
+                        SimpleTemplateCompilerConfig sc = (SimpleTemplateCompilerConfig) aconfig2;
+                        SimpleTemplateCompilerConfig sc2 = sc.cloneAsInstanceInComposition(config.name, sc.fullyQualifiedName, config.sharing);
+                        TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema(sc2,cbindingsBaseDir);
+                        String aPackage = sc2.package_;
+
+                        if (aPackage==null) {
+                            //packages.put(sc2.fullyQualifiedName, configs.root_package);
+                           // packages.put(config.fullyQualifiedName, configs.root_package);
+
+                        } else {
+                            //packages.put(sc2.fullyQualifiedName, aPackage);
+                           // packages.put(config.fullyQualifiedName, aPackage);
+
+                        }
+                    }
+                }
+                if (!found) throw new UnsupportedOperationException("Composite template (" + config.fullyQualifiedName + ") configuration referencing unknown template " + composedTemplate);
+
+                if (config.package_==null) {
+                    packages.put(config.fullyQualifiedName, configs.root_package);
+                } else {
+                    packages.put(config.fullyQualifiedName, config.package_);
+                }
+            }
+        }
+        return Pair.of(packages, shortNames);
+    }
+
+    static String addBaseDirIfRelative(String template_builder, String baseDir) {
         if (template_builder.startsWith("/")) return template_builder;
         return baseDir + "/" + template_builder;
     }
@@ -267,6 +342,7 @@ public class ConfigProcessor implements Constants {
         Map<String, List<Descriptor>> vars=config.getVar();
         for (String var: vars.keySet()) {
             List<Descriptor> descriptors=vars.get(var);
+            if (descriptors==null) continue;
             for (Descriptor descriptor: descriptors) {
                 if (descriptor instanceof NameDescriptor) {
                     NameDescriptor nd=(NameDescriptor) descriptor;
@@ -300,6 +376,11 @@ public class ConfigProcessor implements Constants {
         SpecificationFile init=compilerBuilderInit.generateInitializer(configs, locations, init_dir, INIT + DOT_JAVA_EXTENSION);
         init.save();
 
+        SpecificationFile catalogueDispatcher=compilerCatalogueDispatcher.generateCatalogueDispatcher(configs, getInputOutputMaps(), locations, init_dir, CATALOGUE_DISPATCHER + DOT_JAVA_EXTENSION);
+        catalogueDispatcher.save();
+
+
+
         SpecificationFile testfile=compilerMaven.generateTestFile_l2p(configs, l2p_test_dir, TESTER_FILE+ DOT_JAVA_EXTENSION);
         testfile.save();
 
@@ -332,11 +413,11 @@ public class ConfigProcessor implements Constants {
         SpecificationFile intface2=compilerLogger.generateLoggerInterface(configs, openprovenance_dir, LOGGER_INTERFACE + DOT_JAVA_EXTENSION);
         intface2.save();
 
-        SpecificationFile intface3=compilerLogger.generateProcessorArgsInterface(configs, openprovenance_dir, PROCESSOR_ARGS_INTERFACE + DOT_JAVA_EXTENSION);
-        intface3.save();
+      //  SpecificationFile intface3=compilerLogger.generateProcessorArgsInterface(configs, openprovenance_dir, PROCESSOR_ARGS_INTERFACE + DOT_JAVA_EXTENSION);
+      //  intface3.save();
 
-        SpecificationFile intface3b=compilerLogger.generateRecordsProcessorInterface(configs, openprovenance_dir, RECORDS_PROCESSOR_INTERFACE + DOT_JAVA_EXTENSION);
-        intface3b.save();
+       // SpecificationFile intface3b=compilerLogger.generateRecordsProcessorInterface(configs, openprovenance_dir, RECORDS_PROCESSOR_INTERFACE + DOT_JAVA_EXTENSION);
+        //intface3b.save();
 
 
         exportMiscFiles(configs, cli_dir, cli_lib);
@@ -357,7 +438,8 @@ public class ConfigProcessor implements Constants {
         SpecificationFile beanProcessor=compilerBeanProcessor.generateBeanProcessor(configs, locations, BEAN_PROCESSOR);
         beanProcessor.save();
 
-        String integrator_package = locations.getFilePackage(BeanDirection.OUTPUTS);
+        //String integrator_package = locations.getBeansPackage(configs.name, BeanDirection.OUTPUTS);
+        String integrator_package = locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR);
         String integrator_dir=locations.convertToDirectory(integrator_package);
 
 
@@ -366,11 +448,14 @@ public class ConfigProcessor implements Constants {
 
 
         if (configs.integrator) {
-            SpecificationFile inputOutputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(configs, locations, integrator_package, true,integrator_dir, INPUT_OUTPUT_PROCESSOR + DOT_JAVA_EXTENSION);
+            SpecificationFile inputOutputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(configs, locations, integrator_package, CompilerInputOutputProcessor.ProcessorType.INPUT_OUTPUT,integrator_dir, INPUT_OUTPUT_PROCESSOR + DOT_JAVA_EXTENSION);
             inputOutputProcessor.save();
 
-            SpecificationFile inputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(configs, locations, integrator_package, false, integrator_dir, INPUT_PROCESSOR + DOT_JAVA_EXTENSION);
+            SpecificationFile inputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(configs, locations, integrator_package, CompilerInputOutputProcessor.ProcessorType.INPUT, integrator_dir, INPUT_PROCESSOR + DOT_JAVA_EXTENSION);
             inputProcessor.save();
+
+            SpecificationFile outputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(configs, locations, integrator_package, CompilerInputOutputProcessor.ProcessorType.OUTPUT, integrator_dir, OUTPUT_PROCESSOR + DOT_JAVA_EXTENSION);
+            outputProcessor.save();
 
             SpecificationFile templateInvoker = compilerTemplateInvoker.generateTemplateInvoker(configs, locations, TEMPLATE_INVOKER);
             templateInvoker.save();
@@ -395,6 +480,8 @@ public class ConfigProcessor implements Constants {
             SpecificationFile beanEnactor2 = compilerBeanEnactor2.generateBeanEnactor2(configs, locations, BEAN_ENACTOR2);
             beanEnactor2.save();
 
+            SpecificationFile beanLocalEnactor2 = compilerBeanLocalEnactor2.generateBeanLocalEnactor2(configs, locations, BEAN_LOCAL_ENACTOR2);
+            beanLocalEnactor2.save();
             SpecificationFile beanEnactor2WP = compilerBeanEnactor2WP.generateBeanEnactor2WithPrincipal(configs, locations, BEAN_ENACTOR2_WP);
             beanEnactor2WP.save();
 
@@ -491,41 +578,57 @@ public class ConfigProcessor implements Constants {
         beanDelegator.save();
 
         if (configs.sqlFile!=null) {
-            SpecificationFile configurationSql = compilerConfigurations.generateSqlConfigurator(configs, SQL_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(SQL_CONFIGURATOR)), SQL_CONFIGURATOR + DOT_JAVA_EXTENSION);
+            SpecificationFile configurationSql = compilerConfigurations.generateSqlConfigurator(configs, SQL_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,SQL_CONFIGURATOR)), SQL_CONFIGURATOR + DOT_JAVA_EXTENSION);
             configurationSql.save();
         }
 
-        SpecificationFile configurationPropertyOrder= compilerConfigurations.generatePropertyOrderConfigurator(configs,PROPERTY_ORDER_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(PROPERTY_ORDER_CONFIGURATOR)), PROPERTY_ORDER_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        SpecificationFile configurationPropertyOrder= compilerConfigurations.generatePropertyOrderConfigurator(configs,PROPERTY_ORDER_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,PROPERTY_ORDER_CONFIGURATOR)), PROPERTY_ORDER_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationPropertyOrder.save();
 
-        SpecificationFile configurationCsv= compilerConfigurations.generateCsvConfigurator(configs,CSV_CONFIGURATOR, locations,locations.convertToDirectory(locations.getFilePackage(CSV_CONFIGURATOR)), CSV_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        SpecificationFile configurationRelation0= compilerConfigurations.generateRelation0Configurator(configs,RELATION0_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,RELATION0_CONFIGURATOR)), RELATION0_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        configurationRelation0.save();
+
+
+        SpecificationFile configurationRelation= compilerConfigurations.generateRelationConfigurator(configs,RELATION_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,RELATION_CONFIGURATOR)), RELATION_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        configurationRelation.save();
+
+        SpecificationFile configurationBuilderProcessor= compilerConfigurations.generateBuilderProcessorConfigurator(configs,BUILDER_PROCESSOR_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,BUILDER_PROCESSOR_CONFIGURATOR)), BUILDER_PROCESSOR_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        configurationBuilderProcessor.save();
+
+
+        SpecificationFile configurationObjectRecordMaker= compilerConfigurations.generateObjectRecordMakerConfigurator(configs,OBJECT_RECORD_MAKER_CONFIGURATOR, locations, locations.convertToBackendDirectory(locations.getFilePackage(configs.name,OBJECT_RECORD_MAKER_CONFIGURATOR)), OBJECT_RECORD_MAKER_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        configurationObjectRecordMaker.save();
+
+
+
+        SpecificationFile configurationCsv= compilerConfigurations.generateCsvConfigurator(configs,CSV_CONFIGURATOR, locations,locations.convertToDirectory(locations.getFilePackage(configs.name,CSV_CONFIGURATOR)), CSV_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationCsv.save();
 
-        SpecificationFile configurationBuilder= compilerConfigurations.generateBuilderConfigurator(configs,BUILDER_CONFIGURATOR, locations,locations.convertToDirectory(locations.getFilePackage(BUILDER_CONFIGURATOR)), BUILDER_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        SpecificationFile configurationBuilder= compilerConfigurations.generateBuilderConfigurator(configs,BUILDER_CONFIGURATOR, locations,locations.convertToDirectory(locations.getFilePackage(configs.name,BUILDER_CONFIGURATOR)), BUILDER_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationBuilder.save();
 
         if (configs.sqlFile!=null) {
-            SpecificationFile configurationSqlInsert = compilerConfigurations.generateSqlInsertConfigurator(configs, SQL_INSERT_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(SQL_INSERT_CONFIGURATOR)), SQL_INSERT_CONFIGURATOR + DOT_JAVA_EXTENSION);
+            SpecificationFile configurationSqlInsert = compilerConfigurations.generateSqlInsertConfigurator(configs, SQL_INSERT_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,SQL_INSERT_CONFIGURATOR)), SQL_INSERT_CONFIGURATOR + DOT_JAVA_EXTENSION);
             configurationSqlInsert.save();
         }
 
-        SpecificationFile configurationConverter= compilerConfigurations.generateConverterConfigurator(configs,CONVERTER_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(CONVERTER_CONFIGURATOR)), CONVERTER_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        SpecificationFile configurationConverter= compilerConfigurations.generateConverterConfigurator(configs,CONVERTER_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,CONVERTER_CONFIGURATOR)), CONVERTER_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationConverter.save();
 
-        SpecificationFile record2recordConverter= compilerConfigurations.generateRecord2RecordConfiguration(configs,RECORD_2_RECORD_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(RECORD_2_RECORD_CONFIGURATOR)), RECORD_2_RECORD_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        SpecificationFile record2recordConverter= compilerConfigurations.generateRecord2RecordConfiguration(configs,RECORD_2_RECORD_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,RECORD_2_RECORD_CONFIGURATOR)), RECORD_2_RECORD_CONFIGURATOR + DOT_JAVA_EXTENSION);
         record2recordConverter.save();
 
         if (configs.integrator) {
-            SpecificationFile configurationInputPropertyOrder = compilerConfigurations.generateInputsConfigurator(configs, INPUTS_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(INPUTS_CONFIGURATOR)), INPUTS_CONFIGURATOR + DOT_JAVA_EXTENSION);
+            SpecificationFile configurationInputPropertyOrder = compilerConfigurations.generateInputsConfigurator(configs, INPUTS_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,INPUTS_CONFIGURATOR)), INPUTS_CONFIGURATOR + DOT_JAVA_EXTENSION);
             configurationInputPropertyOrder.save();
 
-            SpecificationFile configurationOutputPropertyOrder = compilerConfigurations.generateOutputsConfigurator(configs, OUTPUTS_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(OUTPUTS_CONFIGURATOR)), OUTPUTS_CONFIGURATOR + DOT_JAVA_EXTENSION);
+            SpecificationFile configurationOutputPropertyOrder = compilerConfigurations.generateOutputsConfigurator(configs, OUTPUTS_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,OUTPUTS_CONFIGURATOR)), OUTPUTS_CONFIGURATOR + DOT_JAVA_EXTENSION);
             configurationOutputPropertyOrder.save();
 
-            SpecificationFile configurationEnactor= compilerConfigurations.generateEnactorConfigurator(configs,ENACTOR_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(ENACTOR_CONFIGURATOR)), ENACTOR_CONFIGURATOR + DOT_JAVA_EXTENSION);
+            SpecificationFile configurationEnactor= compilerConfigurations.generateEnactorConfigurator(configs,ENACTOR_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,ENACTOR_CONFIGURATOR)), ENACTOR_CONFIGURATOR + DOT_JAVA_EXTENSION);
             configurationEnactor.save();
 
-            SpecificationFile configurationEnactor2= compilerConfigurations.generateEnactorConfigurator2(configs, ENACTOR_CONFIGURATOR2, locations.getFilePackage(BeanDirection.INPUTS), locations, locations.convertToDirectory(locations.getFilePackage(ENACTOR_CONFIGURATOR2)), ENACTOR_CONFIGURATOR2 + DOT_JAVA_EXTENSION);
+            SpecificationFile configurationEnactor2= compilerConfigurations.generateEnactorConfigurator2(configs, ENACTOR_CONFIGURATOR2, locations.getBeansPackage(configs.name, BeanDirection.INPUTS), locations, locations.convertToDirectory(locations.getFilePackage(configs.name,ENACTOR_CONFIGURATOR2)), ENACTOR_CONFIGURATOR2 + DOT_JAVA_EXTENSION);
             configurationEnactor2.save();
 
             SpecificationFile compositeConfigurationEnactor2= compilerCompositeConfigurations.generateCompositeEnactorConfigurator2(configs, locations, COMPOSITE_ENACTOR_CONFIGURATOR2);
@@ -567,14 +670,21 @@ public class ConfigProcessor implements Constants {
     }
 
 
-    public Document readDocumentFromFile(SimpleTemplateCompilerConfig config) throws ClassNotFoundException,
-            NoSuchMethodException,
-            SecurityException,
-            InstantiationException,
-            IllegalAccessException,
-            IllegalArgumentException,
-            InvocationTargetException, FileNotFoundException {
-        return compilerUtil.readDocumentFromFile(config.template);
+    public Document readTemplateFromLibraryPath(SimpleTemplateCompilerConfig config, TemplateIndexPath libraryPath, Locations locations)  {
+        //Document document = compilerUtil.readDocumentFromFile(config.template);
+        try {
+            String absolutePath = libraryPath.getStrict(config.template, TemplateExtension.preferredExtensions());
+            Document document = compilerUtil.readDocumentFromFile(absolutePath);
+            locations.registerLocation(config.template, absolutePath);
+            locations.registerTemplate(config.fullyQualifiedName, config.template);
+
+            statementChecker.ifPresent(sc -> new ProvUtilities().forAllStatementOrBundle(document.getStatementOrBundle(), sc));
+            return document;
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException | FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public void doGenerateServerForEntry(SimpleTemplateCompilerConfig config, TemplatesProjectConfiguration configs, Locations locations, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {
@@ -585,15 +695,14 @@ public class ConfigProcessor implements Constants {
 
         Document doc;
         try {
-            doc = readDocumentFromFile(config);
-            generate(doc, locations, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, config.sharing, null, configs);
-        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
-                | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException | FileNotFoundException e) {
-            System.out.println("could not find Interop Framework");
+            doc = readTemplateFromLibraryPath(config,locations.getTemplateLibraryPath(), locations);
+            generate(doc, locations, config.name, config.fullyQualifiedName, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, config.sharing, null, configs);
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
             System.out.println(Arrays.asList("doc", config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", bindings_schema));
+            throw new RuntimeException("ConfigProcessor.doGenerateServerForEntry() exception: " , e);
+
         }
     }
 
@@ -603,15 +712,14 @@ public class ConfigProcessor implements Constants {
 
         Document doc;
         try {
-            doc = readDocumentFromFile(config);
-            generate(doc, locations, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, compositeTemplateCompilerConfig.sharing, compositeTemplateCompilerConfig.consistsOf, configs);
-        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
-                | InstantiationException | IllegalAccessException | IllegalArgumentException
-                 | InvocationTargetException | FileNotFoundException e) {
-            System.out.println("could not find Interop Framework");
+            doc = readTemplateFromLibraryPath(config,locations.getTemplateLibraryPath(), locations);
+            generate(doc, locations, config.name, config.fullyQualifiedName, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, compositeTemplateCompilerConfig.sharing, compositeTemplateCompilerConfig.consistsOf, configs);
+        } catch (SecurityException
+                 | IllegalArgumentException e) {
             e.printStackTrace();
 
             System.out.println(Arrays.asList("doc", config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", bindings_schema));
+            throw new RuntimeException("ConfigProcessor.doGenerateServerForEntry() exception: " , e);
         }
     }
 
@@ -619,14 +727,15 @@ public class ConfigProcessor implements Constants {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
         try {
-            generate(doc, locations, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, config.sharing, null, configs);
+            generate(doc, locations, config.name, config.fullyQualifiedName, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, config.sharing, null, configs);
         } catch (SecurityException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new RuntimeException("ConfigProcessor.doGenerateServerForEntry2() exception: " , e);
+
         }
     }
 
-    public boolean generate(Document doc, Locations locations, String templateName, String packageName, String cli_src_dir, String l2p_src_dir, String resource, String jsonschema, String documentation, JsonNode bindings_schema,
+    public boolean generate(Document doc, Locations locations, String templateName, String templateFullyQualifiedName, String packageName, String cli_src_dir, String l2p_src_dir, String resource, String jsonschema, String documentation, JsonNode bindings_schema,
                             TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir, boolean inComposition, List<String> sharing, String consistsOf, TemplatesProjectConfiguration configs) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
@@ -641,9 +750,10 @@ public class ConfigProcessor implements Constants {
 
 
             // ignore the composite templates when building join table.
-            if (consistsOf==null) buildJoinTable(templateName, bindingsSchema);
+            if (consistsOf==null) buildJoinTable(templateFullyQualifiedName, bindingsSchema);
 
 
+            //System.out.println("Generating for template: " + templateName + " fully qualified name: " + templateFullyQualifiedName + " package: " + packageName );
             IndexedDocument indexed = makeIndexedDocument(doc);
             u.getBundle(doc).get(0).getStatement().clear();
             u.getBundle(doc).get(0).getStatement().addAll(u.getStatement(indexed.toDocument()));
@@ -660,20 +770,22 @@ public class ConfigProcessor implements Constants {
 
             boolean val7=true;
 
+
+
             if (!inComposition) {
                 // generating client first to ensure successor is calculated
-                Pair<SpecificationFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(configs, locations, doc, bn, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema, indexed, BeanKind.SIMPLE, bn + DOT_JAVA_EXTENSION, consistsOf);
+                Pair<SpecificationFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(configs, locations, doc, bn, templateName, templateFullyQualifiedName, locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON), bindingsSchema, indexed, BeanKind.SIMPLE, bn + DOT_JAVA_EXTENSION, consistsOf);
                 SpecificationFile spec2 = tmp.getLeft();
                 val2=spec2.save();
                 Map<Integer, List<Integer>> successorTable = tmp.getRight();
 
                 //ensure type declaration code is executed
-                SpecificationFile spec5 = compilerTypeManagement.generateTypeDeclaration(configs, locations, doc, bn, templateName, packageName, bindings_schema, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getFileBackendPackage(bnTM)), bnTM + DOT_JAVA_EXTENSION);
+                SpecificationFile spec5 = compilerTypeManagement.generateTypeDeclaration(configs, locations, doc, bn, templateName, packageName, bindings_schema, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnTM + DOT_JAVA_EXTENSION);
                 // before propagation generation
-                SpecificationFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(configs, locations, doc, bn, templateName, packageName, bindings_schema, bindingsSchema, successorTable, locations.convertToDirectory(l2p_src_dir,locations.getFileBackendPackage(bn)), bn + DOT_JAVA_EXTENSION);
+                SpecificationFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(configs, locations, doc, bn, templateName, templateFullyQualifiedName, packageName, bindings_schema, bindingsSchema, successorTable, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bn + DOT_JAVA_EXTENSION);
                 val0 = spec0.save();
 
-                SpecificationFile spec1 = compilerExpansionBuilder.generateBuilderInterfaceSpecification(configs, locations, doc, bn, templateName, packageName, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getFileBackendPackage(bnI)), bnI + DOT_JAVA_EXTENSION);
+                SpecificationFile spec1 = compilerExpansionBuilder.generateBuilderInterfaceSpecification(configs, locations, doc, bn, templateName, packageName, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnI + DOT_JAVA_EXTENSION);
                 val1= spec1.save();
 
                 SpecificationFile spec2b = compilerCommon.generateSQLInterface(configs, locations, SQL_INTERFACE);
@@ -681,42 +793,42 @@ public class ConfigProcessor implements Constants {
                 val2 = val2 & val2b;
 
 
-                SpecificationFile spec6 = compilerTypedRecord.generatedTypedRecordConstructor(configs, locations, doc, bn, templateName, packageName, resource, bindings_schema, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getFileBackendPackage(bnTR)), bnTR + DOT_JAVA_EXTENSION);
+                SpecificationFile spec6 = compilerTypedRecord.generatedTypedRecordConstructor(configs, locations, doc, bn, templateName, packageName, resource, bindings_schema, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnTR + DOT_JAVA_EXTENSION);
                 val5 = spec5.save();
                 val6 = spec6.save();
 
 
-                SpecificationFile tableConfiguratorWithMap=compilerTableConfiguratorWithMap.generateTableConfigurator(configs, locations, locations.convertToDirectory(l2p_src_dir,locations.getFileBackendPackage(bnI)));
+                SpecificationFile tableConfiguratorWithMap=compilerTableConfiguratorWithMap.generateTableConfigurator(configs, locations, locations.convertToDirectory(l2p_src_dir,locations.getConfiguratorBackendPackage(configs.name)));
                 tableConfiguratorWithMap.save();
 
-                SpecificationFile tableConfiguratorForTypes=compilerTableConfiguratorForTypes.generateTableConfigurator(configs, locations, locations.convertToDirectory(l2p_src_dir,locations.getFileBackendPackage(bnI)));
+                SpecificationFile tableConfiguratorForTypes=compilerTableConfiguratorForTypes.generateTableConfigurator(configs, locations, locations.convertToDirectory(l2p_src_dir,locations.getConfiguratorBackendPackage(configs.name)));
                 tableConfiguratorForTypes.save();
 
             }
 
 
-            String integratorPackage = locations.getFilePackage(BeanDirection.OUTPUTS);
+            String integratorPackage = locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.OUTPUTS);
             String integratorDir = locations.convertToDirectory(integratorPackage);
             if (!inComposition) {
-                SpecificationFile spec3 = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.COMMON, null, null, null, bean + DOT_JAVA_EXTENSION);
+                SpecificationFile spec3 = compilerBeanGenerator.generateBean(configs, locations, templateName, templateFullyQualifiedName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.COMMON, null, null, null, bean + DOT_JAVA_EXTENSION);
                 val3 = spec3.save();
 
                 if (configs.integrator) {
 
-                    SpecificationFile spec3b = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.OUTPUTS, null, null, null, outputs + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec3b = compilerBeanGenerator.generateBean(configs, locations, templateName, templateFullyQualifiedName,  bindingsSchema, BeanKind.SIMPLE, BeanDirection.OUTPUTS, null, null, null, outputs + DOT_JAVA_EXTENSION);
                     val3 = val3 & spec3b.save();
 
-                    SpecificationFile spec3c = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, null, null, inputs + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec3c = compilerBeanGenerator.generateBean(configs, locations, templateName, templateFullyQualifiedName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, null, null, inputs + DOT_JAVA_EXTENSION);
                     val3 = val3 & spec3c.save();
 
-                    SpecificationFile spec7 = compilerIntegrator.generateIntegrator(locations, templateName, integratorPackage, bindingsSchema, LOGGER, BeanKind.SIMPLE, consistsOf, integratorDir, integratorBuilder + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec7 = compilerIntegrator.generateIntegrator(configs, locations, templateName, templateFullyQualifiedName, integratorPackage, bindingsSchema, LOGGER, BeanKind.SIMPLE, consistsOf, integratorDir, integratorBuilder + DOT_JAVA_EXTENSION);
                     val3 = val3 & spec7.save();
 
-                    SpecificationFile spec4b = compilerProcessor.generateProcessor(locations, templateName, locations.getFilePackage(BeanDirection.INPUTS), bindingsSchema, IN_INTEGRATOR, compilerUtil.integratorNameClass(templateName) + DOT_JAVA_EXTENSION, consistsOf);
+                    SpecificationFile spec4b = compilerProcessor.generateProcessor(configs,locations, templateName, locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.INPUTS), bindingsSchema, IN_INTEGRATOR, compilerUtil.integratorNameClass(templateName) + DOT_JAVA_EXTENSION, consistsOf);
                     val4 = val4 & spec4b.save();
                 }
 
-                SpecificationFile spec4 = compilerProcessor.generateProcessor(locations, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema, !IN_INTEGRATOR, compilerUtil.processorNameClass(templateName) + DOT_JAVA_EXTENSION, consistsOf);
+                SpecificationFile spec4 = compilerProcessor.generateProcessor(configs, locations, templateName, locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON), bindingsSchema, !IN_INTEGRATOR, compilerUtil.processorNameClass(templateName) + DOT_JAVA_EXTENSION, consistsOf);
                 val4 = spec4.save();
 
 
@@ -725,11 +837,11 @@ public class ConfigProcessor implements Constants {
             if (!inComposition) {
 
 
-                compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema, null, "#/definitions/", sharing);
+                compilerJsonSchema.generateJSonSchema(templateName, templateFullyQualifiedName, bindingsSchema, null, "#/definitions/", sharing);
 
                 if (configs.sqlFile!=null) {
                     compilerSQL.generateSQL(templateName, bindingsSchema);
-                    compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList(), getInputOutputMaps(), configs.search);
+                    compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, templateFullyQualifiedName, locations, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList(), getInputOutputMaps(), configs.search);
                     compilerSQL.generateSQLPrimitiveTables(sqlTables,bindingsSchema);
                 }
             }
@@ -742,44 +854,46 @@ public class ConfigProcessor implements Constants {
 
 
                 // generate the composite bean schema
-                compilerJsonSchema.generateJSonSchema(templateName+"_1", bindingsSchema, null, "#/definitions/", null);
+                compilerJsonSchema.generateJSonSchema(templateName+"_1", templateFullyQualifiedName+"_1", bindingsSchema, null, "#/definitions/", null);
 
 
-                if (configs.sqlFile!=null) compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing, getInputOutputMaps(), configs.search);
+                if (configs.sqlFile!=null) compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, templateFullyQualifiedName, locations, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing, getInputOutputMaps(), configs.search);
 
                 SimpleTemplateCompilerConfig config = new SimpleTemplateCompilerConfig();
                 config.name = compositeBeanNameClass;
                 config.package_ = packageName;
 
-                config.bindings = OPENPROVENANCE_COMPOSITE_BEAN_JSON; //"openprovenance:composite-bean.json";
+                config.cbindings = OPENPROVENANCE_COMPOSITE_BEAN_JSON; //"openprovenance:composite-bean.json";
                 config.template = "openprovenance:composite-bean.provn";
                 TemplateBindingsSchema bindingsSchema2 = compilerUtil.getBindingsSchema(config);
-                compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema2, consistsOf, "#/definitions/", sharing);
+
+
+                compilerJsonSchema.generateJSonSchema(templateName, templateFullyQualifiedName, bindingsSchema2, consistsOf, "#/definitions/", sharing);
 
                 if (configs.sqlFile!=null) compilerSQL.generateSQL(templateName, bindingsSchema2);
 
 
                 // LUC: FIXME: not generating processor fully, with composite subbean
-                SpecificationFile spec4 = compilerProcessor.generateProcessor(locations, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema2, !IN_INTEGRATOR, compilerUtil.processorNameClass(templateName)  + DOT_JAVA_EXTENSION, consistsOf);
+                SpecificationFile spec4 = compilerProcessor.generateProcessor(configs, locations, templateName, locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON), bindingsSchema2, !IN_INTEGRATOR, compilerUtil.processorNameClass(templateName)  + DOT_JAVA_EXTENSION, consistsOf);
                 val4 = spec4.save();
 
-                SpecificationFile spec7b = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.COMMON, consistsOf, null, null, compositeBeanNameClass + DOT_JAVA_EXTENSION);
+                SpecificationFile spec7b = compilerBeanGenerator.generateBean(configs, locations, templateName, templateFullyQualifiedName, bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.COMMON, consistsOf, null, null, compositeBeanNameClass + DOT_JAVA_EXTENSION);
                 if (spec7b!=null) {
                     val3 = val3 & spec7b.save();
                 }
 
                 if (configs.integrator) {
-                    SpecificationFile spec7c = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.OUTPUTS, consistsOf, null, null, outputs + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec7c = compilerBeanGenerator.generateBean(configs, locations, templateName, templateFullyQualifiedName, bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.OUTPUTS, consistsOf, null, null, outputs + DOT_JAVA_EXTENSION);
                     if (spec7c != null) {
                         val3 = val3 & spec7c.save();
                     }
-                    SpecificationFile spec7d = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.INPUTS, consistsOf, sharing, null, inputs + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec7d = compilerBeanGenerator.generateBean(configs, locations, templateName, templateFullyQualifiedName, bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.INPUTS, consistsOf, sharing, null, inputs + DOT_JAVA_EXTENSION);
                     if (spec7d != null) {
                         val3 = val3 & spec7d.save();
                     }
                 }
 
-                Pair<SpecificationFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(configs, locations, doc, bn, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema2, indexed, BeanKind.COMPOSITE, bn + DOT_JAVA_EXTENSION,consistsOf);
+                Pair<SpecificationFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(configs, locations, doc, bn, templateName, templateFullyQualifiedName, locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON), bindingsSchema2, indexed, BeanKind.COMPOSITE, bn + DOT_JAVA_EXTENSION,consistsOf);
                 if (tmp.getLeft()!=null) {
                     SpecificationFile spec2 = tmp.getLeft();
                     val3 = val3 & spec2.save();
@@ -787,7 +901,7 @@ public class ConfigProcessor implements Constants {
 
 
                 if (configs.integrator) {
-                    SpecificationFile spec7 = compilerIntegrator.generateIntegrator(locations, templateName, integratorPackage, bindingsSchema2, LOGGER, BeanKind.COMPOSITE, consistsOf, integratorDir, integratorBuilder + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec7 = compilerIntegrator.generateIntegrator(configs, locations, templateName, templateFullyQualifiedName, integratorPackage, bindingsSchema2, LOGGER, BeanKind.COMPOSITE, consistsOf, integratorDir, integratorBuilder + DOT_JAVA_EXTENSION);
                     val3 = val3 & spec7.save();
                 }
 
@@ -796,11 +910,11 @@ public class ConfigProcessor implements Constants {
             if (!inComposition) {
                 final String cli_webjar_html_dir = cli_webjar_dir + "/html";
                 new File(cli_webjar_html_dir).mkdirs();
-                compilerDocumentation.generateDocumentation(documentation, templateName, cli_webjar_html_dir, bindingsSchema, null);
+                compilerDocumentation.generateDocumentation(documentation, templateName, templateFullyQualifiedName, cli_webjar_html_dir, bindingsSchema, null);
             } else {
                 final String cli_webjar_html_dir = cli_webjar_dir + "/html";
                 new File(cli_webjar_html_dir).mkdirs();
-                compilerDocumentation.generateDocumentation(documentation, templateName, cli_webjar_html_dir, bindingsSchema, sharing);
+                compilerDocumentation.generateDocumentation(documentation, templateName, templateFullyQualifiedName, cli_webjar_html_dir, bindingsSchema, sharing);
             }
 
 
@@ -868,15 +982,18 @@ public class ConfigProcessor implements Constants {
     public static void main(String [] args) {
         //System.out.println(Arrays.asList(args));
 
-        if (args.length!=3 && args.length!=2) {
+        if (args.length!=5) {
             // display args
-            throw new IllegalArgumentException("Usage: ConfigProcessor <config-file> <inputBaseDir> <outputBaseDir>");
+            throw new IllegalArgumentException("Usage: ConfigProcessor <config-file> <inputBaseDir>  <cbindingsBaseDir>  <outputBaseDir> <templatePath> ");
         }
         org.openprovenance.prov.vanilla.ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
         ConfigProcessor cp=new ConfigProcessor(pf);
         String inputBaseDir=args[1];
-        String outputBaseDir=(args.length==3)?args[2]:inputBaseDir;
-        cp.processTemplateGenerationConfig(args[0],inputBaseDir, outputBaseDir,pf);
+        String cbindingsBaseDir=args[2];
+        String outputBaseDir=args[3];
+        List<String> templatePath=Arrays.asList(args[4].split(":"));
+
+        cp.processTemplateGenerationConfig(args[0],inputBaseDir, cbindingsBaseDir, outputBaseDir, templatePath, pf);
     }
 
 }

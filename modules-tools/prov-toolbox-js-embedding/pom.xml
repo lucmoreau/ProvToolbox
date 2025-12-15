@@ -3,14 +3,14 @@
     <parent>
         <groupId>org.openprovenance.prov</groupId>
         <artifactId>modules-tools</artifactId>
-        <version>2.2.1</version>
+        <version>2.2.2</version>
     </parent>
     <artifactId>prov-toolbox-js-embedding</artifactId>
     <name> |---- PROV-TOOLBOX-JS-EMBEDDING</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <graalvm.version>24.1.0</graalvm.version>
+        <graalvm.version>25.0.1</graalvm.version> <!-- 24.1.0 -->
     </properties>
 
     <dependencies>
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
         </dependency>
         <!--
         <dependency>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <version>${junit.version}</version>
         </dependency>
     </dependencies>
 
@@ -76,7 +76,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>${compiler.plugin.version}</version>
                 <configuration>
                     <source>21</source>
                     <target>21</target>
@@ -86,13 +86,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>${surefire.plugin.version}</version>
             </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>${exec.plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -161,7 +161,7 @@
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
-                        <version>0.10.2</version>
+                        <version>0.11.3</version><!-- 0.11.0, 0.10.2 -->
                         <extensions>true</extensions>
                         <executions>
                             <execution>
@@ -184,7 +184,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.6.0</version>
+                        <version>${exec.plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>default-cli</id>
@@ -285,12 +285,13 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>3.1.2</version>
+                        <version>${surefire.plugin.version}</version>
                         <configuration>
                             <argLine>
                                 -XX:+UnlockExperimentalVMOptions
                                 -XX:+EnableJVMCI
                                 --upgrade-module-path=${project.build.directory}/compiler
+                                --enable-native-access=org.graalvm.truffle <!-- suggested by JDK 25 -->
                             </argLine>
                         </configuration>
                     </plugin>
@@ -298,7 +299,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.6.0</version>
+                        <version>${exec.plugin.version}</version> <!--1.6.0 -->
                         <executions>
                             <execution>
                                 <id>default-cli</id>
@@ -346,7 +347,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <version>3.6.0</version>
+                        <version>${assembly.plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -356,7 +357,7 @@
                                 <configuration>
                                     <archive>
                                         <manifest>
-                                            <mainClass>org.example.embedding.Main</mainClass>
+                                            <mainClass>org.openprovenance.prov.polyglot.Embedding</mainClass>
                                         </manifest>
                                     </archive>
                                     <descriptors>
@@ -377,7 +378,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.5.1</version>
+                        <version>${shade.plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -529,7 +530,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>3.1.2</version>
+                        <version>${surefire.plugin.version}</version>
                         <configuration>
                             <systemPropertyVariables>
                                 <!--
@@ -543,7 +544,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>${exec.plugin.version}</version>
                         <executions>
                             <execution>
                                 <goals>

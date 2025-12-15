@@ -1,0 +1,461 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Explanation Assistant Editor</title>
+    <script src="/xplain/static/js/google-blockly/blockly_compressed.js"></script>
+    <script src="/xplain/static/js/google-blockly/blocks_compressed.js"></script>
+    <script src="/xplain/static/js/google-blockly/javascript_compressed.js"></script>
+    <script src="/xplain/static/js/google-blockly/msg/js/en.js"></script>
+    <style>
+        body {
+            background-color: #fff;
+            font-family: sans-serif;
+        }
+        h1 {
+            font-weight: normal;
+            font-size: 110%;
+        }
+        .textOverflow {
+            height:40px;
+            overflow-y: scroll;
+        }
+
+        pre .pretty {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+        .pretty .string { color: green; }
+        .pretty .uri { color: darkolivegreen; }
+        .pretty .number { color: darkorange; }
+        .pretty .boolean { color: blue; }
+        .pretty .symbol { color: blue; }
+        .pretty .indent { color: #23ff51; }
+        .pretty .null { color: magenta; }
+        .pretty .operator { color: red; }
+        .pretty .key { color: red; }
+        .pretty .date { color: red; }
+        .pretty .feature { color: saddlebrown; }
+        .pretty .attribute { color: skyblue; }
+        .pretty .category { color: green; }
+        .pretty .provkeyword { color: saddlebrown; }
+        .pretty .querykeyword { color: coral;  font-weight: bold; }
+        .pretty .phrasekeyword { color: coral;  font-weight: bold; }
+        .pretty .snlgkeyword { color: saddlebrown; font-weight: bold; }
+        .pretty .templatekeyword { color: royalblue; font-weight: bold; text-decoration: underline; font-variant: small-caps;}
+
+
+    </style>
+    <script type="text/javascript" src="/xplain/webjars/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/xplain/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/xplain/webjars/bootstrap-table/1.9.1/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="/xplain/webjars/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+</head>
+<body>
+<h1><a href="/xplain/view/editor"><img src="/xplain/static/resources/images/plead-explanation-assistant.png"></a>Explanation Assistant Editor</h1>
+
+
+<div class="container">
+    <div class="row header">
+
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a href="#tab_editor" data-toggle="pill" class="nav-link show active" role="tab" id="link_editor">Editor</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_document" data-toggle="pill" class="nav-link" role="tab">Document</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_query" data-toggle="pill" class="nav-link" role="tab">Query</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_dictionary" data-toggle="pill" class="nav-link" role="tab">Dictionary</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_debug" data-toggle="pill" class="nav-link" role="tab">Debug</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_configuration" data-toggle="pill" class="nav-link disabled" role="tab" id="link_configuration">Configuration</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_imports" data-toggle="pill" class="nav-link disabled" role="tab">Import/Export XPlan</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_dev" data-toggle="pill" class="nav-link disabled" role="tab">Dev</a>
+            </li>
+
+        </ul>
+
+        <div class="tab-content" id="all-tab-contents">
+            <div id="tab_editor" class="tab-pane active" role="tabpanel">
+                <table>
+                    <tr>
+                        <td><div id="resultDiv" class="textOverflow" style="width: 1200px;"></div></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="blocklyDiv" style="width: 1200px; height: 800px;"></div>
+                        </td>
+                    </tr>
+                </table>
+
+                <div id="textarea"></div>
+            </div>
+
+            <div id="tab_debug" class="tab-pane active" role="tabpanel">
+
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a href="#tab_debug_request" data-toggle="pill" class="nav-link show active" role="tab">Request</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#tab_debug_response" data-toggle="pill" class="nav-link disabled" role="tab">Response</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="all-debug-tab-contents">
+                    <div id="tab_debug_request" class="tab-pane active" role="tabpanel">
+                        <div id="tab-Request"></div>
+
+                    </div>
+                    <div id="tab_debug_response" class="tab-pane" role="tabpanel">
+                        <div id="tab-Response"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="tab_document" class="tab-pane active" role="tabpanel">
+                <ul class="nav nav-tabs" id="myTabs">
+                    <li class="nav-item"><a href="#menu_jsonld"  data-toggle="pill"  class="nav-link show active" data-url=".jsonld" data-verbatim="true" data-json="true">PROV-JSON-LD</a></li>
+                    <li class="nav-item disabled"><a href="#menu_provn"	 data-toggle="pill"  class="nav-link disabled"    data-url=".provn"  data-verbatim="true" data-provn="true">PROV-N</a></li>
+                    <li class="nav-item disabled"><a href="#menu_json" 	 data-toggle="pill"  class="nav-link disabled"    data-url=".json"   data-verbatim="true" data-json="true">PROV-JSON</a></li>
+                    <li class="nav-item disabled"><a href="#menu_svg"  	 data-toggle="pill"  class="nav-link disabled"    data-url=".svg">SVG</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div id="menu_jsonld" class="tab-pane fade">
+                        <pre id="prov-document-jsonld" class="code pretty"></pre>
+                    </div>
+                    <div id="menu_provn" class="tab-pane fade provn_code" ace-mode="ace/mode/provn" ace-theme="ace/theme/chrome">
+                    </div>
+                    <div id="menu_json" class="tab-pane fade">
+                    </div>
+
+                    <div id="menu_svg" class="tab-pane fade">
+                    </div>
+                    <div id="menu_pdf" class="tab-pane fade">
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab_query" class="tab-pane active" role="tabpanel">
+                <pre id="the-query" class="code pretty" data-verbatim="true"></pre>
+            </div>
+
+            <div id="tab_dictionary" class="tab-pane active" role="tabpanel">
+                <pre id="the-dictionary" class="code pretty"></pre>
+            </div>
+
+
+            <div id="tab_imports" class="tab-pane active" role="tabpanel">
+                <p>
+                    <input type="button" value="Export to XML" onclick="toXml()">
+                    <input type="button" value="Import XPlan from XML" onclick="fromXml()">
+                </p>
+                <table>
+                    <tr>
+                        <td>
+                            <textarea id="importExport" style="width: 800px; height: 800px;"></textarea>
+                        </td>
+
+                    </tr>
+                </table>
+
+            </div>
+
+            <div id="tab_dev" class="tab-pane active" role="tabpanel">
+
+
+                <p>My block editor at <a href="https://blockly-demo.appspot.com/static/demos/blockfactory/index.html">https://blockly-demo.appspot.com/static/demos/blockfactory/index.html</a></p>
+                <p>Local block editor at <a href="/xplain/static/js/google-blockly/demos/blockfactory/index.html">/xplain/static/google-blockly/demos/blockfactory/index.html</a></p>
+
+            </div>
+
+            <div id="tab_configuration" class="tab-pane active" role="tabpanel">
+
+                <p/>
+
+                <p><a id="github-login-link" href="SETUP-BY-JAVASCRIPT" class="btn btn-primary btn-lg active" role="button">LOGIN PLEAD ASSISTANT</a></p>
+
+                <p/>
+
+
+                <table style="border-width: 0px 0px 0px 0px">
+                    <tr style="background-color: #FFCCCC20; ">
+                        <td>&nbsp;</td><td>&nbsp;</td>
+                    </tr>
+                    <tr style="background-color: #FFCCCC20; ">
+                        <td>X-Plan library&nbsp;&nbsp;&nbsp;</td>
+                        <td>
+                            <div class="input-append btn-group">
+                                <input id="the-config-input" type="text" name="url" class="input-large" style="width:500px; "  />
+
+                                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <span class="caret"></span>
+                                </a>
+
+
+                                <ul class="dropdown-menu">
+                                    <li>Examples</li>
+                                    <li><a href="#" onclick="updateDiv('the-config-input', 'https://api.github.com/repos/plead-project/explanations/contents/credit-scoring/xplan/plead/plead-template-library.json')">
+                                        <i class="icon-ok"></i> PLEAD (Credit Scoring)</a>
+                                    </li>
+                                    <li><a href="#" onclick="updateDiv('the-config-input', 'https://api.github.com/repos/plead-project/explanations/contents/school-allocation/xplan/plead/plead-template-library.json')">
+                                        <i class="icon-ok"></i> PLEAD (School Allocation)</a>
+                                    </li>
+                                    <li><a href="#" onclick="updateDiv('the-config-input', 'https://raw.githubusercontent.com/plead-project/explanations/master/credit-scoring/xplan/plead/plead-template-library.json')">
+                                        <i class="icon-ok"></i> Thump</a>
+                                    </li>
+
+
+                                    <li class="divider"></li>
+                                    <li><a href="#" onclick="updateDiv('the-config-input','')"><i class="icon-trash"></i> Clear</a></li>
+                                </ul>
+
+                                <input type="button" value="Load Configuration" onclick="loadConfiguration('the-config-input')">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="background-color: #FFCCCC20; ">
+                        <td>&nbsp;</td><td>&nbsp;</td>
+                    </tr>
+
+                    <tr style="background-color: #F9EDBE6A; ">
+                        <td>&nbsp;</td><td>&nbsp;</td>
+                    </tr>
+                    <tr style="background-color: #F9EDBE6A; ">
+                        <td>X-Plan</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="xplan-dropdown-menu-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+                                    Select from Dropdown
+                                </button>
+                                <span id="xplan-menu-list" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                </span>
+                            </div>
+                            <div id="xplan-selection"></div>
+                        </td>
+                    </tr>
+                    <tr style="background-color: #F9EDBE6A; ">
+                        <td>&nbsp;</td><td>&nbsp;</td>
+                    </tr>
+
+
+                    <tr style="background-color: #AAEEAA20; ">
+                        <td>&nbsp;</td><td>&nbsp;</td>
+                    </tr>
+                    <tr style="background-color: #AAEEAA20; ">
+                        <td>Document</td>
+                        <td>
+                            <div class="input-append btn-group">
+                                <input id="the-document-input" type="text" name="url" class="input-large" style="width:500px; "  />
+
+                                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <span class="caret"></span>
+                                </a>
+
+
+                                <ul class="dropdown-menu">
+                                    <li>Documents</li>
+                                    <li><a href="#" onclick="updateDiv('the-document-input', 'https://api.github.com/repos/plead-project/explanations/contents/credit-scoring/provenance/scenario.v2.provn')">
+                                        <i class="icon-ok"></i> cs:scenario.v2</a>
+                                    </li>
+                                    <li><a href="#" onclick="updateDiv('the-document-input', 'https://api.github.com/repos/plead-project/explanations/contents/credit-scoring/provenance/human-review.provn')">
+                                        <i class="icon-ok"></i> cs:human-review</a>
+                                    </li>
+                                    <li><a href="#" onclick="updateDiv('the-document-input', 'https://api.github.com/repos/plead-project/explanations/contents/school-allocation/provenance/second_choice.provn')">
+                                        <i class="icon-ok"></i> sa:second_choice</a>
+                                    </li>
+
+                                    <li class="divider"></li>
+                                    <li><a href="#" onclick="updateDiv('the-document-input','')"><i class="icon-trash"></i> Clear</a></li>
+                                </ul>
+
+                                <input type="button" value="Load Document" onclick="loadDocument('the-document-input')">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="background-color: #AAEEAA20; ">
+                        <td>&nbsp;</td><td>&nbsp;</td>
+                    </tr>
+
+                    <tr style="background-color: #00A6FF20; ">
+                        <td>&nbsp;</td><td>&nbsp;</td>
+                    </tr>
+
+                    <tr style="background-color:#00A6FF20; ">
+                        <td>Profiles</td>
+                        <td><div id="profile-selection"></div></td>
+                    </tr>
+
+                    <tr style="background-color: #00A6FF20; ">
+                        <td>&nbsp;</td><td>&nbsp;</td>
+                    </tr>
+
+                    <tr style="background-color: #FF840020; ">
+                        <td>&nbsp;</td><td>&nbsp;</td>
+                    </tr>
+
+                    <tr style="background-color:#FF840020; ">
+                        <td>Format</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="format-dropdown-menu-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Select Format
+                                </button>
+                                <span id="format-menu-list" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li>
+                                        <a classname="dropdown-item" href="#" onclick="selectFormat(0,'plain text')">plain text</a>
+                                    </li>
+                                    <li>
+                                        <a classname="dropdown-item" href="#" onclick="selectFormat(1,'html')">html</a>
+                                    </li>
+                                </span>
+                            </div>
+                            <div id="format-selection"></div>
+                        </td>
+                    </tr>
+
+                    <tr style="background-color: #FF840020; ">
+                        <td>&nbsp;</td><td>&nbsp;</td>
+                    </tr>
+
+                </table>
+
+
+
+            </div>
+        </div>
+
+
+
+
+    </div>
+</div>
+
+<xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+    <category name="Phrases" colour="#995ba5">
+        <block type="clause"></block>
+        <block type="noun_phrase"></block>
+        <block type="verb_phrase"></block>
+        <block type="adjective_phrase"></block>
+        <block type="adverb_phrase"></block>
+        <block type="preposition_phrase"></block>
+        <block type="coordinated_phrase"></block>
+    </category>
+    <category name="Computation" colour="#995ba5">
+        <block type="funcall"></block>
+        <block type="phrase_iterator"></block>
+    </category>
+    <category name="Primitives" colour="#a5745b">
+        <block type="text">
+            <field name="TEXT"></field>
+        </block>
+        <block type="math_number">
+            <field name="NUM">0</field>
+        </block>
+    </category>
+    <category name="Features">
+        <block type="features">
+            <field name="TENSE_TICK">FALSE</field>
+            <field name="TENSE_CHOICE">PRESENT</field>
+            <field name="VOICE_TICK">FALSE</field>
+            <field name="VOICE_CHOICE">PASSIVE</field>
+            <field name="NUMBER_TICK">FALSE</field>
+            <field name="NUMBER_CHOICE">SINGULAR</field>
+            <field name="PARTICIPLE_TICK">FALSE</field>
+            <field name="PARTICIPLE_CHOICE">PAST_PARTICIPLE</field>
+        </block>
+        <block type="map"></block>
+    </category>
+    <category name="Lists" colour="#745ba5">
+        <block type="lists_create_with">
+            <mutation items="0"></mutation>
+        </block>
+        <block type="lists_create_with">
+            <mutation items="1"></mutation>
+        </block>
+        <block type="lists_repeat">
+            <value name="NUM">
+                <shadow type="math_number">
+                    <field name="NUM">5</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="lists_length"></block>
+        <block type="lists_isEmpty"></block>
+        <!--
+        <block type="lists_indexOf">
+            <field name="END">FIRST</field>
+            <value name="VALUE">
+                <block type="variables_get">
+                    <field name="VAR" id="-:zI7N5?wbK(07h6[h~z">list</field>
+                </block>
+            </value>
+        </block>
+        <block type="lists_getIndex">
+            <mutation statement="false" at="true"></mutation>
+            <field name="MODE">GET</field>
+            <field name="WHERE">FROM_START</field>
+            <value name="VALUE">
+                <block type="variables_get">
+                    <field name="VAR" id="-:zI7N5?wbK(07h6[h~z">list</field>
+                </block>
+            </value>
+        </block>
+        <block type="lists_setIndex">
+            <mutation at="true"></mutation>
+            <field name="MODE">SET</field>
+            <field name="WHERE">FROM_START</field>
+            <value name="LIST">
+                <block type="variables_get">
+                    <field name="VAR" id="-:zI7N5?wbK(07h6[h~z">list</field>
+                </block>
+            </value>
+        </block>
+        <block type="lists_getSublist">
+            <mutation at1="true" at2="true"></mutation>
+            <field name="WHERE1">FROM_START</field>
+            <field name="WHERE2">FROM_START</field>
+            <value name="LIST">
+                <block type="variables_get">
+                    <field name="VAR" id="-:zI7N5?wbK(07h6[h~z">list</field>
+                </block>
+            </value>
+        </block>
+        <block type="lists_split">
+            <mutation mode="SPLIT"></mutation>
+            <field name="MODE">SPLIT</field>
+            <value name="DELIM">
+                <shadow type="text">
+                    <field name="TEXT">,</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="lists_sort">
+            <field name="TYPE">NUMERIC</field>
+            <field name="DIRECTION">1</field>
+        </block> -->
+    </category>
+</xml>
+
+<xml id="workspaceBlocks" style="display: none"/>
+
+<script src="/xplain/static/js/nlg.js"></script>
+<script src="/xplain/static/js/generator.js"></script>
+<script src="/xplain/static/js/editor.js"></script>
+
+<script type="text/javascript" src="/xplain/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+</html>

@@ -43,7 +43,7 @@ public class CompilerDocumentation {
 
 
 
-    public void generateDocumentation(String documentationFile, String templateName, String root_dir, TemplateBindingsSchema bindingsSchema, List<String> sharing) {
+    public void generateDocumentation(String documentationFile, String templateName, String templateFullyQualifiedName, String root_dir, TemplateBindingsSchema bindingsSchema, List<String> sharing) {
 
         if (os==null) {
             new File(root_dir).mkdirs();
@@ -78,9 +78,9 @@ public class CompilerDocumentation {
 
 
 
-            os.println("<div class='csv_template' id='" + "template_" + templateName + "'>" );
+            os.println("<div class='csv_template' id='" + "template_" + templateFullyQualifiedName.replace('.','_') + "'>" );
 
-            os.println("<h2>"+templateName+"</h2>");
+            os.println("<h2>"+templateFullyQualifiedName+"</h2>");
             os.println("<div class='csv_intro'>");
             os.println(docString);
             os.println("</div>");
@@ -99,7 +99,7 @@ public class CompilerDocumentation {
             os.println("<li>");
 
             os.println(makeSpan(String.valueOf(column), "csv_column"));
-            os.println(makeSpan("" + templateName+ "", "csv_field_header")+":");
+            os.println(makeSpan("" + templateFullyQualifiedName+ "", "csv_field_header")+":");
             os.println(makeSpan("Constant field for the name of this template","csv_doc"));
 
             column++;

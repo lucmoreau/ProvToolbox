@@ -2,7 +2,7 @@
     <parent>
         <artifactId>modules-services2</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.2.1</version>
+        <version>2.2.2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -17,74 +17,80 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>service-templates-core</artifactId>
+            <version>2.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-core</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-translation</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-security-pac</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-index-redis</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template-compiler</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-mongodb</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template-library</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-validation</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model-scala</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-explanations</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
             <scope>compile</scope>
         </dependency>
 
@@ -198,14 +204,11 @@
             <version>2.1.5</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.webjars.bower</groupId>
             <artifactId>jquery-csv</artifactId>
             <version>0.8.3</version>
         </dependency>
-
-
 
         <dependency>
             <groupId>org.jsweet</groupId>
@@ -231,7 +234,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
@@ -283,22 +286,24 @@
             </exclusions>
         </dependency>
         <!-- following two dependencies required to address: warning:
-        Unable to load io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider -->
+        Unable to load io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider
 
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.76.Final</version>
+            <version>${netty.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-resolver-dns-native-macos</artifactId>
-            <version>4.1.76.Final</version>
+            <version>${netty.version}</version>
             <classifier>osx-aarch_64</classifier>
             <scope>test</scope>
         </dependency>
+        -->
+
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -394,6 +399,8 @@
         <unsecure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-no-security.xml</unsecure.webxml.location>
         <secure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-with-security.xml</secure.webxml.location>
         <lexicon.location>/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/nlg-wrapper/target/dictionary/lexAccess2013.data</lexicon.location>
+        <template.config.location>${project.build.directory}/test-classes/config/plead-template-config.json</template.config.location>
+
     </properties>
 
 
@@ -657,6 +664,11 @@
                                             <name>XPLAIN_LEXICON</name>
                                             <value>${lexicon.location}</value>
                                         </property>
+                                        <property>
+                                            <name>TEMPLATE_CONFIG</name>
+                                            <value>${template.config.location}</value>
+                                        </property>
+
                                         <!--
                                         <property>
                                             <name>TPL_SECURITY_CONFIG</name>
@@ -690,7 +702,7 @@
                                 <id>start-jetty</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
-                                    <goal>start</goal>
+                                    <goal>start-war</goal>
                                 </goals>
                                 <configuration>
 
@@ -711,7 +723,17 @@
                         </executions>
                     </plugin>
                 </plugins>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/properties</directory>
+                        <filtering>true</filtering>
+                        <includes>
+                            <include>prov-template-library.webapp.config.properties</include>
+                        </includes>
+                    </resource>
+                </resources>
             </build>
+
         </profile>
 
 

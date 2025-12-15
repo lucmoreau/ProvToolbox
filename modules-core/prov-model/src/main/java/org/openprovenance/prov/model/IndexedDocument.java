@@ -52,12 +52,10 @@ public class IndexedDocument implements StatementAction {
     private final HashMap<QualifiedName,Collection<Used>> namedUsedMap= new HashMap<>();
 
 
-    /* Collection of WasGeneratedBy edges that have a given activity as a
-     * cause. */
+    /* Collection of WasGeneratedBy edges that have a given activity as a cause. */
     private final HashMap<QualifiedName,Collection<WasGeneratedBy>> activityWasGeneratedByMap= new HashMap<>();
 
-    /* Collection of WasGeneratedBy edges that have a given entity as an
-     * effect. */
+    /* Collection of WasGeneratedBy edges that have a given entity as an effect. */
     private final HashMap<QualifiedName,Collection<WasGeneratedBy>> entityWasGeneratedByMap= new HashMap<>();
     private final Collection<WasGeneratedBy> anonWasGeneratedBy= new LinkedList<>();
     private final HashMap<QualifiedName,Collection<WasGeneratedBy>> namedWasGeneratedByMap= new HashMap<>();
@@ -66,8 +64,7 @@ public class IndexedDocument implements StatementAction {
     /* Collection of WasDerivedFrom edges that have a given entity as a cause. */
     private final HashMap<QualifiedName,Collection<WasDerivedFrom>> entityCauseWasDerivedFromMap= new HashMap<>();
 
-    /* Collection of WasDerivedFrom edges that have a given entity as an
-     * effect. */
+    /* Collection of WasDerivedFrom edges that have a given entity as an effect. */
     private final HashMap<QualifiedName,Collection<WasDerivedFrom>> entityEffectWasDerivedFromMap= new HashMap<>();
     private final Collection<WasDerivedFrom> anonWasDerivedFrom= new LinkedList<>();
     private final HashMap<QualifiedName,Collection<WasDerivedFrom>> namedWasDerivedFromMap= new HashMap<>();
@@ -77,8 +74,7 @@ public class IndexedDocument implements StatementAction {
      * effect. */
     private final HashMap<QualifiedName,Collection<WasAssociatedWith>> activityWasAssociatedWithMap= new HashMap<>();
 
-    /* Collection of WasAssociatedWith edges that have a given agent as a
-     * cause. */
+    /* Collection of WasAssociatedWith edges that have a given agent as a cause. */
     private final HashMap<QualifiedName,Collection<WasAssociatedWith>> agentWasAssociatedWithMap= new HashMap<>();
     private final Collection<WasAssociatedWith> anonWasAssociatedWith= new LinkedList<>();
     private final HashMap<QualifiedName,Collection<WasAssociatedWith>> namedWasAssociatedWithMap= new HashMap<>();
@@ -122,6 +118,19 @@ public class IndexedDocument implements StatementAction {
     private final HashMap<QualifiedName, Collection<SpecializationOf>> specificEntitySpecializationOfMap= new HashMap<>();
     private final Collection<SpecializationOf> anonSpecializationOf= new LinkedList<>();
     private final HashMap<QualifiedName, Collection<SpecializationOf>> genericEntitySpecializationOfMap= new HashMap<>();
+
+
+    private final HashMap<QualifiedName, Collection<QualifiedSpecializationOf>> namedQualifiedSpecializationOfMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<QualifiedSpecializationOf>> specificEntityQualifiedSpecializationOfMap= new HashMap<>();
+    private final Collection<QualifiedSpecializationOf> anonQualifiedSpecializationOf= new LinkedList<>();
+    private final HashMap<QualifiedName, Collection<QualifiedSpecializationOf>> genericEntityQualifiedSpecializationOfMap= new HashMap<>();
+
+    private final HashMap<QualifiedName, Collection<QualifiedHadMember>> namedQualifiedHadMemberMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<QualifiedHadMember>> collectionQualifiedHadMemberMap= new HashMap<>();
+    private final Collection<QualifiedHadMember> anonQualifiedHadMember= new LinkedList<>();
+    private final HashMap<QualifiedName, Collection<QualifiedHadMember>> entityQualifiedHadMemberMap= new HashMap<>();
+
+
 
     private final Collection<AlternateOf> anonAlternateOf= new LinkedList<>();
     private final HashMap<QualifiedName, Collection<AlternateOf>> namedAlternateOfMap= new HashMap<>();
@@ -459,6 +468,13 @@ public class IndexedDocument implements StatementAction {
             existing2.getLocation().addAll(set2);
         }
 
+        if (existing instanceof HasRole) {
+            HasRole existing2=(HasRole) existing;
+            Set<Role> set2=new HashSet<>(((HasRole)newElement).getRole());
+            set2.removeAll(existing2.getRole());
+            existing2.getRole().addAll(set2);
+        }
+
         Set<Type> set3=new HashSet<Type>(newElement.getType());
         set3.removeAll(existing.getType());
         existing.getType().addAll(set3);
@@ -570,7 +586,7 @@ public class IndexedDocument implements StatementAction {
         return add(wgb, 3, anonWasGeneratedBy, namedWasGeneratedByMap, entityWasGeneratedByMap, activityWasGeneratedByMap);
     }
     public WasDerivedFrom add(WasDerivedFrom wdf) {
-        return add(wdf, 5, anonWasDerivedFrom, namedWasDerivedFromMap, entityEffectWasDerivedFromMap, entityCauseWasDerivedFromMap);
+        return add(wdf, 2, anonWasDerivedFrom, namedWasDerivedFromMap, entityEffectWasDerivedFromMap, entityCauseWasDerivedFromMap);
     }
     public WasAssociatedWith add(WasAssociatedWith waw) {
         return add(waw, 3, anonWasAssociatedWith, namedWasAssociatedWithMap, activityWasAssociatedWithMap, agentWasAssociatedWithMap);
@@ -586,6 +602,12 @@ public class IndexedDocument implements StatementAction {
     }
     public SpecializationOf add(SpecializationOf spec) {
         return add(spec, 2, anonSpecializationOf, namedSpecializationOfMap, specificEntitySpecializationOfMap, genericEntitySpecializationOfMap);
+    }
+    public QualifiedSpecializationOf add(QualifiedSpecializationOf spec) {
+        return add(spec, 2, anonQualifiedSpecializationOf, namedQualifiedSpecializationOfMap, specificEntityQualifiedSpecializationOfMap, genericEntityQualifiedSpecializationOfMap);
+    }
+    public QualifiedHadMember add(QualifiedHadMember spec) {
+        return add(spec, 2, anonQualifiedHadMember, namedQualifiedHadMemberMap, collectionQualifiedHadMemberMap, entityQualifiedHadMemberMap);
     }
     public AlternateOf add(AlternateOf alt) {
         return add(alt, 2, anonAlternateOf, namedAlternateOfMap, entityEffectAlternateOfMap,entityCauseAlternateOfMap);
@@ -872,8 +894,16 @@ public class IndexedDocument implements StatementAction {
         }
 
         statementOrBundle.addAll(anonSpecializationOf);
+        statementOrBundle.addAll(anonQualifiedSpecializationOf);
+        for (Collection<QualifiedSpecializationOf> c: namedQualifiedSpecializationOfMap.values()) {
+            statementOrBundle.addAll(c);
+        }
         statementOrBundle.addAll(anonAlternateOf);
+
         statementOrBundle.addAll(anonHadMember);
+        for (Collection<QualifiedHadMember> c: namedQualifiedHadMemberMap.values()) {
+            statementOrBundle.addAll(c);
+        }
 
         statementOrBundle.addAll(anonWasInvalidatedBy);
         for (Collection<WasInvalidatedBy> c: namedWasInvalidatedByMap.values()) {

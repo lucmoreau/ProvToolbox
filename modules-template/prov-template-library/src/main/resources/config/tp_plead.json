@@ -1,98 +1,105 @@
 {
-	"group": "org.openprovenance.prov",
-	"name": "template_library",
-	"destination": "target",
-	"description": "PROV templates for plead ML pipeline",
-	"version": "0.1.0",
-	"root_package": "org.openprovenance.prov.template.library.plead",
-	"search": ["activity", "file", "agent", "method", "score", "approval_record"],
-	"script": "ptm_plead_run",
-	"script_dir": "target/bin",
-	"python_dir": "target/generated-python",
-	"integrator": true,
-	"jsweet": true,
-	"jsonschema": "schema-plead.json",
-	"documentation": "doc-plead.html",
-	"sqlFile": "prov-template-library-plead.sql",
-	"templates" : [
+    "group": "org.openprovenance.prov",
+    "name": "template_library",
+    "destination": "target",
+    "description": "PROV templates for plead ML pipeline",
+    "version": "0.1.0",
+    "root_package": "org.openprovenance.prov.template.library.plead",
+    "search": ["activity", "file", "agent", "method", "score", "approval_record"],
+    "script": "ptm_plead_run",
+    "script_dir": "target/bin",
+    "python_dir": "target/generated-python",
+    "integrator": true,
+    "jsweet": true,
+    "jsonschema": "schema-plead.json",
+    "documentation": "doc-plead.html",
+    "sqlFile": "prov-template-library-plead.sql",
+    "templates" : [
 
-		{
-			"@type": "simple",
-			"name": "plead_transforming",
-			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/plead/plead-transforming.provn",
-			"package": "org.openprovenance.prov.template.library.plead",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-transforming.json"
-		},
+        {
+            "@type": "simple",
+            "fullyQualifiedName": "org/openprovenance/prov/templates/plead/plead-transforming",
+            "name": "plead_transforming",
+            "package": "org.openprovenance.prov.template.library.plead",
+            "template": "org/openprovenance/prov/templates/plead/plead-transforming",
+            "cbindings": "org/openprovenance/prov/templates/plead/plead-transforming.json"
+        },
 
-		{
-			"@type": "simple",
-			"name": "plead_filtering",
-			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/plead/plead-filtering.provn",
-			"package": "org.openprovenance.prov.template.library.plead",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-filtering.json"
-		},
-		{
-			"@type": "simple",
-			"name": "plead_training",
-			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/plead/plead-training.provn",
-			"package": "org.openprovenance.prov.template.library.plead",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-training.json"
-		},
-		{
-			"@type": "simple",
-			"name": "plead_validating",
-			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/plead/plead-validating.provn",
-			"package": "org.openprovenance.prov.template.library.plead",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-validating.json"
-		},
-		{
-			"@type": "simple",
-			"name": "plead_approving",
-			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/plead/plead-approving.provn",
-			"package": "org.openprovenance.prov.template.library.plead",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-approving.json"
-		},
-		{
-			"@type": "simple",
-			"name": "plead_splitting",
-			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/plead/plead-splitting.provn",
-			"package": "org.openprovenance.prov.template.library.plead",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-splitting.json"
-		},
+        {
+            "@type": "simple",
+            "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadFiltering",
+            "name": "plead_filtering",
+            "package": "org.openprovenance.prov.template.library.plead",
+            "template": "org/openprovenance/prov/templates/plead/plead-filtering",
+            "cbindings": "org/openprovenance/prov/templates/plead/plead-filtering.json"
+        },
+        {
+            "@type": "simple",
+            "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadTraining",
+            "name": "plead_training",
+            "package": "org.openprovenance.prov.template.library.plead",
+            "template": "org/openprovenance/prov/templates/plead/plead-training",
+            "cbindings": "org/openprovenance/prov/templates/plead/plead-training.json"
+        },
+        {
+            "@type": "simple",
+            "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadValidating",
+            "name": "plead_validating",
+            "package": "org.openprovenance.prov.template.library.plead",
+            "template": "org/openprovenance/prov/templates/plead/plead-validating",
+            "cbindings": "org/openprovenance/prov/templates/plead/plead-validating.json"
+        },
+        {
+            "@type": "simple",
+            "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadApproving",
+            "name": "plead_approving",
+            "package": "org.openprovenance.prov.template.library.plead",
+            "template": "org/openprovenance/prov/templates/plead/plead-approving",
+            "cbindings": "org/openprovenance/prov/templates/plead/plead-approving.json"
+        },
+        {
+            "@type": "simple",
+            "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadSplitting",
+            "name": "plead_splitting",
+            "package": "org.openprovenance.prov.template.library.plead",
+            "template": "org/openprovenance/prov/templates/plead/plead-splitting",
+            "cbindings": "org/openprovenance/prov/templates/plead/plead-splitting.json"
+        },
 
-		{
-			"@type": "composite",
-			"name": "plead_transforming_composite",
-			"consistsOf": "plead_transforming",
-			"package": "org.openprovenance.prov.template.library.plead",
-			"sharing": ["transformed_file", "transforming"]
-		}
-	],
-	"sql.tables":  {
-		"file": {
-			"id": "SERIAL",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-		"agent": {
-			"id": "SERIAL",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-		"score": {
-			"id": "SERIAL",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-		"approval_record": {
-			"id": "SERIAL",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-		"activity": {
-			"id": "SERIAL",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-		"method": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		}
-	}
+        {
+            "@type": "composite",
+            "fullyQualifiedName": "org.openprovenance.prov.template.library.plead.PleadTransformingComposite",
+            "name": "plead_transforming_composite",
+            "package": "org.openprovenance.prov.template.library.plead",
+            "consistsOf": "org/openprovenance/prov/templates/plead/plead-transforming",
+            "sharing": ["transformed_file", "transforming"]
+        }
+    ],
+    "sql.tables":  {
+        "file": {
+            "id": "SERIAL",
+            "created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+        },
+        "agent": {
+            "id": "SERIAL",
+            "created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+        },
+        "score": {
+            "id": "SERIAL",
+            "created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+        },
+        "approval_record": {
+            "id": "SERIAL",
+            "created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+        },
+        "activity": {
+            "id": "SERIAL",
+            "created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+        },
+        "method": {
+            "id": "SERIAL",
+            "serial": "INT",
+            "created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+        }
+    }
 }

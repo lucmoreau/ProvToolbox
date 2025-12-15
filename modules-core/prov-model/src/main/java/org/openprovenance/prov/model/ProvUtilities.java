@@ -752,14 +752,23 @@ public class ProvUtilities {
         }
         case PROV_MEMBERSHIP: {
             final org.openprovenance.prov.model.HadMember a = (org.openprovenance.prov.model.HadMember) s;
-            switch (i) {
-            case 0:
-                return a.getCollection();
-            case 1:
-                return a.getEntity();
-            default:
-                throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind
-                                                         + " and index " + i);
+            if (a instanceof QualifiedHadMember) {
+                QualifiedHadMember qa = (QualifiedHadMember) a;
+                return switch (i) {
+                    case 0 -> qa.getId();
+                    case 1 -> qa.getCollection();
+                    case 2 -> qa.getEntity();
+                    case 3 -> qa.getOther();
+                    default -> throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind
+                            + " and index " + i);
+                };
+            } else {
+                return switch (i) {
+                    case 0 -> a.getCollection();
+                    case 1 -> a.getEntity();
+                    default -> throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind
+                            + " and index " + i);
+                };
             }
         }
         case PROV_MENTION: {
@@ -784,14 +793,28 @@ public class ProvUtilities {
         }
         case PROV_SPECIALIZATION: {
             final org.openprovenance.prov.model.SpecializationOf a = (org.openprovenance.prov.model.SpecializationOf) s;
-            switch (i) {
-            case 0:
-                return a.getSpecificEntity();
-            case 1:
-                return a.getGeneralEntity();
-            default:
-                throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind
-                                                         + " and index " + i);
+
+            if (a instanceof QualifiedSpecializationOf) {
+                QualifiedSpecializationOf qa = (QualifiedSpecializationOf) a;
+                return switch (i) {
+                    case 0 -> qa.getId();
+                    case 1 -> qa.getSpecificEntity();
+                    case 2 -> qa.getGeneralEntity();
+                    case 3 -> qa.getOther();
+                    default -> throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind
+                            + " and index " + i);
+                };
+            } else {
+
+                switch (i) {
+                    case 0:
+                        return a.getSpecificEntity();
+                    case 1:
+                        return a.getGeneralEntity();
+                    default:
+                        throw new ArrayIndexOutOfBoundsException("ProvUtilities.getter() for " + kind
+                                + " and index " + i);
+                }
             }
         }
         case PROV_START: {
@@ -1084,17 +1107,36 @@ public class ProvUtilities {
         }
         case PROV_MEMBERSHIP: {
             final org.openprovenance.prov.model.HadMember a = (org.openprovenance.prov.model.HadMember) s;
-            switch (i) {
-            case 0:
-                a.setCollection((QualifiedName) val);
-                return;
-            case 1:
-                a.getEntity().remove(0);
-                a.getEntity().add((QualifiedName) val);
-                return; // FIXME: only supporting one value in the membership
-            default:
-                throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind
-                                                         + " and index " + i);
+            if (a instanceof QualifiedHadMember) {
+                QualifiedHadMember qa = (QualifiedHadMember) a;
+                switch (i) {
+                    case 0:
+                        qa.setId((QualifiedName) val);
+                        return;
+                    case 1:
+                        qa.setCollection((QualifiedName) val);
+                        return;
+                    case 2:
+                        if (qa.getEntity() !=null && !qa.getEntity().isEmpty()) qa.getEntity().remove(0);
+                        qa.getEntity().add((QualifiedName) val);
+                        return; // FIXME: only supporting one value in the membership
+                    default:
+                        throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind
+                                + " and index " + i);
+                }
+            } else {
+                switch (i) {
+                    case 0:
+                        a.setCollection((QualifiedName) val);
+                        return;
+                    case 1:
+                        a.getEntity().remove(0);
+                        a.getEntity().add((QualifiedName) val);
+                        return; // FIXME: only supporting one value in the membership
+                    default:
+                        throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind
+                                + " and index " + i);
+                }
             }
         }
         case PROV_MENTION: {
@@ -1112,10 +1154,33 @@ public class ProvUtilities {
         }
         case PROV_SPECIALIZATION: {
             final org.openprovenance.prov.model.SpecializationOf a=(org.openprovenance.prov.model.SpecializationOf) s;
-            switch (i) {
-            case 0: a.setSpecificEntity((QualifiedName)val); return;
-            case 1: a.setGeneralEntity((QualifiedName)val); return;
-            default: throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+
+            if (a instanceof QualifiedSpecializationOf) {
+                QualifiedSpecializationOf qa = (QualifiedSpecializationOf) a;
+                switch (i) {
+                    case 0:
+                        qa.setId((QualifiedName) val);
+                        return;
+                    case 1:
+                        qa.setSpecificEntity((QualifiedName) val);
+                        return;
+                    case 2:
+                        qa.setGeneralEntity((QualifiedName) val);
+                        return;
+                    default:
+                        throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+                }
+            } else {
+                switch (i) {
+                    case 0:
+                        a.setSpecificEntity((QualifiedName) val);
+                        return;
+                    case 1:
+                        a.setGeneralEntity((QualifiedName) val);
+                        return;
+                    default:
+                        throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind + " and index " + i);
+                }
             }
         }
         case PROV_START: {

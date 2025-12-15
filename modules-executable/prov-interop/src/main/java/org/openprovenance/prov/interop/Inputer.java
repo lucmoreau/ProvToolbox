@@ -221,7 +221,7 @@ public class Inputer implements InteropMediaType {
     }
 
     List<ToRead> readIndexFile(InputStream is) throws IOException {
-        List<ToRead> res = new LinkedList<ToRead>();
+        List<ToRead> res = new LinkedList<>();
 
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 

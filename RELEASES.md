@@ -1,7 +1,63 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.2.2-SNAPSHOT`
+`2.2.3-SNAPSHOT`
 
+`2.2.2`
+* prov-template: added ptm-merging template
+* prov-template-library: added ptm-merging template
+* prov-template: updated BatchExecutor to create provenance when merging templates
+* prov-template: refactored BatchExecutor to support two different tasks for instantiation and merge
+* prov-template: merge tasks now supporting a list of input files
+* prov-template: renamed ttb to ttf as per book
+* prov-template: updated ttf schema
+* ProvToDot: added option to display qualified relations and annotations on edges 
+* prov-jsonld: support for QualifiedSpecialization
+* prov-model: IndexedDocument, merge, support for QualifiedSpecialization
+* prov-template: BatchExecutor taking InteropFramework serialisers/deserialisers as input       
+* module-tools: BatchExecutor taking InteropFramework serialisers/deserialisers as input    
+* prov-template-process executable, using latest BatchExecutor
+* prov-model: fixed issue with QualifiedSpecialization in ProvUtilities
+* prov-template: fixed issue with QualifiedSpecialization in Instantiation
+* prov-model, prov-template, prov-dot: support for QualifiedHadMember
+* prov-template-compiler: generation of OutputProcessor interface
+* prov-toolbox-plugin: renamed goals, validate-catalogue and compile-catalogue
+* prov-template-compiler: fixed issue with variables in template and not in bindings
+* prov-template-compiler: process method for Input and Output beans
+* prov-template-compiler: generation of local enactor (CompilerBeanLocalEnactor2)
+* modules-core: add new method newWasGeneratedBy to support template compiler
+* prov-template-compiler: allow for null declaration in bindings
+* prov-template-compiler: compiler support for QualifiedSpecializationOf
+* prov-template-compiler: CompilerConfigurations: generate Relation0Configurator
+* prov-template-compiler: CompilerConfigurations: generate RelationConfigurator
+* prov-template-compiler: CompilerConfigurations: generate BuilderProcessorConfigurator
+* prov-template-compiler: CompilerCommon: getForeign for Builder
+* prov-template-compiler: CompilerConfigurations: generator for ObjectRecordMaker
+* prov-template-compiler: CompilerCatalogueDispatcher: generating CatalogueDispatcher for template serviceompiler: CompilerCatalogueDispatcher: generating CatalogueDispatcher for template service
+* prov-template-compiler: replaced PROCESSOR_ARGS<T> by Function<Object[],T>
+* prov-template-compiler: replaced RecordsProcessorInterface<T> by Function<List<Object[]>,T>
+* prov-template-compiler: introduced CatalogueDispatcher interface
+* prov-template-compiler: moved principal mangement out of generated code
+* service-templates-core: first version
+* prov-template-archetype: first version
+* prov-template-compiler: changed Locations to better manager packages of generated code
+* prov-template-compiler: added generated method isCompositeOf in Builder
+* prov-template-archetype: support for compulsory properties in forms.html for composites
+* service-templates: refactored to rely on service-templates-core
+* prov-template: template variable syntax checker
+* prov-template-compiler: introduced fully qualified names for templates
+* prov-template-compiler: LocalEnactor for composites
+* prov-template-compiler: support for template library paths
+* prov-template-compiler: generate linker tables
+* prov-template: fully qualified names for outputs
+* provconvert: support for template library path
+* ProvToolbox: upgrade to jackson 2.18.5, and then 2.19.4
+* prov-toolbox-plugin: prepare-webjar goal
+* prov-template-compiler: introduced cbindingsDir
+* prov-template-compiler: removed dependency on java 12, but introduced MAVEN_OPTS to support jsweet
+* service-xplain: rescued service (from provman project): interactive demonstrator of explanations
+* prov-template: qualified.png as a type of serialization displaying all qualified relations
+* prov-template: optional variableCheck to instantiation and merge tasks
+* 
 `2.2.1`
 * service-metrics: a service to gather metrics on provenance, using MetricsCalculator.java
 * prov-typemap: incremental construction of type map

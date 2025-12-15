@@ -1,0 +1,25 @@
+document
+  prefix pic <http://www.ipaw.info/ns/picaso#>
+  prefix tmpl <http://openprovenance.org/tmpl#>
+  prefix var <http://openprovenance.org/var#>
+  prefix vargen <http://openprovenance.org/vargen#>
+  prefix ui <http://openprovenance.org/ui#>
+
+
+    entity(var:paper, [prov:type='var:paperType',
+                       tmpl:label='var:title',   
+		       ui:type='pic:Article', ui:minimum=1, ui:maximum=1])
+    agent(var:author, [tmpl:label='var:authorName',
+                       prov:type='var:authorType',
+		       ui:type='prov:Person',
+		       ui:type='prov:Organization',
+		       ui:minimum=1])
+    wasAttributedTo(var:paper, var:author, [prov:type='var:attributionType',
+    			       		    ui:type='pic:Author',
+                                            ui:type='pic:Contributor',
+                                            ui:type='pic:Editor',
+                                            ui:type='pic:Reviewer',
+                                            ui:type='pic:Funder'
+                                           ])
+
+endDocument

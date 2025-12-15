@@ -465,6 +465,9 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
   }
 
 
+  "closing lexicon " should "work" in {
+    defs.lexicon.close()
+  }
 
 }
 

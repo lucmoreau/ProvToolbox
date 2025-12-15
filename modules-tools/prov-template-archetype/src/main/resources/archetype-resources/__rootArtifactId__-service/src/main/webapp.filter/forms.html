@@ -1,0 +1,749 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="utf-8"/>
+    <title>${symbol_dollar}{pom.form.dashboard.title}</title>
+    <link rel="stylesheet" href="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/css/bootstrap.css" />
+    <link rel="stylesheet" href="${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/css/provtemplate.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="${symbol_dollar}{service.context}/webjars/font-awesome/${symbol_dollar}{webjars.fontawesome.version}/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css"  href="${symbol_dollar}{service.context}/webjars/swagger-ui/${symbol_dollar}{webjars.swagger-ui.version}/swagger-ui.css" >
+    <link rel="icon"       type="image/png" href="${symbol_dollar}{service.context}/webjars/swagger-ui/${symbol_dollar}{webjars.swagger-ui.version}/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon"       type="image/png" href="${symbol_dollar}{service.context}/webjars/swagger-ui/${symbol_dollar}{webjars.swagger-ui.version}/favicon-16x16.png" sizes="16x16" />
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+
+<body>
+<script src="${symbol_dollar}{service.context}/webjars/jquery/${symbol_dollar}{webjars.jquery.version}/jquery.min.js"></script>
+<script src="${symbol_dollar}{service.context}/webjars/datatables.net/${symbol_dollar}{webjars.datatables.version}/js/jquery.dataTables.min.js" type="text/javascript" charset="utf8" ></script>
+<script src="${symbol_dollar}{service.context}/webjars/JSV/lib/jsv.js"></script>
+<script src="${symbol_dollar}{service.context}/webjars/underscore/${symbol_dollar}{webjars.underscore.version}/underscore.js"></script>
+<script src="${symbol_dollar}{service.context}/webjars/jsonform/lib/jsonform.js"></script>
+<script src="${symbol_dollar}{service.context}/webjars/jsonform/deps/opt/jquery-ui.js"></script>
+<script src="${symbol_dollar}{service.context}/webjars/jquery-csv/${symbol_dollar}{webjars.jquery.csv.version}/src/jquery.csv.js"></script>
+
+
+<script src="${symbol_dollar}{service.context}/webjars/j4ts/${symbol_dollar}{webjars.j4ts.version}/bundle.js"></script>
+
+
+<script src="${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/js/bundle.js"></script>
+<script src="${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/js/TemplateManager.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-sha3@0.8.0/src/sha3.js"></script>
+
+<style>
+    .container {
+        min-width:1200px;
+        width: auto !important;
+        width:1500px;
+    }
+    .shared_var {
+        color: blue;
+    }
+</style>
+
+<div class="container">
+    <div class="row header">
+        <div class="col-lg-12 text-left">
+            <h3>${symbol_dollar}{pom.form.dashboard.title}</h3>
+        </div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a href="${symbol_pound}tab_compose" data-toggle="pill" class="nav-link show active" role="tab" id="composer-lnk">Composer</a>
+            </li>
+            <li class="nav-item">
+                <a href="${symbol_pound}tab_documentation" data-toggle="pill" class="nav-link" role="tab">Documentation</a>
+            </li>
+            <li class="nav-item">
+                <a href="${symbol_pound}tab_csv_log" data-toggle="pill" class="nav-link" role="tab">CSV Logger</a>
+            </li>
+            <li class="nav-item">
+                <a href="${symbol_pound}tab_browser" data-toggle="pill" class="nav-link" role="tab">Browser</a>
+            </li>
+            <li class="nav-item">
+                <a href="${symbol_pound}tab_navigator" data-toggle="pill" class="nav-link" role="tab">Navigator</a>
+            </li>
+            <li class="nav-item">
+                <a href="${symbol_pound}tab_expand" data-toggle="pill" class="nav-link" role="tab">Expand</a>
+            </li>
+            <li class="nav-item">
+                <a href="${symbol_pound}tab_api" data-toggle="pill" class="nav-link" role="tab">API</a>
+            </li>
+
+
+
+
+        </ul>
+
+        <div class="tab-content" id="all-tab-contents">
+            <div id="tab_compose" class="tab-pane active" role="tabpanel">
+                <div class="col-lg-2">
+                    <div id="template-dropdown-composer">
+                        <a href="${symbol_pound}" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="template-dropdown-composer-lnk">${symbol_dollar}{pom.templates.button.label}</a>
+                    </div>
+                </div>
+                <div class="col-lg-4 first-column">
+                    <div id="template-form">
+                        <form></form>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <h4>CSV encoding</h4>
+                    <pre id="csv_result"><p> </p></pre>
+                    <p> </p>
+                    <h4>JSON encoding</h4>
+                    <pre id="json_result" class="pretty">
+                    </pre>
+                </div>
+                <div class="col-sm-3">
+                    <button id="button-submit-json" type="button" class="btn btn-warning" onclick="submitEnactor(true)">Submit (json)</button>
+                    <button id="button-submit-csv" type="button" class="btn btn-warning" onclick="submitEnactor(false)">Submit (csv)</button>
+                    <button id="button-clear" type="button" class="btn btn-info" onclick="enactClear()">Clear</button>
+                    <h4>Submission Result</h4>
+                    <pre id="enact_result" class="pretty"> </pre>
+                    <p id="prov_link"></p>
+                    <h4>Explanation</h4>
+                    <p id="prov_xplain"></p>
+                </div>
+            </div>
+
+            <div id="tab_documentation" class="tab-pane" role="tabpanel">
+                <div class="col-lg-2">
+                    <div id="template-dropdown-documentation">
+                        <a href="${symbol_pound}" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">${symbol_dollar}{pom.templates.button.label}</a>
+                    </div>
+                </div>
+                <div class="col-lg-7 first-column">
+                    <div id="documentation">
+                    </div>
+                    <div id="documentation_image">
+                    </div>
+                    <div id="tmp_div" class="invisible_div">
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="tab_csv_log" class="tab-pane" role="tabpanel">
+                <pre id="csv_log"></pre>
+            </div>
+
+            <div id="tab_browser" class="tab-pane" role="tabpanel">
+                <div class="col-lg-2">
+                    <label for="browser_base_relation">Base relation:</label><input type="text" id="browser_base_relation" class="form-control" value="activity">
+                    <label for="browser_from_date">From date:</label><input type="datetime-local" id="browser_from_date" class="form-control" value="2024-07-19T15:13">
+                    <label for="browser_to_date">To date:</label><input type="datetime-local" id="browser_to_date" class="form-control" >
+                    <label for="browser_limit"></label><input type="number" id="browser_limit" class="form-control" value="100">
+
+                    <p></p>
+                    <button id="browser-refresh" type="button" class="btn btn-info" onclick="submitBrowse()">Refresh</button>
+                    <button id="browser-clear" type="button" class="btn btn-warning" onclick="clearBrowse()">Clear</button>
+
+                </div>
+                <div class="col-lg-10 first-column">
+                    <table id="browser_list"
+                           class="display"
+                           style="width:80%">
+
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab_navigator" class="tab-pane" role="tabpanel">
+                <div class="col-lg-2">
+                    <label for="navigator-id"></label><input type="number" id="navigator-id" class="form-control" value="153">
+                    <label for="navigator-template"></label><input type="text" id="navigator-template" class="form-control" value="weighing">
+                    <label for="navigator-property"></label><input type="text" id="navigator-property" class="form-control" value="item1">
+                    <label for="navigator-style"></label><select name="navigator-style" id="navigator-style" class="form-control">
+                        <option value="template">Template Viz</option>
+                        <option value="prov">PROV Viz</option>
+                        <option value="entities">Entities Viz</option>
+                    </select>
+                    <p></p>
+                    <p></p>
+
+                    <button id="navigator-refresh" type="button" class="btn btn-info" onclick="submitNavigate('${symbol_pound}navigator-div')">Refresh</button>
+                </div>
+                <div class="col-lg-10 first-column" id="navigator-div">
+                </div>
+            </div>
+
+            <div id="tab_api" class="tab-pane" role="tabpanel">
+
+                <div class="row">
+
+                    <div class="spancol-sm-8" style="margin-top:80px;margin-bottom:50px">
+
+                        <div id="swagger-ui"></div>
+
+                        <div id="swagger-ui2"></div>
+
+                    </div>
+                </div>
+
+
+                <script src="${symbol_dollar}{service.context}/webjars/swagger-ui/${symbol_dollar}{webjars.swagger-ui.version}/swagger-ui-bundle.js"> </script>
+                <script src="${symbol_dollar}{service.context}/webjars/swagger-ui/${symbol_dollar}{webjars.swagger-ui.version}/swagger-ui-standalone-preset.js"> </script>
+                <script type="text/javascript">
+                    var myUrl=document.URL;
+                    console.log("myUrl");
+                    console.log(myUrl);
+                    // delete the substring that follows ${symbol_pound} in the URL
+                    if (myUrl.lastIndexOf('${symbol_pound}')>0) {
+                        myUrl = myUrl.substring(0, myUrl.lastIndexOf('${symbol_pound}'));
+                    }
+                    // delete the substring that follows the last / in the URL
+                    myUrl=myUrl.substring(0, myUrl.lastIndexOf('/'));
+
+                    myApiUrl=myUrl.concat("/provapi/openapi.json");
+                    //myApiUrl2=myUrl.replace("/api.html","/resources/openapi.json");
+                    //myApiUrl=myUrl.replace("/view/api","/luc.yaml");
+
+                    console.log("myApiUrl");
+                    console.log(myApiUrl);
+
+                    window.onload = function() {
+
+                        // Build a system
+                        const ui = SwaggerUIBundle({
+                            url:myApiUrl,
+                            //urls: [{url: myApiUrl, name: "PROV API"}, {url: myApiUrl2, name: "Resources"}],
+                            dom_id: '${symbol_pound}swagger-ui',
+                            deepLinking: true,
+                            presets: [
+                                SwaggerUIBundle.presets.apis,
+                                SwaggerUIStandalonePreset
+                            ],
+                            plugins: [
+                                SwaggerUIBundle.plugins.DownloadUrl
+                            ],
+                            layout: "StandaloneLayout"
+                        })
+
+
+                        window.ui = ui
+                    }
+                </script>
+            </div>
+
+            <div id="tab_expand" class="tab-pane" role="tabpanel">
+
+                <div class="col-sm-8" style="text-align:center;margin-top:80px;margin-bottom:50px">
+                    <form action="${symbol_dollar}{service.context}/provapi/documents_form/" method="post" enctype="multipart/form-data">
+                        <style type="text/css">
+                            .input-append .btn .dropdown-toggle {
+                                float: none;
+                            }
+                        </style>
+                        <div style="text-align:left;">
+                            <table style="margin-left: auto; margin-right: auto;">
+                                <tr>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td rowspan="3">
+                                        <input type="submit"   value="jsonld" name="expand"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+                                        <input type="submit"   value="json"   name="expand"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+                                        <input type="submit"   value="provx"  name="expand"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+                                        <input type="submit"   value="provn"  name="expand"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+                                        <input type="submit"   value="svg"    name="expand"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Template</td>
+                                    <td>
+                                        <div class="input-append btn-group">
+                                            <input id="the-url-input" type="text" name="url" class="input-large" style="width:315px; height: 30px"  />
+
+                                            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="${symbol_pound}">
+                                                <span class="caret"></span>
+                                            </a>
+
+
+                                            <ul class="dropdown-menu">
+                                                <li>Templates</li>
+                                                <!--
+                                                <li><a href="${symbol_pound}" onclick="updateRootURLInputBox('${symbol_dollar}{service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1.provn')">
+                                                    <i class="icon-ok"></i>  generic.binaryop (old)</a>
+                                                </li>
+                                                -->
+                                                <li><a href="${symbol_pound}" onclick="updateRootURLInputBox('${symbol_dollar}{service.context}/webjars/prov-template-library/${symbol_dollar}{pom.the.template.library.version}/templates/org/openprovenance/prov/templates/generic/binaryop.provn')">
+                                                    <i class="icon-ok"></i>  generic/binaryop</a>
+                                                </li>
+
+                                                <li class="divider"></li>
+                                                <li><a href="${symbol_pound}" onclick="updateURLInputBox('')"><i class="icon-trash"></i> Clear</a></li>
+                                            </ul>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Bindings</td>
+                                    <td>
+                                        <textarea id="the-bindings-input" rows="10" name="statements" placehoder="Set of bindings in json format" style="width:350px; "></textarea>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Examples</td>
+                                    <td>
+                                        <div class="input-append btn-group">
+
+                                            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="${symbol_pound}">
+                                                <span class="caret"></span>
+                                            </a>
+
+                                            <ul class="dropdown-menu">
+                                                <li>Bindings Examples</li>
+                                                <li><a href="${symbol_pound}" onclick="updateRootBindingsBox('${symbol_dollar}{service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b1.json')">
+                                                    <i class="icon-ok"></i>  generic.binaryop.b1 (1 output)</a>
+                                                </li>
+                                                <li><a href="${symbol_pound}" onclick="updateRootBindingsBox('${symbol_dollar}{service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b2.json')">
+                                                    <i class="icon-ok"></i>  generic.binaryop.b2 (2 outputs)</a>
+                                                </li>
+                                                <li><a href="${symbol_pound}" onclick="updateRootBindingsBox('${symbol_dollar}{service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b3.json')">
+                                                    <i class="icon-ok"></i>  generic.binaryop.b3 (1 output, 2 properties)</a>
+                                                </li>
+                                                <li><a href="${symbol_pound}" onclick="updateRootBindingsBox('${symbol_dollar}{service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b4.json')">
+                                                    <i class="icon-ok"></i>  generic.binaryop.b4 (2 outputs, 1 or 2 properties)</a>
+                                                </li>
+
+                                                <li class="divider"></li>
+                                                <li><a href="${symbol_pound}" onclick="updateBindingsBoxupdateBindingsBox('')"><i class="icon-trash"></i> Clear</a></li>
+                                            </ul>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function diff (arr1, arr2) {
+        return arr1.filter(x => !arr2.includes(x));
+    }
+
+    function constructMenusConfiguration() {
+        let profile = {}
+        let composites = {}
+        for (var indx in builders) {
+            const builder = builders[indx]
+            let name = builder.getName()
+            let consistOf = builder.isCompositeOf()
+            if (typeof builder.getCompulsoryInputs !== "undefined") { //not selecting composite
+                let compusolryFields = ["isA"].concat(builder.getCompulsoryInputs());
+                let optionalFields = diff(builder.getInputs(), builder.getCompulsoryInputs());
+                profile[name] = {
+                    compulsory: compusolryFields,
+                    optional: optionalFields
+                }
+            }
+            if (consistOf != null) {
+                console.log("composite " + name + " consists of " + consistOf)
+                profile[name] = {
+                    compulsory: ["isA", "__elements"],
+                    optional: diff(builder.getPropertyOrder(), ["isA"])
+                }
+                composites[name] = consistOf
+            }
+        }
+
+        // now process composites to add compulsory fields from their components
+        for (var name in composites) {
+            let consistOf = composites[name];
+            profile[name].compulsory = profile[name].compulsory.concat(profile[consistOf].compulsory.map(x => ["__element", x]));
+        }
+
+        return profile;
+    }
+
+
+
+    const MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON = "application/vnd.kcl.prov-template+json";
+    const MEDIA_TYPE_TEXT_CSV = "text/csv";
+
+    const HTML_ANCHOR_ENACT_RESULT_BOX = '${symbol_pound}enact_result';
+    const HTML_ANCHOR_JSON_RESULT = '${symbol_pound}json_result';
+    const HTML_ANCHOR_CSV_RESULT = '${symbol_pound}csv_result';
+    const HTML_ANCHOR_CSV_LOG = '${symbol_pound}csv_log';
+    const HTML_ANCHOR_ENACT_RESULT_PROV_LINK = '${symbol_pound}prov_link';
+    const HTML_ANCHOR_EXPLANATION_PROV_LINK = '${symbol_pound}prov_xplain';
+    const HTML_ANCHOR_DOCUMENTATION_IMAGE = '${symbol_pound}documentation_image';
+    const HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER = "${symbol_pound}template-dropdown-composer";
+    const HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN = "${symbol_pound}template-dropdown-documentation";
+
+    const SUBMISSION_URL = '${symbol_dollar}{service.context}/provapi/statements/';
+    const SCHEMA_URL = "${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/schema/schema${symbol_dollar}{the.template.sublibrary}.json";
+    const DOC_URL = "${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/html/doc${symbol_dollar}{the.template.sublibrary}.html";
+
+    const logger=new ${symbol_dollar}{logger.constructor}();
+    const builders=logger.getBuilders()
+    const profile = constructMenusConfiguration();
+
+    console.log(profile)
+
+
+    function submitEnactor(jsonSubmit) {
+        ${symbol_dollar}(HTML_ANCHOR_ENACT_RESULT_BOX).html(${symbol_dollar}('<p>'));
+        ${symbol_dollar}(HTML_ANCHOR_ENACT_RESULT_BOX).attr('received','false');
+        submitService(jsonSubmit, SUBMISSION_URL, HTML_ANCHOR_ENACT_RESULT_BOX, HTML_ANCHOR_CSV_LOG, HTML_ANCHOR_ENACT_RESULT_PROV_LINK, HTML_ANCHOR_EXPLANATION_PROV_LINK, true,true)
+    }
+
+
+
+    var alreadySeen=[]
+
+    function createProvLink(name, ID) {
+        return "Link to Provenance <a target='_blank' href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".svg'   >(svg)</a>,"
+                               + " <a target='_blank' href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".provn' >(provn)</a>,"
+                               + " <a target='_blank' href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".jsonld'>(jsonld)</a>";
+    }
+
+    function createXplainLink(name, ID) {
+
+        return "Link to <a target='_blank' href='${symbol_dollar}{service.context}/provapi/explanation/template/" + name + "/" + ID + "'   >explanation</a>";
+    }
+
+    // function getExplanation(url,accept,id) sends get request to url with http header Accept-Explanation set to parameter accept, and results added to html element with id
+    function getExplanation(url, accept_explanation, id) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+        };
+        xhr.onload= function() {
+            const response = xhr.responseText;
+            console.log("loaded " + xhr.status);
+            ${symbol_dollar}(id).html(response);
+        }
+        xhr.setRequestHeader("Accept-PROV-explanation", accept_explanation);
+        xhr.setRequestHeader("Accept", "text/plain");
+        xhr.send();
+    }
+
+
+    function submitService(jsonSubmit, url, anchor_result_box, anchor_csv, anchor_result_prov_link, anchor_explanation, enactorp, allRecordsp) {
+        console.log("submitService")
+
+        let csv_data=${symbol_dollar}(HTML_ANCHOR_CSV_RESULT).text()
+        const input_bean = tm.getBean();
+        const __elements=input_bean.__elements;
+        let json_data=JSON.stringify(alreadySeen.concat([input_bean]))
+        if (allRecordsp) alreadySeen=[]
+        console.log("submitService " + json_data);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+            ${symbol_dollar}(anchor_result_box).html("error with " + event);
+
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+            ${symbol_dollar}(anchor_result_box).html("abort with " + event);
+        };
+        xhr.onload= function() {
+            console.log("loaded " + xhr.status);
+            if (xhr.status === 400 || xhr.status === 404) {
+                ${symbol_dollar}(anchor_result_box).html("status code " + xhr.status + " " + xhr.responseText);
+            } else if (!enactorp && (xhr.status === 200)) {
+                ${symbol_dollar}(anchor_result_box).html('<i class="fa fa-check"></i>' + "Passed Validator!");
+            } else {
+                const parsed = JSON.parse(xhr.responseText);
+                let name=parsed[0]["isA"];
+                if (__elements) {
+                    // this is a compositive bean, get the type from the input bean
+                    parsed[0].type=input_bean.type;
+                }
+                let highlighted=tm.syntaxHighlight_json(JSON.stringify(parsed, null, 2), name)
+                ${symbol_dollar}(anchor_result_box).html(highlighted);
+                if (anchor_csv) {
+                    let merged= {...input_bean, ...parsed[0]}
+                    let csv_bean=tm.populateBean(name, merged)
+                    // if we want json log
+                    //      ${symbol_dollar}(id2).append(JSON.stringify(merged, null, 2));
+                    // if we want csv log
+                    ${symbol_dollar}(anchor_csv).append("<p>").append(csv_bean[0]).append("</p>");
+                }
+                if (anchor_result_prov_link) {
+                    let ID=parsed[0]["ID"];
+                    let prov_link = createProvLink(name, ID);
+                    ${symbol_dollar}(anchor_result_prov_link).html(prov_link).append("<p/>").append("<div id='xplain-id'></div>").append("<p/>");
+                    getExplanation('${symbol_dollar}{service.context}/provapi/explanation/template/' + name + '/' + ID, 'default', anchor_explanation);
+                }
+
+            }
+            ${symbol_dollar}(anchor_result_box).attr('received','true');
+        }
+
+        // Currently, the server does not support the csv format in the result
+        if (true) {
+            xhr.setRequestHeader("Accept", MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON);
+        } else {
+            xhr.setRequestHeader("Accept", MEDIA_TYPE_TEXT_CSV);
+        }
+
+        if (jsonSubmit) {
+            xhr.setRequestHeader("Content-Type", MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON);
+        } else {
+            xhr.setRequestHeader("Content-Type", MEDIA_TYPE_TEXT_CSV);
+        }
+
+        console.log("submitService " + jsonSubmit);
+
+        if (jsonSubmit) {
+            xhr.send(json_data);
+        } else {
+            xhr.send(csv_data);
+        }
+    }
+
+    function enactClear() {
+        ${symbol_dollar}(HTML_ANCHOR_ENACT_RESULT_BOX).html("");
+        ${symbol_dollar}(HTML_ANCHOR_ENACT_RESULT_PROV_LINK).html("");
+    }
+
+    function clearBrowse() {
+        //${symbol_dollar}('${symbol_pound}browser_list').DataTable().clear().destroy();
+        ${symbol_dollar}('${symbol_pound}browser_from_date').val("");
+        ${symbol_dollar}('${symbol_pound}browser_to_date').val("");
+        ${symbol_dollar}('${symbol_pound}browser_base_relation').val("activity");
+        ${symbol_dollar}('${symbol_pound}browser_limit').val("10");
+    }
+
+    function submitBrowse() {
+        //let url = "http://localhost:7072/ptl/provapi/templates/records"
+        let url = "${symbol_dollar}{service.context}/provapi/templates/records"
+        console.log("submitBrowse " + url)
+        let id = '${symbol_pound}browser_list'
+        let from_date = ${symbol_dollar}('${symbol_pound}browser_from_date').val()
+        let to_date = ${symbol_dollar}('${symbol_pound}browser_to_date').val()
+        let limit = ${symbol_dollar}('${symbol_pound}browser_limit').val()
+
+        // if from_date is not empty string, replace by null
+        if (from_date === "") {
+            from_date = null
+        }
+        // if to_date is not empty string, replace by null
+        if (to_date === "") {
+            to_date = null
+        }
+
+
+
+        let search_config = {
+            base_relation: ${symbol_dollar}('${symbol_pound}browser_base_relation').val(),
+            from_date: from_date,
+            to_date: to_date,
+            limit: limit
+        }
+        let json_data=JSON.stringify(search_config)
+        console.log("submitBrowse " + json_data)
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+        };
+        xhr.onload= function (contents) {
+            let contents2 = xhr.responseText;
+            var data = ${symbol_dollar}.csv.toArrays(contents2);
+            data.shift()
+            var columns = data[0];
+            var titles = ${symbol_dollar}.map(columns, function (column) {
+                return {"title": column}
+            })
+            console.log(titles)
+            data.shift()
+            console.log(data)
+
+            let seen=[]
+
+            ${symbol_dollar}(id).DataTable({
+                destroy: true,
+                "data": data,
+                "columns": titles,
+                order: [[1, 'desc']],
+                columnDefs: [
+                    {
+                        // The `data` parameter refers to the data for the cell (defined by the
+                        // `data` option, which defaults to the column being worked with, in
+                        // this case `data: 0`.
+                        render: (data, type, row) => makeLinkToSignature(cleanSignature(data,row[4],row[3],seen),row[4],row[3]),
+                        targets: 7
+                    },//,
+                    {
+                        render: (data, type, row) => makeLinkToTemplate(data,row[4],row[3]),
+                        targets: 4
+                    },
+                    {
+                        render: (data, type, row) => makeLinkToBaseRelation(data,data,row[2]),
+                        targets: 0
+                    }
+
+                    //{ visible: false, targets: [3] }
+                    ]
+
+            });
+        }
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(json_data);
+
+    }
+
+    function cleanSignature(data,id,template,seen) {
+        if (data===null || data===undefined || data==="" || data==="null") {
+            return "";
+        }
+
+        let sig=JSON.parse(data)["SHA3-512"]
+
+        if (!seen.includes(id)) {
+            seen.push(id)
+            getRecordAsCsv(sig, id, template)
+        }
+
+        return "<div id='" + sig + "'>" + sig.substring(0, 8) + "..." + "</div>"
+    }
+
+    function getRecordAsCsv(sig, id, template) {
+        let url = "http://localhost:7072/ptl/provapi/template/" + template + "/" + id + ".csv"
+        // perform an XMLHttpRequest() to get the csv record, calculate its hash and compare it with the signature
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+        };
+        xhr.onload= function() {
+            const response = xhr.responseText;
+            // get first line of the response
+            let trimmed=response.slice(0, response.indexOf("${symbol_escape}n"));
+            // string to hash
+            let toHash=id+","+trimmed
+
+            let csv_sig=sha3_512(toHash)
+            console.log("id: hash " + id )
+            console.log("- csv_sig " + csv_sig)
+            console.log("- sig " + sig)
+            let div_id = "${symbol_pound}" + sig
+            if (csv_sig !== sig) {
+                // append cross at the end of the div with id
+                ${symbol_dollar}(div_id).append('<i  style="color: red"class="fa fa-times"></i>')
+            } else {
+                // append a green tick at the end of the div with id
+                ${symbol_dollar}(div_id).append('<i style="color: green" class="fa fa-check"></i>')
+
+            }
+        }
+        xhr.setRequestHeader("Accept", "text/csv");
+        xhr.send();
+    }
+
+
+    function makeLinkToSignature(data, id, template) {
+        if (data==="") return "";
+        return "<a  target='_blank' href='${symbol_dollar}{service.context}/provapi/hash/template/" + template + "/" + id + "'>" + data + "</a>";
+    }
+
+    function makeLinkToTemplate(data, id, template) {
+        if (data==="") return "";
+        return "<a  target='_blank' href='${symbol_dollar}{service.context}/provapi/template/" + template + "/" + id + ".svg'>" + data + "</a>";
+    }
+
+    function makeLinkToBaseRelation(data, id, relation) {
+        if (data==="") return "";
+        return "<a  target='_blank' href='${symbol_dollar}{service.context}/provapi/live/" + relation + "/" + id + ".svg'>" + data + "</a>";
+    }
+
+    function submitNavigate(id) {
+        //let url = "http://localhost:7072/ptl/provapi/templates/viz"
+        let url = "${symbol_dollar}{service.context}/provapi/templates/viz"
+        let template=${symbol_dollar}('${symbol_pound}navigator-template').val();
+        let property=${symbol_dollar}('${symbol_pound}navigator-property').val();
+        let template_id=${symbol_dollar}('${symbol_pound}navigator-id').val();
+        let style=${symbol_dollar}('${symbol_pound}navigator-style').val();
+
+        console.log("submitNavigate " + template + " " + property + " " + id + " " + style);
+
+        let config = {
+            template: template,
+            property: property,
+            id: template_id,
+            style: style
+        }
+
+        let json_data=JSON.stringify(config)
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+        };
+        xhr.onload= function() {
+            const response = xhr.responseText;
+            console.log("loaded " + xhr.status);
+            ${symbol_dollar}(id).html(response);
+        }
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Accept", "image/svg+xml");
+        xhr.send(json_data);
+
+
+    }
+
+
+    let imageNameMapper = {
+        "plead_transforming": "plead-transforming",
+        "plead_filtering": "plead-filtering",
+        "plead_training": "plead-training",
+        "plead_validating": "plead-validating",
+        "plead_approving": "plead-approving",
+        "plead_splitting": "plead-splitting"
+    };
+
+    const tm=new TemplateManager(logger,SCHEMA_URL,DOC_URL,profile);
+    tm.setCsvResult(HTML_ANCHOR_CSV_RESULT);
+    tm.setJsonResult(HTML_ANCHOR_JSON_RESULT);
+    tm.setImageUrlPrefix('${symbol_dollar}{image.url.prefix}');
+    tm.setImageLocation(HTML_ANCHOR_DOCUMENTATION_IMAGE);
+    tm.setFilenameConverter(imageNameMapper)
+    tm.createDropdownForPlayground(HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER, "tm");
+    tm.createDropdownForDocumentation(HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN, "tm");
+
+
+
+</script>
+<script src="provservice.js"></script>
+<script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+<script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/dropdown.js"></script>
+<script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/tab.js"></script>
+<script>
+    ${symbol_dollar}('.dropdown-toggle').dropdown();
+</script>
+</body>
+</html>

@@ -9,7 +9,7 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
 
     public String template;
 
-    public String bindings;
+    public String cbindings;
 
     @Override
     @JsonProperty("@type")
@@ -28,9 +28,10 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
         return "SimpleTemplateCompilerConfig{" +
                 "@type='" + type_ + '\'' +
                 ", name='" + name + '\'' +
+                ", fullyQualifiedName='" + fullyQualifiedName + '\'' +
                 ", template='" + template + '\'' +
                 ", package_='" + package_ + '\'' +
-                ", bindings='" + bindings + '\'' +
+                ", cbindings='" + cbindings + '\'' +
                 '}';
     }
 
@@ -40,13 +41,14 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
     @JsonIgnore
     public List<String> sharing;
 
-    public SimpleTemplateCompilerConfig cloneAsInstanceInComposition(String newName, List<String> sharing) {
+    public SimpleTemplateCompilerConfig cloneAsInstanceInComposition(String newName, String newFullQualifiedName, List<String> sharing) {
         SimpleTemplateCompilerConfig clone= new SimpleTemplateCompilerConfig();
         clone.template=template;
         clone.type_=type_;
         clone.name= newName; //this.name +"_shared";
+        clone.fullyQualifiedName=newFullQualifiedName; //this.fullyQualifiedName+"._shared";
         clone.package_=package_;
-        clone.bindings=bindings;
+        clone.cbindings = cbindings;
         clone.inComposition=true;
         clone.sharing=sharing;
         return clone;

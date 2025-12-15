@@ -1,8 +1,6 @@
 package org.openprovenance.prov.scala.nlg
 
-import org.apache.http.client.methods.{CloseableHttpResponse, HttpPost}
-import org.apache.http.entity.StringEntity
-import org.apache.http.impl.client.HttpClientBuilder
+
 import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.nlgspec_transformer.defs.callSimplenlgLibrary

@@ -1,0 +1,125 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <block type="clause" id="6u!hC!HjWZ/n2B=C4|YF" x="-20" y="40">
+    <value name="SUBJECT">
+      <block type="text" id="{w2xZi*EBG=r-3-O*f%R">
+        <field name="TEXT">we</field>
+      </block>
+    </value>
+    <value name="VERB">
+      <block type="text" id=",8Q=^#6Qk~1AG1Kglokf">
+        <field name="TEXT">regret</field>
+      </block>
+    </value>
+    <value name="DIRECT_OBJECT">
+      <block type="clause" id="}GV^k8G.4;L1V_*?S}?a">
+        <value name="VERB">
+          <block type="verb_phrase" id="5V~6o~5~z?PE4@,]p}=`">
+            <value name="HEAD">
+              <block type="text" id="-zi#i/T|WW0}M!BdIzK`">
+                <field name="TEXT">inform</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <value name="DIRECT_OBJECT">
+          <block type="noun_phrase" id="}V@u6c$MaKF4gTQLT%G}">
+            <value name="HEAD">
+              <block type="text" id="xM3t4Ei4Q.$Qy^iBIM}2">
+                <field name="TEXT">you</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <value name="COMPLEMENTS">
+          <block type="clause" id=",H:/hs7$r24{lj0Jfo;g">
+            <value name="SUBJECT">
+              <block type="text" id="7~52h_zs672g+{}j?Hhx">
+                <field name="TEXT">we</field>
+              </block>
+            </value>
+            <value name="VERB">
+              <block type="text" id="_NxaB4LGw@]kVmwTxA$^">
+                <field name="TEXT">decline</field>
+              </block>
+            </value>
+            <value name="DIRECT_OBJECT">
+              <block type="noun_phrase" id=",E7Mr+3%D!KQq/.csdP)">
+                <value name="HEAD">
+                  <block type="text" id="bKR.dBb%/aq6,a)Z[mn/">
+                    <field name="TEXT">application</field>
+                  </block>
+                </value>
+                <value name="SPECIFIER">
+                  <block type="text" id="pv7%/x~N!m88pf.d0.Sh">
+                    <field name="TEXT">##borrower-possessive</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="COMPLEMENTS">
+              <block type="clause" id="qSxp?yKA3olu(7MM*Y~;">
+                <value name="SUBJECT">
+                  <block type="noun_phrase" id=",h[1}?P2[=IVJ|!j!ati">
+                    <value name="DETERMINER">
+                      <block type="text" id="l$QwOP=]i%Ragt/6oFxl">
+                        <field name="TEXT">your</field>
+                      </block>
+                    </value>
+                    <value name="HEAD">
+                      <block type="text" id="4Tq_dx1`ue5q.JhNuSD}">
+                        <field name="TEXT">credit score</field>
+                      </block>
+                    </value>
+                    <value name="MODIFIERS">
+                      <block type="lists_create_with" id="{d7zQmE_(KjYUo$)Rb/r">
+                        <mutation items="1"></mutation>
+                        <value name="ADD0">
+                          <block type="adjective_phrase" id="/zPnj]O%j4(eG0(}e!`,">
+                            <value name="HEAD">
+                              <block type="text" id="zZVcL)xicb9!FH~t9J:e">
+                                <field name="TEXT">low</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <value name="COMPLEMENTISER">
+                  <block type="text" id="_SyDc%$?gXjvC1B9+@t5">
+                    <field name="TEXT">because of</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="FEATURES">
+              <block type="features" id="zgw?kLM,Bqy;)Qp,Er(I">
+                <field name="TENSE_TICK">TRUE</field>
+                <field name="TENSE_CHOICE">PAST</field>
+                <field name="VOICE_TICK">FALSE</field>
+                <field name="VOICE_CHOICE">PASSIVE</field>
+                <field name="NUMBER_TICK">FALSE</field>
+                <field name="NUMBER_CHOICE">SINGULAR</field>
+                <field name="PARTICIPLE_TICK">FALSE</field>
+                <field name="PARTICIPLE_CHOICE">PAST_PARTICIPLE</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <value name="COMPLEMENTISER">
+          <block type="text" id="7]MpSXW-dcO`s+2`H(4U">
+            <field name="TEXT">to</field>
+          </block>
+        </value>
+      </block>
+    </value>
+  </block>
+  <block type="config" id="[Y;)Hh-5U3+W15_sQt^r" x="238" y="28">
+    <value name="PROFILE">
+      <block type="text" id="6-HoEu5%Zr20pP_m+|o0">
+        <field name="TEXT">ln:borrower-noun</field>
+      </block>
+    </value>
+  </block>
+</xml>

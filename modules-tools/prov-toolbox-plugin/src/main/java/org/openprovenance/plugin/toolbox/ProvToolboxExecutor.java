@@ -26,6 +26,7 @@ public class ProvToolboxExecutor extends AbstractMojo {
 
     public void execute() throws MojoExecutionException {
         try {
+            /*
             List<String> classpathElements = project.getCompileClasspathElements();
             URL[] urls = new URL[classpathElements.size()];
             for (int i = 0; i < classpathElements.size(); i++) {
@@ -40,6 +41,7 @@ public class ProvToolboxExecutor extends AbstractMojo {
             //URLClassLoader loader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
             //Class<?> clazz = Class.forName(className, true, loader);
             //Method method = clazz.getMethod("mainNoExit", String[].class);
+                      */
             String[] argsArray = args.toArray(new String[0]);
             CommandLineArguments.mainNoExit(argsArray);
 

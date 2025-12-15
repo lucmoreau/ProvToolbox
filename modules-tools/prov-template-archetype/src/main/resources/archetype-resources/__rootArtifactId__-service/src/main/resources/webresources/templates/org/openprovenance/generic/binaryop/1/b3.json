@@ -1,0 +1,54 @@
+
+{
+  "var": {
+    "operation": [
+      {
+        "@id": "ex:operation1"
+      }
+    ],
+    "agent": [
+      {
+        "@id": "ex:ag1"
+      }
+    ],
+    "consumed1": [
+      {
+        "@id": "ex:input_1"
+      }
+    ],
+    "consumed_value1": [
+      {
+        "@value": "4",
+        "@type": "xsd:int"
+      }
+    ],
+    "consumed2": [
+      {
+        "@id": "ex:input_2"
+      }
+    ],
+    "consumed_value2": [
+      {
+        "@value": "5",
+        "@type": "xsd:int"
+      }
+    ],
+    "produced": [
+	{
+            "@id": "ex:output1"
+	}	
+    ],
+    "produced_type": [[
+      {
+        "@id": "ex:Result1"
+      },
+      {
+        "@id": "ex:Result2"
+      }
+    ]]
+  },
+  "context": {
+    "ex": "http://example.org/#"
+  },
+  "template": "https://openprovenance.org/templates/org/openprovenance/generic/binaryop/1.provn"
+}

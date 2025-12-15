@@ -69,7 +69,7 @@ public class VariableChecker {
     }
 
     public boolean checkPlanId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.plan)) || id.getLocalPart().matches(ifExists(pv.wasAssociatedWithPlan));
+        return id == null || id.getLocalPart().matches(ifExists(pv.plan)) || id.getLocalPart().matches(ifExists(pv.wasAssociatedWithEntity));
     }
 
     public boolean checkWasInvalidatedById(QualifiedName id) {

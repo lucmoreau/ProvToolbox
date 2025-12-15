@@ -33,6 +33,16 @@ public class VariableChecker {
         return id == null || id.getLocalPart().matches(ifExists(pv.entity)) || id.getLocalPart().matches(ifExists(pv.wasGeneratedByEntity));
     }
 
+    public boolean checkUsedEntityId(QualifiedName id) {
+        return id == null || id.getLocalPart().matches(ifExists(pv.entity)) || id.getLocalPart().matches(ifExists(pv.usedEntity));
+    }
+
+    public boolean checkWasDerivedFromEntityId(QualifiedName id) {
+        return id == null || id.getLocalPart().matches(ifExists(pv.entity)) || id.getLocalPart().matches(ifExists(pv.wasDerivedFromEntity));
+    }
+
+
+
     public boolean checkSpecializationOfEntityId(QualifiedName id) {
         return id == null || id.getLocalPart().matches(ifExists(pv.entity)) || id.getLocalPart().matches(ifExists(pv.specializationOfEntity));
     }
@@ -59,7 +69,7 @@ public class VariableChecker {
     }
 
     public boolean checkPlanId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.plan));
+        return id == null || id.getLocalPart().matches(ifExists(pv.plan)) || id.getLocalPart().matches(ifExists(pv.wasAssociatedWithPlan));
     }
 
     public boolean checkWasInvalidatedById(QualifiedName id) {

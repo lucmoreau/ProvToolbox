@@ -39,7 +39,8 @@ public class StatementChecker implements org.openprovenance.prov.model.Statement
     public void doAction(Used s) {
         assertTrue(vc.checkUsedId(s.getId()), s, "Invalid Used id", s.getId());
         assertTrue(vc.checkActivityId(s.getActivity()), s, "Invalid Activity id", s.getActivity());
-        assertTrue(vc.checkEntityId(s.getEntity()), s, "Invalid Entity id", s.getEntity());
+        //assertTrue(vc.checkEntityId(s.getEntity()), s, "Invalid Entity id", s.getEntity());
+        assertTrue(vc.checkUsedEntityId(s.getEntity()), s, "Invalid Entity id", s.getEntity());
         doAttributes(s.getOther(), s);
     }
 
@@ -95,6 +96,8 @@ public class StatementChecker implements org.openprovenance.prov.model.Statement
     public void doAction(WasDerivedFrom s) {
         assertTrue(vc.checkWasDerivedFromId(s.getId()), s, "Invalid WasDerivedFrom id", s.getId());
         assertTrue(vc.checkActivityId(s.getActivity()), s, "Invalid Activity id", s.getActivity());
+        assertTrue(vc.checkWasDerivedFromEntityId(s.getGeneratedEntity()), s, "Invalid Entity id", s.getGeneratedEntity());
+        assertTrue(vc.checkWasDerivedFromEntityId(s.getUsedEntity()), s, "Invalid Entity id", s.getUsedEntity());
         assertTrue(vc.checkEntityId(s.getGeneratedEntity()), s, "Invalid Entity id", s.getGeneratedEntity());
         assertTrue(vc.checkEntityId(s.getUsedEntity()), s, "Invalid Entity id", s.getUsedEntity());
         assertTrue(vc.checkUsedId(s.getUsage()), s, "Invalid Usage id", s.getUsage());

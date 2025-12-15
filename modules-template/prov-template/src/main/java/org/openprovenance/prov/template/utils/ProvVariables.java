@@ -14,6 +14,13 @@ public class ProvVariables {
     public String wasGeneratedByEntity;
     @JsonProperty("entity.specializationOf")
     public String specializationOfEntity;
+    @JsonProperty("entity.used")
+    public String usedEntity;
+    @JsonProperty("entity.wasDerivedFrom")
+    public String wasDerivedFromEntity;
+    @JsonProperty("plan.wasAssociatedWith")
+    public String wasAssociatedWithEntity;
+
 
     public String plan;
     public String collection;

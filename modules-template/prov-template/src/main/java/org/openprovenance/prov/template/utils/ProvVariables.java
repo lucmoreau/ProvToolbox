@@ -46,4 +46,7 @@ public class ProvVariables {
 
     public Map<String,String> attributes;
     public Map<String,String> values;
+
+    @JsonProperty(".name")
+    public String checkerName;
 }

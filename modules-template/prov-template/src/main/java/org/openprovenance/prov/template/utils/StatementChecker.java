@@ -249,7 +249,7 @@ public class StatementChecker implements org.openprovenance.prov.model.Statement
 
         public void assertTrue(boolean condition, StatementOrBundle s, String message, QualifiedName varName) {
             if (!condition) {
-                System.out.println("**** FAILED CHECK: "+message+" for variable "+varName+" in statement "+s.toString());
+                System.out.println("**** FAILED CHECK (" + vc.pv.checkerName + "): "  +message+" for variable "+varName+" in statement "+s.toString());
                 if (strict) throw new VariableCheckException("In statement: " + s.toString() + ": " + message + " for variable " + varName);
             }
         }
@@ -258,9 +258,19 @@ public class StatementChecker implements org.openprovenance.prov.model.Statement
         public void assertTrue(boolean condition, Statement s, String message, QualifiedName attrName, QualifiedName qn) {
            // System.out.println("**** CHECKING: "+message+" for attribute-value pair "+attrName+","+ qn + " in statement "+s.toString());
             if (!condition) {
-                System.out.println("**** FAILED CHECK: "+message+" for attribute-value pair "+attrName+","+ qn + " in statement "+s.toString());
+                System.out.println("**** FAILED CHECK (" + vc.pv.checkerName + "): "  +message+" for attribute-value pair "+attrName+","+ qn + " in statement "+s.toString());
                 if (strict) throw new VariableCheckException("In statement: " + s.toString() + ": " + message+" for attribute-value pair "+attrName+","+ qn);
             }
         }
 
+    public String getVariableChecker() {
+        return vc.pv.checkerName;
     }
+
+    @Override
+    public String toString() {
+        return "StatementChecker{" +
+                "vc=" + getVariableChecker() +
+                '}';
+    }
+}

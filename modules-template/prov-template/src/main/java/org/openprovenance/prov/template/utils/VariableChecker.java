@@ -5,7 +5,7 @@ import org.openprovenance.prov.model.Statement;
 
 
 public class VariableChecker {
-    private final ProvVariables pv;
+    final ProvVariables pv;
 
     public VariableChecker(ProvVariables pv) {
         this.pv = pv;
@@ -149,6 +149,10 @@ public class VariableChecker {
         };
     }
 
-
-
+    @Override
+    public String toString() {
+        return "VariableChecker{" +
+                "pv=" + pv.checkerName +
+                '}';
+    }
 }

@@ -142,7 +142,7 @@ public class InstantiateTask implements ConfigTask {
         } else {
             statementChecker=Optional.empty();
         }
-        statementChecker.ifPresent(sc -> System.out.println("***** Variable Checker: " + sc));
+        statementChecker.ifPresent(sc -> System.out.println("***** Variable Checker: " + sc.getVariableChecker()));
         statementChecker.ifPresent(sc -> new ProvUtilities().forAllStatementOrBundle(doc.getStatementOrBundle(), sc));
 
 

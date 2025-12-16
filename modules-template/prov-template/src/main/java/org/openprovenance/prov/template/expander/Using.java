@@ -118,7 +118,13 @@ public class Using implements Iterable<List<Integer>> {
                     }
                     result.put(var, val.get(ind));
                 } catch (IndexOutOfBoundsException excp) {
-                    throw new MissingAttributeValue("Missing attribute value for variable " + var + ": index is " + ind + " and values are " + val, excp);
+                    List<TypedValue> attVal = val.get(0);
+                    System.err.println("IndexOutOfBoundsWarning: Using index " + ind + " for variable " + var + " with values " + val + ". Reusing first attribute value: " + attVal);
+                    if (attVal!=null) {
+                        result.put(var, attVal);
+                    } else {
+                        throw new MissingAttributeValue("Missing attribute value for variable " + var + ": index is " + ind + " and values are " + val, excp);
+                    }
                 }
             }
         }

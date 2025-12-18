@@ -163,7 +163,7 @@ public class MergeTask implements ConfigTask {
         } else {
             statementChecker=Optional.empty();
         }
-        statementChecker.ifPresent(sc -> System.out.println("***** Variable Checker: " + sc));
+        statementChecker.ifPresent(sc -> System.out.println("***** Variable Checker: " + sc + " (" + simplify(output) + ")"));
         statementChecker.ifPresent(sc -> new ProvUtilities().forAllStatementOrBundle(doc3.getStatementOrBundle(), sc));
 
 
@@ -182,6 +182,16 @@ public class MergeTask implements ConfigTask {
                     }
                 }
             }
+        }
+    }
+
+    static String simplify(String output) {
+        // return suffix after last /
+        int lastSlash=output.lastIndexOf('/');
+        if (lastSlash>=0) {
+            return output.substring(lastSlash+1);
+        } else {
+            return output;
         }
     }
 

@@ -23,11 +23,21 @@ public class Expand {
 
     final private boolean addOrderp;
     final private boolean allUpdatedRequired;
+    private final boolean preserveUnboundVariables;
+
+    boolean displayUnusedVariables=true;
 
     public Expand(ProvFactory pf, boolean addOrderp, boolean allUpdatedRequired) {
         this.pf = pf;
         this.addOrderp = addOrderp;
         this.allUpdatedRequired = allUpdatedRequired;
+        this.preserveUnboundVariables=false;
+    }
+    public Expand(ProvFactory pf, boolean addOrderp, boolean allUpdatedRequired, boolean preserveUnboundVariables) {
+        this.pf = pf;
+        this.addOrderp = addOrderp;
+        this.allUpdatedRequired = allUpdatedRequired;
+        this.preserveUnboundVariables=preserveUnboundVariables;
     }
     public Expand(ProvFactory pf) {
         this(pf, false, false);
@@ -71,15 +81,17 @@ public class Expand {
 
     static ProvUtilities u = new ProvUtilities();
 
-    public List<StatementOrBundle> expand(Statement statement, OldBindings oldBindings, Groupings grp1) {
+    public List<StatementOrBundle> expand(Statement statement, OldBindings oldBindings, Groupings grp1, Set<String> unboundVariables) {
         Using us1 = ExpandUtil.usedGroups(statement, grp1, oldBindings);
-        return expand(statement, oldBindings, grp1, us1);
+        return expand(statement, oldBindings, grp1, us1, unboundVariables);
     }
     
     boolean allExpanded=true;
     public boolean getAllExpanded() {
     	return allExpanded;
     }
+
+
 
     public List<StatementOrBundle> expand(Bundle bun, Bindings bindings, Groupings grp1) {
 
@@ -90,6 +102,9 @@ public class Expand {
         Map<QualifiedName, QualifiedName> env0 = new HashMap<>();
         Map<QualifiedName, List<TypedValue>> env1 = new HashMap<>();
 
+        Set<String> unboundVariables=new HashSet<>();
+        Set<String> usedBindings=new HashSet<>();
+
         ExpandAction action = new ExpandAction(pf,
                                                u,
                                                this,
@@ -99,16 +114,21 @@ public class Expand {
                                                legacyBindings,
                                                grp1,
                                                addOrderp,
-                                               allUpdatedRequired);
+                                               allUpdatedRequired,
+                                               unboundVariables,
+                                               preserveUnboundVariables);
         u.doAction(bun, action);
         allExpanded=allExpanded && action.getAllExpanded();
+        if (displayUnusedVariables && !unboundVariables.isEmpty()) {
+            System.out.println("The following variables in the templates were not bound: " + unboundVariables);
+        }
         return action.getList();
     }
 
     public List<StatementOrBundle> expand(Statement statement,
                                           OldBindings bindings1,
                                           Groupings grp1,
-                                          Using us1) {
+                                          Using us1, Set<String> unboundVariables) {
         List<StatementOrBundle> results = new LinkedList<>();
         Iterator<List<Integer>> iter = us1.iterator();
         /*
@@ -117,6 +137,7 @@ public class Expand {
          * System.out.println(" Using " + us1); System.out.println(" Groupings "
          * + grp1);
          */
+
         while (iter.hasNext()) {
             List<Integer> index = iter.next();
             // System.out.println(" Index " + index);
@@ -128,6 +149,8 @@ public class Expand {
                                bindings1,
                                (UsingIterator) iter);
 
+
+
             ExpandAction action = new ExpandAction(pf,
                                                    u,
                                                    this,
@@ -137,7 +160,9 @@ public class Expand {
                                                    bindings1,
                                                    grp1,
                                                    addOrderp,
-                                                   allUpdatedRequired);
+                                                   allUpdatedRequired,
+                                                   unboundVariables,
+                                                   preserveUnboundVariables);
             u.doAction(statement, action);
             allExpanded=allExpanded && action.getAllExpanded();
 

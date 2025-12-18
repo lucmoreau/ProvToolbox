@@ -43,7 +43,6 @@ import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.expander.exception.BundleVariableHasMultipleValues;
 import org.openprovenance.prov.template.expander.exception.BundleVariableHasNoValue;
-import org.openprovenance.prov.template.json.Bindings;
 
 public class ExpandAction implements StatementAction {
 
@@ -61,7 +60,9 @@ public class ExpandAction implements StatementAction {
     final private boolean addOrderp;
     final private String qualifiedNameURI;
     final private boolean allUpdatedRequired;
-    
+    private final Set<String> unboundVariables;
+    private final boolean preserveUnboundVariables;
+
     private boolean allExpanded=true;
     
     public boolean getAllExpanded() {
@@ -77,7 +78,9 @@ public class ExpandAction implements StatementAction {
                         OldBindings oldBindings,
                         Groupings grp1,
                         boolean addOrderp,
-                        boolean allUpdatedRequired) {
+                        boolean allUpdatedRequired,
+                        Set<String> unboundVariables,
+                        boolean preserveUnboundVariables) {
         this.pf = pf;
         this.expand = expand;
         this.env = env;
@@ -89,6 +92,8 @@ public class ExpandAction implements StatementAction {
         this.addOrderp = addOrderp;
         this.qualifiedNameURI = pf.getName().PROV_QUALIFIED_NAME.getUri();
         this.allUpdatedRequired=allUpdatedRequired;
+        this.unboundVariables=unboundVariables;
+        this.preserveUnboundVariables=preserveUnboundVariables;
     }
 
     @Override
@@ -540,6 +545,10 @@ public class ExpandAction implements StatementAction {
                     oldBindings.addVariable(id, uuid);
                     return true;
                 } else {
+                    if (unboundVariables!=null) unboundVariables.add(id.getLocalPart());
+                    if (!preserveUnboundVariables) {
+                       u.setter(res, position, null);
+                    }
                     return false;
                 }
             }
@@ -752,7 +761,7 @@ public class ExpandAction implements StatementAction {
         List<Statement> newStatements = new LinkedList<>();
 
         for (Statement s : statements) {
-            for (StatementOrBundle sb : expand.expand(s, oldBindings, grp1)) {
+            for (StatementOrBundle sb : expand.expand(s, oldBindings, grp1, unboundVariables)) {
                 newStatements.add((Statement) sb);
             }
 

@@ -213,7 +213,9 @@ public class StatementChecker implements org.openprovenance.prov.model.Statement
 
     @Override
     public void doAction(Bundle s, ProvUtilities provUtilities) {
-        assertTrue(vc.checkBundleId(s.getId()), s, "Invalid Bundle id", s.getId());
+        if (isVariable(s.getId())) {
+            assertTrue(vc.checkBundleId(s.getId()), s, "Invalid Bundle id", s.getId());
+        }
         provUtilities.forAllStatement(s.getStatement(),this);
     }
 

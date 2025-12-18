@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
 import static org.openprovenance.prov.template.expander.ttf.BatchExecutor.*;
+import static org.openprovenance.prov.template.expander.ttf.MergeTask.simplify;
 
 public class InstantiateTask implements ConfigTask {
     public String type;
@@ -142,7 +143,7 @@ public class InstantiateTask implements ConfigTask {
         } else {
             statementChecker=Optional.empty();
         }
-        statementChecker.ifPresent(sc -> System.out.println("***** Variable Checker: " + sc.getVariableChecker()));
+        statementChecker.ifPresent(sc -> System.out.println("***** Variable Checker: " + sc.getVariableChecker()  + " (" + simplify(output) + ")"));
         statementChecker.ifPresent(sc -> new ProvUtilities().forAllStatementOrBundle(doc.getStatementOrBundle(), sc));
 
 

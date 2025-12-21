@@ -17,6 +17,8 @@ public class DerivationBuilder {
     public static final String VOCAB = "vocab";
     public static final String PROVEXT = "provext";
     public static final String AG_401_Alice = "ag401";
+    public static final String AS_COLLECTION = "asCollection";
+    public static final String AS_MEMBER = "asMember";
     public static ProvFactory pFactory=new org.openprovenance.prov.vanilla.ProvFactory();
     public static Name name=pFactory.getName();
     protected final String edge2Colour;
@@ -863,21 +865,21 @@ public class DerivationBuilder {
         builder.wasGeneratedBy()
                 .entity("coll1")
                 .activity("insert0")
-                .role(PROVEXT, "outCollection")
+                .role(PROVEXT, AS_COLLECTION)
                 .attr(defs.dotColour, edge2Colour)
                 .build();
 
         builder.used()
                 .activity("insert0")
                 .entity("coll0")
-                .role(PROVEXT, "asCollection")
+                .role(PROVEXT, AS_COLLECTION)
                 .attr(defs.dotColour, edge1Colour)
                 .build();
 
         builder.used()
                 .activity("insert0")
                 .entity("item73")
-                .role(PROVEXT, "asEntity")
+                .role(PROVEXT, AS_MEMBER)
                 .attr(defs.dotColour, edge1Colour)
                 .build();
 
@@ -941,7 +943,7 @@ public class DerivationBuilder {
         builder.wasGeneratedBy()
                 .entity("coll1")
                 .activity("remove0")
-                .role(PROVEXT, "outCollection")
+                .role(PROVEXT, AS_COLLECTION)
                 .attr(defs.dotColour, edge2Colour)
                 .build();
 
@@ -955,7 +957,7 @@ public class DerivationBuilder {
         builder.used()
                 .activity("remove0")
                 .entity("item73")
-                .role(PROVEXT, "asEntity")
+                .role(PROVEXT, AS_MEMBER)
                 .attr(defs.dotColour, edge1Colour)
                 .build();
 

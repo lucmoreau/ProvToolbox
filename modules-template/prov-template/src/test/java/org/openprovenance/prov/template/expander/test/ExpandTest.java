@@ -23,9 +23,9 @@ public class ExpandTest extends TestCase {
 
     ObjectMapper mapper=new ObjectMapper();
 
-    public  void expandAndCheck(String in, String inBindings_asProv, String inBindings, String out) throws IOException {
+    public  void expandAndCheck(String templateFilename, String inBindings_asProv, String inBindings, String out) throws IOException {
 
-        Document doc= new Utility().readDocument(in, pf);
+        Document doc= new Utility().readDocument(templateFilename, pf);
         Document docBindings= new Utility().readDocument(inBindings_asProv, pf);
 
         OldBindings oldBindings= OldBindings.fromDocument_v1(docBindings, pf);
@@ -38,7 +38,7 @@ public class ExpandTest extends TestCase {
         Groupings grp1=Groupings.fromDocument(doc, newBindings, pf);
         System.err.println("Found groupings " + grp1);
 
-        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, newBindings, grp1).get(0);
+        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, newBindings, grp1, inBindings_asProv, templateFilename).get(0);
         Document doc1= pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
 
@@ -80,7 +80,7 @@ public class ExpandTest extends TestCase {
         BindingsBean inBindingsBean2=Conversions.toBean(inBindingsLegacy);
 
 
-        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, inBindings, grp1).get(0);
+        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, inBindings, grp1, inFileBindings, inFilename).get(0);
         Document doc1= pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
         bun1.setNamespace(Namespace.gatherNamespaces(bun1));

@@ -166,15 +166,13 @@ public class Expand {
             // System.out.println(" Index " + index);
 
             Map<QualifiedName, QualifiedName> env = us1.get(oldBindings, grp1, index);
-       // testing
+        // testing
             us1.newGet(bindings, grp1, index);
             Map<QualifiedName, List<TypedValue>> env2;
 
             env2 = us1.getAttr(ExpandUtil.freeAttributeVariables(statement, pf),
                                oldBindings,
                                (UsingIterator) iter);
-
-
 
             ExpandAction action = new ExpandAction(pf,
                                                    u,

@@ -1051,18 +1051,10 @@ public class ProvUtilities {
         case PROV_GENERATION: {
             final org.openprovenance.prov.model.WasGeneratedBy a = (org.openprovenance.prov.model.WasGeneratedBy) s;
             switch (i) {
-            case 0:
-                a.setId((QualifiedName) val);
-                return;
-            case 1:
-                a.setEntity((QualifiedName) val);
-                return;
-            case 2:
-                a.setActivity((QualifiedName) val);
-                return;
-            case 3:
-                a.setTime((XMLGregorianCalendar) val);
-                return;
+            case 0: a.setId((QualifiedName) val); return;
+            case 1: a.setEntity((QualifiedName) val); return;
+            case 2: a.setActivity((QualifiedName) val); return;
+            case 3: a.setTime((XMLGregorianCalendar) val); return;
             default:
                 throw new ArrayIndexOutOfBoundsException("ProvUtilities.setter() for " + kind
                                                          + " and index " + i);

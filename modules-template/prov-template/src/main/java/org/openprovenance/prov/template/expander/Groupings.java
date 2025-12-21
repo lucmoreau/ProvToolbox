@@ -25,10 +25,12 @@ public class Groupings {
         return variables.size();
     }
 
-    public void addVariable(QualifiedName name) {
+    public int addVariable(QualifiedName name) {
         List<QualifiedName> ll= new LinkedList<>();
         ll.add(name);
+        int len=variables.size();
         variables.add(ll);
+        return len;
     }
 
 
@@ -67,7 +69,7 @@ public class Groupings {
                 }
             }
         }
-        //TODO
+
         if (bindings!=null) {
             Map<String, String> blinked = bindings.linked;
             if (blinked !=null) {
@@ -78,13 +80,13 @@ public class Groupings {
                 }
             }
         }
-        //Luc add information for bindings file here
+
 
         // Compute transitive closure
         for(QualifiedName visit: linked.keySet()) {
             Stack<QualifiedName> toVisit = new Stack<>();
             toVisit.push(visit);
-            Collection<QualifiedName> reachable = new HashSet<>();
+            Set<QualifiedName> reachable = new HashSet<>();
             while(!toVisit.isEmpty()) {
                 QualifiedName local_qn = toVisit.pop();
                 for(QualifiedName neighbour: linked.get(local_qn)) {
@@ -104,25 +106,33 @@ public class Groupings {
         for (QualifiedName qn: sorted) {
             Set<QualifiedName> links=linked.get(qn);
             if (links==null || links.isEmpty()) {
-                grps.addVariable(qn);
+                int g=grps.addVariable(qn);
+                if (g!=currentGroup) {
+                    throw new IllegalStateException("Unexpected group index");
+                }
+                currentGroup++;
             } else {
                 Integer aGroup=linkedGroups.get(qn);
                 if (aGroup!=null) {
                     grps.addVariable(aGroup,qn);
                 } else {
-                    grps.addVariable(qn);
+                    int g=grps.addVariable(qn);
+                    if (g!=currentGroup) {
+                        throw new IllegalStateException("Unexpected group index");
+                    }
                     for (QualifiedName otherQn: links) {
                         linkedGroups.put(otherQn,currentGroup);
                     }
+                    currentGroup++;
                 }
             }
-            currentGroup++;
         }
         return grps;
     }
 
     static  void addEntry(Map<QualifiedName, Set<QualifiedName>> linked,
-                          QualifiedName id, QualifiedName otherId) {
+                          QualifiedName id,
+                          QualifiedName otherId) {
         linked.computeIfAbsent(otherId, k -> new HashSet<>());
         linked.get(otherId).add(id);
     }

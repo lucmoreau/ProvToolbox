@@ -55,7 +55,7 @@ public class Using implements Iterable<List<Integer>> {
 
     public List<Integer> nextIndex(List<Integer> index) {
         if (!checkIndex(index)) throw new IllegalArgumentException(""+index);
-        List<Integer> result=new LinkedList<Integer>();
+        List<Integer> result= new LinkedList<>();
 
         int count=0;
         int carryOver=1;
@@ -142,8 +142,8 @@ public class Using implements Iterable<List<Integer>> {
                     result.put(var, val.get(ind));
                 } catch (IndexOutOfBoundsException excp) {
                     List<TypedValue> attVal = val.get(0);
-                    System.err.println("IndexOutOfBoundsWarning: Using index " + ind + " for variable " + var + " with values " + val + ". Reusing first attribute value: " + attVal);
                     if (attVal!=null) {
+                        System.err.println("IndexOutOfBoundsWarning: index " + ind + " for variable '" + var.getLocalPart() + "'. Reusing: " + attVal);
                         result.put(var, attVal);
                     } else {
                         throw new MissingAttributeValue("Missing attribute value for variable " + var + ": index is " + ind + " and values are " + val, excp);
@@ -158,7 +158,7 @@ public class Using implements Iterable<List<Integer>> {
     public class UsingIterator implements Iterator<List<Integer>> {
         List<Integer> currentIndex;
         boolean initialized;
-        private Using u;
+        private final Using u;
         private int count;
 
         @Override

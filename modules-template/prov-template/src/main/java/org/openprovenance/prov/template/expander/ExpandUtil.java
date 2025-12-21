@@ -156,6 +156,7 @@ public class ExpandUtil {
         Integer[] sorted = groups.toArray(new Integer[0]);
         Arrays.sort(sorted);
 
+
         for (Integer g : sorted) {
             List<QualifiedName> vs = groupings.get(g);
             QualifiedName qn = vs.get(0);

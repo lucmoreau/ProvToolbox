@@ -3,8 +3,9 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 `2.2.3-SNAPSHOT`
 * prov-template: update to instantiation
 * prov-template: variable-checker: pretty printing name
+* prov-template: tmpl:ID attribute, and capturing unused vars
 
-`2.2.2`
+* `2.2.2`
 * prov-template: added ptm-merging template
 * prov-template-library: added ptm-merging template
 * prov-template: updated BatchExecutor to create provenance when merging templates

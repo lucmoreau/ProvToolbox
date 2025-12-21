@@ -120,7 +120,7 @@ public class InstantiateTask implements ConfigTask {
 
         // extract extension from filename
         String informat = executor.getFormat(templateFile);
-        Document doc=expand.expander(executor.deserialise(new FileInputStream(templateFile),informat), executor.om.readValue(is, Bindings.class));
+        Document doc=expand.expander(executor.deserialise(new FileInputStream(templateFile),informat), executor.om.readValue(is, Bindings.class), bindingsFilename, foundTemplate);
         for (String format: formats) {
             Path documentPath = Path.of(templateTasksBatch.output_dir, output + "." + format);
 

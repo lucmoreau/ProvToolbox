@@ -35,6 +35,9 @@ public class ExpandUtil {
     public static final String ENDTIME_URI = TMPL_NS + ENDTIME;
     public static final String IFVAR = "if";
     public static final String IFVAR_URI = TMPL_NS + IFVAR;
+    public static final String IDVAR = "ID";
+    public static final String IDVAR_URI = TMPL_NS + IDVAR;
+
 
     public static final String ACTIVITY_TYPE = "activityType";
     public static final String ACTIVITY_TYPE_URI = TMPL_NS + ACTIVITY_TYPE;

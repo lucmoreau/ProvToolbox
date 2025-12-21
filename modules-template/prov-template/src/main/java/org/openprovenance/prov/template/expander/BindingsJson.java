@@ -84,7 +84,8 @@ public class BindingsJson {
 
             Descriptors descriptors = var.get(key);
             if (descriptors==null || descriptors.values==null) {
-                throw new IllegalArgumentException("Missing variable " + key + " in bindings " + var);
+                //throw new IllegalArgumentException("Missing variable " + key + " in bindings " + var);
+                continue;
             };
             for (Descriptor descriptor: descriptors.values) {
 
@@ -160,9 +161,9 @@ public class BindingsJson {
         }
     }
 
+    /*
     public static OldBindings getBindingsFromSchema(JsonNode bindings_schema, ProvFactory provFactory) {
         return BindingsJson.fromBean(BindingsJson.importBindings(bindings_schema), provFactory);
     }
-
-
+     */
 }

@@ -1,48 +1,16 @@
 package org.openprovenance.prov.template.expander;
 
-import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
-import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_PREFIX;
-
 import java.util.*;
 
-import org.openprovenance.prov.model.ActedOnBehalfOf;
-import org.openprovenance.prov.model.Activity;
-import org.openprovenance.prov.model.Agent;
-import org.openprovenance.prov.model.AlternateOf;
-import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.DerivedByInsertionFrom;
-import org.openprovenance.prov.model.DerivedByRemovalFrom;
-import org.openprovenance.prov.model.DictionaryMembership;
-import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.HasOther;
-import org.openprovenance.prov.model.HasTime;
-import org.openprovenance.prov.model.MentionOf;
-import org.openprovenance.prov.model.Bundle;
-import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.ProvUtilities;
-import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.QualifiedNameUtils;
-import org.openprovenance.prov.model.SpecializationOf;
-import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.StatementAction;
-import org.openprovenance.prov.model.StatementOrBundle;
-import org.openprovenance.prov.model.TypedValue;
-import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.WasAssociatedWith;
-import org.openprovenance.prov.model.WasAttributedTo;
-import org.openprovenance.prov.model.WasDerivedFrom;
-import org.openprovenance.prov.model.WasEndedBy;
-import org.openprovenance.prov.model.WasGeneratedBy;
-import org.openprovenance.prov.model.WasInfluencedBy;
-import org.openprovenance.prov.model.WasInformedBy;
-import org.openprovenance.prov.model.WasInvalidatedBy;
-import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.expander.exception.BundleVariableHasMultipleValues;
 import org.openprovenance.prov.template.expander.exception.BundleVariableHasNoValue;
+import org.openprovenance.prov.template.json.Bindings;
+
+import static org.openprovenance.prov.template.expander.ExpandUtil.*;
 
 public class ExpandAction implements StatementAction {
 
@@ -62,6 +30,8 @@ public class ExpandAction implements StatementAction {
     final private boolean allUpdatedRequired;
     private final Set<String> unboundVariables;
     private final boolean preserveUnboundVariables;
+    private final Set<String> usedBindings;
+    private final Bindings bindings;
 
     private boolean allExpanded=true;
     
@@ -76,17 +46,20 @@ public class ExpandAction implements StatementAction {
                         Map<QualifiedName, List<TypedValue>> env2,
                         List<Integer> index,
                         OldBindings oldBindings,
+                        Bindings bindings,
                         Groupings grp1,
                         boolean addOrderp,
                         boolean allUpdatedRequired,
                         Set<String> unboundVariables,
-                        boolean preserveUnboundVariables) {
+                        boolean preserveUnboundVariables,
+                        Set<String> usedBindings) {
         this.pf = pf;
         this.expand = expand;
         this.env = env;
         this.u = u;
         this.index = index;
         this.oldBindings = oldBindings;
+        this.bindings=bindings;
         this.grp1 = grp1;
         this.env2 = env2;
         this.addOrderp = addOrderp;
@@ -94,6 +67,7 @@ public class ExpandAction implements StatementAction {
         this.allUpdatedRequired=allUpdatedRequired;
         this.unboundVariables=unboundVariables;
         this.preserveUnboundVariables=preserveUnboundVariables;
+        this.usedBindings=usedBindings;
     }
 
     @Override
@@ -366,33 +340,33 @@ public class ExpandAction implements StatementAction {
         boolean found = false;
         if (dstStatement instanceof HasOther) {
 
-            Collection<Attribute> attributes = pf.getAttributes(srcStatement);
+            Collection<Attribute> srcAttributes = pf.getAttributes(srcStatement);
             Collection<Attribute> dstAttributes = new LinkedList<>();
 
-            for (Attribute attribute : attributes) {
-                if (ExpandUtil.isVariable(attribute.getElementName())) {
-                    //System.out.println("WARNING: attribute " + attribute.getElementName() + " is a variable name");
+            for (final Attribute srcAttribute : srcAttributes) {
+                QualifiedName srcAttributeElementName = srcAttribute.getElementName();
+                if (ExpandUtil.isVariable(srcAttributeElementName)) {
                     int count=0;
-                    List<TypedValue> typedValues = env2.get(attribute.getElementName());
-                    if (typedValues!=null) {
+                    List<TypedValue> srcAttributeValues = env2.get(srcAttributeElementName);
+                    if (srcAttributeValues!=null) {
                         // if prop has not value, we skip this
-                        for (TypedValue val : typedValues) {
-                            // System.out.println("WARNING: values " + val); // + " " + env2 + " " + env);
-                            if (qualifiedNameURI.equals(val.getType().getUri())) {
-                                //System.out.println("WARNING: associated value is a qualified name");
-                                QualifiedName qn1 = (QualifiedName) val.getValue();
-                                attribute = pf.newAttribute(qn1, attribute.getValue(), attribute.getType());
-                                //System.out.println("Now attribute is " + attribute);
-                                found = expandAttribute(dstStatement, attribute, dstAttributes, found, count);
+                        for (TypedValue srcAttributeValue : srcAttributeValues) {
+                            if (qualifiedNameURI.equals(srcAttributeValue.getType().getUri())) {
+                                QualifiedName qn1 = (QualifiedName) srcAttributeValue.getValue();
+                                usedBindings.add(srcAttributeElementName.getLocalPart());
+                                Attribute srcAttribute2 = pf.newAttribute(qn1, srcAttribute.getValue(), srcAttribute.getType());
+                                found = expandAttributeValue(dstStatement, srcAttribute2, dstAttributes, found, count, unboundVariables);
                                 count++;
                             } else {
                                 // this was not a qualified name, so we ignore it
                             }
                         }
+                    } else {
+                        unboundVariables.add(srcAttributeElementName.getLocalPart());
                     }
                 } else {
 
-                    found = expandAttribute(dstStatement, attribute, dstAttributes, found, null);
+                    found = expandAttributeValue(dstStatement, srcAttribute, dstAttributes, found, null, unboundVariables);
                 }
             }
             pf.setAttributes((HasOther) dstStatement, dstAttributes);
@@ -400,30 +374,29 @@ public class ExpandAction implements StatementAction {
         return found;
     }
 
-    private boolean expandAttribute(Statement dstStatement, Attribute attribute, Collection<Attribute> dstAttributes, boolean found, Integer count) {
+    private boolean expandAttributeValue(Statement dstStatement, Attribute attribute, Collection<Attribute> dstAttributes, boolean found, Integer count, Set<String> unboundVariables) {
         if (qualifiedNameURI.equals(attribute.getType().getUri())) {
 
-            Object o = attribute.getValue();
-            if (o instanceof QualifiedName) { // if attribute is
-                                              // constructed properly,
-                                              // this test should always
-                                              // return true
-                QualifiedName qn1 = (QualifiedName) o;
+            Object attributeValue = attribute.getValue();
+            if (attributeValue instanceof QualifiedName) { // if attribute is constructed properly,
+                                              // this test should always return true
+                QualifiedName qn1 = (QualifiedName) attributeValue;
 
                 if (ExpandUtil.isVariable(qn1)) {
-                    List<TypedValue> vals = env2.get(qn1);
+                    List<TypedValue> bindingValues = env2.get(qn1);
 
-                    if (vals == null) {
+                    if (bindingValues == null) {
                         if (ExpandUtil.isGensymVariable(qn1)) {
                             dstAttributes.add(pf.newAttribute(attribute.getElementName(),
                                                               getUUIDQualifiedName(),
                                                               pf.getName().PROV_QUALIFIED_NAME));
+                        } else {
+                            unboundVariables.add(qn1.getLocalPart());
                         }
-                        // if not a vargen, then simply drop this
-                        // attribute
-                        // dstAttributes.add(attribute);
+                        // if not a vargen, then simply drop this attribute
                     } else {
                         found = true;
+                        usedBindings.add(qn1.getLocalPart());
                         if (count!=null) {
                             // it means that the property name was a variable (say prop), it was bound to
                             // the count value associated with prop. We are now about to process the value
@@ -432,12 +405,12 @@ public class ExpandAction implements StatementAction {
                             processTemplateAttributes(dstStatement,
                                     dstAttributes,
                                     attribute,
-                                    List.of(vals.get(count)));
+                                    List.of(bindingValues.get(count)));
                         } else {
                             processTemplateAttributes(dstStatement,
                                     dstAttributes,
                                     attribute,
-                                    vals);
+                                    bindingValues);
                         }
                     }
                 } else { // no variable here
@@ -452,55 +425,69 @@ public class ExpandAction implements StatementAction {
         return found;
     }
 
-    boolean allowVariableInLabelAndTime=true;
+    final boolean allowVariableInLabelAndTime=true;
 
     public void processTemplateAttributes(Statement dstStatement,
                                           Collection<Attribute> dstAttributes,
                                           Attribute attribute,
-                                          List<TypedValue> vals) {
+                                          List<TypedValue> bindingValues) {
 
-        for (TypedValue val : vals) {
-            String elementName = attribute.getElementName().getUri();
-            if (ExpandUtil.LABEL_URI.equals(elementName)) {
-                Object value=val.getValue();
+        for (TypedValue bindingValue : bindingValues) {
+            String elementNameUri = attribute.getElementName().getUri();
+            if (ExpandUtil.LABEL_URI.equals(elementNameUri)) {
+                Object value=bindingValue.getValue();
                 if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
                     dstAttributes.add(pf.newAttribute(attribute.getElementName(),
                                                       value,
-                                                      val.getType()));
+                                                      bindingValue.getType()));
                 } else {
                     dstAttributes.add(pf.newAttribute(pf.getName().PROV_LABEL,
                                                       value,
-                                                      val.getType()));
+                                                      bindingValue.getType()));
                 }
-            } else if (ExpandUtil.TIME_URI.equals(elementName)) {
-                Object value=val.getValue();
+            } else if (ExpandUtil.TIME_URI.equals(elementNameUri)) {
+                Object value=bindingValue.getValue();
                 if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
-                    dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, val.getType()));
+                    dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, bindingValue.getType()));
                 } else if (dstStatement instanceof HasTime) {
                     ((HasTime) dstStatement).setTime(pf.newISOTime((String) value));
                 }
-            } else if (ExpandUtil.STARTTIME_URI.equals(elementName)) {
+            } else if (ExpandUtil.STARTTIME_URI.equals(elementNameUri)) {
                 if (dstStatement instanceof Activity) {
-                    Object value=val.getValue();
-                    if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
-                        dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, val.getType()));
+                    Object value=bindingValue.getValue();
+                    if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && isVariable((QualifiedName)value)) {
+                        QualifiedName qnValue=(QualifiedName) value;
+                        //System.out.println("Setting start time to variable " + qnValue);
+                        //usedBindings.add(qnValue.getLocalPart());
+                        dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, bindingValue.getType()));
                     } else {
-                        ((Activity) dstStatement).setStartTime(pf.newISOTime((String) val.getValue()));
+                        ((Activity) dstStatement).setStartTime(pf.newISOTime((String) bindingValue.getValue()));
                     }
                 }
-            } else if (ExpandUtil.ENDTIME_URI.equals(elementName)) {
+            } else if (ExpandUtil.ENDTIME_URI.equals(elementNameUri)) {
                 if (dstStatement instanceof Activity) {
-                    Object value=val.getValue();
+                    Object value=bindingValue.getValue();
                     if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
-                        dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, val.getType()));
+                        //QualifiedName qnValue=(QualifiedName) value;
+                        //usedBindings.add(qnValue.getLocalPart());
+                        dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, bindingValue.getType()));
                     } else {
-                        ((Activity) dstStatement).setEndTime(pf.newISOTime((String) val.getValue()));
+                        ((Activity) dstStatement).setEndTime(pf.newISOTime((String) bindingValue.getValue()));
+                    }
+                }
+            } else if (ExpandUtil.IDVAR_URI.equals(elementNameUri)) {
+                if (dstStatement instanceof Identifiable) {
+                    Object value=bindingValue.getValue();
+                    if ((value instanceof QualifiedName) && ((Identifiable) dstStatement).getId()==null){
+                        ((Identifiable) dstStatement).setId((QualifiedName) value);
+                    } else {
+                        dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, bindingValue.getType()));
                     }
                 }
             } else {
                 dstAttributes.add(pf.newAttribute(attribute.getElementName(),
-                                                  val.getValue(),
-                                                  val.getType()));
+                                                  bindingValue.getValue(),
+                                                  bindingValue.getType()));
             }
         }
     }
@@ -537,6 +524,7 @@ public class ExpandAction implements StatementAction {
             // allows for null value associated with id
             if ((val != null)  || env.containsKey(id)) {
                 u.setter(res, position, val);
+                usedBindings.add(id.getLocalPart());
                 return true;
             } else {
                 if (ExpandUtil.isGensymVariable(id)) {
@@ -545,7 +533,7 @@ public class ExpandAction implements StatementAction {
                     oldBindings.addVariable(id, uuid);
                     return true;
                 } else {
-                    if (unboundVariables!=null) unboundVariables.add(id.getLocalPart());
+                    unboundVariables.add(id.getLocalPart());
                     if (!preserveUnboundVariables) {
                        u.setter(res, position, null);
                     }
@@ -761,7 +749,7 @@ public class ExpandAction implements StatementAction {
         List<Statement> newStatements = new LinkedList<>();
 
         for (Statement s : statements) {
-            for (StatementOrBundle sb : expand.expand(s, oldBindings, grp1, unboundVariables)) {
+            for (StatementOrBundle sb : expand.expand(s, oldBindings, bindings, grp1, unboundVariables,usedBindings)) {
                 newStatements.add((Statement) sb);
             }
 

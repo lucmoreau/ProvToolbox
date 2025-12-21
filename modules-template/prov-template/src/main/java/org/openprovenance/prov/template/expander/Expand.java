@@ -26,31 +26,35 @@ public class Expand {
     private final boolean preserveUnboundVariables;
 
     boolean displayUnusedVariables=true;
+    boolean displayUnusedBindings=true;
 
     public Expand(ProvFactory pf, boolean addOrderp, boolean allUpdatedRequired) {
         this.pf = pf;
         this.addOrderp = addOrderp;
         this.allUpdatedRequired = allUpdatedRequired;
         this.preserveUnboundVariables=false;
+        this.displayUnusedVariables=true;
     }
-    public Expand(ProvFactory pf, boolean addOrderp, boolean allUpdatedRequired, boolean preserveUnboundVariables) {
+    public Expand(ProvFactory pf, boolean addOrderp, boolean allUpdatedRequired, boolean preserveUnboundVariables, boolean displayUnusedVariables, boolean displayUnusedBindings) {
         this.pf = pf;
         this.addOrderp = addOrderp;
         this.allUpdatedRequired = allUpdatedRequired;
         this.preserveUnboundVariables=preserveUnboundVariables;
+        this.displayUnusedVariables=displayUnusedVariables;
+        this.displayUnusedBindings=displayUnusedBindings;
     }
     public Expand(ProvFactory pf) {
         this(pf, false, false);
     }
 
-
-
     public Document expander(Document docIn, Bindings bindings) {
+        return expander(docIn, bindings, null, null);
+    }
+
+    public Document expander(Document docIn, Bindings bindings, String bindingsFilename, String templateFilename) {
 
         
         Bundle bun;
-        //logger.info("expander: expander " + bindings);
-
         try {
             bun = u.getBundle(docIn).get(0);
         } catch (RuntimeException e) {
@@ -58,15 +62,11 @@ public class Expand {
         }
 
         Groupings grp1 = Groupings.fromDocument(docIn, bindings, pf);
-        //logger.debug("expander: Found groupings " + grp1);
 
-        Bundle bun1 = (Bundle) expand(bun, bindings, grp1).get(0);
+        Bundle bun1 = (Bundle) expand(bun, bindings, grp1, bindingsFilename, templateFilename).get(0);
         Document doc1 = pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
 
-        //logger.info("expander: id uri " + bun1.getId().getNamespaceURI());
-        //logger.info("expander: id pre " + bun1.getId().getPrefix());
-        //logger.info("expander: id loc " + bun1.getId().getLocalPart());
 
         bun1.setNamespace(Namespace.gatherNamespaces(bun1));
 
@@ -81,9 +81,9 @@ public class Expand {
 
     static ProvUtilities u = new ProvUtilities();
 
-    public List<StatementOrBundle> expand(Statement statement, OldBindings oldBindings, Groupings grp1, Set<String> unboundVariables) {
+    public List<StatementOrBundle> expand(Statement statement, OldBindings oldBindings, Bindings bindings, Groupings grp1, Set<String> unboundVariables, Set<String> usedBindings) {
         Using us1 = ExpandUtil.usedGroups(statement, grp1, oldBindings);
-        return expand(statement, oldBindings, grp1, us1, unboundVariables);
+        return expand(statement, oldBindings, bindings, grp1, us1, unboundVariables, usedBindings);
     }
     
     boolean allExpanded=true;
@@ -93,7 +93,7 @@ public class Expand {
 
 
 
-    public List<StatementOrBundle> expand(Bundle bun, Bindings bindings, Groupings grp1) {
+    public List<StatementOrBundle> expand(Bundle bun, Bindings bindings, Groupings grp1, String bindingsFilename, String templateFilename) {
 
         OldBindings legacyBindings=BindingsJson.fromBean(bindings,pf);
         // TODO: make ExpandAction to take Bindings directly
@@ -112,41 +112,66 @@ public class Expand {
                                                env1,
                                                null,
                                                legacyBindings,
+                                               bindings,
                                                grp1,
                                                addOrderp,
                                                allUpdatedRequired,
                                                unboundVariables,
-                                               preserveUnboundVariables);
+                                               preserveUnboundVariables,
+                                               usedBindings);
         u.doAction(bun, action);
         allExpanded=allExpanded && action.getAllExpanded();
-        if (displayUnusedVariables && !unboundVariables.isEmpty()) {
-            System.out.println("The following variables in the templates were not bound: " + unboundVariables);
-        }
+        warnAboutUnboundTemplateVariables(bindings, templateFilename, unboundVariables);
+        warnAboutUnusedBindingsVariables(bindings, bindingsFilename, usedBindings);
         return action.getList();
     }
 
+    private void warnAboutUnusedBindingsVariables(Bindings bindings, String bindingsFilename, Set<String> usedBindings) {
+        if (!displayUnusedBindings) return;
+        Set<String> allBindingsVars= bindings.var.keySet();
+        allBindingsVars.removeAll(usedBindings);
+        if (!allBindingsVars.isEmpty()) {
+            // find all keys in bindings.var.keySet() bound with value null
+            allBindingsVars.removeIf(k -> bindings.var.get(k) == null);
+        }
+        if (displayUnusedBindings && !allBindingsVars.isEmpty()) {
+
+            System.out.println("The following bindings were not used: " + allBindingsVars + ((bindingsFilename ==null)?"": ": in bindings " + bindingsFilename));
+        }
+    }
+
+    private void warnAboutUnboundTemplateVariables(Bindings bindings, String templateFilename, Set<String> unboundVariables) {
+        if (!displayUnusedVariables) return;
+        if (!unboundVariables.isEmpty()) {
+            unboundVariables.removeIf(k -> bindings.var.get(k) == null);
+        }
+        if (displayUnusedVariables && !unboundVariables.isEmpty()) {
+            System.out.println("The following template variables were not bound: " + unboundVariables + ((templateFilename ==null)?"": " in template " + templateFilename));
+        }
+    }
+
     public List<StatementOrBundle> expand(Statement statement,
-                                          OldBindings bindings1,
+                                          OldBindings oldBindings,
+                                          Bindings bindings,
                                           Groupings grp1,
-                                          Using us1, Set<String> unboundVariables) {
+                                          Using us1,
+                                          Set<String> unboundVariables,
+                                          Set<String> usedBindings) {
         List<StatementOrBundle> results = new LinkedList<>();
         Iterator<List<Integer>> iter = us1.iterator();
-        /*
-         * System.out.println(" --------------------- " );
-         * System.out.println(" Statement " + statement);
-         * System.out.println(" Using " + us1); System.out.println(" Groupings "
-         * + grp1);
-         */
+
 
         while (iter.hasNext()) {
             List<Integer> index = iter.next();
             // System.out.println(" Index " + index);
 
-            Map<QualifiedName, QualifiedName> env = us1.get(bindings1, grp1, index);
+            Map<QualifiedName, QualifiedName> env = us1.get(oldBindings, grp1, index);
+       // testing
+            us1.newGet(bindings, grp1, index);
             Map<QualifiedName, List<TypedValue>> env2;
 
             env2 = us1.getAttr(ExpandUtil.freeAttributeVariables(statement, pf),
-                               bindings1,
+                               oldBindings,
                                (UsingIterator) iter);
 
 
@@ -157,12 +182,14 @@ public class Expand {
                                                    env,
                                                    env2,
                                                    index,
-                                                   bindings1,
+                                                   oldBindings,
+                                                   bindings,
                                                    grp1,
                                                    addOrderp,
                                                    allUpdatedRequired,
                                                    unboundVariables,
-                                                   preserveUnboundVariables);
+                                                   preserveUnboundVariables,
+                                                   usedBindings);
             u.doAction(statement, action);
             allExpanded=allExpanded && action.getAllExpanded();
 

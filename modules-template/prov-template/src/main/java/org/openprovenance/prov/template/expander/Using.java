@@ -5,6 +5,9 @@ import java.util.*;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.template.expander.exception.MissingAttributeValue;
+import org.openprovenance.prov.template.json.Bindings;
+import org.openprovenance.prov.template.json.Descriptor;
+import org.openprovenance.prov.template.json.Descriptors;
 
 public class Using implements Iterable<List<Integer>> {
 
@@ -98,9 +101,29 @@ public class Using implements Iterable<List<Integer>> {
             }
             count++;
         }
-
         return result;
     }
+    Map<QualifiedName, QualifiedName> newGet(Bindings b,
+                                             Groupings gr,
+                                             List<Integer> index) {
+        Map<QualifiedName,QualifiedName> result= new HashMap<>();
+
+        int count=0;
+        for (int ind: index) {
+            int group=groups.get(count);
+            for (QualifiedName var: gr.get(group)) {
+                Descriptors ll=b.var.get(var);
+                if (ll!=null) {
+                   Descriptor val=ll.values.get(ind);
+                    System.out.println("Variable " + var + " has descriptors " + val);
+                    //result.put(var, val);
+                }
+            }
+            count++;
+        }
+        return result;
+    }
+
 
     public Map<QualifiedName, List<TypedValue>> getAttr(Set<QualifiedName> variables,
                                                         OldBindings b,

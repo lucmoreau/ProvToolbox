@@ -109,7 +109,6 @@ public class ExpandUtil {
     static public Set<QualifiedName> freeAttributeVariables(Statement statement) {
         Set<QualifiedName> result = new HashSet<>();
         if (statement instanceof HasOther) {
-
             List<Other> ll = ((HasOther) statement).getOther();
             for (Other other : ll) {
                 if (isVariable(other.getElementName())) {
@@ -121,6 +120,40 @@ public class ExpandUtil {
                 }
             }
         }
+        if (statement instanceof HasType) {
+            List<Type> types = ((HasType) statement).getType();
+            if (types != null) {
+                for (Attribute attr : types) {
+                    if (attr.getValue() instanceof QualifiedName) {
+                        QualifiedName qn = (QualifiedName) attr.getValue();
+                        if (isVariable(qn))  result.add(qn);
+                    }
+                }
+            }
+        }
+        if (statement instanceof HasLocation) {
+            List<Location> locations = ((HasLocation) statement).getLocation();
+            if (locations != null) {
+                for (Attribute attr : locations) {
+                    if (attr.getValue() instanceof QualifiedName) {
+                        QualifiedName qn = (QualifiedName) attr.getValue();
+                        if (isVariable(qn))  result.add(qn);
+                    }
+                }
+            }
+        }
+        if (statement instanceof HasRole) {
+            List<Role> roles = ((HasRole) statement).getRole();
+            if (roles != null) {
+                for (Attribute attr : roles) {
+                    if (attr.getValue() instanceof QualifiedName) {
+                        QualifiedName qn = (QualifiedName) attr.getValue();
+                        if (isVariable(qn))  result.add(qn);
+                    }
+                }
+            }
+        }
+
         return result;
     }
 

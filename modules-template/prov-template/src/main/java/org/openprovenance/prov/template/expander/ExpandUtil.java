@@ -11,8 +11,9 @@ import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.StatementOrBundle.Kind;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
-
-import static org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_START;
+import org.openprovenance.prov.template.json.Bindings;
+import org.openprovenance.prov.template.json.Descriptor;
+import org.openprovenance.prov.template.json.Descriptors;
 
 public class ExpandUtil {
     static Logger logger = LogManager.getLogger(ExpandUtil.class);
@@ -44,11 +45,13 @@ public class ExpandUtil {
     public static final String ACTIVITY = "activity";
     public static final String TMPL_ACTIVITY_URI = TMPL_NS + ACTIVITY;
 
+    public static final String UUID_PREFIX = "uuid";
+    public static final String URN_UUID_NS = "urn:uuid:";
     static ProvUtilities u = new ProvUtilities();
 
 
     static   public int getFirstTimeIndex(Statement s)  {
-    	final Kind kind = s.getKind();
+        final Kind kind = s.getKind();
         return switch (kind) {
             case PROV_ACTIVITY -> 1;
             case PROV_AGENT -> 1;
@@ -178,8 +181,8 @@ public class ExpandUtil {
             if (pf.getName().PROV_QUALIFIED_NAME.equals(attr.getType())) {
                 Object o = attr.getValue();
                 if (o instanceof QualifiedName) { // if attribute is constructed
-                                                  // properly, this test should
-                                                  // always return true
+                    // properly, this test should
+                    // always return true
                     QualifiedName qn = (QualifiedName) o;
                     if (isVariable(qn)  && (!attr.getElementName().getUri().equals(LINKED_URI)))  // ignore occurrence of linked variables
                         result.add(qn);
@@ -195,7 +198,7 @@ public class ExpandUtil {
     }
 
 
-   public static Using usedGroups(Statement statement, Groupings groupings, OldBindings bindings) {
+    public static Using usedGroups(Statement statement, Groupings groupings, OldBindings bindings) {
         Set<QualifiedName> vars = freeVariables(statement);
         Set<Integer> groups = new HashSet<>();
         for (QualifiedName var : vars) {
@@ -222,7 +225,7 @@ public class ExpandUtil {
             } else {
                 if (isGensymVariable(qn)) {
                     u.addGroup(g, 1); // uuid to be generated for this gensym
-                                      // variable
+                    // variable
                 } else {
                     List<List<TypedValue>> attrs = bindings.getAttributes().get(vs.get(0));
                     if (attrs != null) {
@@ -230,6 +233,55 @@ public class ExpandUtil {
                     }
                 }
 
+            }
+        }
+
+        return u;
+    }
+
+
+
+    public static Using usedGroups(Statement statement, Groupings groupings, Bindings bindings) {
+        Set<QualifiedName> vars = freeVariables(statement);
+        Set<Integer> groups = new HashSet<>();
+        for (QualifiedName var : vars) {
+            for (int grp = 0; grp < groupings.size(); grp++) {
+                List<QualifiedName> names = groupings.get(grp);
+                if (names.contains(var)) {
+                    groups.add(grp);
+                }
+            }
+        }
+
+        Using u = new Using();
+        Integer[] sorted = groups.toArray(new Integer[0]);
+        Arrays.sort(sorted);
+
+
+        for (Integer g : sorted) {
+            List<QualifiedName> vs = groupings.get(g);
+            QualifiedName qn = vs.get(0);
+
+            Descriptors descriptors=(bindings.var==null)?null:bindings.var.get(qn.getLocalPart());
+            Descriptors gen_descriptors=(bindings.vargen==null)?null:bindings.vargen.get(qn.getLocalPart());
+
+            List<Descriptor> descriptor_list=new java.util.ArrayList<>();
+            if (descriptors!=null && descriptors.values!=null) descriptor_list.addAll(descriptors.values);
+            if (gen_descriptors!=null && gen_descriptors.values!=null) descriptor_list.addAll(gen_descriptors.values);
+
+
+
+            if (!descriptor_list.isEmpty()) {
+
+                u.addGroup(g, descriptor_list.size());
+
+            } else {
+                if (isGensymVariable(qn)) {
+                    u.addGroup(g, 1); // uuid to be generated for this gensym
+                    // variable
+                } else {
+
+                }
             }
         }
 
@@ -251,8 +303,6 @@ public class ExpandUtil {
     static public QualifiedName newVariable(String name, ProvFactory pf) {
         return pf.newQualifiedName(VAR_NS,name,VAR_PREFIX);
     }
-
-
 
 }
 

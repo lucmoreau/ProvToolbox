@@ -4,6 +4,12 @@ import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.expander.ExpandUtil;
+
+import java.util.Map;
+
+import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
+import static org.openprovenance.prov.template.expander.ExpandUtil.*;
 
 public class DescriptorUtils {
     private final ProvFactory pf;
@@ -22,10 +28,14 @@ public class DescriptorUtils {
         return qDescriptor;
     }
 
-    public QualifiedName newQualifiedName(QDescriptor qDescriptor) {
+    public QualifiedName newQualifiedName(QDescriptor qDescriptor, Bindings bindings) {
         String[] parts = qDescriptor.id.split(":");
         if (parts.length == 2) {
-            return pf.newQualifiedName(qDescriptor.namespace, parts[1], parts[0]);
+            if (UUID_PREFIX.equals(parts[0]) && bindings.context.get(UUID_PREFIX)==null) {
+                return pf.newQualifiedName(URN_UUID_NS, parts[1], UUID_PREFIX);
+            } else {
+                return pf.newQualifiedName(bindings.context.get(parts[0]), parts[1], parts[0]);
+            }
         } else {
             return pf.newQualifiedName(qDescriptor.namespace, qDescriptor.id, "");
         }
@@ -62,20 +72,30 @@ public class DescriptorUtils {
     }
 
 
-    public Attribute newAttribute(QualifiedName elementName, SingleDescriptor singleDescriptor) {
+    public Attribute newAttribute(QualifiedName elementName, SingleDescriptor singleDescriptor, Bindings bindings) {
         if (singleDescriptor instanceof QDescriptor) {
             return pf.newAttribute(elementName,
-                    newQualifiedName(((QDescriptor) singleDescriptor)),
+                    newQualifiedName(((QDescriptor) singleDescriptor), bindings),
                     pf.getName().PROV_QUALIFIED_NAME);
         } else if (singleDescriptor instanceof VDescriptor) {
             Object val = newValue((VDescriptor) singleDescriptor);
             QualifiedName type = valueType((VDescriptor) singleDescriptor);
-            return pf.newAttribute(elementName,
-                    val,
-                    type);
+            return pf.newAttribute(elementName, val, type);
         } else {
             throw new IllegalArgumentException("Unexpected descriptor type " + singleDescriptor.getClass());
         }
+    }
+
+    public boolean isVariable(SingleDescriptor singleDescriptor, Bindings bindings) {
+        if (singleDescriptor ==null) return false;
+        if (singleDescriptor instanceof QDescriptor) {
+            QDescriptor qd = (QDescriptor) singleDescriptor;
+            String[] parts = qd.id.split(":");
+            Map<String, String> context = bindings.context;
+            String qnNamespace = context.get(parts[0]);
+            return parts.length == 2 && VAR_NS.equals(qnNamespace);
+        }
+        return false;
     }
 
     public  void addVariable(Bindings bindings, QualifiedName id, QualifiedName uuid) {

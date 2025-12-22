@@ -62,29 +62,26 @@ public class Expand {
         }
 
         Groupings grp1 = Groupings.fromDocument(docIn, bindings, pf);
-
         Bundle bun1 = (Bundle) expand(bun, bindings, grp1, bindingsFilename, templateFilename).get(0);
         Document doc1 = pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
-
-
         bun1.setNamespace(Namespace.gatherNamespaces(bun1));
-
         doc1.setNamespace(new Namespace());
-
         return doc1;
     }
 
 
 
     private final ProvFactory pf;
-
     static ProvUtilities u = new ProvUtilities();
 
-    public List<StatementOrBundle> expand(Statement statement, OldBindings oldBindings, Bindings bindings, Groupings grp1) {
-        Using us1 = ExpandUtil.usedGroups(statement, grp1, oldBindings);
-        return expand(statement, oldBindings, bindings, grp1, us1);
+    /*
+    public List<StatementOrBundle> expand(Statement statement,  Bindings bindings, Groupings grp1) {
+        Using us1 = ExpandUtil.usedGroups(statement, grp1, bindings);
+        return expand(statement,  bindings, grp1, us1);
     }
+
+     */
     
     boolean allExpanded=true;
     public boolean getAllExpanded() {
@@ -95,26 +92,15 @@ public class Expand {
 
     public List<StatementOrBundle> expand(Bundle bun, Bindings bindings, Groupings grp1, String bindingsFilename, String templateFilename) {
 
-        OldBindings legacyBindings=BindingsJson.fromBean(bindings,pf);
-        // TODO: make ExpandAction to take Bindings directly
-
-
-        Map<QualifiedName, QualifiedName> oldEnv = new HashMap<>();
-        Map<QualifiedName, List<TypedValue>> oldEnv2 = new HashMap<>();
-
         Map<QualifiedName, QDescriptor> env= new HashMap<>();
         Map<QualifiedName, SingleDescriptors> env2= new HashMap<>();
-
 
         ExpandAction action = new ExpandAction(pf,
                                                u,
                                                this,
-                                               oldEnv,
-                                               oldEnv2,
                                                env,
                                                env2,
                                          null,
-                                               legacyBindings,
                                                bindings,
                                                grp1,
                                                addOrderp,
@@ -163,7 +149,6 @@ public class Expand {
     }
 
     public List<StatementOrBundle> expand(Statement statement,
-                                          OldBindings oldBindings,
                                           Bindings bindings,
                                           Groupings grp1,
                                           Using us1) {
@@ -174,41 +159,18 @@ public class Expand {
 
         while (iter.hasNext()) {
             List<Integer> index = iter.next();
-            // System.out.println(" Index " + index);
-
-            Map<QualifiedName, QualifiedName> oldEnv = us1.get(oldBindings, grp1, index);
-        // testing replacement of oldBindings by new bindings
             Map<QualifiedName, QDescriptor> env=us1.newGet(bindings, grp1, index);
 
-            assert env.size()==oldEnv.size();
-
-
-            Map<QualifiedName, List<TypedValue>> oldEnv2;
-
-            oldEnv2 = us1.getAttr(freeAttributeVariables,
-                               oldBindings,
-                               (UsingIterator) iter);
             Map<QualifiedName, SingleDescriptors> env2=us1.newGetAttr(freeAttributeVariables,
                     bindings,
                     (UsingIterator) iter);
-            if (env2.size()!=oldEnv2.size()) {
-                System.out.println("Mismatch in attribute environment sizes: env2.size()=" + env2.size() + " vs oldEnv2.size()=" + oldEnv2.size());
-                System.out.println("testEnv2=" + env2);
-                System.out.println("env2=" + oldEnv2);
-            }
-            assert env2.size()==oldEnv2.size();
-            assert compareTests(env2,oldEnv2);
-
 
             ExpandAction action = new ExpandAction(pf,
                                                    u,
                                                    this,
-                                                   oldEnv,
-                                                   oldEnv2,
-                                                   env,
+                                                    env,
                                                    env2,
                                                    index,
-                                                   oldBindings,
                                                    bindings,
                                                    grp1,
                                                    addOrderp,
@@ -222,65 +184,6 @@ public class Expand {
         }
         return results;
 
-    }
-
-    private boolean compareTests(Map<QualifiedName, SingleDescriptors> testEnv2, Map<QualifiedName, List<TypedValue>> env2) {
-        for (QualifiedName key: testEnv2.keySet()) {
-            SingleDescriptors sd=testEnv2.get(key);
-            List<TypedValue> tvs=env2.get(key);
-            if (sd.values.size()!=tvs.size()) {
-                System.out.println("Mismatch in sizes for key " + key + ": sd.values.size()=" + sd.values.size() + " vs tvs.size()=" + tvs.size());
-                System.out.println("sd.values=" + sd.values);
-                System.out.println("tvs=" + tvs);
-                return false;
-            }
-            for (int i=0;i<sd.values.size();i++) {
-                SingleDescriptor sdi=sd.values.get(i);
-                TypedValue tvi=tvs.get(i);
-                if (sdi instanceof QDescriptor) {
-                    QDescriptor qdi=(QDescriptor)sdi;
-                    if (tvi.getValue() instanceof QualifiedName) {
-                        QualifiedName qn=(QualifiedName)tvi.getValue();
-                        if (!qdi.id.equals(qn.getPrefix()+":"+qn.getLocalPart())) {
-                            System.out.println("Mismatch in id values for key " + key + " at index " + i + ": qdi.id=" + qdi.id + " vs qn.getLocalPart()=" + qn.getLocalPart());
-                            System.out.println("sdi=" + sdi);
-                            System.out.println("tvi=" + tvi);
-                            return false;
-                        }
-                        continue;
-                    } else {
-                        System.out.println("Expected QualifiedName value for key " + key + " at index " + i + ": tvi.getValue()=" + tvi.getValue());
-                        System.out.println("sdi=" + sdi);
-                        System.out.println("tvi=" + tvi);
-                        return false;
-                    }
-                } else if (sdi instanceof VDescriptor) {
-                    Object value = tvi.getValue();
-                    if ( (value instanceof String) | (value instanceof org.openprovenance.prov.vanilla.LangString) ) {
-                        String str=(value instanceof String)? (String)value : ((org.openprovenance.prov.vanilla.LangString)value).getValue();
-                        VDescriptor vdi=(VDescriptor)sdi;
-                        if (!vdi.value.equals(str)) {
-                            System.out.println("Mismatch in value for key " + key + " at index " + i + ": vdi.value=" + vdi.value + " vs str=" + str);
-                            System.out.println("sdi=" + sdi);
-                            System.out.println("tvi=" + tvi);
-                            return false;
-                        }
-                        continue;
-                    } else {
-                        System.out.println("Expected String value for key " + key + " at index " + i + ": tvi.getValue()=" + value);
-                        System.out.println("sdi=" + sdi);
-                        System.out.println("tvi=" + tvi);
-                        return false;
-                    }
-                } else {
-                    System.out.println("Unexpected descriptor type for key " + key + " at index " + i + ": sdi.getClass()=" + sdi.getClass());
-                    System.out.println("sdi=" + sdi);
-                    System.out.println("tvi=" + tvi);
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
 

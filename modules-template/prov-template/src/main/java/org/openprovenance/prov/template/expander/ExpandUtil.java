@@ -49,40 +49,34 @@ public class ExpandUtil {
 
     static   public int getFirstTimeIndex(Statement s)  {
     	final Kind kind = s.getKind();
-    	switch (kind) {
-    	case PROV_ACTIVITY: return 1;
-    	case PROV_AGENT: return 1;
-    	case PROV_ALTERNATE: return 2;
-    	case PROV_ASSOCIATION: return 4;
-    	case PROV_ATTRIBUTION: return 3;
-    	case PROV_BUNDLE:
-    		throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
-    	case PROV_COMMUNICATION: return 3;
-    	case PROV_DELEGATION: return 4;
-    	case PROV_DERIVATION: return 6;
-    	case PROV_DICTIONARY_INSERTION:
-    		throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
-    	case PROV_DICTIONARY_MEMBERSHIP:
-    		throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
-    	case PROV_DICTIONARY_REMOVAL:
-    		throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
-    	case PROV_END: return 4;
-    	case PROV_ENTITY: return 1;
-    	case PROV_GENERATION: return 3;
-    	case PROV_INFLUENCE: return 3;
-    	case PROV_INVALIDATION: return 3;
-    	case PROV_MEMBERSHIP: {
-            return (s instanceof QualifiedRelation)? 3:2;
-        }
-    	case PROV_MENTION: return 3;
-    	case PROV_SPECIALIZATION: {
-                return (s instanceof QualifiedRelation)? 3:2;
-        }
-    	case PROV_START: return 4;
-    	case PROV_USAGE: return 3;
-    	default:
-    		throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
-    	}
+        return switch (kind) {
+            case PROV_ACTIVITY -> 1;
+            case PROV_AGENT -> 1;
+            case PROV_ALTERNATE -> 2;
+            case PROV_ASSOCIATION -> 4;
+            case PROV_ATTRIBUTION -> 3;
+            case PROV_BUNDLE -> throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
+            case PROV_COMMUNICATION -> 3;
+            case PROV_DELEGATION -> 4;
+            case PROV_DERIVATION -> 6;
+            case PROV_DICTIONARY_INSERTION ->
+                    throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
+            case PROV_DICTIONARY_MEMBERSHIP ->
+                    throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
+            case PROV_DICTIONARY_REMOVAL ->
+                    throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
+            case PROV_END -> 4;
+            case PROV_ENTITY -> 1;
+            case PROV_GENERATION -> 3;
+            case PROV_INFLUENCE -> 3;
+            case PROV_INVALIDATION -> 3;
+            case PROV_MEMBERSHIP -> (s instanceof QualifiedRelation) ? 3 : 2;
+            case PROV_MENTION -> 3;
+            case PROV_SPECIALIZATION -> (s instanceof QualifiedRelation) ? 3 : 2;
+            case PROV_START -> 4;
+            case PROV_USAGE -> 3;
+            default -> throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
+        };
     }
 
     static public Set<QualifiedName> freeVariables(Statement statement) {
@@ -118,6 +112,13 @@ public class ExpandUtil {
                     QualifiedName qn = (QualifiedName) other.getValue();
                     if (isVariable(qn))  result.add(qn);
                 }
+            }
+        }
+        if (statement instanceof HasValue) {
+            Value attr = ((HasValue) statement).getValue();
+            if (attr.getValue() instanceof QualifiedName) {
+                QualifiedName qn = (QualifiedName) attr.getValue();
+                if (isVariable(qn))  result.add(qn);
             }
         }
         if (statement instanceof HasType) {

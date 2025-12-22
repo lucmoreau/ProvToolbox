@@ -54,4 +54,19 @@ public class Bindings {
     public int hashCode() {
         return Objects.hash(var, vargen, context, linked, template);
     }
+
+    public void addVargen(String var, QDescriptor qDescriptor) {
+
+        if (vargen==null) {
+            vargen= new java.util.HashMap<>();
+        }
+        if (!vargen.containsKey(var)) {
+            Descriptors value = new Descriptors();
+            value.values = new java.util.ArrayList<>();
+            value.values.add(qDescriptor);
+            vargen.put(var, value);
+        } else {
+            vargen.get(var).values.add(qDescriptor);
+        }
+    }
 }

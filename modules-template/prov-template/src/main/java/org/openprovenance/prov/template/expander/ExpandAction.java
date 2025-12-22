@@ -8,7 +8,7 @@ import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.expander.exception.BundleVariableHasMultipleValues;
 import org.openprovenance.prov.template.expander.exception.BundleVariableHasNoValue;
-import org.openprovenance.prov.template.json.Bindings;
+import org.openprovenance.prov.template.json.*;
 
 import static org.openprovenance.prov.template.expander.ExpandUtil.*;
 
@@ -18,18 +18,21 @@ public class ExpandAction implements StatementAction {
     public static final String URN_UUID_NS = "urn:uuid:";
     final private ProvFactory pf;
     final private Expand expand;
-    final private Map<QualifiedName, QualifiedName> env;
+    final private Map<QualifiedName, QualifiedName> oldEnv;
+    final private Map<QualifiedName, List<TypedValue>> oldEnv2;
     final private ProvUtilities u;
     final private List<StatementOrBundle> ll = new LinkedList<>();
     final private List<Integer> index;
     final private OldBindings oldBindings;
     final private Groupings grp1;
-    final private Map<QualifiedName, List<TypedValue>> env2;
     final private boolean addOrderp;
     final private String qualifiedNameURI;
     final private boolean allUpdatedRequired;
     private final boolean preserveUnboundVariables;
     private final Bindings bindings;
+    private final Map<QualifiedName, QDescriptor> env;
+    private final Map<QualifiedName, SingleDescriptors> env2;
+    private final DescriptorUtils dUtils;
 
     private boolean allExpanded=true;
     
@@ -40,8 +43,10 @@ public class ExpandAction implements StatementAction {
     public ExpandAction(ProvFactory pf,
                         ProvUtilities u,
                         Expand expand,
-                        Map<QualifiedName, QualifiedName> env,
-                        Map<QualifiedName, List<TypedValue>> env2,
+                        Map<QualifiedName, QualifiedName> oldEnv,
+                        Map<QualifiedName, List<TypedValue>> oldEnv2,
+                        Map<QualifiedName, QDescriptor> env,
+                        Map<QualifiedName, SingleDescriptors> env2,
                         List<Integer> index,
                         OldBindings oldBindings,
                         Bindings bindings,
@@ -51,17 +56,21 @@ public class ExpandAction implements StatementAction {
                         boolean preserveUnboundVariables) {
         this.pf = pf;
         this.expand = expand;
-        this.env = env;
         this.u = u;
         this.index = index;
         this.oldBindings = oldBindings;
         this.bindings=bindings;
         this.grp1 = grp1;
-        this.env2 = env2;
+        this.oldEnv = oldEnv;
+        this.oldEnv2 = oldEnv2;
+        this.env=env;
+        this.env2=env2;
         this.addOrderp = addOrderp;
         this.qualifiedNameURI = pf.getName().PROV_QUALIFIED_NAME.getUri();
         this.allUpdatedRequired=allUpdatedRequired;
         this.preserveUnboundVariables=preserveUnboundVariables;
+        this.dUtils = new DescriptorUtils(pf);
+
     }
 
     @Override
@@ -341,14 +350,34 @@ public class ExpandAction implements StatementAction {
                 QualifiedName srcAttributeElementName = srcAttribute.getElementName();
                 if (ExpandUtil.isVariable(srcAttributeElementName)) {
                     int count=0;
-                    List<TypedValue> srcAttributeValues = env2.get(srcAttributeElementName);
+                    List<TypedValue> srcAttributeValues = oldEnv2.get(srcAttributeElementName);
+                    SingleDescriptors singleDescriptors=env2.get(srcAttributeElementName);
+
                     if (srcAttributeValues!=null) {
+                        assert singleDescriptors!=null;
+                        assert singleDescriptors.values!=null;
+
+                        List<SingleDescriptor> srcAttributeDescriptors=singleDescriptors.values;
+
                         // if prop has not value, we skip this
                         for (TypedValue srcAttributeValue : srcAttributeValues) {
+                            SingleDescriptor srcAttributeDescriptor=srcAttributeDescriptors.get(count);
+
                             if (qualifiedNameURI.equals(srcAttributeValue.getType().getUri())) {
+                                assert srcAttributeDescriptor instanceof QDescriptor;
+
                                 QualifiedName qn1 = (QualifiedName) srcAttributeValue.getValue();
                                 Attribute srcAttribute2 = pf.newAttribute(qn1, srcAttribute.getValue(), srcAttribute.getType());
+                                Attribute tstAttribute2 = dUtils.newAttribute(qn1, srcAttributeDescriptor);
                                 found = expandAttributeValue(dstStatement, srcAttribute2, dstAttributes, found, count);
+
+                                //test
+                                assert tstAttribute2.getElementName().equals(srcAttribute2.getElementName());
+                                assert tstAttribute2.getValue().equals(srcAttribute2.getValue());
+                                assert tstAttribute2.getType().equals(srcAttribute2.getType());
+
+                                assert srcAttributeValues.get(count) instanceof QDescriptor;
+                                assert ((QDescriptor) srcAttributeDescriptors.get(count)).id.equals(qn1.getLocalPart());
                                 count++;
                             } else {
                                 // this was not a qualified name, so we ignore it
@@ -374,9 +403,11 @@ public class ExpandAction implements StatementAction {
                 QualifiedName qn1 = (QualifiedName) attributeValue;
 
                 if (ExpandUtil.isVariable(qn1)) {
-                    List<TypedValue> bindingValues = env2.get(qn1);
+                    List<TypedValue> bindingValues = oldEnv2.get(qn1);
+                    SingleDescriptors singleDescriptors = env2.get(qn1);
 
                     if (bindingValues == null) {
+                        assert singleDescriptors==null;
                         if (ExpandUtil.isGensymVariable(qn1)) {
                             dstAttributes.add(pf.newAttribute(attribute.getElementName(),
                                                               getUUIDQualifiedName(),
@@ -390,15 +421,23 @@ public class ExpandAction implements StatementAction {
                             // the count value associated with prop. We are now about to process the value
                             // of prop which has been determined to be a variable (say prop_value).
                             // We select the 'count' value associated with prop_value.
+
+                            SingleDescriptor srcAttributeDescriptor= singleDescriptors.values.get(count);
+                            SingleDescriptors sds=new SingleDescriptors();
+                            sds.values=List.of(srcAttributeDescriptor);
+
                             processTemplateAttributes(dstStatement,
                                     dstAttributes,
                                     attribute,
-                                    List.of(bindingValues.get(count)));
+                                    List.of(bindingValues.get(count)),
+                                    sds);
                         } else {
+
                             processTemplateAttributes(dstStatement,
                                     dstAttributes,
                                     attribute,
-                                    bindingValues);
+                                    bindingValues,
+                                    singleDescriptors);
                         }
                     }
                 } else { // no variable here
@@ -418,9 +457,12 @@ public class ExpandAction implements StatementAction {
     public void processTemplateAttributes(Statement dstStatement,
                                           Collection<Attribute> dstAttributes,
                                           Attribute attribute,
-                                          List<TypedValue> bindingValues) {
+                                          List<TypedValue> bindingValues,
+                                          SingleDescriptors singleDescriptors) {
 
+        int tmpCounter=0;
         for (TypedValue bindingValue : bindingValues) {
+            SingleDescriptor singleDescriptor=singleDescriptors.values.get(tmpCounter);
             String elementNameUri = attribute.getElementName().getUri();
             if (ExpandUtil.LABEL_URI.equals(elementNameUri)) {
                 Object value=bindingValue.getValue();
@@ -428,15 +470,23 @@ public class ExpandAction implements StatementAction {
                     dstAttributes.add(pf.newAttribute(attribute.getElementName(),
                                                       value,
                                                       bindingValue.getType()));
+                    //test
+                    dUtils.newAttribute(attribute.getElementName(), singleDescriptor);
                 } else {
                     dstAttributes.add(pf.newAttribute(pf.getName().PROV_LABEL,
                                                       value,
                                                       bindingValue.getType()));
+                    //test
+                    dUtils.newAttribute(pf.getName().PROV_LABEL, singleDescriptor);
+
                 }
             } else if (ExpandUtil.TIME_URI.equals(elementNameUri)) {
                 Object value=bindingValue.getValue();
                 if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
                     dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, bindingValue.getType()));
+                    // test
+                    dUtils.newAttribute(attribute.getElementName(), singleDescriptor);
+
                 } else if (dstStatement instanceof HasTime) {
                     ((HasTime) dstStatement).setTime(pf.newISOTime((String) value));
                 }
@@ -448,6 +498,8 @@ public class ExpandAction implements StatementAction {
                         //System.out.println("Setting start time to variable " + qnValue);
                         //usedBindings.add(qnValue.getLocalPart());
                         dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, bindingValue.getType()));
+                        // test
+                        dUtils.newAttribute(attribute.getElementName(), singleDescriptor);
                     } else {
                         ((Activity) dstStatement).setStartTime(pf.newISOTime((String) bindingValue.getValue()));
                     }
@@ -459,6 +511,8 @@ public class ExpandAction implements StatementAction {
                         //QualifiedName qnValue=(QualifiedName) value;
                         //usedBindings.add(qnValue.getLocalPart());
                         dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, bindingValue.getType()));
+                        // test
+                        dUtils.newAttribute(attribute.getElementName(), singleDescriptor);
                     } else {
                         ((Activity) dstStatement).setEndTime(pf.newISOTime((String) bindingValue.getValue()));
                     }
@@ -468,6 +522,9 @@ public class ExpandAction implements StatementAction {
                     Object value=bindingValue.getValue();
                     if ((value instanceof QualifiedName) && ((Identifiable) dstStatement).getId()==null){
                         ((Identifiable) dstStatement).setId((QualifiedName) value);
+
+                        // test
+                        dUtils.newQualifiedName(((QDescriptor) singleDescriptor));
                     } else {
                         dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, bindingValue.getType()));
                     }
@@ -476,17 +533,20 @@ public class ExpandAction implements StatementAction {
                 dstAttributes.add(pf.newAttribute(attribute.getElementName(),
                                                   bindingValue.getValue(),
                                                   bindingValue.getType()));
+
+                // test
+                dUtils.newAttribute(attribute.getElementName(), singleDescriptor);
             }
         }
     }
 
+
+
+
     static final QualifiedNameUtils qnU = new QualifiedNameUtils();
 
     public QualifiedName getUUIDQualifiedName() {
-        UUID uuid = UUID.randomUUID();
-        return pf.newQualifiedName(URN_UUID_NS,
-                                   qnU.escapeProvLocalName(uuid.toString()),
-                                   UUID_PREFIX);
+        return getUUIDQualifiedName2(pf);
     }
 
     static public QualifiedName getUUIDQualifiedName2(ProvFactory pf) {
@@ -507,20 +567,45 @@ public class ExpandAction implements StatementAction {
 
     private boolean setExpand(Statement res, QualifiedName id, int position) {
         if (ExpandUtil.isVariable(id)) {
-            QualifiedName val = env.get(id);
+            QualifiedName val = oldEnv.get(id);
+            QDescriptor qDescriptor=env.get(id);
 
-            // allows for null value associated with id
-            if ((val != null)  || env.containsKey(id)) {
+
+            if (val != null) {
+
+                if (qDescriptor==null) {
+                    System.err.println("qDescriptor is null for variable " + val);
+                    System.out.println("qDescriptor is null for variable " + val);
+                } else if (qDescriptor.id == null) {
+                    System.err.println("Descriptor id is null for variable " + val);
+                    System.out.println("Descriptor id is null for variable " + val);
+                }
+
+
+                assert(qDescriptor!=null);
+                assert(qDescriptor.id!=null);
+
+
+                boolean test = isEquals(qDescriptor, val);
+                if (!test) {
+                    System.out.println("Inconsistent variable mapping for " + val + " : descriptor id is " + qDescriptor.id);
+                }
+                assert test;
+
                 u.setter(res, position, val);
                 return true;
             } else {
+                assert qDescriptor==null;
+
                 if (ExpandUtil.isGensymVariable(id)) {
                     QualifiedName uuid = getUUIDQualifiedName();
                     u.setter(res, position, uuid);
                     oldBindings.addVariable(id, uuid);
+                    dUtils.addVariable(bindings, id, uuid);
                     return true;
                 } else {
-                    if (!preserveUnboundVariables) {
+                    // allows for null value associated with id
+                    if (!preserveUnboundVariables || oldEnv.containsKey(id) || env.containsKey(id)) {
                        u.setter(res, position, null);
                     }
                     return false;
@@ -530,6 +615,14 @@ public class ExpandAction implements StatementAction {
             // this is not a variable, so it's regarded as expanded
             return true;
         }
+    }
+
+
+
+    private boolean isEquals(QDescriptor qDescriptor, QualifiedName val) {
+        if (qDescriptor==null) return val==null;
+        if (qDescriptor.id==null) return val==null || val.getLocalPart()==null;
+        return qDescriptor.id.equals(val.getPrefix() + ":" + val.getLocalPart());
     }
 
     @Override
@@ -741,20 +834,25 @@ public class ExpandAction implements StatementAction {
 
         }
 
-        updateEnvironmentForBundleId(bun, oldBindings, env);
+        updateEnvironmentForBundleId(bun, oldBindings, bindings, oldEnv, env);
 
         QualifiedName newId;
         final QualifiedName bunId = bun.getId();
         if (ExpandUtil.isVariable(bunId)) {
             // System.out.println("===> bundle " + env + " " + bindings);
-            QualifiedName val = env.get(bunId);
+            QualifiedName val = oldEnv.get(bunId);
+            QDescriptor qDescriptor=env.get(bunId);
+
             if (val != null) {
+                assert isEquals(qDescriptor, val);
+
                 newId = val;
             } else {
                 if (ExpandUtil.isGensymVariable(bunId)) {
                     QualifiedName uuid = getUUIDQualifiedName();
                     newId = uuid;
                     oldBindings.addVariable(bunId, uuid);
+                    dUtils.addVariable(bindings, bunId, uuid);
                 } else {
                     newId = bunId;
                 }
@@ -763,30 +861,46 @@ public class ExpandAction implements StatementAction {
             newId = bunId;
         }
         ll.add(pf.newNamedBundle(newId, newStatements));
-
     }
 
     public void updateEnvironmentForBundleId(Bundle bun,
                                              OldBindings bindings1,
-                                             Map<QualifiedName, QualifiedName> env0) {
+                                             Bindings bindings,
+                                             Map<QualifiedName, QualifiedName> env0,
+                                             Map<QualifiedName, QDescriptor> env) {
         final QualifiedName id = bun.getId();
         if (ExpandUtil.isVariable(id)) {
             List<QualifiedName> vals = bindings1.getVariables().get(id);
+            Descriptors descriptors=bindings.var.get(id.getLocalPart());
+            if (descriptors==null) {
+                if (bindings.vargen!=null) {
+                    descriptors = bindings.vargen.get(id.getLocalPart());
+                }
+            }
             if (vals == null) {
+                assert descriptors==null;
                 if (ExpandUtil.isGensymVariable(id)) {
                     // OK, we'll generate a uuid later
                 } else {
                     throw new BundleVariableHasNoValue(id);
                 }
             } else {
+                assert  (descriptors!=null );
+                assert  (descriptors.values.size()==vals.size());
+
                 if (vals.size() > 1) {
                     throw new BundleVariableHasMultipleValues(id, vals);
                 } else {
-                    env0.put(id, vals.get(0));
+                    QualifiedName value = vals.get(0);
+                    env0.put(id, value);
+                    QDescriptor qDescriptor = dUtils.newQDescriptor(value);
+                    env.put(id, qDescriptor);
                 }
             }
         }
     }
+
+
 
     public List<StatementOrBundle> getList() {
         return ll;

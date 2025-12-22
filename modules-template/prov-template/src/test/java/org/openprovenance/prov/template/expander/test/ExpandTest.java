@@ -108,6 +108,19 @@ public class ExpandTest extends TestCase {
 
     }
 
+    public void testGo() throws IOException{
+        testExpand1();
+        testExpand2();
+        testExpand3();
+        testExpand10();
+        testExpand20();
+        testExpand21();
+        testExpand22();
+        testExpand23();
+        testExpand25();
+        testExpandQualifiedName();
+    }
+
 
 
     public void testExpand1() throws IOException {

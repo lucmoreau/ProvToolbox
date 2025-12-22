@@ -15,8 +15,7 @@ import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.template.expander.Using.UsingIterator;
 import org.openprovenance.prov.model.ProvUtilities;
-import org.openprovenance.prov.template.json.Bindings;
-import org.openprovenance.prov.template.json.QDescriptor;
+import org.openprovenance.prov.template.json.*;
 
 public class Expand {
     static Logger logger = LogManager.getLogger(Expand.class);
@@ -100,16 +99,21 @@ public class Expand {
         // TODO: make ExpandAction to take Bindings directly
 
 
-        Map<QualifiedName, QualifiedName> env0 = new HashMap<>();
-        Map<QualifiedName, List<TypedValue>> env1 = new HashMap<>();
+        Map<QualifiedName, QualifiedName> oldEnv = new HashMap<>();
+        Map<QualifiedName, List<TypedValue>> oldEnv2 = new HashMap<>();
+
+        Map<QualifiedName, QDescriptor> env= new HashMap<>();
+        Map<QualifiedName, SingleDescriptors> env2= new HashMap<>();
 
 
         ExpandAction action = new ExpandAction(pf,
                                                u,
                                                this,
-                                               env0,
-                                               env1,
-                                               null,
+                                               oldEnv,
+                                               oldEnv2,
+                                               env,
+                                               env2,
+                                         null,
                                                legacyBindings,
                                                bindings,
                                                grp1,
@@ -166,28 +170,41 @@ public class Expand {
         List<StatementOrBundle> results = new LinkedList<>();
         Iterator<List<Integer>> iter = us1.iterator();
 
+        Set<QualifiedName> freeAttributeVariables = ExpandUtil.freeAttributeVariables(statement, pf);
 
         while (iter.hasNext()) {
             List<Integer> index = iter.next();
             // System.out.println(" Index " + index);
 
-            Map<QualifiedName, QualifiedName> env = us1.get(oldBindings, grp1, index);
+            Map<QualifiedName, QualifiedName> oldEnv = us1.get(oldBindings, grp1, index);
         // testing replacement of oldBindings by new bindings
-            Map<QualifiedName, QDescriptor> testEnv=us1.newGet(bindings, grp1, index);
+            Map<QualifiedName, QDescriptor> env=us1.newGet(bindings, grp1, index);
 
-            assert testEnv.size()==env.size();
+            assert env.size()==oldEnv.size();
 
 
-            Map<QualifiedName, List<TypedValue>> env2;
+            Map<QualifiedName, List<TypedValue>> oldEnv2;
 
-            env2 = us1.getAttr(ExpandUtil.freeAttributeVariables(statement, pf),
+            oldEnv2 = us1.getAttr(freeAttributeVariables,
                                oldBindings,
                                (UsingIterator) iter);
+            Map<QualifiedName, SingleDescriptors> env2=us1.newGetAttr(freeAttributeVariables,
+                    bindings,
+                    (UsingIterator) iter);
+            if (env2.size()!=oldEnv2.size()) {
+                System.out.println("Mismatch in attribute environment sizes: env2.size()=" + env2.size() + " vs oldEnv2.size()=" + oldEnv2.size());
+                System.out.println("testEnv2=" + env2);
+                System.out.println("env2=" + oldEnv2);
+            }
+            assert env2.size()==oldEnv2.size();
+            assert compareTests(env2,oldEnv2);
 
-            // TODO: it seems we are calling expand actions many times for a single statement (impacting performance, not the outcome)
+
             ExpandAction action = new ExpandAction(pf,
                                                    u,
                                                    this,
+                                                   oldEnv,
+                                                   oldEnv2,
                                                    env,
                                                    env2,
                                                    index,
@@ -207,6 +224,64 @@ public class Expand {
 
     }
 
+    private boolean compareTests(Map<QualifiedName, SingleDescriptors> testEnv2, Map<QualifiedName, List<TypedValue>> env2) {
+        for (QualifiedName key: testEnv2.keySet()) {
+            SingleDescriptors sd=testEnv2.get(key);
+            List<TypedValue> tvs=env2.get(key);
+            if (sd.values.size()!=tvs.size()) {
+                System.out.println("Mismatch in sizes for key " + key + ": sd.values.size()=" + sd.values.size() + " vs tvs.size()=" + tvs.size());
+                System.out.println("sd.values=" + sd.values);
+                System.out.println("tvs=" + tvs);
+                return false;
+            }
+            for (int i=0;i<sd.values.size();i++) {
+                SingleDescriptor sdi=sd.values.get(i);
+                TypedValue tvi=tvs.get(i);
+                if (sdi instanceof QDescriptor) {
+                    QDescriptor qdi=(QDescriptor)sdi;
+                    if (tvi.getValue() instanceof QualifiedName) {
+                        QualifiedName qn=(QualifiedName)tvi.getValue();
+                        if (!qdi.id.equals(qn.getPrefix()+":"+qn.getLocalPart())) {
+                            System.out.println("Mismatch in id values for key " + key + " at index " + i + ": qdi.id=" + qdi.id + " vs qn.getLocalPart()=" + qn.getLocalPart());
+                            System.out.println("sdi=" + sdi);
+                            System.out.println("tvi=" + tvi);
+                            return false;
+                        }
+                        continue;
+                    } else {
+                        System.out.println("Expected QualifiedName value for key " + key + " at index " + i + ": tvi.getValue()=" + tvi.getValue());
+                        System.out.println("sdi=" + sdi);
+                        System.out.println("tvi=" + tvi);
+                        return false;
+                    }
+                } else if (sdi instanceof VDescriptor) {
+                    Object value = tvi.getValue();
+                    if ( (value instanceof String) | (value instanceof org.openprovenance.prov.vanilla.LangString) ) {
+                        String str=(value instanceof String)? (String)value : ((org.openprovenance.prov.vanilla.LangString)value).getValue();
+                        VDescriptor vdi=(VDescriptor)sdi;
+                        if (!vdi.value.equals(str)) {
+                            System.out.println("Mismatch in value for key " + key + " at index " + i + ": vdi.value=" + vdi.value + " vs str=" + str);
+                            System.out.println("sdi=" + sdi);
+                            System.out.println("tvi=" + tvi);
+                            return false;
+                        }
+                        continue;
+                    } else {
+                        System.out.println("Expected String value for key " + key + " at index " + i + ": tvi.getValue()=" + value);
+                        System.out.println("sdi=" + sdi);
+                        System.out.println("tvi=" + tvi);
+                        return false;
+                    }
+                } else {
+                    System.out.println("Unexpected descriptor type for key " + key + " at index " + i + ": sdi.getClass()=" + sdi.getClass());
+                    System.out.println("sdi=" + sdi);
+                    System.out.println("tvi=" + tvi);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
 
 }

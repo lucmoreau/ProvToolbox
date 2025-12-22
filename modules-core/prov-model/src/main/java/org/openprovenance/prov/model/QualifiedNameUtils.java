@@ -226,16 +226,16 @@ public class QualifiedNameUtils {
     static final String NC_Name=NC_NameStartChar + "(" + NC_NameChar + ")*";
 
     static final Pattern NC_pat=Pattern.compile(QualifiedNameUtils.NC_Name);
-    
+
     public boolean is_NC_Name (String input) {
-	if ("".equals(input)) return false;
-	Matcher match=NC_pat.matcher(input);
-	if (match.matches()) {
-	    //System.out.println("found " + input.substring(match.start(),match.end()));
-	    return match.start()==0 && match.end()==input.length();
-	} else {
-	    return false;
-	}
+        if ("".equals(input)) return false;
+        Matcher match=NC_pat.matcher(input);
+        if (match.matches()) {
+            //System.out.println("found " + input.substring(match.start(),match.end()));
+            return match.start()==0 && match.end()==input.length();
+        } else {
+            return false;
+        }
     }
-    
+
 }

@@ -5,10 +5,7 @@ import java.util.*;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.template.expander.exception.MissingAttributeValue;
-import org.openprovenance.prov.template.json.Bindings;
-import org.openprovenance.prov.template.json.Descriptor;
-import org.openprovenance.prov.template.json.Descriptors;
-import org.openprovenance.prov.template.json.QDescriptor;
+import org.openprovenance.prov.template.json.*;
 
 public class Using implements Iterable<List<Integer>> {
 
@@ -114,7 +111,7 @@ public class Using implements Iterable<List<Integer>> {
             for (QualifiedName var: gr.get(group)) {
                 if (b.var!=null) {
                     Descriptors ll = b.var.get(var.getLocalPart());
-                    if (ll != null) {
+                    if (ll != null && ll.values!=null) {
                         Descriptor val = ll.values.get(ind);
                         if (val instanceof QDescriptor) {
                             result.put(var, (QDescriptor) val);
@@ -123,8 +120,9 @@ public class Using implements Iterable<List<Integer>> {
                 }
                 if (b.vargen!=null) {
                     Descriptors ll = b.vargen.get(var.getLocalPart());
-                    if (ll != null) {
-                        Descriptor val = ll.values.get(ind);
+                    if (ll != null && ll.values!=null) {
+                        // note that there must always be a single value for vargen variables, so select 0, irrespective of ind
+                        Descriptor val = ll.values.get(0);
                         if (val instanceof QDescriptor) {
                             result.put(var, (QDescriptor) val);
                         }
@@ -164,6 +162,59 @@ public class Using implements Iterable<List<Integer>> {
             }
         }
         return result;
+    }
+
+    public Map<QualifiedName, SingleDescriptors> newGetAttr(Set<QualifiedName> variables, Bindings bindings, UsingIterator iter) {
+        Map<QualifiedName, SingleDescriptors> result= new HashMap<>();
+
+        int ind=iter.getCount();
+        for (QualifiedName var: variables) {
+
+            Descriptors descriptors;
+            if (ExpandUtil.isGensymVariable(var)) {
+                descriptors = bindings.vargen.get(var.getLocalPart());
+            } else {
+                descriptors = bindings.var.get(var.getLocalPart());
+            }
+
+
+            if (descriptors != null) {
+                result.computeIfAbsent(var, k -> {
+                    SingleDescriptors singleDescriptors = new SingleDescriptors();
+                    singleDescriptors.values = new LinkedList<>();
+                    return singleDescriptors;
+                });
+                SingleDescriptors sdlist = result.get(var);
+                try {
+                    Descriptor descriptor = descriptors.values.get(ind);
+                    if (descriptor instanceof SingleDescriptors) {
+                        SingleDescriptors sds = (SingleDescriptors) descriptor;
+                        sdlist.values.addAll(sds.values);
+                    } else if (descriptor instanceof SingleDescriptor) {
+                        SingleDescriptor sd = (SingleDescriptor) descriptor;
+                        sdlist.values.add(sd);
+                    } else {
+                        throw new IllegalArgumentException("Unexpected descriptor (1) type " + descriptor.getClass());
+                    }
+                } catch (IndexOutOfBoundsException excp) {
+                    Descriptor descriptor = descriptors.values.get(0);
+                    if (descriptor != null) {
+                        if (descriptor instanceof SingleDescriptor) {
+                            SingleDescriptor sd = (SingleDescriptor) descriptor;
+                            sdlist.values.add(sd);
+                            System.err.println("IndexOutOfBoundsWarning: index " + ind + " for variable '" + var.getLocalPart() + "'. Reusing: " + descriptor);
+                        } else {
+                            throw new IllegalArgumentException("Unexpected descriptor (2) type " + descriptor.getClass());
+                        }
+                    } else {
+                        throw new MissingAttributeValue("Missing attribute value for variable " + var + ": index is " + ind + " and values are " + descriptors.values, excp);
+                    }
+                }
+            }
+
+        }
+        return result;
+
     }
 
 

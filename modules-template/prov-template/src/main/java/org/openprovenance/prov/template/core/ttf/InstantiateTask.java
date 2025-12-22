@@ -41,6 +41,7 @@ public class InstantiateTask implements ConfigTask {
 
 
     static private final Ptm_expandingBuilder expandBuilder =new Ptm_expandingBuilder();
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public String toString() {
@@ -120,7 +121,18 @@ public class InstantiateTask implements ConfigTask {
 
         // extract extension from filename
         String informat = executor.getFormat(templateFile);
-        Document doc= instantiater.instantiate(executor.deserialise(new FileInputStream(templateFile),informat), executor.om.readValue(is, Bindings.class), bindingsFilename, foundTemplate);
+        Document templateDocument = retrieveTemplate(executor, template, templateFile, informat);
+        Document doc= instantiater.instantiate(templateDocument, executor.om.readValue(is, Bindings.class), bindingsFilename, foundTemplate);
+        executor.cacheTemplate(outputId, doc);
+
+
+        // consider saving asynchronously: we can proceed with the next task as we have cached the document
+        saveAllOutputs(templateTasksBatch, executor, inputBasedir, outputIndex, outputId, doc, time, secondsSince2023_01_01, loggedRecords);
+
+
+    }
+
+    private void saveAllOutputs(TemplateTasksBatch templateTasksBatch, BatchExecutor executor, String inputBasedir, TemplateIndex outputIndex, String outputId, Document doc, String time, long secondsSince2023_01_01, List<String> loggedRecords) throws IOException {
         for (String format: formats) {
             Path documentPath = Path.of(templateTasksBatch.output_dir, output + "." + format);
 
@@ -129,29 +141,44 @@ public class InstantiateTask implements ConfigTask {
             executor.serialize(new FileOutputStream(documentPath.toFile()), format, doc, false);
             if (copyinput != null && copyinput) {
                 executor.serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + template.replace(".provn","."+format)), format, doc, false);
-                outputIndex.addEntry(template, format, template.replace(".provn","."+format));
+                synchronized (outputIndex) {
+                    outputIndex.addEntry(template, format, template.replace(".provn","."+format));
+                }
             }
             String csvRecord = createExpansionCsvRecord(format, template, time, secondsSince2023_01_01);
             loggedRecords.add(csvRecord);
         }
 
+        checkVariables(inputBasedir, doc);
+
+        executor.exportProvenanceAsCsv(templateTasksBatch, this, outputId, outputIndex, loggedRecords);
+    }
+
+    private void checkVariables(String inputBasedir, Document doc) throws IOException {
         Optional<StatementChecker> statementChecker;
 
         if (variableCheck!=null) {
-            ProvVariables pv=new ObjectMapper().readValue(new File(TemplateTasksBatch.addBaseDir(inputBasedir, variableCheck)), ProvVariables.class);
+            ProvVariables pv= mapper.readValue(new File(TemplateTasksBatch.addBaseDir(inputBasedir, variableCheck)), ProvVariables.class);
             statementChecker= Optional.of(new StatementChecker(new VariableChecker(pv)));
         } else {
             statementChecker=Optional.empty();
         }
         statementChecker.ifPresent(sc -> System.out.println("***** Variable Checker: " + sc.getVariableChecker()  + " (" + simplify(output) + ")"));
         statementChecker.ifPresent(sc -> new ProvUtilities().forAllStatementOrBundle(doc.getStatementOrBundle(), sc));
-
-
-        executor.exportProvenanceAsCsv(templateTasksBatch, this, outputId, outputIndex, loggedRecords);
-
-
     }
 
+    private Document retrieveTemplate(BatchExecutor executor, String template, File templateFile, String informat) throws FileNotFoundException {
+        Document doc=executor.getCachedTemplate(template);
+        if (doc!=null) {
+            System.out.println("Using cached template for " + template);
+            return doc;
+        }
+        Document doc2 = executor.deserialise(new FileInputStream(templateFile), informat);
+        if (doc2!=null) {
+            executor.cacheTemplate(template, doc2);
+        }
+        return doc2;
+    }
 
 
     private String createExpansionCsvRecord(String format, String templateFile, String time, long secondsSince2023_01_01) {

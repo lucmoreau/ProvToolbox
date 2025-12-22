@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
@@ -133,17 +134,10 @@ public class BatchExecutor {
 
         TemplateIndexPath templateLibraryPath =new TemplateIndexPath(templateTasksBatch.template_path.stream().map(loc-> new TemplateIndex(loc,true)).collect(Collectors.toList()));
 
-
-
-
         logger.info("template_path: " + templateTasksBatch.template_path);
         logger.info("bindings_path: " + templateTasksBatch.bindings_path);
         logger.info("output_dir: " + templateTasksBatch.output_dir);
 
-
-    //    System.out.println("template_path: " + templateTasksBatch.template_path);
-      //  System.out.println("bindings_path: " + templateTasksBatch.bindings_path);
-      //  System.out.println("output_dir: " + templateTasksBatch.output_dir);
 
         // create directory
 
@@ -152,19 +146,11 @@ public class BatchExecutor {
         //mkdir(new File(templateTasksBatch.output_dir),true);
 
         for (ConfigTask task : templateTasksBatch.tasks) {
-
-
             logger.info("task: " + task);
 
             task.execute(templateTasksBatch, this, variableMap, inputBasedir);
-
-
         }
-
-
         return 0;
-
-
     }
 
 
@@ -289,4 +275,23 @@ public class BatchExecutor {
         }
         return informat;
     }
+
+    static private final Map<String,Document> templateCache=new HashMap<>();
+
+
+    public Document getCachedTemplate(String template) {
+        return templateCache.get(template);
+    }
+
+    public void cacheTemplate(String template, Document doc2) {
+        templateCache.put(template, doc2);
+    }
+
+    /*int threads = Math.min(Math.max(1, 4), Runtime.getRuntime().availableProcessors());
+    ExecutorService serPool = java.util.concurrent.Executors.newFixedThreadPool(threads);
+    List<java.util.concurrent.Future<String>> futures = new java.util.ArrayList<>();
+
+
+     */
+
 }

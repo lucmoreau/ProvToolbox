@@ -27,7 +27,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	private static final String fileName = "toolbox.properties";
 
 	private static final String toolboxVersion = getPropertiesFromClasspath(fileName).getProperty("toolbox.version");
-    private final ValueConverter vconv;
 
     private static Properties getPropertiesFromClasspath(String propFileName) {
 		Properties props = new Properties();
@@ -49,8 +48,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 	public ProvFactory() {
 		init();
-        vconv=new ValueConverter(this);
-
     }
 
 
@@ -1118,7 +1115,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 			if (getName().RDF_LITERAL.equals(attr.getType())&& (aValue instanceof String)) {
 				System.out.println("Converting " + aValue);
-				aValue=vconv.convertToJava(attr.getType(),(String)aValue);
+				aValue=new ValueConverter(this).convertToJava(attr.getType(),(String)aValue);
 			}
 
 			switch (attr.getKind()) {

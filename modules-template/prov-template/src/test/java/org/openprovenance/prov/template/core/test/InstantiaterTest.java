@@ -14,8 +14,10 @@ import org.openprovenance.prov.template.core.*;
 import org.openprovenance.prov.template.core.deprecated.BindingsBean;
 import org.openprovenance.prov.template.core.deprecated.Conversions;
 import org.openprovenance.prov.template.core.deprecated.OldBindings;
-import org.openprovenance.prov.template.json.Bindings;
+import org.openprovenance.prov.template.core.Bindings;
 import org.openprovenance.prov.vanilla.ProvFactory;
+
+import static org.openprovenance.prov.template.core.deprecated.BindingsBean.toBean;
 
 public class InstantiaterTest extends TestCase {
     ProvFactory pf= new org.openprovenance.prov.vanilla.ProvFactory();
@@ -76,7 +78,7 @@ public class InstantiaterTest extends TestCase {
         Groupings grp1=Groupings.fromDocument(doc, inBindings, pf);
         System.err.println("Found groupings " + grp1);
 
-        BindingsBean inBindingsBean=inBindings.toBean();
+        BindingsBean inBindingsBean=toBean(inBindings);
         OldBindings inBindingsLegacy= OldBindings.fromBean(inBindings,pf);
         //System.out.println(inBindingsLegacy.toString());
         BindingsBean inBindingsBean2=Conversions.toBean(inBindingsLegacy);

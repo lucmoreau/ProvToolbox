@@ -5,7 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.template.core.Instantiater;
-import org.openprovenance.prov.template.json.Bindings;
+import org.openprovenance.prov.template.core.Bindings;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBean;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBuilder;
 import org.openprovenance.prov.template.utils.*;

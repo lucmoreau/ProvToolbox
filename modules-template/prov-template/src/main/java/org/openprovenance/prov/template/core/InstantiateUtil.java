@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.StatementOrBundle.Kind;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
-import org.openprovenance.prov.template.json.Bindings;
 import org.openprovenance.prov.template.json.Descriptor;
 import org.openprovenance.prov.template.json.Descriptors;
 

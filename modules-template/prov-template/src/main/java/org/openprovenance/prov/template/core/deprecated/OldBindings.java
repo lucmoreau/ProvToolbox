@@ -8,6 +8,7 @@ import static org.openprovenance.prov.template.core.InstantiateUtil.TMPL_PREFIX;
 import java.util.Map.Entry;
 
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.template.core.Bindings;
 import org.openprovenance.prov.template.core.InstantiateUtil;
 import org.openprovenance.prov.template.json.*;
 

@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import com.flipkart.zjsonpatch.JsonDiff;
-import org.openprovenance.prov.template.json.Bindings;
+import org.openprovenance.prov.template.core.Bindings;
 
 public class MyTest extends TestCase {
 

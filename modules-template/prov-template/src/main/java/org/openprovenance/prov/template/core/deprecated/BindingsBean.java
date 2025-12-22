@@ -2,9 +2,11 @@ package org.openprovenance.prov.template.core.deprecated;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.openprovenance.prov.template.core.Bindings;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Deprecated
 public class BindingsBean {
@@ -13,6 +15,16 @@ public class BindingsBean {
     public Map<String, String> context;
     public String template;
     public Map<String, String> linked;
+
+    static public BindingsBean toBean(Bindings bindings) {
+        BindingsBean bindingsBean = new BindingsBean();
+        if (bindings.var!=null) bindingsBean.var=bindings.var.keySet().stream().collect(Collectors.toMap(k -> k, k -> bindings.var.get(k).toList()));
+        if (bindings.vargen!=null) bindingsBean.vargen=bindings.vargen.keySet().stream().collect(Collectors.toMap(k -> k, k -> bindings.vargen.get(k).toList()));
+        bindingsBean.context=bindings.context;
+        bindingsBean.template=bindings.template;
+        bindingsBean.linked=bindings.linked;
+        return bindingsBean;
+    }
 
     @Override
     public boolean equals(Object o) {

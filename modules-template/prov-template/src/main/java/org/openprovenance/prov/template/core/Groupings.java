@@ -6,7 +6,6 @@ import static org.openprovenance.prov.template.core.InstantiateUtil.newVariable;
 import java.util.*;
 
 import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.template.json.Bindings;
 
 public class Groupings {
     final private static ProvUtilities u= new ProvUtilities();

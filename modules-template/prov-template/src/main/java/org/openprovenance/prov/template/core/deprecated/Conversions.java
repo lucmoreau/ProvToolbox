@@ -13,7 +13,7 @@ import java.util.*;
 import static org.openprovenance.prov.template.core.InstantiateUtil.TMPL_NS;
 import static org.openprovenance.prov.template.core.InstantiateUtil.TMPL_PREFIX;
 import static org.openprovenance.prov.template.core.deprecated.OldBindings.*;
-import static org.openprovenance.prov.template.json.Bindings.mapper;
+import static org.openprovenance.prov.template.core.Bindings.mapper;
 
 @Deprecated
 public class Conversions {

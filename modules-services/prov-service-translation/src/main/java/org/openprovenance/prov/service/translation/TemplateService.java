@@ -22,7 +22,7 @@ import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.TemplateResource;
 import org.openprovenance.prov.template.core.Instantiater;
 import org.openprovenance.prov.model.ProvUtilities;
-import org.openprovenance.prov.template.json.Bindings;
+import org.openprovenance.prov.template.core.Bindings;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

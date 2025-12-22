@@ -1,15 +1,15 @@
-package org.openprovenance.prov.template.json;
+package org.openprovenance.prov.template.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.model.exception.UncheckedException;
-import org.openprovenance.prov.template.core.deprecated.BindingsBean;
+import org.openprovenance.prov.template.json.Descriptors;
+import org.openprovenance.prov.template.json.QDescriptor;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class Bindings {
     public Map<String, Descriptors> var;
@@ -44,16 +44,6 @@ public class Bindings {
             e.printStackTrace();
             throw new UncheckedException("JSON conversion to bean failed", e);
         }
-    }
-
-    public BindingsBean toBean() {
-        BindingsBean bindingsBean = new BindingsBean();
-        if (var!=null) bindingsBean.var=var.keySet().stream().collect(Collectors.toMap(k -> k, k -> var.get(k).toList()));
-        if (vargen!=null) bindingsBean.vargen=vargen.keySet().stream().collect(Collectors.toMap(k -> k, k -> vargen.get(k).toList()));
-        bindingsBean.context=context;
-        bindingsBean.template=template;
-        bindingsBean.linked=linked;
-        return bindingsBean;
     }
 
     public static Bindings fromStream(ObjectMapper om, InputStream is) throws IOException {

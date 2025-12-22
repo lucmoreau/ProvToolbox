@@ -3,7 +3,7 @@ package org.openprovenance.prov.storage.mongodb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
 
-import org.openprovenance.prov.template.json.Bindings;
+import org.openprovenance.prov.template.core.Bindings;
 
 import java.io.FileInputStream;
 import java.io.IOException;

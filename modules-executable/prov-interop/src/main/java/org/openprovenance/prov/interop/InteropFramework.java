@@ -31,7 +31,7 @@ import org.openprovenance.prov.template.core.Instantiater;
 
 import org.openprovenance.prov.generator.GeneratorDetails;
 import org.openprovenance.prov.generator.GraphGenerator;
-import org.openprovenance.prov.template.json.Bindings;
+import org.openprovenance.prov.template.core.Bindings;
 
 import static org.openprovenance.prov.model.interop.Formats.ProvFormat.*;
 

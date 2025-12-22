@@ -4,6 +4,7 @@ import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.core.Bindings;
 
 import java.util.Map;
 

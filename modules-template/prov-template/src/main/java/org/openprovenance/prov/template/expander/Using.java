@@ -8,6 +8,7 @@ import org.openprovenance.prov.template.expander.exception.MissingAttributeValue
 import org.openprovenance.prov.template.json.Bindings;
 import org.openprovenance.prov.template.json.Descriptor;
 import org.openprovenance.prov.template.json.Descriptors;
+import org.openprovenance.prov.template.json.QDescriptor;
 
 public class Using implements Iterable<List<Integer>> {
 
@@ -103,20 +104,31 @@ public class Using implements Iterable<List<Integer>> {
         }
         return result;
     }
-    Map<QualifiedName, QualifiedName> newGet(Bindings b,
-                                             Groupings gr,
-                                             List<Integer> index) {
-        Map<QualifiedName,QualifiedName> result= new HashMap<>();
-
+    Map<QualifiedName, QDescriptor> newGet(Bindings b,
+                                           Groupings gr,
+                                           List<Integer> index) {
+        Map<QualifiedName,QDescriptor> result= new HashMap<>();
         int count=0;
         for (int ind: index) {
             int group=groups.get(count);
             for (QualifiedName var: gr.get(group)) {
-                Descriptors ll=b.var.get(var);
-                if (ll!=null) {
-                   Descriptor val=ll.values.get(ind);
-                    System.out.println("Variable " + var + " has descriptors " + val);
-                    //result.put(var, val);
+                if (b.var!=null) {
+                    Descriptors ll = b.var.get(var.getLocalPart());
+                    if (ll != null) {
+                        Descriptor val = ll.values.get(ind);
+                        if (val instanceof QDescriptor) {
+                            result.put(var, (QDescriptor) val);
+                        }
+                    }
+                }
+                if (b.vargen!=null) {
+                    Descriptors ll = b.vargen.get(var.getLocalPart());
+                    if (ll != null) {
+                        Descriptor val = ll.values.get(ind);
+                        if (val instanceof QDescriptor) {
+                            result.put(var, (QDescriptor) val);
+                        }
+                    }
                 }
             }
             count++;

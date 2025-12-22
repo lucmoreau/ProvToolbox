@@ -10,7 +10,10 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Expand.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Expand.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Using.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Using.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -143,6 +146,7 @@
     "JUnit.DerivationBuilderTest.testBuild.executor": "Run",
     "JUnit.DerivationBuilderTest.testOther.executor": "Run",
     "JUnit.ExpandIT.executor": "Run",
+    "JUnit.ExpandTest.testExpandQualifiedName.executor": "Run",
     "JUnit.IT.executor": "Run",
     "JUnit.MetricsTest.executor": "Run",
     "JUnit.MetricsTest.testMetrics.executor": "Run",
@@ -283,7 +287,7 @@
       <recent name="org.openprovenance.prov.model.interop" />
     </key>
   </component>
-  <component name="RunManager" selected="Makefile Target.check.schema.spec">
+  <component name="RunManager" selected="JUnit.ExpandTest.testExpandQualifiedName">
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -342,6 +346,32 @@
       </deployment>
       <method v="2" />
     </configuration>
+    <configuration name="ExpandTest.testExpandQualifiedName" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-template" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.template.expander.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template.expander.test" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.expander.test.ExpandTest" />
+      <option name="METHOD_NAME" value="testExpandQualifiedName" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="IT" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="service-signature" />
       <extension name="coverage">
@@ -364,32 +394,6 @@
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.signature.sign.IT" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MongoBindingsDbTest.testMongoStorage" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-storage-mongodb" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.storage.mongodb.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.storage.mongodb" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.storage.mongodb.MongoBindingsDbTest" />
-      <option name="METHOD_NAME" value="testMongoStorage" />
-      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -591,8 +595,8 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
+      <item itemvalue="JUnit.ExpandTest.testExpandQualifiedName" />
       <item itemvalue="JUnit.IT" />
-      <item itemvalue="JUnit.MongoBindingsDbTest.testMongoStorage" />
       <item itemvalue="JUnit.RoundTripFromJavaMongoTest" />
       <item itemvalue="Makefile Target.check.schema.spec" />
       <item itemvalue="Makefile Target.go" />
@@ -600,11 +604,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.ExpandTest.testExpandQualifiedName" />
         <item itemvalue="Makefile Target.check.schema.spec" />
         <item itemvalue="Makefile Target.go" />
         <item itemvalue="JUnit.IT" />
         <item itemvalue="JUnit.RoundTripFromJavaMongoTest" />
-        <item itemvalue="JUnit.MongoBindingsDbTest.testMongoStorage" />
       </list>
     </recent_temporary>
   </component>

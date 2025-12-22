@@ -116,9 +116,11 @@ public class ExpandUtil {
         }
         if (statement instanceof HasValue) {
             Value attr = ((HasValue) statement).getValue();
-            if (attr.getValue() instanceof QualifiedName) {
-                QualifiedName qn = (QualifiedName) attr.getValue();
-                if (isVariable(qn))  result.add(qn);
+            if (attr != null) {
+                if (attr.getValue() instanceof QualifiedName) {
+                    QualifiedName qn = (QualifiedName) attr.getValue();
+                    if (isVariable(qn))  result.add(qn);
+                }
             }
         }
         if (statement instanceof HasType) {

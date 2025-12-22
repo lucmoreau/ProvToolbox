@@ -5,7 +5,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template: variable-checker: pretty printing name
 * prov-template: tmpl:ID attribute, and capturing unused vars
 * prov-template: fixed isue with groups
-
+* prov-template: preparing to replace oldBindings by new Bindings
 
 `2.2.2`
 * prov-template: added ptm-merging template

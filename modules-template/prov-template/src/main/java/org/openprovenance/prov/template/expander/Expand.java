@@ -16,6 +16,7 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.template.expander.Using.UsingIterator;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.template.json.Bindings;
+import org.openprovenance.prov.template.json.QDescriptor;
 
 public class Expand {
     static Logger logger = LogManager.getLogger(Expand.class);
@@ -170,8 +171,12 @@ public class Expand {
             // System.out.println(" Index " + index);
 
             Map<QualifiedName, QualifiedName> env = us1.get(oldBindings, grp1, index);
-        // testing
-            us1.newGet(bindings, grp1, index);
+        // testing replacement of oldBindings by new bindings
+            Map<QualifiedName, QDescriptor> testEnv=us1.newGet(bindings, grp1, index);
+
+            assert testEnv.size()==env.size();
+
+
             Map<QualifiedName, List<TypedValue>> env2;
 
             env2 = us1.getAttr(ExpandUtil.freeAttributeVariables(statement, pf),

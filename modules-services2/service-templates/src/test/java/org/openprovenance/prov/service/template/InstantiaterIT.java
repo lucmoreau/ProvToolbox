@@ -38,15 +38,15 @@ import static org.openprovenance.prov.model.interop.InteropMediaType.MEDIA_TEXT_
 
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ExpandIT extends TestCase implements ApiUriFragments {
-    static Logger logger = LogManager.getLogger(ExpandIT.class);
+public class InstantiaterIT extends TestCase implements ApiUriFragments {
+    static Logger logger = LogManager.getLogger(InstantiaterIT.class);
     final static ClientConfig config=new ClientConfig(TranslateIT.class);
     final org.openprovenance.prov.model.ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
     final InteropFramework intF=new InteropFramework(pf);
     final private VanillaDocumentMessageBodyWriter bodyWriter;
 
 
-    public ExpandIT() {
+    public InstantiaterIT() {
         this.bodyWriter = new VanillaDocumentMessageBodyWriter(intF);
     }
 

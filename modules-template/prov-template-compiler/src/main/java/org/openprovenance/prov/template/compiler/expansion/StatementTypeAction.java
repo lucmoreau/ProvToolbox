@@ -9,7 +9,7 @@ import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
-import org.openprovenance.prov.template.expander.ExpandUtil;
+import org.openprovenance.prov.template.expander.InstantiateUtil;
 import org.openprovenance.prov.template.expander.exception.MissingAttributeValue;
 
 import java.nio.charset.StandardCharsets;
@@ -18,7 +18,7 @@ import java.util.*;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.*;
-import static org.openprovenance.prov.template.expander.ExpandUtil.*;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.*;
 
 public class StatementTypeAction implements StatementAction {
 
@@ -77,7 +77,7 @@ public class StatementTypeAction implements StatementAction {
                 Object o=type.getValue();
                 if (o instanceof QualifiedName) {
                     QualifiedName qn=(QualifiedName) o;
-                    if (ExpandUtil.isVariable(qn)) {
+                    if (InstantiateUtil.isVariable(qn)) {
                         registerUnknownType(id,qn.getUri());
                     } else {
                         registerAType(id,qn.getUri());
@@ -92,7 +92,7 @@ public class StatementTypeAction implements StatementAction {
                 Object o=type.getValue();
                 if (o instanceof QualifiedName) {
                     QualifiedName qn=(QualifiedName) o;
-                    if (ExpandUtil.isVariable(qn)) {
+                    if (InstantiateUtil.isVariable(qn)) {
                         registerUnknownType(id,suffix,qn.getUri());
                     } else {
                         registerAType(id,suffix,qn.getUri());
@@ -104,7 +104,7 @@ public class StatementTypeAction implements StatementAction {
     public void registerTypes2(QualifiedName id, Collection<QualifiedName> types) {
         if ((id !=null) && (types!=null)) {
             types.forEach(qn -> {
-                if (ExpandUtil.isVariable(qn)) {
+                if (InstantiateUtil.isVariable(qn)) {
                     registerUnknownType(id,qn.getUri());
                 } else {
                     registerAType(id,qn.getUri());
@@ -116,7 +116,7 @@ public class StatementTypeAction implements StatementAction {
     public void registerTypes2(QualifiedName id, String suffix, Collection<QualifiedName> types) {
         if ((id !=null) && (types!=null)) {
             types.forEach(qn -> {
-                if (ExpandUtil.isVariable(qn)) {
+                if (InstantiateUtil.isVariable(qn)) {
                     registerUnknownType(id,suffix, qn.getUri());
                 } else {
                     registerAType(id, suffix, qn.getUri());
@@ -282,7 +282,7 @@ public class StatementTypeAction implements StatementAction {
 
     @Override
     public void doAction(WasDerivedFrom s) {
-        final Collection<QualifiedName> qualifiedNames = doCollectElementVariables(s, ExpandUtil.ACTIVITY_TYPE_URI);
+        final Collection<QualifiedName> qualifiedNames = doCollectElementVariables(s, InstantiateUtil.ACTIVITY_TYPE_URI);
         if (s.getId()==null) {
             s.setId(gensym());
         }
@@ -310,7 +310,7 @@ public class StatementTypeAction implements StatementAction {
     private void doRegisterTypesForAttributes(Identifiable s,Collection<Attribute> attributes, String expressionUri) {
 
 
-        if (ExpandUtil.isGensymVariable(s.getId())) return;
+        if (InstantiateUtil.isGensymVariable(s.getId())) return;
         JsonNode the_var = bindings_schema.get("var");
 
         mbuilder.beginControlFlow("if ($N!=null) ", s.getId().getLocalPart());
@@ -340,7 +340,7 @@ public class StatementTypeAction implements StatementAction {
 
             if (value instanceof QualifiedName) {
                 QualifiedName qn=(QualifiedName) value;
-                if (ExpandUtil.isVariable(qn)) {
+                if (InstantiateUtil.isVariable(qn)) {
                     String key=qn.getLocalPart();
                     if (bindingsSchema.getVar().containsKey(key) && (bindingsSchema.getVar().get(key)!=null)) {
                         final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
@@ -380,7 +380,7 @@ public class StatementTypeAction implements StatementAction {
     static int iDataCounter=0;
 
     private void doRegisterIDataForAttributes(Identifiable s, Collection<Attribute> attributes, List<Type> types, String expressionUri) {
-        if (ExpandUtil.isGensymVariable(s.getId())) return;
+        if (InstantiateUtil.isGensymVariable(s.getId())) return;
         JsonNode the_var = bindings_schema.get("var");
 
         mbuilder.beginControlFlow("if ($N!=null) ", s.getId().getLocalPart());
@@ -435,7 +435,7 @@ public class StatementTypeAction implements StatementAction {
 
             if (value instanceof QualifiedName) {
                 QualifiedName qn=(QualifiedName) value;
-                if (ExpandUtil.isVariable(qn)) {
+                if (InstantiateUtil.isVariable(qn)) {
                     String key=qn.getLocalPart();
                     if (bindingsSchema.getVar().containsKey(key) && (bindingsSchema.getVar().get(key)!=null)) {
                         final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
@@ -529,7 +529,7 @@ public class StatementTypeAction implements StatementAction {
         mbuilder.addStatement("knownTypeMap.get($N).add($S)", tmp, relationURI);
 
         qualifiedNames.forEach(q -> {
-            if (ExpandUtil.isVariable(q)) {
+            if (InstantiateUtil.isVariable(q)) {
                 mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new $T<>())", tmp, HashSet.class);
                 mbuilder.addStatement("unknownTypeMap.get($N).add($N.getUri())", tmp, q.getLocalPart());
             } else {
@@ -598,7 +598,7 @@ public class StatementTypeAction implements StatementAction {
 
     @Override
     public void doAction(QualifiedHadMember s) {
-        final Collection<QualifiedName> qualifiedNames = doCollectElementVariables(s, ExpandUtil.ACTIVITY_TYPE_URI);
+        final Collection<QualifiedName> qualifiedNames = doCollectElementVariables(s, InstantiateUtil.ACTIVITY_TYPE_URI);
         if (s.getId()==null) {
             s.setId(gensym());
         }

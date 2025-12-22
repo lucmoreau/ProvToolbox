@@ -1,6 +1,6 @@
 package org.openprovenance.prov.template.expander.test;
 
-import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.VAR_NS;
 
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;

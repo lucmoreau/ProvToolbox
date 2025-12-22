@@ -1,6 +1,8 @@
 package org.openprovenance.prov.template.json;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
 
 import java.io.IOException;
@@ -13,6 +15,7 @@ public class Bindings {
     public Map<String, Descriptors> var;
     public Map<String, Descriptors> vargen;
     public Map<String, String> context;
+
 
     @Override
     public String toString() {
@@ -27,6 +30,21 @@ public class Bindings {
 
     public Map<String, String> linked;
     public String template;
+
+
+
+    public static final ObjectMapper mapper = new ObjectMapper();
+
+    public static Bindings importBindings(JsonNode json) {
+
+        try {
+            return mapper.treeToValue(json,Bindings.class);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException("JSON conversion to bean failed", e);
+        }
+    }
 
     public BindingsBean toBean() {
         BindingsBean bindingsBean = new BindingsBean();

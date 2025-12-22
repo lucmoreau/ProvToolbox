@@ -1,25 +1,23 @@
-package org.openprovenance.prov.template.expander;
+package org.openprovenance.prov.template.expander.deprecated;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.UncheckedException;
-import org.openprovenance.prov.template.expander.BindingsJson;
-import org.openprovenance.prov.template.expander.ExpandUtil;
-import org.openprovenance.prov.template.expander.OldBindings;
-import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
+import org.openprovenance.prov.template.expander.InstantiateUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-import static org.openprovenance.prov.template.expander.BindingsJson.mapper;
-import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
-import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_PREFIX;
-import static org.openprovenance.prov.template.expander.OldBindings.*;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.TMPL_NS;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.TMPL_PREFIX;
+import static org.openprovenance.prov.template.expander.deprecated.OldBindings.*;
+import static org.openprovenance.prov.template.json.Bindings.mapper;
 
 @Deprecated
 public class Conversions {
+    /*
     static public OldBindings fromBean(BindingsBean bean, ProvFactory pf) {
         OldBindings result = new OldBindings(pf);
         Namespace ns = new Namespace(bean.context);
@@ -83,6 +81,8 @@ public class Conversions {
         return result;
     }
 
+
+     */
 
     public static void exportBean(String output_file1,
                                   BindingsBean bean,
@@ -256,7 +256,7 @@ public class Conversions {
             List<Object> l1= new LinkedList<>();
             for (QualifiedName qn: entry.getValue()) {
                 l1.add(convertValueToBean(qn, null, bean.context));
-                if (entry.getKey().getNamespaceURI().startsWith(ExpandUtil.VARGEN_NS)) {
+                if (entry.getKey().getNamespaceURI().startsWith(InstantiateUtil.VARGEN_NS)) {
                     bean.vargen.put(entry.getKey().getLocalPart(), l1);
                 } else {
                     bean.var.put(entry.getKey().getLocalPart(), l1);
@@ -278,7 +278,7 @@ public class Conversions {
                     l1.add(l2);
                 }
             }
-            if (entry.getKey().getNamespaceURI().startsWith(ExpandUtil.VARGEN_NS)) {
+            if (entry.getKey().getNamespaceURI().startsWith(InstantiateUtil.VARGEN_NS)) {
                 bean.vargen.put(entry.getKey().getLocalPart(),l1);
             } else {
                 bean.var.put(entry.getKey().getLocalPart(),l1);

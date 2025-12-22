@@ -31,7 +31,7 @@ import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.*;
-import org.openprovenance.prov.template.expander.ExpandUtil;
+import org.openprovenance.prov.template.expander.InstantiateUtil;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 
 //import com.google.common.base.CaseFormat;
@@ -157,10 +157,10 @@ public class CompilerUtil {
                                               Set<QualifiedName> allAtts,
                                               ProvFactory pFactory) {
         for (Statement statement: bundle.getStatement()) {
-            Set<QualifiedName> vars=ExpandUtil.freeVariables(statement);
+            Set<QualifiedName> vars= InstantiateUtil.freeVariables(statement);
             allVars.addAll(vars);
-            allVars.addAll(ExpandUtil.freeVariables(bundle));
-            Set<QualifiedName> vars2=ExpandUtil.freeAttributeVariables(statement, pFactory);
+            allVars.addAll(InstantiateUtil.freeVariables(bundle));
+            Set<QualifiedName> vars2= InstantiateUtil.freeAttributeVariables(statement, pFactory);
             allAtts.addAll(vars2);
         }
     }
@@ -241,7 +241,7 @@ public class CompilerUtil {
 
     public Set<QualifiedName> allQualifiedNames(Statement statement) {
         HashSet<QualifiedName> result = new HashSet<QualifiedName>();
-        for (int i = 0; i < ExpandUtil.getFirstTimeIndex(statement); i++) {
+        for (int i = 0; i < InstantiateUtil.getFirstTimeIndex(statement); i++) {
             Object o = u.getter(statement, i);
             if (o instanceof QualifiedName) {
                 QualifiedName name = (QualifiedName) o;

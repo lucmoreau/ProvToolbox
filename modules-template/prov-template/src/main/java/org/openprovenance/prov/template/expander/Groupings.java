@@ -1,7 +1,7 @@
 package org.openprovenance.prov.template.expander;
 
-import static org.openprovenance.prov.template.expander.ExpandUtil.LINKED_URI;
-import static org.openprovenance.prov.template.expander.ExpandUtil.newVariable;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.LINKED_URI;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.newVariable;
 
 import java.util.*;
 
@@ -9,16 +9,15 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.json.Bindings;
 
 public class Groupings {
-    final private List<List<QualifiedName>> variables;
-
-    static ProvUtilities u= new ProvUtilities();
+    final private static ProvUtilities u= new ProvUtilities();
+    final private ArrayList<ArrayList<QualifiedName>> variables;
     private QualifiedName[] freeVariables;
 
     public Groupings() {
-        variables= new LinkedList<>();
+        variables= new ArrayList<>();
     }
 
-    public List<QualifiedName> get(int group) {
+    public ArrayList<QualifiedName> get(int group) {
         return variables.get(group);
     }
 
@@ -27,7 +26,7 @@ public class Groupings {
     }
 
     public int addVariable(QualifiedName name) {
-        List<QualifiedName> ll= new LinkedList<>();
+        ArrayList<QualifiedName> ll= new ArrayList<>();
         ll.add(name);
         int len=variables.size();
         variables.add(ll);
@@ -56,7 +55,7 @@ public class Groupings {
         Groupings grps=new Groupings();
         Set<QualifiedName> allVars= new HashSet<>();
         for (Statement statement: bun.getStatement()) {
-            Set<QualifiedName> vars=ExpandUtil.freeVariables(statement);
+            Set<QualifiedName> vars= InstantiateUtil.freeVariables(statement);
             allVars.addAll(vars);
             if (statement instanceof HasOther) {
                 HasOther stmt2=(HasOther)statement;
@@ -75,9 +74,10 @@ public class Groupings {
             Map<String, String> blinked = bindings.linked;
             if (blinked !=null) {
                 for (String key: blinked.keySet()) {
-                    addEntry(linked, newVariable(key, pf), newVariable(blinked.get(key), pf));
-                    addEntry(linked, newVariable(blinked.get(key),pf), newVariable(key, pf));
-
+                    QualifiedName q1 = newVariable(key, pf);
+                    QualifiedName q2 = newVariable(blinked.get(key), pf);
+                    addEntry(linked, q1, q2);
+                    addEntry(linked, q2, q1);
                 }
             }
         }
@@ -103,6 +103,7 @@ public class Groupings {
         QualifiedName [] sorted=allVars.toArray(new QualifiedName[0]);
         Arrays.sort(sorted, Comparator.comparing(QualifiedName::getUri));;
 
+        // currentGroup has the same value as size()
         int currentGroup=0;
         for (QualifiedName qn: sorted) {
             Set<QualifiedName> links=linked.get(qn);
@@ -132,7 +133,7 @@ public class Groupings {
         // also look for all free variables in attributes
         Set<QualifiedName> vars= new HashSet<>();
         for (Statement statement: bun.getStatement()) {
-            vars.addAll(ExpandUtil.freeAttributeVariables(statement));
+            vars.addAll(InstantiateUtil.freeAttributeVariables(statement));
         }
         Collections.addAll(vars, sorted);
         QualifiedName [] sorted2=vars.toArray(new QualifiedName[0]);
@@ -148,7 +149,7 @@ public class Groupings {
         return freeVariables;
     }
 
-    static  void addEntry(Map<QualifiedName, Set<QualifiedName>> linked,
+    static  private void addEntry(Map<QualifiedName, Set<QualifiedName>> linked,
                           QualifiedName id,
                           QualifiedName otherId) {
         linked.computeIfAbsent(otherId, k -> new HashSet<>());

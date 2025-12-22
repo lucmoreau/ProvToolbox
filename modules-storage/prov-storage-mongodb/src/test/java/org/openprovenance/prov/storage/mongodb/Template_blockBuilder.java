@@ -18,7 +18,7 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.model.interop.Formats;
-import org.openprovenance.prov.template.expander.ExpandAction;
+import org.openprovenance.prov.template.expander.InstantiateAction;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.template.log2prov.interfaces.ProxyClientAccessorInterface;
 
@@ -55,7 +55,7 @@ public class Template_blockBuilder extends FileBuilder implements ProxyClientAcc
     Namespace namespace = pf.newNamespace();
 
     if (b==null) {
-      b=ExpandAction.getUUIDQualifiedName2(pf);
+      b= InstantiateAction.getUUIDQualifiedName2(pf);
       namespace.register(b.getPrefix(),b.getNamespaceURI());
     }
     Bundle b_ = pf.newNamedBundle(b, namespace,null);

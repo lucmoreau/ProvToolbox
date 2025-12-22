@@ -1,7 +1,7 @@
 package org.openprovenance.prov.template.expander.test;
 
-import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
-import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.TMPL_NS;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.VAR_NS;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,9 +14,9 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.notation.Utility;
-import org.openprovenance.prov.template.expander.Conversions;
+import org.openprovenance.prov.template.expander.deprecated.Conversions;
 import org.openprovenance.prov.template.expander.Groupings;
-import org.openprovenance.prov.template.expander.OldBindings;
+import org.openprovenance.prov.template.expander.deprecated.OldBindings;
 import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
 
 import junit.framework.TestCase;
@@ -229,7 +229,7 @@ public class BindingTest extends TestCase {
 
         BindingsBean bb2=Conversions.importBean(new File(filename_root+"_1.json"));
 
-        OldBindings bindings_v2= Conversions.fromBean(bb2,pf);
+        //OldBindings bindings_v2= Conversions.fromBean(bb2,pf);
 
 
 

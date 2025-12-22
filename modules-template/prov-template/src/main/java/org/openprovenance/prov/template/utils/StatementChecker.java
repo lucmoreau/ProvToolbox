@@ -9,13 +9,12 @@ import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 import java.util.List;
 
-import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
-import static org.openprovenance.prov.template.expander.ExpandUtil.isVariable;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.TMPL_NS;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.isVariable;
 
-public class StatementChecker implements org.openprovenance.prov.model.StatementAction {
+final public class StatementChecker implements org.openprovenance.prov.model.StatementAction {
     static Logger logger = LogManager.getLogger(StatementChecker.class);
     private final VariableChecker vc;
-    private final ProvUtilities u=new ProvUtilities();
     private final boolean strict;
 
     public StatementChecker(VariableChecker vc, boolean strict) {
@@ -249,21 +248,21 @@ public class StatementChecker implements org.openprovenance.prov.model.Statement
 
 
 
-        public void assertTrue(boolean condition, StatementOrBundle s, String message, QualifiedName varName) {
-            if (!condition) {
-                System.out.println("**** FAILED CHECK (" + vc.pv.checkerName + "): "  +message+" for variable "+varName+" in statement "+s.toString());
-                if (strict) throw new VariableCheckException("In statement: " + s.toString() + ": " + message + " for variable " + varName);
-            }
+    public void assertTrue(boolean condition, StatementOrBundle s, String message, QualifiedName varName) {
+        if (!condition) {
+            System.out.println("**** FAILED CHECK (" + vc.pv.checkerName + "): "  +message+" for variable "+varName+" in statement "+s.toString());
+            if (strict) throw new VariableCheckException("In statement: " + s.toString() + ": " + message + " for variable " + varName);
         }
+    }
 
 
-        public void assertTrue(boolean condition, Statement s, String message, QualifiedName attrName, QualifiedName qn) {
-           // System.out.println("**** CHECKING: "+message+" for attribute-value pair "+attrName+","+ qn + " in statement "+s.toString());
-            if (!condition) {
-                System.out.println("**** FAILED CHECK (" + vc.pv.checkerName + "): "  +message+" for attribute-value pair "+attrName+","+ qn + " in statement "+s.toString());
-                if (strict) throw new VariableCheckException("In statement: " + s.toString() + ": " + message+" for attribute-value pair "+attrName+","+ qn);
-            }
+    public void assertTrue(boolean condition, Statement s, String message, QualifiedName attrName, QualifiedName qn) {
+        // System.out.println("**** CHECKING: "+message+" for attribute-value pair "+attrName+","+ qn + " in statement "+s.toString());
+        if (!condition) {
+            System.out.println("**** FAILED CHECK (" + vc.pv.checkerName + "): "  +message+" for attribute-value pair "+attrName+","+ qn + " in statement "+s.toString());
+            if (strict) throw new VariableCheckException("In statement: " + s.toString() + ": " + message+" for attribute-value pair "+attrName+","+ qn);
         }
+    }
 
     public String getVariableChecker() {
         return vc.pv.checkerName;

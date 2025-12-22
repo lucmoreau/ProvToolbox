@@ -1,25 +1,17 @@
-package org.openprovenance.prov.template.expander;
+package org.openprovenance.prov.template.expander.deprecated;
 
 import java.util.*;
 
-import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
-import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_PREFIX;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.TMPL_NS;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.TMPL_PREFIX;
 
 import java.util.Map.Entry;
 
-import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.Name;
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.Other;
-import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.ProvUtilities;
-import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.TypedValue;
-import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
+import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.template.expander.InstantiateUtil;
+import org.openprovenance.prov.template.json.*;
 
+@Deprecated
 public class OldBindings {
     
     public static final String VALUE = "value_";
@@ -47,6 +39,130 @@ public class OldBindings {
         this.attributes=attributes;
         this.pf=pf;
         this.name=pf.getName();
+    }
+
+    public static Object[] convertBeanToValue(Descriptor v, Map<String, String> context, Namespace ns, ProvFactory pf) {
+        if (v instanceof QDescriptor) {
+            QDescriptor qd=(QDescriptor)v;
+            return new Object[] {ns.stringToQualifiedName(qd.id,pf),pf.getName().PROV_QUALIFIED_NAME};
+        }
+        if (v instanceof VDescriptor) {
+
+            VDescriptor vd=(VDescriptor)v;
+            if (vd.language!=null) {
+                return new Object[]{pf.newInternationalizedString(vd.value,vd.language),pf.getName().XSD_STRING};
+            }
+            if (vd.type!=null) {
+                String[] strings = vd.type.split(":");
+                String prefix = "";
+                String local = vd.type;
+                if (strings.length > 1) {
+                    prefix = strings[0];
+                    local = strings[1];
+                }
+                String namespace = "http://foo/";
+                namespace = context.getOrDefault(prefix, namespace);
+                if ("xsd".equals(prefix)) {
+                    namespace = NamespacePrefixMapper.XSD_NS;
+                }
+                return new Object[]{vd.value, pf.newQualifiedName(namespace, local, prefix)};
+            } else {
+                //System.out.println("===> vd " + vd); //new RuntimeException().printStackTrace();
+                return new Object[]{vd.value,pf.getName().XSD_STRING};
+            }
+        }
+        else throw new UnsupportedOperationException("bean is " + v.getClass());
+    }
+
+    enum VAR_KIND { IS_VAR, IS_VARGEN };
+
+    public static OldBindings fromBean(Bindings bean, ProvFactory pf) {
+        OldBindings result=new OldBindings(pf);
+        Namespace ns=new Namespace(bean.context);
+
+        if (bean.var!=null) fromBeanForVariables(bean, pf, bean.var, ns, result, VAR_KIND.IS_VAR);
+        if (bean.vargen!=null) fromBeanForVariables(bean, pf, bean.vargen, ns, result, VAR_KIND.IS_VARGEN);
+
+
+        return result;
+    }
+
+    private static void fromBeanForVariables(Bindings bean,
+                                             ProvFactory pf,
+                                             Map<String, Descriptors> var,
+                                             Namespace ns,
+                                             OldBindings result,
+                                             VAR_KIND varKind) {
+        for (String key: var.keySet()) {
+            int i=0;
+            List<List<TypedValue>> allvalues= new LinkedList<>();
+
+            boolean single_value=true;
+
+            Descriptors descriptors = var.get(key);
+            if (descriptors==null || descriptors.values==null) {
+                //throw new IllegalArgumentException("Missing variable " + key + " in bindings " + var);
+                continue;
+            };
+            for (Descriptor descriptor: descriptors.values) {
+
+                SingleDescriptors wrapped;
+                if (descriptor instanceof SingleDescriptor) {
+                    wrapped=new SingleDescriptors();
+                    wrapped.values=new LinkedList<>();
+                    wrapped.values.add((SingleDescriptor)descriptor);
+                } else if (descriptor instanceof SingleDescriptors) {
+                    wrapped=((SingleDescriptors) descriptor);
+                    single_value=false;
+                } else {
+                    throw new IllegalArgumentException("Unexpected type " + descriptor.getClass());
+                }
+                int count=0;
+
+
+
+                List<TypedValue> values= new LinkedList<>();
+
+                for (SingleDescriptor o: wrapped.values) {
+                    //System.out.println("Converting " + o);
+                    Object[] conversion= convertBeanToValue(o, bean.context, ns, pf);
+                    Object theValue=conversion[0];
+                    QualifiedName type=(QualifiedName)conversion[1];
+                    if (!(type.equals(pf.getName().PROV_QUALIFIED_NAME))) single_value=false; // interested only in qualified names
+                    values.add(pf.newAttribute(TMPL_NS, VALUE2 + i + "_" + count, TMPL_PREFIX, theValue, type));
+                    count++;
+                }
+
+                allvalues.add(values);
+
+                i++;
+            }
+
+            QualifiedName myvar;
+            if (varKind.equals(VAR_KIND.IS_VAR)) {
+                 myvar = pf.newQualifiedName(InstantiateUtil.VAR_NS, key, "var");
+            } else {
+                 myvar = pf.newQualifiedName(InstantiateUtil.VARGEN_NS, key, "vargen");
+            }
+
+            result.getAttributes().put(myvar, allvalues);
+
+
+            if (single_value) {
+                List<QualifiedName> ll = new LinkedList<>();
+                for (Descriptor o : descriptors.values) {
+                    Object[] conversion = convertBeanToValue(o, bean.context, ns, pf);
+                    Object theValue = conversion[0];
+                    ll.add((QualifiedName) theValue);
+                }
+                result.getVariables().put(myvar, ll);
+            }
+
+
+
+        }
+
+
     }
 
     @Override
@@ -94,7 +210,7 @@ public class OldBindings {
     
     /* binding variable */
     public QualifiedName b_var(String name) {
-        return pf.newQualifiedName(ExpandUtil.VAR_NS, name, ExpandUtil.VAR_PREFIX);
+        return pf.newQualifiedName(InstantiateUtil.VAR_NS, name, InstantiateUtil.VAR_PREFIX);
     }
     
     /* Attribute value */
@@ -266,8 +382,14 @@ public class OldBindings {
     }
     
     public void exportToJson(String filename) {
-        BindingsBean bb=Conversions.toBean(this);
+        BindingsBean bb= Conversions.toBean(this);
         Conversions.exportBean(filename,bb,true);
     }
+
+       /*
+    public static OldBindings getBindingsFromSchema(JsonNode bindings_schema, ProvFactory provFactory) {
+        return BindingsJson.fromBean(BindingsJson.importBindings(bindings_schema), provFactory);
+    }
+     */
 	
 }

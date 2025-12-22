@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvUtilities;
-import org.openprovenance.prov.template.expander.Expand;
+import org.openprovenance.prov.template.expander.Instantiater;
 import org.openprovenance.prov.template.json.Bindings;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBean;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBuilder;
@@ -101,7 +101,7 @@ public class InstantiateTask implements ConfigTask {
         //String bindingsFilename = config.bindings_path + "/" + task.bindings;
         InputStream is=substituteVariablesInFile(variableMap, bindingsFilename);
 
-        Expand expand = new Expand(pf, false, false);
+        Instantiater instantiater = new Instantiater(pf, false, false);
 
         String foundTemplate=templateLibraryPath.getStrict(template, TemplateExtension.preferredExtensions());
         File templateFile=new File(foundTemplate);
@@ -120,7 +120,7 @@ public class InstantiateTask implements ConfigTask {
 
         // extract extension from filename
         String informat = executor.getFormat(templateFile);
-        Document doc=expand.expander(executor.deserialise(new FileInputStream(templateFile),informat), executor.om.readValue(is, Bindings.class), bindingsFilename, foundTemplate);
+        Document doc= instantiater.instantiate(executor.deserialise(new FileInputStream(templateFile),informat), executor.om.readValue(is, Bindings.class), bindingsFilename, foundTemplate);
         for (String format: formats) {
             Path documentPath = Path.of(templateTasksBatch.output_dir, output + "." + format);
 

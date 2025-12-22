@@ -21,8 +21,8 @@ import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
-import org.openprovenance.prov.template.expander.ExpandAction;
-import org.openprovenance.prov.template.expander.ExpandUtil;
+import org.openprovenance.prov.template.expander.InstantiateAction;
+import org.openprovenance.prov.template.expander.InstantiateUtil;
 import org.openprovenance.prov.template.expander.exception.MissingAttributeValue;
 import org.openprovenance.prov.template.types.TypesRecordProcessor;
 
@@ -35,7 +35,7 @@ import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 import static org.openprovenance.prov.template.compiler.common.CompilerCommon.makeArgsList;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.*;
-import static org.openprovenance.prov.template.expander.ExpandUtil.*;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.*;
 
 public class CompilerExpansionBuilder {
     private final CompilerUtil compilerUtil;
@@ -201,9 +201,9 @@ public class CompilerExpansionBuilder {
             }
         }
         for (QualifiedName q : allVars) {
-            if (ExpandUtil.isGensymVariable(q)) {
+            if (InstantiateUtil.isGensymVariable(q)) {
                 final String vgen = q.getLocalPart();
-                builder.addStatement("if ($N==null) $N=$T.getUUIDQualifiedName2(pf)", vgen, vgen, ExpandAction.class);
+                builder.addStatement("if ($N==null) $N=$T.getUUIDQualifiedName2(pf)", vgen, vgen, InstantiateAction.class);
             }
         }
 
@@ -578,11 +578,11 @@ public class CompilerExpansionBuilder {
         Bundle bun = u.getBundle(doc).get(0);
         Set<QualifiedName> set = new HashSet<>();
         compilerUtil.allQualifiedNames(bun, set, pFactory);
-        set.remove(pFactory.newQualifiedName(ExpandUtil.TMPL_NS, ExpandUtil.LABEL, ExpandUtil.TMPL_PREFIX));
+        set.remove(pFactory.newQualifiedName(InstantiateUtil.TMPL_NS, InstantiateUtil.LABEL, InstantiateUtil.TMPL_PREFIX));
         set.add(pFactory.getName().PROV_LABEL);
         Hashtable<QualifiedName, String> qnVariables = new Hashtable<>();
         for (QualifiedName qn : set) {
-            if (!(ExpandUtil.isVariable(qn))) {
+            if (!(InstantiateUtil.isVariable(qn))) {
                 final String v = variableForQualifiedName(qn);
                 qnVariables.put(qn, v);
 

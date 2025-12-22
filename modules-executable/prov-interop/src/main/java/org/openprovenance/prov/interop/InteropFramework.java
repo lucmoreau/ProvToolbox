@@ -26,7 +26,7 @@ import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
-import org.openprovenance.prov.template.expander.Expand;
+import org.openprovenance.prov.template.expander.Instantiater;
 
 
 import org.openprovenance.prov.generator.GeneratorDetails;
@@ -688,7 +688,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         }
         try {
             if (config.bindings != null) {
-                Expand myExpand = new Expand(pFactory, config.addOrderp, config.allExpanded);
+                Instantiater myInstantiater = new Instantiater(pFactory, config.addOrderp, config.allExpanded);
                 Document expanded;
                 if (config.bindingsVersion == 3) {
                     Bindings inBindings;
@@ -699,12 +699,12 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     } catch (IOException e) {
                         throw new InteropException("problem parsing bindings file " + config.bindings, e);
                     }
-                    expanded = myExpand.expander(doc, inBindings);
+                    expanded = myInstantiater.instantiate(doc, inBindings);
 
                 } else {
                     throw new DocumentedUnsupportedCaseException("bindings version number <> 3: " + config.bindingsVersion);
                 }
-                boolean flag = myExpand.getAllExpanded();
+                boolean flag = myInstantiater.getAllExpanded();
                 outputer.writeDocumentToFileOrDefaultOutput(config.outfile, expanded, config.outformat);
 
                 if (!flag) {

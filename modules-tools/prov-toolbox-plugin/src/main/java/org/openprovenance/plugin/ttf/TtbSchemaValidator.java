@@ -7,7 +7,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.openprovenance.prov.template.expander.Expand;
+import org.openprovenance.prov.template.expander.Instantiater;
 
 import java.net.URL;
 import java.nio.file.Files;
@@ -58,7 +58,7 @@ public class TtbSchemaValidator extends AbstractMojo {
             // create a path for the temp file in the system's default temporary-file directory
             Path tempFilePath = Paths.get(System.getProperty("java.io.tmpdir"), tempFileName);
 
-            IOUtils.copy(Expand.class.getClassLoader().getResourceAsStream("jsonschema/template-transformation-file-schema.json"), Files.newOutputStream(tempFilePath));
+            IOUtils.copy(Instantiater.class.getClassLoader().getResourceAsStream("jsonschema/template-transformation-file-schema.json"), Files.newOutputStream(tempFilePath));
             Path inputBasePath=java.nio.file.Paths.get(inputBaseDir);
 
             for (String arg : args) {

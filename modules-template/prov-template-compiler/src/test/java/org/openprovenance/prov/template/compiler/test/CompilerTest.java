@@ -9,7 +9,6 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.*;
-import org.openprovenance.prov.template.compiler.util.JavaVersion;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.VAR_NS;
 
 public class CompilerTest extends TestCase {
 

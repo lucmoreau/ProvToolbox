@@ -4,12 +4,10 @@ import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Name;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.template.expander.ExpandUtil;
 
 import java.util.Map;
 
-import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
-import static org.openprovenance.prov.template.expander.ExpandUtil.*;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.*;
 
 public class DescriptorUtils {
     private final ProvFactory pf;
@@ -29,7 +27,7 @@ public class DescriptorUtils {
     }
 
     public QualifiedName newQualifiedName(QDescriptor qDescriptor, Bindings bindings) {
-        String[] parts = qDescriptor.id.split(":");
+        String[] parts = qDescriptor.getParts();
         if (parts.length == 2) {
             if (UUID_PREFIX.equals(parts[0]) && bindings.context.get(UUID_PREFIX)==null) {
                 return pf.newQualifiedName(URN_UUID_NS, parts[1], UUID_PREFIX);
@@ -76,7 +74,7 @@ public class DescriptorUtils {
         if (singleDescriptor instanceof QDescriptor) {
             return pf.newAttribute(elementName,
                     newQualifiedName(((QDescriptor) singleDescriptor), bindings),
-                    pf.getName().PROV_QUALIFIED_NAME);
+                    name.PROV_QUALIFIED_NAME);
         } else if (singleDescriptor instanceof VDescriptor) {
             Object val = newValue((VDescriptor) singleDescriptor);
             QualifiedName type = valueType((VDescriptor) singleDescriptor);
@@ -90,10 +88,10 @@ public class DescriptorUtils {
         if (singleDescriptor ==null) return false;
         if (singleDescriptor instanceof QDescriptor) {
             QDescriptor qd = (QDescriptor) singleDescriptor;
-            String[] parts = qd.id.split(":");
+            //String[] parts = qd.id.split(":");
+            String[] parts = qd.getParts();
             Map<String, String> context = bindings.context;
-            String qnNamespace = context.get(parts[0]);
-            return parts.length == 2 && VAR_NS.equals(qnNamespace);
+            return parts.length == 2 && VAR_NS.equals(context.get(parts[0]));
         }
         return false;
     }

@@ -17,7 +17,7 @@ import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.TemplateResource;
-import org.openprovenance.prov.template.expander.Expand;
+import org.openprovenance.prov.template.expander.Instantiater;
 import org.openprovenance.prov.template.json.Bindings;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
@@ -128,8 +128,8 @@ public class ActionExpand implements ActionPerformer {
                    Bindings bindings,
                    ProvFactory pFactory)
     {
-        Expand anExpander=new Expand(pFactory);
-        Document expanded = anExpander.expander(templateDocument, bindings);
+        Instantiater anExpander=new Instantiater(pFactory);
+        Document expanded = anExpander.instantiate(templateDocument, bindings);
         return Pair.of(expanded, bindings);
     }
 

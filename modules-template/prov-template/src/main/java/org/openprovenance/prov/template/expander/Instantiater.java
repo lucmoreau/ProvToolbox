@@ -11,14 +11,13 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
-import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.template.expander.Using.UsingIterator;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.template.json.*;
 
-public class Expand {
-    static Logger logger = LogManager.getLogger(Expand.class);
+public class Instantiater {
+    static Logger logger = LogManager.getLogger(Instantiater.class);
 
 
     final private boolean addOrderp;
@@ -28,14 +27,14 @@ public class Expand {
     boolean displayUnusedVariables=true;
     boolean displayUnusedBindings=true;
 
-    public Expand(ProvFactory pf, boolean addOrderp, boolean allUpdatedRequired) {
+    public Instantiater(ProvFactory pf, boolean addOrderp, boolean allUpdatedRequired) {
         this.pf = pf;
         this.addOrderp = addOrderp;
         this.allUpdatedRequired = allUpdatedRequired;
         this.preserveUnboundVariables=false;
         this.displayUnusedVariables=true;
     }
-    public Expand(ProvFactory pf, boolean addOrderp, boolean allUpdatedRequired, boolean preserveUnboundVariables, boolean displayUnusedVariables, boolean displayUnusedBindings) {
+    public Instantiater(ProvFactory pf, boolean addOrderp, boolean allUpdatedRequired, boolean preserveUnboundVariables, boolean displayUnusedVariables, boolean displayUnusedBindings) {
         this.pf = pf;
         this.addOrderp = addOrderp;
         this.allUpdatedRequired = allUpdatedRequired;
@@ -43,15 +42,15 @@ public class Expand {
         this.displayUnusedVariables=displayUnusedVariables;
         this.displayUnusedBindings=displayUnusedBindings;
     }
-    public Expand(ProvFactory pf) {
+    public Instantiater(ProvFactory pf) {
         this(pf, false, false);
     }
 
-    public Document expander(Document docIn, Bindings bindings) {
-        return expander(docIn, bindings, null, null);
+    public Document instantiate(Document docIn, Bindings bindings) {
+        return instantiate(docIn, bindings, null, null);
     }
 
-    public Document expander(Document docIn, Bindings bindings, String bindingsFilename, String templateFilename) {
+    public Document instantiate(Document docIn, Bindings bindings, String bindingsFilename, String templateFilename) {
 
         
         Bundle bun;
@@ -95,7 +94,7 @@ public class Expand {
         Map<QualifiedName, QDescriptor> env= new HashMap<>();
         Map<QualifiedName, SingleDescriptors> env2= new HashMap<>();
 
-        ExpandAction action = new ExpandAction(pf,
+        InstantiateAction action = new InstantiateAction(pf,
                                                u,
                                                this,
                                                env,
@@ -155,27 +154,27 @@ public class Expand {
         List<StatementOrBundle> results = new LinkedList<>();
         Iterator<List<Integer>> iter = us1.iterator();
 
-        Set<QualifiedName> freeAttributeVariables = ExpandUtil.freeAttributeVariables(statement, pf);
+        Set<QualifiedName> freeAttributeVariables = InstantiateUtil.freeAttributeVariables(statement, pf);
 
         while (iter.hasNext()) {
             List<Integer> index = iter.next();
-            Map<QualifiedName, QDescriptor> env=us1.newGet(bindings, grp1, index);
+            Map<QualifiedName, QDescriptor> env=us1.get(bindings, grp1, index);
 
-            Map<QualifiedName, SingleDescriptors> env2=us1.newGetAttr(freeAttributeVariables,
+            Map<QualifiedName, SingleDescriptors> env2=us1.getAttr(freeAttributeVariables,
                     bindings,
                     (UsingIterator) iter);
 
-            ExpandAction action = new ExpandAction(pf,
-                                                   u,
-                                                   this,
-                                                    env,
-                                                   env2,
-                                                   index,
-                                                   bindings,
-                                                   grp1,
-                                                   addOrderp,
-                                                   allUpdatedRequired,
-                                                   preserveUnboundVariables);
+            InstantiateAction action = new InstantiateAction(pf,
+                                                               u,
+                                                               this,
+                                                                env,
+                                                               env2,
+                                                               index,
+                                                               bindings,
+                                                               grp1,
+                                                               addOrderp,
+                                                               allUpdatedRequired,
+                                                               preserveUnboundVariables);
             u.doAction(statement, action);
             allExpanded=allExpanded && action.getAllExpanded();
 

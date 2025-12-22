@@ -23,7 +23,7 @@ import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.ne
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfString;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
-import static org.openprovenance.prov.template.expander.ExpandUtil.isVariable;
+import static org.openprovenance.prov.template.expander.InstantiateUtil.isVariable;
 
 public class CompilerCommon {
     public static final String SB_VAR = "sb";

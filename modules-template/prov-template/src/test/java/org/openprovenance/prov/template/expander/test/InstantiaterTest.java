@@ -12,10 +12,12 @@ import org.openprovenance.prov.notation.Utility;
 import junit.framework.TestCase;
 import org.openprovenance.prov.template.expander.*;
 import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
+import org.openprovenance.prov.template.expander.deprecated.Conversions;
+import org.openprovenance.prov.template.expander.deprecated.OldBindings;
 import org.openprovenance.prov.template.json.Bindings;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
-public class ExpandTest extends TestCase {
+public class InstantiaterTest extends TestCase {
     ProvFactory pf= new org.openprovenance.prov.vanilla.ProvFactory();
 
     final BindingsBuilder bindingsBuilder = new BindingsBuilder(pf);
@@ -38,7 +40,7 @@ public class ExpandTest extends TestCase {
         Groupings grp1=Groupings.fromDocument(doc, newBindings, pf);
         System.err.println("Found groupings " + grp1);
 
-        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, newBindings, grp1, inBindings_asProv, templateFilename).get(0);
+        Bundle bun1=(Bundle) new Instantiater(pf,addOrderp,false).expand(bun, newBindings, grp1, inBindings_asProv, templateFilename).get(0);
         Document doc1= pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
 
@@ -75,12 +77,12 @@ public class ExpandTest extends TestCase {
         System.err.println("Found groupings " + grp1);
 
         BindingsBean inBindingsBean=inBindings.toBean();
-        OldBindings inBindingsLegacy= BindingsJson.fromBean(inBindings,pf);
+        OldBindings inBindingsLegacy= OldBindings.fromBean(inBindings,pf);
         //System.out.println(inBindingsLegacy.toString());
         BindingsBean inBindingsBean2=Conversions.toBean(inBindingsLegacy);
 
 
-        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, inBindings, grp1, inFileBindings, inFilename).get(0);
+        Bundle bun1=(Bundle) new Instantiater(pf,addOrderp,false).expand(bun, inBindings, grp1, inFileBindings, inFilename).get(0);
         Document doc1= pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
         bun1.setNamespace(Namespace.gatherNamespaces(bun1));

@@ -15,8 +15,8 @@ import org.openprovenance.prov.template.json.Bindings;
 import org.openprovenance.prov.template.json.Descriptor;
 import org.openprovenance.prov.template.json.Descriptors;
 
-public class ExpandUtil {
-    static Logger logger = LogManager.getLogger(ExpandUtil.class);
+public class InstantiateUtil {
+    static Logger logger = LogManager.getLogger(InstantiateUtil.class);
 
     public static final String VAR_NS = "http://openprovenance.org/var#";
     public static final String VARGEN_NS = "http://openprovenance.org/vargen#";
@@ -108,11 +108,13 @@ public class ExpandUtil {
         if (statement instanceof HasOther) {
             List<Other> ll = ((HasOther) statement).getOther();
             for (Other other : ll) {
-                if (isVariable(other.getElementName())) {
-                    result.add(other.getElementName());
+                QualifiedName elementName = other.getElementName();
+                if (isVariable(elementName)) {
+                    result.add(elementName);
                 }
-                if (other.getValue() instanceof QualifiedName) {
-                    QualifiedName qn = (QualifiedName) other.getValue();
+                Object value = other.getValue();
+                if (value instanceof QualifiedName) {
+                    QualifiedName qn = (QualifiedName) value;
                     if (isVariable(qn))  result.add(qn);
                 }
             }
@@ -120,8 +122,9 @@ public class ExpandUtil {
         if (statement instanceof HasValue) {
             Value attr = ((HasValue) statement).getValue();
             if (attr != null) {
-                if (attr.getValue() instanceof QualifiedName) {
-                    QualifiedName qn = (QualifiedName) attr.getValue();
+                Object value = attr.getValue();
+                if (value instanceof QualifiedName) {
+                    QualifiedName qn = (QualifiedName) value;
                     if (isVariable(qn))  result.add(qn);
                 }
             }
@@ -130,8 +133,9 @@ public class ExpandUtil {
             List<Type> types = ((HasType) statement).getType();
             if (types != null) {
                 for (Attribute attr : types) {
-                    if (attr.getValue() instanceof QualifiedName) {
-                        QualifiedName qn = (QualifiedName) attr.getValue();
+                    Object value = attr.getValue();
+                    if (value instanceof QualifiedName) {
+                        QualifiedName qn = (QualifiedName) value;
                         if (isVariable(qn))  result.add(qn);
                     }
                 }
@@ -141,8 +145,9 @@ public class ExpandUtil {
             List<Location> locations = ((HasLocation) statement).getLocation();
             if (locations != null) {
                 for (Attribute attr : locations) {
-                    if (attr.getValue() instanceof QualifiedName) {
-                        QualifiedName qn = (QualifiedName) attr.getValue();
+                    Object value = attr.getValue();
+                    if (value instanceof QualifiedName) {
+                        QualifiedName qn = (QualifiedName) value;
                         if (isVariable(qn))  result.add(qn);
                     }
                 }
@@ -152,8 +157,9 @@ public class ExpandUtil {
             List<Role> roles = ((HasRole) statement).getRole();
             if (roles != null) {
                 for (Attribute attr : roles) {
-                    if (attr.getValue() instanceof QualifiedName) {
-                        QualifiedName qn = (QualifiedName) attr.getValue();
+                    Object value = attr.getValue();
+                    if (value instanceof QualifiedName) {
+                        QualifiedName qn = (QualifiedName) value;
                         if (isVariable(qn))  result.add(qn);
                     }
                 }
@@ -177,67 +183,28 @@ public class ExpandUtil {
     static public Set<QualifiedName> freeAttributeVariables(Statement statement, ProvFactory pf) {
         Set<QualifiedName> result = new HashSet<>();
         Collection<Attribute> ll = pf.getAttributes(statement);
+        Name name = pf.getName();
         for (Attribute attr : ll) {
-            if (pf.getName().PROV_QUALIFIED_NAME.equals(attr.getType())) {
+            QualifiedName elementName = attr.getElementName();
+            if (name.PROV_QUALIFIED_NAME.equals(attr.getType())) {
                 Object o = attr.getValue();
                 if (o instanceof QualifiedName) { // if attribute is constructed
                     // properly, this test should
                     // always return true
                     QualifiedName qn = (QualifiedName) o;
-                    if (isVariable(qn)  && (!attr.getElementName().getUri().equals(LINKED_URI)))  // ignore occurrence of linked variables
+                    if (isVariable(qn)  && (!elementName.getUri().equals(LINKED_URI)))  // ignore occurrence of linked variables
                         result.add(qn);
                 }
             }
 
-            if (ExpandUtil.isVariable(attr.getElementName())) {
+            if (InstantiateUtil.isVariable(elementName)) {
                 //System.out.println("Free variable: found attrib variable " + attr.getElementName());
-                result.add(attr.getElementName());
+                result.add(elementName);
             }
         }
         return result;
     }
 
-
-    public static Using usedGroups(Statement statement, Groupings groupings, OldBindings bindings) {
-        Set<QualifiedName> vars = freeVariables(statement);
-        Set<Integer> groups = new HashSet<>();
-        for (QualifiedName var : vars) {
-            for (int grp = 0; grp < groupings.size(); grp++) {
-                List<QualifiedName> names = groupings.get(grp);
-                if (names.contains(var)) {
-                    groups.add(grp);
-                }
-            }
-        }
-
-        Using u = new Using();
-        Integer[] sorted = groups.toArray(new Integer[0]);
-        Arrays.sort(sorted);
-
-
-        for (Integer g : sorted) {
-            List<QualifiedName> vs = groupings.get(g);
-            QualifiedName qn = vs.get(0);
-            List<QualifiedName> vals = bindings.getVariables().get(qn);
-            if (vals != null) {
-                u.addGroup(g, vals.size());
-
-            } else {
-                if (isGensymVariable(qn)) {
-                    u.addGroup(g, 1); // uuid to be generated for this gensym
-                    // variable
-                } else {
-                    List<List<TypedValue>> attrs = bindings.getAttributes().get(vs.get(0));
-                    if (attrs != null) {
-                        u.addGroup(g, attrs.size());
-                    }
-                }
-
-            }
-        }
-
-        return u;
-    }
 
 
 
@@ -270,11 +237,8 @@ public class ExpandUtil {
             if (gen_descriptors!=null && gen_descriptors.values!=null) descriptor_list.addAll(gen_descriptors.values);
 
 
-
             if (!descriptor_list.isEmpty()) {
-
                 u.addGroup(g, descriptor_list.size());
-
             } else {
                 if (isGensymVariable(qn)) {
                     u.addGroup(g, 1); // uuid to be generated for this gensym

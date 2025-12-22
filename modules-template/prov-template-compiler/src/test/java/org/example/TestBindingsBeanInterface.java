@@ -4,7 +4,7 @@ package org.example;
 import java.lang.String;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.template.expander.OldBindings;
+import org.openprovenance.prov.template.expander.deprecated.OldBindings;
 import org.openprovenance.prov.template.expander.BindingsBeanInterface;
 
 public class TestBindingsBeanInterface implements BindingsBeanInterface {

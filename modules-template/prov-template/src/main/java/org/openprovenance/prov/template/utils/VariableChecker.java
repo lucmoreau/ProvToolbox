@@ -4,7 +4,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 
 
-public class VariableChecker {
+final public class VariableChecker {
     final ProvVariables pv;
 
     public VariableChecker(ProvVariables pv) {
@@ -13,112 +13,114 @@ public class VariableChecker {
 
 
     public boolean checkActivityId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.activity));
+        return id == null || matches(id, pv.activity);
     }
 
-    private String ifExists(String regexp) {
-        if (regexp==null) return ".*";
-        else return regexp;
-    }
 
     public boolean checkUsedId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.used));
+        return id == null || matches(id, pv.used);
+    }
+
+    private boolean matches(QualifiedName id, String regexp) {
+        if (regexp==null) return true;
+        return id.getLocalPart().matches(regexp);
     }
 
     public boolean checkEntityId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.entity));
+        return id == null || matches(id, pv.entity);
     }
 
     public boolean checkWasGeneratedByEntityId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.entity)) || id.getLocalPart().matches(ifExists(pv.wasGeneratedByEntity));
+        return id == null || matches(id, pv.entity) || matches(id, pv.wasGeneratedByEntity);
     }
 
     public boolean checkUsedEntityId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.entity)) || id.getLocalPart().matches(ifExists(pv.usedEntity));
+        return id == null || matches(id, pv.entity) || matches(id, pv.usedEntity);
     }
 
     public boolean checkWasDerivedFromEntityId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.entity)) || id.getLocalPart().matches(ifExists(pv.wasDerivedFromEntity));
+        return id == null || matches(id, pv.entity) || matches(id, pv.wasDerivedFromEntity);
     }
 
 
 
     public boolean checkSpecializationOfEntityId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.entity)) || id.getLocalPart().matches(ifExists(pv.specializationOfEntity));
+        return id == null || matches(id, pv.entity) || matches(id, pv.specializationOfEntity);
     }
 
 
     public boolean checkWasGeneratedById(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.wasGeneratedBy));
+        return id == null || matches(id, pv.wasGeneratedBy);
     }
 
     public boolean checkWasAssociatedId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.wasAssociatedWith));
+        return id == null || matches(id, pv.wasAssociatedWith);
     }
 
     public boolean checkWasDerivedFromId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.wasDerivedFrom));
+        return id == null || matches(id, pv.wasDerivedFrom);
     }
 
     public boolean checkWasAttributedToId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.wasAttributedTo));
+        return id == null || matches(id, pv.wasAttributedTo);
     }
 
     public boolean checkAgentId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.agent));
+        return id == null || matches(id, pv.agent);
     }
 
     public boolean checkPlanId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.plan)) || id.getLocalPart().matches(ifExists(pv.wasAssociatedWithEntity));
+        return id == null || matches(id, pv.plan) || matches(id, pv.wasAssociatedWithEntity);
     }
 
     public boolean checkWasInvalidatedById(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.wasInvalidatedBy));
+        return id == null || matches(id, pv.wasInvalidatedBy);
     }
 
     public boolean checkQualifiedSpecializationId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.specializationOf));
+        return id == null || matches(id, pv.specializationOf);
     }
 
     public boolean checkBundleId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.bundle));
+        return id == null || matches(id, pv.bundle);
     }
 
     public boolean checkTimeVariable(QualifiedName qn) {
-        return qn == null || qn.getLocalPart().matches(ifExists(pv.time));
+        return qn == null || matches(qn, pv.time);
     }
 
     public boolean checkQualifiedHadMemberId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.hadMember));
+        return id == null || matches(id, pv.hadMember);
     }
 
     public boolean checkCollectionId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.collection));
+        return id == null || matches(id, pv.collection);
     }
 
     public boolean checkQualifiedAlternateId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.alternateOf));
+        return id == null || matches(id, pv.alternateOf);
     }
 
     public boolean checkActedOnBehalfOfId(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.actedOnBehalfOf));
+        return id == null || matches(id, pv.actedOnBehalfOf);
     }
 
     public boolean checkWasStartedById(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.wasStartedBy));
+        return id == null || matches(id, pv.wasStartedBy);
     }
 
     public boolean checkWasEndedById(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.wasEndedBy));
+        return id == null || matches(id, pv.wasEndedBy);
     }
     public boolean checkWasInformedById(QualifiedName id) {
-        return id == null || id.getLocalPart().matches(ifExists(pv.wasInformedBy));
+        return id == null || matches(id, pv.wasInformedBy);
     }
 
 
     public boolean checkPropertyValuePair(QualifiedName attribute, QualifiedName value, Statement s) {
-        return (attribute == null || attribute.getLocalPart().matches(ifExists(pv.attributes.get(nameOf(s.getKind()))))) &&
-                (value == null || value.getLocalPart().matches(ifExists(pv.values.get(nameOf(s.getKind())))));
+        String name = nameOf(s.getKind());
+        return (attribute == null || matches(attribute, pv.attributes.get(name))) &&
+                (value == null || matches(value, pv.values.get(name)));
     }
 
 

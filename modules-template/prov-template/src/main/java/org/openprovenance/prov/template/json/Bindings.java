@@ -3,7 +3,7 @@ package org.openprovenance.prov.template.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.model.exception.UncheckedException;
-import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
+import org.openprovenance.prov.template.core.deprecated.BindingsBean;
 
 import java.io.IOException;
 import java.io.InputStream;

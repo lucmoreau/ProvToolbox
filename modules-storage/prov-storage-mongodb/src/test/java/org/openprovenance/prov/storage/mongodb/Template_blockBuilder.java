@@ -18,7 +18,7 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.model.interop.Formats;
-import org.openprovenance.prov.template.expander.InstantiateAction;
+import org.openprovenance.prov.template.core.InstantiateAction;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.template.log2prov.interfaces.ProxyClientAccessorInterface;
 

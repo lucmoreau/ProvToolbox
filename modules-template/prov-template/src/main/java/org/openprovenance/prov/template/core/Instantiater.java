@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.expander;
+package org.openprovenance.prov.template.core;
 
 import java.util.*;
 
@@ -12,7 +12,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.exception.UncheckedException;
-import org.openprovenance.prov.template.expander.Using.UsingIterator;
+import org.openprovenance.prov.template.core.Using.UsingIterator;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.template.json.*;
 

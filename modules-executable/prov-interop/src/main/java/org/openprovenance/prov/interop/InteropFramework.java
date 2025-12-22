@@ -26,7 +26,7 @@ import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
-import org.openprovenance.prov.template.expander.Instantiater;
+import org.openprovenance.prov.template.core.Instantiater;
 
 
 import org.openprovenance.prov.generator.GeneratorDetails;

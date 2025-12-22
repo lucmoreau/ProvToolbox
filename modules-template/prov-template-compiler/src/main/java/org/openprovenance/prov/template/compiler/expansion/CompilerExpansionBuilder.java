@@ -21,9 +21,9 @@ import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
-import org.openprovenance.prov.template.expander.InstantiateAction;
-import org.openprovenance.prov.template.expander.InstantiateUtil;
-import org.openprovenance.prov.template.expander.exception.MissingAttributeValue;
+import org.openprovenance.prov.template.core.InstantiateAction;
+import org.openprovenance.prov.template.core.InstantiateUtil;
+import org.openprovenance.prov.template.core.exception.MissingAttributeValue;
 import org.openprovenance.prov.template.types.TypesRecordProcessor;
 
 import javax.lang.model.element.Modifier;
@@ -35,7 +35,7 @@ import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 import static org.openprovenance.prov.template.compiler.common.CompilerCommon.makeArgsList;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.*;
-import static org.openprovenance.prov.template.expander.InstantiateUtil.*;
+import static org.openprovenance.prov.template.core.InstantiateUtil.*;
 
 public class CompilerExpansionBuilder {
     private final CompilerUtil compilerUtil;

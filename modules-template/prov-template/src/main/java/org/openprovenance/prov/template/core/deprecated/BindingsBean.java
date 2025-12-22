@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.expander.deprecated;
+package org.openprovenance.prov.template.core.deprecated;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

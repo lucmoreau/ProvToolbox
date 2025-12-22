@@ -1,6 +1,6 @@
-package org.openprovenance.prov.template.expander.test;
+package org.openprovenance.prov.template.core.test;
 
-import static org.openprovenance.prov.template.expander.InstantiateUtil.VAR_NS;
+import static org.openprovenance.prov.template.core.InstantiateUtil.VAR_NS;
 
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
@@ -8,7 +8,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.notation.Utility;
 
 import junit.framework.TestCase;
-import org.openprovenance.prov.template.expander.Groupings;
+import org.openprovenance.prov.template.core.Groupings;
 
 public class GroupingsTest extends TestCase {
 

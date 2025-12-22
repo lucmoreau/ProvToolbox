@@ -9,8 +9,8 @@ import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 import java.util.List;
 
-import static org.openprovenance.prov.template.expander.InstantiateUtil.TMPL_NS;
-import static org.openprovenance.prov.template.expander.InstantiateUtil.isVariable;
+import static org.openprovenance.prov.template.core.InstantiateUtil.TMPL_NS;
+import static org.openprovenance.prov.template.core.InstantiateUtil.isVariable;
 
 final public class StatementChecker implements org.openprovenance.prov.model.StatementAction {
     static Logger logger = LogManager.getLogger(StatementChecker.class);

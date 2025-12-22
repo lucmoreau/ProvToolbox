@@ -14,9 +14,9 @@ module prov.template {
     exports org.openprovenance.prov.template.utils;
     exports org.openprovenance.prov.template.json;
     exports org.openprovenance.prov.template.json.deserializer;
-    exports org.openprovenance.prov.template.expander;
-    exports org.openprovenance.prov.template.expander.exception;
-    exports org.openprovenance.prov.template.expander.ttf;
-    exports org.openprovenance.prov.template.expander.deprecated;
+    exports org.openprovenance.prov.template.core;
+    exports org.openprovenance.prov.template.core.exception;
+    exports org.openprovenance.prov.template.core.ttf;
+    exports org.openprovenance.prov.template.core.deprecated;
 
 }

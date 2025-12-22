@@ -12,6 +12,6 @@ public class BatchExecutor {
         Map<String, ProvDeserialiser> deserializerMap2 = new HashMap<>();
         Map<String, ProvSerialiser> serializerMap2 = new HashMap<>();
         new InteropFramework().populateSerializerDeserializerMaps(deserializerMap2, serializerMap2);
-        new org.openprovenance.prov.template.expander.ttf.BatchExecutor(serializerMap2, deserializerMap2).execute(args);
+        new org.openprovenance.prov.template.core.ttf.BatchExecutor(serializerMap2, deserializerMap2).execute(args);
     }
 }

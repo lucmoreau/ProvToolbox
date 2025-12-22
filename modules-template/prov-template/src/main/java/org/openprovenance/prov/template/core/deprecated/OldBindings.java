@@ -1,14 +1,14 @@
-package org.openprovenance.prov.template.expander.deprecated;
+package org.openprovenance.prov.template.core.deprecated;
 
 import java.util.*;
 
-import static org.openprovenance.prov.template.expander.InstantiateUtil.TMPL_NS;
-import static org.openprovenance.prov.template.expander.InstantiateUtil.TMPL_PREFIX;
+import static org.openprovenance.prov.template.core.InstantiateUtil.TMPL_NS;
+import static org.openprovenance.prov.template.core.InstantiateUtil.TMPL_PREFIX;
 
 import java.util.Map.Entry;
 
 import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.template.expander.InstantiateUtil;
+import org.openprovenance.prov.template.core.InstantiateUtil;
 import org.openprovenance.prov.template.json.*;
 
 @Deprecated

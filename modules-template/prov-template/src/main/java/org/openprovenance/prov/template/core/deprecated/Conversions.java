@@ -1,18 +1,18 @@
-package org.openprovenance.prov.template.expander.deprecated;
+package org.openprovenance.prov.template.core.deprecated;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.UncheckedException;
-import org.openprovenance.prov.template.expander.InstantiateUtil;
+import org.openprovenance.prov.template.core.InstantiateUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-import static org.openprovenance.prov.template.expander.InstantiateUtil.TMPL_NS;
-import static org.openprovenance.prov.template.expander.InstantiateUtil.TMPL_PREFIX;
-import static org.openprovenance.prov.template.expander.deprecated.OldBindings.*;
+import static org.openprovenance.prov.template.core.InstantiateUtil.TMPL_NS;
+import static org.openprovenance.prov.template.core.InstantiateUtil.TMPL_PREFIX;
+import static org.openprovenance.prov.template.core.deprecated.OldBindings.*;
 import static org.openprovenance.prov.template.json.Bindings.mapper;
 
 @Deprecated

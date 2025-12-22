@@ -1,6 +1,4 @@
-package org.openprovenance.prov.template.expander.ttf;
-
-import org.openprovenance.prov.template.utils.TemplateIndexPath;
+package org.openprovenance.prov.template.core.ttf;
 
 import java.io.IOException;
 import java.util.Map;

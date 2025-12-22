@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.expander.ttf;
+package org.openprovenance.prov.template.core.ttf;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

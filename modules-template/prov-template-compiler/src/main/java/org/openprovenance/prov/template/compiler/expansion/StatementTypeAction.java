@@ -9,8 +9,8 @@ import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
-import org.openprovenance.prov.template.expander.InstantiateUtil;
-import org.openprovenance.prov.template.expander.exception.MissingAttributeValue;
+import org.openprovenance.prov.template.core.InstantiateUtil;
+import org.openprovenance.prov.template.core.exception.MissingAttributeValue;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -18,7 +18,7 @@ import java.util.*;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.*;
-import static org.openprovenance.prov.template.expander.InstantiateUtil.*;
+import static org.openprovenance.prov.template.core.InstantiateUtil.*;
 
 public class StatementTypeAction implements StatementAction {
 

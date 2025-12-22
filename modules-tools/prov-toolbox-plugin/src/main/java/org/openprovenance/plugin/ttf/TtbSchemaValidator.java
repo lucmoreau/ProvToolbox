@@ -7,7 +7,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.openprovenance.prov.template.expander.Instantiater;
+import org.openprovenance.prov.template.core.Instantiater;
 
 import java.net.URL;
 import java.nio.file.Files;

@@ -7,7 +7,7 @@ import org.openprovenance.prov.model.ProvFactory;
 
 import java.util.Map;
 
-import static org.openprovenance.prov.template.expander.InstantiateUtil.*;
+import static org.openprovenance.prov.template.core.InstantiateUtil.*;
 
 public class DescriptorUtils {
     private final ProvFactory pf;

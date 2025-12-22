@@ -31,7 +31,7 @@ import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.*;
-import org.openprovenance.prov.template.expander.InstantiateUtil;
+import org.openprovenance.prov.template.core.InstantiateUtil;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 
 //import com.google.common.base.CaseFormat;

@@ -20,7 +20,7 @@ import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.service.translation.actions.ActionExpand;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.TemplateResource;
-import org.openprovenance.prov.template.expander.Instantiater;
+import org.openprovenance.prov.template.core.Instantiater;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.template.json.Bindings;
 

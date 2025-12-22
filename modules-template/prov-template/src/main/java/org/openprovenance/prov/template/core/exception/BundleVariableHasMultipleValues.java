@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.expander.exception;
+package org.openprovenance.prov.template.core.exception;
 
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.json.Descriptors;

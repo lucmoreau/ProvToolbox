@@ -1,7 +1,7 @@
-package org.openprovenance.prov.template.expander.test;
+package org.openprovenance.prov.template.core.test;
 
-import static org.openprovenance.prov.template.expander.InstantiateUtil.TMPL_NS;
-import static org.openprovenance.prov.template.expander.InstantiateUtil.VAR_NS;
+import static org.openprovenance.prov.template.core.InstantiateUtil.TMPL_NS;
+import static org.openprovenance.prov.template.core.InstantiateUtil.VAR_NS;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +14,10 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.notation.Utility;
-import org.openprovenance.prov.template.expander.deprecated.Conversions;
-import org.openprovenance.prov.template.expander.Groupings;
-import org.openprovenance.prov.template.expander.deprecated.OldBindings;
-import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
+import org.openprovenance.prov.template.core.deprecated.Conversions;
+import org.openprovenance.prov.template.core.Groupings;
+import org.openprovenance.prov.template.core.deprecated.OldBindings;
+import org.openprovenance.prov.template.core.deprecated.BindingsBean;
 
 import junit.framework.TestCase;
 

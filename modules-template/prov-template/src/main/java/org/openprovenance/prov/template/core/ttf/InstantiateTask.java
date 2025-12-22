@@ -1,10 +1,10 @@
-package org.openprovenance.prov.template.expander.ttf;
+package org.openprovenance.prov.template.core.ttf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvUtilities;
-import org.openprovenance.prov.template.expander.Instantiater;
+import org.openprovenance.prov.template.core.Instantiater;
 import org.openprovenance.prov.template.json.Bindings;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBean;
 import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBuilder;
@@ -20,8 +20,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
-import static org.openprovenance.prov.template.expander.ttf.BatchExecutor.*;
-import static org.openprovenance.prov.template.expander.ttf.MergeTask.simplify;
+import static org.openprovenance.prov.template.core.ttf.BatchExecutor.*;
+import static org.openprovenance.prov.template.core.ttf.MergeTask.simplify;
 
 public class InstantiateTask implements ConfigTask {
     public String type;

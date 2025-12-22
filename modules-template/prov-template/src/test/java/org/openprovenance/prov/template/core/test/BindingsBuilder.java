@@ -1,15 +1,15 @@
-package org.openprovenance.prov.template.expander.test;
+package org.openprovenance.prov.template.core.test;
 
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
-import org.openprovenance.prov.template.expander.deprecated.OldBindings;
-import org.openprovenance.prov.template.expander.InstantiateUtil;
+import org.openprovenance.prov.template.core.deprecated.OldBindings;
+import org.openprovenance.prov.template.core.InstantiateUtil;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.openprovenance.prov.template.expander.InstantiateUtil.TMPL_NS;
+import static org.openprovenance.prov.template.core.InstantiateUtil.TMPL_NS;
 
 public class BindingsBuilder {
     private static final String EX_NS = "http://example.org/";

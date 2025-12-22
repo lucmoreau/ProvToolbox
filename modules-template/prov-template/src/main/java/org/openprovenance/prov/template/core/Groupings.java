@@ -1,7 +1,7 @@
-package org.openprovenance.prov.template.expander;
+package org.openprovenance.prov.template.core;
 
-import static org.openprovenance.prov.template.expander.InstantiateUtil.LINKED_URI;
-import static org.openprovenance.prov.template.expander.InstantiateUtil.newVariable;
+import static org.openprovenance.prov.template.core.InstantiateUtil.LINKED_URI;
+import static org.openprovenance.prov.template.core.InstantiateUtil.newVariable;
 
 import java.util.*;
 

@@ -8,7 +8,7 @@ import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
-import org.openprovenance.prov.template.expander.InstantiateUtil;
+import org.openprovenance.prov.template.core.InstantiateUtil;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec.Builder;

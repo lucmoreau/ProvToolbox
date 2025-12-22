@@ -156,7 +156,7 @@
                         </goals>
                         <phase>test</phase>
                         <configuration>
-                            <mainClass>org.openprovenance.prov.template.expander.ttf.BatchExecutor</mainClass>
+                            <mainClass>org.openprovenance.prov.template.core.ttf.BatchExecutor</mainClass>
                             <arguments>
                                 <argument>${project.basedir}</argument>
                                 <argument>${project.build.directory}/generated-templates</argument>

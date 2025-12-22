@@ -9,18 +9,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/deprecated/BindingsBeanInterface.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/BatchExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/BatchExecutor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/benchmarks/src/main/R/plot.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/benchmarks/src/main/R/plot.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/actions/ActionExpand.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/actions/ActionExpand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/expander.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/expander.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/template/ExpandIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/template/InstantiaterIT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/forms.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/main/webapp.filter/forms.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/test/java/org/openprovenance/prov/service/template/ExpandIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/test/java/org/openprovenance/prov/service/template/InstantiaterIT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/MongoBindingsDbTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/MongoBindingsDbTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/Template_blockBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/Template_blockBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/BindingsBeanGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/BindingsBeanGenerator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" afterDir="false" />
@@ -28,29 +22,38 @@
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/CompilerExpansionBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/CompilerExpansionBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/StatementCompilerAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/StatementCompilerAction.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/StatementTypeAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/StatementTypeAction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/example/TestBindingsBeanInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/example/TestBindingsBeanInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/example/TestBindingsBeanInterface.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template/compiler/test/CompilerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template/compiler/test/CompilerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsBeanInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsBeanInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsJson.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Conversions.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/deprecated/Conversions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Expand.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Instantiater.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/InstantiateAction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/InstantiateUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Groupings.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Groupings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/OldBindings.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/deprecated/OldBindings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Using.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Using.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/InstantiateTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/InstantiateTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsBeanInterface.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Groupings.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/Groupings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/InstantiateAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/InstantiateAction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/InstantiateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/InstantiateUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Instantiater.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/Instantiater.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Using.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/Using.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/deprecated/BindingsBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/deprecated/BindingsBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/deprecated/Conversions.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/deprecated/Conversions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/deprecated/OldBindings.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/deprecated/OldBindings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/exception/BundleVariableHasMultipleValues.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/exception/BundleVariableHasMultipleValues.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/exception/BundleVariableHasNoValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/exception/BundleVariableHasNoValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/exception/MissingAttributeValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/exception/MissingAttributeValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/BatchExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/ttf/BatchExecutor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/ConfigTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/ttf/ConfigTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/InstantiateTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/ttf/InstantiateTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/MergeTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/ttf/MergeTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ttf/TemplateTasksBatch.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/core/ttf/TemplateTasksBatch.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/Bindings.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/Bindings.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/DescriptorUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/DescriptorUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/QDescriptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/QDescriptor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/StatementChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/StatementChecker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/VariableChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/utils/VariableChecker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/BindingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/BindingTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/BindingsBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/BindingsBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/ExpandTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/InstantiaterTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/GroupingsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/GroupingsTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/webapp.filter/forms.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/webapp.filter/forms.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/BindingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/core/test/BindingTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/BindingsBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/core/test/BindingsBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/GroupingsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/core/test/GroupingsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/InstantiaterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/core/test/InstantiaterTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/test/MyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/core/test/MyTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/bindings/BindingsSchemaValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/bindings/BindingsSchemaValidator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/BatchExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/BatchExecutor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/TtbSchemaValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-toolbox-plugin/src/main/java/org/openprovenance/plugin/ttf/TtbSchemaValidator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -394,7 +397,7 @@
       <module name="prov-template" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.expander.test.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.template.core.test.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -409,7 +412,7 @@
         </ENTRIES>
       </extension>
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.template.expander.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.expander.test.InstantiaterTest" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.core.test.InstantiaterTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
@@ -420,7 +423,7 @@
       <module name="prov-template" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.expander.test.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.template.core.test.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -435,7 +438,7 @@
         </ENTRIES>
       </extension>
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.template.expander.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.expander.test.InstantiaterTest" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.core.test.InstantiaterTest" />
       <option name="METHOD_NAME" value="testExpand1" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
@@ -446,7 +449,7 @@
       <module name="prov-template" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.expander.test.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.template.core.test.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -461,7 +464,7 @@
         </ENTRIES>
       </extension>
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.template.expander.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.expander.test.InstantiaterTest" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.core.test.InstantiaterTest" />
       <option name="METHOD_NAME" value="testExpand23" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
@@ -472,7 +475,7 @@
       <module name="prov-template" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.expander.test.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.template.core.test.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -487,7 +490,7 @@
         </ENTRIES>
       </extension>
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.template.expander.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.expander.test.InstantiaterTest" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.core.test.InstantiaterTest" />
       <option name="METHOD_NAME" value="testExpand25" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">

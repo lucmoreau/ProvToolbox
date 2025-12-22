@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.expander.ttf;
+package org.openprovenance.prov.template.core.ttf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.tuple.Pair;

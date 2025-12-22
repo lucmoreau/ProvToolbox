@@ -5,8 +5,8 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.template.expander.BindingsBeanInterface;
-import org.openprovenance.prov.template.expander.deprecated.OldBindings;
+import org.openprovenance.prov.template.core.deprecated.BindingsBeanInterface;
+import org.openprovenance.prov.template.core.deprecated.OldBindings;
 
 import javax.lang.model.element.Modifier;
 import java.io.File;

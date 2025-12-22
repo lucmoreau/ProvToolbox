@@ -9,7 +9,7 @@ module prov.template.test {
     requires org.apache.logging.log4j;
     requires prov.template;
 
-    exports org.openprovenance.prov.template.expander.test;
+    exports org.openprovenance.prov.template.core.test;
 
 
 }

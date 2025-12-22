@@ -1,9 +1,9 @@
-package org.openprovenance.prov.template.expander;
+package org.openprovenance.prov.template.core;
 
 import java.util.*;
 
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.template.expander.exception.MissingAttributeValue;
+import org.openprovenance.prov.template.core.exception.MissingAttributeValue;
 import org.openprovenance.prov.template.json.*;
 
 public class Using implements Iterable<List<Integer>> {

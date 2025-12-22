@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import static org.openprovenance.prov.template.expander.InstantiateUtil.VAR_NS;
+import static org.openprovenance.prov.template.core.InstantiateUtil.VAR_NS;
 
 public class CompilerTest extends TestCase {
 

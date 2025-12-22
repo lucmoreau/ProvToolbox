@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.expander.test;
+package org.openprovenance.prov.template.core.test;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,10 +10,10 @@ import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.notation.Utility;
 
 import junit.framework.TestCase;
-import org.openprovenance.prov.template.expander.*;
-import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
-import org.openprovenance.prov.template.expander.deprecated.Conversions;
-import org.openprovenance.prov.template.expander.deprecated.OldBindings;
+import org.openprovenance.prov.template.core.*;
+import org.openprovenance.prov.template.core.deprecated.BindingsBean;
+import org.openprovenance.prov.template.core.deprecated.Conversions;
+import org.openprovenance.prov.template.core.deprecated.OldBindings;
 import org.openprovenance.prov.template.json.Bindings;
 import org.openprovenance.prov.vanilla.ProvFactory;
 

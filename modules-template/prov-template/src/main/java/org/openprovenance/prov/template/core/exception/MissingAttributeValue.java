@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.expander.exception;
+package org.openprovenance.prov.template.core.exception;
 
 public class MissingAttributeValue extends RuntimeException {
 

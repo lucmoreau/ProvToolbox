@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.expander;
+package org.openprovenance.prov.template.core;
 
 import java.util.Arrays;
 import java.util.Collection;

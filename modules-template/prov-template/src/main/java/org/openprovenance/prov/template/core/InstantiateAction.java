@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.expander;
+package org.openprovenance.prov.template.core;
 
 import java.util.*;
 
@@ -6,11 +6,11 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
-import org.openprovenance.prov.template.expander.exception.BundleVariableHasMultipleValues;
-import org.openprovenance.prov.template.expander.exception.BundleVariableHasNoValue;
+import org.openprovenance.prov.template.core.exception.BundleVariableHasMultipleValues;
+import org.openprovenance.prov.template.core.exception.BundleVariableHasNoValue;
 import org.openprovenance.prov.template.json.*;
 
-import static org.openprovenance.prov.template.expander.InstantiateUtil.*;
+import static org.openprovenance.prov.template.core.InstantiateUtil.*;
 
 public class InstantiateAction implements StatementAction {
 

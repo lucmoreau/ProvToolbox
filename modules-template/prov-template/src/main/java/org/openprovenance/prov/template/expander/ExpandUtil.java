@@ -106,6 +106,25 @@ public class ExpandUtil {
         return result;
     }
 
+    static public Set<QualifiedName> freeAttributeVariables(Statement statement) {
+        Set<QualifiedName> result = new HashSet<>();
+        if (statement instanceof HasOther) {
+
+            List<Other> ll = ((HasOther) statement).getOther();
+            for (Other other : ll) {
+                if (isVariable(other.getElementName())) {
+                    result.add(other.getElementName());
+                }
+                if (other.getValue() instanceof QualifiedName) {
+                    QualifiedName qn = (QualifiedName) other.getValue();
+                    if (isVariable(qn))  result.add(qn);
+                }
+            }
+        }
+        return result;
+    }
+
+
     static public Set<QualifiedName> freeVariables(Bundle statement) {
         Set<QualifiedName> result = new HashSet<>();
         QualifiedName name = statement.getId();

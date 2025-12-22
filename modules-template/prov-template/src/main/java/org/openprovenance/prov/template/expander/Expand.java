@@ -81,9 +81,9 @@ public class Expand {
 
     static ProvUtilities u = new ProvUtilities();
 
-    public List<StatementOrBundle> expand(Statement statement, OldBindings oldBindings, Bindings bindings, Groupings grp1, Set<String> unboundVariables, Set<String> usedBindings) {
+    public List<StatementOrBundle> expand(Statement statement, OldBindings oldBindings, Bindings bindings, Groupings grp1) {
         Using us1 = ExpandUtil.usedGroups(statement, grp1, oldBindings);
-        return expand(statement, oldBindings, bindings, grp1, us1, unboundVariables, usedBindings);
+        return expand(statement, oldBindings, bindings, grp1, us1);
     }
     
     boolean allExpanded=true;
@@ -102,8 +102,6 @@ public class Expand {
         Map<QualifiedName, QualifiedName> env0 = new HashMap<>();
         Map<QualifiedName, List<TypedValue>> env1 = new HashMap<>();
 
-        Set<String> unboundVariables=new HashSet<>();
-        Set<String> usedBindings=new HashSet<>();
 
         ExpandAction action = new ExpandAction(pf,
                                                u,
@@ -116,47 +114,53 @@ public class Expand {
                                                grp1,
                                                addOrderp,
                                                allUpdatedRequired,
-                                               unboundVariables,
-                                               preserveUnboundVariables,
-                                               usedBindings);
+                                               preserveUnboundVariables);
         u.doAction(bun, action);
         allExpanded=allExpanded && action.getAllExpanded();
-        warnAboutUnboundTemplateVariables(bindings, templateFilename, unboundVariables);
-        warnAboutUnusedBindingsVariables(bindings, bindingsFilename, usedBindings);
+        Set<String> freeVars=Arrays.stream(grp1.getFreeVariables()).map(QualifiedName::getLocalPart).collect(java.util.stream.Collectors.toSet());
+        warnAboutUnboundTemplateVariables(bindings, templateFilename, freeVars);
+        warnAboutUnusedBindingsVariables(bindings, bindingsFilename, freeVars);
         return action.getList();
     }
 
-    private void warnAboutUnusedBindingsVariables(Bindings bindings, String bindingsFilename, Set<String> usedBindings) {
+    private void warnAboutUnusedBindingsVariables(Bindings bindings, String bindingsFilename, Set<String> freeVariables) {
         if (!displayUnusedBindings) return;
         Set<String> allBindingsVars= bindings.var.keySet();
-        allBindingsVars.removeAll(usedBindings);
+        allBindingsVars.removeAll(freeVariables);
         if (!allBindingsVars.isEmpty()) {
-            // find all keys in bindings.var.keySet() bound with value null
-            allBindingsVars.removeIf(k -> bindings.var.get(k) == null);
-        }
-        if (displayUnusedBindings && !allBindingsVars.isEmpty()) {
+            // get the suffix of bindingsFilename following last slash
 
-            System.out.println("The following bindings were not used: " + allBindingsVars + ((bindingsFilename ==null)?"": ": in bindings " + bindingsFilename));
+
+            System.out.println("Unused bindings variables: " + allBindingsVars + ((bindingsFilename ==null)?"": ": in bindings file " + filenameSuffix(bindingsFilename)));
         }
     }
 
-    private void warnAboutUnboundTemplateVariables(Bindings bindings, String templateFilename, Set<String> unboundVariables) {
+    private void warnAboutUnboundTemplateVariables(Bindings bindings, String templateFilename, Set<String> freeVariables) {
         if (!displayUnusedVariables) return;
+        List<String> unboundVariables=new LinkedList<>();
+        Set<String> allBindingsVars=bindings.var.keySet();
+        for (String var: freeVariables) {
+            if (!allBindingsVars.contains(var)) {
+                unboundVariables.add(var);
+            }
+        }
         if (!unboundVariables.isEmpty()) {
-            unboundVariables.removeIf(k -> bindings.var.get(k) == null);
+            System.out.println("Unbound template variables: " + unboundVariables + ((templateFilename ==null)?"": " in template " + filenameSuffix(templateFilename)));
         }
-        if (displayUnusedVariables && !unboundVariables.isEmpty()) {
-            System.out.println("The following template variables were not bound: " + unboundVariables + ((templateFilename ==null)?"": " in template " + templateFilename));
-        }
+    }
+
+    private String filenameSuffix(String path) {
+        if (path == null) return "";
+        int idx = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+        if (idx >= 0 && idx < path.length() - 1) return path.substring(idx + 1);
+        return path;
     }
 
     public List<StatementOrBundle> expand(Statement statement,
                                           OldBindings oldBindings,
                                           Bindings bindings,
                                           Groupings grp1,
-                                          Using us1,
-                                          Set<String> unboundVariables,
-                                          Set<String> usedBindings) {
+                                          Using us1) {
         List<StatementOrBundle> results = new LinkedList<>();
         Iterator<List<Integer>> iter = us1.iterator();
 
@@ -185,9 +189,7 @@ public class Expand {
                                                    grp1,
                                                    addOrderp,
                                                    allUpdatedRequired,
-                                                   unboundVariables,
-                                                   preserveUnboundVariables,
-                                                   usedBindings);
+                                                   preserveUnboundVariables);
             u.doAction(statement, action);
             allExpanded=allExpanded && action.getAllExpanded();
 

@@ -28,9 +28,7 @@ public class ExpandAction implements StatementAction {
     final private boolean addOrderp;
     final private String qualifiedNameURI;
     final private boolean allUpdatedRequired;
-    private final Set<String> unboundVariables;
     private final boolean preserveUnboundVariables;
-    private final Set<String> usedBindings;
     private final Bindings bindings;
 
     private boolean allExpanded=true;
@@ -50,9 +48,7 @@ public class ExpandAction implements StatementAction {
                         Groupings grp1,
                         boolean addOrderp,
                         boolean allUpdatedRequired,
-                        Set<String> unboundVariables,
-                        boolean preserveUnboundVariables,
-                        Set<String> usedBindings) {
+                        boolean preserveUnboundVariables) {
         this.pf = pf;
         this.expand = expand;
         this.env = env;
@@ -65,9 +61,7 @@ public class ExpandAction implements StatementAction {
         this.addOrderp = addOrderp;
         this.qualifiedNameURI = pf.getName().PROV_QUALIFIED_NAME.getUri();
         this.allUpdatedRequired=allUpdatedRequired;
-        this.unboundVariables=unboundVariables;
         this.preserveUnboundVariables=preserveUnboundVariables;
-        this.usedBindings=usedBindings;
     }
 
     @Override
@@ -353,20 +347,17 @@ public class ExpandAction implements StatementAction {
                         for (TypedValue srcAttributeValue : srcAttributeValues) {
                             if (qualifiedNameURI.equals(srcAttributeValue.getType().getUri())) {
                                 QualifiedName qn1 = (QualifiedName) srcAttributeValue.getValue();
-                                usedBindings.add(srcAttributeElementName.getLocalPart());
                                 Attribute srcAttribute2 = pf.newAttribute(qn1, srcAttribute.getValue(), srcAttribute.getType());
-                                found = expandAttributeValue(dstStatement, srcAttribute2, dstAttributes, found, count, unboundVariables);
+                                found = expandAttributeValue(dstStatement, srcAttribute2, dstAttributes, found, count);
                                 count++;
                             } else {
                                 // this was not a qualified name, so we ignore it
                             }
                         }
-                    } else {
-                        unboundVariables.add(srcAttributeElementName.getLocalPart());
                     }
                 } else {
 
-                    found = expandAttributeValue(dstStatement, srcAttribute, dstAttributes, found, null, unboundVariables);
+                    found = expandAttributeValue(dstStatement, srcAttribute, dstAttributes, found, null);
                 }
             }
             pf.setAttributes((HasOther) dstStatement, dstAttributes);
@@ -374,7 +365,7 @@ public class ExpandAction implements StatementAction {
         return found;
     }
 
-    private boolean expandAttributeValue(Statement dstStatement, Attribute attribute, Collection<Attribute> dstAttributes, boolean found, Integer count, Set<String> unboundVariables) {
+    private boolean expandAttributeValue(Statement dstStatement, Attribute attribute, Collection<Attribute> dstAttributes, boolean found, Integer count) {
         if (qualifiedNameURI.equals(attribute.getType().getUri())) {
 
             Object attributeValue = attribute.getValue();
@@ -390,13 +381,10 @@ public class ExpandAction implements StatementAction {
                             dstAttributes.add(pf.newAttribute(attribute.getElementName(),
                                                               getUUIDQualifiedName(),
                                                               pf.getName().PROV_QUALIFIED_NAME));
-                        } else {
-                            unboundVariables.add(qn1.getLocalPart());
                         }
                         // if not a vargen, then simply drop this attribute
                     } else {
                         found = true;
-                        usedBindings.add(qn1.getLocalPart());
                         if (count!=null) {
                             // it means that the property name was a variable (say prop), it was bound to
                             // the count value associated with prop. We are now about to process the value
@@ -524,7 +512,6 @@ public class ExpandAction implements StatementAction {
             // allows for null value associated with id
             if ((val != null)  || env.containsKey(id)) {
                 u.setter(res, position, val);
-                usedBindings.add(id.getLocalPart());
                 return true;
             } else {
                 if (ExpandUtil.isGensymVariable(id)) {
@@ -533,7 +520,6 @@ public class ExpandAction implements StatementAction {
                     oldBindings.addVariable(id, uuid);
                     return true;
                 } else {
-                    unboundVariables.add(id.getLocalPart());
                     if (!preserveUnboundVariables) {
                        u.setter(res, position, null);
                     }
@@ -749,7 +735,7 @@ public class ExpandAction implements StatementAction {
         List<Statement> newStatements = new LinkedList<>();
 
         for (Statement s : statements) {
-            for (StatementOrBundle sb : expand.expand(s, oldBindings, bindings, grp1, unboundVariables,usedBindings)) {
+            for (StatementOrBundle sb : expand.expand(s, oldBindings, bindings, grp1)) {
                 newStatements.add((Statement) sb);
             }
 

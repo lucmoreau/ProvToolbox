@@ -12,6 +12,7 @@ public class Groupings {
     final private List<List<QualifiedName>> variables;
 
     static ProvUtilities u= new ProvUtilities();
+    private QualifiedName[] freeVariables;
 
     public Groupings() {
         variables= new LinkedList<>();
@@ -127,7 +128,24 @@ public class Groupings {
                 }
             }
         }
+
+        // also look for all free variables in attributes
+        Set<QualifiedName> vars= new HashSet<>();
+        for (Statement statement: bun.getStatement()) {
+            vars.addAll(ExpandUtil.freeAttributeVariables(statement));
+        }
+        Collections.addAll(vars, sorted);
+        QualifiedName [] sorted2=vars.toArray(new QualifiedName[0]);
+        grps.setFreeVariables(sorted2);
         return grps;
+    }
+
+    private void setFreeVariables(QualifiedName[] freeVariables) {
+        this.freeVariables=freeVariables;
+    }
+
+    public QualifiedName[] getFreeVariables() {
+        return freeVariables;
     }
 
     static  void addEntry(Map<QualifiedName, Set<QualifiedName>> linked,

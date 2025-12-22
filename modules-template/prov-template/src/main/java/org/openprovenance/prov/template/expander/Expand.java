@@ -119,24 +119,23 @@ public class Expand {
         u.doAction(bun, action);
         allExpanded=allExpanded && action.getAllExpanded();
         Set<String> freeVars=Arrays.stream(grp1.getFreeVariables()).map(QualifiedName::getLocalPart).collect(java.util.stream.Collectors.toSet());
-        warnAboutUnboundTemplateVariables(bindings, templateFilename, freeVars);
-        warnAboutUnusedBindingsVariables(bindings, bindingsFilename, freeVars);
+        warnAboutUnboundTemplateVariables(bindings, templateFilename, bindingsFilename, freeVars);
+        warnAboutUnusedBindingsVariables(bindings, templateFilename, bindingsFilename, freeVars);
         return action.getList();
     }
 
-    private void warnAboutUnusedBindingsVariables(Bindings bindings, String bindingsFilename, Set<String> freeVariables) {
+    private void warnAboutUnusedBindingsVariables(Bindings bindings, String templateFilename, String bindingsFilename, Set<String> freeVariables) {
         if (!displayUnusedBindings) return;
         Set<String> allBindingsVars= bindings.var.keySet();
         allBindingsVars.removeAll(freeVariables);
         if (!allBindingsVars.isEmpty()) {
-            // get the suffix of bindingsFilename following last slash
-
-
-            System.out.println("Unused bindings variables: " + allBindingsVars + ((bindingsFilename ==null)?"": ": in bindings file " + filenameSuffix(bindingsFilename)));
+            List<String> sorted=new LinkedList<>(allBindingsVars);
+            Collections.sort(sorted);
+            System.out.println("Unknown bindings variables: " + sorted + ((bindingsFilename ==null)?"": ": in bindings file " + filenameSuffix(bindingsFilename) + ((templateFilename ==null)?"": " (template file: " + filenameSuffix(templateFilename) + ")")));
         }
     }
 
-    private void warnAboutUnboundTemplateVariables(Bindings bindings, String templateFilename, Set<String> freeVariables) {
+    private void warnAboutUnboundTemplateVariables(Bindings bindings, String templateFilename, String bindingsFilename, Set<String> freeVariables) {
         if (!displayUnusedVariables) return;
         List<String> unboundVariables=new LinkedList<>();
         Set<String> allBindingsVars=bindings.var.keySet();
@@ -146,7 +145,9 @@ public class Expand {
             }
         }
         if (!unboundVariables.isEmpty()) {
-            System.out.println("Unbound template variables: " + unboundVariables + ((templateFilename ==null)?"": " in template " + filenameSuffix(templateFilename)));
+            // sort unboundVariables
+            Collections.sort(unboundVariables);
+            System.out.println("Unbound template variables: " + unboundVariables + ((templateFilename ==null)?"": " in template " + filenameSuffix(templateFilename) + ((bindingsFilename ==null)?"": " (bindings file: " + filenameSuffix(bindingsFilename) + ")")));
         }
     }
 
@@ -183,6 +184,7 @@ public class Expand {
                                oldBindings,
                                (UsingIterator) iter);
 
+            // TODO: it seems we are calling expand actions many times for a single statement (impacting performance, not the outcome)
             ExpandAction action = new ExpandAction(pf,
                                                    u,
                                                    this,

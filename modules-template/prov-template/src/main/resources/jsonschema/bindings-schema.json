@@ -41,6 +41,9 @@
                 },
                 {
                     "$ref": "#/definitions/ArrayOfIds"
+                },
+                {
+                    "type": "null"
                 }
             ]
         },

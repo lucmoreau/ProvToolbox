@@ -1,7 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
@@ -283,28 +282,24 @@ public class CompilerLogger {
                 .returns(String.class);
         compilerUtil.specWithComment(builder);
 
-        JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
+        TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
+        Map<String, List<Descriptor>> theVars=bindingsSchema.getVar();
 
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_documentation = bindings_schema.get("@documentation");
-        JsonNode the_return = bindings_schema.get("@return");
-        compilerUtil.generateSpecializedParameters(builder, the_var, compilerUtil.getBindingsSchema(config).getVar());
-        compilerUtil.generateSpecializedParametersJavadoc(builder, the_var, the_documentation, the_return);
+        compilerUtil.generateSpecializedParameters(builder, theVars);
+        compilerUtil.generateSpecializedParametersJavadoc(builder, theVars, bindingsSchema.getDocumentation(), bindingsSchema.getReturnValue());
 
-        CodeBlock argsList = convertToArgsList(the_var,compilerUtil.getBindingsSchema(config));
+        CodeBlock argsList = convertToArgsList(bindingsSchema);
 
 
         builder.addStatement("return $N.$N().$N($L)", Constants.GENERATED_VAR_PREFIX + config.name, Constants.ARGS_CSV_CONVERSION_METHOD, "process",argsList);
         return builder.build();
     }
 
-    public static CodeBlock convertToArgsList(JsonNode the_var, TemplateBindingsSchema bindingsSchema) {
+    public static CodeBlock convertToArgsList(TemplateBindingsSchema bindingsSchema) {
         List<String> variables=new LinkedList<>();
         Map<String, List<Descriptor>> theVars=bindingsSchema.getVar();
-        Iterator<String> iter = the_var.fieldNames();
-        while (iter.hasNext()) {
-            String key = iter.next();
-            if (theVars.containsKey(key) && theVars.get(key)!=null) {
+        for (String key : theVars.keySet()) {
+            if (theVars.containsKey(key) && theVars.get(key) != null) {
                 variables.add(key);
             }
         }
@@ -318,16 +313,15 @@ public class CompilerLogger {
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
                 .returns(ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON),compilerUtil.commonNameClass(config.name)));
 
-        JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_documentation = bindings_schema.get("@documentation");
-        JsonNode the_return = bindings_schema.get("@return");
-        compilerUtil.generateSpecializedParameters(builder, the_var,compilerUtil.getBindingsSchema(config).getVar());
-        compilerUtil.generateSpecializedParametersJavadoc(builder, the_var, the_documentation, the_return);
+        TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
+        Map<String, List<Descriptor>> theVars=bindingsSchema.getVar();
+
+        compilerUtil.generateSpecializedParameters(builder, theVars);
+        compilerUtil.generateSpecializedParametersJavadoc(builder, theVars, bindingsSchema.getDocumentation(), bindingsSchema.getReturnValue());
 
 
-        CodeBlock argsList = convertToArgsList(the_var, compilerUtil.getBindingsSchema(config));
+        CodeBlock argsList = convertToArgsList(compilerUtil.getBindingsSchema(config));
 
         builder.addStatement("return $N.$N." + "$N" +  "($L)", Constants.GENERATED_VAR_PREFIX + config.name, Constants.A_ARGS_BEAN_CONVERTER, "process", argsList);
 

@@ -1,9 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchema;
-import com.networknt.schema.ValidationMessage;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
@@ -208,35 +206,6 @@ public class CompilerDocumentation {
 
     }
 
-    /*
-    public JsonSchema setupJsonSchemaCheck() throws ProcessingException, IOException {
-        return setupJsonSchemaCheck("src/main/resources/schema/json-schema-v4.json");
-    }
-
-
-
-    public JsonSchema setupJsonSchemaCheck(String file) throws
-            IOException, ProcessingException {
-        final JsonNode schemaJSON = JsonLoader.fromPath(file);
-        final JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
-        JsonSchema schema = factory.getJsonSchema(schemaJSON);
-        return schema;
-    }
-
-    public boolean checkSchema(JsonSchema schema, String file) throws IOException, ProcessingException {
-        System.out.println("Loading " + file);
-        final JsonNode fileJSON = JsonLoader.fromPath(file);
-        ProcessingReport report = schema.validate(fileJSON);
-        if (!report.isSuccess()) {
-            System.err.println("Cannot validate " + file + " against the PROV-JSON schema.");
-            System.err.println(report);
-        } else {
-            System.out.println(report);
-        }
-        return (report.isSuccess());
-    }
-
-     */
 
     static class Tester extends  JsonSchemaTesting {
         @Override
@@ -276,10 +245,5 @@ public class CompilerDocumentation {
 
     }
 
-    public Set<ValidationMessage> checkSchema(JsonSchema schema, String file) throws IOException {
-        JsonNode node = om.readTree(new File(file));
-        Set<ValidationMessage> errors = schema.validate(node);
-        return errors;
-    }
 
 }

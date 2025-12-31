@@ -8,6 +8,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template: preparing to replace oldBindings by new Bindings
 * prov-template: WIP: running new Bindings in parallel with OldBindings, and comparing
 * prov-template: relying on new descriptor-based Bindings (no longer using OldBindings and old env structure)
+* prov-template-compiler: moved away from JsonNode, and using Bindings Descriptor
 
 `2.2.2`
 * prov-template: added ptm-merging template

@@ -2,7 +2,6 @@ package org.openprovenance.prov.template.compiler.expansion;
 
 import java.util.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
@@ -20,7 +19,6 @@ import static org.openprovenance.prov.template.compiler.expansion.StatementTypeA
 
 public class StatementCompilerAction implements StatementAction {
 
-    private final JsonNode bindings_schema;
     private final TemplateBindingsSchema bindingsSchema;
     private Collection<QualifiedName> allVars;
     private Collection<QualifiedName> allAtts;
@@ -36,14 +34,13 @@ public class StatementCompilerAction implements StatementAction {
     static final TypeName  cl_linkedListOfAttributes = ParameterizedTypeName.get(cl_linkedList, cl_attribute);
     public static final TypeName  cl_collectionOfAttributes = ParameterizedTypeName.get(cl_collection, cl_attribute);
 
-    public StatementCompilerAction(ProvFactory pFactory, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    public StatementCompilerAction(ProvFactory pFactory, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, TemplateBindingsSchema bindingsSchema) {
         this.pFactory=pFactory;
         this.allVars=allVars;
         this.allAtts=allAtts;
         this.builder=builder;
         this.target=target;
         this.vmap=vmap;
-        this.bindings_schema=bindings_schema;
         this.bindingsSchema=bindingsSchema;
     }
 
@@ -515,7 +512,7 @@ public class StatementCompilerAction implements StatementAction {
         builder.addStatement(target + ".add($N)", id_);
 
         String target2 = id_+".getStatement()";
-        StatementCompilerAction action2=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, target2, bindings_schema, bindingsSchema);
+        StatementCompilerAction action2=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, target2, bindingsSchema);
         
         for (Statement s: bun.getStatement()) {
             provUtilities.doAction(s, action2);

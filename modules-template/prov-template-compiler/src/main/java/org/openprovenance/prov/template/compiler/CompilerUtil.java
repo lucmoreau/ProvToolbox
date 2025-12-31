@@ -10,10 +10,6 @@ import java.util.function.Supplier;
 
 import javax.lang.model.element.Modifier;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.MissingNode;
-import com.fasterxml.jackson.databind.node.NullNode;
 import com.squareup.javapoet.*;
 import org.apache.commons.text.CaseUtils;
 import org.openprovenance.prov.model.Attribute;
@@ -37,9 +33,8 @@ import org.openprovenance.prov.template.log2prov.FileBuilder;
 //import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.TypeSpec.Builder;
 
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.addBaseDirIfRelative;
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
-import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 
 
 public class CompilerUtil {
@@ -357,18 +352,6 @@ public class CompilerUtil {
     }
 
 
-    public JsonNode get_bindings_schema(SimpleTemplateCompilerConfig config) {
-        JsonNode bindings_schema=null;
-        if (config.cbindings != null) {
-            try {
-                bindings_schema = objectMapper.readTree(new File(config.cbindings));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return bindings_schema;
-    }
-
 
     Map<String,TemplateBindingsSchema> bindingsSchemaCache=new HashMap<>();
 
@@ -449,36 +432,6 @@ public class CompilerUtil {
         throw new UnsupportedOperationException("This exception is never reached");
     }
 
-    public Class<?> getJavaTypeForDeclaredType(JsonNode the_var, String key) {
-        JsonNode the_key = the_var.get(key);
-        if (the_key!=null && the_key.get(0).get("@id") != null) {
-            JsonNode jsonNode = the_key.get(0).get("@type");
-            String idType =  (jsonNode==null)?null:jsonNode.textValue();
-            if (idType==null) {
-                return String.class;
-            } else {
-                return getClassForType(idType);
-            }
-        } else {
-            if (the_key==null || the_key.get(0).get(0) == null) {
-                System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
-
-                throw new UnsupportedOperationException("no value associated with key '" + key + "'");
-            }
-            JsonNode hasType = the_key.get(0).get(0).get("@type");
-            if (hasType != null) {
-                String keyType = hasType.textValue();
-                return getClassForType(keyType);
-            } else {
-                System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
-
-                throw new UnsupportedOperationException();
-            }
-        }
-    }
-
     private Class<? extends Serializable> getClassForType(String keyType) {
         return switch (keyType) {
             case "xsd:int" -> Integer.class;
@@ -527,91 +480,73 @@ public class CompilerUtil {
         }
     }
 
-    public void generateSpecializedParameters(MethodSpec.Builder builder, JsonNode the_var, Map<String, List<Descriptor>> theVars) {
-        Iterator<String> iter = the_var.fieldNames();
-        while (iter.hasNext()) {
-            String key = iter.next();
-            if (theVars.get(key)!=null) {
-                builder.addParameter(getJavaTypeForDeclaredType(the_var, key), key);
+    public void generateSpecializedParameters(MethodSpec.Builder builder, Map<String, List<Descriptor>> theVars) {
+        for (String key : theVars.keySet()) {
+            if (theVars.get(key) != null) {
+                builder.addParameter(getJavaTypeForDeclaredType(theVars, key), key);
             }
         }
     }
+
     public void generateDocumentSpecializedParameters(MethodSpec.Builder builder, Map<String, List<Descriptor>> theVar, Collection<String> variables) {
         for (String key: variables) {
             builder.addParameter(getJavaDocumentTypeForDeclaredType(theVar, key), key);
         }
     }
-    public boolean isVariableDenotingQualifiedName(String key, JsonNode the_var) {
-        final JsonNode entry = the_var.path(key);
-
-        return entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode) && ( entry.get(0).get("@id") != null);
-    }
-
     public boolean isVariableDenotingQualifiedName(String key, Map<String, List<Descriptor>> theVar) {
         return theVar.containsKey(key) && theVar.get(key)!=null && theVar.get(key).get(0) instanceof NameDescriptor;
     }
 
 
 
-    public String generateArgumentsListForCall(JsonNode the_var, Map<String,String> translator, Map<String, List<Descriptor>> var) {
-        Iterator<String> iter = the_var.fieldNames();
+    public String generateArgumentsListForCall(Map<String,String> translator, Map<String, List<Descriptor>> var) {
         boolean first = true;
-        String args = "";
-        while (iter.hasNext()) {
-            String key = iter.next();
+        StringBuilder args = new StringBuilder();
+        for (String key : var.keySet()) {
             if (!var.containsKey(key)) continue;
-            if (var.get(key)==null) continue;
+            if (var.get(key) == null) continue;
 
             if (first) {
                 first = false;
             } else {
-                args = args + ", ";
+                args.append(", ");
             }
-            String newName=key;
-            if (translator!=null) {
+            String newName = key;
+            if (translator != null) {
                 final String tmp = translator.get(key);
-                if (tmp !=null) {
-                    newName=tmp;
+                if (tmp != null) {
+                    newName = tmp;
                 }
             }
-            args = args + newName;
+            args.append(newName);
 
         }
-        return args;
+        return args.toString();
     }
 
 
-
-    public void generateSpecializedParametersJavadoc(MethodSpec.Builder builder, JsonNode the_var, JsonNode the_documentation, JsonNode the_return) {
-        String docString = noNode(the_documentation) ? "No @documentation." : the_documentation.textValue();
-        String retString = noNode(the_return) ? "@return not documented." : the_return.textValue();
+    public void generateSpecializedParametersJavadoc(MethodSpec.Builder builder, Map<String, List<Descriptor>> theVars, String functionDocumentation, String returnValue) {
+        String docString = (functionDocumentation == null) ? "No @documentation." : functionDocumentation;
+        String retString = (returnValue == null) ? "@return not documented." : returnValue;
         builder.addJavadoc(docString);
         builder.addJavadoc("\n\n");
-        Iterator<String> iter = the_var.fieldNames();
-        while (iter.hasNext()) {
-            String key = iter.next();
-
-            final JsonNode entry = the_var.path(key);
-            if (entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode)) {
-                JsonNode firstNode = entry.get(0);
-                if (firstNode instanceof ArrayNode) {
-                    firstNode = ((ArrayNode) firstNode).get(0);
-                }
-                final JsonNode jsonNode = firstNode.get("@documentation");
-                String documentation = noNode(jsonNode) ? "-- no @documentation" : jsonNode.textValue();
-                final JsonNode jsonNode2 = firstNode.get("@type");
-                String type = noNode(jsonNode2) ? "xsd:string" : jsonNode2.textValue();
+        for (String key : theVars.keySet()) {
+            final List<Descriptor> descriptors = theVars.get(key);
+            if (descriptors != null && (!descriptors.isEmpty())) {
+                Descriptor descriptor=descriptors.get(0);
+                String documentation0=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
+                String documentation = documentation0==null ? "-- no @documentation" : documentation0;
+                String type0=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getType, NameDescriptor::getType);
+                String type = type0==null ? "xsd:string" : type0;
                 builder.addJavadoc("@param $N $L (expected type: $L)\n", key, documentation, type);
             } else {
                 builder.addJavadoc("@param $N -- no bindings schemas \n", key);
             }
         }
         builder.addJavadoc(retString);
+
     }
 
-    public boolean noNode(final JsonNode jsonNode2) {
-        return jsonNode2 == null || jsonNode2 instanceof MissingNode || jsonNode2 instanceof NullNode;
-    }
 
 
     public String generateExampleForType(String declaredType, String varName, ProvFactory pFactory) {
@@ -633,82 +568,76 @@ public class CompilerUtil {
         }
     }
 
-    public String createExamplar(JsonNode the_var, String key, int num, ProvFactory pFactory) {
-        if (the_var.get(key).get(0).get("@examplar") != null) {
-            return the_var.get(key).get(0).get("@examplar").toString();
-        } else if (the_var.get(key).get(0).get("@id") != null) {
-            JsonNode jsonNode1 = the_var.get(key);
-            JsonNode jsonNode2=(jsonNode1==null)?null:jsonNode1.get(0);
-            JsonNode jsonNode3=(jsonNode2==null)?null:jsonNode2.get("@type");
-            String idType =  (jsonNode3==null)?null:jsonNode3.textValue();
-            String example = generateExampleForType(idType,key, pFactory);
-            Class<?> declaredJavaType=getJavaTypeForDeclaredType(the_var, key);
+    public String createExamplar(Map<String, List<Descriptor>> theVars, String key, int num, ProvFactory pFactory) {
+
+
+        List<Descriptor> descriptors = theVars.get(key);
+        Descriptor descriptor = (descriptors == null) ? null : descriptors.get(0);
+        String idType = (descriptor == null) ? null : descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getType, NameDescriptor::getType);
+        Object examplar = (descriptor == null) ? null : descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getExamplar, NameDescriptor::getExamplar);
+
+
+        if (examplar != null) {
+            Class<?> declaredJavaType = getJavaTypeForDeclaredType(theVars, key);
             final String converter = getConverterForDeclaredType2(declaredJavaType);
-
             if (converter == null) {
-                return "\"v" + num + "\"";
+                return "\"" + examplar.toString() + "\"";
             } else {
-                return converter + "(" + example + ")";
+                return converter + "(" + examplar.toString() + ")";
             }
-
-
         } else {
-            if (the_var.get(key).get(0).get(0) == null) {
-                System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
-                throw new UnsupportedOperationException();
-            }
-            JsonNode hasType = the_var.get(key).get(0).get(0).get("@type");
-            if (hasType != null) {
-                String keyType = hasType.textValue();
-                switch (keyType) {
-                    case "xsd:int":
-                        return "" + num;
-                    case "xsd:long":
-                        return "" + num + "L";
-                    case "xsd:string":
-                        return "\"v" + num + "\"";
-                    case "xsd:boolean":
-                        return "true";
-                    case "xsd:float":
-                        return "" + num + ".01f";
-                    case "xsd:double":
-                        return "" + num + ".01d";
-                    case "xsd:date":
-                    case "xsd:dateTime":
-                        return "\"" + pFactory.newTimeNow().toXMLFormat() + "\"";
+
+            if (descriptor != null) {
+                switch (descriptor.getDescriptorType()) {
+                    case NAME:
+                        String example = generateExampleForType(idType, key, pFactory);
+                        Class<?> declaredJavaType = getJavaTypeForDeclaredType(theVars, key);
+                        final String converter = getConverterForDeclaredType2(declaredJavaType);
+
+                        if (converter == null) {
+                            return "\"v" + num + "\"";
+                        } else {
+                            return converter + "(" + example + ")";
+                        }
+                    case ATTRIBUTE:
+                        AttributeDescriptor ad = ((AttributeDescriptorList) descriptor).getItems().get(0);
+                        String hasType = ad.getType();
+                        if (hasType != null) {
+                            switch (hasType) {
+                                case "xsd:int":
+                                    return "" + num;
+                                case "xsd:long":
+                                    return "" + num + "L";
+                                case "xsd:string":
+                                    return "\"v" + num + "\"";
+                                case "xsd:boolean":
+                                    return "true";
+                                case "xsd:float":
+                                    return "" + num + ".01f";
+                                case "xsd:double":
+                                    return "" + num + ".01d";
+                                case "xsd:date":
+                                case "xsd:dateTime":
+                                    return "\"" + pFactory.newTimeNow().toXMLFormat() + "\"";
+                                default:
+                                    throw new UnsupportedOperationException();
+                            }
+                        } else {
+                            System.out.println("key is " + key);
+                            System.out.println("decl is " + theVars);
+
+                            throw new UnsupportedOperationException("No type for " + key);
+                        }
                     default:
-                        throw new UnsupportedOperationException();
+                        throw new UnsupportedOperationException("This exception is never reached");
                 }
+
+
             } else {
                 System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
+                System.out.println("decl is " + theVars);
 
-                throw new UnsupportedOperationException();
-            }
-        }
-
-    }
-
-    public String getDeclaredType(JsonNode the_var, String key) {
-        if (the_var.get(key).get(0).get("@id") != null) {
-            return "prov:QualifiedName";
-        } else {
-            if (the_var.get(key).get(0).get(0) == null) {
-                System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
-
-                throw new UnsupportedOperationException();
-            }
-            JsonNode hasType = the_var.get(key).get(0).get(0).get("@type");
-            if (hasType != null) {
-                String keyType = hasType.textValue();
-                return keyType;
-            } else {
-                System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
-
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("cannot find null descriptor here!!");
             }
         }
     }

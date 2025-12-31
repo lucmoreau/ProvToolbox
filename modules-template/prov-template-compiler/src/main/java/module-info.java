@@ -21,6 +21,7 @@ module prov.template.compiler {
 
     exports org.openprovenance.prov.template.compiler;
     exports org.openprovenance.prov.template.compiler.configuration;
+    exports org.openprovenance.prov.template.compiler.common;
     exports org.openprovenance.prov.template.compiler.util;
     exports org.openprovenance.prov.template.descriptors;
     exports org.openprovenance.prov.template.log2prov;

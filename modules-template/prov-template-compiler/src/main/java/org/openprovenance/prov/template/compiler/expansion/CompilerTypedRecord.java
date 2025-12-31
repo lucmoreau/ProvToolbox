@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.compiler.expansion;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
@@ -33,7 +32,7 @@ public class CompilerTypedRecord {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
-    public SpecificationFile generatedTypedRecordConstructor(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    public SpecificationFile generatedTypedRecordConstructor(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, String resource, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -43,13 +42,13 @@ public class CompilerTypedRecord {
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
-        return generateTypeDeclaration_aux(configs, locations, doc, allVars, allAtts, name, templateName, packge, resource, bindings_schema, bindingsSchema, directory, fileName);
+        return generateTypeDeclaration_aux(configs, locations, doc, name, templateName, packge, resource, bindingsSchema, directory, fileName);
 
     }
 
 
 
-    public SpecificationFile generateTypeDeclaration_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    public SpecificationFile generateTypeDeclaration_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, String resource, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
@@ -60,14 +59,12 @@ public class CompilerTypedRecord {
         compilerUtil.specWithComment(mbuilder);
 
 
-        JsonNode the_var = bindings_schema.get("var");
-
         Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
         Collection<String> variables=descriptorUtils.fieldNames(bindingsSchema);
 
         compilerUtil.generateDocumentSpecializedParameters(mbuilder, theVar, variables);
 
-        String allArgs= compilerUtil.generateArgumentsListForCall(the_var,null, bindingsSchema.getVar());
+        String allArgs= compilerUtil.generateArgumentsListForCall(null, bindingsSchema.getVar());
 
 
 

@@ -1,7 +1,5 @@
 package org.openprovenance.prov.template.compiler.expansion;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.MissingNode;
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.text.StringSubstitutor;
@@ -17,10 +15,7 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
-import org.openprovenance.prov.template.descriptors.Descriptor;
-import org.openprovenance.prov.template.descriptors.DescriptorUtils;
-import org.openprovenance.prov.template.descriptors.NameDescriptor;
-import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
+import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.core.InstantiateAction;
 import org.openprovenance.prov.template.core.InstantiateUtil;
 import org.openprovenance.prov.template.core.exception.MissingAttributeValue;
@@ -91,7 +86,7 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public SpecificationFile generateBuilderSpecification(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String templateFullyQualifiedName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
+    public SpecificationFile generateBuilderSpecification(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String templateFullyQualifiedName, String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -101,7 +96,7 @@ public class CompilerExpansionBuilder {
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
-        return generateBuilderSpecification_aux(configs, locations, doc, new ArrayList<>(allVars), new ArrayList<>(allAtts), name, templateName, templateFullyQualifiedName, packge, bindings_schema, bindingsSchema, successorTable, directory, fileName);
+        return generateBuilderSpecification_aux(configs, locations, doc, new ArrayList<>(allVars), new ArrayList<>(allAtts), name, templateName, templateFullyQualifiedName, packge, bindingsSchema, successorTable, directory, fileName);
 
     }
 
@@ -122,7 +117,7 @@ public class CompilerExpansionBuilder {
         return builder.build();
     }
 
-    SpecificationFile generateBuilderSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String templateFullyQualifiedName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
+    SpecificationFile generateBuilderSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String templateFullyQualifiedName, String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassBuilder2(name);
@@ -131,7 +126,7 @@ public class CompilerExpansionBuilder {
 
         builder.addMethod(compilerUtil.generateConstructor2(vmap));
 
-        builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindings_schema, bindingsSchema));
+        builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindingsSchema));
 
 
         builder.addMethod(compilerCommon.generateNameAccessor(templateName));
@@ -144,22 +139,19 @@ public class CompilerExpansionBuilder {
         builder.addMethod(compilerCommon.typedRecordGenerator(templateName,packge));
 
 
-        builder.addMethod(generateTypePropagator(allVars, allAtts, doc, vmap, packge+".client", bindings_schema,successorTable));
+        builder.addMethod(generateTypePropagator(packge+".client", bindingsSchema, successorTable));
 
         //builder.addMethod(generateTypePropagatorN_OLD());
         builder.addMethod(generateTypePropagatorN_new());
 
 
-        if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindings_schema, bindingsSchema));
+        if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindingsSchema));
 
-        if (bindings_schema != null) {
-            builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindings_schema, bindingsSchema));
-            builder.addMethod(generateFactoryMethodWithContinuation(allVars, allAtts, name,  templateName, packge, bindings_schema, bindingsSchema));
-            builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema, bindingsSchema));
-            builder.addMethod(generateFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindings_schema, bindingsSchema));
-            builder.addMethod(generateUniqueRecordFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
-        }
-
+        builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindingsSchema));
+        builder.addMethod(generateFactoryMethodWithContinuation(allVars, allAtts, name,  templateName, packge, bindingsSchema));
+        builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindingsSchema));
+        builder.addMethod(generateFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
+        builder.addMethod(generateUniqueRecordFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
 
 
         TypeSpec bean = builder.build();
@@ -172,7 +164,7 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public MethodSpec generateTemplateGenerator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateTemplateGenerator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, TemplateBindingsSchema bindingsSchema) {
 
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("generator")
@@ -208,7 +200,7 @@ public class CompilerExpansionBuilder {
         }
 
 
-        StatementCompilerAction action = new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, "__C_document.getStatementOrBundle()", bindings_schema, bindingsSchema);
+        StatementCompilerAction action = new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, "__C_document.getStatementOrBundle()", bindingsSchema);
         for (StatementOrBundle s : doc.getStatementOrBundle()) {
             u.doAction(s, action);
         }
@@ -233,7 +225,7 @@ public class CompilerExpansionBuilder {
 
 
 
-    public MethodSpec generateTypePropagator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, String packge, JsonNode bindings_schema, Map<Integer, List<Integer>> successorTable) {
+    public MethodSpec generateTypePropagator(String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable) {
 
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("propagateTypes")
@@ -251,12 +243,12 @@ public class CompilerExpansionBuilder {
 
         builder.addComment(successorTable.toString());
 
-        //builder.addStatement("$T builder=getClientBuilder()", ClassName.get("org.openprovenance.prov.client","Builder"));
 
         int count=1; // ignore the tempalte name
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
-        Iterator<String> iter = the_var.fieldNames();
+
+        Map<String,List<Descriptor>> theVar=bindingsSchema.getVar();
+        Iterator<String> iter = theVar.keySet().iterator();
+
 
         Map<String, Set<Pair<QualifiedName, WasDerivedFrom>>>  successors1= compilerCommon.getSuccessors1();
         Map<String, Set<Pair<QualifiedName, WasAttributedTo>>> successors2= compilerCommon.getSuccessors2();
@@ -270,7 +262,7 @@ public class CompilerExpansionBuilder {
 
         while (iter.hasNext()) {
             String key = iter.next();
-            if (compilerUtil.isVariableDenotingQualifiedName(key,the_var)) {
+            if (compilerUtil.isVariableDenotingQualifiedName(key,theVar)) {
                 builder.addComment("Variable: " + key);
                 builder.addComment("Count: " + count);
 
@@ -286,9 +278,9 @@ public class CompilerExpansionBuilder {
                         int relation = rowValues.get(i * 2 + 1);
 
                         if (relation == StatementOrBundle.Kind.PROV_DERIVATION.ordinal()) {
-                            generateStatementForRelation_NEW(builder, count, successor, relation, the_var, successors1, knownTypes, unknownTypes, key);
+                            generateStatementForRelation_NEW(builder, count, successor, relation, theVar, successors1, knownTypes, unknownTypes, key);
                         } else if (relation == StatementOrBundle.Kind.PROV_MEMBERSHIP.ordinal()) {
-                            generateStatementForRelation_NEW(builder, count, successor, relation, the_var, successors3b, knownTypes, unknownTypes, key);
+                            generateStatementForRelation_NEW(builder, count, successor, relation, theVar, successors3b, knownTypes, unknownTypes, key);
                         } else {
                             builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$L,$L,$L,uniqId)", count, successor, relation, -1);
                         }
@@ -303,67 +295,8 @@ public class CompilerExpansionBuilder {
         }
         return builder.build();
     }
-/*
-    private <ARELATION extends Identifiable> void generateStatementForRelation_OLD(MethodSpec.Builder builder, int count, JsonNode the_var, Map<String, Set<Pair<QualifiedName, ARELATION>>> successors, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, String key) {
-        if (successors.get(key) != null) {
 
-            final List<ARELATION> relations = successors.get(key).stream().map(Pair::getRight).collect(Collectors.toList());
-            final List<QualifiedName> identifiers = relations.stream().map(Identifiable::getId).collect(Collectors.toList());
-
-            builder.addComment("Identifiers: " + identifiers);
-            builder.addComment("KnownTypes: "   + successors.get(key).stream().map(p -> knownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
-            builder.addComment("UnknownTypes: " + successors.get(key).stream().map(p -> unknownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
-
-            final List<Collection<QualifiedName>> optionalActivityTypes = relations.stream().map(p -> doCollectElementVariables((Statement)p, ACTIVITY_TYPE_URI)).collect(Collectors.toList());
-            final List<Collection<QualifiedName>> optionalActivities    = relations.stream().map(p -> doCollectElementVariables((Statement)p, TMPL_ACTIVITY_URI)).collect(Collectors.toList());
-
-            builder.addComment("ActivityTypes: " + optionalActivityTypes);
-            builder.addComment("Activities: "    + optionalActivities);
-
-            if (optionalActivityTypes.isEmpty() || optionalActivityTypes.get(0) == null) {
-                builder.addStatement("propagateTypes_n_old(record,mapLevelN,mapLevelNP1,$L,$L)", count, -1);
-            } else {
-
-                final QualifiedName firstRelationIdentifier = identifiers.get(0);
-                final ARELATION firstRelation = relations.get(0);
-
-                final Optional<QualifiedName> firstActivityType = optionalActivityTypes.get(0).stream().findFirst();
-                if (firstActivityType.isEmpty()) {
-
-                    builder.addStatement("propagateTypes_n_old(record,mapLevelN,mapLevelNP1,$L,$L)", count, -1);
-
-                } else {
-
-                    if (optionalActivities.isEmpty() || optionalActivities.get(0) == null)
-                        throw new MissingAttributeValue(TMPL_ACTIVITY_URI + " in " + firstRelation);
-                    final Optional<QualifiedName> firstActivity = optionalActivities.get(0).stream().findFirst();
-                    if (firstActivity.isEmpty())
-                        throw new MissingAttributeValue(TMPL_ACTIVITY_URI + " in " + firstRelation);
-
-                    builder.addComment("propagating for $N", key);
-                    builder.addComment("URI: " + firstActivity.get().getUri());
-
-                    //builder.addStatement("System.out.println(\"maplevelN \" + mapLevelN.get($S))",identifiers.get(0).getUri());
-                    final String tmpa = "l0a_" + count;
-                    final String tmpb = "l0b_" + count;
-
-                    builder.addComment("Position: " + findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), the_var));
-
-                    //TypesRecordProcessor.localName(firstActivity.get().getUri())
-                    builder.addStatement("$T $N=mapLevel0.get($S + (($T)record[$L]).getLocalPart())", Integer.class, tmpa, firstRelationIdentifier.getUri() + ".", QualifiedName.class, findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), the_var));
-                    builder.addStatement("int $N=($N==null)?-1:$N", tmpb, tmpa, tmpa);
-
-                    builder.addStatement("propagateTypes_n_old(record,mapLevelN,mapLevelNP1,$L,$N)", count, tmpb);
-                }
-            }
-        } else {
-            builder.addStatement("propagateTypes_n_old(record,mapLevelN,mapLevelNP1,$L,$L)", count, -1);
-        }
-    }
-
-
- */
-    private <ARELATION extends Identifiable> void generateStatementForRelation_NEW(MethodSpec.Builder builder, int count, int successor, int relation, JsonNode the_var, Map<String, Set<Pair<QualifiedName, ARELATION>>> successors, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, String key) {
+    private <ARELATION extends Identifiable> void generateStatementForRelation_NEW(MethodSpec.Builder builder, int count, int successor, int relation, Map<String,List<Descriptor>> theVar, Map<String, Set<Pair<QualifiedName, ARELATION>>> successors, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, String key) {
         if (successors.get(key) != null) {
 
             final List<ARELATION> relations = successors.get(key).stream().map(Pair::getRight).collect(Collectors.toList());
@@ -406,10 +339,12 @@ public class CompilerExpansionBuilder {
                     final String tmpa = "l1a_" + count;
                     final String tmpb = "l1b_" + count;
 
-                    builder.addComment("Position: " + findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), the_var));
+                    builder.addComment("Position: " + findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), theVar));
 
                     //TypesRecordProcessor.localName(firstActivity.get().getUri())
-                    builder.addStatement("$T $N=mapLevel0.get($S + (($T)record[$L]).getLocalPart())", Integer.class, tmpa, firstRelationIdentifier.getUri() + ".", QualifiedName.class, findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), the_var));
+                    builder.addStatement("$T $N=mapLevel0.get($S + (($T)record[$L]).getLocalPart())", Integer.class, tmpa, firstRelationIdentifier.getUri() + ".", QualifiedName.class, findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), theVar
+
+                    ));
                     builder.addStatement("int $N=($N==null)?-1:$N", tmpb, tmpa, tmpa);
 
                     builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$L,$L,$N, uniqId)", count, successor, relation, tmpb);
@@ -420,8 +355,9 @@ public class CompilerExpansionBuilder {
         }
     }
 
-    private int findPosition(String name, JsonNode the_var) {
-        Iterator<String> iter = the_var.fieldNames();
+
+    private int findPosition(String name, Map<String, List<Descriptor>> theVar) {
+        Iterator<String> iter = theVar.keySet().iterator();
 
         int count=1;
         while (iter.hasNext()) {
@@ -599,7 +535,7 @@ public class CompilerExpansionBuilder {
         return "_Q_" + qn.getPrefix() + "_" + qn.getLocalPart();
     }
 
-    public MethodSpec generateFactoryMethod(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateFactoryMethod(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(Document.class);
@@ -613,45 +549,43 @@ public class CompilerExpansionBuilder {
                 .addStatement("$T __C_ns = new Namespace()", Namespace.class)
                 .addStatement("$T subst= new StringSubstitutor(getVariableMap())", StringSubstitutor.class);
 
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
+        Map<String, String> theContext=bindingsSchema.getContext();
+        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
 
-        compilerUtil.generateSpecializedParameters(builder, the_var, bindingsSchema.getVar());
+        compilerUtil.generateSpecializedParameters(builder, bindingsSchema.getVar());
 
-        Iterator<String> iter2 = the_context.fieldNames();
-        while (iter2.hasNext()) {
-            String prefix = iter2.next();
-            String uri = the_context.get(prefix).textValue();
+        for (String prefix : theContext.keySet()) {
+            String uri = theContext.get(prefix);
             builder.addStatement("__C_ns.register($S,subst.replace($S))", prefix, uri);  // TODO: needs substitution here, to expand the URI potentially containing *
         }
 
 
-        String args = "";
+        String args;
         boolean first = true;
         Set<String> seen = new HashSet<>();
+        StringBuilder argsBuilder = new StringBuilder();
         for (QualifiedName q : allVars) {
             final String key = q.getLocalPart();
             seen.add(key);
             final String newName = compilerUtil.varPrefix(key);
-            final JsonNode entry = the_var.path(key);
-            if (entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode)) {
-                String s = entry.get(0).get("@id").textValue();
-                // substring of s preceding first occurrence of :
+            List<Descriptor> descriptors=theVar.get(key);
+            if (descriptors!=null && !descriptors.isEmpty() && (descriptors.get(0) instanceof NameDescriptor)) {
+                NameDescriptor descriptor=(NameDescriptor) descriptors.get(0);
+                String s= descriptor.getId();
                 int existsColumn = s.indexOf(":");
                 if (existsColumn >= 0) {
                     String pre = s.substring(0, existsColumn);
-                    if (pre != null && !pre.isEmpty() && the_context.get(pre) == null) {
-                        throw new InvalidCaseException("CompilerExpansionBuilder (line 629): Reference to prefix '" + pre + "' in '" + s + "' for key '" + key + "', not available in context " + the_context.toPrettyString());
+                    if (pre != null && !pre.isEmpty() && theContext.get(pre) == null) {
+                        throw new InvalidCaseException("CompilerExpansionBuilder: Reference to prefix '" + pre + "' in '" + s + "' for key '" + key + "', not available in context " + theContext);
                     }
                 }
-                JsonNode toEscapeEntry = entry.get(0).get("@escape");
-                boolean toEscape = toEscapeEntry != null && toEscapeEntry.textValue() != null && "true".equals(toEscapeEntry.textValue());
-                String s2 = "\"" + s.replace("*", "\" + $N + \"") + "\"";
+                String escape=descriptor.getEscape();
+                boolean toEscape = escape != null && "true".equals(escape);
+                String s2 = "\"" + s.replace("*", "\" + $N + \"") +"\"";
                 if (toEscape) {
                     builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf,false)", QualifiedName.class, newName, key, key);
                 } else {
                     builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
-
                 }
             } else {
                 // TODO: check if it was a gensym, because then i can generate it!
@@ -661,40 +595,48 @@ public class CompilerExpansionBuilder {
 
             if (first) {
                 first = false;
-                args = newName;
             } else {
-                args = args + ", " + newName;
+                argsBuilder.append(", ");
             }
+            argsBuilder.append(newName);
         }
 
         for (QualifiedName q : allAtts) {
             final String key = q.getLocalPart();
             String newName = key;
             if (!(seen.contains(key))) {
-                final JsonNode entry = the_var.path(key);
-                JsonNode jentry;
-                if (entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode) && ((jentry = entry.get(0).get("@id")) != null)) {
-                    String s = jentry.textValue();
+                List<Descriptor> descriptors=theVar.get(key);
+                if (descriptors!=null && !descriptors.isEmpty() && (descriptors.get(0) instanceof NameDescriptor)) {
+                    NameDescriptor descriptor=(NameDescriptor) descriptors.get(0);
+                    String s= descriptor.getId();
+                    int existsColumn = s.indexOf(":");
+                    if (existsColumn >= 0) {
+                        String pre = s.substring(0, existsColumn);
+                        if (pre != null && !pre.isEmpty() && theContext.get(pre) == null) {
+                            throw new InvalidCaseException("CompilerExpansionBuilder: Reference to prefix '" + pre + "' in '" + s + "' for key '" + key + "', not available in context " + theContext);
+                        }
+                    }
                     String s2 = "\"" + s.replace("*", "\" + $N + \"") + "\"";
                     newName = compilerUtil.attPrefix(key);
                     builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
                 } else {
-                    if (entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode)) {
+                    if (descriptors!=null && !descriptors.isEmpty()) {
                         // is already declared, but not with @id
                     } else {
                         builder.addStatement("$T $N=null", Object.class, newName);
                     }
                 }
-                //if (entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode)) { // if not entry, then don't add to list of arguments
                 if (first) {
                     first = false;
-                    args = newName;
                 } else {
-                    args = args + ", " + newName;
+                    argsBuilder.append(", ");
                 }
-                //}
+                argsBuilder.append(newName);
             }
         }
+
+        args = argsBuilder.toString();
+
 
         builder.addStatement("__C_document = generator(" + args + ")");
 
@@ -707,7 +649,7 @@ public class CompilerExpansionBuilder {
         return method;
     }
 
-    public MethodSpec generateFactoryMethodWithContinuation(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String template, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateFactoryMethodWithContinuation(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String template, String packge, TemplateBindingsSchema bindingsSchema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(TypeVariableName.get("T"))
@@ -720,17 +662,15 @@ public class CompilerExpansionBuilder {
                 .addStatement("$T __C_ns = new Namespace()", Namespace.class)
                 .addStatement("$T subst= new StringSubstitutor(getVariableMap())", StringSubstitutor.class);
 
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
+        Map<String, List<Descriptor>> theVar= bindingsSchema.getVar();
+        Map<String, String> theContext = bindingsSchema.getContext();
 
-        compilerUtil.generateSpecializedParameters(builder, the_var, bindingsSchema.getVar());
+        compilerUtil.generateSpecializedParameters(builder, theVar);
 
         builder.addParameter(processorInterfaceType(template, packge), "processor");
 
-        Iterator<String> iter2 = the_context.fieldNames();
-        while (iter2.hasNext()) {
-            String prefix = iter2.next();
-            String uri = the_context.get(prefix).textValue();
+        for (String prefix : theContext.keySet()) {
+            String uri = theContext.get(prefix);
             builder.addStatement("__C_ns.register($S,subst.replace($S))", prefix, uri);  // TODO: needs substitution here, to expand the URI potentially containing *
         }
 
@@ -743,16 +683,17 @@ public class CompilerExpansionBuilder {
             seen.add(key);
             final String newName = compilerUtil.varPrefix(key);
             translator.put(key,newName);
-            final JsonNode entry = the_var.path(key);
-            if (entry != null && (!entry.isEmpty()) &&!(entry instanceof MissingNode)) {
-                String s = entry.get(0).get("@id").textValue();
-                JsonNode toEscapeEntry = entry.get(0).get("@escape");
-                boolean toEscape = toEscapeEntry != null && toEscapeEntry.textValue() != null && "true".equals(toEscapeEntry.textValue());
-                String s2 = "\"" + s.replace("*", "\" + $N + \"") + "\"";
+            List<Descriptor> descriptors=theVar.get(key);
+            if (descriptors!=null && !descriptors.isEmpty() && (descriptors.get(0) instanceof NameDescriptor)) {
+                NameDescriptor descriptor=(NameDescriptor) descriptors.get(0);
+                String escape=descriptor.getEscape();
+                boolean toEscape = "true".equals(escape);
+                String id = descriptor.getId();
+                String id2 = "\"" + id.replace("*", "\" + $N + \"") + "\"";
                 if (toEscape) {
-                    builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf,false)", QualifiedName.class, newName, key, key);
+                    builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + id2 + ",pf,false)", QualifiedName.class, newName, key, key);
                 } else {
-                    builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
+                    builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + id2 + ",pf)", QualifiedName.class, newName, key, key);
                 }
             } else {
                 // TODO: check if it was a gensym, because then i can generate it!
@@ -763,19 +704,25 @@ public class CompilerExpansionBuilder {
         for (QualifiedName q : allAtts) {
             final String key = q.getLocalPart();
             if (!(seen.contains(key))) {
-                final JsonNode entry = the_var.path(key);
-                JsonNode jentry;
-                if (entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode) && ((jentry = entry.get(0).get("@id")) != null)) {
-                    String s = jentry.textValue();
-                    String s2 = "\"" + s.replace("*", "\" + $N + \"") + "\"";
+                List<Descriptor> descriptors=theVar.get(key);
+                if (descriptors!=null && !descriptors.isEmpty() && (descriptors.get(0) instanceof NameDescriptor)) {
+                    NameDescriptor descriptor=(NameDescriptor) descriptors.get(0);
+                    String escape=descriptor.getEscape();
+                    boolean toEscape = "true".equals(escape);
+                    String id = descriptor.getId();
+                    String id2 = "\"" + id.replace("*", "\" + $N + \"") + "\"";
                     final String newName = compilerUtil.attPrefix(key);
                     translator.put(key,newName);
-                    builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
+                    if (toEscape) {
+                        builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + id2 + ",pf,false)", QualifiedName.class, newName, key, key);
+                    } else {
+                        builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + id2 + ",pf)", QualifiedName.class, newName, key, key);
+                    }
                 }
             }
         }
 
-        final String args = compilerUtil.generateArgumentsListForCall(the_var,translator,bindingsSchema.getVar());
+        final String args = compilerUtil.generateArgumentsListForCall(translator,bindingsSchema.getVar());
 
         builder.addStatement("__C_result = processor.call(" + args + ")");
 
@@ -790,7 +737,7 @@ public class CompilerExpansionBuilder {
 
 
 
-    public MethodSpec generateFactoryMethodWithArray(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateFactoryMethodWithArray(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(Document.class);
@@ -798,20 +745,17 @@ public class CompilerExpansionBuilder {
         compilerUtil.specWithComment(builder);
 
 
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
+        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
 
         builder.addParameter(Object[].class, "__record");
 
         int count = 1;
-        Iterator<String> iter = the_var.fieldNames();
-        String args = "";
-        while (iter.hasNext()) {
-            String key = iter.next();
-            if (bindingsSchema.getVar().get(key)==null) {
+        StringBuilder args = new StringBuilder();
+        for (String key : theVar.keySet()) {
+            if (bindingsSchema.getVar().get(key) == null) {
                 continue;
             }
-            final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
+            final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
             final String converter = compilerUtil.getConverterForDeclaredType(atype);
             if (converter == null) {
                 String statement = "$T $N=($T) __record[" + count + "]";
@@ -820,8 +764,8 @@ public class CompilerExpansionBuilder {
                 String statement = "$T $N=$N(__record[" + count + "])";
                 builder.addStatement(statement, atype, key, converter);
             }
-            if (count > 1) args = args + ", ";
-            args = args + key;
+            if (count > 1) args.append(", ");
+            args.append(key);
             count++;
         }
         builder.addStatement("return make(" + args + ")");
@@ -832,7 +776,7 @@ public class CompilerExpansionBuilder {
         return method;
     }
 
-    public MethodSpec generateFactoryMethodWithArrayAndContinuation(String name, String template, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateFactoryMethodWithArrayAndContinuation(String name, String template, String packge, TemplateBindingsSchema bindingsSchema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(TypeVariableName.get("T"))
@@ -841,20 +785,17 @@ public class CompilerExpansionBuilder {
         compilerUtil.specWithComment(builder);
 
 
-
-
-        JsonNode the_var = bindings_schema.get("var");
+        Map<String, List<Descriptor>> theVar= bindingsSchema.getVar();
 
         builder.addParameter(Object[].class, "__record");
         builder.addParameter(processorInterfaceType(template, packge), Constants.PROCESSOR);
 
         int count = 1;
-        Iterator<String> iter = the_var.fieldNames();
         String args = "";
-        while (iter.hasNext()) {
-            String key = iter.next();
-            if (bindingsSchema.getVar().get(key)!=null) {
-                final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
+
+        for (String key : theVar.keySet()) {
+            if (bindingsSchema.getVar().get(key) != null) {
+                final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
                 final String converter = compilerUtil.getConverterForDeclaredType(atype);
                 if (converter == null) {
                     String statement = "$T $N=($T) __record[" + count + "]";
@@ -923,7 +864,7 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public MethodSpec generateMain(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateMain(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("main")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -945,17 +886,12 @@ public class CompilerExpansionBuilder {
             builder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, compilerUtil.varPrefix(q.getLocalPart()), "http://example.org/", q.getLocalPart(), "ex");
         }
 
-        JsonNode the_var2 = (bindings_schema == null) ? null : bindings_schema.get("var");
-
         for (QualifiedName q : allAtts) {
             String declaredType = null;
-            if (the_var2 != null) {
-                Iterator<String> iter = the_var2.fieldNames();
-
-                while (iter.hasNext()) {
-                    String key = iter.next();
+            if (theVars != null) {
+                for (String key : theVars.keySet()) {
                     if (q.getLocalPart().equals(key)) {
-                        if (theVars.containsKey(key) && theVars.get(key)!=null) {
+                        if (theVars.containsKey(key) && theVars.get(key) != null) {
                             declaredType = compilerUtil.getDeclaredType(theVars, key);
                         }
                     }
@@ -971,15 +907,15 @@ public class CompilerExpansionBuilder {
             }
         }
 
-        String args = "";
+        StringBuilder args = new StringBuilder();
         boolean first = true;
         Set<String> seen = new HashSet<>();
         for (QualifiedName q : allVars) {
             if (first) {
                 first = false;
-                args = compilerUtil.varPrefix(q.getLocalPart());
+                args = new StringBuilder(compilerUtil.varPrefix(q.getLocalPart()));
             } else {
-                args = args + ", " + compilerUtil.varPrefix(q.getLocalPart());
+                args.append(", ").append(compilerUtil.varPrefix(q.getLocalPart()));
             }
             seen.add(q.getLocalPart());
 
@@ -991,9 +927,9 @@ public class CompilerExpansionBuilder {
                 final String key = compilerUtil.attPrefix(q.getLocalPart());
                 if (first) {
                     first = false;
-                    args = key;
+                    args = new StringBuilder(key);
                 } else {
-                    args = args + ", " + key;
+                    args.append(", ").append(key);
                 }
             }
         }
@@ -1003,23 +939,19 @@ public class CompilerExpansionBuilder {
         builder.addStatement("fr.writeDocument($T.out,document,$T.PROVN)", System.class, Formats.ProvFormat.class);
 
 
-        if (bindings_schema != null) {
-            JsonNode the_var = bindings_schema.get("var");
+        if (theVars != null) {
 
-            Iterator<String> iter = the_var.fieldNames();
-            args = "";
+            args = new StringBuilder();
             first = true;
             int count = 0;
-            while (iter.hasNext()) {
-                String key = iter.next();
-
-                if (theVars.get(key)==null) continue;
+            for (String key : theVars.keySet()) {
+                if (theVars.get(key) == null) continue;
 
                 if (first) {
                     first = false;
-                    args = compilerUtil.createExamplar(the_var, key, count++, pFactory);
+                    args = new StringBuilder(compilerUtil.createExamplar(theVars, key, count++, pFactory));
                 } else {
-                    args = args + ", " + compilerUtil.createExamplar(the_var, key, count++, pFactory);
+                    args.append(", ").append(compilerUtil.createExamplar(theVars, key, count++, pFactory));
                 }
             }
 

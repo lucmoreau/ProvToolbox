@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.compiler.expansion;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec.Builder;
 import org.openprovenance.prov.model.*;
@@ -8,6 +7,7 @@ import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
+import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import org.openprovenance.prov.template.core.InstantiateUtil;
 import org.openprovenance.prov.template.core.exception.MissingAttributeValue;
@@ -29,7 +29,6 @@ public class StatementTypeAction implements StatementAction {
     public static String WASDERIVEDFROM_URI=PROV_NS+"WasDerivedFrom";
     public static String QUALIFIEDHADMEMBER_URI=PROV_EXT_NS+"HadMember";
 
-    private final JsonNode bindings_schema;
     private final Map<String, Collection<String>> knownTypes;
     private final Map<String, Collection<String>> unknownTypes;
     private final Builder mbuilder;
@@ -44,14 +43,13 @@ public class StatementTypeAction implements StatementAction {
     final public QualifiedName PROV_EXT_NS_ID;
 
 
-    public StatementTypeAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, Builder mbuilder, CompilerUtil compilerUtil) {
+    public StatementTypeAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, TemplateBindingsSchema bindingsSchema, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, Builder mbuilder, CompilerUtil compilerUtil) {
         this.pFactory=pFactory;
         this.allVars=allVars;
         this.allAtts=allAtts;
         //this.builder=builder;
         //this.target=target;
         this.vmap=vmap;
-        this.bindings_schema=bindings_schema;
         this.bindingsSchema=bindingsSchema;
         this.knownTypes=knownTypes;
         this.unknownTypes=unknownTypes;
@@ -311,7 +309,7 @@ public class StatementTypeAction implements StatementAction {
 
 
         if (InstantiateUtil.isGensymVariable(s.getId())) return;
-        JsonNode the_var = bindings_schema.get("var");
+        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
 
         mbuilder.beginControlFlow("if ($N!=null) ", s.getId().getLocalPart());
 
@@ -343,7 +341,7 @@ public class StatementTypeAction implements StatementAction {
                 if (InstantiateUtil.isVariable(qn)) {
                     String key=qn.getLocalPart();
                     if (bindingsSchema.getVar().containsKey(key) && (bindingsSchema.getVar().get(key)!=null)) {
-                        final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
+                        final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
                         mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new HashSet<>())", s.getId().getLocalPart());
                         if (atype.equals(QualifiedName.class)) {
                             mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).addAll($N.apply($N.getUri(), $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
@@ -381,7 +379,7 @@ public class StatementTypeAction implements StatementAction {
 
     private void doRegisterIDataForAttributes(Identifiable s, Collection<Attribute> attributes, List<Type> types, String expressionUri) {
         if (InstantiateUtil.isGensymVariable(s.getId())) return;
-        JsonNode the_var = bindings_schema.get("var");
+        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
 
         mbuilder.beginControlFlow("if ($N!=null) ", s.getId().getLocalPart());
 
@@ -438,7 +436,7 @@ public class StatementTypeAction implements StatementAction {
                 if (InstantiateUtil.isVariable(qn)) {
                     String key=qn.getLocalPart();
                     if (bindingsSchema.getVar().containsKey(key) && (bindingsSchema.getVar().get(key)!=null)) {
-                        final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
+                        final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
                         mbuilder.addStatement("idata.computeIfAbsent($N, k -> new $T<>())", s.getId().getLocalPart(), HashMap.class);
                         if (atype.equals(QualifiedName.class)) {
                             //mbuilder.addStatement("if ($N!=null) idata.get($N).addAll($N.apply($N.getUri(), $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
@@ -637,7 +635,7 @@ public class StatementTypeAction implements StatementAction {
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
         registerBundle(bun.getId());
-        StatementTypeAction action2=new StatementTypeAction(pFactory, allVars, allAtts, vmap, null, null, bindings_schema, bindingsSchema, knownTypes, unknownTypes, mbuilder, compilerUtil);
+        StatementTypeAction action2=new StatementTypeAction(pFactory, allVars, allAtts, vmap, null, null, bindingsSchema, knownTypes, unknownTypes, mbuilder, compilerUtil);
         
         for (Statement s: bun.getStatement()) {
             provUtilities.doAction(s, action2);

@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -661,9 +660,6 @@ public class ConfigProcessor implements Constants {
         }
     }
 
-    public JsonNode readTree(File file) throws IOException {
-        return objectMapper.readTree(file);
-    }
 
     public TemplateBindingsSchema getBindingsSchema(String location) {
         return compilerUtil.getBindingsSchema(location);
@@ -688,7 +684,6 @@ public class ConfigProcessor implements Constants {
     }
 
     public void doGenerateServerForEntry(SimpleTemplateCompilerConfig config, TemplatesProjectConfiguration configs, Locations locations, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {
-        JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
 
         findSqlTableReferences(bindingsSchema);
@@ -696,38 +691,35 @@ public class ConfigProcessor implements Constants {
         Document doc;
         try {
             doc = readTemplateFromLibraryPath(config,locations.getTemplateLibraryPath(), locations);
-            generate(doc, locations, config.name, config.fullyQualifiedName, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, config.sharing, null, configs);
+            generate(doc, locations, config.name, config.fullyQualifiedName, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, config.sharing, null, configs);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
-            System.out.println(Arrays.asList("doc", config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", bindings_schema));
             throw new RuntimeException("ConfigProcessor.doGenerateServerForEntry() exception: " , e);
 
         }
     }
 
     public void doGenerateServerForEntry(CompositeTemplateCompilerConfig compositeTemplateCompilerConfig, SimpleTemplateCompilerConfig config, TemplatesProjectConfiguration configs, Locations locations, String cli_src_dir, String l2p_src_dir, String cli_webjar_dir) {
-        JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
 
         Document doc;
         try {
             doc = readTemplateFromLibraryPath(config,locations.getTemplateLibraryPath(), locations);
-            generate(doc, locations, config.name, config.fullyQualifiedName, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, compositeTemplateCompilerConfig.sharing, compositeTemplateCompilerConfig.consistsOf, configs);
+            generate(doc, locations, config.name, config.fullyQualifiedName, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, compositeTemplateCompilerConfig.sharing, compositeTemplateCompilerConfig.consistsOf, configs);
         } catch (SecurityException
                  | IllegalArgumentException e) {
             e.printStackTrace();
 
-            System.out.println(Arrays.asList("doc", config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", bindings_schema));
+            System.out.println(Arrays.asList("doc", config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", bindingsSchema));
             throw new RuntimeException("ConfigProcessor.doGenerateServerForEntry() exception: " , e);
         }
     }
 
     public void doGenerateServerForEntry1(Document doc, SimpleTemplateCompilerConfig config, TemplatesProjectConfiguration configs, Locations locations, String cli_src_dir, String l2p_src_dir, String cli_webjar_dir) {
-        JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
         try {
-            generate(doc, locations, config.name, config.fullyQualifiedName, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, config.sharing, null, configs);
+            generate(doc, locations, config.name, config.fullyQualifiedName, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.jsonschema, configs.documentation, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, config.sharing, null, configs);
         } catch (SecurityException e) {
             e.printStackTrace();
             throw new RuntimeException("ConfigProcessor.doGenerateServerForEntry2() exception: " , e);
@@ -735,7 +727,7 @@ public class ConfigProcessor implements Constants {
         }
     }
 
-    public boolean generate(Document doc, Locations locations, String templateName, String templateFullyQualifiedName, String packageName, String cli_src_dir, String l2p_src_dir, String resource, String jsonschema, String documentation, JsonNode bindings_schema,
+    public boolean generate(Document doc, Locations locations, String templateName, String templateFullyQualifiedName, String packageName, String cli_src_dir, String l2p_src_dir, String resource, String jsonschema, String documentation,
                             TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir, boolean inComposition, List<String> sharing, String consistsOf, TemplatesProjectConfiguration configs) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
@@ -780,9 +772,9 @@ public class ConfigProcessor implements Constants {
                 Map<Integer, List<Integer>> successorTable = tmp.getRight();
 
                 //ensure type declaration code is executed
-                SpecificationFile spec5 = compilerTypeManagement.generateTypeDeclaration(configs, locations, doc, bn, templateName, packageName, bindings_schema, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnTM + DOT_JAVA_EXTENSION);
+                SpecificationFile spec5 = compilerTypeManagement.generateTypeDeclaration(configs, locations, doc, bn, templateName, packageName, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnTM + DOT_JAVA_EXTENSION);
                 // before propagation generation
-                SpecificationFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(configs, locations, doc, bn, templateName, templateFullyQualifiedName, packageName, bindings_schema, bindingsSchema, successorTable, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bn + DOT_JAVA_EXTENSION);
+                SpecificationFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(configs, locations, doc, bn, templateName, templateFullyQualifiedName, packageName, bindingsSchema, successorTable, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bn + DOT_JAVA_EXTENSION);
                 val0 = spec0.save();
 
                 SpecificationFile spec1 = compilerExpansionBuilder.generateBuilderInterfaceSpecification(configs, locations, doc, bn, templateName, packageName, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnI + DOT_JAVA_EXTENSION);
@@ -793,7 +785,7 @@ public class ConfigProcessor implements Constants {
                 val2 = val2 & val2b;
 
 
-                SpecificationFile spec6 = compilerTypedRecord.generatedTypedRecordConstructor(configs, locations, doc, bn, templateName, packageName, resource, bindings_schema, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnTR + DOT_JAVA_EXTENSION);
+                SpecificationFile spec6 = compilerTypedRecord.generatedTypedRecordConstructor(configs, locations, doc, bn, templateName, packageName, resource, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnTR + DOT_JAVA_EXTENSION);
                 val5 = spec5.save();
                 val6 = spec6.save();
 

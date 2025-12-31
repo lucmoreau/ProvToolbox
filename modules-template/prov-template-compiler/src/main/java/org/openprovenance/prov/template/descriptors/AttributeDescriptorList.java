@@ -21,4 +21,11 @@ public class AttributeDescriptorList implements Descriptor{
     public DescriptorTypes getDescriptorType () {
         return DescriptorTypes.ATTRIBUTE;
     }
+
+    @Override
+    public String toString() {
+        return "AttributeDescriptorList{" +
+                "items=" + items +
+                '}';
+    }
 }

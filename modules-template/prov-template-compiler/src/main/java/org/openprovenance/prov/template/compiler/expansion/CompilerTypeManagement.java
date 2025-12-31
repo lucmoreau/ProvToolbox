@@ -1,7 +1,5 @@
 package org.openprovenance.prov.template.compiler.expansion;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.MissingNode;
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.*;
@@ -41,7 +39,7 @@ public class CompilerTypeManagement {
     private Map<String,Collection<String>> knownTypes;
     private Map<String,Collection<String>> unknownTypes;
 
-    public SpecificationFile generateTypeDeclaration(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    public SpecificationFile generateTypeDeclaration(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
         knownTypes=new HashMap<>();
         unknownTypes=new HashMap<>();
 
@@ -53,7 +51,7 @@ public class CompilerTypeManagement {
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
-        return generateTypeDeclaration_aux(configs, locations, doc, allVars, allAtts, name, templateName, packge, bindings_schema, bindingsSchema, directory, fileName);
+        return generateTypeDeclaration_aux(configs, locations, doc, allVars, allAtts, name, templateName, packge, bindingsSchema, directory, fileName);
 
     }
 
@@ -102,7 +100,7 @@ public class CompilerTypeManagement {
 
 
 
-    public SpecificationFile generateTypeDeclaration_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    public SpecificationFile generateTypeDeclaration_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         MethodSpec.Builder mbuilder = MethodSpec.methodBuilder("call")
@@ -111,9 +109,6 @@ public class CompilerTypeManagement {
 
         compilerUtil.specWithComment(mbuilder);
 
-        JsonNode the_var = bindings_schema.get("var");
-
-
         Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
         Collection<String> variables=descriptorUtils.fieldNames(bindingsSchema);
 
@@ -121,7 +116,7 @@ public class CompilerTypeManagement {
         compilerUtil.generateDocumentSpecializedParameters(mbuilder, theVar, variables);
 
 
-        StatementTypeAction action = new StatementTypeAction(pFactory, allVars, allAtts, null, null, "__C_document.getStatementOrBundle()", bindings_schema, bindingsSchema, knownTypes, unknownTypes, mbuilder,compilerUtil);
+        StatementTypeAction action = new StatementTypeAction(pFactory, allVars, allAtts, null, null, "__C_document.getStatementOrBundle()", bindingsSchema, knownTypes, unknownTypes, mbuilder,compilerUtil);
         for (StatementOrBundle s : doc.getStatementOrBundle()) {
             u.doAction(s, action);
         }
@@ -130,33 +125,31 @@ public class CompilerTypeManagement {
         for (QualifiedName q : allVars) {
 
             final String key = q.getLocalPart();
-            final JsonNode entry = the_var.path(key);
-            if (entry != null && !(entry instanceof MissingNode)) {
 
-                mbuilder.addComment("Declare $N", q.getLocalPart());
-                knownTypes.getOrDefault(q.getUri(), new LinkedList<>()).forEach(type -> {
+            List<Descriptor> descriptors=theVar.get(key);
+            if (descriptors==null) continue;
+            mbuilder.addComment("Declare $N", q.getLocalPart());
+            knownTypes.getOrDefault(q.getUri(), new LinkedList<>()).forEach(type -> {
 
-                    mbuilder.beginControlFlow("if ($N!=null) ", q.getLocalPart());
-                    mbuilder.addStatement("knownTypeMap.computeIfAbsent($N, k -> new $T<>())", q.getLocalPart(), HashSet.class);
-                    mbuilder.addStatement("knownTypeMap.get($N).add($S)", q.getLocalPart(), type);
-                    mbuilder.endControlFlow();
+                mbuilder.beginControlFlow("if ($N!=null) ", q.getLocalPart());
+                mbuilder.addStatement("knownTypeMap.computeIfAbsent($N, k -> new $T<>())", q.getLocalPart(), HashSet.class);
+                mbuilder.addStatement("knownTypeMap.get($N).add($S)", q.getLocalPart(), type);
+                mbuilder.endControlFlow();
 
-                });
+            });
 
-                unknownTypes.getOrDefault(q.getUri(), new LinkedList<>()).forEach(type -> {
-                    mbuilder.beginControlFlow("if ($N!=null) ", q.getLocalPart());
-                    mbuilder.addComment(type);
-                    final String typeVar = type.substring(type.indexOf("#") + 1);
-                    mbuilder.beginControlFlow("if ($N!=null) ", typeVar);
-                    mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new $T<>())", q.getLocalPart(), HashSet.class);
-                    mbuilder.addStatement("unknownTypeMap.get($N).add((($T)$N).getUri())", q.getLocalPart(), QualifiedName.class, typeVar);
-                    mbuilder.endControlFlow();
-                    mbuilder.endControlFlow();
+            unknownTypes.getOrDefault(q.getUri(), new LinkedList<>()).forEach(type -> {
+                mbuilder.beginControlFlow("if ($N!=null) ", q.getLocalPart());
+                mbuilder.addComment(type);
+                final String typeVar = type.substring(type.indexOf("#") + 1);
+                mbuilder.beginControlFlow("if ($N!=null) ", typeVar);
+                mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new $T<>())", q.getLocalPart(), HashSet.class);
+                mbuilder.addStatement("unknownTypeMap.get($N).add((($T)$N).getUri())", q.getLocalPart(), QualifiedName.class, typeVar);
+                mbuilder.endControlFlow();
+                mbuilder.endControlFlow();
 
-                });
-            } else {
+            });
 
-            }
         }
 
 

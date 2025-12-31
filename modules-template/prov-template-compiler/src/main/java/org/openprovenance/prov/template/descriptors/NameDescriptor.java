@@ -16,6 +16,7 @@ import java.util.Objects;
 @JsonPropertyOrder({
         "@id",
         "@type",
+        "@escape",
         "@documentation",
         "@examplar",
         "@input",
@@ -40,6 +41,8 @@ public class NameDescriptor implements Descriptor {
     private OutputFieldValue output;
     @JsonProperty("@sql.type")
     private String sqlType;
+    @JsonProperty("@escape")
+    private String escape;
 
 
     @JsonProperty("@sql.table")
@@ -143,6 +146,16 @@ public class NameDescriptor implements Descriptor {
         this.sqlType = sqlType;
     }
 
+    @JsonProperty("@escape")
+    public String getEscape() {
+        return escape;
+    }
+
+    @JsonProperty("@escape")
+    public void setEscape(String escape) {
+        this.escape = escape;
+    }
+
     @Override
     public String toString() {
         return "NameDescriptor{" +
@@ -153,6 +166,7 @@ public class NameDescriptor implements Descriptor {
                 ", input=" + input +
                 ", output=" + output +
                 ", sqlType='" + sqlType + '\'' +
+                ", escape='" + escape + '\'' +
                 ", table='" + table + '\'' +
                 ", newInputs=" + newInputs +
                 ", alsoOutputs=" + alsoOutputs +

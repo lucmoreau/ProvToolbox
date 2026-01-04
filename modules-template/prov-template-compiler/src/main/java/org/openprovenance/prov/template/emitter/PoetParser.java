@@ -1,18 +1,14 @@
 package org.openprovenance.prov.template.emitter;
 import com.squareup.javapoet.*;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
-import org.openprovenance.prov.template.emitter.minilanguage.*;
-import org.openprovenance.prov.template.emitter.minilanguage.Class;
+import org.openprovenance.prov.template.compiler.past0.*;
+import org.openprovenance.prov.template.compiler.past0.Class;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static org.openprovenance.prov.template.compiler.common.CompilerCommon.*;
-import static org.openprovenance.prov.template.emitter.minilanguage.Expression.makeExpression;
-import static org.openprovenance.prov.template.emitter.minilanguage.Statement.makeStatement;
 
 public class PoetParser {
 

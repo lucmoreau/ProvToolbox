@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template.compiler.common;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
@@ -10,20 +11,43 @@ import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.emitter.Poet;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.descriptors.*;
 
 import javax.lang.model.element.Modifier;
+import java.io.File;
+import java.io.IOException;
+import java.lang.Class;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.model.StatementOrBundle.ALL_RELATIONS;
+import static org.openprovenance.prov.template.compiler.past.ArrayInitialiser.ARRAY_INITIALISER;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.ForLoop.FOR;
+import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.LambdaExpression.LAMBDA;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfString;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 import static org.openprovenance.prov.template.core.InstantiateUtil.isVariable;
+
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 
 public class CompilerCommon {
     public static final String SB_VAR = "sb";
@@ -76,15 +100,27 @@ public class CompilerCommon {
 
     }
 
+    PastFactory pastFactory=new PastFactory();
+
 
     Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib_aux(TemplatesProjectConfiguration configs, Locations locations, Set<QualifiedName> allVars, String name, String templateName, String templateFullyQualifiedName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, BeanKind beanKind, String fileName, String consistsOf) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = generateClassInit(name, Constants.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName), Constants.BUILDER, templateName);
+        //TypeSpec.Builder builder = generateClassInit(name, Constants.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName), Constants.BUILDER, templateName);
 
+
+
+        org.openprovenance.prov.template.compiler.past.Class pastClass=pastFactory
+                .CLASS(name)
+                .INTERFACES(
+                        org.openprovenance.prov.template.compiler.past.type.ClassName.get(BUILDER, CLIENT_PACKAGE),
+                        org.openprovenance.prov.template.compiler.past.type.ClassName.get("SQL", CLIENT_PACKAGE))
+                .MODIFIERS(Modifier.PUBLIC)
+                .COMMENT("Builder class for $N", templateName);
 
         Map<Integer, List<Integer>> successorTable=null;
 
+        /*
         //add default constructor
         builder.addMethod(MethodSpec.constructorBuilder()
                 .addJavadoc("Default constructor for builder for template $N", templateName)
@@ -93,20 +129,37 @@ public class CompilerCommon {
 
 
 
-        builder.addMethod(generateNameAccessor(templateName));
-        builder.addMethod(generateFullyQualifiedNameAccessor(templateFullyQualifiedName));
-        builder.addMethod(generateTemplateNameAccessor(templateFullyQualifiedName,locations));
-        builder.addMethod(generateCBindingsAccessor(templateFullyQualifiedName,locations));
+         */
 
-        builder.addMethod(generatePropertyOrderMethod());
+        pastClass.METHOD(generateNameAccessor(templateName));
+        pastClass.METHOD(generateFullyQualifiedNameAccessor(templateFullyQualifiedName));
+        pastClass.METHOD(generateTemplateNameAccessor(templateFullyQualifiedName,locations));
+        pastClass.METHOD(generateCBindingsAccessor(templateFullyQualifiedName,locations));
+        pastClass.METHOD(generatePropertyOrderMethod());
+        pastClass.FIELDS(generateFieldPropertyOrder(bindingsSchema));
+        pastClass.METHOD(generateLoggerMethod_new(templateName, templateFullyQualifiedName, bindingsSchema));
+        pastClass.METHOD(generateCommonCSVConverterMethod_aux_new(locations, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
+        pastClass.FIELDS(generateField4aArgs2CsvConverter_new(name,templateName,packageName));
 
-        builder.addField(generateFieldPropertyOrder(bindingsSchema));
+
+        TypeSpec.Builder builder = new Poet().emitBuilder(pastClass);
+
+
+        //builder.addMethod(generateNameAccessor_no_past(templateName));
+        //builder.addMethod(generateFullyQualifiedNameAccessor_no_past(templateFullyQualifiedName));
+        //builder.addMethod(generateTemplateNameAccessor_no_past(templateFullyQualifiedName,locations));
+        //builder.addMethod(generateCBindingsAccessor_no_past(templateFullyQualifiedName,locations));
+
+        //builder.addMethod(generatePropertyOrderMethod_no_past());
+        //builder.addField(generateFieldPropertyOrder_no_past(bindingsSchema));
+
         builder.addMethod(generateCommonMethodGetNodes(beanKind));
         builder.addMethod(generateCommonMethodGetSuccessors(beanKind));
         builder.addMethod(generateCommonMethodGetForeign(beanKind));
         builder.addMethod(generateCommonMethodGetTypedSuccessors(beanKind));
         builder.addMethod(generateRecordCsvProcessorMethod(beanKind));
         compilerSQL.generateSQLstatements(builder, templateName, bindingsSchema, beanKind);
+
 
         if (configs.integrator) {
             ClassName integratorClassName = ClassName.get(locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.INPUTS), compilerUtil.integratorBuilderNameClass(templateName));
@@ -126,16 +179,16 @@ public class CompilerCommon {
         }
 
         if (beanKind==BeanKind.SIMPLE) {
-            builder.addMethod(generateCommonCSVConverterMethod_aux(locations, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
+            //builder.addMethod(generateCommonCSVConverterMethod_aux(locations, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
+
             builder.addMethod(generateCommonSQLConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
             builder.addMethod(generateArgsToRecordMethod(templateName, packageName, bindingsSchema));
             builder.addMethod(generateProcessorConverter(templateName, packageName, bindingsSchema, BeanDirection.COMMON));
             builder.addMethod(generateProcessorConverter2(templateName, packageName, bindingsSchema));
             builder.addMethod(generateApplyMethod(templateName, packageName));
 
-
-            builder.addMethod(generateLoggerMethod(templateName, templateFullyQualifiedName, bindingsSchema));
-            builder.addMethod(generateCommonMethod2PureCsv(templateName, templateFullyQualifiedName, bindingsSchema, consistsOf));
+           // builder.addMethod(generateLoggerMethod(templateName, templateFullyQualifiedName, bindingsSchema));
+           // builder.addMethod(generateCommonMethod2PureCsv(templateName, templateFullyQualifiedName, bindingsSchema, consistsOf));
             builder.addMethod(generateCommonMethod3static(bindingsSchema));
             builder.addMethod(generateCommonMethod4static(allVars, bindingsSchema, indexed));
             builder.addMethod(generateGetRelations(allVars, bindingsSchema, indexed));
@@ -153,7 +206,9 @@ public class CompilerCommon {
             builder.addField(generateField4aBeanConverter(templateName,packageName, bindingsSchema));
             builder.addField(generateField4aBeanConverter2("toBean", templateName,packageName, Constants.A_RECORD_BEAN_CONVERTER, BeanDirection.COMMON));
             builder.addField(generateField4aSQLConverter2(name,templateName,packageName));
-            builder.addField(generateField4aArgs2CsvConverter(name,templateName,packageName));
+           // builder.addField(generateField4aArgs2CsvConverter(name,templateName,packageName));
+
+
             builder.addField(generateField4aRecord2SqlConverter(templateName));
             builder.addField(generateField4aRecord2CsvConverter(name,templateName,packageName));
 
@@ -196,9 +251,9 @@ public class CompilerCommon {
             builder.addMethod(generateFactoryMethodToBeanWithArrayComposite("toBean", templateName, packageName, bindingsSchema, locations.getFilePackage(configs.name,LOGGER), LOGGER, BeanDirection.COMMON, null, null));
             builder.addMethod(generateNewBean(templateName, packageName));
 
-            builder.addField(generateField4aArgs2CsvConverter(name,templateName,packageName));
-            builder.addMethod(generateCommonMethod2PureCsv(templateName, templateFullyQualifiedName, bindingsSchema, consistsOf));
-            builder.addMethod(generateCommonCSVConverterMethod_aux(locations, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
+            //builder.addField(generateField4aArgs2CsvConverter(name,templateName,packageName));
+            //builder.addMethod(generateCommonMethod2PureCsv(templateName, templateFullyQualifiedName, bindingsSchema, consistsOf));
+            //builder.addMethod(generateCommonCSVConverterMethod_aux(locations, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
             builder.addMethod(generateNullOutputsMethod());
             builder.addMethod(generateNullInputsMethod());
 
@@ -214,6 +269,20 @@ public class CompilerCommon {
 
 
         TypeSpec bean=builder.build();
+
+        try {
+            new org.openprovenance.prov.template.compiler.past.emitter.Python()
+                    .toWritableObject(pastClass, templateName, packageName, stackTraceElement)
+                    .writeTo(new File("target/python"));
+        } catch (IOException|RuntimeException e) {
+            e.printStackTrace();
+            try {
+                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.err, pastClass);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
 
 
         JavaFile myfile = compilerUtil.specWithComment(bean, configs, packageName, stackTraceElement);
@@ -252,7 +321,7 @@ public class CompilerCommon {
                                                            String logger) {
 
         final TypeName processorClassName = processorClassType(templateName, packageName,ArrayTypeName.of(Object[].class));
-        final TypeName processorClassNameNotParametrised = processorClassType(templateName, packageName);
+        final TypeName processorClassNameNotParametrised = processorClassTypeNotParametrised(templateName, packageName);
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(ARGS_2_RECORDS)
                 .addModifiers(Modifier.PUBLIC)
@@ -344,8 +413,89 @@ public class CompilerCommon {
         return builder.build();
     }
 
+    public Method generateNameAccessor(String templateName) {
+        Method method = METHOD(GET_NAME)
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(STRING);
+        compilerUtil.debugFileLocation(method);
+        method.BODY(RETURN(CONSTANT(templateName)));
+        return method;
+    }
 
-    public MethodSpec generateNameAccessor(String templateName) {
+    public Method generateFullyQualifiedNameAccessor(String fullyQualifiedTemplateName) {
+        Method method = METHOD(GET_FULLY_QUALIFIED_NAME)
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(STRING);
+        compilerUtil.debugFileLocation(method);
+        method.BODY(RETURN(CONSTANT(fullyQualifiedTemplateName)));
+        return method;
+    }
+
+    public Method generateTemplateNameAccessor(String fullyQualifiedTemplateName, Locations locations) {
+        Method method = METHOD(GET_TEMPLATE_NAME)
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(STRING);
+        compilerUtil.debugFileLocation(method);
+        method.BODY(RETURN(CONSTANT(locations.getTemplateRegistrations().get(fullyQualifiedTemplateName))));
+        return method;
+    }
+    public Method generateCBindingsAccessor(String fullyQualifiedTemplateName, Locations locations) {
+        Method method = METHOD(GET_CBINDINGS)
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(STRING);
+        compilerUtil.debugFileLocation(method);
+        method.BODY(RETURN(CONSTANT(locations.getCbindingsRegistrations().get(fullyQualifiedTemplateName))));
+        return method;
+    }
+    public Method generatePropertyOrderMethod() {
+        Method method = METHOD(PROPERTY_ORDER_METHOD)
+                .COMMENT("Null method for composite\n@return the array of properties in order\n")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(STRING_ARRAY);
+        compilerUtil.debugFileLocation(method);
+        method.BODY(RETURN(VARIABLE(PROPERTY_ORDER, true)));
+        return method;
+    }
+
+    private Field generateFieldPropertyOrder(TemplateBindingsSchema bindingsSchema) {
+        Field fbuilder=FIELD(PROPERTY_ORDER, STRING_ARRAY)
+                .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+        fbuilder.COMMENT("Generated by method $N", getClass().getName()+".generateFieldPropertyOrder()");
+        Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
+        fbuilder.INITIALIZER(ARRAY_INITIALISER(STRING_ARRAY, makeConstantSequence(IS_A,variables)));
+        return fbuilder;
+    }
+
+    public static List<Expression> makeVariableSequence(String head, Collection<String> variables) {
+        List<String> variables2=new LinkedList<>();
+        if (head!=null) variables2.add(head);
+        variables2.addAll(variables);
+        return variables2.stream().map(v -> VARIABLE(v,true)).collect(Collectors.toList());
+    }
+
+    public static List<Expression> makeConstantSequence(String head, Collection<String> variables) {
+        List<String> variables2=new LinkedList<>();
+        if (head!=null) variables2.add(head);
+        variables2.addAll(variables);
+        return variables2.stream().map(Constant::new).collect(Collectors.toList());
+
+    }
+
+    private Field generateField4aArgs2CsvConverter_new(String name, String templateName, String packge) {
+        final org.openprovenance.prov.template.compiler.past.type.TypeName processorClassName = processorClassType(templateName, packge, STRING);
+        Field field=FIELD(A_ARGS_CSV_CONVERTER, processorClassName)
+                .MODIFIERS(Modifier.FINAL, Modifier.PUBLIC)
+                .COMMENT("Generated by method $N", getClass().getName()+".generateField4aArgs2CsvConverter()")
+                .INITIALIZER(METHOD_CALL(VARIABLE("this"), ARGS_CSV_CONVERSION_METHOD,List.of()));
+        return field;
+    }
+
+
+
+
+
+
+    public MethodSpec generateNameAccessor_no_past(String templateName) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(GET_NAME)
                 .addModifiers(Modifier.PUBLIC)
                // .addAnnotation(Override.class)
@@ -355,7 +505,8 @@ public class CompilerCommon {
         builder.addStatement("return $S", templateName);
         return builder.build();
     }
-    public MethodSpec generateFullyQualifiedNameAccessor(String fullyQualifiedTemplateName) {
+
+    public MethodSpec generateFullyQualifiedNameAccessor_no_past(String fullyQualifiedTemplateName) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(GET_FULLY_QUALIFIED_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 //.addAnnotation(Override.class)
@@ -366,7 +517,7 @@ public class CompilerCommon {
         return builder.build();
     }
 
-    public MethodSpec generateTemplateNameAccessor(String fullyQualifiedTemplateName, Locations locations) {
+    public MethodSpec generateTemplateNameAccessor_no_past(String fullyQualifiedTemplateName, Locations locations) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(GET_TEMPLATE_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 //.addAnnotation(Override.class)
@@ -376,7 +527,7 @@ public class CompilerCommon {
         return builder.build();
     }
 
-    public MethodSpec generateCBindingsAccessor(String fullyQualifiedTemplateName, Locations locations) {
+    public MethodSpec generateCBindingsAccessor_no_past(String fullyQualifiedTemplateName, Locations locations) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(GET_CBINDINGS)
                 .addModifiers(Modifier.PUBLIC)
                 //.addAnnotation(Override.class)
@@ -393,10 +544,121 @@ public class CompilerCommon {
     public MethodSpec generateCommonMethod2PureCsv(String template, String templateFullyQualifiedName, TemplateBindingsSchema bindingsSchema, String consistsOf) {
         return generateLoggerMethod(template, templateFullyQualifiedName, bindingsSchema, false, consistsOf);
     }
+    public Method generateCommonMethod2PureCsv_new(String template, String templateFullyQualifiedName, TemplateBindingsSchema bindingsSchema) {
+        return generateLoggerMethod_new(template, templateFullyQualifiedName, bindingsSchema);
+    }
+
+    public final ParameterizedType functionObjArrayTo (org.openprovenance.prov.template.compiler.past.type.TypeName returnType) {
+        return ParameterizedType.get(FUNCTION, OBJECT_ARRAY, returnType);
+    }
+
+
+    public Method generateCommonCSVConverterMethod_aux_new(Locations locations, String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, String consistsOf, String loggerPackage, String logger) {
+        final org.openprovenance.prov.template.compiler.past.type.TypeName processorClassName = processorClassType(template, packge,STRING);
+        final org.openprovenance.prov.template.compiler.past.type.TypeName processorClassNameNotParametrised = processorClassTypeNotParametrised2(template, packge);
+        Method method = METHOD(ARGS_CSV_CONVERSION_METHOD)
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(processorClassName);
+        compilerUtil.debugFileLocation(method);
+
+        method.COMMENT(loggerName + " client side logging method\n");
+        method.COMMENT("@return $T\n" , processorClassNameNotParametrised);
+
+
+        method.BODY(ASSIGNMENT(get(name,packge), VARIABLE(SELF_VAR), VARIABLE("this")));
+
+        Map<String, List<Descriptor>> var = bindingsSchema.getVar();
+        Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
+
+        Collection<String> actualVariables;
+        List<Parameter> paramsList;
+
+        String shortConsistsOf=null;
+
+        if (beanKind==BeanKind.COMPOSITE) {
+            shortConsistsOf=locations.getShortNames().get(consistsOf);
+
+            actualVariables = new LinkedList<>(variables);
+            actualVariables.add(ELEMENTS);
+            String beanNameClass = compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.COMMON);
+            ParameterizedType listBeanType=ParameterizedType.get(LIST, org.openprovenance.prov.template.compiler.past.type.ClassName.get(beanNameClass,packge));
+            paramsList= makeParamsListComposite2(actualVariables, var, compilerUtil, listBeanType);
+        } else {
+            actualVariables=variables;
+            paramsList= makeParamsList2(actualVariables, var, compilerUtil);
+        }
+
+        LambdaExpression lambda= LAMBDA(paramsList);
+        List<Expression> argsList = makeRenamedArgsLocalVariableList(SB_VAR,variables);
+
+        lambda.BODY(ASSIGNMENT(STRING_BUILDER, VARIABLE(SB_VAR), CONSTRUCTOR_CALL(STRING_BUILDER, List.of())),
+
+                METHOD_CALL(VARIABLE(SELF_VAR), loggerName, argsList));
+
+
+
+        if (consistsOf!=null) {
+            String[] variableArray = variables.toArray(new String[]{});
+
+
+            String beanNameClass = compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.COMMON);
+            org.openprovenance.prov.template.compiler.past.type.ClassName loggerClassName = get(logger, loggerPackage);
+
+            ParameterizedType parametericInterface=ParameterizedType.get(get(compilerUtil.processorNameClass(shortConsistsOf),packge), OBJECT_ARRAY);
+            ParameterizedType processorOfString = functionObjArrayTo(STRING);
+
+            // Does not convert well to JS with JSweet
+            // lambda.beginControlFlow("for ($T $N: $N) ", ClassName.get(packge,beanNameClass), VAR_ELEMENT, Constants.GENERATED_VAR_PREFIX + ELEMENTS);
+            // instead:
+
+            lambda.BODY(
+                    ASSIGNMENT(parametericInterface, VARIABLE("processor"),
+                            METHOD_CALL(METHOD_CALL(loggerClassName, GENERATED_VAR_PREFIX + shortConsistsOf), ARGS2RECORD_CONVERTER, List.of())),
+                    FOR(
+                            ASSIGNMENT(_int, VARIABLE(_I_), CONSTANT(0)),
+                            BINARY_OP(VARIABLE(_I_), BinaryOp.LT, METHOD_CALL(VARIABLE(GENERATED_VAR_PREFIX + ELEMENTS), "size", List.of())),
+                            ASSIGNMENT(null, VARIABLE(_I_), BINARY_OP(VARIABLE(_I_), "+", CONSTANT(1))))
+
+                            .BODY(
+                                    ASSIGNMENT(org.openprovenance.prov.template.compiler.past.type.ClassName.get(beanNameClass,packge),VARIABLE(VAR_ELEMENT),
+                                         METHOD_CALL(VARIABLE(GENERATED_VAR_PREFIX + ELEMENTS),"get", List.of(VARIABLE(_I_)))),
+
+
+
+                                   new Comment("// the following line generates ts error: Untyped function calls may not accept type arguments."),
+
+
+                                    ASSIGNMENT(OBJECT_ARRAY, VARIABLE(VAR_OBJECTS),
+                                            METHOD_CALL(VARIABLE(VAR_ELEMENT), "process", List.of(VARIABLE("processor")))),
+
+
+                                    ASSIGNMENT(processorOfString, VARIABLE(VAR_CSV_CONVERTER),
+                                            METHOD_CALL(METHOD_CALL(loggerClassName, "simpleCSvConverters"),
+                                                    "get", List.of(VARIABLE(GENERATED_VAR_PREFIX + variableArray[2])))),
+
+                                    ASSIGNMENT(STRING, VARIABLE(VAR_CSV),
+                                            METHOD_CALL(VARIABLE(VAR_CSV_CONVERTER), "apply", List.of(VARIABLE(VAR_OBJECTS)))),
+
+                                    METHOD_CALL(
+                                            METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\\n"))),
+                                            "append",
+                                            List.of(VARIABLE(VAR_CSV)))
+
+                            ));
+        }
+
+
+        lambda.BODY(RETURN(METHOD_CALL(VARIABLE(SB_VAR), "toString", List.of())));
+        // note, poet method does not accept nested statement codeblock, so instead of adding a statement, we add a codeblock
+        method.BODY(RETURN(lambda));
+
+
+        return method;
+    }
 
     public MethodSpec generateCommonCSVConverterMethod_aux(Locations locations, String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, String consistsOf, String loggerPackage, String logger) {
         final TypeName processorClassName = processorClassType(template, packge,ClassName.get(String.class));
-        final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
+        final TypeName processorClassNameNotParametrised = processorClassTypeNotParametrised(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.ARGS_CSV_CONVERSION_METHOD)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(processorClassName);
@@ -521,16 +783,51 @@ public class CompilerCommon {
         return CodeBlock.join(variables.stream().filter((v) -> theVars.containsKey(v) && theVars.get(v)!=null).map(variable ->
                     CodeBlock.of("$T $N", compilerUtil.getJavaTypeForDeclaredType(theVars, variable), Constants.GENERATED_VAR_PREFIX + variable)).collect(Collectors.toList()), ", ");
     }
+
+    public static List<Parameter>  makeParamsList2(Collection<String> variables, Map<String, List<Descriptor>> theVars, CompilerUtil compilerUtil) {
+        return variables
+                .stream()
+                .filter((v) -> theVars.containsKey(v) && theVars.get(v)!=null)
+                .map(variable ->
+                        PARAMETER(GENERATED_VAR_PREFIX + variable,compilerUtil.getPastTypeForDeclaredType(theVars, variable)))
+                .collect(Collectors.toList());
+    }
     public static CodeBlock makeParamsListComposite(Collection<String> variables, Map<String, List<Descriptor>> var, CompilerUtil compilerUtil, ParameterizedTypeName listBeanType) {
         return CodeBlock.join(variables.stream().map(variable ->
                 CodeBlock.of("$T $N", (variable.equals(ELEMENTS)? listBeanType: compilerUtil.getJavaTypeForDeclaredType(var, variable)), Constants.GENERATED_VAR_PREFIX + variable)).collect(Collectors.toList()), ", ");
     }
+
+    public static List<Parameter> makeParamsListComposite2(Collection<String> variables, Map<String, List<Descriptor>> var, CompilerUtil compilerUtil, ParameterizedType listBeanType) {
+        return variables
+                .stream()
+                .map(variable ->
+                        PARAMETER(GENERATED_VAR_PREFIX + variable,(variable.equals(ELEMENTS) ? listBeanType : compilerUtil.getPastTypeForDeclaredType(var, variable))))
+                .collect(Collectors.toList());
+    }
+
 
     public static CodeBlock makeRenamedArgsList(String head, Collection<String> variables) {
         List<String> variables2=new LinkedList<>();
         if (head!=null) variables2.add(head);
         variables2.addAll(variables);
         return CodeBlock.join(variables2.stream().map(variable -> CodeBlock.of("$N", (variable.equals(head)?variable: Constants.GENERATED_VAR_PREFIX + variable))).collect(Collectors.toList()), ", ");
+    }
+
+    public static List<Expression> makeRenamedArgsList2(String head, Collection<String> variables) {
+        List<String> variables2=new LinkedList<>();
+        if (head!=null) variables2.add(head);
+        variables2.addAll(variables);
+        return variables2
+                .stream()
+                .map(variable -> variable.equals(head)? VARIABLE(variable,true): VARIABLE(GENERATED_VAR_PREFIX + variable,true )).collect(Collectors.toList());
+    }
+    public static List<Expression> makeRenamedArgsLocalVariableList(String head, Collection<String> variables) {
+        List<String> variables2=new LinkedList<>();
+        if (head!=null) variables2.add(head);
+        variables2.addAll(variables);
+        return variables2
+                .stream()
+                .map(variable -> variable.equals(head)? VARIABLE(variable): VARIABLE(GENERATED_VAR_PREFIX + variable )).collect(Collectors.toList());
     }
 
     public static CodeBlock makeArgsList(Collection<String> variables) {
@@ -565,7 +862,7 @@ public class CompilerCommon {
         return fbuilder.build();
     }
 
-    private FieldSpec generateFieldPropertyOrder(TemplateBindingsSchema bindingsSchema) {
+    private FieldSpec generateFieldPropertyOrder_no_past(TemplateBindingsSchema bindingsSchema) {
         FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), Constants.PROPERTY_ORDER, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
         fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateFieldPropertyOrder()");
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
@@ -674,7 +971,7 @@ public class CompilerCommon {
 
     public MethodSpec generateCommonSQLConverterMethod_aux(String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema) {
         final TypeName processorClassName = processorClassType(template, packge, ClassName.get(String.class));
-        final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
+        final TypeName processorClassNameNotParametrised = processorClassTypeNotParametrised(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.BEAN_SQL_CONVERSION_METHOD)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(processorClassName);
@@ -727,7 +1024,7 @@ public class CompilerCommon {
 
     public MethodSpec generateArgsToRecordMethod(String template, String packge, TemplateBindingsSchema bindingsSchema) {
         final TypeName processorClassName = processorClassType(template, packge, ArrayTypeName.of(Object.class));
-        final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
+        final TypeName processorClassNameNotParametrised = processorClassTypeNotParametrised(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.ARGS2RECORD_CONVERTER)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(processorClassName);
@@ -768,7 +1065,7 @@ public class CompilerCommon {
 
         final TypeName returnClassName= beanDirection==BeanDirection.COMMON ? processorClassType(template, packge, typeT) : integratorClassType(template, packge, typeT);
 
-        final TypeName returnClassNameNotParametrised = beanDirection==BeanDirection.COMMON ? processorClassType(template, packge): integratorClassType (template, packge);
+        final TypeName returnClassNameNotParametrised = beanDirection==BeanDirection.COMMON ? processorClassTypeNotParametrised(template, packge): integratorClassType (template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.PROCESSOR_CONVERTER)
                 .addModifiers(Modifier.PUBLIC)
                 .addTypeVariable(TypeVariableName.get("T"))
@@ -946,12 +1243,95 @@ public class CompilerCommon {
         ParameterizedTypeName name=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(template)),cl);
         return name;
     }
+    private org.openprovenance.prov.template.compiler.past.type.TypeName processorClassType(String template, String packge, org.openprovenance.prov.template.compiler.past.type.ClassName cl) {
+        ParameterizedType name= ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get(compilerUtil.processorNameClass(template),packge),cl);
+        return name;
+    }
 
-    private TypeName processorClassType(String template, String packge) {
+
+    private TypeName processorClassTypeNotParametrised(String template, String packge) {
         return ClassName.get(packge,compilerUtil.processorNameClass(template));
+    }
+    private org.openprovenance.prov.template.compiler.past.type.TypeName processorClassTypeNotParametrised2(String template, String packge) {
+        return org.openprovenance.prov.template.compiler.past.type.ClassName.get(compilerUtil.processorNameClass(template), packge);
     }
     private TypeName integratorClassType(String template, String packge) {
         return ClassName.get(packge,compilerUtil.integratorNameClass(template));
+    }
+
+    public Method generateLoggerMethod_new(String template, String templateFullyQualifiedName, TemplateBindingsSchema bindingsSchema) {
+        Method method = METHOD(compilerUtil.loggerName(template))
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(VOID);
+        String var = SB_VAR;
+
+        compilerUtil.debugFileLocation(method);
+
+
+
+        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
+        Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
+
+
+        method.COMMENT("Logger method\n");
+        method.COMMENT("@param $N a StringBuffer\n", var);
+
+
+        method.PARAMETER(STRING_BUILDER, var);
+
+        for (String key: fieldNames) {
+            String newkey = compilerUtil.generateNewNameForVariable(key);
+            Descriptor descriptor=theVar.get(key).get(0);
+            String documentation=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
+
+            method.COMMENT("@param $N $N\n", newkey, documentation);
+            method.PARAMETER(compilerUtil.getPastTypeForDeclaredType(theVar, key), newkey);
+        }
+
+        String separator = ",";
+
+        String constant = StringEscapeUtils.escapeCsv(templateFullyQualifiedName);
+        method.BODY(METHOD_CALL(VARIABLE(var), "append", CONSTANT(constant)));
+
+        for (String key: fieldNames) {
+
+            final String newName = compilerUtil.generateNewNameForVariable(key);
+            final org.openprovenance.prov.template.compiler.past.type.ClassName clazz1 = compilerUtil.getPastTypeForDeclaredType(theVar, key);
+            final boolean isQualifiedName = theVar.get(key).get(0) instanceof NameDescriptor; //the_var.get(key).get(0).get("@id") != null;
+
+            method.BODY(METHOD_CALL(VARIABLE(var), "append", CONSTANT(separator)));
+
+
+            if (STRING.packge.equals(clazz1.packge) && STRING.simpleName.equals(clazz1.simpleName)) {
+                boolean doEscape=false;
+                if (!isQualifiedName) {
+                    doEscape = ((AttributeDescriptorList)theVar.get(key).get(0)).getItems().get(0).getEscape() !=null; //.the_var.get(key).get(0).get(0).get("@escape") != null;
+                    if (doEscape) {
+                        foundEscape=true;
+                    }
+                }
+                method.BODY(IF(BINARY_OP(VARIABLE(newName), BinaryOp.EQ, Constant.getNull()))
+                                .ELSE(
+                                        (doEscape)?
+                                                METHOD_CALL(VARIABLE(var), "append",
+                                                        METHOD_CALL(get("StringEscapeUtils", "org.openprovenance.apache.commons.lang"), "escapeCsv", VARIABLE(newName))
+                                                )
+                                                :
+                                                METHOD_CALL(VARIABLE(var), "append", VARIABLE(newName)
+                                                )
+                                ));
+
+
+            } else {
+                method.BODY(IF(BINARY_OP(VARIABLE(newName), BinaryOp.EQ, Constant.getNull()))
+                        .ELSE(
+                                METHOD_CALL(VARIABLE(var), "append", VARIABLE(newName))
+                        ));
+            }
+        };
+
+
+        return method;
     }
 
 
@@ -1109,7 +1489,7 @@ public class CompilerCommon {
     TypeName OLDmyType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
     TypeName myType=functionObjArrayTo(ClassName.get(String.class));
 
-    public MethodSpec generatePropertyOrderMethod() {
+    public MethodSpec generatePropertyOrderMethod_no_past() {
         MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.PROPERTY_ORDER_METHOD)
                 .addJavadoc("Null method for composite\n@return the array of properties in order\n")
                 .addModifiers(Modifier.PUBLIC)

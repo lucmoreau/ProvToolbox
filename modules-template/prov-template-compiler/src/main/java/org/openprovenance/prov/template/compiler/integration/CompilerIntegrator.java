@@ -73,10 +73,10 @@ public class CompilerIntegrator {
 
         }
 
-        builder.addMethod(compilerCommon.generateNameAccessor(templateName));
-        builder.addMethod(compilerCommon.generateFullyQualifiedNameAccessor(templateFullyQualifiedName));
-        builder.addMethod(compilerCommon.generateTemplateNameAccessor(templateFullyQualifiedName,locations));
-        builder.addMethod(compilerCommon.generateCBindingsAccessor(templateFullyQualifiedName,locations));
+        builder.addMethod(compilerCommon.generateNameAccessor_no_past(templateName));
+        builder.addMethod(compilerCommon.generateFullyQualifiedNameAccessor_no_past(templateFullyQualifiedName));
+        builder.addMethod(compilerCommon.generateTemplateNameAccessor_no_past(templateFullyQualifiedName,locations));
+        builder.addMethod(compilerCommon.generateCBindingsAccessor_no_past(templateFullyQualifiedName,locations));
 
 
 

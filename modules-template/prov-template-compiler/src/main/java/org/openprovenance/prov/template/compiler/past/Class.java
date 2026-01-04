@@ -1,0 +1,78 @@
+package org.openprovenance.prov.template.compiler.past;
+
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.openprovenance.prov.template.compiler.past.type.TypeName;
+
+import javax.lang.model.element.Modifier;
+import java.util.LinkedList;
+import java.util.List;
+
+@JsonPropertyOrder ({ "comments", "name","modifiers","interfaces","fields","methods" })
+
+public class Class {
+
+
+    final public String name;
+    final public List<Comment> comments=new LinkedList<>();
+    final public List<Field> fields=new LinkedList<>();
+    final public List<Method> methods=new LinkedList<>();
+    final public List<TypeName> interfaces=new LinkedList<>();
+    final public List<Modifier> modifiers=new LinkedList<>();
+
+    public Class (String name) {
+        this.name = name;
+    }
+    public Class(String name, List<TypeName> interfaces, List<Field> fields, List<Method> methods, List<Comment> comments) {
+        this.name = name;
+        if (interfaces!=null) this.interfaces.addAll(interfaces);
+        this.fields.addAll(fields);
+        this.methods.addAll(methods);
+        this.comments.addAll(comments);
+    }
+
+    public Class INTERFACES(TypeName... interfaceNames) {
+        for (TypeName interfaceName: interfaceNames) {
+            if (interfaceName == null) throw new IllegalArgumentException("null interface name");
+            interfaces.add(interfaceName);
+        }
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Class{" +
+                "name='" + name + '\'' +
+                ", comments=" + comments +
+                ", fields=" + fields +
+                ", methods=" + methods +
+                ", interfaces=" + interfaces +
+                '}';
+    }
+
+    public Class MODIFIERS(Modifier modifier) {
+        if (modifier==null) throw new IllegalArgumentException("null modifier");
+        modifiers.add(modifier);
+        return this;
+    }
+
+    public Class COMMENT(String format, Object... args) {
+        if (format==null) throw new IllegalArgumentException("null format");
+        this.comments.add(new Comment(format, args));
+        return this;
+    }
+
+    public Class FIELDS(Field... fields) {
+        for (Field field: fields) {
+            if (field == null) throw new IllegalArgumentException("null field");
+            this.fields.add(field);
+        }
+        return this;
+    }
+
+    public Class METHOD(Method method2) {
+        if (method2==null) throw new IllegalArgumentException("null method");
+        this.methods.add(method2);
+        return this;
+    }
+}

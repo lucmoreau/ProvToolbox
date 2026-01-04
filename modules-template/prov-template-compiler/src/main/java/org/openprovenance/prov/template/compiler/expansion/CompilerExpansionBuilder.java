@@ -129,8 +129,8 @@ public class CompilerExpansionBuilder {
         builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindingsSchema));
 
 
-        builder.addMethod(compilerCommon.generateNameAccessor(templateName));
-        builder.addMethod(compilerCommon.generateFullyQualifiedNameAccessor(templateFullyQualifiedName));
+        builder.addMethod(compilerCommon.generateNameAccessor_no_past(templateName));
+        builder.addMethod(compilerCommon.generateFullyQualifiedNameAccessor_no_past(templateFullyQualifiedName));
 
         builder.addMethod(compilerCommon.commonAccessorGenerator(templateName,locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON)));
 

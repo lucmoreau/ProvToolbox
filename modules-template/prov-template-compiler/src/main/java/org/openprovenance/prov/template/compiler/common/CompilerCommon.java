@@ -453,7 +453,7 @@ public class CompilerCommon {
                 .MODIFIERS(Modifier.PUBLIC)
                 .RETURNS(STRING_ARRAY);
         compilerUtil.debugFileLocation(method);
-        method.BODY(RETURN(VARIABLE(PROPERTY_ORDER, true)));
+        method.BODY(RETURN(VARIABLE(PROPERTY_ORDER, Variable.VariableKind.FIELD_VARIABLE)));
         return method;
     }
 
@@ -470,7 +470,7 @@ public class CompilerCommon {
         List<String> variables2=new LinkedList<>();
         if (head!=null) variables2.add(head);
         variables2.addAll(variables);
-        return variables2.stream().map(v -> VARIABLE(v,true)).collect(Collectors.toList());
+        return variables2.stream().map(v -> VARIABLE(v, Variable.VariableKind.FIELD_VARIABLE)).collect(Collectors.toList());
     }
 
     public static List<Expression> makeConstantSequence(String head, Collection<String> variables) {
@@ -819,7 +819,7 @@ public class CompilerCommon {
         variables2.addAll(variables);
         return variables2
                 .stream()
-                .map(variable -> variable.equals(head)? VARIABLE(variable,true): VARIABLE(GENERATED_VAR_PREFIX + variable,true )).collect(Collectors.toList());
+                .map(variable -> variable.equals(head)? VARIABLE(variable): VARIABLE(GENERATED_VAR_PREFIX + variable )).collect(Collectors.toList());
     }
     public static List<Expression> makeRenamedArgsLocalVariableList(String head, Collection<String> variables) {
         List<String> variables2=new LinkedList<>();

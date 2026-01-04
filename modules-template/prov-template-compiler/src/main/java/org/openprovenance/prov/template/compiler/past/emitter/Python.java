@@ -14,8 +14,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.template.compiler.past.Expression.ExpressionKind.METHOD_CALL;
-import static org.openprovenance.prov.template.compiler.past.Expression.ExpressionKind.VARIABLE;
+import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.MethodCallKind.FUNCTIONAL_INTERFACE_CALL;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 
@@ -116,7 +115,8 @@ public class Python implements Emitter<StringBuilder> {
         for (String imprt : imports) {
             // get suffix after last dot in imprt
             String suffix = getLocalName(imprt);
-
+            // ignore LOGGER
+            if (LOGGER.equals(suffix)) continue;
             sb.insert(0, "from " + imprt + " import " + suffix + "\n");
         }
 
@@ -170,21 +170,36 @@ public class Python implements Emitter<StringBuilder> {
         }
         sb.append("):\n");
 
+        boolean anyField=false;
         // Field assignments
         for (Field field : fields) {
             String fieldName = sanitizeName(field.name);
-            if (isStaticOrFinal(field)) {
-                sb.append(INDENT).append(INDENT)
-                        .append("self.").append(fieldName)
-                        .append(" = ").append(convert(field.initialiser)).append("\n");
-            } else {
+            if (!field.modifiers.contains(Modifier.STATIC)) {
+                anyField=true;
+                if (field.modifiers.contains(Modifier.FINAL)) {
+                    sb.append(INDENT).append(INDENT)
+                            .append("self.").append(fieldName)
+                            .append(" = ").append(convert(field.initialiser)).append("\n");
+                } else {
 
-                sb.append(INDENT).append(INDENT)
-                        .append("self.").append(fieldName)
-                        .append(" = ").append(fieldName).append("\n");
+                    sb.append(INDENT).append(INDENT)
+                            .append("self.").append(fieldName)
+                            .append(" = ").append(fieldName).append("\n");
+                }
             }
         }
+        if (!anyField) {
+            sb.append(INDENT).append(INDENT).append("pass\n");
+        }
         sb.append("\n");
+        for (Field field : fields) {
+            String fieldName = sanitizeName(field.name);
+            if (field.modifiers.contains(Modifier.STATIC)) {
+                sb.append(INDENT)
+                        .append(fieldName)
+                        .append(" = ").append(convert(field.initialiser)).append("\n");
+            }
+        }
     }
 
     private void emitMethod(Method method) {
@@ -195,9 +210,18 @@ public class Python implements Emitter<StringBuilder> {
             sb.append("\"\"\"\n");
         }
 
+        if (method.modifiers.contains(Modifier.STATIC)) {
+            sb.append(INDENT).append("@staticmethod\n");
+        }
+
         // Method signature
         sb.append(INDENT).append("def ").append(sanitizeName(method.name));
-        sb.append("(self");
+        sb.append("(");
+        if (method.modifiers.contains(Modifier.STATIC)) {
+            sb.append("cls");
+        } else {
+            sb.append("self");
+        }
 
         // Parameters
         if (method.parameters != null) {
@@ -338,11 +362,11 @@ public class Python implements Emitter<StringBuilder> {
         switch (expression.expressionKind) {
             case VARIABLE: {
                 Variable ve = (Variable) expression;
-                if (ve.field) {
-                    return "self." + ve.name;
-                } else {
-                    return convertVariableName(ve.name);
-                }
+                return switch (ve.field) {
+                    case STATIC_FIELD_VARIABLE -> "cls." + sanitizeName(ve.name);
+                    case FIELD_VARIABLE -> "self." + sanitizeName(ve.name);
+                    case LOCAL_VARIABLE -> convertVariableName(sanitizeName(ve.name));
+                };
             }
             case CONSTANT: {
                 Constant constant = (Constant) expression;

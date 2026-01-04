@@ -50,8 +50,8 @@ if __name__ == "__main__":
     print('-----')
 
 
-    print(Logger.logPlead_approving(9999,'approved_pipeline',100,21,18,0.123,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z'))
-   # bean2=Logger.beanPlead_approving(9999,'approved_pipeline',100,21,18,0.234,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z')
+    print(Logger.logPlead_approving(Logger,'approved_pipeline',100,21,18,0.123,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z'))
+    bean2=Logger.beanPlead_approving(Logger,'approved_pipeline',100,21,18,0.234,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z')
 
     print(json.dumps(vars(bean2)))
 

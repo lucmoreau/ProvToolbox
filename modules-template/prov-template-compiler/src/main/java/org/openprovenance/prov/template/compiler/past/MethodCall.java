@@ -46,7 +46,7 @@ public class MethodCall extends Expression {
         this.className=null;
     }
 
-    public MethodCall(Variable object, String methodName, List<Expression> arguments, boolean functionalInterfaceCall) {
+    public MethodCall(Expression object, String methodName, List<Expression> arguments, boolean functionalInterfaceCall) {
         this.object=object;
         this.methodName=methodName;
         this.arguments=arguments;
@@ -95,6 +95,7 @@ public class MethodCall extends Expression {
     }
 
 
+
     @Override
     public String toString() {
         return "MethodCall{" +
@@ -114,7 +115,7 @@ public class MethodCall extends Expression {
     public static MethodCall METHOD_CALL(Variable object, String methodName, List<Expression> arguments) {
         return new MethodCall(object, methodName, arguments);
     }
-    public static MethodCall FUNCTIONAL_METHOD_CALL(Variable object, String methodName, List<Expression> arguments) {
+    public static MethodCall FUNCTIONAL_METHOD_CALL(Expression object, String methodName, List<Expression> arguments) {
         return new MethodCall(object, methodName, arguments,true);
     }
     public static MethodCall METHOD_CALL(MethodCall object, String methodName, List<Expression> arguments) {

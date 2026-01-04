@@ -29,8 +29,7 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 import static org.openprovenance.prov.template.compiler.common.CompilerCommon.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
-import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
-import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.*;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.STRING;
@@ -66,7 +65,6 @@ public class CompilerLogger {
         }
 
         List<String> templates= Arrays.stream(configs.templates).map(x->x.name).collect(Collectors.toList());
-        ArrayTypeName builderArrayType = ArrayTypeName.of(ClassName.get(Constants.CLIENT_PACKAGE, "Builder"));
         ArrayType builderArrayPastType = ArrayType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get("Builder", CLIENT_PACKAGE));
         pastClass.FIELDS(Field.FIELD(__BUILDERS_VAR, builderArrayPastType)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
@@ -414,7 +412,6 @@ public class CompilerLogger {
     }
     public Method generateStaticLogMethod_new(SimpleTemplateCompilerConfig config, Locations locations) {
         final String loggerName = compilerUtil.loggerName(config.name);
-
         Method builder = METHOD(loggerName)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
                 .RETURNS(STRING);
@@ -430,9 +427,9 @@ public class CompilerLogger {
 
         builder.BODY(
                 RETURN(
-                        METHOD_CALL(
+                        FUNCTIONAL_METHOD_CALL(
                                 METHOD_CALL(
-                                        VARIABLE(GENERATED_VAR_PREFIX + config.name,true),
+                                        VARIABLE(GENERATED_VAR_PREFIX + config.name, Variable.VariableKind.STATIC_FIELD_VARIABLE),
                                         ARGS_CSV_CONVERSION_METHOD,
                                         List.of()),
                                 "process",
@@ -491,7 +488,7 @@ public class CompilerLogger {
                 .MODIFIERS(Modifier.PUBLIC)
                 .RETURNS(builderArrayType);
         compilerUtil.debugFileLocation(method);
-        method.BODY(RETURN(VARIABLE(__BUILDERS_VAR,true)));
+        method.BODY(RETURN(VARIABLE(__BUILDERS_VAR, Variable.VariableKind.FIELD_VARIABLE)));
         return method;
 
     }

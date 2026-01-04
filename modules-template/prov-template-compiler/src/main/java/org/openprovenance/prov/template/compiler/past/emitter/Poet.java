@@ -290,8 +290,8 @@ public class Poet implements Emitter<TypeSpec> {
                 CodeBlock argsCode = CodeBlock.join(
                         methodCall.arguments.stream().map(this::convert).collect(Collectors.toList()),
                         ",");
-                Variable var = (Variable) methodCall.object;
-                return CodeBlock.of("$L.$L($L)", var.name, methodCall.methodName, argsCode);
+                CodeBlock operator = convert(methodCall.object);
+                return CodeBlock.of("$L.$L($L)", operator, methodCall.methodName, argsCode);
             }
             case OBJECT_METHOD_CALL -> {
                 CodeBlock argsCode = CodeBlock.join(

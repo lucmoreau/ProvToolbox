@@ -328,7 +328,7 @@ public class CompilerBeanGenerator {
                         new org.openprovenance.prov.template.compiler.past.ArrayInitialiser(intArrayType,List.of(VARIABLE("v"))))
                         .addModifier(Modifier.FINAL),
                 METHOD_CALL(
-                        VARIABLE(ELEMENTS,true),
+                        VARIABLE(ELEMENTS, Variable.VariableKind.FIELD_VARIABLE),
                         "forEach",
                         LAMBDA(PARAMETER("b", consistsOfClass))
                                 .BODY(ASSIGNMENT(
@@ -349,7 +349,7 @@ public class CompilerBeanGenerator {
 
         method.BODY(
                 METHOD_CALL(
-                        VARIABLE(ELEMENTS,true),
+                        VARIABLE(ELEMENTS, Variable.VariableKind.FIELD_VARIABLE),
                         "forEach",
                         LAMBDA(PARAMETER("b", consistsOfClass))
                                 .BODY(ASSIGNMENT(
@@ -376,7 +376,7 @@ public class CompilerBeanGenerator {
         compilerUtil.debugFileLocation(method);
 
         method.BODY(METHOD_CALL(
-                new Variable(ELEMENTS, true),
+                new Variable(ELEMENTS, Variable.VariableKind.FIELD_VARIABLE),
                 "add", CAST(org.openprovenance.prov.template.compiler.past.type.ClassName.get(name, packge), VARIABLE("o"))));
         builder.METHOD(method);
     }
@@ -421,7 +421,7 @@ public class CompilerBeanGenerator {
                             PROCESSOR_PROCESS_METHOD_NAME,
                             actualFieldNames
                                     .stream()
-                                    .map(field -> VARIABLE(field,true))
+                                    .map(field -> VARIABLE(field, Variable.VariableKind.FIELD_VARIABLE))
                                     .collect(Collectors.toList()))));
         } else if (beanDirection==BeanDirection.INPUTS) {
             method.addStatement(RETURN(
@@ -430,7 +430,7 @@ public class CompilerBeanGenerator {
                             PROCESSOR_PROCESS_METHOD_NAME,
                             actualFieldNames
                                     .stream()
-                                    .map(field -> descriptorUtils.isInput(field,bindingsSchema)?VARIABLE(field,true):Constant.getNull())
+                                    .map(field -> descriptorUtils.isInput(field,bindingsSchema)?VARIABLE(field, Variable.VariableKind.FIELD_VARIABLE):Constant.getNull())
                                     .collect(Collectors.toList()))));
         } else if (beanDirection==BeanDirection.OUTPUTS) {
             method.addStatement(RETURN(
@@ -439,7 +439,7 @@ public class CompilerBeanGenerator {
                             PROCESSOR_PROCESS_METHOD_NAME,
                             actualFieldNames
                                     .stream()
-                                    .map(field -> descriptorUtils.isOutput(field,bindingsSchema)?VARIABLE(field,true):Constant.getNull())
+                                    .map(field -> descriptorUtils.isOutput(field,bindingsSchema)?VARIABLE(field, Variable.VariableKind.FIELD_VARIABLE):Constant.getNull())
                                     .collect(Collectors.toList()))));
         } else {
             throw new IllegalStateException("Unexpected value: " + beanDirection);

@@ -3,7 +3,9 @@ package org.openprovenance.prov.template.compiler.past;
 
 public class Variable extends Expression {
     public final String name;
-    public boolean field=false;
+    public VariableKind field= VariableKind.LOCAL_VARIABLE;
+    public enum VariableKind { LOCAL_VARIABLE, FIELD_VARIABLE, STATIC_FIELD_VARIABLE }
+
 
     public Variable(String name) {
         if (name==null) {
@@ -13,7 +15,7 @@ public class Variable extends Expression {
         this.expressionKind=ExpressionKind.VARIABLE;
     }
 
-    public Variable(String name, boolean field) {
+    public Variable(String name, VariableKind field) {
         if (name==null) {
             throw new IllegalArgumentException("Variable name cannot be null");
         }
@@ -36,8 +38,9 @@ public class Variable extends Expression {
     public static Variable VARIABLE(String name) {
         return new Variable(name);
     }
-    public static Variable VARIABLE(String name, boolean field) {
-        return new Variable(name, field);
+    public static Variable VARIABLE(String name, VariableKind kind) {
+        return new Variable(name, kind);
     }
+
 
 }

@@ -44,13 +44,35 @@ if __name__ == "__main__":
 
 
     builder=Plead_approvingBuilder()
+
+
+    print('----- aArgs2CsVConverter output -----')
+
     result=bean.process(builder.aArgs2CsVConverter)
     print(result)
 
-    print('-----')
 
+
+    print('----- Logger output -----')
 
     print(Logger.logPlead_approving(Logger,'approved_pipeline',100,21,18,0.123,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z'))
+
+
+    print('-----toBean output -----')
+
+    print(builder.toBean(['Plead_approving',100,100,21,18,0.234,112345,22,245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z']))
+
+    print('----- json dump of toBean output -----')
+
+    print(builder.toBean(['Plead_approving',100,100,21,18,0.234,112345,22,245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z']).toJSON())
+
+    print('----- aArgs2RecordConverter output -----')
+
+    result=bean.process(builder.aArgs2RecordConverter())
+    print(result)
+
+
+
     bean2=Logger.beanPlead_approving(Logger,'approved_pipeline',100,21,18,0.234,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z')
 
     print(json.dumps(vars(bean2)))

@@ -65,10 +65,11 @@ public class CompilerLogger {
         }
 
         List<String> templates= Arrays.stream(configs.templates).map(x->x.name).collect(Collectors.toList());
-        ArrayType builderArrayPastType = ArrayType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get("Builder", CLIENT_PACKAGE));
+        ArrayType builderArrayPastType = ArrayType.of(org.openprovenance.prov.template.compiler.past.type.ClassName.get("Builder", CLIENT_PACKAGE));
+        org.openprovenance.prov.template.compiler.past.type.ClassName builderPastType = org.openprovenance.prov.template.compiler.past.type.ClassName.get("Builder", CLIENT_PACKAGE);
         pastClass.FIELDS(Field.FIELD(__BUILDERS_VAR, builderArrayPastType)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
-                .INITIALIZER(new ArrayInitialiser(builderArrayPastType, makeRenamedArgsList2(null,templates))))
+                .INITIALIZER(new ArrayInitialiser(builderPastType, makeRenamedArgsList2(null,templates))))
         ;
 
         pastClass.METHOD(generateGetBuilderMethod(builderArrayPastType));

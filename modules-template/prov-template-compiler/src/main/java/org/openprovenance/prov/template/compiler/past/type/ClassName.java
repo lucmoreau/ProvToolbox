@@ -6,15 +6,19 @@ public class ClassName extends TypeName {
     static public final ClassName OBJECT=ClassName.get("Object", "past.lang");
     static public final ClassName STRING=ClassName.get("String", "past.lang");
     public static final ClassName INTEGER = ClassName.get("Integer", "past.lang");
+    public static final ClassName MAP = ClassName.get("Map", "past.util");
+    public static final ClassName HASHMAP = ClassName.get("HashMap", "past.util");
     public static final ClassName LIST = ClassName.get("List", "past.util");
     public static final ClassName LINKED_LIST = ClassName.get( "LinkedList", "past.util");
     public static final ClassName CLASS = ClassName.get( "Class", "past.lang");
     public static final ClassName VOID = ClassName.get( "Void", "past.lang");
-    public static final ArrayType STRING_ARRAY=ArrayType.get(STRING);
-    public static final ArrayType OBJECT_ARRAY=ArrayType.get(OBJECT);
+    public static final ArrayType STRING_ARRAY=ArrayType.of(STRING);
+    public static final ArrayType OBJECT_ARRAY=ArrayType.of(OBJECT);
     public static final ClassName STRING_BUILDER = ClassName.get( "StringBuilder", "past.util");
     public static final ClassName FUNCTION = ClassName.get( "Function", "past.lang");
-
+    public static final ClassName UNSUPPORTED_OPERATION_EXCEPTION=ClassName.get("UnsupportedOperationException", "past.exception");
+    public static final ParameterizedType MAP_INTEGER_INTARRAY= ParameterizedType.get(MAP, INTEGER, intArray);
+    public static final ParameterizedType HASH_MAP_INTEGER_INTARRAY= ParameterizedType.get(HASHMAP, INTEGER, intArray);
 
     final public String simpleName;
     final public String packge;

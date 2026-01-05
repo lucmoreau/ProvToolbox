@@ -4,6 +4,7 @@ package org.openprovenance.prov.template.compiler.past.emitter;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
 
 import java.io.File;
@@ -11,10 +12,15 @@ import java.io.IOException;
 import javax.lang.model.element.Modifier;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
+import static org.openprovenance.prov.template.compiler.past.Expression.ExpressionKind.ARRAY_INITIALISER;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.MethodCallKind.FUNCTIONAL_INTERFACE_CALL;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 
@@ -50,12 +56,12 @@ public class Python implements Emitter<StringBuilder> {
         };
     }
 
-    List<String> imports;
+    Set<String> imports;
     @Override
     public StringBuilder emit(Class clazz) {
         this.sb = new StringBuilder();
 
-        imports = new java.util.ArrayList<>();
+        imports = new java.util.HashSet<>();
 
         // Class docstring from comments
 
@@ -87,7 +93,7 @@ public class Python implements Emitter<StringBuilder> {
 
         // Constructor (__init__)
         if (!clazz.fields.isEmpty()) {
-            emitConstructor(clazz.fields);
+            emitClassConstructor(clazz.fields);
             hasContent = true;
         }
 
@@ -114,6 +120,8 @@ public class Python implements Emitter<StringBuilder> {
 
         for (String imprt : imports) {
             // get suffix after last dot in imprt
+            if (!imprt.contains(".")) continue;
+
             String suffix = getLocalName(imprt);
             // ignore LOGGER
             if (LOGGER.equals(suffix)) continue;
@@ -154,11 +162,36 @@ public class Python implements Emitter<StringBuilder> {
 
     }
 
+
+    private String convertForInstanceCheck(TypeName tn) {
+        switch (tn.typeKind) {
+            case CLASS: {
+                ClassName cn = (ClassName) tn;
+                if (cn.packge != null && cn.packge.equals("past.lang")) {
+                    // map past.lang types to python types
+                    return switch (cn.simpleName) {
+                        case "String" -> "str";
+                        case "Integer", "int" -> "int";
+                        case "Float" -> "float";
+                        case "Boolean" -> "bool";
+                        case "Object" -> "object";
+                        default -> (cn.packge + "." + cn.simpleName);
+                    };
+                }
+            }
+            case VARIABLE:
+            case ARRAY:
+            case PARAMETERIZED:
+            default: throw new IllegalArgumentException("Unsupported type for instanceof: " + tn);
+        }
+    }
+
+
     private String convert(Comment c) {
         return String.format(c.format.replace("$L","%s").replace("$N","%s"), c.objects);
     }
 
-    private void emitConstructor(List<Field> fields) {
+    private void emitClassConstructor(List<Field> fields) {
         sb.append(INDENT).append("def __init__(self");
 
         // Parameters from fields
@@ -200,6 +233,25 @@ public class Python implements Emitter<StringBuilder> {
                         .append(" = ").append(convert(field.initialiser)).append("\n");
             }
         }
+
+        // append json serialization method
+        /*
+          def toJSON(self):
+        return json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=False,
+            indent=4)
+         */
+        sb.append(INDENT).append("def toJSON(self):\n");
+        sb.append(INDENT).append(INDENT).append("import json\n");
+        sb.append(INDENT).append(INDENT).append("return json.dumps(\n");
+        sb.append(INDENT).append(INDENT).append(INDENT).append("self,\n");
+        sb.append(INDENT).append(INDENT).append(INDENT).append("default=lambda o: o.__dict__,\n");
+        sb.append(INDENT).append(INDENT).append(INDENT).append("sort_keys=False,\n");
+        sb.append(INDENT).append(INDENT).append(INDENT).append("indent=4)\n\n");
+
+
     }
 
     private void emitMethod(Method method) {
@@ -347,8 +399,25 @@ public class Python implements Emitter<StringBuilder> {
             }
             case EXPRESSION_STATEMENT -> {
                 Expression es = (Expression) statement;
-                MethodCall mc=(MethodCall) es;
-                sb.append(indent).append(convertMethodCall(mc));
+                switch (es.expressionKind) {
+                    case METHOD_CALL -> {
+                        MethodCall mc=(MethodCall) es;
+                        sb.append(indent).append(convertMethodCall(mc));
+                    }
+                    case ARRAY_INITIALISER -> {
+                        ArrayInitialiser ai = (ArrayInitialiser) statement;
+                        sb.append(indent).append(convert(ai));
+                    }
+
+                    default -> {
+                        throw new UnsupportedOperationException("Lambda body restriction: Unsupported EXPRESSION_STATEMENT kind " + es.expressionKind);
+                    }
+                }
+            }
+            case RETURN -> {
+                Return ret = (Return) statement;
+                sb.append(indent)
+                        .append(sanitizeName(convert(ret.expression)));
             }
 
             default -> {
@@ -436,7 +505,24 @@ public class Python implements Emitter<StringBuilder> {
             }
             case BINARY_OP: {
                 BinaryOp bo = (BinaryOp) expression;
-                return convert(bo.left) + " " + bo.op + " " + convert(bo.right);
+                if (bo.op.equals(INSTANCEOF)) {
+                    // the argument of instanceof must be of the form String.class (i.e. a MethodCall with className set)
+                    if (!(bo.right instanceof MethodCall) || ((MethodCall) bo.right).className==null) {
+                        throw new IllegalArgumentException("Right side of instanceof must be a class name");
+                    }
+                    MethodCall mc = (MethodCall) bo.right;
+                    // convert the typename to a python type
+                    String typeName = convertForInstanceCheck(mc.className);
+                    return "isinstance(" + convert(bo.left) + ", " + importAndGetLocalName(sanitizeName(typeName)) + ")";
+
+                } else {
+                    return convert(bo.left) + " " + bo.op + " " + convert(bo.right);
+                }
+            }
+
+            case IF_EXPRESSION: {
+                IfExpression ie = (IfExpression) expression;
+                return convert(ie.thenExpression) + " if " + convert(ie.condition) + " else " + convert(ie.elseExpression);
             }
 
             default:
@@ -447,6 +533,8 @@ public class Python implements Emitter<StringBuilder> {
     private String convertVariableName(String name) {
         if (name.equals("this")) {
             return "self";
+        } else if (name.equals("throw")) {
+            return "raise";
         } else {
             return name;
         }
@@ -468,6 +556,9 @@ public class Python implements Emitter<StringBuilder> {
         switch(mc.operatorKind) {
             case CONSTRUCTOR_CALL -> {
                 assert mc.className!=null;
+                if (isMap(mc.className)) {
+                    return "{}";
+                }
                 result.append(importAndGetLocalName(sanitizeName(convert(mc.className)))).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
@@ -554,6 +645,20 @@ public class Python implements Emitter<StringBuilder> {
 
     }
 
+    private boolean isMap(TypeName typeName) {
+        switch (typeName.typeKind) {
+            case CLASS:
+                ClassName cn = (ClassName) typeName;
+                String fullName = (cn.packge != null && !cn.packge.isEmpty()) ? (cn.packge + "." + cn.simpleName) : cn.simpleName;
+                return fullName.equals("past.util.Map") || fullName.equals("past.util.HashMap");
+            case PARAMETERIZED:
+                ParameterizedType pt = (ParameterizedType) typeName;
+                return isMap(pt.rawType);
+            default:
+                return false;
+        }
+    }
+
     private String convertListForEach(MethodCall mc) {
         Expression expression = mc.arguments.get(0);
         LambdaExpression le = (LambdaExpression) expression;
@@ -592,15 +697,45 @@ public class Python implements Emitter<StringBuilder> {
                 field.modifiers.contains(Modifier.FINAL);
     }
 
+    public String getConverterForDeclaredType2(java.lang.Class cl) {
+        if (cl != null) {
+            String keyType = cl.getName();
+            switch (keyType) {
+                case "java.lang.Integer":
+                    return "Integer.valueOf";
+                case "java.lang.Long":
+                    return "Long.valueOf";
+                case "java.lang.String":
+                    return null;
+                case "java.lang.Boolean":
+                    return "Boolean.valueOf";
+                case "java.lang.Float":
+                    return "Float.valueOf";
+                case "java.lang.Double":
+                    return "Double.valueOf";
+                default:
+                    throw new UnsupportedOperationException();
+            }
+        } else {
+            return null;
+        }
+    }
+
+    Map<String, String> functionNameConversion = new HashMap<>() {{
+        put("Integer.valueOf", "int");
+        put("Long.valueOf", "int");
+        put("Float.valueOf", "float");
+        put("Double.valueOf", "float");
+        put("Boolean.valueOf", "bool");
+        put("add", "append");
+    }};
+
     private String sanitizeName(String name) {
         if (name == null) return "unknown";
+        if (functionNameConversion.containsKey(name)) {
+            return functionNameConversion.get(name);
+        }
         // Convert Java naming to Python (camelCase to snake_case)
-        if (name.equals("None")) {
-            return "None";
-        }
-        if (name.equals("add")) {
-            return "append";
-        }
         //String result = name.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
         String result=name;
         // Handle reserved keywords

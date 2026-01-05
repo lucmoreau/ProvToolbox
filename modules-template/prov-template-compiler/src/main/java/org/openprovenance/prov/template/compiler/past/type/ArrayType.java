@@ -8,7 +8,7 @@ public class ArrayType extends TypeName {
         this.typeKind=TypeKind.ARRAY;
     }
 
-    static public ArrayType get(TypeName elementType) {
+    static public ArrayType of(TypeName elementType) {
         if (elementType==null) {
             throw new IllegalArgumentException("Element type cannot be null");
         }

@@ -15,6 +15,10 @@ public class TypeVariable extends TypeName {
         return new TypeVariable(name);
     }
 
+    static public TypeVariable T() {
+        return get("T");
+    }
+
     @Override
     public String toString() {
         return "TypeVariable{" +

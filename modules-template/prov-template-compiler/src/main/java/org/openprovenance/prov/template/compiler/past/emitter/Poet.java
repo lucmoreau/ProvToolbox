@@ -7,10 +7,10 @@ import org.openprovenance.prov.template.compiler.past.type.ArrayType;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
 
 
 public class Poet implements Emitter<TypeSpec> {
@@ -56,7 +56,9 @@ public class Poet implements Emitter<TypeSpec> {
     private MethodSpec convert(Method method) {
         MethodSpec.Builder builder=MethodSpec.methodBuilder(method.name);
         method.modifiers.forEach(builder::addModifiers);
-        if (!voidType(method.returnType)) builder.returns(convert(method.returnType));
+        if (!voidType(method.returnType)) {
+            builder.returns(convert(method.returnType));
+        }
         method.parameters.forEach(param -> builder.addParameter(convert(param.type), param.name));
         method.comments.forEach(comment -> builder.addJavadoc(comment.format, convertToPoet(comment.objects)));
         method.typeVariables.forEach(tv -> {
@@ -144,17 +146,10 @@ public class Poet implements Emitter<TypeSpec> {
         CodeBlock leftHandCode = convert(assignment.leftHandExpression);
         CodeBlock valueCode = convert(assignment.value);
         if (assignment.modifiers.contains(javax.lang.model.element.Modifier.FINAL)) {
-            if (assignment.type != null) {
-                // handles the case of array of primitive int
-                if (assignment.type instanceof  org.openprovenance.prov.template.compiler.past.type.ClassName
-                && ((org.openprovenance.prov.template.compiler.past.type.ClassName) assignment.type).simpleName.equals("int[]")
-                && ((org.openprovenance.prov.template.compiler.past.type.ClassName) assignment.type).packge.equals("past.lang")) {
-                    org.openprovenance.prov.template.compiler.past.type.ClassName assignmentType=(org.openprovenance.prov.template.compiler.past.type.ClassName) assignment.type;
-                    return CodeBlock.of("final $L $L=$L", assignmentType.simpleName, leftHandCode, valueCode);
-                } else {
-                    TypeName typeName = convert(assignment.type);
-                    return CodeBlock.of("final $T $L=$L", typeName, leftHandCode, valueCode);
-                }
+            org.openprovenance.prov.template.compiler.past.type.TypeName type = assignment.type;
+            if (type != null) {
+                TypeName typeName = convert(type);
+                return CodeBlock.of("final $T $L=$L", typeName, leftHandCode, valueCode);
             } else {
                 return CodeBlock.of("final $L=$L", leftHandCode, valueCode);
             }
@@ -228,7 +223,8 @@ public class Poet implements Emitter<TypeSpec> {
                 CodeBlock elementsCode = CodeBlock.join(
                         arrayInitialiser.values.stream().map(this::convert).collect(Collectors.toList()),
                         ",");
-                return CodeBlock.of("{ $L }", elementsCode);
+                TypeName elementTypeName = convert(arrayInitialiser.elementType);
+                return CodeBlock.of("new $T[] { $L }", elementTypeName, elementsCode);
             }
             case LAMBDA_EXPRESSION -> {
                 LambdaExpression lambda = (LambdaExpression) expression;
@@ -257,7 +253,24 @@ public class Poet implements Emitter<TypeSpec> {
                 BinaryOp binaryOperation = (BinaryOp) expression;
                 CodeBlock leftCode = convert(binaryOperation.left);
                 CodeBlock rightCode = convert(binaryOperation.right);
-                return CodeBlock.of("($L $L $L)", leftCode, binaryOperation.op, rightCode);
+                if (binaryOperation.op.equals(INSTANCEOF)) {
+                    // the argument of instanceof must be of the form String.class (i.e. a MethodCall with className set)
+                    if (!(binaryOperation.right instanceof MethodCall) || ((MethodCall) binaryOperation.right).className==null) {
+                        throw new IllegalArgumentException("Right side of instanceof must be a class name");
+                    }
+                    MethodCall mc = (MethodCall) binaryOperation.right;
+                    return CodeBlock.of("($L $L $T)", leftCode, binaryOperation.op, convert(mc.className));
+                } else {
+                    return CodeBlock.of("($L $L $L)", leftCode, binaryOperation.op, rightCode);
+                }
+            }
+
+            case IF_EXPRESSION ->  {
+                IfExpression ifExpression = (IfExpression) expression;
+                CodeBlock conditionCode = convert(ifExpression.condition);
+                CodeBlock thenCode = convert(ifExpression.thenExpression);
+                CodeBlock elseCode = convert(ifExpression.elseExpression);
+                return CodeBlock.of("($L ? $L : $L)", conditionCode, thenCode, elseCode);
             }
         }
         throw new IllegalArgumentException("Expression conversion not supported yet " + expression.expressionKind);
@@ -355,6 +368,7 @@ public class Poet implements Emitter<TypeSpec> {
                     case "Void" ->  { return ClassName.get(Void.class); }
                     case "Function" ->  { return ClassName.get(java.util.function.Function.class); }
                     case "int" ->  { return TypeName.get(int.class); }
+                    case "int[]" ->  { return ArrayTypeName.of(TypeName.get(int.class)); }
                     default ->  { /* continue */ }
                 }
             }
@@ -364,6 +378,14 @@ public class Poet implements Emitter<TypeSpec> {
                     case "LinkedList" ->  { return ClassName.get(LinkedList.class); }
                     case "Void" ->  { return ClassName.get(Void.class); }
                     case "StringBuilder" ->  { return ClassName.get(StringBuilder.class); }
+                    case "Map" ->  { return ClassName.get(Map.class); }
+                    case "HashMap" ->  { return ClassName.get(HashMap.class); }
+                    default ->  { /* continue */ }
+                }
+            }
+            case "past.exception" -> {
+                switch (cn.simpleName) {
+                    case "UnsupportedOperationException" ->  { return ClassName.get(UnsupportedOperationException.class); }
                     default ->  { /* continue */ }
                 }
             }

@@ -58,6 +58,14 @@ public class Method {
         return this;
     }
 
+    public Method PARAMETERS(Parameter... parameters) {
+        for (Parameter parameter: parameters) {
+            if (parameter == null) throw new IllegalArgumentException("null parameter");
+            this.parameters.add(parameter);
+        }
+        return this;
+    }
+
     public Method PARAMETER(TypeName typeName, String parameterName) {
         this.parameters.add(new Parameter(parameterName, typeName));
         return this;

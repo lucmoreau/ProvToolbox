@@ -194,4 +194,5 @@ public interface Constants {
     String MAP_VAR="map";
     String ARGS_2_RECORDS = "args2Records";
     String _I_ = "_i_";
+    String TABLE = "table";
 }

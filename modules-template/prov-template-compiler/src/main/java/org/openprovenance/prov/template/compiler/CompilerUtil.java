@@ -714,6 +714,7 @@ public class CompilerUtil {
     }
 
 
+    // TODO: make it work with past types
     public String getConverterForDeclaredType2(Class cl) {
         if (cl != null) {
             String keyType = cl.getName();

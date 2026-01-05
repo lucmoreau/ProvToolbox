@@ -320,12 +320,12 @@ public class CompilerBeanGenerator {
         compilerUtil.debugFileLocation(method);
 
         String countName="__count";
-        org.openprovenance.prov.template.compiler.past.type.TypeName intArrayType = intArray;
+
         method.BODY(
                 ASSIGNMENT(
-                        intArrayType,
+                        intArray,
                         VARIABLE(countName),
-                        new org.openprovenance.prov.template.compiler.past.ArrayInitialiser(intArrayType,List.of(VARIABLE("v"))))
+                        new org.openprovenance.prov.template.compiler.past.ArrayInitialiser(_int,List.of(VARIABLE("v"))))
                         .addModifier(Modifier.FINAL),
                 METHOD_CALL(
                         VARIABLE(ELEMENTS, Variable.VariableKind.FIELD_VARIABLE),

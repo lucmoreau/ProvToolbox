@@ -5,6 +5,7 @@ package org.openprovenance.prov.template.compiler.past;
 public class BinaryOp extends Expression {
     public static final String EQ = "==";
     public static final String LT = "<";
+    public static final String INSTANCEOF= "instanceof";
     public final Expression left;
     public final String op;
     public final Expression right;

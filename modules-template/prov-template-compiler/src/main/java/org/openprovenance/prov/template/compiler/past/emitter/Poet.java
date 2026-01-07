@@ -272,6 +272,13 @@ public class Poet implements Emitter<TypeSpec> {
                 CodeBlock elseCode = convert(ifExpression.elseExpression);
                 return CodeBlock.of("($L ? $L : $L)", conditionCode, thenCode, elseCode);
             }
+
+            case ARRAY_ALLOCATOR -> {
+                ArrayAllocator arrayAllocator = (ArrayAllocator) expression;
+                CodeBlock sizeCode = convert(arrayAllocator.size);
+                TypeName elementTypeName = convert(arrayAllocator.elementType);
+                return CodeBlock.of("new $T[$L]", elementTypeName, sizeCode);
+            }
         }
         throw new IllegalArgumentException("Expression conversion not supported yet " + expression.expressionKind);
     }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"expressionKind", "constantType", "string"})
 public class Constant extends Expression {
+
     public enum ConstantType {
         STRING,
         INTEGER,

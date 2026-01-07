@@ -2,7 +2,6 @@ package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -11,6 +10,8 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
+import org.openprovenance.prov.template.compiler.past.Constant;
+import org.openprovenance.prov.template.compiler.past.Method;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer;
 import org.openprovenance.prov.template.compiler.util.CompilerException;
 import org.openprovenance.prov.template.descriptors.*;
@@ -21,6 +22,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.STRING_BUILDER;
 import static org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer.getTheSqlType;
 
 public class CompilerSQL {
@@ -315,24 +324,22 @@ public class CompilerSQL {
     private final boolean debugComment=true;
 
 
-    public MethodSpec generateCommonSQLMethod2(String template, TemplateBindingsSchema bindingsSchema)  {
-        MethodSpec.Builder builder
-                = MethodSpec
-                .methodBuilder(compilerUtil.sqlName(template))
-                .addModifiers(Modifier.PUBLIC)
-                .returns(void.class);
+    public Method generateSqlTupleMethod(String template, TemplateBindingsSchema bindingsSchema)  {
+        Method method
+                = METHOD(compilerUtil.sqlName(template))
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(org.openprovenance.prov.template.compiler.past.type.ClassName.VOID);
         String var = "sb";
-        compilerUtil.specWithComment(builder);
+        compilerUtil.debugFileLocation(method);
 
 
         Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
         Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
 
-        builder.addParameter(StringBuffer.class, var);
-        for (String key: fieldNames) {
-            String newkey = "__" + key;
-            builder.addParameter(compilerUtil.getJavaTypeForDeclaredType(theVar, key), newkey);
-        }
+        method.PARAMETER(STRING_BUILDER, var);
+        method.PARAMETERS(fieldNames.stream()
+                .map(key -> PARAMETER("__" + key, compilerUtil.getPastTypeForDeclaredType(theVar, key)))
+                .collect(Collectors.toList()));
 
 
         String constant = "(";
@@ -347,12 +354,11 @@ public class CompilerSQL {
             } else {
                 constant = constant + ',';
             }
-            builder.addStatement("$N.append($S)", var, constant);
+            method.BODY(METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT(constant))));
             constant = "";
 
             if (String.class.equals(clazz)) {
-                String myStatement = "$N.append($N)";
-                String myEscapeStatement = "$N.append($T.escapeJavaScript($N))";
+
                 boolean doEscape=false;
                 if (!isQualifiedName) {
                     Descriptor descriptor = theVar.get(key).get(0);
@@ -361,31 +367,33 @@ public class CompilerSQL {
                         //foundEscape=true;
                     }
                 }
-                builder.beginControlFlow("if ($N==null)", newName);
-                builder.addStatement("$N.append($S)", var, "''"); // is it correct, or should it be null?
-                builder.nextControlFlow("else")
-                        .addStatement("$N.append($S)", var, "'");
 
-                if (doEscape) {
-                    builder.addStatement(myEscapeStatement, var, ClassName.get("org.openprovenance.apache.commons.lang", "StringEscapeUtils"), newName);
-                } else {
-                    builder.addStatement(myStatement, var, newName);
-                }
-                builder.addStatement("$N.append($S)", var, "'")
-                        .endControlFlow();
+                method.BODY(IF(BINARY_OP(VARIABLE(newName), "==", Constant.getNull()))
+                        .THEN(METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT("''")))) // is it correct, or should it be null?
+                        .ELSE(
+                                METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT("'"))),
+
+                                (doEscape)
+                                        ?
+                                        METHOD_CALL(VARIABLE(var),
+                                                "append",
+                                                List.of(METHOD_CALL(org.openprovenance.prov.template.compiler.past.type.ClassName.get("StringEscapeUtils","org.openprovenance.apache.commons.lang"),
+                                                        "escapeJavaScript",
+                                                        List.of(VARIABLE(newName)))))
+                                        :
+                                        METHOD_CALL(VARIABLE(var), "append", List.of(VARIABLE(newName))),
+
+
+                                METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT("'")))));
             } else {
-                builder.beginControlFlow("if ($N==null)", newName);
-                builder.addStatement("$N.append($S)", var, "''");  // is it correct, or should it be null?
-                builder.nextControlFlow("else");
-                builder.addStatement("$N.append($S)", var, constant);
-                builder.addStatement("$N.append($N)", var, newName);
-                builder.endControlFlow();
+                method.BODY(IF(BINARY_OP(VARIABLE(newName), "==", Constant.getNull()))
+                        .THEN(METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT("''"))))  // is it correct, or should it be null?
+                        .ELSE(METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT(constant))),
+                                METHOD_CALL(VARIABLE(var), "append", List.of(VARIABLE(newName)))));
+
             }
         }
-        builder.addStatement("$N.append($S)", var, ")");
-
-
-        MethodSpec method = builder.build();
+        method.BODY(METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT(")"))));
 
         return method;
     }

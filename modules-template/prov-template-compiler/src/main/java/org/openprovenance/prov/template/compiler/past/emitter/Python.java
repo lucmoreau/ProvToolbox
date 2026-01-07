@@ -12,10 +12,7 @@ import java.io.IOException;
 import javax.lang.model.element.Modifier;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
@@ -62,11 +59,12 @@ public class Python implements Emitter<StringBuilder> {
         this.sb = new StringBuilder();
 
         imports = new java.util.HashSet<>();
+        imports.add("past.util.Map");
 
         // Class docstring from comments
 
         sb.append("\"\"\"");
-        sb.append(clazz.comments.stream().map(this::convert).collect(Collectors.joining("\n")));
+        sb.append(clazz.comments.stream().map(this::convert).flatMap(Collection::stream).collect(Collectors.joining("\n")));
         sb.append("\"\"\"\n");
 
 
@@ -88,34 +86,31 @@ public class Python implements Emitter<StringBuilder> {
         }
         sb.append(":\n");
 
-        boolean hasContent = false;
 
 
         // Constructor (__init__)
-        if (!clazz.fields.isEmpty()) {
-            emitClassConstructor(clazz.fields);
-            hasContent = true;
-        }
+
+        emitClassConstructor(clazz.fields);
+
 
         // Methods
         if (!clazz.methods.isEmpty()) {
             for (Method method : clazz.methods) {
                 emitMethod(method);
-                hasContent = true;
             }
         }
 
         for (Method method: lateMethods) {
             emitMethod(method);
-            hasContent = true;
         }
 
 
+        emitStaticFields(clazz.fields);
 
 
-        // Empty class body
-        if (!hasContent) {
-            sb.append(INDENT).append("pass\n");
+        if (!imports.isEmpty()) {
+            sb.insert(0,"\n");
+            sb.insert(0,"\n");
         }
 
         for (String imprt : imports) {
@@ -187,8 +182,8 @@ public class Python implements Emitter<StringBuilder> {
     }
 
 
-    private String convert(Comment c) {
-        return String.format(c.format.replace("$L","%s").replace("$N","%s"), c.objects);
+    private List<String> convert(Comment c) {
+        return List.of(String.format(c.format.replace("$L", "%s").replace("$N", "%s"), c.objects).split("\n"));
     }
 
     private void emitClassConstructor(List<Field> fields) {
@@ -225,14 +220,6 @@ public class Python implements Emitter<StringBuilder> {
             sb.append(INDENT).append(INDENT).append("pass\n");
         }
         sb.append("\n");
-        for (Field field : fields) {
-            String fieldName = sanitizeName(field.name);
-            if (field.modifiers.contains(Modifier.STATIC)) {
-                sb.append(INDENT)
-                        .append(fieldName)
-                        .append(" = ").append(convert(field.initialiser)).append("\n");
-            }
-        }
 
         // append json serialization method
         /*
@@ -254,31 +241,57 @@ public class Python implements Emitter<StringBuilder> {
 
     }
 
+    private void emitStaticFields(List<Field> fields) {
+        for (Field field : fields) {
+            String fieldName = sanitizeName(field.name);
+            if (field.modifiers.contains(Modifier.STATIC)) {
+                sb.append(INDENT)
+                        .append(fieldName)
+                        .append(" = ").append(convert(field.initialiser)).append("\n");
+            }
+        }
+    }
+
     private void emitMethod(Method method) {
         // Method docstring
         if (method.comments != null && !method.comments.isEmpty()) {
             sb.append(INDENT).append("\"\"\"");
-            sb.append(method.comments.stream().map(this::convert).collect(Collectors.joining("\n" + INDENT)));
+            sb.append(method.comments.stream().map(this::convert).flatMap(Collection::stream).collect(Collectors.joining("\n" + INDENT)));
             sb.append("\"\"\"\n");
         }
 
         if (method.modifiers.contains(Modifier.STATIC)) {
-            sb.append(INDENT).append("@staticmethod\n");
+            if (method.annotation.contains("@classmethod")) {
+                sb.append(INDENT).append("@classmethod\n");
+            } else {
+                sb.append(INDENT).append("@staticmethod\n");
+            }
         }
 
         // Method signature
         sb.append(INDENT).append("def ").append(sanitizeName(method.name));
         sb.append("(");
+        boolean first=false;
         if (method.modifiers.contains(Modifier.STATIC)) {
-            sb.append("cls");
+            if (method.annotation.contains("@classmethod")) {
+                sb.append("cls");
+                first=true;
+            }
+            // for @static methods, no self parameter
         } else {
             sb.append("self");
+            first=true;
         }
 
         // Parameters
         if (method.parameters != null) {
             for (var param : method.parameters) {
-                sb.append(", ").append(sanitizeName(param.name));
+                if (!first) {
+                    first=true;
+                } else {
+                    sb.append(", ");
+                }
+                sb.append(sanitizeName(param.name));
             }
         }
         sb.append("):\n");
@@ -525,6 +538,14 @@ public class Python implements Emitter<StringBuilder> {
                 return convert(ie.thenExpression) + " if " + convert(ie.condition) + " else " + convert(ie.elseExpression);
             }
 
+            case ARRAY_ALLOCATOR: {
+                ArrayAllocator aa = (ArrayAllocator) expression;
+                StringBuilder result = new StringBuilder();
+                result.append("[None] * ");
+                result.append(convert(aa.size));
+                return result.toString();
+            }
+
             default:
                throw new IllegalArgumentException("Unsupported expression type " + expression);
         }
@@ -557,7 +578,7 @@ public class Python implements Emitter<StringBuilder> {
             case CONSTRUCTOR_CALL -> {
                 assert mc.className!=null;
                 if (isMap(mc.className)) {
-                    return "{}";
+                    return "Map()";
                 }
                 result.append(importAndGetLocalName(sanitizeName(convert(mc.className)))).append("(");
                 if (mc.arguments != null) {
@@ -687,6 +708,9 @@ public class Python implements Emitter<StringBuilder> {
         } else if (leftHandExpression instanceof MethodCall) {
             MethodCall mc = (MethodCall) leftHandExpression;
             return convertMethodCall(mc);
+        } else if (leftHandExpression instanceof ArrayAccessor) {
+            ArrayAccessor aa = (ArrayAccessor) leftHandExpression;
+            return convert(aa.arrayExpression) + "[" + convert(aa.indexExpression) + "]";
         }
         throw new IllegalArgumentException("Unsupported left-hand expression type");
     }

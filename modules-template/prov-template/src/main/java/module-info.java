@@ -18,5 +18,6 @@ module prov.template {
     exports org.openprovenance.prov.template.core.exception;
     exports org.openprovenance.prov.template.core.ttf;
     exports org.openprovenance.prov.template.core.deprecated;
+    exports org.openprovenance.prov.template.formatter;
 
 }

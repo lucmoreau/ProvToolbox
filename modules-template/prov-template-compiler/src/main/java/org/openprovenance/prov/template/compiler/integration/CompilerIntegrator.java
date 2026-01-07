@@ -48,7 +48,7 @@ public class CompilerIntegrator {
         if (beanKind==BeanKind.SIMPLE) {
             builder.addMethod(compilerCommon.generateProcessorConverter(templateName, integrator_package, bindingsSchema, OUTPUTS));
             builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArray_old(locations, TO_INPUTS, templateName, integrator_package, bindingsSchema, INPUTS, null, null));
-            builder.addField(compilerCommon.generateField4aBeanConverter2(TO_INPUTS, templateName, integrator_package, A_RECORD_INPUTS_CONVERTER, INPUTS));
+            builder.addField(compilerCommon.generateField4aBeanConverter2_REPLACEME(TO_INPUTS, templateName, integrator_package, A_RECORD_INPUTS_CONVERTER, INPUTS));
 
 
         } else {

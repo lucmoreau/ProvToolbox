@@ -414,7 +414,8 @@ public class CompilerLogger {
     public Method generateStaticLogMethod_new(SimpleTemplateCompilerConfig config, Locations locations) {
         final String loggerName = compilerUtil.loggerName(config.name);
         Method builder = METHOD(loggerName)
-                .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
+                .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
+                .ANNOTATIONS("@classmethod") // annotation aimed at python conversion
                 .RETURNS(STRING);
         compilerUtil.debugFileLocation(builder);
 

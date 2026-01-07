@@ -1,5 +1,11 @@
 package org.openprovenance.prov.template.compiler.past.type;
 
+import com.squareup.javapoet.ArrayTypeName;
+import com.squareup.javapoet.ParameterizedTypeName;
+
+import java.util.Map;
+import java.util.function.Function;
+
 public class ClassName extends TypeName {
     static public final ClassName _int =ClassName.get("int", "past.lang");
     static public final ClassName intArray =ClassName.get("int[]", "past.lang");
@@ -19,7 +25,13 @@ public class ClassName extends TypeName {
     public static final ClassName UNSUPPORTED_OPERATION_EXCEPTION=ClassName.get("UnsupportedOperationException", "past.exception");
     public static final ParameterizedType MAP_INTEGER_INTARRAY= ParameterizedType.get(MAP, INTEGER, intArray);
     public static final ParameterizedType HASH_MAP_INTEGER_INTARRAY= ParameterizedType.get(HASHMAP, INTEGER, intArray);
-
+    public static final ParameterizedType MAP_STRING_INTARRAY = ParameterizedType.get(MAP, STRING, intArray);
+    public static final ParameterizedType HASH_MAP_STRING_INTARRAY = ParameterizedType.get(HASHMAP, STRING, intArray);
+    public static final ParameterizedType MAP_STRING_MAP_STRING_INTARRAY = ParameterizedType.get(MAP, STRING, MAP_STRING_INTARRAY);
+    public static final ParameterizedType HASH_MAP_STRING_MAP_STRING_INTARRAY = ParameterizedType.get(HASHMAP, STRING, MAP_STRING_INTARRAY);
+    public static final ParameterizedType FUNCTION_OBJARRAY_TO_TYPE (TypeName returnType) {
+        return ParameterizedType.get(FUNCTION, OBJECT_ARRAY, returnType);
+    }
     final public String simpleName;
     final public String packge;
 

@@ -14,6 +14,7 @@ public class Method {
     public List<Statement> body=new java.util.ArrayList<>();
     public List<Modifier> modifiers=new java.util.ArrayList<>();
     public List<TypeName> typeVariables=new java.util.ArrayList<>();
+    public List<String> annotation=new java.util.ArrayList<>();
 
     public Method() {}
     public Method(String name, TypeName returnType, List<Parameter> parameters, List<Statement> body, Collection<Modifier> modifiers, List<Comment> comments) {
@@ -65,6 +66,13 @@ public class Method {
         }
         return this;
     }
+    public Method PARAMETERS(List<Parameter> parameters) {
+        for (Parameter parameter: parameters) {
+            if (parameter == null) throw new IllegalArgumentException("null parameter");
+            this.parameters.add(parameter);
+        }
+        return this;
+    }
 
     public Method PARAMETER(TypeName typeName, String parameterName) {
         this.parameters.add(new Parameter(parameterName, typeName));
@@ -99,6 +107,11 @@ public class Method {
 
     public static Method METHOD(String name) {
         return new Method(name);
+    }
+
+    public Method ANNOTATIONS(String... names) {
+        this.annotation.addAll(Arrays.asList(names));
+        return this;
     }
 
 }

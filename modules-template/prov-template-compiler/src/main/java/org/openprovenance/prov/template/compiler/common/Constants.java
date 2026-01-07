@@ -195,4 +195,8 @@ public interface Constants {
     String ARGS_2_RECORDS = "args2Records";
     String _I_ = "_i_";
     String TABLE = "table";
+    String METHOD_GET_NODES = "__getNodes";
+    String METHOD_GET_TYPED_SUCCESSORS = "__getTypedSuccessors";
+    String METHOD_GET_SUCCESSORS = "__getSuccessors";
+    String METHOD_GET_RELATIONS = "__getRelations";
 }

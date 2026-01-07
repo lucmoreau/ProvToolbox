@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
     print('----- Logger output -----')
 
-    print(Logger.logPlead_approving(Logger,'approved_pipeline',100,21,18,0.123,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z'))
+    print(Logger.logPlead_approving('approved_pipeline',100,21,18,0.123,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z'))
 
 
     print('-----toBean output -----')
@@ -71,7 +71,40 @@ if __name__ == "__main__":
     result=bean.process(builder.aArgs2RecordConverter())
     print(result)
 
+    print('----- various tables output -----')
 
+    print(Plead_approvingBuilder.allTypes)
+
+    print(builder.getSuccessors().toString())
+    print(builder.getTypedSuccessors().toString())
+
+    print('----- examplar -----')
+
+    print(Plead_approvingBuilder.examplar().toJSON())
+
+    print('----- examplar, to array, and the back to bean -----')
+
+    examplar1=Plead_approvingBuilder.examplar()
+    print(examplar1.toJSON())
+    examplar1Array=examplar1.process(builder.aArgs2RecordConverter())
+    print(examplar1Array)
+    examplar2=builder.aRecord2BeanConverter(examplar1Array)
+    print(examplar2.toJSON())
+
+
+
+    print('----- assigning unknown field -----')
+
+    bean.luc="foo"
+
+    print(json.dumps(vars(bean)))
+
+    print('----- examplar to sql-----')
+
+    print(examplar1.process(builder.bean2sql()))
+
+
+    print('----- Logger bean creation -----')
 
     bean2=Logger.beanPlead_approving(Logger,'approved_pipeline',100,21,18,0.234,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z')
 

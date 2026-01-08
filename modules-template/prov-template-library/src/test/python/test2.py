@@ -12,6 +12,10 @@ sys.path.insert(0, "target/python")
 from org.openprovenance.prov.template.library.plead.client.logger.Logger import Logger
 from org.openprovenance.prov.template.library.plead.client.common.Plead_approvingBean    import Plead_approvingBean
 from org.openprovenance.prov.template.library.plead.client.common.Plead_approvingBuilder import Plead_approvingBuilder
+from org.openprovenance.prov.template.library.plead.client.common.Plead_transforming_compositeBuilder import Plead_transforming_compositeBuilder
+from org.openprovenance.prov.template.library.plead.client.common.Plead_transformingBuilder import Plead_transformingBuilder
+from org.openprovenance.prov.template.library.plead.client.common.Plead_transforming_compositeBean import Plead_transforming_compositeBean
+from org.openprovenance.prov.template.library.plead.client.common.Plead_transformingBean import Plead_transformingBean
 
 from org.openprovenance.apache.commons.lang.StringEscapeUtils import StringEscapeUtils
 
@@ -115,6 +119,26 @@ if __name__ == "__main__":
     print('----- Logger bean creation -----')
 
     print(Logger.logPlead_approving('approved_pipeline',100,21,18,0.123,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z'))
+
+    print('----- transforming composite bean -----')
+    compositeBuilder=Plead_transforming_compositeBuilder()
+    print(compositeBuilder.args2Records())
+
+
+
+    print('----- examplar -----')
+
+    print(Plead_transformingBuilder.examplar().toJSON())
+    t1=Plead_transformingBuilder.examplar()
+    t2=Plead_transformingBuilder.examplar()
+    compositeBean=Plead_transforming_compositeBean()
+    compositeBean.addElements(t1)
+    compositeBean.addElements(t2)
+
+    print(compositeBean.toJSON())
+
+
+
 
 
 

@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler.past.emitter;
 
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.Iterator;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
@@ -17,9 +18,7 @@ import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
-import static org.openprovenance.prov.template.compiler.past.Expression.ExpressionKind.ARRAY_INITIALISER;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.MethodCallKind.FUNCTIONAL_INTERFACE_CALL;
-import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 
 /**
  * Emitter that generates Python class definitions from PAST abstract syntax tree.
@@ -60,6 +59,7 @@ public class Python implements Emitter<StringBuilder> {
 
         imports = new java.util.HashSet<>();
         imports.add("past.util.Map");
+        imports.add("past.util.List");
 
         // Class docstring from comments
 
@@ -204,7 +204,7 @@ public class Python implements Emitter<StringBuilder> {
             String fieldName = sanitizeName(field.name);
             if (!field.modifiers.contains(Modifier.STATIC)) {
                 anyField=true;
-                if (field.modifiers.contains(Modifier.FINAL)) {
+                if (field.initialiser!=null ) { // was field.modifiers.contains(Modifier.FINAL)
                     sb.append(INDENT).append(INDENT)
                             .append("self.").append(fieldName)
                             .append(" = ").append(convert(field.initialiser)).append("\n");
@@ -391,7 +391,19 @@ public class Python implements Emitter<StringBuilder> {
                     emitStatement(bodyStmt, indent + INDENT);
                 }
                 emitStatement(update, indent + INDENT);
+            }
 
+            case ITERATOR -> {
+                Iterator iterator = (Iterator) statement;
+                sb.append(indent)
+                        .append("for ")
+                        .append(sanitizeName(iterator.parameter.name))
+                        .append(" in ")
+                        .append(convert(iterator.collection))
+                        .append(":\n");
+                for (Statement bodyStmt : iterator.body) {
+                    emitStatement(bodyStmt, indent + INDENT);
+                }
             }
 
             default -> {
@@ -580,6 +592,9 @@ public class Python implements Emitter<StringBuilder> {
                 if (isMap(mc.className)) {
                     return "Map()";
                 }
+                if (isList(mc.className)) {
+                    return "List()";
+                }
                 result.append(importAndGetLocalName(sanitizeName(convert(mc.className)))).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
@@ -675,6 +690,19 @@ public class Python implements Emitter<StringBuilder> {
             case PARAMETERIZED:
                 ParameterizedType pt = (ParameterizedType) typeName;
                 return isMap(pt.rawType);
+            default:
+                return false;
+        }
+    }
+    private boolean isList(TypeName typeName) {
+        switch (typeName.typeKind) {
+            case CLASS:
+                ClassName cn = (ClassName) typeName;
+                String fullName = (cn.packge != null && !cn.packge.isEmpty()) ? (cn.packge + "." + cn.simpleName) : cn.simpleName;
+                return fullName.equals("past.util.List") || fullName.equals("past.util.LinkedList")|| fullName.equals("past.util.ArrayList");
+            case PARAMETERIZED:
+                ParameterizedType pt = (ParameterizedType) typeName;
+                return isList(pt.rawType);
             default:
                 return false;
         }

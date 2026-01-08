@@ -101,7 +101,7 @@ public class CompilerBeanCompleter2Composite {
 
         mspec.addStatement("$T $N=new $T()", composee, OUT_VAR, composee);
 
-        mspec.addStatement("$N.__addElements(new $N($N).process($N))", BEAN_VAR, BEAN_COMPLETER2, M_VAR, OUT_VAR);
+        mspec.addStatement("$N.$N(new $N($N).process($N))", BEAN_VAR, ADD_ELEMENTS, BEAN_COMPLETER2, M_VAR, OUT_VAR); // was __addElements
 
 
         mspec.endControlFlow();

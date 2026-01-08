@@ -20,6 +20,7 @@ public class ClassName extends TypeName {
     public static final ClassName VOID = ClassName.get( "Void", "past.lang");
     public static final ArrayType STRING_ARRAY=ArrayType.of(STRING);
     public static final ArrayType OBJECT_ARRAY=ArrayType.of(OBJECT);
+    public static final ArrayType OBJECT_ARRAY_ARRAY=ArrayType.of(OBJECT_ARRAY);
     public static final ClassName STRING_BUILDER = ClassName.get( "StringBuilder", "past.util");
     public static final ClassName FUNCTION = ClassName.get( "Function", "past.lang");
     public static final ClassName UNSUPPORTED_OPERATION_EXCEPTION=ClassName.get("UnsupportedOperationException", "past.exception");

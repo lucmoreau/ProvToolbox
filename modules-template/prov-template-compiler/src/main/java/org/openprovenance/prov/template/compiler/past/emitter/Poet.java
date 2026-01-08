@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler.past.emitter;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.Iterator;
 import org.openprovenance.prov.template.compiler.past.type.ArrayType;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
@@ -135,6 +136,19 @@ public class Poet implements Emitter<TypeSpec> {
                 CodeBlock.Builder builder= CodeBlock.builder();
                 builder.beginControlFlow("for ( $L; $L; $L )", initCode, conditionCode, updateCode);
                 forLoop.body.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
+                builder.endControlFlow();
+                return builder.build();
+            }
+
+            case ITERATOR -> {
+                Iterator iterator = (Iterator) statement;
+                CodeBlock collectionCode = convert(iterator.collection);
+                CodeBlock.Builder builder= CodeBlock.builder();
+                builder.beginControlFlow("for ( $T $L : $L )",
+                        convert(iterator.parameter.type),
+                        iterator.parameter.name,
+                        collectionCode);
+                iterator.body.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
                 builder.endControlFlow();
                 return builder.build();
             }
@@ -276,8 +290,15 @@ public class Poet implements Emitter<TypeSpec> {
             case ARRAY_ALLOCATOR -> {
                 ArrayAllocator arrayAllocator = (ArrayAllocator) expression;
                 CodeBlock sizeCode = convert(arrayAllocator.size);
-                TypeName elementTypeName = convert(arrayAllocator.elementType);
-                return CodeBlock.of("new $T[$L]", elementTypeName, sizeCode);
+                if (arrayAllocator.elementType instanceof ArrayType) {
+                    // multi-dimensional array
+                    ArrayType at = (ArrayType) arrayAllocator.elementType;
+                    TypeName elementTypeName = convert(at.elementType);
+                    return CodeBlock.of("new $T[$L][]", elementTypeName, sizeCode);
+                } else {
+                    TypeName elementTypeName = convert(arrayAllocator.elementType);
+                    return CodeBlock.of("new $T[$L]", elementTypeName, sizeCode);
+                }
             }
         }
         throw new IllegalArgumentException("Expression conversion not supported yet " + expression.expressionKind);

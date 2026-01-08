@@ -132,11 +132,11 @@ public class CompilerExpansionBuilder {
         builder.addMethod(compilerCommon.generateNameAccessor_no_past(templateName));
         builder.addMethod(compilerCommon.generateFullyQualifiedNameAccessor_no_past(templateFullyQualifiedName));
 
-        builder.addMethod(compilerCommon.commonAccessorGenerator(templateName,locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON)));
+        builder.addMethod(commonAccessorGenerator(templateName,locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON)));
 
         builder.addMethod(typeManagerGenerator(templateName,packge));
        // builder.addMethod(compilerClient.typePropagateGenerator(templateName,packge));
-        builder.addMethod(compilerCommon.typedRecordGenerator(templateName,packge));
+        builder.addMethod(typedRecordGenerator(templateName,packge));
 
 
         builder.addMethod(generateTypePropagator(packge+".client", bindingsSchema, successorTable));
@@ -996,6 +996,36 @@ public class CompilerExpansionBuilder {
                 "propertyConverters",
                 "idata",
                 "idataConverters");
+
+        return builder.build();
+
+    }
+
+    public MethodSpec commonAccessorGenerator(String templateName, String packge) {
+
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("getClientBuilder")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(ClassName.get(Constants.CLIENT_PACKAGE, Constants.BUILDER));
+
+        compilerUtil.specWithComment(builder);
+
+        builder.addStatement("return new $T()", ClassName.get(packge,compilerUtil.templateNameClass(templateName)));
+
+        return builder.build();
+
+    }
+
+
+    public MethodSpec typedRecordGenerator(String templateName, String packge) {
+
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("getTypedRecord")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypedRecord"));
+
+        compilerUtil.specWithComment(builder);
+
+
+        builder.addStatement("return new $T()", ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypedRecord"));
 
         return builder.build();
 

@@ -4,7 +4,7 @@ public interface Constants {
     String IS_A = "isA";
     String GENERATED_VAR_PREFIX = "__";
     String ELEMENTS = GENERATED_VAR_PREFIX + "elements";
-    String ADD_ELEMENTS = GENERATED_VAR_PREFIX + "addElements";
+    String ADD_ELEMENTS = "addElements";
     String GET_NODES_METHOD = "getNodes";
     String BUILDER_INTERFACE = "Builder";
     String INIT = "Init";

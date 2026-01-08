@@ -11,7 +11,10 @@ import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.past.Constant;
+import org.openprovenance.prov.template.compiler.past.Field;
 import org.openprovenance.prov.template.compiler.past.Method;
+import org.openprovenance.prov.template.compiler.past.Variable;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer;
 import org.openprovenance.prov.template.compiler.util.CompilerException;
 import org.openprovenance.prov.template.descriptors.*;
@@ -22,13 +25,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.common.CompilerCommon.generateUnsupportedException;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
 import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.FIELD_VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.LOCAL_VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.STRING;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.STRING_BUILDER;
 import static org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer.getTheSqlType;
 
@@ -202,53 +211,44 @@ public class CompilerSQL {
         return descriptorUtils.getFromDescriptor(entry, AttributeDescriptor::getDocumentation,NameDescriptor::getDocumentation);
     }
 
-    public void generateSQLstatements(TypeSpec.Builder builder, String templateName, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
+    public void generateSQLstatements(org.openprovenance.prov.template.compiler.past.Class clazz, String templateName, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
 
         StringBuffer sb=new StringBuffer();
         getInsertStringAndCount(templateName,descriptorUtils.fieldNames(bindingsSchema),sb);
 
-        FieldSpec.Builder builder1=FieldSpec.builder(String.class,"_sqlInsert1", Modifier.PRIVATE, Modifier.STATIC);
-        builder1.initializer("$S",sb.toString());
-        builder.addField(builder1.build());
-        builder.addMethod(generateSQLInsert(templateName,beanKind));
-        builder.addMethod(generateSQLInsertStatement(templateName, bindingsSchema,beanKind));
+        clazz.FIELDS(FIELD("_sqlInsert1", STRING).MODIFIERS(Modifier.PRIVATE, Modifier.STATIC).INITIALIZER(CONSTANT(sb.toString())));
+
+        clazz.METHOD(generateSQLInsert(templateName,beanKind));
+        clazz.METHOD(generateSQLInsertStatement(templateName, bindingsSchema,beanKind));
 
     }
-    public MethodSpec generateSQLInsert(String template, BeanKind beanKind) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("getSQLInsert")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(String.class);
-        compilerUtil.specWithComment(builder);
-
+    public Method generateSQLInsert(String template, BeanKind beanKind) {
+        Method method = METHOD("getSQLInsert")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(STRING);
+        compilerUtil.debugFileLocation(method);
         if (beanKind.equals(BeanKind.COMPOSITE)) {
-            builder.addStatement("throw new $T()", UnsupportedOperationException.class);
+            generateUnsupportedException(method);
         } else {
-            builder.addStatement("return _sqlInsert1");
+            method.BODY(RETURN(VARIABLE("_sqlInsert1", FIELD_VARIABLE)));
         }
-        return builder.build();
+        return method;
     }
 
-    public MethodSpec generateSQLInsertStatement(String template, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("getSQLInsertStatement")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(String.class);
-        compilerUtil.specWithComment(builder);
-
-
+    public Method generateSQLInsertStatement(String template, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
+        Method builder = METHOD("getSQLInsertStatement")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(STRING);
+        compilerUtil.debugFileLocation(builder);
         if (beanKind.equals(BeanKind.COMPOSITE)) {
-            builder.addStatement("throw new $T()", UnsupportedOperationException.class);
+            generateUnsupportedException(builder);
         } else {
             Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
-
             StringBuffer sb = new StringBuffer();
-
             int count = getInsertStringAndCount(template, variables, sb);
             boolean first;
-
             sb = new StringBuffer();
-
             sb.append(" VALUES (");
-
             first = true;
             for (int i = 0; i < count; i++) {
                 if (first) {
@@ -259,11 +259,9 @@ public class CompilerSQL {
                 sb.append("?");
             }
             sb.append(");");
-
-            builder.addStatement("return _sqlInsert1+$S", sb.toString());
+            builder.BODY(RETURN(CONSTANT("_sqlInsert1" + sb.toString())));
         }
-
-        return builder.build();
+        return builder;
     }
 
     public int getInsertStringAndCount(String template, Collection<String> variables, StringBuffer sb) {

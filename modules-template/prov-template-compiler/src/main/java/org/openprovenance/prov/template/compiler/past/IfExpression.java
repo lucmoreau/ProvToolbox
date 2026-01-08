@@ -16,6 +16,7 @@ public class IfExpression extends Expression {
     public IfExpression(Expression condition) {
         this.condition = condition;
         this.statementKind=StatementKind.IF_STATEMENT;
+        this.expressionKind= ExpressionKind.IF_EXPRESSION;
     }
 
     static public IfExpression IFEXPRESSION(Expression condition, Expression  thenExpression, Expression elseExpression) {

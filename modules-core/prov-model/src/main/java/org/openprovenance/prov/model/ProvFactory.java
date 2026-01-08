@@ -12,6 +12,7 @@ import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import jakarta.xml.bind.DatatypeConverter;
+import org.apache.commons.collections4.iterators.IteratorChain;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
@@ -1099,8 +1100,24 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		return result;
 	}
 
+    public Iterator<Attribute> getAttributesIterator(Statement statement) {
+        // create an iterator, but do not construct an intermediate collection
+        List<Iterator<? extends Attribute>> iterators = new ArrayList<>();
+        if (statement instanceof HasType)      iterators.add(((HasType)statement).getType().iterator());
+        if (statement instanceof HasLocation)  iterators.add(((HasLocation)statement).getLocation().iterator());
+        if (statement instanceof HasRole)      iterators.add(((HasRole)statement).getRole().iterator());
+        if (statement instanceof HasValue) {
+            Value val = ((HasValue) statement).getValue();
+            if (val != null) {
+                iterators.add(Collections.singletonList(val).iterator());
+            }
+        }
+        if (statement instanceof HasOther)    iterators.add(((HasOther) statement).getOther().iterator());
 
-	public void setAttributes(HasOther res, Collection<Attribute> attributes) {
+        return new IteratorChain<>(iterators);
+    }
+
+    public void setAttributes(HasOther res, Collection<Attribute> attributes) {
 		if (attributes==null) return;
 		if (attributes.isEmpty()) return;
 		HasType typ=(res instanceof HasType)? (HasType)res : null;

@@ -171,12 +171,12 @@ public class InstantiateAction implements StatementAction {
     public void doAction(WasAssociatedWith s) {
         WasAssociatedWith res = pf.newWasAssociatedWith(s.getId(), s.getActivity(), s.getAgent(), s.getPlan());
         QualifiedName id = res.getId();
-        boolean updated1 = setExpand(res, id, 0);
         QualifiedName en = res.getActivity();
-        boolean updated2 = setExpand(res, en, 1);
         QualifiedName ag = res.getAgent();
-        boolean updated3 = setExpand(res, ag, 2);
         QualifiedName pl = res.getPlan();
+        boolean updated1 = setExpand(res, id, 0);
+        boolean updated2 = setExpand(res, en, 1);
+        boolean updated3 = setExpand(res, ag, 2);
         boolean updated4 = setExpand(res, pl, 3);
         boolean updated5 = expandAttributes(s, res);
         boolean updated = updated1 || updated2 || updated3 || updated4 || updated5;
@@ -333,10 +333,11 @@ public class InstantiateAction implements StatementAction {
         boolean found = false;
         if (dstStatement instanceof HasOther) {
 
-            Collection<Attribute> srcAttributes = pf.getAttributes(srcStatement);
+            //Collection<Attribute> srcAttributes = pf.getAttributes(srcStatement);
             Collection<Attribute> dstAttributes = new LinkedList<>();
 
-            for (final Attribute srcAttribute : srcAttributes) {
+            for (Iterator<Attribute> it = pf.getAttributesIterator(srcStatement); it.hasNext(); ) {
+                Attribute srcAttribute = it.next();
                 QualifiedName srcAttributeElementName = srcAttribute.getElementName();
                 if (InstantiateUtil.isVariable(srcAttributeElementName)) {
                     int count=0;

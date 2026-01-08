@@ -51,20 +51,13 @@ if __name__ == "__main__":
     result=bean.process(builder.aArgs2CsVConverter)
     print(result)
 
+    print('-----conversion: record to bean -----')
 
+    print(builder.record2bean(['Plead_approving',100,100,21,18,0.234,112345,22,245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z']))
 
-    print('----- Logger output -----')
+    print('----- conversion: record to bean, to JSON -----')
 
-    print(Logger.logPlead_approving('approved_pipeline',100,21,18,0.123,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z'))
-
-
-    print('-----toBean output -----')
-
-    print(builder.toBean(['Plead_approving',100,100,21,18,0.234,112345,22,245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z']))
-
-    print('----- json dump of toBean output -----')
-
-    print(builder.toBean(['Plead_approving',100,100,21,18,0.234,112345,22,245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z']).toJSON())
+    print(builder.record2bean(['Plead_approving',100,100,21,18,0.234,112345,22,245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z']).toJSON())
 
     print('----- aArgs2RecordConverter output -----')
 
@@ -92,6 +85,12 @@ if __name__ == "__main__":
     print(examplar2.toJSON())
 
 
+    print('----- array to csv output (2) -----')
+
+    csv2=builder.aRecord2CsvConverter(examplar1Array)
+    print(csv2)
+
+
 
     print('----- assigning unknown field -----')
 
@@ -103,12 +102,21 @@ if __name__ == "__main__":
 
     print(examplar1.process(builder.bean2sql()))
 
+    print(examplar1.process(builder.aBean2SqlConverter))
+
+    print('----- conversion: array to csv -----')
+
+    print(builder.processorConverter(builder.aArgs2CsVConverter)(examplar1Array))
+
+    print('----- conversion: array to sql -----')
+
+    print(builder.processorConverter(builder.bean2sql())(examplar1Array))
 
     print('----- Logger bean creation -----')
 
-    bean2=Logger.beanPlead_approving(Logger,'approved_pipeline',100,21,18,0.234,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z')
+    print(Logger.logPlead_approving('approved_pipeline',100,21,18,0.123,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z'))
 
-    print(json.dumps(vars(bean2)))
+
 
 
 

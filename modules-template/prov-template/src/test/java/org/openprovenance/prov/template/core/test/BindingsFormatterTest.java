@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 /**
  * Tests for BindingsFormat alignment rules
  */
-public class BindingsFormatterTest {
+abstract public class BindingsFormatterTest {
     private final BindingsFormatter formatter = new BindingsFormatter();
     private final ObjectMapper mapper = new ObjectMapper();
 

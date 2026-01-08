@@ -17,7 +17,7 @@ import java.util.*;
  * 5. Closing brackets aligned
  * 6. Nested array elements aligned
  */
-abstract public class BindingsFormatter {
+public class BindingsFormatter {
     private final ObjectMapper mapper = new ObjectMapper();
     private StringBuilder sb;
     private int level2ValueColumn = -1;

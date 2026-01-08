@@ -199,4 +199,5 @@ public interface Constants {
     String METHOD_GET_TYPED_SUCCESSORS = "__getTypedSuccessors";
     String METHOD_GET_SUCCESSORS = "__getSuccessors";
     String METHOD_GET_RELATIONS = "__getRelations";
+    String ARGS_2_BEAN = "args2bean";
 }

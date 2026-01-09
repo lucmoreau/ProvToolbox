@@ -26,10 +26,13 @@ import java.io.IOException;
 import java.lang.Class;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.common.BeanKind.SIMPLE;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
 import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY_ACCESSOR;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
@@ -162,49 +165,11 @@ public class CompilerBeanGenerator {
             generateCompositeListExtender(consistOf, beanPackge, locations, pastClass, beanDirection, variant, sharing);
         }
 
-        TypeSpec spec;
-        try {
-            spec = new Poet().emit(pastClass);
-        } catch (RuntimeException e) {
-            System.out.println("Error emitting class for template " + templateName + " in package " + beanPackge);
-            throw e;
-        }
 
         String directory = locations.convertToDirectory(beanPackge);
-
-        //System.out.println(pastClass); //LUC
-        /*
-        try {
-            new Poet().toWritableObject(pastClass, templateName, beanPackge, stackTraceElement).writeTo(new File("target/poet"));
-
-          //  System.out.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(pastClass));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
-         */
-
-        try {
-            new org.openprovenance.prov.template.compiler.past.emitter.Python()
-                    .toWritableObject(pastClass, templateName, beanPackge, stackTraceElement)
-                    .writeTo(new File("target/python"));
-        } catch (RuntimeException | IOException e) {
-            try {
-                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            throw new RuntimeException(e);
-        }
-
-        JavaFile myfile = compilerUtil.specWithComment(spec, templateName, beanPackge, stackTraceElement);
-
-        if (locations.python_dir==null) {
-            return new SpecificationFile(myfile, directory, fileName, beanPackge);
-        } else {
-            return newSpecificationFiles(compilerUtil, locations, spec, templateName, stackTraceElement, myfile, directory, fileName, beanPackge, null);
-        }
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, templateName, beanPackge, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, templateName, beanPackge, configs, fileName, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator,pythonGenerator);
     }
 
     static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, String templateName, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
@@ -293,6 +258,7 @@ public class CompilerBeanGenerator {
         }
 
         builder.FIELDS(b1);
+
 
         ParameterizedType classofUnknown1= ParameterizedType.get(CLASS, TypeVariable.get("?"));
 

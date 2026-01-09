@@ -8,7 +8,7 @@ test.py:
 	export PYTHONPATH=target/generated-python:src/main/python; python3 src/test/python/test.py
 
 test.py2:
-	export PYTHONPATH=target/python:src/main/python; python3 src/test/python/test2.py
+	export PYTHONPATH=target/generated-python:target/python:src/main/python; python3 src/test/python/test2.py
 
 
 compile.plead.templates:

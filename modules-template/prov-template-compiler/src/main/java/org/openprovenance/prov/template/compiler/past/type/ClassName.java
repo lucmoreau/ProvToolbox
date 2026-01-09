@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler.past.type;
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ParameterizedTypeName;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -30,6 +31,9 @@ public class ClassName extends TypeName {
     public static final ParameterizedType HASH_MAP_STRING_INTARRAY = ParameterizedType.get(HASHMAP, STRING, intArray);
     public static final ParameterizedType MAP_STRING_MAP_STRING_INTARRAY = ParameterizedType.get(MAP, STRING, MAP_STRING_INTARRAY);
     public static final ParameterizedType HASH_MAP_STRING_MAP_STRING_INTARRAY = ParameterizedType.get(HASHMAP, STRING, MAP_STRING_INTARRAY);
+    public static final TypeName LIST_OF_OBJECT_ARRAYS = ParameterizedType.get(LIST,OBJECT_ARRAY);
+    public static final TypeName LIST_OF_OBJECT_ARRAYS_ARRAYS = ParameterizedType.get(LIST,OBJECT_ARRAY_ARRAY);
+
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_TYPE (TypeName returnType) {
         return ParameterizedType.get(FUNCTION, OBJECT_ARRAY, returnType);
     }

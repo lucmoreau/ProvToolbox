@@ -191,8 +191,8 @@ public class CompilerCommon {
         }
 
         String directory = locations.convertToDirectory(packageName);
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, templateName, packageName, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, templateName, packageName, configs, fileName, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packageName, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packageName, configs, fileName, directory, stackTraceElement, compilerUtil);
         SpecificationFile specFile=new SpecificationFile(javaGenerator,pythonGenerator);
         return Pair.of(specFile, successorTable);
     }

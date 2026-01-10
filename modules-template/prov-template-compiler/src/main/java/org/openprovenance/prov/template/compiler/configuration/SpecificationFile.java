@@ -8,7 +8,6 @@ import org.openprovenance.prov.template.compiler.past.emitter.Poet;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class SpecificationFile {
@@ -128,12 +127,12 @@ public class SpecificationFile {
         return class_package;
     }
 
-    public static boolean generateJava(org.openprovenance.prov.template.compiler.past.Class pastClass, String templateName, String packageName, TemplatesProjectConfiguration configs, String fileName, String directory, StackTraceElement stackTraceElement, CompilerUtil compilerUtil) {
+    public static boolean generateJava(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, TemplatesProjectConfiguration configs, String fileName, String directory, StackTraceElement stackTraceElement, CompilerUtil compilerUtil) {
         TypeSpec spec;
         try {
             spec = new Poet().emit(pastClass);
         } catch (RuntimeException e) {
-            System.out.println("Error emitting class for template " + templateName + " in package " + packageName);
+            System.out.println("Error emitting class for template " + pastClass.name + " in package " + packageName);
             throw e;
         }
         JavaFile myfile = compilerUtil.specWithComment(spec, configs, packageName, stackTraceElement);
@@ -141,11 +140,11 @@ public class SpecificationFile {
         return saved;
     }
 
-    public static boolean generatePython(org.openprovenance.prov.template.compiler.past.Class pastClass, String templateName, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
+    public static boolean generatePython(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
         try {
             if (destinationDir==null) return false;
             new org.openprovenance.prov.template.compiler.past.emitter.Python()
-                    .toWritableObject(pastClass, templateName, packageName, stackTraceElement)
+                    .toWritableObject(pastClass, pastClass.name, packageName, stackTraceElement)
                     .writeTo(new File(destinationDir));
             return true;
         } catch (RuntimeException | IOException e) {

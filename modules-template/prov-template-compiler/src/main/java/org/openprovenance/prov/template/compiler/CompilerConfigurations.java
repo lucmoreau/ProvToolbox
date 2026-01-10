@@ -3,7 +3,6 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
-import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
@@ -36,7 +35,6 @@ import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_C
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.FIELD_VARIABLE;
-import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.STATIC_FIELD_VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
@@ -204,8 +202,8 @@ public class CompilerConfigurations {
 
 
         String thePackage=locations.getFilePackage(configs.name, theConfiguratorName);
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, theConfiguratorName, thePackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, theConfiguratorName, thePackage, configs, fileName, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, thePackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, thePackage, configs, fileName, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator,pythonGenerator);
     }
 

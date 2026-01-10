@@ -403,7 +403,7 @@ public class ConfigProcessor implements Constants {
         compilerMaven.makeSubPomJweet(configs, cli_dir, cli_lib, configs.jsweet);
 
 
-        SpecificationFile logger=compilerLogger.generateLogger(configs, locations, LOGGER, getInputOutputMaps());
+        SpecificationFile logger=compilerLogger.generateLogger(configs, locations, LOGGER + DOT_JAVA_EXTENSION, getInputOutputMaps());
         logger.save();
 
         SpecificationFile intface=compilerLogger.generateBuilderInterface(configs, openprovenance_dir, BUILDER_INTERFACE + DOT_JAVA_EXTENSION);

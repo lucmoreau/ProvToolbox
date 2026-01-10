@@ -20,6 +20,7 @@ import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
@@ -30,7 +31,10 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMa
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 import static org.openprovenance.prov.template.compiler.common.CompilerCommon.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.*;
@@ -101,66 +105,41 @@ public class CompilerLogger {
                 .INITIALIZER(METHOD_CALL(INITIALIZE_BEAN_TABLE,List.of(CONSTRUCTOR_CALL(builderConfigurator,List.of()))))
                 .ANNOTATION(ClassInitialiser.NAME));
 
+        pastClass.FIELDS(
+                FIELD("simpleBeanConverters", ParameterizedType.get(MAP, STRING, FUNCTION_OBJARRAY_TO_ANY))
+                        .MODIFIERS(Modifier.STATIC, Modifier.PUBLIC)
+                        .INITIALIZER(METHOD_CALL(INITIALIZE_BEAN_TABLE,List.of(CONSTRUCTOR_CALL(org.openprovenance.prov.template.compiler.past.type.ClassName.get(CONVERTER_CONFIGURATOR,locations.getFilePackage(configs.name, CONVERTER_CONFIGURATOR)),List.of()))))
+                        .ANNOTATION(ClassInitialiser.NAME));
 
-        TypeSpec.Builder builder = new Poet().emitBuilder(pastClass);
-
-        builder.addMethod(generateInitializeCompositeBeanTableMethod(configs, locations));
-
-        /*
-        builder.addField(FieldSpec
-                .builder(builderMapType, "simpleBuilders", Modifier.STATIC, Modifier.PUBLIC)
-                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(configs.name, BUILDER_CONFIGURATOR), BUILDER_CONFIGURATOR))
-                .build());
-
-         */
-        builder.addField(FieldSpec
-                .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfUnknown), "simpleBeanConverters", Modifier.STATIC, Modifier.PUBLIC)
-                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(configs.name, CONVERTER_CONFIGURATOR),CONVERTER_CONFIGURATOR))
-                .build());
-
-        builder.addField(FieldSpec
-                .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfString), "simpleCSvConverters", Modifier.STATIC, Modifier.PUBLIC)
-                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(configs.name, CSV_CONFIGURATOR),CSV_CONFIGURATOR))
-                // python conversion does not support javadoc .addJavadoc("generated Automatically by ProvToolbox ($N.$N())", this.getClass().getSimpleName(), "generateLogger")
-                .build());
+        pastClass.FIELDS(
+                FIELD("simpleCSvConverters", ParameterizedType.get(MAP, STRING, FUNCTION_OBJARRAY_TO_STRING))
+                        .MODIFIERS(Modifier.STATIC, Modifier.PUBLIC)
+                        .INITIALIZER(METHOD_CALL(INITIALIZE_BEAN_TABLE,List.of(CONSTRUCTOR_CALL(org.openprovenance.prov.template.compiler.past.type.ClassName.get(CSV_CONFIGURATOR,locations.getFilePackage(configs.name, CSV_CONFIGURATOR)),List.of()))))
+                        .ANNOTATION(ClassInitialiser.NAME));
 
         try {
-            builder.addField(FieldSpec
-                    .builder(  ClassName.get(String.class), "ioMap", Modifier.STATIC, Modifier.PUBLIC, Modifier.FINAL)
-                    .initializer("$S", objectMapper.writeValueAsString(inputOutputMaps))
-                    .build());
+            pastClass.FIELDS(
+                    FIELD("ioMap", STRING)
+                            .MODIFIERS(Modifier.STATIC, Modifier.PUBLIC, Modifier.FINAL)
+                            .INITIALIZER(CONSTANT(objectMapper.writeValueAsString(inputOutputMaps))));
+
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
 
+        pastClass.METHOD(generateInitializeCompositeBeanTableMethod(configs, locations));
 
-        TypeSpec theLogger = builder.build();
+        String packageName = locations.getFilePackage(configs.name, LOGGER);
 
-        String myPackage = locations.getFilePackage(configs.name, fileName);
-        String directory = locations.convertToDirectory(myPackage);
+        System.out.println("********** Generating logger class " + pastClass.name + " in package " + packageName  + " with filename " + fileName);
 
-        try {
-            new org.openprovenance.prov.template.compiler.past.emitter.Python()
-                    .toWritableObject(pastClass, fileName, myPackage, stackTraceElement)
-                    .writeTo(new File("target/python"));
-        } catch (IOException | RuntimeException e) {
-            e.printStackTrace();
-            try {
-                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.err, pastClass);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            throw new RuntimeException(e);
-        }
+        String directory = locations.convertToDirectory(packageName);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packageName, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packageName, configs, fileName, directory, stackTraceElement, compilerUtil);
+        SpecificationFile specFile=new SpecificationFile(javaGenerator,pythonGenerator);
 
+        return specFile;
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
-
-        if (locations.python_dir==null) {
-            return new SpecificationFile(myfile, directory, fileName + DOT_JAVA_EXTENSION, myPackage);
-        } else {
-            return newSpecificationFiles(compilerUtil, locations, theLogger, configs, stackTraceElement, myfile, directory, fileName + DOT_JAVA_EXTENSION, myPackage, null);
-        }
     }
 
     private Field generateStaticFieldForTemplate(Locations locations, TemplateCompilerConfig config) {
@@ -210,7 +189,7 @@ public class CompilerLogger {
         }
 
         builder.addMethod(generateInitializeBeanTableMethod_old(configs, locations));
-        builder.addMethod(generateInitializeCompositeBeanTableMethod(configs, locations));
+        builder.addMethod(generateInitializeCompositeBeanTableMethod_old(configs, locations));
 
         builder.addField(FieldSpec
                 .builder(builderMapType, "simpleBuilders", Modifier.STATIC, Modifier.PUBLIC)
@@ -324,7 +303,39 @@ public class CompilerLogger {
 
     }
 
-    private MethodSpec generateInitializeCompositeBeanTableMethod(TemplatesProjectConfiguration configs, Locations locations) {
+    private Method generateInitializeCompositeBeanTableMethod(TemplatesProjectConfiguration configs, Locations locations) {
+        ParameterizedType parameterType = ParameterizedType.get(get(COMPOSITE_TABLE_CONFIGURATOR,locations.getFilePackage(configs.name, COMPOSITE_TABLE_CONFIGURATOR) ), T());
+
+        Method method = METHOD("initializeCompositeBeanTable")
+                .COMMENT("Initialize a table of composite bean builders\n")
+                .COMMENT("@param $N a table configurator \n", "configurator")
+                .COMMENT("@param <T> type variable for the result associated with each template name\n")
+                .COMMENT("@return $T&lt;$T,$T&gt;\n", Map.class,String.class, TypeVariableName.get("T"))
+                .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
+                .addTypeVariables(T())
+                .RETURNS(MAP_STRING_T);
+        compilerUtil.debugFileLocation(method);
+
+        method.PARAMETER(parameterType, "configurator");
+        method.BODY(ASSIGNMENT(MAP_STRING_T, VARIABLE(A_TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_STRING_T, List.of())));
+
+        for (TemplateCompilerConfig config : configs.templates) {
+            if (!(config instanceof SimpleTemplateCompilerConfig)) {
+                String thisBuilderName = Constants.GENERATED_VAR_PREFIX + config.name;
+                //builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getFullyQualifiedName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
+                method.BODY(METHOD_CALL(
+                        VARIABLE(A_TABLE_VAR),
+                        "put",
+                        List.of(METHOD_CALL(VARIABLE(thisBuilderName, STATIC_FIELD_VARIABLE), "getFullyQualifiedName", List.of()),
+                                METHOD_CALL(VARIABLE("configurator"), config.name, List.of(VARIABLE(thisBuilderName, STATIC_FIELD_VARIABLE))))));
+            }
+        }
+        method.BODY(RETURN(VARIABLE(A_TABLE_VAR)));
+        return method;
+
+    }
+
+    private MethodSpec generateInitializeCompositeBeanTableMethod_old(TemplatesProjectConfiguration configs, Locations locations) {
         ParameterizedTypeName parameterType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, COMPOSITE_TABLE_CONFIGURATOR), COMPOSITE_TABLE_CONFIGURATOR), typeT);
 
         CodeBlock.Builder jdoc = CodeBlock.builder();

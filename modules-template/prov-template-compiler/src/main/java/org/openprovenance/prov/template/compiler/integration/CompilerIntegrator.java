@@ -88,8 +88,8 @@ public class CompilerIntegrator {
         pastClass.METHOD(generateNewOutputConstructor(templateName, integrator_package, bindingsSchema, OUTPUTS));
 
 
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, templateName, integrator_package, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, templateName, integrator_package, configs, fileName, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, integrator_package, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, integrator_package, configs, fileName, directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator,pythonGenerator);
 

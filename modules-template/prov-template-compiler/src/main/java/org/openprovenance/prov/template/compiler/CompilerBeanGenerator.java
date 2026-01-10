@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Triple;
 import org.openprovenance.prov.model.ProvFactory;
@@ -9,7 +8,6 @@ import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.*;
-import org.openprovenance.prov.template.compiler.past.emitter.Poet;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
@@ -21,8 +19,6 @@ import org.openprovenance.prov.template.emitter.emitters.Python;
 
 import javax.lang.model.element.Modifier;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.Class;
 import java.util.*;
 import java.util.function.Function;
@@ -167,8 +163,8 @@ public class CompilerBeanGenerator {
 
 
         String directory = locations.convertToDirectory(beanPackge);
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, templateName, beanPackge, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, templateName, beanPackge, configs, fileName, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, beanPackge, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, beanPackge, configs, fileName, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator,pythonGenerator);
     }
 

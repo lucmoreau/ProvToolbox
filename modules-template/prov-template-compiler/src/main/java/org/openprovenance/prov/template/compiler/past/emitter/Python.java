@@ -42,10 +42,10 @@ public class Python implements Emitter<StringBuilder> {
         return sb;
     }
 
-    public WritableObject toWritableObject(Class clazz, String templateName, String packge, StackTraceElement stackTraceElement) {
+    public WritableObject toWritableObject(Class clazz, String className, String packge, StackTraceElement stackTraceElement) {
         StringBuilder theBuffer=emit(clazz);
 
-        addHeader(theBuffer, templateName, packge, stackTraceElement);
+        addHeader(theBuffer, className, packge, stackTraceElement);
         return new WritableObject() {
             @Override
             public void writeTo(File directory) throws IOException {
@@ -628,7 +628,7 @@ public class Python implements Emitter<StringBuilder> {
 
     private String convertConstant(Constant c) {
         return switch (c.constantType) {
-            case STRING -> "\"" + c.value.toString() + "\"";
+            case STRING -> (c.value.toString().contains("\""))? "'" + c.value.toString() + "'" : "\"" + c.value.toString() + "\"";
             case INTEGER -> c.value.toString();
             case FLOAT -> c.value.toString();
             case BOOLEAN -> c.value.toString();

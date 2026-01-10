@@ -341,17 +341,23 @@ public class CompilerConfigurations {
         return  generateConfigurator(configs, locations, theConfiguratorName, FunctionOfObjectArray2ObjectArray, new WrapperClass(locations)::generateObjectRecordMaker, "generateObjectRecordMakerConfigurator", BeanDirection.COMMON, MapString2FileBuilder, DISPATCHER_VAR, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
 
-    public SpecificationFile generateSqlConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+    /*
+        public SpecificationFile generateSqlConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, processorOfString, this::generateMethodRecord2SqlConverter, "generateSqlConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
+     */
+
+    public SpecificationFile generateSqlConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_OBJARRAY_TO_STRING, this::generateMethodRecord2SqlConverter, "generateSqlConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
+    }
     public SpecificationFile generatePropertyOrderConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, stringArray, this::generatePropertyOrder, "generatePropertyOrderConfigurator", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, STRING_ARRAY, this::generatePropertyOrder, "generatePropertyOrder", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateInputsConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, stringArray, this::generateInputPropertyOrder, "generateInputsConfigurator", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, STRING_ARRAY, this::generateInputPropertyOrder, "generateInputsConfigurator", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateOutputsConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, stringArray, this::generateOutputPropertyOrder, "generateOutputsConfigurator", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, STRING_ARRAY, this::generateOutputPropertyOrder, "generateOutputPropertyOrder", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateCsvConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_OBJARRAY_TO_STRING, this::generateMethodRecord2CsvConverter, "generateCsvConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
@@ -372,7 +378,7 @@ public class CompilerConfigurations {
      */
 
     public SpecificationFile generateSqlInsertConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, ClassName.get(String.class), this::generateSqlInsert, "generateSqlInsertConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, STRING, this::generateSqlInsert, "generateSqlInsert", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateConverterConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_OBJARRAY_TO_ANY, this::generateMethodRecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
@@ -404,15 +410,15 @@ public class CompilerConfigurations {
         return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, new WrapperClass2(locations,this)::generateMethodEnactor2, "generateEnactorConfigurator2", BeanDirection.INPUTS, ClassName.get(locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR),INPUT_OUTPUT_PROCESSOR), ENACTOR_VAR, null, false, integrator_package,BeanDirection.OUTPUTS, directory, fileName);
     }
 
-    public void generateMethodRecord2SqlConverter(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
-        mspec.addStatement("return $N.aRecord2SqlConverter", builderParameter);
+    public void generateMethodRecord2SqlConverter(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+        mspec.BODY(RETURN(METHOD_CALL(VARIABLE(builderParameter),"aRecord2SqlConverter"))); //"return $N.aRecord2SqlConverter", builderParameter);
     }
     public void generateMethodRecord2CsvConverter(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
         mspec.BODY(RETURN(METHOD_CALL(VARIABLE(builderParameter), "processorConverter", List.of(METHOD_CALL(VARIABLE(builderParameter), "aArgs2CsVConverter" )))));
         //"return $N.processorConverter($N.aArgs2CsVConverter)", builderParameter, builderParameter);
     }
-    public void generatePropertyOrder(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
-        mspec.addStatement("return $N.getPropertyOrder()", builderParameter);
+    public void generatePropertyOrder(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+        mspec.addStatement(RETURN(METHOD_CALL(VARIABLE(builderParameter), "getPropertyOrder", List.of()))); //"return $N.getPropertyOrder()", builderParameter);
     }
     /*
     public void generateRelation0(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
@@ -478,14 +484,14 @@ public class CompilerConfigurations {
     }
 
 
-    public void generateInputPropertyOrder(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
-        mspec.addStatement("return $N.getInputs()", builderParameter);
+    public void generateInputPropertyOrder(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+        mspec.addStatement(RETURN(METHOD_CALL(VARIABLE(builderParameter), "getInputs", List.of())));//"return $N.getInputs()", builderParameter);
     }
-    public void generateOutputPropertyOrder(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
-        mspec.addStatement("return $N.getOutputs()", builderParameter);
+    public void generateOutputPropertyOrder(String builderParameter, String name, Method mspec,  org.openprovenance.prov.template.compiler.past.type.TypeName className,  org.openprovenance.prov.template.compiler.past.type.TypeName beanType,  org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+        mspec.addStatement(RETURN(METHOD_CALL(VARIABLE(builderParameter), "getOutputs", List.of()))); //"return $N.getOutputs()", builderParameter);
     }
-    public void generateSqlInsert(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
-        mspec.addStatement("return $N.getSQLInsert()", builderParameter);
+    public void generateSqlInsert(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+        mspec.BODY(RETURN(METHOD_CALL(VARIABLE(builderParameter), "getSQLInsert", List.of()))); //"return $N.getSQLInsert()", builderParameter);
     }
     public void generateMethodRecordConverter(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
         mspec.BODY(RETURN(METHOD_CALL(VARIABLE(builderParameter), "aRecord2BeanConverter"))); //"return $N.aRecord2BeanConverter", builderParameter);

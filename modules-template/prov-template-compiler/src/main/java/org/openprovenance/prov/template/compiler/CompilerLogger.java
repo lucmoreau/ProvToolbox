@@ -1,7 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
@@ -10,25 +9,19 @@ import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.annotations.ClassInitialiser;
-import org.openprovenance.prov.template.compiler.past.emitter.Poet;
+import org.openprovenance.prov.template.compiler.past.annotations.ClassMethod;
 import org.openprovenance.prov.template.compiler.past.type.ArrayType;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
-import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfString;
-import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfUnknown;
-import static org.openprovenance.prov.template.compiler.CompilerUtil.builderMapType;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 import static org.openprovenance.prov.template.compiler.common.CompilerCommon.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
@@ -152,7 +145,7 @@ public class CompilerLogger {
     }
 
     private Method generateInitializeBeanTableMethod(TemplatesProjectConfiguration configs, Locations locations) {
-        Method builder = METHOD(INITIALIZE_BEAN_TABLE).ANNOTATIONS("@classmethod")
+        Method builder = METHOD(INITIALIZE_BEAN_TABLE).ANNOTATIONS(ClassMethod.NAME)
                 .COMMENT("Initialize a table of bean builders\n")
                 .COMMENT("@param $N a table configurator \n", "configurator")
                 .COMMENT("@param <T> type variable for the result associated with each template name\n")
@@ -313,7 +306,7 @@ public class CompilerLogger {
         final String loggerName = compilerUtil.loggerName(config.name);
         Method builder = METHOD(loggerName)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
-                .ANNOTATIONS("@classmethod") // annotation aimed at python conversion
+                .ANNOTATIONS(ClassMethod.NAME) // annotation aimed at python conversion
                 .RETURNS(STRING);
         compilerUtil.debugFileLocation(builder);
 
@@ -353,7 +346,7 @@ public class CompilerLogger {
 
         Method method = METHOD(beanCreatorName)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
-                .ANNOTATIONS("@classmethod") // annotation aimed at python conversion
+                .ANNOTATIONS(ClassMethod.NAME) // annotation aimed at python conversion
                 .RETURNS(org.openprovenance.prov.template.compiler.past.type.ClassName.get(compilerUtil.commonNameClass(config.name), locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON)));
         compilerUtil.debugFileLocation(method);
 

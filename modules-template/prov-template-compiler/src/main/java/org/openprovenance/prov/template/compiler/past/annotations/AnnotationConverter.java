@@ -10,6 +10,7 @@ public class AnnotationConverter {
         Map<String, PastAnnotation> map= new java.util.HashMap<>();
         map.put(ClassInitialiser.NAME, new ClassInitialiser());
         map.put(Ignore.NAME, new Ignore());
+        map.put(ClassMethod.NAME, new ClassMethod());
         return map;
     }
 

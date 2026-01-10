@@ -5,6 +5,7 @@ import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Iterator;
 import org.openprovenance.prov.template.compiler.past.annotations.ClassInitialiser;
+import org.openprovenance.prov.template.compiler.past.annotations.ClassMethod;
 import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation;
 import org.openprovenance.prov.template.compiler.past.annotations.PythonAnnotation;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
@@ -299,11 +300,18 @@ public class Python implements Emitter<StringBuilder> {
             sb.append(method.comments.stream().map(this::convert).flatMap(Collection::stream).collect(Collectors.joining("\n" + INDENT)));
             sb.append("\"\"\"\n");
         }
+        boolean foundClassMethod=false;
 
         if (method.modifiers.contains(Modifier.STATIC)) {
-            if (method.annotation.contains("@classmethod")) {
-                sb.append(INDENT).append("@classmethod\n");
-            } else {
+            for(PastAnnotation annot: method.annotation) {
+                if (annot instanceof PythonAnnotation) {
+                    if (annot.getName().equals(ClassMethod.NAME)) {
+                        foundClassMethod=true;
+                        sb.append(INDENT).append("@classmethod\n");
+                    }
+                }
+            }
+            if (!foundClassMethod) {
                 sb.append(INDENT).append("@staticmethod\n");
             }
         }
@@ -313,7 +321,7 @@ public class Python implements Emitter<StringBuilder> {
         sb.append("(");
         boolean first=false;
         if (method.modifiers.contains(Modifier.STATIC)) {
-            if (method.annotation.contains("@classmethod")) {
+            if (foundClassMethod) {
                 sb.append("cls");
                 first=true;
             }

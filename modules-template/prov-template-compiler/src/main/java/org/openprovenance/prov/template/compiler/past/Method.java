@@ -1,10 +1,13 @@
 package org.openprovenance.prov.template.compiler.past;
+import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
 
 import javax.lang.model.element.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import static org.openprovenance.prov.template.compiler.past.annotations.AnnotationConverter.toAnnotation;
 
 public class Method {
     public List<Comment> comments=new java.util.ArrayList<>();
@@ -14,7 +17,7 @@ public class Method {
     public List<Statement> body=new java.util.ArrayList<>();
     public List<Modifier> modifiers=new java.util.ArrayList<>();
     public List<TypeName> typeVariables=new java.util.ArrayList<>();
-    public List<String> annotation=new java.util.ArrayList<>();
+    public List<PastAnnotation> annotation=new java.util.ArrayList<>();
 
     public Method() {}
     public Method(String name, TypeName returnType, List<Parameter> parameters, List<Statement> body, Collection<Modifier> modifiers, List<Comment> comments) {
@@ -109,8 +112,13 @@ public class Method {
         return new Method(name);
     }
 
-    public Method ANNOTATIONS(String... names) {
-        this.annotation.addAll(Arrays.asList(names));
+    public Method ANNOTATIONS(String... annot) {
+        for (String a: annot) {
+            if (a==null) {
+                throw new IllegalArgumentException("Annotation cannot be null");
+            }
+            this.annotation.add(toAnnotation(a));
+        }
         return this;
     }
 

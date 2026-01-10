@@ -14,5 +14,11 @@ class Map:
     def clear(self):
         self._dict = []
 
+    def get(self, k):
+        print ("Getting key:", k)
+        return self._dict[k]
+
+
+
 
 

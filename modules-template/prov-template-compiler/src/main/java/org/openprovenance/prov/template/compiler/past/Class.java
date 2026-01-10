@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler.past;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
+import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 
 import javax.lang.model.element.Modifier;
 import java.util.LinkedList;
@@ -17,7 +18,9 @@ public class Class {
     final public List<Comment> comments=new LinkedList<>();
     final public List<Field> fields=new LinkedList<>();
     final public List<Method> methods=new LinkedList<>();
+    final public List<Constructor> constructors=new LinkedList<>();
     final public List<TypeName> interfaces=new LinkedList<>();
+    final public List<TypeVariable> typeVariables=new LinkedList<>();
     final public List<Modifier> modifiers=new LinkedList<>();
 
     public Class (String name) {
@@ -39,6 +42,15 @@ public class Class {
         return this;
     }
 
+    public Class TYPE_VARIABLES(TypeVariable... typeVariables) {
+        for (TypeVariable typeVariable: typeVariables) {
+            if (typeVariable == null) throw new IllegalArgumentException("null type variable");
+            this.typeVariables.add(typeVariable);
+        }
+        return this;
+    }
+
+
     @Override
     public String toString() {
         return "Class{" +
@@ -47,6 +59,8 @@ public class Class {
                 ", fields=" + fields +
                 ", methods=" + methods +
                 ", interfaces=" + interfaces +
+                ", typeVariables=" + typeVariables +
+                ", modifiers=" + modifiers +
                 '}';
     }
 
@@ -73,6 +87,11 @@ public class Class {
     public Class METHOD(Method method2) {
         if (method2==null) throw new IllegalArgumentException("null method");
         this.methods.add(method2);
+        return this;
+    }
+    public Class CONSTRUCTOR(Constructor method2) {
+        if (method2==null) throw new IllegalArgumentException("null constructor");
+        this.constructors.add(method2);
         return this;
     }
 }

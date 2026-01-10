@@ -4,6 +4,7 @@ import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Iterator;
+import org.openprovenance.prov.template.compiler.past.annotations.Ignore;
 import org.openprovenance.prov.template.compiler.past.type.ArrayType;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
@@ -36,6 +37,9 @@ public class Poet implements Emitter<TypeSpec> {
         clazz.fields.forEach(field -> builder.addField(convert(field)));
         clazz.comments.forEach(comment -> builder.addJavadoc(comment.format, comment.objects));
         clazz.methods.forEach(method -> builder.addMethod(convert(method)));
+        for (TypeVariable tv: clazz.typeVariables) {
+            builder.addTypeVariable(TypeVariableName.get(tv.name));
+        }
         return builder;
 
 
@@ -44,14 +48,29 @@ public class Poet implements Emitter<TypeSpec> {
     public TypeSpec emit(Class clazz) {
 
         TypeSpec.Builder builder=TypeSpec.classBuilder(clazz.name);
+        for (TypeVariable tv : clazz.typeVariables) {
+            builder.addTypeVariable(TypeVariableName.get(tv.name));
+        }
         clazz.modifiers.forEach(builder::addModifiers);
         clazz.interfaces.forEach(intfce -> builder.addSuperinterface(convert(intfce)));
         clazz.fields.forEach(field -> builder.addField(convert(field)));
         clazz.comments.forEach(comment -> builder.addJavadoc(comment.format, comment.objects));
         clazz.methods.forEach(method -> builder.addMethod(convert(method)));
+        clazz.constructors.forEach(constructor -> builder.addMethod(convert(constructor)));
         return builder.build();
 
 
+    }
+
+    private MethodSpec convert(Constructor constructor) {
+        MethodSpec.Builder builder=MethodSpec.constructorBuilder();
+        constructor.modifiers.forEach(builder::addModifiers);
+        constructor.parameters.forEach(param -> builder.addParameter(convert(param.type), param.name));
+        constructor.comments.forEach(comment -> builder.addJavadoc(comment.format, convertToPoet(comment.objects)));
+        constructor.body.forEach(statement -> {
+            builder.addStatement(convert(statement));
+        });
+        return builder.build();
     }
 
     private MethodSpec convert(Method method) {
@@ -326,12 +345,28 @@ public class Poet implements Emitter<TypeSpec> {
                     return CodeBlock.of("new $T($L)", convert(methodCall.className), argsCode);
                 }
             }
-            case FUNCTIONAL_INTERFACE_CALL , OPERATOR_VARIABLE -> {
-                // in Java, both method calls are handled similarly
+            case FUNCTIONAL_INTERFACE_CALL  -> {
                 CodeBlock argsCode = CodeBlock.join(
                         methodCall.arguments.stream().map(this::convert).collect(Collectors.toList()),
                         ",");
                 CodeBlock operator = convert(methodCall.object);
+                return CodeBlock.of("$L.$L($L)", operator, methodCall.methodName, argsCode);
+            }
+            case OPERATOR_VARIABLE -> {
+                CodeBlock argsCode = CodeBlock.join(
+                        methodCall.arguments.stream().map(this::convert).collect(Collectors.toList()),
+                        ",");
+                Variable variable = (Variable)methodCall.object;
+                assert variable != null;
+                if (!variable.annotation.isEmpty()) {
+                    for (var annot: variable.annotation) {
+                        if (annot instanceof Ignore) {
+                            return CodeBlock.of("$L($L)", methodCall.methodName, argsCode);
+                        }
+                    }
+                }
+                CodeBlock operator = convert(methodCall.object);
+
                 return CodeBlock.of("$L.$L($L)", operator, methodCall.methodName, argsCode);
             }
             case OBJECT_METHOD_CALL -> {

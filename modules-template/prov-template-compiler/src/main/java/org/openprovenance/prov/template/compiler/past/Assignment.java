@@ -12,6 +12,7 @@ public class Assignment extends Statement {
     public final Expression leftHandExpression;
     public final Expression value;
     public List<Modifier> modifiers = new ArrayList<>();
+    public List<String> annotation=new java.util.ArrayList<>();
 
     public Assignment(TypeName type, Expression leftHandExpression, Expression value) {
         if (leftHandExpression ==null) {
@@ -52,5 +53,9 @@ public class Assignment extends Statement {
 
     public static Assignment ASSIGNMENT(TypeName type, Expression leftHandExpression, Expression value) {
         return new Assignment(type, leftHandExpression, value);
+    }
+    public Assignment ANNOTATION(String annot) {
+        this.annotation.add(annot);
+        return this;
     }
 }

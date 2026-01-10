@@ -23,6 +23,7 @@ public class SpecificationFile {
     private final Supplier<String> pyContent;
     private final Supplier<Boolean> javaGenerator;
     private final Supplier<Boolean> pythonGenerator;
+    private final SpecificationFile javaSpec;
 
     public SpecificationFile(JavaFile javaFile, String directory, String fileName, String class_package) {
         this.javaFile = javaFile;
@@ -36,6 +37,7 @@ public class SpecificationFile {
         this.pyFilename=null;
         this.javaGenerator=null;
         this.pythonGenerator=null;
+        this.javaSpec=null;
 
     }
 
@@ -51,6 +53,7 @@ public class SpecificationFile {
         this.pyContent=pyContent;
         this.javaGenerator=null;
         this.pythonGenerator=null;
+        this.javaSpec=null;
     }
 
     public SpecificationFile(Supplier<Boolean> javaGenerator, Supplier<Boolean> pythonGenerator) {
@@ -64,6 +67,21 @@ public class SpecificationFile {
         this.pyContent=null;
         this.javaGenerator=javaGenerator;
         this.pythonGenerator=pythonGenerator;
+        this.javaSpec=null;
+    }
+
+    public SpecificationFile(SpecificationFile javaSpec, Supplier<Boolean> pythonGenerator) {
+        this.compilerUtil=null;
+        this.javaFile=null;
+        this.directory=null;
+        this.fileName=null;
+        this.class_package=null;
+        this.pyDirectory=null;
+        this.pyFilename=null;
+        this.pyContent=null;
+        this.javaGenerator=null;
+        this.pythonGenerator=pythonGenerator;
+        this.javaSpec=javaSpec;
     }
 
     class JavaInUse {
@@ -76,6 +94,11 @@ public class SpecificationFile {
             boolean javaGen=javaGenerator.get();
             boolean pyGen=pythonGenerator.get();
             return javaGen && pyGen;
+        }
+        if (javaSpec!=null && pythonGenerator!=null) {
+            boolean javaSaved=javaSpec.save();
+            boolean pyGen=pythonGenerator.get();
+            return javaSaved && pyGen;
         }
 
         // old method

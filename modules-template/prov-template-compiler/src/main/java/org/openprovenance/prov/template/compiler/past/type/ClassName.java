@@ -2,10 +2,14 @@ package org.openprovenance.prov.template.compiler.past.type;
 
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeVariableName;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
+import static org.openprovenance.prov.template.compiler.common.Constants.CLIENT_PACKAGE;
+import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
 public class ClassName extends TypeName {
     static public final ClassName _int =ClassName.get("int", "past.lang");
@@ -33,6 +37,13 @@ public class ClassName extends TypeName {
     public static final ParameterizedType HASH_MAP_STRING_MAP_STRING_INTARRAY = ParameterizedType.get(HASHMAP, STRING, MAP_STRING_INTARRAY);
     public static final TypeName LIST_OF_OBJECT_ARRAYS = ParameterizedType.get(LIST,OBJECT_ARRAY);
     public static final TypeName LIST_OF_OBJECT_ARRAYS_ARRAYS = ParameterizedType.get(LIST,OBJECT_ARRAY_ARRAY);
+    public static final ParameterizedType MAP_STRING_T= ParameterizedType.get(MAP, STRING, T());
+    public static final ParameterizedType HASH_MAP_STRING_T= ParameterizedType.get(HASHMAP, STRING, T());
+    public static final ClassName BUILDER_INTERFACE=ClassName.get("Builder", CLIENT_PACKAGE);
+    public static final ParameterizedType MAP_STRING_BUILDER=ParameterizedType.get(MAP, STRING, BUILDER_INTERFACE);
+    public static final ParameterizedType FUNCTION_BUILDER_T=ParameterizedType.get(FUNCTION,  BUILDER_INTERFACE, T());
+    public static final ParameterizedType FUNCTION_OBJARRAY_TO_ANY=FUNCTION_OBJARRAY_TO_TYPE(TypeVariable.get("?"));
+    public static final ParameterizedType FUNCTION_OBJARRAY_TO_STRING=FUNCTION_OBJARRAY_TO_TYPE(STRING);
 
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_TYPE (TypeName returnType) {
         return ParameterizedType.get(FUNCTION, OBJECT_ARRAY, returnType);

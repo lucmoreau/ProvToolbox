@@ -126,7 +126,7 @@ if __name__ == "__main__":
 
 
 
-    print('----- examplar -----')
+    print('----- examplar composite -----')
 
     print(Plead_transformingBuilder.examplar().toJSON())
     t1=Plead_transformingBuilder.examplar()
@@ -134,8 +134,41 @@ if __name__ == "__main__":
     compositeBean=Plead_transforming_compositeBean()
     compositeBean.addElements(t1)
     compositeBean.addElements(t2)
+    compositeBean.type='org/openprovenance/prov/templates/plead/plead-transforming'
 
-    print(compositeBean.toJSON())
+    print(compositeBean.elements.toString())
+
+    print('----- examplar composite: bean to records -----')
+
+    compositeRecords=compositeBean.process(compositeBuilder.args2Records())
+
+    print(compositeRecords)
+
+    print('----- examplar composite: configuring Logger (static constructor not generated yet, requires manual config) -----')
+
+    from org.openprovenance.prov.template.library.plead.configurator.BuilderConfigurator import BuilderConfigurator
+    from org.openprovenance.prov.template.library.plead.configurator.ConverterConfigurator import ConverterConfigurator
+    from org.openprovenance.prov.template.library.plead.configurator.CsvConfigurator import CsvConfigurator
+
+    # class initializations (not supported by pyhton compiler yet)
+    Logger.simpleBuilders = Logger.initializeBeanTable(BuilderConfigurator())
+    Logger.simpleBeanConverters = Logger.initializeBeanTable(ConverterConfigurator())
+    Logger.simpleCSvConverters = Logger.initializeBeanTable(CsvConfigurator())
+
+    print(Logger.simpleCSvConverters.toString())
+
+    print('----- examplar composite: bean to csv -----')
+
+    print(compositeBean.process(compositeBuilder.args2csv()))
+
+    print('----- examplar composite: records to bean -----')
+
+    print(compositeRecords)
+
+    print(compositeBuilder.toBean(compositeRecords).toJSON())
+
+
+    #print(compositeBean.toJSON())
 
 
 

@@ -1,11 +1,14 @@
 package org.openprovenance.prov.template.compiler.past;
 
+import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
 
 
 import javax.lang.model.element.Modifier;
 import java.util.LinkedList;
 import java.util.List;
+
+import static org.openprovenance.prov.template.compiler.past.annotations.AnnotationConverter.toAnnotation;
 
 public class Field {
 
@@ -15,6 +18,8 @@ public class Field {
     public Expression initialiser;
     final public List<Comment> comments=new LinkedList<>();
     final public List<Modifier> modifiers=new LinkedList<>();
+    public List<PastAnnotation> annotation=new java.util.ArrayList<>();
+
 
 
     public Field(String name, TypeName type, List<String> attributes, Expression initialiser, List<Comment> comments) {
@@ -60,6 +65,21 @@ public class Field {
 
     public Field INITIALIZER(Expression initialiser) {
         this.initialiser = initialiser;
+        return this;
+    }
+
+    public Field ANNOTATION(PastAnnotation... annotations) {
+        for (PastAnnotation annotation: annotations) {
+            if (annotation == null) throw new IllegalArgumentException("null annotation");
+            this.annotation.add(annotation);
+        }
+        return this;
+    }
+    public Field ANNOTATION(String ... annotations) {
+        for (String annotation: annotations) {
+            if (annotation == null) throw new IllegalArgumentException("null annotation");
+            this.annotation.add(toAnnotation(annotation));
+        }
         return this;
     }
 }

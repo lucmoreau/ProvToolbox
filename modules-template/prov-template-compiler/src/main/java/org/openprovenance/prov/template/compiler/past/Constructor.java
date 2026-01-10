@@ -6,37 +6,33 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class Method {
+public class Constructor {
     public List<Comment> comments=new java.util.ArrayList<>();
-    public String name;
-    public TypeName returnType;
+    //public String name;
+    //public TypeName returnType;
     public List<Parameter> parameters=new java.util.ArrayList<>();
     public List<Statement> body=new java.util.ArrayList<>();
     public List<Modifier> modifiers=new java.util.ArrayList<>();
-    public List<TypeName> typeVariables=new java.util.ArrayList<>();
+    //public List<TypeName> typeVariables=new java.util.ArrayList<>();
     public List<String> annotation=new java.util.ArrayList<>();
 
-    public Method() {}
-    public Method(String name, TypeName returnType, List<Parameter> parameters, List<Statement> body, Collection<Modifier> modifiers, List<Comment> comments) {
-        this.name = name;
-        this.returnType = returnType;
+    public Constructor() {}
+    public Constructor(List<Parameter> parameters, List<Statement> body, Collection<Modifier> modifiers, List<Comment> comments) {
         this.parameters.addAll(parameters);
         this.body.addAll(body);
         this.modifiers.addAll(modifiers);
         this.comments.addAll(comments);
     }
-    public Method(String name) {
-        this.name = name;
-    }
 
 
     @Override
     public String toString() {
-        return "Method{" +
-                "name='" + name + '\'' +
-                ", returnType='" + returnType + '\'' +
+        return "Constructor{" +
+                "comments=" + comments +
                 ", parameters=" + parameters +
                 ", body=" + body +
+                ", modifiers=" + modifiers +
+                ", annotation=" + annotation +
                 '}';
     }
 
@@ -44,29 +40,19 @@ public class Method {
         return modifiers.contains(Modifier.STATIC);
     }
 
-    public Method MODIFIERS(Modifier... modifiers) {
+    public Constructor MODIFIERS(Modifier... modifiers) {
         this.modifiers.addAll(Arrays.asList(modifiers));
         return this;
     }
 
-    public Method RETURNS(TypeName typeT) {
-        this.returnType=typeT;
-        return this;
-    }
-
-    public Method addTypeVariables(TypeName... typeVars) {
-        this.typeVariables.addAll(Arrays.asList(typeVars));
-        return this;
-    }
-
-    public Method PARAMETERS(Parameter... parameters) {
+    public Constructor PARAMETERS(Parameter... parameters) {
         for (Parameter parameter: parameters) {
             if (parameter == null) throw new IllegalArgumentException("null parameter");
             this.parameters.add(parameter);
         }
         return this;
     }
-    public Method PARAMETERS(List<Parameter> parameters) {
+    public Constructor PARAMETERS(List<Parameter> parameters) {
         for (Parameter parameter: parameters) {
             if (parameter == null) throw new IllegalArgumentException("null parameter");
             this.parameters.add(parameter);
@@ -74,16 +60,16 @@ public class Method {
         return this;
     }
 
-    public Method PARAMETER(TypeName typeName, String parameterName) {
+    public Constructor PARAMETER(TypeName typeName, String parameterName) {
         this.parameters.add(new Parameter(parameterName, typeName));
         return this;
     }
 
-    public Method addStatement(Statement statement) {
+    public Constructor addStatement(Statement statement) {
         this.body.add(statement);
         return this;
     }
-    public Method BODY(Statement... statements) {
+    public Constructor BODY(Statement... statements) {
         for (Statement statement: statements) {
             if (statement == null) throw new IllegalArgumentException("null statement");
             this.body.add(statement);
@@ -91,12 +77,12 @@ public class Method {
         return this;
     }
 
-    public Method COMMENT(String format, Object... args) {
+    public Constructor COMMENT(String format, Object... args) {
         this.comments.add(new Comment(format, args));
         return this;
     }
 
-    public Method COMMENT(boolean internal, String format, Object... args) {
+    public Constructor COMMENT(boolean internal, String format, Object... args) {
         if (internal) {
             this.addStatement(new Comment(format, args));
         } else {
@@ -105,20 +91,13 @@ public class Method {
         return this;
     }
 
-    public static Method METHOD(String name) {
-        return new Method(name);
+    public static Constructor CONSTRUCTOR() {
+        return new Constructor();
     }
 
-    public Method ANNOTATIONS(String... names) {
+    public Constructor ANNOTATIONS(String... names) {
         this.annotation.addAll(Arrays.asList(names));
         return this;
     }
 
-    public Method COMMENTS(Comment... comments) {
-        for (Comment comment: comments) {
-            if (comment == null) throw new IllegalArgumentException("null comment");
-            this.comments.add(comment);
-        }
-        return this;
-    }
 }

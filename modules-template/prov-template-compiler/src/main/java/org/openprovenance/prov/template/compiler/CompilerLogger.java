@@ -9,8 +9,10 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.annotations.ClassInitialiser;
 import org.openprovenance.prov.template.compiler.past.emitter.Poet;
 import org.openprovenance.prov.template.compiler.past.type.ArrayType;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
@@ -28,11 +30,15 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMa
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 import static org.openprovenance.prov.template.compiler.common.CompilerCommon.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.*;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
-import static org.openprovenance.prov.template.compiler.past.type.ClassName.STRING;
+import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.STATIC_FIELD_VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
 public class CompilerLogger {
     public static final String __BUILDERS_VAR = GENERATED_VAR_PREFIX + "builders";
@@ -55,19 +61,13 @@ public class CompilerLogger {
 
         for (TemplateCompilerConfig config : configs.templates) {
             // if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
-            final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            final org.openprovenance.prov.template.compiler.past.type.ClassName className = org.openprovenance.prov.template.compiler.past.type.ClassName.get(templateNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
-            pastClass.FIELDS(Field.FIELD(Constants.GENERATED_VAR_PREFIX + config.name, className)
-                    .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
-                    .INITIALIZER(CONSTRUCTOR_CALL(className, List.of())))
-            ;
-
+            Field field = generateStaticFieldForTemplate(locations, config);
+            pastClass.FIELDS(field);
         }
-
         List<String> templates= Arrays.stream(configs.templates).map(x->x.name).collect(Collectors.toList());
         ArrayType builderArrayPastType = ArrayType.of(org.openprovenance.prov.template.compiler.past.type.ClassName.get("Builder", CLIENT_PACKAGE));
         org.openprovenance.prov.template.compiler.past.type.ClassName builderPastType = org.openprovenance.prov.template.compiler.past.type.ClassName.get("Builder", CLIENT_PACKAGE);
-        pastClass.FIELDS(Field.FIELD(__BUILDERS_VAR, builderArrayPastType)
+        pastClass.FIELDS(FIELD(__BUILDERS_VAR, builderArrayPastType)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                 .INITIALIZER(new ArrayInitialiser(builderPastType, makeRenamedArgsList2(null,templates))))
         ;
@@ -80,26 +80,39 @@ public class CompilerLogger {
 
         for (TemplateCompilerConfig config : configs.templates) {
             if (config instanceof SimpleTemplateCompilerConfig) {
-                pastClass.METHOD(generateStaticLogMethod_new((SimpleTemplateCompilerConfig) config, locations));
+                pastClass.METHOD(generateStaticLogMethod((SimpleTemplateCompilerConfig) config, locations));
             }
         }
 
-        TypeSpec.Builder builder = new Poet().emitBuilder(pastClass);
 
 
         for (TemplateCompilerConfig config : configs.templates) {
             if (config instanceof SimpleTemplateCompilerConfig) {
-                builder.addMethod(generateStaticBeanMethod((SimpleTemplateCompilerConfig) config, locations));
+                pastClass.METHOD(generateStaticBeanMethod((SimpleTemplateCompilerConfig) config, locations));
             }
         }
+        pastClass.METHOD(generateInitializeBeanTableMethod(configs, locations));
 
-        builder.addMethod(generateInitializeBeanTableMethod(configs, locations));
+        org.openprovenance.prov.template.compiler.past.type.ClassName builderConfigurator= org.openprovenance.prov.template.compiler.past.type.ClassName.get(BUILDER_CONFIGURATOR, locations.getFilePackage(configs.name, BUILDER_CONFIGURATOR));
+
+        pastClass.FIELDS(
+                FIELD("simpleBuilders", MAP_STRING_BUILDER)
+                .MODIFIERS(Modifier.STATIC, Modifier.PUBLIC)
+                .INITIALIZER(METHOD_CALL(INITIALIZE_BEAN_TABLE,List.of(CONSTRUCTOR_CALL(builderConfigurator,List.of()))))
+                .ANNOTATION(ClassInitialiser.NAME));
+
+
+        TypeSpec.Builder builder = new Poet().emitBuilder(pastClass);
+
         builder.addMethod(generateInitializeCompositeBeanTableMethod(configs, locations));
 
+        /*
         builder.addField(FieldSpec
                 .builder(builderMapType, "simpleBuilders", Modifier.STATIC, Modifier.PUBLIC)
                 .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(configs.name, BUILDER_CONFIGURATOR), BUILDER_CONFIGURATOR))
                 .build());
+
+         */
         builder.addField(FieldSpec
                 .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfUnknown), "simpleBeanConverters", Modifier.STATIC, Modifier.PUBLIC)
                 .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(locations.getFilePackage(configs.name, CONVERTER_CONFIGURATOR),CONVERTER_CONFIGURATOR))
@@ -149,6 +162,16 @@ public class CompilerLogger {
             return newSpecificationFiles(compilerUtil, locations, theLogger, configs, stackTraceElement, myfile, directory, fileName + DOT_JAVA_EXTENSION, myPackage, null);
         }
     }
+
+    private Field generateStaticFieldForTemplate(Locations locations, TemplateCompilerConfig config) {
+        final String templateNameClass = compilerUtil.templateNameClass(config.name);
+        final org.openprovenance.prov.template.compiler.past.type.ClassName className = org.openprovenance.prov.template.compiler.past.type.ClassName.get(templateNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
+        return (FIELD(Constants.GENERATED_VAR_PREFIX + config.name, className)
+                .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
+                .COMMENT("Generated by method $N", getClass().getName()+".generateStaticFieldForTemplate()")
+                .INITIALIZER(CONSTRUCTOR_CALL(className, List.of())));
+    }
+
     SpecificationFile generateLogger_OLD(TemplatesProjectConfiguration configs, Locations locations, String fileName, Map<String, Map<String, Map<String, String>>> inputOutputMaps) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
@@ -181,12 +204,12 @@ public class CompilerLogger {
 
         for (TemplateCompilerConfig config : configs.templates) {
             if (config instanceof SimpleTemplateCompilerConfig) {
-                builder.addMethod(generateStaticLogMethod((SimpleTemplateCompilerConfig) config, locations));
-                builder.addMethod(generateStaticBeanMethod((SimpleTemplateCompilerConfig) config, locations));
+                builder.addMethod(generateStaticLogMethod_old_but_new_defined_here((SimpleTemplateCompilerConfig) config, locations));
+                builder.addMethod(generateStaticBeanMethod_old_new_developed_here((SimpleTemplateCompilerConfig) config, locations));
             }
         }
 
-        builder.addMethod(generateInitializeBeanTableMethod(configs, locations));
+        builder.addMethod(generateInitializeBeanTableMethod_old(configs, locations));
         builder.addMethod(generateInitializeCompositeBeanTableMethod(configs, locations));
 
         builder.addField(FieldSpec
@@ -231,7 +254,43 @@ public class CompilerLogger {
     static final ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeVariableName.get("T"));
     static final ParameterizedTypeName mapType2 = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(String.class), TypeVariableName.get("T"));
 
-    private MethodSpec generateInitializeBeanTableMethod(TemplatesProjectConfiguration configs, Locations locations) {
+    private Method generateInitializeBeanTableMethod(TemplatesProjectConfiguration configs, Locations locations) {
+        Method builder = METHOD(INITIALIZE_BEAN_TABLE).ANNOTATIONS("@classmethod")
+                .COMMENT("Initialize a table of bean builders\n")
+                .COMMENT("@param $N a table configurator \n", "configurator")
+                .COMMENT("@param <T> type variable for the result associated with each template name\n")
+                .COMMENT("@return $T&lt;$T,$T&gt;\n", Map.class,String.class, TypeVariableName.get("T"))
+                .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
+                .addTypeVariables(T())
+                .RETURNS(MAP_STRING_T);
+        compilerUtil.debugFileLocation(builder);
+
+
+        builder.PARAMETER(ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get(TABLE_CONFIGURATOR,locations.getFilePackage(configs.name, TABLE_CONFIGURATOR)), T()), "configurator");
+
+        builder.BODY(ASSIGNMENT(MAP_STRING_T, VARIABLE(A_TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_STRING_T,List.of())));
+        //builder.addStatement("$T $N=$N $T()",mapType, A_TABLE_VAR,"new", mapType2);
+
+        for (TemplateCompilerConfig config : configs.templates) {
+
+            String thisBuilderName = Constants.GENERATED_VAR_PREFIX + config.name;
+           //builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getFullyQualifiedName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
+
+            builder.BODY(METHOD_CALL(
+                    VARIABLE(A_TABLE_VAR),
+                    "put",
+                    List.of(METHOD_CALL(VARIABLE(thisBuilderName, STATIC_FIELD_VARIABLE), "getFullyQualifiedName", List.of()),
+                            METHOD_CALL(VARIABLE("configurator"), config.name, VARIABLE(thisBuilderName,STATIC_FIELD_VARIABLE)))));
+        }
+
+
+        builder.BODY(RETURN(VARIABLE(A_TABLE_VAR)));
+
+        return builder;
+
+    }
+
+    private MethodSpec generateInitializeBeanTableMethod_old(TemplatesProjectConfiguration configs, Locations locations) {
         CodeBlock.Builder jdoc = CodeBlock.builder();
         jdoc.add("Initialize a table of bean builders\n");
         jdoc.add("@param $N a table configurator \n", "configurator");
@@ -391,7 +450,7 @@ public class CompilerLogger {
 
     }
 
-    public MethodSpec generateStaticLogMethod(SimpleTemplateCompilerConfig config, Locations locations) {
+    public MethodSpec generateStaticLogMethod_old_but_new_defined_here(SimpleTemplateCompilerConfig config, Locations locations) {
         final String loggerName = compilerUtil.loggerName(config.name);
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(loggerName)
@@ -411,7 +470,7 @@ public class CompilerLogger {
         builder.addStatement("return $N.$N().$N($L)", Constants.GENERATED_VAR_PREFIX + config.name, Constants.ARGS_CSV_CONVERSION_METHOD, "process",argsList);
         return builder.build();
     }
-    public Method generateStaticLogMethod_new(SimpleTemplateCompilerConfig config, Locations locations) {
+    public Method generateStaticLogMethod(SimpleTemplateCompilerConfig config, Locations locations) {
         final String loggerName = compilerUtil.loggerName(config.name);
         Method builder = METHOD(loggerName)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
@@ -431,7 +490,7 @@ public class CompilerLogger {
                 RETURN(
                         FUNCTIONAL_METHOD_CALL(
                                 METHOD_CALL(
-                                        VARIABLE(GENERATED_VAR_PREFIX + config.name, Variable.VariableKind.STATIC_FIELD_VARIABLE),
+                                        VARIABLE(GENERATED_VAR_PREFIX + config.name, STATIC_FIELD_VARIABLE),
                                         ARGS_CSV_CONVERSION_METHOD,
                                         List.of()),
                                 "process",
@@ -459,9 +518,43 @@ public class CompilerLogger {
         }
         return variables.stream().map(Variable::VARIABLE).collect(Collectors.toList());
     }
+    public Method generateStaticBeanMethod(SimpleTemplateCompilerConfig config, Locations locations) {
+        final String beanCreatorName = "bean"+compilerUtil.capitalize(config.name);
+
+        Method method = METHOD(beanCreatorName)
+                .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
+                .ANNOTATIONS("@classmethod") // annotation aimed at python conversion
+                .RETURNS(org.openprovenance.prov.template.compiler.past.type.ClassName.get(compilerUtil.commonNameClass(config.name), locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON)));
+        compilerUtil.debugFileLocation(method);
 
 
-    public MethodSpec generateStaticBeanMethod(SimpleTemplateCompilerConfig config, Locations locations) {
+        TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
+        Map<String, List<Descriptor>> theVars=bindingsSchema.getVar();
+
+        compilerUtil.generateSpecializedParameters(method, theVars);
+        compilerUtil.generateSpecializedParametersJavadoc(method, theVars, bindingsSchema.getDocumentation(), bindingsSchema.getReturnValue());
+
+
+        List<Expression> argsList = convertToLocalVariableList(compilerUtil.getBindingsSchema(config));
+
+        //builder.addStatement("return $N.$N." + "$N" +  "($L)", Constants.GENERATED_VAR_PREFIX + config.name, Constants.A_ARGS_BEAN_CONVERTER, "process", argsList);
+
+
+        method.BODY(
+                RETURN(
+                        FUNCTIONAL_METHOD_CALL(
+                                METHOD_CALL(
+                                        VARIABLE(GENERATED_VAR_PREFIX + config.name, STATIC_FIELD_VARIABLE),
+                                        A_ARGS_BEAN_CONVERTER),
+                                "process",
+                                argsList)));
+
+        return method;
+
+    }
+
+
+    public MethodSpec generateStaticBeanMethod_old_new_developed_here(SimpleTemplateCompilerConfig config, Locations locations) {
         final String beanCreatorName = "bean"+compilerUtil.capitalize(config.name);
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(beanCreatorName)

@@ -22,6 +22,8 @@ module prov.template.compiler {
 
     exports org.openprovenance.prov.template.compiler;
     exports org.openprovenance.prov.template.compiler.past;
+    exports org.openprovenance.prov.template.compiler.past.annotations;
+    exports org.openprovenance.prov.template.compiler.past.emitter;
     exports org.openprovenance.prov.template.compiler.past.type;
     exports org.openprovenance.prov.template.compiler.configuration;
     exports org.openprovenance.prov.template.compiler.common;

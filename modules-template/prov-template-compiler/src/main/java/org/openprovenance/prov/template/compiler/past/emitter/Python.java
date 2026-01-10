@@ -4,6 +4,9 @@ package org.openprovenance.prov.template.compiler.past.emitter;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Iterator;
+import org.openprovenance.prov.template.compiler.past.annotations.ClassInitialiser;
+import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation;
+import org.openprovenance.prov.template.compiler.past.annotations.PythonAnnotation;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
@@ -16,8 +19,10 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.template.compiler.common.Constants.GENERATED_VAR_PREFIX;
 import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.MethodCallKind.FUNCTIONAL_INTERFACE_CALL;
 
 /**
@@ -72,7 +77,8 @@ public class Python implements Emitter<StringBuilder> {
         sb.append("class ").append(sanitizeName(clazz.name));
 
         // Base classes (interfaces in Java become base classes in Python)
-        if (!clazz.interfaces.isEmpty()) {
+        // ignored for now
+        if (false && !clazz.interfaces.isEmpty()) {
             sb.append("(");
             sb.append(clazz.interfaces.stream()
                     .map(this::convert)
@@ -90,7 +96,19 @@ public class Python implements Emitter<StringBuilder> {
 
         // Constructor (__init__)
 
-        emitClassConstructor(clazz.fields);
+        if (clazz.constructors.isEmpty()) {
+            emitDefaultConstructor(clazz.fields);
+        } else {
+            for (Constructor constructor : clazz.constructors) {
+                emitMethod(METHOD("__init__")
+                                .PARAMETERS(constructor.parameters)
+                                .MODIFIERS(constructor.modifiers.toArray(new Modifier[0]))
+                                .BODY(constructor.body.toArray(new Statement[0]))
+                                .ANNOTATIONS(constructor.annotation.toArray(new String[0]))
+                                .COMMENTS(constructor.comments.toArray(new Comment[0])));
+            }
+        }
+
 
 
         // Methods
@@ -186,12 +204,21 @@ public class Python implements Emitter<StringBuilder> {
         return List.of(String.format(c.format.replace("$L", "%s").replace("$N", "%s"), c.objects).split("\n"));
     }
 
-    private void emitClassConstructor(List<Field> fields) {
+    private void emitDefaultConstructor(List<Field> fields) {
         sb.append(INDENT).append("def __init__(self");
 
         // Parameters from fields
         for (Field field : fields) {
             if (!isStaticOrFinal(field)) {
+                if (!field.annotation.isEmpty()) {
+                    for (PastAnnotation annot : field.annotation) {
+                        if (annot instanceof PythonAnnotation) {
+                            if (annot.getName().equals("@ClassInitialiser")) {
+                                throw new IllegalArgumentException("Unexpected @ClassInitialiser annotation on dynamic field field");
+                            }
+                        }
+                    }
+                }
                 sb.append(", ").append(sanitizeName(field.name));
                 sb.append("=None");
             }
@@ -243,11 +270,24 @@ public class Python implements Emitter<StringBuilder> {
 
     private void emitStaticFields(List<Field> fields) {
         for (Field field : fields) {
-            String fieldName = sanitizeName(field.name);
-            if (field.modifiers.contains(Modifier.STATIC)) {
-                sb.append(INDENT)
-                        .append(fieldName)
-                        .append(" = ").append(convert(field.initialiser)).append("\n");
+            boolean isClassInitialised=false;
+            if (!field.annotation.isEmpty()) {
+                for (PastAnnotation annot : field.annotation) {
+                    if (annot instanceof PythonAnnotation) {
+                        if (ClassInitialiser.NAME.equals(annot.getName())) {
+                            System.out.println("----------- Not Processing @ClassInitialiser annotation");
+                            isClassInitialised=true;
+                        }
+                    }
+                }
+            }
+            if (!isClassInitialised) {
+                String fieldName = sanitizeName(field.name);
+                if (field.modifiers.contains(Modifier.STATIC)) {
+                    sb.append(INDENT)
+                            .append(fieldName)
+                            .append(" = ").append(convert(field.initialiser)).append("\n");
+                }
             }
         }
     }
@@ -313,7 +353,18 @@ public class Python implements Emitter<StringBuilder> {
     private void emitStatement(Statement statement, String indent) {
         switch (statement.statementKind) {
             case ASSIGNMENT -> {
+
                 Assignment assignment = (Assignment) statement;
+                if (!assignment.annotation.isEmpty()) {
+                    for (String annot : assignment.annotation) {
+                        if (annot.startsWith("@import")) {
+                            // get the string following @import
+                            String importString = annot.substring(7).trim();
+                            delayedImport(sb, indent, importString);
+
+                        }
+                    }
+                }
                 if (assignment.leftHandExpression instanceof Variable
                         && ((Variable)assignment.leftHandExpression).name.equals("self")) {
                     return;
@@ -491,7 +542,7 @@ public class Python implements Emitter<StringBuilder> {
                 if (le.body.size() != 1) {
                     String funName="funLambda" + (lambdaCount++);
                     Method method=new Method(funName);
-                    method.parameters.addAll(le.parameters);
+                    method.parameters.addAll(le.parameters.stream().map(p -> new Parameter(sanitizeName(p.name), p.type)).collect(Collectors.toList()));
                     method.body.addAll(le.body);
                     
                     lateEmitMethod(method);
@@ -553,8 +604,9 @@ public class Python implements Emitter<StringBuilder> {
             case ARRAY_ALLOCATOR: {
                 ArrayAllocator aa = (ArrayAllocator) expression;
                 StringBuilder result = new StringBuilder();
-                result.append("[None] * ");
+                result.append("[None] * (");
                 result.append(convert(aa.size));
+                result.append(")");
                 return result.toString();
             }
 
@@ -593,7 +645,7 @@ public class Python implements Emitter<StringBuilder> {
                     return "Map()";
                 }
                 if (isList(mc.className)) {
-                    return "[]";
+                    return "List()";
                 }
                 result.append(importAndGetLocalName(sanitizeName(convert(mc.className)))).append("(");
                 if (mc.arguments != null) {
@@ -780,12 +832,17 @@ public class Python implements Emitter<StringBuilder> {
         put("Double.valueOf", "float");
         put("Boolean.valueOf", "bool");
         put("add", "append");
+        put("class", "__class__");
+     //   put("__plead_transforming", "plead_transforming");
     }};
 
     private String sanitizeName(String name) {
         if (name == null) return "unknown";
         if (functionNameConversion.containsKey(name)) {
             return functionNameConversion.get(name);
+        }
+        if (name.startsWith(GENERATED_VAR_PREFIX)) {
+            return name.substring(2);
         }
         // Convert Java naming to Python (camelCase to snake_case)
         //String result = name.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
@@ -804,6 +861,11 @@ public class Python implements Emitter<StringBuilder> {
                         "is", "lambda", "nonlocal", "not", "or", "pass",
                         "raise", "return", "try", "while", "with", "yield")
                 .contains(name);
+    }
+
+    private void delayedImport(StringBuilder sb, String indent, String imprt) {
+        String suffix = getLocalName(imprt);
+        sb.append(indent).append("from ").append(imprt).append(" import ").append(suffix).append("\n");
     }
 
 }

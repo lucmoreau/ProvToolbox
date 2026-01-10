@@ -3,7 +3,13 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.emitter.Poet;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
+import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 
 import javax.lang.model.element.Modifier;
@@ -12,11 +18,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import static org.openprovenance.prov.template.compiler.common.Constants.BUILDER_INTERFACE;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.FUNCTIONAL_METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.FIELD_VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.STATIC_FIELD_VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
 public class CompilerConfigurations {
     public static final String RECORD_2_RECORD = "Record2Record";
@@ -39,10 +61,8 @@ public class CompilerConfigurations {
     public static final TypeName stringArray = ArrayTypeName.get(String[].class);
     static final TypeName intArray = ArrayTypeName.get(int[].class);
     static final ParameterizedTypeName mapString2StringArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), stringArray);
-    static final ParameterizedTypeName mapString2IntegerList = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(Integer.class)));
     static final ParameterizedTypeName mapString2StringList = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(String.class)));
     static final ParameterizedTypeName mapString2IntArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), intArray);
-    static final ParameterizedTypeName mapString2MapString2StringArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), mapString2StringArray);
     static final ParameterizedTypeName mapString2MapString2IntArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), mapString2IntArray);
 
     static final ParameterizedTypeName BiFunctionOfString2StringArray = ParameterizedTypeName.get(ClassName.get(java.util.function.BiFunction.class), mapString2MapString2IntArray, stringArray, PARAMETRIC_T);
@@ -79,6 +99,119 @@ public class CompilerConfigurations {
     public SpecificationFile generateConfigurator(TemplatesProjectConfiguration configs,
                                                   Locations locations,
                                                   String theConfiguratorName,
+                                                  org.openprovenance.prov.template.compiler.past.type.TypeName typeName,
+                                                  SixtetConsumer<String, String, Method, org.openprovenance.prov.template.compiler.past.type.TypeName, org.openprovenance.prov.template.compiler.past.type.TypeName, org.openprovenance.prov.template.compiler.past.type.TypeName> generator,
+                                                  String generatorMethod,
+                                                  BeanDirection direction,
+                                                  org.openprovenance.prov.template.compiler.past.type.TypeName constructParameterType,
+                                                  String constructorParameter,
+                                                  TypeVariable parametericType,
+                                                  boolean defaultBehaviour,
+                                                  String beanPackage,
+                                                  BeanDirection outDirection,
+                                                  String directory,
+                                                  String fileName) {
+        return generateConfigurator(configs, locations, theConfiguratorName, typeName, generator, generatorMethod, direction, constructParameterType, constructorParameter, parametericType, defaultBehaviour, beanPackage, outDirection, directory, fileName, null);
+    }
+
+    public SpecificationFile generateConfigurator(TemplatesProjectConfiguration configs,
+                                                  Locations locations,
+                                                  String theConfiguratorName,
+                                                  org.openprovenance.prov.template.compiler.past.type.TypeName typeName,
+                                                  SixtetConsumer<String, String, Method, org.openprovenance.prov.template.compiler.past.type.TypeName, org.openprovenance.prov.template.compiler.past.type.TypeName, org.openprovenance.prov.template.compiler.past.type.TypeName> generator,
+                                                  String generatorMethod,
+                                                  BeanDirection direction,
+                                                  org.openprovenance.prov.template.compiler.past.type.TypeName constructParameterType,
+                                                  String constructorParameter,
+                                                  org.openprovenance.prov.template.compiler.past.type.TypeVariable parametericType,
+                                                  boolean defaultBehaviour,
+                                                  String beanPackage,
+                                                  BeanDirection outDirection,
+                                                  String directory,
+                                                  String fileName,
+                                                  Consumer<TypeSpec.Builder> optionalCode) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
+        final ParameterizedType tableConfiguratorType = ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get(TABLE_CONFIGURATOR,locations.getFilePackage(configs.name, TABLE_CONFIGURATOR)), typeName);
+
+        PastFactory pastFactory=new PastFactory();
+        Class pastClass = pastFactory.CLASS(theConfiguratorName)
+                .MODIFIERS(Modifier.PUBLIC)
+                .COMMENT("The table configurator $N\n", theConfiguratorName);
+
+
+        //TypeSpec.Builder builder = compilerUtil.generateClassInit(theConfiguratorName);
+        //builder.addJavadoc("The table configurator $N\n", theConfiguratorName);
+
+
+
+        // the following in only used for the enactorConfigurator
+        if (constructParameterType!=null && constructorParameter!=null) {
+            pastClass.FIELDS(FIELD(constructorParameter, constructParameterType).MODIFIERS(Modifier.FINAL, Modifier.PRIVATE));
+            Constructor cspec= CONSTRUCTOR() // constructor
+                    .MODIFIERS(Modifier.PUBLIC)
+                    .PARAMETER(constructParameterType,constructorParameter);
+            compilerUtil.debugFileLocation(cspec);
+
+            cspec.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), constructorParameter),VARIABLE(constructorParameter)));
+            pastClass.CONSTRUCTOR(cspec);
+        }
+
+
+        if (parametericType!=null)  pastClass.TYPE_VARIABLES(parametericType);
+        pastClass.INTERFACES(tableConfiguratorType);
+
+
+        for (TemplateCompilerConfig config : configs.templates) {
+            final String templateNameClass = compilerUtil.templateNameClass(config.name);
+
+            final String inBeanNameClass = compilerUtil.beanNameClass(config.name, direction);
+            final String outBeanNameClass = compilerUtil.beanNameClass(config.name, outDirection);
+            final org.openprovenance.prov.template.compiler.past.type.ClassName className = get(templateNameClass,locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
+            String builderParameter = "builder";
+
+            Method method = METHOD(config.name)
+                    .COMMENT("Gets configuration\n")
+                    .COMMENT("@param $N builder for template $N\n", builderParameter, config.name)
+                    .COMMENT("@return $T\n", STRING_ARRAY)
+                    .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                    .PARAMETER(className, builderParameter)
+                    .RETURNS(typeName);
+            compilerUtil.debugFileLocation(method);
+
+            if (config instanceof SimpleTemplateCompilerConfig || defaultBehaviour) {
+
+                generator.accept(builderParameter,
+                        config.fullyQualifiedName,
+                        method,
+                        className,
+                        get(inBeanNameClass,(direction==BeanDirection.COMMON)? locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) : beanPackage),
+                        get(outBeanNameClass,(direction==BeanDirection.COMMON)? locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) : beanPackage)
+                );
+            } else {
+                method.BODY(RETURN(Constant.getNull()));
+            }
+            pastClass.METHOD(method);
+
+        }
+
+        TypeSpec.Builder builder = new Poet().emitBuilder(pastClass);
+
+        if (optionalCode!=null) {
+            optionalCode.accept(builder);
+        }
+
+
+
+        String thePackage=locations.getFilePackage(configs.name, theConfiguratorName);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, theConfiguratorName, thePackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, theConfiguratorName, thePackage, configs, fileName, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator,pythonGenerator);
+    }
+
+    public SpecificationFile generateConfigurator(TemplatesProjectConfiguration configs,
+                                                  Locations locations,
+                                                  String theConfiguratorName,
                                                   TypeName typeName,
                                                   SixtetConsumer<String, String, MethodSpec.Builder, TypeName, TypeName, TypeName> generator,
                                                   String generatorMethod,
@@ -96,10 +229,16 @@ public class CompilerConfigurations {
 
         final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, TABLE_CONFIGURATOR),TABLE_CONFIGURATOR), typeName);
 
+        PastFactory pastFactory=new PastFactory();
+        Class pastClass = pastFactory.CLASS(theConfiguratorName)
+                .MODIFIERS(Modifier.PUBLIC)
+                .COMMENT("The table configurator $N\n", theConfiguratorName);
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(theConfiguratorName);
-        builder.addJavadoc("The table configurator $N\n", theConfiguratorName);
 
+        //TypeSpec.Builder builder = compilerUtil.generateClassInit(theConfiguratorName);
+        //builder.addJavadoc("The table configurator $N\n", theConfiguratorName);
+
+        TypeSpec.Builder builder = new Poet().emitBuilder(pastClass);
 
         if (parametericType!=null)  builder.addTypeVariable(parametericType);
 
@@ -115,8 +254,8 @@ public class CompilerConfigurations {
             builder.addMethod(cspec.build());
         }
 
-
         builder.addSuperinterface(tableConfiguratorType);
+
 
         for (TemplateCompilerConfig config : configs.templates) {
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
@@ -141,15 +280,15 @@ public class CompilerConfigurations {
             if (config instanceof SimpleTemplateCompilerConfig || defaultBehaviour) {
 
                 generator.accept(builderParameter,
-                                 config.fullyQualifiedName,
-                                 mspec,
-                                className,
-                                ClassName.get((direction==BeanDirection.COMMON)? locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) : beanPackage, inBeanNameClass),
-                                ClassName.get((direction==BeanDirection.COMMON)? locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) : beanPackage, outBeanNameClass)
-                        );
+                        config.fullyQualifiedName,
+                        mspec,
+                        className,
+                        ClassName.get((direction==BeanDirection.COMMON)? locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) : beanPackage, inBeanNameClass),
+                        ClassName.get((direction==BeanDirection.COMMON)? locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) : beanPackage, outBeanNameClass)
+                );
             } else {
                 mspec.addStatement("return$Nnull", "/*null*/");
-               // generateUnsupportedException(mspec);
+                // generateUnsupportedException(mspec);
             }
             builder.addMethod(mspec.build());
 
@@ -166,7 +305,7 @@ public class CompilerConfigurations {
 
         JavaFile myfile = compilerUtil.specWithComment(theConfigurator, configs, thePackage, stackTraceElement);
 
-       // return new SpecificationFile(myfile, directory, fileName, configs.configurator_package);
+        // return new SpecificationFile(myfile, directory, fileName, configs.configurator_package);
 
         List<String> toGeneratePython= Stream.of(BUILDER_CONFIGURATOR, CONVERTER_CONFIGURATOR, CSV_CONFIGURATOR).map(x->x+".java").collect(Collectors.toList());
 
@@ -178,15 +317,27 @@ public class CompilerConfigurations {
 
     }
 
-    public SpecificationFile generateRelation0Configurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+    /*
+    public SpecificationFile generateRelation0Configurator_old(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, mapString2MapString2IntArray, this::generateRelation0, "generateRelation0Configurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
+    }
+
+     */
+    public SpecificationFile generateRelation0Configurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName, MAP_STRING_MAP_STRING_INTARRAY, this::generateRelation0, "generateRelation0Configurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateRelationConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, PARAMETRIC_T, this::generateRelation, "generateRelationConfigurator", BeanDirection.COMMON, BiFunctionOfString2StringArray, CONVERTER_VAR, PARAMETRIC_T, false, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateBuilderProcessorConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName, T(), this::generateBuilderProcessor, "generateBuilderProcessorConfigurator", BeanDirection.COMMON, FUNCTION_BUILDER_T, PROCESSOR, T(), false, null, BeanDirection.COMMON, directory, fileName);
+    }
+    /*
+    public SpecificationFile generateBuilderProcessorConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, PARAMETRIC_T, this::generateBuilderProcessor, "generateBuilderProcessorConfigurator", BeanDirection.COMMON, FunctionOfString2StringArray, PROCESSOR, PARAMETRIC_T, false, null, BeanDirection.COMMON, directory, fileName);
     }
+
+     */
 
     public SpecificationFile generateObjectRecordMakerConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, FunctionOfObjectArray2ObjectArray, new WrapperClass(locations)::generateObjectRecordMaker, "generateObjectRecordMakerConfigurator", BeanDirection.COMMON, MapString2FileBuilder, DISPATCHER_VAR, null, false, null, BeanDirection.COMMON, directory, fileName);
@@ -205,18 +356,34 @@ public class CompilerConfigurations {
         return  generateConfigurator(configs, locations, theConfiguratorName, stringArray, this::generateOutputPropertyOrder, "generateOutputsConfigurator", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateCsvConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_OBJARRAY_TO_STRING, this::generateMethodRecord2CsvConverter, "generateCsvConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
+    }
+    /*
+        public SpecificationFile generateCsvConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, processorOfString, this::generateMethodRecord2CsvConverter, "generateCsvConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
+     */
+    public SpecificationFile generateBuilderConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName,  get(BUILDER_INTERFACE,CLIENT_PACKAGE), this::generateReturnSelf, "generateReturnSelf", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
+    }
+    /*
     public SpecificationFile generateBuilderConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, ClassName.get(CLIENT_PACKAGE,"Builder"), this::generateReturnSelf, "generateBuilderConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
+
+     */
 
     public SpecificationFile generateSqlInsertConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, ClassName.get(String.class), this::generateSqlInsert, "generateSqlInsertConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateConverterConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_OBJARRAY_TO_ANY, this::generateMethodRecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
+    }
+    /*
+        public SpecificationFile generateConverterConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodRecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
+     */
     public SpecificationFile generateRecord2RecordConfiguration(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         Consumer<TypeSpec.Builder> optionalCode=
                 builder -> // add static interface declaration
@@ -242,20 +409,33 @@ public class CompilerConfigurations {
     public void generateMethodRecord2SqlConverter(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.aRecord2SqlConverter", builderParameter);
     }
-    public void generateMethodRecord2CsvConverter(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
-        mspec.addStatement("return $N.processorConverter($N.aArgs2CsVConverter)", builderParameter, builderParameter);
+    public void generateMethodRecord2CsvConverter(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+        mspec.BODY(RETURN(METHOD_CALL(VARIABLE(builderParameter), "processorConverter", List.of(METHOD_CALL(VARIABLE(builderParameter), "aArgs2CsVConverter" )))));
+        //"return $N.processorConverter($N.aArgs2CsVConverter)", builderParameter, builderParameter);
     }
     public void generatePropertyOrder(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.getPropertyOrder()", builderParameter);
     }
+    /*
     public void generateRelation0(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $T.__relations", className);
+    }
+
+     */
+    public void generateRelation0(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+        mspec.BODY((RETURN(METHOD_CALL((org.openprovenance.prov.template.compiler.past.type.ClassName)className,"__relations"))));
     }
     public void generateRelation(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.apply($T.__relations, $N.getPropertyOrder())", CONVERTER_VAR, className, builderParameter);
     }
+    /*
     public void generateBuilderProcessor(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.apply($N)", PROCESSOR, builderParameter);
+    }
+
+     */
+    public void generateBuilderProcessor(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+        mspec.BODY(RETURN(FUNCTIONAL_METHOD_CALL(VARIABLE(PROCESSOR, FIELD_VARIABLE),"apply", List.of(VARIABLE(builderParameter)))));//"return $N.apply($N)", PROCESSOR, builderParameter);
     }
 
     static class WrapperClass {
@@ -309,9 +489,15 @@ public class CompilerConfigurations {
     public void generateSqlInsert(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.getSQLInsert()", builderParameter);
     }
+    public void generateMethodRecordConverter(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+        mspec.BODY(RETURN(METHOD_CALL(VARIABLE(builderParameter), "aRecord2BeanConverter"))); //"return $N.aRecord2BeanConverter", builderParameter);
+    }
+    /*
     public void generateMethodRecordConverter(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.aRecord2BeanConverter", builderParameter);
     }
+
+     */
     public void generateMethodRecord2RecordConverter(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return x -> builder.aRecord2BeanConverter.apply(x).process(builder.aArgs2RecordConverter())");
     }
@@ -337,7 +523,13 @@ public class CompilerConfigurations {
         mspec.addStatement("return enactor");
     }
 
+    public void generateReturnSelf(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+        mspec.BODY(RETURN(VARIABLE(builderParameter)));//("return $N", builderParameter);
+    }
+    /*
     public void generateReturnSelf(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N", builderParameter);
     }
+    *
+     */
 }

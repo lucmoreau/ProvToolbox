@@ -18,5 +18,13 @@ class List:
         self._list.append(o)
         return self  # Allow method chaining
 
+    def size(self):
+        return len(self._list)
+
+    def get(self, k):
+        return self._list[k]
+
+    def __iter__(self):
+        yield from self._list
 
 

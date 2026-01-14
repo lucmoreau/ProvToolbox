@@ -519,9 +519,9 @@ public class CompilerConfigurations {
 
         public void generateMethodEnactor2(String builderParameter, String fullyQualifiedName, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName _inType, org.openprovenance.prov.template.compiler.past.type.TypeName _outType) {
             String inPackage=locations.getBeansPackage(fullyQualifiedName, BeanDirection.INPUTS);
-            org.openprovenance.prov.template.compiler.past.type.ClassName inType=get(_inType.toString().substring(_inType.toString().lastIndexOf('.')+1),inPackage);
+            org.openprovenance.prov.template.compiler.past.type.ClassName inType=get(((org.openprovenance.prov.template.compiler.past.type.ClassName)_inType).simpleName,inPackage);
             String outPackage=locations.getBeansPackage(fullyQualifiedName, BeanDirection.OUTPUTS);
-            org.openprovenance.prov.template.compiler.past.type.ClassName outType=get(_outType.toString().substring(_outType.toString().lastIndexOf('.')+1),inPackage);
+            org.openprovenance.prov.template.compiler.past.type.ClassName outType=get(((org.openprovenance.prov.template.compiler.past.type.ClassName)_outType).simpleName,inPackage);
 
             compilerConfigurations.generateMethodEnactor2(builderParameter, fullyQualifiedName, mspec, className, inType, outType);
         }

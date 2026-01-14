@@ -21,21 +21,26 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.squareup.javapoet.TypeSpec.interfaceBuilder;
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.BUILDER_INTERFACE;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.LambdaExpression.LAMBDA;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.FUNCTIONAL_METHOD_CALL;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.FIELD_VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.FUNCTION_OBJARRAY_TO_TYPE;
 import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
 public class CompilerConfigurations {
@@ -112,7 +117,7 @@ public class CompilerConfigurations {
         return generateConfigurator(configs, locations, theConfiguratorName, typeName, generator, generatorMethod, direction, constructParameterType, constructorParameter, parametericType, defaultBehaviour, beanPackage, outDirection, directory, fileName, null);
     }
 
-    public SpecificationFile generateConfigurator(TemplatesProjectConfiguration configs,
+    private SpecificationFile generateConfigurator(TemplatesProjectConfiguration configs,
                                                   Locations locations,
                                                   String theConfiguratorName,
                                                   org.openprovenance.prov.template.compiler.past.type.TypeName typeName,
@@ -207,7 +212,7 @@ public class CompilerConfigurations {
         return new SpecificationFile(javaGenerator,pythonGenerator);
     }
 
-    public SpecificationFile generateConfigurator(TemplatesProjectConfiguration configs,
+    private SpecificationFile generateConfigurator(TemplatesProjectConfiguration configs,
                                                   Locations locations,
                                                   String theConfiguratorName,
                                                   TypeName typeName,
@@ -324,8 +329,16 @@ public class CompilerConfigurations {
     public SpecificationFile generateRelation0Configurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, MAP_STRING_MAP_STRING_INTARRAY, this::generateRelation0, "generateRelation0Configurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
+
+    /*
+        public SpecificationFile generateRelationConfigurator_old(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName, PARAMETRIC_T, this::generateRelation_old, "generateRelationConfigurator", BeanDirection.COMMON, BiFunctionOfString2StringArray, CONVERTER_VAR, PARAMETRIC_T, false, null, BeanDirection.COMMON, directory, fileName);
+    }
+
+     */
+
     public SpecificationFile generateRelationConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, PARAMETRIC_T, this::generateRelation, "generateRelationConfigurator", BeanDirection.COMMON, BiFunctionOfString2StringArray, CONVERTER_VAR, PARAMETRIC_T, false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, T(), this::generateRelation, "generateRelationConfigurator", BeanDirection.COMMON, BIFUNCTION_MAP_STRING_MAP_STRING_INTARRAY_STRINGARRAY_TO_T, CONVERTER_VAR, T(), false, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateBuilderProcessorConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, T(), this::generateBuilderProcessor, "generateBuilderProcessorConfigurator", BeanDirection.COMMON, FUNCTION_BUILDER_T, PROCESSOR, T(), false, null, BeanDirection.COMMON, directory, fileName);
@@ -338,7 +351,7 @@ public class CompilerConfigurations {
      */
 
     public SpecificationFile generateObjectRecordMakerConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, FunctionOfObjectArray2ObjectArray, new WrapperClass(locations)::generateObjectRecordMaker, "generateObjectRecordMakerConfigurator", BeanDirection.COMMON, MapString2FileBuilder, DISPATCHER_VAR, null, false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_OBJARRAY_TO_OBJ_ARRAY, new WrapperClass(locations)::generateObjectRecordMaker, "generateObjectRecordMakerConfigurator", BeanDirection.COMMON, MAP_STRING_FILEBUILDER, DISPATCHER_VAR, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
 
     /*
@@ -388,7 +401,8 @@ public class CompilerConfigurations {
         return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodRecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
      */
-    public SpecificationFile generateRecord2RecordConfiguration(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+    /*
+       public SpecificationFile generateRecord2RecordConfiguration(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         Consumer<TypeSpec.Builder> optionalCode=
                 builder -> // add static interface declaration
                         builder.addType(TypeSpec.interfaceBuilder(RECORD_2_RECORD)
@@ -402,12 +416,19 @@ public class CompilerConfigurations {
         TypeName record2recordType=ClassName.get(locations.getFilePackage(configs.name, RECORD_2_RECORD_CONFIGURATOR), RECORD_2_RECORD_CONFIGURATOR+"."+RECORD_2_RECORD);
         return  generateConfigurator(configs, locations, theConfiguratorName, record2recordType, this::generateMethodRecord2RecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName, optionalCode);
     }
+     */
+    public SpecificationFile generateRecord2RecordConfiguration(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+       // internal interfacee generated separately
+        // was org.openprovenance.prov.template.compiler.past.type.ClassName record2recordType=get(RECORD_2_RECORD_CONFIGURATOR+"."+RECORD_2_RECORD, locations.getFilePackage(configs.name, RECORD_2_RECORD_CONFIGURATOR));
+        org.openprovenance.prov.template.compiler.past.type.ClassName record2recordType=get(RECORD_2_RECORD, locations.getFilePackage(configs.name, RECORD_2_RECORD_CONFIGURATOR));
+        return  generateConfigurator(configs, locations, theConfiguratorName, record2recordType, this::generateMethodRecord2RecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
+    }
     public SpecificationFile generateEnactorConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor, "generateEnactorConfigurator", BeanDirection.COMMON, compilerUtil.getClass(configs.name, BEAN_PROCESSOR,locations), ENACTOR_VAR, null, false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_OBJARRAY_TO_ANY, this::generateMethodEnactor, "generateEnactorConfigurator", BeanDirection.COMMON, get(BEAN_PROCESSOR,locations.getFilePackage(configs.name, BEAN_PROCESSOR)), ENACTOR_VAR, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
 
     public SpecificationFile generateEnactorConfigurator2(TemplatesProjectConfiguration configs, String theConfiguratorName, String integrator_package, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, new WrapperClass2(locations,this)::generateMethodEnactor2, "generateEnactorConfigurator2", BeanDirection.INPUTS, ClassName.get(locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR),INPUT_OUTPUT_PROCESSOR), ENACTOR_VAR, null, false, integrator_package,BeanDirection.OUTPUTS, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_OBJARRAY_TO_ANY, new WrapperClass2(locations,this)::generateMethodEnactor2, "generateEnactorConfigurator2", BeanDirection.INPUTS, get(INPUT_OUTPUT_PROCESSOR,locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR)), ENACTOR_VAR, null, false, integrator_package,BeanDirection.OUTPUTS, directory, fileName);
     }
 
     public void generateMethodRecord2SqlConverter(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
@@ -429,9 +450,19 @@ public class CompilerConfigurations {
     public void generateRelation0(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
         mspec.BODY((RETURN(METHOD_CALL((org.openprovenance.prov.template.compiler.past.type.ClassName)className,"__relations"))));
     }
-    public void generateRelation(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
+
+    public void generateRelation(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+        mspec.addStatement(RETURN(FUNCTIONAL_METHOD_CALL(VARIABLE(CONVERTER_VAR, FIELD_VARIABLE), "apply", List.of(METHOD_CALL((org.openprovenance.prov.template.compiler.past.type.ClassName)className,"__relations"), METHOD_CALL(VARIABLE(builderParameter), "getPropertyOrder", List.of())))));
+                //"return $N.apply($T.__relations, $N.getPropertyOrder())", CONVERTER_VAR, className, builderParameter);
+    }
+
+    /*
+        public void generateRelation_old(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.apply($T.__relations, $N.getPropertyOrder())", CONVERTER_VAR, className, builderParameter);
     }
+
+     */
+
     /*
     public void generateBuilderProcessor(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.apply($N)", PROCESSOR, builderParameter);
@@ -445,17 +476,35 @@ public class CompilerConfigurations {
     static class WrapperClass {
         private final Locations locations;
 
-        public void generateObjectRecordMaker(String builderParameter, String fullyQualifiedName, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName outType) {
+        public void generateObjectRecordMaker(String builderParameter, String fullyQualifiedName, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName outType) {
 
             final String backendPackage = locations.getBackendPackage(fullyQualifiedName);
 
-            String backendBuilder = className.toString();
+            String backendBuilder = ((org.openprovenance.prov.template.compiler.past.type.ClassName)className).simpleName;
             // return suffix after last dot
-            final int pos = backendBuilder.lastIndexOf('.');
-            backendBuilder = backendBuilder.substring(pos + 1);
+           // final int pos = backendBuilder.lastIndexOf('.');
+           // backendBuilder = backendBuilder.substring(pos + 1);
 
-            mspec.addStatement("$T $N=($T) $N.get(builder.getName())", ClassName.get(backendPackage,backendBuilder), TEMPLATE_BUILDER_VARIABLE, ClassName.get(backendPackage,backendBuilder), DISPATCHER_VAR);
-            mspec.addStatement("return record -> $N.make(record, $N.getTypedRecord())", TEMPLATE_BUILDER_VARIABLE, TEMPLATE_BUILDER_VARIABLE);
+            mspec.BODY(
+                    ASSIGNMENT(get(backendBuilder, backendPackage), VARIABLE(TEMPLATE_BUILDER_VARIABLE),
+                            CAST(
+                                    get(backendBuilder, backendPackage),
+                                    METHOD_CALL(
+                                            VARIABLE(DISPATCHER_VAR, FIELD_VARIABLE),
+                                            "get",
+                                            List.of(METHOD_CALL(VARIABLE(builderParameter), "getName", List.of()))
+                                    ))),
+
+                    RETURN(LAMBDA(PARAMETER("record", OBJECT_ARRAY))
+                            .BODY(RETURN(METHOD_CALL(
+                                            VARIABLE(TEMPLATE_BUILDER_VARIABLE),
+                                            "make",
+                                            List.of(VARIABLE("record"), METHOD_CALL(VARIABLE(TEMPLATE_BUILDER_VARIABLE), "getTypedRecord", List.of()))
+                                    )
+                            )))  );
+
+           // mspec.addStatement("$T $N=($T) $N.get(builder.getName())", ClassName.get(backendPackage,backendBuilder), TEMPLATE_BUILDER_VARIABLE, ClassName.get(backendPackage,backendBuilder), DISPATCHER_VAR);
+//           / mspec.addStatement("return record -> $N.make(record, $N.getTypedRecord())", TEMPLATE_BUILDER_VARIABLE, TEMPLATE_BUILDER_VARIABLE);
         }
 
         WrapperClass(Locations locations) {
@@ -468,11 +517,11 @@ public class CompilerConfigurations {
         private final Locations locations;
         private final CompilerConfigurations compilerConfigurations;
 
-        public void generateMethodEnactor2(String builderParameter, String fullyQualifiedName, MethodSpec.Builder mspec, TypeName className, TypeName _inType, TypeName _outType) {
+        public void generateMethodEnactor2(String builderParameter, String fullyQualifiedName, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName _inType, org.openprovenance.prov.template.compiler.past.type.TypeName _outType) {
             String inPackage=locations.getBeansPackage(fullyQualifiedName, BeanDirection.INPUTS);
-            TypeName inType=ClassName.get(inPackage,_inType.toString().substring(_inType.toString().lastIndexOf('.')+1));
+            org.openprovenance.prov.template.compiler.past.type.ClassName inType=get(_inType.toString().substring(_inType.toString().lastIndexOf('.')+1),inPackage);
             String outPackage=locations.getBeansPackage(fullyQualifiedName, BeanDirection.OUTPUTS);
-            TypeName outType=ClassName.get(inPackage,_outType.toString().substring(_outType.toString().lastIndexOf('.')+1));
+            org.openprovenance.prov.template.compiler.past.type.ClassName outType=get(_outType.toString().substring(_outType.toString().lastIndexOf('.')+1),inPackage);
 
             compilerConfigurations.generateMethodEnactor2(builderParameter, fullyQualifiedName, mspec, className, inType, outType);
         }
@@ -502,9 +551,79 @@ public class CompilerConfigurations {
     }
 
      */
-    public void generateMethodRecord2RecordConverter(String builderParameter, String name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
-        mspec.addStatement("return x -> builder.aRecord2BeanConverter.apply(x).process(builder.aArgs2RecordConverter())");
+    public void generateMethodRecord2RecordConverter(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+        mspec.BODY(RETURN(LAMBDA(PARAMETER("x", OBJECT_ARRAY))
+                .BODY(RETURN(
+                        FUNCTIONAL_METHOD_CALL(
+                                FUNCTIONAL_METHOD_CALL(METHOD_CALL(
+                                                VARIABLE(builderParameter),
+                                                "aRecord2BeanConverter"
+                                        ),
+                                        "apply",
+                                        List.of(VARIABLE("x"))),
+                                "process",
+                                List.of(
+                                        METHOD_CALL(
+                                                VARIABLE(builderParameter),
+                                                "aArgs2RecordConverter",
+                                                List.of()
+                                        )
+                                )
+                        )
+                ))));
+        //("return x -> builder.aRecord2BeanConverter.apply(x).process(builder.aArgs2RecordConverter())");
     }
+
+
+
+    public void generateMethodEnactor(String builderParameter, String _name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+        mspec.COMMENT("Generated Automatically by ProvToolbox method $N.$N()", getClass().getName(), "generateMethodEnactor");
+        mspec.BODY(
+
+                ASSIGNMENT(FUNCTION_OBJARRAY_TO_TYPE(beanType), VARIABLE("beanConverter"),
+                        METHOD_CALL(VARIABLE(builderParameter), "aRecord2BeanConverter")),
+
+                ASSIGNMENT(FUNCTION_OBJARRAY_TO_TYPE(beanType), VARIABLE("enactor"),
+
+                        LAMBDA(PARAMETER("array", OBJECT_ARRAY))
+                                .BODY(ASSIGNMENT(beanType, VARIABLE("bean"),
+                                                FUNCTIONAL_METHOD_CALL(VARIABLE("beanConverter"), "apply", List.of(VARIABLE("array")))),
+                                        RETURN(
+                                                FUNCTIONAL_METHOD_CALL(
+                                                        VARIABLE(ENACTOR_VAR),
+                                                        "process",
+                                                        List.of(VARIABLE("bean"))
+                                                )
+                                        ))),
+                RETURN(VARIABLE("enactor"))
+        );
+    }
+    public void generateMethodEnactor2(String builderParameter, String _name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName inputBeanType, org.openprovenance.prov.template.compiler.past.type.TypeName outputBeanType) {
+
+        mspec.COMMENT("Generated Automatically by ProvToolbox method $N.$N()", getClass().getName(), "generateMethodEnactor2");
+
+        mspec.BODY(
+                ASSIGNMENT(FUNCTION_OBJARRAY_TO_TYPE(inputBeanType), VARIABLE("beanConverter"),
+                        METHOD_CALL(METHOD_CALL(VARIABLE(builderParameter), "getIntegrator", List.of()),
+                                "aRecord2InputsConverter")),
+
+                ASSIGNMENT(FUNCTION_OBJARRAY_TO_TYPE(outputBeanType), VARIABLE("enactor"),
+                        LAMBDA(PARAMETER("array", OBJECT_ARRAY))
+                                .BODY(ASSIGNMENT(inputBeanType, VARIABLE("bean"),
+                                                FUNCTIONAL_METHOD_CALL(VARIABLE("beanConverter"), "apply", List.of(VARIABLE("array")))),
+                                        RETURN(
+                                                FUNCTIONAL_METHOD_CALL(
+                                                        VARIABLE(ENACTOR_VAR),
+                                                        "process",
+                                                        List.of(VARIABLE("bean"))
+                                                )
+                                        ))),
+                RETURN(VARIABLE("enactor")));
+
+    }
+
+    /*
+
     public void generateMethodEnactor(String builderParameter, String _name, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("$T beanConverter=$N.aRecord2BeanConverter", functionObjArrayTo(beanType), builderParameter);
 
@@ -526,6 +645,7 @@ public class CompilerConfigurations {
                 "                }", functionObjArrayTo(outputBeanType),inputBeanType, ENACTOR_VAR);
         mspec.addStatement("return enactor");
     }
+     */
 
     public void generateReturnSelf(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
         mspec.BODY(RETURN(VARIABLE(builderParameter)));//("return $N", builderParameter);

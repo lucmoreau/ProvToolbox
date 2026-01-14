@@ -1,28 +1,23 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.*;
+
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
-import org.openprovenance.prov.template.compiler.past.emitter.Poet;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
+import org.openprovenance.prov.template.compiler.past.type.TypeName;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
-import org.openprovenance.prov.template.log2prov.FileBuilder;
+
 
 import javax.lang.model.element.Modifier;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static com.squareup.javapoet.TypeSpec.interfaceBuilder;
-import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
+
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.BUILDER_INTERFACE;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
@@ -52,44 +47,19 @@ public class CompilerConfigurations {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
-
-    static public final ParameterizedTypeName functionObjArrayTo (TypeName returnType) {
-        return ParameterizedTypeName.get(ClassName.get(Function.class), ArrayTypeName.of(Object.class), returnType);
-    }
-
-    static final TypeVariableName PARAMETRIC_T=TypeVariableName.get("T");
-    public static final ParameterizedTypeName processorOfStringOLD = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"ProcessorArgsInterface"), TypeName.get(String.class));
-    public static final ParameterizedTypeName processorOfString = functionObjArrayTo(TypeName.get(String.class));
-    static final ParameterizedTypeName processorOfUnknown = functionObjArrayTo(TypeVariableName.get("?"));
-    public static final TypeName stringArray = ArrayTypeName.get(String[].class);
-    static final TypeName intArray = ArrayTypeName.get(int[].class);
-    static final ParameterizedTypeName mapString2StringArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), stringArray);
-    static final ParameterizedTypeName mapString2StringList = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(String.class)));
-    static final ParameterizedTypeName mapString2IntArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), intArray);
-    static final ParameterizedTypeName mapString2MapString2IntArray = ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), mapString2IntArray);
-
-    static final ParameterizedTypeName BiFunctionOfString2StringArray = ParameterizedTypeName.get(ClassName.get(java.util.function.BiFunction.class), mapString2MapString2IntArray, stringArray, PARAMETRIC_T);
-    static final ParameterizedTypeName FunctionOfString2StringArray = ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ClassName.get(CLIENT_PACKAGE,BUILDER_INTERFACE), PARAMETRIC_T);
-
-    static final ParameterizedTypeName FunctionOfObjectArray2ObjectArray = ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ArrayTypeName.get(Object[].class), ArrayTypeName.get(Object[].class));
-
-    static final ParameterizedTypeName MapString2FileBuilder= ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), ClassName.get(FileBuilder.class));
-
     static final String CONVERTER_VAR="converter";
 
 
     static final String ENACTOR_VAR = "beanEnactor";
 
-
-
-    public SpecificationFile generateConfigurator(TemplatesProjectConfiguration configs,
+    private SpecificationFile generateConfigurator(TemplatesProjectConfiguration configs,
                                                   Locations locations,
                                                   String theConfiguratorName,
-                                                  org.openprovenance.prov.template.compiler.past.type.TypeName typeName,
-                                                  SixtetConsumer<String, String, Method, org.openprovenance.prov.template.compiler.past.type.TypeName, org.openprovenance.prov.template.compiler.past.type.TypeName, org.openprovenance.prov.template.compiler.past.type.TypeName> generator,
+                                                  TypeName typeName,
+                                                  SixtetConsumer<String, String, Method, ClassName, TypeName, TypeName> generator,
                                                   String generatorMethod,
                                                   BeanDirection direction,
-                                                  org.openprovenance.prov.template.compiler.past.type.TypeName constructParameterType,
+                                                  TypeName constructParameterType,
                                                   String constructorParameter,
                                                   TypeVariable parametericType,
                                                   boolean defaultBehaviour,
@@ -97,25 +67,6 @@ public class CompilerConfigurations {
                                                   BeanDirection outDirection,
                                                   String directory,
                                                   String fileName) {
-        return generateConfigurator(configs, locations, theConfiguratorName, typeName, generator, generatorMethod, direction, constructParameterType, constructorParameter, parametericType, defaultBehaviour, beanPackage, outDirection, directory, fileName, null);
-    }
-
-    private SpecificationFile generateConfigurator(TemplatesProjectConfiguration configs,
-                                                  Locations locations,
-                                                  String theConfiguratorName,
-                                                  org.openprovenance.prov.template.compiler.past.type.TypeName typeName,
-                                                  SixtetConsumer<String, String, Method, org.openprovenance.prov.template.compiler.past.type.TypeName, org.openprovenance.prov.template.compiler.past.type.TypeName, org.openprovenance.prov.template.compiler.past.type.TypeName> generator,
-                                                  String generatorMethod,
-                                                  BeanDirection direction,
-                                                  org.openprovenance.prov.template.compiler.past.type.TypeName constructParameterType,
-                                                  String constructorParameter,
-                                                  org.openprovenance.prov.template.compiler.past.type.TypeVariable parametericType,
-                                                  boolean defaultBehaviour,
-                                                  String beanPackage,
-                                                  BeanDirection outDirection,
-                                                  String directory,
-                                                  String fileName,
-                                                  Consumer<TypeSpec.Builder> optionalCode) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         final ParameterizedType tableConfiguratorType = ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get(TABLE_CONFIGURATOR,locations.getFilePackage(configs.name, TABLE_CONFIGURATOR)), typeName);
@@ -176,13 +127,6 @@ public class CompilerConfigurations {
             pastClass.METHOD(method);
 
         }
-
-        TypeSpec.Builder builder = new Poet().emitBuilder(pastClass);
-
-        if (optionalCode!=null) {
-            optionalCode.accept(builder);
-        }
-
 
 
         String thePackage=locations.getFilePackage(configs.name, theConfiguratorName);
@@ -247,38 +191,38 @@ public class CompilerConfigurations {
         return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_OBJARRAY_TO_ANY, new WrapperClass2(locations,this)::generateMethodEnactor2, "generateEnactorConfigurator2", BeanDirection.INPUTS, get(INPUT_OUTPUT_PROCESSOR,locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR)), ENACTOR_VAR, null, false, integrator_package,BeanDirection.OUTPUTS, directory, fileName);
     }
 
-    public void generateMethodRecord2SqlConverter(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+    public void generateMethodRecord2SqlConverter(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
         mspec.BODY(RETURN(METHOD_CALL(VARIABLE(builderParameter),"aRecord2SqlConverter"))); //"return $N.aRecord2SqlConverter", builderParameter);
     }
 
-    public void generateMethodRecord2CsvConverter(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+    public void generateMethodRecord2CsvConverter(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
         mspec.BODY(RETURN(METHOD_CALL(VARIABLE(builderParameter), "processorConverter", List.of(METHOD_CALL(VARIABLE(builderParameter), "aArgs2CsVConverter")))));
     }
 
-    public void generatePropertyOrder(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+    public void generatePropertyOrder(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
         mspec.addStatement(RETURN(METHOD_CALL(VARIABLE(builderParameter), "getPropertyOrder", List.of()))); //"return $N.getPropertyOrder()", builderParameter);
     }
 
-    public void generateRelation0(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
-        mspec.BODY((RETURN(METHOD_CALL((org.openprovenance.prov.template.compiler.past.type.ClassName)className,"__relations"))));
+    public void generateRelation0(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
+        mspec.BODY((RETURN(METHOD_CALL(className,"__relations"))));
     }
 
-    public void generateRelation(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
-        mspec.addStatement(RETURN(FUNCTIONAL_METHOD_CALL(VARIABLE(CONVERTER_VAR, FIELD_VARIABLE), "apply", List.of(METHOD_CALL((org.openprovenance.prov.template.compiler.past.type.ClassName)className,"__relations"), METHOD_CALL(VARIABLE(builderParameter), "getPropertyOrder", List.of())))));
+    public void generateRelation(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
+        mspec.addStatement(RETURN(FUNCTIONAL_METHOD_CALL(VARIABLE(CONVERTER_VAR, FIELD_VARIABLE), "apply", List.of(METHOD_CALL(className,"__relations"), METHOD_CALL(VARIABLE(builderParameter), "getPropertyOrder", List.of())))));
     }
 
-    public void generateBuilderProcessor(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+    public void generateBuilderProcessor(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
         mspec.BODY(RETURN(FUNCTIONAL_METHOD_CALL(VARIABLE(PROCESSOR, FIELD_VARIABLE),"apply", List.of(VARIABLE(builderParameter)))));//"return $N.apply($N)", PROCESSOR, builderParameter);
     }
 
     static class WrapperClass {
         private final Locations locations;
 
-        public void generateObjectRecordMaker(String builderParameter, String fullyQualifiedName, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName outType) {
+        public void generateObjectRecordMaker(String builderParameter, String fullyQualifiedName, Method mspec, ClassName className, TypeName beanType, TypeName outType) {
 
             final String backendPackage = locations.getBackendPackage(fullyQualifiedName);
 
-            String backendBuilder = ((org.openprovenance.prov.template.compiler.past.type.ClassName)className).simpleName;
+            String backendBuilder = className.simpleName;
 
             mspec.BODY(
                     ASSIGNMENT(get(backendBuilder, backendPackage), VARIABLE(TEMPLATE_BUILDER_VARIABLE),
@@ -309,7 +253,7 @@ public class CompilerConfigurations {
         private final Locations locations;
         private final CompilerConfigurations compilerConfigurations;
 
-        public void generateMethodEnactor2(String builderParameter, String fullyQualifiedName, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName _inType, org.openprovenance.prov.template.compiler.past.type.TypeName _outType) {
+        public void generateMethodEnactor2(String builderParameter, String fullyQualifiedName, Method mspec, TypeName className, TypeName _inType, TypeName _outType) {
             String inPackage=locations.getBeansPackage(fullyQualifiedName, BeanDirection.INPUTS);
             org.openprovenance.prov.template.compiler.past.type.ClassName inType=get(((org.openprovenance.prov.template.compiler.past.type.ClassName)_inType).simpleName,inPackage);
             String outPackage=locations.getBeansPackage(fullyQualifiedName, BeanDirection.OUTPUTS);
@@ -325,20 +269,20 @@ public class CompilerConfigurations {
     }
 
 
-    public void generateInputPropertyOrder(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
-        mspec.addStatement(RETURN(METHOD_CALL(VARIABLE(builderParameter), "getInputs", List.of())));//"return $N.getInputs()", builderParameter);
+    public void generateInputPropertyOrder(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
+        mspec.addStatement(RETURN(METHOD_CALL(VARIABLE(builderParameter), "getInputs", List.of())));
     }
-    public void generateOutputPropertyOrder(String builderParameter, String name, Method mspec,  org.openprovenance.prov.template.compiler.past.type.TypeName className,  org.openprovenance.prov.template.compiler.past.type.TypeName beanType,  org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
-        mspec.addStatement(RETURN(METHOD_CALL(VARIABLE(builderParameter), "getOutputs", List.of()))); //"return $N.getOutputs()", builderParameter);
+    public void generateOutputPropertyOrder(String builderParameter, String name, Method mspec,  TypeName className,  TypeName beanType,  TypeName _out) {
+        mspec.addStatement(RETURN(METHOD_CALL(VARIABLE(builderParameter), "getOutputs", List.of())));
     }
-    public void generateSqlInsert(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
-        mspec.BODY(RETURN(METHOD_CALL(VARIABLE(builderParameter), "getSQLInsert", List.of()))); //"return $N.getSQLInsert()", builderParameter);
+    public void generateSqlInsert(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
+        mspec.BODY(RETURN(METHOD_CALL(VARIABLE(builderParameter), "getSQLInsert", List.of())));
     }
-    public void generateMethodRecordConverter(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
-        mspec.BODY(RETURN(METHOD_CALL(VARIABLE(builderParameter), "aRecord2BeanConverter"))); //"return $N.aRecord2BeanConverter", builderParameter);
+    public void generateMethodRecordConverter(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
+        mspec.BODY(RETURN(METHOD_CALL(VARIABLE(builderParameter), "aRecord2BeanConverter")));
     }
 
-    public void generateMethodRecord2RecordConverter(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+    public void generateMethodRecord2RecordConverter(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
         mspec.BODY(RETURN(LAMBDA(PARAMETER("x", OBJECT_ARRAY))
                 .BODY(RETURN(
                         FUNCTIONAL_METHOD_CALL(
@@ -362,7 +306,7 @@ public class CompilerConfigurations {
 
 
 
-    public void generateMethodEnactor(String builderParameter, String _name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+    public void generateMethodEnactor(String builderParameter, String _name, Method mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.COMMENT("Generated Automatically by ProvToolbox method $N.$N()", getClass().getName(), "generateMethodEnactor");
         mspec.BODY(
 
@@ -384,7 +328,7 @@ public class CompilerConfigurations {
                 RETURN(VARIABLE("enactor"))
         );
     }
-    public void generateMethodEnactor2(String builderParameter, String _name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName inputBeanType, org.openprovenance.prov.template.compiler.past.type.TypeName outputBeanType) {
+    public void generateMethodEnactor2(String builderParameter, String _name, Method mspec, TypeName className, TypeName inputBeanType, TypeName outputBeanType) {
 
         mspec.COMMENT("Generated Automatically by ProvToolbox method $N.$N()", getClass().getName(), "generateMethodEnactor2");
 
@@ -409,7 +353,7 @@ public class CompilerConfigurations {
     }
 
 
-    public void generateReturnSelf(String builderParameter, String name, Method mspec, org.openprovenance.prov.template.compiler.past.type.TypeName className, org.openprovenance.prov.template.compiler.past.type.TypeName beanType, org.openprovenance.prov.template.compiler.past.type.TypeName _out) {
+    public void generateReturnSelf(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
         mspec.BODY(RETURN(VARIABLE(builderParameter)));
     }
 

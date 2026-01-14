@@ -53,12 +53,10 @@ public class CompilerBeanEnactor2 {
 
 
         ClassName queryInvokerClass = ClassName.get(QUERY_INVOKER2, locations.getFilePackage(configs.name, Constants.QUERY_INVOKER2));
-        ClassName beanCompleterClass = ClassName.get(BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
 
         ClassName ioProcessorClass = ClassName.get(INPUT_OUTPUT_PROCESSOR,locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR));
         ClassName inputProcessorClass = ClassName.get(INPUT_PROCESSOR,locations.getFilePackage(configs.name, INPUT_PROCESSOR));
         pastClass.interfaces.add(ioProcessorClass);
-
 
         pastClass.FIELDS(
                 FIELD("checker", inputProcessorClass)

@@ -11,6 +11,7 @@ import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Constructor;
 import org.openprovenance.prov.template.compiler.past.Method;
 import org.openprovenance.prov.template.compiler.past.PastFactory;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 
 import javax.lang.model.element.Modifier;
@@ -51,32 +52,12 @@ public class CompilerBeanEnactor2 {
                 .TYPE_VARIABLES(TYPE_RESULT);
 
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName queryInvokerClass = org.openprovenance.prov.template.compiler.past.type.ClassName.get(QUERY_INVOKER2, locations.getFilePackage(configs.name, Constants.QUERY_INVOKER2));
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanCompleterClass = org.openprovenance.prov.template.compiler.past.type.ClassName.get(BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
+        ClassName queryInvokerClass = ClassName.get(QUERY_INVOKER2, locations.getFilePackage(configs.name, Constants.QUERY_INVOKER2));
+        ClassName beanCompleterClass = ClassName.get(BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName ioProcessorClass = org.openprovenance.prov.template.compiler.past.type.ClassName.get(INPUT_OUTPUT_PROCESSOR,locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR));
-        org.openprovenance.prov.template.compiler.past.type.ClassName inputProcessorClass = org.openprovenance.prov.template.compiler.past.type.ClassName.get(INPUT_PROCESSOR,locations.getFilePackage(configs.name, INPUT_PROCESSOR));
+        ClassName ioProcessorClass = ClassName.get(INPUT_OUTPUT_PROCESSOR,locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR));
+        ClassName inputProcessorClass = ClassName.get(INPUT_PROCESSOR,locations.getFilePackage(configs.name, INPUT_PROCESSOR));
         pastClass.interfaces.add(ioProcessorClass);
-
-
-        /*
-        MethodSpec.Builder method4 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
-                .addParameter(ParameterSpec.builder(typeResult,"rs").build())
-                .addParameter(ParameterSpec.builder(Object[].class,"extra").build())
-                .addParameter(ParameterSpec.builder(BIFUN,"postProcessing").build())
-                .returns(beanCompleterClass);
-        inface.addMethod(method4.build());
-
-        MethodSpec.Builder method5 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
-                .addParameter(ParameterSpec.builder(typeResult,"rs").build())
-                .addParameter(ParameterSpec.builder(BIFUN,"postProcessing").build())
-                .returns(beanCompleterClass);
-        inface.addMethod(method5.build());
-
-         */
-
 
 
         pastClass.FIELDS(
@@ -84,14 +65,11 @@ public class CompilerBeanEnactor2 {
                         .MODIFIERS(Modifier.FINAL, Modifier.PRIVATE));
 
 
-
-        // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
         final ParameterizedType ENACTOR_IMPLEMENTATION_TYPE= ParameterizedType.get(get(ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.ENACTOR_IMPLEMENTATION)), TYPE_RESULT);
 
         pastClass.FIELDS(
                 FIELD(REALISER, ENACTOR_IMPLEMENTATION_TYPE)
                         .MODIFIERS(Modifier.FINAL, Modifier.PRIVATE));
-
 
         Constructor cbuilder3= CONSTRUCTOR()
                 .MODIFIERS(Modifier.PUBLIC)
@@ -112,14 +90,12 @@ public class CompilerBeanEnactor2 {
 
         pastClass.CONSTRUCTOR(cbuilder3);
 
-
-
         for (TemplateCompilerConfig config : configs.templates) {
 
             final String outputNameClass = compilerUtil.outputsNameClass(config.name);
             final String inputNameClass = compilerUtil.inputsNameClass(config.name);
-            final org.openprovenance.prov.template.compiler.past.type.ClassName outputClassName = org.openprovenance.prov.template.compiler.past.type.ClassName.get(outputNameClass,locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
-            final org.openprovenance.prov.template.compiler.past.type.ClassName inputClassName = org.openprovenance.prov.template.compiler.past.type.ClassName.get(inputNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS));
+            final ClassName outputClassName = ClassName.get(outputNameClass,locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
+            final ClassName inputClassName = ClassName.get(inputNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS));
 
             Method mspec = METHOD(Constants.PROCESS_METHOD_NAME)
                     .MODIFIERS(Modifier.PUBLIC)
@@ -154,11 +130,6 @@ public class CompilerBeanEnactor2 {
 
                     )));
 
-            //           "return $N.generic_enact(new $T(),bean,\n" +
-            //         "                b -> checker.process(b),\n" +
-            //          "                (sb,b) -> new $T(sb).process(b),\n" +
-            //        "                (rs,b) -> $N.beanCompleterFactory(rs).process(b))", Constants.REALISER, outputClassName, queryInvokerClass, Constants.REALISER);
-
             pastClass.METHOD(mspec);
         }
 
@@ -169,8 +140,6 @@ public class CompilerBeanEnactor2 {
         Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + ".java", directory, stackTraceElement, compilerUtil);
 
-
-
         return new SpecificationFile(javaGenerator,pythonGenerator);
 
     }
@@ -178,17 +147,12 @@ public class CompilerBeanEnactor2 {
     SpecificationFile generateBeanEnactorImplementation(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-
-
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanCompleterClass = org.openprovenance.prov.template.compiler.past.type.ClassName.get(BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
-
+        ClassName beanCompleterClass = ClassName.get(BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
 
         Class intfce = pastFactory.INTERFACE(ENACTOR_IMPLEMENTATION)
                 .MODIFIERS(Modifier.PUBLIC)
                 .TYPE_VARIABLES(TYPE_RESULT);
 
-        //TypeSpec.Builder inface=compilerUtil.generateInterfaceInit(Constants.ENACTOR_IMPLEMENTATION);
-        //.addTypeVariable(typeResult);
 
         Method method1 = METHOD("generic_enact")
                 .MODIFIERS(Modifier.PUBLIC,Modifier.ABSTRACT)
@@ -235,16 +199,11 @@ public class CompilerBeanEnactor2 {
          */
 
 
-
-
         String myPackage= locations.getFilePackage(configs.name, fileName);
         String directory = locations.convertToDirectory(myPackage);
 
-
         Supplier<Boolean> pythonGenerator=() -> generatePython(intfce, myPackage, locations.python_dir, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(intfce, myPackage, configs, fileName + ".java", directory, stackTraceElement, compilerUtil);
-
-
 
         return new SpecificationFile(javaGenerator,pythonGenerator);
 

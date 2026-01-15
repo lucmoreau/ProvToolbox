@@ -11,6 +11,8 @@ public class AnnotationConverter {
         map.put(ClassInitialiser.NAME, new ClassInitialiser());
         map.put(Ignore.NAME, new Ignore());
         map.put(ClassMethod.NAME, new ClassMethod());
+        map.put(RegisterMethod.NAME, new RegisterMethod());
+        map.put(SingleDispatchMethod.NAME, new SingleDispatchMethod());
         return map;
     }
 

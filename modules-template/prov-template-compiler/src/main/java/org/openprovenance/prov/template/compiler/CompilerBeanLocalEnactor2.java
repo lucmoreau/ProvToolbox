@@ -7,6 +7,12 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.past.Constant;
+import org.openprovenance.prov.template.compiler.past.Method;
+import org.openprovenance.prov.template.compiler.past.Parameter;
+import org.openprovenance.prov.template.compiler.past.annotations.RegisterMethod;
+import org.openprovenance.prov.template.compiler.past.annotations.SingleDispatchMethod;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
@@ -17,10 +23,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.mapStringIntInt;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateRust;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 public class CompilerBeanLocalEnactor2 {
     static Logger logger = LogManager.getLogger(CompilerBeanLocalEnactor2.class);
@@ -35,53 +55,62 @@ public class CompilerBeanLocalEnactor2 {
     SpecificationFile generateBeanLocalEnactor2(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
+        org.openprovenance.prov.template.compiler.past.type.ClassName ioProcessorClass = org.openprovenance.prov.template.compiler.past.type.ClassName.get(INPUT_OUTPUT_PROCESSOR, locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR));
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_LOCAL_ENACTOR2);
-        builder.addModifiers(Modifier.ABSTRACT);
-
-
-        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(configs.name, Constants.QUERY_INVOKER2), Constants.QUERY_INVOKER2);
-
-        ClassName ioProcessorClass = ClassName.get(locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR), INPUT_OUTPUT_PROCESSOR);
-        builder.addSuperinterface(ioProcessorClass);
+        org.openprovenance.prov.template.compiler.past.Class pastClass=compilerUtil.getPastFactory()
+                .CLASS(Constants.BEAN_LOCAL_ENACTOR2)
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .INTERFACES(ioProcessorClass);
 
 
+        //builder.addSuperinterface(ioProcessorClass);
 
-        MethodSpec.Builder method1 = MethodSpec.methodBuilder("newIdentifier")
-                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
-                .addParameter(ParameterSpec.builder(String.class,"field").build())
-                .addParameter(ParameterSpec.builder(String.class,"counter").build())
-                .returns(Integer.class);
+        Method method1=METHOD("newIdentifier")
+                .MODIFIERS(Modifier.PUBLIC,Modifier.ABSTRACT)
+                .PARAMETER(STRING,"field")
+                .PARAMETER(STRING,"counter")
+                .RETURNS(INTEGER);
 
-        MethodSpec.Builder method2 = MethodSpec.methodBuilder("newSIdentifier")
-                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
-                .addParameter(ParameterSpec.builder(String.class,"field").build())
-                .addParameter(ParameterSpec.builder(String.class,"counter").build())
-                .returns(String.class);
-
-
-        builder.addMethod(method1.build());
-        builder.addMethod(method2.build());
+        Method method2=METHOD("newSIdentifier")
+                .MODIFIERS(Modifier.PUBLIC,Modifier.ABSTRACT)
+                .PARAMETER(STRING,"field")
+                .PARAMETER(STRING,"counter")
+                .RETURNS(STRING);
 
 
 
+
+        pastClass.METHOD(method1);
+        pastClass.METHOD(method2);
+
+
+
+        boolean isFirst=true;
 
 
 
         for (TemplateCompilerConfig config : configs.templates) {
             final String outputNameClass = compilerUtil.outputsNameClass(config.name);
             final String inputNameClass = compilerUtil.inputsNameClass(config.name);
-            final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputNameClass);
-            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputNameClass);
+            final org.openprovenance.prov.template.compiler.past.type.ClassName outputClassName = get(outputNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
+            final org.openprovenance.prov.template.compiler.past.type.ClassName inputClassName = get(inputNameClass,locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS));
 
-            MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                    .addModifiers(Modifier.PUBLIC)
-                    .addParameter(ParameterSpec.builder(inputClassName,"bean").build())
-                    .returns(outputClassName);
+            Method mspec = METHOD(Constants.PROCESS_METHOD_NAME)
+                    .MODIFIERS(Modifier.PUBLIC)
+                    .PARAMETER(inputClassName,"bean")
+                    .RETURNS(outputClassName)
+                    .ANNOTATIONS(RegisterMethod.NAME);
 
-            compilerUtil.specWithComment(mspec);
+            if (isFirst) {
+                mspec.ANNOTATIONS(SingleDispatchMethod.NAME);
+                isFirst=false;
+            }
 
-            mspec.addStatement("$T $N=new $T()", outputClassName, OUT_BEAN, outputClassName);
+            compilerUtil.debugFileLocation(mspec);
+
+            mspec.BODY(ASSIGNMENT(outputClassName, VARIABLE(OUT_BEAN), CONSTRUCTOR_CALL(outputClassName, List.of())));
+
+           // mspec.addStatement("$T $N=new $T()", outputClassName, OUT_BEAN, outputClassName);
 
             if (config instanceof SimpleTemplateCompilerConfig) {
                 TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
@@ -96,15 +125,24 @@ public class CompilerBeanLocalEnactor2 {
 
                         Class<?> theType=compilerUtil.getJavaTypeForDeclaredType(theVar, field);
                         if (theType==String.class)
-                            mspec.addStatement("$N.$N = newSIdentifier($S,$S)", OUT_BEAN, field, field, sqlTable.orElse("sql/" + field));
+                            mspec.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE(OUT_BEAN),field), METHOD_CALL(VARIABLE("this"), "newSIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field))))));
+                            //mspec.addStatement("$N.$N = newSIdentifier($S,$S)", OUT_BEAN, field, field, sqlTable.orElse("sql/" + field));
                         else
-                            mspec.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, field, field, sqlTable.orElse("sql/" + field));
+                            mspec.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE(OUT_BEAN),field), METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field))))));
+                           // mspec.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, field, field, sqlTable.orElse("sql/" + field));
                     }
                 }
-                mspec.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, "ID", "template/"+ config.name, "template/"+config.name);
+                mspec.BODY(
+
+                        ASSIGNMENT(null, METHOD_CALL(VARIABLE(OUT_BEAN),"ID"), METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT("template/" + config.name), CONSTANT("template/" + config.name)))),
+                //mspec.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, "ID", "template/"+ config.name, "template/"+config.name);
+
+                        RETURN(VARIABLE(OUT_BEAN))
+                );
 
 
-                mspec.addStatement("return $N", OUT_BEAN);
+
+               // mspec.addStatement("return $N", OUT_BEAN);
 
             } else {
                 CompositeTemplateCompilerConfig config1 = (CompositeTemplateCompilerConfig) config;
@@ -112,31 +150,65 @@ public class CompilerBeanLocalEnactor2 {
                 String extension="_1";
                 logger.warn("Using fixed extension "+extension+" in CompositeTemplateCompilerConfig processing. This is a temporary measure. Template " + config1.fullyQualifiedName);
 
-                mspec.addStatement("$T $N = new $T<>()", mapStringIntInt, MAP_VAR, HashMap.class);
-                for (String field : config1.sharing) {
-                    mspec.addStatement("$N.put($S, new $T<>())", MAP_VAR, field, HashMap.class);
-                }
-
-                mspec.addStatement("$N.$N.forEach(in1 -> $N.$N($N(in1,$N)))", "bean", ELEMENTS, OUT_BEAN, ADD_ELEMENTS, Constants.PROCESS_METHOD_NAME, MAP_VAR);
-                mspec.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, "ID", "template/" + config1.name, "template/" + config1.name);
-
-                mspec.addStatement("return $N",     OUT_BEAN);
-
-
                 String shortConsistOfName = locations.getShortNames().get(config1.consistsOf);
                 final String inputNameClass2 = compilerUtil.inputsNameClass(shortConsistOfName, extension);
-                final ClassName inputClassName2 = ClassName.get(locations.getBeansPackage(config1.fullyQualifiedName, BeanDirection.INPUTS), inputNameClass2);
+                final ClassName inputClassName2 = get(inputNameClass2, locations.getBeansPackage(config1.fullyQualifiedName, BeanDirection.INPUTS));
                 final String outputNameClass2 = compilerUtil.outputsNameClass(shortConsistOfName); // no extension in outputs
-                final ClassName outputClassName2 = ClassName.get(locations.getBeansPackage(config1.fullyQualifiedName, BeanDirection.OUTPUTS), outputNameClass2);
+                final org.openprovenance.prov.template.compiler.past.type.ClassName outputClassName2 = get(outputNameClass2, locations.getBeansPackage(config1.fullyQualifiedName, BeanDirection.OUTPUTS));
 
-                MethodSpec.Builder mspec2 = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                        .addModifiers(Modifier.PUBLIC)
-                        .addParameter(ParameterSpec.builder(inputClassName2, "bean").build())
-                        .addParameter(ParameterSpec.builder(mapStringIntInt, MAP_VAR).build())
-                        .returns(outputClassName2);
 
-                compilerUtil.specWithComment(mspec2);
-                mspec2.addStatement("$T $N=new $T()", outputClassName2, OUT_BEAN, outputClassName2);
+                mspec.BODY(ASSIGNMENT(
+                        MAP_STRING_MAP_INTEGER_INTEGER,
+                        VARIABLE(MAP_VAR),
+                        CONSTRUCTOR_CALL(HASHMAP, List.of())
+                ));
+                //mspec.addStatement("$T $N = new $T<>()", mapStringIntInt, MAP_VAR, HashMap.class);
+                for (String field : config1.sharing) {
+                    mspec.BODY(METHOD_CALL(VARIABLE(MAP_VAR), "put", List.of(CONSTANT(field), CONSTRUCTOR_CALL(HASHMAP, List.of()))));
+                    //mspec.addStatement("$N.put($S, new $T<>())", MAP_VAR, field, HashMap.class);
+                }
+
+                mspec.BODY(ITERATOR(
+                        Parameter.PARAMETER("in1", inputClassName2),
+                        METHOD_CALL(VARIABLE("bean"), ELEMENTS))
+
+                        .BODY(
+                                METHOD_CALL(
+                                        VARIABLE(OUT_BEAN),
+                                        ADD_ELEMENTS,
+                                        List.of(METHOD_CALL(
+                                                Constants.PROCESS_METHOD_NAME,
+                                                List.of(VARIABLE("in1"), VARIABLE(MAP_VAR)))
+                                        ))));
+
+
+
+                // mspec.addStatement("$N.$N.forEach(in1 -> $N.$N($N(in1,$N)))", "bean", ELEMENTS, OUT_BEAN, ADD_ELEMENTS, Constants.PROCESS_METHOD_NAME, MAP_VAR);
+                //mspec.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, "ID", "template/" + config1.name, "template/" + config1.name);
+
+                mspec.BODY(
+
+                        ASSIGNMENT(null,
+                                METHOD_CALL(VARIABLE(OUT_BEAN),"ID"),
+                                METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT("template/" + config1.name), CONSTANT("template/" + config1.name)))),
+
+                        RETURN(VARIABLE(OUT_BEAN))
+                );
+
+
+
+
+                Method mspec2 = METHOD(Constants.PROCESS_METHOD_NAME)
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .PARAMETER(inputClassName2, "bean")
+                        .PARAMETER(MAP_STRING_MAP_INTEGER_INTEGER, MAP_VAR)
+                        .RETURNS(outputClassName2);
+
+
+                compilerUtil.debugFileLocation(mspec2);
+
+                mspec2.BODY(ASSIGNMENT(outputClassName2, VARIABLE(OUT_BEAN), CONSTRUCTOR_CALL(outputClassName2, List.of())));
+                // mspec2.addStatement("$T $N=new $T()", outputClassName2, OUT_BEAN, outputClassName2);
 
 
 
@@ -156,46 +228,87 @@ public class CompilerBeanLocalEnactor2 {
                     if (descriptorUtils.isOutput(field,bindingsSchema)) {
                         Optional<String> sqlTable = descriptorUtils.getSqlTable(field, bindingsSchema);
                         if (config1.sharing.contains(field)) {
-                            mspec2.beginControlFlow("if ($N.get($S)==null)", MAP_VAR, field);
-                            mspec2.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, field, field, sqlTable.orElse("sql/" + field));
-                            mspec2.nextControlFlow("else if ($N.get($S).containsKey($N.$N))", MAP_VAR, field, BEAN_VAR, field);
-                            mspec2.addStatement("$N.$N = $N.get($S).get($N.$N)", OUT_BEAN, field, MAP_VAR, field, BEAN_VAR, field);
-                            mspec2.nextControlFlow("else");
-                            mspec2.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, field, field, sqlTable.orElse("sql/" + field));
-                            mspec2.addStatement("$N.get($S).put($N.$N, $N.$N)", MAP_VAR, field, BEAN_VAR, field, OUT_BEAN, field);
-                            mspec2.endControlFlow();
+                            mspec2.BODY(IF(BINARY_OP(METHOD_CALL(VARIABLE(MAP_VAR), "get", List.of(CONSTANT(field))), "==", Constant.getNull()))
+                                    .THEN(
+                                            ASSIGNMENT(null,
+                                                    METHOD_CALL(VARIABLE(OUT_BEAN), field),
+                                                    METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field)))))
+                                    )
+                                    .ELSE(IF(
+                                            METHOD_CALL(
+                                                    METHOD_CALL(VARIABLE(MAP_VAR), "get", List.of(CONSTANT(field))),
+                                                    "containsKey",
+                                                    List.of(METHOD_CALL(VARIABLE(BEAN_VAR), field)) )  )
+                                            .THEN(
+                                                    ASSIGNMENT(null,
+                                                            METHOD_CALL(VARIABLE(OUT_BEAN), field),
+                                                            METHOD_CALL(
+                                                                    METHOD_CALL(VARIABLE(MAP_VAR), "get", List.of(CONSTANT(field))),
+                                                                    "get",
+                                                                    List.of(METHOD_CALL(VARIABLE(BEAN_VAR), field))  ))   )
+                                            .ELSE(
+                                                    ASSIGNMENT(null,
+                                                            METHOD_CALL(VARIABLE(OUT_BEAN), field),
+                                                            METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field))))   ),
+                                                    METHOD_CALL(
+                                                            METHOD_CALL(VARIABLE(MAP_VAR), "get", List.of(CONSTANT(field))),
+                                                            "put",
+                                                            List.of(
+                                                                    METHOD_CALL(VARIABLE("bean"), field),
+                                                                    METHOD_CALL(VARIABLE(OUT_BEAN), field)  )   )    )
+                                    )
+                            );
+
+
+                            //mspec2.beginControlFlow("if ($N.get($S)==null)", MAP_VAR, field);
+                            //mspec2.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, field, field, sqlTable.orElse("sql/" + field));
+                            //mspec2.nextControlFlow("else if ($N.get($S).containsKey($N.$N))", MAP_VAR, field, BEAN_VAR, field);
+                            //mspec2.addStatement("$N.$N = $N.get($S).get($N.$N)", OUT_BEAN, field, MAP_VAR, field, BEAN_VAR, field);
+                           // mspec2.nextControlFlow("else");
+                           // mspec2.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, field, field, sqlTable.orElse("sql/" + field));
+                            //mspec2.addStatement("$N.get($S).put($N.$N, $N.$N)", MAP_VAR, field, BEAN_VAR, field, OUT_BEAN, field);
+                           // mspec2.endControlFlow();
                         } else {
                             Class<?> theType = compilerUtil.getJavaTypeForDeclaredType(theVar, field);
                             if (theType == String.class)
-                                mspec2.addStatement("$N.$N = newSIdentifier($S,$S)", OUT_BEAN, field, field, sqlTable.orElse("sql/" + field));
+                                mspec2.BODY(ASSIGNMENT(null,
+                                        METHOD_CALL(VARIABLE(OUT_BEAN),field),
+                                        METHOD_CALL(VARIABLE("this"), "newSIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field))))));
+                                //mspec2.addStatement("$N.$N = newSIdentifier($S,$S)", OUT_BEAN, field, field, sqlTable.orElse("sql/" + field));
                             else
-                                mspec2.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, field, field, sqlTable.orElse("sql/" + field));
+                               //mspec2.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, field, field, sqlTable.orElse("sql/" + field));
+                            mspec2.BODY(ASSIGNMENT(null,
+                                    METHOD_CALL(VARIABLE(OUT_BEAN),field),
+                                    METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field))))));
                         }
                     }
                 }
                 //     out.ID = newIdentifier("template/packing","template/packing");
-                mspec2.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, "ID", "template/" + shortConsistOfName, "template/" + shortConsistOfName);
+                mspec2.BODY(
+                        ASSIGNMENT(null,
+                                METHOD_CALL(VARIABLE(OUT_BEAN),"ID"),
+                                METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT("template/" + shortConsistOfName), CONSTANT("template/" + shortConsistOfName)))),
+                        RETURN(VARIABLE(OUT_BEAN))
+                );
+                //mspec2.addStatement("$N.$N = newIdentifier($S,$S)", OUT_BEAN, "ID", "template/" + shortConsistOfName, "template/" + shortConsistOfName);
 
-                mspec2.addStatement("return $N", OUT_BEAN);
-                builder.addMethod(mspec2.build());
+                //mspec2.addStatement("return $N", OUT_BEAN);
+                pastClass.METHOD(mspec2);
             }
-            builder.addMethod(mspec.build());
-
-
-
-
+            pastClass.METHOD(mspec);
         }
-
-
-        TypeSpec theLogger = builder.build();
 
         String myPackage= locations.getFilePackage(configs.name, fileName);
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
-
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+ DOT_JAVA_EXTENSION, myPackage);
-
+        String directory = locations.convertToDirectory(myPackage);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + ".java", directory, stackTraceElement, compilerUtil);
+        //Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, "target/generated-js", stackTraceElement);
+        //Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, myPackage, "target/generated-rust/src", stackTraceElement);
+        return new SpecificationFile(javaGenerator,pythonGenerator);
     }
+
+
 
 
 

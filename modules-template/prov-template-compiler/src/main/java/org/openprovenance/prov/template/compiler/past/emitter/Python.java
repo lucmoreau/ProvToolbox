@@ -1,13 +1,11 @@
 package org.openprovenance.prov.template.compiler.past.emitter;
 
 
+import com.squareup.javapoet.CodeBlock;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Iterator;
-import org.openprovenance.prov.template.compiler.past.annotations.ClassInitialiser;
-import org.openprovenance.prov.template.compiler.past.annotations.ClassMethod;
-import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation;
-import org.openprovenance.prov.template.compiler.past.annotations.PythonAnnotation;
+import org.openprovenance.prov.template.compiler.past.annotations.*;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
@@ -301,6 +299,8 @@ public class Python implements Emitter<StringBuilder> {
             sb.append("\"\"\"\n");
         }
         boolean foundClassMethod=false;
+        boolean foundRegisterMethod=false;
+        boolean foundSingleDispatchMethod=false;
 
         if (method.modifiers.contains(Modifier.STATIC)) {
             for(PastAnnotation annot: method.annotation) {
@@ -316,8 +316,38 @@ public class Python implements Emitter<StringBuilder> {
             }
         }
 
+        //https://www.index.dev/blog/function-overloading-in-python
+        for (PastAnnotation annot: method.annotation) {
+            if (annot instanceof PythonAnnotation) {
+                if (annot.getName().equals(SingleDispatchMethod.NAME)) {
+                    foundSingleDispatchMethod=true;
+                }
+                if (annot.getName().equals(RegisterMethod.NAME)) {
+                    foundRegisterMethod=true;
+
+                }
+            }
+        }
+
+        if (foundSingleDispatchMethod) {
+            sb.append(INDENT).append("@singledispatch\n");
+            sb.append(INDENT).append("def ").append(sanitizeName(method.name)).append("(self,").append(sanitizeName(method.parameters.get(0).name)).append("):\n");
+            sb.append(INDENT).append(INDENT).append("pass\n\n");
+            imports.add("functools.singledispatch");
+        }
+
+        if (foundRegisterMethod) {
+            TypeName inClazz= method.parameters.get(0).type;
+            String inTypeName=importAndGetLocalName(sanitizeName(convert(inClazz)));
+            sb.append(INDENT).append("@").append(method.name).append(".register(").append(inTypeName).append(")\n");
+        }
+
         // Method signature
-        sb.append(INDENT).append("def ").append(sanitizeName(method.name));
+        String methodName=method.name;
+        if (foundRegisterMethod) {
+            methodName="_"; // https://www.index.dev/blog/function-overloading-in-python
+        }
+        sb.append(INDENT).append("def ").append(sanitizeName(methodName));
         sb.append("(");
         boolean first=false;
         if (method.modifiers.contains(Modifier.STATIC)) {
@@ -683,7 +713,10 @@ public class Python implements Emitter<StringBuilder> {
                     result.append(importAndGetLocalName(sanitizeName(convert(mc.className)))).append(".").append(sanitizeName(mc.methodName));
                 } else  if (mc.object instanceof Variable) {
                     result.append(convert(mc.object)).append(".").append(sanitizeName(mc.methodName));
-                } else {
+                } else if (mc.object instanceof MethodCall) {
+                    MethodCall mc2 = (MethodCall) mc.object;
+                    result.append(convert(mc2)).append(".").append(mc.methodName);
+                }else {
                     throw new IllegalArgumentException("Unsupported object type in accessor: " + mc.object);
                 }
                 return result.toString();

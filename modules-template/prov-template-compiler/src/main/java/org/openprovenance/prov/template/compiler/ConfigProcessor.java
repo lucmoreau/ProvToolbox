@@ -37,7 +37,9 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import static org.openprovenance.prov.template.compiler.CompilerConfigurations.RECORD_2_RECORD;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.compileRustProject;
 import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.gensym;
 
 
@@ -264,8 +266,6 @@ public class ConfigProcessor implements Constants {
 
             doGenerateClientAndProject(configs, locations, cli_lib, cli_dir, cli_src_dir);
 
-            //System.out.println(objectMapper.writeValueAsString(getInputOutputMaps()));
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -478,6 +478,8 @@ public class ConfigProcessor implements Constants {
         if (configs.integrator) {
             SpecificationFile beanEnactor2 = compilerBeanEnactor2.generateBeanEnactor2(configs, locations, BEAN_ENACTOR2);
             beanEnactor2.save();
+            SpecificationFile beanEnactorImplementation = compilerBeanEnactor2.generateBeanEnactorImplementation(configs, locations, ENACTOR_IMPLEMENTATION);
+            beanEnactorImplementation.save();
 
             SpecificationFile beanLocalEnactor2 = compilerBeanLocalEnactor2.generateBeanLocalEnactor2(configs, locations, BEAN_LOCAL_ENACTOR2);
             beanLocalEnactor2.save();
@@ -636,6 +638,15 @@ public class ConfigProcessor implements Constants {
 
         SpecificationFile compositeConfigurationEnactor= compilerCompositeConfigurations.generateCompositeEnactorConfigurator(configs, locations, COMPOSITE_ENACTOR_CONFIGURATOR);
         compositeConfigurationEnactor.save();
+
+
+        System.out.println("##################Rust code generation started...");
+        try {
+            SpecificationFile.finalizeRustGeneration();
+            compileRustProject();
+        } catch (IOException e) {
+            throw new RuntimeException("failed to finalize Rust code generation", e);
+        }
 
     }
 
@@ -825,6 +836,8 @@ public class ConfigProcessor implements Constants {
 
 
             }
+
+            compilerProcessor.generateRecord2Record(configs, locations,  RECORD_2_RECORD+".java").save();
 
             if (!inComposition) {
 

@@ -92,6 +92,7 @@ public class Locations {
                 return getLoggerPackage(name);
 
             case BEAN_ENACTOR2:
+            case ENACTOR_IMPLEMENTATION:
             case BEAN_LOCAL_ENACTOR2:
             case BEAN_ENACTOR2_COMPOSITE:
             case TEMPLATE_INVOKER:

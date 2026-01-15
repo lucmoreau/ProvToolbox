@@ -5,6 +5,7 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.past.emitter.Poet;
+import org.openprovenance.prov.template.compiler.past.emitter.RustProjectGenerator;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,8 @@ public class SpecificationFile {
     private final Supplier<Boolean> javaGenerator;
     private final Supplier<Boolean> pythonGenerator;
     private final SpecificationFile javaSpec;
+    private final Supplier<Boolean> jsGenerator;
+    private final Supplier<Boolean> rustGenerator;
 
     public SpecificationFile(JavaFile javaFile, String directory, String fileName, String class_package) {
         this.javaFile = javaFile;
@@ -37,6 +40,8 @@ public class SpecificationFile {
         this.javaGenerator=null;
         this.pythonGenerator=null;
         this.javaSpec=null;
+        this.jsGenerator=null;
+        this.rustGenerator=null;
 
     }
 
@@ -53,6 +58,9 @@ public class SpecificationFile {
         this.javaGenerator=null;
         this.pythonGenerator=null;
         this.javaSpec=null;
+        this.jsGenerator=null;
+        this.rustGenerator=null;
+
     }
 
     public SpecificationFile(Supplier<Boolean> javaGenerator, Supplier<Boolean> pythonGenerator) {
@@ -67,9 +75,11 @@ public class SpecificationFile {
         this.javaGenerator=javaGenerator;
         this.pythonGenerator=pythonGenerator;
         this.javaSpec=null;
-    }
+        this.jsGenerator=null;
+        this.rustGenerator=null;
 
-    public SpecificationFile(SpecificationFile javaSpec, Supplier<Boolean> pythonGenerator) {
+    }
+    public SpecificationFile(Supplier<Boolean> javaGenerator, Supplier<Boolean> pythonGenerator, Supplier<Boolean> jsGenerator, Supplier<Boolean> rustGenerator) {
         this.compilerUtil=null;
         this.javaFile=null;
         this.directory=null;
@@ -78,9 +88,12 @@ public class SpecificationFile {
         this.pyDirectory=null;
         this.pyFilename=null;
         this.pyContent=null;
-        this.javaGenerator=null;
+        this.javaGenerator=javaGenerator;
         this.pythonGenerator=pythonGenerator;
-        this.javaSpec=javaSpec;
+        this.jsGenerator=jsGenerator;
+        this.javaSpec=null;
+        this.rustGenerator=rustGenerator;
+
     }
 
     class JavaInUse {
@@ -88,17 +101,46 @@ public class SpecificationFile {
             return (String x, String y) -> 5;
         }
     }
+
+    static boolean rustProjectCreated=false;
+    static RustGenerationCoordinator rustCoordinator = new RustGenerationCoordinator();
+
+    /**
+     * Reset the Rust coordinator for a new compilation run.
+     * Call this at the start of template compilation to ensure clean state.
+     */
+    public static void resetRustCoordinator() {
+        rustCoordinator = new RustGenerationCoordinator();
+    }
+
+    /**
+     * Finalize Rust code generation after all SpecificationFile.save() calls complete.
+     * This triggers the actual code generation with full trait knowledge.
+     *
+     * @return true if generation succeeded
+     * @throws IOException if file writing fails
+     */
+    public static boolean finalizeRustGeneration() throws IOException {
+        return rustCoordinator.finalizeGeneration();
+    }
+
     public boolean save() {
         if (javaGenerator!=null && pythonGenerator!=null) {
             boolean javaGen=javaGenerator.get();
             boolean pyGen=pythonGenerator.get();
+            if (jsGenerator!=null) {
+                boolean jsGen=jsGenerator.get();
+                if (rustGenerator!=null) {
+                    boolean rustGen=rustGenerator.get();
+                    //compileRustProject();
+                    return javaGen && pyGen && jsGen && rustGen;
+                }
+                return javaGen && pyGen && jsGen;
+            }
             return javaGen && pyGen;
         }
-        if (javaSpec!=null && pythonGenerator!=null) {
-            boolean javaSaved=javaSpec.save();
-            boolean pyGen=pythonGenerator.get();
-            return javaSaved && pyGen;
-        }
+
+
 
         // old method
 
@@ -109,6 +151,28 @@ public class SpecificationFile {
         boolean javaSaved=compilerUtil.saveToFile(directory, directory + fileName, javaFile);
 
         return javaSaved && pySaved;
+    }
+
+    public static void compileRustProject() {
+        if (!rustProjectCreated) {
+            // create a Cargo.toml file
+            rustProjectCreated=true;
+            RustProjectGenerator generator = new RustProjectGenerator("target/generated-rust");
+
+            // Option 1: Full workflow
+           // generator.generateCompileAndRun("prov-templates", "0.1.0");
+
+            // Option 2: Step by step
+            try {
+                generator.generateCargo("prov-templates", "0.1.0");
+                generator.generateModFiles();
+                if (generator.compileProject()) {
+                    generator.runProject();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public JavaFile getJavaFile() {
@@ -156,4 +220,41 @@ public class SpecificationFile {
             throw new RuntimeException(e);
         }
     }
+
+    public static boolean generateJavaScript(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
+        try {
+            if (destinationDir==null) return false;
+            new org.openprovenance.prov.template.compiler.past.emitter.JavaScript()
+                    .toWritableObject(pastClass, pastClass.name, packageName, stackTraceElement)
+                    .writeTo(new File(destinationDir));
+            return true;
+        } catch (RuntimeException | IOException e) {
+            try {
+                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean generateRust(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
+        // Use two-pass generation via coordinator
+        // Pass 1: Register class and discover traits (happens immediately)
+        // Pass 2: Actual code generation (happens in finalizeRustGeneration())
+        if (destinationDir == null) return false;
+
+        try {
+            rustCoordinator.createRustGenerator(pastClass, packageName, destinationDir, stackTraceElement).get();
+            return true;  // Actual generation deferred to finalizeRustGeneration()
+        } catch (RuntimeException e) {
+            try {
+                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
 }

@@ -94,6 +94,17 @@ public class MethodCall extends Expression {
         this.className=null;
     }
 
+    public MethodCall(Expression object, String accessorName) {
+        this.methodName=accessorName;
+        this.arguments=null;
+        this.object=object;
+        this.operatorKind =MethodCallKind.OBJECT_ACCESSOR;
+        this.expressionKind=ExpressionKind.METHOD_CALL;
+        this.className=null;
+    }
+
+
+
 
 
     @Override
@@ -142,5 +153,9 @@ public class MethodCall extends Expression {
     public static MethodCall METHOD_CALL(String methodName, List<Expression> arguments) {
         return new MethodCall(methodName, arguments);
     }
+    public static MethodCall METHOD_CALL(Expression object, String methodName) {
+        return new MethodCall(object, methodName);
+    }
+
 
 }

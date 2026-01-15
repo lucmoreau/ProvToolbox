@@ -22,9 +22,11 @@ public class Class {
     final public List<TypeName> interfaces=new LinkedList<>();
     final public List<TypeVariable> typeVariables=new LinkedList<>();
     final public List<Modifier> modifiers=new LinkedList<>();
+    final public boolean isInterface;
 
     public Class (String name) {
         this.name = name;
+        this.isInterface=false;
     }
     public Class(String name, List<TypeName> interfaces, List<Field> fields, List<Method> methods, List<Comment> comments) {
         this.name = name;
@@ -32,6 +34,12 @@ public class Class {
         this.fields.addAll(fields);
         this.methods.addAll(methods);
         this.comments.addAll(comments);
+        this.isInterface=false;
+    }
+
+    public Class(String interfaceName, boolean isInterface) {
+        this.name = interfaceName;
+        this.isInterface=isInterface;
     }
 
     public Class INTERFACES(TypeName... interfaceNames) {
@@ -64,9 +72,11 @@ public class Class {
                 '}';
     }
 
-    public Class MODIFIERS(Modifier modifier) {
-        if (modifier==null) throw new IllegalArgumentException("null modifier");
-        modifiers.add(modifier);
+    public Class MODIFIERS(Modifier... modifiers) {
+        for (Modifier modifier: modifiers) {
+            if (modifier == null) throw new IllegalArgumentException("null modifier");
+            this.modifiers.add(modifier);
+        }
         return this;
     }
 

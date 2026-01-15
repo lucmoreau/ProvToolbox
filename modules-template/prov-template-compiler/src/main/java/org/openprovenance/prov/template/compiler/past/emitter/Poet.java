@@ -31,7 +31,7 @@ public class Poet implements Emitter<TypeSpec> {
 
     public TypeSpec.Builder emitBuilder(Class clazz) {
 
-        TypeSpec.Builder builder=TypeSpec.classBuilder(clazz.name);
+        TypeSpec.Builder builder=(clazz.isInterface)?TypeSpec.interfaceBuilder(clazz.name):TypeSpec.classBuilder(clazz.name);
         clazz.modifiers.forEach(builder::addModifiers);
         clazz.interfaces.forEach(intfce -> builder.addSuperinterface(convert(intfce)));
         clazz.fields.forEach(field -> builder.addField(convert(field)));
@@ -47,7 +47,7 @@ public class Poet implements Emitter<TypeSpec> {
 
     public TypeSpec emit(Class clazz) {
 
-        TypeSpec.Builder builder=TypeSpec.classBuilder(clazz.name);
+        TypeSpec.Builder builder=(clazz.isInterface)?TypeSpec.interfaceBuilder(clazz.name):TypeSpec.classBuilder(clazz.name);
         for (TypeVariable tv : clazz.typeVariables) {
             builder.addTypeVariable(TypeVariableName.get(tv.name));
         }
@@ -382,6 +382,9 @@ public class Poet implements Emitter<TypeSpec> {
                 } else if (methodCall.object instanceof Variable) {
                     Variable var = (Variable) methodCall.object;
                     return CodeBlock.of("$L.$N", var.name, methodCall.methodName);
+                } else if (methodCall.object instanceof MethodCall) {
+                    MethodCall mc = (MethodCall) methodCall.object;
+                    return CodeBlock.of("$L.$N", convert(mc), methodCall.methodName);
                 } else {
                     throw new IllegalArgumentException("Unsupported object type in accessor: " + methodCall.object);
                 }
@@ -429,7 +432,10 @@ public class Poet implements Emitter<TypeSpec> {
                     case "Integer" ->  { return ClassName.get(Integer.class); }
                     case "Class" ->  { return ClassName.get(java.lang.Class.class); }
                     case "Void" ->  { return ClassName.get(Void.class); }
+                    case "Consumer" ->  { return ClassName.get(java.util.function.Consumer.class); }
+                    case "BiConsumer" ->  { return ClassName.get(java.util.function.BiConsumer.class); }
                     case "Function" ->  { return ClassName.get(java.util.function.Function.class); }
+                    case "BiFunction" ->  { return ClassName.get(java.util.function.BiFunction.class); }
                     case "int" ->  { return TypeName.get(int.class); }
                     case "int[]" ->  { return ArrayTypeName.of(TypeName.get(int.class)); }
                     default ->  { /* continue */ }

@@ -27,8 +27,7 @@ import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.common.BeanKind.SIMPLE;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
 import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY_ACCESSOR;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
@@ -165,7 +164,9 @@ public class CompilerBeanGenerator {
         String directory = locations.convertToDirectory(beanPackge);
         Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, beanPackge, locations.python_dir, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, beanPackge, configs, fileName, directory, stackTraceElement, compilerUtil);
-        return new SpecificationFile(javaGenerator,pythonGenerator);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, beanPackge, "target/generated-js", stackTraceElement);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, beanPackge, "target/generated-rust/src", stackTraceElement);
+        return new SpecificationFile(javaGenerator,pythonGenerator,jsGenerator,rustGenerator);
     }
 
     static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, String templateName, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {

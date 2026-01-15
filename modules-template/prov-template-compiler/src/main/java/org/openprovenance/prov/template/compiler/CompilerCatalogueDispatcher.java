@@ -10,6 +10,7 @@ import org.openprovenance.prov.template.log2prov.FileBuilder;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerCompositeConfigurations.recordsProcessorOfUnknown;
@@ -19,11 +20,23 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMa
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerCatalogueDispatcher {
+
+
+    public static final com.squareup.javapoet.TypeName stringArray = ArrayTypeName.get(String[].class);
+    static final com.squareup.javapoet.TypeName intArray = ArrayTypeName.get(int[].class);
+    static final ParameterizedTypeName mapString2StringList = ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Map.class), com.squareup.javapoet.ClassName.get(String.class), ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(List.class), com.squareup.javapoet.ClassName.get(String.class)));
+    static final ParameterizedTypeName mapString2IntArray = ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Map.class), com.squareup.javapoet.ClassName.get(String.class), intArray);
+    static final ParameterizedTypeName mapString2MapString2IntArray = ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Map.class), com.squareup.javapoet.ClassName.get(String.class), mapString2IntArray);
+
     public static final String POST_PROCESSING_VAR = "postProcessing";
     static final ParameterizedTypeName FunctionOfString2StringArray = ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ClassName.get(CLIENT_PACKAGE,BUILDER_INTERFACE), ArrayTypeName.of(ClassName.get(String.class)));
-
+    public static final ParameterizedTypeName processorOfString = functionObjArrayTo(com.squareup.javapoet.TypeName.get(String.class));
+    static final ParameterizedTypeName processorOfUnknown = functionObjArrayTo(com.squareup.javapoet.TypeVariableName.get("?"));
     static final ParameterizedTypeName FunctionStringResultSet = ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ClassName.get(String.class), ClassName.get(java.sql.ResultSet.class));
     static final ParameterizedTypeName BiFunctionIntegerStringObject=ParameterizedTypeName.get(ClassName.get(java.util.function.BiFunction.class), ClassName.get(Integer.class), ClassName.get(String.class), ClassName.get(Object.class));
+    static public final ParameterizedTypeName functionObjArrayTo (com.squareup.javapoet.TypeName returnType) {
+        return ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Function.class), ArrayTypeName.of(Object.class), returnType);
+    }
 
     //  Function<Object[], Object[]>
     static final ParameterizedTypeName FunctionObjArray2ObjArray= ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ArrayTypeName.of(ClassName.get(Object.class)), ArrayTypeName.of(ClassName.get(Object.class)));

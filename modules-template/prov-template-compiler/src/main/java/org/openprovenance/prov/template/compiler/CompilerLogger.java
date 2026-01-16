@@ -1,7 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -20,7 +19,6 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
 import static org.openprovenance.prov.template.compiler.common.CompilerCommon.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
@@ -52,7 +50,6 @@ public class CompilerLogger {
     SpecificationFile generateLogger(TemplatesProjectConfiguration configs, Locations locations, String fileName, Map<String, Map<String, Map<String, String>>> inputOutputMaps) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-
         Class pastClass = pastFactory.CLASS(LOGGER)
                 .MODIFIERS(Modifier.PUBLIC)
                 .INTERFACES(org.openprovenance.prov.template.compiler.past.type.ClassName.get(LOGGER_INTERFACE, Constants.CLIENT_PACKAGE));
@@ -67,22 +64,15 @@ public class CompilerLogger {
         org.openprovenance.prov.template.compiler.past.type.ClassName builderPastType = org.openprovenance.prov.template.compiler.past.type.ClassName.get("Builder", CLIENT_PACKAGE);
         pastClass.FIELDS(FIELD(__BUILDERS_VAR, builderArrayPastType)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
-                .INITIALIZER(new ArrayInitialiser(builderPastType, makeRenamedArgsList2(null,templates))))
-        ;
+                .INITIALIZER(new ArrayInitialiser(builderPastType, makeRenamedArgsList2(null,templates))));
 
         pastClass.METHOD(generateGetBuilderMethod(builderArrayPastType));
-
-
-
-
 
         for (TemplateCompilerConfig config : configs.templates) {
             if (config instanceof SimpleTemplateCompilerConfig) {
                 pastClass.METHOD(generateStaticLogMethod((SimpleTemplateCompilerConfig) config, locations));
             }
         }
-
-
 
         for (TemplateCompilerConfig config : configs.templates) {
             if (config instanceof SimpleTemplateCompilerConfig) {
@@ -125,14 +115,11 @@ public class CompilerLogger {
 
         String packageName = locations.getFilePackage(configs.name, LOGGER);
 
-        //System.out.println("********** Generating logger class " + pastClass.name + " in package " + packageName  + " with filename " + fileName);
-
         String directory = locations.convertToDirectory(packageName);
         Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packageName, locations.python_dir, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packageName, configs, fileName, directory, stackTraceElement, compilerUtil);
-        SpecificationFile specFile=new SpecificationFile(javaGenerator,pythonGenerator);
 
-        return specFile;
+        return new SpecificationFile(javaGenerator,pythonGenerator);
 
     }
 
@@ -150,31 +137,24 @@ public class CompilerLogger {
                 .COMMENT("Initialize a table of bean builders\n")
                 .COMMENT("@param $N a table configurator \n", "configurator")
                 .COMMENT("@param <T> type variable for the result associated with each template name\n")
-                .COMMENT("@return $T&lt;$T,$T&gt;\n", Map.class,String.class, TypeVariableName.get("T"))
+                .COMMENT("@return $T&lt;$T,$T&gt;\n", Map.class,String.class, T())
                 .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
                 .addTypeVariables(T())
                 .RETURNS(MAP_STRING_T);
         compilerUtil.debugFileLocation(builder);
 
-
         builder.PARAMETER(ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get(TABLE_CONFIGURATOR,locations.getFilePackage(configs.name, TABLE_CONFIGURATOR)), T()), "configurator");
 
         builder.BODY(ASSIGNMENT(MAP_STRING_T, VARIABLE(A_TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_STRING_T,List.of())));
-        //builder.addStatement("$T $N=$N $T()",mapType, A_TABLE_VAR,"new", mapType2);
 
         for (TemplateCompilerConfig config : configs.templates) {
-
             String thisBuilderName = Constants.GENERATED_VAR_PREFIX + config.name;
-           //builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getFullyQualifiedName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
-
             builder.BODY(METHOD_CALL(
                     VARIABLE(A_TABLE_VAR),
                     "put",
                     List.of(METHOD_CALL(VARIABLE(thisBuilderName, STATIC_FIELD_VARIABLE), "getFullyQualifiedName", List.of()),
                             METHOD_CALL(VARIABLE("configurator"), config.name, VARIABLE(thisBuilderName,STATIC_FIELD_VARIABLE)))));
         }
-
-
         builder.BODY(RETURN(VARIABLE(A_TABLE_VAR)));
 
         return builder;
@@ -188,7 +168,7 @@ public class CompilerLogger {
                 .COMMENT("Initialize a table of composite bean builders\n")
                 .COMMENT("@param $N a table configurator \n", "configurator")
                 .COMMENT("@param <T> type variable for the result associated with each template name\n")
-                .COMMENT("@return $T&lt;$T,$T&gt;\n", Map.class,String.class, TypeVariableName.get("T"))
+                .COMMENT("@return $T&lt;$T,$T&gt;\n", MAP,STRING,T())
                 .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
                 .addTypeVariables(T())
                 .RETURNS(MAP_STRING_T);
@@ -215,138 +195,59 @@ public class CompilerLogger {
     SpecificationFile generateBuilderInterface(TemplatesProjectConfiguration configs, String directory, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        //TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(BUILDER_INTERFACE);
-
-        Class pastClass = pastFactory.CLASS(BUILDER_INTERFACE, true)
+        Class pastClass = pastFactory.INTERFACE(BUILDER_INTERFACE)
                 .MODIFIERS(Modifier.PUBLIC);
 
-
-
-        Method builder2 = METHOD(Constants.GET_NODES_METHOD)
+        Method method1 = METHOD(Constants.GET_NODES_METHOD)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .RETURNS(intArray);
-        pastClass.METHOD(builder2);
+        pastClass.METHOD(method1);
 
-
-        Method builder3 = METHOD(Constants.GET_SUCCESSOR_METHOD)
+        Method method2 = METHOD(Constants.GET_SUCCESSOR_METHOD)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .RETURNS(MAP_INTEGER_INTARRAY);
-        pastClass.METHOD(builder3);
+        pastClass.METHOD(method2);
 
-
-        Method builder3b = METHOD(Constants.GET_TYPED_SUCCESSOR_METHOD)
+        Method method3 = METHOD(Constants.GET_TYPED_SUCCESSOR_METHOD)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .RETURNS(MAP_INTEGER_INTARRAY);
-        pastClass.METHOD(builder3b);
+        pastClass.METHOD(method3);
 
-        Method builder3c = METHOD(Constants.GET_FOREIGN)
+        Method method4 = METHOD(Constants.GET_FOREIGN)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .RETURNS(STRING_ARRAY);
-        pastClass.METHOD(builder3c);
+        pastClass.METHOD(method4);
 
-        Method builder4 = METHOD(Constants.GET_NAME)
+        Method method5 = METHOD(Constants.GET_NAME)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .RETURNS(STRING);
-        pastClass.METHOD(builder4);
+        pastClass.METHOD(method5);
 
-        //TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
-
-       // TypeName myType=functionObjArrayTo(ClassName.get(String.class));
-        Method builder5 = METHOD(Constants.RECORD_CSV_PROCESSOR_METHOD)
+        Method method6 = METHOD(Constants.RECORD_CSV_PROCESSOR_METHOD)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .PARAMETER(OBJECT_ARRAY,"record")
                 .RETURNS(FUNCTION_OBJARRAY_TO_STRING);
-        pastClass.METHOD(builder5);
+        pastClass.METHOD(method6);
 
-        Method builder6 = METHOD(Constants.PROPERTY_ORDER_METHOD)
+        Method method7 = METHOD(Constants.PROPERTY_ORDER_METHOD)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .RETURNS(STRING_ARRAY);
-        pastClass.METHOD(builder6);
+        pastClass.METHOD(method7);
 
-
-        Method builder7 = METHOD(Constants.GET_TEMPLATE_NAME)
+        Method method8 = METHOD(Constants.GET_TEMPLATE_NAME)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .RETURNS(STRING);
-        pastClass.METHOD(builder7);
+        pastClass.METHOD(method8);
 
-        Method builder8 = METHOD(GET_FULLY_QUALIFIED_NAME)
+        Method method9 = METHOD(GET_FULLY_QUALIFIED_NAME)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .RETURNS(STRING);
-        pastClass.METHOD(builder8);
+        pastClass.METHOD(method9);
 
         Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, Constants.CLIENT_PACKAGE, locations.python_dir, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, Constants.CLIENT_PACKAGE, configs, fileName+ DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
-        SpecificationFile specFile=new SpecificationFile(javaGenerator,pythonGenerator);
 
-        return specFile;
-    }
-
-    SpecificationFile generateBuilderInterface_old(TemplatesProjectConfiguration configs, String directory, String fileName) {
-        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
-
-        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(BUILDER_INTERFACE);
-
-
-        MethodSpec.Builder builder2 = MethodSpec.methodBuilder(Constants.GET_NODES_METHOD)
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(int[].class);
-        builder.addMethod(builder2.build());
-
-
-        MethodSpec.Builder builder3 = MethodSpec.methodBuilder(Constants.GET_SUCCESSOR_METHOD)
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(CompilerUtil.mapIntArrayType);
-        builder.addMethod(builder3.build());
-
-
-        MethodSpec.Builder builder3b = MethodSpec.methodBuilder(Constants.GET_TYPED_SUCCESSOR_METHOD)
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(CompilerUtil.mapIntArrayType);
-        builder.addMethod(builder3b.build());
-
-        MethodSpec.Builder builder3c = MethodSpec.methodBuilder(Constants.GET_FOREIGN)
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(ArrayTypeName.of(String.class));
-        builder.addMethod(builder3c.build());
-
-        MethodSpec.Builder builder4 = MethodSpec.methodBuilder(Constants.GET_NAME)
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(String.class);
-        builder.addMethod(builder4.build());
-
-        //TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
-
-        TypeName myType= functionObjArrayTo_old(ClassName.get(String.class));
-        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.RECORD_CSV_PROCESSOR_METHOD)
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .addParameter(ParameterSpec.builder(ArrayTypeName.of(Object.class),"record").build())
-                .returns(myType);
-        builder.addMethod(builder5.build());
-
-        MethodSpec.Builder builder6 = MethodSpec.methodBuilder(Constants.PROPERTY_ORDER_METHOD)
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(String[].class);
-        builder.addMethod(builder6.build());
-
-
-        MethodSpec.Builder builder7 = MethodSpec.methodBuilder(Constants.GET_TEMPLATE_NAME)
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(String.class);
-        builder.addMethod(builder7.build());
-
-        MethodSpec.Builder builder8 = MethodSpec.methodBuilder(GET_FULLY_QUALIFIED_NAME)
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(String.class);
-        builder.addMethod(builder8.build());
-
-
-
-
-        TypeSpec theInterface = builder.build();
-
-        JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, Constants.CLIENT_PACKAGE, stackTraceElement);
-
-        return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
+        return new SpecificationFile(javaGenerator,pythonGenerator);
     }
 
     SpecificationFile generateLoggerInterface(TemplatesProjectConfiguration configs, String directory, Locations locations, String fileName) {

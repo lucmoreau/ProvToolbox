@@ -10,10 +10,9 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
-import org.openprovenance.prov.template.compiler.past.Constant;
-import org.openprovenance.prov.template.compiler.past.Field;
-import org.openprovenance.prov.template.compiler.past.Method;
-import org.openprovenance.prov.template.compiler.past.Variable;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
+import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer;
 import org.openprovenance.prov.template.compiler.util.CompilerException;
@@ -21,11 +20,16 @@ import org.openprovenance.prov.template.descriptors.*;
 
 import javax.lang.model.element.Modifier;
 import java.io.*;
+import java.lang.Class;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+
 import static org.openprovenance.prov.template.compiler.common.CompilerCommon.generateUnsupportedException;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
@@ -45,12 +49,14 @@ public class CompilerSQL {
     public static final String SMALL_INDENTATION = "  ";
     private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
+    private final PastFactory pastFactory;
     ObjectMapper om = new ObjectMapper();
     private final String tableKey;
 
     public CompilerSQL(ProvFactory pFactory, String tableKey) {
         this.tableKey=tableKey;
         this.compilerUtil=new CompilerUtil(pFactory);
+        this.pastFactory=compilerUtil.getPastFactory();
         this.pFactory=pFactory;
     }
 
@@ -220,8 +226,37 @@ public class CompilerSQL {
 
         clazz.METHOD(generateSQLInsert(templateName,beanKind));
         clazz.METHOD(generateSQLInsertStatement(templateName, bindingsSchema,beanKind));
-
     }
+
+
+
+
+    public SpecificationFile generateSQLInterface(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
+        org.openprovenance.prov.template.compiler.past.Class pastClass = pastFactory.INTERFACE("SQL")
+                .MODIFIERS(Modifier.PUBLIC);
+
+        Method method1 = METHOD("getSQLInsert")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .RETURNS(STRING);
+        pastClass.METHOD(method1);
+
+        Method method2 = METHOD("getSQLInsertStatement")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .RETURNS(STRING);
+        pastClass.METHOD(method2);
+
+        String myPackage=locations.getFilePackage(configs.name,fileName);
+        String directory=locations.convertToDirectory(myPackage);
+
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName+ DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+
+        return new SpecificationFile(javaGenerator,pythonGenerator);
+    }
+
+
     public Method generateSQLInsert(String template, BeanKind beanKind) {
         Method method = METHOD("getSQLInsert")
                 .MODIFIERS(Modifier.PUBLIC)

@@ -156,6 +156,7 @@ public class CompilerBeanLocalEnactor2 {
                                                 VARIABLE(OUT_BEAN),
                                                 ADD_ELEMENTS,
                                                 List.of(METHOD_CALL(
+                                                        VARIABLE("this"),
                                                         Constants.PROCESS_METHOD_NAME,
                                                         List.of(VARIABLE("in1"), VARIABLE(MAP_VAR)))
                                                 ))),

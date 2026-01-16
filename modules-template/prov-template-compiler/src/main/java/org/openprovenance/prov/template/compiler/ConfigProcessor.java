@@ -406,10 +406,10 @@ public class ConfigProcessor implements Constants {
         SpecificationFile logger=compilerLogger.generateLogger(configs, locations, LOGGER + DOT_JAVA_EXTENSION, getInputOutputMaps());
         logger.save();
 
-        SpecificationFile intface=compilerLogger.generateBuilderInterface(configs, openprovenance_dir, BUILDER_INTERFACE + DOT_JAVA_EXTENSION);
+        SpecificationFile intface=compilerLogger.generateBuilderInterface(configs, openprovenance_dir, locations, BUILDER_INTERFACE );
         intface.save();
 
-        SpecificationFile intface2=compilerLogger.generateLoggerInterface(configs, openprovenance_dir, LOGGER_INTERFACE + DOT_JAVA_EXTENSION);
+        SpecificationFile intface2=compilerLogger.generateLoggerInterface(configs, openprovenance_dir, locations,LOGGER_INTERFACE );
         intface2.save();
 
       //  SpecificationFile intface3=compilerLogger.generateProcessorArgsInterface(configs, openprovenance_dir, PROCESSOR_ARGS_INTERFACE + DOT_JAVA_EXTENSION);
@@ -791,7 +791,7 @@ public class ConfigProcessor implements Constants {
                 SpecificationFile spec1 = compilerExpansionBuilder.generateBuilderInterfaceSpecification(configs, locations, doc, bn, templateName, packageName, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnI + DOT_JAVA_EXTENSION);
                 val1= spec1.save();
 
-                SpecificationFile spec2b = compilerCommon.generateSQLInterface(configs, locations, SQL_INTERFACE);
+                SpecificationFile spec2b = compilerSQL.generateSQLInterface(configs, locations, SQL_INTERFACE);
                 val2b = spec2b.save();
                 val2 = val2 & val2b;
 

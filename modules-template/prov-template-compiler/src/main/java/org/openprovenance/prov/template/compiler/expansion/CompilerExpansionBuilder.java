@@ -28,7 +28,8 @@ import java.util.stream.Collectors;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.typeT;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
-import static org.openprovenance.prov.template.compiler.common.CompilerCommon.makeArgsList;
+import static org.openprovenance.prov.template.compiler.common.Constants.GET_FULLY_QUALIFIED_NAME;
+import static org.openprovenance.prov.template.compiler.common.Constants.GET_NAME;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.*;
 import static org.openprovenance.prov.template.core.InstantiateUtil.*;
 
@@ -129,8 +130,8 @@ public class CompilerExpansionBuilder {
         builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindingsSchema));
 
 
-        builder.addMethod(compilerCommon.generateNameAccessor_no_past(templateName));
-        builder.addMethod(compilerCommon.generateFullyQualifiedNameAccessor_no_past(templateFullyQualifiedName));
+        builder.addMethod(generateNameAccessor_no_past(templateName));
+        builder.addMethod(generateFullyQualifiedNameAccessor_no_past(templateFullyQualifiedName));
 
         builder.addMethod(commonAccessorGenerator(templateName,locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON)));
 
@@ -162,6 +163,35 @@ public class CompilerExpansionBuilder {
 
 
     }
+    public static CodeBlock makeArgsList(Collection<String> variables) {
+        return CodeBlock.join(variables.stream().map(variable -> CodeBlock.of("$N", variable)).collect(Collectors.toList()), ", ");
+    }
+
+
+    //new version in CompilerCommon
+    public MethodSpec generateNameAccessor_no_past(String templateName) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(GET_NAME)
+                .addModifiers(Modifier.PUBLIC)
+                // .addAnnotation(Override.class)
+                .returns(String.class);
+        compilerUtil.specWithComment(builder);
+
+        builder.addStatement("return $S", templateName);
+        return builder.build();
+    }
+
+    //new version in CompilerCommon
+    public MethodSpec generateFullyQualifiedNameAccessor_no_past(String fullyQualifiedTemplateName) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(GET_FULLY_QUALIFIED_NAME)
+                .addModifiers(Modifier.PUBLIC)
+                //.addAnnotation(Override.class)
+                .returns(String.class);
+        compilerUtil.specWithComment(builder);
+
+        builder.addStatement("return $S", fullyQualifiedTemplateName);
+        return builder.build();
+    }
+
 
 
     public MethodSpec generateTemplateGenerator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, TemplateBindingsSchema bindingsSchema) {

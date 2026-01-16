@@ -20,10 +20,12 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.model.DOMProcessing.builder;
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
 import static org.openprovenance.prov.template.compiler.common.CompilerCommon.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import static org.openprovenance.prov.template.compiler.common.Constants.BUILDER_INTERFACE;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
@@ -46,12 +48,12 @@ public class CompilerLogger {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
+    final PastFactory pastFactory=new PastFactory();
 
     SpecificationFile generateLogger(TemplatesProjectConfiguration configs, Locations locations, String fileName, Map<String, Map<String, Map<String, String>>> inputOutputMaps) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
-        PastFactory pastFactory=new PastFactory();
         Class pastClass = pastFactory.CLASS(LOGGER)
                 .MODIFIERS(Modifier.PUBLIC)
                 .INTERFACES(org.openprovenance.prov.template.compiler.past.type.ClassName.get(LOGGER_INTERFACE, Constants.CLIENT_PACKAGE));
@@ -124,7 +126,7 @@ public class CompilerLogger {
 
         String packageName = locations.getFilePackage(configs.name, LOGGER);
 
-        System.out.println("********** Generating logger class " + pastClass.name + " in package " + packageName  + " with filename " + fileName);
+        //System.out.println("********** Generating logger class " + pastClass.name + " in package " + packageName  + " with filename " + fileName);
 
         String directory = locations.convertToDirectory(packageName);
         Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packageName, locations.python_dir, stackTraceElement);
@@ -214,7 +216,74 @@ public class CompilerLogger {
     SpecificationFile generateBuilderInterface(TemplatesProjectConfiguration configs, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(Constants.BUILDER_INTERFACE);
+        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(BUILDER_INTERFACE);
+
+
+        MethodSpec.Builder builder2 = MethodSpec.methodBuilder(Constants.GET_NODES_METHOD)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(int[].class);
+        builder.addMethod(builder2.build());
+
+
+        MethodSpec.Builder builder3 = MethodSpec.methodBuilder(Constants.GET_SUCCESSOR_METHOD)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(CompilerUtil.mapIntArrayType);
+        builder.addMethod(builder3.build());
+
+
+        MethodSpec.Builder builder3b = MethodSpec.methodBuilder(Constants.GET_TYPED_SUCCESSOR_METHOD)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(CompilerUtil.mapIntArrayType);
+        builder.addMethod(builder3b.build());
+
+        MethodSpec.Builder builder3c = MethodSpec.methodBuilder(Constants.GET_FOREIGN)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(ArrayTypeName.of(String.class));
+        builder.addMethod(builder3c.build());
+
+        MethodSpec.Builder builder4 = MethodSpec.methodBuilder(Constants.GET_NAME)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(String.class);
+        builder.addMethod(builder4.build());
+
+        //TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
+
+        TypeName myType=functionObjArrayTo(ClassName.get(String.class));
+        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.RECORD_CSV_PROCESSOR_METHOD)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .addParameter(ParameterSpec.builder(ArrayTypeName.of(Object.class),"record").build())
+                .returns(myType);
+        builder.addMethod(builder5.build());
+
+        MethodSpec.Builder builder6 = MethodSpec.methodBuilder(Constants.PROPERTY_ORDER_METHOD)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(String[].class);
+        builder.addMethod(builder6.build());
+
+
+        MethodSpec.Builder builder7 = MethodSpec.methodBuilder(Constants.GET_TEMPLATE_NAME)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(String.class);
+        builder.addMethod(builder7.build());
+
+        MethodSpec.Builder builder8 = MethodSpec.methodBuilder(GET_FULLY_QUALIFIED_NAME)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(String.class);
+        builder.addMethod(builder8.build());
+
+
+
+
+        TypeSpec theInterface = builder.build();
+
+        JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, Constants.CLIENT_PACKAGE, stackTraceElement);
+
+        return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
+    }
+    SpecificationFile generateBuilderInterface_old(TemplatesProjectConfiguration configs, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
+        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(BUILDER_INTERFACE);
 
 
         MethodSpec.Builder builder2 = MethodSpec.methodBuilder(Constants.GET_NODES_METHOD)
@@ -279,26 +348,38 @@ public class CompilerLogger {
         return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
     }
 
-    SpecificationFile generateLoggerInterface(TemplatesProjectConfiguration configs, String directory, String fileName) {
+    SpecificationFile generateLoggerInterface(TemplatesProjectConfiguration configs, String directory, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(Constants.LOGGER_INTERFACE);
 
-        ClassName cln = ClassName.get(Constants.CLIENT_PACKAGE, "Builder");
-        ArrayTypeName builderArrayType = ArrayTypeName.of(cln);
+        Class pastClass = pastFactory.CLASS(LOGGER_INTERFACE, true)
+                .MODIFIERS(Modifier.PUBLIC);
 
-        MethodSpec.Builder builder2 = MethodSpec.methodBuilder(Constants.GET_BUILDERS_METHOD)
-                .addJavadoc("Returns the array of builders")
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(builderArrayType)
-               ;
-        builder.addMethod(builder2.build());
+       // TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(Constants.LOGGER_INTERFACE);
 
+     //   org.openprovenance.prov.template.compiler.past.type.ClassName cln = get("Builder", CLIENT_PACKAGE);
+       // ArrayTypeName builderArrayType = ArrayTypeName.of(cln);
+
+        Method builder2 = METHOD(Constants.GET_BUILDERS_METHOD)
+                .COMMENT("Returns the array of builders")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .RETURNS(BUILDERS_ARRAY);
+
+        pastClass.METHOD(builder2);
+
+
+
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, CLIENT_PACKAGE, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, CLIENT_PACKAGE, configs, fileName+ DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator,pythonGenerator);
+
+/*
         TypeSpec theInterface = builder.build();
 
         JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, Constants.CLIENT_PACKAGE, stackTraceElement);
 
         return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
+        */
 
     }
 

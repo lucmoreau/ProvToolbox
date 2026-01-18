@@ -6,6 +6,7 @@ import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
@@ -46,19 +47,18 @@ public class CompilerBeanChecker {
 
     public SpecificationFile generateBeanChecker(TemplatesProjectConfiguration configs, Locations locations, BeanDirection direction, Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
-
-
-        org.openprovenance.prov.template.compiler.past.Class pastClass= pastFactory
+        
+        Class pastClass= pastFactory
                 .CLASS(fileName)
                 .MODIFIERS(Modifier.PUBLIC);
 
         String packageForBeanProcessor;
         if (direction== COMMON) {
             packageForBeanProcessor=locations.getFilePackage(configs.name, Constants.BEAN_PROCESSOR);
-            pastClass.INTERFACES(org.openprovenance.prov.template.compiler.past.type.ClassName.get(BEAN_PROCESSOR, packageForBeanProcessor));
+            pastClass.INTERFACES(ClassName.get(BEAN_PROCESSOR, packageForBeanProcessor));
         } else {
             packageForBeanProcessor=locations.getFilePackage(configs.name, INPUT_PROCESSOR);
-            pastClass.INTERFACES(org.openprovenance.prov.template.compiler.past.type.ClassName.get(INPUT_PROCESSOR, packageForBeanProcessor));
+            pastClass.INTERFACES(ClassName.get(INPUT_PROCESSOR, packageForBeanProcessor));
         }
 
         Method mspec0 = METHOD(Constants.NOT_NULL_METHOD)
@@ -142,7 +142,6 @@ public class CompilerBeanChecker {
 
             for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
                 if (descriptorUtils.isCompulsoryInput(key, bindingsSchema)) {
-                    //mspec.addStatement("$N(bean.$N,$S,$S)", NOT_NULL_METHOD, key, key,templateName);
                     mspec.BODY(METHOD_CALL(NOT_NULL_METHOD, List.of(METHOD_CALL(VARIABLE("bean"), key),CONSTANT(key), CONSTANT(templateName))));
 
                 }
@@ -151,7 +150,6 @@ public class CompilerBeanChecker {
 
             if (sharing != null) {
                 sharing.forEach(shared -> {
-                   // mspec.addStatement("$N(bean.$N,$S,$S) /* shared */", NOT_NULL_METHOD, shared, shared, templateName);
                     mspec.BODY(METHOD_CALL(NOT_NULL_METHOD, List.of(METHOD_CALL(VARIABLE("bean"), shared),CONSTANT("shared"), CONSTANT(templateName))));
 
                 });
@@ -161,9 +159,8 @@ public class CompilerBeanChecker {
             CompositeTemplateCompilerConfig config1 = (CompositeTemplateCompilerConfig) config;
 
             String shortConsistOfName = locations.getShortNames().get(config1.consistsOf);
-            final String innerNameClass2 = compilerUtil.beanNameClass(shortConsistOfName, direction, direction.equals(COMMON)?extension:"_1"); // LUC: extension hard coded
+            final String innerNameClass2 = compilerUtil.beanNameClass(shortConsistOfName, direction, direction.equals(COMMON)?extension:"_1"); // LUC: TODO FIXME: extension is hard coded
             final ClassName innerClassName2 = get(innerNameClass2, locations.getBeansPackage(config1.fullyQualifiedName, direction));
-
 
             mspec.BODY(
                     ITERATOR(
@@ -173,7 +170,6 @@ public class CompilerBeanChecker {
                                     METHOD_CALL(PROCESS_METHOD_NAME, List.of(VARIABLE("el")))));
         }
         mspec.BODY(RETURN(VARIABLE("bean")));
-       // mspec.addStatement("return bean");
 
         return mspec;
     }

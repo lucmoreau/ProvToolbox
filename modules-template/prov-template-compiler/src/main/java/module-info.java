@@ -19,7 +19,6 @@ module prov.template.compiler {
     requires prov.template;
     requires com.networknt.schema;
 
-
     exports org.openprovenance.prov.template.compiler;
     exports org.openprovenance.prov.template.compiler.past;
     exports org.openprovenance.prov.template.compiler.past.annotations;

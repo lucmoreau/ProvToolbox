@@ -144,6 +144,7 @@ public class Locations {
                 return getCommonPackage(name);
 
             case SQL_INTERFACE:
+            case GETTER:
                 return Constants.CLIENT_PACKAGE;
 
         }

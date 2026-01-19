@@ -1,10 +1,16 @@
 package org.openprovenance.prov.template.compiler.past.type;
 
+import com.squareup.javapoet.ParameterizedTypeName;
+
+import java.util.Map;
+
 import static org.openprovenance.prov.template.compiler.common.Constants.CLIENT_PACKAGE;
 import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
 public class ClassName extends TypeName {
     static public final ClassName _int =ClassName.get("int", "past.lang");
+    public static final TypeName _bool =ClassName.get("bool", "past.lang");
+
     static public final ClassName intArray =ClassName.get("int[]", "past.lang");
     static public final ClassName OBJECT=ClassName.get("Object", "past.lang");
     static public final ClassName STRING=ClassName.get("String", "past.lang");
@@ -24,6 +30,9 @@ public class ClassName extends TypeName {
     public static final ClassName FUNCTION = ClassName.get( "Function", "past.lang");
     public static final ClassName BIFUNCTION = ClassName.get( "BiFunction", "past.lang");
     public static final ClassName UNSUPPORTED_OPERATION_EXCEPTION=ClassName.get("UnsupportedOperationException", "past.exception");
+    public static final ClassName ILLEGAL_STATE_EXCEPTION=ClassName.get("IllegalStateException", "past.exception");
+    public static final ClassName ILLEGAL_ARGUMENT_EXCEPTION=ClassName.get("IllegalArgumentException", "past.exception");
+
     public static final ParameterizedType MAP_STRING_T= ParameterizedType.get(MAP, STRING, T());
     public static final ParameterizedType MAP_INTEGER_INTARRAY= ParameterizedType.get(MAP, INTEGER, intArray);
     public static final ParameterizedType HASH_MAP_INTEGER_INTARRAY= ParameterizedType.get(HASHMAP, INTEGER, intArray);
@@ -43,7 +52,9 @@ public class ClassName extends TypeName {
     public static final TypeVariable TYPE_IN = TypeVariable.get("IN");
     public static final TypeName  CONSUMER_OF_IN= ParameterizedType.get(CONSUMER, TYPE_IN);
     public static final TypeName MAP_STRING_MAP_INTEGER_INTEGER=ParameterizedType.get(MAP,STRING,ParameterizedType.get(MAP,INTEGER,INTEGER));
-
+    public static final ArrayType BUILDERS_ARRAY=ArrayType.of(BUILDER_INTERFACE);
+    public static final ParameterizedType MAP_STRING_OBJECT= ParameterizedType.get(MAP, STRING, OBJECT);
+    public static final ParameterizedType CLASS_T=ParameterizedType.get(CLASS, T());
     public static final ParameterizedType FUNCTION_BUILDER_T=ParameterizedType.get(FUNCTION,  BUILDER_INTERFACE, T());
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_ANY=FUNCTION_OBJARRAY_TO_TYPE(TypeVariable.get("?"));
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_STRING=FUNCTION_OBJARRAY_TO_TYPE(STRING);
@@ -52,8 +63,12 @@ public class ClassName extends TypeName {
 
     public static final ParameterizedType BICONSUMER_STRINGBUILDER_TYPEIN=ParameterizedType.get(BICONSUMER, STRING_BUILDER, TYPE_IN);
     public static final ParameterizedType BICONSUMER_RESULT_TYPEOUT =ParameterizedType.get(BICONSUMER, TYPE_RESULT, TYPE_OUT);
-    public static final ParameterizedType FUNCTION_OBJARRAY_TO_TYPE (TypeName returnType) {
+
+    public static ParameterizedType FUNCTION_OBJARRAY_TO_TYPE(TypeName returnType) {
         return ParameterizedType.get(FUNCTION, OBJECT_ARRAY, returnType);
+    }
+    public static ParameterizedType FUNCTION_LIST_OBJARRAY_TO_TYPE(TypeName returnType) {
+        return ParameterizedType.get(FUNCTION, LIST_OF_OBJECT_ARRAYS, returnType);
     }
     final public String simpleName;
     final public String packge;

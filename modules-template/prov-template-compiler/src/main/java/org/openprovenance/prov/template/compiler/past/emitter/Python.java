@@ -137,7 +137,12 @@ public class Python implements Emitter<StringBuilder> {
             String suffix = getLocalName(imprt);
             // ignore LOGGER
             if (LOGGER.equals(suffix)) continue;
-            sb.insert(0, "from " + imprt + " import " + suffix + "\n");
+            //functools.singledispatch
+            if (imprt.equals("functools.singledispatch")) {
+                sb.insert(0, "from functools import singledispatch, update_wrapper\n");
+            } else {
+                sb.insert(0, "from " + imprt + " import " + suffix + "\n");
+            }
         }
 
         return sb;
@@ -330,7 +335,18 @@ public class Python implements Emitter<StringBuilder> {
         }
 
         if (foundSingleDispatchMethod) {
-            sb.append(INDENT).append("@singledispatch\n");
+            sb.append(INDENT).append("""
+                    # https://stackoverflow.com/questions/24601722/how-can-i-use-functools-singledispatch-with-instance-methods
+                    def methdispatch(func):
+                            dispatcher = singledispatch(func)
+                            def wrapper(*args, **kw):
+                                return dispatcher.dispatch(args[1].__class__)(*args, **kw)
+                            wrapper.register = dispatcher.register
+                            update_wrapper(wrapper, dispatcher)
+                            return wrapper
+                    
+                    """);
+            sb.append(INDENT).append("@methdispatch\n");
             sb.append(INDENT).append("def ").append(sanitizeName(method.name)).append("(self,").append(sanitizeName(method.parameters.get(0).name)).append("):\n");
             sb.append(INDENT).append(INDENT).append("pass\n\n");
             imports.add("functools.singledispatch");
@@ -671,6 +687,7 @@ public class Python implements Emitter<StringBuilder> {
             case FLOAT -> c.value.toString();
             case BOOLEAN -> c.value.toString();
             case NULL -> "0";
+            case BOOL -> c.value.toString();
         };
     }
 
@@ -678,6 +695,9 @@ public class Python implements Emitter<StringBuilder> {
         StringBuilder result= new StringBuilder();
         switch(mc.operatorKind) {
             case CONSTRUCTOR_CALL -> {
+                if (mc.clazz!=null) {
+                    return "new " + "fixmeGetter" + "()";
+                }
                 assert mc.className!=null;
                 if (isMap(mc.className)) {
                     return "Map()";

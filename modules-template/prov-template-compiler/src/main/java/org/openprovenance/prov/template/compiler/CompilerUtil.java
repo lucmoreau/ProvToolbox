@@ -868,7 +868,7 @@ public class CompilerUtil {
         RuntimeException exception = new RuntimeException();
         return exception.getStackTrace()[1];
     }
-    public StackTraceElement previousMethodAndLine() {
+    static public StackTraceElement previousMethodAndLine() {
         RuntimeException exception = new RuntimeException();
         return exception.getStackTrace()[2];
     }

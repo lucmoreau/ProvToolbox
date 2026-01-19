@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler.past.emitter;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Iterator;
@@ -61,6 +62,31 @@ public class Poet implements Emitter<TypeSpec> {
 
 
     }
+
+    public CodeBlock emitAnonymous(Class clazz) {
+        System.out.println("Anonymous class for interface: " + clazz);
+
+        //org.openprovenance.prov.template.compiler.past.type.TypeName xx= clazz.interfaces.get(0);
+
+        //TypeName interfaceType = convert(xx);
+        TypeSpec.Builder builder=TypeSpec.anonymousClassBuilder("")
+              ;
+
+        for (TypeVariable tv : clazz.typeVariables) {
+            builder.addTypeVariable(TypeVariableName.get(tv.name));
+        }
+        clazz.modifiers.forEach(builder::addModifiers);
+        clazz.fields.forEach(field -> builder.addField(convert(field)));
+        clazz.comments.forEach(comment -> builder.addJavadoc(comment.format, comment.objects));
+        clazz.methods.forEach(method -> builder.addMethod(convert(method)));
+        clazz.constructors.forEach(constructor -> builder.addMethod(convert(constructor)));
+        clazz.interfaces.forEach(intfce -> builder.addSuperinterface(convert(intfce)));
+        return CodeBlock.of("$L",
+                builder.build());
+
+
+    }
+
 
     private MethodSpec convert(Constructor constructor) {
         MethodSpec.Builder builder=MethodSpec.constructorBuilder();
@@ -140,9 +166,9 @@ public class Poet implements Emitter<TypeSpec> {
                 CodeBlock.Builder builder= CodeBlock.builder();
 
                 builder.beginControlFlow("if ($L)", conditionCode);
-                ifStatement.thenBlock.stream().map(s -> CodeBlock.of("$L;", convert(s))).forEach(builder::add);
+                ifStatement.thenBlock.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
                 builder.nextControlFlow("else");
-                ifStatement.elseBlock.stream().map(s -> CodeBlock.of("$L;", convert(s))).forEach(builder::add);
+                ifStatement.elseBlock.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
                 builder.endControlFlow();
                 return builder.build();
             }
@@ -231,6 +257,9 @@ public class Poet implements Emitter<TypeSpec> {
                         return CodeBlock.of("$L", constant.value);
                     }
                     case BOOLEAN -> {
+                        return CodeBlock.of("$L", constant.value);
+                    }
+                    case BOOL -> {
                         return CodeBlock.of("$L", constant.value);
                     }
                     case STRING -> {
@@ -341,6 +370,8 @@ public class Poet implements Emitter<TypeSpec> {
 
                     return CodeBlock.of("new $T<>($L)", convert(pt.rawType), argsCode);
 
+                } else if (methodCall.clazz!=null) {
+                    return emitAnonymous(methodCall.clazz) ;
                 } else {
                     return CodeBlock.of("new $T($L)", convert(methodCall.className), argsCode);
                 }
@@ -430,6 +461,8 @@ public class Poet implements Emitter<TypeSpec> {
                     case "Object" ->  { return ClassName.get(Object.class); }
                     case "String" ->  { return ClassName.get(String.class); }
                     case "Integer" ->  { return ClassName.get(Integer.class); }
+                    case "bool" ->  { return TypeName.get(boolean.class); }
+                    case "Boolean" ->  { return ClassName.get(Boolean.class); }
                     case "Class" ->  { return ClassName.get(java.lang.Class.class); }
                     case "Void" ->  { return ClassName.get(Void.class); }
                     case "Consumer" ->  { return ClassName.get(java.util.function.Consumer.class); }
@@ -455,6 +488,7 @@ public class Poet implements Emitter<TypeSpec> {
             case "past.exception" -> {
                 switch (cn.simpleName) {
                     case "UnsupportedOperationException" ->  { return ClassName.get(UnsupportedOperationException.class); }
+                    case "IllegalArgumentException" ->  { return ClassName.get(IllegalArgumentException.class); }
                     default ->  { /* continue */ }
                 }
             }

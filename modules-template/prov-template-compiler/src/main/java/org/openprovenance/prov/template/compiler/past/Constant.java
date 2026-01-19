@@ -10,6 +10,7 @@ public class Constant extends Expression {
         STRING,
         INTEGER,
         FLOAT,
+        BOOL,
         BOOLEAN,
         NULL
     }
@@ -19,6 +20,11 @@ public class Constant extends Expression {
     public Constant(String value) {
         this.value = value;
         this.constantType=ConstantType.STRING;
+        this.expressionKind=ExpressionKind.CONSTANT;
+    }
+    public Constant(boolean value) {
+        this.value = value;
+        this.constantType=ConstantType.BOOL;
         this.expressionKind=ExpressionKind.CONSTANT;
     }
 
@@ -48,6 +54,9 @@ public class Constant extends Expression {
         return constant;
     }
     static public Constant CONSTANT(Integer value) {
+        return new Constant(value);
+    }
+    static public Constant CONSTANT(boolean value) {
         return new Constant(value);
     }
 

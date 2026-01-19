@@ -13,6 +13,8 @@ import java.util.List;
 
 public class Class {
 
+    public enum ClassKind { CLASS, INTERFACE, ANONYMOUS}
+
 
     final public String name;
     final public List<Comment> comments=new LinkedList<>();
@@ -23,10 +25,12 @@ public class Class {
     final public List<TypeVariable> typeVariables=new LinkedList<>();
     final public List<Modifier> modifiers=new LinkedList<>();
     final public boolean isInterface;
+    final public ClassKind classKind;
 
     public Class (String name) {
         this.name = name;
         this.isInterface=false;
+        this.classKind=ClassKind.CLASS;
     }
     public Class(String name, List<TypeName> interfaces, List<Field> fields, List<Method> methods, List<Comment> comments) {
         this.name = name;
@@ -35,11 +39,19 @@ public class Class {
         this.methods.addAll(methods);
         this.comments.addAll(comments);
         this.isInterface=false;
+        this.classKind=ClassKind.CLASS;
     }
 
     public Class(String interfaceName, boolean isInterface) {
         this.name = interfaceName;
         this.isInterface=isInterface;
+        this.classKind=ClassKind.INTERFACE;
+    }
+
+    public Class(String name, ClassKind kind) {
+        this.name = name;
+        this.isInterface=kind==ClassKind.INTERFACE;
+        this.classKind=kind;
     }
 
     public Class INTERFACES(TypeName... interfaceNames) {
@@ -66,9 +78,12 @@ public class Class {
                 ", comments=" + comments +
                 ", fields=" + fields +
                 ", methods=" + methods +
+                ", constructors=" + constructors +
                 ", interfaces=" + interfaces +
                 ", typeVariables=" + typeVariables +
                 ", modifiers=" + modifiers +
+                ", isInterface=" + isInterface +
+                ", classKind=" + classKind +
                 '}';
     }
 

@@ -445,6 +445,10 @@ public class ConfigProcessor implements Constants {
         SpecificationFile beanCompleter=compilerBeanCompleter.generateBeanCompleter(configs, locations, BEAN_COMPLETER);
         beanCompleter.save();
 
+        SpecificationFile getterInterface=compilerBeanCompleter.generateGetterInterface(configs, locations, GETTER);
+        getterInterface.save();
+
+
 
         if (configs.integrator) {
             SpecificationFile inputOutputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(configs, locations, integrator_package, CompilerInputOutputProcessor.ProcessorType.INPUT_OUTPUT,integrator_dir, INPUT_OUTPUT_PROCESSOR + DOT_JAVA_EXTENSION);

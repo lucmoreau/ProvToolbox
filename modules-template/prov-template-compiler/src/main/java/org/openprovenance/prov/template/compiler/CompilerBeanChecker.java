@@ -47,7 +47,7 @@ public class CompilerBeanChecker {
 
     public SpecificationFile generateBeanChecker(TemplatesProjectConfiguration configs, Locations locations, BeanDirection direction, Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
-        
+
         Class pastClass= pastFactory
                 .CLASS(fileName)
                 .MODIFIERS(Modifier.PUBLIC);

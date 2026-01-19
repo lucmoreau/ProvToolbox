@@ -176,7 +176,8 @@ public class CompilerBeanLocalEnactor2 {
                         .MODIFIERS(Modifier.PUBLIC)
                         .PARAMETER(inputClassName2, "bean")
                         .PARAMETER(MAP_STRING_MAP_INTEGER_INTEGER, MAP_VAR)
-                        .RETURNS(outputClassName2);
+                        .RETURNS(outputClassName2)
+                        .ANNOTATIONS(RegisterMethod.NAME);
 
 
                 compilerUtil.debugFileLocation(mspec2);

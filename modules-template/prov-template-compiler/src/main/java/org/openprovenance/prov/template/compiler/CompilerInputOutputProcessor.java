@@ -50,7 +50,8 @@ public class CompilerInputOutputProcessor {
 
         Class pastClass = pastFactory.INTERFACE(interfaceName)
                 .MODIFIERS(Modifier.PUBLIC)
-                .TYPE_VARIABLES(T());
+                //.TYPE_VARIABLES(T())
+                ;
 
         for (TemplateCompilerConfig config : configs.templates) {
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);

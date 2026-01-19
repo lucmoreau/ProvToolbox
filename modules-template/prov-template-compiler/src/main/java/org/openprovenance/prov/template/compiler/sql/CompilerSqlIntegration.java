@@ -66,7 +66,7 @@ public class CompilerSqlIntegration {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ResultSet.class, "rs");
 
-        constructor.addStatement("super(new Getter() {\n" +
+        constructor.addStatement("super(new org.openprovenance.prov.client.Getter() {\n" +
                 "            @Override\n" +
                 "            public <T> T get(Class<T> cl, String col) {\n" +
                 "                try {\n" +

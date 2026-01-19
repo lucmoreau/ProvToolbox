@@ -15,8 +15,11 @@ class Map:
         self._dict = []
 
     def get(self, k):
-        print ("Getting key:", k)
+        #print ("Getting key:", k)
         return self._dict[k]
+
+    def containsKey(self, k):
+        return k in self._dict
 
 
 

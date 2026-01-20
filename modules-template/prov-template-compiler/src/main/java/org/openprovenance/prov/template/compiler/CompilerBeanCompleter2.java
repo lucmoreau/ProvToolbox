@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -118,7 +117,6 @@ public class CompilerBeanCompleter2 {
 
         for (TemplateCompilerConfig config : configs.templates) {
             if (config instanceof SimpleTemplateCompilerConfig) {
-               // compilerUtil.debugFileLocation(mspecOut);
 
                 TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
@@ -127,27 +125,26 @@ public class CompilerBeanCompleter2 {
 
                 final ClassName outputClassName = get(outputBeanNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
                 Method mspecOut = METHOD(Constants.PROCESS_METHOD_NAME)
+                        .debugFileLocation()
                         .MODIFIERS(Modifier.PUBLIC)
                         .PARAMETER(outputClassName, BEAN_VAR)
-                        .RETURNS(outputClassName);
-                compilerUtil.debugFileLocation(mspecOut);
+                        .RETURNS(outputClassName)
+                        .BODY(
+                                // if output, set ID and call post processing
 
-                // if output, set ID and call post processing
-                mspecOut.BODY(
-                        ASSIGNMENT(null,
-                                METHOD_CALL(VARIABLE(BEAN_VAR), "ID"),
-                                METHOD_CALL(VARIABLE(GETTER_VAR), "get", List.of(METHOD_CALL(get("Integer", "java.lang"), "class"), CONSTANT("ID")))
-                        )
-                );
+                                ASSIGNMENT(null,
+                                        METHOD_CALL(VARIABLE(BEAN_VAR), "ID"),
+                                        METHOD_CALL(VARIABLE(GETTER_VAR), "get", List.of(METHOD_CALL(get("Integer", "java.lang"), "class"), CONSTANT("ID")))
+                                ),
 
-                // call postEnactmentProcessing(bean.ID, fullyQualifiedName)
-                mspecOut.BODY(
-                        METHOD_CALL(POST_PROCESS_METHOD_NAME, List.of(METHOD_CALL(VARIABLE(BEAN_VAR), "ID"), CONSTANT(config.fullyQualifiedName)))
-                );
+                                // call postEnactmentProcessing(bean.ID, fullyQualifiedName)
+
+                                METHOD_CALL(POST_PROCESS_METHOD_NAME, List.of(METHOD_CALL(VARIABLE(BEAN_VAR), "ID"), CONSTANT(config.fullyQualifiedName)))
+                        );
 
                 for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
                     if (descriptorUtils.isOutput(key, bindingsSchema)) {
-                        org.openprovenance.prov.template.compiler.past.type.ClassName cl = compilerUtil.getPastTypeForDeclaredType(bindingsSchema.getVar(), key);
+                        ClassName cl = compilerUtil.getPastTypeForDeclaredType(bindingsSchema.getVar(), key);
                         mspecOut.BODY(ASSIGNMENT(null,
                                 METHOD_CALL(VARIABLE(BEAN_VAR), key),
                                 METHOD_CALL(
@@ -175,7 +172,7 @@ public class CompilerBeanCompleter2 {
 
                 for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
                     if (descriptorUtils.isInput(key, bindingsSchema)) {
-                        org.openprovenance.prov.template.compiler.past.type.ClassName cl = compilerUtil.getPastTypeForDeclaredType(bindingsSchema.getVar(), key);
+                        ClassName cl = compilerUtil.getPastTypeForDeclaredType(bindingsSchema.getVar(), key);
                         mspecIn.BODY(ASSIGNMENT(null,
                                 METHOD_CALL(VARIABLE(BEAN_VAR), key),
                                 METHOD_CALL(
@@ -205,38 +202,36 @@ public class CompilerBeanCompleter2 {
                 ClassName composeeClass = get(composeeName, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
 
                 Method mspec = METHOD(Constants.PROCESS_METHOD_NAME)
+                        .debugFileLocation()
                         .MODIFIERS(Modifier.PUBLIC)
                         .PARAMETER(outputClassName, BEAN_VAR)
-                        .RETURNS(outputClassName);
-
-                compilerUtil.debugFileLocation(mspec);
-
-                mspec.BODY(
-                        ASSIGNMENT(_bool, VARIABLE("nextExists"), CONSTANT(true)),
-                        ITERATOR(
-                                PARAMETER("composee", composeeClass),
-                                METHOD_CALL(VARIABLE(BEAN_VAR), ELEMENTS))
-                                .BODY(
-                                        IF(VARIABLE("nextExists"))
-                                                .THEN(
-                                                        METHOD_CALL(
-                                                                VARIABLE("this"),
-                                                                PROCESS_METHOD_NAME,
-                                                                List.of(VARIABLE("composee"))),
-                                                        ASSIGNMENT(
-                                                                null,
-                                                                VARIABLE("nextExists"),
+                        .RETURNS(outputClassName)
+                        .BODY(
+                                ASSIGNMENT(_bool, VARIABLE("nextExists"), CONSTANT(true)),
+                                ITERATOR(
+                                        PARAMETER("composee", composeeClass),
+                                        METHOD_CALL(VARIABLE(BEAN_VAR), ELEMENTS))
+                                        .BODY(
+                                                IF(VARIABLE("nextExists"))
+                                                        .THEN(
                                                                 METHOD_CALL(
                                                                         VARIABLE("this"),
-                                                                        "next",
-                                                                        List.of())))
-                                                .ELSE(
-                                                        METHOD_CALL("throw",
-                                                                List.of(CONSTRUCTOR_CALL(ILLEGAL_ARGUMENT_EXCEPTION,
-                                                                        List.of(CONSTANT("Not enough record in the result"))))))),
+                                                                        PROCESS_METHOD_NAME,
+                                                                        List.of(VARIABLE("composee"))),
+                                                                ASSIGNMENT(
+                                                                        null,
+                                                                        VARIABLE("nextExists"),
+                                                                        METHOD_CALL(
+                                                                                VARIABLE("this"),
+                                                                                "next",
+                                                                                List.of())))
+                                                        .ELSE(
+                                                                METHOD_CALL("throw",
+                                                                        List.of(CONSTRUCTOR_CALL(ILLEGAL_ARGUMENT_EXCEPTION,
+                                                                                List.of(CONSTANT("Not enough record in the result"))))))),
 
 
-                        RETURN(VARIABLE(BEAN_VAR)));
+                                RETURN(VARIABLE(BEAN_VAR)));
 
                 pastClass.METHOD(mspec);
 
@@ -259,8 +254,7 @@ public class CompilerBeanCompleter2 {
                 .BODY(); // empty body
         pastClass.METHOD(pMethod);
 
-                String myPackage=locations.getFilePackage(configs.name, fileName);
-
+        String myPackage=locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
 

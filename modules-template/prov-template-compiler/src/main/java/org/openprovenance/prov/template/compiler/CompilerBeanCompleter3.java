@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.get;
 
 public class CompilerBeanCompleter3 {
     private final CompilerUtil compilerUtil;
@@ -25,6 +26,9 @@ public class CompilerBeanCompleter3 {
 
     SpecificationFile generateBeanCompleter3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
+        ClassName GETTER_TYPE = ClassName.get( locations.getFilePackage("ignoreme", GETTER ),GETTER);
+
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_COMPLETER3);
 
@@ -45,7 +49,7 @@ public class CompilerBeanCompleter3 {
         compilerUtil.specWithComment(cbuilder3);
         cbuilder3
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(TypeVariableName.get(Constants.GETTER), "getter")
+                .addParameter(GETTER_TYPE, "getter")
                 .addStatement("super(getter)");
 
         builder.addMethod(cbuilder3.build());

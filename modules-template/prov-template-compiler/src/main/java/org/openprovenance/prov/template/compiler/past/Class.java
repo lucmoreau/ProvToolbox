@@ -26,6 +26,7 @@ public class Class {
     final public List<Modifier> modifiers=new LinkedList<>();
     final public boolean isInterface;
     final public ClassKind classKind;
+    public TypeName superclass = null;
 
     public Class (String name) {
         this.name = name;
@@ -62,6 +63,12 @@ public class Class {
         return this;
     }
 
+    public Class SUPERCLASS(TypeName superType) {
+        if (superType == null) throw new IllegalArgumentException("null superclass");
+        this.superclass = superType;
+        return this;
+    }
+
     public Class TYPE_VARIABLES(TypeVariable... typeVariables) {
         for (TypeVariable typeVariable: typeVariables) {
             if (typeVariable == null) throw new IllegalArgumentException("null type variable");
@@ -84,6 +91,7 @@ public class Class {
                 ", modifiers=" + modifiers +
                 ", isInterface=" + isInterface +
                 ", classKind=" + classKind +
+                ", superclass=" + superclass +
                 '}';
     }
 

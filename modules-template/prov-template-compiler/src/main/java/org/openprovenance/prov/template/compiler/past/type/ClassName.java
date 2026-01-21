@@ -60,6 +60,7 @@ public class ClassName extends TypeName {
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_STRING=FUNCTION_OBJARRAY_TO_TYPE(STRING);
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_OBJ_ARRAY = FUNCTION_OBJARRAY_TO_TYPE(OBJECT_ARRAY);
     public static final ParameterizedType BIFUNCTION_MAP_STRING_MAP_STRING_INTARRAY_STRINGARRAY_TO_T= ParameterizedType.get(BIFUNCTION, MAP_STRING_MAP_STRING_INTARRAY, STRING_ARRAY, T());
+    public static final ParameterizedType LIST_MAP_STRING_OBJECT=ParameterizedType.get(LIST, MAP_STRING_OBJECT);
 
     public static final ParameterizedType BICONSUMER_STRINGBUILDER_TYPEIN=ParameterizedType.get(BICONSUMER, STRING_BUILDER, TYPE_IN);
     public static final ParameterizedType BICONSUMER_RESULT_TYPEOUT =ParameterizedType.get(BICONSUMER, TYPE_RESULT, TYPE_OUT);

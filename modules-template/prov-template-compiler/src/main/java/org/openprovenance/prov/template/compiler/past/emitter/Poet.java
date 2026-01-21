@@ -53,6 +53,10 @@ public class Poet implements Emitter<TypeSpec> {
             builder.addTypeVariable(TypeVariableName.get(tv.name));
         }
         clazz.modifiers.forEach(builder::addModifiers);
+        // emit superclass if present
+        if (clazz.superclass != null) {
+            builder.superclass(convert(clazz.superclass));
+        }
         clazz.interfaces.forEach(intfce -> builder.addSuperinterface(convert(intfce)));
         clazz.fields.forEach(field -> builder.addField(convert(field)));
         clazz.comments.forEach(comment -> builder.addJavadoc(comment.format, comment.objects));

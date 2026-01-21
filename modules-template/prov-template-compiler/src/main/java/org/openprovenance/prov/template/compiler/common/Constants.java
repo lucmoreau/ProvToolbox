@@ -202,4 +202,5 @@ public interface Constants {
     String METHOD_GET_RELATIONS = "__getRelations";
     String ARGS_2_BEAN = "args2bean";
     String GETTER_VAR = "getter";
+    String ELEM_VAR = "elem";
 }

@@ -2,7 +2,6 @@ package org.openprovenance.prov.template.compiler;
 
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
-import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
@@ -29,7 +28,6 @@ import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.*;
 import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 
@@ -55,7 +53,6 @@ public class CompilerBeanCompleter2Composite {
                 FIELD(M_VAR, MAP_STRING_OBJECT).MODIFIERS(Modifier.FINAL)
         );
 
-        // constructor(Map<String,Object> m) { this.ll = (List<Map<String,Object>>) m.get("elements"); this.m = m; }
         Constructor constructor = CONSTRUCTOR()
                  .MODIFIERS(Modifier.PUBLIC)
                  .PARAMETER(MAP_STRING_OBJECT, M_VAR)
@@ -79,7 +76,6 @@ public class CompilerBeanCompleter2Composite {
 
             ClassName composeeClass = get(compilerUtil.outputsNameClass(shortName), locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
 
-            // -        mspec.addStatement("$N.$N=($T)$N.get($S)", BEAN_VAR, "ID", Integer.class, M_VAR, "ID");
             Method m = METHOD(PROCESS_METHOD_NAME)
                     .MODIFIERS(Modifier.PUBLIC)
                     .PARAMETER(outClass, BEAN_VAR)
@@ -90,16 +86,12 @@ public class CompilerBeanCompleter2Composite {
                                     METHOD_CALL(VARIABLE(BEAN_VAR), "ID"),
 
                                     CAST(INTEGER,
-                                            METHOD_CALL(VARIABLE(M_VAR), "get", List.of(CONSTANT("ID")))
-                                    )
+                                            METHOD_CALL(VARIABLE(M_VAR), "get", List.of(CONSTANT("ID")))  )   ),
 
-                            ),
-                            // for (Map<String,Object> m: this.ll) { Composee out = new Composee(); bean.addElements(new BeanCompleter2(m).process(out)); }
                             ITERATOR(
                                     PARAMETER("elem", MAP_STRING_OBJECT),
                                     VARIABLE(LL_VAR))
                                     .BODY(
-                                            // declare out and call BeanCompleter2
                                             ASSIGNMENT(composeeClass, VARIABLE(OUT_VAR), CONSTRUCTOR_CALL(composeeClass, List.of())),
                                             METHOD_CALL(
                                                     VARIABLE(BEAN_VAR),
@@ -112,9 +104,9 @@ public class CompilerBeanCompleter2Composite {
                                                             )
                                                     )
                                             )
-                                    )
-                    ,
-                    RETURN(VARIABLE(BEAN_VAR))
+                                    ),
+                            
+                            RETURN(VARIABLE(BEAN_VAR))
                     );
 
             pastClass.METHOD(m);

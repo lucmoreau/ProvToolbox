@@ -199,11 +199,11 @@ public class CompilerSqlIntegration {
         // static method
         MethodSpec.Builder staticMethod = MethodSpec.methodBuilder("newGetter")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2, Constants.GETTER))
+                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.GETTER),  Constants.GETTER))
                 .addParameter(ResultSet.class, "rs");
 
 
-        staticMethod.addStatement("return new Getter() {\n" +
+        staticMethod.addStatement("return new org.openprovenance.prov.client.Getter() {\n" +
                 "            @Override\n" +
                 "            public <T> T get(Class<T> cl, String col) {\n" +
                 "                try {\n" +

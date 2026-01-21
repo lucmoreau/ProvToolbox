@@ -107,7 +107,6 @@ public class CompilerBeanCompleter3 {
                     pastClass.METHOD(mspec);
                 }
             } else {
-                CompositeTemplateCompilerConfig config1 = (CompositeTemplateCompilerConfig) config;
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
                 final ClassName outputClassName = get(outputBeanNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
 
@@ -143,17 +142,7 @@ public class CompilerBeanCompleter3 {
 
                 RETURN(VARIABLE("result"))         );
 
-
-       // mspec.addStatement("$T result=super.$N($N)", outputClassName, Constants.PROCESS_METHOD_NAME, BEAN_VAR);
-       // mspec.addStatement("result.ID=getValueFromLocation()");
-       // mspec.addStatement("System.out.println($S+result.ID+$S)", "Assigned ID in completer: ", "  " + templateFullyQualifiedName);
-        //mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, "result", templateFullyQualifiedName);
-
-        //.addStatement("return $N", "result");
-        //mspec.addAnnotation(Override.class);
-
         return mspec;
     }
-
 
 }

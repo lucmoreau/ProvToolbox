@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
-import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
@@ -49,7 +48,7 @@ public class CompilerBeanCompleter2Composite {
 
         // fields
         pastClass.FIELDS(
-                FIELD(LL_VAR, ParameterizedType.get(LIST, MAP_STRING_OBJECT)).MODIFIERS(Modifier.FINAL),
+                FIELD(LL_VAR, LIST_MAP_STRING_OBJECT).MODIFIERS(Modifier.FINAL),
                 FIELD(M_VAR, MAP_STRING_OBJECT).MODIFIERS(Modifier.FINAL)
         );
 
@@ -59,7 +58,7 @@ public class CompilerBeanCompleter2Composite {
                  .debugFileLocation()
                  .BODY(
                         ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), LL_VAR),
-                                CAST(ParameterizedType.get(LIST, MAP_STRING_OBJECT), METHOD_CALL(VARIABLE(M_VAR), "get", List.of(CONSTANT(ELEMENTS))))),
+                                CAST(LIST_MAP_STRING_OBJECT, METHOD_CALL(VARIABLE(M_VAR), "get", List.of(CONSTANT(ELEMENTS))))),
                          ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), M_VAR), VARIABLE(M_VAR))
                  );
          pastClass.CONSTRUCTOR(constructor);
@@ -89,7 +88,7 @@ public class CompilerBeanCompleter2Composite {
                                             METHOD_CALL(VARIABLE(M_VAR), "get", List.of(CONSTANT("ID")))  )   ),
 
                             ITERATOR(
-                                    PARAMETER("elem", MAP_STRING_OBJECT),
+                                    PARAMETER(ELEM_VAR, MAP_STRING_OBJECT),
                                     VARIABLE(LL_VAR))
                                     .BODY(
                                             ASSIGNMENT(composeeClass, VARIABLE(OUT_VAR), CONSTRUCTOR_CALL(composeeClass, List.of())),
@@ -98,14 +97,14 @@ public class CompilerBeanCompleter2Composite {
                                                     ADD_ELEMENTS,
                                                     List.of(
                                                             METHOD_CALL(
-                                                                    CONSTRUCTOR_CALL(get(BEAN_COMPLETER2, locations.getFilePackage(configs.name, BEAN_COMPLETER2)), List.of(VARIABLE("elem"))),
+                                                                    CONSTRUCTOR_CALL(get(BEAN_COMPLETER2, locations.getFilePackage(configs.name, BEAN_COMPLETER2)), List.of(VARIABLE(ELEM_VAR))),
                                                                     PROCESS_METHOD_NAME,
                                                                     List.of(VARIABLE(OUT_VAR))
                                                             )
                                                     )
                                             )
                                     ),
-                            
+
                             RETURN(VARIABLE(BEAN_VAR))
                     );
 

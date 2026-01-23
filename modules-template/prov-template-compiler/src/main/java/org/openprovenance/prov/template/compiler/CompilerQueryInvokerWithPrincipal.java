@@ -10,11 +10,10 @@ import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import javax.lang.model.element.Modifier;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
-import static org.openprovenance.prov.template.compiler.CompilerQueryInvoker.CONVERT_TO_NON_NULLABLE_TEXT;
-import static org.openprovenance.prov.template.compiler.CompilerQueryInvoker.CONVERT_TO_NULLABLE_TEXT;
+import static org.openprovenance.prov.template.compiler.oldstuff.CompilerQueryInvokerOld.CONVERT_TO_NON_NULLABLE_TEXT;
+import static org.openprovenance.prov.template.compiler.oldstuff.CompilerQueryInvokerOld.CONVERT_TO_NULLABLE_TEXT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerQueryInvokerWithPrincipal {

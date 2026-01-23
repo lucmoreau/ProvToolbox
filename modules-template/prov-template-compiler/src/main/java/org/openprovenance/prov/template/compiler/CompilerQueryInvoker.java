@@ -54,20 +54,17 @@ public class CompilerQueryInvoker {
         Class pastClass = pastFactory.CLASS(className)
                 .MODIFIERS(Modifier.PUBLIC);
 
-        // add interface
         if (withBean) {
             pastClass.INTERFACES(get(BEAN_PROCESSOR, locations.getFilePackage(configs.name, BEAN_PROCESSOR)));
         } else {
             pastClass.INTERFACES(get(INPUT_PROCESSOR, locations.getFilePackage(configs.name, INPUT_PROCESSOR)));
         }
 
-        // fields: StringBuilder sb; bool linking
         pastClass.FIELDS(
                 FIELD(SB_VAR, STRING_BUILDER).MODIFIERS(Modifier.FINAL),
                 FIELD(LINKING_VAR, _bool).MODIFIERS(Modifier.FINAL)
         );
 
-        // constructor(StringBuilder sb) { this.sb = sb; this.linking = false; }
         Constructor c1 = CONSTRUCTOR()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(STRING_BUILDER, SB_VAR)
@@ -78,7 +75,6 @@ public class CompilerQueryInvoker {
                 );
         pastClass.CONSTRUCTOR(c1);
 
-        // optional constructor(StringBuilder sb, boolean linking)
         if (!withBean) {
             Constructor c2 = CONSTRUCTOR()
                     .MODIFIERS(Modifier.PUBLIC)
@@ -92,7 +88,6 @@ public class CompilerQueryInvoker {
             pastClass.CONSTRUCTOR(c2);
         }
 
-        // Collect special types
         Set<String> foundSpecialTypes = new HashSet<>();
         foundSpecialTypes.add(NON_NULLABLE_TEXT);
 
@@ -127,6 +122,16 @@ public class CompilerQueryInvoker {
              pastClass.METHOD(m);
          }
 
+        addSpecialTypesMethods(foundSpecialTypes, pastClass);
+
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+
+        return new SpecificationFile(javaGenerator, pythonGenerator);
+    }
+
+    private void addSpecialTypesMethods(Set<String> foundSpecialTypes, Class pastClass) {
         // add special type converters as methods
         if (foundSpecialTypes.contains(TIMESTAMPTZ)) {
             Method ms = METHOD("convertToTimestamptz")
@@ -227,24 +232,8 @@ public class CompilerQueryInvoker {
                     );
             pastClass.METHOD(ms5);
         }
-
-        String myPackage = locations.getFilePackage(configs.name, fileName);
-        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
-
-        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
-    // Helper to produce a Variable expression for bean.field: VARIABLE(bean).field -> represented by MethodCall Variable, "field"
-    private static org.openprovenance.prov.template.compiler.past.Expression VARIABLE_EXPRESSION(String beanVar, String field) {
-        return METHOD_CALL(VARIABLE(beanVar), field, List.of());
-    }
-
-    private static String VARIABLE_BEAN_NAME() { return VARIABLE_BEAN; }
-
-    private static String VARIABLE_BEAN_FIELD(String beanVar, String field) { return beanVar + "." + field; }
-
-    private static String VARIABLE_BEAN = "bean";
 
     public String converterForSpecialType(String specialType) {
         return switch (specialType) {
@@ -257,12 +246,9 @@ public class CompilerQueryInvoker {
         };
     }
 
-    // Helper methods inserted below
-
     private void simpleQueryInvoker(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, Method m, String beanVar) {
         TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
-        // sb.append("select * from "); sb.append("insert_xxx (");
         m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("select * from "))));
         m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(INSERT_PREFIX + config.name + " ("))));
 
@@ -277,7 +263,6 @@ public class CompilerQueryInvoker {
                 if (sqlType != null) {
                     String fun = converterForSpecialType(sqlType);
                     if (fun != null) {
-                        // append result of converter applied to bean.field
                         m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(fun, List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
                         foundSpecialTypes.add(sqlType);
                     } else {
@@ -368,37 +353,22 @@ public class CompilerQueryInvoker {
             iterType = get(compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.INPUTS, "_1"), locations.getBeansPackage(compositeConfig.fullyQualifiedName, BeanDirection.INPUTS));
         }
 
-        // boolean first = true;
         m.BODY(ASSIGNMENT(_bool, VARIABLE("first"), CONSTANT(true)));
 
-        // for (<iterType> variableBean1 : bean.elements) { ... }
+        Iterator iterator = ITERATOR(PARAMETER(variableBean1, iterType), METHOD_CALL(VARIABLE(beanVar), ELEMENTS));
+        iterator.BODY(
+                IF(VARIABLE("first")).THEN(
+                        ASSIGNMENT(null, VARIABLE("first"), CONSTANT(false))
+                ).ELSE(
+                        METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(",\n     ")))
+                )
+        );
+        simpleQueryInvokerEmbedded(configs, composee, foundSpecialTypes, iterator, variableBean1, compositeConfig.sharing);
+
+        m.BODY(iterator);
 
 
-        // After adding the iterator skeleton, insert the embedded element body by reconstructing the iterator body via helper
-        // To achieve this we call the helper which will append appropriate statements to 'm' at the current construction point.
-        // However, since 'm' already contains the iterator statement, we need to rebuild the iterator with full body using the helper.
-        // For simplicity and correctness, recreate the iterator statement with the helper-generated body and replace the previous one.
-        // Build iterator body statements using a temporary Method to collect statements, then add to m.
-        {
-            // Remove previous iterator and re-add a new one with proper body using the helper
-            // Create iterator with parameter and collection
-            Iterator iterator = ITERATOR(PARAMETER(variableBean1, iterType), METHOD_CALL(VARIABLE(beanVar), ELEMENTS));
-            // begin 'first' handling and comma insertion
-            iterator.BODY(
-                    IF(VARIABLE("first")).THEN(
-                            ASSIGNMENT(null, VARIABLE("first"), CONSTANT(false))
-                    ).ELSE(
-                            METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(",\n     ")))
-                    )
-            );
-            simpleQueryInvokerEmbedded(configs, composee, foundSpecialTypes, iterator, variableBean1, compositeConfig.sharing);
 
-            m.BODY(iterator);
-
-        }
-
-
-        // close array
         m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\n]);\n"))));
 
     }

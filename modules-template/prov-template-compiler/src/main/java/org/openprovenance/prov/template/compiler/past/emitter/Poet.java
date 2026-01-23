@@ -167,12 +167,15 @@ public class Poet implements Emitter<TypeSpec> {
                 IfStatement ifStatement = (IfStatement) statement;
                 CodeBlock conditionCode = convert(ifStatement.condition);
 
-                CodeBlock.Builder builder= CodeBlock.builder();
+                CodeBlock.Builder builder = CodeBlock.builder();
 
                 builder.beginControlFlow("if ($L)", conditionCode);
                 ifStatement.thenBlock.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
-                builder.nextControlFlow("else");
-                ifStatement.elseBlock.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
+                if (!ifStatement.elseBlock.isEmpty()) {
+                    builder.nextControlFlow("else");
+                    ifStatement.elseBlock.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
+
+                }
                 builder.endControlFlow();
                 return builder.build();
             }
@@ -186,6 +189,16 @@ public class Poet implements Emitter<TypeSpec> {
                 builder.beginControlFlow("for ( $L; $L; $L )", initCode, conditionCode, updateCode);
                 forLoop.body.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
                 builder.endControlFlow();
+                return builder.build();
+            }
+
+            case DO_LOOP ->  {
+                DoLoop doLoop = (DoLoop) statement;
+                CodeBlock conditionCode = convert(doLoop.condition);
+                CodeBlock.Builder builder= CodeBlock.builder();
+                builder.beginControlFlow("do ");
+                doLoop.body.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
+                builder.endControlFlow(" while ( $L );", conditionCode);
                 return builder.build();
             }
 
@@ -425,6 +438,17 @@ public class Poet implements Emitter<TypeSpec> {
                 }
             }
             case STATIC_METHOD_CALL -> {
+                if (methodCall.className!=null &&
+                        Objects.equals(org.openprovenance.prov.template.compiler.past.type.ClassName.STRING.simpleName,
+                                ((org.openprovenance.prov.template.compiler.past.type.ClassName) methodCall.className).simpleName)
+                        && "concat".equals(methodCall.methodName)) {
+
+                    CodeBlock argsCode = CodeBlock.join(
+                            methodCall.arguments.stream().map(this::convert).collect(Collectors.toList()),
+                            "+");
+
+                    return argsCode;
+                }
                 CodeBlock argsCode = CodeBlock.join(
                         methodCall.arguments.stream().map(this::convert).collect(Collectors.toList()),
                         ",");

@@ -37,8 +37,7 @@ public class CompilerQueryInvoker {
     private final CompilerUtil compilerUtil;
     private final PastFactory pastFactory;
 
-    public static final String SB_VAR = "sb";
-    public static final String LINKING_VAR = "linking";
+
 
     public CompilerQueryInvoker(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
@@ -197,7 +196,7 @@ public class CompilerQueryInvoker {
         }
 
         if (foundSpecialTypes.contains(NON_NULLABLE_TEXT)) {
-            Method ms4 = METHOD("convertToNonNullableTEXT")
+            Method ms4 = METHOD(CONVERT_TO_NON_NULLABLE_TEXT)
                     .debugFileLocation()
                     .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
                     .PARAMETER(STRING, "str")
@@ -235,7 +234,7 @@ public class CompilerQueryInvoker {
             case Constants.SQL_DATE -> "convertToDate";
             case Constants.TIMESTAMPTZ -> "convertToTimestamptz";
             case Constants.NULLABLE_TEXT -> "convertToNullableTEXT";
-            case Constants.NON_NULLABLE_TEXT -> "convertToNonNullableTEXT";
+            case Constants.NON_NULLABLE_TEXT -> CONVERT_TO_NON_NULLABLE_TEXT;
             case Constants.JSON_TEXT -> "convertToJsonTEXT";
             default -> null;
         };

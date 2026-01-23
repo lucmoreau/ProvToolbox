@@ -335,8 +335,8 @@ public class Python implements Emitter<StringBuilder> {
         }
 
         if (foundSingleDispatchMethod) {
-            sb.append(INDENT).append("""
-                    # https://stackoverflow.com/questions/24601722/how-can-i-use-functools-singledispatch-with-instance-methods
+            sb.append(INDENT).append("# https://stackoverflow.com/questions/24601722/how-can-i-use-functools-singledispatch-with-instance-methods\n")
+                    .append(INDENT).append("""
                     def methdispatch(func):
                             dispatcher = singledispatch(func)
                             def wrapper(*args, **kw):
@@ -496,6 +496,21 @@ public class Python implements Emitter<StringBuilder> {
                     emitStatement(bodyStmt, indent + INDENT);
                 }
                 emitStatement(update, indent + INDENT);
+            }
+
+            case DO_LOOP -> {
+                DoLoop doLoop = (DoLoop) statement;
+                sb.append(indent)
+                        .append("while True:\n");
+                for (Statement bodyStmt : doLoop.body) {
+                    emitStatement(bodyStmt, indent + INDENT);
+                }
+                sb.append(indent + INDENT)
+                        .append("if not (")
+                        .append(convert(doLoop.condition))
+                        .append("):\n");
+                sb.append(indent + INDENT + INDENT)
+                        .append("break\n");
             }
 
             case ITERATOR -> {

@@ -33,5 +33,12 @@ public class Iterator extends Statement {
         }
         return this;
     }
+    public Iterator COMMENT(String format, Object... args) {
+
+        this.body.add(new Comment(format, args));
+
+        return this;
+    }
+
 
 }

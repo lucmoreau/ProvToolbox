@@ -156,7 +156,7 @@ public class ConfigProcessor implements Constants {
         this.compilerTemplateBuilders = new CompilerTemplateBuilders(pFactory);
         this.compilerTableConfiguratorForTypes = new CompilerTableConfiguratorForTypes(pFactory);
         this.compilerSqlIntegration = new CompilerSqlIntegration(pFactory);
-        this.compilerQueryInvokerWithPrincipal = new CompilerQueryInvokerWithPrincipal(pFactory);
+        this.compilerQueryInvokerWithPrincipal = new CompilerQueryInvokerWithPrincipal(pFactory,compilerQueryInvoker);
         this.compilerBeanEnactor2compositeWP = new CompilerBeanEnactor2CompositeWithPrincipal(pFactory);
         this.compilerCatalogueDispatcher=new CompilerCatalogueDispatcher(pFactory);
     }

@@ -203,4 +203,10 @@ public interface Constants {
     String ARGS_2_BEAN = "args2bean";
     String GETTER_VAR = "getter";
     String ELEM_VAR = "elem";
+    String CONVERT_TO_NON_NULLABLE_TEXT = "convertToNonNullableTEXT";
+    String PRINCIPAL_VAR ="principal";
+    String QUERY_INVOKER_VAR ="queryInvoker";
+    String SB_VAR = "sb";
+    String LINKING_VAR = "linking";
+
 }

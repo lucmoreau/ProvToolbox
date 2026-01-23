@@ -4,6 +4,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.oldstuff.CompilerBeanCompleter2Old;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
@@ -22,6 +23,7 @@ import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST
 import static org.openprovenance.prov.template.compiler.past.Class.ClassKind.ANONYMOUS;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.DoLoop.DO;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
 import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
@@ -34,19 +36,22 @@ import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.*;
-
 public class CompilerBeanCompleter2 {
     private final CompilerUtil compilerUtil;
     private final PastFactory pastFactory;
     private final boolean debugComment=true;
+    private final CompilerBeanCompleter2Old old;
 
 
     public CompilerBeanCompleter2(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
         this.pastFactory=compilerUtil.getPastFactory();
+        this.old=new CompilerBeanCompleter2Old(pFactory);
     }
+    SpecificationFile generateBeanCompleter2_old(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
 
+        return old.generateBeanCompleter2(configs, locations, fileName);
+    }
 
     SpecificationFile generateBeanCompleter2(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
@@ -201,7 +206,31 @@ public class CompilerBeanCompleter2 {
                 String composeeName = compilerUtil.outputsNameClass(shortConsistsOf);
                 ClassName composeeClass = get(composeeName, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
 
-                Method mspec = METHOD(Constants.PROCESS_METHOD_NAME)
+
+
+                Method mspec0=METHOD(Constants.PROCESS_METHOD_NAME)
+                        .debugFileLocation()
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .PARAMETER(outputClassName, BEAN_VAR)
+                        .RETURNS(outputClassName)
+                        .BODY(
+                                DO()
+                                        .BODY(
+                                                ASSIGNMENT(composeeClass, VARIABLE("composee"), CONSTRUCTOR_CALL(composeeClass, List.of())),
+                                                METHOD_CALL(
+                                                        VARIABLE(BEAN_VAR),
+                                                        ADD_ELEMENTS,
+                                                        List.of(VARIABLE("composee"))
+                                                ),
+                                                METHOD_CALL(
+                                                        VARIABLE("this"),
+                                                        PROCESS_METHOD_NAME,
+                                                        List.of(VARIABLE("composee"))))
+                                        .WHILE(METHOD_CALL("next", List.of())),
+                                RETURN(VARIABLE(BEAN_VAR)));
+                pastClass.METHOD(mspec0);
+
+                Method mspec_incorrect = METHOD(Constants.PROCESS_METHOD_NAME+"Incorrect")
                         .debugFileLocation()
                         .MODIFIERS(Modifier.PUBLIC)
                         .PARAMETER(outputClassName, BEAN_VAR)
@@ -233,7 +262,7 @@ public class CompilerBeanCompleter2 {
 
                                 RETURN(VARIABLE(BEAN_VAR)));
 
-                pastClass.METHOD(mspec);
+                pastClass.METHOD(mspec_incorrect);
 
             }
         }

@@ -27,7 +27,6 @@ import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
 import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
-import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
 import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
@@ -107,20 +106,16 @@ public class CompilerQueryInvoker {
                     ;
 
             if (config instanceof SimpleTemplateCompilerConfig) {
-                // simple template: delegate to helper
-                simpleQueryInvoker(configs, config, foundSpecialTypes, m, BEAN_VAR);
+                simpleQueryInvoker(configs, config, foundSpecialTypes, m, BEAN_VAR, null);
             } else {
-                // composite
                 CompositeTemplateCompilerConfig comp = (CompositeTemplateCompilerConfig) config;
-
-                // composite template: delegate to helper
-                compositeQueryInvoker(configs, locations, config, foundSpecialTypes, m, BEAN_VAR, withBean);
-                m.BODY(RETURN(VARIABLE(BEAN_VAR)));
-
             }
-
-             pastClass.METHOD(m);
-         }
+            m.BODY(
+                    METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(";\n"))),
+                    RETURN(VARIABLE(BEAN_VAR))
+            );
+            pastClass.METHOD(m);
+        }
 
         addSpecialTypesMethods(foundSpecialTypes, pastClass);
 
@@ -141,7 +136,7 @@ public class CompilerQueryInvoker {
                     .RETURNS(STRING)
                     .BODY(
                             IF(BINARY_OP(VARIABLE("time"),"==",Constant.getNull()))
-                                    .THEN(RETURN(Constant.getNull())),
+                                    .THEN(RETURN(CONSTANT("NULL"))),
 
                             RETURN(
                                     METHOD_CALL(STRING,"concat",
@@ -246,7 +241,7 @@ public class CompilerQueryInvoker {
         };
     }
 
-    private void simpleQueryInvoker(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, Method m, String beanVar) {
+    public void simpleQueryInvoker(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, Method m, String beanVar, String queryInvoker) {
         TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
         m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("select * from "))));
@@ -263,7 +258,15 @@ public class CompilerQueryInvoker {
                 if (sqlType != null) {
                     String fun = converterForSpecialType(sqlType);
                     if (fun != null) {
-                        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(fun, List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
+                        if (queryInvoker == null) {
+                            m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(fun, List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
+                        } else {
+                            m.BODY(METHOD_CALL(VARIABLE(SB_VAR),
+                                    "append",
+                                    List.of(METHOD_CALL(VARIABLE(queryInvoker),
+                                            fun,
+                                            List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
+                        }
                         foundSpecialTypes.add(sqlType);
                     } else {
                         m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(VARIABLE(beanVar), key))));
@@ -274,11 +277,10 @@ public class CompilerQueryInvoker {
             }
         }
 
-        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(");"))));
-        m.BODY(RETURN(VARIABLE(beanVar)));
+        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(")"))));
     }
 
-    private void simpleQueryInvokerEmbedded(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, Iterator m, String beanVar, List<String> sharing) {
+    public void simpleQueryInvokerEmbedded(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, Iterator m, String beanVar, List<String> sharing, String queryInvoker) {
         TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
         compilerUtil.debugFileLocation(m);
         m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("( "))));
@@ -299,10 +301,19 @@ public class CompilerQueryInvoker {
                     String fun = converterForSpecialType(sqlType);
                     if (fun != null) {
                         if (!comment.isEmpty()) m.COMMENT(comment);
-                        m.BODY(METHOD_CALL(VARIABLE(SB_VAR),
-                                "append",
-                                List.of(METHOD_CALL(fun, List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
+                        if (queryInvoker != null) {
+                            m.BODY(METHOD_CALL(VARIABLE(SB_VAR),
+                                    "append",
+                                    List.of(METHOD_CALL(VARIABLE(queryInvoker),
+                                            fun,
+                                            List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
+                        } else {
+                            m.BODY(METHOD_CALL(VARIABLE(SB_VAR),
+                                    "append",
+                                    List.of(METHOD_CALL(fun, List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
+                        }
                         foundSpecialTypes.add(sqlType);
+
                     } else {
                         if (!comment.isEmpty()) m.COMMENT(comment);
                         m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(VARIABLE(beanVar), key)))) ;
@@ -318,7 +329,7 @@ public class CompilerQueryInvoker {
         m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(") :: " + config.name + "_type"))));
     }
 
-    private void compositeQueryInvoker(TemplatesProjectConfiguration configs, Locations locations, TemplateCompilerConfig config, Set<String> foundSpecialTypes, Method m, String beanVar, boolean withBean) {
+    public void compositeQueryInvoker(TemplatesProjectConfiguration configs, Locations locations, TemplateCompilerConfig config, Set<String> foundSpecialTypes, Method m, String beanVar, boolean withBean, String queryInvoker) {
         CompositeTemplateCompilerConfig compositeConfig = (CompositeTemplateCompilerConfig) config;
 
         m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("---- query invoker for  " + compositeConfig.name + "\n\n"))))
@@ -363,13 +374,13 @@ public class CompilerQueryInvoker {
                         METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(",\n     ")))
                 )
         );
-        simpleQueryInvokerEmbedded(configs, composee, foundSpecialTypes, iterator, variableBean1, compositeConfig.sharing);
+        simpleQueryInvokerEmbedded(configs, composee, foundSpecialTypes, iterator, variableBean1, compositeConfig.sharing, queryInvoker);
 
         m.BODY(iterator);
 
 
 
-        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\n]);\n"))));
+        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\n])"))));
 
     }
 }

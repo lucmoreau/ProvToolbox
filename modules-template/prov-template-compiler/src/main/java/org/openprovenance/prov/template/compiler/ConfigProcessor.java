@@ -49,12 +49,12 @@ public class ConfigProcessor implements Constants {
     public static final TypeVariableName typeOut = TypeVariableName.get("OUT");
     public static final TypeVariableName typeIn = TypeVariableName.get("IN");
 
-    static final TypeVariableName typeT = TypeVariableName.get("T");
-    static final TypeName biconsumerType2=ParameterizedTypeName.get(ClassName.get(BiConsumer.class), typeResult, typeT);
+    public static final TypeVariableName typeT = TypeVariableName.get("T");
+    public static final TypeName biconsumerType2=ParameterizedTypeName.get(ClassName.get(BiConsumer.class), typeResult, typeT);
     public static final TypeName biconsumerTypeOut=ParameterizedTypeName.get(ClassName.get(BiConsumer.class), typeResult, typeOut);
-    static final TypeName consumerT=ParameterizedTypeName.get(ClassName.get(Consumer.class), typeT);
+    public static final TypeName consumerT=ParameterizedTypeName.get(ClassName.get(Consumer.class), typeT);
     public static final TypeName consumerIn=ParameterizedTypeName.get(ClassName.get(Consumer.class), typeIn);
-    static final TypeName biconsumerType=ParameterizedTypeName.get(ClassName.get(BiConsumer.class),ClassName.get(StringBuilder.class), typeT);
+    public static final TypeName biconsumerType=ParameterizedTypeName.get(ClassName.get(BiConsumer.class),ClassName.get(StringBuilder.class), typeT);
     public static final TypeName biconsumerTypeIn=ParameterizedTypeName.get(ClassName.get(BiConsumer.class),ClassName.get(StringBuilder.class), typeIn);
     static final TypeName listTypeT=ParameterizedTypeName.get(ClassName.get(List.class), typeT);
     private final ProvFactory pFactory;
@@ -478,6 +478,8 @@ public class ConfigProcessor implements Constants {
 
         SpecificationFile beanEnactor=compilerBeanEnactor.generateBeanEnactor(configs, locations, BEAN_ENACTOR);
         beanEnactor.save();
+        SpecificationFile enactorImplementationInterface=compilerBeanEnactor.generateEnactorImplementationInterface(configs, locations, ENACTOR_IMPLEMENTATION1);
+        enactorImplementationInterface.save();
 
         if (configs.integrator) {
             SpecificationFile beanEnactor2 = compilerBeanEnactor2.generateBeanEnactor2(configs, locations, BEAN_ENACTOR2);

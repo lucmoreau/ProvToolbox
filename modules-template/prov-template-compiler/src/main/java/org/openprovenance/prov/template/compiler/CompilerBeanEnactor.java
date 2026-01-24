@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -10,6 +9,7 @@ import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerC
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 
 import javax.lang.model.element.Modifier;
@@ -30,7 +30,6 @@ import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
-import static org.openprovenance.prov.template.compiler.past.type.ClassName.STRING;
 import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
 public class CompilerBeanEnactor {
@@ -47,10 +46,10 @@ public class CompilerBeanEnactor {
     SpecificationFile generateBeanEnactor(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName queryInvokerClass  = org.openprovenance.prov.template.compiler.past.type.ClassName.get(QUERY_INVOKER,locations.getFilePackage(configs.name,QUERY_INVOKER));
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanProcessorClass = org.openprovenance.prov.template.compiler.past.type.ClassName.get(BEAN_PROCESSOR,locations.getFilePackage(configs.name,BEAN_PROCESSOR));
+        ClassName queryInvokerClass  = ClassName.get(QUERY_INVOKER,locations.getFilePackage(configs.name,QUERY_INVOKER));
+        ClassName beanProcessorClass = ClassName.get(BEAN_PROCESSOR,locations.getFilePackage(configs.name,BEAN_PROCESSOR));
 
-        final ParameterizedType ENACTOR_IMPLEMENTATION_TYPE= ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get( ENACTOR_IMPLEMENTATION1,locations.getFilePackage(configs.name,ENACTOR_IMPLEMENTATION1)), TYPE_RESULT);
+        final ParameterizedType ENACTOR_IMPLEMENTATION_TYPE= ParameterizedType.get(ClassName.get( ENACTOR_IMPLEMENTATION1,locations.getFilePackage(configs.name,ENACTOR_IMPLEMENTATION1)), TYPE_RESULT);
 
 
         Class pastClass= pastFactory
@@ -61,46 +60,6 @@ public class CompilerBeanEnactor {
                 .FIELDS(FIELD("checker", beanProcessorClass).MODIFIERS(Modifier.FINAL, Modifier.PROTECTED),
                         FIELD(REALISER,ENACTOR_IMPLEMENTATION_TYPE).MODIFIERS(Modifier.FINAL, Modifier.PROTECTED))
                 ;
-
-
-
-        /*
-        TypeSpec.Builder inface=compilerUtil.generateInterfaceInit(Constants.ENACTOR_IMPLEMENTATION);
-
-        CLASS(Constants.ENACTOR_IMPLEMENTATION,true);
-        inface.addTypeVariable(typeResult);
-        MethodSpec.Builder method1 = MethodSpec.methodBuilder("generic_enact")
-                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
-                .addParameter(ParameterSpec.builder(typeT,"bean").build())
-                .addParameter(ParameterSpec.builder(consumerT,"checker").build())
-                .addParameter(ParameterSpec.builder(biconsumerType,"queryInvoker").build())
-                .addParameter(ParameterSpec.builder(biconsumerType2,"completeBean").build())
-                .addTypeVariable(typeT)
-                .returns(typeT);
-
-
-        inface.addMethod(method1.build());
-
-        MethodSpec.Builder method2 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
-                .addParameter(ParameterSpec.builder(typeResult,"rs").build())
-                .returns(beanCompleterClass);
-
-        inface.addMethod(method2.build());
-
-
-        builder.addType(inface.build());
-
-         */
-
-       // builder.addField(beanProcessorClass,"checker",Modifier.FINAL, Modifier.PROTECTED);
-
-
-
-        // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
-        //final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,BEAN_ENACTOR)+"."+ Constants.BEAN_ENACTOR, Constants.ENACTOR_IMPLEMENTATION), typeResult);
-
-       // builder.addField(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PROTECTED);
 
         pastClass.CONSTRUCTOR(CONSTRUCTOR()
                 .debugFileLocation()
@@ -116,7 +75,7 @@ public class CompilerBeanEnactor {
         for (TemplateCompilerConfig config : configs.templates) {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
-            final org.openprovenance.prov.template.compiler.past.type.ClassName className = org.openprovenance.prov.template.compiler.past.type.ClassName.get(beanNameClass,locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
+            final ClassName className = ClassName.get(beanNameClass,locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
             Method mspec = METHOD(Constants.PROCESS_METHOD_NAME)
                     .debugFileLocation()
                     .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
@@ -148,13 +107,9 @@ public class CompilerBeanEnactor {
                                                                                     "beanCompleterFactory",
                                                                                     List.of(VARIABLE("rs"))),
                                                                             "process",
-                                                                            List.of(VARIABLE("b"))   )   )   ) ) ))
-            ;
-
-
+                                                                            List.of(VARIABLE("b"))   )   )   ) ) ))  ;
             pastClass.METHOD(mspec);
         }
-
 
         String myPackage = locations.getFilePackage(configs.name, BEAN_ENACTOR);
 
@@ -169,7 +124,7 @@ public class CompilerBeanEnactor {
     public SpecificationFile generateEnactorImplementationInterface(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanCompleterClass = org.openprovenance.prov.template.compiler.past.type.ClassName.get(BEAN_COMPLETER,locations.getFilePackage(configs.name,BEAN_COMPLETER));
+        ClassName beanCompleterClass = ClassName.get(BEAN_COMPLETER,locations.getFilePackage(configs.name,BEAN_COMPLETER));
 
         Class pastClass=pastFactory.INTERFACE(ENACTOR_IMPLEMENTATION1)
                 .MODIFIERS(Modifier.PUBLIC)
@@ -188,7 +143,6 @@ public class CompilerBeanEnactor {
                                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                                 .PARAMETER(TYPE_RESULT, "rs")
                                 .RETURNS(beanCompleterClass));
-
 
             String myPackage = locations.getFilePackage(configs.name, fileName);
 

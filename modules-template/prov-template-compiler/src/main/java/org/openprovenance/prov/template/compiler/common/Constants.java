@@ -93,6 +93,7 @@ public interface Constants {
     String PROCESSOR_PROCESS_METHOD_NAME = "process";
     String GETTER = "Getter";
     String ENACTOR_IMPLEMENTATION = "EnactorImplementation";
+    String ENACTOR_IMPLEMENTATION1 = "EnactorImplementation1";
     String INSERT_PREFIX = "insert_";
     String NOT_NULL_METHOD = "notNull";
     String INPUT_PREFIX = "input_";

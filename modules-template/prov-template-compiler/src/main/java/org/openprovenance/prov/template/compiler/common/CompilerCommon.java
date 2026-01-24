@@ -26,7 +26,6 @@ import static org.openprovenance.prov.model.StatementOrBundle.ALL_RELATIONS;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
 import static org.openprovenance.prov.template.core.InstantiateUtil.isVariable;
-import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY_ACCESSOR;

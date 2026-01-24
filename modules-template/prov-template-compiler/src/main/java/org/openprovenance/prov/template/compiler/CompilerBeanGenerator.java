@@ -42,6 +42,7 @@ import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 import static  org.openprovenance.prov.template.compiler.past.type.ClassName.STRING;
+import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
 public class CompilerBeanGenerator {
     public static final String JAVADOC_NO_DOCUMENTATION = "xsd:string";
@@ -61,8 +62,6 @@ public class CompilerBeanGenerator {
         if (extension!=null) {
             name=name+extension;
         }
-
-        //TypeSpec.Builder builder = compilerUtil.generateClassInit(name);
 
         org.openprovenance.prov.template.compiler.past.Class pastClass=compilerUtil.getPastFactory()
                 .CLASS(name)
@@ -169,6 +168,7 @@ public class CompilerBeanGenerator {
         return new SpecificationFile(javaGenerator,pythonGenerator,jsGenerator,rustGenerator);
     }
 
+    /*
     static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, String templateName, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
         return newSpecificationFiles(locations, spec, myfile, directory, fileName, packge, selectedExports, compilerUtil.pySpecWithComment(templateName, stackTraceElement));
     }
@@ -178,6 +178,9 @@ public class CompilerBeanGenerator {
         return newSpecificationFiles(locations, spec, myfile, directory, fileName, packge, selectedExports, compilerUtil.pySpecWithComment(configs, stackTraceElement));
     }
 
+     */
+
+    /*
     private static SpecificationFile newSpecificationFiles(Locations locations, TypeSpec spec, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports, String prelude) {
         final PoetParser poetParser = new PoetParser();
         poetParser.emitPrelude(prelude);
@@ -203,6 +206,8 @@ public class CompilerBeanGenerator {
                 pyDirectory, pyFilename, () -> poetParser.getSb().toString());
     }
 
+
+     */
     public Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable=new HashMap<>();
 
     String newVariant(String templateFullyQualifiedName, List<String> sharing, TemplatesProjectConfiguration configs) {
@@ -232,8 +237,11 @@ public class CompilerBeanGenerator {
         return sharing.stream().sorted().collect(Collectors.joining("_"));
     }
 
+    /*
     static final ParameterizedTypeName classOfUnknown = ParameterizedTypeName.get(ClassName.get(Class.class), TypeVariableName.get("?"));
 
+
+     */
 
     private void generateCompositeList(String templateName, String packge, Locations locations, org.openprovenance.prov.template.compiler.past.Class builder, BeanDirection beanDirection, String variant, List<String> sharing) {
 
@@ -348,11 +356,9 @@ public class CompilerBeanGenerator {
 
 
 
-    TypeVariable typeT =TypeVariable.get("T");
-
 
     private org.openprovenance.prov.template.compiler.past.type.TypeName processorClassType(String template, String packge) {
-        return ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get(compilerUtil.processorNameClass(template),packge), typeT);
+        return ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get(compilerUtil.processorNameClass(template),packge), T());
     }
     public Method generateInvokeProcessor(String template, String processorPackage, TemplateBindingsSchema bindingsSchema, String elements, BeanDirection beanDirection) {
 
@@ -361,11 +367,10 @@ public class CompilerBeanGenerator {
             throw new IllegalStateException("Template " + template + " contains variable " + PROCESSOR_PARAMETER_NAME + " " + fieldNames);
         }
 
-
         Method method=METHOD(PROCESSOR_PROCESS_METHOD_NAME)
                 .MODIFIERS(Modifier.PUBLIC)
-                .RETURNS(typeT)
-                .addTypeVariables(typeT)
+                .RETURNS(T())
+                .addTypeVariables(T())
                 .PARAMETER(processorClassType(template,processorPackage), PROCESSOR_PARAMETER_NAME);
 
         List<String> actualFieldNames;
@@ -375,7 +380,6 @@ public class CompilerBeanGenerator {
         } else {
             actualFieldNames=fieldNames;
         }
-
 
         if (beanDirection==BeanDirection.COMMON) {
             method.addStatement(RETURN(
@@ -422,7 +426,6 @@ public class CompilerBeanGenerator {
                                 String extension=pair.getLeft();
                                 List<String> sharing=pair.getMiddle();
                                 TemplateBindingsSchema bindingsSchema = pair.getRight();
-
 
                                 // find in configs the template configuration with qualifiedName templateFullyQualifiedName
                                 SimpleTemplateCompilerConfig config=Arrays.stream(configs.templates)

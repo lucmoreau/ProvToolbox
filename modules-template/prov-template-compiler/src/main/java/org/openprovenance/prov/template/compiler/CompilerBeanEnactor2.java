@@ -90,10 +90,10 @@ public class CompilerBeanEnactor2 {
 
         for (TemplateCompilerConfig config : configs.templates) {
 
-            final String outputNameClass = compilerUtil.outputsNameClass(config.name);
-            final String inputNameClass = compilerUtil.inputsNameClass(config.name);
-            final ClassName outputClassName = ClassName.get(outputNameClass,locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
-            final ClassName inputClassName = ClassName.get(inputNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS));
+            final String outputName = compilerUtil.outputsNameClass(config.name);
+            final String inputName = compilerUtil.inputsNameClass(config.name);
+            final ClassName outputClassName = ClassName.get(outputName,locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
+            final ClassName inputClassName = ClassName.get(inputName, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS));
 
             Method mspec = METHOD(Constants.PROCESS_METHOD_NAME)
                     .MODIFIERS(Modifier.PUBLIC)
@@ -151,7 +151,6 @@ public class CompilerBeanEnactor2 {
                 .MODIFIERS(Modifier.PUBLIC)
                 .TYPE_VARIABLES(TYPE_RESULT);
 
-
         Method method1 = METHOD("generic_enact")
                 .MODIFIERS(Modifier.PUBLIC,Modifier.ABSTRACT)
                 .PARAMETER(TYPE_OUT,"output")
@@ -177,25 +176,6 @@ public class CompilerBeanEnactor2 {
                 .PARAMETER(OBJECT_ARRAY,"extra")
                 .RETURNS(beanCompleterClass);
         intfce.METHOD(method3);
-
-        /*
-        MethodSpec.Builder method4 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
-                .addParameter(ParameterSpec.builder(typeResult,"rs").build())
-                .addParameter(ParameterSpec.builder(Object[].class,"extra").build())
-                .addParameter(ParameterSpec.builder(BIFUN,"postProcessing").build())
-                .returns(beanCompleterClass);
-        inface.addMethod(method4.build());
-
-        MethodSpec.Builder method5 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
-                .addParameter(ParameterSpec.builder(typeResult,"rs").build())
-                .addParameter(ParameterSpec.builder(BIFUN,"postProcessing").build())
-                .returns(beanCompleterClass);
-        inface.addMethod(method5.build());
-
-         */
-
 
         String myPackage= locations.getFilePackage(configs.name, fileName);
         String directory = locations.convertToDirectory(myPackage);

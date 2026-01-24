@@ -209,6 +209,7 @@ public class CompilerBeanCompleter {
                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .METHOD(
                         METHOD("get")
+                             //   .debugFileLocation()
                                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                                 .PARAMETER(CLASS_T, "cl")
                                 .PARAMETER(STRING, "col")

@@ -51,6 +51,7 @@ public class ClassName extends TypeName {
     public static final TypeVariable TYPE_OUT = TypeVariable.get("OUT");
     public static final TypeVariable TYPE_IN = TypeVariable.get("IN");
     public static final TypeName  CONSUMER_OF_IN= ParameterizedType.get(CONSUMER, TYPE_IN);
+    public static final TypeName  CONSUMER_OF_T= ParameterizedType.get(CONSUMER, T());
     public static final TypeName MAP_STRING_MAP_INTEGER_INTEGER=ParameterizedType.get(MAP,STRING,ParameterizedType.get(MAP,INTEGER,INTEGER));
     public static final ArrayType BUILDERS_ARRAY=ArrayType.of(BUILDER_INTERFACE);
     public static final ParameterizedType MAP_STRING_OBJECT= ParameterizedType.get(MAP, STRING, OBJECT);
@@ -63,7 +64,9 @@ public class ClassName extends TypeName {
     public static final ParameterizedType LIST_MAP_STRING_OBJECT=ParameterizedType.get(LIST, MAP_STRING_OBJECT);
 
     public static final ParameterizedType BICONSUMER_STRINGBUILDER_TYPEIN=ParameterizedType.get(BICONSUMER, STRING_BUILDER, TYPE_IN);
+    public static final ParameterizedType BICONSUMER_STRINGBUILDER_T=ParameterizedType.get(BICONSUMER, STRING_BUILDER, T());
     public static final ParameterizedType BICONSUMER_RESULT_TYPEOUT =ParameterizedType.get(BICONSUMER, TYPE_RESULT, TYPE_OUT);
+    public static final ParameterizedType BICONSUMER_RESULT_T =ParameterizedType.get(BICONSUMER, TYPE_RESULT, T());
 
     public static ParameterizedType FUNCTION_OBJARRAY_TO_TYPE(TypeName returnType) {
         return ParameterizedType.get(FUNCTION, OBJECT_ARRAY, returnType);

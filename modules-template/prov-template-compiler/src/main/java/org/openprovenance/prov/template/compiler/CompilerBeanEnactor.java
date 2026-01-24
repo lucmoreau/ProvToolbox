@@ -8,38 +8,66 @@ import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 
 import javax.lang.model.element.Modifier;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.LambdaExpression.LAMBDA;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.*;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.STRING;
+import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
 public class CompilerBeanEnactor {
     private final CompilerUtil compilerUtil;
+    private final PastFactory pastFactory;
 
 
     public CompilerBeanEnactor(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
+        this.pastFactory=compilerUtil.getPastFactory();
     }
 
 
     SpecificationFile generateBeanEnactor(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
+        org.openprovenance.prov.template.compiler.past.type.ClassName queryInvokerClass  = org.openprovenance.prov.template.compiler.past.type.ClassName.get(QUERY_INVOKER,locations.getFilePackage(configs.name,QUERY_INVOKER));
+        org.openprovenance.prov.template.compiler.past.type.ClassName beanProcessorClass = org.openprovenance.prov.template.compiler.past.type.ClassName.get(BEAN_PROCESSOR,locations.getFilePackage(configs.name,BEAN_PROCESSOR));
+
+        final ParameterizedType ENACTOR_IMPLEMENTATION_TYPE= ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get( ENACTOR_IMPLEMENTATION1,locations.getFilePackage(configs.name,ENACTOR_IMPLEMENTATION1)), TYPE_RESULT);
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_ENACTOR);
-        builder.addModifiers(Modifier.ABSTRACT);
-        builder.addTypeVariable(typeResult);
+        Class pastClass= pastFactory
+                .CLASS(Constants.BEAN_ENACTOR)
+                .MODIFIERS(Modifier.ABSTRACT, Modifier.PUBLIC)
+                .TYPE_VARIABLES(TYPE_RESULT)
+                .INTERFACES(beanProcessorClass)
+                .FIELDS(FIELD("checker", beanProcessorClass).MODIFIERS(Modifier.FINAL, Modifier.PROTECTED),
+                        FIELD(REALISER,ENACTOR_IMPLEMENTATION_TYPE).MODIFIERS(Modifier.FINAL, Modifier.PROTECTED))
+                ;
 
 
-        ClassName queryInvokerClass  = ClassName.get(locations.getFilePackage(configs.name,QUERY_INVOKER), QUERY_INVOKER);
-        ClassName beanCompleterClass = ClassName.get(locations.getFilePackage(configs.name,BEAN_COMPLETER), BEAN_COMPLETER);
-        ClassName beanProcessorClass = ClassName.get(locations.getFilePackage(configs.name,BEAN_PROCESSOR), BEAN_PROCESSOR);
-        builder.addSuperinterface(beanProcessorClass);
 
-
-
+        /*
         TypeSpec.Builder inface=compilerUtil.generateInterfaceInit(Constants.ENACTOR_IMPLEMENTATION);
+
+        CLASS(Constants.ENACTOR_IMPLEMENTATION,true);
         inface.addTypeVariable(typeResult);
         MethodSpec.Builder method1 = MethodSpec.methodBuilder("generic_enact")
                 .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
@@ -63,57 +91,112 @@ public class CompilerBeanEnactor {
 
         builder.addType(inface.build());
 
-        builder.addField(beanProcessorClass,"checker",Modifier.FINAL, Modifier.PROTECTED);
+         */
+
+       // builder.addField(beanProcessorClass,"checker",Modifier.FINAL, Modifier.PROTECTED);
 
 
 
         // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
-        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,BEAN_ENACTOR)+"."+ Constants.BEAN_ENACTOR, Constants.ENACTOR_IMPLEMENTATION), typeResult);
+        //final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,BEAN_ENACTOR)+"."+ Constants.BEAN_ENACTOR, Constants.ENACTOR_IMPLEMENTATION), typeResult);
 
-        builder.addField(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PROTECTED);
+       // builder.addField(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PROTECTED);
 
+        pastClass.CONSTRUCTOR(CONSTRUCTOR()
+                .debugFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(ENACTOR_IMPLEMENTATION_TYPE, REALISER)
+                .PARAMETER(beanProcessorClass, "checker")
+                .BODY(
 
-        MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER)
-                .addParameter(beanProcessorClass, "checker");
-        compilerUtil.specWithComment(cbuilder3);
-        cbuilder3
-                .addStatement("this.$N = $N", Constants.REALISER, Constants.REALISER)
-                .addStatement("this.$N = $N", "checker", "checker");
-
-        builder.addMethod(cbuilder3.build());
-
+                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"),"checker"), VARIABLE("checker")),
+                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"),REALISER), VARIABLE(REALISER))            ))      ;
 
 
         for (TemplateCompilerConfig config : configs.templates) {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
-            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), beanNameClass);
-            MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                    .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                    .addParameter(ParameterSpec.builder(className,"bean").build())
-                    .returns(className);
-            compilerUtil.specWithComment(mspec);
+            final org.openprovenance.prov.template.compiler.past.type.ClassName className = org.openprovenance.prov.template.compiler.past.type.ClassName.get(beanNameClass,locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
+            Method mspec = METHOD(Constants.PROCESS_METHOD_NAME)
+                    .debugFileLocation()
+                    .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                    .PARAMETER(className,"bean")
+                    .RETURNS(className)
+                    .BODY(
+                            RETURN(
+                                    METHOD_CALL(
+                                            VARIABLE(REALISER),
+                                            "generic_enact",
+                                            List.of(
+                                                    VARIABLE("bean"),
+                                                    LAMBDA(PARAMETER("b",className))
+                                                            .BODY(
+                                                                    FUNCTIONAL_METHOD_CALL(
+                                                                            VARIABLE("checker"),
+                                                                            "process",
+                                                                            VARIABLE("b")  )  ),
+                                                    LAMBDA(PARAMETER("sb",STRING_BUILDER),PARAMETER("b",className))
+                                                            .BODY(METHOD_CALL(
+                                                                    CONSTRUCTOR_CALL(queryInvokerClass, List.of(VARIABLE("sb"))),
+                                                                    "process",
+                                                                    List.of(VARIABLE("b")))),
 
-            mspec.addStatement("return $N.generic_enact(bean,\n" +
-                    "                b -> checker.process(b),\n" +
-                    "                (sb,b) -> new $T(sb).process(b),\n" +
-                    "                (rs,b) -> $N.beanCompleterFactory(rs).process(b))", Constants.REALISER, queryInvokerClass, Constants.REALISER);
+                                                    LAMBDA(PARAMETER("rs",TYPE_RESULT), PARAMETER("b",className))
+                                                            .BODY( METHOD_CALL(
+                                                                            METHOD_CALL(
+                                                                                    VARIABLE(REALISER),
+                                                                                    "beanCompleterFactory",
+                                                                                    List.of(VARIABLE("rs"))),
+                                                                            "process",
+                                                                            List.of(VARIABLE("b"))   )   )   ) ) ))
+            ;
 
 
-            builder.addMethod(mspec.build());
+            pastClass.METHOD(mspec);
         }
 
 
-        TypeSpec theLogger = builder.build();
+        String myPackage = locations.getFilePackage(configs.name, BEAN_ENACTOR);
 
-        String packge=locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR);
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, packge, stackTraceElement);
-        return new SpecificationFile(myfile, locations.convertToDirectory(packge), fileName+DOT_JAVA_EXTENSION, packge);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+
+        return new SpecificationFile(javaGenerator, pythonGenerator);
 
     }
 
+
+    public SpecificationFile generateEnactorImplementationInterface(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
+        org.openprovenance.prov.template.compiler.past.type.ClassName beanCompleterClass = org.openprovenance.prov.template.compiler.past.type.ClassName.get(BEAN_COMPLETER,locations.getFilePackage(configs.name,BEAN_COMPLETER));
+
+        Class pastClass=pastFactory.INTERFACE(ENACTOR_IMPLEMENTATION1)
+                .MODIFIERS(Modifier.PUBLIC)
+                .TYPE_VARIABLES(TYPE_RESULT)
+                .METHOD(
+                        METHOD("generic_enact")
+                                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                                .PARAMETER(T(), "bean")
+                                .PARAMETER(CONSUMER_OF_T, "checker")
+                                .PARAMETER(BICONSUMER_STRINGBUILDER_T, "queryInvoker")
+                                .PARAMETER(BICONSUMER_RESULT_T, "completeBean")
+                                .RETURNS(T())
+                                .addTypeVariables(T()))
+                .METHOD(
+                        METHOD("beanCompleterFactory")
+                                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                                .PARAMETER(TYPE_RESULT, "rs")
+                                .RETURNS(beanCompleterClass));
+
+
+            String myPackage = locations.getFilePackage(configs.name, fileName);
+
+            Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+            Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+
+            return new SpecificationFile(javaGenerator, pythonGenerator);
+        }
 
 
 }

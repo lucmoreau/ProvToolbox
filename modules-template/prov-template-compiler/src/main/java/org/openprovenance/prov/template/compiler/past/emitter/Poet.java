@@ -105,6 +105,13 @@ public class Poet implements Emitter<TypeSpec> {
 
     private MethodSpec convert(Method method) {
         MethodSpec.Builder builder=MethodSpec.methodBuilder(method.name);
+        // if override annotation
+        method.annotation.forEach(annotation -> {
+            if (annotation instanceof org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation) {
+                builder.addAnnotation(Override.class);
+            }
+        });
+
         method.modifiers.forEach(builder::addModifiers);
         if (!voidType(method.returnType)) {
             builder.returns(convert(method.returnType));
@@ -493,6 +500,7 @@ public class Poet implements Emitter<TypeSpec> {
                     case "Boolean" ->  { return ClassName.get(Boolean.class); }
                     case "Class" ->  { return ClassName.get(java.lang.Class.class); }
                     case "Void" ->  { return ClassName.get(Void.class); }
+                    case "Supplier" ->  { return ClassName.get(java.util.function.Supplier.class); }
                     case "Consumer" ->  { return ClassName.get(java.util.function.Consumer.class); }
                     case "BiConsumer" ->  { return ClassName.get(java.util.function.BiConsumer.class); }
                     case "Function" ->  { return ClassName.get(java.util.function.Function.class); }

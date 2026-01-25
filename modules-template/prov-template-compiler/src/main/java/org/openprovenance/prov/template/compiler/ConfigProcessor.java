@@ -491,6 +491,8 @@ public class ConfigProcessor implements Constants {
             beanLocalEnactor2.save();
             SpecificationFile beanEnactor2WP = compilerBeanEnactor2WP.generateBeanEnactor2WithPrincipal(configs, locations, BEAN_ENACTOR2_WP);
             beanEnactor2WP.save();
+            SpecificationFile enactorImplmentation4 = compilerBeanEnactor2WP.generateEnactorImplmentation4(configs, locations, ENACTOR_IMPLEMENTATION4);
+            enactorImplmentation4.save();
 
             SpecificationFile beanEnactor2Composite = compilerBeanEnactor2composite.generateBeanEnactor2Composite(configs, locations, BEAN_ENACTOR2_COMPOSITE);
             beanEnactor2Composite.save();

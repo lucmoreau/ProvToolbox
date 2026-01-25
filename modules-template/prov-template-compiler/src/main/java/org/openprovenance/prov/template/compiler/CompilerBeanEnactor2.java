@@ -173,7 +173,7 @@ public class CompilerBeanEnactor2 {
         Method method3 = METHOD("beanCompleterFactory")
                 .MODIFIERS(Modifier.PUBLIC,Modifier.ABSTRACT)
                 .PARAMETER(TYPE_RESULT,"rs")
-                .PARAMETER(OBJECT_ARRAY,"extra")
+                .PARAMETER(INTEGER_ARRAY,"extra")
                 .RETURNS(beanCompleterClass);
         intfce.METHOD(method3);
 

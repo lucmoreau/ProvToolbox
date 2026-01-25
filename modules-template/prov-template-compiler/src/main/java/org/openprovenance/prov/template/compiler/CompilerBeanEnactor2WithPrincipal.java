@@ -41,8 +41,6 @@ public class CompilerBeanEnactor2WithPrincipal {
     SpecificationFile generateBeanEnactor2WithPrincipal(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-
-        // types
         ClassName beanEnactor2Class = get(Constants.BEAN_ENACTOR2, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2));
         ClassName queryInvokerWpClass = get(Constants.QUERY_INVOKER2WP, locations.getFilePackage(configs.name, Constants.QUERY_INVOKER2WP));
         ClassName ioProcessorClass = get(INPUT_OUTPUT_PROCESSOR, locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR));
@@ -62,8 +60,6 @@ public class CompilerBeanEnactor2WithPrincipal {
                         FIELD(PRINCIPAL_MANAGER_VAR, SUPPLIER_OF_STRING).MODIFIERS(Modifier.FINAL, Modifier.PRIVATE)
                 );
 
-
-        // constructor: (THIS_ENACTOR_IMPLEMENTATION_TYPE realiser, inputProcessorClass checker, bifun postProcessing, Supplier<String> principalManager)
         Constructor ctor = CONSTRUCTOR()
                 .debugFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
@@ -82,7 +78,6 @@ public class CompilerBeanEnactor2WithPrincipal {
                 );
         pastClass.CONSTRUCTOR(ctor);
 
-        // for each template generate process method
         for (TemplateCompilerConfig config : configs.templates) {
             final String outputNameClass = compilerUtil.outputsNameClass(config.name);
             final String inputNameClass = compilerUtil.inputsNameClass(config.name);
@@ -95,7 +90,6 @@ public class CompilerBeanEnactor2WithPrincipal {
                     .PARAMETER(inputClassName, "bean")
                     .RETURNS(outputClassName);
 
-            // Build generic_enact(...) return expression with PAST lambdas
             m.BODY(
                     RETURN(
                             METHOD_CALL(

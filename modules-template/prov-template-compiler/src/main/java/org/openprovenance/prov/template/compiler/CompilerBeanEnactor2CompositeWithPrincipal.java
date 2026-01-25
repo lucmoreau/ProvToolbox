@@ -1,113 +1,140 @@
+
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.Constructor;
+import org.openprovenance.prov.template.compiler.past.Method;
+import org.openprovenance.prov.template.compiler.past.PastFactory;
+import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 
 import javax.lang.model.element.Modifier;
+import java.util.List;
+import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.CompilerCatalogueDispatcher.SupplierOfString;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
-import static org.openprovenance.prov.template.compiler.sql.CompilerSqlIntegration.BIFUN;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.LambdaExpression.LAMBDA;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.*;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 public class CompilerBeanEnactor2CompositeWithPrincipal {
     private final CompilerUtil compilerUtil;
+    private final PastFactory pastFactory;
 
     public CompilerBeanEnactor2CompositeWithPrincipal(ProvFactory pFactory) {
-        this.compilerUtil=new CompilerUtil(pFactory);
+        this.compilerUtil = new CompilerUtil(pFactory);
+        this.pastFactory = compilerUtil.getPastFactory();
     }
-
 
     SpecificationFile generateBeanEnactor2CompositeWithPrincipal(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
-        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+        StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
+        ClassName beanEnactor2WpClass = get(BEAN_ENACTOR2_WP, locations.getFilePackage(configs.name, BEAN_ENACTOR2_WP));
+        ClassName queryInvokerWpClass = get(QUERY_INVOKER2WP, locations.getFilePackage(configs.name, QUERY_INVOKER2WP));
+        ClassName inputProcessorClass = get(INPUT_PROCESSOR, locations.getFilePackage(configs.name, INPUT_PROCESSOR));
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_ENACTOR2_COMPOSITE_WP);
-        builder.addTypeVariable(typeResult);
-        builder.addJavadoc("Ensures that composite beans are given an ID\n");
+        final ParameterizedType ENACTOR_IMPLEMENTATION_TYPE = ParameterizedType.get(
+                get(ENACTOR_IMPLEMENTATION4, locations.getFilePackage(configs.name, ENACTOR_IMPLEMENTATION4)),
+                TYPE_RESULT
+        );
 
+        Class pastClass = pastFactory.CLASS(BEAN_ENACTOR2_COMPOSITE_WP)
+                .MODIFIERS(Modifier.PUBLIC)
+                .TYPE_VARIABLES(TYPE_RESULT)
+                .SUPERCLASS(ParameterizedType.get(beanEnactor2WpClass, TYPE_RESULT))
+                .FIELDS(
+                        FIELD("checker", inputProcessorClass).MODIFIERS(Modifier.FINAL, Modifier.PRIVATE),
+                        FIELD("postProcessing", BIFUNCTION_INTEGER_STRING_OBJECT).MODIFIERS(Modifier.FINAL, Modifier.PRIVATE),
+                        FIELD(REALISER, ENACTOR_IMPLEMENTATION_TYPE).MODIFIERS(Modifier.FINAL, Modifier.PRIVATE),
+                        FIELD(PRINCIPAL_MANAGER_VAR, SUPPLIER_OF_STRING).MODIFIERS(Modifier.FINAL, Modifier.PRIVATE)
+                );
 
-        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(configs.name, Constants.QUERY_INVOKER2WP), Constants.QUERY_INVOKER2WP);
-        ParameterizedTypeName beanEnactor2Class = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR2_WP), Constants.BEAN_ENACTOR2_WP), typeResult);
-
-        ClassName inputProcessorClass = ClassName.get(locations.getFilePackage(configs.name, INPUT_PROCESSOR), INPUT_PROCESSOR);
-        builder.superclass(beanEnactor2Class);
-
-
-
-
-        builder.addField(inputProcessorClass,"checker",Modifier.FINAL, Modifier.PRIVATE);
-        builder.addField(BIFUN, "postProcessing", Modifier.FINAL, Modifier.PRIVATE);
-        builder.addField(SupplierOfString, PRINCIPAL_MANAGER_VAR, Modifier.FINAL, Modifier.PRIVATE);
-
-
-
-        // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
-        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, Constants.ENACTOR_IMPLEMENTATION4), Constants.ENACTOR_IMPLEMENTATION4), typeResult);
-
-        builder.addField(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PRIVATE);
-
-
-        MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER)
-                .addParameter(inputProcessorClass, "checker")
-                .addParameter(BIFUN, "postProcessing")
-                .addParameter(SupplierOfString, PRINCIPAL_MANAGER_VAR);
-        compilerUtil.specWithComment(cbuilder3);
-
-        cbuilder3
-                .addStatement("super($N,$N,$N, $N)", Constants.REALISER, "checker","postProcessing", PRINCIPAL_MANAGER_VAR)
-                .addStatement("this.$N = $N", Constants.REALISER, Constants.REALISER)
-                .addStatement("this.$N = $N", "checker", "checker")
-                .addStatement("this.$N = postProcessing", "postProcessing")
-                .addStatement("this.$N = $N", PRINCIPAL_MANAGER_VAR, PRINCIPAL_MANAGER_VAR);
-
-        builder.addMethod(cbuilder3.build());
-
-
+        Constructor ctor = CONSTRUCTOR()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETERS(
+                        PARAMETER(REALISER, ENACTOR_IMPLEMENTATION_TYPE),
+                        PARAMETER("checker", inputProcessorClass),
+                        PARAMETER("postProcessing", BIFUNCTION_INTEGER_STRING_OBJECT),
+                        PARAMETER(PRINCIPAL_MANAGER_VAR, SUPPLIER_OF_STRING)
+                )
+                .debugFileLocation()
+                .BODY(
+                        METHOD_CALL("super",List.of(VARIABLE(REALISER), VARIABLE("checker"), VARIABLE("postProcessing"), VARIABLE(PRINCIPAL_MANAGER_VAR))),
+                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), REALISER), VARIABLE(REALISER)),
+                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), "checker"), VARIABLE("checker")),
+                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), "postProcessing"), VARIABLE("postProcessing")),
+                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), PRINCIPAL_MANAGER_VAR), VARIABLE(PRINCIPAL_MANAGER_VAR))
+                );
+        pastClass.CONSTRUCTOR(ctor);
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (config instanceof CompositeTemplateCompilerConfig) {
+            if (!(config instanceof CompositeTemplateCompilerConfig)) continue;
 
+            final String outputNameClass = compilerUtil.outputsNameClass(config.name);
+            final String inputNameClass = compilerUtil.inputsNameClass(config.name);
+            final ClassName outputClassName = get(outputNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
+            final ClassName inputClassName = get(inputNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS));
 
-                final String outputNameClass = compilerUtil.outputsNameClass(config.name);
-                final String inputNameClass = compilerUtil.inputsNameClass(config.name);
-                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputNameClass);
-                final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputNameClass);
+            Method m = METHOD(PROCESS_METHOD_NAME)
+                    .debugFileLocation()
+                    .MODIFIERS(Modifier.PUBLIC)
+                    .PARAMETER(inputClassName, "bean")
+                    .RETURNS(outputClassName)
+                    .ANNOTATIONS(OverrideAnnotation.NAME);
 
-                MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                        .addModifiers(Modifier.PUBLIC)
-                        .addAnnotation(Override.class)
-                        .addParameter(ParameterSpec.builder(inputClassName,"bean").build())
-                        .returns(outputClassName);
+            m.BODY(
+                    RETURN(
+                            METHOD_CALL(
+                                    VARIABLE(Constants.REALISER),
+                                    "generic_enact",
+                                    List.of(
+                                            CONSTRUCTOR_CALL(outputClassName, List.of()),
+                                            VARIABLE("bean"),
+                                            LAMBDA(PARAMETER("b", inputClassName))
+                                                    .BODY(FUNCTIONAL_METHOD_CALL(VARIABLE("checker"), "process", List.of(VARIABLE("b")))),
+                                            LAMBDA(PARAMETER("sb", STRING_BUILDER), PARAMETER("b", inputClassName))
+                                                    .BODY(
+                                                            FUNCTIONAL_METHOD_CALL(
+                                                                    CONSTRUCTOR_CALL(queryInvokerWpClass, List.of(VARIABLE("sb"), METHOD_CALL(VARIABLE(PRINCIPAL_MANAGER_VAR), "get", List.of()))),
+                                                                    "process",
+                                                                    List.of(VARIABLE("b"))
+                                                            )
+                                                    ),
+                                            LAMBDA(PARAMETER("rs", TYPE_RESULT), PARAMETER("b", outputClassName))
+                                                    .BODY(
+                                                            FUNCTIONAL_METHOD_CALL(
+                                                                    METHOD_CALL(VARIABLE(Constants.REALISER), "beanCompleterFactory", List.of(VARIABLE("rs"), VARIABLE("postProcessing"))),
+                                                                    "process",
+                                                                    List.of(VARIABLE("b"))
+                                                            )
+                                                    )
+                                    )
+                            )
+                    )
+            );
 
-                compilerUtil.specWithComment(mspec);
-
-                mspec.addStatement("System.out.println(\"LUC Processing composite bean for: $T\" )", inputClassName);
-
-                mspec.addStatement("return $N.generic_enact(new $T(),bean,\n" +
-                        "                b -> checker.process(b),\n" +
-                        "                (sb,b) -> new $T(sb,true,$N.get()).process(b),\n" +
-                        "                (rs,b) -> $N.beanCompleterFactory(rs,new Integer[1],postProcessing).process(b))", Constants.REALISER, outputClassName, queryInvokerClass, PRINCIPAL_MANAGER_VAR, Constants.REALISER);
-
-                builder.addMethod(mspec.build());
-            }
+            pastClass.METHOD(m);
         }
 
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION,
+                locations.convertToBackendDirectory(myPackage), stackTraceElement, compilerUtil);
 
-        TypeSpec theLogger = builder.build();
-
-        String myPackage= locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
-
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName+ DOT_JAVA_EXTENSION, myPackage);
-
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
-
-
-
 }

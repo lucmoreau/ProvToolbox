@@ -88,7 +88,7 @@ public class CompilerBeanEnactor2WithPrincipal {
         MethodSpec.Builder method4 = MethodSpec.methodBuilder("beanCompleterFactory")
                 .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
                 .addParameter(ParameterSpec.builder(typeResult,"rs").build())
-                .addParameter(ParameterSpec.builder(Object[].class,"extra").build())
+                .addParameter(ParameterSpec.builder(Integer[].class,"extra").build())
                 .addParameter(ParameterSpec.builder(BIFUN,"postProcessing").build())
                 .returns(beanCompleterClass);
         inface.addMethod(method4.build());

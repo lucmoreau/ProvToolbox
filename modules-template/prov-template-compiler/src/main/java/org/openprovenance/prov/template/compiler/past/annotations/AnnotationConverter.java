@@ -13,6 +13,7 @@ public class AnnotationConverter {
         map.put(ClassMethod.NAME, new ClassMethod());
         map.put(RegisterMethod.NAME, new RegisterMethod());
         map.put(SingleDispatchMethod.NAME, new SingleDispatchMethod());
+        map.put(OverrideAnnotation.NAME, new OverrideAnnotation());
         return map;
     }
 

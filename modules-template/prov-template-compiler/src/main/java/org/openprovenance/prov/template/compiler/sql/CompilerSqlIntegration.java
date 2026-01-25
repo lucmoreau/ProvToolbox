@@ -640,7 +640,7 @@ public class CompilerSqlIntegration {
                 .addAnnotation(Override.class)
                 .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
                 .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra");
+                .addParameter(Integer[].class, "extra");
 
         method2.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_COMPLETER3), Constants.SQL_BEAN_COMPLETER3));
         builder.addMethod(method2.build());
@@ -818,7 +818,7 @@ public class CompilerSqlIntegration {
                 .addAnnotation(Override.class)
                 .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
                 .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra")
+                .addParameter(Integer[].class, "extra")
                 .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
 
         method3.addStatement("System.out.println(\"LUC In beanCompleterFactory 4 with extra of length \" + (extra==null?0:extra.length));");
@@ -1144,7 +1144,7 @@ public class CompilerSqlIntegration {
                 .addAnnotation(Override.class)
                 .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
                 .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra");
+                .addParameter(Integer[].class, "extra");
         method2.addStatement("return new $T(rs, extra)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_COMPLETER3), Constants.SQL_COMPOSITE_BEAN_COMPLETER3));
         builder.addMethod(method2.build());
 
@@ -1230,7 +1230,7 @@ public class CompilerSqlIntegration {
                 .addAnnotation(Override.class)
                 .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
                 .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra");
+                .addParameter(Integer[].class, "extra");
         method2.addStatement("System.out.println(\"LUCXXX In beanCompleterFactory 4 with extra of length \" + (extra==null?0:extra.length));");
 
         method2.addStatement("return new $T(rs, extra)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_COMPLETER4), Constants.SQL_COMPOSITE_BEAN_COMPLETER4));
@@ -1242,7 +1242,7 @@ public class CompilerSqlIntegration {
                 .addAnnotation(Override.class)
                 .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
                 .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra")
+                .addParameter(Integer[].class, "extra")
                 .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
         method3.addStatement("System.out.println(\"LUC YYYY In beanCompleterFactory 4 with extra of length \" + (extra==null?0:extra.length));");
 
@@ -1324,7 +1324,7 @@ public class CompilerSqlIntegration {
         builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER3), Constants.BEAN_COMPLETER3));
 
         // fields
-        FieldSpec.Builder field1 = FieldSpec.builder(Object[].class, "extra", Modifier.PRIVATE, Modifier.FINAL);
+        FieldSpec.Builder field1 = FieldSpec.builder(Integer[].class, "extra", Modifier.PRIVATE, Modifier.FINAL);
         builder.addField(field1.build());
 
         FieldSpec.Builder field2 = FieldSpec.builder(ResultSet.class, "rs", Modifier.PRIVATE, Modifier.FINAL);
@@ -1340,13 +1340,13 @@ public class CompilerSqlIntegration {
         MethodSpec.Builder constructor1 = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ResultSet.class, "rs")
-                .addStatement("this(rs,(Object[]) null)");
+                .addStatement("this(rs,(Integer[]) null)");
         builder.addMethod(constructor1.build());
 
         MethodSpec.Builder constructor2 = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra")
+                .addParameter(Integer[].class, "extra")
                 .addStatement("super($T.newGetter(rs))", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_COMPLETER3), Constants.SQL_BEAN_COMPLETER3))
                 .addStatement("this.rs=rs")
                 .addStatement("this.extra=extra");
@@ -1412,13 +1412,13 @@ public class CompilerSqlIntegration {
         MethodSpec.Builder constructor1 = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ResultSet.class, "rs")
-                .addStatement("this(rs,(Object[]) null)");
+                .addStatement("this(rs,(Integer[]) null)");
         builder.addMethod(constructor1.build());
 
         MethodSpec.Builder constructor2 = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra")
+                .addParameter(Integer[].class, "extra")
                 .addStatement("super(rs,extra)")
                 .addStatement("this.postProcessing=null");
         builder.addMethod(constructor2.build());
@@ -1426,7 +1426,7 @@ public class CompilerSqlIntegration {
         MethodSpec.Builder constructor3 = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra")
+                .addParameter(Integer[].class, "extra")
                 .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR)
                 .addStatement("super(rs,extra)")
                 .addStatement("this.postProcessing=postProcessing");

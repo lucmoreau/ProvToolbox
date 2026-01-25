@@ -85,6 +85,7 @@ public class Locations {
             case SQL_COMPOSITE_ENACTOR_CONFIGURATOR4:
             case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4:
             case SQL_COMPOSITE_BEAN_COMPLETER4:
+            case ENACTOR_IMPLEMENTATION4:
                 return getSqlAccessControlBackendPackage(name);
 
             case LOGGER:

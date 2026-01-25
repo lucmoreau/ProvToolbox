@@ -701,8 +701,8 @@ public class CompilerSqlIntegration {
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_ENACTOR_IMPLEMENTATION4);
         builder.addModifiers(Modifier.PUBLIC);
         builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_ENACTOR_IMPLEMENTATION3), Constants.SQL_ENACTOR_IMPLEMENTATION3));
-        builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.ENACTOR_IMPLEMENTATION), ENACTOR_IMPLEMENTATION), TypeName.get(ResultSet.class)));
-        builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR2_WP), Constants.BEAN_ENACTOR2_WP, ENACTOR_IMPLEMENTATION), TypeName.get(ResultSet.class)));
+        builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, ENACTOR_IMPLEMENTATION), ENACTOR_IMPLEMENTATION), TypeName.get(ResultSet.class)));
+        builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, ENACTOR_IMPLEMENTATION4), ENACTOR_IMPLEMENTATION4), TypeName.get(ResultSet.class)));
 
         ParameterizedTypeName querierType = ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class));
         // fields

@@ -38,7 +38,6 @@ public class CompilerQueryInvoker {
     private final PastFactory pastFactory;
 
 
-
     public CompilerQueryInvoker(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
         this.pastFactory=compilerUtil.getPastFactory();

@@ -41,7 +41,7 @@ public class CompilerCatalogueDispatcher {
     //  Function<Object[], Object[]>
     static final ParameterizedTypeName FunctionObjArray2ObjArray= ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ArrayTypeName.of(ClassName.get(Object.class)), ArrayTypeName.of(ClassName.get(Object.class)));
    // Supplier<String>
-    static final ParameterizedTypeName SupplierOfString= ParameterizedTypeName.get(ClassName.get(java.util.function.Supplier.class), ClassName.get(String.class));
+    public static final ParameterizedTypeName SupplierOfString= ParameterizedTypeName.get(ClassName.get(java.util.function.Supplier.class), ClassName.get(String.class));
 
     public static Map<String,String> dataConfiguratorMap=new java.util.HashMap<>() {{
         put(PROPERTY_ORDER, PROPERTY_ORDER_CONFIGURATOR);

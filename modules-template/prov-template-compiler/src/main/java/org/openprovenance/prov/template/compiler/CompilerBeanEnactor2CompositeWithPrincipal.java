@@ -91,7 +91,7 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
                 mspec.addStatement("return $N.generic_enact(new $T(),bean,\n" +
                         "                b -> checker.process(b),\n" +
                         "                (sb,b) -> new $T(sb,true,$N.get()).process(b),\n" +
-                        "                (rs,b) -> $N.beanCompleterFactory(rs,new Object[1],postProcessing).process(b))", Constants.REALISER, outputClassName, queryInvokerClass, PRINCIPAL_MANAGER_VAR, Constants.REALISER);
+                        "                (rs,b) -> $N.beanCompleterFactory(rs,new Integer[1],postProcessing).process(b))", Constants.REALISER, outputClassName, queryInvokerClass, PRINCIPAL_MANAGER_VAR, Constants.REALISER);
 
                 builder.addMethod(mspec.build());
             }

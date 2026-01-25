@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler.past.type;
 import com.squareup.javapoet.ParameterizedTypeName;
 
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.CLIENT_PACKAGE;
 import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
@@ -23,8 +24,10 @@ public class ClassName extends TypeName {
     public static final ClassName VOID = ClassName.get( "Void", "past.lang");
     public static final ArrayType STRING_ARRAY=ArrayType.of(STRING);
     public static final ArrayType OBJECT_ARRAY=ArrayType.of(OBJECT);
+    public static final ArrayType INTEGER_ARRAY=ArrayType.of(INTEGER);
     public static final ArrayType OBJECT_ARRAY_ARRAY=ArrayType.of(OBJECT_ARRAY);
     public static final ClassName STRING_BUILDER = ClassName.get( "StringBuilder", "past.util");
+    public static final ClassName SUPPLIER = ClassName.get( "Supplier", "past.lang");
     public static final ClassName CONSUMER = ClassName.get( "Consumer", "past.lang");
     public static final ClassName BICONSUMER = ClassName.get( "BiConsumer", "past.lang");
     public static final ClassName FUNCTION = ClassName.get( "Function", "past.lang");
@@ -52,6 +55,7 @@ public class ClassName extends TypeName {
     public static final TypeVariable TYPE_IN = TypeVariable.get("IN");
     public static final TypeName  CONSUMER_OF_IN= ParameterizedType.get(CONSUMER, TYPE_IN);
     public static final TypeName  CONSUMER_OF_T= ParameterizedType.get(CONSUMER, T());
+    public static final TypeName  SUPPLIER_OF_STRING= ParameterizedType.get(SUPPLIER, STRING);
     public static final TypeName MAP_STRING_MAP_INTEGER_INTEGER=ParameterizedType.get(MAP,STRING,ParameterizedType.get(MAP,INTEGER,INTEGER));
     public static final ArrayType BUILDERS_ARRAY=ArrayType.of(BUILDER_INTERFACE);
     public static final ParameterizedType MAP_STRING_OBJECT= ParameterizedType.get(MAP, STRING, OBJECT);
@@ -62,7 +66,7 @@ public class ClassName extends TypeName {
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_OBJ_ARRAY = FUNCTION_OBJARRAY_TO_TYPE(OBJECT_ARRAY);
     public static final ParameterizedType BIFUNCTION_MAP_STRING_MAP_STRING_INTARRAY_STRINGARRAY_TO_T= ParameterizedType.get(BIFUNCTION, MAP_STRING_MAP_STRING_INTARRAY, STRING_ARRAY, T());
     public static final ParameterizedType LIST_MAP_STRING_OBJECT=ParameterizedType.get(LIST, MAP_STRING_OBJECT);
-
+    public static final ParameterizedType BIFUNCTION_INTEGER_STRING_OBJECT = ParameterizedType.get(BIFUNCTION, INTEGER, STRING, OBJECT);
     public static final ParameterizedType BICONSUMER_STRINGBUILDER_TYPEIN=ParameterizedType.get(BICONSUMER, STRING_BUILDER, TYPE_IN);
     public static final ParameterizedType BICONSUMER_STRINGBUILDER_T=ParameterizedType.get(BICONSUMER, STRING_BUILDER, T());
     public static final ParameterizedType BICONSUMER_RESULT_TYPEOUT =ParameterizedType.get(BICONSUMER, TYPE_RESULT, TYPE_OUT);

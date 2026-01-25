@@ -141,6 +141,7 @@ public class Locations {
             case QUERY_INVOKER:
             case BEAN_ENACTOR:
             case BEAN_PROCESSOR:
+            case ENACTOR_IMPLEMENTATION1:
                 return getCommonPackage(name);
 
             case SQL_INTERFACE:

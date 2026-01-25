@@ -94,6 +94,7 @@ public interface Constants {
     String GETTER = "Getter";
     String ENACTOR_IMPLEMENTATION = "EnactorImplementation";
     String ENACTOR_IMPLEMENTATION1 = "EnactorImplementation1";
+    String ENACTOR_IMPLEMENTATION4 = "EnactorImplementation4";
     String INSERT_PREFIX = "insert_";
     String NOT_NULL_METHOD = "notNull";
     String INPUT_PREFIX = "input_";

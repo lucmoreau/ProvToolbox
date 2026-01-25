@@ -8,7 +8,7 @@ import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
 
-import static org.openprovenance.prov.template.compiler.CompilerBeanEnactor2WithPrincipal.SupplierOfString;
+import static org.openprovenance.prov.template.compiler.CompilerCatalogueDispatcher.SupplierOfString;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.sql.CompilerSqlIntegration.BIFUN;
 
@@ -45,7 +45,7 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
 
 
         // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
-        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, Constants.ENACTOR_IMPLEMENTATION), Constants.ENACTOR_IMPLEMENTATION), typeResult);
+        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, Constants.ENACTOR_IMPLEMENTATION4), Constants.ENACTOR_IMPLEMENTATION4), typeResult);
 
         builder.addField(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PRIVATE);
 

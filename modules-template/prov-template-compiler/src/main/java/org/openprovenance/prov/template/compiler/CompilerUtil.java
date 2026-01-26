@@ -49,7 +49,7 @@ public class CompilerUtil {
     static final TypeName stringArrayType=ArrayTypeName.get(String[].class);
     public static final TypeName classType=ParameterizedTypeName.get(ClassName.get(Class.class), typeT);
     public static final TypeName mapType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(Object.class));
-    static final TypeName mapString2StringType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(String.class));
+    public static final TypeName mapString2StringType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(String.class));
     static final TypeName mapString2StringArrayType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),stringArrayType);
     static final TypeName listMapType=ParameterizedTypeName.get(ClassName.get(List.class),mapType);
     static final TypeName hashMapType=ParameterizedTypeName.get(ClassName.get(HashMap.class),ClassName.get(String.class),ClassName.get(Object.class));

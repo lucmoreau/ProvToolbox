@@ -1,83 +1,89 @@
+
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.Locations;
-import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
+import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.Constructor;
+import org.openprovenance.prov.template.compiler.past.Method;
+import org.openprovenance.prov.template.compiler.past.PastFactory;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 
 import javax.lang.model.element.Modifier;
+import java.util.List;
+import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 public class CompilerDelegator {
     private final CompilerUtil compilerUtil;
-
+    private final PastFactory pastFactory;
 
     public CompilerDelegator(ProvFactory pFactory) {
-        this.compilerUtil=new CompilerUtil(pFactory);
+        this.compilerUtil = new CompilerUtil(pFactory);
+        this.pastFactory = compilerUtil.getPastFactory();
     }
-
 
     public SpecificationFile generateDelegator(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
-        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+        StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
+        ClassName beanProcessorType = get(BEAN_PROCESSOR, locations.getFilePackage(configs.name, BEAN_PROCESSOR));
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.DELEGATOR);
+        Class pastClass = pastFactory.CLASS(Constants.DELEGATOR)
+                .COMMENT("Delegator for processing beans\n")
+                .MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(beanProcessorType)
+                .FIELDS(
+                        FIELD(DELEGATOR_VAR, beanProcessorType).MODIFIERS(Modifier.FINAL, Modifier.PRIVATE)
+                );
 
-        ClassName beanProcessorClass = compilerUtil.getClass(configs.name, BEAN_PROCESSOR, locations);
-        builder.addSuperinterface(beanProcessorClass);
-
-        builder.addJavadoc("Delegator for processing beans\n");
-
-        builder.addField(beanProcessorClass, DELEGATOR_VAR, Modifier.FINAL, Modifier.PRIVATE);
-
-        MethodSpec.Builder mspec2 = MethodSpec
-                .constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(beanProcessorClass, DELEGATOR_VAR);
-
-        CodeBlock.Builder jdoc = CodeBlock.builder();
-        jdoc.add("Constructor for Delegator\n");
-        jdoc.add("@param delegator a processor to which processing of beans is delegated\n");
-        mspec2.addJavadoc(jdoc.build());
-
-        compilerUtil.specWithComment(mspec2);
-        mspec2.addStatement("this.$N=$N", DELEGATOR_VAR, DELEGATOR_VAR);
-
-        builder.addMethod(mspec2.build());
-
+        Constructor ctor = CONSTRUCTOR()
+                .debugFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(beanProcessorType, DELEGATOR_VAR)
+                .BODY(
+                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), DELEGATOR_VAR), VARIABLE(DELEGATOR_VAR))
+                );
+        pastClass.CONSTRUCTOR(ctor);
 
         for (TemplateCompilerConfig config : configs.templates) {
-
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
-            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), beanNameClass);
-            MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                    .addModifiers(Modifier.PUBLIC)  // this one is not final!
-                    .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())
-                    .returns(className);
-            compilerUtil.specWithComment(mspec);
-            CodeBlock.Builder jdoc2= CodeBlock.builder();
-            jdoc2.add("Porcessing method\n");
-            jdoc2.add("@param bean an input bean\n");
-            jdoc2.add("@return a processed bean\n");
-            mspec.addJavadoc(jdoc2.build());
+            ClassName beanType = get(beanNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
 
-            mspec.addStatement("return $N.process($N)", DELEGATOR_VAR, BEAN_VAR);
-            builder.addMethod(mspec.build());
+            Method m = METHOD(PROCESS_METHOD_NAME)
+                    .debugFileLocation()
+                    .MODIFIERS(Modifier.PUBLIC)
+                    .PARAMETER(beanType, BEAN_VAR)
+                    .RETURNS(beanType)
+                    .COMMENT("Processing method\n")
+                    .COMMENT("@param bean an input bean\n")
+                    .COMMENT("@return a processed bean\n");
+
+            m.BODY(
+                    RETURN(
+                            METHOD_CALL(VARIABLE(DELEGATOR_VAR), PROCESS_METHOD_NAME, List.of(VARIABLE(BEAN_VAR))))
+
+            );
+
+            pastClass.METHOD(m);
         }
 
-        TypeSpec theLogger = builder.build();
-
-        String myPackage=locations.getFilePackage(configs.name, fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
-
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
-
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
-
 }

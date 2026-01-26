@@ -36,7 +36,11 @@ public class ClassName extends TypeName {
     public static final ClassName ILLEGAL_STATE_EXCEPTION=ClassName.get("IllegalStateException", "past.exception");
     public static final ClassName ILLEGAL_ARGUMENT_EXCEPTION=ClassName.get("IllegalArgumentException", "past.exception");
 
+    public static final ClassName PROV_FILE_BUILDER = ClassName.get("FileBuilder", "org.openprovenance.prov.template.log2prov");
+    public static final ClassName PROV_FACTORY = ClassName.get("ProvFactory", "org.openprovenance.prov.model");
+
     public static final ParameterizedType MAP_STRING_T= ParameterizedType.get(MAP, STRING, T());
+    public static final ParameterizedType MAP_STRING_STRING= ParameterizedType.get(MAP, STRING, STRING);
     public static final ParameterizedType MAP_INTEGER_INTARRAY= ParameterizedType.get(MAP, INTEGER, intArray);
     public static final ParameterizedType HASH_MAP_INTEGER_INTARRAY= ParameterizedType.get(HASHMAP, INTEGER, intArray);
     public static final ParameterizedType MAP_STRING_INTARRAY = ParameterizedType.get(MAP, STRING, intArray);
@@ -48,7 +52,7 @@ public class ClassName extends TypeName {
     public static final ParameterizedType HASH_MAP_STRING_T= ParameterizedType.get(HASHMAP, STRING, T());
     public static final ClassName BUILDER_INTERFACE=ClassName.get("Builder", CLIENT_PACKAGE);
     public static final ParameterizedType MAP_STRING_BUILDER=ParameterizedType.get(MAP, STRING, BUILDER_INTERFACE);
-    public static final ParameterizedType MAP_STRING_FILEBUILDER= ParameterizedType.get(MAP, STRING, ClassName.get("FileBuilder", "org.openprovenance.prov.template.log2prov"));
+    public static final ParameterizedType MAP_STRING_FILEBUILDER= ParameterizedType.get(MAP, STRING, PROV_FILE_BUILDER);
     public static final TypeVariable TYPE_RESULT = TypeVariable.get("RESULT");
     public static final TypeVariable TYPE_OUTPUT = TypeVariable.get("OUTPUT");
     public static final TypeVariable TYPE_OUT = TypeVariable.get("OUT");
@@ -71,6 +75,8 @@ public class ClassName extends TypeName {
     public static final ParameterizedType BICONSUMER_STRINGBUILDER_T=ParameterizedType.get(BICONSUMER, STRING_BUILDER, T());
     public static final ParameterizedType BICONSUMER_RESULT_TYPEOUT =ParameterizedType.get(BICONSUMER, TYPE_RESULT, TYPE_OUT);
     public static final ParameterizedType BICONSUMER_RESULT_T =ParameterizedType.get(BICONSUMER, TYPE_RESULT, T());
+
+
 
     public static ParameterizedType FUNCTION_OBJARRAY_TO_TYPE(TypeName returnType) {
         return ParameterizedType.get(FUNCTION, OBJECT_ARRAY, returnType);

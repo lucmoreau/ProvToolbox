@@ -556,7 +556,7 @@ public class DerivationBuilder {
                 .type(defs.DropOff)
                 .time("2024-07-16T11:58:00")
                 .label("drop-off at destination")
-                .attr(defs.dotColour, edge1Colour)
+                .attr(defs.dotColour, edge2Colour)
 
                 .build();
 
@@ -567,7 +567,7 @@ public class DerivationBuilder {
                 .type(defs.PickUp)
                 .time("2024-07-16T10:20:00")
                 .label("pick up at origin")
-                .attr(defs.dotColour, edge2Colour)
+                .attr(defs.dotColour, edge1Colour)
 
                 .build();
 
@@ -1136,7 +1136,7 @@ public class DerivationBuilder {
         QualifiedName usage         =builder.qn(PROVEXT, "usage");
         QualifiedName dotColour     =builder.qn(DOT, "color");
         QualifiedName InsertingElement =builder.qn(PROVEXT, "InsertingElement");
-        QualifiedName InsertingIntoCollection =builder.qn(PROVEXT, "InsertingIntoCollection");
+        QualifiedName InsertingIntoCollection =builder.qn(PROVEXT, "InsertingItemIntoCollection");
         QualifiedName RemovingElement =builder.qn(PROVEXT, "RemovingElement");
         QualifiedName RemovingElementFromCollection =builder.qn(PROVEXT, "RemovingElementFromCollection");
 
@@ -1179,7 +1179,7 @@ public class DerivationBuilder {
         public final QualifiedName InsertingIntoCollection;
         public final QualifiedName RemovingElement;
         public final QualifiedName RemovingElementFromCollection;
-        private final QualifiedName Unpacking;
+        public final QualifiedName Unpacking;
 
         public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Recycling, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName unpacking, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName unpacker, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation, QualifiedName usage, QualifiedName dotColour, QualifiedName insertingElement, QualifiedName insertingIntoCollection, QualifiedName removingElement, QualifiedName removingElementFromCollection) {
             this.XID = XID;

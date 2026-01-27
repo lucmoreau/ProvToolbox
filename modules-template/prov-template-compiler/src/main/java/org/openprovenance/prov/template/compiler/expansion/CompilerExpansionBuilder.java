@@ -22,6 +22,7 @@ import org.openprovenance.prov.template.core.exception.MissingAttributeValue;
 import org.openprovenance.prov.template.types.TypesRecordProcessor;
 
 import javax.lang.model.element.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1005,7 +1006,8 @@ public class CompilerExpansionBuilder {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getTypeManager")
                 .addModifiers(Modifier.PUBLIC)
-                .returns(ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypeManagement"));
+                .addTypeVariable(typeT)
+                .returns(ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypeManagement"),typeT));
 
         compilerUtil.specWithComment(builder);
 
@@ -1013,12 +1015,12 @@ public class CompilerExpansionBuilder {
         builder.addParameter(ParameterSpec.builder(Map_QN_S_of_String,"unknownTypeMap").build());
         builder.addParameter(ParameterSpec.builder(Map_S_Map_S_to_Function,"propertyConverters").build());
 
-        builder.addParameter(ParameterSpec.builder(Map_QN_Col_of_String,"idata").build());
-        builder.addParameter(ParameterSpec.builder(Map_S_Map_S_to_Function,"idataConverters").build());
+        builder.addParameter(ParameterSpec.builder(Map_QN_Map_String_C_of_String,"idata").build()); // Was Map_QN_Col_of_String
+        builder.addParameter(ParameterSpec.builder(Map_S_Map_S_to_TriFunction,"idataConverters").build()); // was Map_S_Map_S_to_Function
 
 
         builder.addStatement(
-                "return new $T($N,$N,$N,$N,$N,$N)",
+                "return new $T<>($N,$N,$N,$N,$N,$N)",
                 ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypeManagement"),
                 "pf",
                 "knownTypeMap",

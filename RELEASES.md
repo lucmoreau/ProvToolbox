@@ -11,6 +11,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: moved away from JsonNode, and using Bindings Descriptor
 * prov-template-compiler: introduced PAST (provenance abstract syntax tree), intermediate to Poet and Python (WIP)
 * prov-template: gensym variable, accept null binding, and ensure uniqueness
+* prov-template-compiler: fixed issue with generics in generated code
 
 `2.2.2`
 * prov-template: added ptm-merging template

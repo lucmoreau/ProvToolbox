@@ -74,6 +74,9 @@ public class Bindings {
             value.values.add(qDescriptor);
             vargen.put(var, value);
         } else {
+            if (vargen.get(var).values==null) {
+                vargen.get(var).values = new java.util.ArrayList<>();
+            }
             vargen.get(var).values.add(qDescriptor);
         }
     }

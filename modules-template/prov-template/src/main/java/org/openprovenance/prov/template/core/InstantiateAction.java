@@ -382,9 +382,11 @@ public class InstantiateAction implements StatementAction {
 
                     if (singleDescriptors == null || singleDescriptors.values==null) {
                         if (InstantiateUtil.isGensymVariable(qn1)) {
-                            dstAttributes.add(pf.newAttribute(attribute.getElementName(),
-                                                getUUIDQualifiedName(),
-                                                pf.getName().PROV_QUALIFIED_NAME));
+                            QualifiedName uuidQualifiedName = retrieveOrGenerateUUIDQualifiedName(bindings, qn1);
+                            if (uuidQualifiedName!=null)
+                                dstAttributes.add(pf.newAttribute(attribute.getElementName(),
+                                        uuidQualifiedName,
+                                        pf.getName().PROV_QUALIFIED_NAME));
                         }
                         // if not a vargen, then simply drop this attribute
                     } else {
@@ -483,8 +485,28 @@ public class InstantiateAction implements StatementAction {
 
     static final QualifiedNameUtils qnU = new QualifiedNameUtils();
 
-    public QualifiedName getUUIDQualifiedName() {
-        return getUUIDQualifiedName2(pf);
+    public QualifiedName retrieveOrGenerateUUIDQualifiedName(Bindings bindings, QualifiedName id) {
+        if (bindings.vargen!=null) {
+            String varName=id.getLocalPart();
+            Descriptors descriptors=bindings.vargen.get(varName);
+            if (descriptors!=null && descriptors.values.size()>1) {
+                throw new BundleVariableHasMultipleValues(id, descriptors);
+            }
+            if (descriptors==null || descriptors.values.isEmpty()) {
+                if (bindings.vargen.containsKey(varName)) return null;
+                //continue to gensym
+            } else {
+                Descriptor descriptor0 = descriptors.values.get(0);
+                if (descriptor0 instanceof QDescriptor) {
+                    return dUtils.newQualifiedName((QDescriptor) descriptor0, bindings);
+                } else {
+                    throw new IllegalArgumentException("Expected QDescriptor for vargen variable " + id);
+                }
+            }
+        }
+        QualifiedName uuid = getUUIDQualifiedName2(pf);
+        dUtils.addVariable(bindings, id, uuid);
+        return uuid;
     }
 
     static public QualifiedName getUUIDQualifiedName2(ProvFactory pf) {
@@ -512,9 +534,9 @@ public class InstantiateAction implements StatementAction {
             } else {
 
                 if (InstantiateUtil.isGensymVariable(id)) {
-                    QualifiedName uuid = getUUIDQualifiedName();
+                    QualifiedName uuid = retrieveOrGenerateUUIDQualifiedName(bindings,id);
                     u.setter(res, position, uuid);
-                    dUtils.addVariable(bindings, id, uuid);
+                    // now done in getUUIDQualifiedName dUtils.addVariable(bindings, id, uuid);
                     return true;
                 } else {
                     // allows for null value associated with id
@@ -753,9 +775,10 @@ public class InstantiateAction implements StatementAction {
                 newId = dUtils.newQualifiedName(qDescriptor, bindings);
             } else {
                 if (InstantiateUtil.isGensymVariable(bunId)) {
-                    QualifiedName uuid = getUUIDQualifiedName();
+                    QualifiedName uuid = retrieveOrGenerateUUIDQualifiedName(bindings,bunId);
+                    if (uuid==null) throw new IllegalArgumentException("No value for vargen bundle id "+bunId);
                     newId = uuid;
-                    dUtils.addVariable(bindings, bunId, uuid);
+                    // now done is getUUIDQualifiedName dUtils.addVariable(bindings, bunId, uuid);
                 } else {
                     newId = bunId;
                 }

@@ -12,6 +12,7 @@ public class ClassName extends TypeName {
     static public final ClassName _int =ClassName.get("int", "past.lang");
     public static final TypeName _bool =ClassName.get("bool", "past.lang");
 
+
     static public final ClassName intArray =ClassName.get("int[]", "past.lang");
     static public final ClassName OBJECT=ClassName.get("Object", "past.lang");
     static public final ClassName STRING=ClassName.get("String", "past.lang");
@@ -19,6 +20,7 @@ public class ClassName extends TypeName {
     public static final ClassName MAP = ClassName.get("Map", "past.util");
     public static final ClassName HASHMAP = ClassName.get("HashMap", "past.util");
     public static final ClassName LIST = ClassName.get("List", "past.util");
+    public static final ClassName SET = ClassName.get("Set", "past.util");
     public static final ClassName LINKED_LIST = ClassName.get( "LinkedList", "past.util");
     public static final ClassName CLASS = ClassName.get( "Class", "past.lang");
     public static final ClassName VOID = ClassName.get( "Void", "past.lang");
@@ -38,7 +40,9 @@ public class ClassName extends TypeName {
 
     public static final ClassName PROV_FILE_BUILDER = ClassName.get("FileBuilder", "org.openprovenance.prov.template.log2prov");
     public static final ClassName PROV_FACTORY = ClassName.get("ProvFactory", "org.openprovenance.prov.model");
+    public static final ClassName PROV_QUALIFIED_NAME = ClassName.get("QualifiedName", "org.openprovenance.prov.model");
 
+    public static final ParameterizedType SET_STRING = ParameterizedType.get(SET, STRING);
     public static final ParameterizedType MAP_STRING_T= ParameterizedType.get(MAP, STRING, T());
     public static final ParameterizedType MAP_STRING_STRING= ParameterizedType.get(MAP, STRING, STRING);
     public static final ParameterizedType MAP_INTEGER_INTARRAY= ParameterizedType.get(MAP, INTEGER, intArray);
@@ -53,6 +57,7 @@ public class ClassName extends TypeName {
     public static final ClassName BUILDER_INTERFACE=ClassName.get("Builder", CLIENT_PACKAGE);
     public static final ParameterizedType MAP_STRING_BUILDER=ParameterizedType.get(MAP, STRING, BUILDER_INTERFACE);
     public static final ParameterizedType MAP_STRING_FILEBUILDER= ParameterizedType.get(MAP, STRING, PROV_FILE_BUILDER);
+
     public static final TypeVariable TYPE_RESULT = TypeVariable.get("RESULT");
     public static final TypeVariable TYPE_OUTPUT = TypeVariable.get("OUTPUT");
     public static final TypeVariable TYPE_OUT = TypeVariable.get("OUT");
@@ -76,6 +81,11 @@ public class ClassName extends TypeName {
     public static final ParameterizedType BICONSUMER_RESULT_TYPEOUT =ParameterizedType.get(BICONSUMER, TYPE_RESULT, TYPE_OUT);
     public static final ParameterizedType BICONSUMER_RESULT_T =ParameterizedType.get(BICONSUMER, TYPE_RESULT, T());
 
+    public static final ParameterizedType MAP_QUALIFIEDNAME_STRING_SET = ParameterizedType.get(MAP, PROV_QUALIFIED_NAME, SET_STRING);
+    public static final ParameterizedType MAP_STRING_STRING_SET = ParameterizedType.get(MAP, STRING, SET_STRING);
+    public static final ParameterizedType MAP_STRING_STRING_ARRAY = ParameterizedType.get(MAP, STRING, STRING_ARRAY);
+
+    public static final ParameterizedType HASH_MAP_GENERICS= ParameterizedType.get(HASHMAP);
 
 
     public static ParameterizedType FUNCTION_OBJARRAY_TO_TYPE(TypeName returnType) {

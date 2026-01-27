@@ -111,9 +111,10 @@ public class    CompilerTableConfiguratorWithMap {
                 );
             }
 
-            pastClass.CONSTRUCTOR(ctor);
             pastClass.METHOD(method);
         }
+        pastClass.CONSTRUCTOR(ctor);
+
 
         String myPackage = locations.getConfiguratorBackendPackage(configs.name);
         Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);

@@ -1,126 +1,120 @@
+
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.*;
+import com.squareup.javapoet.MethodSpec;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.Constructor;
+import org.openprovenance.prov.template.compiler.past.Method;
+import org.openprovenance.prov.template.compiler.past.PastFactory;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
-
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
-import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
+import static org.openprovenance.prov.template.compiler.CompilerUtil.typeT;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.*;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
 public class CompilerTypeConverter {
-
     private final CompilerUtil compilerUtil;
-
+    private final PastFactory pastFactory;
 
     public CompilerTypeConverter(ProvFactory pFactory) {
-        this.compilerUtil=new CompilerUtil(pFactory);
+        this.compilerUtil = new CompilerUtil(pFactory);
+        this.pastFactory = compilerUtil.getPastFactory();
     }
 
-
     SpecificationFile generateTypeConverter(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
-        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+        StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        ParameterizedTypeName getterOfT=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, Constants.TYPE_CONVERTER), Constants.TYPE_CONVERTER+"."+Constants.GETTER),typeT);
+        ClassName TYPED_GETTER_TYPE = get(Constants.TYPED_GETTER, locations.getFilePackage(configs.name, Constants.TYPED_GETTER));
+        ParameterizedType TYPED_GETTER_OF_T = ParameterizedType.get(TYPED_GETTER_TYPE, T());
 
+        Class pastClass = pastFactory.CLASS(Constants.TYPE_CONVERTER)
+                .MODIFIERS(Modifier.PUBLIC)
+                .TYPE_VARIABLES(T())
+                .FIELDS(
+                        FIELD("getter", TYPED_GETTER_OF_T).MODIFIERS(Modifier.FINAL)
+                );
 
+        // constructor: public TypeConverter(Getter<T> getter) { this.getter = getter; }
+        Constructor ctor = CONSTRUCTOR()
+                .debugFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(TYPED_GETTER_OF_T, "getter")
+                .BODY(
+                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), "getter"), VARIABLE("getter"))
+                );
+        pastClass.CONSTRUCTOR(ctor);
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.TYPE_CONVERTER);
-        builder.addTypeVariable(typeT);
-
-        //builder.addSuperinterface(ClassName.get(configs.logger_package,configs.beanProcessor));
-
-
-
-        TypeSpec.Builder inface=compilerUtil.generateInterfaceInit(Constants.GETTER);
-        inface.addTypeVariable(typeT);
-
-        inface.addMethod(MethodSpec.methodBuilder("getString")
-                .addModifiers(Modifier.ABSTRACT,Modifier.PUBLIC)
-                .addParameter(String.class,"col")
-                .returns(typeT)
-                .build());
-        inface.addMethod(MethodSpec.methodBuilder("getObject")
-                .addModifiers(Modifier.ABSTRACT,Modifier.PUBLIC)
-                .addParameter(String.class,"col")
-                .returns(typeT)
-                .build());
-        inface.addMethod(MethodSpec.methodBuilder("getTimestamp")
-                .addModifiers(Modifier.ABSTRACT,Modifier.PUBLIC)
-                .addParameter(String.class,"col")
-                .returns(typeT)
-                .build());
-        inface.addMethod(MethodSpec.methodBuilder("getBoolean")
-                .addModifiers(Modifier.ABSTRACT,Modifier.PUBLIC)
-                .addParameter(String.class,"col")
-                .returns(typeT)
-                .build());
-        builder.addType(inface.build());
-
-
-        builder.addField(getterOfT,"getter", Modifier.FINAL);
-
-        MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(getterOfT, "getter")
-                .addStatement("this.getter = getter");
-
-        builder.addMethod(cbuilder3.build());
-
+        // create process methods for each simple template; placeholder implementation returns new HashMap<>()
         for (TemplateCompilerConfig config : configs.templates) {
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            final ClassName templateClass = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
-            MethodSpec.Builder mspec = createProcessMethod(bindingsSchema, templateClass);
-            builder.addMethod(mspec.build());
+            final ClassName templateClass = get(templateNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
+
+            Method m = createProcessMethod(bindingsSchema, templateClass);
+
+            pastClass.METHOD(m);
         }
 
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION,
+                locations.convertToBackendDirectory(myPackage), stackTraceElement, compilerUtil);
 
-        TypeSpec theLogger = builder.build();
-
-        String myPackage=locations.getFilePackage(configs.name, fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
-
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
-
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
-    private MethodSpec.Builder createProcessMethod(TemplateBindingsSchema bindingsSchema, ClassName outputClassName) {
-        MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterSpec.builder(outputClassName,"builder").build())
-                .returns(mapTypeT);
-        compilerUtil.specWithComment(mspec);
+    private Method createProcessMethod(TemplateBindingsSchema bindingsSchema, ClassName templateClass) {
+        Method m = METHOD(Constants.PROCESS_METHOD_NAME)
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(templateClass, "builder")
+                .RETURNS(MAP_STRING_T)
+                .debugFileLocation();
 
-        mspec.addStatement("$T m=new $T()",mapTypeT,hashMapTypeT);
+        m.BODY(
+                ASSIGNMENT(MAP_STRING_T, VARIABLE("m"), CONSTRUCTOR_CALL(HASH_MAP_GENERICS, List.of()))
+        );
 
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
+            ClassName cl=compilerUtil.getPastTypeForDeclaredType(bindingsSchema.getVar(), key);
+            String sqlType=descriptorUtils.getFromDescriptor(bindingsSchema.getVar().get(key).get(0), AttributeDescriptor::getSqlType, nd->null);
+            m.BODY(
 
-                Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-                String sqlType=descriptorUtils.getFromDescriptor(bindingsSchema.getVar().get(key).get(0), AttributeDescriptor::getSqlType, nd->null);
-
-
-
-            mspec.addStatement("m.put($S, getter.$N($S))", key, convertToMethod(cl.getSimpleName(), sqlType), key);
-
+                    METHOD_CALL(VARIABLE("m"), "put",
+                            List.of(CONSTANT(key),
+                                    METHOD_CALL(VARIABLE("getter"),
+                                            convertToMethod(cl.simpleName, sqlType),
+                                            List.of(CONSTANT(key))   )))  );
         }
-
-        mspec.addStatement("return m");
-        return mspec;
+        m.BODY(RETURN(VARIABLE("m")));
+        return m;
     }
-
     Map<String,String> mapper=new HashMap<>() {{
         put("string", "getString");
         put("int", "getObject");
@@ -142,6 +136,46 @@ public class CompilerTypeConverter {
         }
         if (res==null) throw new IllegalStateException("Unexpected value: " + simpleClassName);
         return res;
+    }
+
+
+    public SpecificationFile generateTypedGetterInterface(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
+
+        Class pastClass=pastFactory.INTERFACE(TYPED_GETTER)
+                .MODIFIERS(Modifier.PUBLIC)
+                .TYPE_VARIABLES(T())
+                .METHOD(
+                        METHOD("getString")
+                                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                                .PARAMETER(STRING, "col")
+                                .RETURNS(T()))
+                .METHOD(
+                        METHOD("getObject")
+                                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                                .PARAMETER(STRING, "col")
+                                .RETURNS(T()))
+                .METHOD(
+                        METHOD("getTimestamp")
+                                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                                .PARAMETER(STRING, "col")
+                                .RETURNS(T()))
+                .METHOD(
+                        METHOD("getBoolean")
+                                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                                .PARAMETER(STRING, "col")
+                                .RETURNS(T()));
+
+
+
+
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
 

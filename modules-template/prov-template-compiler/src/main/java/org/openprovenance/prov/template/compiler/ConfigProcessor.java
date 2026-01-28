@@ -475,6 +475,9 @@ public class ConfigProcessor implements Constants {
 
         SpecificationFile typeConverter=compilerTypeConverter.generateTypeConverter(configs, locations, TYPE_CONVERTER);
         typeConverter.save();
+        SpecificationFile typedGetter=compilerTypeConverter.generateTypedGetterInterface(configs, locations, TYPED_GETTER);
+        typedGetter.save();
+
 
         SpecificationFile beanEnactor=compilerBeanEnactor.generateBeanEnactor(configs, locations, BEAN_ENACTOR);
         beanEnactor.save();

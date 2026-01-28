@@ -412,13 +412,6 @@ public class ConfigProcessor implements Constants {
         SpecificationFile intface2=compilerLogger.generateLoggerInterface(configs, openprovenance_dir, locations,LOGGER_INTERFACE );
         intface2.save();
 
-      //  SpecificationFile intface3=compilerLogger.generateProcessorArgsInterface(configs, openprovenance_dir, PROCESSOR_ARGS_INTERFACE + DOT_JAVA_EXTENSION);
-      //  intface3.save();
-
-       // SpecificationFile intface3b=compilerLogger.generateRecordsProcessorInterface(configs, openprovenance_dir, RECORDS_PROCESSOR_INTERFACE + DOT_JAVA_EXTENSION);
-        //intface3b.save();
-
-
         exportMiscFiles(configs, cli_dir, cli_lib);
 
         compilerScript.generateScript(configs);

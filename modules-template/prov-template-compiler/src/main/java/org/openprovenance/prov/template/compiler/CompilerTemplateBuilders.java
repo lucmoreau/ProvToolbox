@@ -5,17 +5,28 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.PastFactory;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 
 import javax.lang.model.element.Modifier;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
-import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
+import java.util.function.Supplier;
+
+import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 
 public class CompilerTemplateBuilders {
     private final CompilerUtil compilerUtil;
+    private final PastFactory pastFactory;
 
     public CompilerTemplateBuilders(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
+        this.pastFactory = compilerUtil.getPastFactory();
     }
 
 
@@ -23,29 +34,30 @@ public class CompilerTemplateBuilders {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.TEMPLATE_BUILDERS);
+        Class pastClass = pastFactory.CLASS(TEMPLATE_BUILDERS)
+                .MODIFIERS(Modifier.PUBLIC)
+                ;
+
+
 
         for (TemplateCompilerConfig config : configs.templates) {
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
 
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
 
-            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
-            FieldSpec fspec = FieldSpec.builder(className, config.name + "Builder")
-                    .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                    .initializer(LOGGER + "." + Constants.GENERATED_VAR_PREFIX + config.name)
-                    .build();
+            final ClassName className = ClassName.get(templateNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) );
+            pastClass.FIELDS(
+                    FIELD(config.name + "Builder", className)
+                            .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                            .INITIALIZER(METHOD_CALL(VARIABLE(LOGGER),Constants.GENERATED_VAR_PREFIX + config.name)));
 
-            builder.addField(fspec);
         }
 
-        TypeSpec theLogger = builder.build();
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
 
-        String myPackage=locations.getFilePackage(configs.name, fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
-
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
     }
 
 

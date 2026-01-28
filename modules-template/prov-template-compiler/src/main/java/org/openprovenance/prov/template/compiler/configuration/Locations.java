@@ -136,6 +136,7 @@ public class Locations {
                 return getConfiguratorPackage2(name);
 
             case TYPE_CONVERTER:
+            case TYPED_GETTER:
             case DELEGATOR:
             case BEAN_COMPLETER:
             case BEAN_CHECKER:

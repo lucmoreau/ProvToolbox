@@ -92,6 +92,7 @@ public interface Constants {
     String PROCESS_METHOD_NAME = "process";
     String PROCESSOR_PROCESS_METHOD_NAME = "process";
     String GETTER = "Getter";
+    String TYPED_GETTER = "TypedGetter";
     String ENACTOR_IMPLEMENTATION = "EnactorImplementation";
     String ENACTOR_IMPLEMENTATION1 = "EnactorImplementation1";
     String ENACTOR_IMPLEMENTATION4 = "EnactorImplementation4";

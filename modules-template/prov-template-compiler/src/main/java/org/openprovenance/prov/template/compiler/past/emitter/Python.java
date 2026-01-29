@@ -194,6 +194,8 @@ public class Python implements Emitter<StringBuilder> {
                         case "Object" -> "object";
                         default -> (cn.packge + "." + cn.simpleName);
                     };
+                } else if (cn.packge != null && cn.packge.equals("org.openprovenance.prov.model")) {
+                    return (cn.packge + "." + cn.simpleName);
                 }
             }
             case VARIABLE:
@@ -287,10 +289,16 @@ public class Python implements Emitter<StringBuilder> {
             }
             if (!isClassInitialised) {
                 String fieldName = sanitizeName(field.name);
-                if (field.modifiers.contains(Modifier.STATIC)) {
+                if (field.initialiser!=null) {
+                    if (field.modifiers.contains(Modifier.STATIC)) {
+                        sb.append(INDENT)
+                                .append(fieldName)
+                                .append(" = ").append(convert(field.initialiser)).append("\n");
+                    }
+                } else {
                     sb.append(INDENT)
                             .append(fieldName)
-                            .append(" = ").append(convert(field.initialiser)).append("\n");
+                            .append(" = ").append("None").append("\n");
                 }
             }
         }
@@ -661,7 +669,7 @@ public class Python implements Emitter<StringBuilder> {
                     return "isinstance(" + convert(bo.left) + ", " + importAndGetLocalName(sanitizeName(typeName)) + ")";
 
                 } else {
-                    return convert(bo.left) + " " + bo.op + " " + convert(bo.right);
+                    return convert(bo.left) + " " + convertOp(bo.op) + " " + convert(bo.right);
                 }
             }
 
@@ -682,6 +690,16 @@ public class Python implements Emitter<StringBuilder> {
             default:
                throw new IllegalArgumentException("Unsupported expression type " + expression);
         }
+    }
+
+    private String convertOp(String op) {
+        return switch (op) {
+            case "&&" -> "and";
+            case "||" -> "or";
+            case "!" -> "not ";
+            case "Objects.equals" -> "==";
+            default -> op;
+        };
     }
 
     private String convertVariableName(String name) {

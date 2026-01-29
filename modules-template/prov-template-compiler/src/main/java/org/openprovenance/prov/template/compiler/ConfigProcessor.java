@@ -372,7 +372,7 @@ public class ConfigProcessor implements Constants {
         final String cli_test_dir= cli_test_src_dir + "/" + configs.root_package.replace('.', '/') + "/";
 
 
-        SpecificationFile init=compilerBuilderInit.generateInitializer(configs, locations, init_dir, INIT + DOT_JAVA_EXTENSION);
+        SpecificationFile init=compilerBuilderInit.generateInitializer(configs, locations, init_dir, INIT);
         init.save();
 
         SpecificationFile catalogueDispatcher=compilerCatalogueDispatcher.generateCatalogueDispatcher(configs, getInputOutputMaps(), locations, init_dir, CATALOGUE_DISPATCHER + DOT_JAVA_EXTENSION);

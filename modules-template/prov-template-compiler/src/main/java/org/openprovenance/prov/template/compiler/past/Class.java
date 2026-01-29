@@ -6,6 +6,7 @@ import org.openprovenance.prov.template.compiler.past.type.TypeName;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 
 import javax.lang.model.element.Modifier;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class Class {
     final public List<Modifier> modifiers=new LinkedList<>();
     final public boolean isInterface;
     final public ClassKind classKind;
+    final public List<Statement> staticBlock=new LinkedList<>();
     public TypeName superclass = null;
 
     public Class (String name) {
@@ -91,6 +93,7 @@ public class Class {
                 ", modifiers=" + modifiers +
                 ", isInterface=" + isInterface +
                 ", classKind=" + classKind +
+                ", staticBlock=" + staticBlock +
                 ", superclass=" + superclass +
                 '}';
     }
@@ -125,6 +128,12 @@ public class Class {
     public Class CONSTRUCTOR(Constructor method2) {
         if (method2==null) throw new IllegalArgumentException("null constructor");
         this.constructors.add(method2);
+        return this;
+    }
+    public Class STATIC_BLOCK(List<Statement> statements) {
+        if (statements==null) throw new IllegalArgumentException("null statements");
+        if (statements.isEmpty()) return this;
+        staticBlock.addAll(statements);
         return this;
     }
 }

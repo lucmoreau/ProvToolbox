@@ -62,6 +62,13 @@ public class Poet implements Emitter<TypeSpec> {
         clazz.comments.forEach(comment -> builder.addJavadoc(comment.format, comment.objects));
         clazz.methods.forEach(method -> builder.addMethod(convert(method)));
         clazz.constructors.forEach(constructor -> builder.addMethod(convert(constructor)));
+        if (!clazz.staticBlock.isEmpty()) {
+            CodeBlock.Builder block = CodeBlock.builder();
+            clazz.staticBlock.forEach(statement -> {
+                block.addStatement("$L", convert(statement));
+            });
+            builder.addStaticBlock(block.build());
+        }
         return builder.build();
 
 
@@ -125,6 +132,11 @@ public class Poet implements Emitter<TypeSpec> {
                 throw new IllegalArgumentException("Unsupported type variable: " + tv);
             }
         });
+
+
+
+        method.exceptions.forEach(exc -> builder.addException(convert(exc)));
+
         method.body.forEach(statement -> {
             // Placeholder for statement conversion
             builder.addStatement(convert(statement));
@@ -346,7 +358,10 @@ public class Poet implements Emitter<TypeSpec> {
                     }
                     MethodCall mc = (MethodCall) binaryOperation.right;
                     return CodeBlock.of("($L $L $T)", leftCode, binaryOperation.op, convert(mc.className));
-                } else {
+                } if (binaryOperation.op.equals("Objects.equals")) {
+                    return CodeBlock.of("Objects.equals($L,$L)", leftCode, rightCode);
+                }
+                else {
                     return CodeBlock.of("($L $L $L)", leftCode, binaryOperation.op, rightCode);
                 }
             }
@@ -512,12 +527,13 @@ public class Poet implements Emitter<TypeSpec> {
             }
             case "past.util" -> {
                 switch (cn.simpleName) {
-                    case "List" ->  { return ClassName.get(List.class); }
-                    case "LinkedList" ->  { return ClassName.get(LinkedList.class); }
-                    case "Void" ->  { return ClassName.get(Void.class); }
+                    case "List"          ->  { return ClassName.get(List.class); }
+                    case "LinkedList"    ->  { return ClassName.get(LinkedList.class); }
+                    case "Void"          ->  { return ClassName.get(Void.class); }
                     case "StringBuilder" ->  { return ClassName.get(StringBuilder.class); }
-                    case "Map" ->  { return ClassName.get(Map.class); }
-                    case "HashMap" ->  { return ClassName.get(HashMap.class); }
+                    case "Map"           ->  { return ClassName.get(Map.class); }
+                    case "Set"           ->  { return ClassName.get(Set.class); }
+                    case "HashMap"       ->  { return ClassName.get(HashMap.class); }
                     default ->  { /* continue */ }
                 }
             }
@@ -525,6 +541,7 @@ public class Poet implements Emitter<TypeSpec> {
                 switch (cn.simpleName) {
                     case "UnsupportedOperationException" ->  { return ClassName.get(UnsupportedOperationException.class); }
                     case "IllegalArgumentException" ->  { return ClassName.get(IllegalArgumentException.class); }
+                    case "Exception" ->  { return ClassName.get(Exception.class); }
                     default ->  { /* continue */ }
                 }
             }

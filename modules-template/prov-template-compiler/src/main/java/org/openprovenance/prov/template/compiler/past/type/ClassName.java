@@ -1,10 +1,5 @@
 package org.openprovenance.prov.template.compiler.past.type;
 
-import com.squareup.javapoet.ParameterizedTypeName;
-
-import java.util.Map;
-import java.util.function.BiFunction;
-
 import static org.openprovenance.prov.template.compiler.common.Constants.CLIENT_PACKAGE;
 import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
@@ -16,6 +11,7 @@ public class ClassName extends TypeName {
     static public final ClassName intArray =ClassName.get("int[]", "past.lang");
     static public final ClassName OBJECT=ClassName.get("Object", "past.lang");
     static public final ClassName STRING=ClassName.get("String", "past.lang");
+    static public final ClassName BOOLEAN=ClassName.get("Boolean", "past.lang");
     public static final ClassName INTEGER = ClassName.get("Integer", "past.lang");
     public static final ClassName MAP = ClassName.get("Map", "past.util");
     public static final ClassName HASHMAP = ClassName.get("HashMap", "past.util");
@@ -37,10 +33,14 @@ public class ClassName extends TypeName {
     public static final ClassName UNSUPPORTED_OPERATION_EXCEPTION=ClassName.get("UnsupportedOperationException", "past.exception");
     public static final ClassName ILLEGAL_STATE_EXCEPTION=ClassName.get("IllegalStateException", "past.exception");
     public static final ClassName ILLEGAL_ARGUMENT_EXCEPTION=ClassName.get("IllegalArgumentException", "past.exception");
+    public static final ClassName PAST_EXCEPTION=ClassName.get("Exception", "past.exception");
 
     public static final ClassName PROV_FILE_BUILDER = ClassName.get("FileBuilder", "org.openprovenance.prov.template.log2prov");
     public static final ClassName PROV_FACTORY = ClassName.get("ProvFactory", "org.openprovenance.prov.model");
     public static final ClassName PROV_QUALIFIED_NAME = ClassName.get("QualifiedName", "org.openprovenance.prov.model");
+    public static final ClassName PROV_PROVENANCE_KERNELS = ClassName.get("ProvenanceKernels", "org.openprovenance.prov.template.types");
+    public static final ClassName PROV_RUNNER = ClassName.get("Runner", "org.openprovenance.prov.template.types");
+
 
     public static final ParameterizedType SET_STRING = ParameterizedType.get(SET, STRING);
     public static final ParameterizedType MAP_STRING_T= ParameterizedType.get(MAP, STRING, T());
@@ -69,6 +69,7 @@ public class ClassName extends TypeName {
     public static final ArrayType BUILDERS_ARRAY=ArrayType.of(BUILDER_INTERFACE);
     public static final ParameterizedType MAP_STRING_OBJECT= ParameterizedType.get(MAP, STRING, OBJECT);
     public static final ParameterizedType CLASS_T=ParameterizedType.get(CLASS, T());
+    public static final ParameterizedType CLASS_OUT=ParameterizedType.get(CLASS, TYPE_OUT);
     public static final ParameterizedType FUNCTION_BUILDER_T=ParameterizedType.get(FUNCTION,  BUILDER_INTERFACE, T());
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_ANY=FUNCTION_OBJARRAY_TO_TYPE(TypeVariable.get("?"));
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_STRING=FUNCTION_OBJARRAY_TO_TYPE(STRING);
@@ -86,7 +87,8 @@ public class ClassName extends TypeName {
     public static final ParameterizedType MAP_STRING_STRING_ARRAY = ParameterizedType.get(MAP, STRING, STRING_ARRAY);
 
     public static final ParameterizedType HASH_MAP_GENERICS= ParameterizedType.get(HASHMAP);
-
+    public static final ParameterizedType LINKED_LIST_GENERICS= ParameterizedType.get(LINKED_LIST);
+    public static final ParameterizedType BIFUNCTION_MAP_OUT_OUT = ParameterizedType.get(BIFUNCTION, MAP_STRING_OBJECT, TYPE_OUT, TYPE_OUT);
 
     public static ParameterizedType FUNCTION_OBJARRAY_TO_TYPE(TypeName returnType) {
         return ParameterizedType.get(FUNCTION, OBJECT_ARRAY, returnType);

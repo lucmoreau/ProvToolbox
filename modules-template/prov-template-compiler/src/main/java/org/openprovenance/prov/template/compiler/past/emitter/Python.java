@@ -717,7 +717,9 @@ public class Python implements Emitter<StringBuilder> {
         return switch (c.constantType) {
             case STRING -> (c.value.toString().contains("\""))? "'" + c.value.toString() + "'" : "\"" + c.value.toString() + "\"";
             case INTEGER -> c.value.toString();
+            case LONG -> c.value.toString();
             case FLOAT -> c.value.toString();
+            case DOUBLE -> c.value.toString();
             case BOOLEAN -> c.value.toString();
             case NULL -> "0";
             case BOOL -> c.value.toString();

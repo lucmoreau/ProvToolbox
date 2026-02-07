@@ -1,5 +1,7 @@
 package org.openprovenance.prov.template.compiler.past.type;
 
+import org.openprovenance.prov.template.compiler.past.Class;
+
 import static org.openprovenance.prov.template.compiler.common.Constants.CLIENT_PACKAGE;
 import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
@@ -31,6 +33,7 @@ public class ClassName extends TypeName {
     public static final ClassName BICONSUMER = ClassName.get( "BiConsumer", "past.lang");
     public static final ClassName FUNCTION = ClassName.get( "Function", "past.lang");
     public static final ClassName BIFUNCTION = ClassName.get( "BiFunction", "past.lang");
+    public static final ClassName SYSTEM = ClassName.get("System", "past.lang");
     public static final ClassName UNSUPPORTED_OPERATION_EXCEPTION=ClassName.get("UnsupportedOperationException", "past.exception");
     public static final ClassName ILLEGAL_STATE_EXCEPTION=ClassName.get("IllegalStateException", "past.exception");
     public static final ClassName ILLEGAL_ARGUMENT_EXCEPTION=ClassName.get("IllegalArgumentException", "past.exception");
@@ -48,10 +51,16 @@ public class ClassName extends TypeName {
     public static final ClassName PROV_VALUE_CONVERTER = ClassName.get("ValueConverter", "org.openprovenance.prov.model");
     public static final ClassName PROV_PROXY_CLIENT_ACCESSOR = ClassName.get("ProxyClientAccessorInterface", "org.openprovenance.prov.template.log2prov.interfaces");
     public static final ClassName PROV_INSTANTIATE_ACTION = ClassName.get("InstantiateAction", "org.openprovenance.prov.template.core");
+    public static final ClassName PROV_NAMESPACE = ClassName.get("Namespace", "org.openprovenance.prov.model");
+    public static final ClassName PROV_FRAMEWORK = ClassName.get("Framework", "org.openprovenance.prov.model.interop");
+    public static final ClassName PROV_FORMATS = ClassName.get("Formats", "org.openprovenance.prov.model.interop");
 
     public static final ClassName PROV_ATTRIBUTE = ClassName.get("Attribute", "org.openprovenance.prov.model");
     public static final TypeName PROV_LINKED_LIST_OF_ATTRIBUTES = ParameterizedType.get(LINKED_LIST, PROV_ATTRIBUTE);
     public static final TypeName PROV_COLLECTION_OF_ATTRIBUTES = ParameterizedType.get(COLLECTION, PROV_ATTRIBUTE);
+
+    public static final ClassName APACHE_STRING_SUBSTITUTOR= ClassName.get("StringSubstitutor", "org.apache.commons.text");
+
 
     public static final ParameterizedType SET_STRING = ParameterizedType.get(SET, STRING);
     public static final ParameterizedType MAP_STRING_T= ParameterizedType.get(MAP, STRING, T());

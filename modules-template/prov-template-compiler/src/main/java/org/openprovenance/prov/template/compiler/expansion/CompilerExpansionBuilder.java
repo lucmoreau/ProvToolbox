@@ -33,7 +33,9 @@ import static org.openprovenance.prov.template.compiler.CompilerUtil.typeT;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.*;
+import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY_ACCESSOR;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.EQ;
 import static org.openprovenance.prov.template.compiler.past.Constant.getNull;
@@ -164,6 +166,7 @@ public class CompilerExpansionBuilder {
         if (withMain) pastClass.METHOD(generateMain_past(allVars, allAtts, name, packge, bindingsSchema));
         pastClass.METHOD(generateFactoryMethod_past(allVars, allAtts, name, bindingsSchema));
         pastClass.METHOD(generateFactoryMethodWithContinuation_past(allVars, allAtts, name, templateName, packge, bindingsSchema));
+        pastClass.METHOD(generateFactoryMethodWithArray_past(allVars, allAtts, name, bindingsSchema));
 
         TypeSpec.Builder builder=new Poet().emitBuilder(pastClass);
 
@@ -172,7 +175,6 @@ public class CompilerExpansionBuilder {
         builder.addMethod(generateTemplateGenerator_old(allVars, allAtts, doc, vmap, bindingsSchema));
 
         // TO BE CONVERTED TO PAST GENERATION
-        builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindingsSchema));
         builder.addMethod(generateFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
         builder.addMethod(generateUniqueRecordFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
         // TO HERE
@@ -1308,6 +1310,43 @@ public class CompilerExpansionBuilder {
         return method;
     }
 
+
+    public Method generateFactoryMethodWithArray_past(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
+        Method method = METHOD("make")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(PROV_DOCUMENT);
+
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
+
+        method.PARAMETER(OBJECT_ARRAY, "__record");
+
+        int count = 1;
+        List<org.openprovenance.prov.template.compiler.past.Expression> args = new ArrayList<>();
+        for (String key : theVar.keySet()) {
+            if (theVar.get(key) == null) {
+                continue;
+            }
+            final org.openprovenance.prov.template.compiler.past.type.ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, key);
+            final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
+            final String converter = compilerUtil.getConverterForDeclaredType(atype);
+            org.openprovenance.prov.template.compiler.past.Expression arrayAccess =
+                    ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count));
+            if (converter == null) {
+                // Type key = (Type) __record[count]
+                method.addStatement(ASSIGNMENT(pastType, VARIABLE(key), CAST(pastType, arrayAccess)));
+            } else {
+                // Type key = converter(__record[count])
+                method.addStatement(ASSIGNMENT(pastType, VARIABLE(key), METHOD_CALL(converter, List.of(arrayAccess))));
+            }
+            args.add(VARIABLE(key));
+            count++;
+        }
+        // return make(args...)
+        method.addStatement(RETURN(METHOD_CALL("make", args)));
+
+        return method;
+    }
 
     public MethodSpec generateFactoryMethodWithArray(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("make")

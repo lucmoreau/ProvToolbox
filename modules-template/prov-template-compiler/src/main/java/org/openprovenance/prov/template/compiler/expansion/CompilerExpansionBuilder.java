@@ -15,6 +15,9 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
+import org.openprovenance.prov.template.compiler.past.Method;
+import org.openprovenance.prov.template.compiler.past.PastFactory;
+import org.openprovenance.prov.template.compiler.past.emitter.Poet;
 import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.core.InstantiateAction;
 import org.openprovenance.prov.template.core.InstantiateUtil;
@@ -22,16 +25,25 @@ import org.openprovenance.prov.template.core.exception.MissingAttributeValue;
 import org.openprovenance.prov.template.types.TypesRecordProcessor;
 
 import javax.lang.model.element.Modifier;
-import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.typeT;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
-import static org.openprovenance.prov.template.compiler.common.Constants.GET_FULLY_QUALIFIED_NAME;
-import static org.openprovenance.prov.template.compiler.common.Constants.GET_NAME;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.*;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.EQ;
+import static org.openprovenance.prov.template.compiler.past.Constant.getNull;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 import static org.openprovenance.prov.template.core.InstantiateUtil.*;
 
 public class CompilerExpansionBuilder {
@@ -39,8 +51,8 @@ public class CompilerExpansionBuilder {
     private final ProvFactory pFactory;
     private final boolean withMain;
     private final CompilerCommon compilerCommon;
-    private final boolean debugComment;
     private final CompilerTypeManagement compilerTypeManagement;
+    private final PastFactory pastFactory;
 
     private TypeName processorInterfaceType(String template, String packge) {
         return ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.templateNameClass(template)+"Interface"),TypeVariableName.get("T"));
@@ -51,9 +63,9 @@ public class CompilerExpansionBuilder {
         this.pFactory=pFactory;
         this.withMain=withMain;
         this.compilerCommon = compilerCommon;
-        this.debugComment=debugComment;
         this.compilerTypeManagement=compilerTypeManagement;
         this.compilerUtil=new CompilerUtil(pFactory);
+        this.pastFactory=compilerUtil.getPastFactory();
     }
 
 
@@ -122,29 +134,36 @@ public class CompilerExpansionBuilder {
     SpecificationFile generateBuilderSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String templateFullyQualifiedName, String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateClassBuilder2(name);
+        //TypeSpec.Builder builder = compilerUtil.generateClassBuilder2(name);
 
-        Hashtable<QualifiedName, String> vmap = generateQualifiedNames(doc, builder);
 
+        org.openprovenance.prov.template.compiler.past.Class pastClass =
+                pastFactory.CLASS(name)
+                        .SUPERCLASS(PROV_FILE_BUILDER)
+                        .INTERFACES(PROV_PROXY_CLIENT_ACCESSOR)
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .FIELDS(
+                                FIELD("pf", PROV_FACTORY).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL),
+                                FIELD("vc", PROV_VALUE_CONVERTER).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL)
+                        );
+
+        pastClass.METHOD(compilerCommon.generateNameAccessor(templateName));
+        pastClass.METHOD(compilerCommon.generateFullyQualifiedNameAccessor(templateFullyQualifiedName));
+        Hashtable<QualifiedName, String> vmap = generateQualifiedNames(doc, pastClass);
+        pastClass.METHOD(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindingsSchema, true));
+
+        TypeSpec.Builder builder=new Poet().emitBuilder(pastClass);
+
+
+
+        builder.addMethod(generateTemplateGenerator_old(allVars, allAtts, doc, vmap, bindingsSchema));
+
+        
         builder.addMethod(compilerUtil.generateConstructor2(vmap));
 
-        builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindingsSchema));
-
-
-        builder.addMethod(generateNameAccessor_no_past(templateName));
-        builder.addMethod(generateFullyQualifiedNameAccessor_no_past(templateFullyQualifiedName));
 
         builder.addMethod(commonAccessorGenerator(templateName,locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON)));
 
-        builder.addMethod(typeManagerGenerator(templateName,packge));
-       // builder.addMethod(compilerClient.typePropagateGenerator(templateName,packge));
-        builder.addMethod(typedRecordGenerator(templateName,packge));
-
-
-        builder.addMethod(generateTypePropagator(packge+".client", bindingsSchema, successorTable));
-
-        //builder.addMethod(generateTypePropagatorN_OLD());
-        builder.addMethod(generateTypePropagatorN_new());
 
 
         if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindingsSchema));
@@ -154,6 +173,17 @@ public class CompilerExpansionBuilder {
         builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindingsSchema));
         builder.addMethod(generateFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
         builder.addMethod(generateUniqueRecordFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
+
+
+        builder.addMethod(typeManagerGenerator(templateName,packge));
+        // builder.addMethod(compilerClient.typePropagateGenerator(templateName,packge));
+        builder.addMethod(typedRecordGenerator(templateName,packge));
+
+
+        builder.addMethod(generateTypePropagator(packge+".client", bindingsSchema, successorTable));
+
+        //builder.addMethod(generateTypePropagatorN_OLD());
+        builder.addMethod(generateTypePropagatorN_new());
 
 
         TypeSpec bean = builder.build();
@@ -169,7 +199,7 @@ public class CompilerExpansionBuilder {
     }
 
 
-    //new version in CompilerCommon
+    /*
     public MethodSpec generateNameAccessor_no_past(String templateName) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(GET_NAME)
                 .addModifiers(Modifier.PUBLIC)
@@ -180,6 +210,8 @@ public class CompilerExpansionBuilder {
         builder.addStatement("return $S", templateName);
         return builder.build();
     }
+
+
 
     //new version in CompilerCommon
     public MethodSpec generateFullyQualifiedNameAccessor_no_past(String fullyQualifiedTemplateName) {
@@ -192,20 +224,83 @@ public class CompilerExpansionBuilder {
         builder.addStatement("return $S", fullyQualifiedTemplateName);
         return builder.build();
     }
+   */
+
+    /**
+     *
+     * Returns a PAST {@link Method} .
+     */
+    public Method generateTemplateGenerator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, TemplateBindingsSchema bindingsSchema, boolean past) {
+
+        Method method = METHOD("generator")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(PROV_DOCUMENT);
+        compilerUtil.debugFileLocation(method);
+
+        // Parameters
+        for (QualifiedName q : allVars) {
+            method.PARAMETER(PROV_QUALIFIED_NAME, q.getLocalPart());
+        }
+        for (QualifiedName q : allAtts) {
+            if (!allVars.contains(q)) {
+                method.PARAMETER(org.openprovenance.prov.template.compiler.past.type.ClassName.OBJECT, q.getLocalPart());
+            }
+        }
+
+        // Body: variable declarations
+        // QualifiedName nullqn = null
+        method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE("nullqn"), getNull()));
+        // Collection<Attribute> attrs = null
+        method.addStatement(ASSIGNMENT(PROV_COLLECTION_OF_ATTRIBUTES, VARIABLE("attrs"), getNull()));
+        // Document __C_document = pf.newDocument()
+        method.addStatement(ASSIGNMENT(PROV_DOCUMENT, VARIABLE("__C_document"),
+                METHOD_CALL(VARIABLE("pf"), "newDocument", List.of())));
+
+        // Gensym variable handling
+        for (QualifiedName q : allVars) {
+            if (InstantiateUtil.isGensymVariable(q)) {
+                final String vgen = q.getLocalPart();
+                // if (vgen==null) vgen=InstantiateAction.getUUIDQualifiedName2(pf)
+                method.addStatement(
+                        IF(BINARY_OP(VARIABLE(vgen), EQ, getNull()))
+                                .THEN(ASSIGNMENT(null, VARIABLE(vgen),
+                                        METHOD_CALL(PROV_INSTANTIATE_ACTION, "getUUIDQualifiedName2", VARIABLE("pf")))));
+            }
+        }
+
+        // Process PROV template statements using StatementCompilerAction2
+        List<org.openprovenance.prov.template.compiler.past.Statement> bodyStatements = new ArrayList<>();
+        StatementCompilerAction2 action = new StatementCompilerAction2(pFactory, allVars, allAtts, vmap, bodyStatements, "__C_document.getStatementOrBundle()", bindingsSchema);
+        for (StatementOrBundle s : doc.getStatementOrBundle()) {
+            u.doAction(s, action);
+        }
+        for (org.openprovenance.prov.template.compiler.past.Statement stmt : bodyStatements) {
+            method.addStatement(stmt);
+        }
+
+        // new ProvUtilities().updateNamespaces(__C_document)
+        method.addStatement(
+                METHOD_CALL(
+                        CONSTRUCTOR_CALL(PROV_UTILITIES, List.of()),
+                        "updateNamespaces",
+                        List.of(VARIABLE("__C_document"))));
+
+        // return __C_document
+        method.addStatement(RETURN(VARIABLE("__C_document")));
+
+        return method;
+    }
 
 
+    public MethodSpec generateTemplateGenerator_old(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, TemplateBindingsSchema bindingsSchema) {
 
-    public MethodSpec generateTemplateGenerator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, TemplateBindingsSchema bindingsSchema) {
 
-
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("generator")
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("generator_old")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(Document.class);
 
         compilerUtil.specWithComment(builder);
 
-        Map<String, List<Descriptor>> theVars=bindingsSchema.getVar();
-        DescriptorUtils utils=new DescriptorUtils();
 
 
 
@@ -430,24 +525,7 @@ public class CompilerExpansionBuilder {
         }
         return null;
     }
-    /*
-    public MethodSpec generateTypePropagatorN_new1() {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("propagateTypes_n")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(void.class);
-        final String var_successor = "successor";
-        final String var_genericRelation = "genericRelation";
 
-        builder.addParameter(ParameterSpec.builder(recordType, "record").build());
-        builder.addParameter(ParameterSpec.builder(levelNMapType, "mapLevelN").build());
-        builder.addParameter(ParameterSpec.builder(levelNP1CMapType, "mapLevelNP1").build());
-        builder.addParameter(ParameterSpec.builder(Integer.class, "count").build());
-        builder.addParameter(ParameterSpec.builder(int.class, var_successor).build());
-        builder.addParameter(ParameterSpec.builder(int.class, var_genericRelation).build());
-        builder.addParameter(ParameterSpec.builder(int.class, "specificRelation").build());
-        return builder.build();
-    }
-         */
     public MethodSpec generateTypePropagatorN_new() {
 
 
@@ -488,59 +566,6 @@ public class CompilerExpansionBuilder {
         return builder.build();
     }
 
-/*
-
-    public MethodSpec generateTypePropagatorN_OLD() {
-
-
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("propagateTypes_n_old")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(void.class);
-
-        builder.addParameter(ParameterSpec.builder(recordType,"record").build());
-        builder.addParameter(ParameterSpec.builder(levelNMapType,"mapLevelN").build());
-        builder.addParameter(ParameterSpec.builder(levelNP1CMapType,"mapLevelNP1").build());
-        builder.addParameter(ParameterSpec.builder(Integer.class,"count").build());
-        builder.addParameter(ParameterSpec.builder(int.class,"rel").build());
-
-        if (debugComment)
-            builder.addComment("Generated by method $N", getClass().getName() + ".generateTypePropagatorN_OLD()");
-
-        builder.addStatement("$T builder=getClientBuilder()", ClassName.get("org.openprovenance.prov.client","Builder"));
-        builder.addStatement("$T successors=builder.getTypedSuccessors()", successorType);
-
-
-        String tmpVar="tmp";
-
-        builder.beginControlFlow("if ($N[$N]!=null)", "record", "count");
-        builder.addStatement("String uri=(($T)($N[$L])).getUri()",QualifiedName.class, "record", "count");
-        builder.addStatement("Integer $N=mapLevelN.get(uri)", tmpVar);
-        builder.beginControlFlow("if ($N!=null)",tmpVar);
-        builder.addStatement("$T the_type=successors.get($N)", TypeName.get(int[].class), "count");
-        builder.beginControlFlow("if (the_type!=null && the_type.length!=0)");
-        builder.addStatement("int theLength=the_type.length/2");
-        builder.beginControlFlow("for (int _count=0; _count<theLength; _count++) ");
-        //builder.addStatement("System.out.println(\"count is \" + count + \" and _count is \" + _count)");
-
-        builder.beginControlFlow("if ($N[the_type[_count*2+0]]!=null)", "record");
-        builder.addStatement("String uri2=(($T)($N[the_type[_count*2+0]])).getUri()",QualifiedName.class, "record");
-
-        builder.addStatement("mapLevelNP1.computeIfAbsent(uri2, k -> new $T<>())",  LinkedList.class); //store in Lists initially
-
-        builder.addStatement("mapLevelNP1.get(uri2).add(new int[] { the_type[_count*2+0], the_type[_count*2+1], rel, $N, $N })", tmpVar, "count");
-        builder.endControlFlow();
-        builder.endControlFlow();
-        builder.endControlFlow();
-        builder.endControlFlow();
-        builder.endControlFlow();
-
-
-        return builder.build();
-    }
-
-
-
- */
     public Hashtable<QualifiedName, String> generateQualifiedNames(Document doc, TypeSpec.Builder builder) {
         Bundle bun = u.getBundle(doc).get(0);
         Set<QualifiedName> set = new HashSet<>();
@@ -555,11 +580,25 @@ public class CompilerExpansionBuilder {
 
                 builder.addField(QualifiedName.class, v, Modifier.PUBLIC, Modifier.FINAL);
             }
-
-
         }
         return qnVariables;
+    }
 
+    public Hashtable<QualifiedName, String> generateQualifiedNames(Document doc, org.openprovenance.prov.template.compiler.past.Class builder) {
+        Bundle bun = u.getBundle(doc).get(0);
+        Set<QualifiedName> set = new HashSet<>();
+        compilerUtil.allQualifiedNames(bun, set, pFactory);
+        set.remove(pFactory.newQualifiedName(InstantiateUtil.TMPL_NS, InstantiateUtil.LABEL, InstantiateUtil.TMPL_PREFIX));
+        set.add(pFactory.getName().PROV_LABEL);
+        Hashtable<QualifiedName, String> qnVariables = new Hashtable<>();
+        for (QualifiedName qn : set) {
+            if (!(InstantiateUtil.isVariable(qn))) {
+                final String v = variableForQualifiedName(qn);
+                qnVariables.put(qn, v);
+                builder.FIELDS(FIELD(v,PROV_QUALIFIED_NAME).MODIFIERS(Modifier.PUBLIC, Modifier.FINAL));
+            }
+        }
+        return qnVariables;
     }
 
     public String variableForQualifiedName(QualifiedName qn) {
@@ -667,14 +706,8 @@ public class CompilerExpansionBuilder {
         }
 
         args = argsBuilder.toString();
-
-
         builder.addStatement("__C_document = generator(" + args + ")");
-
-
         builder.addStatement("return __C_document");
-
-
         MethodSpec method = builder.build();
 
         return method;
@@ -765,7 +798,6 @@ public class CompilerExpansionBuilder {
 
         return method;
     }
-
 
 
     public MethodSpec generateFactoryMethodWithArray(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {

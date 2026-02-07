@@ -32,7 +32,7 @@ public class CompilerTypedRecord {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
-    public SpecificationFile generatedTypedRecordConstructor(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, String resource, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    public SpecificationFile generatedTypedRecordConstructor(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String templateFullyQualifiedName, String packge, String resource, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -42,13 +42,13 @@ public class CompilerTypedRecord {
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
-        return generateTypeDeclaration_aux(configs, locations, doc, name, templateName, packge, resource, bindingsSchema, directory, fileName);
+        return generateTypeDeclaration_aux(configs, locations, doc, name, templateName, templateFullyQualifiedName, packge, resource, bindingsSchema, directory, fileName);
 
     }
 
 
 
-    public SpecificationFile generateTypeDeclaration_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, String resource, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    public SpecificationFile generateTypeDeclaration_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String templateFullyQualifiedName, String packge, String resource, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
@@ -68,7 +68,7 @@ public class CompilerTypedRecord {
 
 
 
-        mbuilder.addStatement("return new Object[] { $S , " + allArgs + "}", templateName );
+        mbuilder.addStatement("return new Object[] { $S , " + allArgs + "}", templateFullyQualifiedName );
 
 
 

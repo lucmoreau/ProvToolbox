@@ -18,6 +18,7 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectC
 import org.openprovenance.prov.template.compiler.past.Method;
 import org.openprovenance.prov.template.compiler.past.PastFactory;
 import org.openprovenance.prov.template.compiler.past.emitter.Poet;
+import org.openprovenance.prov.template.compiler.past.Constructor;
 import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.core.InstantiateAction;
 import org.openprovenance.prov.template.core.InstantiateUtil;
@@ -36,7 +37,12 @@ import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNME
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.EQ;
 import static org.openprovenance.prov.template.compiler.past.Constant.getNull;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import org.openprovenance.prov.template.compiler.past.IfExpression;
+
+import static org.openprovenance.prov.template.compiler.past.IfExpression.IF_;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
@@ -152,28 +158,25 @@ public class CompilerExpansionBuilder {
         Hashtable<QualifiedName, String> vmap = generateQualifiedNames(doc, pastClass);
         pastClass.METHOD(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindingsSchema, true));
 
+        // Converted to PAST generation
+        pastClass.CONSTRUCTOR(generateConstructor2_past(vmap));
+        pastClass.METHOD(commonAccessorGenerator_past(templateName, locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON)));
+        if (withMain) pastClass.METHOD(generateMain_past(allVars, allAtts, name, packge, bindingsSchema));
+        pastClass.METHOD(generateFactoryMethod_past(allVars, allAtts, name, bindingsSchema));
+
         TypeSpec.Builder builder=new Poet().emitBuilder(pastClass);
 
 
 
         builder.addMethod(generateTemplateGenerator_old(allVars, allAtts, doc, vmap, bindingsSchema));
 
-        
-        builder.addMethod(compilerUtil.generateConstructor2(vmap));
+        // TO BE CONVERTED TO PAST GENERATION
 
-
-        builder.addMethod(commonAccessorGenerator(templateName,locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON)));
-
-
-
-        if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindingsSchema));
-
-        builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindingsSchema));
         builder.addMethod(generateFactoryMethodWithContinuation(allVars, allAtts, name,  templateName, packge, bindingsSchema));
         builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindingsSchema));
         builder.addMethod(generateFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
         builder.addMethod(generateUniqueRecordFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
-
+        // TO HERE
 
         builder.addMethod(typeManagerGenerator(templateName,packge));
         // builder.addMethod(compilerClient.typePropagateGenerator(templateName,packge));
@@ -227,15 +230,390 @@ public class CompilerExpansionBuilder {
    */
 
     /**
+     * Returns a PAST {@link Constructor} equivalent to {@link CompilerUtil#generateConstructor2_old(Hashtable)}.
+     */
+    public Constructor generateConstructor2_past(Hashtable<QualifiedName, String> vmap) {
+        Constructor constructor = CONSTRUCTOR()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(PROV_FACTORY, "pf")
+                .debugFileLocation();
+
+        // this.pf = pf
+        constructor.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), "pf"), VARIABLE("pf")));
+
+        // For each qualified name in the map: this.varName = pf.newQualifiedName(nsURI, localPart, prefix)
+        for (Map.Entry<QualifiedName, String> e : vmap.entrySet()) {
+            final QualifiedName q = e.getKey();
+            constructor.BODY(
+                    ASSIGNMENT(null,
+                            METHOD_CALL(VARIABLE("this"), e.getValue()),
+                            METHOD_CALL(VARIABLE("pf"), "newQualifiedName",
+                                    CONSTANT(q.getNamespaceURI()),
+                                    CONSTANT(q.getLocalPart()),
+                                    CONSTANT(q.getPrefix()))));
+        }
+
+        constructor.BODY(
+                // this.vc = new ValueConverter(pf)
+                ASSIGNMENT(null,
+                        METHOD_CALL(VARIABLE("this"), "vc"),
+                        CONSTRUCTOR_CALL(PROV_VALUE_CONVERTER, List.of(VARIABLE("pf")))),
+
+                // register(this)
+                METHOD_CALL("register", List.of(VARIABLE("this"))));
+
+        return constructor;
+    }
+
+    /**
+     * Returns a PAST {@link Method} equivalent to {@link #commonAccessorGenerator_old(String, String)}.
+     */
+    public Method commonAccessorGenerator_past(String templateName, String packge) {
+        Method method = METHOD("getClientBuilder")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(BUILDER_INTERFACE);
+
+        method.addStatement(
+                RETURN(CONSTRUCTOR_CALL(
+                        org.openprovenance.prov.template.compiler.past.type.ClassName.get(
+                                compilerUtil.templateNameClass(templateName), packge),
+                        List.of())));
+
+        return method;
+    }
+
+    /**
+     * Returns a PAST {@link org.openprovenance.prov.template.compiler.past.Expression} equivalent to what
+     * {@link CompilerUtil#createExamplar(Map, String, int, ProvFactory)} returns as a raw Java code fragment.
+     */
+    public org.openprovenance.prov.template.compiler.past.Expression createExamplarExpression(Map<String, List<Descriptor>> theVars, String key, int num, ProvFactory pFactory) {
+        List<Descriptor> descriptors = theVars.get(key);
+        Descriptor descriptor = (descriptors == null) ? null : descriptors.get(0);
+        Object examplar = (descriptor == null) ? null : descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getExamplar, NameDescriptor::getExamplar);
+
+        if (examplar != null) {
+            Class<?> declaredJavaType = compilerUtil.getJavaTypeForDeclaredType(theVars, key);
+            final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+            if (converter == null) {
+                return CONSTANT(examplar.toString());
+            } else {
+                // converter(examplar) — e.g., Integer.valueOf(123)
+                String[] parts = converter.split("\\.");
+                if (parts.length == 2) {
+                    org.openprovenance.prov.template.compiler.past.type.ClassName cls =
+                            org.openprovenance.prov.template.compiler.past.type.ClassName.get(parts[0], "past.lang");
+                    return METHOD_CALL(cls, parts[1], CONSTANT(examplar.toString()));
+                }
+                return CONSTANT(examplar.toString());
+            }
+        } else {
+            if (descriptor != null) {
+                switch (descriptor.getDescriptorType()) {
+                    case NAME:
+                        Class<?> declaredJavaType = compilerUtil.getJavaTypeForDeclaredType(theVars, key);
+                        final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+                        if (converter == null) {
+                            return CONSTANT("v" + num);
+                        } else {
+                            String example = compilerUtil.generateExampleForType(
+                                    descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getType, NameDescriptor::getType),
+                                    key, pFactory);
+                            String[] parts = converter.split("\\.");
+                            if (parts.length == 2) {
+                                org.openprovenance.prov.template.compiler.past.type.ClassName cls =
+                                        org.openprovenance.prov.template.compiler.past.type.ClassName.get(parts[0], "past.lang");
+                                return METHOD_CALL(cls, parts[1], CONSTANT(example));
+                            }
+                            return CONSTANT(example);
+                        }
+                    case ATTRIBUTE:
+                        AttributeDescriptor ad = ((AttributeDescriptorList) descriptor).getItems().get(0);
+                        String hasType = ad.getType();
+                        if (hasType != null) {
+                            return switch (hasType) {
+                                case "xsd:int" -> CONSTANT(num);
+                                case "xsd:long" -> CONSTANT(Long.valueOf(num));
+                                case "xsd:string" -> CONSTANT("v" + num);
+                                case "xsd:boolean" -> CONSTANT(true);
+                                case "xsd:float" -> new org.openprovenance.prov.template.compiler.past.Constant(Float.valueOf((float) (num + 0.01)));
+                                case "xsd:double" -> new org.openprovenance.prov.template.compiler.past.Constant(Double.valueOf(num + 0.01));
+                                case "xsd:date", "xsd:dateTime" -> CONSTANT(pFactory.newTimeNow().toXMLFormat());
+                                default -> throw new UnsupportedOperationException("createExamplarExpression: unsupported type " + hasType);
+                            };
+                        } else {
+                            throw new UnsupportedOperationException("No type for " + key);
+                        }
+                    default:
+                        throw new UnsupportedOperationException("This exception is never reached");
+                }
+            } else {
+                throw new UnsupportedOperationException("cannot find null descriptor here!!");
+            }
+        }
+    }
+
+    /**
+     * Returns a PAST {@link Method} equivalent to {@link #generateMain_old(Collection, Collection, String, TemplateBindingsSchema)}.
+     */
+    public Method generateMain_past(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String packge, TemplateBindingsSchema bindingsSchema) {
+        Method method = METHOD("main")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
+                .RETURNS(VOID)
+                .PARAMETER(STRING_ARRAY, "args");
+        compilerUtil.debugFileLocation(method);
+
+        Map<String, List<Descriptor>> theVars = bindingsSchema.getVar();
+
+        org.openprovenance.prov.template.compiler.past.type.ClassName nameClass =
+                org.openprovenance.prov.template.compiler.past.type.ClassName.get(name, packge);
+
+        // Framework fr = Framework.dynamicLoad()
+        method.addStatement(ASSIGNMENT(PROV_FRAMEWORK, VARIABLE("fr"),
+                METHOD_CALL(PROV_FRAMEWORK, "dynamicLoad", List.of())));
+        // ProvFactory pf = fr.getFactory()
+        method.addStatement(ASSIGNMENT(PROV_FACTORY, VARIABLE("pf"),
+                METHOD_CALL(VARIABLE("fr"), "getFactory", List.of())));
+        // <Name> me = new <Name>(pf)
+        method.addStatement(ASSIGNMENT(nameClass, VARIABLE("me"),
+                CONSTRUCTOR_CALL(nameClass, List.of(VARIABLE("pf")))));
+
+        // For each var: QualifiedName __var_X = pf.newQualifiedName("http://example.org/", "X", "ex")
+        for (QualifiedName q : allVars) {
+            method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(compilerUtil.varPrefix(q.getLocalPart())),
+                    METHOD_CALL(VARIABLE("pf"), "newQualifiedName",
+                            CONSTANT("http://example.org/"), CONSTANT(q.getLocalPart()), CONSTANT("ex"))));
+        }
+
+        // For each att: either String __att_X = "example" or Object __att_X = null
+        for (QualifiedName q : allAtts) {
+            String declaredType = null;
+            if (theVars != null) {
+                for (String key : theVars.keySet()) {
+                    if (q.getLocalPart().equals(key)) {
+                        if (theVars.containsKey(key) && theVars.get(key) != null) {
+                            declaredType = compilerUtil.getDeclaredType(theVars, key);
+                        }
+                    }
+                }
+            }
+
+            if (declaredType != null) {
+                String example = compilerUtil.generateExampleForType(declaredType, q.getLocalPart(), pFactory);
+                method.addStatement(ASSIGNMENT(STRING, VARIABLE(compilerUtil.attPrefix(q.getLocalPart())),
+                        CONSTANT(example)));
+            } else {
+                method.addStatement(ASSIGNMENT(OBJECT, VARIABLE(compilerUtil.attPrefix(q.getLocalPart())),
+                        getNull()));
+            }
+        }
+
+        // Build argument list for me.generator(...)
+        List<org.openprovenance.prov.template.compiler.past.Expression> generatorArgs = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+        for (QualifiedName q : allVars) {
+            generatorArgs.add(VARIABLE(compilerUtil.varPrefix(q.getLocalPart())));
+            seen.add(q.getLocalPart());
+        }
+        for (QualifiedName q : allAtts) {
+            if (!seen.contains(q.getLocalPart())) {
+                generatorArgs.add(VARIABLE(compilerUtil.attPrefix(q.getLocalPart())));
+            }
+        }
+
+        // System.out accessor
+        org.openprovenance.prov.template.compiler.past.Expression systemOut =
+                new org.openprovenance.prov.template.compiler.past.MethodCall(
+                        org.openprovenance.prov.template.compiler.past.type.ClassName.get("System", "past.lang"), "out");
+        // Formats.ProvFormat.PROVN accessor
+        org.openprovenance.prov.template.compiler.past.Expression provFormatProvn =
+                new org.openprovenance.prov.template.compiler.past.MethodCall(
+                        new org.openprovenance.prov.template.compiler.past.MethodCall(PROV_FORMATS, "ProvFormat"),
+                        "PROVN");
+
+        // Document document = me.generator(args...)
+        method.addStatement(ASSIGNMENT(PROV_DOCUMENT, VARIABLE("document"),
+                METHOD_CALL(VARIABLE("me"), "generator", generatorArgs)));
+        // fr.writeDocument(System.out, document, Formats.ProvFormat.PROVN)
+        method.addStatement(METHOD_CALL(VARIABLE("fr"), "writeDocument",
+                systemOut, VARIABLE("document"), provFormatProvn));
+
+        // if (theVars != null): second call using make(exemplars...)
+        if (theVars != null) {
+            List<org.openprovenance.prov.template.compiler.past.Expression> makeArgs = new ArrayList<>();
+            int count = 0;
+            for (String key : theVars.keySet()) {
+                if (theVars.get(key) == null) continue;
+                makeArgs.add(createExamplarExpression(theVars, key, count++, pFactory));
+            }
+
+            // document = me.make(args...)
+            method.addStatement(ASSIGNMENT(null, VARIABLE("document"),
+                    METHOD_CALL(VARIABLE("me"), "make", makeArgs)));
+            // fr.writeDocument(System.out, document, Formats.ProvFormat.PROVN)
+            method.addStatement(METHOD_CALL(VARIABLE("fr"), "writeDocument",
+                    systemOut, VARIABLE("document"), provFormatProvn));
+        }
+
+        return method;
+    }
+
+    /**
+     * Builds a PAST string concatenation expression from a descriptor ID pattern
+     * where {@code *} is replaced by the variable value at runtime.
+     * For example, {@code "ex:*"} becomes {@code "ex:" + key + ""} via
+     * {@code METHOD_CALL(STRING, "concat", CONSTANT("ex:"), VARIABLE(key), CONSTANT(""))}.
+     */
+    private org.openprovenance.prov.template.compiler.past.Expression buildIdStringExpression(String idPattern, String variableName) {
+        String[] parts = idPattern.split("\\*", -1);
+        List<org.openprovenance.prov.template.compiler.past.Expression> concatArgs = new ArrayList<>();
+        for (int i = 0; i < parts.length; i++) {
+            concatArgs.add(CONSTANT(parts[i]));
+            if (i < parts.length - 1) {
+                concatArgs.add(VARIABLE(variableName));
+            }
+        }
+        if (concatArgs.size() == 1) {
+            return concatArgs.get(0);
+        }
+        return METHOD_CALL(STRING, "concat", concatArgs);
+    }
+
+    /**
+     * Returns a PAST {@link Method} equivalent to {@link #generateFactoryMethod_old(Collection, Collection, String, TemplateBindingsSchema)}.
+     */
+    public Method generateFactoryMethod_past(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
+        Method method = METHOD("make")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(PROV_DOCUMENT);
+
+        Map<String, List<Descriptor>> theVars = bindingsSchema.getVar();
+
+        // Document __C_document = null
+        method.addStatement(ASSIGNMENT(PROV_DOCUMENT, VARIABLE("__C_document"), getNull()));
+        // Namespace __C_ns = new Namespace()
+        method.addStatement(ASSIGNMENT(PROV_NAMESPACE, VARIABLE("__C_ns"),
+                CONSTRUCTOR_CALL(PROV_NAMESPACE, List.of())));
+        // StringSubstitutor subst = new StringSubstitutor(getVariableMap())
+        method.addStatement(ASSIGNMENT(APACHE_STRING_SUBSTITUTOR, VARIABLE("subst"),
+                CONSTRUCTOR_CALL(APACHE_STRING_SUBSTITUTOR,
+                        List.of(METHOD_CALL("getVariableMap", List.of())))));
+
+        Map<String, String> theContext = bindingsSchema.getContext();
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
+
+        // Parameters
+        compilerUtil.generateSpecializedParameters(method, bindingsSchema.getVar());
+
+        // Register namespace prefixes
+        for (String prefix : theContext.keySet()) {
+            String uri = theContext.get(prefix);
+            // __C_ns.register(prefix, subst.replace(uri))
+            method.addStatement(METHOD_CALL(VARIABLE("__C_ns"), "register",
+                    CONSTANT(prefix),
+                    METHOD_CALL(VARIABLE("subst"), "replace", CONSTANT(uri))));
+        }
+
+        // Process variables
+        List<org.openprovenance.prov.template.compiler.past.Expression> generatorArgs = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+
+        for (QualifiedName q : allVars) {
+            final String key = q.getLocalPart();
+            seen.add(key);
+            final String newName = compilerUtil.varPrefix(key);
+            List<Descriptor> descriptors = theVar.get(key);
+            if (descriptors != null && !descriptors.isEmpty() && (descriptors.get(0) instanceof NameDescriptor)) {
+                NameDescriptor descriptor = (NameDescriptor) descriptors.get(0);
+                String s = descriptor.getId();
+                int existsColumn = s.indexOf(":");
+                if (existsColumn >= 0) {
+                    String pre = s.substring(0, existsColumn);
+                    if (pre != null && !pre.isEmpty() && theContext.get(pre) == null) {
+                        throw new InvalidCaseException("CompilerExpansionBuilder: Reference to prefix '" + pre + "' in '" + s + "' for key '" + key + "', not available in context " + theContext);
+                    }
+                }
+                String escape = descriptor.getEscape();
+                boolean toEscape = escape != null && "true".equals(escape);
+
+                // Build: QualifiedName newName = (key==null) ? null : __C_ns.stringToQualifiedName(idExpr, pf [, false])
+                org.openprovenance.prov.template.compiler.past.Expression idExpr = buildIdStringExpression(s, key);
+                List<org.openprovenance.prov.template.compiler.past.Expression> stqArgs = new ArrayList<>();
+                stqArgs.add(idExpr);
+                stqArgs.add(VARIABLE("pf"));
+                if (toEscape) {
+                    stqArgs.add(CONSTANT(false));
+                }
+                org.openprovenance.prov.template.compiler.past.Expression stqCall =
+                        METHOD_CALL(VARIABLE("__C_ns"), "stringToQualifiedName", stqArgs);
+                method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(newName),
+                        IfExpression.IFEXPRESSION(
+                                BINARY_OP(VARIABLE(key), EQ, getNull()),
+                                getNull(),
+                                stqCall)));
+            } else {
+                // QualifiedName newName = null
+                method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(newName), getNull()));
+            }
+            generatorArgs.add(VARIABLE(newName));
+        }
+
+        // Process attributes
+        for (QualifiedName q : allAtts) {
+            final String key = q.getLocalPart();
+            String newName = key;
+            if (!seen.contains(key)) {
+                List<Descriptor> descriptors = theVar.get(key);
+                if (descriptors != null && !descriptors.isEmpty() && (descriptors.get(0) instanceof NameDescriptor)) {
+                    NameDescriptor descriptor = (NameDescriptor) descriptors.get(0);
+                    String s = descriptor.getId();
+                    int existsColumn = s.indexOf(":");
+                    if (existsColumn >= 0) {
+                        String pre = s.substring(0, existsColumn);
+                        if (pre != null && !pre.isEmpty() && theContext.get(pre) == null) {
+                            throw new InvalidCaseException("CompilerExpansionBuilder: Reference to prefix '" + pre + "' in '" + s + "' for key '" + key + "', not available in context " + theContext);
+                        }
+                    }
+                    newName = compilerUtil.attPrefix(key);
+                    // QualifiedName newName = (key==null) ? null : __C_ns.stringToQualifiedName(idExpr, pf)
+                    org.openprovenance.prov.template.compiler.past.Expression idExpr = buildIdStringExpression(s, key);
+                    org.openprovenance.prov.template.compiler.past.Expression stqCall =
+                            METHOD_CALL(VARIABLE("__C_ns"), "stringToQualifiedName", idExpr, VARIABLE("pf"));
+                    method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(newName),
+                            IF_(BINARY_OP(VARIABLE(key), EQ, getNull()))
+                                    .THEN(getNull())
+                                    .ELSE(stqCall)));
+                } else {
+                    if (descriptors != null && !descriptors.isEmpty()) {
+                        // is already declared, but not with @id — no statement needed
+                    } else {
+                        method.addStatement(ASSIGNMENT(OBJECT, VARIABLE(newName), getNull()));
+                    }
+                }
+                generatorArgs.add(VARIABLE(newName));
+            }
+        }
+
+        // __C_document = generator(args...)
+        method.addStatement(ASSIGNMENT(null, VARIABLE("__C_document"),
+                METHOD_CALL("generator", generatorArgs)));
+        // return __C_document
+        method.addStatement(RETURN(VARIABLE("__C_document")));
+
+        return method;
+    }
+
+    /**
      *
      * Returns a PAST {@link Method} .
      */
     public Method generateTemplateGenerator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, TemplateBindingsSchema bindingsSchema, boolean past) {
 
         Method method = METHOD("generator")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .RETURNS(PROV_DOCUMENT);
-        compilerUtil.debugFileLocation(method);
 
         // Parameters
         for (QualifiedName q : allVars) {
@@ -605,7 +983,7 @@ public class CompilerExpansionBuilder {
         return "_Q_" + qn.getPrefix() + "_" + qn.getLocalPart();
     }
 
-    public MethodSpec generateFactoryMethod(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateFactoryMethod_old(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(Document.class);
@@ -927,7 +1305,7 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public MethodSpec generateMain(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateMain_old(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("main")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -1065,7 +1443,7 @@ public class CompilerExpansionBuilder {
 
     }
 
-    public MethodSpec commonAccessorGenerator(String templateName, String packge) {
+    public MethodSpec commonAccessorGenerator_old(String templateName, String packge) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getClientBuilder")
                 .addModifiers(Modifier.PUBLIC)

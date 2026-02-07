@@ -30,23 +30,11 @@ public class Poet implements Emitter<TypeSpec> {
         return directory -> javaFile.writeTo(directory);
     }
 
-    public TypeSpec.Builder emitBuilder(Class clazz) {
-
-        TypeSpec.Builder builder=(clazz.isInterface)?TypeSpec.interfaceBuilder(clazz.name):TypeSpec.classBuilder(clazz.name);
-        clazz.modifiers.forEach(builder::addModifiers);
-        clazz.interfaces.forEach(intfce -> builder.addSuperinterface(convert(intfce)));
-        clazz.fields.forEach(field -> builder.addField(convert(field)));
-        clazz.comments.forEach(comment -> builder.addJavadoc(comment.format, comment.objects));
-        clazz.methods.forEach(method -> builder.addMethod(convert(method)));
-        for (TypeVariable tv: clazz.typeVariables) {
-            builder.addTypeVariable(TypeVariableName.get(tv.name));
-        }
-        return builder;
-
-
+    public TypeSpec emit(Class clazz) {
+        return emitBuilder(clazz).build();
     }
 
-    public TypeSpec emit(Class clazz) {
+    public TypeSpec.Builder emitBuilder(Class clazz) {
 
         TypeSpec.Builder builder=(clazz.isInterface)?TypeSpec.interfaceBuilder(clazz.name):TypeSpec.classBuilder(clazz.name);
         for (TypeVariable tv : clazz.typeVariables) {
@@ -69,7 +57,7 @@ public class Poet implements Emitter<TypeSpec> {
             });
             builder.addStaticBlock(block.build());
         }
-        return builder.build();
+        return builder;
 
 
     }
@@ -189,10 +177,18 @@ public class Poet implements Emitter<TypeSpec> {
                 CodeBlock.Builder builder = CodeBlock.builder();
 
                 builder.beginControlFlow("if ($L)", conditionCode);
-                ifStatement.thenBlock.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
+                if (ifStatement.thenBlock.size()==1) {
+                    builder.add(CodeBlock.of("$L ;",convert(ifStatement.thenBlock.get(0))));
+                } else {
+                    ifStatement.thenBlock.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
+                }
                 if (!ifStatement.elseBlock.isEmpty()) {
                     builder.nextControlFlow("else");
-                    ifStatement.elseBlock.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
+                    if (ifStatement.elseBlock.size()==1) {
+                        builder.add(CodeBlock.of("$L ;", convert(ifStatement.elseBlock.get(0))));
+                    } else {
+                        ifStatement.elseBlock.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
+                    }
 
                 }
                 builder.endControlFlow();
@@ -304,6 +300,12 @@ public class Poet implements Emitter<TypeSpec> {
                     case FLOAT -> {
                         return CodeBlock.of("$LF", constant.value);
                     }
+                    case LONG -> {
+                        return CodeBlock.of("$LL", constant.value);
+                    }
+                    case DOUBLE -> {
+                        return CodeBlock.of("$Ld", constant.value);
+                    }
                     case NULL -> {
                         return CodeBlock.of("null");
                     }
@@ -359,7 +361,7 @@ public class Poet implements Emitter<TypeSpec> {
                     MethodCall mc = (MethodCall) binaryOperation.right;
                     return CodeBlock.of("($L $L $T)", leftCode, binaryOperation.op, convert(mc.className));
                 } if (binaryOperation.op.equals("Objects.equals")) {
-                    return CodeBlock.of("Objects.equals($L,$L)", leftCode, rightCode);
+                    return CodeBlock.of("$T.equals($L,$L)", Objects.class, leftCode, rightCode);
                 }
                 else {
                     return CodeBlock.of("($L $L $L)", leftCode, binaryOperation.op, rightCode);
@@ -511,6 +513,8 @@ public class Poet implements Emitter<TypeSpec> {
                     case "Object" ->  { return ClassName.get(Object.class); }
                     case "String" ->  { return ClassName.get(String.class); }
                     case "Integer" ->  { return ClassName.get(Integer.class); }
+                    case "Double" ->  { return ClassName.get(Double.class); }
+                    case "Long" ->  { return ClassName.get(Long.class); }
                     case "bool" ->  { return TypeName.get(boolean.class); }
                     case "Boolean" ->  { return ClassName.get(Boolean.class); }
                     case "Class" ->  { return ClassName.get(java.lang.Class.class); }
@@ -520,8 +524,11 @@ public class Poet implements Emitter<TypeSpec> {
                     case "BiConsumer" ->  { return ClassName.get(java.util.function.BiConsumer.class); }
                     case "Function" ->  { return ClassName.get(java.util.function.Function.class); }
                     case "BiFunction" ->  { return ClassName.get(java.util.function.BiFunction.class); }
+                    case "long" ->  { return TypeName.get(long.class); }
+                    case "double" ->  { return TypeName.get(double.class); }
                     case "int" ->  { return TypeName.get(int.class); }
                     case "int[]" ->  { return ArrayTypeName.of(TypeName.get(int.class)); }
+                    case "System" ->  { return ClassName.get(System.class); }
                     default ->  { /* continue */ }
                 }
             }
@@ -533,6 +540,7 @@ public class Poet implements Emitter<TypeSpec> {
                     case "StringBuilder" ->  { return ClassName.get(StringBuilder.class); }
                     case "Map"           ->  { return ClassName.get(Map.class); }
                     case "Set"           ->  { return ClassName.get(Set.class); }
+                    case "Collection"    ->  { return ClassName.get(Collection.class); }
                     case "HashMap"       ->  { return ClassName.get(HashMap.class); }
                     default ->  { /* continue */ }
                 }

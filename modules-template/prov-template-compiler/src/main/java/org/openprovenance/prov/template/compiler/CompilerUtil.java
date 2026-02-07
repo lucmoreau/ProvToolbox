@@ -201,7 +201,7 @@ public class CompilerUtil {
         return TypeSpec.classBuilder(name+"TypedRecord")
                 .addModifiers(Modifier.PUBLIC);
     }
-    public MethodSpec generateConstructor2(Hashtable<QualifiedName, String> vmap) {
+    public MethodSpec generateConstructor2_old(Hashtable<QualifiedName, String> vmap) {
         com.squareup.javapoet.MethodSpec.Builder builder= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ProvFactory.class, "pf")

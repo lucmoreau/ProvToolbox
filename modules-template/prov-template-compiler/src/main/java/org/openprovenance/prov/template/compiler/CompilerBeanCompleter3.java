@@ -95,7 +95,7 @@ public class CompilerBeanCompleter3 {
                             .MODIFIERS(Modifier.PUBLIC)
                             .PARAMETER(outputClassName, BEAN_VAR)
                             .RETURNS(outputClassName)
-                            .debugFileLocation()
+                            .commentFileLocation()
                             .BODY(
                                     // super.process(bean)
                                     METHOD_CALL(VARIABLE("super"), PROCESS_METHOD_NAME, List.of(VARIABLE(BEAN_VAR))),
@@ -125,7 +125,7 @@ public class CompilerBeanCompleter3 {
 
     private Method createCompositeProcessMethod(String templateFullyQualifiedName, ClassName outputClassName) {
         Method mspec = METHOD(Constants.PROCESS_METHOD_NAME)
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(outputClassName,BEAN_VAR)
                 .RETURNS(outputClassName);

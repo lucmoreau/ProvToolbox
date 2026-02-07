@@ -87,7 +87,7 @@ public class CompilerBeanEnactor2Composite {
             final ClassName inputClassName = get(inputNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS));
 
             Method m = METHOD(Constants.PROCESS_METHOD_NAME)
-                    .debugFileLocation()
+                    .commentFileLocation()
                     .MODIFIERS(Modifier.PUBLIC)
                     .PARAMETER(inputClassName, "bean")
                     .RETURNS(outputClassName);

@@ -84,7 +84,7 @@ public class    CompilerTableConfiguratorWithMap {
                     .RETURNS(PROV_FILE_BUILDER);
 
             if (config instanceof SimpleTemplateCompilerConfig) {
-                method.debugFileLocation();
+                method.commentFileLocation();
                 SimpleTemplateCompilerConfig simpleConfig = (SimpleTemplateCompilerConfig) config;
                 ClassName builderClass = get(templateNameClass, simpleConfig.package_);
                 String builderVar = PREFIX + config.name;
@@ -106,7 +106,7 @@ public class    CompilerTableConfiguratorWithMap {
                         RETURN(METHOD_CALL(VARIABLE("this"), builderVar))
                 );
             } else {
-                method.debugFileLocation();
+                method.commentFileLocation();
                 method.BODY(RETURN(Constant.getNull())
                 );
             }

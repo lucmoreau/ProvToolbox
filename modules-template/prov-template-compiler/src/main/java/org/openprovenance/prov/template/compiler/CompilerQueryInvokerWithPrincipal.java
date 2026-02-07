@@ -2,7 +2,6 @@ package org.openprovenance.prov.template.compiler;
 
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
-import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.oldstuff.CompilerQueryInvokerWithPrincipalOld;
 import org.openprovenance.prov.template.compiler.past.Constructor;
@@ -118,7 +117,7 @@ public class CompilerQueryInvokerWithPrincipal {
             final ClassName inputClassName = get(inputsNameClass,locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS));
 
             Method m = METHOD(PROCESS_METHOD_NAME)
-                    .debugFileLocation()
+                    .commentFileLocation()
                     .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
                     .PARAMETER(inputClassName, BEAN_VAR)
                     .RETURNS(inputClassName)
@@ -141,7 +140,7 @@ public class CompilerQueryInvokerWithPrincipal {
     }
 
     private void simpleQueryInvoker(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, Method method) {
-        method.debugFileLocation();
+        method.commentFileLocation();
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
         method.BODY(
@@ -231,7 +230,7 @@ public class CompilerQueryInvokerWithPrincipal {
     public void compositeQueryInvoker(TemplatesProjectConfiguration configs, Locations locations, TemplateCompilerConfig config, Set<String> foundSpecialTypes, final String sbVar, Method method, String variableBean, boolean withBean) {
         CompositeTemplateCompilerConfig compositeConfig=(CompositeTemplateCompilerConfig ) config;
 
-        method.debugFileLocation();
+        method.commentFileLocation();
 
         method.BODY(
                 METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(  "---- query invoker for  " + compositeConfig.name + " (with Principal)\n\n"))),

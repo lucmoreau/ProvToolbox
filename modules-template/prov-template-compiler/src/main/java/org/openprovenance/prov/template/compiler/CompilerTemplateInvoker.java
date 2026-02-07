@@ -3,7 +3,6 @@ package org.openprovenance.prov.template.compiler;
 
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
-import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Method;
@@ -11,7 +10,6 @@ import org.openprovenance.prov.template.compiler.past.PastFactory;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 
 import javax.lang.model.element.Modifier;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -58,7 +56,7 @@ public class CompilerTemplateInvoker {
 
 
             Method m = METHOD(PROCESS_METHOD_NAME)
-                    .debugFileLocation()
+                    .commentFileLocation()
                     .MODIFIERS(Modifier.PUBLIC)
                     .PARAMETER(inputClassName, BEAN_VAR)
                     .RETURNS(outputClassName);

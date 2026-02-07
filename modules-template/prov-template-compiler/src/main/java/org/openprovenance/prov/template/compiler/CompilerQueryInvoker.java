@@ -97,7 +97,7 @@ public class CompilerQueryInvoker {
             ClassName inputType = get(inputsNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS));
 
             Method m = METHOD(PROCESS_METHOD_NAME)
-                    .debugFileLocation()
+                    .commentFileLocation()
                     .MODIFIERS(Modifier.PUBLIC)
                     .PARAMETER((withBean)?beanType:inputType, BEAN_VAR)
                     .RETURNS((withBean)?beanType:inputType)
@@ -128,7 +128,7 @@ public class CompilerQueryInvoker {
         // add special type converters as methods
         if (foundSpecialTypes.contains(TIMESTAMPTZ)) {
             Method ms = METHOD("convertToTimestamptz")
-                    .debugFileLocation()
+                    .commentFileLocation()
                     .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
                     .PARAMETER(STRING, "time")
                     .RETURNS(STRING)
@@ -150,7 +150,7 @@ public class CompilerQueryInvoker {
 
         if (foundSpecialTypes.contains(SQL_DATE)) {
             Method ms2 = METHOD("convertToDate")
-                    .debugFileLocation()
+                    .commentFileLocation()
                     .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
                     .PARAMETER(STRING, "date")
                     .RETURNS(STRING)
@@ -172,7 +172,7 @@ public class CompilerQueryInvoker {
 
         if (foundSpecialTypes.contains(NULLABLE_TEXT)) {
             Method ms3 = METHOD("convertToNullableTEXT")
-                    .debugFileLocation()
+                    .commentFileLocation()
                     .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
                     .PARAMETER(STRING, "str")
                     .RETURNS(STRING)
@@ -196,7 +196,7 @@ public class CompilerQueryInvoker {
 
         if (foundSpecialTypes.contains(NON_NULLABLE_TEXT)) {
             Method ms4 = METHOD(CONVERT_TO_NON_NULLABLE_TEXT)
-                    .debugFileLocation()
+                    .commentFileLocation()
                     .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
                     .PARAMETER(STRING, "str")
                     .RETURNS(STRING)

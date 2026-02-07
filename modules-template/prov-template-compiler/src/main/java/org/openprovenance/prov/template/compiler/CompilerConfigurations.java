@@ -231,7 +231,7 @@ public class CompilerConfigurations {
                                     METHOD_CALL(
                                             VARIABLE(DISPATCHER_VAR, FIELD_VARIABLE),
                                             "get",
-                                            List.of(METHOD_CALL(VARIABLE(builderParameter), "getName", List.of()))
+                                            List.of(METHOD_CALL(VARIABLE(builderParameter), "getFullyQualifiedName", List.of()))
                                     ))),
 
                     RETURN(LAMBDA(PARAMETER("record", OBJECT_ARRAY))

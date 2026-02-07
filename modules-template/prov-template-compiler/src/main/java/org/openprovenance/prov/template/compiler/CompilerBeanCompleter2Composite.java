@@ -79,7 +79,7 @@ public class CompilerBeanCompleter2Composite {
                     .MODIFIERS(Modifier.PUBLIC)
                     .PARAMETER(outClass, BEAN_VAR)
                     .RETURNS(outClass)
-                    .debugFileLocation()
+                    .commentFileLocation()
                     .BODY(
                             ASSIGNMENT(null,
                                     METHOD_CALL(VARIABLE(BEAN_VAR), "ID"),

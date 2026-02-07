@@ -1,9 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
-import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Constructor;
@@ -13,7 +11,6 @@ import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 
 import javax.lang.model.element.Modifier;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -96,7 +93,7 @@ public class CompilerTableConfiguratorForTypes {
                     .MODIFIERS(Modifier.PUBLIC)
                     .PARAMETER(builderParamType, "builder")
                     .RETURNS(MAP_STRING_STRING_SET)
-                    .debugFileLocation();
+                    .commentFileLocation();
 
             if (config instanceof SimpleTemplateCompilerConfig) {
                 ClassName builderClassName = get(templateNameClass, locations.getBackendPackage(config.fullyQualifiedName));

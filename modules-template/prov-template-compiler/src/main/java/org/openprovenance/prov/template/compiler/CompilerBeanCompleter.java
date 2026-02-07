@@ -55,7 +55,7 @@ public class CompilerBeanCompleter {
                 FIELD(GETTER_VAR, GETTER_TYPE).MODIFIERS(Modifier.FINAL));
 
         Method callMe2 = METHOD("getMap")
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(CLASS_T, "cl")
                 .PARAMETER(STRING, "key")
@@ -188,7 +188,7 @@ public class CompilerBeanCompleter {
         }
 
         Method nMethod = METHOD("next")
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .RETURNS(_bool)
                 .BODY(RETURN(CONSTANT(true)));

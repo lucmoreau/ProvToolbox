@@ -23,7 +23,6 @@ import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRU
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
-import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
@@ -64,7 +63,7 @@ public class CompilerDelegator {
             ClassName beanType = get(beanNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
 
             Method m = METHOD(PROCESS_METHOD_NAME)
-                    .debugFileLocation()
+                    .commentFileLocation()
                     .MODIFIERS(Modifier.PUBLIC)
                     .PARAMETER(beanType, BEAN_VAR)
                     .RETURNS(beanType)

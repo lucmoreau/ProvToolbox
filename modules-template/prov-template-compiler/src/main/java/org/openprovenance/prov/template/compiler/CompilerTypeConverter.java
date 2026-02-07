@@ -1,7 +1,6 @@
 
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.MethodSpec;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.CompilerUtil.typeT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
@@ -31,7 +29,6 @@ import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRU
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.*;
-import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
@@ -95,7 +92,7 @@ public class CompilerTypeConverter {
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(templateClass, "builder")
                 .RETURNS(MAP_STRING_T)
-                .debugFileLocation();
+                .commentFileLocation();
 
         m.BODY(
                 ASSIGNMENT(MAP_STRING_T, VARIABLE("m"), CONSTRUCTOR_CALL(HASH_MAP_GENERICS, List.of()))

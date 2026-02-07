@@ -77,7 +77,7 @@ public class CompilerBeanEnactor {
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
             final ClassName className = ClassName.get(beanNameClass,locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
             Method mspec = METHOD(Constants.PROCESS_METHOD_NAME)
-                    .debugFileLocation()
+                    .commentFileLocation()
                     .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
                     .PARAMETER(className,"bean")
                     .RETURNS(className)

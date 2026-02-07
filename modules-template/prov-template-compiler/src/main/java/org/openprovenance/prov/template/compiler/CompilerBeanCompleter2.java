@@ -65,7 +65,7 @@ public class CompilerBeanCompleter2 {
                 );
 
         Method callMe2 = METHOD("getMap")
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(CLASS_T, "cl")
                 .PARAMETER(STRING, "key")
@@ -130,7 +130,7 @@ public class CompilerBeanCompleter2 {
 
                 final ClassName outputClassName = get(outputBeanNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
                 Method mspecOut = METHOD(Constants.PROCESS_METHOD_NAME)
-                        .debugFileLocation()
+                        .commentFileLocation()
                         .MODIFIERS(Modifier.PUBLIC)
                         .PARAMETER(outputClassName, BEAN_VAR)
                         .RETURNS(outputClassName)
@@ -209,7 +209,7 @@ public class CompilerBeanCompleter2 {
 
 
                 Method mspec0=METHOD(Constants.PROCESS_METHOD_NAME)
-                        .debugFileLocation()
+                        .commentFileLocation()
                         .MODIFIERS(Modifier.PUBLIC)
                         .PARAMETER(outputClassName, BEAN_VAR)
                         .RETURNS(outputClassName)
@@ -231,7 +231,7 @@ public class CompilerBeanCompleter2 {
                 pastClass.METHOD(mspec0);
 
                 Method mspec_incorrect = METHOD(Constants.PROCESS_METHOD_NAME+"Incorrect")
-                        .debugFileLocation()
+                        .commentFileLocation()
                         .MODIFIERS(Modifier.PUBLIC)
                         .PARAMETER(outputClassName, BEAN_VAR)
                         .RETURNS(outputClassName)
@@ -268,14 +268,14 @@ public class CompilerBeanCompleter2 {
         }
 
         Method nMethod = METHOD("next")
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .RETURNS(_bool)
                 .BODY(RETURN(CONSTANT(true)));
         pastClass.METHOD(nMethod);
 
         Method pMethod = METHOD(POST_PROCESS_METHOD_NAME)
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(INTEGER, "id")
                 .PARAMETER(STRING, "template")

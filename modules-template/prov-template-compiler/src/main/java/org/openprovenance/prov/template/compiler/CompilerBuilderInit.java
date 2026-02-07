@@ -4,9 +4,6 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.Statement;
-import org.openprovenance.prov.template.log2prov.FileBuilder;
-import org.openprovenance.prov.template.log2prov.Runner;
-import org.openprovenance.prov.template.types.ProvenanceKernels;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Method;
 import org.openprovenance.prov.template.compiler.past.PastFactory;
@@ -55,7 +52,7 @@ public class CompilerBuilderInit {
         );
 
         Method init = METHOD("init")
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
                 .RETURNS(ClassName.BOOLEAN)
                 .BODY(
@@ -65,7 +62,7 @@ public class CompilerBuilderInit {
         pastClass.METHOD(init);
 
         Method main = METHOD("main")
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
                 .PARAMETER(STRING_ARRAY, "args")
                 .RETURNS(VOID)
@@ -92,7 +89,7 @@ public class CompilerBuilderInit {
                 new java.util.ArrayList<>(List.of(
                         ASSIGNMENT(null, VARIABLE(BUILDERS), ARRAY_ALLOCATOR(STRING, CONSTANT(size))),
                         ASSIGNMENT(null, VARIABLE(TYPEMANAGERS), ARRAY_ALLOCATOR(STRING, CONSTANT(size))),
-                        ASSIGNMENT(null, VARIABLE(PF), METHOD_CALL(PROV_FACTORY, "getFactory", List.of()))
+                        ASSIGNMENT(null, VARIABLE(PF), METHOD_CALL(PROV_VANILLA_FACTORY, "getFactory", List.of()))
                 ));
 
         int count=0;
@@ -107,9 +104,7 @@ public class CompilerBuilderInit {
                             ARRAY_ACCESSOR(VARIABLE(TYPEMANAGERS), CONSTANT(count)),
                             CONSTANT(locations.getBackendPackage(config.fullyQualifiedName)+"."+compilerUtil.templateNameClass(config.name)+"TypeManagement")));
 
-         //   block.addStatement("$N[$L]=$S", Constants.BUILDERS,count,locations.getBackendPackage(config.fullyQualifiedName)+"."+compilerUtil.templateNameClass(config.name));
-          //  block.addStatement("$N[$L]=$S", Constants.TYPEMANAGERS,count,locations.getBackendPackage(config.fullyQualifiedName)+"."+compilerUtil.templateNameClass(config.name)+"TypeManagement");
-            count++;
+             count++;
         }
 
         pastClass.STATIC_BLOCK(staticBlockStatements);
@@ -119,7 +114,6 @@ public class CompilerBuilderInit {
         Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
 
-        Supplier<Boolean> nullPythonGenerator = () -> true;
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 }

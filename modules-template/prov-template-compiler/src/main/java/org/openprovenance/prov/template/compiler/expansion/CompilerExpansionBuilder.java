@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler.expansion;
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.text.StringSubstitutor;
+import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.interop.Formats;
 import org.openprovenance.prov.model.interop.Framework;
 import org.openprovenance.prov.model.*;
@@ -15,10 +16,8 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
-import org.openprovenance.prov.template.compiler.past.Method;
-import org.openprovenance.prov.template.compiler.past.PastFactory;
+import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.emitter.Poet;
-import org.openprovenance.prov.template.compiler.past.Constructor;
 import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.core.InstantiateAction;
 import org.openprovenance.prov.template.core.InstantiateUtil;
@@ -26,12 +25,15 @@ import org.openprovenance.prov.template.core.exception.MissingAttributeValue;
 import org.openprovenance.prov.template.types.TypesRecordProcessor;
 
 import javax.lang.model.element.Modifier;
+import java.lang.Class;
 import java.util.*;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.typeT;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
+import static org.openprovenance.prov.template.compiler.common.Constants.PROCESSOR;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.*;
 import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY_ACCESSOR;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
@@ -42,7 +44,6 @@ import static org.openprovenance.prov.template.compiler.past.Constant.getNull;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
-import org.openprovenance.prov.template.compiler.past.IfExpression;
 
 import static org.openprovenance.prov.template.compiler.past.IfExpression.IF_;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
@@ -52,6 +53,7 @@ import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_C
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 import static org.openprovenance.prov.template.core.InstantiateUtil.*;
 
 public class CompilerExpansionBuilder {
@@ -167,6 +169,7 @@ public class CompilerExpansionBuilder {
         pastClass.METHOD(generateFactoryMethod_past(allVars, allAtts, name, bindingsSchema));
         pastClass.METHOD(generateFactoryMethodWithContinuation_past(allVars, allAtts, name, templateName, packge, bindingsSchema));
         pastClass.METHOD(generateFactoryMethodWithArray_past(allVars, allAtts, name, bindingsSchema));
+        pastClass.METHOD(generateFactoryMethodWithArrayAndContinuation_past(name, templateName, packge, bindingsSchema));
 
         TypeSpec.Builder builder=new Poet().emitBuilder(pastClass);
 
@@ -175,13 +178,12 @@ public class CompilerExpansionBuilder {
         builder.addMethod(generateTemplateGenerator_old(allVars, allAtts, doc, vmap, bindingsSchema));
 
         // TO BE CONVERTED TO PAST GENERATION
-        builder.addMethod(generateFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
         builder.addMethod(generateUniqueRecordFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
+        builder.addMethod(typedRecordGenerator(templateName,packge));
         // TO HERE
 
         builder.addMethod(typeManagerGenerator(templateName,packge));
         // builder.addMethod(compilerClient.typePropagateGenerator(templateName,packge));
-        builder.addMethod(typedRecordGenerator(templateName,packge));
 
 
         builder.addMethod(generateTypePropagator(packge+".client", bindingsSchema, successorTable));
@@ -610,7 +612,7 @@ public class CompilerExpansionBuilder {
      * {@link #generateFactoryMethodWithContinuation_old(Collection, Collection, String, String, String, TemplateBindingsSchema)}.
      */
     public Method generateFactoryMethodWithContinuation_past(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String template, String packge, TemplateBindingsSchema bindingsSchema) {
-        org.openprovenance.prov.template.compiler.past.type.TypeVariable typeT = org.openprovenance.prov.template.compiler.past.type.TypeVariable.T();
+        org.openprovenance.prov.template.compiler.past.type.TypeVariable typeT = T();
 
         Method method = METHOD("make")
                 .commentFileLocation()
@@ -1348,6 +1350,55 @@ public class CompilerExpansionBuilder {
         return method;
     }
 
+    public Method generateFactoryMethodWithArrayAndContinuation_past(String name, String template, String packge, TemplateBindingsSchema bindingsSchema) {
+
+        Method method = METHOD("make")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(T())
+                .addTypeVariables(T());
+
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
+
+        method.PARAMETER(OBJECT_ARRAY, "__record");
+
+        // Parameter: processor of type <TemplateName>Interface<T>
+        org.openprovenance.prov.template.compiler.past.type.ClassName interfaceClass =
+                org.openprovenance.prov.template.compiler.past.type.ClassName.get(
+                        compilerUtil.templateNameClass(template) + "Interface", packge);
+        org.openprovenance.prov.template.compiler.past.type.ParameterizedType processorType =
+                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(interfaceClass, T());
+        method.PARAMETER(processorType, PROCESSOR);
+
+        int count = 1;
+        List<org.openprovenance.prov.template.compiler.past.Expression> args = new ArrayList<>();
+        for (String key : theVar.keySet()) {
+            if (theVar.get(key) == null) {
+                continue;
+            }
+            final org.openprovenance.prov.template.compiler.past.type.ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, key);
+            final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
+            final String converter = compilerUtil.getConverterForDeclaredType2(atype);
+            if (converter == null) {
+                // Type key = (Type) __record[count]
+                method.addStatement(ASSIGNMENT(pastType, VARIABLE(key), CAST(pastType, ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)))));
+            } else {
+                // Type key = converter(__record[count])
+                method.addStatement(ASSIGNMENT(pastType, VARIABLE(key),
+                        IF_(BINARY_OP(ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)), EQ, Constant.getNull()))
+                                .THEN(Constant.getNull())
+                                .ELSE(METHOD_CALL(converter, List.of(METHOD_CALL(ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)), "toString", List.of()))))));
+            }
+            args.add(VARIABLE(key));
+            count++;
+        }
+        // return make(args..., _processor)
+        args.add(VARIABLE(PROCESSOR));
+        method.addStatement(RETURN(METHOD_CALL("make", args)));
+
+        return method;
+    }
+
     public MethodSpec generateFactoryMethodWithArray(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
                 .addModifiers(Modifier.PUBLIC)
@@ -1399,7 +1450,7 @@ public class CompilerExpansionBuilder {
         Map<String, List<Descriptor>> theVar= bindingsSchema.getVar();
 
         builder.addParameter(Object[].class, "__record");
-        builder.addParameter(processorInterfaceType(template, packge), Constants.PROCESSOR);
+        builder.addParameter(processorInterfaceType(template, packge), PROCESSOR);
 
         int count = 1;
         String args = "";
@@ -1437,7 +1488,7 @@ public class CompilerExpansionBuilder {
 
         compilerUtil.specWithComment(builder);
 
-        builder.addParameter(processorInterfaceType(template, packge), Constants.PROCESSOR);
+        builder.addParameter(processorInterfaceType(template, packge), PROCESSOR);
 
         Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
         Collection<String> variables=descriptorUtils.fieldNames(bindingsSchema);
@@ -1467,7 +1518,7 @@ public class CompilerExpansionBuilder {
             }
         }
         CodeBlock argsList=makeArgsList(variables);
-        builder.addStatement("return make($L,$N)", argsList, Constants.PROCESSOR);
+        builder.addStatement("return make($L,$N)", argsList, PROCESSOR);
 
         MethodSpec method = builder.build();
 

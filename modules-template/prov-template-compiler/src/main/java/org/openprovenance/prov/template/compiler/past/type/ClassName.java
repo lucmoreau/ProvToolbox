@@ -18,6 +18,7 @@ public class ClassName extends TypeName {
     public static final ClassName LIST = ClassName.get("List", "past.util");
     public static final ClassName SET = ClassName.get("Set", "past.util");
     public static final ClassName LINKED_LIST = ClassName.get( "LinkedList", "past.util");
+    public static final ClassName COLLECTION = ClassName.get( "Collection", "past.util");
     public static final ClassName CLASS = ClassName.get( "Class", "past.lang");
     public static final ClassName VOID = ClassName.get( "Void", "past.lang");
     public static final ArrayType STRING_ARRAY=ArrayType.of(STRING);
@@ -37,10 +38,20 @@ public class ClassName extends TypeName {
 
     public static final ClassName PROV_FILE_BUILDER = ClassName.get("FileBuilder", "org.openprovenance.prov.template.log2prov");
     public static final ClassName PROV_FACTORY = ClassName.get("ProvFactory", "org.openprovenance.prov.model");
-    public static final ClassName PROV_QUALIFIED_NAME = ClassName.get("QualifiedName", "org.openprovenance.prov.model");
-    public static final ClassName PROV_PROVENANCE_KERNELS = ClassName.get("ProvenanceKernels", "org.openprovenance.prov.template.types");
-    public static final ClassName PROV_RUNNER = ClassName.get("Runner", "org.openprovenance.prov.template.types");
+    public static final ClassName PROV_VANILLA_FACTORY = ClassName.get("ProvFactory", "org.openprovenance.prov.vanilla");
 
+    public static final ClassName PROV_QUALIFIED_NAME = ClassName.get("QualifiedName", "org.openprovenance.prov.model");
+    public static final ClassName PROV_DOCUMENT = ClassName.get("Document", "org.openprovenance.prov.model");
+    public static final ClassName PROV_UTILITIES = ClassName.get("ProvUtilities", "org.openprovenance.prov.model");
+    public static final ClassName PROV_PROVENANCE_KERNELS = ClassName.get("ProvenanceKernels", "org.openprovenance.prov.template.types");
+    public static final ClassName PROV_RUNNER = ClassName.get("Runner", "org.openprovenance.prov.template.log2prov");
+    public static final ClassName PROV_VALUE_CONVERTER = ClassName.get("ValueConverter", "org.openprovenance.prov.model");
+    public static final ClassName PROV_PROXY_CLIENT_ACCESSOR = ClassName.get("ProxyClientAccessorInterface", "org.openprovenance.prov.template.log2prov.interfaces");
+    public static final ClassName PROV_INSTANTIATE_ACTION = ClassName.get("InstantiateAction", "org.openprovenance.prov.template.core");
+
+    public static final ClassName PROV_ATTRIBUTE = ClassName.get("Attribute", "org.openprovenance.prov.model");
+    public static final TypeName PROV_LINKED_LIST_OF_ATTRIBUTES = ParameterizedType.get(LINKED_LIST, PROV_ATTRIBUTE);
+    public static final TypeName PROV_COLLECTION_OF_ATTRIBUTES = ParameterizedType.get(COLLECTION, PROV_ATTRIBUTE);
 
     public static final ParameterizedType SET_STRING = ParameterizedType.get(SET, STRING);
     public static final ParameterizedType MAP_STRING_T= ParameterizedType.get(MAP, STRING, T());

@@ -212,4 +212,5 @@ public interface Constants {
     String SB_VAR = "sb";
     String LINKING_VAR = "linking";
 
+    String C_NS = "__C_ns";
 }

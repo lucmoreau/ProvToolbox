@@ -9,7 +9,9 @@ public class Constant extends Expression {
     public enum ConstantType {
         STRING,
         INTEGER,
+        LONG,
         FLOAT,
+        DOUBLE,
         BOOL,
         BOOLEAN,
         NULL
@@ -40,6 +42,18 @@ public class Constant extends Expression {
         this.expressionKind=ExpressionKind.CONSTANT;
     }
 
+    public Constant(Long value) {
+        this.value = value;
+        this.constantType=ConstantType.LONG;
+        this.expressionKind=ExpressionKind.CONSTANT;
+    }
+
+    public Constant(Double value) {
+        this.value = value;
+        this.constantType=ConstantType.DOUBLE;
+        this.expressionKind=ExpressionKind.CONSTANT;
+    }
+
     static public Constant getNull() {
         Constant c=new Constant((String)null);
         c.constantType=ConstantType.NULL;
@@ -57,6 +71,12 @@ public class Constant extends Expression {
         return new Constant(value);
     }
     static public Constant CONSTANT(boolean value) {
+        return new Constant(value);
+    }
+    static public Constant CONSTANT(Long value) {
+        return new Constant(value);
+    }
+    static public Constant CONSTANT(Double value) {
         return new Constant(value);
     }
 

@@ -10,7 +10,6 @@ import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Statement;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
-import org.openprovenance.prov.template.compiler.past.type.TypeName;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import org.openprovenance.prov.template.core.InstantiateUtil;
 
@@ -21,13 +20,12 @@ import static org.openprovenance.prov.template.compiler.past.BinaryOp.EQ;
 import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constant.getNull;
-import static org.openprovenance.prov.template.compiler.past.IfExpression.IFEXPRESSION;
 import static org.openprovenance.prov.template.compiler.past.IfExpression.IF_;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
-import static org.openprovenance.prov.template.compiler.past.type.ClassName.LINKED_LIST;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 /**
  * Variant of {@link StatementCompilerAction} that generates PAST statements
@@ -45,13 +43,6 @@ public class StatementCompilerAction2 implements StatementAction {
     private final String target;
     private final ProvFactory pFactory;
     private final Hashtable<QualifiedName, String> vmap;
-
-    static final ClassName CL_COLLECTION = ClassName.get("Collection", "java.util");
-    static final ClassName CL_LIST = ClassName.get("List", "java.util");
-    static final ClassName CL_LINKED_LIST = ClassName.get("LinkedList", "java.util");
-
-    static final ClassName CL_QUALIFIED_NAME = ClassName.get("QualifiedName", "org.openprovenance.prov.model");
-    static final ClassName CL_BUNDLE = ClassName.get("Bundle", "org.openprovenance.prov.model");
 
     public StatementCompilerAction2(ProvFactory pFactory, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, List<Statement> statements, String target, TemplateBindingsSchema bindingsSchema) {
         this.pFactory = pFactory;
@@ -89,8 +80,7 @@ public class StatementCompilerAction2 implements StatementAction {
         if (methodPart.endsWith("()")) {
             methodPart = methodPart.substring(0, methodPart.length() - 2);
         }
-        MethodCall getCollection = METHOD_CALL(VARIABLE(varName), methodPart, List.of());
-        return new MethodCall(getCollection, "add", List.of(expr));
+        return new MethodCall(METHOD_CALL(VARIABLE(varName), methodPart, List.of()), "add", List.of(expr));
     }
 
     // --- helper: build pf.newXXX(...) ---
@@ -530,7 +520,7 @@ public class StatementCompilerAction2 implements StatementAction {
 
         // Bundle id_ = pf.newNamedBundle(id, pf.newNamespace(), null)
         statements.add(Assignment.ASSIGNMENT(
-                CL_BUNDLE,
+                PROV_BUNDLE,
                 VARIABLE(id_),
                 pfCall("newNamedBundle", List.of(
                         VARIABLE(id),
@@ -618,7 +608,7 @@ public class StatementCompilerAction2 implements StatementAction {
                                     notNull(localPart)))
                                     .THEN(METHOD_CALL(VARIABLE("attrs"), "add",
                                             pfCall("newAttribute", List.of(
-                                                    CAST(CL_QUALIFIED_NAME, VARIABLE(element.getLocalPart())),
+                                                    CAST(PROV_QUALIFIED_NAME, VARIABLE(element.getLocalPart())),
                                                     VARIABLE(localPart),
                                                     METHOD_CALL(VARIABLE("vc"), "getXsdType", VARIABLE(localPart)))))));
                         }

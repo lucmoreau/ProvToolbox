@@ -129,7 +129,7 @@ public class ConfigProcessor implements Constants {
         this.compilerIntegrator=new CompilerIntegrator(pFactory, compilerCommon,compilerBeanGenerator);
         this.compilerTypeManagement= new CompilerTypeManagement(withMain, compilerCommon,pFactory,debugComment);
         this.compilerExpansionBuilder= new CompilerExpansionBuilder(withMain, compilerCommon,pFactory,debugComment,compilerTypeManagement);
-        this.compilerBuilderInterface= new CompilerBuilderInterface(withMain, compilerCommon,pFactory,debugComment,compilerTypeManagement);
+        this.compilerBuilderInterface= new CompilerBuilderInterface(pFactory);
         this.compilerTypedRecord = new CompilerTypedRecord(withMain, compilerCommon,pFactory,debugComment);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
         this.compilerBeanChecker= new CompilerBeanChecker(pFactory);
@@ -795,7 +795,7 @@ public class ConfigProcessor implements Constants {
                 SpecificationFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(configs, locations, doc, bn, templateName, templateFullyQualifiedName, packageName, bindingsSchema, successorTable, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bn );
                 val0 = spec0.save();
 
-                SpecificationFile spec1 = compilerBuilderInterface.generateBuilderInterfaceSpecification(configs, locations, doc, bn, templateName, packageName, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnI + DOT_JAVA_EXTENSION);
+                SpecificationFile spec1 = compilerBuilderInterface.generateBuilderInterfaceSpecification(configs, locations, bn, templateName, packageName, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnI + DOT_JAVA_EXTENSION);
                 val1= spec1.save();
 
                 SpecificationFile spec2b = compilerSQL.generateSQLInterface(configs, locations, SQL_INTERFACE);

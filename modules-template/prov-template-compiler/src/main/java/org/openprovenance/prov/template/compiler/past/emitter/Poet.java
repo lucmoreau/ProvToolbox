@@ -161,6 +161,9 @@ public class Poet implements Emitter<TypeSpec> {
             case ASSIGNMENT -> {
                 return convert((Assignment) statement);
             }
+            case DEFINITION -> {
+                return convert((Definition) statement);
+            }
             case RETURN ->  {
                 Return ret = (Return) statement;
                 CodeBlock valueCode = convert(ret.expression);
@@ -250,6 +253,28 @@ public class Poet implements Emitter<TypeSpec> {
                 return CodeBlock.of("$T $L=$L", typeName, leftHandCode, valueCode);
             } else {
                 return CodeBlock.of("$L=$L", leftHandCode, valueCode);
+            }
+        }
+    }
+
+
+    public CodeBlock convert(Definition definition) {
+        CodeBlock leftHandCode = convert(definition.leftHandExpression);
+        CodeBlock valueCode = convert(definition.value);
+        if (definition.modifiers.contains(javax.lang.model.element.Modifier.FINAL)) {
+            org.openprovenance.prov.template.compiler.past.type.TypeName type = definition.type;
+            if (type != null) {
+                TypeName typeName = convert(type);
+                return CodeBlock.of("final $T $L=$L", typeName, leftHandCode, valueCode);
+            } else {
+                return CodeBlock.of("final $L=$L", leftHandCode, valueCode);
+            }
+        } else {
+            if (definition.type != null) {
+                TypeName typeName = convert(definition.type);
+                return CodeBlock.of("$T $L=$L", typeName, leftHandCode, valueCode);
+            } else {
+                throw new IllegalArgumentException("Definition without type is not supported: " + definition);
             }
         }
     }

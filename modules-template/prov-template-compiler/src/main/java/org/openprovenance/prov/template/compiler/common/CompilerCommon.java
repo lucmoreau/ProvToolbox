@@ -282,7 +282,7 @@ public class CompilerCommon {
 
                         DEFINITION(_int, VARIABLE("_i_"), CONSTANT(1)),
 
-                        ASSIGNMENT(null, ARRAY_ACCESSOR(VARIABLE("_result"),CONSTANT(0)),
+                        ASSIGNMENT(ARRAY_ACCESSOR(VARIABLE("_result"),CONSTANT(0)),
                                 ARRAY_INITIALISER(OBJECT, List.of(CONSTANT("compositeThingie"),
                                         METHOD_CALL(VARIABLE(Constants.GENERATED_VAR_PREFIX + ELEMENTS1), "size", List.of()),
                                         Constant.getNull()))),
@@ -311,13 +311,11 @@ public class CompilerCommon {
                                         ),
 
                                         ASSIGNMENT(
-                                                null,
                                                 ARRAY_ACCESSOR(VARIABLE("_result"), VARIABLE("_i_")),
                                                 VARIABLE(VAR_OBJECTS)
                                         ),
 
                                         ASSIGNMENT(
-                                                null,
                                                 VARIABLE("_i_"),
                                                 BINARY_OP(VARIABLE("_i_"), "+", CONSTANT(1))
                                         )
@@ -481,7 +479,7 @@ public class CompilerCommon {
                     FOR(
                             DEFINITION(_int, VARIABLE(_I_), CONSTANT(0)),
                             BINARY_OP(VARIABLE(_I_), BinaryOp.LT, METHOD_CALL(VARIABLE(GENERATED_VAR_PREFIX+ELEMENTS1), "size", List.of())),
-                            ASSIGNMENT(null, VARIABLE(_I_), BINARY_OP(VARIABLE(_I_), "+", CONSTANT(1))))
+                            ASSIGNMENT( VARIABLE(_I_), BINARY_OP(VARIABLE(_I_), "+", CONSTANT(1))))
 
                             .BODY(
                                     DEFINITION(ClassName.get(beanNameClass,packge),VARIABLE(VAR_ELEMENT),
@@ -1290,7 +1288,7 @@ public class CompilerCommon {
             String rel=entry.getKey();
             Map<String, int[]> map2=entry.getValue();
 
-            method.BODY(ASSIGNMENT(null, VARIABLE("map2"), CONSTRUCTOR_CALL(HASH_MAP_STRING_INTARRAY, List.of())));
+            method.BODY(ASSIGNMENT( VARIABLE("map2"), CONSTRUCTOR_CALL(HASH_MAP_STRING_INTARRAY, List.of())));
 
             for (Map.Entry<String, int[]> entry2: map2.entrySet()) {
                 String key2=entry2.getKey();
@@ -1642,7 +1640,7 @@ public class CompilerCommon {
         method.BODY(DEFINITION(STRING_ARRAY, VARIABLE(TABLE_VAR), ARRAY_ALLOCATOR(STRING, CONSTANT(knownTypes.size()))));
         int count=0;
         for (String s: knownTypes) {
-            method.BODY(ASSIGNMENT(null, ARRAY_ACCESSOR(VARIABLE(TABLE_VAR), CONSTANT(count)), CONSTANT(s)));
+            method.BODY(ASSIGNMENT( ARRAY_ACCESSOR(VARIABLE(TABLE_VAR), CONSTANT(count)), CONSTANT(s)));
             count++;
         }
         method.BODY(RETURN(VARIABLE(TABLE_VAR)));
@@ -1674,7 +1672,7 @@ public class CompilerCommon {
         for (String key: variables) {
             String newkey = compilerUtil.generateNewNameForVariable(key);
             method.PARAMETER(compilerUtil.getPastTypeForDeclaredType(bindingsSchema.getVar(), key), newkey);
-            method.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE(BEAN_VAR), key), VARIABLE(newkey)));
+            method.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE(BEAN_VAR), key), VARIABLE(newkey)));
         }
         method.BODY(RETURN(VARIABLE(BEAN_VAR)));
         return method;
@@ -1711,14 +1709,14 @@ public class CompilerCommon {
             if (direction==BeanDirection.COMMON || descriptorUtils.isInput(key,bindingsSchema) || (sharing!=null) && sharing.contains(key)) {
                 if (converter == null) {
                     method.BODY(
-                            ASSIGNMENT(null,  METHOD_CALL(VARIABLE("bean"), key), CAST(declaredJavaType2, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count))))
+                            ASSIGNMENT(  METHOD_CALL(VARIABLE("bean"), key), CAST(declaredJavaType2, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count))))
 
                     );
                 } else {
 
 
                     method.BODY(
-                            ASSIGNMENT(null,
+                            ASSIGNMENT(
                                     METHOD_CALL(VARIABLE("bean"), key),
                                     IF_(
                                             BINARY_OP(ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)), "==", Constant.getNull()))
@@ -1734,12 +1732,12 @@ public class CompilerCommon {
 
         method.BODY(
 
-                ASSIGNMENT(null, METHOD_CALL(VARIABLE("bean"), ELEMENTS), CONSTRUCTOR_CALL(LINKED_LIST, List.of())),
+                ASSIGNMENT( METHOD_CALL(VARIABLE("bean"), ELEMENTS), CONSTRUCTOR_CALL(LINKED_LIST, List.of())),
 
                 FOR(
                         DEFINITION(_int, VARIABLE(_I_), CONSTANT(1)),
                         BINARY_OP(VARIABLE(_I_), "<", METHOD_CALL(VARIABLE("records"), "size", List.of())),
-                        ASSIGNMENT(null, VARIABLE(_I_), BINARY_OP(VARIABLE(_I_), "+", CONSTANT(1))))
+                        ASSIGNMENT( VARIABLE(_I_), BINARY_OP(VARIABLE(_I_), "+", CONSTANT(1))))
 
                         .BODY(
                                 extension==null ?
@@ -1813,11 +1811,11 @@ public class CompilerCommon {
                     || descriptorUtils.isInput(key,bindingsSchema)
                     || (shared!=null && shared.contains(key))) {
                 if (converter == null) {
-                    method.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE(BEAN_VAR),key),
+                    method.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE(BEAN_VAR),key),
                             CAST(declaredJavaType2,ARRAY_ACCESSOR(VARIABLE("record"),CONSTANT(count)))));
                 } else {
                     method.BODY(
-                            ASSIGNMENT(null, METHOD_CALL(VARIABLE(BEAN_VAR),key),
+                            ASSIGNMENT( METHOD_CALL(VARIABLE(BEAN_VAR),key),
                                     IFEXPRESSION(
                                             BINARY_OP(ARRAY_ACCESSOR(VARIABLE("record"),CONSTANT(count)),EQ,getNull()),
                                             getNull(),
@@ -1874,16 +1872,16 @@ public class CompilerCommon {
             Object examplar = (qDescriptor == null) ? null : descriptorUtils.getFromDescriptor(qDescriptor, AttributeDescriptor::getExamplar, NameDescriptor::getExamplar);
 
             if (idType == null) {
-                builder.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE(BEAN_VAR),aVar), CONSTANT("example_" + aVar)));
+                builder.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE(BEAN_VAR),aVar), CONSTANT("example_" + aVar)));
             } else {
                 String example = (examplar == null) ? compilerUtil.generateExampleForType(idType, aVar, pFactory) : examplar.toString();
                 Class<?> declaredJavaType = compilerUtil.getJavaTypeForDeclaredType(theVars, aVar);
 
                 final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
                 if (converter == null) {
-                    builder.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE(BEAN_VAR),aVar),CONSTANT(example)));
+                    builder.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE(BEAN_VAR),aVar),CONSTANT(example)));
                 } else {
-                    builder.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE(BEAN_VAR),aVar),METHOD_CALL(converter,List.of(CONSTANT(example)))));
+                    builder.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE(BEAN_VAR),aVar),METHOD_CALL(converter,List.of(CONSTANT(example)))));
                 }
             }
         }
@@ -1904,9 +1902,9 @@ public class CompilerCommon {
 
                 final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
                 if (converter == null) {
-                    builder.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE(BEAN_VAR),aVar),CONSTANT(example)));
+                    builder.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE(BEAN_VAR),aVar),CONSTANT(example)));
                 } else {
-                    builder.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE(BEAN_VAR),aVar),METHOD_CALL(converter,List.of(CONSTANT(example)))));
+                    builder.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE(BEAN_VAR),aVar),METHOD_CALL(converter,List.of(CONSTANT(example)))));
                 }
             }
         }

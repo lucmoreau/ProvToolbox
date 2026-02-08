@@ -3,12 +3,12 @@ package org.openprovenance.prov.template.compiler.past;
 import java.util.List;
 
 public class ForLoop extends Statement {
-    public Assignment initialization;
+    public Definition initialization;
     public Expression condition;
     public Assignment update;
     public List<Statement> body=new java.util.ArrayList<>();
 
-    public ForLoop(Assignment initialization, Expression condition, Assignment update, List<Statement> body) {
+    public ForLoop(Definition initialization, Expression condition, Assignment update, List<Statement> body) {
         this.initialization = initialization;
         this.condition = condition;
         this.update = update;
@@ -27,7 +27,7 @@ public class ForLoop extends Statement {
                 '}';
     }
 
-    public static ForLoop FOR(Assignment initialization, Expression condition, Assignment update) {
+    public static ForLoop FOR(Definition initialization, Expression condition, Assignment update) {
         return new ForLoop(initialization, condition, update, null);
     }
 

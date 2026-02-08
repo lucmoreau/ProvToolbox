@@ -6,36 +6,36 @@ import javax.lang.model.element.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Assignment extends Statement {
+public class Definition extends Statement {
 
     public final TypeName type;
     public final Expression leftHandExpression;
     public final Expression value;
     public List<Modifier> modifiers = new ArrayList<>();
-    public List<String> annotation=new java.util.ArrayList<>();
+    public List<String> annotation=new ArrayList<>();
 
-    public Assignment(TypeName type, Expression leftHandExpression, Expression value) {
+    public Definition(TypeName type, Expression leftHandExpression, Expression value) {
         if (leftHandExpression ==null) {
             throw new IllegalArgumentException("Left hand expression cannot be null");
         }
         if (value==null) {
             throw new IllegalArgumentException("Value cannot be null");
         }
-        if (type!=null) {
-            throw new IllegalArgumentException("Type cannot be specified in an assignment. Use a definition instead");
+        if (type==null) {
+            throw new IllegalArgumentException("Type cannot be null");
         }
         this.type = type;
         this.leftHandExpression = leftHandExpression;
         this.value = value;
-        this.statementKind=StatementKind.ASSIGNMENT;
+        this.statementKind=StatementKind.DEFINITION;
 
     }
 
-    static public Assignment get(TypeName type, Variable variable, Expression value) {
-        return new Assignment(type, variable, value);
+    static public Definition get(TypeName type, Variable variable, Expression value) {
+        return new Definition(type, variable, value);
     }
 
-    public Assignment addModifier(Modifier modifier) {
+    public Definition addModifier(Modifier modifier) {
         if (modifier==null) {
             throw new IllegalArgumentException("Modifier cannot be null");
         }
@@ -45,19 +45,20 @@ public class Assignment extends Statement {
 
     @Override
     public String toString() {
-        return "Assignment{" +
+        return "Definition{" +
                 "type=" + type +
                 ", leftHandExpression=" + leftHandExpression +
                 ", value=" + value +
                 ", modifiers=" + modifiers +
+                ", annotation=" + annotation +
                 ", statementKind=" + statementKind +
                 '}';
     }
 
-    public static Assignment ASSIGNMENT(TypeName type, Expression leftHandExpression, Expression value) {
-        return new Assignment(type, leftHandExpression, value);
+    public static Definition DEFINITION(TypeName type, Expression leftHandExpression, Expression value) {
+        return new Definition(type, leftHandExpression, value);
     }
-    public Assignment ANNOTATION(String annot) {
+    public Definition ANNOTATION(String annot) {
         this.annotation.add(annot);
         return this;
     }

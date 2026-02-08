@@ -101,9 +101,6 @@ public class CompilerExpansionBuilder {
     SpecificationFile generateBuilderSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, org.openprovenance.prov.model.Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String templateFullyQualifiedName, String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        //TypeSpec.Builder builder = compilerUtil.generateClassBuilder2(name);
-
-
         org.openprovenance.prov.template.compiler.past.Class pastClass =
                 pastFactory.CLASS(name)
                         .SUPERCLASS(PROV_FILE_BUILDER)

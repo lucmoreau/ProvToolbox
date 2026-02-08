@@ -107,6 +107,16 @@ public class MethodCall extends Expression {
         this.clazz=null;
 
     }
+    public MethodCall(CastExpression object, String methodName, List<Expression> arguments) {
+        this.methodName=methodName;
+        this.arguments=arguments;
+        this.object=object;
+        this.operatorKind =MethodCallKind.OBJECT_METHOD_CALL;
+        this.expressionKind=ExpressionKind.METHOD_CALL;
+        this.className=null;
+        this.clazz=null;
+
+    }
 
     public MethodCall(ClassName className, String accessorName) {
         this.methodName=accessorName;
@@ -166,6 +176,9 @@ public class MethodCall extends Expression {
         return new MethodCall(object, methodName, arguments);
     }
     public static MethodCall METHOD_CALL(ArrayAccessor object, String methodName, List<Expression> arguments) {
+        return new MethodCall(object, methodName, arguments);
+    }
+    public static MethodCall METHOD_CALL(CastExpression object, String methodName, List<Expression> arguments) {
         return new MethodCall(object, methodName, arguments);
     }
     public static MethodCall FUNCTIONAL_METHOD_CALL(Expression object, String methodName, List<Expression> arguments) {

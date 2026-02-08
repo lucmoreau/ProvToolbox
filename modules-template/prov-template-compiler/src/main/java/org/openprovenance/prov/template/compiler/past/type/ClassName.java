@@ -44,6 +44,7 @@ public class ClassName extends TypeName {
     public static final ClassName PROV_VANILLA_FACTORY = ClassName.get("ProvFactory", "org.openprovenance.prov.vanilla");
 
     public static final ClassName PROV_QUALIFIED_NAME = ClassName.get("QualifiedName", "org.openprovenance.prov.model");
+    public static final ClassName PROV_BUNDLE = ClassName.get("Bundle", "org.openprovenance.prov.model");
     public static final ClassName PROV_DOCUMENT = ClassName.get("Document", "org.openprovenance.prov.model");
     public static final ClassName PROV_UTILITIES = ClassName.get("ProvUtilities", "org.openprovenance.prov.model");
     public static final ClassName PROV_PROVENANCE_KERNELS = ClassName.get("ProvenanceKernels", "org.openprovenance.prov.template.types");
@@ -59,6 +60,8 @@ public class ClassName extends TypeName {
     public static final TypeName PROV_LINKED_LIST_OF_ATTRIBUTES = ParameterizedType.get(LINKED_LIST, PROV_ATTRIBUTE);
     public static final TypeName PROV_COLLECTION_OF_ATTRIBUTES = ParameterizedType.get(COLLECTION, PROV_ATTRIBUTE);
 
+    public static final ClassName TRIFUNCTION = ClassName.get("TriFunction", "org.openprovenance.prov.template.log2prov.interfaces");
+    public static final ClassName PAIR = ClassName.get("Pair", "org.apache.commons.lang3.tuple");
     public static final ClassName APACHE_STRING_SUBSTITUTOR= ClassName.get("StringSubstitutor", "org.apache.commons.text");
 
 
@@ -103,6 +106,24 @@ public class ClassName extends TypeName {
     public static final ParameterizedType BICONSUMER_RESULT_T =ParameterizedType.get(BICONSUMER, TYPE_RESULT, T());
 
     public static final ParameterizedType MAP_QUALIFIEDNAME_STRING_SET = ParameterizedType.get(MAP, PROV_QUALIFIED_NAME, SET_STRING);
+    public static final ParameterizedType COLLECTION_OF_STRING = ParameterizedType.get(COLLECTION, STRING);
+    public static final ParameterizedType MAP_STRING_COLLECTION_OF_STRING = ParameterizedType.get(MAP, STRING, COLLECTION_OF_STRING);
+    public static final ParameterizedType MAP_QUALIFIEDNAME_MAP_STRING_COLLECTION_OF_STRING = ParameterizedType.get(MAP, PROV_QUALIFIED_NAME, MAP_STRING_COLLECTION_OF_STRING);
+    // BiFunction<Object, String, Collection<String>>
+    public static final ParameterizedType BIFUNCTION_OBJECT_STRING_COLLECTION_STRING = ParameterizedType.get(BIFUNCTION, OBJECT, STRING, COLLECTION_OF_STRING);
+    // Map<String, BiFunction<Object, String, Collection<String>>>
+    public static final ParameterizedType MAP_STRING_BIFUNCTION_OBJECT_STRING_COLLECTION_STRING = ParameterizedType.get(MAP, STRING, BIFUNCTION_OBJECT_STRING_COLLECTION_STRING);
+    // Map<String, Map<String, BiFunction<Object, String, Collection<String>>>>
+    public static final ParameterizedType MAP_STRING_MAP_STRING_BIFUNCTION = ParameterizedType.get(MAP, STRING, MAP_STRING_BIFUNCTION_OBJECT_STRING_COLLECTION_STRING);
+    // Collection<Pair<String, Collection<String>>>
+    public static final ParameterizedType PAIR_STRING_COLLECTION_STRING = ParameterizedType.get(PAIR, STRING, COLLECTION_OF_STRING);
+    public static final ParameterizedType COLLECTION_OF_PAIRS_STRING_COLLECTION_STRING = ParameterizedType.get(COLLECTION, PAIR_STRING_COLLECTION_STRING);
+    // TriFunction<Object, String, String, Collection<Pair<String, Collection<String>>>>
+    public static final ParameterizedType TRIFUNCTION_OBJECT_STRING_STRING_COLLECTION_PAIRS = ParameterizedType.get(TRIFUNCTION, OBJECT, STRING, STRING, COLLECTION_OF_PAIRS_STRING_COLLECTION_STRING);
+    // Map<String, TriFunction<...>>
+    public static final ParameterizedType MAP_STRING_TRIFUNCTION = ParameterizedType.get(MAP, STRING, TRIFUNCTION_OBJECT_STRING_STRING_COLLECTION_PAIRS);
+    // Map<String, Map<String, TriFunction<...>>>
+    public static final ParameterizedType MAP_STRING_MAP_STRING_TRIFUNCTION = ParameterizedType.get(MAP, STRING, MAP_STRING_TRIFUNCTION);
     public static final ParameterizedType MAP_STRING_STRING_SET = ParameterizedType.get(MAP, STRING, SET_STRING);
     public static final ParameterizedType MAP_STRING_STRING_ARRAY = ParameterizedType.get(MAP, STRING, STRING_ARRAY);
 

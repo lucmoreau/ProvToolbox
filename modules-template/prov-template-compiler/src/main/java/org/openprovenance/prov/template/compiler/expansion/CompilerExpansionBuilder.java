@@ -2,8 +2,8 @@ package org.openprovenance.prov.template.compiler.expansion;
 
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.model.Identifiable;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.template.compiler.*;
@@ -15,6 +15,7 @@ import org.openprovenance.prov.template.compiler.configuration.SpecificationFile
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.emitter.Poet;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.core.InstantiateUtil;
 import org.openprovenance.prov.template.core.exception.MissingAttributeValue;
@@ -45,6 +46,8 @@ import org.openprovenance.prov.template.compiler.past.ArrayInitialiser;
 import org.openprovenance.prov.template.compiler.past.LambdaExpression;
 import org.openprovenance.prov.template.compiler.past.MethodCall;
 import org.openprovenance.prov.template.compiler.past.Parameter;
+import org.openprovenance.prov.template.compiler.past.Statement;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 
 import static org.openprovenance.prov.template.compiler.past.IfExpression.IF_;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
@@ -59,7 +62,7 @@ import static org.openprovenance.prov.template.core.InstantiateUtil.*;
 
 public class CompilerExpansionBuilder {
     private final CompilerUtil compilerUtil;
-    private final ProvFactory pFactory;
+    private final org.openprovenance.prov.model.ProvFactory pFactory;
     private final boolean withMain;
     private final CompilerCommon compilerCommon;
     private final CompilerTypeManagement compilerTypeManagement;
@@ -67,7 +70,7 @@ public class CompilerExpansionBuilder {
 
 
 
-    public CompilerExpansionBuilder(boolean withMain, CompilerCommon compilerCommon, ProvFactory pFactory, boolean debugComment, CompilerTypeManagement compilerTypeManagement) {
+    public CompilerExpansionBuilder(boolean withMain, CompilerCommon compilerCommon, org.openprovenance.prov.model.ProvFactory pFactory, boolean debugComment, CompilerTypeManagement compilerTypeManagement) {
         this.pFactory=pFactory;
         this.withMain=withMain;
         this.compilerCommon = compilerCommon;
@@ -79,10 +82,10 @@ public class CompilerExpansionBuilder {
 
 
 
-    public SpecificationFile generateBuilderSpecification(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String templateFullyQualifiedName, String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
+    public SpecificationFile generateBuilderSpecification(TemplatesProjectConfiguration configs, Locations locations, org.openprovenance.prov.model.Document doc, String name, String templateName, String templateFullyQualifiedName, String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
 
 
-        Bundle bun = u.getBundle(doc).get(0);
+        org.openprovenance.prov.model.Bundle bun = u.getBundle(doc).get(0);
 
         Set<QualifiedName> allVars = new HashSet<>();
         Set<QualifiedName> allAtts = new HashSet<>();
@@ -95,7 +98,7 @@ public class CompilerExpansionBuilder {
 
 
 
-    SpecificationFile generateBuilderSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String templateFullyQualifiedName, String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
+    SpecificationFile generateBuilderSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, org.openprovenance.prov.model.Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String templateFullyQualifiedName, String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
         //TypeSpec.Builder builder = compilerUtil.generateClassBuilder2(name);
@@ -128,7 +131,7 @@ public class CompilerExpansionBuilder {
         pastClass.METHOD(typeManagerGenerator(templateName, packge));
         pastClass.METHOD(generateTypePropagatorN());
         pastClass.METHOD(generateTypePropagator(packge + ".client", bindingsSchema, successorTable));
-        
+
         //builder.addMethod(generateTemplateGenerator_old(allVars, allAtts, doc, vmap, bindingsSchema));
         // builder.addMethod(generateTypePropagator_old(packge+".client", bindingsSchema, successorTable));
 
@@ -185,7 +188,7 @@ public class CompilerExpansionBuilder {
                 .RETURNS(BUILDER_INTERFACE)
                 .BODY(
                         RETURN(CONSTRUCTOR_CALL(
-                                org.openprovenance.prov.template.compiler.past.type.ClassName.get(
+                                ClassName.get(
                                         compilerUtil.templateNameClass(templateName), packge),
                                 List.of())));
 
@@ -193,9 +196,9 @@ public class CompilerExpansionBuilder {
     }
 
     /**
-     * Returns a PAST {@link org.openprovenance.prov.template.compiler.past.Expression}
+     * Returns a PAST {@link Expression}
      */
-    public org.openprovenance.prov.template.compiler.past.Expression createExamplarExpression(Map<String, List<Descriptor>> theVars, String key, int num, ProvFactory pFactory) {
+    public Expression createExamplarExpression(Map<String, List<Descriptor>> theVars, String key, int num, org.openprovenance.prov.model.ProvFactory pFactory) {
         List<Descriptor> descriptors = theVars.get(key);
         Descriptor descriptor = (descriptors == null) ? null : descriptors.get(0);
         Object examplar = (descriptor == null) ? null : descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getExamplar, NameDescriptor::getExamplar);
@@ -209,8 +212,8 @@ public class CompilerExpansionBuilder {
                 // converter(examplar) — e.g., Integer.valueOf(123)
                 String[] parts = converter.split("\\.");
                 if (parts.length == 2) {
-                    org.openprovenance.prov.template.compiler.past.type.ClassName cls =
-                            org.openprovenance.prov.template.compiler.past.type.ClassName.get(parts[0], "past.lang");
+                    ClassName cls =
+                            ClassName.get(parts[0], "past.lang");
                     return METHOD_CALL(cls, parts[1], CONSTANT(examplar.toString()));
                 }
                 return CONSTANT(examplar.toString());
@@ -229,8 +232,8 @@ public class CompilerExpansionBuilder {
                                     key, pFactory);
                             String[] parts = converter.split("\\.");
                             if (parts.length == 2) {
-                                org.openprovenance.prov.template.compiler.past.type.ClassName cls =
-                                        org.openprovenance.prov.template.compiler.past.type.ClassName.get(parts[0], "past.lang");
+                                ClassName cls =
+                                        ClassName.get(parts[0], "past.lang");
                                 return METHOD_CALL(cls, parts[1], CONSTANT(example));
                             }
                             return CONSTANT(example);
@@ -244,8 +247,8 @@ public class CompilerExpansionBuilder {
                                 case "xsd:long" -> CONSTANT(Long.valueOf(num));
                                 case "xsd:string" -> CONSTANT("v" + num);
                                 case "xsd:boolean" -> CONSTANT(true);
-                                case "xsd:float" -> new org.openprovenance.prov.template.compiler.past.Constant(Float.valueOf((float) (num + 0.01)));
-                                case "xsd:double" -> new org.openprovenance.prov.template.compiler.past.Constant(Double.valueOf(num + 0.01));
+                                case "xsd:float" -> CONSTANT(Float.valueOf((float) (num + 0.01)));
+                                case "xsd:double" -> CONSTANT(Double.valueOf(num + 0.01));
                                 case "xsd:date", "xsd:dateTime" -> CONSTANT(pFactory.newTimeNow().toXMLFormat());
                                 default -> throw new UnsupportedOperationException("createExamplarExpression: unsupported type " + hasType);
                             };
@@ -273,8 +276,8 @@ public class CompilerExpansionBuilder {
 
         Map<String, List<Descriptor>> theVars = bindingsSchema.getVar();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName nameClass =
-                org.openprovenance.prov.template.compiler.past.type.ClassName.get(name, packge);
+        ClassName nameClass =
+                ClassName.get(name, packge);
 
         // Framework fr = Framework.dynamicLoad()
         method.addStatement(ASSIGNMENT(PROV_FRAMEWORK, VARIABLE("fr"),
@@ -317,7 +320,7 @@ public class CompilerExpansionBuilder {
         }
 
         // Build argument list for me.generator(...)
-        List<org.openprovenance.prov.template.compiler.past.Expression> generatorArgs = new ArrayList<>();
+        List<Expression> generatorArgs = new ArrayList<>();
         Set<String> seen = new HashSet<>();
         for (QualifiedName q : allVars) {
             generatorArgs.add(VARIABLE(compilerUtil.varPrefix(q.getLocalPart())));
@@ -330,13 +333,13 @@ public class CompilerExpansionBuilder {
         }
 
         // System.out accessor
-        org.openprovenance.prov.template.compiler.past.Expression systemOut =
-                new org.openprovenance.prov.template.compiler.past.MethodCall(
-                        org.openprovenance.prov.template.compiler.past.type.ClassName.get("System", "past.lang"), "out");
+        Expression systemOut =
+                new MethodCall(
+                        ClassName.get("System", "past.lang"), "out");
         // Formats.ProvFormat.PROVN accessor
-        org.openprovenance.prov.template.compiler.past.Expression provFormatProvn =
-                new org.openprovenance.prov.template.compiler.past.MethodCall(
-                        new org.openprovenance.prov.template.compiler.past.MethodCall(PROV_FORMATS, "ProvFormat"),
+        Expression provFormatProvn =
+                new MethodCall(
+                        new MethodCall(PROV_FORMATS, "ProvFormat"),
                         "PROVN");
 
         // Document document = me.generator(args...)
@@ -348,7 +351,7 @@ public class CompilerExpansionBuilder {
 
         // if (theVars != null): second call using make(exemplars...)
         if (theVars != null) {
-            List<org.openprovenance.prov.template.compiler.past.Expression> makeArgs = new ArrayList<>();
+            List<Expression> makeArgs = new ArrayList<>();
             int count = 0;
             for (String key : theVars.keySet()) {
                 if (theVars.get(key) == null) continue;
@@ -372,9 +375,9 @@ public class CompilerExpansionBuilder {
      * For example, {@code "ex:*"} becomes {@code "ex:" + key + ""} via
      * {@code METHOD_CALL(STRING, "concat", CONSTANT("ex:"), VARIABLE(key), CONSTANT(""))}.
      */
-    private org.openprovenance.prov.template.compiler.past.Expression buildIdStringExpression(String idPattern, String variableName) {
+    private Expression buildIdStringExpression(String idPattern, String variableName) {
         String[] parts = idPattern.split("\\*", -1);
-        List<org.openprovenance.prov.template.compiler.past.Expression> concatArgs = new ArrayList<>();
+        List<Expression> concatArgs = new ArrayList<>();
         for (int i = 0; i < parts.length; i++) {
             concatArgs.add(CONSTANT(parts[i]));
             if (i < parts.length - 1) {
@@ -423,7 +426,7 @@ public class CompilerExpansionBuilder {
         }
 
         // Process variables
-        List<org.openprovenance.prov.template.compiler.past.Expression> generatorArgs = new ArrayList<>();
+        List<Expression> generatorArgs = new ArrayList<>();
         Set<String> seen = new HashSet<>();
 
         for (QualifiedName q : allVars) {
@@ -445,14 +448,14 @@ public class CompilerExpansionBuilder {
                 boolean toEscape = escape != null && "true".equals(escape);
 
                 // Build: QualifiedName newName = (key==null) ? null : __C_ns.stringToQualifiedName(idExpr, pf [, false])
-                org.openprovenance.prov.template.compiler.past.Expression idExpr = buildIdStringExpression(s, key);
-                List<org.openprovenance.prov.template.compiler.past.Expression> stqArgs = new ArrayList<>();
+                Expression idExpr = buildIdStringExpression(s, key);
+                List<Expression> stqArgs = new ArrayList<>();
                 stqArgs.add(idExpr);
                 stqArgs.add(VARIABLE("pf"));
                 if (toEscape) {
                     stqArgs.add(CONSTANT(false));
                 }
-                org.openprovenance.prov.template.compiler.past.Expression stqCall =
+                Expression stqCall =
                         METHOD_CALL(VARIABLE(Constants.C_NS), "stringToQualifiedName", stqArgs);
                 method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(newName),
                         IfExpression.IFEXPRESSION(
@@ -484,8 +487,8 @@ public class CompilerExpansionBuilder {
                     }
                     newName = compilerUtil.attPrefix(key);
                     // QualifiedName newName = (key==null) ? null : __C_ns.stringToQualifiedName(idExpr, pf)
-                    org.openprovenance.prov.template.compiler.past.Expression idExpr = buildIdStringExpression(s, key);
-                    org.openprovenance.prov.template.compiler.past.Expression stqCall =
+                    Expression idExpr = buildIdStringExpression(s, key);
+                    Expression stqCall =
                             METHOD_CALL(VARIABLE(Constants.C_NS), "stringToQualifiedName", idExpr, VARIABLE("pf"));
                     method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(newName),
                             IF_(BINARY_OP(VARIABLE(key), EQ, getNull()))
@@ -539,11 +542,10 @@ public class CompilerExpansionBuilder {
         compilerUtil.generateSpecializedParameters(method, theVar);
 
         // Parameter: processor of type <TemplateName>Interface<T>
-        org.openprovenance.prov.template.compiler.past.type.ClassName interfaceClass =
-                org.openprovenance.prov.template.compiler.past.type.ClassName.get(
+        ClassName interfaceClass =
+                ClassName.get(
                         compilerUtil.templateNameClass(template) + "Interface", packge);
-        org.openprovenance.prov.template.compiler.past.type.ParameterizedType processorType =
-                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(interfaceClass, T());
+        ParameterizedType processorType = ParameterizedType.get(interfaceClass, T());
         method.PARAMETER(processorType, "processor");
 
         // Register namespace prefixes
@@ -571,14 +573,14 @@ public class CompilerExpansionBuilder {
                 boolean toEscape = "true".equals(escape);
                 String id = descriptor.getId();
 
-                org.openprovenance.prov.template.compiler.past.Expression idExpr = buildIdStringExpression(id, key);
-                List<org.openprovenance.prov.template.compiler.past.Expression> stqArgs = new ArrayList<>();
+                Expression idExpr = buildIdStringExpression(id, key);
+                List<Expression> stqArgs = new ArrayList<>();
                 stqArgs.add(idExpr);
                 stqArgs.add(VARIABLE("pf"));
                 if (toEscape) {
                     stqArgs.add(CONSTANT(false));
                 }
-                org.openprovenance.prov.template.compiler.past.Expression stqCall =
+                Expression stqCall =
                         METHOD_CALL(VARIABLE(Constants.C_NS), "stringToQualifiedName", stqArgs);
                 method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(newName),
                         IF_(BINARY_OP(VARIABLE(key), EQ, getNull()))
@@ -603,14 +605,14 @@ public class CompilerExpansionBuilder {
                     final String newName = compilerUtil.attPrefix(key);
                     translator.put(key, newName);
 
-                    org.openprovenance.prov.template.compiler.past.Expression idExpr = buildIdStringExpression(id, key);
-                    List<org.openprovenance.prov.template.compiler.past.Expression> stqArgs = new ArrayList<>();
+                    Expression idExpr = buildIdStringExpression(id, key);
+                    List<Expression> stqArgs = new ArrayList<>();
                     stqArgs.add(idExpr);
                     stqArgs.add(VARIABLE("pf"));
                     if (toEscape) {
                         stqArgs.add(CONSTANT(false));
                     }
-                    org.openprovenance.prov.template.compiler.past.Expression stqCall =
+                    Expression stqCall =
                             METHOD_CALL(VARIABLE(Constants.C_NS), "stringToQualifiedName", stqArgs);
                     method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(newName),
                             IF_(BINARY_OP(VARIABLE(key), EQ, getNull()))
@@ -621,7 +623,7 @@ public class CompilerExpansionBuilder {
         }
 
         // Build argument list for processor.call(args...) using translator
-        List<org.openprovenance.prov.template.compiler.past.Expression> callArgs = new ArrayList<>();
+        List<Expression> callArgs = new ArrayList<>();
         for (String key : theVar.keySet()) {
             if (!theVar.containsKey(key)) continue;
             if (theVar.get(key) == null) continue;
@@ -645,7 +647,7 @@ public class CompilerExpansionBuilder {
      *
      * Returns a PAST {@link Method} .
      */
-    public Method generateTemplateGenerator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, TemplateBindingsSchema bindingsSchema, boolean past) {
+    public Method generateTemplateGenerator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, org.openprovenance.prov.model.Document doc, Hashtable<QualifiedName, String> vmap, TemplateBindingsSchema bindingsSchema, boolean past) {
 
         Method method = METHOD("generator")
                 .commentFileLocation()
@@ -658,7 +660,7 @@ public class CompilerExpansionBuilder {
         }
         for (QualifiedName q : allAtts) {
             if (!allVars.contains(q)) {
-                method.PARAMETER(org.openprovenance.prov.template.compiler.past.type.ClassName.OBJECT, q.getLocalPart());
+                method.PARAMETER(ClassName.OBJECT, q.getLocalPart());
             }
         }
 
@@ -684,12 +686,12 @@ public class CompilerExpansionBuilder {
         }
 
         // Process PROV template statements using StatementCompilerAction2
-        List<org.openprovenance.prov.template.compiler.past.Statement> bodyStatements = new ArrayList<>();
+        List<Statement> bodyStatements = new ArrayList<>();
         StatementCompilerAction2 action = new StatementCompilerAction2(pFactory, allVars, allAtts, vmap, bodyStatements, "__C_document.getStatementOrBundle()", bindingsSchema);
-        for (StatementOrBundle s : doc.getStatementOrBundle()) {
+        for (org.openprovenance.prov.model.StatementOrBundle s : doc.getStatementOrBundle()) {
             u.doAction(s, action);
         }
-        for (org.openprovenance.prov.template.compiler.past.Statement stmt : bodyStatements) {
+        for (Statement stmt : bodyStatements) {
             method.addStatement(stmt);
         }
 
@@ -761,7 +763,7 @@ public class CompilerExpansionBuilder {
 
 
 
-    private org.openprovenance.prov.template.compiler.past.Expression propagateTypesNCall(int count, int successor, int relation, org.openprovenance.prov.template.compiler.past.Expression specificRelation) {
+    private Expression propagateTypesNCall(int count, int successor, int relation, Expression specificRelation) {
         return METHOD_CALL("propagateTypes_n", List.of(
                 VARIABLE("record"),
                 VARIABLE("mapLevelN"),
@@ -819,9 +821,9 @@ public class CompilerExpansionBuilder {
 
                     // Integer tmpa = mapLevel0.get(uri + ((QualifiedName)record[pos]).getLocalPart())
                     int pos = findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), theVar);
-                    org.openprovenance.prov.template.compiler.past.Expression getLocalPart =
+                    Expression getLocalPart =
                             METHOD_CALL(CAST(PROV_QUALIFIED_NAME, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(pos))), "getLocalPart", List.of());
-                    org.openprovenance.prov.template.compiler.past.Expression concatUri =
+                    Expression concatUri =
                             METHOD_CALL(STRING, "concat", CONSTANT(firstRelationIdentifier.getUri() + "."), getLocalPart);
                     method.addStatement(ASSIGNMENT(INTEGER, VARIABLE(tmpa),
                             METHOD_CALL(VARIABLE("mapLevel0"), "get", concatUri)));
@@ -842,12 +844,12 @@ public class CompilerExpansionBuilder {
 
     public Method generateTypePropagator(String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable) {
 
-        org.openprovenance.prov.template.compiler.past.type.ParameterizedType levelNMap =
-                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(MAP, STRING, INTEGER);
-        org.openprovenance.prov.template.compiler.past.type.ParameterizedType collectionIntArray =
-                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(COLLECTION, intArray);
-        org.openprovenance.prov.template.compiler.past.type.ParameterizedType levelNP1CMap =
-                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(MAP, STRING, collectionIntArray);
+        ParameterizedType levelNMap =
+                ParameterizedType.get(MAP, STRING, INTEGER);
+        ParameterizedType collectionIntArray =
+                ParameterizedType.get(COLLECTION, intArray);
+        ParameterizedType levelNP1CMap =
+                ParameterizedType.get(MAP, STRING, collectionIntArray);
 
         Method method = METHOD("propagateTypes")
                 .commentFileLocation()
@@ -867,11 +869,11 @@ public class CompilerExpansionBuilder {
         Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
         java.util.Iterator<String> iter = theVar.keySet().iterator();
 
-        Map<String, Set<Pair<QualifiedName, WasDerivedFrom>>>  successors1  = compilerCommon.getSuccessors1();
-        Map<String, Set<Pair<QualifiedName, WasAttributedTo>>> successors2  = compilerCommon.getSuccessors2();
-        Map<String, Set<Pair<QualifiedName, HadMember>>>       successors3  = compilerCommon.getSuccessors3();
+        Map<String, Set<Pair<QualifiedName, org.openprovenance.prov.model.WasDerivedFrom>>>  successors1  = compilerCommon.getSuccessors1();
+        Map<String, Set<Pair<QualifiedName, org.openprovenance.prov.model.WasAttributedTo>>> successors2  = compilerCommon.getSuccessors2();
+        Map<String, Set<Pair<QualifiedName, org.openprovenance.prov.model.HadMember>>>       successors3  = compilerCommon.getSuccessors3();
         Map<String, Set<Pair<QualifiedName, QualifiedHadMember>>> successors3b = compilerCommon.getSuccessors3b();
-        Map<String, Set<Pair<QualifiedName, SpecializationOf>>> successors4 = compilerCommon.getSuccessors4();
+        Map<String, Set<Pair<QualifiedName, org.openprovenance.prov.model.SpecializationOf>>> successors4 = compilerCommon.getSuccessors4();
 
         Map<String, Collection<String>> knownTypes   = compilerTypeManagement.getKnownTypes();
         Map<String, Collection<String>> unknownTypes  = compilerTypeManagement.getUnknownTypes();
@@ -891,9 +893,9 @@ public class CompilerExpansionBuilder {
                         int successor = rowValues.get(i * 2);
                         int relation = rowValues.get(i * 2 + 1);
 
-                        if (relation == StatementOrBundle.Kind.PROV_DERIVATION.ordinal()) {
+                        if (relation == org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_DERIVATION.ordinal()) {
                             generateStatementForRelation(method, count, successor, relation, theVar, successors1, knownTypes, unknownTypes, key);
-                        } else if (relation == StatementOrBundle.Kind.PROV_MEMBERSHIP.ordinal()) {
+                        } else if (relation == org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_MEMBERSHIP.ordinal()) {
                             generateStatementForRelation(method, count, successor, relation, theVar, successors3b, knownTypes, unknownTypes, key);
                         } else {
                             method.addStatement(propagateTypesNCall(count, successor, relation, CONSTANT(-1)));
@@ -1063,17 +1065,17 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public Collection<QualifiedName> doCollectElementVariables(Statement s, String search) {
+    public Collection<QualifiedName> doCollectElementVariables(org.openprovenance.prov.model.Statement s, String search) {
         return doCollectElementVariables(pFactory,s,search);
     }
 
 
-    static public Collection<QualifiedName> doCollectElementVariables(ProvFactory pFactory, Statement s, String search) {
-        Collection<Attribute> attributes = pFactory.getAttributes(s);
+    static public Collection<QualifiedName> doCollectElementVariables(org.openprovenance.prov.model.ProvFactory pFactory, org.openprovenance.prov.model.Statement s, String search) {
+        Collection<org.openprovenance.prov.model.Attribute> attributes = pFactory.getAttributes(s);
         if (!(attributes.isEmpty())) {
             boolean found=false;
             Collection<QualifiedName> res=new LinkedList<>();
-            for (Attribute attribute:attributes) {
+            for (org.openprovenance.prov.model.Attribute attribute:attributes) {
                 QualifiedName element=attribute.getElementName();
                 Object value=attribute.getValue();
                 if (value instanceof QualifiedName) {
@@ -1097,12 +1099,12 @@ public class CompilerExpansionBuilder {
         final String var_count = "count";
         final String var_in_type = "in_type";
 
-        org.openprovenance.prov.template.compiler.past.type.ParameterizedType levelNMap =
-                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(MAP, STRING, INTEGER);
-        org.openprovenance.prov.template.compiler.past.type.ParameterizedType collectionIntArray =
-                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(COLLECTION, intArray);
-        org.openprovenance.prov.template.compiler.past.type.ParameterizedType levelNP1CMap =
-                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(MAP, STRING, collectionIntArray);
+        ParameterizedType levelNMap =
+                ParameterizedType.get(MAP, STRING, INTEGER);
+        ParameterizedType collectionIntArray =
+                ParameterizedType.get(COLLECTION, intArray);
+        ParameterizedType levelNP1CMap =
+                ParameterizedType.get(MAP, STRING, collectionIntArray);
 
         Method method = METHOD("propagateTypes_n")
                 .commentFileLocation()
@@ -1119,30 +1121,30 @@ public class CompilerExpansionBuilder {
         method.PARAMETER(levelNMap, "uniqId");
 
         // if (record[count]!=null) {
-        org.openprovenance.prov.template.compiler.past.Expression recordCount =
+        Expression recordCount =
                 ARRAY_ACCESSOR(VARIABLE(var_record), VARIABLE(var_count));
 
         //   String uri=((QualifiedName)(record[count])).getUri()
-        org.openprovenance.prov.template.compiler.past.Statement uriAssignment =
+        Statement uriAssignment =
                 ASSIGNMENT(STRING, VARIABLE("uri"),
                         METHOD_CALL(CAST(PROV_QUALIFIED_NAME, recordCount), "getUri", List.of()));
 
         //   Integer in_type=mapLevelN.get(uri)
-        org.openprovenance.prov.template.compiler.past.Statement inTypeAssignment =
+        Statement inTypeAssignment =
                 ASSIGNMENT(INTEGER, VARIABLE(var_in_type),
                         METHOD_CALL(VARIABLE("mapLevelN"), "get", VARIABLE("uri")));
 
         // if (record[successor]!=null) {
-        org.openprovenance.prov.template.compiler.past.Expression recordSuccessor =
+        Expression recordSuccessor =
                 ARRAY_ACCESSOR(VARIABLE(var_record), VARIABLE(var_successor));
 
         //   String uri2=((QualifiedName)(record[successor])).getUri()
-        org.openprovenance.prov.template.compiler.past.Statement uri2Assignment =
+        Statement uri2Assignment =
                 ASSIGNMENT(STRING, VARIABLE("uri2"),
                         METHOD_CALL(CAST(PROV_QUALIFIED_NAME, recordSuccessor), "getUri", List.of()));
 
         //   mapLevelNP1.computeIfAbsent(uri2, k -> new LinkedList<>())
-        org.openprovenance.prov.template.compiler.past.Expression computeIfAbsent =
+        Expression computeIfAbsent =
                 METHOD_CALL(VARIABLE("mapLevelNP1"), "computeIfAbsent",
                         VARIABLE("uri2"),
                         LambdaExpression.LAMBDA(Parameter.PARAMETER("k", null))
@@ -1151,7 +1153,7 @@ public class CompilerExpansionBuilder {
         //   mapLevelNP1.get(uri2).add(new int[] { successor, genericRelation, specificRelation, in_type, count, uniqId.get(uri) })
         MethodCall getUri2 =
                 METHOD_CALL(VARIABLE("mapLevelNP1"), "get", VARIABLE("uri2"));
-        org.openprovenance.prov.template.compiler.past.Expression arrayInit =
+        Expression arrayInit =
                 ArrayInitialiser.ARRAY_INITIALISER(_int,
                         VARIABLE(var_successor),
                         VARIABLE(var_genericRelation),
@@ -1159,7 +1161,7 @@ public class CompilerExpansionBuilder {
                         VARIABLE(var_in_type),
                         VARIABLE(var_count),
                         METHOD_CALL(VARIABLE("uniqId"), "get", VARIABLE("uri")));
-        org.openprovenance.prov.template.compiler.past.Expression addCall =
+        Expression addCall =
                 METHOD_CALL(getUri2, "add", List.of(arrayInit));
 
         // Build nested if statements (innermost first)
@@ -1183,8 +1185,8 @@ public class CompilerExpansionBuilder {
 
 
 
-    public Hashtable<QualifiedName, String> generateQualifiedNames(Document doc, org.openprovenance.prov.template.compiler.past.Class builder) {
-        Bundle bun = u.getBundle(doc).get(0);
+    public Hashtable<QualifiedName, String> generateQualifiedNames(org.openprovenance.prov.model.Document doc, org.openprovenance.prov.template.compiler.past.Class builder) {
+        org.openprovenance.prov.model.Bundle bun = u.getBundle(doc).get(0);
         Set<QualifiedName> set = new HashSet<>();
         compilerUtil.allQualifiedNames(bun, set, pFactory);
         set.remove(pFactory.newQualifiedName(InstantiateUtil.TMPL_NS, InstantiateUtil.LABEL, InstantiateUtil.TMPL_PREFIX));
@@ -1217,15 +1219,15 @@ public class CompilerExpansionBuilder {
         method.PARAMETER(OBJECT_ARRAY, "__record");
 
         int count = 1;
-        List<org.openprovenance.prov.template.compiler.past.Expression> args = new ArrayList<>();
+        List<Expression> args = new ArrayList<>();
         for (String key : theVar.keySet()) {
             if (theVar.get(key) == null) {
                 continue;
             }
-            final org.openprovenance.prov.template.compiler.past.type.ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, key);
+            final ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, key);
             final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
             final String converter = compilerUtil.getConverterForDeclaredType(atype);
-            org.openprovenance.prov.template.compiler.past.Expression arrayAccess =
+            Expression arrayAccess =
                     ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count));
             if (converter == null) {
                 // Type key = (Type) __record[count]
@@ -1256,20 +1258,20 @@ public class CompilerExpansionBuilder {
         method.PARAMETER(OBJECT_ARRAY, "__record");
 
         // Parameter: processor of type <TemplateName>Interface<T>
-        org.openprovenance.prov.template.compiler.past.type.ClassName interfaceClass =
-                org.openprovenance.prov.template.compiler.past.type.ClassName.get(
+        ClassName interfaceClass =
+                ClassName.get(
                         compilerUtil.templateNameClass(template) + "Interface", packge);
-        org.openprovenance.prov.template.compiler.past.type.ParameterizedType processorType =
-                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(interfaceClass, T());
+        ParameterizedType processorType =
+                ParameterizedType.get(interfaceClass, T());
         method.PARAMETER(processorType, PROCESSOR);
 
         int count = 1;
-        List<org.openprovenance.prov.template.compiler.past.Expression> args = new ArrayList<>();
+        List<Expression> args = new ArrayList<>();
         for (String key : theVar.keySet()) {
             if (theVar.get(key) == null) {
                 continue;
             }
-            final org.openprovenance.prov.template.compiler.past.type.ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, key);
+            final ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, key);
             final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
             final String converter = compilerUtil.getConverterForDeclaredType2(atype);
             if (converter == null) {
@@ -1301,11 +1303,11 @@ public class CompilerExpansionBuilder {
                 .addTypeVariables(T());
 
         // Parameter: processor of type <TemplateName>Interface<T>
-        org.openprovenance.prov.template.compiler.past.type.ClassName interfaceClass =
-                org.openprovenance.prov.template.compiler.past.type.ClassName.get(
+        ClassName interfaceClass =
+                ClassName.get(
                         compilerUtil.templateNameClass(template) + "Interface", packge);
-        org.openprovenance.prov.template.compiler.past.type.ParameterizedType processorType =
-                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(interfaceClass, T());
+        ParameterizedType processorType =
+                ParameterizedType.get(interfaceClass, T());
         method.PARAMETER(processorType, PROCESSOR);
 
         Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
@@ -1316,7 +1318,7 @@ public class CompilerExpansionBuilder {
             List<Descriptor> descriptors = theVar.get(variable);
             if (descriptors != null) {
                 for (Descriptor descriptor : descriptors) {
-                    final org.openprovenance.prov.template.compiler.past.type.ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, variable);
+                    final ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, variable);
                     final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, variable);
                     final String converter = compilerUtil.getConverterForDeclaredType(atype);
                     if (descriptor instanceof NameDescriptor) {
@@ -1336,7 +1338,7 @@ public class CompilerExpansionBuilder {
             }
         }
         // return make(args..., _processor)
-        List<org.openprovenance.prov.template.compiler.past.Expression> args = new ArrayList<>();
+        List<Expression> args = new ArrayList<>();
         for (String variable : variables) {
             args.add(VARIABLE(variable));
         }
@@ -1354,19 +1356,18 @@ public class CompilerExpansionBuilder {
 
 
     public Method typeManagerGenerator(String templateName, String packge) {
-        org.openprovenance.prov.template.compiler.past.type.TypeVariable typeT = org.openprovenance.prov.template.compiler.past.type.TypeVariable.T();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName typeManagementClass =
-                org.openprovenance.prov.template.compiler.past.type.ClassName.get(
+        ClassName typeManagementClass =
+                ClassName.get(
                         compilerUtil.templateNameClass(templateName) + "TypeManagement", packge);
-        org.openprovenance.prov.template.compiler.past.type.ParameterizedType returnType =
-                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(typeManagementClass, typeT);
+        ParameterizedType returnType =
+                ParameterizedType.get(typeManagementClass, T());
 
         Method method = METHOD("getTypeManager")
                 .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .RETURNS(returnType)
-                .addTypeVariables(typeT);
+                .addTypeVariables(T());
 
         method.PARAMETER(MAP_QUALIFIEDNAME_STRING_SET, "knownTypeMap");
         method.PARAMETER(MAP_QUALIFIEDNAME_STRING_SET, "unknownTypeMap");
@@ -1375,8 +1376,8 @@ public class CompilerExpansionBuilder {
         method.PARAMETER(MAP_STRING_MAP_STRING_TRIFUNCTION, "idataConverters");
 
         // return new <TemplateName>TypeManagement<>(pf, knownTypeMap, unknownTypeMap, propertyConverters, idata, idataConverters)
-        org.openprovenance.prov.template.compiler.past.type.ParameterizedType diamondType =
-                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(typeManagementClass);
+        ParameterizedType diamondType =
+                ParameterizedType.get(typeManagementClass);
         method.addStatement(RETURN(CONSTRUCTOR_CALL(diamondType, List.of(
                 VARIABLE("pf"),
                 VARIABLE("knownTypeMap"),
@@ -1390,8 +1391,8 @@ public class CompilerExpansionBuilder {
 
 
     public Method typedRecordGenerator(String templateName, String packge) {
-        org.openprovenance.prov.template.compiler.past.type.ClassName typedRecordClass =
-                org.openprovenance.prov.template.compiler.past.type.ClassName.get(
+        ClassName typedRecordClass =
+                ClassName.get(
                         compilerUtil.templateNameClass(templateName) + "TypedRecord", packge);
 
         Method method = METHOD("getTypedRecord")

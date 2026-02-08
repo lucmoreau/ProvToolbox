@@ -304,7 +304,6 @@ public class CompilerBeanGenerator {
                         "forEach",
                         LAMBDA(PARAMETER("b", consistsOfClass))
                                 .BODY(ASSIGNMENT(
-                                        null, // not  a delcaration
                                         METHOD_CALL(VARIABLE("b"), shared),
                                         POST_INCREMENT(ARRAY_ACCESSOR(VARIABLE(countName), CONSTANT(0)),-1)))));
         builder.METHOD(method);
@@ -325,7 +324,6 @@ public class CompilerBeanGenerator {
                         "forEach",
                         LAMBDA(PARAMETER("b", consistsOfClass))
                                 .BODY(ASSIGNMENT(
-                                        null, // not  a delcaration
                                         METHOD_CALL(VARIABLE("b"), shared),
                                         VARIABLE("v")))));
 

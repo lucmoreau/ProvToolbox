@@ -68,8 +68,8 @@ public class CompilerBeanEnactor {
                 .PARAMETER(beanProcessorClass, "checker")
                 .BODY(
 
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"),"checker"), VARIABLE("checker")),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"),REALISER), VARIABLE(REALISER))            ))      ;
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"),"checker"), VARIABLE("checker")),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"),REALISER), VARIABLE(REALISER))            ))      ;
 
 
         for (TemplateCompilerConfig config : configs.templates) {

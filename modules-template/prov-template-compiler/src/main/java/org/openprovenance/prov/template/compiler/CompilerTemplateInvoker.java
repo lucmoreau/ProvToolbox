@@ -89,7 +89,6 @@ public class CompilerTemplateInvoker {
                                                 PARAMETER("o", outputClassName))
                                                 .BODY(
                                                         ASSIGNMENT(
-                                                                null,
                                                                 METHOD_CALL(VARIABLE("o"), ELEMENTS),
                                                                 CONSTRUCTOR_CALL(LINKED_LIST_GENERICS, List.of())),
                                                         RETURN(

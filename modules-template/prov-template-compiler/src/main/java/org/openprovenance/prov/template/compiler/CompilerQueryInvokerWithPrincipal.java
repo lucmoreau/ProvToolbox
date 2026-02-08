@@ -73,10 +73,10 @@ public class CompilerQueryInvokerWithPrincipal {
                 .PARAMETER(QUERY_INVOKER2_CLASS, QUERY_INVOKER_VAR)
                 .debugFileLocation()
                 .BODY(
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), LINKING_VAR), CONSTANT(false)),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), PRINCIPAL_VAR), VARIABLE(PRINCIPAL_VAR)),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), QUERY_INVOKER_VAR), VARIABLE(QUERY_INVOKER_VAR))
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LINKING_VAR), CONSTANT(false)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), PRINCIPAL_VAR), VARIABLE(PRINCIPAL_VAR)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), QUERY_INVOKER_VAR), VARIABLE(QUERY_INVOKER_VAR))
                 );
         pastClass.CONSTRUCTOR(c1);
 
@@ -86,10 +86,10 @@ public class CompilerQueryInvokerWithPrincipal {
                 .PARAMETER(STRING, PRINCIPAL_VAR)
                 .debugFileLocation()
                 .BODY(
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), LINKING_VAR), CONSTANT(false)),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), PRINCIPAL_VAR), VARIABLE(PRINCIPAL_VAR)),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), QUERY_INVOKER_VAR),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LINKING_VAR), CONSTANT(false)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), PRINCIPAL_VAR), VARIABLE(PRINCIPAL_VAR)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), QUERY_INVOKER_VAR),
                                 CONSTRUCTOR_CALL(QUERY_INVOKER2_CLASS, List.of(VARIABLE(SB_VAR), VARIABLE(LINKING_VAR))))
                 );
         pastClass.CONSTRUCTOR(c2);
@@ -101,10 +101,10 @@ public class CompilerQueryInvokerWithPrincipal {
                 .PARAMETER(STRING, PRINCIPAL_VAR)
                 .debugFileLocation()
                 .BODY(
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), LINKING_VAR), VARIABLE(LINKING_VAR)),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), PRINCIPAL_VAR), VARIABLE(PRINCIPAL_VAR)),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), QUERY_INVOKER_VAR),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LINKING_VAR), VARIABLE(LINKING_VAR)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), PRINCIPAL_VAR), VARIABLE(PRINCIPAL_VAR)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), QUERY_INVOKER_VAR),
                                 CONSTRUCTOR_CALL(QUERY_INVOKER2_CLASS, List.of(VARIABLE(SB_VAR), VARIABLE(LINKING_VAR))))
                 );
         pastClass.CONSTRUCTOR(c3);

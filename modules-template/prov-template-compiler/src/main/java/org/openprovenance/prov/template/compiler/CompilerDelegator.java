@@ -54,7 +54,7 @@ public class CompilerDelegator {
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(beanProcessorType, DELEGATOR_VAR)
                 .BODY(
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), DELEGATOR_VAR), VARIABLE(DELEGATOR_VAR))
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), DELEGATOR_VAR), VARIABLE(DELEGATOR_VAR))
                 );
         pastClass.CONSTRUCTOR(ctor);
 

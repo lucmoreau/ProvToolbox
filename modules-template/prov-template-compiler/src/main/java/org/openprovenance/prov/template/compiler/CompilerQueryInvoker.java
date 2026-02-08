@@ -68,8 +68,8 @@ public class CompilerQueryInvoker {
                 .PARAMETER(STRING_BUILDER, SB_VAR)
                 .debugFileLocation()
                 .BODY(
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), LINKING_VAR), CONSTANT(false))
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LINKING_VAR), CONSTANT(false))
                 );
         pastClass.CONSTRUCTOR(c1);
 
@@ -80,8 +80,8 @@ public class CompilerQueryInvoker {
                     .PARAMETER(_bool, LINKING_VAR)
                     .debugFileLocation()
                     .BODY(
-                            ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
-                            ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), LINKING_VAR), VARIABLE(LINKING_VAR))
+                            ASSIGNMENT( METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
+                            ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LINKING_VAR), VARIABLE(LINKING_VAR))
                     );
             pastClass.CONSTRUCTOR(c2);
         }
@@ -368,7 +368,7 @@ public class CompilerQueryInvoker {
         Iterator iterator = ITERATOR(PARAMETER(variableBean1, iterType), METHOD_CALL(VARIABLE(beanVar), ELEMENTS));
         iterator.BODY(
                 IF(VARIABLE("first")).THEN(
-                        ASSIGNMENT(null, VARIABLE("first"), CONSTANT(false))
+                        ASSIGNMENT( VARIABLE("first"), CONSTANT(false))
                 ).ELSE(
                         METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(",\n     ")))
                 )

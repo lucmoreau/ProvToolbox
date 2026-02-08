@@ -71,7 +71,7 @@ public class    CompilerTableConfiguratorWithMap {
                         PARAMETER("pf", PROV_FACTORY)
                 )
                 .BODY(
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), "map"), VARIABLE("map"))
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "map"), VARIABLE("map"))
                 );
 
         for (TemplateCompilerConfig config : configs.templates) {
@@ -92,7 +92,7 @@ public class    CompilerTableConfiguratorWithMap {
 
 
                 ctor.BODY(
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), builderVar),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), builderVar),
                                 CONSTRUCTOR_CALL(builderClass, List.of(VARIABLE("pf"))))
                 );
 

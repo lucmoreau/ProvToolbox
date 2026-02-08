@@ -135,7 +135,7 @@ public class CompilerBeanCompleter3 {
 
                 DEFINITION(outputClassName, VARIABLE("result"), METHOD_CALL(VARIABLE("super"),PROCESS_METHOD_NAME, List.of(VARIABLE(BEAN_VAR)))),
 
-                ASSIGNMENT(null, METHOD_CALL(VARIABLE("result"), "ID"), METHOD_CALL("getValueFromLocation",List.of())),
+                ASSIGNMENT( METHOD_CALL(VARIABLE("result"), "ID"), METHOD_CALL("getValueFromLocation",List.of())),
 
                 // PRINT STATEMENT
 

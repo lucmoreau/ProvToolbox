@@ -58,9 +58,9 @@ public class CompilerBeanCompleter2Composite {
                  .PARAMETER(MAP_STRING_OBJECT, M_VAR)
                  .debugFileLocation()
                  .BODY(
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), LL_VAR),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LL_VAR),
                                 CAST(LIST_MAP_STRING_OBJECT, METHOD_CALL(VARIABLE(M_VAR), "get", List.of(CONSTANT(ELEMENTS))))),
-                         ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), M_VAR), VARIABLE(M_VAR))
+                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), M_VAR), VARIABLE(M_VAR))
                  );
          pastClass.CONSTRUCTOR(constructor);
 
@@ -82,7 +82,7 @@ public class CompilerBeanCompleter2Composite {
                     .RETURNS(outClass)
                     .commentFileLocation()
                     .BODY(
-                            ASSIGNMENT(null,
+                            ASSIGNMENT(
                                     METHOD_CALL(VARIABLE(BEAN_VAR), "ID"),
                                     CAST(INTEGER,
                                             METHOD_CALL(VARIABLE(M_VAR), "get", List.of(CONSTANT("ID")))  )   ),

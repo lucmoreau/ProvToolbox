@@ -63,7 +63,7 @@ public class CompilerTypeConverter {
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(TYPED_GETTER_OF_T, "getter")
                 .BODY(
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), "getter"), VARIABLE("getter"))
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "getter"), VARIABLE("getter"))
                 );
         pastClass.CONSTRUCTOR(ctor);
 

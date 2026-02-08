@@ -87,20 +87,20 @@ public class CompilerBuilderInit {
         int size=configs.templates.length;
         List<Statement> staticBlockStatements=
                 new java.util.ArrayList<>(List.of(
-                        ASSIGNMENT(null, VARIABLE(BUILDERS), ARRAY_ALLOCATOR(STRING, CONSTANT(size))),
-                        ASSIGNMENT(null, VARIABLE(TYPEMANAGERS), ARRAY_ALLOCATOR(STRING, CONSTANT(size))),
-                        ASSIGNMENT(null, VARIABLE(PF), METHOD_CALL(PROV_VANILLA_FACTORY, "getFactory", List.of()))
+                        ASSIGNMENT( VARIABLE(BUILDERS), ARRAY_ALLOCATOR(STRING, CONSTANT(size))),
+                        ASSIGNMENT( VARIABLE(TYPEMANAGERS), ARRAY_ALLOCATOR(STRING, CONSTANT(size))),
+                        ASSIGNMENT( VARIABLE(PF), METHOD_CALL(PROV_VANILLA_FACTORY, "getFactory", List.of()))
                 ));
 
         int count=0;
         for (TemplateCompilerConfig config: configs.templates) {
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             staticBlockStatements.add(
-                    ASSIGNMENT(null,
+                    ASSIGNMENT(
                             ARRAY_ACCESSOR(VARIABLE(BUILDERS), CONSTANT(count)),
                             CONSTANT(locations.getBackendPackage(config.fullyQualifiedName)+"."+compilerUtil.templateNameClass(config.name))));
             staticBlockStatements.add(
-                    ASSIGNMENT(null,
+                    ASSIGNMENT(
                             ARRAY_ACCESSOR(VARIABLE(TYPEMANAGERS), CONSTANT(count)),
                             CONSTANT(locations.getBackendPackage(config.fullyQualifiedName)+"."+compilerUtil.templateNameClass(config.name)+"TypeManagement")));
 

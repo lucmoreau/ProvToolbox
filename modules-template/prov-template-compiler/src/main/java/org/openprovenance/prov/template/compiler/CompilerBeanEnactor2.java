@@ -76,11 +76,9 @@ public class CompilerBeanEnactor2 {
                         PARAMETER("checker", inputProcessorClass))
                 .BODY(
                         ASSIGNMENT(
-                                null,
                                 METHOD_CALL(VARIABLE("this"), REALISER),
                                 VARIABLE(REALISER)   ),
                         ASSIGNMENT(
-                                null,
                                 METHOD_CALL(VARIABLE("this"), "checker"),
                                 VARIABLE( "checker")  )
                 );

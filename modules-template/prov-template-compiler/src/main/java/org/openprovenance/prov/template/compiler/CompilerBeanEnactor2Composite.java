@@ -72,8 +72,8 @@ public class CompilerBeanEnactor2Composite {
                         // Note: appears a method call to super
                         METHOD_CALL("super",List.of(VARIABLE(Constants.REALISER), VARIABLE("checker"))),
                         // assign fields
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), Constants.REALISER), VARIABLE(Constants.REALISER)),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), "checker"), VARIABLE("checker"))
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), Constants.REALISER), VARIABLE(Constants.REALISER)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "checker"), VARIABLE("checker"))
                 );
         pastClass.CONSTRUCTOR(ctor);
 

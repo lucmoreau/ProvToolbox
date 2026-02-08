@@ -66,7 +66,7 @@ public class CompilerCompositeConfigurations {
                     .MODIFIERS(Modifier.PUBLIC)
                     .PARAMETER(beanProcessor, ENACTOR_VAR);
             compilerUtil.debugFileLocation(cspec);
-            cspec.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), ENACTOR_VAR), VARIABLE(ENACTOR_VAR)));
+            cspec.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE("this"), ENACTOR_VAR), VARIABLE(ENACTOR_VAR)));
             pastClass.CONSTRUCTOR(cspec);
         }
 
@@ -147,7 +147,7 @@ public class CompilerCompositeConfigurations {
                     .MODIFIERS(Modifier.PUBLIC)
                     .PARAMETER(beanProcessor, ENACTOR_VAR);
             compilerUtil.debugFileLocation(cspec);
-            cspec.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), ENACTOR_VAR), VARIABLE(ENACTOR_VAR)));
+            cspec.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE("this"), ENACTOR_VAR), VARIABLE(ENACTOR_VAR)));
             pastClass.CONSTRUCTOR(cspec);
         }
 

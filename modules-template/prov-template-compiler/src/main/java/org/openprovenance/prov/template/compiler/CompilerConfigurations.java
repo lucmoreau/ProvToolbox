@@ -87,7 +87,7 @@ public class CompilerConfigurations {
                     .PARAMETER(constructParameterType,constructorParameter);
             compilerUtil.debugFileLocation(cspec);
 
-            cspec.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), constructorParameter),VARIABLE(constructorParameter)));
+            cspec.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE("this"), constructorParameter),VARIABLE(constructorParameter)));
             pastClass.CONSTRUCTOR(cspec);
         }
 

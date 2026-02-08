@@ -71,10 +71,10 @@ public class CompilerBeanEnactor2WithPrincipal {
                 )
                 .BODY(
                         METHOD_CALL("super",List.of(VARIABLE(Constants.REALISER), VARIABLE("checker"))),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), Constants.REALISER), VARIABLE(Constants.REALISER)),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), "checker"), VARIABLE("checker")),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), "postProcessing"), VARIABLE("postProcessing")),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), PRINCIPAL_MANAGER_VAR), VARIABLE(PRINCIPAL_MANAGER_VAR))
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), Constants.REALISER), VARIABLE(Constants.REALISER)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "checker"), VARIABLE("checker")),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "postProcessing"), VARIABLE("postProcessing")),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), PRINCIPAL_MANAGER_VAR), VARIABLE(PRINCIPAL_MANAGER_VAR))
                 );
         pastClass.CONSTRUCTOR(ctor);
 

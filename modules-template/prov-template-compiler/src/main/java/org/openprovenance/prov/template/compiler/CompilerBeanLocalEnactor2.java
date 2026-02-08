@@ -111,14 +111,14 @@ public class CompilerBeanLocalEnactor2 {
 
                         Class<?> theType=compilerUtil.getJavaTypeForDeclaredType(theVar, field);
                         if (theType==String.class)
-                            mspec.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE(OUT_BEAN),field), METHOD_CALL(VARIABLE("this"), "newSIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field))))));
+                            mspec.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE(OUT_BEAN),field), METHOD_CALL(VARIABLE("this"), "newSIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field))))));
                         else
-                            mspec.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE(OUT_BEAN),field), METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field))))));
+                            mspec.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE(OUT_BEAN),field), METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field))))));
                     }
                 }
                 mspec.BODY(
 
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE(OUT_BEAN),"ID"), METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT("template/" + config.name), CONSTANT("template/" + config.name)))),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE(OUT_BEAN),"ID"), METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT("template/" + config.name), CONSTANT("template/" + config.name)))),
 
                         RETURN(VARIABLE(OUT_BEAN))
                 );
@@ -163,7 +163,7 @@ public class CompilerBeanLocalEnactor2 {
                                                 ))),
 
 
-                        ASSIGNMENT(null,
+                        ASSIGNMENT(
                                 METHOD_CALL(VARIABLE(OUT_BEAN),"ID"),
                                 METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT("template/" + config1.name), CONSTANT("template/" + config1.name)))),
 
@@ -204,7 +204,7 @@ public class CompilerBeanLocalEnactor2 {
                         if (config1.sharing.contains(field)) {
                             mspec2.BODY(IF(BINARY_OP(METHOD_CALL(VARIABLE(MAP_VAR), "get", List.of(CONSTANT(field))), "==", Constant.getNull()))
                                     .THEN(
-                                            ASSIGNMENT(null,
+                                            ASSIGNMENT(
                                                     METHOD_CALL(VARIABLE(OUT_BEAN), field),
                                                     METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field)))))
                                     )
@@ -214,14 +214,14 @@ public class CompilerBeanLocalEnactor2 {
                                                     "containsKey",
                                                     List.of(METHOD_CALL(VARIABLE(BEAN_VAR), field)) )  )
                                             .THEN(
-                                                    ASSIGNMENT(null,
+                                                    ASSIGNMENT(
                                                             METHOD_CALL(VARIABLE(OUT_BEAN), field),
                                                             METHOD_CALL(
                                                                     METHOD_CALL(VARIABLE(MAP_VAR), "get", List.of(CONSTANT(field))),
                                                                     "get",
                                                                     List.of(METHOD_CALL(VARIABLE(BEAN_VAR), field))  ))   )
                                             .ELSE(
-                                                    ASSIGNMENT(null,
+                                                    ASSIGNMENT(
                                                             METHOD_CALL(VARIABLE(OUT_BEAN), field),
                                                             METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field))))   ),
                                                     METHOD_CALL(
@@ -235,18 +235,18 @@ public class CompilerBeanLocalEnactor2 {
                         } else {
                             Class<?> theType = compilerUtil.getJavaTypeForDeclaredType(theVar, field);
                             if (theType == String.class)
-                                mspec2.BODY(ASSIGNMENT(null,
+                                mspec2.BODY(ASSIGNMENT(
                                         METHOD_CALL(VARIABLE(OUT_BEAN),field),
                                         METHOD_CALL(VARIABLE("this"), "newSIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field))))));
                             else
-                                mspec2.BODY(ASSIGNMENT(null,
+                                mspec2.BODY(ASSIGNMENT(
                                         METHOD_CALL(VARIABLE(OUT_BEAN),field),
                                         METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT(field), CONSTANT(sqlTable.orElse("sql/" + field))))));
                         }
                     }
                 }
                 mspec2.BODY(
-                        ASSIGNMENT(null,
+                        ASSIGNMENT(
                                 METHOD_CALL(VARIABLE(OUT_BEAN),"ID"),
                                 METHOD_CALL(VARIABLE("this"), "newIdentifier", List.of(CONSTANT("template/" + shortConsistOfName), CONSTANT("template/" + shortConsistOfName)))),
                         RETURN(VARIABLE(OUT_BEAN))

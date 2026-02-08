@@ -81,11 +81,11 @@ public class CompilerBeanCompleter2 {
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(MAP_STRING_OBJECT, "m")
                 .debugFileLocation()
-                .BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), "m"), VARIABLE("m")))
+                .BODY(ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "m"), VARIABLE("m")))
                 .COMMENT("The following code implements this assignment, in a way that jsweet can compile")
                 .COMMENT("this.getter = this::getMap")
                 .BODY(
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), GETTER_VAR),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), GETTER_VAR),
                                 CONSTRUCTOR_CALL(
                                         pastFactory
                                                 .CLASS(null, ANONYMOUS)
@@ -116,8 +116,8 @@ public class CompilerBeanCompleter2 {
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(GETTER_TYPE, GETTER_VAR)
                 .BODY(
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), "m"), Constant.getNull()),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), GETTER_VAR), VARIABLE(GETTER_VAR)));
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "m"), Constant.getNull()),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), GETTER_VAR), VARIABLE(GETTER_VAR)));
 
         pastClass.CONSTRUCTOR(constructor2);
 
@@ -138,7 +138,7 @@ public class CompilerBeanCompleter2 {
                         .BODY(
                                 // if output, set ID and call post processing
 
-                                ASSIGNMENT(null,
+                                ASSIGNMENT(
                                         METHOD_CALL(VARIABLE(BEAN_VAR), "ID"),
                                         METHOD_CALL(VARIABLE(GETTER_VAR), "get", List.of(METHOD_CALL(get("Integer", "java.lang"), "class"), CONSTANT("ID")))
                                 ),
@@ -151,7 +151,7 @@ public class CompilerBeanCompleter2 {
                 for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
                     if (descriptorUtils.isOutput(key, bindingsSchema)) {
                         ClassName cl = compilerUtil.getPastTypeForDeclaredType(bindingsSchema.getVar(), key);
-                        mspecOut.BODY(ASSIGNMENT(null,
+                        mspecOut.BODY(ASSIGNMENT(
                                 METHOD_CALL(VARIABLE(BEAN_VAR), key),
                                 METHOD_CALL(
                                         VARIABLE(GETTER_VAR),
@@ -179,7 +179,7 @@ public class CompilerBeanCompleter2 {
                 for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
                     if (descriptorUtils.isInput(key, bindingsSchema)) {
                         ClassName cl = compilerUtil.getPastTypeForDeclaredType(bindingsSchema.getVar(), key);
-                        mspecIn.BODY(ASSIGNMENT(null,
+                        mspecIn.BODY(ASSIGNMENT(
                                 METHOD_CALL(VARIABLE(BEAN_VAR), key),
                                 METHOD_CALL(
                                         VARIABLE(GETTER_VAR),
@@ -249,7 +249,6 @@ public class CompilerBeanCompleter2 {
                                                                         PROCESS_METHOD_NAME,
                                                                         List.of(VARIABLE("composee"))),
                                                                 ASSIGNMENT(
-                                                                        null,
                                                                         VARIABLE("nextExists"),
                                                                         METHOD_CALL(
                                                                                 VARIABLE("this"),

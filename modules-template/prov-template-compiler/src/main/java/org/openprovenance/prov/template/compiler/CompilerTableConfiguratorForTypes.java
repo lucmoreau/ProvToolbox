@@ -79,9 +79,9 @@ public class CompilerTableConfiguratorForTypes {
                         PARAMETER("pf", PROV_FACTORY)
                 )
                 .BODY(
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), "map"), VARIABLE("map")),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), PROPERTY_ORDER), VARIABLE(PROPERTY_ORDER)),
-                        ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), DOCUMENT_BUILDER_DISPATCHER), VARIABLE(DOCUMENT_BUILDER_DISPATCHER))
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "map"), VARIABLE("map")),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), PROPERTY_ORDER), VARIABLE(PROPERTY_ORDER)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), DOCUMENT_BUILDER_DISPATCHER), VARIABLE(DOCUMENT_BUILDER_DISPATCHER))
                 );
 
         pastClass.CONSTRUCTOR(ctor);
@@ -150,7 +150,7 @@ public class CompilerTableConfiguratorForTypes {
 
                         FOR(DEFINITION(_int, VARIABLE("i"), CONSTANT(0)),
                                 BINARY_OP(VARIABLE("i"), "<", METHOD_CALL(VARIABLE("record2"), "length")),
-                                ASSIGNMENT(null, VARIABLE("i"),
+                                ASSIGNMENT( VARIABLE("i"),
                                         BINARY_OP(VARIABLE("i"), "+", CONSTANT(1))))
                                 .BODY(
                                         DEFINITION(STRING, VARIABLE("property"),

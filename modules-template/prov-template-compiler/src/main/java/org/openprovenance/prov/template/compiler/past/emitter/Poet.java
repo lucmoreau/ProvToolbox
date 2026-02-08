@@ -446,7 +446,12 @@ public class Poet implements Emitter<TypeSpec> {
                         methodCall.arguments.stream().map(this::convert).collect(Collectors.toList()),
                         ",");
                 CodeBlock objectCode = convert(methodCall.object);
-                return CodeBlock.of("$L.$L($L)", objectCode, methodCall.methodName, argsCode);
+                if (methodCall.object instanceof CastExpression) {
+                    // ensure that the cast is parenthesised to avoid issues with operator precedence
+                    return CodeBlock.of("($L).$L($L)", objectCode, methodCall.methodName, argsCode);
+                } else {
+                    return CodeBlock.of("$L.$L($L)", objectCode, methodCall.methodName, argsCode);
+                }
             }
             case OBJECT_ACCESSOR -> {
                 if (methodCall.className != null) {
@@ -457,6 +462,9 @@ public class Poet implements Emitter<TypeSpec> {
                 } else if (methodCall.object instanceof MethodCall) {
                     MethodCall mc = (MethodCall) methodCall.object;
                     return CodeBlock.of("$L.$N", convert(mc), methodCall.methodName);
+                } else if (methodCall.object instanceof CastExpression) {
+                    CastExpression cast = (CastExpression) methodCall.object;
+                    return CodeBlock.of("($L).$N", convert(cast), methodCall.methodName);
                 } else {
                     throw new IllegalArgumentException("Unsupported object type in accessor: " + methodCall.object);
                 }

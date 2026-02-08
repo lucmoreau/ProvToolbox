@@ -204,6 +204,19 @@ public class SpecificationFile {
         return saved;
     }
 
+    public static boolean generateJava(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String templateName, String fileName, String directory, StackTraceElement stackTraceElement, CompilerUtil compilerUtil) {
+        TypeSpec spec;
+        try {
+            spec = new Poet().emit(pastClass);
+        } catch (RuntimeException e) {
+            System.out.println("Error emitting class for template " + pastClass.name + " in package " + packageName);
+            throw e;
+        }
+        JavaFile myfile = compilerUtil.specWithComment(spec, templateName, packageName, stackTraceElement);
+        boolean saved=compilerUtil.saveToFile(directory, directory + fileName, myfile);
+        return saved;
+    }
+
     public static boolean generatePython(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
         try {
             if (destinationDir==null) return false;

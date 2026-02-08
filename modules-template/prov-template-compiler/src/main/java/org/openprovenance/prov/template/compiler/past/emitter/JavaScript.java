@@ -280,18 +280,51 @@ public class JavaScript implements Emitter<StringBuilder> {
 
                 sb.append(indent);
 
+                sb.append(sanitizeName(convertLH(assignment.leftHandExpression)))
+                        .append(" = ")
+                        .append(convert(assignment.value))
+                        .append(";\n");
+
+                if (postDecrement != null) {
+                    sb.append(indent)
+                            .append(postDecrement)
+                            .append("--;\n");
+                    postDecrement = null;
+                }
+            }
+
+            case DEFINITION -> {
+                Definition definition = (Definition) statement;
+
+                // Handle import annotations
+                if (!definition.annotation.isEmpty()) {
+                    for (String annot : definition.annotation) {
+                        if (annot.startsWith("@import")) {
+                            String importString = annot.substring(7).trim();
+                            delayedImport(sb, indent, importString);
+                        }
+                    }
+                }
+
+                if (definition.leftHandExpression instanceof Variable
+                        && ((Variable) definition.leftHandExpression).name.equals("this")) {
+                    return;
+                }
+
+                sb.append(indent);
+
                 // Add const/let for new variables
-                if (assignment.type != null && assignment.leftHandExpression instanceof Variable) {
-                    if (assignment.modifiers.contains(Modifier.FINAL)) {
+                if (definition.type != null && definition.leftHandExpression instanceof Variable) {
+                    if (definition.modifiers.contains(Modifier.FINAL)) {
                         sb.append("const ");
                     } else {
                         sb.append("let ");
                     }
                 }
 
-                sb.append(sanitizeName(convertLH(assignment.leftHandExpression)))
+                sb.append(sanitizeName(convertLH(definition.leftHandExpression)))
                         .append(" = ")
-                        .append(convert(assignment.value))
+                        .append(convert(definition.value))
                         .append(";\n");
 
                 if (postDecrement != null) {
@@ -399,12 +432,20 @@ public class JavaScript implements Emitter<StringBuilder> {
             case ASSIGNMENT -> {
                 Assignment assignment = (Assignment) statement;
                 StringBuilder result = new StringBuilder();
-                if (assignment.type != null && assignment.leftHandExpression instanceof Variable) {
-                    result.append("let ");
-                }
                 result.append(sanitizeName(convertLH(assignment.leftHandExpression)))
                         .append(" = ")
                         .append(convert(assignment.value));
+                return result.toString();
+            }
+            case DEFINITION -> {
+                Definition definition = (Definition) statement;
+                StringBuilder result = new StringBuilder();
+                if (definition.leftHandExpression instanceof Variable) {
+                    result.append("let ");
+                }
+                result.append(sanitizeName(convertLH(definition.leftHandExpression)))
+                        .append(" = ")
+                        .append(convert(definition.value));
                 return result.toString();
             }
             case EXPRESSION_STATEMENT -> {

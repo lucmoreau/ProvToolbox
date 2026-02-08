@@ -178,13 +178,14 @@ public class CompilerExpansionBuilder {
         pastClass.METHOD(typedRecordGenerator_past(templateName, packge));
         pastClass.METHOD(typeManagerGenerator_past(templateName, packge));
         pastClass.METHOD(generateTypePropagatorN_past());
+        pastClass.METHOD(generateTypePropagator_past(packge+".client", bindingsSchema, successorTable));
 
         TypeSpec.Builder builder=new Poet().emitBuilder(pastClass);
 
 
 
         builder.addMethod(generateTemplateGenerator_old(allVars, allAtts, doc, vmap, bindingsSchema));
-        builder.addMethod(generateTypePropagator(packge+".client", bindingsSchema, successorTable));
+        builder.addMethod(generateTypePropagator_old(packge+".client", bindingsSchema, successorTable));
 
         //END
 
@@ -860,10 +861,159 @@ public class CompilerExpansionBuilder {
 
 
 
-    public MethodSpec generateTypePropagator(String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable) {
+    private org.openprovenance.prov.template.compiler.past.Expression propagateTypesNCall(int count, int successor, int relation, org.openprovenance.prov.template.compiler.past.Expression specificRelation) {
+        return METHOD_CALL("propagateTypes_n", List.of(
+                VARIABLE("record"),
+                VARIABLE("mapLevelN"),
+                VARIABLE("mapLevelNP1"),
+                CONSTANT(count),
+                CONSTANT(successor),
+                CONSTANT(relation),
+                specificRelation,
+                VARIABLE("uniqId")));
+    }
+
+    private <ARELATION extends Identifiable> void generateStatementForRelation_PAST(Method method, int count, int successor, int relation, Map<String,List<Descriptor>> theVar, Map<String, Set<Pair<QualifiedName, ARELATION>>> successors, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, String key) {
+        if (successors.get(key) != null) {
+
+            final List<ARELATION> relations = successors.get(key).stream().map(Pair::getRight).collect(Collectors.toList());
+            final List<QualifiedName> identifiers = relations.stream().map(Identifiable::getId).collect(Collectors.toList());
+
+            method.COMMENT(true, "Identifiers: " + identifiers);
+            method.COMMENT(true, "KnownTypes: "   + successors.get(key).stream().map(p -> knownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
+            method.COMMENT(true, "UnknownTypes: " + successors.get(key).stream().map(p -> unknownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
+
+            final List<Collection<QualifiedName>> optionalActivityTypes = relations.stream().map(p -> doCollectElementVariables((org.openprovenance.prov.model.Statement)p, ACTIVITY_TYPE_URI)).collect(Collectors.toList());
+            final List<Collection<QualifiedName>> optionalActivities    = relations.stream().map(p -> doCollectElementVariables((org.openprovenance.prov.model.Statement)p, TMPL_ACTIVITY_URI)).collect(Collectors.toList());
+
+            method.COMMENT(true, "ActivityTypes: " + optionalActivityTypes);
+            method.COMMENT(true, "Activities: "    + optionalActivities);
+
+            if (optionalActivityTypes.isEmpty() || optionalActivityTypes.get(0) == null) {
+                method.addStatement(propagateTypesNCall(count, successor, relation, CONSTANT(-1)));
+            } else {
+
+                final QualifiedName firstRelationIdentifier = identifiers.get(0);
+                final ARELATION firstRelation = relations.get(0);
+
+                final Optional<QualifiedName> firstActivityType = optionalActivityTypes.get(0).stream().findFirst();
+                if (firstActivityType.isEmpty()) {
+
+                    method.addStatement(propagateTypesNCall(count, successor, relation, CONSTANT(-1)));
+
+                } else {
+
+                    if (optionalActivities.isEmpty() || optionalActivities.get(0) == null)
+                        throw new MissingAttributeValue(TMPL_ACTIVITY_URI + " in " + firstRelation);
+                    final Optional<QualifiedName> firstActivity = optionalActivities.get(0).stream().findFirst();
+                    if (firstActivity.isEmpty())
+                        throw new MissingAttributeValue(TMPL_ACTIVITY_URI + " in " + firstRelation);
+
+                    method.COMMENT(true, "propagating for $N", key);
+                    method.COMMENT(true, "URI: " + firstActivity.get().getUri());
+
+                    final String tmpa = "l1a_" + count;
+                    final String tmpb = "l1b_" + count;
+
+                    method.COMMENT(true, "Position: " + findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), theVar));
+
+                    // Integer tmpa = mapLevel0.get(uri + ((QualifiedName)record[pos]).getLocalPart())
+                    int pos = findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), theVar);
+                    org.openprovenance.prov.template.compiler.past.Expression getLocalPart =
+                            METHOD_CALL(CAST(PROV_QUALIFIED_NAME, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(pos))), "getLocalPart");
+                    org.openprovenance.prov.template.compiler.past.Expression concatUri =
+                            METHOD_CALL(STRING, "concat", CONSTANT(firstRelationIdentifier.getUri() + "."), getLocalPart);
+                    method.addStatement(ASSIGNMENT(INTEGER, VARIABLE(tmpa),
+                            METHOD_CALL(VARIABLE("mapLevel0"), "get", concatUri)));
+
+                    // int tmpb = (tmpa==null) ? -1 : tmpa
+                    method.addStatement(ASSIGNMENT(_int, VARIABLE(tmpb),
+                            IF_(BINARY_OP(VARIABLE(tmpa), EQ, getNull()))
+                                    .THEN(CONSTANT(-1))
+                                    .ELSE(VARIABLE(tmpa))));
+
+                    method.addStatement(propagateTypesNCall(count, successor, relation, VARIABLE(tmpb)));
+                }
+            }
+        } else {
+            method.addStatement(propagateTypesNCall(count, successor, relation, CONSTANT(-1)));
+        }
+    }
+
+    public Method generateTypePropagator_past(String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable) {
+
+        org.openprovenance.prov.template.compiler.past.type.ParameterizedType levelNMap =
+                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(MAP, STRING, INTEGER);
+        org.openprovenance.prov.template.compiler.past.type.ParameterizedType collectionIntArray =
+                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(COLLECTION, intArray);
+        org.openprovenance.prov.template.compiler.past.type.ParameterizedType levelNP1CMap =
+                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(MAP, STRING, collectionIntArray);
+
+        Method method = METHOD("propagateTypes")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(VOID);
+
+        method.PARAMETER(OBJECT_ARRAY, "record");
+        method.PARAMETER(levelNMap, "mapLevelN");
+        method.PARAMETER(levelNP1CMap, "mapLevelNP1");
+        method.PARAMETER(levelNMap, "mapLevel0");
+        method.PARAMETER(levelNMap, "uniqId");
+
+        method.COMMENT(true, successorTable.toString());
+
+        int count = 1;
+
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
+        java.util.Iterator<String> iter = theVar.keySet().iterator();
+
+        Map<String, Set<Pair<QualifiedName, WasDerivedFrom>>>  successors1  = compilerCommon.getSuccessors1();
+        Map<String, Set<Pair<QualifiedName, WasAttributedTo>>> successors2  = compilerCommon.getSuccessors2();
+        Map<String, Set<Pair<QualifiedName, HadMember>>>       successors3  = compilerCommon.getSuccessors3();
+        Map<String, Set<Pair<QualifiedName, QualifiedHadMember>>> successors3b = compilerCommon.getSuccessors3b();
+        Map<String, Set<Pair<QualifiedName, SpecializationOf>>> successors4 = compilerCommon.getSuccessors4();
+
+        Map<String, Collection<String>> knownTypes   = compilerTypeManagement.getKnownTypes();
+        Map<String, Collection<String>> unknownTypes  = compilerTypeManagement.getUnknownTypes();
+
+        while (iter.hasNext()) {
+            String key = iter.next();
+            if (compilerUtil.isVariableDenotingQualifiedName(key, theVar)) {
+                method.COMMENT(true, "Variable: " + key);
+                method.COMMENT(true, "Count: " + count);
+
+                if ((successors1.get(key) != null) || (successors2.get(key) != null) || (successors3.get(key) != null) || (successors3b.get(key) != null) || (successors4.get(key) != null)) {
+
+                    List<Integer> rowValues = successorTable.get(count);
+                    if (rowValues == null || rowValues.isEmpty()) throw new InvalidCaseException("successor table incorrect");
+
+                    for (int i = 0; i < rowValues.size() / 2; i++) {
+                        int successor = rowValues.get(i * 2);
+                        int relation = rowValues.get(i * 2 + 1);
+
+                        if (relation == StatementOrBundle.Kind.PROV_DERIVATION.ordinal()) {
+                            generateStatementForRelation_PAST(method, count, successor, relation, theVar, successors1, knownTypes, unknownTypes, key);
+                        } else if (relation == StatementOrBundle.Kind.PROV_MEMBERSHIP.ordinal()) {
+                            generateStatementForRelation_PAST(method, count, successor, relation, theVar, successors3b, knownTypes, unknownTypes, key);
+                        } else {
+                            method.addStatement(propagateTypesNCall(count, successor, relation, CONSTANT(-1)));
+                        }
+                    }
+                } else {
+                    method.COMMENT(true, "No successor for: " + count);
+                }
+            }
+            method.COMMENT(true, "");
+
+            count++;
+        }
+        return method;
+    }
+
+    public MethodSpec generateTypePropagator_old(String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable) {
 
 
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("propagateTypes")
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("propagateTypes_old")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class);
 

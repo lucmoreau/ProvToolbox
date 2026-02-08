@@ -95,6 +95,7 @@ public class ClassName extends TypeName {
     public static final ParameterizedType CLASS_OUT=ParameterizedType.get(CLASS, TYPE_OUT);
     public static final ParameterizedType FUNCTION_BUILDER_T=ParameterizedType.get(FUNCTION,  BUILDER_INTERFACE, T());
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_ANY=FUNCTION_OBJARRAY_TO_TYPE(TypeVariable.get("?"));
+    public static final ParameterizedType FUNCTION_LIST_OBJARRAY_TO_ANY=FUNCTION_LIST_OBJARRAY_TO_TYPE(TypeVariable.get("?"));
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_STRING=FUNCTION_OBJARRAY_TO_TYPE(STRING);
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_OBJ_ARRAY = FUNCTION_OBJARRAY_TO_TYPE(OBJECT_ARRAY);
     public static final ParameterizedType BIFUNCTION_MAP_STRING_MAP_STRING_INTARRAY_STRINGARRAY_TO_T= ParameterizedType.get(BIFUNCTION, MAP_STRING_MAP_STRING_INTARRAY, STRING_ARRAY, T());

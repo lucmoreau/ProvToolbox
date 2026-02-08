@@ -240,20 +240,9 @@ public class Poet implements Emitter<TypeSpec> {
         CodeBlock leftHandCode = convert(assignment.leftHandExpression);
         CodeBlock valueCode = convert(assignment.value);
         if (assignment.modifiers.contains(javax.lang.model.element.Modifier.FINAL)) {
-            org.openprovenance.prov.template.compiler.past.type.TypeName type = assignment.type;
-            if (type != null) {
-                TypeName typeName = convert(type);
-                return CodeBlock.of("final $T $L=$L", typeName, leftHandCode, valueCode);
-            } else {
-                return CodeBlock.of("final $L=$L", leftHandCode, valueCode);
-            }
+            return CodeBlock.of("final $L=$L", leftHandCode, valueCode);
         } else {
-            if (assignment.type != null) {
-                TypeName typeName = convert(assignment.type);
-                return CodeBlock.of("$T $L=$L", typeName, leftHandCode, valueCode);
-            } else {
-                return CodeBlock.of("$L=$L", leftHandCode, valueCode);
-            }
+            return CodeBlock.of("$L=$L", leftHandCode, valueCode);
         }
     }
 

@@ -13,6 +13,7 @@ import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.expansion.CompilerBuilderInterface;
 import org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
@@ -62,6 +63,7 @@ public class ConfigProcessor implements Constants {
     private final boolean debugComment;
     public static final DescriptorUtils descriptorUtils;
     private final CompilerIntegrator compilerIntegrator;
+    private final CompilerBuilderInterface compilerBuilderInterface;
     boolean withMain=true; // TODO need to be updatable via command line
     public static final ObjectMapper objectMapper = new ObjectMapper();
     private final CompilerUtil compilerUtil;
@@ -127,6 +129,7 @@ public class ConfigProcessor implements Constants {
         this.compilerIntegrator=new CompilerIntegrator(pFactory, compilerCommon,compilerBeanGenerator);
         this.compilerTypeManagement= new CompilerTypeManagement(withMain, compilerCommon,pFactory,debugComment);
         this.compilerExpansionBuilder= new CompilerExpansionBuilder(withMain, compilerCommon,pFactory,debugComment,compilerTypeManagement);
+        this.compilerBuilderInterface= new CompilerBuilderInterface(withMain, compilerCommon,pFactory,debugComment,compilerTypeManagement);
         this.compilerTypedRecord = new CompilerTypedRecord(withMain, compilerCommon,pFactory,debugComment);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
         this.compilerBeanChecker= new CompilerBeanChecker(pFactory);
@@ -789,10 +792,10 @@ public class ConfigProcessor implements Constants {
                 //ensure type declaration code is executed
                 SpecificationFile spec5 = compilerTypeManagement.generateTypeDeclaration(configs, locations, doc, bn, templateName, packageName, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnTM + DOT_JAVA_EXTENSION);
                 // before propagation generation
-                SpecificationFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(configs, locations, doc, bn, templateName, templateFullyQualifiedName, packageName, bindingsSchema, successorTable, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bn + DOT_JAVA_EXTENSION);
+                SpecificationFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(configs, locations, doc, bn, templateName, templateFullyQualifiedName, packageName, bindingsSchema, successorTable, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bn );
                 val0 = spec0.save();
 
-                SpecificationFile spec1 = compilerExpansionBuilder.generateBuilderInterfaceSpecification(configs, locations, doc, bn, templateName, packageName, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnI + DOT_JAVA_EXTENSION);
+                SpecificationFile spec1 = compilerBuilderInterface.generateBuilderInterfaceSpecification(configs, locations, doc, bn, templateName, packageName, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnI + DOT_JAVA_EXTENSION);
                 val1= spec1.save();
 
                 SpecificationFile spec2b = compilerSQL.generateSQLInterface(configs, locations, SQL_INTERFACE);

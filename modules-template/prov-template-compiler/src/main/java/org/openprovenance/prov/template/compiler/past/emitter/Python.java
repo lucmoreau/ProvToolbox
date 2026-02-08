@@ -447,6 +447,40 @@ public class Python implements Emitter<StringBuilder> {
 
             }
 
+
+            case DEFINITION -> {
+
+                Definition definition = (Definition) statement;
+                if (!definition.annotation.isEmpty()) {
+                    for (String annot : definition.annotation) {
+                        if (annot.startsWith("@import")) {
+                            // get the string following @import
+                            String importString = annot.substring(7).trim();
+                            delayedImport(sb, indent, importString);
+
+                        }
+                    }
+                }
+                if (definition.leftHandExpression instanceof Variable
+                        && ((Variable)definition.leftHandExpression).name.equals("self")) {
+                    return;
+                }
+                sb.append(indent)
+                        .append(sanitizeName(convertLH(definition.leftHandExpression)))
+                        .append(" = ")
+                        .append(sanitizeName(convert(definition.value)))
+                        .append("\n");
+
+                if (postDecrement!=null) {
+                    sb.append(indent)
+                            .append(postDecrement)
+                            .append(" -= 1")
+                            .append("\n");
+                    postDecrement=null;
+                }
+
+            }
+
             case RETURN -> {
                 Return ret = (Return) statement;
                 sb.append(indent)

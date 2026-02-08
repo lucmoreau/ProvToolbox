@@ -41,6 +41,7 @@ import static org.openprovenance.prov.template.compiler.past.BinaryOp.EQ;
 import static org.openprovenance.prov.template.compiler.past.Constant.getNull;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import org.openprovenance.prov.template.compiler.past.ArrayInitialiser;
 import org.openprovenance.prov.template.compiler.past.LambdaExpression;
@@ -277,18 +278,18 @@ public class CompilerExpansionBuilder {
                 ClassName.get(name, packge);
 
         // Framework fr = Framework.dynamicLoad()
-        method.addStatement(ASSIGNMENT(PROV_FRAMEWORK, VARIABLE("fr"),
+        method.addStatement(DEFINITION(PROV_FRAMEWORK, VARIABLE("fr"),
                 METHOD_CALL(PROV_FRAMEWORK, "dynamicLoad", List.of())));
         // ProvFactory pf = fr.getFactory()
-        method.addStatement(ASSIGNMENT(PROV_FACTORY, VARIABLE("pf"),
+        method.addStatement(DEFINITION(PROV_FACTORY, VARIABLE("pf"),
                 METHOD_CALL(VARIABLE("fr"), "getFactory", List.of())));
         // <Name> me = new <Name>(pf)
-        method.addStatement(ASSIGNMENT(nameClass, VARIABLE("me"),
+        method.addStatement(DEFINITION(nameClass, VARIABLE("me"),
                 CONSTRUCTOR_CALL(nameClass, List.of(VARIABLE("pf")))));
 
         // For each var: QualifiedName __var_X = pf.newQualifiedName("http://example.org/", "X", "ex")
         for (QualifiedName q : allVars) {
-            method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(compilerUtil.varPrefix(q.getLocalPart())),
+            method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(compilerUtil.varPrefix(q.getLocalPart())),
                     METHOD_CALL(VARIABLE("pf"), "newQualifiedName",
                             CONSTANT("http://example.org/"), CONSTANT(q.getLocalPart()), CONSTANT("ex"))));
         }
@@ -308,10 +309,10 @@ public class CompilerExpansionBuilder {
 
             if (declaredType != null) {
                 String example = compilerUtil.generateExampleForType(declaredType, q.getLocalPart(), pFactory);
-                method.addStatement(ASSIGNMENT(STRING, VARIABLE(compilerUtil.attPrefix(q.getLocalPart())),
+                method.addStatement(DEFINITION(STRING, VARIABLE(compilerUtil.attPrefix(q.getLocalPart())),
                         CONSTANT(example)));
             } else {
-                method.addStatement(ASSIGNMENT(OBJECT, VARIABLE(compilerUtil.attPrefix(q.getLocalPart())),
+                method.addStatement(DEFINITION(OBJECT, VARIABLE(compilerUtil.attPrefix(q.getLocalPart())),
                         getNull()));
             }
         }
@@ -340,7 +341,7 @@ public class CompilerExpansionBuilder {
                         "PROVN");
 
         // Document document = me.generator(args...)
-        method.addStatement(ASSIGNMENT(PROV_DOCUMENT, VARIABLE("document"),
+        method.addStatement(DEFINITION(PROV_DOCUMENT, VARIABLE("document"),
                 METHOD_CALL(VARIABLE("me"), "generator", generatorArgs)));
         // fr.writeDocument(System.out, document, Formats.ProvFormat.PROVN)
         method.addStatement(METHOD_CALL(VARIABLE("fr"), "writeDocument",
@@ -398,12 +399,12 @@ public class CompilerExpansionBuilder {
 
 
         // Document __C_document = null
-        method.addStatement(ASSIGNMENT(PROV_DOCUMENT, VARIABLE("__C_document"), getNull()));
+        method.addStatement(DEFINITION(PROV_DOCUMENT, VARIABLE("__C_document"), getNull()));
         // Namespace __C_ns = new Namespace()
-        method.addStatement(ASSIGNMENT(PROV_NAMESPACE, VARIABLE(Constants.C_NS),
+        method.addStatement(DEFINITION(PROV_NAMESPACE, VARIABLE(Constants.C_NS),
                 CONSTRUCTOR_CALL(PROV_NAMESPACE, List.of())));
         // StringSubstitutor subst = new StringSubstitutor(getVariableMap())
-        method.addStatement(ASSIGNMENT(APACHE_STRING_SUBSTITUTOR, VARIABLE("subst"),
+        method.addStatement(DEFINITION(APACHE_STRING_SUBSTITUTOR, VARIABLE("subst"),
                 CONSTRUCTOR_CALL(APACHE_STRING_SUBSTITUTOR,
                         List.of(METHOD_CALL("getVariableMap", List.of())))));
 
@@ -454,14 +455,14 @@ public class CompilerExpansionBuilder {
                 }
                 Expression stqCall =
                         METHOD_CALL(VARIABLE(Constants.C_NS), "stringToQualifiedName", stqArgs);
-                method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(newName),
+                method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(newName),
                         IfExpression.IFEXPRESSION(
                                 BINARY_OP(VARIABLE(key), EQ, getNull()),
                                 getNull(),
                                 stqCall)));
             } else {
                 // QualifiedName newName = null
-                method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(newName), getNull()));
+                method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(newName), getNull()));
             }
             generatorArgs.add(VARIABLE(newName));
         }
@@ -487,7 +488,7 @@ public class CompilerExpansionBuilder {
                     Expression idExpr = buildIdStringExpression(s, key);
                     Expression stqCall =
                             METHOD_CALL(VARIABLE(Constants.C_NS), "stringToQualifiedName", idExpr, VARIABLE("pf"));
-                    method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(newName),
+                    method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(newName),
                             IF_(BINARY_OP(VARIABLE(key), EQ, getNull()))
                                     .THEN(getNull())
                                     .ELSE(stqCall)));
@@ -495,7 +496,7 @@ public class CompilerExpansionBuilder {
                     if (descriptors != null && !descriptors.isEmpty()) {
                         // is already declared, but not with @id — no statement needed
                     } else {
-                        method.addStatement(ASSIGNMENT(OBJECT, VARIABLE(newName), getNull()));
+                        method.addStatement(DEFINITION(OBJECT, VARIABLE(newName), getNull()));
                     }
                 }
                 generatorArgs.add(VARIABLE(newName));
@@ -526,12 +527,12 @@ public class CompilerExpansionBuilder {
         Map<String, String> theContext = bindingsSchema.getContext();
 
         // T __C_result = null
-        method.addStatement(ASSIGNMENT(T(), VARIABLE("__C_result"), getNull()));
+        method.addStatement(DEFINITION(T(), VARIABLE("__C_result"), getNull()));
         // Namespace __C_ns = new Namespace()
-        method.addStatement(ASSIGNMENT(PROV_NAMESPACE, VARIABLE(Constants.C_NS),
+        method.addStatement(DEFINITION(PROV_NAMESPACE, VARIABLE(Constants.C_NS),
                 CONSTRUCTOR_CALL(PROV_NAMESPACE, List.of())));
         // StringSubstitutor subst = new StringSubstitutor(getVariableMap())
-        method.addStatement(ASSIGNMENT(APACHE_STRING_SUBSTITUTOR, VARIABLE("subst"),
+        method.addStatement(DEFINITION(APACHE_STRING_SUBSTITUTOR, VARIABLE("subst"),
                 CONSTRUCTOR_CALL(APACHE_STRING_SUBSTITUTOR,
                         List.of(METHOD_CALL("getVariableMap", List.of())))));
 
@@ -577,15 +578,14 @@ public class CompilerExpansionBuilder {
                 if (toEscape) {
                     stqArgs.add(CONSTANT(false));
                 }
-                Expression stqCall =
-                        METHOD_CALL(VARIABLE(Constants.C_NS), "stringToQualifiedName", stqArgs);
-                method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(newName),
+                Expression stqCall = METHOD_CALL(VARIABLE(Constants.C_NS), "stringToQualifiedName", stqArgs);
+                method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(newName),
                         IF_(BINARY_OP(VARIABLE(key), EQ, getNull()))
                                 .THEN(getNull())
                                 .ELSE(stqCall)));
             } else {
                 // QualifiedName newName = null
-                method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(newName), getNull()));
+                method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(newName), getNull()));
             }
         }
 
@@ -611,7 +611,7 @@ public class CompilerExpansionBuilder {
                     }
                     Expression stqCall =
                             METHOD_CALL(VARIABLE(Constants.C_NS), "stringToQualifiedName", stqArgs);
-                    method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE(newName),
+                    method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(newName),
                             IF_(BINARY_OP(VARIABLE(key), EQ, getNull()))
                                     .THEN(getNull())
                                     .ELSE(stqCall)));
@@ -663,11 +663,11 @@ public class CompilerExpansionBuilder {
 
         // Body: variable declarations
         // QualifiedName nullqn = null
-        method.addStatement(ASSIGNMENT(PROV_QUALIFIED_NAME, VARIABLE("nullqn"), getNull()));
+        method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE("nullqn"), getNull()));
         // Collection<Attribute> attrs = null
-        method.addStatement(ASSIGNMENT(PROV_COLLECTION_OF_ATTRIBUTES, VARIABLE("attrs"), getNull()));
+        method.addStatement(DEFINITION(PROV_COLLECTION_OF_ATTRIBUTES, VARIABLE("attrs"), getNull()));
         // Document __C_document = pf.newDocument()
-        method.addStatement(ASSIGNMENT(PROV_DOCUMENT, VARIABLE("__C_document"),
+        method.addStatement(DEFINITION(PROV_DOCUMENT, VARIABLE("__C_document"),
                 METHOD_CALL(VARIABLE("pf"), "newDocument", List.of())));
 
         // Gensym variable handling
@@ -822,11 +822,11 @@ public class CompilerExpansionBuilder {
                             METHOD_CALL(CAST(PROV_QUALIFIED_NAME, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(pos))), "getLocalPart", List.of());
                     Expression concatUri =
                             METHOD_CALL(STRING, "concat", CONSTANT(firstRelationIdentifier.getUri() + "."), getLocalPart);
-                    method.addStatement(ASSIGNMENT(INTEGER, VARIABLE(tmpa),
+                    method.addStatement(DEFINITION(INTEGER, VARIABLE(tmpa),
                             METHOD_CALL(VARIABLE("mapLevel0"), "get", concatUri)));
 
                     // int tmpb = (tmpa==null) ? -1 : tmpa
-                    method.addStatement(ASSIGNMENT(_int, VARIABLE(tmpb),
+                    method.addStatement(DEFINITION(_int, VARIABLE(tmpb),
                             IF_(BINARY_OP(VARIABLE(tmpa), EQ, getNull()))
                                     .THEN(CONSTANT(-1))
                                     .ELSE(VARIABLE(tmpa))));
@@ -1123,12 +1123,12 @@ public class CompilerExpansionBuilder {
 
         //   String uri=((QualifiedName)(record[count])).getUri()
         Statement uriAssignment =
-                ASSIGNMENT(STRING, VARIABLE("uri"),
+                DEFINITION(STRING, VARIABLE("uri"),
                         METHOD_CALL(CAST(PROV_QUALIFIED_NAME, recordCount), "getUri", List.of()));
 
         //   Integer in_type=mapLevelN.get(uri)
         Statement inTypeAssignment =
-                ASSIGNMENT(INTEGER, VARIABLE(var_in_type),
+                DEFINITION(INTEGER, VARIABLE(var_in_type),
                         METHOD_CALL(VARIABLE("mapLevelN"), "get", VARIABLE("uri")));
 
         // if (record[successor]!=null) {
@@ -1137,7 +1137,7 @@ public class CompilerExpansionBuilder {
 
         //   String uri2=((QualifiedName)(record[successor])).getUri()
         Statement uri2Assignment =
-                ASSIGNMENT(STRING, VARIABLE("uri2"),
+                DEFINITION(STRING, VARIABLE("uri2"),
                         METHOD_CALL(CAST(PROV_QUALIFIED_NAME, recordSuccessor), "getUri", List.of()));
 
         //   mapLevelNP1.computeIfAbsent(uri2, k -> new LinkedList<>())
@@ -1228,10 +1228,10 @@ public class CompilerExpansionBuilder {
                     ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count));
             if (converter == null) {
                 // Type key = (Type) __record[count]
-                method.addStatement(ASSIGNMENT(pastType, VARIABLE(key), CAST(pastType, arrayAccess)));
+                method.addStatement(DEFINITION(pastType, VARIABLE(key), CAST(pastType, arrayAccess)));
             } else {
                 // Type key = converter(__record[count])
-                method.addStatement(ASSIGNMENT(pastType, VARIABLE(key), METHOD_CALL(converter, List.of(arrayAccess))));
+                method.addStatement(DEFINITION(pastType, VARIABLE(key), METHOD_CALL(converter, List.of(arrayAccess))));
             }
             args.add(VARIABLE(key));
             count++;
@@ -1273,10 +1273,10 @@ public class CompilerExpansionBuilder {
             final String converter = compilerUtil.getConverterForDeclaredType2(atype);
             if (converter == null) {
                 // Type key = (Type) __record[count]
-                method.addStatement(ASSIGNMENT(pastType, VARIABLE(key), CAST(pastType, ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)))));
+                method.addStatement(DEFINITION(pastType, VARIABLE(key), CAST(pastType, ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)))));
             } else {
                 // Type key = converter(__record[count])
-                method.addStatement(ASSIGNMENT(pastType, VARIABLE(key),
+                method.addStatement(DEFINITION(pastType, VARIABLE(key),
                         IF_(BINARY_OP(ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)), EQ, Constant.getNull()))
                                 .THEN(Constant.getNull())
                                 .ELSE(METHOD_CALL(converter, List.of(METHOD_CALL(ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)), "toString", List.of()))))));
@@ -1321,14 +1321,14 @@ public class CompilerExpansionBuilder {
                     if (descriptor instanceof NameDescriptor) {
                         if (converter == null) {
                             // Type var = (Type) "count"
-                            method.addStatement(ASSIGNMENT(pastType, VARIABLE(variable), CAST(pastType, CONSTANT("" + count))));
+                            method.addStatement(DEFINITION(pastType, VARIABLE(variable), CAST(pastType, CONSTANT("" + count))));
                         } else {
                             // Type var = converter(count)
-                            method.addStatement(ASSIGNMENT(pastType, VARIABLE(variable), METHOD_CALL(converter, List.of(CONSTANT(count)))));
+                            method.addStatement(DEFINITION(pastType, VARIABLE(variable), METHOD_CALL(converter, List.of(CONSTANT(count)))));
                         }
                     } else {
                         // Type var = null /* count */
-                        method.addStatement(ASSIGNMENT(pastType, VARIABLE(variable), getNull()));
+                        method.addStatement(DEFINITION(pastType, VARIABLE(variable), getNull()));
                     }
                     count++;
                 }

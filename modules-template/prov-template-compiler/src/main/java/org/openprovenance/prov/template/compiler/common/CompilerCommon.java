@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 import static org.openprovenance.prov.model.StatementOrBundle.ALL_RELATIONS;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.core.InstantiateUtil.isVariable;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
@@ -277,9 +278,9 @@ public class CompilerCommon {
 
         LambdaExpression lambda=LAMBDA(paramsList)
                 .BODY(
-                        ASSIGNMENT(OBJECT_ARRAY_ARRAY, VARIABLE("_result"), ARRAY_ALLOCATOR(OBJECT_ARRAY, BINARY_OP(METHOD_CALL(VARIABLE(Constants.GENERATED_VAR_PREFIX + ELEMENTS1), "size", List.of()), "+", CONSTANT(1)))),
+                        DEFINITION(OBJECT_ARRAY_ARRAY, VARIABLE("_result"), ARRAY_ALLOCATOR(OBJECT_ARRAY, BINARY_OP(METHOD_CALL(VARIABLE(Constants.GENERATED_VAR_PREFIX + ELEMENTS1), "size", List.of()), "+", CONSTANT(1)))),
 
-                        ASSIGNMENT(_int, VARIABLE("_i_"), CONSTANT(1)),
+                        DEFINITION(_int, VARIABLE("_i_"), CONSTANT(1)),
 
                         ASSIGNMENT(null, ARRAY_ACCESSOR(VARIABLE("_result"),CONSTANT(0)),
                                 ARRAY_INITIALISER(OBJECT, List.of(CONSTANT("compositeThingie"),
@@ -288,7 +289,7 @@ public class CompilerCommon {
 
                         ITERATOR(Parameter.PARAMETER(VAR_ELEMENT,className), VARIABLE(Constants.GENERATED_VAR_PREFIX + ELEMENTS1))
                                 .BODY(
-                                        ASSIGNMENT(
+                                        DEFINITION(
                                                 parametericInterface,
                                                 VARIABLE("processor"),
                                                 METHOD_CALL(
@@ -299,7 +300,7 @@ public class CompilerCommon {
                                                 )
                                         ).ANNOTATION("@import " + loggerPackage + "." + logger),
 
-                                        ASSIGNMENT(
+                                        DEFINITION(
                                                 OBJECT_ARRAY,
                                                 VARIABLE(VAR_OBJECTS),
                                                 METHOD_CALL(
@@ -432,7 +433,7 @@ public class CompilerCommon {
         method.COMMENT("@return $T\n" , processorClassNameNotParametrised);
 
 
-        method.BODY(ASSIGNMENT(get(name,packge), VARIABLE(SELF_VAR), VARIABLE("this")));
+        method.BODY(DEFINITION(get(name,packge), VARIABLE(SELF_VAR), VARIABLE("this")));
 
         Map<String, List<Descriptor>> var = bindingsSchema.getVar();
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
@@ -459,7 +460,7 @@ public class CompilerCommon {
         List<Expression> argsList = makeRenamedArgsLocalVariableList(SB_VAR,variables);
 
         lambda.BODY(
-                ASSIGNMENT(STRING_BUILDER, VARIABLE(SB_VAR), CONSTRUCTOR_CALL(STRING_BUILDER, List.of())),
+                DEFINITION(STRING_BUILDER, VARIABLE(SB_VAR), CONSTRUCTOR_CALL(STRING_BUILDER, List.of())),
 
                 METHOD_CALL(VARIABLE(SELF_VAR), loggerName, argsList));
 
@@ -468,22 +469,22 @@ public class CompilerCommon {
             String[] variableArray = variables.toArray(new String[]{});
 
             String beanNameClass = compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.COMMON);
-            org.openprovenance.prov.template.compiler.past.type.ClassName loggerClassName = get(logger, loggerPackage);
+            ClassName loggerClassName = get(logger, loggerPackage);
 
             ParameterizedType parametericInterface=ParameterizedType.get(get(compilerUtil.processorNameClass(shortConsistsOf),packge), OBJECT_ARRAY);
             ParameterizedType processorOfString = functionObjArrayTo(STRING);
 
             lambda.BODY(
-                    ASSIGNMENT(parametericInterface, VARIABLE("processor"),
+                    DEFINITION(parametericInterface, VARIABLE("processor"),
                             METHOD_CALL(METHOD_CALL(loggerClassName, GENERATED_VAR_PREFIX + shortConsistsOf), ARGS2RECORD_CONVERTER, List.of()))
                             .ANNOTATION("@import " + loggerPackage + "." + logger),  //delayed import for python
                     FOR(
-                            ASSIGNMENT(_int, VARIABLE(_I_), CONSTANT(0)),
+                            DEFINITION(_int, VARIABLE(_I_), CONSTANT(0)),
                             BINARY_OP(VARIABLE(_I_), BinaryOp.LT, METHOD_CALL(VARIABLE(GENERATED_VAR_PREFIX+ELEMENTS1), "size", List.of())),
                             ASSIGNMENT(null, VARIABLE(_I_), BINARY_OP(VARIABLE(_I_), "+", CONSTANT(1))))
 
                             .BODY(
-                                    ASSIGNMENT(org.openprovenance.prov.template.compiler.past.type.ClassName.get(beanNameClass,packge),VARIABLE(VAR_ELEMENT),
+                                    DEFINITION(ClassName.get(beanNameClass,packge),VARIABLE(VAR_ELEMENT),
                                          METHOD_CALL(VARIABLE(GENERATED_VAR_PREFIX + ELEMENTS1),"get", List.of(VARIABLE(_I_)))),
 
 
@@ -491,15 +492,15 @@ public class CompilerCommon {
                                    new Comment("// the following line generates ts error: Untyped function calls may not accept type arguments."),
 
 
-                                    ASSIGNMENT(OBJECT_ARRAY, VARIABLE(VAR_OBJECTS),
+                                    DEFINITION(OBJECT_ARRAY, VARIABLE(VAR_OBJECTS),
                                             METHOD_CALL(VARIABLE(VAR_ELEMENT), "process", List.of(VARIABLE("processor")))),
 
 
-                                    ASSIGNMENT(processorOfString, VARIABLE(VAR_CSV_CONVERTER),
+                                    DEFINITION(processorOfString, VARIABLE(VAR_CSV_CONVERTER),
                                             METHOD_CALL(METHOD_CALL(loggerClassName, "simpleCSvConverters"),
                                                     "get", List.of(VARIABLE(GENERATED_VAR_PREFIX + variableArray[2])))),
 
-                                    ASSIGNMENT(STRING, VARIABLE(VAR_CSV),
+                                    DEFINITION(STRING, VARIABLE(VAR_CSV),
                                             FUNCTIONAL_METHOD_CALL(VARIABLE(VAR_CSV_CONVERTER), "apply", List.of(VARIABLE(VAR_OBJECTS)))),
 
                                     METHOD_CALL(
@@ -693,14 +694,14 @@ public class CompilerCommon {
         Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
 
-        method.BODY(ASSIGNMENT(get(name,packge), VARIABLE(SELF_VAR), VARIABLE("this")));  //  python??
+        method.BODY(DEFINITION(get(name,packge), VARIABLE(SELF_VAR), VARIABLE("this")));  //  python??
 
         List<Parameter> parameters=variables.stream()
                 .map(key -> PARAMETER(GENERATED_VAR_PREFIX + key,compilerUtil.getPastTypeForDeclaredType(theVar, key)))
                 .collect(Collectors.toList());
 
         method.BODY(RETURN(LAMBDA(parameters).BODY(
-                ASSIGNMENT(STRING_BUILDER, VARIABLE(SB_VAR), CONSTRUCTOR_CALL(STRING_BUILDER, List.of())),
+                DEFINITION(STRING_BUILDER, VARIABLE(SB_VAR), CONSTRUCTOR_CALL(STRING_BUILDER, List.of())),
                 METHOD_CALL(VARIABLE(SELF_VAR), "sqlTuple", makeRenamedArgsList2(SB_VAR,variables)),
                 RETURN(METHOD_CALL(VARIABLE(SB_VAR), "toString", List.of()))
         )));
@@ -1127,7 +1128,7 @@ public class CompilerCommon {
                 .RETURNS(MAP_INTEGER_INTARRAY);
         compilerUtil.debugFileLocation(method);
 
-        method.BODY(ASSIGNMENT(MAP_INTEGER_INTARRAY, VARIABLE(TABLE), CONSTRUCTOR_CALL(HASH_MAP_INTEGER_INTARRAY, List.of())));
+        method.BODY(DEFINITION(MAP_INTEGER_INTARRAY, VARIABLE(TABLE), CONSTRUCTOR_CALL(HASH_MAP_INTEGER_INTARRAY, List.of())));
 
         Map<Integer, int[]> map=generateSucccessorMap(allVars, bindingsSchema, indexed);
 
@@ -1282,8 +1283,8 @@ public class CompilerCommon {
 
         Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
 
-        method.BODY(ASSIGNMENT(MAP_STRING_MAP_STRING_INTARRAY, VARIABLE(TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_STRING_MAP_STRING_INTARRAY, List.of())));
-        method.BODY(ASSIGNMENT(MAP_STRING_INTARRAY, VARIABLE("map2"), CONSTRUCTOR_CALL(HASH_MAP_STRING_INTARRAY, List.of())));
+        method.BODY(DEFINITION(MAP_STRING_MAP_STRING_INTARRAY, VARIABLE(TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_STRING_MAP_STRING_INTARRAY, List.of())));
+        method.BODY(DEFINITION(MAP_STRING_INTARRAY, VARIABLE("map2"), CONSTRUCTOR_CALL(HASH_MAP_STRING_INTARRAY, List.of())));
 
         for (Map.Entry<String, Map<String, int[]>> entry: relations.entrySet()) {
             String rel=entry.getKey();
@@ -1503,7 +1504,7 @@ public class CompilerCommon {
                 .RETURNS(MAP_INTEGER_INTARRAY);
         compilerUtil.debugFileLocation(method);
 
-        method.BODY(ASSIGNMENT(MAP_INTEGER_INTARRAY, VARIABLE(TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_INTEGER_INTARRAY, List.of())));
+        method.BODY(DEFINITION(MAP_INTEGER_INTARRAY, VARIABLE(TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_INTEGER_INTARRAY, List.of())));
 
 
 
@@ -1638,7 +1639,7 @@ public class CompilerCommon {
         Collections.sort(sortedList);
         knownTypes.addAll(sortedList);
 
-        method.BODY(ASSIGNMENT(STRING_ARRAY, VARIABLE(TABLE_VAR), ARRAY_ALLOCATOR(STRING, CONSTANT(knownTypes.size()))));
+        method.BODY(DEFINITION(STRING_ARRAY, VARIABLE(TABLE_VAR), ARRAY_ALLOCATOR(STRING, CONSTANT(knownTypes.size()))));
         int count=0;
         for (String s: knownTypes) {
             method.BODY(ASSIGNMENT(null, ARRAY_ACCESSOR(VARIABLE(TABLE_VAR), CONSTANT(count)), CONSTANT(s)));
@@ -1669,7 +1670,7 @@ public class CompilerCommon {
 
         compilerUtil.debugFileLocation(method);
         Collection<String>variables=descriptorUtils.fieldNames(bindingsSchema);
-        method.BODY(ASSIGNMENT(get(compilerUtil.commonNameClass(template),packge), VARIABLE(BEAN_VAR), CONSTRUCTOR_CALL(get(compilerUtil.commonNameClass(template),packge), List.of())));
+        method.BODY(DEFINITION(get(compilerUtil.commonNameClass(template),packge), VARIABLE(BEAN_VAR), CONSTRUCTOR_CALL(get(compilerUtil.commonNameClass(template),packge), List.of())));
         for (String key: variables) {
             String newkey = compilerUtil.generateNewNameForVariable(key);
             method.PARAMETER(compilerUtil.getPastTypeForDeclaredType(bindingsSchema.getVar(), key), newkey);
@@ -1697,8 +1698,8 @@ public class CompilerCommon {
         method.PARAMETER(LIST_OF_OBJECT_ARRAYS, "records");
 
         method.BODY(
-                ASSIGNMENT(OBJECT_ARRAY, VARIABLE("record"), METHOD_CALL(VARIABLE("records"), "get", List.of(CONSTANT(0)))),
-                ASSIGNMENT(className, VARIABLE("bean"), CONSTRUCTOR_CALL(className, List.of()))
+                DEFINITION(OBJECT_ARRAY, VARIABLE("record"), METHOD_CALL(VARIABLE("records"), "get", List.of(CONSTANT(0)))),
+                DEFINITION(className, VARIABLE("bean"), CONSTRUCTOR_CALL(className, List.of()))
         );
 
         int count = 1;
@@ -1736,7 +1737,7 @@ public class CompilerCommon {
                 ASSIGNMENT(null, METHOD_CALL(VARIABLE("bean"), ELEMENTS), CONSTRUCTOR_CALL(LINKED_LIST, List.of())),
 
                 FOR(
-                        ASSIGNMENT(_int, VARIABLE(_I_), CONSTANT(1)),
+                        DEFINITION(_int, VARIABLE(_I_), CONSTANT(1)),
                         BINARY_OP(VARIABLE(_I_), "<", METHOD_CALL(VARIABLE("records"), "size", List.of())),
                         ASSIGNMENT(null, VARIABLE(_I_), BINARY_OP(VARIABLE(_I_), "+", CONSTANT(1))))
 
@@ -1793,7 +1794,7 @@ public class CompilerCommon {
         method.PARAMETER(OBJECT_ARRAY, "record");
 
         ClassName className = get(compilerUtil.beanNameClass(template,direction,extension),packge);
-        method.addStatement(ASSIGNMENT(className,VARIABLE(BEAN_VAR),CONSTRUCTOR_CALL(className,List.of())));
+        method.addStatement(DEFINITION(className,VARIABLE(BEAN_VAR),CONSTRUCTOR_CALL(className,List.of())));
 
         method.COMMENT("Converter to bean of type $T for template $N.\n", className, template);
         if (shared!=null) {
@@ -1843,7 +1844,7 @@ public class CompilerCommon {
                 .MODIFIERS(Modifier.PUBLIC)
                 .RETURNS(beanClass);
         compilerUtil.debugFileLocation(builder);
-        builder.BODY(ASSIGNMENT(beanClass, VARIABLE(BEAN_VAR), CONSTRUCTOR_CALL(beanClass, List.of())));
+        builder.BODY(DEFINITION(beanClass, VARIABLE(BEAN_VAR), CONSTRUCTOR_CALL(beanClass, List.of())));
         builder.addStatement(RETURN(VARIABLE(BEAN_VAR)));
         return builder;
     }
@@ -1859,7 +1860,7 @@ public class CompilerCommon {
 
         compilerUtil.debugFileLocation(builder);
 
-        builder.BODY(ASSIGNMENT(commonName, VARIABLE(BEAN_VAR), CONSTRUCTOR_CALL(commonName, List.of())));
+        builder.BODY(DEFINITION(commonName, VARIABLE(BEAN_VAR), CONSTRUCTOR_CALL(commonName, List.of())));
 
         Map<String, List<Descriptor>> theVars = bindingsSchema.getVar();
         Collection<String> nameVariables = descriptorUtils.getNameVariables(bindingsSchema);

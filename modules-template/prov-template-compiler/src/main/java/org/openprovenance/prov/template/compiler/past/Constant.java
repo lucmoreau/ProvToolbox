@@ -67,6 +67,13 @@ public class Constant extends Expression {
         }
         return constant;
     }
+    static public Constant CONSTANT(Float value) {
+        Constant constant = new Constant(value);
+        if (value==null) {
+            constant.constantType=ConstantType.NULL;
+        }
+        return constant;
+    }
     static public Constant CONSTANT(Integer value) {
         return new Constant(value);
     }

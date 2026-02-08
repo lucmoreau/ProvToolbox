@@ -1,16 +1,37 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.*;
+
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.Constructor;
+import org.openprovenance.prov.template.compiler.past.Method;
+import org.openprovenance.prov.template.compiler.past.PastFactory;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
+import org.openprovenance.prov.template.compiler.past.type.TypeName;
 
 import javax.lang.model.element.Modifier;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.LambdaExpression.LAMBDA;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.FUNCTIONAL_METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.FIELD_VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 public class CompilerCompositeConfigurations {
     private final CompilerUtil compilerUtil;
@@ -19,35 +40,36 @@ public class CompilerCompositeConfigurations {
         this.compilerUtil=new CompilerUtil(pFactory);
     }
 
-    String enactorVar = "beanEnactor";
+    static final String ENACTOR_VAR = "beanEnactor";
 
 
     public SpecificationFile generateCompositeConfigurator(TemplatesProjectConfiguration configs,
                                                            Locations locations,
                                                            TypeName typeName,
-                                                           QuadConsumer<String, MethodSpec.Builder, TypeName, TypeName> generator,
+                                                           QuadConsumer<String, Method, ClassName, TypeName> generator,
                                                            String generatorMethod,
                                                            TypeName beanProcessor,
                                                            String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, COMPOSITE_TABLE_CONFIGURATOR), COMPOSITE_TABLE_CONFIGURATOR), typeName);
+        final ParameterizedType tableConfiguratorType = ParameterizedType.get(ClassName.get(COMPOSITE_TABLE_CONFIGURATOR, locations.getFilePackage(configs.name, COMPOSITE_TABLE_CONFIGURATOR)), typeName);
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(fileName);
+        PastFactory pastFactory=new PastFactory();
+        Class pastClass = pastFactory.CLASS(fileName)
+                .MODIFIERS(Modifier.PUBLIC);
 
         // the following in only used for the enactorConfigurator
         if (beanProcessor!=null) {
-            builder.addField(beanProcessor, enactorVar, Modifier.FINAL, Modifier.PRIVATE);
-            MethodSpec.Builder cspec= MethodSpec.constructorBuilder()
-                    .addModifiers(Modifier.PUBLIC)
-                    .addParameter(ParameterSpec.builder(beanProcessor, enactorVar).build());
-            compilerUtil.specWithComment(cspec);
-            cspec.addStatement("this.$N=$N", enactorVar, enactorVar);
-            builder.addMethod(cspec.build());
+            pastClass.FIELDS(FIELD(ENACTOR_VAR, beanProcessor).MODIFIERS(Modifier.FINAL, Modifier.PRIVATE));
+            Constructor cspec= CONSTRUCTOR()
+                    .MODIFIERS(Modifier.PUBLIC)
+                    .PARAMETER(beanProcessor, ENACTOR_VAR);
+            compilerUtil.debugFileLocation(cspec);
+            cspec.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), ENACTOR_VAR), VARIABLE(ENACTOR_VAR)));
+            pastClass.CONSTRUCTOR(cspec);
         }
 
-
-        builder.addSuperinterface(tableConfiguratorType);
+        pastClass.INTERFACES(tableConfiguratorType);
 
 
         for (TemplateCompilerConfig config : configs.templates) {
@@ -55,77 +77,81 @@ public class CompilerCompositeConfigurations {
             if (!(config instanceof SimpleTemplateCompilerConfig )) {
                 final String templateNameClass = compilerUtil.templateNameClass(config.name);
                 final String beanNameClass = compilerUtil.commonNameClass(config.name);
-                final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
+                final ClassName className = ClassName.get(templateNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
                 String builderParameter = "builder";
-                MethodSpec.Builder mspec = MethodSpec.methodBuilder(config.name)
-                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .addParameter(ParameterSpec.builder(className, builderParameter).build())
-                        .returns(typeName);
-                compilerUtil.specWithComment(mspec);
-                generator.accept(builderParameter, mspec, className, ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), beanNameClass));
-                builder.addMethod(mspec.build());
+                Method mspec = METHOD(config.name)
+                        .commentFileLocation()
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                        .PARAMETER(className, builderParameter)
+                        .RETURNS(typeName);
+                generator.accept(builderParameter, mspec, className, ClassName.get(beanNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON)));
+                pastClass.METHOD(mspec);
             }
 
         }
 
-        TypeSpec theConfigurator = builder.build();
-
         String myPackage=locations.getFilePackage(configs.name, fileName);
 
-        JavaFile myfile = compilerUtil.specWithComment(theConfigurator, configs, myPackage, stackTraceElement);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
 
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
+        return new SpecificationFile(javaGenerator,pythonGenerator);
 
     }
-
-    static public final ParameterizedTypeName functionListObjArrayTo (TypeName returnType) {
-        return ParameterizedTypeName.get(ClassName.get(Function.class), ParameterizedTypeName.get(ClassName.get(List.class),ArrayTypeName.of(Object.class)), returnType);
-    }
-    static final ParameterizedTypeName recordsProcessorOfUnknown = functionListObjArrayTo(TypeVariableName.get("?"));
 
     public SpecificationFile generateCompositeEnactorConfigurator(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
-        return  generateCompositeConfigurator(configs, locations, recordsProcessorOfUnknown, this::generateMethodEnactor, "generateCompositeConfigurator", compilerUtil.getClass(configs.name, BEAN_PROCESSOR, locations), fileName);
+        return  generateCompositeConfigurator(configs, locations, FUNCTION_LIST_OBJARRAY_TO_ANY, this::generateMethodEnactor, "generateCompositeConfigurator", ClassName.get(BEAN_PROCESSOR, locations.getFilePackage(configs.name, BEAN_PROCESSOR)), fileName);
     }
 
 
-    public void generateMethodEnactor(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
-        mspec.addStatement("$T beanConverter=$N.aRecord2BeanConverter", functionListObjArrayTo(beanType), builderParameter);
+    public void generateMethodEnactor(String builderParameter, Method mspec, ClassName className, TypeName beanType) {
+        mspec.BODY(
+                ASSIGNMENT(FUNCTION_LIST_OBJARRAY_TO_TYPE(beanType), VARIABLE("beanConverter"),
+                        METHOD_CALL(VARIABLE(builderParameter), "aRecord2BeanConverter")),
 
-
-        mspec.addStatement("$T enactor=(array) -> {\n" +
-                "                    $T bean=beanConverter.apply(array);\n" +
-                "                    return $N.process(bean);\n" +
-                "                }", functionListObjArrayTo(beanType),beanType,enactorVar);
-        mspec.addStatement("return enactor");
+                ASSIGNMENT(FUNCTION_LIST_OBJARRAY_TO_TYPE(beanType), VARIABLE("enactor"),
+                        LAMBDA(PARAMETER("array", LIST_OF_OBJECT_ARRAYS))
+                                .BODY(ASSIGNMENT(beanType, VARIABLE("bean"),
+                                                FUNCTIONAL_METHOD_CALL(VARIABLE("beanConverter"), "apply", List.of(VARIABLE("array")))),
+                                        RETURN(
+                                                FUNCTIONAL_METHOD_CALL(
+                                                        VARIABLE(ENACTOR_VAR, FIELD_VARIABLE),
+                                                        "process",
+                                                        List.of(VARIABLE("bean"))
+                                                )
+                                        ))),
+                RETURN(VARIABLE("enactor"))
+        );
     }
 
     public SpecificationFile generateCompositeConfigurator2(TemplatesProjectConfiguration configs,
                                                             Locations locations,
                                                             TypeName typeName,
-                                                            QuintetConsumer<String, MethodSpec.Builder, TypeName, TypeName, TypeName> generator,
+                                                            QuintetConsumer<String, Method, ClassName, TypeName, TypeName> generator,
                                                             String generatorMethod,
                                                             TypeName beanProcessor,
                                                             String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name, COMPOSITE_TABLE_CONFIGURATOR), COMPOSITE_TABLE_CONFIGURATOR), typeName);
+        final ParameterizedType tableConfiguratorType = ParameterizedType.get(ClassName.get(COMPOSITE_TABLE_CONFIGURATOR, locations.getFilePackage(configs.name, COMPOSITE_TABLE_CONFIGURATOR)), typeName);
 
-
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(fileName);
+        PastFactory pastFactory=new PastFactory();
+        Class pastClass = pastFactory.CLASS(fileName)
+                .MODIFIERS(Modifier.PUBLIC);
 
         // the following in only used for the enactorConfigurator
         if (beanProcessor!=null) {
-            builder.addField(beanProcessor, enactorVar, Modifier.FINAL, Modifier.PRIVATE);
-            MethodSpec.Builder cspec= MethodSpec.constructorBuilder()
-                    .addModifiers(Modifier.PUBLIC)
-                    .addParameter(ParameterSpec.builder(beanProcessor, enactorVar).build());
-            compilerUtil.specWithComment(cspec);
-            cspec.addStatement("this.$N=$N", enactorVar, enactorVar);
-            builder.addMethod(cspec.build());
+            pastClass.FIELDS(FIELD(ENACTOR_VAR, beanProcessor).MODIFIERS(Modifier.FINAL, Modifier.PRIVATE));
+            Constructor cspec= CONSTRUCTOR()
+                    .MODIFIERS(Modifier.PUBLIC)
+                    .PARAMETER(beanProcessor, ENACTOR_VAR);
+            compilerUtil.debugFileLocation(cspec);
+            cspec.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), ENACTOR_VAR), VARIABLE(ENACTOR_VAR)));
+            pastClass.CONSTRUCTOR(cspec);
         }
 
 
-        builder.addSuperinterface(tableConfiguratorType);
+        pastClass.INTERFACES(tableConfiguratorType);
 
 
         for (TemplateCompilerConfig config : configs.templates) {
@@ -135,42 +161,51 @@ public class CompilerCompositeConfigurations {
                 final String beanNameClass = compilerUtil.commonNameClass(config.name);
                 final String inputNameClass = compilerUtil.inputsNameClass(config.name);
                 final String outputNameClass = compilerUtil.outputsNameClass(config.name);
-                final ClassName commonClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), templateNameClass);
+                final ClassName commonClassName = ClassName.get(templateNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
                 String builderParameter = "builder";
-                MethodSpec.Builder mspec = MethodSpec.methodBuilder(config.name)
-                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .addParameter(ParameterSpec.builder(commonClassName, builderParameter).build())
-                        .returns(typeName);
-                compilerUtil.specWithComment(mspec);
-                generator.accept(builderParameter, mspec, commonClassName, ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputNameClass), ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputNameClass));
-                builder.addMethod(mspec.build());
+                Method mspec = METHOD(config.name)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                        .PARAMETER(commonClassName, builderParameter)
+                        .RETURNS(typeName);
+                compilerUtil.debugFileLocation(mspec);
+                generator.accept(builderParameter, mspec, commonClassName, ClassName.get(inputNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS)), ClassName.get(outputNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS)));
+                pastClass.METHOD(mspec);
             }
 
         }
 
-        TypeSpec theConfigurator = builder.build();
-
         String myPackage=locations.getFilePackage(configs.name, fileName);
 
-        JavaFile myfile = compilerUtil.specWithComment(theConfigurator, configs, myPackage, stackTraceElement);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
 
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
+        return new SpecificationFile(javaGenerator,pythonGenerator);
 
     }
 
     public SpecificationFile generateCompositeEnactorConfigurator2(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
-        return  generateCompositeConfigurator2(configs, locations, recordsProcessorOfUnknown, this::generateMethodEnactor2, "generateCompositeConfigurator", ClassName.get(locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR),INPUT_OUTPUT_PROCESSOR), fileName);
+        return  generateCompositeConfigurator2(configs, locations, FUNCTION_LIST_OBJARRAY_TO_ANY, this::generateMethodEnactor2, "generateCompositeConfigurator", ClassName.get(INPUT_OUTPUT_PROCESSOR, locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR)), fileName);
     }
 
-    public void generateMethodEnactor2(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName inBeanType, TypeName outBeanType) {
-        mspec.addStatement("$T beanConverter=$N.getIntegrator().aRecord2InputsConverter", functionListObjArrayTo(inBeanType), builderParameter);
+    public void generateMethodEnactor2(String builderParameter, Method mspec, ClassName className, TypeName inBeanType, TypeName outBeanType) {
+        mspec.BODY(
+                ASSIGNMENT(FUNCTION_LIST_OBJARRAY_TO_TYPE(inBeanType), VARIABLE("beanConverter"),
+                        METHOD_CALL(METHOD_CALL(VARIABLE(builderParameter), "getIntegrator", List.of()),
+                                "aRecord2InputsConverter")),
 
-
-        mspec.addStatement("$T enactor=(array) -> {\n" +
-                "                    $T bean=beanConverter.apply(array);\n" +
-                "                    return $N.process(bean);\n" +
-                "                }", functionListObjArrayTo(outBeanType),inBeanType,enactorVar);
-        mspec.addStatement("return enactor");
+                ASSIGNMENT(FUNCTION_LIST_OBJARRAY_TO_TYPE(outBeanType), VARIABLE("enactor"),
+                        LAMBDA(PARAMETER("array", LIST_OF_OBJECT_ARRAYS))
+                                .BODY(ASSIGNMENT(inBeanType, VARIABLE("bean"),
+                                                FUNCTIONAL_METHOD_CALL(VARIABLE("beanConverter"), "apply", List.of(VARIABLE("array")))),
+                                        RETURN(
+                                                FUNCTIONAL_METHOD_CALL(
+                                                        VARIABLE(ENACTOR_VAR, FIELD_VARIABLE),
+                                                        "process",
+                                                        List.of(VARIABLE("bean"))
+                                                )
+                                        ))),
+                RETURN(VARIABLE("enactor"))
+        );
     }
 
 

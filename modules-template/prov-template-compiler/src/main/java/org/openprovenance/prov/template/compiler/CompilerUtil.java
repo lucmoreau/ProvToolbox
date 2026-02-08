@@ -391,6 +391,20 @@ public class CompilerUtil {
     static final public ParameterizedTypeName mapStringArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeName.get(int[].class));
     static final public ParameterizedTypeName mapStringMapStringArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), mapStringArrayType);
 
+    public org.openprovenance.prov.template.compiler.past.type.ClassName getPastDocumentTypeForDeclaredType(Map<String, List<Descriptor>> varMap, String key) {
+        Class<?> cl=getJavaDocumentTypeForDeclaredType(varMap, key);
+        ClassName className=ClassName.get(cl);
+        String packge=className.packageName();
+        String simpleName=className.simpleName();
+        return new org.openprovenance.prov.template.compiler.past.type.ClassName(simpleName, packge);
+    }
+
+    public void generateDocumentSpecializedParameters(org.openprovenance.prov.template.compiler.past.Method method, Map<String, List<Descriptor>> theVar, Collection<String> variables) {
+        for (String key: variables) {
+            method.PARAMETER(getPastDocumentTypeForDeclaredType(theVar, key), key);
+        }
+    }
+
     public org.openprovenance.prov.template.compiler.past.type.ClassName getPastTypeForDeclaredType(Map<String, List<Descriptor>> varMap, String key) {
         Class<?> cl=getJavaTypeForDeclaredType(varMap,  key);
         ClassName className=ClassName.get(cl);

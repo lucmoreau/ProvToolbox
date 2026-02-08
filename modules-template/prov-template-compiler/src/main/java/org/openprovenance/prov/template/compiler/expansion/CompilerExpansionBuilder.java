@@ -150,13 +150,13 @@ public class CompilerExpansionBuilder {
                 .debugFileLocation();
 
         // this.pf = pf
-        constructor.BODY(ASSIGNMENT(null, METHOD_CALL(VARIABLE("this"), "pf"), VARIABLE("pf")));
+        constructor.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "pf"), VARIABLE("pf")));
 
         // For each qualified name in the map: this.varName = pf.newQualifiedName(nsURI, localPart, prefix)
         for (Map.Entry<QualifiedName, String> e : vmap.entrySet()) {
             final QualifiedName q = e.getKey();
             constructor.BODY(
-                    ASSIGNMENT(null,
+                    ASSIGNMENT(
                             METHOD_CALL(VARIABLE("this"), e.getValue()),
                             METHOD_CALL(VARIABLE("pf"), "newQualifiedName",
                                     CONSTANT(q.getNamespaceURI()),
@@ -166,7 +166,7 @@ public class CompilerExpansionBuilder {
 
         constructor.BODY(
                 // this.vc = new ValueConverter(pf)
-                ASSIGNMENT(null,
+                ASSIGNMENT(
                         METHOD_CALL(VARIABLE("this"), "vc"),
                         CONSTRUCTOR_CALL(PROV_VALUE_CONVERTER, List.of(VARIABLE("pf")))),
 
@@ -357,7 +357,7 @@ public class CompilerExpansionBuilder {
             }
 
             // document = me.make(args...)
-            method.addStatement(ASSIGNMENT(null, VARIABLE("document"),
+            method.addStatement(ASSIGNMENT( VARIABLE("document"),
                     METHOD_CALL(VARIABLE("me"), "make", makeArgs)));
             // fr.writeDocument(System.out, document, Formats.ProvFormat.PROVN)
             method.addStatement(METHOD_CALL(VARIABLE("fr"), "writeDocument",
@@ -504,7 +504,7 @@ public class CompilerExpansionBuilder {
         }
 
         // __C_document = generator(args...)
-        method.addStatement(ASSIGNMENT(null, VARIABLE("__C_document"),
+        method.addStatement(ASSIGNMENT( VARIABLE("__C_document"),
                 METHOD_CALL("generator", generatorArgs)));
         // return __C_document
         method.addStatement(RETURN(VARIABLE("__C_document")));
@@ -632,7 +632,7 @@ public class CompilerExpansionBuilder {
         }
 
         // __C_result = processor.call(args...)
-        method.addStatement(ASSIGNMENT(null, VARIABLE("__C_result"),
+        method.addStatement(ASSIGNMENT( VARIABLE("__C_result"),
                 METHOD_CALL(VARIABLE("processor"), "call", callArgs)));
         // return __C_result
         method.addStatement(RETURN(VARIABLE("__C_result")));
@@ -677,7 +677,7 @@ public class CompilerExpansionBuilder {
                 // if (vgen==null) vgen=InstantiateAction.getUUIDQualifiedName2(pf)
                 method.addStatement(
                         IF(BINARY_OP(VARIABLE(vgen), EQ, getNull()))
-                                .THEN(ASSIGNMENT(null, VARIABLE(vgen),
+                                .THEN(ASSIGNMENT( VARIABLE(vgen),
                                         METHOD_CALL(PROV_INSTANTIATE_ACTION, "getUUIDQualifiedName2", VARIABLE("pf")))));
             }
         }

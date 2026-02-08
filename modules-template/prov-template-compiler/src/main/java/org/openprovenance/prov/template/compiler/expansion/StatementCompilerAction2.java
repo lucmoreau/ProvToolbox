@@ -15,11 +15,13 @@ import org.openprovenance.prov.template.core.InstantiateUtil;
 
 import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.bnNS;
 import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.gensym;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.EQ;
 import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constant.getNull;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.IfExpression.IF_;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
@@ -519,7 +521,7 @@ public class StatementCompilerAction2 implements StatementAction {
         final String id_ = id + "_";
 
         // Bundle id_ = pf.newNamedBundle(id, pf.newNamespace(), null)
-        statements.add(Assignment.ASSIGNMENT(
+        statements.add(DEFINITION(
                 PROV_BUNDLE,
                 VARIABLE(id_),
                 pfCall("newNamedBundle", List.of(
@@ -574,8 +576,7 @@ public class StatementCompilerAction2 implements StatementAction {
         }
 
         // attrs = new LinkedList<Attribute>()
-        statements.add(Assignment.ASSIGNMENT(
-                null,
+        statements.add(ASSIGNMENT(
                 VARIABLE("attrs"),
                 CONSTRUCTOR_CALL(
                         ParameterizedType.get(LINKED_LIST),

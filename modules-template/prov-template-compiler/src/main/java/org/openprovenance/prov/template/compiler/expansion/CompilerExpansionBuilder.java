@@ -44,6 +44,10 @@ import static org.openprovenance.prov.template.compiler.past.Constant.getNull;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import org.openprovenance.prov.template.compiler.past.ArrayInitialiser;
+import org.openprovenance.prov.template.compiler.past.LambdaExpression;
+import org.openprovenance.prov.template.compiler.past.MethodCall;
+import org.openprovenance.prov.template.compiler.past.Parameter;
 
 import static org.openprovenance.prov.template.compiler.past.IfExpression.IF_;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
@@ -170,27 +174,19 @@ public class CompilerExpansionBuilder {
         pastClass.METHOD(generateFactoryMethodWithContinuation_past(allVars, allAtts, name, templateName, packge, bindingsSchema));
         pastClass.METHOD(generateFactoryMethodWithArray_past(allVars, allAtts, name, bindingsSchema));
         pastClass.METHOD(generateFactoryMethodWithArrayAndContinuation_past(name, templateName, packge, bindingsSchema));
+        pastClass.METHOD(generateUniqueRecordFactoryMethodWithArrayAndContinuation_past(name, templateName, packge, bindingsSchema));
+        pastClass.METHOD(typedRecordGenerator_past(templateName, packge));
+        pastClass.METHOD(typeManagerGenerator_past(templateName, packge));
+        pastClass.METHOD(generateTypePropagatorN_past());
 
         TypeSpec.Builder builder=new Poet().emitBuilder(pastClass);
 
 
 
         builder.addMethod(generateTemplateGenerator_old(allVars, allAtts, doc, vmap, bindingsSchema));
-
-        // TO BE CONVERTED TO PAST GENERATION
-        builder.addMethod(generateUniqueRecordFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
-        builder.addMethod(typedRecordGenerator(templateName,packge));
-        // TO HERE
-
-        builder.addMethod(typeManagerGenerator(templateName,packge));
-        // builder.addMethod(compilerClient.typePropagateGenerator(templateName,packge));
-
-
         builder.addMethod(generateTypePropagator(packge+".client", bindingsSchema, successorTable));
 
-        //builder.addMethod(generateTypePropagatorN_OLD());
-        builder.addMethod(generateTypePropagatorN_new());
-
+        //END
 
         TypeSpec bean = builder.build();
 
@@ -1039,6 +1035,98 @@ public class CompilerExpansionBuilder {
         return null;
     }
 
+    public Method generateTypePropagatorN_past() {
+        final String var_successor = "successor";
+        final String var_genericRelation = "genericRelation";
+        final String var_record = "record";
+        final String var_specificRelation = "specificRelation";
+        final String var_count = "count";
+        final String var_in_type = "in_type";
+
+        org.openprovenance.prov.template.compiler.past.type.ParameterizedType levelNMap =
+                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(MAP, STRING, INTEGER);
+        org.openprovenance.prov.template.compiler.past.type.ParameterizedType collectionIntArray =
+                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(COLLECTION, intArray);
+        org.openprovenance.prov.template.compiler.past.type.ParameterizedType levelNP1CMap =
+                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(MAP, STRING, collectionIntArray);
+
+        Method method = METHOD("propagateTypes_n")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(VOID);
+
+        method.PARAMETER(OBJECT_ARRAY, var_record);
+        method.PARAMETER(levelNMap, "mapLevelN");
+        method.PARAMETER(levelNP1CMap, "mapLevelNP1");
+        method.PARAMETER(INTEGER, var_count);
+        method.PARAMETER(_int, var_successor);
+        method.PARAMETER(_int, var_genericRelation);
+        method.PARAMETER(_int, var_specificRelation);
+        method.PARAMETER(levelNMap, "uniqId");
+
+        // if (record[count]!=null) {
+        org.openprovenance.prov.template.compiler.past.Expression recordCount =
+                ARRAY_ACCESSOR(VARIABLE(var_record), VARIABLE(var_count));
+
+        //   String uri=((QualifiedName)(record[count])).getUri()
+        org.openprovenance.prov.template.compiler.past.Statement uriAssignment =
+                ASSIGNMENT(STRING, VARIABLE("uri"),
+                        METHOD_CALL(CAST(PROV_QUALIFIED_NAME, recordCount), "getUri", List.of()));
+
+        //   Integer in_type=mapLevelN.get(uri)
+        org.openprovenance.prov.template.compiler.past.Statement inTypeAssignment =
+                ASSIGNMENT(INTEGER, VARIABLE(var_in_type),
+                        METHOD_CALL(VARIABLE("mapLevelN"), "get", VARIABLE("uri")));
+
+        // if (record[successor]!=null) {
+        org.openprovenance.prov.template.compiler.past.Expression recordSuccessor =
+                ARRAY_ACCESSOR(VARIABLE(var_record), VARIABLE(var_successor));
+
+        //   String uri2=((QualifiedName)(record[successor])).getUri()
+        org.openprovenance.prov.template.compiler.past.Statement uri2Assignment =
+                ASSIGNMENT(STRING, VARIABLE("uri2"),
+                        METHOD_CALL(CAST(PROV_QUALIFIED_NAME, recordSuccessor), "getUri", List.of()));
+
+        //   mapLevelNP1.computeIfAbsent(uri2, k -> new LinkedList<>())
+        org.openprovenance.prov.template.compiler.past.Expression computeIfAbsent =
+                METHOD_CALL(VARIABLE("mapLevelNP1"), "computeIfAbsent",
+                        VARIABLE("uri2"),
+                        LambdaExpression.LAMBDA(Parameter.PARAMETER("k", null))
+                                .BODY(RETURN(CONSTRUCTOR_CALL(LINKED_LIST_GENERICS, List.of()))));
+
+        //   mapLevelNP1.get(uri2).add(new int[] { successor, genericRelation, specificRelation, in_type, count, uniqId.get(uri) })
+        MethodCall getUri2 =
+                METHOD_CALL(VARIABLE("mapLevelNP1"), "get", VARIABLE("uri2"));
+        org.openprovenance.prov.template.compiler.past.Expression arrayInit =
+                ArrayInitialiser.ARRAY_INITIALISER(_int,
+                        VARIABLE(var_successor),
+                        VARIABLE(var_genericRelation),
+                        VARIABLE(var_specificRelation),
+                        VARIABLE(var_in_type),
+                        VARIABLE(var_count),
+                        METHOD_CALL(VARIABLE("uniqId"), "get", VARIABLE("uri")));
+        org.openprovenance.prov.template.compiler.past.Expression addCall =
+                METHOD_CALL(getUri2, "add", List.of(arrayInit));
+
+        // Build nested if statements (innermost first)
+        // if (record[successor]!=null) { uri2=...; computeIfAbsent; add }
+        // if (in_type!=null) { if (record[successor]!=null) { ... } }
+        // if (record[count]!=null) { uri=...; in_type=...; if (in_type!=null) { ... } }
+        IfStatement outerIf =
+                IF(BINARY_OP(recordCount, "!=", getNull()))
+                        .THEN(uriAssignment,
+                                inTypeAssignment,
+                                IF(BINARY_OP(VARIABLE(var_in_type), "!=", getNull()))
+                                        .THEN(IF(BINARY_OP(recordSuccessor, "!=", getNull()))
+                                                .THEN(uri2Assignment,
+                                                        computeIfAbsent,
+                                                        addCall)));
+
+        method.addStatement(outerIf);
+
+        return method;
+    }
+
     public MethodSpec generateTypePropagatorN_new() {
 
 
@@ -1399,7 +1487,61 @@ public class CompilerExpansionBuilder {
         return method;
     }
 
-    public MethodSpec generateFactoryMethodWithArray(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
+    public Method generateUniqueRecordFactoryMethodWithArrayAndContinuation_past(String name, String template, String packge, TemplateBindingsSchema bindingsSchema) {
+
+        Method method = METHOD("make")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(T())
+                .addTypeVariables(T());
+
+        // Parameter: processor of type <TemplateName>Interface<T>
+        org.openprovenance.prov.template.compiler.past.type.ClassName interfaceClass =
+                org.openprovenance.prov.template.compiler.past.type.ClassName.get(
+                        compilerUtil.templateNameClass(template) + "Interface", packge);
+        org.openprovenance.prov.template.compiler.past.type.ParameterizedType processorType =
+                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(interfaceClass, T());
+        method.PARAMETER(processorType, PROCESSOR);
+
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
+        Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
+
+        int count = 1;
+        for (String variable : variables) {
+            List<Descriptor> descriptors = theVar.get(variable);
+            if (descriptors != null) {
+                for (Descriptor descriptor : descriptors) {
+                    final org.openprovenance.prov.template.compiler.past.type.ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, variable);
+                    final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, variable);
+                    final String converter = compilerUtil.getConverterForDeclaredType(atype);
+                    if (descriptor instanceof NameDescriptor) {
+                        if (converter == null) {
+                            // Type var = (Type) "count"
+                            method.addStatement(ASSIGNMENT(pastType, VARIABLE(variable), CAST(pastType, CONSTANT("" + count))));
+                        } else {
+                            // Type var = converter(count)
+                            method.addStatement(ASSIGNMENT(pastType, VARIABLE(variable), METHOD_CALL(converter, List.of(CONSTANT(count)))));
+                        }
+                    } else {
+                        // Type var = null /* count */
+                        method.addStatement(ASSIGNMENT(pastType, VARIABLE(variable), getNull()));
+                    }
+                    count++;
+                }
+            }
+        }
+        // return make(args..., _processor)
+        List<org.openprovenance.prov.template.compiler.past.Expression> args = new ArrayList<>();
+        for (String variable : variables) {
+            args.add(VARIABLE(variable));
+        }
+        args.add(VARIABLE(PROCESSOR));
+        method.addStatement(RETURN(METHOD_CALL("make", args)));
+
+        return method;
+    }
+
+    public MethodSpec generateFactoryMethodWithArray_old(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(Document.class);
@@ -1631,9 +1773,43 @@ public class CompilerExpansionBuilder {
     }
 
 
-    // move to expansion subpackage
 
-    public MethodSpec typeManagerGenerator(String templateName, String packge) {
+    public Method typeManagerGenerator_past(String templateName, String packge) {
+        org.openprovenance.prov.template.compiler.past.type.TypeVariable typeT = org.openprovenance.prov.template.compiler.past.type.TypeVariable.T();
+
+        org.openprovenance.prov.template.compiler.past.type.ClassName typeManagementClass =
+                org.openprovenance.prov.template.compiler.past.type.ClassName.get(
+                        compilerUtil.templateNameClass(templateName) + "TypeManagement", packge);
+        org.openprovenance.prov.template.compiler.past.type.ParameterizedType returnType =
+                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(typeManagementClass, typeT);
+
+        Method method = METHOD("getTypeManager")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(returnType)
+                .addTypeVariables(typeT);
+
+        method.PARAMETER(MAP_QUALIFIEDNAME_STRING_SET, "knownTypeMap");
+        method.PARAMETER(MAP_QUALIFIEDNAME_STRING_SET, "unknownTypeMap");
+        method.PARAMETER(MAP_STRING_MAP_STRING_BIFUNCTION, "propertyConverters");
+        method.PARAMETER(MAP_QUALIFIEDNAME_MAP_STRING_COLLECTION_OF_STRING, "idata");
+        method.PARAMETER(MAP_STRING_MAP_STRING_TRIFUNCTION, "idataConverters");
+
+        // return new <TemplateName>TypeManagement<>(pf, knownTypeMap, unknownTypeMap, propertyConverters, idata, idataConverters)
+        org.openprovenance.prov.template.compiler.past.type.ParameterizedType diamondType =
+                org.openprovenance.prov.template.compiler.past.type.ParameterizedType.get(typeManagementClass);
+        method.addStatement(RETURN(CONSTRUCTOR_CALL(diamondType, List.of(
+                VARIABLE("pf"),
+                VARIABLE("knownTypeMap"),
+                VARIABLE("unknownTypeMap"),
+                VARIABLE("propertyConverters"),
+                VARIABLE("idata"),
+                VARIABLE("idataConverters")))));
+
+        return method;
+    }
+
+    private MethodSpec typeManagerGenerator_old(String templateName, String packge) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getTypeManager")
                 .addModifiers(Modifier.PUBLIC)
@@ -1679,7 +1855,22 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public MethodSpec typedRecordGenerator(String templateName, String packge) {
+    public Method typedRecordGenerator_past(String templateName, String packge) {
+        org.openprovenance.prov.template.compiler.past.type.ClassName typedRecordClass =
+                org.openprovenance.prov.template.compiler.past.type.ClassName.get(
+                        compilerUtil.templateNameClass(templateName) + "TypedRecord", packge);
+
+        Method method = METHOD("getTypedRecord")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(typedRecordClass)
+                // return new <TemplateName>TypedRecord()
+                .BODY(RETURN(CONSTRUCTOR_CALL(typedRecordClass, List.of())));
+
+        return method;
+    }
+
+    public MethodSpec typedRecordGenerator_old(String templateName, String packge) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getTypedRecord")
                 .addModifiers(Modifier.PUBLIC)

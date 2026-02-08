@@ -13,7 +13,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.template.compiler.CompilerCompositeConfigurations.recordsProcessorOfUnknown;
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.*;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.mapString2StringType;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
@@ -29,7 +28,6 @@ public class CompilerCatalogueDispatcher {
     static final ParameterizedTypeName mapString2MapString2IntArray = ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Map.class), com.squareup.javapoet.ClassName.get(String.class), mapString2IntArray);
 
     public static final String POST_PROCESSING_VAR = "postProcessing";
-    static final ParameterizedTypeName FunctionOfString2StringArray = ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ClassName.get(CLIENT_PACKAGE,BUILDER_INTERFACE), ArrayTypeName.of(ClassName.get(String.class)));
     public static final ParameterizedTypeName processorOfString = functionObjArrayTo(com.squareup.javapoet.TypeName.get(String.class));
     static final ParameterizedTypeName processorOfUnknown = functionObjArrayTo(com.squareup.javapoet.TypeVariableName.get("?"));
     static final ParameterizedTypeName FunctionStringResultSet = ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ClassName.get(String.class), ClassName.get(java.sql.ResultSet.class));
@@ -37,6 +35,10 @@ public class CompilerCatalogueDispatcher {
     static public final ParameterizedTypeName functionObjArrayTo (com.squareup.javapoet.TypeName returnType) {
         return ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Function.class), ArrayTypeName.of(Object.class), returnType);
     }
+    static public final ParameterizedTypeName functionListObjArrayTo (com.squareup.javapoet.TypeName returnType) {
+        return ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Function.class), ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(List.class),ArrayTypeName.of(Object.class)), returnType);
+    }
+    static final ParameterizedTypeName recordsProcessorOfUnknown = functionListObjArrayTo(TypeVariableName.get("?"));
 
     //  Function<Object[], Object[]>
     static final ParameterizedTypeName FunctionObjArray2ObjArray= ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ArrayTypeName.of(ClassName.get(Object.class)), ArrayTypeName.of(ClassName.get(Object.class)));

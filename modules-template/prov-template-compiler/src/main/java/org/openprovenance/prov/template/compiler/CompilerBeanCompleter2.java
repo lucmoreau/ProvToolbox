@@ -23,6 +23,7 @@ import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST
 import static org.openprovenance.prov.template.compiler.past.Class.ClassKind.ANONYMOUS;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.DoLoop.DO;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
@@ -216,7 +217,7 @@ public class CompilerBeanCompleter2 {
                         .BODY(
                                 DO()
                                         .BODY(
-                                                ASSIGNMENT(composeeClass, VARIABLE("composee"), CONSTRUCTOR_CALL(composeeClass, List.of())),
+                                                DEFINITION(composeeClass, VARIABLE("composee"), CONSTRUCTOR_CALL(composeeClass, List.of())),
                                                 METHOD_CALL(
                                                         VARIABLE(BEAN_VAR),
                                                         ADD_ELEMENTS,
@@ -236,7 +237,7 @@ public class CompilerBeanCompleter2 {
                         .PARAMETER(outputClassName, BEAN_VAR)
                         .RETURNS(outputClassName)
                         .BODY(
-                                ASSIGNMENT(_bool, VARIABLE("nextExists"), CONSTANT(true)),
+                                DEFINITION(_bool, VARIABLE("nextExists"), CONSTANT(true)),
                                 ITERATOR(
                                         PARAMETER("composee", composeeClass),
                                         METHOD_CALL(VARIABLE(BEAN_VAR), ELEMENTS))

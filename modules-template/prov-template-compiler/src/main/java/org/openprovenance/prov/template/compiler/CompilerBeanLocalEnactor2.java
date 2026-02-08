@@ -29,6 +29,7 @@ import static org.openprovenance.prov.template.compiler.configuration.Specificat
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
 import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
@@ -96,7 +97,7 @@ public class CompilerBeanLocalEnactor2 {
 
             compilerUtil.debugFileLocation(mspec);
 
-            mspec.BODY(ASSIGNMENT(outputClassName, VARIABLE(OUT_BEAN), CONSTRUCTOR_CALL(outputClassName, List.of())));
+            mspec.BODY(DEFINITION(outputClassName, VARIABLE(OUT_BEAN), CONSTRUCTOR_CALL(outputClassName, List.of())));
 
             if (config instanceof SimpleTemplateCompilerConfig) {
                 TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
@@ -136,7 +137,7 @@ public class CompilerBeanLocalEnactor2 {
                 final ClassName outputClassName2 = get(outputNameClass2, locations.getBeansPackage(config1.fullyQualifiedName, BeanDirection.OUTPUTS));
 
 
-                mspec.BODY(ASSIGNMENT(
+                mspec.BODY(DEFINITION(
                         MAP_STRING_MAP_INTEGER_INTEGER,
                         VARIABLE(MAP_VAR),
                         CONSTRUCTOR_CALL(HASHMAP, List.of())
@@ -182,7 +183,7 @@ public class CompilerBeanLocalEnactor2 {
 
                 compilerUtil.debugFileLocation(mspec2);
 
-                mspec2.BODY(ASSIGNMENT(outputClassName2, VARIABLE(OUT_BEAN), CONSTRUCTOR_CALL(outputClassName2, List.of())));
+                mspec2.BODY(DEFINITION(outputClassName2, VARIABLE(OUT_BEAN), CONSTRUCTOR_CALL(outputClassName2, List.of())));
 
 
                 TemplateBindingsSchema bindingsSchema=null;

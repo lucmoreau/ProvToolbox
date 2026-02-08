@@ -24,6 +24,7 @@ import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF
 import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.ForLoop.FOR;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
@@ -98,17 +99,17 @@ public class CompilerTableConfiguratorForTypes {
             if (config instanceof SimpleTemplateCompilerConfig) {
                 ClassName builderClassName = get(templateNameClass, locations.getBackendPackage(config.fullyQualifiedName));
                 m.BODY(
-                        ASSIGNMENT(STRING_ARRAY, VARIABLE("properties"),
+                        DEFINITION(STRING_ARRAY, VARIABLE("properties"),
                                 METHOD_CALL(VARIABLE(PROPERTY_ORDER), "get", List.of(CONSTANT(config.fullyQualifiedName)))),
 
-                        ASSIGNMENT(builderClassName, VARIABLE(TEMPLATE_BUILDER_VARIABLE),
+                        DEFINITION(builderClassName, VARIABLE(TEMPLATE_BUILDER_VARIABLE),
                                 CAST(builderClassName, METHOD_CALL(
                                         VARIABLE(DOCUMENT_BUILDER_DISPATCHER),
                                         "get",
                                         List.of(CONSTANT(config.fullyQualifiedName))
                                 ) )),
 
-                        ASSIGNMENT(OBJECT_ARRAY, VARIABLE("record2"),
+                        DEFINITION(OBJECT_ARRAY, VARIABLE("record2"),
                                 METHOD_CALL(
                                         VARIABLE(TEMPLATE_BUILDER_VARIABLE),
                                         "make",
@@ -122,7 +123,7 @@ public class CompilerTableConfiguratorForTypes {
                                 )
                         ),
 
-                        ASSIGNMENT(MAP_QUALIFIEDNAME_STRING_SET, VARIABLE("knownTypeMap"),
+                        DEFINITION(MAP_QUALIFIEDNAME_STRING_SET, VARIABLE("knownTypeMap"),
                                 CONSTRUCTOR_CALL(HASH_MAP_GENERICS, List.of())
                         ),
 
@@ -143,19 +144,19 @@ public class CompilerTableConfiguratorForTypes {
                                         )
                                 )
                         ),
-                        ASSIGNMENT(MAP_STRING_STRING_SET, VARIABLE(PROPERTY_MAP),
+                        DEFINITION(MAP_STRING_STRING_SET, VARIABLE(PROPERTY_MAP),
                                 CONSTRUCTOR_CALL(HASH_MAP_GENERICS, List.of())
                         ),
 
-                        FOR(ASSIGNMENT(_int, VARIABLE("i"), CONSTANT(0)),
+                        FOR(DEFINITION(_int, VARIABLE("i"), CONSTANT(0)),
                                 BINARY_OP(VARIABLE("i"), "<", METHOD_CALL(VARIABLE("record2"), "length")),
                                 ASSIGNMENT(null, VARIABLE("i"),
                                         BINARY_OP(VARIABLE("i"), "+", CONSTANT(1))))
                                 .BODY(
-                                        ASSIGNMENT(STRING, VARIABLE("property"),
+                                        DEFINITION(STRING, VARIABLE("property"),
                                                 ARRAY_ACCESSOR(VARIABLE("properties"), VARIABLE("i"))),
 
-                                        ASSIGNMENT(OBJECT, VARIABLE("value"),
+                                        DEFINITION(OBJECT, VARIABLE("value"),
                                                 ARRAY_ACCESSOR(VARIABLE("record2"), VARIABLE("i"))),
                                         IF(BINARY_OP(VARIABLE("value"), INSTANCEOF, METHOD_CALL(PROV_QUALIFIED_NAME,".class")))
                                                 .THEN(

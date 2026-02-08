@@ -23,6 +23,7 @@ import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNME
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
 import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
@@ -362,7 +363,7 @@ public class CompilerQueryInvoker {
             iterType = get(compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.INPUTS, "_1"), locations.getBeansPackage(compositeConfig.fullyQualifiedName, BeanDirection.INPUTS));
         }
 
-        m.BODY(ASSIGNMENT(_bool, VARIABLE("first"), CONSTANT(true)));
+        m.BODY(DEFINITION(_bool, VARIABLE("first"), CONSTANT(true)));
 
         Iterator iterator = ITERATOR(PARAMETER(variableBean1, iterType), METHOD_CALL(VARIABLE(beanVar), ELEMENTS));
         iterator.BODY(

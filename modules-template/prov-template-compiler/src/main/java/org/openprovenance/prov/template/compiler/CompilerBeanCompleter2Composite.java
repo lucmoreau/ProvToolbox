@@ -16,6 +16,7 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
@@ -90,7 +91,7 @@ public class CompilerBeanCompleter2Composite {
                                     PARAMETER(ELEM_VAR, MAP_STRING_OBJECT),
                                     VARIABLE(LL_VAR))
                                     .BODY(
-                                            ASSIGNMENT(composeeClass, VARIABLE(OUT_VAR), CONSTRUCTOR_CALL(composeeClass, List.of())),
+                                            DEFINITION(composeeClass, VARIABLE(OUT_VAR), CONSTRUCTOR_CALL(composeeClass, List.of())),
                                             METHOD_CALL(
                                                     VARIABLE(BEAN_VAR),
                                                     ADD_ELEMENTS,

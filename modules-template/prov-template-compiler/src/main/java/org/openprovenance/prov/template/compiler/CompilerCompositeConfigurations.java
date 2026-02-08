@@ -22,6 +22,7 @@ import static org.openprovenance.prov.template.compiler.configuration.Specificat
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.LambdaExpression.LAMBDA;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
@@ -106,12 +107,12 @@ public class CompilerCompositeConfigurations {
 
     public void generateMethodEnactor(String builderParameter, Method mspec, ClassName className, TypeName beanType) {
         mspec.BODY(
-                ASSIGNMENT(FUNCTION_LIST_OBJARRAY_TO_TYPE(beanType), VARIABLE("beanConverter"),
+                DEFINITION(FUNCTION_LIST_OBJARRAY_TO_TYPE(beanType), VARIABLE("beanConverter"),
                         METHOD_CALL(VARIABLE(builderParameter), "aRecord2BeanConverter")),
 
-                ASSIGNMENT(FUNCTION_LIST_OBJARRAY_TO_TYPE(beanType), VARIABLE("enactor"),
+                DEFINITION(FUNCTION_LIST_OBJARRAY_TO_TYPE(beanType), VARIABLE("enactor"),
                         LAMBDA(PARAMETER("array", LIST_OF_OBJECT_ARRAYS))
-                                .BODY(ASSIGNMENT(beanType, VARIABLE("bean"),
+                                .BODY(DEFINITION(beanType, VARIABLE("bean"),
                                                 FUNCTIONAL_METHOD_CALL(VARIABLE("beanConverter"), "apply", List.of(VARIABLE("array")))),
                                         RETURN(
                                                 FUNCTIONAL_METHOD_CALL(
@@ -189,13 +190,13 @@ public class CompilerCompositeConfigurations {
 
     public void generateMethodEnactor2(String builderParameter, Method mspec, ClassName className, TypeName inBeanType, TypeName outBeanType) {
         mspec.BODY(
-                ASSIGNMENT(FUNCTION_LIST_OBJARRAY_TO_TYPE(inBeanType), VARIABLE("beanConverter"),
+                DEFINITION(FUNCTION_LIST_OBJARRAY_TO_TYPE(inBeanType), VARIABLE("beanConverter"),
                         METHOD_CALL(METHOD_CALL(VARIABLE(builderParameter), "getIntegrator", List.of()),
                                 "aRecord2InputsConverter")),
 
-                ASSIGNMENT(FUNCTION_LIST_OBJARRAY_TO_TYPE(outBeanType), VARIABLE("enactor"),
+                DEFINITION(FUNCTION_LIST_OBJARRAY_TO_TYPE(outBeanType), VARIABLE("enactor"),
                         LAMBDA(PARAMETER("array", LIST_OF_OBJECT_ARRAYS))
-                                .BODY(ASSIGNMENT(inBeanType, VARIABLE("bean"),
+                                .BODY(DEFINITION(inBeanType, VARIABLE("bean"),
                                                 FUNCTIONAL_METHOD_CALL(VARIABLE("beanConverter"), "apply", List.of(VARIABLE("array")))),
                                         RETURN(
                                                 FUNCTIONAL_METHOD_CALL(

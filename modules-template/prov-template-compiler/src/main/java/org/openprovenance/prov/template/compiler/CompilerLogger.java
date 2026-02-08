@@ -25,8 +25,8 @@ import static org.openprovenance.prov.template.compiler.common.Constants.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.BUILDER_INTERFACE;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
-import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.*;
@@ -145,7 +145,7 @@ public class CompilerLogger {
 
         builder.PARAMETER(ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get(TABLE_CONFIGURATOR,locations.getFilePackage(configs.name, TABLE_CONFIGURATOR)), T()), "configurator");
 
-        builder.BODY(ASSIGNMENT(MAP_STRING_T, VARIABLE(A_TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_STRING_T,List.of())));
+        builder.BODY(DEFINITION(MAP_STRING_T, VARIABLE(A_TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_STRING_T,List.of())));
 
         for (TemplateCompilerConfig config : configs.templates) {
             String thisBuilderName = Constants.GENERATED_VAR_PREFIX + config.name;
@@ -175,7 +175,7 @@ public class CompilerLogger {
         compilerUtil.debugFileLocation(method);
 
         method.PARAMETER(parameterType, "configurator");
-        method.BODY(ASSIGNMENT(MAP_STRING_T, VARIABLE(A_TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_STRING_T, List.of())));
+        method.BODY(DEFINITION(MAP_STRING_T, VARIABLE(A_TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_STRING_T, List.of())));
 
         for (TemplateCompilerConfig config : configs.templates) {
             if (!(config instanceof SimpleTemplateCompilerConfig)) {

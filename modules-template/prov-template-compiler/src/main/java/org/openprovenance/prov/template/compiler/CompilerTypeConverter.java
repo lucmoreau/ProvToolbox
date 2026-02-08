@@ -26,6 +26,7 @@ import static org.openprovenance.prov.template.compiler.configuration.Specificat
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.*;
@@ -95,7 +96,7 @@ public class CompilerTypeConverter {
                 .commentFileLocation();
 
         m.BODY(
-                ASSIGNMENT(MAP_STRING_T, VARIABLE("m"), CONSTRUCTOR_CALL(HASH_MAP_GENERICS, List.of()))
+                DEFINITION(MAP_STRING_T, VARIABLE("m"), CONSTRUCTOR_CALL(HASH_MAP_GENERICS, List.of()))
         );
 
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {

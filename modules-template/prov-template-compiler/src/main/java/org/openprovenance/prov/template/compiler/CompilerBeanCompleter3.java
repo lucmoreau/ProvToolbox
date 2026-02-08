@@ -21,6 +21,7 @@ import static org.openprovenance.prov.template.compiler.configuration.Specificat
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
@@ -132,7 +133,7 @@ public class CompilerBeanCompleter3 {
 
         mspec.BODY(
 
-                ASSIGNMENT(outputClassName, VARIABLE("result"), METHOD_CALL(VARIABLE("super"),PROCESS_METHOD_NAME, List.of(VARIABLE(BEAN_VAR)))),
+                DEFINITION(outputClassName, VARIABLE("result"), METHOD_CALL(VARIABLE("super"),PROCESS_METHOD_NAME, List.of(VARIABLE(BEAN_VAR)))),
 
                 ASSIGNMENT(null, METHOD_CALL(VARIABLE("result"), "ID"), METHOD_CALL("getValueFromLocation",List.of())),
 

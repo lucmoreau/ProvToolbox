@@ -32,6 +32,7 @@ import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.LambdaExpression.LAMBDA;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
@@ -293,7 +294,7 @@ public class CompilerBeanGenerator {
         String countName="__count";
 
         method.BODY(
-                ASSIGNMENT(
+                DEFINITION(
                         intArray,
                         VARIABLE(countName),
                         new org.openprovenance.prov.template.compiler.past.ArrayInitialiser(_int,List.of(VARIABLE("v"))))

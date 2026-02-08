@@ -25,6 +25,7 @@ import static org.openprovenance.prov.template.compiler.configuration.Specificat
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.LambdaExpression.LAMBDA;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
@@ -225,7 +226,7 @@ public class CompilerConfigurations {
             String backendBuilder = className.simpleName;
 
             mspec.BODY(
-                    ASSIGNMENT(get(backendBuilder, backendPackage), VARIABLE(TEMPLATE_BUILDER_VARIABLE),
+                    DEFINITION(get(backendBuilder, backendPackage), VARIABLE(TEMPLATE_BUILDER_VARIABLE),
                             CAST(
                                     get(backendBuilder, backendPackage),
                                     METHOD_CALL(
@@ -310,13 +311,13 @@ public class CompilerConfigurations {
         mspec.COMMENT("Generated Automatically by ProvToolbox method $N.$N()", getClass().getName(), "generateMethodEnactor");
         mspec.BODY(
 
-                ASSIGNMENT(FUNCTION_OBJARRAY_TO_TYPE(beanType), VARIABLE("beanConverter"),
+                DEFINITION(FUNCTION_OBJARRAY_TO_TYPE(beanType), VARIABLE("beanConverter"),
                         METHOD_CALL(VARIABLE(builderParameter), "aRecord2BeanConverter")),
 
-                ASSIGNMENT(FUNCTION_OBJARRAY_TO_TYPE(beanType), VARIABLE("enactor"),
+                DEFINITION(FUNCTION_OBJARRAY_TO_TYPE(beanType), VARIABLE("enactor"),
 
                         LAMBDA(PARAMETER("array", OBJECT_ARRAY))
-                                .BODY(ASSIGNMENT(beanType, VARIABLE("bean"),
+                                .BODY(DEFINITION(beanType, VARIABLE("bean"),
                                                 FUNCTIONAL_METHOD_CALL(VARIABLE("beanConverter"), "apply", List.of(VARIABLE("array")))),
                                         RETURN(
                                                 FUNCTIONAL_METHOD_CALL(
@@ -333,13 +334,13 @@ public class CompilerConfigurations {
         mspec.COMMENT("Generated Automatically by ProvToolbox method $N.$N()", getClass().getName(), "generateMethodEnactor2");
 
         mspec.BODY(
-                ASSIGNMENT(FUNCTION_OBJARRAY_TO_TYPE(inputBeanType), VARIABLE("beanConverter"),
+                DEFINITION(FUNCTION_OBJARRAY_TO_TYPE(inputBeanType), VARIABLE("beanConverter"),
                         METHOD_CALL(METHOD_CALL(VARIABLE(builderParameter), "getIntegrator", List.of()),
                                 "aRecord2InputsConverter")),
 
-                ASSIGNMENT(FUNCTION_OBJARRAY_TO_TYPE(outputBeanType), VARIABLE("enactor"),
+                DEFINITION(FUNCTION_OBJARRAY_TO_TYPE(outputBeanType), VARIABLE("enactor"),
                         LAMBDA(PARAMETER("array", OBJECT_ARRAY))
-                                .BODY(ASSIGNMENT(inputBeanType, VARIABLE("bean"),
+                                .BODY(DEFINITION(inputBeanType, VARIABLE("bean"),
                                                 FUNCTIONAL_METHOD_CALL(VARIABLE("beanConverter"), "apply", List.of(VARIABLE("array")))),
                                         RETURN(
                                                 FUNCTIONAL_METHOD_CALL(

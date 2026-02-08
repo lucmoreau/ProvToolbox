@@ -21,6 +21,7 @@ import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST
 import static org.openprovenance.prov.template.compiler.past.Class.ClassKind.ANONYMOUS;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
 import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
@@ -154,7 +155,7 @@ public class CompilerBeanCompleter {
                 ClassName composeeClass = get(composeeName, locations.getBeansPackage(config1.fullyQualifiedName, BeanDirection.COMMON));
 
                 mspec.BODY(
-                        ASSIGNMENT(_bool, VARIABLE("nextExists"), CONSTANT(true)),
+                        DEFINITION(_bool, VARIABLE("nextExists"), CONSTANT(true)),
                         ITERATOR(
                                 PARAMETER("composee", composeeClass),
                                 METHOD_CALL(VARIABLE(BEAN_VAR), ELEMENTS))

@@ -20,6 +20,7 @@ public class ClassName extends TypeName {
     public static final ClassName LIST = ClassName.get("List", "past.util");
     public static final ClassName SET = ClassName.get("Set", "past.util");
     public static final ClassName LINKED_LIST = ClassName.get( "LinkedList", "past.util");
+    public static final ClassName ARRAY_LIST = ClassName.get( "ArrayList", "past.util");
     public static final ClassName COLLECTION = ClassName.get( "Collection", "past.util");
     public static final ClassName CLASS = ClassName.get( "Class", "past.lang");
     public static final ClassName VOID = ClassName.get( "Void", "past.lang");
@@ -126,10 +127,19 @@ public class ClassName extends TypeName {
     // Map<String, Map<String, TriFunction<...>>>
     public static final ParameterizedType MAP_STRING_MAP_STRING_TRIFUNCTION = ParameterizedType.get(MAP, STRING, MAP_STRING_TRIFUNCTION);
     public static final ParameterizedType MAP_STRING_STRING_SET = ParameterizedType.get(MAP, STRING, SET_STRING);
+    public static final ParameterizedType MAP_STRING_MAP_STRING_SET_STRING = ParameterizedType.get(MAP, STRING, MAP_STRING_STRING_SET);
     public static final ParameterizedType MAP_STRING_STRING_ARRAY = ParameterizedType.get(MAP, STRING, STRING_ARRAY);
+    public static final ParameterizedType LIST_OF_STRING = ParameterizedType.get(LIST, STRING);
+    public static final ParameterizedType MAP_STRING_LIST_STRING = ParameterizedType.get(MAP, STRING, LIST_OF_STRING);
+    public static final ClassName RESULT_SET = ClassName.get("ResultSet", "java.sql");
+    public static final ParameterizedType FUNCTION_STRING_RESULTSET = ParameterizedType.get(FUNCTION, STRING, RESULT_SET);
+    public static final ClassName CATALOGUE_DISPATCHER_INTERFACE = ClassName.get("CatalogueDispatcherInterface", "org.openprovenance.prov.model.interop");
+    public static final ClassName COLLECTORS = ClassName.get("Collectors", "past.util.stream");
+    public static final ClassName ARRAYS = ClassName.get("Arrays", "past.util");
 
     public static final ParameterizedType HASH_MAP_GENERICS= ParameterizedType.get(HASHMAP);
     public static final ParameterizedType LINKED_LIST_GENERICS= ParameterizedType.get(LINKED_LIST);
+    public static final ParameterizedType ARRAY_LIST_GENERICS= ParameterizedType.get(ARRAY_LIST);
     public static final ParameterizedType BIFUNCTION_MAP_OUT_OUT = ParameterizedType.get(BIFUNCTION, MAP_STRING_OBJECT, TYPE_OUT, TYPE_OUT);
 
     public static ParameterizedType FUNCTION_OBJARRAY_TO_TYPE(TypeName returnType) {

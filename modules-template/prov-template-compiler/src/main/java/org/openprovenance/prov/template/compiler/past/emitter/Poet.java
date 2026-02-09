@@ -558,6 +558,7 @@ public class Poet implements Emitter<TypeSpec> {
                 switch (cn.simpleName) {
                     case "List"          ->  { return ClassName.get(List.class); }
                     case "LinkedList"    ->  { return ClassName.get(LinkedList.class); }
+                    case "ArrayList"     ->  { return ClassName.get(ArrayList.class); }
                     case "Void"          ->  { return ClassName.get(Void.class); }
                     case "StringBuilder" ->  { return ClassName.get(StringBuilder.class); }
                     case "Map"           ->  { return ClassName.get(Map.class); }
@@ -571,6 +572,7 @@ public class Poet implements Emitter<TypeSpec> {
                 switch (cn.simpleName) {
                     case "UnsupportedOperationException" ->  { return ClassName.get(UnsupportedOperationException.class); }
                     case "IllegalArgumentException" ->  { return ClassName.get(IllegalArgumentException.class); }
+                    case "IllegalStateException" ->  { return ClassName.get(IllegalStateException.class); }
                     case "Exception" ->  { return ClassName.get(Exception.class); }
                     default ->  { /* continue */ }
                 }

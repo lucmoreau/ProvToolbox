@@ -14,7 +14,6 @@ import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.compiler.past.*;
-import org.openprovenance.prov.template.compiler.past.emitter.Poet;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.core.InstantiateUtil;
@@ -147,7 +146,7 @@ public class CompilerExpansionBuilder {
         Constructor constructor = CONSTRUCTOR()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(PROV_FACTORY, "pf")
-                .debugFileLocation();
+                .commentFileLocation();
 
         // this.pf = pf
         constructor.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "pf"), VARIABLE("pf")));

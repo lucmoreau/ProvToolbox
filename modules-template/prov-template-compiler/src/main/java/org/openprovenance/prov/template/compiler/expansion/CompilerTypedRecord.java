@@ -12,9 +12,12 @@ import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
+import java.util.function.Supplier;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
+import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 
 public class CompilerTypedRecord {
     private final CompilerUtil compilerUtil;

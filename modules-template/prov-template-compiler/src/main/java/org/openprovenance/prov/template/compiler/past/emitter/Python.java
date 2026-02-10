@@ -568,6 +568,14 @@ public class Python implements Emitter<StringBuilder> {
                 }
             }
 
+            case THROW -> {
+                ThrowStatement throwStmt = (ThrowStatement) statement;
+                sb.append(indent)
+                        .append("raise ")
+                        .append(convert(throwStmt.expression))
+                        .append("\n");
+            }
+
             default -> {
                 throw new IllegalArgumentException("Unsupported statement type " + statement);
             }

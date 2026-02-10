@@ -50,7 +50,7 @@ public class CompilerBeanCompleter3 {
         Constructor cons1 = CONSTRUCTOR()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(MAP_STRING_OBJECT, "m")
-                .debugFileLocation()
+                .commentFileLocation()
                 .BODY(
                         // call super(m)
                         METHOD_CALL("super", List.of(VARIABLE("m")))
@@ -58,9 +58,9 @@ public class CompilerBeanCompleter3 {
         pastClass.CONSTRUCTOR(cons1);
 
         Constructor cons2 = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(GETTER_TYPE, "getter")
-                .debugFileLocation()
                 .BODY(
                         METHOD_CALL("super", List.of(VARIABLE("getter")))
                 );

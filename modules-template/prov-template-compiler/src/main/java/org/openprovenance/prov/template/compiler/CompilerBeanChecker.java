@@ -28,6 +28,7 @@ import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.ThrowStatement.THROW;
 import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
@@ -62,24 +63,23 @@ public class CompilerBeanChecker {
         }
 
         Method mspec0 = METHOD(Constants.NOT_NULL_METHOD)
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PRIVATE,Modifier.FINAL, Modifier.STATIC)
                 .PARAMETER(T(),"object")
                 .PARAMETER(STRING,"field")
                 .PARAMETER(STRING,"template")
                 .addTypeVariables(T())
-                .RETURNS(T());
-        compilerUtil.debugFileLocation(mspec0);
-        mspec0.BODY(
-                IF(BINARY_OP(VARIABLE("object"), "==", Constant.getNull()))
-                .THEN(METHOD_CALL("throw",
-                        List.of(CONSTRUCTOR_CALL(ILLEGAL_ARGUMENT_EXCEPTION,
-                                List.of(CONSTANT("The object field is null in template")
-                                     //   VARIABLE("field"),
-                                     //   CONSTANT(" is null in template "),
+                .RETURNS(T()).BODY(
+                        IF(BINARY_OP(VARIABLE("object"), "==", Constant.getNull()))
+                                .THEN(THROW(
+                                        CONSTRUCTOR_CALL(ILLEGAL_ARGUMENT_EXCEPTION,
+                                                List.of(CONSTANT("The object field is null in template")
+                                                        //   VARIABLE("field"),
+                                                        //   CONSTANT(" is null in template "),
 
-                                      //  VARIABLE("template")
-                                ))))  ),
-                RETURN(VARIABLE("object")));
+                                                        //  VARIABLE("template")
+                                                )))  ),
+                        RETURN(VARIABLE("object")));
 
         pastClass.METHOD(mspec0);
 

@@ -30,6 +30,7 @@ import static org.openprovenance.prov.template.compiler.past.LambdaExpression.LA
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.ThrowStatement.THROW;
 import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
@@ -324,9 +325,9 @@ public class CompilerCatalogueDispatcher {
         if (storageRequired.contains(data)) {
             getterSpec.BODY(
                     IF(BINARY_OP(VARIABLE(data), "==", Constant.getNull()))
-                    .THEN(METHOD_CALL("throw",
-                            List.of(CONSTRUCTOR_CALL(ILLEGAL_STATE_EXCEPTION,
-                                    List.of(CONSTANT("non initialized field " + data)))))));
+                    .THEN(THROW(
+                            CONSTRUCTOR_CALL(ILLEGAL_STATE_EXCEPTION,
+                                    List.of(CONSTANT("non initialized field " + data))))));
         }
         if (configs.sqlFile==null && storageRequired.contains(data)) {
             getterSpec.BODY(RETURN(Constant.getNull()));
@@ -425,9 +426,9 @@ public class CompilerCatalogueDispatcher {
                                                         "!=",
                                                         Constant.getNull()))
                                                 .THEN(
-                                                        METHOD_CALL("throw", List.of(
+                                                        THROW(
                                                                 CONSTRUCTOR_CALL(ILLEGAL_STATE_EXCEPTION,
-                                                                        List.of(CONSTANT("Duplicate key")))))
+                                                                        List.of(CONSTANT("Duplicate key"))))
                                                 )
                                         )
                                 ),

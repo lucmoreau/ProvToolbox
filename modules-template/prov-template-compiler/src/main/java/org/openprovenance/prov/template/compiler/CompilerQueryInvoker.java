@@ -66,7 +66,7 @@ public class CompilerQueryInvoker {
         Constructor c1 = CONSTRUCTOR()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(STRING_BUILDER, SB_VAR)
-                .debugFileLocation()
+                .commentFileLocation()
                 .BODY(
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LINKING_VAR), CONSTANT(false))
@@ -78,7 +78,7 @@ public class CompilerQueryInvoker {
                     .MODIFIERS(Modifier.PUBLIC)
                     .PARAMETER(STRING_BUILDER, SB_VAR)
                     .PARAMETER(_bool, LINKING_VAR)
-                    .debugFileLocation()
+                    .commentFileLocation()
                     .BODY(
                             ASSIGNMENT( METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
                             ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LINKING_VAR), VARIABLE(LINKING_VAR))

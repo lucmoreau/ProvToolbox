@@ -62,7 +62,7 @@ public class CompilerBeanEnactor {
                 ;
 
         pastClass.CONSTRUCTOR(CONSTRUCTOR()
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(ENACTOR_IMPLEMENTATION_TYPE, REALISER)
                 .PARAMETER(beanProcessorClass, "checker")

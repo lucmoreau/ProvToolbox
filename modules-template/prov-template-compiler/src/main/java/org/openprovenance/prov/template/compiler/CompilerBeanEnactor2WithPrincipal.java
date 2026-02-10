@@ -61,7 +61,7 @@ public class CompilerBeanEnactor2WithPrincipal {
                 );
 
         Constructor ctor = CONSTRUCTOR()
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETERS(
                         PARAMETER(Constants.REALISER, ENACTOR_IMPLEMENTATION_TYPE),

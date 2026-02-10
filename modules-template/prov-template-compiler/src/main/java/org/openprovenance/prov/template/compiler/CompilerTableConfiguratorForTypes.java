@@ -70,7 +70,7 @@ public class CompilerTableConfiguratorForTypes {
                 );
 
         Constructor ctor = CONSTRUCTOR()
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETERS(
                         PARAMETER("map", MAP_STRING_STRING),

@@ -28,6 +28,7 @@ import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.ThrowStatement.THROW;
 import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
@@ -70,7 +71,7 @@ public class CompilerBeanCompleter {
         Constructor constructor1 = CONSTRUCTOR()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(MAP_STRING_OBJECT, "m")
-                .debugFileLocation()
+                .commentFileLocation()
                 .BODY(ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "m"), VARIABLE("m")))
                 .COMMENT("The following code implements this assignment, in a way that jsweet can compile")
                 .COMMENT("this.getter = this::getMap")
@@ -102,7 +103,7 @@ public class CompilerBeanCompleter {
         pastClass.CONSTRUCTOR(constructor1);
 
         Constructor constructor2 = CONSTRUCTOR()
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(GETTER_TYPE, GETTER_VAR)
                 .BODY(
@@ -174,9 +175,9 @@ public class CompilerBeanCompleter {
                                                                         List.of())))
                                                 .ELSE(
 
-                                                        METHOD_CALL("throw",
-                                                                List.of(CONSTRUCTOR_CALL(ILLEGAL_ARGUMENT_EXCEPTION,
-                                                                        List.of(CONSTANT("Not enough record in the result"))))))
+                                                        THROW(
+                                                                CONSTRUCTOR_CALL(ILLEGAL_ARGUMENT_EXCEPTION,
+                                                                        List.of(CONSTANT("Not enough record in the result")))))
                                 ),
 
                         RETURN(VARIABLE(BEAN_VAR))

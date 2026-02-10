@@ -56,7 +56,7 @@ public class CompilerBeanCompleter2Composite {
         Constructor constructor = CONSTRUCTOR()
                  .MODIFIERS(Modifier.PUBLIC)
                  .PARAMETER(MAP_STRING_OBJECT, M_VAR)
-                 .debugFileLocation()
+                 .commentFileLocation()
                  .BODY(
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LL_VAR),
                                 CAST(LIST_MAP_STRING_OBJECT, METHOD_CALL(VARIABLE(M_VAR), "get", List.of(CONSTANT(ELEMENTS))))),

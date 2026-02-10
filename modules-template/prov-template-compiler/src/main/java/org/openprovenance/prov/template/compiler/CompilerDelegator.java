@@ -50,7 +50,7 @@ public class CompilerDelegator {
                 );
 
         Constructor ctor = CONSTRUCTOR()
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(beanProcessorType, DELEGATOR_VAR)
                 .BODY(

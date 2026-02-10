@@ -71,7 +71,7 @@ public class CompilerQueryInvokerWithPrincipal {
                 .PARAMETER(STRING_BUILDER, SB_VAR)
                 .PARAMETER(STRING, PRINCIPAL_VAR)
                 .PARAMETER(QUERY_INVOKER2_CLASS, QUERY_INVOKER_VAR)
-                .debugFileLocation()
+                .commentFileLocation()
                 .BODY(
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LINKING_VAR), CONSTANT(false)),
@@ -84,7 +84,7 @@ public class CompilerQueryInvokerWithPrincipal {
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(STRING_BUILDER, SB_VAR)
                 .PARAMETER(STRING, PRINCIPAL_VAR)
-                .debugFileLocation()
+                .commentFileLocation()
                 .BODY(
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LINKING_VAR), CONSTANT(false)),
@@ -99,7 +99,7 @@ public class CompilerQueryInvokerWithPrincipal {
                 .PARAMETER(STRING_BUILDER, SB_VAR)
                 .PARAMETER(_bool, LINKING_VAR)
                 .PARAMETER(STRING, PRINCIPAL_VAR)
-                .debugFileLocation()
+                .commentFileLocation()
                 .BODY(
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LINKING_VAR), VARIABLE(LINKING_VAR)),

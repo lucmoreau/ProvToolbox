@@ -59,7 +59,7 @@ public class CompilerTypeConverter {
 
         // constructor: public TypeConverter(Getter<T> getter) { this.getter = getter; }
         Constructor ctor = CONSTRUCTOR()
-                .debugFileLocation()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(TYPED_GETTER_OF_T, "getter")
                 .BODY(

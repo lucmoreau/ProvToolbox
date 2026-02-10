@@ -45,7 +45,7 @@ public class SpecificationFile {
 
     }
 
-    public SpecificationFile(JavaFile javaFile, String directory, String fileName, String class_package, String pyDirectory, String pyFilename, Supplier<String> pyContent) {
+    private SpecificationFile(JavaFile javaFile, String directory, String fileName, String class_package, String pyDirectory, String pyFilename, Supplier<String> pyContent) {
         this.javaFile = javaFile;
         this.directory = directory;
         this.fileName = fileName;

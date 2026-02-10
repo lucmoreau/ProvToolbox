@@ -56,7 +56,7 @@ public class Poet implements Emitter<TypeSpec> {
         if (!clazz.staticBlock.isEmpty()) {
             CodeBlock.Builder block = CodeBlock.builder();
             clazz.staticBlock.forEach(statement -> {
-                block.addStatement("$L", convert(statement));
+                convertAndAddStatement(statement, block); // was block.addStatement("$L", convert(statement));
             });
             builder.addStaticBlock(block.build());
         }
@@ -96,7 +96,7 @@ public class Poet implements Emitter<TypeSpec> {
         constructor.parameters.forEach(param -> builder.addParameter(convert(param.type), param.name));
         constructor.comments.forEach(comment -> builder.addJavadoc(comment.format, convertToPoet(comment.objects)));
         constructor.body.forEach(statement -> {
-            builder.addStatement(convert(statement));
+            convertAndAddStatement(statement,builder);
         });
         return builder.build();
     }
@@ -133,7 +133,91 @@ public class Poet implements Emitter<TypeSpec> {
         return builder.build();
     }
 
+    public interface Body {
+        void addStatement(CodeBlock codeBlock);
+        void beginControlFlow(String controlFlow, Object... args);
+        void nextControlFlow(String controlFlow, Object... args);
+        void endControlFlow();
+        void endControlFlow(String controlFlow, Object... args);
+    }
+
+    public static class MethodBody implements Body {
+        private final MethodSpec.Builder builder;
+
+        public MethodBody(MethodSpec.Builder builder) {
+            this.builder = builder;
+        }
+
+        @Override
+        public void addStatement(CodeBlock codeBlock) {
+            builder.addStatement(codeBlock);
+        }
+
+        @Override
+        public void beginControlFlow(String controlFlow, Object... args) {
+            builder.beginControlFlow(controlFlow, args);
+        }
+
+        @Override
+        public void nextControlFlow(String controlFlow, Object... args) {
+            builder.nextControlFlow(controlFlow, args);
+        }
+
+        @Override
+        public void endControlFlow() {
+            builder.endControlFlow();
+        }
+
+        @Override
+        public void endControlFlow(String controlFlow, Object... args) {
+            builder.endControlFlow(controlFlow, args);
+        }
+    }
+
+    public static class LambdaBody implements Body {
+        private final CodeBlock.Builder builder;
+
+        public LambdaBody(CodeBlock.Builder builder) {
+            this.builder = builder;
+        }
+
+        @Override
+        public void addStatement(CodeBlock codeBlock) {
+            builder.add("$L;\n",codeBlock);
+        }
+
+        @Override
+        public void beginControlFlow(String controlFlow, Object... args) {
+            builder.beginControlFlow(controlFlow, args);
+        }
+
+        @Override
+        public void nextControlFlow(String controlFlow, Object... args) {
+            builder.nextControlFlow(controlFlow, args);
+        }
+
+        @Override
+        public void endControlFlow() {
+            builder.endControlFlow();
+        }
+
+        @Override
+        public void endControlFlow(String controlFlow, Object... args) {
+            builder.endControlFlow(controlFlow, args);
+        }
+    }
+
     private void convertAndAddStatement(Statement statement, MethodSpec.Builder builder) {
+        convertAndAddStatement(statement, new MethodBody(builder));
+    }
+
+    private void convertAndAddStatement(Statement statement, CodeBlock.Builder builder) {
+        convertAndAddStatement(statement, new LambdaBody(builder));
+    }
+
+
+
+    private void convertAndAddStatement(Statement statement, Body builder) {
         switch (statement.statementKind) {
 
             case IF_STATEMENT -> {
@@ -240,6 +324,8 @@ public class Poet implements Emitter<TypeSpec> {
                 return CodeBlock.of("// " + comment.format, comment.objects);
             }
             case IF_STATEMENT -> {
+                throw new IllegalArgumentException("If statements should be handled separately to ensure proper formatting");
+                /*
                 IfStatement ifStatement = (IfStatement) statement;
                 CodeBlock conditionCode = convert(ifStatement.condition);
 
@@ -262,9 +348,13 @@ public class Poet implements Emitter<TypeSpec> {
                 }
                 builder.endControlFlow();
                 return builder.build();
+
+                 */
             }
 
             case FOR_LOOP ->  {
+                throw new IllegalArgumentException("ForLoop statements should be handled separately to ensure proper formatting");
+                        /*
                 ForLoop forLoop = (ForLoop) statement;
                 CodeBlock initCode = convert(forLoop.initialization);
                 CodeBlock conditionCode = convert(forLoop.condition);
@@ -274,9 +364,13 @@ public class Poet implements Emitter<TypeSpec> {
                 forLoop.body.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
                 builder.endControlFlow();
                 return builder.build();
+
+                         */
             }
 
             case DO_LOOP ->  {
+                throw new IllegalArgumentException("Do loops should be handled separately to ensure proper formatting");
+                /*
                 DoLoop doLoop = (DoLoop) statement;
                 CodeBlock conditionCode = convert(doLoop.condition);
                 CodeBlock.Builder builder= CodeBlock.builder();
@@ -284,9 +378,13 @@ public class Poet implements Emitter<TypeSpec> {
                 doLoop.body.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
                 builder.endControlFlow(" while ( $L );", conditionCode);
                 return builder.build();
+
+                 */
             }
 
             case ITERATOR -> {
+                throw new IllegalArgumentException("Iterators should be handled separately to ensure proper formatting");
+                /*
                 Iterator iterator = (Iterator) statement;
                 CodeBlock collectionCode = convert(iterator.collection);
                 CodeBlock.Builder builder= CodeBlock.builder();
@@ -299,6 +397,8 @@ public class Poet implements Emitter<TypeSpec> {
 
                 builder.endControlFlow();
                 return builder.build();
+
+                 */
             }
 
             case TRY_CATCH -> {
@@ -428,11 +528,28 @@ public class Poet implements Emitter<TypeSpec> {
             }
             case LAMBDA_EXPRESSION -> {
                 LambdaExpression lambda = (LambdaExpression) expression;
+
+                CodeBlock.Builder builder = CodeBlock.builder();
+                builder.add((lambda.parameters.size()==1)? "$L -> {\n": "($L) -> {\n",
+                        lambda.parameters.stream().map(p -> p.name).reduce((a, b) -> a + ", " + b).orElse(""));
+                builder.indent();
+                //lambda.body.forEach(s -> builder.add("$L;\n", convert(s)));
+                lambda.body.forEach(s -> convertAndAddStatement(s,builder));
+                builder.unindent();
+                builder.add("}");
+
+                return builder.build();
+
+
+                /*
+
                 return CodeBlock.of(
                         (lambda.parameters.size()==1)? "$L -> { $L }": "($L) -> {\n$L }",
                         lambda.parameters.stream().map(p -> p.name).reduce((a, b) -> a + ", " + b).orElse(""),
                         CodeBlock.join(lambda.body.stream().map(s -> CodeBlock.of("$L;", convert(s))).collect(Collectors.toList()), "\n"));
                         //CodeBlock.of((lambda.body.size()==1)? ";" : "")) ; // handles the special case of single statement body: TO CHECK, should it be for all?
+
+                 */
             }
             case ARRAY_ACCESSOR -> {
                 ArrayAccessor arrayAccessor = (ArrayAccessor) expression;

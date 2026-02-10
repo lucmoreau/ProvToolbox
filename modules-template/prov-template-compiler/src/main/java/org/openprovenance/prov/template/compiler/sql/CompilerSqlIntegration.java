@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.compiler.sql;
 
-import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -10,13 +9,13 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectC
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 
 import javax.lang.model.element.Modifier;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
@@ -43,8 +42,6 @@ import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 public class CompilerSqlIntegration {
     private final CompilerUtil compilerUtil;
 
-    // JavaPoet type constant retained for backward compatibility with oldstuff/ classes
-    public static final ParameterizedTypeName BIFUN = ParameterizedTypeName.get(BiFunction.class, Integer.class, String.class, Object.class);
 
     private final PastFactory pastFactory = new PastFactory();
 
@@ -52,16 +49,11 @@ public class CompilerSqlIntegration {
         this.compilerUtil = new CompilerUtil(pFactory);
     }
 
-    /** Helper to create a ClassName from locations package lookup. */
-    private org.openprovenance.prov.template.compiler.past.type.ClassName loc(TemplatesProjectConfiguration configs, Locations locations, String constantName) {
-        return org.openprovenance.prov.template.compiler.past.type.ClassName.get(constantName, locations.getFilePackage(configs.name, constantName));
-    }
-
     /** Helper to build the anonymous Getter class with try/catch wrapping rs.getObject(col,cl). */
     private Class buildGetterAnonymousClass(TemplatesProjectConfiguration configs, Locations locations) {
         return pastFactory
                 .CLASS(null, Class.ClassKind.ANONYMOUS)
-                .INTERFACES(loc(configs, locations, Constants.GETTER))
+                .INTERFACES(ClassName.get(Constants.GETTER, locations.getFilePackage(configs.name, Constants.GETTER)))
                 .METHOD(
                         METHOD("get")
                                 .MODIFIERS(Modifier.PUBLIC)
@@ -121,19 +113,11 @@ public class CompilerSqlIntegration {
                 );
     }
 
-    /** Helper for the common emit pattern: generate PAST class and return SpecificationFile. */
-    private SpecificationFile emitClass(Class pastClass, TemplatesProjectConfiguration configs, Locations locations, String fileName, String directory, StackTraceElement stackTraceElement) {
-        String myPackage = locations.getFilePackage(configs.name, fileName);
-        Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
-        return new SpecificationFile(javaGenerator, pythonGenerator);
-    }
-
 
     public SpecificationFile generateSqlIntegration_BeanCompleter(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.BEAN_COMPLETER);
+        ClassName superclass = ClassName.get(Constants.BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER));
 
         Constructor constructor = CONSTRUCTOR()
                 .MODIFIERS(Modifier.PUBLIC)
@@ -147,13 +131,17 @@ public class CompilerSqlIntegration {
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeBeanCompleter(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.SQL_BEAN_COMPLETER);
+        ClassName superclass = ClassName.get(Constants.SQL_BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPLETER));
 
         Constructor constructor = CONSTRUCTOR()
                 .MODIFIERS(Modifier.PUBLIC)
@@ -178,16 +166,21 @@ public class CompilerSqlIntegration {
                 .CONSTRUCTOR(constructor)
                 .METHOD(nextMethod);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_BeanCompleter3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.BEAN_COMPLETER2);
-        org.openprovenance.prov.template.compiler.past.type.ClassName getterType = loc(configs, locations, Constants.GETTER);
+        ClassName superclass = ClassName.get(Constants.BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
+        ClassName getterType = ClassName.get(Constants.GETTER, locations.getFilePackage(configs.name, Constants.GETTER));
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(RESULT_SET, "rs")
                 .BODY(
@@ -195,6 +188,7 @@ public class CompilerSqlIntegration {
                 );
 
         Method staticMethod = METHOD("newGetter")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
                 .RETURNS(getterType)
                 .PARAMETER(RESULT_SET, "rs")
@@ -208,15 +202,20 @@ public class CompilerSqlIntegration {
                 .CONSTRUCTOR(constructor)
                 .METHOD(staticMethod);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_BeanCompleter4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.SQL_BEAN_COMPLETER3);
+        ClassName superclass = ClassName.get(Constants.SQL_BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPLETER3));
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(RESULT_SET, "rs")
                 .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
@@ -226,6 +225,7 @@ public class CompilerSqlIntegration {
                 );
 
         Method postMethod = METHOD(Constants.POST_PROCESS_METHOD_NAME)
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(INTEGER, "id")
                 .PARAMETER(STRING, "template")
@@ -246,16 +246,21 @@ public class CompilerSqlIntegration {
                 .CONSTRUCTOR(constructor)
                 .METHOD(postMethod);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_EnactorImplementation(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName enactorImpl1 = org.openprovenance.prov.template.compiler.past.type.ClassName.get(ENACTOR_IMPLEMENTATION1, locations.getFilePackage(configs.name, ENACTOR_IMPLEMENTATION1));
+        ClassName enactorImpl1 = ClassName.get(ENACTOR_IMPLEMENTATION1, locations.getFilePackage(configs.name, ENACTOR_IMPLEMENTATION1));
         ParameterizedType paramEnactorImpl1 = ParameterizedType.get(enactorImpl1, RESULT_SET);
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
                 .BODY(
@@ -264,6 +269,7 @@ public class CompilerSqlIntegration {
 
         // generic_enact method
         Method genericEnact = METHOD("generic_enact")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATIONS(OverrideAnnotation.NAME)
                 .addTypeVariables(TypeVariable.T())
@@ -283,10 +289,11 @@ public class CompilerSqlIntegration {
                 );
 
         // beanCompleterFactory method
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanCompleterType = loc(configs, locations, Constants.BEAN_COMPLETER);
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlBeanCompleterType = loc(configs, locations, Constants.SQL_BEAN_COMPLETER);
+        ClassName beanCompleterType = ClassName.get(Constants.BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER));
+        ClassName sqlBeanCompleterType = ClassName.get(Constants.SQL_BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPLETER));
 
         Method beanCompleterFactory = METHOD("beanCompleterFactory")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATIONS(OverrideAnnotation.NAME)
                 .RETURNS(beanCompleterType)
@@ -297,6 +304,7 @@ public class CompilerSqlIntegration {
 
         // printResultSet static method
         Method printResultSet = METHOD("printResultSet")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
                 .PARAMETER(RESULT_SET, "resultSet")
                 .RETURNS(VOID)
@@ -346,16 +354,21 @@ public class CompilerSqlIntegration {
                 .METHOD(beanCompleterFactory)
                 .METHOD(printResultSet);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_IntegratorEnactorImplementation(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName enactorImpl = org.openprovenance.prov.template.compiler.past.type.ClassName.get(ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.ENACTOR_IMPLEMENTATION));
+        ClassName enactorImpl = ClassName.get(ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.ENACTOR_IMPLEMENTATION));
         ParameterizedType paramEnactorImpl = ParameterizedType.get(enactorImpl, RESULT_SET);
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
                 .BODY(
@@ -364,6 +377,7 @@ public class CompilerSqlIntegration {
 
         // generic_enact method with IN, OUT type variables
         Method genericEnact = METHOD("generic_enact")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATIONS(OverrideAnnotation.NAME)
                 .addTypeVariables(TYPE_IN)
@@ -385,10 +399,11 @@ public class CompilerSqlIntegration {
                 );
 
         // beanCompleterFactory methods
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanCompleter2Type = loc(configs, locations, Constants.BEAN_COMPLETER2);
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlBeanCompleter3Type = loc(configs, locations, Constants.SQL_BEAN_COMPLETER3);
+        ClassName beanCompleter2Type = ClassName.get(Constants.BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
+        ClassName sqlBeanCompleter3Type = ClassName.get(Constants.SQL_BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPLETER3));
 
         Method beanCompleterFactory = METHOD("beanCompleterFactory")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATIONS(OverrideAnnotation.NAME)
                 .RETURNS(beanCompleter2Type)
@@ -398,6 +413,7 @@ public class CompilerSqlIntegration {
                 );
 
         Method beanCompleterFactory2 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATIONS(OverrideAnnotation.NAME)
                 .RETURNS(beanCompleter2Type)
@@ -418,19 +434,24 @@ public class CompilerSqlIntegration {
                 .METHOD(beanCompleterFactory)
                 .METHOD(beanCompleterFactory2);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_IntegratorEnactorImplementation4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.SQL_ENACTOR_IMPLEMENTATION3);
-        org.openprovenance.prov.template.compiler.past.type.ClassName enactorImpl = org.openprovenance.prov.template.compiler.past.type.ClassName.get(ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.ENACTOR_IMPLEMENTATION));
+        ClassName superclass = ClassName.get(Constants.SQL_ENACTOR_IMPLEMENTATION3, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_IMPLEMENTATION3));
+        ClassName enactorImpl = ClassName.get(ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.ENACTOR_IMPLEMENTATION));
         ParameterizedType paramEnactorImpl = ParameterizedType.get(enactorImpl, RESULT_SET);
-        org.openprovenance.prov.template.compiler.past.type.ClassName enactorImpl4 = org.openprovenance.prov.template.compiler.past.type.ClassName.get(ENACTOR_IMPLEMENTATION4, locations.getFilePackage(configs.name, Constants.ENACTOR_IMPLEMENTATION4));
+        ClassName enactorImpl4 = ClassName.get(ENACTOR_IMPLEMENTATION4, locations.getFilePackage(configs.name, Constants.ENACTOR_IMPLEMENTATION4));
         ParameterizedType paramEnactorImpl4 = ParameterizedType.get(enactorImpl4, RESULT_SET);
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
                 .BODY(
@@ -438,10 +459,11 @@ public class CompilerSqlIntegration {
                         ASSIGNMENT(METHOD_CALL(VARIABLE("this"), "querier"), VARIABLE("querier"))
                 );
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanCompleter2Type = loc(configs, locations, Constants.BEAN_COMPLETER2);
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlBeanCompleter4Type = loc(configs, locations, Constants.SQL_BEAN_COMPLETER4);
+        ClassName beanCompleter2Type = ClassName.get(Constants.BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
+        ClassName sqlBeanCompleter4Type = ClassName.get(Constants.SQL_BEAN_COMPLETER4, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPLETER4));
 
         Method beanCompleterFactory3 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATIONS(OverrideAnnotation.NAME)
                 .RETURNS(beanCompleter2Type)
@@ -457,6 +479,7 @@ public class CompilerSqlIntegration {
                 );
 
         Method beanCompleterFactory4 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATIONS(OverrideAnnotation.NAME)
                 .RETURNS(beanCompleter2Type)
@@ -479,13 +502,17 @@ public class CompilerSqlIntegration {
                 .METHOD(beanCompleterFactory3)
                 .METHOD(beanCompleterFactory4);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeEnactorImplementation(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.SQL_ENACTOR_IMPLEMENTATION);
+        ClassName superclass = ClassName.get(Constants.SQL_ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_IMPLEMENTATION));
 
         Constructor constructor = CONSTRUCTOR()
                 .MODIFIERS(Modifier.PUBLIC)
@@ -494,8 +521,8 @@ public class CompilerSqlIntegration {
                         SUPER_CALL(VARIABLE("querier"))
                 );
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanCompleterType = loc(configs, locations, Constants.BEAN_COMPLETER);
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlCompositeBeanCompleterType = loc(configs, locations, Constants.SQL_COMPOSITE_BEAN_COMPLETER);
+        ClassName beanCompleterType = ClassName.get(Constants.BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER));
+        ClassName sqlCompositeBeanCompleterType = ClassName.get(Constants.SQL_COMPOSITE_BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_COMPLETER));
 
         Method beanCompleterFactory = METHOD("beanCompleterFactory")
                 .MODIFIERS(Modifier.PUBLIC)
@@ -512,17 +539,21 @@ public class CompilerSqlIntegration {
                 .CONSTRUCTOR(constructor)
                 .METHOD(beanCompleterFactory);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeBeanEnactor(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanEnactorType = loc(configs, locations, Constants.BEAN_ENACTOR);
+        ClassName beanEnactorType = ClassName.get(Constants.BEAN_ENACTOR, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR));
         ParameterizedType superclass = ParameterizedType.get(beanEnactorType, RESULT_SET);
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlCompositeEnactorImplType = loc(configs, locations, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION);
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanCheckerType = loc(configs, locations, Constants.BEAN_CHECKER);
+        ClassName sqlCompositeEnactorImplType = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION));
+        ClassName beanCheckerType = ClassName.get(Constants.BEAN_CHECKER, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER));
 
         Constructor constructor = CONSTRUCTOR()
                 .MODIFIERS(Modifier.PUBLIC)
@@ -537,17 +568,21 @@ public class CompilerSqlIntegration {
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_BeanEnactor(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanEnactorType = loc(configs, locations, Constants.BEAN_ENACTOR);
+        ClassName beanEnactorType = ClassName.get(Constants.BEAN_ENACTOR, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR));
         ParameterizedType superclass = ParameterizedType.get(beanEnactorType, RESULT_SET);
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlEnactorImplType = loc(configs, locations, Constants.SQL_ENACTOR_IMPLEMENTATION);
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanCheckerType = loc(configs, locations, Constants.BEAN_CHECKER);
+        ClassName sqlEnactorImplType = ClassName.get(Constants.SQL_ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_IMPLEMENTATION));
+        ClassName beanCheckerType = ClassName.get(Constants.BEAN_CHECKER, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER));
 
         Constructor constructor = CONSTRUCTOR()
                 .MODIFIERS(Modifier.PUBLIC)
@@ -562,19 +597,24 @@ public class CompilerSqlIntegration {
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_BeanEnactor3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanEnactor2Type = loc(configs, locations, Constants.BEAN_ENACTOR2);
+        ClassName beanEnactor2Type = ClassName.get(Constants.BEAN_ENACTOR2, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2));
         ParameterizedType superclass = ParameterizedType.get(beanEnactor2Type, RESULT_SET);
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlCompositeEnactorImpl3Type = loc(configs, locations, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3);
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanChecker2Type = loc(configs, locations, Constants.BEAN_CHECKER2);
+        ClassName sqlCompositeEnactorImpl3Type = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3));
+        ClassName beanChecker2Type = ClassName.get(Constants.BEAN_CHECKER2, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER2));
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
                 .PARAMETER(SUPPLIER_OF_STRING, Constants.PRINCIPAL_MANAGER_VAR)
@@ -588,19 +628,24 @@ public class CompilerSqlIntegration {
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_BeanEnactor4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanEnactor2WPType = loc(configs, locations, Constants.BEAN_ENACTOR2_WP);
+        ClassName beanEnactor2WPType = ClassName.get(Constants.BEAN_ENACTOR2_WP, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2_WP));
         ParameterizedType superclass = ParameterizedType.get(beanEnactor2WPType, RESULT_SET);
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlCompositeEnactorImpl4Type = loc(configs, locations, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4);
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanChecker2Type = loc(configs, locations, Constants.BEAN_CHECKER2);
+        ClassName sqlCompositeEnactorImpl4Type = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4));
+        ClassName beanChecker2Type = ClassName.get(Constants.BEAN_CHECKER2, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER2));
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
                 .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
@@ -617,25 +662,31 @@ public class CompilerSqlIntegration {
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeEnactorImplementation3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.SQL_ENACTOR_IMPLEMENTATION3);
+        ClassName superclass = ClassName.get(Constants.SQL_ENACTOR_IMPLEMENTATION3, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_IMPLEMENTATION3));
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
                 .BODY(
                         SUPER_CALL(VARIABLE("querier"))
                 );
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanCompleter2Type = loc(configs, locations, Constants.BEAN_COMPLETER2);
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlCompositeBeanCompleter3Type = loc(configs, locations, Constants.SQL_COMPOSITE_BEAN_COMPLETER3);
+        ClassName beanCompleter2Type = ClassName.get(Constants.BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
+        ClassName sqlCompositeBeanCompleter3Type = ClassName.get(Constants.SQL_COMPOSITE_BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_COMPLETER3));
 
         Method beanCompleterFactory = METHOD("beanCompleterFactory")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATIONS(OverrideAnnotation.NAME)
                 .RETURNS(beanCompleter2Type)
@@ -645,6 +696,7 @@ public class CompilerSqlIntegration {
                 );
 
         Method beanCompleterFactory2 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATIONS(OverrideAnnotation.NAME)
                 .RETURNS(beanCompleter2Type)
@@ -661,25 +713,31 @@ public class CompilerSqlIntegration {
                 .METHOD(beanCompleterFactory)
                 .METHOD(beanCompleterFactory2);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeEnactorImplementation4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.SQL_ENACTOR_IMPLEMENTATION4);
+        ClassName superclass = ClassName.get(Constants.SQL_ENACTOR_IMPLEMENTATION4, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_IMPLEMENTATION4));
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
                 .BODY(
                         SUPER_CALL(VARIABLE("querier"))
                 );
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanCompleter2Type = loc(configs, locations, Constants.BEAN_COMPLETER2);
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlCompositeBeanCompleter4Type = loc(configs, locations, Constants.SQL_COMPOSITE_BEAN_COMPLETER4);
+        ClassName beanCompleter2Type = ClassName.get(Constants.BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
+        ClassName sqlCompositeBeanCompleter4Type = ClassName.get(Constants.SQL_COMPOSITE_BEAN_COMPLETER4, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_COMPLETER4));
 
         Method beanCompleterFactory = METHOD("beanCompleterFactory")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATIONS(OverrideAnnotation.NAME)
                 .RETURNS(beanCompleter2Type)
@@ -689,6 +747,7 @@ public class CompilerSqlIntegration {
                 );
 
         Method beanCompleterFactory2 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATIONS(OverrideAnnotation.NAME)
                 .RETURNS(beanCompleter2Type)
@@ -703,6 +762,7 @@ public class CompilerSqlIntegration {
                 );
 
         Method beanCompleterFactory3 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATIONS(OverrideAnnotation.NAME)
                 .RETURNS(beanCompleter2Type)
@@ -718,6 +778,7 @@ public class CompilerSqlIntegration {
                 );
 
         Method beanCompleterFactory4 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATIONS(OverrideAnnotation.NAME)
                 .RETURNS(beanCompleter2Type)
@@ -737,16 +798,21 @@ public class CompilerSqlIntegration {
                 .METHOD(beanCompleterFactory3)
                 .METHOD(beanCompleterFactory4);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeBeanCompleter3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.BEAN_COMPLETER3);
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlBeanCompleter3Type = loc(configs, locations, Constants.SQL_BEAN_COMPLETER3);
+        ClassName superclass = ClassName.get(Constants.BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER3));
+        ClassName sqlBeanCompleter3Type = ClassName.get(Constants.SQL_BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPLETER3));
 
         Constructor constructor1 = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(RESULT_SET, "rs")
                 .BODY(
@@ -754,6 +820,7 @@ public class CompilerSqlIntegration {
                 );
 
         Constructor constructor2 = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(RESULT_SET, "rs")
                 .PARAMETER(INTEGER_ARRAY, "extra")
@@ -764,6 +831,7 @@ public class CompilerSqlIntegration {
                 );
 
         Method getValueFromLocation = METHOD("getValueFromLocation")
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .RETURNS(INTEGER)
                 .BODY(
@@ -810,15 +878,20 @@ public class CompilerSqlIntegration {
                 .METHOD(nextMethod)
                 .METHOD(setValueInLocation);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeBeanCompleter4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.SQL_COMPOSITE_BEAN_COMPLETER3);
+        ClassName superclass = ClassName.get(Constants.SQL_COMPOSITE_BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_COMPLETER3));
 
         Constructor constructor1 = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(RESULT_SET, "rs")
                 .BODY(
@@ -826,6 +899,7 @@ public class CompilerSqlIntegration {
                 );
 
         Constructor constructor2 = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(RESULT_SET, "rs")
                 .PARAMETER(INTEGER_ARRAY, "extra")
@@ -835,6 +909,7 @@ public class CompilerSqlIntegration {
                 );
 
         Constructor constructor3 = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(RESULT_SET, "rs")
                 .PARAMETER(INTEGER_ARRAY, "extra")
@@ -845,6 +920,7 @@ public class CompilerSqlIntegration {
                 );
 
         Constructor constructor4 = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(RESULT_SET, "rs")
                 .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
@@ -854,6 +930,7 @@ public class CompilerSqlIntegration {
                 );
 
         Method postMethod = METHOD(Constants.POST_PROCESS_METHOD_NAME)
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(INTEGER, "id")
                 .PARAMETER(STRING, "template")
@@ -877,19 +954,24 @@ public class CompilerSqlIntegration {
                 .CONSTRUCTOR(constructor4)
                 .METHOD(postMethod);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeBeanEnactor3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanEnactor2CompositeType = loc(configs, locations, Constants.BEAN_ENACTOR2_COMPOSITE);
+        ClassName beanEnactor2CompositeType = ClassName.get(Constants.BEAN_ENACTOR2_COMPOSITE, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2_COMPOSITE));
         ParameterizedType superclass = ParameterizedType.get(beanEnactor2CompositeType, RESULT_SET);
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlCompositeEnactorImpl3Type = loc(configs, locations, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3);
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanChecker2Type = loc(configs, locations, Constants.BEAN_CHECKER2);
+        ClassName sqlCompositeEnactorImpl3Type = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3));
+        ClassName beanChecker2Type = ClassName.get(Constants.BEAN_CHECKER2, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER2));
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
                 .BODY(
@@ -902,19 +984,24 @@ public class CompilerSqlIntegration {
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeBeanEnactor4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanEnactor2CompositeWPType = loc(configs, locations, Constants.BEAN_ENACTOR2_COMPOSITE_WP);
+        ClassName beanEnactor2CompositeWPType = ClassName.get(Constants.BEAN_ENACTOR2_COMPOSITE_WP, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2_COMPOSITE_WP));
         ParameterizedType superclass = ParameterizedType.get(beanEnactor2CompositeWPType, RESULT_SET);
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlCompositeEnactorImpl4Type = loc(configs, locations, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4);
-        org.openprovenance.prov.template.compiler.past.type.ClassName beanChecker2Type = loc(configs, locations, Constants.BEAN_CHECKER2);
+        ClassName sqlCompositeEnactorImpl4Type = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4));
+        ClassName beanChecker2Type = ClassName.get(Constants.BEAN_CHECKER2, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER2));
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
                 .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
@@ -931,16 +1018,21 @@ public class CompilerSqlIntegration {
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeEnactorConfigurator3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.COMPOSITE_ENACTOR_CONFIGURATOR2);
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlCompositeBeanEnactor3Type = loc(configs, locations, Constants.SQL_COMPOSITE_BEAN_ENACTOR3);
+        ClassName superclass = ClassName.get(Constants.COMPOSITE_ENACTOR_CONFIGURATOR2, locations.getFilePackage(configs.name, Constants.COMPOSITE_ENACTOR_CONFIGURATOR2));
+        ClassName sqlCompositeBeanEnactor3Type = ClassName.get(Constants.SQL_COMPOSITE_BEAN_ENACTOR3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_ENACTOR3));
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
                 .BODY(
@@ -952,16 +1044,21 @@ public class CompilerSqlIntegration {
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeEnactorConfigurator4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.COMPOSITE_ENACTOR_CONFIGURATOR2);
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlCompositeBeanEnactor4Type = loc(configs, locations, Constants.SQL_COMPOSITE_BEAN_ENACTOR4);
+        ClassName superclass = ClassName.get(Constants.COMPOSITE_ENACTOR_CONFIGURATOR2, locations.getFilePackage(configs.name, Constants.COMPOSITE_ENACTOR_CONFIGURATOR2));
+        ClassName sqlCompositeBeanEnactor4Type = ClassName.get(Constants.SQL_COMPOSITE_BEAN_ENACTOR4, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_ENACTOR4));
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
                 .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
@@ -975,16 +1072,21 @@ public class CompilerSqlIntegration {
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_EnactorConfigurator3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.ENACTOR_CONFIGURATOR2);
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlBeanEnactor3Type = loc(configs, locations, Constants.SQL_BEAN_ENACTOR3);
+        ClassName superclass = ClassName.get(Constants.ENACTOR_CONFIGURATOR2, locations.getFilePackage(configs.name, Constants.ENACTOR_CONFIGURATOR2));
+        ClassName sqlBeanEnactor3Type = ClassName.get(Constants.SQL_BEAN_ENACTOR3, locations.getFilePackage(configs.name, Constants.SQL_BEAN_ENACTOR3));
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
                 .PARAMETER(SUPPLIER_OF_STRING, Constants.PRINCIPAL_MANAGER_VAR)
@@ -997,16 +1099,21 @@ public class CompilerSqlIntegration {
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_EnactorConfigurator4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        org.openprovenance.prov.template.compiler.past.type.ClassName superclass = loc(configs, locations, Constants.ENACTOR_CONFIGURATOR2);
-        org.openprovenance.prov.template.compiler.past.type.ClassName sqlBeanEnactor4Type = loc(configs, locations, Constants.SQL_BEAN_ENACTOR4);
+        ClassName superclass = ClassName.get(Constants.ENACTOR_CONFIGURATOR2, locations.getFilePackage(configs.name, Constants.ENACTOR_CONFIGURATOR2));
+        ClassName sqlBeanEnactor4Type = ClassName.get(Constants.SQL_BEAN_ENACTOR4, locations.getFilePackage(configs.name, Constants.SQL_BEAN_ENACTOR4));
 
         Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
                 .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
@@ -1020,7 +1127,11 @@ public class CompilerSqlIntegration {
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
 
-        return emitClass(pastClass, configs, locations, fileName, locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName)), stackTraceElement);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
 

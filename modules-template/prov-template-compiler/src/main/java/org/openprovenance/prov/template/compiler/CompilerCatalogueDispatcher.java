@@ -5,21 +5,18 @@ import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
-import org.openprovenance.prov.template.compiler.past.Constant;
-import org.openprovenance.prov.template.compiler.past.Constructor;
-import org.openprovenance.prov.template.compiler.past.LambdaExpression;
-import org.openprovenance.prov.template.compiler.past.PastFactory;
-import org.openprovenance.prov.template.compiler.past.emitter.Poet;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
@@ -44,30 +41,9 @@ public class CompilerCatalogueDispatcher {
 
     public static final String POST_PROCESSING_VAR = "postProcessing";
 
-    // JavaPoet types retained for use by the process method and init methods (post-emission)
-    static final com.squareup.javapoet.TypeName poetStringArray = ArrayTypeName.get(String[].class);
-    static final com.squareup.javapoet.TypeName poetIntArray = ArrayTypeName.get(int[].class);
-    static final ParameterizedTypeName poetMapString2StringList = ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Map.class), com.squareup.javapoet.ClassName.get(String.class), ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(List.class), com.squareup.javapoet.ClassName.get(String.class)));
-    static final ParameterizedTypeName poetMapString2IntArray = ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Map.class), com.squareup.javapoet.ClassName.get(String.class), poetIntArray);
-    static final ParameterizedTypeName poetMapString2MapString2IntArray = ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Map.class), com.squareup.javapoet.ClassName.get(String.class), poetMapString2IntArray);
-    static final ParameterizedTypeName poetProcessorOfString = poetFunctionObjArrayTo(com.squareup.javapoet.TypeName.get(String.class));
-    static final ParameterizedTypeName poetProcessorOfUnknown = poetFunctionObjArrayTo(com.squareup.javapoet.TypeVariableName.get("?"));
-    static final ParameterizedTypeName poetFunctionStringResultSet = ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(java.util.function.Function.class), com.squareup.javapoet.ClassName.get(String.class), com.squareup.javapoet.ClassName.get(java.sql.ResultSet.class));
-    static final ParameterizedTypeName poetBiFunctionIntegerStringObject = ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(java.util.function.BiFunction.class), com.squareup.javapoet.ClassName.get(Integer.class), com.squareup.javapoet.ClassName.get(String.class), com.squareup.javapoet.ClassName.get(Object.class));
-    static public final ParameterizedTypeName poetFunctionObjArrayTo(com.squareup.javapoet.TypeName returnType) {
-        return ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Function.class), ArrayTypeName.of(Object.class), returnType);
-    }
-    static public final ParameterizedTypeName poetFunctionListObjArrayTo(com.squareup.javapoet.TypeName returnType) {
-        return ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Function.class), ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(List.class), ArrayTypeName.of(Object.class)), returnType);
-    }
-    static final ParameterizedTypeName poetRecordsProcessorOfUnknown = poetFunctionListObjArrayTo(TypeVariableName.get("?"));
-    static final ParameterizedTypeName poetFunctionObjArray2ObjArray = ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(java.util.function.Function.class), ArrayTypeName.of(com.squareup.javapoet.ClassName.get(Object.class)), ArrayTypeName.of(com.squareup.javapoet.ClassName.get(Object.class)));
-    public static final ParameterizedTypeName poetSupplierOfString = ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(java.util.function.Supplier.class), com.squareup.javapoet.ClassName.get(String.class));
+       public static final ParameterizedTypeName poetSupplierOfString = ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(java.util.function.Supplier.class), com.squareup.javapoet.ClassName.get(String.class));
 
     // PAST types for field type declarations
-    static org.openprovenance.prov.template.compiler.past.type.TypeName pastMapOf(org.openprovenance.prov.template.compiler.past.type.TypeName t) {
-        return ParameterizedType.get(MAP, STRING, t);
-    }
 
     public static Map<String,String> dataConfiguratorMap=new java.util.HashMap<>() {{
         put(PROPERTY_ORDER, PROPERTY_ORDER_CONFIGURATOR);
@@ -88,41 +64,23 @@ public class CompilerCatalogueDispatcher {
     }};
 
     public static Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> pastDataTypeMap =new java.util.HashMap<>() {{
-        put(PROPERTY_ORDER, pastMapOf(STRING_ARRAY));
-        put("inputs", pastMapOf(STRING_ARRAY));
-        put("outputs", pastMapOf(STRING_ARRAY));
-        put("sqlConverter", pastMapOf(FUNCTION_OBJARRAY_TO_STRING));
-        put("csvConverter", pastMapOf(FUNCTION_OBJARRAY_TO_STRING));
-        put("sqlInsert", pastMapOf(STRING));
-        put("beanConverter", pastMapOf(FUNCTION_OBJARRAY_TO_ANY));
-        put("relation0", pastMapOf(MAP_STRING_MAP_STRING_INTARRAY));
-        put("foreignTables", pastMapOf(STRING_ARRAY));
-        put("successors", pastMapOf(MAP_STRING_LIST_STRING));
-        put("enactorConverter", pastMapOf(FUNCTION_OBJARRAY_TO_ANY));
-        put("compositeEnactorConverter", pastMapOf(FUNCTION_LIST_OBJARRAY_TO_ANY));
-        put("documentBuilderDispatcher", pastMapOf(PROV_FILE_BUILDER));
-        put("typeAssignment", MAP_STRING_MAP_STRING_SET_STRING);
-        put("recordMaker", pastMapOf(FUNCTION_OBJARRAY_TO_OBJ_ARRAY));
+        put(PROPERTY_ORDER,              ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING_ARRAY));
+        put("inputs",                    ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING_ARRAY));
+        put("outputs",                   ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING_ARRAY));
+        put("sqlConverter",              ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_STRING));
+        put("csvConverter",              ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_STRING));
+        put("sqlInsert",                 ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING));
+        put("beanConverter",             ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_ANY));
+        put("relation0",                 ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_MAP_STRING_INTARRAY));
+        put("foreignTables",             ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING_ARRAY));
+        put("successors",                ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_LIST_STRING));
+        put("enactorConverter",          ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_ANY));
+        put("compositeEnactorConverter", ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_LIST_OBJARRAY_TO_ANY));
+        put("documentBuilderDispatcher", ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.PROV_FILE_BUILDER));
+        put("typeAssignment",            MAP_STRING_MAP_STRING_SET_STRING);
+        put("recordMaker",               ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_OBJ_ARRAY));
     }};
 
-    // JavaPoet type map retained for post-emission methods (null-guard getters, init methods)
-    public static Map<String, com.squareup.javapoet.TypeName> dataTypeMap=new java.util.HashMap<>() {{
-        put(PROPERTY_ORDER, poetMapOf(poetStringArray));
-        put("inputs", poetMapOf(poetStringArray));
-        put("outputs", poetMapOf(poetStringArray));
-        put("sqlConverter", poetMapOf(poetProcessorOfString));
-        put("csvConverter", poetMapOf(poetProcessorOfString));
-        put("sqlInsert", poetMapOf(com.squareup.javapoet.ClassName.get(String.class)));
-        put("beanConverter", poetMapOf(poetProcessorOfUnknown));
-        put("relation0", poetMapOf(poetMapString2MapString2IntArray));
-        put("foreignTables", poetMapOf(poetStringArray));
-        put("successors", poetMapOf(poetMapString2StringList));
-        put("enactorConverter", poetMapOf(poetProcessorOfUnknown));
-        put("compositeEnactorConverter", poetMapOf(poetRecordsProcessorOfUnknown));
-        put("documentBuilderDispatcher", poetMapOf(com.squareup.javapoet.ClassName.get(org.openprovenance.prov.template.log2prov.FileBuilder.class)));
-        put("typeAssignment", poetMapOf(poetMapOf(ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Set.class), com.squareup.javapoet.ClassName.get(String.class)))));
-        put("recordMaker", poetMapOf(poetFunctionObjArray2ObjArray));
-    }};
 
 
     public static Set<String> integratorRequired= new HashSet<>(List.of("inputs", "outputs"));
@@ -198,21 +156,19 @@ public class CompilerCatalogueDispatcher {
         }
 
         // Add simple string getters for static fields
-        pastClass.METHOD(
+        pastClass.METHODS(
                 METHOD("getIoMap")
                         .MODIFIERS(Modifier.PUBLIC)
                         .commentFileLocation()
                         .RETURNS(STRING)
-                        .BODY(RETURN(VARIABLE("ioMap"))));
+                        .BODY(RETURN(VARIABLE("ioMap"))),
 
-        pastClass.METHOD(
                 METHOD("getShortNames")
                         .MODIFIERS(Modifier.PUBLIC)
                         .commentFileLocation()
                         .RETURNS(STRING)
-                        .BODY(RETURN(VARIABLE("shortNames"))));
+                        .BODY(RETURN(VARIABLE("shortNames"))),
 
-        pastClass.METHOD(
                 METHOD("getLinkers")
                         .MODIFIERS(Modifier.PUBLIC)
                         .commentFileLocation()
@@ -238,15 +194,15 @@ public class CompilerCatalogueDispatcher {
             String configurator = dataConfiguratorMap.get(data);
 
             if (!storageRequired.contains(data)) {
-                org.openprovenance.prov.template.compiler.past.type.ClassName loggerClass =
-                        org.openprovenance.prov.template.compiler.past.type.ClassName.get(Constants.LOGGER, locations.getFilePackage(configs.name, Constants.LOGGER));
-                org.openprovenance.prov.template.compiler.past.type.ClassName configuratorClass =
-                        org.openprovenance.prov.template.compiler.past.type.ClassName.get(configurator, locations.getFilePackage(configs.name, configurator));
+                ClassName loggerClass =
+                        ClassName.get(Constants.LOGGER, locations.getFilePackage(configs.name, Constants.LOGGER));
+                ClassName configuratorClass =
+                        ClassName.get(configurator, locations.getFilePackage(configs.name, configurator));
 
                 if ("foreignTables".equals(data)) {
                     // new BuilderProcessorConfigurator<>(b -> b.getForeign())
                     ParameterizedType diamondConfiguratorType = ParameterizedType.get(configuratorClass);
-                    LambdaExpression lambda = LAMBDA(PARAMETER("b", org.openprovenance.prov.template.compiler.past.type.ClassName.BUILDER_INTERFACE))
+                    LambdaExpression lambda = LAMBDA(PARAMETER("b", ClassName.BUILDER_INTERFACE))
                             .BODY(RETURN(METHOD_CALL(VARIABLE("b"), "getForeign", List.of())));
                     cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
                             METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
@@ -254,9 +210,9 @@ public class CompilerCatalogueDispatcher {
                 } else if ("successors".equals(data)) {
                     // new BuilderProcessorConfigurator<>(b -> CatalogueDispatcher.process(b))
                     ParameterizedType diamondConfiguratorType = ParameterizedType.get(configuratorClass);
-                    org.openprovenance.prov.template.compiler.past.type.ClassName catalogueDispatcherClass =
-                            org.openprovenance.prov.template.compiler.past.type.ClassName.get(CATALOGUE_DISPATCHER, configs.root_package);
-                    LambdaExpression lambda = LAMBDA(PARAMETER("b", org.openprovenance.prov.template.compiler.past.type.ClassName.BUILDER_INTERFACE))
+                    ClassName catalogueDispatcherClass =
+                            ClassName.get(CATALOGUE_DISPATCHER, configs.root_package);
+                    LambdaExpression lambda = LAMBDA(PARAMETER("b", ClassName.BUILDER_INTERFACE))
                             .BODY(RETURN(METHOD_CALL(catalogueDispatcherClass, "process", List.of(VARIABLE("b")))));
                     cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
                             METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
@@ -298,8 +254,9 @@ public class CompilerCatalogueDispatcher {
                     pastClass.METHOD(createNullInit(data));
                 }
             } else if (configs.sqlFile==null && storageRequired.contains(data)) {
-                pastClass.METHOD(createNullGetter(data, pastDataTypeMap.get(data)));
-                pastClass.METHOD(createNullInit(data));
+                pastClass.METHODS(
+                        createNullGetter(data, pastDataTypeMap.get(data)),
+                        createNullInit(data));
             }
         }
 
@@ -313,32 +270,40 @@ public class CompilerCatalogueDispatcher {
             }
             if (storageRequired.contains(data)) {
                 String configurator = dataConfiguratorMap.get(data);
-                org.openprovenance.prov.template.compiler.past.type.ClassName loggerClass =
-                        org.openprovenance.prov.template.compiler.past.type.ClassName.get(Constants.LOGGER, locations.getFilePackage(configs.name, Constants.LOGGER));
-                org.openprovenance.prov.template.compiler.past.type.ClassName configuratorClass =
-                        org.openprovenance.prov.template.compiler.past.type.ClassName.get(configurator, locations.getFilePackage(configs.name, configurator));
+                ClassName loggerClass =
+                        ClassName.get(Constants.LOGGER, locations.getFilePackage(configs.name, Constants.LOGGER));
+                ClassName configuratorClass =
+                        ClassName.get(configurator, locations.getFilePackage(configs.name, configurator));
                 String initMethodName = ("compositeEnactorConverter".equals(data)) ? "initializeCompositeBeanTable" : INITIALIZE_BEAN_TABLE;
 
-                pastClass.METHOD(METHOD("init" + capitalizeFirstLetter(data))
-                        .MODIFIERS(Modifier.PUBLIC)
-                        .commentFileLocation()
-                        .RETURNS(VOID)
-                        .PARAMETER(FUNCTION_STRING_RESULTSET, QUERIER_VAR)
-                        .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, POST_PROCESSING_VAR)
-                        .PARAMETER(SUPPLIER_OF_STRING, GET_PRINCIPAL_VAR)
-                        .BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
-                                METHOD_CALL(loggerClass, initMethodName,
-                                        List.of(CONSTRUCTOR_CALL(configuratorClass,
-                                                List.of(VARIABLE(QUERIER_VAR), VARIABLE(POST_PROCESSING_VAR), VARIABLE(GET_PRINCIPAL_VAR))))))));
+                pastClass.METHODS(
 
-                // Null-guard getter
-                pastClass.METHOD(createGetter(configs, data, pastDataTypeMap.get(data)));
+                        METHOD("init" + capitalizeFirstLetter(data))
+                                .MODIFIERS(Modifier.PUBLIC)
+                                .commentFileLocation()
+                                .RETURNS(VOID)
+                                .PARAMETER(FUNCTION_STRING_RESULTSET, QUERIER_VAR)
+                                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, POST_PROCESSING_VAR)
+                                .PARAMETER(SUPPLIER_OF_STRING, GET_PRINCIPAL_VAR)
+                                .BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
+                                        METHOD_CALL(loggerClass, initMethodName,
+                                                List.of(CONSTRUCTOR_CALL(configuratorClass,
+                                                        List.of(VARIABLE(QUERIER_VAR), VARIABLE(POST_PROCESSING_VAR), VARIABLE(GET_PRINCIPAL_VAR))))))),
+
+                        createGetter(configs, data, pastDataTypeMap.get(data)));
             }
         }
 
         // Add the process method
         pastClass.METHOD(processMethodGenerator());
 
+
+        Supplier<Boolean> pythonGenerator=() -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, configs.root_package, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+
+        return new SpecificationFile(javaGenerator,pythonGenerator);
+
+        /*
         // Emit PAST class to TypeSpec.Builder
         TypeSpec.Builder builder = new Poet().emitBuilder(pastClass);
 
@@ -347,15 +312,18 @@ public class CompilerCatalogueDispatcher {
         JavaFile myfile = compilerUtil.specWithComment(theCatalogueDispatcher, configs, configs.root_package, stackTraceElement);
 
         return new SpecificationFile(myfile, directory, fileName, configs.root_package);
+        */
+
     }
 
-    private org.openprovenance.prov.template.compiler.past.Method createGetter(TemplatesProjectConfiguration configs, String data, org.openprovenance.prov.template.compiler.past.type.TypeName typeName) {
-        org.openprovenance.prov.template.compiler.past.Method getterSpec = METHOD("get" + capitalizeFirstLetter(data))
+    private Method createGetter(TemplatesProjectConfiguration configs, String data, org.openprovenance.prov.template.compiler.past.type.TypeName typeName) {
+        Method getterSpec = METHOD("get" + capitalizeFirstLetter(data))
                 .MODIFIERS(Modifier.PUBLIC)
                 .commentFileLocation()
                 .RETURNS(typeName);
         if (storageRequired.contains(data)) {
-            getterSpec.BODY(IF(BINARY_OP(VARIABLE(data), "==", Constant.getNull()))
+            getterSpec.BODY(
+                    IF(BINARY_OP(VARIABLE(data), "==", Constant.getNull()))
                     .THEN(METHOD_CALL("throw",
                             List.of(CONSTRUCTOR_CALL(ILLEGAL_STATE_EXCEPTION,
                                     List.of(CONSTANT("non initialized field " + data)))))));
@@ -368,7 +336,7 @@ public class CompilerCatalogueDispatcher {
         return getterSpec;
     }
 
-    private org.openprovenance.prov.template.compiler.past.Method createNullGetter(String data, org.openprovenance.prov.template.compiler.past.type.TypeName typeName) {
+    private Method createNullGetter(String data, org.openprovenance.prov.template.compiler.past.type.TypeName typeName) {
         return METHOD("get" + capitalizeFirstLetter(data))
                 .MODIFIERS(Modifier.PUBLIC)
                 .commentFileLocation()
@@ -376,7 +344,7 @@ public class CompilerCatalogueDispatcher {
                 .BODY(RETURN(Constant.getNull()));
     }
 
-    private org.openprovenance.prov.template.compiler.past.Method createNullInit(String data) {
+    private Method createNullInit(String data) {
         return METHOD("init" + capitalizeFirstLetter(data))
                 .MODIFIERS(Modifier.PUBLIC)
                 .commentFileLocation()
@@ -388,7 +356,7 @@ public class CompilerCatalogueDispatcher {
     }
 
 
-    private org.openprovenance.prov.template.compiler.past.Method processMethodGenerator() {
+    private Method processMethodGenerator() {
         // Map<Integer, int[]> successors = builder.getSuccessors();
         // String[] order = builder.getPropertyOrder();
         // Map<String, List<String>> map = new HashMap<>();
@@ -410,7 +378,7 @@ public class CompilerCatalogueDispatcher {
                 .MODIFIERS(Modifier.STATIC, Modifier.PUBLIC)
                 .commentFileLocation()
                 .RETURNS(MAP_STRING_LIST_STRING)
-                .PARAMETER(org.openprovenance.prov.template.compiler.past.type.ClassName.BUILDER_INTERFACE, "builder")
+                .PARAMETER(ClassName.BUILDER_INTERFACE, "builder")
                 .BODY(
                         // Map<Integer, int[]> successors = builder.getSuccessors();
                         DEFINITION(MAP_INTEGER_INTARRAY, VARIABLE("successors"),

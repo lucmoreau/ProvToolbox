@@ -21,6 +21,7 @@ public class ClassName extends TypeName {
     public static final ClassName SET = ClassName.get("Set", "past.util");
     public static final ClassName LINKED_LIST = ClassName.get( "LinkedList", "past.util");
     public static final ClassName ARRAY_LIST = ClassName.get( "ArrayList", "past.util");
+    public static final ClassName HASH_SET = ClassName.get( "HashSet", "past.util");
     public static final ClassName COLLECTION = ClassName.get( "Collection", "past.util");
     public static final ClassName CLASS = ClassName.get( "Class", "past.lang");
     public static final ClassName VOID = ClassName.get( "Void", "past.lang");
@@ -39,6 +40,10 @@ public class ClassName extends TypeName {
     public static final ClassName ILLEGAL_STATE_EXCEPTION=ClassName.get("IllegalStateException", "past.exception");
     public static final ClassName ILLEGAL_ARGUMENT_EXCEPTION=ClassName.get("IllegalArgumentException", "past.exception");
     public static final ClassName PAST_EXCEPTION=ClassName.get("Exception", "past.exception");
+    public static final ClassName SQL_EXCEPTION=ClassName.get("SQLException", "java.sql");
+    public static final ClassName RUNTIME_EXCEPTION=ClassName.get("RuntimeException", "past.exception");
+    public static final ClassName UNCHECKED_EXCEPTION=ClassName.get("UncheckedException", "org.openprovenance.prov.model.exception");
+    public static final ClassName RESULT_SET_META_DATA = ClassName.get("ResultSetMetaData", "java.sql");
 
     public static final ClassName PROV_FILE_BUILDER = ClassName.get("FileBuilder", "org.openprovenance.prov.template.log2prov");
     public static final ClassName PROV_FACTORY = ClassName.get("ProvFactory", "org.openprovenance.prov.model");
@@ -140,6 +145,7 @@ public class ClassName extends TypeName {
     public static final ParameterizedType HASH_MAP_GENERICS= ParameterizedType.get(HASHMAP);
     public static final ParameterizedType LINKED_LIST_GENERICS= ParameterizedType.get(LINKED_LIST);
     public static final ParameterizedType ARRAY_LIST_GENERICS= ParameterizedType.get(ARRAY_LIST);
+    public static final ParameterizedType HASH_SET_GENERICS= ParameterizedType.get(HASH_SET);
     public static final ParameterizedType BIFUNCTION_MAP_OUT_OUT = ParameterizedType.get(BIFUNCTION, MAP_STRING_OBJECT, TYPE_OUT, TYPE_OUT);
 
     public static ParameterizedType FUNCTION_OBJARRAY_TO_TYPE(TypeName returnType) {

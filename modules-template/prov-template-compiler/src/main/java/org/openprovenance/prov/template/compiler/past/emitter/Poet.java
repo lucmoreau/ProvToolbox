@@ -1,9 +1,12 @@
 package org.openprovenance.prov.template.compiler.past.emitter;
 
 import com.squareup.javapoet.*;
-import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.TryCatch;
+import org.openprovenance.prov.template.compiler.past.ThrowStatement;
+import org.openprovenance.prov.template.compiler.past.SuperConstructorCall;
 import org.openprovenance.prov.template.compiler.past.Iterator;
 import org.openprovenance.prov.template.compiler.past.annotations.Ignore;
 import org.openprovenance.prov.template.compiler.past.type.ArrayType;
@@ -122,14 +125,77 @@ public class Poet implements Emitter<TypeSpec> {
         });
 
 
-
         method.exceptions.forEach(exc -> builder.addException(convert(exc)));
 
         method.body.forEach(statement -> {
-            // Placeholder for statement conversion
-            builder.addStatement(convert(statement));
+               convertAndAddStatement(statement,builder);
         });
         return builder.build();
+    }
+
+    private void convertAndAddStatement(Statement statement, MethodSpec.Builder builder) {
+        switch (statement.statementKind) {
+
+            case IF_STATEMENT -> {
+                IfStatement ifStatement = (IfStatement) statement;
+                CodeBlock conditionCode = convert(ifStatement.condition);
+
+                builder.beginControlFlow("if ($L)", conditionCode);
+                ifStatement.thenBlock.forEach(s -> convertAndAddStatement(s,builder));
+                if (!ifStatement.elseBlock.isEmpty()) {
+                    builder.nextControlFlow("else");
+                    ifStatement.elseBlock.forEach(s -> convertAndAddStatement(s,builder));
+                }
+                builder.endControlFlow();
+                return;
+            }
+
+            case TRY_CATCH -> {
+                TryCatch tryCatch = (TryCatch) statement;
+                builder.beginControlFlow("try");
+                tryCatch.tryBlock.forEach(s -> convertAndAddStatement(s,builder));
+                builder.nextControlFlow("catch ($T $L)", convert(tryCatch.exceptionType), tryCatch.exceptionName);
+                tryCatch.catchBlock.forEach(s -> convertAndAddStatement(s,builder));
+                builder.endControlFlow();
+                return;
+            }
+
+
+            case FOR_LOOP ->  {
+                ForLoop forLoop = (ForLoop) statement;
+                CodeBlock initCode = convert(forLoop.initialization);
+                CodeBlock conditionCode = convert(forLoop.condition);
+                CodeBlock updateCode = convert(forLoop.update);
+                builder.beginControlFlow("for ( $L; $L; $L )", initCode, conditionCode, updateCode);
+                forLoop.body.forEach(s -> convertAndAddStatement(s,builder));
+                builder.endControlFlow();
+                return;
+            }
+
+            case DO_LOOP ->  {
+                DoLoop doLoop = (DoLoop) statement;
+                CodeBlock conditionCode = convert(doLoop.condition);
+                builder.beginControlFlow("do ");
+                doLoop.body.forEach(s -> convertAndAddStatement(s,builder));
+                builder.endControlFlow(" while ( $L );", conditionCode);
+                return;
+            }
+
+            case ITERATOR -> {
+                Iterator iterator = (Iterator) statement;
+                CodeBlock collectionCode = convert(iterator.collection);
+                builder.beginControlFlow("for ( $T $L : $L )",
+                        convert(iterator.parameter.type),
+                        iterator.parameter.name,
+                        collectionCode);
+                iterator.body.forEach(s -> convertAndAddStatement(s,builder));
+                builder.endControlFlow();
+                return;
+            }
+
+
+        }
+        builder.addStatement(convert(statement));
     }
 
     private Object [] convertToPoet(Object[] objects) {
@@ -224,13 +290,33 @@ public class Poet implements Emitter<TypeSpec> {
                 Iterator iterator = (Iterator) statement;
                 CodeBlock collectionCode = convert(iterator.collection);
                 CodeBlock.Builder builder= CodeBlock.builder();
+
                 builder.beginControlFlow("for ( $T $L : $L )",
                         convert(iterator.parameter.type),
                         iterator.parameter.name,
                         collectionCode);
                 iterator.body.stream().map(s -> CodeBlock.of("$L;\n", convert(s))).forEach(builder::add);
+
                 builder.endControlFlow();
                 return builder.build();
+            }
+
+            case TRY_CATCH -> {
+               throw new IllegalArgumentException("TryCatch statements should be handled separately to ensure proper formatting");
+            }
+
+            case THROW -> {
+                ThrowStatement throwStmt = (ThrowStatement) statement;
+                CodeBlock exprCode = convert(throwStmt.expression);
+                return CodeBlock.of("throw $L", exprCode);
+            }
+
+            case SUPER_CONSTRUCTOR_CALL -> {
+                SuperConstructorCall superCall = (SuperConstructorCall) statement;
+                CodeBlock argsCode = CodeBlock.join(
+                        superCall.arguments.stream().map(this::convert).collect(Collectors.toList()),
+                        ",");
+                return CodeBlock.of("super($L)", argsCode);
             }
         }
         throw new IllegalArgumentException("Statement conversion not supported yet " + statement);
@@ -563,6 +649,7 @@ public class Poet implements Emitter<TypeSpec> {
                     case "StringBuilder" ->  { return ClassName.get(StringBuilder.class); }
                     case "Map"           ->  { return ClassName.get(Map.class); }
                     case "Set"           ->  { return ClassName.get(Set.class); }
+                    case "HashSet"       ->  { return ClassName.get(HashSet.class); }
                     case "Collection"    ->  { return ClassName.get(Collection.class); }
                     case "HashMap"       ->  { return ClassName.get(HashMap.class); }
                     default ->  { /* continue */ }
@@ -574,6 +661,15 @@ public class Poet implements Emitter<TypeSpec> {
                     case "IllegalArgumentException" ->  { return ClassName.get(IllegalArgumentException.class); }
                     case "IllegalStateException" ->  { return ClassName.get(IllegalStateException.class); }
                     case "Exception" ->  { return ClassName.get(Exception.class); }
+                    case "RuntimeException" ->  { return ClassName.get(RuntimeException.class); }
+                    default ->  { /* continue */ }
+                }
+            }
+            case "java.sql" -> {
+                switch (cn.simpleName) {
+                    case "ResultSet" ->  { return ClassName.get(java.sql.ResultSet.class); }
+                    case "SQLException" ->  { return ClassName.get(java.sql.SQLException.class); }
+                    case "ResultSetMetaData" ->  { return ClassName.get(java.sql.ResultSetMetaData.class); }
                     default ->  { /* continue */ }
                 }
             }

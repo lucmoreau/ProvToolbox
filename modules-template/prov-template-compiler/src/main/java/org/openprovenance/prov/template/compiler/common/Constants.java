@@ -213,4 +213,6 @@ public interface Constants {
     String LINKING_VAR = "linking";
 
     String C_NS = "__C_ns";
+    String POST_PROCESSING_VAR = "postProcessing";
+    String TABLE_VAR = "table";
 }

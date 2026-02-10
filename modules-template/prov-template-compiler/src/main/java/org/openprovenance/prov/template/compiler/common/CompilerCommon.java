@@ -55,15 +55,11 @@ import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 public class CompilerCommon {
     public static final String SB_VAR = "sb";
     public static final String SELF_VAR = "self";
-    public static final String MARKER_LAMBDA_END = "/*#lend#*/";
-    public static final String MARKER_LAMBDA_BODY = "/*#lbody#*/";
+
     public static final String MARKER_LAMBDA = "/*#lambda#*/";
     public static final String MARKER_PARAMS = "/*#params#*/";
 
     public static final String MARKER_ARRAY = "/*#array#*/";
-    public static final String UNKNOWN = "unknown";
-    public static final String POST_PROCESSING_VAR = "postProcessing";
-    public static final String TABLE_VAR = "table";
 
     private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
@@ -1281,7 +1277,7 @@ public class CompilerCommon {
 
         Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
 
-        method.BODY(DEFINITION(MAP_STRING_MAP_STRING_INTARRAY, VARIABLE(TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_STRING_MAP_STRING_INTARRAY, List.of())));
+        method.BODY(DEFINITION(MAP_STRING_MAP_STRING_INTARRAY, VARIABLE(Constants.TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_STRING_MAP_STRING_INTARRAY, List.of())));
         method.BODY(DEFINITION(MAP_STRING_INTARRAY, VARIABLE("map2"), CONSTRUCTOR_CALL(HASH_MAP_STRING_INTARRAY, List.of())));
 
         for (Map.Entry<String, Map<String, int[]>> entry: relations.entrySet()) {
@@ -1299,9 +1295,9 @@ public class CompilerCommon {
 
 
             }
-            method.BODY(METHOD_CALL(VARIABLE(TABLE_VAR), "put", List.of(CONSTANT(rel), VARIABLE("map2"))));
+            method.BODY(METHOD_CALL(VARIABLE(Constants.TABLE_VAR), "put", List.of(CONSTANT(rel), VARIABLE("map2"))));
         }
-        method.BODY(RETURN(VARIABLE(TABLE_VAR)));
+        method.BODY(RETURN(VARIABLE(Constants.TABLE_VAR)));
         return method;
     }
 
@@ -1502,7 +1498,7 @@ public class CompilerCommon {
                 .RETURNS(MAP_INTEGER_INTARRAY);
         compilerUtil.debugFileLocation(method);
 
-        method.BODY(DEFINITION(MAP_INTEGER_INTARRAY, VARIABLE(TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_INTEGER_INTARRAY, List.of())));
+        method.BODY(DEFINITION(MAP_INTEGER_INTARRAY, VARIABLE(Constants.TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_INTEGER_INTARRAY, List.of())));
 
 
 
@@ -1510,9 +1506,9 @@ public class CompilerCommon {
             Integer key=entry.getKey();
             List<Integer> values=entry.getValue();
             List<Expression> constants=values.stream().map(Constant::new).collect(Collectors.toList());
-            method.BODY(METHOD_CALL(VARIABLE(TABLE_VAR), "put", List.of(CONSTANT(key), ARRAY_INITIALISER(_int,constants))));
+            method.BODY(METHOD_CALL(VARIABLE(Constants.TABLE_VAR), "put", List.of(CONSTANT(key), ARRAY_INITIALISER(_int,constants))));
         }
-        method.BODY(RETURN(VARIABLE(TABLE_VAR)));
+        method.BODY(RETURN(VARIABLE(Constants.TABLE_VAR)));
 
         return method;
     }
@@ -1637,13 +1633,13 @@ public class CompilerCommon {
         Collections.sort(sortedList);
         knownTypes.addAll(sortedList);
 
-        method.BODY(DEFINITION(STRING_ARRAY, VARIABLE(TABLE_VAR), ARRAY_ALLOCATOR(STRING, CONSTANT(knownTypes.size()))));
+        method.BODY(DEFINITION(STRING_ARRAY, VARIABLE(Constants.TABLE_VAR), ARRAY_ALLOCATOR(STRING, CONSTANT(knownTypes.size()))));
         int count=0;
         for (String s: knownTypes) {
-            method.BODY(ASSIGNMENT( ARRAY_ACCESSOR(VARIABLE(TABLE_VAR), CONSTANT(count)), CONSTANT(s)));
+            method.BODY(ASSIGNMENT( ARRAY_ACCESSOR(VARIABLE(Constants.TABLE_VAR), CONSTANT(count)), CONSTANT(s)));
             count++;
         }
-        method.BODY(RETURN(VARIABLE(TABLE_VAR)));
+        method.BODY(RETURN(VARIABLE(Constants.TABLE_VAR)));
         return method;
     }
 

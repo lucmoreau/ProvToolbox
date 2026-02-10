@@ -125,6 +125,15 @@ public class Class {
         this.methods.add(method2);
         return this;
     }
+
+    public Class METHODS(Method... methods) {
+        if ((methods==null) || (methods.length==0)) return this;
+        for (Method method: methods) {
+            if (method == null) throw new IllegalArgumentException("null method");
+            this.methods.add(method);
+        }
+        return this;
+    }
     public Class CONSTRUCTOR(Constructor method2) {
         if (method2==null) throw new IllegalArgumentException("null constructor");
         this.constructors.add(method2);

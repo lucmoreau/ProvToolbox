@@ -378,7 +378,7 @@ public class ConfigProcessor implements Constants {
         SpecificationFile init=compilerBuilderInit.generateInitializer(configs, locations, init_dir, INIT);
         init.save();
 
-        SpecificationFile catalogueDispatcher=compilerCatalogueDispatcher.generateCatalogueDispatcher(configs, getInputOutputMaps(), locations, init_dir, CATALOGUE_DISPATCHER + DOT_JAVA_EXTENSION);
+        SpecificationFile catalogueDispatcher=compilerCatalogueDispatcher.generateCatalogueDispatcher(configs, getInputOutputMaps(), locations, init_dir, CATALOGUE_DISPATCHER);
         catalogueDispatcher.save();
 
 
@@ -790,7 +790,7 @@ public class ConfigProcessor implements Constants {
                 Map<Integer, List<Integer>> successorTable = tmp.getRight();
 
                 //ensure type declaration code is executed
-                SpecificationFile spec5 = compilerTypeManagement.generateTypeDeclaration(configs, locations, doc, bn, templateName, packageName, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnTM + DOT_JAVA_EXTENSION);
+                SpecificationFile spec5 = compilerTypeManagement.generateTypeDeclaration(configs, locations, doc, bn, templateName, packageName, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bnTM );
                 // before propagation generation
                 SpecificationFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(configs, locations, doc, bn, templateName, templateFullyQualifiedName, packageName, bindingsSchema, successorTable, locations.convertToDirectory(l2p_src_dir,locations.getBackendPackage(templateFullyQualifiedName)), bn );
                 val0 = spec0.save();

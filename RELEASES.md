@@ -13,6 +13,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template: gensym variable, accept null binding, and ensure uniqueness
 * prov-template-compiler: fixed issue with generics in generated code
 * prov-template-compiler: predecessor table initialisation
+* prov-template-compiler: json schema disallowing ID variable
 
 `2.2.2`
 * prov-template: added ptm-merging template

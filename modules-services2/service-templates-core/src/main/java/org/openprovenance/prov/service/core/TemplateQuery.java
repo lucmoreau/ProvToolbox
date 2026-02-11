@@ -86,6 +86,29 @@ public class TemplateQuery {
 
 
         generateTraversalMethods(querier, this.ioMap);
+
+        initializePredecessorTable();
+    }
+
+    private void initializePredecessorTable() {
+
+        querier.do_statements(null,
+                null,
+                (sb, data) -> {
+                    try {
+                        regeneratePredecessorTable(sb);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+
+        ;
+
+    }
+
+    public Map<String, String> getLongNames() {
+        return longNames;
     }
 
     private Map<String, Map<String, Map<String, String>>> shortenNames(Map<String, Map<String, Map<String, String>>> ioMap,
@@ -206,7 +229,7 @@ public class TemplateQuery {
         Collections.reverse(templateConnections);
 
         //logger.info("templateConnections: " + templateConnections.stream().map(TemplateConnection::toString).collect(Collectors.joining("\n")));
-
+System.out.println("templateConnections: " + templateConnections.stream().map(TemplateConnection::toString).collect(Collectors.joining("\n")));
         new TemplatesToDot(templateConnections, style, baseTypes, ioMap, templateDispatcher, successors, pf, this, principal).convert(null, out, "template_connections");
     }
 
@@ -316,6 +339,12 @@ public class TemplateQuery {
     }
 
 
+    static public class QualifiedTemplateName {
+        public String template;
+        public QualifiedTemplateName (String template) {
+            this.template=template;
+        }
+    }
     static public class TemplateConnection {
         public Integer in_id;
         public String in_template;
@@ -323,6 +352,18 @@ public class TemplateQuery {
         public Integer out_id;
         public String out_template;
         public String out_property;
+
+        @Override
+        public String toString() {
+            return "TemplateConnection{" +
+                    "in_id=" + in_id +
+                    ", in_template='" + in_template + '\'' +
+                    ", in_property='" + in_property + '\'' +
+                    ", out_id=" + out_id +
+                    ", out_template='" + out_template + '\'' +
+                    ", out_property='" + out_property + '\'' +
+                    '}';
+        }
     }
 
     public List<TemplateConnection> recursiveTraversal(Integer id, String template, String property, String principal) {
@@ -345,10 +386,10 @@ public class TemplateQuery {
                     while (rs.next()) {
                         TemplateConnection record = new TemplateConnection();
                         record.in_id=rs.getObject("in_id", Integer.class);
-                        record.in_template=rs.getObject("in_template", String.class);
+                        record.in_template=longNames.get(rs.getObject("in_template", String.class));
                         record.in_property=rs.getObject("in_property", String.class);
                         record.out_id=rs.getObject("out_id", Integer.class);
-                        record.out_template=rs.getObject("out_template", String.class);
+                        record.out_template=longNames.get(rs.getObject("out_template", String.class));
                         record.out_property=rs.getObject("out_property", String.class);
                         data.add(record);
                     }
@@ -365,7 +406,7 @@ public class TemplateQuery {
     public Document constructDocument(Map<String, FileBuilder> documentBuilderDispatcher, Collection<Object[]> the_records) {
             IndexedDocument iDoc = new IndexedDocument(pf, pf.newDocument());
             for (Object[] record : the_records) {
-                FileBuilder builder = documentBuilderDispatcher.get((String)record[0]);
+                FileBuilder builder = documentBuilderDispatcher.get((String)record[0]); // expected to be a long name already
                 if (builder != null) {
                     Document doc = builder.make(record);
                     iDoc.merge(doc);
@@ -389,10 +430,19 @@ public class TemplateQuery {
         return compositeLinker.containsKey(template);
     }
 
-    public List<Object[]> querySimple(String templateFullyQualifiedName, Integer id, boolean withTitles, String principal) {
-        logger.info("querySimple templateFullyQualifiedName=" + templateFullyQualifiedName + " id=" + id + " principal=" + principal);
+    public List<Object[]> querySimple(String fullyQualifiedName, Integer id, boolean withTitles, String principal) {
+        logger.info("querySimple fullyQualifiedName=" + fullyQualifiedName + " id=" + id + " principal=" + principal);
+        System.out.println("querySimple fullyQualifiedName=" + fullyQualifiedName + " id=" + id + " principal=" + principal);
         List<Object[]> the_records = new LinkedList<>();
-        String[] propertyOrder= this.propertyOrder.get(templateFullyQualifiedName);
+        if (!fullyQualifiedName.contains(".")) {
+            throw new IllegalArgumentException("template table name must be a composite name including '.' " + fullyQualifiedName);
+
+        }
+        String[] propertyOrder= this.propertyOrder.get(fullyQualifiedName);
+        String shortName= this.shortNames.get(fullyQualifiedName);
+        if (shortName==null) {
+            throw new IllegalArgumentException("no short name for template qualified name " + fullyQualifiedName);
+        }
         //System.out.println("propertyOrder = " + Arrays.toString(propertyOrder));
         querier.do_query(the_records,
                 null,
@@ -412,13 +462,12 @@ public class TemplateQuery {
 
              */
 
-                    sb.append("\n--- " + shortNames.get(templateFullyQualifiedName));
-                    sb.append("\n--- " + templateFullyQualifiedName + "\n");
+                    sb.append("\n--- " + fullyQualifiedName + "\n");
 
                     sb.append("SELECT template.*\n FROM ");
-                    sb.append(shortNames.get(templateFullyQualifiedName));
+                    sb.append(shortName);
                     sb.append(" as template ");
-                    joinAccessControl(templateFullyQualifiedName, principal, sb);
+                    joinAccessControl(shortName, principal, sb);
                     sb.append("\n WHERE template.id=");
                     sb.append(id);
                     andAccessControl(principal, sb);
@@ -427,7 +476,7 @@ public class TemplateQuery {
                 (rs, data) -> {
                     while (rs.next()) {
                         Object[] record = new Object[propertyOrder.length];
-                        record[0]=templateFullyQualifiedName;
+                        record[0]=fullyQualifiedName;
                         for (int i = 1; i < record.length; i++) {
                             // ISSUE, these are the sql names, not the property names
                             String columnLabel = sqlify(propertyOrder[i]);
@@ -455,18 +504,18 @@ public class TemplateQuery {
         sb.append("' OR access_control.record IS NOT NULL)");
     }
 
-    public void joinAccessControl(String templateFullyQualifiedName, String principal, StringBuilder sb) {
-        joinAccessControl(templateFullyQualifiedName, principal, sb, "template", "id");
+    public void joinAccessControl(String template_table_name, String principal, StringBuilder sb) {
+        joinAccessControl(template_table_name, principal, sb, "template", "id");
     }
 
-    public void joinAccessControl(String templateFullyQualifiedName, String principal, StringBuilder sb, String label, String id) {
+    public void joinAccessControl(String template_table_name, String principal, StringBuilder sb, String label, String id) {
         sb.append("\n LEFT JOIN record_index ON record_index.key=").append(label).append(".").append(id);
-        if (templateFullyQualifiedName.startsWith(label)) {  // TOCHECK, this seems always false with full qualified name
+        if (template_table_name.startsWith(label)) {  // TOCHECK, this seems always false with full qualified name
             sb.append("\n AND record_index.table_name=");
-            sb.append(shortNames.get(templateFullyQualifiedName));
+            sb.append(template_table_name);
         } else {
             sb.append("\n AND record_index.table_name='");
-            sb.append(shortNames.get(templateFullyQualifiedName));
+            sb.append(template_table_name);
             sb.append("'");
         }
         sb.append("\n AND record_index.principal IS NOT NULL");
@@ -868,5 +917,51 @@ public class TemplateQuery {
                 Map.Entry::getValue
         ));
     }
+
+
+
+
+    private StringBuilder regeneratePredecessorTable(StringBuilder sb) throws JsonProcessingException {
+        Map<String, Map<String, List<String>>> successors0 = this.templateDispatcher.getSuccessors();
+        Map<String,String> shortNames= new ObjectMapper().readValue(templateDispatcher.getShortNames(), typeRef2);
+        List<List<String>> successorsList=new ArrayList<>();
+        for (String key : successors0.keySet()) {
+            Map<String, List<String>> value = successors0.get(key);
+            if (value==null) continue;
+            for (String subKey : value.keySet()) {
+                for (String s : value.get(subKey)) {
+                    successorsList.add(List.of(shortNames.get(key), subKey, s));
+                    ;
+                }
+            }
+        }
+
+        sb.append("CREATE TABLE if not exists predecessor_table  (template text, output text, input text);\n" +
+                "\n" +
+                "truncate predecessor_table;\n" +
+                "\n" +
+                "insert into predecessor_table (template, output, input)\n" +
+                "values\n");
+        final boolean[] first = {true};
+        successorsList.forEach(s->{
+            if (first[0]) {
+                first[0] =false;
+            } else {
+                sb.append(",\n");
+            }
+            sb.append("(");
+            sb.append("'").append(s.get(0)).append("', ");
+            sb.append("'").append(s.get(2)).append("', ");
+            sb.append("'").append(s.get(1)).append("'");
+            sb.append(")");
+        });
+        sb.append("\n;\n");
+
+        System.out.println("Regenerating predecessor table with \n" + sb.toString());
+
+        return sb;
+
+    }
+
 
 }

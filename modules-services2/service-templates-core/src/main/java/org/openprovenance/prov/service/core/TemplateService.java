@@ -153,7 +153,6 @@ public class TemplateService {
             this.compositeLinker= om.readValue(this.catalogueDispatcher.getLinkers(), om.getTypeFactory().constructMapType(HashMap.class, String.class, Linker.class));
 
 
-
         } catch (JsonProcessingException e) {
             logger.error("Failed to read linker table from catalogue", this.catalogueDispatcher.getLinkers());
             throw new RuntimeException("Failed to read linker table from catalogue", e);
@@ -172,6 +171,7 @@ public class TemplateService {
          */
 
         storageInitialize(conn, sqlInitializer);
+
 
         this.documentBuilderDispatcher=catalogueDispatcher.getDocumentBuilderDispatcher();
         this.recordMaker=catalogueDispatcher.getRecordMaker();
@@ -448,7 +448,7 @@ public class TemplateService {
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
         List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
-        //debugDisplay("records.size ", records.size());
+        debugDisplay("records.size ", records);
 
 
         Document doc=queryTemplate.constructDocument(documentBuilderDispatcher,records);
@@ -605,6 +605,7 @@ public class TemplateService {
             Object[] record=records.get(i);
             String property=ll.get(i).property;
             String template=(String)record[0];
+            System.out.println("template " + template + " property " + property + " record " + java.util.Arrays.asList(record));
             //logger.info("template " + template);
             //logger.info("property " + property);
             //logger.info("record " + java.util.Arrays.asList(record));

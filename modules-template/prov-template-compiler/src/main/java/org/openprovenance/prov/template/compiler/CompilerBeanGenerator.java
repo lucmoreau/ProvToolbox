@@ -14,8 +14,7 @@ import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
-import org.openprovenance.prov.template.emitter.PoetParser;
-import org.openprovenance.prov.template.emitter.emitters.Python;
+
 
 import javax.lang.model.element.Modifier;
 

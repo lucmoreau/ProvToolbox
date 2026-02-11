@@ -3,7 +3,6 @@ package org.openprovenance.prov.template.compiler;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.configuration.*;
-import org.openprovenance.prov.template.compiler.oldstuff.CompilerQueryInvokerWithPrincipalOld;
 import org.openprovenance.prov.template.compiler.past.Constructor;
 import org.openprovenance.prov.template.compiler.past.Method;
 import org.openprovenance.prov.template.compiler.past.PastFactory;
@@ -44,11 +43,6 @@ public class CompilerQueryInvokerWithPrincipal {
         this.delegateCompiler=delegateCompiler;
         this.pastFactory = compilerUtil.getPastFactory();
 
-    }
-
-
-    SpecificationFile generateQueryInvokerWithPrincipalOld(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
-        return new CompilerQueryInvokerWithPrincipalOld(pFactory).generateQueryInvokerWithPrincipal(configs, locations, fileName);
     }
 
     public SpecificationFile generateQueryInvokerWithPrincipal(TemplatesProjectConfiguration configs, Locations locations, String fileName) {

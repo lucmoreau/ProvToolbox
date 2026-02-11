@@ -4,7 +4,6 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
-import org.openprovenance.prov.template.compiler.oldstuff.CompilerBeanCompleter2Old;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
@@ -42,17 +41,11 @@ public class CompilerBeanCompleter2 {
     private final CompilerUtil compilerUtil;
     private final PastFactory pastFactory;
     private final boolean debugComment=true;
-    private final CompilerBeanCompleter2Old old;
 
 
     public CompilerBeanCompleter2(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
         this.pastFactory=compilerUtil.getPastFactory();
-        this.old=new CompilerBeanCompleter2Old(pFactory);
-    }
-    SpecificationFile generateBeanCompleter2_old(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
-
-        return old.generateBeanCompleter2(configs, locations, fileName);
     }
 
     SpecificationFile generateBeanCompleter2(TemplatesProjectConfiguration configs, Locations locations, String fileName) {

@@ -14,6 +14,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: fixed issue with generics in generated code
 * prov-template-compiler: predecessor table initialisation
 * prov-template-compiler: json schema disallowing ID variable
+* prov-template-compiler: generation of PAST (Provenance Abstract Syntax Tree) instead of Poet, and then conversion to Poet
 
 `2.2.2`
 * prov-template: added ptm-merging template

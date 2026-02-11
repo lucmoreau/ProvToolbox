@@ -1,72 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AnalysisUIOptions">
-    <option name="ANALYZE_INJECTED_CODE" value="false" />
-    <option name="SCOPE_TYPE" value="3" />
-  </component>
   <component name="AutoImportSettings">
-    <option name="autoReloadType" value="ALL" />
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CargoProjects">
+    <cargoProject FILE="$PROJECT_DIR$/ProvToolbox.bak/modules-template/prov-template-compiler/target/generated-rust/Cargo.toml">
+      <package file="$PROJECT_DIR$/ProvToolbox.bak/modules-template/prov-template-compiler/target/generated-rust">
+        <feature name="default" enabled="true" />
+      </package>
+    </cargoProject>
+    <cargoProject FILE="$PROJECT_DIR$/ProvToolbox.bak/modules-template/prov-template-library/target/generated-rust/Cargo.toml">
+      <package file="$PROJECT_DIR$/ProvToolbox.bak/modules-template/prov-template-library/target/generated-rust">
+        <feature name="default" enabled="true" />
+      </package>
+    </cargoProject>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/annotations/ClassMethod.java" afterDir="false" />
+    <list default="true" id="44a1f447-c308-479f-be3a-95e05d37ae08" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/annotations/HeterogeneousArray.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/annotations/MethodRename.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/annotations/RustAnnotation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/annotations/StatefulProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/emitter/Rust.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/emitter/RustCodeGenerator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/emitter/RustProjectGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/LNKD.tech Editor.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_light_war.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_light_war_exploded.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.len" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values.at" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values.s" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat_i" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat_i.len" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/storage_v2/_src_/database/postgres.edMnLQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/storage_v2/_src_/database/postgres.edMnLQ/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jpa-buddy.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/scala_compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/scala_compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/scala_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerConfigurations.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerConfigurations.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/Method.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/Method.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/annotations/AnnotationConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/annotations/AnnotationConverter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/emitter/Python.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/emitter/Python.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProvToolbox.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="CodeStyleSettingsInfer">
-    <option name="done" value="true" />
-  </component>
-  <component name="CoverageViewManager">
-    <option name="myElementSize" value="315" />
-  </component>
-  <component name="DatabaseView">
-    <option name="SHOW_INTERMEDIATE" value="true" />
-    <option name="GROUP_DATA_SOURCES" value="true" />
-    <option name="GROUP_SCHEMA" value="true" />
-    <option name="GROUP_CONTENTS" value="false" />
-    <option name="SORT_POSITIONED" value="false" />
-    <option name="SHOW_EMPTY_GROUPS" value="false" />
-    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
-    <option name="HIDDEN_KINDS">
-      <set />
-    </option>
-    <expand />
-    <select />
-  </component>
-  <component name="DefaultGradleProjectSettings">
-    <option name="isMigrated" value="true" />
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_/Users/luc/IdeaProjects/ProvToolbox" value="38RLYO4kV75F1cgV6OfvtiT1W3Y" />
+    </persistenceIdMap>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Package Object" />
-        <option value="Scala Trait" />
-        <option value="JavaScript File" />
-        <option value="Enum" />
-        <option value="HTML File" />
-        <option value="module-info" />
-        <option value="Exception" />
-        <option value="Python Script" />
-        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="development" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -75,1408 +83,103 @@
     &quot;assignee&quot;: &quot;lucmoreau&quot;
   }
 }</component>
-  <component name="GitSEFilterConfiguration">
-    <file-type-list>
-      <filtered-out-file-type name="LOCAL_BRANCH" />
-      <filtered-out-file-type name="REMOTE_BRANCH" />
-      <filtered-out-file-type name="TAG" />
-      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
-    </file-type-list>
-  </component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/lucmoreau/ProvToolbox&quot;,
     &quot;accountId&quot;: &quot;f75af254-b653-4000-a82a-28cf662d1438&quot;
   }
 }</component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.17.1/jackson-databind-2.17.1.jar!/com/fasterxml/jackson/databind/ObjectMapper.class" root0="SKIP_INSPECTION" />
-    <setting file="jar://$MAVEN_REPOSITORY$/org/apache/jena/jena-arq/5.1.0/jena-arq-5.1.0.jar!/org/apache/jena/query/ResultSetFormatter.class" root0="SKIP_INSPECTION" />
-  </component>
-  <component name="InvalidFacetManager">
-    <ignored-facets>
-      <facet id="prov-template-library/invalid/Python" />
-    </ignored-facets>
-  </component>
-  <component name="JpbToolWindowState">
-    <option name="myId2FirstActivated">
-      <map>
-        <entry key="JPA Structure" value="true" />
-      </map>
-    </option>
-    <option name="myId2Visible">
-      <map>
-        <entry key="JPA Structure" value="false" />
-      </map>
-    </option>
-  </component>
-  <component name="JsBowerSettings">
-    <bower-package value="" />
-    <bower.json value="" />
-  </component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
-  </component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="1IkPZsw2" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
   </component>
   <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 0
 }</component>
-  <component name="ProjectId" id="1Sn3wNZbfFqwhTxNiyaVJ58yqRM" />
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="2" id="Add" />
-  </component>
+  <component name="ProjectId" id="38RLYO4kV75F1cgV6OfvtiT1W3Y" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
-    "Application.Reasoning.executor": "Run",
-    "Application.TemplatesViz.executor": "Run",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "JUnit.BindingsFormatterTest.executor": "Run",
-    "JUnit.CompilerTest.testCompiler1.executor": "Run",
-    "JUnit.DateTest.testDate5.executor": "Run",
-    "JUnit.DerivationBuilderTest (1).executor": "Run",
-    "JUnit.DerivationBuilderTest.executor": "Run",
-    "JUnit.DerivationBuilderTest.testBuild (1).executor": "Run",
-    "JUnit.DerivationBuilderTest.testBuild.executor": "Run",
-    "JUnit.DerivationBuilderTest.testOther.executor": "Run",
-    "JUnit.ExpandIT.executor": "Run",
-    "JUnit.ExpandTest.executor": "Run",
-    "JUnit.ExpandTest.testExpand1.executor": "Run",
-    "JUnit.ExpandTest.testExpand23.executor": "Run",
-    "JUnit.ExpandTest.testExpand25.executor": "Run",
-    "JUnit.ExpandTest.testExpandQualifiedName.executor": "Profiler#1",
-    "JUnit.ExpandTest.testGo.executor": "Profiler#1",
-    "JUnit.IT.executor": "Run",
-    "JUnit.InstantiaterTest.executor": "Run",
-    "JUnit.MetricsTest.executor": "Run",
-    "JUnit.MetricsTest.testMetrics.executor": "Run",
-    "JUnit.MongoBindingsDbTest.executor": "Run",
-    "JUnit.MongoBindingsDbTest.testMongoStorage.executor": "Run",
-    "JUnit.MongoCSVDbTest.executor": "Run",
-    "JUnit.MongoCSVDbTest.testMongoStorage.executor": "Run",
-    "JUnit.MongoJLDDocumentDbTest.executor": "Run",
-    "JUnit.MongoJLDDocumentDbTest.testMongoStorage.executor": "Run",
-    "JUnit.OrderingTest.testConstraintsSpecialization1.executor": "Debug",
-    "JUnit.OtherTest.testHelp.executor": "Run",
-    "JUnit.PC1FullTest (1).executor": "Run",
-    "JUnit.PC1FullTest (2).executor": "Run",
-    "JUnit.PC1FullTest.executor": "Run",
-    "JUnit.PC1FullTest.testPC1.executor": "Run",
-    "JUnit.PleadTest.testPlead1 (1).executor": "Run",
-    "JUnit.PleadTest.testPlead1.executor": "Run",
-    "JUnit.PleadTest.testPleadLocal.executor": "Run",
-    "JUnit.PleadTest.testPleadRemote.executor": "Run",
-    "JUnit.PleadWorkflowIT.executor": "Run",
-    "JUnit.PleadWorkflowIT.testPleadLocal.executor": "Run",
-    "JUnit.PleadWorkflowIT.testPleadRemote.executor": "Run",
-    "JUnit.RoundTripFromJavaJSONLD11Test.executor": "Run",
-    "JUnit.RoundTripFromJavaJSONTest (1).executor": "Run",
-    "JUnit.RoundTripFromJavaMongoTest.executor": "Debug",
-    "JUnit.StorageTest.testExample.executor": "Debug",
-    "JUnit.TriangleTest.executor": "Run",
-    "JUnit.TriangleTest.testTriangle.executor": "Run",
-    "JUnit.ValidateTest.testFailingDocumentExpansion.executor": "Run",
-    "JUnit.ValidateTest.testFailingDocumentPicaso.executor": "Run",
-    "JUnit.mongoDb2Test.executor": "Run",
-    "Makefile Target.check.schema.spec.executor": "Run",
-    "Makefile Target.go.executor": "Run",
-    "Makefile Target.go1.executor": "Run",
-    "Makefile Target.go2.executor": "Run",
-    "Makefile Target.kern.executor": "Run",
-    "Makefile Target.kern2.executor": "Run",
-    "Makefile Target.pkcs12.executor": "Run",
-    "Makefile Target.test.json.string.executor": "Run",
-    "Makefile Target.test.log.executor": "Run",
-    "Makefile Target.test.metrics.executor": "Run",
-    "Makefile Target.test.schema.projects.executor": "Run",
-    "Makefile Target.trusted.store.executor": "Run",
-    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ScalaTest.TypeLibraryIssueSpec.executor": "Run",
-    "WebServerToolWindowFactoryState": "false",
-    "extract.method.default.visibility": "public",
     "git-widget-placeholder": "development2__0",
-    "jdk.selected.JAVA_MODULE": "17",
-    "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
-    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-library/src/main/python/past/util",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/oldstuff",
     "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.stylelint": "true",
+    "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.stylelint": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.66091955",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "scala_project_settings_configurable.last_selected_tab_index": "0",
-    "settings.editor.selected.configurable": "editing.templates",
-    "ts.external.directory.path": "/Users/luc/Library/Application Support/JetBrains/IntelliJIdea2025.2/plugins/javascript-plugin/jsLanguageServicesImpl/external",
+    "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
+    "org.rust.first.attach.projects": "true",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "http.proxy",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="PyConsoleOptionsProvider">
-    <option name="myPythonConsoleState">
-      <console-settings module-name="prov-template-compiler">
-        <option name="myModuleName" value="prov-template-compiler" />
-      </console-settings>
-    </option>
-  </component>
-  <component name="ReactorSettings">
-    <option name="notificationShown" value="true" />
-  </component>
   <component name="RecentsManager">
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="org.openprovenance.prov.template.compiler.past" />
-      <recent name="org.openprovenance.plugin.webjar" />
-      <recent name="org.openprovenance.prov.template.utils" />
-      <recent name="org.openprovenance.prov.rules" />
-      <recent name="org.openprovenance.prov.service.metrics" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/past/util" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/plead" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/prov/client" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
-      <recent name="$PROJECT_DIR$/modules-explanations/service-xplain/src/main/resources" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/modules-services2/service-templates/src/test/resources/config" />
-      <recent name="$PROJECT_DIR$/modules-nf/service-signature/src/main/resources" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/templates" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/pg" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/bindings/plead" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/oldstuff" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
-      <recent name="org.openprovenance.prov.template.core.deprecated.BindingsBean" />
-      <recent name="org.openprovenance.prov.template.expander.deprecated.OldBindings" />
-      <recent name="org.openprovenance.prov.template.json.Bindings" />
-      <recent name="org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig" />
       <recent name="org.openprovenance.prov.template.compiler.common.Constants" />
+      <recent name="org.openprovenance.prov.template.compiler.past.Constant" />
     </key>
     <key name="IntroduceConstantDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.template.compiler.common.Constants" />
-      <recent name="org.openprovenance.prov.service.TemplateQuery" />
-      <recent name="org.openprovenance.prov.service.TemplateLogic" />
-      <recent name="org.openprovenance.prov.template.compiler.common.CompilerCommon" />
-      <recent name="org.openprovenance.prov.service.security.ClientConfiguration" />
-    </key>
-    <key name="ExtractSuperBase.RECENT_KEYS">
-      <recent name="org.openprovenance.prov.model.interop" />
-      <recent name="org.openprovenance.prov.service.translation" />
-      <recent name="org.openprovenance.prov.dot" />
-      <recent name="org.openprovenance.prov.model" />
-      <recent name="org.openprovenance.prov.storage.mongodb" />
-    </key>
-    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
-      <recent name="org.openprovenance.prov.template.core" />
-      <recent name="org.openprovenance.prov.service" />
-      <recent name="org.openprovenance.prov.rules" />
-      <recent name="org.openprovenance.prov.templates.library" />
-      <recent name="org.openprovenance.prov.service.core" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.template.compiler.oldstuff" />
       <recent name="org.openprovenance.prov.template.compiler.past" />
       <recent name="org.openprovenance.prov.template.compiler.past.annotations" />
-      <recent name="org.openprovenance.prov.template.compiler.past.emitter" />
-      <recent name="" />
-      <recent name="org.openprovenance.prov.template.expander.test" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.BindingsFormatterTest">
-    <configuration default="true" type="JUnit" factoryName="JUnit">
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="MAIN_CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
-      <option name="VMParameters" value="" />
-      <option name="allowRunningInParallel" value="false" />
-      <option name="alternativeJrePath" />
-      <option name="alternativeJrePathEnabled" value="false" />
-      <option name="classpathModifications">
-        <list />
-      </option>
-      <option name="envFilePaths">
-        <list />
-      </option>
-      <option name="envs">
-        <map />
-      </option>
-      <option name="passParentEnvs" value="true" />
-      <option name="programParameters" value="" />
-      <option name="projectPathOnTarget" />
-      <option name="selectedOptions">
-        <list />
-      </option>
-      <option name="testKind" value="Class" />
-      <option name="workingDirectory" value="$PROJECT_DIR$" />
-      <option name="shortenClasspath" value="NONE" />
-      <option name="workingDirectory" value="$PROJECT_DIR$" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
-      <deployment type="docker-compose.yml">
-        <settings />
-      </deployment>
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
-      <deployment type="dockerfile">
-        <settings />
-      </deployment>
-      <method v="2" />
-    </configuration>
-    <configuration name="BindingsFormatterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-template" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.core.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template.core.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.core.test.BindingsFormatterTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="InstantiaterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-template" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.core.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template.expander.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.core.test.InstantiaterTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="InstantiaterTest.testExpand1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-template" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.core.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template.expander.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.core.test.InstantiaterTest" />
-      <option name="METHOD_NAME" value="testExpand1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="InstantiaterTest.testExpand23" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-template" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.core.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template.expander.test" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.core.test.InstantiaterTest" />
-      <option name="METHOD_NAME" value="testExpand23" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="OtherTest.testHelp" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-interop" />
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="OtherTest" />
-      <option name="METHOD_NAME" value="testHelp" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
-      <module name="prov-jsonld" />
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
-      <module name="prov-jsonld" />
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="JUnit" factoryName="JUnit">
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="MAIN_CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
-      <module name="prov-model-scala" />
-      <option name="VMParameters" value="" />
-      <option name="allowRunningInParallel" value="false" />
-      <option name="alternativeJrePath" />
-      <option name="alternativeJrePathEnabled" value="false" />
-      <option name="classpathModifications">
-        <list />
-      </option>
-      <option name="envFilePaths">
-        <list />
-      </option>
-      <option name="envs">
-        <map />
-      </option>
-      <option name="passParentEnvs" value="true" />
-      <option name="programParameters" value="" />
-      <option name="projectPathOnTarget" />
-      <option name="selectedOptions">
-        <list />
-      </option>
-      <option name="testKind" value="Class" />
-      <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
-      <option name="searchTest" value="In single module" />
-      <option name="shortenClasspath" value="NONE" />
-      <option name="testClassPath" value="org.openprovenance.prov.scala.ModelSpec" />
-      <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
-      <module name="prov-model-scala" />
-      <option name="VMParameters" value="" />
-      <option name="allowRunningInParallel" value="false" />
-      <option name="alternativeJrePath" />
-      <option name="alternativeJrePathEnabled" value="false" />
-      <option name="classpathModifications">
-        <list />
-      </option>
-      <option name="envs">
-        <map />
-      </option>
-      <option name="passParentEnvs" value="true" />
-      <option name="programParameters" value="" />
-      <option name="projectPathOnTarget" />
-      <option name="selectedOptions">
-        <list />
-      </option>
-      <option name="testKind" value="Class" />
-      <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
-      <option name="searchTest" value="In single module" />
-      <option name="shortenClasspath" value="NONE" />
-      <option name="testClassPath" value="org.openprovenance.prov.scala.ModelSpec" />
-      <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
-      <option name="VMParameters" value="" />
-      <option name="allowRunningInParallel" value="false" />
-      <option name="alternativeJrePath" />
-      <option name="alternativeJrePathEnabled" value="false" />
-      <option name="classpathModifications">
-        <list />
-      </option>
-      <option name="envFilePaths">
-        <list />
-      </option>
-      <option name="envs">
-        <map />
-      </option>
-      <option name="passParentEnvs" value="true" />
-      <option name="programParameters" value="" />
-      <option name="projectPathOnTarget" />
-      <option name="selectedOptions">
-        <list />
-      </option>
-      <option name="testKind" value="Class" />
-      <option name="workingDirectory" value="$PROJECT_DIR$" />
-      <option name="shortenClasspath" value="NONE" />
-      <option name="workingDirectory" value="$PROJECT_DIR$" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
-      <deployment type="docker-compose.yml">
-        <settings />
-      </deployment>
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
-      <deployment type="dockerfile">
-        <settings />
-      </deployment>
-      <method v="2" />
-    </configuration>
-    <list>
-      <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="JUnit.BindingsFormatterTest" />
-      <item itemvalue="JUnit.InstantiaterTest" />
-      <item itemvalue="JUnit.InstantiaterTest.testExpand1" />
-      <item itemvalue="JUnit.InstantiaterTest.testExpand23" />
-      <item itemvalue="JUnit.OtherTest.testHelp" />
-      <item itemvalue="ScalaTest.ModelSpec" />
-    </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="JUnit.BindingsFormatterTest" />
-        <item itemvalue="JUnit.InstantiaterTest" />
-        <item itemvalue="JUnit.InstantiaterTest.testExpand1" />
-        <item itemvalue="JUnit.OtherTest.testHelp" />
-        <item itemvalue="JUnit.InstantiaterTest.testExpand23" />
-      </list>
-    </recent_temporary>
-  </component>
-  <component name="ScalaProjectSettings">
-    <option name="customScalatestSyntaxHighlighting" value="true" />
-    <option name="intInjectionMapping">
-      <map>
-        <entry key="css" value="CSS" />
-        <entry key="html" value="HTML" />
-        <entry key="java" value="JAVA" />
-        <entry key="js" value="JavaScript" />
-        <entry key="json" value="JSON" />
-        <entry key="json5" value="JSON5" />
-        <entry key="less" value="LESS" />
-        <entry key="protobuf" value="protobuf" />
-        <entry key="scala" value="Scala" />
-        <entry key="sql" value="SQL" />
-        <entry key="sqlu" value="SQL" />
-        <entry key="svg" value="SVG" />
-        <entry key="xhtml" value="XHTML" />
-        <entry key="xml" value="XML" />
-        <entry key="xpath" value="XPath" />
-        <entry key="yaml" value="yaml" />
-      </map>
-    </option>
-    <option name="scala3DisclaimerShown" value="true" />
-  </component>
-  <component name="ServiceViewManager">
-    <option name="viewStates">
-      <list>
-        <serviceView>
-          <treeState>
-            <expand />
-            <select />
-          </treeState>
-        </serviceView>
-      </list>
-    </option>
+  <component name="RustProjectSettings">
+    <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28539.13" />
-        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28539.13" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28539.33" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28539.33" />
       </set>
     </attachedChunks>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
-  <component name="SvnConfiguration">
-    <configuration />
-  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="" />
-      <created>1563129022141</created>
+      <changelist id="44a1f447-c308-479f-be3a-95e05d37ae08" name="Changes" comment="" />
+      <created>1768757483643</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1563129022141</updated>
-      <workItem from="1563129024345" duration="6916000" />
-      <workItem from="1563224680560" duration="1867000" />
-      <workItem from="1563296369837" duration="3522000" />
-      <workItem from="1563618542241" duration="2475000" />
-      <workItem from="1563716775188" duration="447000" />
-      <workItem from="1563737915342" duration="255000" />
-      <workItem from="1564838129931" duration="24000" />
-      <workItem from="1565514544963" duration="70858000" />
-      <workItem from="1566512383366" duration="19334000" />
-      <workItem from="1566920367084" duration="2951000" />
-      <workItem from="1566929460594" duration="2272000" />
-      <workItem from="1567007361993" duration="19002000" />
-      <workItem from="1567075018595" duration="89860000" />
-      <workItem from="1567440900973" duration="89368000" />
-      <workItem from="1568128965781" duration="16768000" />
-      <workItem from="1568294817392" duration="715000" />
-      <workItem from="1568304454117" duration="4238000" />
-      <workItem from="1568395314496" duration="12031000" />
-      <workItem from="1568526450161" duration="58000" />
-      <workItem from="1568527272929" duration="10303000" />
-      <workItem from="1568649088425" duration="9682000" />
-      <workItem from="1568665328032" duration="5510000" />
-      <workItem from="1568727939431" duration="2625000" />
-      <workItem from="1568731407888" duration="2180000" />
-      <workItem from="1568735664509" duration="15177000" />
-      <workItem from="1568822475377" duration="24926000" />
-      <workItem from="1568929320509" duration="85000" />
-      <workItem from="1568929432614" duration="17903000" />
-      <workItem from="1568998999272" duration="844000" />
-      <workItem from="1569007511430" duration="27969000" />
-      <workItem from="1569238166374" duration="32831000" />
-      <workItem from="1569487971436" duration="2686000" />
-      <workItem from="1569571239044" duration="41854000" />
-      <workItem from="1570045029195" duration="1199000" />
-      <workItem from="1570568871070" duration="584000" />
-      <workItem from="1571068102002" duration="6859000" />
-      <workItem from="1571676632473" duration="1565000" />
-      <workItem from="1571990355693" duration="598000" />
-      <workItem from="1572185772303" duration="293000" />
-      <workItem from="1573329086015" duration="1469000" />
-      <workItem from="1573771459162" duration="1660000" />
-      <workItem from="1574428320336" duration="709000" />
-      <workItem from="1574457129683" duration="14264000" />
-      <workItem from="1574594291845" duration="3308000" />
-      <workItem from="1574710561865" duration="597000" />
-      <workItem from="1574799487945" duration="21937000" />
-      <workItem from="1576159145395" duration="11917000" />
-      <workItem from="1576580732869" duration="598000" />
-      <workItem from="1576785833100" duration="6665000" />
-      <workItem from="1577174772445" duration="593000" />
-      <workItem from="1577175806683" duration="11173000" />
-      <workItem from="1577478646976" duration="134106000" />
-      <workItem from="1578298009919" duration="4074000" />
-      <workItem from="1578309962716" duration="198000" />
-      <workItem from="1578311468149" duration="17010000" />
-      <workItem from="1578432397613" duration="35500000" />
-      <workItem from="1578685335278" duration="16021000" />
-      <workItem from="1578933451413" duration="10077000" />
-      <workItem from="1579020960895" duration="7698000" />
-      <workItem from="1579103866065" duration="9923000" />
-      <workItem from="1579163537374" duration="1272000" />
-      <workItem from="1579193436836" duration="62163000" />
-      <workItem from="1579551877689" duration="1097000" />
-      <workItem from="1579627674311" duration="9499000" />
-      <workItem from="1579711129972" duration="52948000" />
-      <workItem from="1580141028092" duration="6904000" />
-      <workItem from="1580238346797" duration="17472000" />
-      <workItem from="1580648177809" duration="5205000" />
-      <workItem from="1580760841397" duration="2246000" />
-      <workItem from="1580930628029" duration="1457000" />
-      <workItem from="1581083932921" duration="4757000" />
-      <workItem from="1581365929732" duration="5476000" />
-      <workItem from="1581404742634" duration="1076000" />
-      <workItem from="1581444336990" duration="85736000" />
-      <workItem from="1581843241985" duration="2151000" />
-      <workItem from="1581866438814" duration="8651000" />
-      <workItem from="1582095456127" duration="10000" />
-      <workItem from="1582197788071" duration="2413000" />
-      <workItem from="1582271933960" duration="8000" />
-      <workItem from="1582272021986" duration="614000" />
-      <workItem from="1582370753493" duration="12267000" />
-      <workItem from="1582388652790" duration="3689000" />
-      <workItem from="1582403306770" duration="3464000" />
-      <workItem from="1582438880264" duration="1117000" />
-      <workItem from="1582446646363" duration="7371000" />
-      <workItem from="1582479276865" duration="5058000" />
-      <workItem from="1582492607565" duration="409000" />
-      <workItem from="1582521185844" duration="147000" />
-      <workItem from="1582888880871" duration="2750000" />
-      <workItem from="1583082542097" duration="611000" />
-      <workItem from="1583129768131" duration="3074000" />
-      <workItem from="1583140278855" duration="3473000" />
-      <workItem from="1583178462493" duration="924000" />
-      <workItem from="1583183077327" duration="974000" />
-      <workItem from="1583184614419" duration="467000" />
-      <workItem from="1583247862231" duration="1582000" />
-      <workItem from="1583352927084" duration="21000" />
-      <workItem from="1583352968996" duration="598000" />
-      <workItem from="1584292219617" duration="648000" />
-      <workItem from="1585166092085" duration="2174000" />
-      <workItem from="1585901013171" duration="3983000" />
-      <workItem from="1586445563313" duration="8414000" />
-      <workItem from="1589295570990" duration="6488000" />
-      <workItem from="1589873474208" duration="598000" />
-      <workItem from="1589904346599" duration="10754000" />
-      <workItem from="1592410461225" duration="15238000" />
-      <workItem from="1592982099967" duration="598000" />
-      <workItem from="1594193273745" duration="609000" />
-      <workItem from="1594301244769" duration="1214000" />
-      <workItem from="1595576596885" duration="1793000" />
-      <workItem from="1595766691049" duration="1809000" />
-      <workItem from="1596355023476" duration="15000" />
-      <workItem from="1596355845664" duration="4616000" />
-      <workItem from="1596639625332" duration="1581000" />
-      <workItem from="1597416998452" duration="5000" />
-      <workItem from="1601632527989" duration="7986000" />
-      <workItem from="1601815482225" duration="597000" />
-      <workItem from="1601834425397" duration="596000" />
-      <workItem from="1601928179849" duration="1191000" />
-      <workItem from="1602098460725" duration="2234000" />
-      <workItem from="1602658625698" duration="1211000" />
-      <workItem from="1602786155167" duration="1195000" />
-      <workItem from="1603354249456" duration="6921000" />
-      <workItem from="1603617824628" duration="598000" />
-      <workItem from="1603917283491" duration="2518000" />
-      <workItem from="1604347954453" duration="598000" />
-      <workItem from="1604668309832" duration="3000" />
-      <workItem from="1604833142976" duration="2072000" />
-      <workItem from="1605214938905" duration="1195000" />
-      <workItem from="1605285281388" duration="788000" />
-      <workItem from="1605735530895" duration="613000" />
-      <workItem from="1605860146592" duration="2189000" />
-      <workItem from="1606638232738" duration="598000" />
-      <workItem from="1606665604516" duration="558000" />
-      <workItem from="1607096975033" duration="599000" />
-      <workItem from="1607602593119" duration="597000" />
-      <workItem from="1608114858942" duration="21000" />
-      <workItem from="1608295816485" duration="10703000" />
-      <workItem from="1609357288112" duration="193000" />
-      <workItem from="1609357569124" duration="2636000" />
-      <workItem from="1609684239208" duration="2325000" />
-      <workItem from="1610100159387" duration="47261000" />
-      <workItem from="1610706267007" duration="20679000" />
-      <workItem from="1611083865960" duration="32718000" />
-      <workItem from="1611500983240" duration="3494000" />
-      <workItem from="1611587766766" duration="105632000" />
-      <workItem from="1611932987304" duration="7197000" />
-      <workItem from="1612466593021" duration="597000" />
-      <workItem from="1612524031476" duration="2832000" />
-      <workItem from="1612538777418" duration="35758000" />
-      <workItem from="1613022949964" duration="9863000" />
-      <workItem from="1613228799663" duration="3080000" />
-      <workItem from="1613490400163" duration="1262000" />
-      <workItem from="1613497838529" duration="5697000" />
-      <workItem from="1615104735520" duration="9498000" />
-      <workItem from="1616092713721" duration="3849000" />
-      <workItem from="1616157210454" duration="10770000" />
-      <workItem from="1616912959195" duration="5928000" />
-      <workItem from="1617904654898" duration="4867000" />
-      <workItem from="1618126924219" duration="51771000" />
-      <workItem from="1618846562151" duration="16647000" />
-      <workItem from="1618934022625" duration="36042000" />
-      <workItem from="1619183937658" duration="4418000" />
-      <workItem from="1619262230719" duration="13411000" />
-      <workItem from="1619374548816" duration="240000" />
-      <workItem from="1619374883328" duration="590000" />
-      <workItem from="1619439600746" duration="18729000" />
-      <workItem from="1619508281636" duration="73741000" />
-      <workItem from="1620019763833" duration="25602000" />
-      <workItem from="1620238896898" duration="2376000" />
-      <workItem from="1620328127838" duration="2934000" />
-      <workItem from="1620470798276" duration="211000" />
-      <workItem from="1620471091798" duration="15679000" />
-      <workItem from="1620632976731" duration="1336000" />
-      <workItem from="1620756342390" duration="7729000" />
-      <workItem from="1620843272271" duration="1874000" />
-      <workItem from="1621006891003" duration="7528000" />
-      <workItem from="1621753013373" duration="11800000" />
-      <workItem from="1622272984720" duration="595000" />
-      <workItem from="1622274581235" duration="367000" />
-      <workItem from="1622274996751" duration="68000" />
-      <workItem from="1622275311550" duration="592000" />
-      <workItem from="1622366603874" duration="594000" />
-      <workItem from="1622567521119" duration="534000" />
-      <workItem from="1622656697012" duration="17293000" />
-      <workItem from="1623086275638" duration="5856000" />
-      <workItem from="1623168480000" duration="1198000" />
-      <workItem from="1623264201808" duration="2051000" />
-      <workItem from="1623740497658" duration="597000" />
-      <workItem from="1623752793209" duration="596000" />
-      <workItem from="1624259371439" duration="569000" />
-      <workItem from="1624560037536" duration="1116000" />
-      <workItem from="1624985469421" duration="2337000" />
-      <workItem from="1625077935366" duration="4514000" />
-      <workItem from="1625225504959" duration="4566000" />
-      <workItem from="1625501521419" duration="2384000" />
-      <workItem from="1625602113466" duration="588000" />
-      <workItem from="1625671086885" duration="596000" />
-      <workItem from="1625692917383" duration="8144000" />
-      <workItem from="1625917779537" duration="8261000" />
-      <workItem from="1626419393857" duration="596000" />
-      <workItem from="1626893321776" duration="3877000" />
-      <workItem from="1627798753423" duration="6183000" />
-      <workItem from="1627857935350" duration="595000" />
-      <workItem from="1627914685686" duration="284000" />
-      <workItem from="1627919554186" duration="2900000" />
-      <workItem from="1628186813741" duration="5998000" />
-      <workItem from="1628855076484" duration="669000" />
-      <workItem from="1628855890581" duration="612000" />
-      <workItem from="1628856754653" duration="591000" />
-      <workItem from="1628958691242" duration="1785000" />
-      <workItem from="1629456705403" duration="727000" />
-      <workItem from="1629820781995" duration="598000" />
-      <workItem from="1629875784263" duration="3681000" />
-      <workItem from="1630053818059" duration="27864000" />
-      <workItem from="1630410150743" duration="572000" />
-      <workItem from="1630411905407" duration="7660000" />
-      <workItem from="1630674238317" duration="12557000" />
-      <workItem from="1630944187226" duration="2563000" />
-      <workItem from="1631044194197" duration="2239000" />
-      <workItem from="1631118714441" duration="1179000" />
-      <workItem from="1631182913936" duration="582000" />
-      <workItem from="1631196377707" duration="20001000" />
-      <workItem from="1631548889576" duration="1002000" />
-      <workItem from="1631634197766" duration="591000" />
-      <workItem from="1631711654353" duration="578000" />
-      <workItem from="1631785626071" duration="1221000" />
-      <workItem from="1632318613391" duration="433000" />
-      <workItem from="1632493801752" duration="481000" />
-      <workItem from="1633072558740" duration="1831000" />
-      <workItem from="1633093845444" duration="1667000" />
-      <workItem from="1633531302537" duration="594000" />
-      <workItem from="1633627112924" duration="4197000" />
-      <workItem from="1633689288526" duration="5632000" />
-      <workItem from="1634127540363" duration="871000" />
-      <workItem from="1634300888402" duration="580000" />
-      <workItem from="1635337565697" duration="1195000" />
-      <workItem from="1637416312689" duration="577000" />
-      <workItem from="1637869383976" duration="20414000" />
-      <workItem from="1638083120689" duration="17748000" />
-      <workItem from="1638204931524" duration="30427000" />
-      <workItem from="1638524822565" duration="2155000" />
-      <workItem from="1638546585936" duration="51124000" />
-      <workItem from="1638817353046" duration="8915000" />
-      <workItem from="1638886644716" duration="28160000" />
-      <workItem from="1639048841950" duration="68040000" />
-      <workItem from="1639655683620" duration="363000" />
-      <workItem from="1639679506291" duration="47089000" />
-      <workItem from="1640113241462" duration="1561000" />
-      <workItem from="1640117737803" duration="9755000" />
-      <workItem from="1642626527944" duration="894000" />
-      <workItem from="1643272569952" duration="28659000" />
-      <workItem from="1644740503361" duration="10181000" />
-      <workItem from="1644770324920" duration="7200000" />
-      <workItem from="1645357435723" duration="1983000" />
-      <workItem from="1645469586674" duration="1040000" />
-      <workItem from="1645558609252" duration="10342000" />
-      <workItem from="1646946126698" duration="53707000" />
-      <workItem from="1648301825149" duration="1824000" />
-      <workItem from="1648583632969" duration="45996000" />
-      <workItem from="1650606299523" duration="102645000" />
-      <workItem from="1652719215639" duration="323000" />
-      <workItem from="1652719572643" duration="51000" />
-      <workItem from="1653652105736" duration="3344000" />
-      <workItem from="1653829477284" duration="5514000" />
-      <workItem from="1654349681176" duration="1270000" />
-      <workItem from="1654717089375" duration="1411000" />
-      <workItem from="1655447835837" duration="17374000" />
-      <workItem from="1657615234357" duration="3470000" />
-      <workItem from="1657868703226" duration="587000" />
-      <workItem from="1659077970605" duration="588000" />
-      <workItem from="1660639579135" duration="14024000" />
-      <workItem from="1661185950769" duration="8499000" />
-      <workItem from="1661370722405" duration="10146000" />
-      <workItem from="1661459370185" duration="4380000" />
-      <workItem from="1662128037249" duration="1144000" />
-      <workItem from="1662644303078" duration="3157000" />
-      <workItem from="1663428715154" duration="841000" />
-      <workItem from="1663494531348" duration="805000" />
-      <workItem from="1664639231385" duration="4944000" />
-      <workItem from="1671617609037" duration="151468000" />
-      <workItem from="1672958974862" duration="1894000" />
-      <workItem from="1672961155387" duration="1151000" />
-      <workItem from="1672988834298" duration="29956000" />
-      <workItem from="1673199638189" duration="15634000" />
-      <workItem from="1673463050386" duration="34217000" />
-      <workItem from="1673876660842" duration="147899000" />
-      <workItem from="1675704896970" duration="94620000" />
-      <workItem from="1677334382907" duration="31949000" />
-      <workItem from="1678621401400" duration="598000" />
-      <workItem from="1678814818868" duration="597000" />
-      <workItem from="1678822443491" duration="23449000" />
-      <workItem from="1679248302212" duration="37866000" />
-      <workItem from="1679575450605" duration="598000" />
-      <workItem from="1679669043934" duration="10457000" />
-      <workItem from="1679943760039" duration="1193000" />
-      <workItem from="1680808559647" duration="597000" />
-      <workItem from="1681717253753" duration="74000" />
-      <workItem from="1681717338602" duration="309000" />
-      <workItem from="1681756057063" duration="575000" />
-      <workItem from="1681933648003" duration="583000" />
-      <workItem from="1682407047702" duration="598000" />
-      <workItem from="1682536398500" duration="2815000" />
-      <workItem from="1683286128815" duration="598000" />
-      <workItem from="1683880831134" duration="1796000" />
-      <workItem from="1684179655375" duration="587000" />
-      <workItem from="1684299992258" duration="3304000" />
-      <workItem from="1684434540022" duration="916000" />
-      <workItem from="1684783804359" duration="39000" />
-      <workItem from="1684847176157" duration="17848000" />
-      <workItem from="1688072699074" duration="15000" />
-      <workItem from="1688715585064" duration="10667000" />
-      <workItem from="1690198033321" duration="10000" />
-      <workItem from="1690205893443" duration="75000" />
-      <workItem from="1690205984526" duration="4788000" />
-      <workItem from="1691948092797" duration="597000" />
-      <workItem from="1691949898307" duration="2884000" />
-      <workItem from="1692632973216" duration="13324000" />
-      <workItem from="1693401616419" duration="16428000" />
-      <workItem from="1693424638597" duration="2611000" />
-      <workItem from="1693462851948" duration="14887000" />
-      <workItem from="1693821094936" duration="9200000" />
-      <workItem from="1693851419696" duration="923000" />
-      <workItem from="1693852690547" duration="107000" />
-      <workItem from="1693852823120" duration="10727000" />
-      <workItem from="1693919563810" duration="27570000" />
-      <workItem from="1694027380052" duration="12448000" />
-      <workItem from="1694092947150" duration="40519000" />
-      <workItem from="1694451178713" duration="75949000" />
-      <workItem from="1694718736380" duration="4396000" />
-      <workItem from="1694938514558" duration="93000" />
-      <workItem from="1694938635656" duration="15467000" />
-      <workItem from="1695023224064" duration="55000" />
-      <workItem from="1695023287797" duration="30105000" />
-      <workItem from="1695190967915" duration="21095000" />
-      <workItem from="1695355590282" duration="6546000" />
-      <workItem from="1696016222464" duration="32606000" />
-      <workItem from="1696237138764" duration="20889000" />
-      <workItem from="1696348385334" duration="69320000" />
-      <workItem from="1696836756493" duration="3240000" />
-      <workItem from="1696867289365" duration="87900000" />
-      <workItem from="1697230799513" duration="57437000" />
-      <workItem from="1697733330468" duration="9198000" />
-      <workItem from="1697808403526" duration="73500000" />
-      <workItem from="1698212176966" duration="59616000" />
-      <workItem from="1698696945408" duration="249000" />
-      <workItem from="1698697236048" duration="9444000" />
-      <workItem from="1698748365341" duration="89701000" />
-      <workItem from="1699289035155" duration="2395000" />
-      <workItem from="1699296893543" duration="65757000" />
-      <workItem from="1699627670865" duration="3605000" />
-      <workItem from="1700464624485" duration="593000" />
-      <workItem from="1700513916475" duration="1211000" />
-      <workItem from="1700584051640" duration="7685000" />
-      <workItem from="1701289062850" duration="20000" />
-      <workItem from="1701289090156" duration="438000" />
-      <workItem from="1701289536148" duration="8909000" />
-      <workItem from="1701433252726" duration="2775000" />
-      <workItem from="1702032132661" duration="7977000" />
-      <workItem from="1702305543427" duration="15566000" />
-      <workItem from="1704189739936" duration="188000" />
-      <workItem from="1704189967892" duration="1198000" />
-      <workItem from="1708331698235" duration="9936000" />
-      <workItem from="1709408911546" duration="549000" />
-      <workItem from="1710416342599" duration="1308000" />
-      <workItem from="1711105997230" duration="12994000" />
-      <workItem from="1711121045894" duration="4750000" />
-      <workItem from="1711296175962" duration="104799000" />
-      <workItem from="1712682645402" duration="47841000" />
-      <workItem from="1712914860175" duration="12497000" />
-      <workItem from="1712931150654" duration="30173000" />
-      <workItem from="1713161046817" duration="18832000" />
-      <workItem from="1713334270338" duration="782000" />
-      <workItem from="1713337784627" duration="9990000" />
-      <workItem from="1713372878257" duration="5927000" />
-      <workItem from="1713385489351" duration="267000" />
-      <workItem from="1713385763798" duration="179264000" />
-      <workItem from="1714472444531" duration="62246000" />
-      <workItem from="1715690420906" duration="169149000" />
-      <workItem from="1716384651492" duration="130994000" />
-      <workItem from="1717088781190" duration="23673000" />
-      <workItem from="1717243679715" duration="146900000" />
-      <workItem from="1718091655832" duration="73759000" />
-      <workItem from="1718607369852" duration="3594000" />
-      <workItem from="1718639569403" duration="67340000" />
-      <workItem from="1720032453503" duration="12633000" />
-      <workItem from="1720505599253" duration="30074000" />
-      <workItem from="1720890851142" duration="1714000" />
-      <workItem from="1720892703388" duration="154667000" />
-      <workItem from="1721594488655" duration="2585000" />
-      <workItem from="1722511910036" duration="4626000" />
-      <workItem from="1722614512467" duration="65447000" />
-      <workItem from="1724102045058" duration="36751000" />
-      <workItem from="1724266404903" duration="30616000" />
-      <workItem from="1725525004310" duration="21140000" />
-      <workItem from="1726515019831" duration="6181000" />
-      <workItem from="1727074643815" duration="16527000" />
-      <workItem from="1728039245552" duration="620000" />
-      <workItem from="1728504186336" duration="101220000" />
-      <workItem from="1729105189635" duration="34450000" />
-      <workItem from="1729241210944" duration="85345000" />
-      <workItem from="1734032815097" duration="599000" />
-      <workItem from="1734249654130" duration="599000" />
-      <workItem from="1735398856978" duration="594000" />
-      <workItem from="1735496775502" duration="598000" />
-      <workItem from="1736673344018" duration="599000" />
-      <workItem from="1738342242578" duration="598000" />
-      <workItem from="1738854672702" duration="585000" />
-      <workItem from="1740757124062" duration="246000" />
-      <workItem from="1745413435106" duration="5681000" />
-      <workItem from="1749234468698" duration="6906000" />
-      <workItem from="1750101648853" duration="3000" />
-      <workItem from="1750391946965" duration="574000" />
-      <workItem from="1750392587000" duration="590000" />
-      <workItem from="1755168278374" duration="27885000" />
-      <workItem from="1756206575782" duration="10338000" />
-      <workItem from="1756293126834" duration="3320000" />
-      <workItem from="1756365861093" duration="19945000" />
-      <workItem from="1756711468280" duration="48370000" />
-      <workItem from="1756920383352" duration="11449000" />
-      <workItem from="1757130104480" duration="1231000" />
-      <workItem from="1757132890517" duration="23803000" />
-      <workItem from="1757356207085" duration="44700000" />
-      <workItem from="1758282679809" duration="41749000" />
-      <workItem from="1758562607785" duration="4696000" />
-      <workItem from="1758656830513" duration="86558000" />
-      <workItem from="1760182058790" duration="24147000" />
-      <workItem from="1760370464975" duration="203326000" />
-      <workItem from="1762791328447" duration="62691000" />
-      <workItem from="1763121485776" duration="47219000" />
-      <workItem from="1763380296994" duration="104538000" />
-      <workItem from="1764151233491" duration="48995000" />
-      <workItem from="1764495913540" duration="80000" />
-      <workItem from="1764496048730" duration="31074000" />
-      <workItem from="1766581524837" duration="598000" />
-      <workItem from="1766846047715" duration="172214000" />
-      <workItem from="1767806049473" duration="88232000" />
+      <updated>1768757483643</updated>
+      <workItem from="1768757484847" duration="81000" />
+      <workItem from="1768757574395" duration="32000" />
+      <workItem from="1768757967182" duration="160000" />
+      <workItem from="1768758137337" duration="66222000" />
+      <workItem from="1769164552698" duration="201765000" />
     </task>
-    <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
-      <created>1566430960720</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1566430960720</updated>
-    </task>
-    <option name="localTasksCounter" value="3" />
     <servers />
-  </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnknownFeatures">
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryresultio-text" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.james:apache-mime4j-dom" />
-    <option featureType="dependencySupport" implementationName="java:jakarta.xml.bind:jakarta.xml.bind-api" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-contextaware" />
-    <option featureType="dependencySupport" implementationName="java:org.quartz-scheduler:quartz" />
-    <option featureType="dependencySupport" implementationName="java:javax.activation:javax.activation-api" />
-    <option featureType="dependencySupport" implementationName="java:org.codehaus.plexus:plexus-utils" />
-    <option featureType="dependencySupport" implementationName="java:com.mchange:c3p0" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-model-scala" />
-    <option featureType="dependencySupport" implementationName="java:com.google.code.gson:gson" />
-    <option featureType="dependencySupport" implementationName="java:javax.json:javax.json-api" />
-    <option featureType="dependencySupport" implementationName="java:org.hibernate.javax.persistence:hibernate-jpa-2.1-api" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-queries" />
-    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.datatype:jackson-datatype-jsr310" />
-    <option featureType="dependencySupport" implementationName="java:javax.persistence:persistence-api" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-client-api" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryparser-api" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-core" />
-    <option featureType="dependencySupport" implementationName="java:org.hibernate:hibernate-core" />
-    <option featureType="dependencySupport" implementationName="java:xerces:xercesImpl" />
-    <option featureType="dependencySupport" implementationName="java:com.sun.mail:javax.mail" />
-    <option featureType="dependencySupport" implementationName="java:com.github.fge:json-schema-core" />
-    <option featureType="dependencySupport" implementationName="java:org.mongodb:mongodb-driver-core" />
-    <option featureType="dependencySupport" implementationName="java:org.glassfish.jaxb:txw2" />
-    <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-annotations" />
-    <option featureType="dependencySupport" implementationName="java:org.webjars:jquery" />
-    <option featureType="com.intellij.configurationType" implementationName="PythonConfigurationType" />
-    <option featureType="dependencySupport" implementationName="java:commons-lang:commons-lang" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-memory" />
-    <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-models" />
-    <option featureType="dependencySupport" implementationName="java:com.google.inject:guice" />
-    <option featureType="dependencySupport" implementationName="java:javax.el:javax.el-api" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryresultio-binary" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.james:apache-mime4j-storage" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-query" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-rdfjson" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-storage-api" />
-    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.core:jackson-databind" />
-    <option featureType="dependencySupport" implementationName="java:org.webjars:swagger-ui" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-ntriples" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-dataset" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss.logging:jboss-logging" />
-    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider" />
-    <option featureType="dependencySupport" implementationName="java:org.slf4j:slf4j-api" />
-    <option featureType="dependencySupport" implementationName="java:org.scalatest:scalatest-compatible" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-model" />
-    <option featureType="dependencySupport" implementationName="java:antlr:antlr" />
-    <option featureType="dependencySupport" implementationName="java:org.yaml:snakeyaml" />
-    <option featureType="dependencySupport" implementationName="java:com.github.fge:jackson-coreutils" />
-    <option featureType="dependencySupport" implementationName="java:org.postgresql:postgresql" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-collections4" />
-    <option featureType="dependencySupport" implementationName="java:org.reactivestreams:reactive-streams" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-trix" />
-    <option featureType="dependencySupport" implementationName="java:org.openjdk.jmh:jmh-generator-annprocess" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpclient" />
-    <option featureType="dependencySupport" implementationName="java:org.openjdk.jmh:jmh-core" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-model" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.maven:maven-model" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-rdfxml" />
-    <option featureType="dependencySupport" implementationName="java:com.mchange:mchange-commons-java" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-trig" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.logging.log4j:log4j-core" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-api" />
-    <option featureType="dependencySupport" implementationName="java:javax.inject:javax.inject" />
-    <option featureType="dependencySupport" implementationName="java:org.mapdb:mapdb" />
-    <option featureType="dependencySupport" implementationName="java:commons-codec:commons-codec" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-interop-light" />
-    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.jaxrs:jackson-jaxrs-base" />
-    <option featureType="dependencySupport" implementationName="java:xml-apis:xml-apis" />
-    <option featureType="dependencySupport" implementationName="java:javax.activation:activation" />
-    <option featureType="dependencySupport" implementationName="java:org.codehaus.mojo:animal-sniffer-annotations" />
-    <option featureType="dependencySupport" implementationName="java:org.osgi:org.osgi.annotation.versioning" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss:jandex" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryalgebra-model" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-text" />
-    <option featureType="dependencySupport" implementationName="java:javax.validation:validation-api" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-federation" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-servlet-initializer" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-binary" />
-    <option featureType="dependencySupport" implementationName="java:org.hibernate.common:hibernate-commons-annotations" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-storage-index-redis" />
-    <option featureType="dependencySupport" implementationName="java:javax.mail:mailapi" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryresultio-api" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss.spec.javax.annotation:jboss-annotations-api_1.3_spec" />
-    <option featureType="com.intellij.facetType" implementationName="Python" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-spatial" />
-    <option featureType="dependencySupport" implementationName="java:org.jvnet.staxex:stax-ex" />
-    <option featureType="dependencySupport" implementationName="java:com.opencsv:opencsv" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.logging.log4j:log4j-slf4j-impl" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-service-translation" />
-    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.core:jackson-annotations" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryresultio-sparqljson" />
-    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.core:jackson-core" />
-    <option featureType="dependencySupport" implementationName="java:com.networknt:json-schema-validator" />
-    <option featureType="dependencySupport" implementationName="java:org.slf4j:jcl-over-slf4j" />
-    <option featureType="dependencySupport" implementationName="java:org.parboiled:parboiled_2.12" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-api" />
-    <option featureType="dependencySupport" implementationName="java:org.scala-lang.modules:scala-xml_2.12" />
-    <option featureType="dependencySupport" implementationName="java:com.chuusai:shapeless_2.12" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-template-compiler" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-csv" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-memory" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-dot" />
-    <option featureType="dependencySupport" implementationName="java:com.sun.istack:istack-commons-runtime" />
-    <option featureType="dependencySupport" implementationName="java:org.mozilla:rhino" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-api" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpclient-osgi" />
-    <option featureType="dependencySupport" implementationName="java:javax.enterprise:cdi-api" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-n3" />
-    <option featureType="dependencySupport" implementationName="java:org.webjars:font-awesome" />
-    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-util" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-log" />
-    <option featureType="dependencySupport" implementationName="java:io.github.classgraph:classgraph" />
-    <option featureType="dependencySupport" implementationName="java:com.googlecode.libphonenumber:libphonenumber" />
-    <option featureType="dependencySupport" implementationName="java:javax.servlet:javax.servlet-api" />
-    <option featureType="dependencySupport" implementationName="java:log4j:log4j" />
-    <option featureType="dependencySupport" implementationName="maven-packaging:war" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-util" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.logging.log4j:log4j-api" />
-    <option featureType="dependencySupport" implementationName="java:com.github.fge:msg-simple" />
-    <option featureType="dependencySupport" implementationName="java:org.slf4j:slf4j-nop" />
-    <option featureType="dependencySupport" implementationName="java:org.webjars:bootstrap-table" />
-    <option featureType="dependencySupport" implementationName="java:org.javassist:javassist" />
-    <option featureType="dependencySupport" implementationName="java:org.hibernate:hibernate-entitymanager" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryparser-sparql" />
-    <option featureType="dependencySupport" implementationName="java:org.hamcrest:hamcrest-core" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryresultio-sparqlxml" />
-    <option featureType="dependencySupport" implementationName="java:org.typelevel:macro-compat_2.12" />
-    <option featureType="dependencySupport" implementationName="java:com.squareup:javapoet" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-nquads" />
-    <option featureType="dependencySupport" implementationName="java:com.zaxxer:HikariCP-java6" />
-    <option featureType="dependencySupport" implementationName="java:commons-io:commons-io" />
-    <option featureType="dependencySupport" implementationName="java:org.glassfish.jaxb:jaxb-runtime" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-core" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-manager" />
-    <option featureType="dependencySupport" implementationName="java:org.scala-lang:scala-library" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-xml" />
-    <option featureType="dependencySupport" implementationName="java:jakarta.validation:jakarta.validation-api" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:fluent-hc" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-event" />
-    <option featureType="dependencySupport" implementationName="java:com.spatial4j:spatial4j" />
-    <option featureType="dependencySupport" implementationName="java:junit:junit" />
-    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.dataformat:jackson-dataformat-yaml" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpclient-cache" />
-    <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-core" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-spin" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-highlighter" />
-    <option featureType="dependencySupport" implementationName="java:org.mongojack:mongojack" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpcore" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-lang3" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-sparql" />
-    <option featureType="dependencySupport" implementationName="java:de.undercouch:bson4jackson" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-runtime" />
-    <option featureType="dependencySupport" implementationName="java:net.sf.jopt-simple:jopt-simple" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-http-protocol" />
-    <option featureType="dependencySupport" implementationName="java:org.scalatest:scalatest_2.12" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-lucene-api" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-http-client" />
-    <option featureType="dependencySupport" implementationName="java:com.google.guava:guava" />
-    <option featureType="dependencySupport" implementationName="java:io.smallrye:smallrye-config" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-sandbox" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-math3" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-jsonld-xml" />
-    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.dataformat:jackson-dataformat-xml" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-base" />
-    <option featureType="dependencySupport" implementationName="java:dom4j:dom4j" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryparser-serql" />
-    <option featureType="dependencySupport" implementationName="java:org.codehaus.woodstox:stax2-api" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-jaxb-provider" />
-    <option featureType="dependencySupport" implementationName="java:org.antlr:stringtemplate" />
-    <option featureType="dependencySupport" implementationName="java:org.webjars.bowergithub.ajaxorg:ace-builds" />
-    <option featureType="dependencySupport" implementationName="java:org.jsweet.candies:jquery" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-generator" />
-    <option featureType="dependencySupport" implementationName="java:org.mongodb:mongodb-driver-legacy" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-http" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-join" />
-    <option featureType="dependencySupport" implementationName="java:commons-cli:commons-cli" />
-    <option featureType="dependencySupport" implementationName="java:org.antlr:antlr-runtime" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-rdf" />
-    <option featureType="dependencySupport" implementationName="java:com.github.fge:uri-template" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-json" />
-    <option featureType="dependencySupport" implementationName="java:org.webjars:bootstrap" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-analyzers-common" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.james:apache-mime4j-core" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-pool2" />
-    <option featureType="dependencySupport" implementationName="java:jakarta.ws.rs:jakarta.ws.rs-api" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-nativerdf" />
-    <option featureType="dependencySupport" implementationName="java:joda-time:joda-time" />
-    <option featureType="dependencySupport" implementationName="java:jakarta.activation:jakarta.activation-api" />
-    <option featureType="dependencySupport" implementationName="java:javax.interceptor:javax.interceptor-api" />
-    <option featureType="dependencySupport" implementationName="java:org.codehaus.izpack:izpack-wrapper" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-inferencer" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec" />
-    <option featureType="dependencySupport" implementationName="java:com.sun.xml.fastinfoset:FastInfoset" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-lucene" />
-    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.module:jackson-module-jaxb-annotations" />
-    <option featureType="dependencySupport" implementationName="java:org.scalactic:scalactic_2.12" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-core-spi" />
-    <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-integration" />
-    <option featureType="dependencySupport" implementationName="java:commons-logging:commons-logging" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-storage-filesystem" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss.logging:jboss-logging-annotations" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-sail" />
-    <option featureType="dependencySupport" implementationName="java:javax.xml.bind:jaxb-api" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-jsonld" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryalgebra-evaluation" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-client" />
-    <option featureType="dependencySupport" implementationName="java:com.github.fge:btf" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-spin" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpcore-osgi" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-queryparser" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-misc" />
-    <option featureType="dependencySupport" implementationName="java:org.jsweet:jsweet-core" />
-    <option featureType="dependencySupport" implementationName="java:aopalliance:aopalliance" />
-    <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-jaxrs2" />
-    <option featureType="dependencySupport" implementationName="java:org.mongodb:mongodb-driver-sync" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-datatypes" />
-    <option featureType="dependencySupport" implementationName="java:org.hsqldb:hsqldb" />
-    <option featureType="dependencySupport" implementationName="java:redis.clients:jedis" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpcore-nio" />
-    <option featureType="dependencySupport" implementationName="java:com.google.code.findbugs:jsr305" />
-    <option featureType="dependencySupport" implementationName="java:com.github.jsonld-java:jsonld-java" />
-    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpmime" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-interop" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-languages" />
-    <option featureType="dependencySupport" implementationName="java:org.mongodb:bson" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-service-core" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-jsonld" />
-    <option featureType="dependencySupport" implementationName="java:com.fasterxml.woodstox:woodstox-core" />
-    <option featureType="dependencySupport" implementationName="java:c3p0:c3p0" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-turtle" />
-    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryrender" />
-    <option featureType="dependencySupport" implementationName="java:org.eclipse.microprofile.config:microprofile-config-api" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-n" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-template" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-multipart-provider" />
-    <option featureType="dependencySupport" implementationName="java:org.scala-lang:scala-reflect" />
-    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-model" />
-    <option featureType="dependencySupport" implementationName="java:com.github.fge:json-schema-validator" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
   <component name="VcsManagerConfiguration">
-    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <ignored-roots>
-      <path value="$PROJECT_DIR$/modules-js/jsweet-quickstart" />
+      <path value="$PROJECT_DIR$/ProvToolbox.bak" />
     </ignored-roots>
-    <MESSAGE value="First cut of json-ld serialisation for activities" />
-    <option name="LAST_COMMIT_MESSAGE" value="First cut of json-ld serialisation for activities" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/webapp.filter/forms.html</url>
-          <line>341</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/Element.java</url>
-          <line>10</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modules-template/prov-template-library/target/python/org/openprovenance/prov/template/library/plead/client/common/Plead_transforming_compositeBean.py</url>
-          <line>4</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modules-template/prov-template-library/target/generated-python/org/openprovenance/prov/template/library/plead/configurator/BuilderProcessorConfigurator.py</url>
-          <line>4</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
-    <expand>
-      <path>
-        <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-        <item name="dir{file:///Users/luc/IdeaProjects/ProvToolbox}" type="462c0819:PsiDirectoryNode" />
-      </path>
-    </expand>
+    <expand />
     <select />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ProvToolbox$PC1BuilderTest.ic" NAME="PC1BuilderTest Coverage Results" MODIFIED="1696686208827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>org.openprovenance.prov.notation.*</FILTER>
-    </SUITE>
-    <SUITE FILE_PATH="coverage/ProvToolbox$CompilerTest.ic" NAME="CompilerTest Coverage Results" MODIFIED="1698861833985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>org.openprovenance.prov.template.*</FILTER>
-    </SUITE>
-    <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>org.openprovenance.prov.core.*</FILTER>
-    </SUITE>
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

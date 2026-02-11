@@ -1,80 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Black">
-    <option name="sdkName" value="Python 3.11 (ProvToolbox)" />
-  </component>
-  <component name="EntryPointsManager">
-    <writeAnnotations>
-      <writeAnnotation name="org.apache.maven.plugins.annotations.Parameter" />
-    </writeAnnotations>
+    <option name="sdkName" value="Python 3.11 virtualenv at ~/IdeaProjects/ProvToolbox/venv" />
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="FrameworkDetectionExcludesConfiguration">
-    <file type="Osmorc" url="file://$PROJECT_DIR$/modules-executable/prov-interop" />
-    <file type="web" url="file://$PROJECT_DIR$/modules-nf/service-signature" />
-    <file type="web" url="file://$PROJECT_DIR$/modules-services/service-translator" />
-    <file type="web" url="file://$PROJECT_DIR$/modules-summarisation/service-summary" />
-    <file type="web" url="file://$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp" />
-    <type id="Python" />
-  </component>
-  <component name="JavadocGenerationManager">
-    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/target" />
-  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/prov-scala/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-services/prov-log/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-services/service-translator/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-services/docker-service-translator/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-services/index-redis/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-executable/prov-interop-light/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-storage/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-legacy/benchmarks/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-core/jsweet-quickstart/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-js/prov-js-core/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-tutorial/tutorial5/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-summarisation/prov-service-summary/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-summarisation/service-summary/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-nf/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-nf/service-signature/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-executable-provman/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-explanations/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-explanations/prov-summary-explanations/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-services/service-templates/pom.xml" />
-        <option value="$PROJECT_DIR$/prov-toolbox-plugin/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-tools/prov-toolbox-js-embedding/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-tools/prov-sparql-query/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-services-metrics/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-explanations/service-xplain/pom.xml" />
       </list>
     </option>
-    <option name="ignoredFiles">
-      <set>
-        <option value="$PROJECT_DIR$/modules-legacy/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" />
-        <option value="$PROJECT_DIR$/mojos/pom.xml" />
-        <option value="$PROJECT_DIR$/prov-plugin/arti/pom.xml" />
-      </set>
-    </option>
   </component>
-  <component name="PWA">
-    <option name="enabled" value="true" />
-    <option name="wasEnabledAtLeastOnce" value="true" />
-  </component>
-  <component name="ProjectResources">
-    <resource url="http://www.w3.org/ns/prov#" location="$PROJECT_DIR$" />
-  </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="temurin-25" project-jdk-type="JavaSDK">
-    <output url="file://$PROJECT_DIR$/classes" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_25" project-jdk-name="temurin-25" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

@@ -17,9 +17,7 @@ var doc = builder
     .agent("ag401")
     .build()
 
-
     .build();
-
 
 serializer.serialize(doc, 'target/doc.jsonld');
 

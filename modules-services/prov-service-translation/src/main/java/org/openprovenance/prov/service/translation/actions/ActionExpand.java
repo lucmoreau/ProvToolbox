@@ -54,7 +54,7 @@ public class ActionExpand implements ActionPerformer {
     }
     @Override
     public ServiceUtils.Action getAction() {
-        return ServiceUtils.Action.EXPAND;
+        return ServiceUtils.Action.INSTANTIATE;
     }
 
     @Override

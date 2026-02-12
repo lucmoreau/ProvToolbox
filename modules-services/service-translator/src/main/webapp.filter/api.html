@@ -11,10 +11,13 @@
         body {
             padding-left: 5px;
         }
-        .sidebar-nav {
-            padding: 9px 0;
+        .navbar-brand {
+            width: 160px;          /* fixed length */
+            display: inline-block; /* required for width to apply properly */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* adds ... if text too long */
         }
-
         .navbar {
             margin: 0;
 
@@ -22,12 +25,9 @@
             color: #333333;
             background-color: #ffffff;
         }
-    </style>
-    <style>
-        html
-        {
+
+        html {
             box-sizing: border-box;
-            overflow: -moz-scrollbars-vertical;
             overflow-y: scroll;
         }
         *,
@@ -48,77 +48,94 @@
 
 <body>
 
-
-<nav class="navbar navbar-inverse">
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <ul class="nav navbar-nav">
-            <li id="header-translator"> <a href="translator.html">Translate</a></li>
-            <li id="header-expander">   <a href="expander.html">Expand</a></li>
-            <li id="header-validator">  <a href="validator.html">Validate</a></li>
-            <li id="header-rator">      <a href="rator.html">Rate</a></li>
-            <li id="header-api">        <a href="api.html">API</a></li>
-            <li id="header-about">      <a href="about.html">About</a></li>
-            <li id="header-contact">    <a href="contact.html">Contact</a></li>
-        </ul>
+
+        <a class="navbar-brand" href="#">PROV API</a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav me-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="translator.html">Translate</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="instantiator.html">Instantiate</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="validator.html">Validate</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="rator.html">Rate</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="api.html">API</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="about.html">About</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="contact.html">Contact</a>
+                </li>
+
+            </ul>
+        </div>
     </div>
 </nav>
 
-<script>
-    $('#header-api').addClass("active");
-</script>
+<!-- CONTENT -->
+<section class="container-fluid mt-4 mb-5">
 
-<section>
+    <div id="swagger-ui"></div>
 
-    <div class="row">
-
-        <div class="spancol-sm-8" style="margin-top:80px;margin-bottom:50px">
-
-            <div id="swagger-ui"></div>
-
-            <div id="swagger-ui2"></div>
-
-        </div>
-    </div>
-
-
-    <script src="${service.context}/webjars/swagger-ui/${webjars.swagger-ui.version}/swagger-ui-bundle.js"> </script>
-    <script src="${service.context}/webjars/swagger-ui/${webjars.swagger-ui.version}/swagger-ui-standalone-preset.js"> </script>
-    <script type="text/javascript">
-        var myUrl=document.URL;
-        myApiUrl=myUrl.replace("/api.html","/provapi/openapi.json");
-        //myApiUrl2=myUrl.replace("/api.html","/resources/openapi.json");
-        //myApiUrl=myUrl.replace("/view/api","/luc.yaml");
-
-        console.log("myApiUrl");
-        console.log(myApiUrl);
-
-        window.onload = function() {
-
-            // Build a system
-            const ui = SwaggerUIBundle({
-                url:myApiUrl,
-                //urls: [{url: myApiUrl, name: "PROV API"}, {url: myApiUrl2, name: "Resources"}],
-                dom_id: '#swagger-ui',
-                deepLinking: true,
-                presets: [
-                    SwaggerUIBundle.presets.apis,
-                    SwaggerUIStandalonePreset
-                ],
-                plugins: [
-                    SwaggerUIBundle.plugins.DownloadUrl
-                ],
-                layout: "StandaloneLayout"
-            })
-
-
-            window.ui = ui
-        }
-    </script>
 </section>
 
+<!-- Swagger UI Scripts -->
+<script src="${service.context}/webjars/swagger-ui/${webjars.swagger-ui.version}/swagger-ui-bundle.js"></script>
+<script src="${service.context}/webjars/swagger-ui/${webjars.swagger-ui.version}/swagger-ui-standalone-preset.js"></script>
+
+<script>
+    var myUrl = document.URL;
+    var myApiUrl = myUrl.replace("/api.html", "/provapi/openapi.json");
+
+    console.log("myApiUrl:", myApiUrl);
+
+    window.onload = function () {
+
+        const ui = SwaggerUIBundle({
+            url: myApiUrl,
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+            ],
+            plugins: [
+                SwaggerUIBundle.plugins.DownloadUrl
+            ],
+            layout: "StandaloneLayout"
+        });
+
+        window.ui = ui;
+    };
+</script>
 
 
-<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
 
 <script src="provservice.js"></script>
 

@@ -83,24 +83,43 @@
 
 <body>
 
-
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <ul class="nav navbar-nav">
-            <li id="header-translator"> <a href="${service.context}/translator.html">Translate</a></li>
-            <li id="header-expander">   <a href="${service.context}/expander.html">Expand</a></li>
-            <li id="header-validator">  <a href="${service.context}/validator.html">Validate</a></li>
-            <li id="header-api">        <a href="${service.context}/api.html">API</a></li>
-            <li id="header-about">      <a href="${service.context}/about.html">About</a></li>
-            <li id="header-contact">    <a href="${service.context}/contact.html">Contact</a></li>
-        </ul>
+
+        <a class="navbar-brand" href="#">ProvValidator</a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item" id="header-translator">
+                    <a class="nav-link" href="${service.context}/translator.html">Translate</a>
+                </li>
+                <li class="nav-item" id="header-expander">
+                    <a class="nav-link" href="${service.context}/instantiator.html">Instantiate</a>
+                </li>
+                <li class="nav-item" id="header-validator">
+                    <a class="nav-link active" href="${service.context}/validator.html">Validate</a>
+                </li>
+                <li class="nav-item" id="header-api">
+                    <a class="nav-link" href="${service.context}/api.html">API</a>
+                </li>
+                <li class="nav-item" id="header-about">
+                    <a class="nav-link" href="${service.context}/about.html">About</a>
+                </li>
+                <li class="nav-item" id="header-contact">
+                    <a class="nav-link" href="${service.context}/contact.html">Contact</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>
 
-
-<script>
-    $('#header-validator').addClass("active");
-</script>
 
 
 <section>
@@ -115,17 +134,17 @@
             <div class="row" style="margin-top:30px">
                 <div class="col-sm-4">
                     <div id="accordion1">
-                        <a href="#tab-ordering-constraints" data-toggle="collapse" class="showHideTab"></a>
-                        <a href="#tab-failed-merge"         data-toggle="collapse" class="showHideTab"></a>
-                        <a href="#tab-type-check"           data-toggle="collapse" class="showHideTab"></a>
-                        <a href="#tab-malformed-expression" data-toggle="collapse" class="showHideTab"></a>
+                        <a href="#tab-ordering-constraints" data-bs-toggle="collapse" class="showHideTab"></a>
+                        <a href="#tab-failed-merge"         data-bs-toggle="collapse" class="showHideTab"></a>
+                        <a href="#tab-type-check"           data-bs-toggle="collapse" class="showHideTab"></a>
+                        <a href="#tab-malformed-expression" data-bs-toggle="collapse" class="showHideTab"></a>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div id="accordion2">
-                        <a href="#tab-specialization-constraints"   data-toggle="collapse" class="showHideTab"></a>
-                        <a href="#tab-term-duplication"             data-toggle="collapse" class="showHideTab"></a>
-                        <a href="#tab-qualified-name"               data-toggle="collapse" class="showHideTab"></a>
+                        <a href="#tab-specialization-constraints"   data-bs-toggle="collapse" class="showHideTab"></a>
+                        <a href="#tab-term-duplication"             data-bs-toggle="collapse" class="showHideTab"></a>
+                        <a href="#tab-qualified-name"               data-bs-toggle="collapse" class="showHideTab"></a>
                     </div>
                 </div>
             </div>
@@ -220,7 +239,9 @@
             function (report) {
                 updateWith(report);
                 $(function () {
-                    $('[data-toggle="popover"]').popover()
+                    //$('[data-bs-toggle="popover"]').popover();
+                    document.querySelectorAll('[data-bs-toggle="popover"]')
+                        .forEach(el => new bootstrap.Popover(el));
                 });
 
             });
@@ -233,7 +254,8 @@
             $('.showHideTab').each(function () {
                 if ($(this).attr("href") != _target) {
                     //console.log($(this).attr("href") );
-                    $($(this).attr("href")).removeClass("in").addClass('collapse');
+                    //$($(this).attr("href")).removeClass("in").addClass('collapse');
+                    $($(this).attr("href")).removeClass("show");
                 } else {
                     $($(this).attr("href")).collapse('show');
                 }
@@ -318,7 +340,8 @@
         var title = $('<div>');
         var span = $('<span style="font-size:large; font-weight: bold;">');
         span.append(titles_ids[key]);
-        var link = $('<a rel="popover" class="withpopover" href="#" html="false" data-trigger="focus" data-toggle="popover">What is this?</a>');
+       // var link = $('<a rel="popover" class="withpopover" href="#" html="false" origger="focus" data-bs-toggle="popover">What is this?</a>');
+        var link = $('<a href="#" class="withpopover" data-bs-toggle="popover" data-bs-trigger="focus">What is this?</a>');
         link.attr('title', titles_ids[key]);
         var overview_id = overviews[key];
         var overview = $('#' + overview_id).html();
@@ -347,14 +370,17 @@
         if (count > 0) {
             if (warnings.includes(key)) {
                 alert.addClass("alert-warning");
-                alert.append("<i class=\"glyphicon glyphicon-warning-sign\"></i>");
+                //alert.append("<i class=\"glyphicon glyphicon-warning-sign\"></i>");
+                alert.append('<i class="fa fa-exclamation-triangle me-2"></i>');
             } else {
                 alert.addClass("alert-danger");
-                alert.append("<i class=\"glyphicon glyphicon-remove\"></i>");
+                //alert.append("<i class=\"glyphicon glyphicon-remove\"></i>");
+                alert.append('<i class="fa fa-times-circle me-2"></i>');
             }
         } else {
             alert.addClass("alert-success");
-            alert.append("<i class=\"glyphicon glyphicon-ok\"></i> ");
+            //alert.append("<i class=\"glyphicon glyphicon-ok\"></i> ");
+            alert.append('<i class="fa fa-check-circle me-2"></i>');
         }
         var span=$('<span>')
         span.append(titles_ids[key]);
@@ -426,8 +452,8 @@
 </script>
 
 <style type="text/css">
-    .popover-inner {
-        width: 600px;
+    .popover {
+        max-width: 600px;
     }
 </style>
 

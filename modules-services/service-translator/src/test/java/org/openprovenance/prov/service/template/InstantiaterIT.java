@@ -153,7 +153,7 @@ public class InstantiaterIT extends TestCase implements ApiUriFragments {
         output.addFormData("url",           template,        MediaType.TEXT_PLAIN_TYPE);
         output.addFormData("statements",    str,             MediaType.TEXT_PLAIN_TYPE);
         output.addFormData("type",      "provn",      MediaType.TEXT_PLAIN_TYPE);
-        output.addFormData("expand",    "provn",      MediaType.TEXT_PLAIN_TYPE);
+        output.addFormData("instantiate",    "provn",      MediaType.TEXT_PLAIN_TYPE);
 
 
         Response response=target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.entity(output, MediaType.MULTIPART_FORM_DATA_TYPE));

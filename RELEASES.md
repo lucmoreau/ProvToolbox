@@ -17,6 +17,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: generation of PAST (Provenance Abstract Syntax Tree) instead of Poet, and then conversion to Poet
 * service-translator: upgraded to bootstrap 5.
 * service-templates: upgraded to bootstrap 5.
+* prov-template-compiler: PAST expression type checking (simple bindings)
 
 
 `2.2.2`

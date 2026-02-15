@@ -4,12 +4,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
+import org.openprovenance.prov.template.compiler.past.checker.ExternalTypeRegistry;
 import org.openprovenance.prov.template.compiler.past.emitter.Poet;
 import org.openprovenance.prov.template.compiler.past.emitter.RustProjectGenerator;
 
+import org.openprovenance.prov.template.compiler.past.checker.TypeDiagnostic;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
+import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.function.Supplier;
+
+import static org.openprovenance.prov.template.compiler.past.checker.ExternalTypeRegistry.initializeExternalRegistry;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 public class SpecificationFile {
     final private CompilerUtil compilerUtil;
@@ -26,42 +35,6 @@ public class SpecificationFile {
     private final SpecificationFile javaSpec;
     private final Supplier<Boolean> jsGenerator;
     private final Supplier<Boolean> rustGenerator;
-
-    public SpecificationFile(JavaFile javaFile, String directory, String fileName, String class_package) {
-        this.javaFile = javaFile;
-        this.directory = directory;
-        this.fileName = fileName;
-        this.class_package = class_package;
-        this.compilerUtil=new CompilerUtil(null); // note, factory not used when saving fiiles
-
-        this.pyDirectory=null;
-        this.pyContent=null;
-        this.pyFilename=null;
-        this.javaGenerator=null;
-        this.pythonGenerator=null;
-        this.javaSpec=null;
-        this.jsGenerator=null;
-        this.rustGenerator=null;
-
-    }
-
-    private SpecificationFile(JavaFile javaFile, String directory, String fileName, String class_package, String pyDirectory, String pyFilename, Supplier<String> pyContent) {
-        this.javaFile = javaFile;
-        this.directory = directory;
-        this.fileName = fileName;
-        this.class_package = class_package;
-        this.compilerUtil=new CompilerUtil(null); // note, factory not used when saving fiiles
-
-        this.pyDirectory=pyDirectory;
-        this.pyFilename=pyFilename;
-        this.pyContent=pyContent;
-        this.javaGenerator=null;
-        this.pythonGenerator=null;
-        this.javaSpec=null;
-        this.jsGenerator=null;
-        this.rustGenerator=null;
-
-    }
 
     public SpecificationFile(Supplier<Boolean> javaGenerator, Supplier<Boolean> pythonGenerator) {
         this.compilerUtil=null;
@@ -104,6 +77,10 @@ public class SpecificationFile {
 
     static boolean rustProjectCreated=false;
     static RustGenerationCoordinator rustCoordinator = new RustGenerationCoordinator();
+    static ExternalTypeRegistry externalRegistry = initializeExternalRegistry(new ExternalTypeRegistry());
+    static TypeCheckCoordinator typeCheckCoordinator = new TypeCheckCoordinator(externalRegistry);
+
+
 
     /**
      * Reset the Rust coordinator for a new compilation run.
@@ -111,6 +88,23 @@ public class SpecificationFile {
      */
     public static void resetRustCoordinator() {
         rustCoordinator = new RustGenerationCoordinator();
+    }
+
+    /**
+     * Reset the type check coordinator for a new compilation run.
+     */
+    public static void resetTypeCheckCoordinator() {
+        typeCheckCoordinator = new TypeCheckCoordinator(externalRegistry);
+    }
+
+    /**
+     * Finalize type checking after all PAST classes have been registered.
+     * Call this after all SpecificationFile.save() calls complete, before Rust finalization.
+     *
+     * @return the list of type diagnostics found
+     */
+    public static List<TypeDiagnostic> finalizeTypeChecking() {
+        return typeCheckCoordinator.finalizeTypeChecking();
     }
 
     /**
@@ -192,6 +186,7 @@ public class SpecificationFile {
     }
 
     public static boolean generateJava(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, TemplatesProjectConfiguration configs, String fileName, String directory, StackTraceElement stackTraceElement, CompilerUtil compilerUtil) {
+        typeCheckCoordinator.register(pastClass, packageName);
         TypeSpec spec;
         try {
             spec = new Poet().emit(pastClass);
@@ -205,6 +200,7 @@ public class SpecificationFile {
     }
 
     public static boolean generateJava(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String templateName, String fileName, String directory, StackTraceElement stackTraceElement, CompilerUtil compilerUtil) {
+        typeCheckCoordinator.register(pastClass, packageName);
         TypeSpec spec;
         try {
             spec = new Poet().emit(pastClass);

@@ -24,6 +24,7 @@ import javax.lang.model.element.Modifier;
 import java.lang.Class;
 import java.util.*;
 import java.util.Iterator;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -1269,7 +1270,9 @@ public class CompilerExpansionBuilder {
             }
             final ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, key);
             final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
-            final String converter = compilerUtil.getConverterForDeclaredType2(atype);
+            //final String converter = compilerUtil.getConverterForDeclaredType2(atype);
+            final Function<List<Expression>, Expression> converter= compilerUtil.getConverterForDeclaredType3(atype);
+
             if (converter == null) {
                 // Type key = (Type) __record[count]
                 method.addStatement(DEFINITION(pastType, VARIABLE(key), CAST(pastType, ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)))));
@@ -1278,7 +1281,7 @@ public class CompilerExpansionBuilder {
                 method.addStatement(DEFINITION(pastType, VARIABLE(key),
                         IF_(BINARY_OP(ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)), EQ, Constant.getNull()))
                                 .THEN(Constant.getNull())
-                                .ELSE(METHOD_CALL(converter, List.of(METHOD_CALL(ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)), "toString", List.of()))))));
+                                .ELSE(converter.apply(List.of(METHOD_CALL(ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)), "toString", List.of()))))));
             }
             args.add(VARIABLE(key));
             count++;

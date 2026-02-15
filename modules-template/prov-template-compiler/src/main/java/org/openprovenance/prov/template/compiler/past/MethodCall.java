@@ -162,6 +162,7 @@ public class MethodCall extends Expression {
                 ", className=" + className +
                 ", clazz=" + clazz +
                 ", expressionKind=" + expressionKind +
+                ", inferredType=" + inferredType +
                 ", statementKind=" + statementKind +
                 '}';
     }

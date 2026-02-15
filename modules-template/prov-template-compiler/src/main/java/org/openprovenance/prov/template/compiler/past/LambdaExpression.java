@@ -9,7 +9,7 @@ import java.util.List;
 public class LambdaExpression extends Expression {
     public final List<Parameter> parameters=new LinkedList<>();
     public List<Statement> body=new java.util.ArrayList<>();
-    private TypeName returnType;
+    public TypeName returnType;
 
     public LambdaExpression(List<Parameter> parameters) {
         this.parameters.addAll(parameters);

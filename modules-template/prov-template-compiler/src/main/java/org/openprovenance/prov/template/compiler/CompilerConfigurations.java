@@ -236,6 +236,7 @@ public class CompilerConfigurations {
                                     ))),
 
                     RETURN(LAMBDA(PARAMETER("record", OBJECT_ARRAY))
+                            .returns(OBJECT_ARRAY)
                             .BODY(RETURN(METHOD_CALL(
                                             VARIABLE(TEMPLATE_BUILDER_VARIABLE),
                                             "make",

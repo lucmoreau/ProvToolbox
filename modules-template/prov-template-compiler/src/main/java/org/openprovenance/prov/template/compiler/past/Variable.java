@@ -12,6 +12,18 @@ public class Variable extends Expression {
     public VariableKind field= VariableKind.LOCAL_VARIABLE;
     public List<PastAnnotation> annotation=new java.util.ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Variable{" +
+                "name='" + name + '\'' +
+                ", field=" + field +
+                ", annotation=" + annotation +
+                ", expressionKind=" + expressionKind +
+                ", inferredType=" + inferredType +
+                ", statementKind=" + statementKind +
+                '}';
+    }
+
     public enum VariableKind { LOCAL_VARIABLE, FIELD_VARIABLE, STATIC_FIELD_VARIABLE }
 
     public Variable(String name) {
@@ -31,16 +43,6 @@ public class Variable extends Expression {
         this.field=field;
     }
 
-
-    @Override
-    public String toString() {
-        return "Variable{" +
-                "name='" + name + '\'' +
-                ", field=" + field +
-                ", expressionKind=" + expressionKind +
-                ", statementKind=" + statementKind +
-                '}';
-    }
 
     public static Variable VARIABLE(String name) {
         return new Variable(name);

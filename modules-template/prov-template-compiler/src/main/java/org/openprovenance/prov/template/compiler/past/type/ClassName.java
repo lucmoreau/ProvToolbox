@@ -10,12 +10,17 @@ public class ClassName extends TypeName {
     public static final TypeName _bool =ClassName.get("bool", "past.lang");
 
 
-    static public final ClassName intArray =ClassName.get("int[]", "past.lang");
+    static public final ArrayType intArray =ArrayType.of(_int);
     static public final ClassName OBJECT=ClassName.get("Object", "past.lang");
     static public final ClassName STRING=ClassName.get("String", "past.lang");
+    static public final ClassName LONG=ClassName.get("Long", "past.lang");
+    static public final ClassName FLOAT=ClassName.get("Float", "past.lang");
+    static public final ClassName DOUBLE=ClassName.get("Double", "past.lang");
     static public final ClassName BOOLEAN=ClassName.get("Boolean", "past.lang");
     public static final ClassName INTEGER = ClassName.get("Integer", "past.lang");
     public static final ClassName MAP = ClassName.get("Map", "past.util");
+    public static final ClassName OPTIONAL = ClassName.get("Optional", "past.lang");
+
     public static final ClassName HASHMAP = ClassName.get("HashMap", "past.util");
     public static final ClassName LIST = ClassName.get("List", "past.util");
     public static final ClassName SET = ClassName.get("Set", "past.util");
@@ -36,6 +41,7 @@ public class ClassName extends TypeName {
     public static final ClassName FUNCTION = ClassName.get( "Function", "past.lang");
     public static final ClassName BIFUNCTION = ClassName.get( "BiFunction", "past.lang");
     public static final ClassName SYSTEM = ClassName.get("System", "past.lang");
+    public static final ClassName PRINT_STREAM = ClassName.get("PrintStream", "past.io");
     public static final ClassName UNSUPPORTED_OPERATION_EXCEPTION=ClassName.get("UnsupportedOperationException", "past.exception");
     public static final ClassName ILLEGAL_STATE_EXCEPTION=ClassName.get("IllegalStateException", "past.exception");
     public static final ClassName ILLEGAL_ARGUMENT_EXCEPTION=ClassName.get("IllegalArgumentException", "past.exception");
@@ -51,6 +57,7 @@ public class ClassName extends TypeName {
 
     public static final ClassName PROV_QUALIFIED_NAME = ClassName.get("QualifiedName", "org.openprovenance.prov.model");
     public static final ClassName PROV_BUNDLE = ClassName.get("Bundle", "org.openprovenance.prov.model");
+    public static final ClassName PROV_STATEMENT = ClassName.get("Statement", "org.openprovenance.prov.model");
     public static final ClassName PROV_DOCUMENT = ClassName.get("Document", "org.openprovenance.prov.model");
     public static final ClassName PROV_UTILITIES = ClassName.get("ProvUtilities", "org.openprovenance.prov.model");
     public static final ClassName PROV_PROVENANCE_KERNELS = ClassName.get("ProvenanceKernels", "org.openprovenance.prov.template.types");

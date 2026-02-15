@@ -39,6 +39,8 @@ public class CompilerTemplateBuilders {
                 ;
 
 
+        String packageName = locations.getFilePackage(configs.name, LOGGER);
+        ClassName loggerClass = ClassName.get(LOGGER, packageName);
 
         for (TemplateCompilerConfig config : configs.templates) {
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
@@ -49,7 +51,7 @@ public class CompilerTemplateBuilders {
             pastClass.FIELDS(
                     FIELD(config.name + "Builder", className)
                             .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
-                            .INITIALIZER(METHOD_CALL(VARIABLE(LOGGER),Constants.GENERATED_VAR_PREFIX + config.name)));
+                            .INITIALIZER(METHOD_CALL(loggerClass,Constants.GENERATED_VAR_PREFIX + config.name)));
 
         }
 

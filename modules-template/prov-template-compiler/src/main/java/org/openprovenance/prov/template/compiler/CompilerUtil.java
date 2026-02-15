@@ -5,12 +5,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.lang.model.element.Modifier;
-
-import com.squareup.javapoet.*;
+//import com.squareup.javapoet.*;
+import com.squareup.javapoet.MethodSpec;
 import org.apache.commons.text.CaseUtils;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Bundle;
@@ -19,23 +18,23 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.notation.ProvDeserialiser;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
+import org.openprovenance.prov.template.compiler.past.Expression;
 import org.openprovenance.prov.template.compiler.past.PastFactory;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.core.InstantiateUtil;
-import org.openprovenance.prov.template.log2prov.FileBuilder;
 
 //import com.google.common.base.CaseFormat;
-import com.squareup.javapoet.TypeSpec.Builder;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.INTEGER;
 
 
 public class CompilerUtil {
@@ -45,10 +44,6 @@ public class CompilerUtil {
     boolean debugComment=true;
 
 
-    public static final TypeVariableName typeT = TypeVariableName.get("T");
-
-
-    public static final TypeName mapString2StringType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(String.class));
 
 
     public CompilerUtil(ProvFactory pFactory) {
@@ -148,73 +143,8 @@ public class CompilerUtil {
             allAtts.addAll(vars2);
         }
     }
-    
-    public Builder generateClassInit(String name) {
-        return TypeSpec.classBuilder(name)
-                .addModifiers(Modifier.PUBLIC);
-    }
 
-    
-    public Builder generateClassInitExtends(String name, String packge, String supername) {
-        return TypeSpec.classBuilder(name)
-                .superclass(ClassName.get(packge,supername))
-                .addModifiers(Modifier.PUBLIC);
-    }
-    public Builder generateInterfaceInit(String name) {
-        return TypeSpec.interfaceBuilder(name)
-                .addModifiers(Modifier.PUBLIC);
-    }
-    public Builder generateInterfaceInitParameter(String name, String type) {
-        return TypeSpec.interfaceBuilder(name)
-                .addTypeVariable(TypeVariableName.get(type))
-                .addModifiers(Modifier.PUBLIC);
-    }
-    public Builder generateInterfaceInitParameter(String name, TypeVariableName type) {
-        return TypeSpec.interfaceBuilder(name)
-                .addTypeVariable(type)
-                .addModifiers(Modifier.PUBLIC);
-    }
-  
-    public Builder generateClassBuilder3(String name) {
-        return TypeSpec.classBuilder(name)
-                .addModifiers(Modifier.PUBLIC);
-    }
-   
-    public Builder generateClassBuilder2(String name) {
-        return TypeSpec.classBuilder(name)
-                .superclass(FileBuilder.class)
-                .addSuperinterface(ClassName.get(org.openprovenance.prov.template.log2prov.interfaces.ProxyClientAccessorInterface.class))
-                .addModifiers(Modifier.PUBLIC)
-                .addField(ProvFactory.class, "pf", Modifier.PRIVATE, Modifier.FINAL)
-                .addField(ValueConverter.class, "vc", Modifier.PRIVATE, Modifier.FINAL);
-    }
 
-    public Builder generateTypeManagementClass(String name) {
-        return TypeSpec.classBuilder(name+"TypeManagement")
-                .addModifiers(Modifier.PUBLIC);
-    }
-    public Builder generateTypePropagateClass(String name) {
-        return TypeSpec.classBuilder(name+"TypePropagate")
-                .addModifiers(Modifier.PUBLIC);
-    }
-    public Builder generateTypedRecordClass(String name) {
-        return TypeSpec.classBuilder(name+"TypedRecord")
-                .addModifiers(Modifier.PUBLIC);
-    }
-    public MethodSpec generateConstructor2_old(Hashtable<QualifiedName, String> vmap) {
-        com.squareup.javapoet.MethodSpec.Builder builder= MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ProvFactory.class, "pf")
-                .addStatement("this.$N = $N", "pf", "pf");
-        for (Entry<QualifiedName, String> e: vmap.entrySet()) {
-            final QualifiedName q = e.getKey();
-            builder.addStatement("this.$N = pf.newQualifiedName($S,$S,$S)", e.getValue(),q.getNamespaceURI(),q.getLocalPart(),q.getPrefix());
-        }
-        builder.addStatement("this.vc = new ValueConverter(pf)");
-        builder.addStatement("register(this)");
-        return builder .build();
-    }
-      
     public String camelcase(String s) {
         //return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s);  //use guava
          return CaseUtils.toCamelCase(s,true);
@@ -303,8 +233,7 @@ public class CompilerUtil {
     }
 
 
-
-    public boolean saveToFile(String destinationDir, String destination, JavaFile spec) {
+    public boolean saveToFile(String destinationDir, String destination, com.squareup.javapoet.JavaFile spec) {
         PrintWriter out;
         try {
             File dir=new File(destinationDir);
@@ -321,6 +250,8 @@ public class CompilerUtil {
             return false;
         }
     }
+
+
 
     public boolean saveToFile(String destinationDir, String destination, Supplier<String> spec) {
         PrintWriter out;
@@ -387,13 +318,10 @@ public class CompilerUtil {
         return bindingsSchema;
     }
 
-    static final public ParameterizedTypeName mapIntArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(Integer.class), TypeName.get(int[].class));
-    static final public ParameterizedTypeName mapStringArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeName.get(int[].class));
-    static final public ParameterizedTypeName mapStringMapStringArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), mapStringArrayType);
 
     public org.openprovenance.prov.template.compiler.past.type.ClassName getPastDocumentTypeForDeclaredType(Map<String, List<Descriptor>> varMap, String key) {
         Class<?> cl=getJavaDocumentTypeForDeclaredType(varMap, key);
-        ClassName className=ClassName.get(cl);
+        com.squareup.javapoet.ClassName className=com.squareup.javapoet.ClassName.get(cl);
         String packge=className.packageName();
         String simpleName=className.simpleName();
         return new org.openprovenance.prov.template.compiler.past.type.ClassName(simpleName, packge);
@@ -405,13 +333,37 @@ public class CompilerUtil {
         }
     }
 
-    public org.openprovenance.prov.template.compiler.past.type.ClassName getPastTypeForDeclaredType(Map<String, List<Descriptor>> varMap, String key) {
-        Class<?> cl=getJavaTypeForDeclaredType(varMap,  key);
-        ClassName className=ClassName.get(cl);
-        String packge=className.packageName();
-        String simpleName=className.simpleName();
-        return new org.openprovenance.prov.template.compiler.past.type.ClassName(simpleName, packge);
+
+    public ClassName getPastTypeForDeclaredType(Map<String, List<Descriptor>> varMap, String key) {
+        if (!varMap.containsKey(key))
+            throw new UnsupportedOperationException("no value associated with key '" + key + "'");
+
+        Descriptor descriptor=varMap.get(key).get(0);
+        switch (descriptor.getDescriptorType()) {
+            case ATTRIBUTE:
+                AttributeDescriptor ad=((AttributeDescriptorList) descriptor).getItems().get(0);
+                String hasType = ad.getType();
+                if (hasType != null) {
+                    return getPastClassForType(hasType);
+                } else {
+                    System.out.println("key is " + key);
+                    System.out.println("decl is " + varMap);
+
+                    throw new UnsupportedOperationException();
+                }
+
+            case NAME:
+                NameDescriptor nd=(NameDescriptor) descriptor;
+                String idType=nd.getType();
+                if (idType==null) {
+                    return ClassName.STRING;
+                } else {
+                    return getPastClassForType(idType);
+                }
+        }
+        throw new UnsupportedOperationException("This exception is never reached");
     }
+
 
     public Class<?> getJavaTypeForDeclaredType(Map<String, List<Descriptor>> varMap, String key) {
        if (!varMap.containsKey(key))
@@ -443,6 +395,20 @@ public class CompilerUtil {
         throw new UnsupportedOperationException("This exception is never reached");
     }
 
+    private ClassName getPastClassForType(String keyType) {
+        return switch (keyType) {
+            case "xsd:int" -> INTEGER;
+            case "xsd:long" -> ClassName.LONG;
+            case "xsd:string" -> ClassName.STRING;
+            case "xsd:boolean" -> ClassName.BOOLEAN;
+            case "xsd:float" -> ClassName.FLOAT;
+            case "xsd:double" -> ClassName.DOUBLE;
+            case "xsd:dateTime" -> ClassName.STRING;
+            case "xsd:date" -> ClassName.STRING;
+            case "json" -> ClassName.STRING;
+            default -> throw new UnsupportedOperationException("getPastClassForType " + keyType);
+        };
+    }
     private Class<? extends Serializable> getClassForType(String keyType) {
         return switch (keyType) {
             case "xsd:int" -> Integer.class;
@@ -491,14 +457,6 @@ public class CompilerUtil {
         }
     }
 
-    public void generateSpecializedParameters(MethodSpec.Builder builder, Map<String, List<Descriptor>> theVars) {
-        for (String key : theVars.keySet()) {
-            if (theVars.get(key) != null) {
-                builder.addParameter(getJavaTypeForDeclaredType(theVars, key), key);
-            }
-        }
-    }
-
     public void generateSpecializedParameters(org.openprovenance.prov.template.compiler.past.Method method, Map<String, List<Descriptor>> theVars) {
         for (String key : theVars.keySet()) {
             if (theVars.get(key) != null) {
@@ -508,11 +466,7 @@ public class CompilerUtil {
     }
 
 
-    public void generateDocumentSpecializedParameters(MethodSpec.Builder builder, Map<String, List<Descriptor>> theVar, Collection<String> variables) {
-        for (String key: variables) {
-            builder.addParameter(getJavaDocumentTypeForDeclaredType(theVar, key), key);
-        }
-    }
+
     public boolean isVariableDenotingQualifiedName(String key, Map<String, List<Descriptor>> theVar) {
         return theVar.containsKey(key) && theVar.get(key)!=null && theVar.get(key).get(0) instanceof NameDescriptor;
     }
@@ -544,28 +498,6 @@ public class CompilerUtil {
         return args.toString();
     }
 
-
-    public void generateSpecializedParametersJavadoc(MethodSpec.Builder builder, Map<String, List<Descriptor>> theVars, String functionDocumentation, String returnValue) {
-        String docString = (functionDocumentation == null) ? "No @documentation." : functionDocumentation;
-        String retString = (returnValue == null) ? "@return not documented." : returnValue;
-        builder.addJavadoc(docString);
-        builder.addJavadoc("\n\n");
-        for (String key : theVars.keySet()) {
-            final List<Descriptor> descriptors = theVars.get(key);
-            if (descriptors != null && (!descriptors.isEmpty())) {
-                Descriptor descriptor=descriptors.get(0);
-                String documentation0=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
-                String documentation = documentation0==null ? "-- no @documentation" : documentation0;
-                String type0=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getType, NameDescriptor::getType);
-                String type = type0==null ? "xsd:string" : type0;
-                builder.addJavadoc("@param $N $L (expected type: $L)\n", key, documentation, type);
-            } else {
-                builder.addJavadoc("@param $N -- no bindings schemas \n", key);
-            }
-        }
-        builder.addJavadoc(retString);
-
-    }
 
     public void generateSpecializedParametersJavadoc(org.openprovenance.prov.template.compiler.past.Method builder, Map<String, List<Descriptor>> theVars, String functionDocumentation, String returnValue) {
         String docString = (functionDocumentation == null) ? "No @documentation." : functionDocumentation;
@@ -739,6 +671,24 @@ public class CompilerUtil {
         }
     }
 
+    public Function<List<Expression>, Expression> getConverterForDeclaredType3(Class cl) {
+        if (cl != null) {
+            String keyType = cl.getName();
+            return switch (keyType) {
+                case "java.lang.Integer" -> (exprs) -> METHOD_CALL(INTEGER, "valueOf", exprs);
+                case "java.lang.Long" -> (exprs) -> METHOD_CALL(ClassName.LONG, "valueOf", exprs);
+                case "java.lang.String" -> null;
+                case "java.lang.Boolean" -> (exprs) -> METHOD_CALL(ClassName.BOOLEAN, "valueOf", exprs);
+                case "java.lang.Float" -> (exprs) -> METHOD_CALL(ClassName.FLOAT, "valueOf", exprs);
+                case "java.lang.Double" -> (exprs) -> METHOD_CALL(ClassName.DOUBLE, "valueOf", exprs);
+                default -> throw new UnsupportedOperationException();
+            };
+        } else {
+            return null;
+        }
+    }
+
+
     public String getConverterForDeclaredType(Class cl) {
         if (cl != null) {
             String keyType = cl.getName();
@@ -787,6 +737,23 @@ public class CompilerUtil {
         }
     }
 
+    public com.squareup.javapoet.JavaFile specWithComment(com.squareup.javapoet.TypeSpec typeSpec, String templateName, String packge, StackTraceElement stackTraceElement) {
+        return com.squareup.javapoet.JavaFile.builder(packge, typeSpec)
+                .addFileComment("Generated automatically by ProvToolbox for template '$L'", templateName)
+                .addFileComment("\nby class $L, method $L,\nin file $L, at line $L",
+                        stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(), stackTraceElement.getLineNumber())
+                .build();
+    }
+    public com.squareup.javapoet.JavaFile specWithComment(com.squareup.javapoet.TypeSpec typeSpec, TemplatesProjectConfiguration configs, String packge, StackTraceElement stackTraceElement) {
+        return com.squareup.javapoet.JavaFile.builder(packge, typeSpec)
+                .addFileComment("Generated automatically by ProvToolbox for template configuration '$L'", configs.name)
+                .addFileComment("\nby class $L, method $L,\nin file $L, at line $L",
+                        stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(), stackTraceElement.getLineNumber())
+                .build();
+    }
+
+
+
     /*
     public JavaFile specWithComment(TypeSpec typeSpec, String templateName, String packge, String className) {
         return JavaFile.builder(packge, typeSpec)
@@ -795,20 +762,6 @@ public class CompilerUtil {
     }
 
      */
-    public JavaFile specWithComment(TypeSpec typeSpec, String templateName, String packge, StackTraceElement stackTraceElement) {
-        return JavaFile.builder(packge, typeSpec)
-                .addFileComment("Generated automatically by ProvToolbox for template '$L'", templateName)
-                .addFileComment("\nby class $L, method $L,\nin file $L, at line $L",
-                        stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(), stackTraceElement.getLineNumber())
-                .build();
-    }
-    public JavaFile specWithComment(TypeSpec typeSpec, TemplatesProjectConfiguration configs, String packge, StackTraceElement stackTraceElement) {
-        return JavaFile.builder(packge, typeSpec)
-                .addFileComment("Generated automatically by ProvToolbox for template configuration '$L'", configs.name)
-                .addFileComment("\nby class $L, method $L,\nin file $L, at line $L",
-                        stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(), stackTraceElement.getLineNumber())
-                .build();
-    }
 
     public String pySpecWithComment(String templateName, StackTraceElement stackTraceElement) {
         return "Generated automatically by ProvToolbox for template '" + templateName + "'\n"
@@ -887,11 +840,11 @@ public class CompilerUtil {
         return ClassName.get(locations.getFilePackage(name), name);
     }
 
-     */
+
 
     public ClassName getClass(String configName, String name, Locations locations) {
         return ClassName.get(locations.getFilePackage(configName, name), name);
-    }
+    }  */
 
     public PastFactory getPastFactory() {
         return pastFactory;

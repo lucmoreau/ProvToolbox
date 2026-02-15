@@ -71,7 +71,7 @@ public class CompilerBuilderInit {
                         METHOD_CALL( "init", List.of()),
                         IF(BINARY_OP(ARRAY_ACCESSOR(VARIABLE("args"),CONSTANT(0)),"Objects.equals",CONSTANT("kernel")))
                                 .THEN(
-                                        METHOD_CALL(METHOD_CALL(VARIABLE("System"),"out"),
+                                        METHOD_CALL(METHOD_CALL(SYSTEM,"out"),
                                                 "println",
 
                                                 List.of(METHOD_CALL(LIST, "of", List.of(VARIABLE("args"))))),

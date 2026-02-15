@@ -24,6 +24,7 @@ public class BinaryOp extends Expression {
                 ", op='" + op + '\'' +
                 ", right=" + right +
                 ", expressionKind=" + expressionKind +
+                ", inferredType=" + inferredType +
                 ", statementKind=" + statementKind +
                 '}';
     }

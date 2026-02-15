@@ -647,6 +647,8 @@ public class ConfigProcessor implements Constants {
         compositeConfigurationEnactor.save();
 
 
+        SpecificationFile.finalizeTypeChecking();
+
         System.out.println("##################Rust code generation started...");
         try {
             SpecificationFile.finalizeRustGeneration();

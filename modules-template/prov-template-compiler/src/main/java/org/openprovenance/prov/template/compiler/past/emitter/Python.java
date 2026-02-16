@@ -576,6 +576,14 @@ public class Python implements Emitter<StringBuilder> {
                         .append("\n");
             }
 
+            case SUPER_CONSTRUCTOR_CALL -> {
+                SuperConstructorCall superCall = (SuperConstructorCall) statement;
+                sb.append(indent)
+                        .append("super().__init__(")
+                        .append(superCall.arguments.stream().map(this::convert).collect(Collectors.joining(", ")))
+                        .append(")\n");
+            }
+
             default -> {
                 throw new IllegalArgumentException("Unsupported statement type " + statement);
             }
@@ -833,6 +841,18 @@ public class Python implements Emitter<StringBuilder> {
                 }
                 if (mc.arguments != null) {
 
+                    result.append(mc.arguments.stream()
+                            .map(this::convert)
+                            .map(this::sanitizeName)
+                            .collect(Collectors.joining(", ")));
+                }
+                result.append(")");
+                return result.toString();
+            }
+            case SUPER_METHOD_CALL -> {
+                assert mc.methodName!=null;
+                result.append("super().").append(sanitizeName(mc.methodName)).append("(");
+                if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
                             .map(this::convert)
                             .map(this::sanitizeName)

@@ -66,7 +66,7 @@ public class Poet implements Emitter<TypeSpec> {
     }
 
     public CodeBlock emitAnonymous(Class clazz) {
-        System.out.println("Anonymous class for interface: " + clazz);
+       // System.out.println("Anonymous class for interface: " + clazz);
 
         //org.openprovenance.prov.template.compiler.past.type.TypeName xx= clazz.interfaces.get(0);
 
@@ -669,6 +669,12 @@ public class Poet implements Emitter<TypeSpec> {
                 } else {
                     return CodeBlock.of("$L.$L($L)", objectCode, methodCall.methodName, argsCode);
                 }
+            }
+            case SUPER_METHOD_CALL -> {
+                CodeBlock argsCode = CodeBlock.join(
+                        methodCall.arguments.stream().map(this::convert).collect(Collectors.toList()),
+                        ",");
+                return CodeBlock.of("super.$L($L)", methodCall.methodName, argsCode);
             }
             case OBJECT_ACCESSOR -> {
                 if (methodCall.className != null) {

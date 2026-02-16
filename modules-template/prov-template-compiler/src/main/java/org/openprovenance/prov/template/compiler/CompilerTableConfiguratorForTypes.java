@@ -3,10 +3,8 @@ package org.openprovenance.prov.template.compiler;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
-import org.openprovenance.prov.template.compiler.past.Constructor;
-import org.openprovenance.prov.template.compiler.past.Method;
-import org.openprovenance.prov.template.compiler.past.PastFactory;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 
@@ -158,7 +156,7 @@ public class CompilerTableConfiguratorForTypes {
 
                                         DEFINITION(OBJECT, VARIABLE("value"),
                                                 ARRAY_ACCESSOR(VARIABLE("record2"), VARIABLE("i"))),
-                                        IF(BINARY_OP(VARIABLE("value"), INSTANCEOF, METHOD_CALL(PROV_QUALIFIED_NAME,".class")))
+                                        IF(BINARY_OP(VARIABLE("value"), INSTANCEOF, METHOD_CALL(PROV_QUALIFIED_NAME,"class")))
                                                 .THEN(
                                                         METHOD_CALL(
                                                                 VARIABLE(PROPERTY_MAP),
@@ -180,7 +178,7 @@ public class CompilerTableConfiguratorForTypes {
 
 
             } else {
-                m.BODY(RETURN(VARIABLE("null")));
+                m.BODY(RETURN(Constant.getNull()));
             }
 
             pastClass.METHOD(m);

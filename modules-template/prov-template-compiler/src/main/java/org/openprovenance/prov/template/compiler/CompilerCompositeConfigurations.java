@@ -112,6 +112,7 @@ public class CompilerCompositeConfigurations {
 
                 DEFINITION(FUNCTION_LIST_OBJARRAY_TO_TYPE(beanType), VARIABLE("enactor"),
                         LAMBDA(PARAMETER("array", LIST_OF_OBJECT_ARRAYS))
+                                .returns(beanType)
                                 .BODY(DEFINITION(beanType, VARIABLE("bean"),
                                                 FUNCTIONAL_METHOD_CALL(VARIABLE("beanConverter"), "apply", List.of(VARIABLE("array")))),
                                         RETURN(
@@ -196,6 +197,7 @@ public class CompilerCompositeConfigurations {
 
                 DEFINITION(FUNCTION_LIST_OBJARRAY_TO_TYPE(outBeanType), VARIABLE("enactor"),
                         LAMBDA(PARAMETER("array", LIST_OF_OBJECT_ARRAYS))
+                                .returns(outBeanType)
                                 .BODY(DEFINITION(inBeanType, VARIABLE("bean"),
                                                 FUNCTIONAL_METHOD_CALL(VARIABLE("beanConverter"), "apply", List.of(VARIABLE("array")))),
                                         RETURN(

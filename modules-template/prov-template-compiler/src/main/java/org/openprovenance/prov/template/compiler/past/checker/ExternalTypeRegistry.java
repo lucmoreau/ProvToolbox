@@ -1,9 +1,11 @@
 package org.openprovenance.prov.template.compiler.past.checker;
 
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -214,6 +216,7 @@ public class ExternalTypeRegistry {
         externalRegistry.forClass(ClassName.MAP, TypeVariable.get("alpha"), TypeVariable.get("beta"))
                 .method("get", TypeVariable.get("beta"), TypeVariable.get("alpha")) // get(alpha) -> beta
                 .method("put", TypeVariable.get("beta"), TypeVariable.get("alpha"), TypeVariable.get("beta")) // put(alpha, beta) -> beta
+                .method("containsKey", BOOLEAN, TypeVariable.get("alpha"))
                 .register();
 
         externalRegistry.forClass(BUILDER_INTERFACE)
@@ -228,6 +231,28 @@ public class ExternalTypeRegistry {
                 .method("size", INTEGER)
                 .method("get", TypeVariable.get("alpha"), INTEGER)
                 .register();
+        externalRegistry.forClass(ClassName.LINKED_LIST, TypeVariable.get("alpha"))
+                .method("size", INTEGER)
+                .method("get", TypeVariable.get("alpha"), INTEGER)
+                .constructor()
+                .register();
+
+
+        externalRegistry.forClass(ClassName.SET, TypeVariable.get("alpha"))
+                .method("size", INTEGER)
+                .method("contains", BOOLEAN, OBJECT)
+                .method("add", BOOLEAN, TypeVariable.get("alpha"))
+                .register();
+
+        externalRegistry.forClass(ClassName.HASH_SET, TypeVariable.get("alpha"))
+                .method("size", INTEGER)
+                .method("contains", BOOLEAN, OBJECT)
+                .method("add", BOOLEAN, TypeVariable.get("alpha"))
+                .constructor()
+                .register();
+
+
+
 
         externalRegistry.forClass(ClassName.SYSTEM)
                 .field("out", ClassName.PRINT_STREAM)
@@ -261,6 +286,8 @@ public class ExternalTypeRegistry {
         externalRegistry.forClass(HASHMAP, TypeVariable.get("alpha"), TypeVariable.get("beta"))
                 .method("put", TypeVariable.get("beta"), TypeVariable.get("alpha"), TypeVariable.get("beta")) // put(alpha, beta) -> beta
                 .method("get", TypeVariable.get("beta"), TypeVariable.get("alpha")) // get(alpha) -> beta
+                .method("containsKey", BOOLEAN, TypeVariable.get("alpha"))
+                .constructor()
                 .register();
 
         externalRegistry.forClass(TRIFUNCTION, TypeVariable.get("alpha"), TypeVariable.get("beta"), TypeVariable.get("gamma"), TypeVariable.get("delta"))
@@ -280,6 +307,7 @@ public class ExternalTypeRegistry {
 
         externalRegistry.forClass(INTEGER)
                 .staticMethod("valueOf", INTEGER, STRING)
+                .field("class", ClassName.CLASS)
                 .register();
 
         externalRegistry.forClass(DOUBLE)
@@ -297,6 +325,26 @@ public class ExternalTypeRegistry {
         externalRegistry.forClass(PROV_INSTANTIATE_ACTION)
                 .staticMethod("getUUIDQualifiedName2", PROV_QUALIFIED_NAME, PROV_FACTORY)
                 .register();
+
+        externalRegistry.forClass(RESULT_SET)
+                .method("next", BOOLEAN)
+                .method("close", VOID)
+                .method("getInt", INTEGER, _int)
+                .method("getString", STRING, _int)
+                .method("getRow", _int)
+                .method("getMetaData", RESULT_SET_META_DATA)
+                .register();
+        externalRegistry.forClass(RESULT_SET_META_DATA)
+                .method("getColumnCount", INTEGER)
+                .method("getColumnName", STRING, _int)
+                .register();
+
+
+        externalRegistry.forClass(ClassName.get("Plead_transformingBean","org.openprovenance.prov.template.library.plead.client.common"))
+                .field("class", ParameterizedType.get(CLASS))
+                .register();
         return externalRegistry;
     }
+    public static final ClassName CLASSNAME = ClassName.get( "ClassName", "past.lang");
+
 }

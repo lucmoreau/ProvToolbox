@@ -493,7 +493,7 @@ public class CompilerSqlIntegration {
         Class pastClass = pastFactory.CLASS(Constants.SQL_ENACTOR_IMPLEMENTATION4)
                 .MODIFIERS(Modifier.PUBLIC)
                 .SUPERCLASS(superclass)
-                .INTERFACES(paramEnactorImpl)
+               // .INTERFACES(paramEnactorImpl), already implemented by superclass
                 .INTERFACES(paramEnactorImpl4)
                 .FIELDS(
                         FIELD("querier", FUNCTION_STRING_RESULTSET).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL)

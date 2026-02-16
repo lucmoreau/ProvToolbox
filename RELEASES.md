@@ -18,6 +18,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-translator: upgraded to bootstrap 5.
 * service-templates: upgraded to bootstrap 5.
 * prov-template-compiler: PAST expression type checking (simple bindings)
+* prov-template-compiler: PAST expression type checking
 
 
 `2.2.2`

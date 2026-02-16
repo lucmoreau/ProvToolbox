@@ -14,13 +14,25 @@ public class MethodCall extends Expression {
     public final TypeName className;
     public final Class clazz;
 
-    public enum MethodCallKind { NO_OPERATOR, CONSTRUCTOR_CALL, OPERATOR_VARIABLE, OBJECT_METHOD_CALL, STATIC_METHOD_CALL, FUNCTIONAL_INTERFACE_CALL, OBJECT_ACCESSOR};
+    public enum MethodCallKind { NO_OPERATOR, CONSTRUCTOR_CALL, OPERATOR_VARIABLE, OBJECT_METHOD_CALL, STATIC_METHOD_CALL, FUNCTIONAL_INTERFACE_CALL, OBJECT_ACCESSOR, SUPER_METHOD_CALL };
 
     public MethodCall(String methodName, List<Expression> arguments) {
         this.methodName=methodName;
         this.arguments=arguments;
         this.object=null;
         this.operatorKind =MethodCallKind.NO_OPERATOR;
+        this.expressionKind=ExpressionKind.METHOD_CALL;
+        this.className=null;
+        this.clazz=null;
+    }
+    public MethodCall(String object,String methodName, List<Expression> arguments) {
+        if (!"super".equals(object)) {
+            throw new IllegalArgumentException("Only 'super' is allowed as object name in this constructor");
+        }
+        this.methodName=methodName;
+        this.arguments=arguments;
+        this.object=null;
+        this.operatorKind =MethodCallKind.SUPER_METHOD_CALL;
         this.expressionKind=ExpressionKind.METHOD_CALL;
         this.className=null;
         this.clazz=null;
@@ -169,6 +181,9 @@ public class MethodCall extends Expression {
 
     public static MethodCall CONSTRUCTOR_CALL(TypeName className, List<Expression> arguments) {
         return new MethodCall("new", className, arguments);
+    }
+    public static MethodCall SUPER_METHOD_CALL(String methodName, List<Expression> arguments) {
+        return new MethodCall("super", methodName, arguments);
     }
     public static MethodCall CONSTRUCTOR_CALL(Class clazz, List<Expression> arguments) {
         return new MethodCall("new", clazz, arguments);

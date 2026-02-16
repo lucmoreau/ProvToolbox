@@ -79,7 +79,7 @@ public class TypeCompatibility {
             if (!isAssignable(functionType.getTypeArguments()[functionType.getTypeArguments().length - 1], methodSignature.returnType, registry)) {
                 return false;
             }
-            System.out.println("***** Checking function type succeeded");
+            //System.out.println("***** Checking function type succeeded");
             return true;
         }
 

@@ -22,6 +22,7 @@ import static org.openprovenance.prov.template.compiler.past.LambdaExpression.LA
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.SUPER_METHOD_CALL;
 import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
@@ -168,7 +169,7 @@ public class TypeCheckerTest extends TestCase {
         assertNotNull(sig);
         assertEquals("MyClass", sig.name);
         assertEquals("com.example", sig.packageName);
-        assertEquals(1, sig.fields.size());
+        assertEquals(2, sig.fields.size());  // because of auto-add of "class" field
         assertEquals(1, sig.methods.size());
     }
 
@@ -750,5 +751,77 @@ public class TypeCheckerTest extends TestCase {
         assertEquals("generic types with types variables type cleanly", 0, errors);
     }
 
+    public void testProtectedSuperclassFieldLookup() {
+        TypeChecker checker = new TypeChecker();
+
+        // Parent class with a protected field
+        Class parent = new Class("Parent");
+        parent.fields.add(FIELD("protectedField", STRING).MODIFIERS(Modifier.PROTECTED));
+
+        // Child class that extends Parent and uses the inherited field
+        Class child = new Class("Child");
+        child.superclass = ClassName.get("Parent", "com.example");
+        child.methods.add(
+                METHOD("getField").RETURNS(STRING)
+                        .BODY(RETURN(VARIABLE("protectedField")))
+        );
+
+        checker.registerClass(parent, "com.example");
+        checker.registerClass(child, "com.example");
+        List<TypeDiagnostic> diagnostics = checker.checkAll();
+
+        long errors = 0;
+        long warnings = 0;
+        for (TypeDiagnostic d : diagnostics) {
+            if (d.severity == TypeDiagnostic.Severity.ERROR) {
+                errors++;
+                System.out.println("Error: " + d);
+            } else {
+                warnings++;
+                System.out.println("Warning: " + d);
+            }
+        }
+        assertEquals("Accessing protected superclass field should have no errors", 0, errors);
+        assertEquals("Accessing protected superclass field should have no warnings", 0, warnings);
+    }
+
+    public void testSuperMethodCall() {
+        TypeChecker checker = new TypeChecker();
+
+        // Parent class with a method
+        Class parent = new Class("Parent");
+        parent.methods.add(
+                METHOD("compute").RETURNS(STRING)
+                        .PARAMETERS(PARAMETER("input", INTEGER))
+                        .BODY(RETURN(CONSTANT("result")))
+        );
+
+        // Child class that calls super.compute(input)
+        Class child = new Class("Child");
+        child.superclass = ClassName.get("Parent", "com.example");
+        child.methods.add(
+                METHOD("compute").RETURNS(STRING)
+                        .PARAMETERS(PARAMETER("input", INTEGER))
+                        .BODY(RETURN(SUPER_METHOD_CALL("compute", List.of(VARIABLE("input")))))
+        );
+
+        checker.registerClass(parent, "com.example");
+        checker.registerClass(child, "com.example");
+        List<TypeDiagnostic> diagnostics = checker.checkAll();
+
+        long errors = 0;
+        long warnings = 0;
+        for (TypeDiagnostic d : diagnostics) {
+            if (d.severity == TypeDiagnostic.Severity.ERROR) {
+                errors++;
+                System.out.println("Error: " + d);
+            } else {
+                warnings++;
+                System.out.println("Warning: " + d);
+            }
+        }
+        assertEquals("super.method() call should have no errors", 0, errors);
+        assertEquals("super.method() call should have no warnings", 0, warnings);
+    }
 
 }

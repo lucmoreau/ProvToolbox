@@ -123,6 +123,20 @@ public class TypeInferrer {
         TypeName type = env.lookup(v.name);
         if (type != null) return type;
 
+        // Fall back to inherited field lookup via superclass chain
+        TypeName envThis = env.lookup("this");
+        ClassName currentClass = resolveClassName(envThis);
+        if (currentClass != null) {
+            ClassSignature sig = registry.lookup(currentClass);
+            if (sig != null && sig.superclass != null) {
+                ClassName superCn = resolveClassName(sig.superclass);
+                if (superCn != null) {
+                    TypeName inherited = registry.lookupField(superCn, v.name);
+                    if (inherited != null) return inherited;
+                }
+            }
+        }
+
         diagnostics.add(TypeDiagnostic.warning(
                 "Undefined variable '" + v.name + "'",
                 className, methodName, v.toString() + " IN ENV " + env.getVariables()));
@@ -288,6 +302,8 @@ public class TypeInferrer {
                 return inferObjectMethodCall(mc, env, className, methodName);
             case OBJECT_ACCESSOR:
                 return inferObjectAccessor(mc, env, className, methodName);
+            case SUPER_METHOD_CALL:
+                return inferSuperMethodCall(mc, env, className, methodName);
             case NO_OPERATOR:
                 return inferNoOperatorCall(mc, env, className, methodName);
             default:
@@ -402,6 +418,31 @@ public class TypeInferrer {
                 if (fieldType != null) return fieldType;
             }
         }
+        return ClassName.OBJECT;
+    }
+
+    private TypeName inferSuperMethodCall(MethodCall mc, TypeEnvironment env, String className, String methodName) {
+        // super.method(args) — resolve method on the superclass of the current class
+        TypeName envThis = env.lookup("this");
+        ClassName currentClass = resolveClassName(envThis);
+        ClassName superClass = null;
+        if (currentClass != null) {
+            ClassSignature sig = registry.lookup(currentClass);
+            if (sig != null && sig.superclass != null) {
+                superClass = resolveClassName(sig.superclass);
+            }
+        }
+        MethodSignature methodSig = null;
+        if (superClass != null) {
+            List<TypeName> argTypes = preInferArgTypes(mc, env, className, methodName);
+            methodSig = registry.lookupMethod(superClass, mc.methodName, argTypes);
+            if (methodSig == null) {
+                int argCount = (mc.arguments != null) ? mc.arguments.size() : 0;
+                methodSig = registry.lookupMethod(superClass, mc.methodName, argCount);
+            }
+        }
+        inferArguments(mc, env, className, methodName, methodSig);
+        if (methodSig != null) return methodSig.returnType;
         return ClassName.OBJECT;
     }
 

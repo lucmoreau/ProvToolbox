@@ -256,10 +256,6 @@ public class TypeChecker {
                     : EnumSet.copyOf(def.modifiers);
             env.define(varName, def.type, mods);
         }
-
-        if ("sb".equals(varName)) {
-            System.out.println("Registered variable 'sb' of type " + def.type + " in " + className + "." + methodName + " with ENV " + env.getVariables());
-        }
     }
 
     // --- Assignment ---

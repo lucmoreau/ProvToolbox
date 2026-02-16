@@ -56,6 +56,8 @@ public class TypeRegistry {
             fieldMap.put(f.name, new ClassSignature.FieldInfo(f.type, mods));
         }
 
+        fieldMap.put("class", new ClassSignature.FieldInfo(ClassName.CLASS, Set.of(Modifier.PUBLIC)));
+
         // Extract method signatures
         List<MethodSignature> methodSigs = new ArrayList<>();
         for (Method m : pastClass.methods) {

@@ -541,6 +541,7 @@ public class CompilerUtil {
         }
     }
 
+    /*
     public String createExamplar(Map<String, List<Descriptor>> theVars, String key, int num, ProvFactory pFactory) {
 
 
@@ -616,6 +617,8 @@ public class CompilerUtil {
     }
 
 
+     */
+
     public String getDeclaredType(Map<String, List<Descriptor>>  theVar, String key) {
         if (theVar.get(key).get(0) instanceof NameDescriptor) {
             return "prov:QualifiedName";
@@ -646,6 +649,7 @@ public class CompilerUtil {
     }
 
 
+    /*
     // TODO: make it work with past types
     public String getConverterForDeclaredType2(Class cl) {
         if (cl != null) {
@@ -670,6 +674,8 @@ public class CompilerUtil {
             return null;
         }
     }
+
+     */
 
     public Function<List<Expression>, Expression> getConverterForDeclaredType3(Class cl) {
         if (cl != null) {

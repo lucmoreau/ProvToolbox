@@ -257,9 +257,8 @@ public class CompilerConfigurations {
 
         public void generateMethodEnactor2(String builderParameter, String fullyQualifiedName, Method mspec, TypeName className, TypeName _inType, TypeName _outType) {
             String inPackage=locations.getBeansPackage(fullyQualifiedName, BeanDirection.INPUTS);
-            org.openprovenance.prov.template.compiler.past.type.ClassName inType=get(((org.openprovenance.prov.template.compiler.past.type.ClassName)_inType).simpleName,inPackage);
-            String outPackage=locations.getBeansPackage(fullyQualifiedName, BeanDirection.OUTPUTS);
-            org.openprovenance.prov.template.compiler.past.type.ClassName outType=get(((org.openprovenance.prov.template.compiler.past.type.ClassName)_outType).simpleName,inPackage);
+            ClassName inType=get(((ClassName)_inType).simpleName,inPackage);
+            ClassName outType=get(((ClassName)_outType).simpleName,inPackage);
 
             compilerConfigurations.generateMethodEnactor2(builderParameter, fullyQualifiedName, mspec, className, inType, outType);
         }
@@ -318,6 +317,7 @@ public class CompilerConfigurations {
                 DEFINITION(FUNCTION_OBJARRAY_TO_TYPE(beanType), VARIABLE("enactor"),
 
                         LAMBDA(PARAMETER("array", OBJECT_ARRAY))
+                                .returns(beanType)
                                 .BODY(DEFINITION(beanType, VARIABLE("bean"),
                                                 FUNCTIONAL_METHOD_CALL(VARIABLE("beanConverter"), "apply", List.of(VARIABLE("array")))),
                                         RETURN(
@@ -341,6 +341,7 @@ public class CompilerConfigurations {
 
                 DEFINITION(FUNCTION_OBJARRAY_TO_TYPE(outputBeanType), VARIABLE("enactor"),
                         LAMBDA(PARAMETER("array", OBJECT_ARRAY))
+                                .returns(outputBeanType)
                                 .BODY(DEFINITION(inputBeanType, VARIABLE("bean"),
                                                 FUNCTIONAL_METHOD_CALL(VARIABLE("beanConverter"), "apply", List.of(VARIABLE("array")))),
                                         RETURN(

@@ -203,11 +203,14 @@ public class CompilerExpansionBuilder {
 
         if (examplar != null) {
             Class<?> declaredJavaType = compilerUtil.getJavaTypeForDeclaredType(theVars, key);
-            final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+            //final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+            final Function<List<Expression>, Expression> converter = compilerUtil.getConverterForDeclaredType3(declaredJavaType);
+
             if (converter == null) {
                 return CONSTANT(examplar.toString());
             } else {
                 // converter(examplar) — e.g., Integer.valueOf(123)
+                /*
                 String[] parts = converter.split("\\.");
                 if (parts.length == 2) {
                     ClassName cls =
@@ -215,19 +218,25 @@ public class CompilerExpansionBuilder {
                     return METHOD_CALL(cls, parts[1], CONSTANT(examplar.toString()));
                 }
                 return CONSTANT(examplar.toString());
+
+                 */
+                return converter.apply(List.of(CONSTANT(examplar.toString())));
             }
         } else {
             if (descriptor != null) {
                 switch (descriptor.getDescriptorType()) {
                     case NAME:
                         Class<?> declaredJavaType = compilerUtil.getJavaTypeForDeclaredType(theVars, key);
-                        final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+                        //final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+                        final Function<List<Expression>, Expression> converter = compilerUtil.getConverterForDeclaredType3(declaredJavaType);
+
                         if (converter == null) {
                             return CONSTANT("v" + num);
                         } else {
                             String example = compilerUtil.generateExampleForType(
                                     descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getType, NameDescriptor::getType),
                                     key, pFactory);
+                            /*
                             String[] parts = converter.split("\\.");
                             if (parts.length == 2) {
                                 ClassName cls =
@@ -235,6 +244,9 @@ public class CompilerExpansionBuilder {
                                 return METHOD_CALL(cls, parts[1], CONSTANT(example));
                             }
                             return CONSTANT(example);
+
+                             */
+                            return converter.apply(List.of(CONSTANT(example)));
                         }
                     case ATTRIBUTE:
                         AttributeDescriptor ad = ((AttributeDescriptorList) descriptor).getItems().get(0);

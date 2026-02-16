@@ -24,7 +24,9 @@ import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRU
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.SUPER_METHOD_CALL;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.SuperConstructorCall.SUPER_CALL;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
@@ -53,7 +55,7 @@ public class CompilerBeanCompleter3 {
                 .commentFileLocation()
                 .BODY(
                         // call super(m)
-                        METHOD_CALL("super", List.of(VARIABLE("m")))
+                        SUPER_CALL( List.of(VARIABLE("m")) )
                 );
         pastClass.CONSTRUCTOR(cons1);
 
@@ -62,7 +64,7 @@ public class CompilerBeanCompleter3 {
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(GETTER_TYPE, "getter")
                 .BODY(
-                        METHOD_CALL("super", List.of(VARIABLE("getter")))
+                        SUPER_CALL( List.of(VARIABLE("getter")) )
                 );
         pastClass.CONSTRUCTOR(cons2);
 
@@ -99,7 +101,7 @@ public class CompilerBeanCompleter3 {
                             .commentFileLocation()
                             .BODY(
                                     // super.process(bean)
-                                    METHOD_CALL(VARIABLE("super"), PROCESS_METHOD_NAME, List.of(VARIABLE(BEAN_VAR))),
+                                    SUPER_METHOD_CALL(PROCESS_METHOD_NAME, List.of(VARIABLE(BEAN_VAR))),
                                     METHOD_CALL("setValueInLocation",List.of()),
                                     // placeholder for calling super.process
                                     RETURN(VARIABLE(BEAN_VAR))
@@ -133,7 +135,7 @@ public class CompilerBeanCompleter3 {
 
         mspec.BODY(
 
-                DEFINITION(outputClassName, VARIABLE("result"), METHOD_CALL(VARIABLE("super"),PROCESS_METHOD_NAME, List.of(VARIABLE(BEAN_VAR)))),
+                DEFINITION(outputClassName, VARIABLE("result"), SUPER_METHOD_CALL(PROCESS_METHOD_NAME, List.of(VARIABLE(BEAN_VAR)))),
 
                 ASSIGNMENT( METHOD_CALL(VARIABLE("result"), "ID"), METHOD_CALL("getValueFromLocation",List.of())),
 

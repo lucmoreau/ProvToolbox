@@ -110,13 +110,13 @@
                         <include>**/*.java</include>
                     </includes>
                 </fileSet>
-                <fileSet encoding="UTF-8">
+                <fileSet filtered="true" encoding="UTF-8">
                     <directory>bin</directory>
                     <includes>
                         <include>**/*.sh</include>
                     </includes>
                 </fileSet>
-                <fileSet encoding="UTF-8">
+                <fileSet  filtered="true" encoding="UTF-8">
                     <includes>
                         <include>Makefile</include>
                         <include>.gitignore</include>

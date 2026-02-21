@@ -7,7 +7,7 @@
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
     <meta content="utf-8"/>
     <title>${symbol_dollar}{pom.form.dashboard.title}</title>
-    <link rel="stylesheet" href="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/css/bootstrap.css" />
+    <link rel="stylesheet" href="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/css/bootstrap.min.css" />
     <link rel="stylesheet" href="${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/css/provtemplate.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="${symbol_dollar}{service.context}/webjars/font-awesome/${symbol_dollar}{webjars.fontawesome.version}/css/font-awesome.min.css"/>
@@ -45,81 +45,122 @@
     .shared_var {
         color: blue;
     }
+    .shrink_h2 h2 {
+        font-size: 1.5rem;
+        line-height: 1.2;
+        font-weight: 500;
+        margin-top: 0.83rem;
+        margin-bottom: 0.83rem;
+    }
+    .dropdown-menu {
+        font-size: 0.75rem;
+    }
+    .form-control {
+        font-size: 0.75rem;
+    }
+    /* Add a small vertical gap before form groups */
+    .form-group {
+        margin-top: 0.5rem;
+    }
+    .help-block {
+        font-size: 0.75rem;
+        font-style: italic;
+    }
+    /* Bootstrap 5: ensure dropdown-toggle inside input-append doesn't float unexpectedly */
+    .input-append .btn .dropdown-toggle {
+        float: none;
+    }
+
+    .grey {
+        background-color: #f5f5f5;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    /* Make elements with readonly="readonly" appear grey (match .grey) */
+    [readonly="readonly"], input[readonly="readonly"], textarea[readonly="readonly"], select[readonly="readonly"] {
+        background-color: #f5f5f5;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    label {
+       font-weight: bold;
+    }
+    legend {
+        font-size: 1rem;
+        font-weight: bold;
+    }
 </style>
 
-<div class="container">
-    <div class="row header">
+    <div class="row header small">
         <div class="col-lg-12 text-left">
-            <h3>${symbol_dollar}{pom.form.dashboard.title}</h3>
+            <h4>${symbol_dollar}{pom.form.dashboard.title}</h4>
         </div>
+
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a href="${symbol_pound}tab_compose" data-toggle="pill" class="nav-link show active" role="tab" id="composer-lnk">Composer</a>
+                <a href="#tab_compose" data-bs-toggle="tab" class="nav-link show active" role="tab" id="composer-lnk">Composer</a>
             </li>
             <li class="nav-item">
-                <a href="${symbol_pound}tab_documentation" data-toggle="pill" class="nav-link" role="tab">Documentation</a>
+                <a href="#tab_documentation" data-bs-toggle="tab" class="nav-link" role="tab">Documentation</a>
             </li>
             <li class="nav-item">
-                <a href="${symbol_pound}tab_csv_log" data-toggle="pill" class="nav-link" role="tab">CSV Logger</a>
+                <a href="#tab_csv_log" data-bs-toggle="tab" class="nav-link" role="tab">CSV Logger</a>
             </li>
             <li class="nav-item">
-                <a href="${symbol_pound}tab_browser" data-toggle="pill" class="nav-link" role="tab">Browser</a>
+                <a href="#tab_browser" data-bs-toggle="tab" class="nav-link" role="tab">Browser</a>
             </li>
             <li class="nav-item">
-                <a href="${symbol_pound}tab_navigator" data-toggle="pill" class="nav-link" role="tab">Navigator</a>
+                <a href="#tab_navigator" data-bs-toggle="tab" class="nav-link" role="tab">Navigator</a>
             </li>
             <li class="nav-item">
-                <a href="${symbol_pound}tab_expand" data-toggle="pill" class="nav-link" role="tab">Expand</a>
+                <a href="#tab_instantiate" data-bs-toggle="tab" class="nav-link" role="tab">Instantiate</a>
             </li>
             <li class="nav-item">
-                <a href="${symbol_pound}tab_api" data-toggle="pill" class="nav-link" role="tab">API</a>
+                <a href="#tab_api" data-bs-toggle="tab" class="nav-link" role="tab">API</a>
             </li>
-
-
-
-
         </ul>
 
         <div class="tab-content" id="all-tab-contents">
-            <div id="tab_compose" class="tab-pane active" role="tabpanel">
-                <div class="col-lg-2">
-                    <div id="template-dropdown-composer">
-                        <a href="${symbol_pound}" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="template-dropdown-composer-lnk">${symbol_dollar}{pom.templates.button.label}</a>
+            <div id="tab_compose" class="tab-pane show active" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div id="template-dropdown-composer" class="dropdown">
+                            <a href="${symbol_pound}" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="template-dropdown-composer-lnk">${symbol_dollar}{pom.templates.button.label}</a>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-4 first-column">
-                    <div id="template-form">
-                        <form></form>
+                    <div class="col-lg-4 first-column">
+                        <div id="template-form">
+                            <form></form>
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-3">
-                    <h4>CSV encoding</h4>
-                    <pre id="csv_result"><p> </p></pre>
-                    <p> </p>
-                    <h4>JSON encoding</h4>
-                    <pre id="json_result" class="pretty">
-                    </pre>
-                </div>
-                <div class="col-sm-3">
-                    <button id="button-submit-json" type="button" class="btn btn-warning" onclick="submitEnactor(true)">Submit (json)</button>
-                    <button id="button-submit-csv" type="button" class="btn btn-warning" onclick="submitEnactor(false)">Submit (csv)</button>
-                    <button id="button-clear" type="button" class="btn btn-info" onclick="enactClear()">Clear</button>
-                    <h4>Submission Result</h4>
-                    <pre id="enact_result" class="pretty"> </pre>
-                    <p id="prov_link"></p>
-                    <h4>Explanation</h4>
-                    <p id="prov_xplain"></p>
+                    <div class="col-sm-3">
+                        <h6>CSV encoding</h6>
+                        <pre id="csv_result" class="grey"><p> </p></pre>
+                        <p> </p>
+                        <h6>JSON encoding</h6>
+                        <pre id="json_result" class="pretty grey"><p> </p></pre>
+                    </div>
+                    <div class="col-sm-3">
+                        <button id="button-submit-json" type="button" class="btn btn-warning" onclick="submitEnactor(true)">Submit (json)</button>
+                        <button id="button-submit-csv"  type="button" class="btn btn-warning" onclick="submitEnactor(false)">Submit (csv)</button>
+                        <button id="button-clear"       type="button" class="btn btn-info"    onclick="enactClear()">Clear</button>
+                        <h6>Submission Result</h6>
+                        <pre id="enact_result" class="pretty grey"> </pre>
+                        <p id="prov_link"></p>
+                        <h6>Explanation</h6>
+                        <p id="prov_xplain"></p>
+                    </div>
                 </div>
             </div>
 
             <div id="tab_documentation" class="tab-pane" role="tabpanel">
                 <div class="col-lg-2">
-                    <div id="template-dropdown-documentation">
-                        <a href="${symbol_pound}" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">${symbol_dollar}{pom.templates.button.label}</a>
+                    <div id="template-dropdown-documentation" class="dropdown">
+                        <a href="${symbol_pound}" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">${symbol_dollar}{pom.templates.button.label}</a>
                     </div>
                 </div>
                 <div class="col-lg-7 first-column">
-                    <div id="documentation">
+                    <div id="documentation" class="shrink_h2">
                     </div>
                     <div id="documentation_image">
                     </div>
@@ -130,7 +171,7 @@
 
 
             <div id="tab_csv_log" class="tab-pane" role="tabpanel">
-                <pre id="csv_log"></pre>
+                <pre id="csv_log grey"></pre>
             </div>
 
             <div id="tab_browser" class="tab-pane" role="tabpanel">
@@ -141,25 +182,27 @@
                     <label for="browser_limit"></label><input type="number" id="browser_limit" class="form-control" value="100">
 
                     <p></p>
-                    <button id="browser-refresh" type="button" class="btn btn-info" onclick="submitBrowse()">Refresh</button>
-                    <button id="browser-clear" type="button" class="btn btn-warning" onclick="clearBrowse()">Clear</button>
-
+                    <button id="browser-refresh" type="button" class="btn btn-info"    onclick="submitBrowse()">Refresh</button>
+                    <button id="browser-clear"   type="button" class="btn btn-warning" onclick="clearBrowse()">Clear</button>
                 </div>
                 <div class="col-lg-10 first-column">
                     <table id="browser_list"
                            class="display"
                            style="width:80%">
-
                     </table>
                 </div>
             </div>
 
             <div id="tab_navigator" class="tab-pane" role="tabpanel">
                 <div class="col-lg-2">
-                    <label for="navigator-id"></label><input type="number" id="navigator-id" class="form-control" value="153">
-                    <label for="navigator-template"></label><input type="text" id="navigator-template" class="form-control" value="weighing">
-                    <label for="navigator-property"></label><input type="text" id="navigator-property" class="form-control" value="item1">
-                    <label for="navigator-style"></label><select name="navigator-style" id="navigator-style" class="form-control">
+                    <label for="navigator-id" class="visually-hidden">Navigator ID</label>
+                    <input type="number" id="navigator-id" class="form-control" value="96">
+                    <label for="navigator-template" class="visually-hidden">Navigator Template</label>
+                    <input type="text" id="navigator-template" class="form-control" value="weighing">
+                    <label for="navigator-property" class="visually-hidden">Navigator Property</label>
+                    <input type="text" id="navigator-property" class="form-control" value="item1">
+                    <label for="navigator-style" class="visually-hidden">Navigator Style</label>
+                    <select name="navigator-style" id="navigator-style" class="form-select">
                         <option value="template">Template Viz</option>
                         <option value="prov">PROV Viz</option>
                         <option value="entities">Entities Viz</option>
@@ -194,11 +237,13 @@
                     console.log("myUrl");
                     console.log(myUrl);
                     // delete the substring that follows ${symbol_pound} in the URL
-                    if (myUrl.lastIndexOf('${symbol_pound}')>0) {
+                    if (myUrl.lastIndexOf('${symbol_pound}') !== -1) {
                         myUrl = myUrl.substring(0, myUrl.lastIndexOf('${symbol_pound}'));
                     }
                     // delete the substring that follows the last / in the URL
-                    myUrl=myUrl.substring(0, myUrl.lastIndexOf('/'));
+                    if (myUrl.lastIndexOf('/') !== -1) {
+                        myUrl = myUrl.substring(0, myUrl.lastIndexOf('/'));
+                    }
 
                     myApiUrl=myUrl.concat("/provapi/openapi.json");
                     //myApiUrl2=myUrl.replace("/api.html","/resources/openapi.json");
@@ -231,7 +276,7 @@
                 </script>
             </div>
 
-            <div id="tab_expand" class="tab-pane" role="tabpanel">
+            <div id="tab_instantiate" class="tab-pane" role="tabpanel">
 
                 <div class="col-sm-8" style="text-align:center;margin-top:80px;margin-bottom:50px">
                     <form action="${symbol_dollar}{service.context}/provapi/documents_form/" method="post" enctype="multipart/form-data">
@@ -246,11 +291,11 @@
                                     <td> </td>
                                     <td> </td>
                                     <td rowspan="3">
-                                        <input type="submit"   value="jsonld" name="instantiater"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
-                                        <input type="submit"   value="json"   name="instantiater"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
-                                        <input type="submit"   value="provx"  name="instantiater"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
-                                        <input type="submit"   value="provn"  name="instantiater"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
-                                        <input type="submit"   value="svg"    name="instantiater"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+                                        <input type="submit"   value="jsonld" name="instantiate"  class="btn btn-primary btn-lg" style="text-align:center; width:80px; "/><br>
+                                        <input type="submit"   value="json"   name="instantiate"  class="btn btn-primary btn-lg" style="text-align:center; width:80px; "/><br>
+                                        <input type="submit"   value="provx"  name="instantiate"  class="btn btn-primary btn-lg" style="text-align:center; width:80px; "/><br>
+                                        <input type="submit"   value="provn"  name="instantiate"  class="btn btn-primary btn-lg" style="text-align:center; width:80px; "/><br>
+                                        <input type="submit"   value="svg"    name="instantiate"  class="btn btn-primary btn-lg" style="text-align:center; width:80px; "/><br>
                                     </td>
                                 </tr>
 
@@ -258,9 +303,10 @@
                                     <td>Template</td>
                                     <td>
                                         <div class="input-append btn-group">
+                                            <label for="the-url-input" class="visually-hidden">Template URL</label>
                                             <input id="the-url-input" type="text" name="url" class="input-large" style="width:315px; height: 30px"  />
 
-                                            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="${symbol_pound}">
+                                            <a class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" href="${symbol_pound}" aria-expanded="false">
                                                 <span class="caret"></span>
                                             </a>
 
@@ -286,6 +332,7 @@
                                 <tr>
                                     <td>Bindings</td>
                                     <td>
+                                        <label for="the-bindings-input" class="visually-hidden">Bindings (JSON)</label>
                                         <textarea id="the-bindings-input" rows="10" name="statements" placehoder="Set of bindings in json format" style="width:350px; "></textarea>
                                     </td>
                                 </tr>
@@ -295,7 +342,7 @@
                                     <td>
                                         <div class="input-append btn-group">
 
-                                            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="${symbol_pound}">
+                                            <a class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" href="${symbol_pound}"  aria-expanded="false">
                                                 <span class="caret"></span>
                                             </a>
 
@@ -328,9 +375,12 @@
             </div>
         </div>
     </div>
-</div>
+
 
 <script>
+    let templateMapping = {}
+    let cbindingsMapping = {}
+
     function diff (arr1, arr2) {
         return arr1.filter(x => !arr2.includes(x));
     }
@@ -338,15 +388,19 @@
     function constructMenusConfiguration() {
         let profile = {}
         let composites = {}
+        let shortNames = {}
         for (var indx in builders) {
+            shortNames[builders[indx].getFullyQualifiedName()]=[builders[indx].getName()]
+            templateMapping[builders[indx].getFullyQualifiedName()]=builders[indx].getTemplateName()
+            cbindingsMapping[builders[indx].getFullyQualifiedName()]=builders[indx].getCBindings()
             const builder = builders[indx]
-            let name = builder.getName()
+            let name = builder.getFullyQualifiedName()
             let consistOf = builder.isCompositeOf()
             if (typeof builder.getCompulsoryInputs !== "undefined") { //not selecting composite
-                let compusolryFields = ["isA"].concat(builder.getCompulsoryInputs());
+                let compulsoryFields = ["isA"].concat(builder.getCompulsoryInputs());
                 let optionalFields = diff(builder.getInputs(), builder.getCompulsoryInputs());
                 profile[name] = {
-                    compulsory: compusolryFields,
+                    compulsory: compulsoryFields,
                     optional: optionalFields
                 }
             }
@@ -371,6 +425,7 @@
 
 
 
+
     const MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON = "application/vnd.kcl.prov-template+json";
     const MEDIA_TYPE_TEXT_CSV = "text/csv";
 
@@ -384,9 +439,10 @@
     const HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER = "${symbol_pound}template-dropdown-composer";
     const HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN = "${symbol_pound}template-dropdown-documentation";
 
-    const SUBMISSION_URL = '${symbol_dollar}{service.context}/provapi/statements/';
-    const SCHEMA_URL = "${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/schema/schema${symbol_dollar}{the.template.sublibrary}.json";
-    const DOC_URL = "${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/html/doc${symbol_dollar}{the.template.sublibrary}.html";
+    const SUBMISSION_URL =     '${symbol_dollar}{service.context}/provapi/statements/';
+    const SCHEMA_URL =         "${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/schema/schema${symbol_dollar}{the.template.sublibrary}.json";
+    const DOC_URL =            "${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/html/doc${symbol_dollar}{the.template.sublibrary}.html";
+    const TEMPLATE_INDEX_URL = "${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/templates/index.json";
 
     const logger=new ${symbol_dollar}{logger.constructor}();
     const builders=logger.getBuilders()
@@ -406,9 +462,9 @@
     var alreadySeen=[]
 
     function createProvLink(name, ID) {
-        return "Link to Provenance <a target='_blank' href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".svg'   >(svg)</a>,"
-                               + " <a target='_blank' href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".provn' >(provn)</a>,"
-                               + " <a target='_blank' href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".jsonld'>(jsonld)</a>";
+        return "Link to Provenance <a target='_blank' id='form-result-svg' href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".svg'   >(svg)</a>,"
+                               + " <a target='_blank' id='form-result-provn'  href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".provn' >(provn)</a>,"
+                               + " <a target='_blank' id='form-result-jsonld' href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".jsonld'>(jsonld)</a>";
     }
 
     function createXplainLink(name, ID) {
@@ -626,7 +682,8 @@
     }
 
     function getRecordAsCsv(sig, id, template) {
-        let url = "http://localhost:7072/ptl/provapi/template/" + template + "/" + id + ".csv"
+        //let url = "http://localhost:7072/ptl/provapi/template/" + template + "/" + id + ".csv"
+        let url = "${symbol_dollar}{service.context}/provapi/template/" + template + "/" + id + ".csv"
         // perform an XMLHttpRequest() to get the csv record, calculate its hash and compare it with the signature
         const xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
@@ -715,35 +772,63 @@
 
 
     }
+    let templateNameMapper = {};
 
 
-    let imageNameMapper = {
-        "plead_transforming": "plead-transforming",
-        "plead_filtering": "plead-filtering",
-        "plead_training": "plead-training",
-        "plead_validating": "plead-validating",
-        "plead_approving": "plead-approving",
-        "plead_splitting": "plead-splitting"
-    };
+    function getTemplateIndex() {
+        let url = TEMPLATE_INDEX_URL;
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onerror = function (xhr, event) {
+            console.log("error with " + event);
+        };
+        xhr.onabort = function (xhr, event) {
+            console.log("abort with " + event);
+        };
+        xhr.onload = function () {
+            console.log("obtained index");
+            const response = xhr.responseText;
+            const parsed = JSON.parse(response);
+            //console.log(parsed);
+
+            // for all keys in Object parsed,
+            for (var key in templateMapping) {
+                let templateName=templateMapping[key];
+                templateNameMapper[key] = parsed[templateName]["png"];
+            }
+            //console.log("templateNameMapper:");
+            //console.log(templateNameMapper);
+            tm.setFilenameConverter(templateNameMapper);
+
+        }
+        xhr.setRequestHeader("Accept", "text/csv");
+        xhr.send();
+    }
+
 
     const tm=new TemplateManager(logger,SCHEMA_URL,DOC_URL,profile);
     tm.setCsvResult(HTML_ANCHOR_CSV_RESULT);
     tm.setJsonResult(HTML_ANCHOR_JSON_RESULT);
     tm.setImageUrlPrefix('${symbol_dollar}{image.url.prefix}');
     tm.setImageLocation(HTML_ANCHOR_DOCUMENTATION_IMAGE);
-    tm.setFilenameConverter(imageNameMapper)
+    //tm.setFilenameConverter(imageNameMapper)
     tm.createDropdownForPlayground(HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER, "tm");
     tm.createDropdownForDocumentation(HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN, "tm");
+
+    tm.setJsonResult(HTML_ANCHOR_JSON_RESULT);
+    tm.setImageUrlPrefix('${symbol_dollar}{templates.url.prefix}');
+    tm.setCBindingsUrlPrefix('${symbol_dollar}{cbindings.url.prefix}');
+    tm.setImageLocation(HTML_ANCHOR_DOCUMENTATION_IMAGE);
+    tm.setCBindingsConverter(cbindingsMapping);
+
+    getTemplateIndex();
 
 
 
 </script>
 <script src="provservice.js"></script>
-<script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/bootstrap.min.js"></script>
-<script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/dropdown.js"></script>
-<script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/tab.js"></script>
-<script>
-    ${symbol_dollar}('.dropdown-toggle').dropdown();
-</script>
+<script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
+<!--<script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/tab.js"></script>-->
+
 </body>
 </html>

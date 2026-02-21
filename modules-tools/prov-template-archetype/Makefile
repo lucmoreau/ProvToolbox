@@ -27,17 +27,17 @@ archetype.generate.book:
         -DProjectArtifactId=$(ARTIFACT_ID) \
         -DarchetypeGroupId=org.openprovenance.prov \
         -DarchetypeArtifactId=prov-template-archetype \
-    	-DarchetypeVersion=$(PROVTOOLBOX_VERSION) \
-    	-DtemplateLibraryGroupId=org.openprovenance.bookptm \
-    	-DtemplateLibraryArtifactId=template-intro1 \
-    	-DtemplateLibraryVersion=0.1.0-SNAPSHOT \
-    	-DtemplateLibraryServiceName=ServiceBookPTM \
-    	-DcataloguePackage=org.openprovenance.bk.physical \
-    	-DtemplateSubLibrary=-transport \
-    	-DloggerConstructor=org.openprovenance.bk.physical.client.logger.Logger \
-    	-DjdbcURL="jdbc:postgresql://localhost:5432/bookptm?sslmode=disable" \
-    	-DserviceContext=/book \
-    	-DservicePort=7075
+	-DarchetypeVersion=$(PROVTOOLBOX_VERSION) \
+	-DtemplateLibraryGroupId=org.openprovenance.bookptm \
+	-DtemplateLibraryArtifactId=template-intro1 \
+	-DtemplateLibraryVersion=0.1.0-SNAPSHOT \
+	-DtemplateLibraryServiceName=ServiceBookPTM \
+	-DcataloguePackage=org.openprovenance.templates.catalogue.transport \
+	-DtemplateSubLibrary=-transport \
+	-DloggerConstructor=org.openprovenance.templates.catalogue.transport.client.logger.Logger \
+	-DjdbcURL="jdbc:postgresql://localhost:5432/bookptm?sslmode=disable" \
+	-DserviceContext=/book \
+	-DservicePort=7075
 
 
 
@@ -49,17 +49,17 @@ archetype.generate.ptl:
         -Dversion=$(VERSION) \
         -DarchetypeGroupId=org.openprovenance.prov \
         -DarchetypeArtifactId=prov-template-archetype \
-    	-DarchetypeVersion=$(PROVTOOLBOX_VERSION) \
-    	-DtemplateLibraryGroupId=org.openprovenance.prov \
-    	-DtemplateLibraryArtifactId=prov-template-library \
-    	-DtemplateLibraryVersion=$(PROVTOOLBOX_VERSION) \
-    	-DtemplateLibraryServiceName=ServiceTemplateLibary \
-    	-DcataloguePackage=org.openprovenance.prov.template.library.plead \
-    	-DtemplateSubLibrary=-plead \
-    	-DloggerConstructor=org.openprovenance.prov.template.library.plead.client.logger.Logger \
-	    -DjdbcURL="jdbc:postgresql://localhost:5432/templates?sslmode=disable" \
-	    -DserviceContext=/ptl \
-	    -DservicePort=7076
+	-DarchetypeVersion=$(PROVTOOLBOX_VERSION) \
+	-DtemplateLibraryGroupId=org.openprovenance.prov \
+	-DtemplateLibraryArtifactId=prov-template-library \
+	-DtemplateLibraryVersion=$(PROVTOOLBOX_VERSION) \
+	-DtemplateLibraryServiceName=ServiceTemplateLibary \
+	-DcataloguePackage=org.openprovenance.prov.template.library.plead \
+	-DtemplateSubLibrary=-plead \
+	-DloggerConstructor=org.openprovenance.prov.template.library.plead.client.logger.Logger \
+	-DjdbcURL="jdbc:postgresql://localhost:5432/templates?sslmode=disable" \
+	-DserviceContext=/ptl \
+	-DservicePort=7076
 
 
 
@@ -67,3 +67,11 @@ archetype.generate.ptl:
 
 book.install:
 	mvn clean install
+
+
+go:
+	$(MAKE) book.install
+	$(MAKE) run.book
+	cd $(DEPLOY_DIR)/artif/artif-service; mvn clean install
+	cd $(DEPLOY_DIR)/artif/artif-service; make jetty
+

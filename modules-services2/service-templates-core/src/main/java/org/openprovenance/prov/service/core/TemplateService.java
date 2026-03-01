@@ -651,16 +651,16 @@ public class TemplateService {
                                               @Context HttpHeaders headers,
                                               @Context UriInfo uriInfo,
 
-                                              @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
+                                              @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String fullyQualifiedName,
                                               @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id) {
 
-        logger.info("getHash " + template + " " + id );
+        logger.info("getHash " + fullyQualifiedName + " " + id );
 
         Principal principal = request.getUserPrincipal();
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
-        Map<String, String> hash=queryTemplate.retrieveHash(template,id,principalAsPreferredUsername);
+        Map<String, String> hash=queryTemplate.retrieveHash(fullyQualifiedName,id,principalAsPreferredUsername);
 
         StreamingOutput promise= out -> om.writeValue(out,hash);
 
@@ -677,25 +677,25 @@ public class TemplateService {
                             @Context HttpHeaders headers,
                             @Context UriInfo uriInfo,
 
-                            @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
+                            @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String fullyQualifiedName,
                             @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id) {
 
-        logger.info("getHash " + template + " " + id );
+        logger.info("getHash " + fullyQualifiedName + " " + id );
 
         Principal principal = request.getUserPrincipal();
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
-        List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
+        List<Object[]> records = queryTemplate.query(fullyQualifiedName, id, false, principalAsPreferredUsername);
         if (records.size()!=1) {
             return utils.composeResponseBadRequest("record not found", new IllegalArgumentException("size not 1:" + records.size()));
         }
 
         Object[] record=records.get(0);
 
-        Map<String, String> hash=queryTemplate.computeHash(template, id, record);
+        Map<String, String> hash=queryTemplate.computeHash(fullyQualifiedName, id, record);
 
-        Map<String,String> storedHash=queryTemplate.retrieveHash(template,id,principalAsPreferredUsername);
+        Map<String,String> storedHash=queryTemplate.retrieveHash(fullyQualifiedName,id,principalAsPreferredUsername);
         for (String key: storedHash.keySet()) {
             if (key.equals("csv")) continue;
             hash.put(key+".check", String.valueOf(storedHash.get(key).equals(hash.get(key))));

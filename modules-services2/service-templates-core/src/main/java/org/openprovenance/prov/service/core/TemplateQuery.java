@@ -290,7 +290,7 @@ System.out.println("templateConnections: " + templateConnections.stream().map(Te
                 });
     }
 
-    public Map<String, String> retrieveHash(String template, int id, String principal) {
+    public Map<String, String> retrieveHash(String fullyQualifiedName, int id, String principal) {
 
         Map<String,String> map=new HashMap<>();
 
@@ -303,7 +303,7 @@ System.out.println("templateConnections: " + templateConnections.stream().map(Te
                     sb.append(principal);
                     sb.append("'");
                     sb.append(" AND table_name='");
-                    sb.append(template);
+                    sb.append(shortNames.get(fullyQualifiedName));
                     sb.append("'");
                 },
                 (rs, data) -> {

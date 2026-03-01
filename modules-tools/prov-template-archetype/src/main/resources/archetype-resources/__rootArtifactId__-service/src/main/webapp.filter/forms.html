@@ -58,6 +58,9 @@
     .form-control {
         font-size: 0.75rem;
     }
+    .form-select {
+        font-size: 0.75rem;
+    }
     /* Add a small vertical gap before form groups */
     .form-group {
         margin-top: 0.5rem;
@@ -156,7 +159,7 @@
             <div id="tab_documentation" class="tab-pane" role="tabpanel">
                 <div class="col-lg-2">
                     <div id="template-dropdown-documentation" class="dropdown">
-                        <a href="${symbol_pound}" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">${symbol_dollar}{pom.templates.button.label}</a>
+                        <a href="${symbol_pound}" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" id="template-dropdown-documentation-lnk">${symbol_dollar}{pom.templates.button.label}</a>
                     </div>
                 </div>
                 <div class="col-lg-7 first-column">
@@ -171,7 +174,7 @@
 
 
             <div id="tab_csv_log" class="tab-pane" role="tabpanel">
-                <pre id="csv_log grey"></pre>
+                <pre id="csv_log" class="grey"></pre>
             </div>
 
             <div id="tab_browser" class="tab-pane" role="tabpanel">
@@ -182,8 +185,8 @@
                     <label for="browser_limit"></label><input type="number" id="browser_limit" class="form-control" value="100">
 
                     <p></p>
-                    <button id="browser-refresh" type="button" class="btn btn-info"    onclick="submitBrowse()">Refresh</button>
-                    <button id="browser-clear"   type="button" class="btn btn-warning" onclick="clearBrowse()">Clear</button>
+                    <button id="browser_refresh" type="button" class="btn btn-info"    onclick="submitBrowse()">Refresh</button>
+                    <button id="browser_clear"   type="button" class="btn btn-warning" onclick="clearBrowse()">Clear</button>
                 </div>
                 <div class="col-lg-10 first-column">
                     <table id="browser_list"
@@ -195,14 +198,14 @@
 
             <div id="tab_navigator" class="tab-pane" role="tabpanel">
                 <div class="col-lg-2">
-                    <label for="navigator-id" class="visually-hidden">Navigator ID</label>
-                    <input type="number" id="navigator-id" class="form-control" value="96">
-                    <label for="navigator-template" class="visually-hidden">Navigator Template</label>
-                    <input type="text" id="navigator-template" class="form-control" value="weighing">
-                    <label for="navigator-property" class="visually-hidden">Navigator Property</label>
-                    <input type="text" id="navigator-property" class="form-control" value="item1">
-                    <label for="navigator-style" class="visually-hidden">Navigator Style</label>
-                    <select name="navigator-style" id="navigator-style" class="form-select">
+                    <label for="navigator_id" class="visually-hidden">Navigator ID</label>
+                    <input type="number" id="navigator_id" class="form-control" value="96">
+                    <label for="navigator_template" class="visually-hidden">Navigator Template</label>
+                    <input type="text" id="navigator_template" class="form-control" value="weighing">
+                    <label for="navigator_property" class="visually-hidden">Navigator Property</label>
+                    <input type="text" id="navigator_property" class="form-control" value="item1">
+                    <label for="navigator_style" class="visually-hidden">Navigator Style</label>
+                    <select name="navigator_style" id="navigator_style" class="form-select">
                         <option value="template">Template Viz</option>
                         <option value="prov">PROV Viz</option>
                         <option value="entities">Entities Viz</option>
@@ -210,9 +213,9 @@
                     <p></p>
                     <p></p>
 
-                    <button id="navigator-refresh" type="button" class="btn btn-info" onclick="submitNavigate('${symbol_pound}navigator-div')">Refresh</button>
+                    <button id="navigator_refresh" type="button" class="btn btn-info" onclick="submitNavigate('${symbol_pound}navigator_div')">Refresh</button>
                 </div>
-                <div class="col-lg-10 first-column" id="navigator-div">
+                <div class="col-lg-10 first-column" id="navigator_div">
                 </div>
             </div>
 
@@ -306,7 +309,7 @@
                                             <label for="the-url-input" class="visually-hidden">Template URL</label>
                                             <input id="the-url-input" type="text" name="url" class="input-large" style="width:315px; height: 30px"  />
 
-                                            <a class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" href="${symbol_pound}" aria-expanded="false">
+                                            <a class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" href="${symbol_pound}" aria-expanded="false" id="templates-examples-lnk">
                                                 <span class="caret"></span>
                                             </a>
 
@@ -318,7 +321,7 @@
                                                     <i class="icon-ok"></i>  generic.binaryop (old)</a>
                                                 </li>
                                                 -->
-                                                <li><a href="${symbol_pound}" onclick="updateRootURLInputBox('${symbol_dollar}{service.context}/webjars/prov-template-library/${symbol_dollar}{pom.the.template.library.version}/templates/org/openprovenance/prov/templates/generic/binaryop.provn')">
+                                                <li><a href="${symbol_pound}" id="template-binaryop-lnk" onclick="updateRootURLInputBox('${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/templates/org/openprovenance/templates/simple/binaryop.provn')">
                                                     <i class="icon-ok"></i>  generic/binaryop</a>
                                                 </li>
 
@@ -342,7 +345,7 @@
                                     <td>
                                         <div class="input-append btn-group">
 
-                                            <a class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" href="${symbol_pound}"  aria-expanded="false">
+                                            <a class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" href="${symbol_pound}"  aria-expanded="false" id="bindings-examples-lnk">
                                                 <span class="caret"></span>
                                             </a>
 
@@ -357,7 +360,7 @@
                                                 <li><a href="${symbol_pound}" onclick="updateRootBindingsBox('${symbol_dollar}{service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b3.json')">
                                                     <i class="icon-ok"></i>  generic.binaryop.b3 (1 output, 2 properties)</a>
                                                 </li>
-                                                <li><a href="${symbol_pound}" onclick="updateRootBindingsBox('${symbol_dollar}{service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b4.json')">
+                                                <li><a href="${symbol_pound}" id="bindings-binaryop-2-1-2-lnk"  onclick="updateRootBindingsBox('${symbol_dollar}{service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b4.json')">
                                                     <i class="icon-ok"></i>  generic.binaryop.b4 (2 outputs, 1 or 2 properties)</a>
                                                 </li>
 
@@ -385,12 +388,15 @@
         return arr1.filter(x => !arr2.includes(x));
     }
 
+    let shortNames = {}
+    let longNames = {}
+
     function constructMenusConfiguration() {
         let profile = {}
         let composites = {}
-        let shortNames = {}
         for (var indx in builders) {
             shortNames[builders[indx].getFullyQualifiedName()]=[builders[indx].getName()]
+            longNames[builders[indx].getName()]=[builders[indx].getFullyQualifiedName()]
             templateMapping[builders[indx].getFullyQualifiedName()]=builders[indx].getTemplateName()
             cbindingsMapping[builders[indx].getFullyQualifiedName()]=builders[indx].getCBindings()
             const builder = builders[indx]
@@ -462,9 +468,9 @@
     var alreadySeen=[]
 
     function createProvLink(name, ID) {
-        return "Link to Provenance <a target='_blank' id='form-result-svg' href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".svg'   >(svg)</a>,"
-                               + " <a target='_blank' id='form-result-provn'  href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".provn' >(provn)</a>,"
-                               + " <a target='_blank' id='form-result-jsonld' href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".jsonld'>(jsonld)</a>";
+        return "Link to Provenance <a target='_blank' id='form_result_svg' href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".svg'   >(svg)</a>,"
+                               + " <a target='_blank' id='form_result_provn'  href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".provn' >(provn)</a>,"
+                               + " <a target='_blank' id='form_result_jsonld' href='${symbol_dollar}{service.context}/provapi/template/" + name + "/" + ID + ".jsonld'>(jsonld)</a>";
     }
 
     function createXplainLink(name, ID) {
@@ -535,7 +541,10 @@
                     // if we want json log
                     //      ${symbol_dollar}(id2).append(JSON.stringify(merged, null, 2));
                     // if we want csv log
-                    ${symbol_dollar}(anchor_csv).append("<p>").append(csv_bean[0]).append("</p>");
+                    console.log("csv_bean " + csv_bean);
+                    let csv_with_brk=csv_bean[0].replace(/(?:\r\n|\r|\n)/g, '<br>').replaceAll('\\n','<br>');
+                    console.log("csv_with_brk " + csv_with_brk);
+                    ${symbol_dollar}(anchor_csv).append("<p>").append(csv_with_brk).append("</p>");
                 }
                 if (anchor_result_prov_link) {
                     let ID=parsed[0]["ID"];
@@ -644,11 +653,11 @@
                         // The `data` parameter refers to the data for the cell (defined by the
                         // `data` option, which defaults to the column being worked with, in
                         // this case `data: 0`.
-                        render: (data, type, row) => makeLinkToSignature(cleanSignature(data,row[4],row[3],seen),row[4],row[3]),
+                        render: (data, type, row) => makeLinkToSignature(cleanSignature(data,row[4],longNames[row[3]],seen),row[4],longNames[row[3]]),
                         targets: 7
                     },//,
                     {
-                        render: (data, type, row) => makeLinkToTemplate(data,row[4],row[3]),
+                        render: (data, type, row) => makeLinkToTemplate(data,row[4],longNames[row[3]]),
                         targets: 4
                     },
                     {
@@ -737,10 +746,10 @@
     function submitNavigate(id) {
         //let url = "http://localhost:7072/ptl/provapi/templates/viz"
         let url = "${symbol_dollar}{service.context}/provapi/templates/viz"
-        let template=${symbol_dollar}('${symbol_pound}navigator-template').val();
-        let property=${symbol_dollar}('${symbol_pound}navigator-property').val();
-        let template_id=${symbol_dollar}('${symbol_pound}navigator-id').val();
-        let style=${symbol_dollar}('${symbol_pound}navigator-style').val();
+        let template=${symbol_dollar}('${symbol_pound}navigator_template').val();
+        let property=${symbol_dollar}('${symbol_pound}navigator_property').val();
+        let template_id=${symbol_dollar}('${symbol_pound}navigator_id').val();
+        let style=${symbol_dollar}('${symbol_pound}navigator_style').val();
 
         console.log("submitNavigate " + template + " " + property + " " + id + " " + style);
 

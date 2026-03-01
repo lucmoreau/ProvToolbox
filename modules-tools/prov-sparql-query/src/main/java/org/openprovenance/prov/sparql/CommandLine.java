@@ -48,12 +48,15 @@ public class CommandLine {
             ontology="src/main/resources/prov-o.ttl";
         }
 
+        /*
         System.out.println("infile=" + infile);
         System.out.println("outfile=" + outfile);
         System.out.println("informat=" + informat);
         System.out.println("outformat=" + outformat);
         System.out.println("query=" + query);
         System.out.println("ontology=" + ontology);
+
+         */
 
         Config config=new Config();
         config.setInfile(infile);

@@ -736,7 +736,7 @@ System.out.println("templateConnections: " + templateConnections.stream().map(Te
                     sb.append("SELECT * FROM ");
                     sb.append(shortNames.get(templateFullyQualifiedName));
                     sb.append(" AS template ");
-                    joinAccessControl(templateFullyQualifiedName, principal, sb);
+                    joinAccessControl(shortNames.get(templateFullyQualifiedName), principal, sb);
                     sb.append("\n WHERE key=");
                     sb.append(id);
                     andAccessControl(principal, sb);
@@ -892,7 +892,7 @@ System.out.println("templateConnections: " + templateConnections.stream().map(Te
                                     }
                                     fun.on (out_templatex + "." +  out_property + " = " + in_templatex  + "." +  in_property )
                                             .and(           unquote(PARAM_PROPERTY) + " = '" + in_property + "'")
-                                            .and(           unquote(PARAM_TEMPLATE) + " = '" + in_templatex + "'")
+                                            .and(           unquote(PARAM_TEMPLATE) + " = '" + in_template + "'")  // was incorrectly in_templatex
                                             .and( in_templatex + ".id=" + PARAM_ID);
                                 }
                             }

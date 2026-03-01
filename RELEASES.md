@@ -19,6 +19,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates: upgraded to bootstrap 5.
 * prov-template-compiler: PAST expression type checking (simple bindings)
 * prov-template-compiler: PAST expression type checking
+* service-templates-core: TemplateQuery: fixed issue in recursive traversal query
 
 
 `2.2.2`

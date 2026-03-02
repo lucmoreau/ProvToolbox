@@ -75,7 +75,7 @@
     "gulp-sourcemaps": "^3.0.0",
     "gulp-umd": "^2.0.0",
     "js-green-licenses": "^2.0.1",
-    "mocha": "^8.1.1",
+    "mocha": "^11.7.5",
     "rimraf": "^3.0.2",
     "selenium-standalone": "^6.17.0",
     "through2": "^4.0.2",

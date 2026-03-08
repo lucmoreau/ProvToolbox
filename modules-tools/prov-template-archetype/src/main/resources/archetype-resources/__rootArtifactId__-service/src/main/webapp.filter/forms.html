@@ -157,17 +157,19 @@
             </div>
 
             <div id="tab_documentation" class="tab-pane" role="tabpanel">
-                <div class="col-lg-2">
-                    <div id="template-dropdown-documentation" class="dropdown">
-                        <a href="${symbol_pound}" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" id="template-dropdown-documentation-lnk">${symbol_dollar}{pom.templates.button.label}</a>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div id="template-dropdown-documentation" class="dropdown">
+                            <a href="${symbol_pound}" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" id="template-dropdown-documentation-lnk">${symbol_dollar}{pom.templates.button.label}</a>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-7 first-column">
-                    <div id="documentation" class="shrink_h2">
-                    </div>
-                    <div id="documentation_image">
-                    </div>
-                    <div id="tmp_div" class="invisible_div">
+                    <div class="col-lg-7 first-column">
+                        <div id="documentation" class="shrink_h2">
+                        </div>
+                        <div id="documentation_image">
+                        </div>
+                        <div id="tmp_div" class="invisible_div">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -178,44 +180,48 @@
             </div>
 
             <div id="tab_browser" class="tab-pane" role="tabpanel">
-                <div class="col-lg-2">
-                    <label for="browser_base_relation">Base relation:</label><input type="text" id="browser_base_relation" class="form-control" value="activity">
-                    <label for="browser_from_date">From date:</label><input type="datetime-local" id="browser_from_date" class="form-control" value="2024-07-19T15:13">
-                    <label for="browser_to_date">To date:</label><input type="datetime-local" id="browser_to_date" class="form-control" >
-                    <label for="browser_limit"></label><input type="number" id="browser_limit" class="form-control" value="100">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label for="browser_base_relation">Base relation:</label><input type="text" id="browser_base_relation" class="form-control" value="activity">
+                        <label for="browser_from_date">From date:</label><input type="datetime-local" id="browser_from_date" class="form-control" value="2024-07-19T15:13">
+                        <label for="browser_to_date">To date:</label><input type="datetime-local" id="browser_to_date" class="form-control" >
+                        <label for="browser_limit"></label><input type="number" id="browser_limit" class="form-control" value="100">
 
-                    <p></p>
-                    <button id="browser_refresh" type="button" class="btn btn-info"    onclick="submitBrowse()">Refresh</button>
-                    <button id="browser_clear"   type="button" class="btn btn-warning" onclick="clearBrowse()">Clear</button>
-                </div>
-                <div class="col-lg-10 first-column">
-                    <table id="browser_list"
-                           class="display"
-                           style="width:80%">
-                    </table>
+                        <p></p>
+                        <button id="browser_refresh" type="button" class="btn btn-info"    onclick="submitBrowse()">Refresh</button>
+                        <button id="browser_clear"   type="button" class="btn btn-warning" onclick="clearBrowse()">Clear</button>
+                    </div>
+                    <div class="col-lg-10 first-column">
+                        <table id="browser_list"
+                               class="display"
+                               style="width:80%">
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <div id="tab_navigator" class="tab-pane" role="tabpanel">
-                <div class="col-lg-2">
-                    <label for="navigator_id" class="visually-hidden">Navigator ID</label>
-                    <input type="number" id="navigator_id" class="form-control" value="96">
-                    <label for="navigator_template" class="visually-hidden">Navigator Template</label>
-                    <input type="text" id="navigator_template" class="form-control" value="weighing">
-                    <label for="navigator_property" class="visually-hidden">Navigator Property</label>
-                    <input type="text" id="navigator_property" class="form-control" value="item1">
-                    <label for="navigator_style" class="visually-hidden">Navigator Style</label>
-                    <select name="navigator_style" id="navigator_style" class="form-select">
-                        <option value="template">Template Viz</option>
-                        <option value="prov">PROV Viz</option>
-                        <option value="entities">Entities Viz</option>
-                    </select>
-                    <p></p>
-                    <p></p>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label for="navigator_id" class="visually-hidden">Navigator ID</label>
+                        <input type="number" id="navigator_id" class="form-control" value="96">
+                        <label for="navigator_template" class="visually-hidden">Navigator Template</label>
+                        <input type="text" id="navigator_template" class="form-control" value="weighing">
+                        <label for="navigator_property" class="visually-hidden">Navigator Property</label>
+                        <input type="text" id="navigator_property" class="form-control" value="item1">
+                        <label for="navigator_style" class="visually-hidden">Navigator Style</label>
+                        <select name="navigator_style" id="navigator_style" class="form-select">
+                            <option value="template">Template Viz</option>
+                            <option value="prov">PROV Viz</option>
+                            <option value="entities">Entities Viz</option>
+                        </select>
+                        <p></p>
+                        <p></p>
 
-                    <button id="navigator_refresh" type="button" class="btn btn-info" onclick="submitNavigate('${symbol_pound}navigator_div')">Refresh</button>
-                </div>
-                <div class="col-lg-10 first-column" id="navigator_div">
+                        <button id="navigator_refresh" type="button" class="btn btn-info" onclick="submitNavigate('${symbol_pound}navigator_div')">Refresh</button>
+                    </div>
+                    <div class="col-lg-10 first-column" id="navigator_div">
+                    </div>
                 </div>
             </div>
 

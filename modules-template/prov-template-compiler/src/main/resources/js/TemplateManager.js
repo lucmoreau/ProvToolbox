@@ -126,7 +126,6 @@ class TemplateManager {
             let csv=csv_bean[0];
             let bean=csv_bean[1];
             let name=bean["isA"];
-            console.log(csv);
             myself.setBean(bean);
             if (values[ELEMENTS]) {
                 myself.getBean().count=values[ELEMENTS].length;
@@ -146,6 +145,10 @@ class TemplateManager {
             }
             if (csv_location) {
                 let csv_div = $('<div>');
+                //if csv contains \n, we need to replace it with <br> for it to be displayed correctly in html
+                //LUC: we need to replace both \n and \\n, because the former is how newlines are represented in the csv string, whereas the latter is how they are represented in the json form values (because of the way json escaping works)
+                csv=csv.replaceAll('\n', '<br>').replaceAll('\\n','<br>');
+                console.log("csv with brk: " + csv);
                 csv_div.append('<p>' + csv + '</p>')
                 if (errors) {
                     csv_div.append('<p>Reported errors:</p>')

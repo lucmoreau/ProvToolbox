@@ -41,6 +41,7 @@ public class Python implements Emitter<StringBuilder> {
     private int lambdaCount=0;
     private String currentPackageName;
     private ClassSignature currentClassSignature;
+    private String classNameDebug;
 
     public Python(TypeRegistry registry) {
         this.typeRegistry = registry;
@@ -92,6 +93,7 @@ public class Python implements Emitter<StringBuilder> {
         sb.append("class ").append(sanitizeName(clazz.name));
 
         // debug
+        this.classNameDebug=clazz.name;
         if (clazz.name.equals("BeanCompleter2") ) {
             ClassSignature sig=typeRegistry.lookup("BeanCompleter2", "org.openprovenance.templates.catalogue.fs.integrator");
             System.out.println("*************** Class signature for BeanCompleter2: " + sig);
@@ -370,7 +372,8 @@ public class Python implements Emitter<StringBuilder> {
         // Prefer registry-based alt name over singledispatch/register pattern
         String altName = findAltNameForDeclaration(method);
 
-        if (altName == null) {
+        // DELETE ME
+        if (false && altName == null) {
             // Fall back to singledispatch/register pattern from PAST annotations
             if (foundSingleDispatchMethod) {
                 sb.append(INDENT).append("# https://stackoverflow.com/questions/24601722/how-can-i-use-functools-singledispatch-with-instance-methods\n")
@@ -491,13 +494,42 @@ public class Python implements Emitter<StringBuilder> {
     }
 
     /**
+     * Look up the alt name for a self-method call site using explicit argument types.
+     * Unlike {@link #findAltNameForCall}, this performs exact type matching so it correctly
+     * resolves overloads that share the same argument count but differ in parameter types.
+     * Note: uses exact type (no subtyping here).
+     */
+    private String findAltNameForCall2(String methodName, List<TypeName> argTypes) {
+        if (currentClassSignature == null || typeRegistry == null) return null;
+        for (MethodSignature ms : currentClassSignature.methods) {
+            if (!ms.name.equals(methodName)) continue;
+            if (!paramTypesMatch(argTypes, ms)) continue;
+            for (PastAnnotation ann : ms.getAnnotations()) {
+                if (ann instanceof OverloadedMethod) return ((OverloadedMethod) ann).getAltName();
+            }
+        }
+        return null;
+    }
+
+    /**
      * Check whether the parameter types of a PAST Method match those of a registry MethodSignature.
      */
     private boolean paramTypesMatch(Method method, MethodSignature ms) {
-        for (int i = 0; i < method.parameters.size(); i++) {
-            String pastTypeName = typeSimpleName(method.parameters.get(i).type).toLowerCase();
+        if (method.parameters.size() != ms.parameterTypes.size()) return false;
+        List<TypeName> argTypes = new ArrayList<>();
+        for (Parameter p : method.parameters) argTypes.add(p.type);
+        return paramTypesMatch(argTypes, ms);
+    }
+
+    /**
+     * Check whether a list of argument types matches the parameter types of a registry MethodSignature.
+     */
+    private boolean paramTypesMatch(List<TypeName> argTypes, MethodSignature ms) {
+        if (argTypes.size() != ms.parameterTypes.size()) return false;
+        for (int i = 0; i < argTypes.size(); i++) {
+            String argTypeName = typeSimpleName(argTypes.get(i)).toLowerCase();
             String regTypeName = typeSimpleName(ms.parameterTypes.get(i)).toLowerCase();
-            if (!pastTypeName.equals(regTypeName)) return false;
+            if (!argTypeName.equals(regTypeName)) return false;
         }
         return true;
     }
@@ -902,12 +934,19 @@ public class Python implements Emitter<StringBuilder> {
                 assert mc.object!=null;
                 String convertedObject = convert(mc.object);
                 String callMethodName = sanitizeName(mc.methodName);
+                // debug
+                if (classNameDebug!=null && classNameDebug.equals("BeanLocalEnactor2")) {
+                    System.out.println("######### " + convertedObject);
+                }
                 // For self-calls to overloaded methods, use the registry alt name
                 if ("self".equals(convertedObject)) {
                     int argCount = mc.arguments == null ? 0 : mc.arguments.size();
-                    String resolvedAlt = findAltNameForCall(mc.methodName, argCount);
-                    if (resolvedAlt != null) {
-                        callMethodName = sanitizeName(resolvedAlt);
+                    if (argCount!=0) {
+                        List<TypeName> argumentTypes= mc.arguments.stream().map(a -> a.inferredType).collect(Collectors.toList());
+                        String resolvedAlt = findAltNameForCall2(mc.methodName, argumentTypes);
+                        if (resolvedAlt != null) {
+                            callMethodName = sanitizeName(resolvedAlt);
+                        }
                     }
                 }
                 result.append(convertedObject).append(".").append(callMethodName).append("(");
@@ -945,7 +984,22 @@ public class Python implements Emitter<StringBuilder> {
                     // methodName is a method of a functional interface. In python, the function is called directly instead, without naming a method
                     result.append(convert(mc.object)).append("(");
                 } else {
-                    result.append(convert(mc.object)).append(".").append(sanitizeName(mc.methodName)).append("(");
+                    if (classNameDebug!=null && classNameDebug.equals("BeanLocalEnactor2")) {
+                        System.out.println("######### (funcitonal interface) " + convert(mc.object));
+                    }
+                    String convertedObject = convert(mc.object);
+                    String callMethodName = sanitizeName(mc.methodName);
+                    if ("self".equals(convertedObject)) {
+                        int argCount = mc.arguments == null ? 0 : mc.arguments.size();
+                        if (argCount!=0) {
+                            List<TypeName> argumentTypes= mc.arguments.stream().map(a -> a.inferredType).collect(Collectors.toList());
+                            String resolvedAlt = findAltNameForCall2(mc.methodName, argumentTypes);
+                            if (resolvedAlt != null) {
+                                callMethodName = sanitizeName(resolvedAlt);
+                            }
+                        }
+                    }
+                    result.append(convertedObject).append(".").append(callMethodName).append("(");
                 }
                 if (mc.arguments != null) {
 

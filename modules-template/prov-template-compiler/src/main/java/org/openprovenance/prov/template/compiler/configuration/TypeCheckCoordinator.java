@@ -8,6 +8,7 @@ import org.openprovenance.prov.template.compiler.past.checker.TypeDiagnostic;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +28,7 @@ public class TypeCheckCoordinator {
     private final ExternalTypeRegistry externalRegistry;
     private final TypeChecker typeChecker;
     private boolean finalized = false;
+    private final List<Runnable> preCheckTasks = new ArrayList<>();
 
     TypeCheckCoordinator(ExternalTypeRegistry externalRegistry) {
         this.externalRegistry = (externalRegistry != null) ? externalRegistry : new ExternalTypeRegistry();
@@ -50,6 +52,15 @@ public class TypeCheckCoordinator {
     }
 
     /**
+     * Register a task to run during the type checking phase, just before {@code checkAll()} executes.
+     * Use this to integrate other registration steps (e.g. Rust trait discovery) into the same phase,
+     * so they benefit from having all PAST classes available but still run before code generation.
+     */
+    public void registerPreCheckTask(Runnable task) {
+        preCheckTasks.add(task);
+    }
+
+    /**
      * Run type checking on all registered classes and report diagnostics.
      * This is Pass 2: checking all classes with full type knowledge.
      *
@@ -60,6 +71,10 @@ public class TypeCheckCoordinator {
             return List.of();
         }
         finalized = true;
+
+        // Run any pre-check tasks (e.g. Rust trait discovery) before type checking executes
+        for (Runnable task : preCheckTasks) task.run();
+        preCheckTasks.clear();
 
         List<TypeDiagnostic> diagnostics = typeChecker.checkAll();
 

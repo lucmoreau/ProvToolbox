@@ -82,7 +82,6 @@ public class SpecificationFile {
 
     static boolean rustProjectCreated=false;
     static RustCodeGenerator rustCodeGenerator = new RustCodeGenerator();
-    static boolean rustFinalizationTaskAdded = false;
     static ExternalTypeRegistry externalRegistry = initializeExternalRegistry(new ExternalTypeRegistry());
     static TypeCheckCoordinator typeCheckCoordinator = new TypeCheckCoordinator(externalRegistry);
     static CodeGenerationCoordinator codeGenCoordinator = new CodeGenerationCoordinator();
@@ -95,7 +94,6 @@ public class SpecificationFile {
      */
     public static void resetRustCoordinator() {
         rustCodeGenerator = new RustCodeGenerator();
-        rustFinalizationTaskAdded = false;
     }
 
     /**
@@ -290,29 +288,18 @@ public class SpecificationFile {
 
     public static boolean generateRust(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
         if (destinationDir == null) return false;
-        try {
-            // Pass 1: Immediately register class for trait discovery (must happen before finalizeCodeGeneration)
-            rustCodeGenerator.registerClass(pastClass, packageName, destinationDir, stackTraceElement);
-            // Pass 2: Add a single generateAll task to codeGenCoordinator (deferred until after type checking)
-            if (!rustFinalizationTaskAdded) {
-                rustFinalizationTaskAdded = true;
-                codeGenCoordinator.addTask(registry -> {
-                    try {
-                        return rustCodeGenerator.generateAll();
-                    } catch (IOException e) {
-                        throw new RuntimeException("Rust generation failed", e);
-                    }
-                });
-            }
-            return true;
-        } catch (RuntimeException e) {
+        // Pass 1: Defer trait discovery to the type checking phase (same phase as typeCheckCoordinator.register)
+        typeCheckCoordinator.registerPreCheckTask(() ->
+                rustCodeGenerator.registerClass(pastClass, packageName, destinationDir, stackTraceElement));
+        // Pass 2: Add a per-class code generation task — same pattern as generateJava/generatePython
+        codeGenCoordinator.addTask(registry -> {
             try {
-                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                return rustCodeGenerator.generateClass(pastClass, packageName, destinationDir, stackTraceElement, registry);
+            } catch (IOException e) {
+                throw new RuntimeException("Rust generation failed for " + pastClass.name, e);
             }
-            throw new RuntimeException(e);
-        }
+        });
+        return true;
     }
 
 }

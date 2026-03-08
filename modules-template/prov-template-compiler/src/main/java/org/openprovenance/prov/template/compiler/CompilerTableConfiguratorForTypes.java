@@ -18,7 +18,6 @@ import static org.openprovenance.prov.template.compiler.configuration.Specificat
 import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY_ACCESSOR;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
-import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
 import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
@@ -26,6 +25,7 @@ import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITI
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.ForLoop.FOR;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.InstanceOf.INSTANCE_OF;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.*;
 import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
@@ -156,7 +156,7 @@ public class CompilerTableConfiguratorForTypes {
 
                                         DEFINITION(OBJECT, VARIABLE("value"),
                                                 ARRAY_ACCESSOR(VARIABLE("record2"), VARIABLE("i"))),
-                                        IF(BINARY_OP(VARIABLE("value"), INSTANCEOF, METHOD_CALL(PROV_QUALIFIED_NAME,"class")))
+                                        IF(INSTANCE_OF(VARIABLE("value"), PROV_QUALIFIED_NAME))
                                                 .THEN(
                                                         METHOD_CALL(
                                                                 VARIABLE(PROPERTY_MAP),

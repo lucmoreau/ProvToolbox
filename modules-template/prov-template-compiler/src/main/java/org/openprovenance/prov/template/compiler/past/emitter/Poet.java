@@ -571,12 +571,7 @@ public class Poet implements Emitter<TypeSpec> {
                 CodeBlock leftCode = convert(binaryOperation.left);
                 CodeBlock rightCode = convert(binaryOperation.right);
                 if (binaryOperation.op.equals(INSTANCEOF)) {
-                    // the argument of instanceof must be of the form String.class (i.e. a MethodCall with className set)
-                    if (!(binaryOperation.right instanceof MethodCall) || ((MethodCall) binaryOperation.right).className==null) {
-                        throw new IllegalArgumentException("Right side of instanceof must be a class name");
-                    }
-                    MethodCall mc = (MethodCall) binaryOperation.right;
-                    return CodeBlock.of("($L $L $T)", leftCode, binaryOperation.op, convert(mc.className));
+                    throw new IllegalArgumentException("Use InstanceOf expression instead of binary operator for instanceof checks");
                 } if (binaryOperation.op.equals("Objects.equals")) {
                     return CodeBlock.of("$T.equals($L,$L)", Objects.class, leftCode, rightCode);
                 }
@@ -605,6 +600,12 @@ public class Poet implements Emitter<TypeSpec> {
                     TypeName elementTypeName = convert(arrayAllocator.elementType);
                     return CodeBlock.of("new $T[$L]", elementTypeName, sizeCode);
                 }
+            }
+
+            case INSTANCEOF ->  {
+                InstanceOf instanceOf = (InstanceOf) expression;
+                CodeBlock exprCode = convert(instanceOf.expression);
+                return CodeBlock.of("($L instanceof $T)", exprCode, convert(instanceOf.type));
             }
         }
         throw new IllegalArgumentException("Expression conversion not supported yet " + expression.expressionKind);

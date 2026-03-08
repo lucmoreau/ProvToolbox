@@ -170,6 +170,10 @@ public class ConfigProcessor implements Constants {
 
         try {
             configs = objectMapper.readValue(new File(addBaseDirIfRelative(template_builder, inputBaseDir)), TemplatesProjectConfiguration.class);
+
+            SpecificationFile.resetTypeCheckCoordinator();
+            SpecificationFile.resetCodeGenCoordinator();
+
             //System.out.println(configs);
             final String root_dir = outputBaseDir + "/" + configs.destination + "/" + configs.name;
             new File(root_dir).mkdirs(); 
@@ -400,8 +404,6 @@ public class ConfigProcessor implements Constants {
         final String openprovenance_dir= cli_src_dir + "/" + CLIENT_PACKAGE.replace('.', '/') + "/";
 
 
-
-
         compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true, compilerCommon.getFoundEscape());
         compilerMaven.makeSubPomJweet(configs, cli_dir, cli_lib, configs.jsweet);
 
@@ -576,9 +578,6 @@ public class ConfigProcessor implements Constants {
         SpecificationFile queryComposer= compilerQueryInvoker.generateQueryInvoker(configs, locations, true, QUERY_INVOKER );
         queryComposer.save();
 
-
-
-
         SpecificationFile beanChecker= compilerBeanChecker.generateBeanChecker(configs, locations, BeanDirection.COMMON, null, BEAN_CHECKER);
         beanChecker.save();
 
@@ -596,18 +595,14 @@ public class ConfigProcessor implements Constants {
         SpecificationFile configurationRelation0= compilerConfigurations.generateRelation0Configurator(configs,RELATION0_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,RELATION0_CONFIGURATOR)), RELATION0_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationRelation0.save();
 
-
         SpecificationFile configurationRelation= compilerConfigurations.generateRelationConfigurator(configs,RELATION_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,RELATION_CONFIGURATOR)), RELATION_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationRelation.save();
 
         SpecificationFile configurationBuilderProcessor= compilerConfigurations.generateBuilderProcessorConfigurator(configs,BUILDER_PROCESSOR_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,BUILDER_PROCESSOR_CONFIGURATOR)), BUILDER_PROCESSOR_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationBuilderProcessor.save();
 
-
         SpecificationFile configurationObjectRecordMaker= compilerConfigurations.generateObjectRecordMakerConfigurator(configs,OBJECT_RECORD_MAKER_CONFIGURATOR, locations, locations.convertToBackendDirectory(locations.getFilePackage(configs.name,OBJECT_RECORD_MAKER_CONFIGURATOR)), OBJECT_RECORD_MAKER_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationObjectRecordMaker.save();
-
-
 
         SpecificationFile configurationCsv= compilerConfigurations.generateCsvConfigurator(configs,CSV_CONFIGURATOR, locations,locations.convertToDirectory(locations.getFilePackage(configs.name,CSV_CONFIGURATOR)), CSV_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationCsv.save();
@@ -646,16 +641,13 @@ public class ConfigProcessor implements Constants {
         SpecificationFile compositeConfigurationEnactor= compilerCompositeConfigurations.generateCompositeEnactorConfigurator(configs, locations, COMPOSITE_ENACTOR_CONFIGURATOR);
         compositeConfigurationEnactor.save();
 
-
         SpecificationFile.finalizeTypeChecking();
+        System.out.println("################## Type Checking done, now generating code...");
 
-        System.out.println("##################Rust code generation started...");
-        try {
-            SpecificationFile.finalizeRustGeneration();
-            compileRustProject();
-        } catch (IOException e) {
-            throw new RuntimeException("failed to finalize Rust code generation", e);
-        }
+        SpecificationFile.finalizeCodeGeneration();
+
+        System.out.println("##################Rust compilation started...");
+        compileRustProject();
 
     }
 

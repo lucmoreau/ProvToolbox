@@ -6,9 +6,15 @@ import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Iterator;
 import org.openprovenance.prov.template.compiler.past.annotations.*;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
+import org.openprovenance.prov.template.compiler.past.checker.ClassSignature;
+import org.openprovenance.prov.template.compiler.past.checker.MethodSignature;
+import org.openprovenance.prov.template.compiler.past.checker.TypeRegistry;
+import org.openprovenance.prov.template.compiler.past.type.ArrayType;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
+import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,9 +35,16 @@ import static org.openprovenance.prov.template.compiler.past.MethodCall.MethodCa
  * Mirrors the Poet.java approach but outputs Python syntax.
  */
 public class Python implements Emitter<StringBuilder> {
+    private final TypeRegistry typeRegistry;
     private StringBuilder sb;
     private static final String INDENT = "    ";
     private int lambdaCount=0;
+    private String currentPackageName;
+    private ClassSignature currentClassSignature;
+
+    public Python(TypeRegistry registry) {
+        this.typeRegistry = registry;
+    }
 
 
     public StringBuilder addHeader(StringBuilder sb, String templateName, String packge, StackTraceElement stackTraceElement) {
@@ -42,6 +55,7 @@ public class Python implements Emitter<StringBuilder> {
     }
 
     public WritableObject toWritableObject(Class clazz, String className, String packge, StackTraceElement stackTraceElement) {
+        this.currentPackageName = packge;
         StringBuilder theBuffer=emit(clazz);
 
         addHeader(theBuffer, className, packge, stackTraceElement);
@@ -60,6 +74,8 @@ public class Python implements Emitter<StringBuilder> {
     @Override
     public StringBuilder emit(Class clazz) {
         this.sb = new StringBuilder();
+        this.currentClassSignature = (typeRegistry != null && currentPackageName != null)
+                ? typeRegistry.lookup(clazz.name, currentPackageName) : null;
 
         imports = new java.util.HashSet<>();
         imports.add("past.util.Map");
@@ -74,6 +90,15 @@ public class Python implements Emitter<StringBuilder> {
 
         // Class declaration
         sb.append("class ").append(sanitizeName(clazz.name));
+
+        // debug
+        if (clazz.name.equals("BeanCompleter2") ) {
+            ClassSignature sig=typeRegistry.lookup("BeanCompleter2", "org.openprovenance.templates.catalogue.fs.integrator");
+            System.out.println("*************** Class signature for BeanCompleter2: " + sig);
+            if (sig!=null) {
+                System.out.println("*************** Method signature for BeanCompleter2: " + sig.methods);
+            }
+        }
 
         // Base classes (interfaces in Java become base classes in Python)
         // ignored for now
@@ -99,7 +124,7 @@ public class Python implements Emitter<StringBuilder> {
             emitDefaultConstructor(clazz.fields);
         } else {
             for (Constructor constructor : clazz.constructors) {
-                emitMethod(METHOD("__init__")
+                emitMethod(METHOD("____init__") // note the quadruple _ because the first two will be removed in sanitizeName, and we want to end up with __init__
                                 .PARAMETERS(constructor.parameters)
                                 .MODIFIERS(constructor.modifiers.toArray(new Modifier[0]))
                                 .BODY(constructor.body.toArray(new Statement[0]))
@@ -342,33 +367,41 @@ public class Python implements Emitter<StringBuilder> {
             }
         }
 
-        if (foundSingleDispatchMethod) {
-            sb.append(INDENT).append("# https://stackoverflow.com/questions/24601722/how-can-i-use-functools-singledispatch-with-instance-methods\n")
-                    .append(INDENT).append("""
-                    def methdispatch(func):
-                            dispatcher = singledispatch(func)
-                            def wrapper(*args, **kw):
-                                return dispatcher.dispatch(args[1].__class__)(*args, **kw)
-                            wrapper.register = dispatcher.register
-                            update_wrapper(wrapper, dispatcher)
-                            return wrapper
-                    
-                    """);
-            sb.append(INDENT).append("@methdispatch\n");
-            sb.append(INDENT).append("def ").append(sanitizeName(method.name)).append("(self,").append(sanitizeName(method.parameters.get(0).name)).append("):\n");
-            sb.append(INDENT).append(INDENT).append("pass\n\n");
-            imports.add("functools.singledispatch");
-        }
+        // Prefer registry-based alt name over singledispatch/register pattern
+        String altName = findAltNameForDeclaration(method);
 
-        if (foundRegisterMethod) {
-            TypeName inClazz= method.parameters.get(0).type;
-            String inTypeName=importAndGetLocalName(sanitizeName(convert(inClazz)));
-            sb.append(INDENT).append("@").append(method.name).append(".register(").append(inTypeName).append(")\n");
+        if (altName == null) {
+            // Fall back to singledispatch/register pattern from PAST annotations
+            if (foundSingleDispatchMethod) {
+                sb.append(INDENT).append("# https://stackoverflow.com/questions/24601722/how-can-i-use-functools-singledispatch-with-instance-methods\n")
+                        .append(INDENT).append("""
+                        def methdispatch(func):
+                                dispatcher = singledispatch(func)
+                                def wrapper(*args, **kw):
+                                    return dispatcher.dispatch(args[1].__class__)(*args, **kw)
+                                wrapper.register = dispatcher.register
+                                update_wrapper(wrapper, dispatcher)
+                                return wrapper
+
+                        """);
+                sb.append(INDENT).append("@methdispatch\n");
+                sb.append(INDENT).append("def ").append(sanitizeName(method.name)).append("(self,").append(sanitizeName(method.parameters.get(0).name)).append("):\n");
+                sb.append(INDENT).append(INDENT).append("pass\n\n");
+                imports.add("functools.singledispatch");
+            }
+
+            if (foundRegisterMethod) {
+                TypeName inClazz= method.parameters.get(0).type;
+                String inTypeName=importAndGetLocalName(sanitizeName(convert(inClazz)));
+                sb.append(INDENT).append("@").append(method.name).append(".register(").append(inTypeName).append(")\n");
+            }
         }
 
         // Method signature
         String methodName=method.name;
-        if (foundRegisterMethod) {
+        if (altName != null) {
+            methodName = altName; // use registry-derived alt name for overloaded method
+        } else if (foundRegisterMethod) {
             methodName="_"; // https://www.index.dev/blog/function-overloading-in-python
         }
         sb.append(INDENT).append("def ").append(sanitizeName(methodName));
@@ -408,6 +441,73 @@ public class Python implements Emitter<StringBuilder> {
         sb.append(INDENT).append(INDENT).append("pass\n\n");
 
 
+    }
+
+    /**
+     * Look up the alt name for a method declaration from the TypeRegistry.
+     * Returns null if no overloaded alt name is registered for this method.
+     */
+    private String findAltNameForDeclaration(Method method) {
+        if (currentClassSignature == null || typeRegistry == null) return null;
+        int paramCount = method.parameters == null ? 0 : method.parameters.size();
+        for (MethodSignature ms : currentClassSignature.methods) {
+            if (!ms.name.equals(method.name)) continue;
+            if (ms.parameterTypes.size() != paramCount) continue;
+            for (PastAnnotation ann : ms.getAnnotations()) {
+                if (ann instanceof OverloadedMethod) {
+                    if (paramCount == 0 || paramTypesMatch(method, ms)) {
+                        return ((OverloadedMethod) ann).getAltName();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Look up the alt name for a self-method call site from the TypeRegistry.
+     * Returns non-null only when there is exactly one overloaded candidate with the given arg count,
+     * to avoid ambiguous resolution.
+     */
+    private String findAltNameForCall(String methodName, int argCount) {
+        if (currentClassSignature == null || typeRegistry == null) return null;
+        List<MethodSignature> candidates = new ArrayList<>();
+        for (MethodSignature ms : currentClassSignature.methods) {
+            if (!ms.name.equals(methodName)) continue;
+            if (ms.parameterTypes.size() != argCount) continue;
+            for (PastAnnotation ann : ms.getAnnotations()) {
+                if (ann instanceof OverloadedMethod) {
+                    candidates.add(ms);
+                    break;
+                }
+            }
+        }
+        if (candidates.size() == 1) {
+            for (PastAnnotation ann : candidates.get(0).getAnnotations()) {
+                if (ann instanceof OverloadedMethod) return ((OverloadedMethod) ann).getAltName();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check whether the parameter types of a PAST Method match those of a registry MethodSignature.
+     */
+    private boolean paramTypesMatch(Method method, MethodSignature ms) {
+        for (int i = 0; i < method.parameters.size(); i++) {
+            String pastTypeName = typeSimpleName(method.parameters.get(i).type).toLowerCase();
+            String regTypeName = typeSimpleName(ms.parameterTypes.get(i)).toLowerCase();
+            if (!pastTypeName.equals(regTypeName)) return false;
+        }
+        return true;
+    }
+
+    private static String typeSimpleName(TypeName type) {
+        if (type instanceof ClassName) return ((ClassName) type).simpleName;
+        if (type instanceof ParameterizedType) return ((ParameterizedType) type).getRawType().simpleName;
+        if (type instanceof ArrayType) return typeSimpleName(((ArrayType) type).elementType) + "Array";
+        if (type instanceof TypeVariable) return ((TypeVariable) type).name;
+        return type.toString();
     }
 
     String postDecrement=null;
@@ -709,18 +809,16 @@ public class Python implements Emitter<StringBuilder> {
             case BINARY_OP: {
                 BinaryOp bo = (BinaryOp) expression;
                 if (bo.op.equals(INSTANCEOF)) {
-                    // the argument of instanceof must be of the form String.class (i.e. a MethodCall with className set)
-                    if (!(bo.right instanceof MethodCall) || ((MethodCall) bo.right).className==null) {
-                        throw new IllegalArgumentException("Right side of instanceof must be a class name");
-                    }
-                    MethodCall mc = (MethodCall) bo.right;
-                    // convert the typename to a python type
-                    String typeName = convertForInstanceCheck(mc.className);
-                    return "isinstance(" + convert(bo.left) + ", " + importAndGetLocalName(sanitizeName(typeName)) + ")";
-
+                    throw new IllegalArgumentException("Unexpected use of instanceof operator in binary operation. Use the dedicated INSTANCEOF expression kind instead.");
                 } else {
                     return convert(bo.left) + " " + convertOp(bo.op) + " " + convert(bo.right);
                 }
+            }
+
+            case INSTANCEOF: {
+                InstanceOf io = (InstanceOf) expression;
+                String typeName = convertForInstanceCheck(io.type);
+                return "isinstance(" + convert(io.expression) + ", " + importAndGetLocalName(sanitizeName(typeName)) + ")";
             }
 
             case IF_EXPRESSION: {
@@ -802,7 +900,17 @@ public class Python implements Emitter<StringBuilder> {
             }
             case OBJECT_METHOD_CALL -> {
                 assert mc.object!=null;
-                result.append(convert(mc.object)).append(".").append(sanitizeName(mc.methodName)).append("(");
+                String convertedObject = convert(mc.object);
+                String callMethodName = sanitizeName(mc.methodName);
+                // For self-calls to overloaded methods, use the registry alt name
+                if ("self".equals(convertedObject)) {
+                    int argCount = mc.arguments == null ? 0 : mc.arguments.size();
+                    String resolvedAlt = findAltNameForCall(mc.methodName, argCount);
+                    if (resolvedAlt != null) {
+                        callMethodName = sanitizeName(resolvedAlt);
+                    }
+                }
+                result.append(convertedObject).append(".").append(callMethodName).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
                             .map(this::convert)

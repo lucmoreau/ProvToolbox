@@ -27,6 +27,7 @@ import static org.openprovenance.prov.model.StatementOrBundle.ALL_RELATIONS;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.InstanceOf.INSTANCE_OF;
 import static org.openprovenance.prov.template.core.InstantiateUtil.isVariable;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
@@ -838,7 +839,7 @@ public class CompilerCommon {
                                         BinaryOp.EQ,
                                         Constant.getNull()))
                                 .THEN(Constant.getNull())
-                                .ELSE(IF_(BINARY_OP(ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)), INSTANCEOF,METHOD_CALL(STRING,"class")))
+                                .ELSE(IF_(INSTANCE_OF(ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)), STRING))
                                         .THEN(converter2.apply(List.of(CAST(STRING, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count))))))
                                         .ELSE(CAST(declaredJavaType2, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)))));
 
@@ -1730,7 +1731,7 @@ public class CompilerCommon {
                                     IF_(
                                             BINARY_OP(ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)), "==", Constant.getNull()))
                                             .THEN(Constant.getNull())
-                                            .ELSE(IF_(BINARY_OP(ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)), "instanceof", METHOD_CALL(STRING,"class")))
+                                            .ELSE(IF_(INSTANCE_OF(ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)), STRING))
                                                     .THEN(converter.apply(List.of(CAST(STRING, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count))))))
                                                     .ELSE(CAST(declaredJavaType2, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)))))));
 
@@ -1829,7 +1830,7 @@ public class CompilerCommon {
                                             BINARY_OP(ARRAY_ACCESSOR(VARIABLE("record"),CONSTANT(count)),EQ,getNull()),
                                             getNull(),
                                             IFEXPRESSION(
-                                                    BINARY_OP(ARRAY_ACCESSOR(VARIABLE("record"),CONSTANT(count)),INSTANCEOF,METHOD_CALL(STRING,"class")),
+                                                    INSTANCE_OF(ARRAY_ACCESSOR(VARIABLE("record"),CONSTANT(count)),STRING),
                                                     converter.apply(List.of(CAST(STRING,ARRAY_ACCESSOR(VARIABLE("record"),CONSTANT(count))))),
                                                     CAST(declaredJavaType2,ARRAY_ACCESSOR(VARIABLE("record"),CONSTANT(count)))))));
 

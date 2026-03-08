@@ -590,13 +590,8 @@ public class JavaScript implements Emitter<StringBuilder> {
             case BINARY_OP: {
                 BinaryOp bo = (BinaryOp) expression;
                 if (bo.op.equals(INSTANCEOF)) {
-                    // JavaScript instanceof
-                    if (!(bo.right instanceof MethodCall) || ((MethodCall) bo.right).className == null) {
-                        throw new IllegalArgumentException("Right side of instanceof must be a class name");
-                    }
-                    MethodCall mc = (MethodCall) bo.right;
-                    String typeName = convertForInstanceCheck(mc.className);
-                    return convert(bo.left) + " instanceof " + importAndGetLocalName(sanitizeName(typeName));
+                    throw new UnsupportedOperationException("Use of instanceof operator in JavaScript is not supported. Use 'instanceof' method call instead.");
+
                 } else {
                     return convert(bo.left) + " " + bo.op + " " + convert(bo.right);
                 }

@@ -3,14 +3,16 @@ package org.openprovenance.prov.template.compiler.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.past.checker.ExternalTypeRegistry;
+import org.openprovenance.prov.template.compiler.past.checker.TypeRegistry;
 import org.openprovenance.prov.template.compiler.past.emitter.Poet;
+import org.openprovenance.prov.template.compiler.past.emitter.RustCodeGenerator;
 import org.openprovenance.prov.template.compiler.past.emitter.RustProjectGenerator;
 
 import org.openprovenance.prov.template.compiler.past.checker.TypeDiagnostic;
-import org.openprovenance.prov.template.compiler.past.type.ClassName;
-import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +23,9 @@ import static org.openprovenance.prov.template.compiler.past.checker.ExternalTyp
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 public class SpecificationFile {
+    //logger declaration
+    static Logger logger = LogManager.getLogger(SpecificationFile.class);
+
     final private CompilerUtil compilerUtil;
 
     final private JavaFile javaFile;
@@ -76,18 +81,21 @@ public class SpecificationFile {
     }
 
     static boolean rustProjectCreated=false;
-    static RustGenerationCoordinator rustCoordinator = new RustGenerationCoordinator();
+    static RustCodeGenerator rustCodeGenerator = new RustCodeGenerator();
+    static boolean rustFinalizationTaskAdded = false;
     static ExternalTypeRegistry externalRegistry = initializeExternalRegistry(new ExternalTypeRegistry());
     static TypeCheckCoordinator typeCheckCoordinator = new TypeCheckCoordinator(externalRegistry);
+    static CodeGenerationCoordinator codeGenCoordinator = new CodeGenerationCoordinator();
+    static TypeRegistry typeRegistry = null;
 
 
 
     /**
-     * Reset the Rust coordinator for a new compilation run.
-     * Call this at the start of template compilation to ensure clean state.
+     * Reset the Rust code generator for a new compilation run.
      */
     public static void resetRustCoordinator() {
-        rustCoordinator = new RustGenerationCoordinator();
+        rustCodeGenerator = new RustCodeGenerator();
+        rustFinalizationTaskAdded = false;
     }
 
     /**
@@ -95,27 +103,50 @@ public class SpecificationFile {
      */
     public static void resetTypeCheckCoordinator() {
         typeCheckCoordinator = new TypeCheckCoordinator(externalRegistry);
+        typeRegistry = null;
+    }
+
+    /**
+     * Reset the code generation coordinator for a new compilation run.
+     * Also resets Rust state since Rust generation is part of the same coordinator.
+     */
+    public static void resetCodeGenCoordinator() {
+        codeGenCoordinator = new CodeGenerationCoordinator();
+        resetRustCoordinator();
     }
 
     /**
      * Finalize type checking after all PAST classes have been registered.
-     * Call this after all SpecificationFile.save() calls complete, before Rust finalization.
+     * Call this after all SpecificationFile.save() calls complete, before code generation.
+     * Stores the resulting TypeRegistry for use by generators.
      *
      * @return the list of type diagnostics found
      */
     public static List<TypeDiagnostic> finalizeTypeChecking() {
-        return typeCheckCoordinator.finalizeTypeChecking();
+        List<TypeDiagnostic> diagnostics = typeCheckCoordinator.finalizeTypeChecking();
+        typeRegistry = typeCheckCoordinator.getTypeChecker().getRegistry();
+        return diagnostics;
     }
 
     /**
-     * Finalize Rust code generation after all SpecificationFile.save() calls complete.
-     * This triggers the actual code generation with full trait knowledge.
+     * Execute all deferred code generation tasks (Java, Python, JavaScript, Rust).
+     * Call this after finalizeTypeChecking(). Each task receives the TypeRegistry
+     * so generators can exploit type information where appropriate.
      *
-     * @return true if generation succeeded
-     * @throws IOException if file writing fails
+     * @return true if all generation tasks succeeded
      */
-    public static boolean finalizeRustGeneration() throws IOException {
-        return rustCoordinator.finalizeGeneration();
+    public static boolean finalizeCodeGeneration() {
+        System.out.println("################## Code generation started (Java/Python/JavaScript/Rust)...");
+        return codeGenCoordinator.finalizeGeneration(typeRegistry);
+    }
+
+    /**
+     * Return the TypeRegistry produced by type checking.
+     * Available after finalizeTypeChecking() has been called.
+     * Generators may use this to exploit type information where appropriate.
+     */
+    public static TypeRegistry getTypeRegistry() {
+        return typeRegistry;
     }
 
     public boolean save() {
@@ -187,75 +218,93 @@ public class SpecificationFile {
 
     public static boolean generateJava(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, TemplatesProjectConfiguration configs, String fileName, String directory, StackTraceElement stackTraceElement, CompilerUtil compilerUtil) {
         typeCheckCoordinator.register(pastClass, packageName);
-        TypeSpec spec;
-        try {
-            spec = new Poet().emit(pastClass);
-        } catch (RuntimeException e) {
-            System.out.println("Error emitting class for template " + pastClass.name + " in package " + packageName);
-            throw e;
-        }
-        JavaFile myfile = compilerUtil.specWithComment(spec, configs, packageName, stackTraceElement);
-        boolean saved=compilerUtil.saveToFile(directory, directory + fileName, myfile);
-        return saved;
+        codeGenCoordinator.addTask(registry -> {
+            TypeSpec spec;
+            try {
+                spec = new Poet().emit(pastClass);
+            } catch (RuntimeException e) {
+                System.out.println("Error emitting class for template " + pastClass.name + " in package " + packageName);
+                throw e;
+            }
+            JavaFile myfile = compilerUtil.specWithComment(spec, configs, packageName, stackTraceElement);
+            return compilerUtil.saveToFile(directory, directory + fileName, myfile);
+        });
+        return true;
     }
 
     public static boolean generateJava(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String templateName, String fileName, String directory, StackTraceElement stackTraceElement, CompilerUtil compilerUtil) {
         typeCheckCoordinator.register(pastClass, packageName);
-        TypeSpec spec;
-        try {
-            spec = new Poet().emit(pastClass);
-        } catch (RuntimeException e) {
-            System.out.println("Error emitting class for template " + pastClass.name + " in package " + packageName);
-            throw e;
-        }
-        JavaFile myfile = compilerUtil.specWithComment(spec, templateName, packageName, stackTraceElement);
-        boolean saved=compilerUtil.saveToFile(directory, directory + fileName, myfile);
-        return saved;
+        codeGenCoordinator.addTask(registry -> {
+            TypeSpec spec;
+            try {
+                spec = new Poet().emit(pastClass);
+            } catch (RuntimeException e) {
+                System.out.println("Error emitting class for template " + pastClass.name + " in package " + packageName);
+                throw e;
+            }
+            JavaFile myfile = compilerUtil.specWithComment(spec, templateName, packageName, stackTraceElement);
+            return compilerUtil.saveToFile(directory, directory + fileName, myfile);
+        });
+        return true;
     }
 
     public static boolean generatePython(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
-        try {
-            if (destinationDir==null) return false;
-            new org.openprovenance.prov.template.compiler.past.emitter.Python()
-                    .toWritableObject(pastClass, pastClass.name, packageName, stackTraceElement)
-                    .writeTo(new File(destinationDir));
-            return true;
-        } catch (RuntimeException | IOException e) {
+        if (destinationDir == null) return false;
+        codeGenCoordinator.addTask(registry -> {
             try {
-                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                new org.openprovenance.prov.template.compiler.past.emitter.Python(registry)
+                        .toWritableObject(pastClass, pastClass.name, packageName, stackTraceElement)
+                        .writeTo(new File(destinationDir));
+                return true;
+            } catch (RuntimeException | IOException e) {
+                try {
+                    new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                throw new RuntimeException(e);
             }
-            throw new RuntimeException(e);
-        }
+        });
+        return true;
     }
 
     public static boolean generateJavaScript(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
-        try {
-            if (destinationDir==null) return false;
-            new org.openprovenance.prov.template.compiler.past.emitter.JavaScript()
-                    .toWritableObject(pastClass, pastClass.name, packageName, stackTraceElement)
-                    .writeTo(new File(destinationDir));
-            return true;
-        } catch (RuntimeException | IOException e) {
+        if (destinationDir == null) return false;
+        codeGenCoordinator.addTask(registry -> {
             try {
-                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                new org.openprovenance.prov.template.compiler.past.emitter.JavaScript()
+                        .toWritableObject(pastClass, pastClass.name, packageName, stackTraceElement)
+                        .writeTo(new File(destinationDir));
+                return true;
+            } catch (RuntimeException | IOException e) {
+                try {
+                    new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                throw new RuntimeException(e);
             }
-            throw new RuntimeException(e);
-        }
+        });
+        return true;
     }
 
     public static boolean generateRust(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
-        // Use two-pass generation via coordinator
-        // Pass 1: Register class and discover traits (happens immediately)
-        // Pass 2: Actual code generation (happens in finalizeRustGeneration())
         if (destinationDir == null) return false;
-
         try {
-            rustCoordinator.createRustGenerator(pastClass, packageName, destinationDir, stackTraceElement).get();
-            return true;  // Actual generation deferred to finalizeRustGeneration()
+            // Pass 1: Immediately register class for trait discovery (must happen before finalizeCodeGeneration)
+            rustCodeGenerator.registerClass(pastClass, packageName, destinationDir, stackTraceElement);
+            // Pass 2: Add a single generateAll task to codeGenCoordinator (deferred until after type checking)
+            if (!rustFinalizationTaskAdded) {
+                rustFinalizationTaskAdded = true;
+                codeGenCoordinator.addTask(registry -> {
+                    try {
+                        return rustCodeGenerator.generateAll();
+                    } catch (IOException e) {
+                        throw new RuntimeException("Rust generation failed", e);
+                    }
+                });
+            }
+            return true;
         } catch (RuntimeException e) {
             try {
                 new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);

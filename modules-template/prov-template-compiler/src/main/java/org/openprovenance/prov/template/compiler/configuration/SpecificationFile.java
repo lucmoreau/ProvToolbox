@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static org.openprovenance.prov.template.compiler.past.checker.ExternalTypeRegistry.initializeExternalRegistry;
-import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 public class SpecificationFile {
     //logger declaration
@@ -176,18 +175,14 @@ public class SpecificationFile {
         return javaSaved && pySaved;
     }
 
-    public static void compileRustProject() {
+    public static void compileRustProject(String projectName, String version) {
         if (!rustProjectCreated) {
             // create a Cargo.toml file
             rustProjectCreated=true;
             RustProjectGenerator generator = new RustProjectGenerator("target/generated-rust");
 
-            // Option 1: Full workflow
-           // generator.generateCompileAndRun("prov-templates", "0.1.0");
-
-            // Option 2: Step by step
             try {
-                generator.generateCargo("prov-templates", "0.1.0");
+                generator.generateCargo(projectName, version);
                 generator.generateModFiles();
                 if (generator.compileProject()) {
                     generator.runProject();

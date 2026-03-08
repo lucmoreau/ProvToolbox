@@ -544,7 +544,7 @@ public class TypeChecker {
             }
         }
 
-        System.out.println("********* Annotated overloaded methods in class '" + pastClass.name);
+        //System.out.println("********* Annotated overloaded methods in class '" + pastClass.name);
     }
 
     private static String buildAltName(MethodSignature m) {

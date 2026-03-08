@@ -1,7 +1,6 @@
 package org.openprovenance.prov.template.compiler.past.emitter;
 
 
-import com.squareup.javapoet.CodeBlock;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Iterator;
@@ -41,7 +40,6 @@ public class Python implements Emitter<StringBuilder> {
     private int lambdaCount=0;
     private String currentPackageName;
     private ClassSignature currentClassSignature;
-    private String classNameDebug;
 
     public Python(TypeRegistry registry) {
         this.typeRegistry = registry;
@@ -92,30 +90,9 @@ public class Python implements Emitter<StringBuilder> {
         // Class declaration
         sb.append("class ").append(sanitizeName(clazz.name));
 
-        // debug
-        this.classNameDebug=clazz.name;
-        if (clazz.name.equals("BeanCompleter2") ) {
-            ClassSignature sig=typeRegistry.lookup("BeanCompleter2", "org.openprovenance.templates.catalogue.fs.integrator");
-            System.out.println("*************** Class signature for BeanCompleter2: " + sig);
-            if (sig!=null) {
-                System.out.println("*************** Method signature for BeanCompleter2: " + sig.methods);
-            }
-        }
 
         // Base classes (interfaces in Java become base classes in Python)
         // ignored for now
-        if (false && !clazz.interfaces.isEmpty()) {
-            sb.append("(");
-            sb.append(clazz.interfaces.stream()
-                    .map(this::convert)
-                    .map(this::sanitizeName)
-                    .map( f -> {
-                        imports.add(f);
-                        return getLocalName(f);
-                    })
-                    .collect(Collectors.joining(", ")));
-            sb.append(")");
-        }
         sb.append(":\n");
 
 
@@ -134,8 +111,6 @@ public class Python implements Emitter<StringBuilder> {
                                 .COMMENTS(constructor.comments.toArray(new Comment[0])));
             }
         }
-
-
 
         // Methods
         if (!clazz.methods.isEmpty()) {
@@ -472,7 +447,7 @@ public class Python implements Emitter<StringBuilder> {
      * Returns non-null only when there is exactly one overloaded candidate with the given arg count,
      * to avoid ambiguous resolution.
      */
-    private String findAltNameForCall(String methodName, int argCount) {
+    private String findAltNameForCall_argcount(String methodName, int argCount) {
         if (currentClassSignature == null || typeRegistry == null) return null;
         List<MethodSignature> candidates = new ArrayList<>();
         for (MethodSignature ms : currentClassSignature.methods) {
@@ -495,11 +470,11 @@ public class Python implements Emitter<StringBuilder> {
 
     /**
      * Look up the alt name for a self-method call site using explicit argument types.
-     * Unlike {@link #findAltNameForCall}, this performs exact type matching so it correctly
+     * Unlike {@link #findAltNameForCall_argcount}, this performs exact type matching so it correctly
      * resolves overloads that share the same argument count but differ in parameter types.
      * Note: uses exact type (no subtyping here).
      */
-    private String findAltNameForCall2(String methodName, List<TypeName> argTypes) {
+    private String findAltNameForCall(String methodName, List<TypeName> argTypes) {
         if (currentClassSignature == null || typeRegistry == null) return null;
         for (MethodSignature ms : currentClassSignature.methods) {
             if (!ms.name.equals(methodName)) continue;
@@ -934,16 +909,13 @@ public class Python implements Emitter<StringBuilder> {
                 assert mc.object!=null;
                 String convertedObject = convert(mc.object);
                 String callMethodName = sanitizeName(mc.methodName);
-                // debug
-                if (classNameDebug!=null && classNameDebug.equals("BeanLocalEnactor2")) {
-                    System.out.println("######### " + convertedObject);
-                }
+
                 // For self-calls to overloaded methods, use the registry alt name
                 if ("self".equals(convertedObject)) {
                     int argCount = mc.arguments == null ? 0 : mc.arguments.size();
                     if (argCount!=0) {
                         List<TypeName> argumentTypes= mc.arguments.stream().map(a -> a.inferredType).collect(Collectors.toList());
-                        String resolvedAlt = findAltNameForCall2(mc.methodName, argumentTypes);
+                        String resolvedAlt = findAltNameForCall(mc.methodName, argumentTypes);
                         if (resolvedAlt != null) {
                             callMethodName = sanitizeName(resolvedAlt);
                         }
@@ -984,16 +956,14 @@ public class Python implements Emitter<StringBuilder> {
                     // methodName is a method of a functional interface. In python, the function is called directly instead, without naming a method
                     result.append(convert(mc.object)).append("(");
                 } else {
-                    if (classNameDebug!=null && classNameDebug.equals("BeanLocalEnactor2")) {
-                        System.out.println("######### (funcitonal interface) " + convert(mc.object));
-                    }
+
                     String convertedObject = convert(mc.object);
                     String callMethodName = sanitizeName(mc.methodName);
                     if ("self".equals(convertedObject)) {
                         int argCount = mc.arguments == null ? 0 : mc.arguments.size();
                         if (argCount!=0) {
                             List<TypeName> argumentTypes= mc.arguments.stream().map(a -> a.inferredType).collect(Collectors.toList());
-                            String resolvedAlt = findAltNameForCall2(mc.methodName, argumentTypes);
+                            String resolvedAlt = findAltNameForCall(mc.methodName, argumentTypes);
                             if (resolvedAlt != null) {
                                 callMethodName = sanitizeName(resolvedAlt);
                             }

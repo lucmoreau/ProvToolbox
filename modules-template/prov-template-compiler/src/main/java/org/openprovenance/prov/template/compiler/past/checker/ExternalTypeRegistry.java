@@ -340,9 +340,6 @@ public class ExternalTypeRegistry {
                 .register();
 
 
-        externalRegistry.forClass(ClassName.get("Plead_transformingBean","org.openprovenance.prov.template.library.plead.client.common"))
-                .field("class", ParameterizedType.get(CLASS))
-                .register();
         return externalRegistry;
     }
     public static final ClassName CLASSNAME = ClassName.get( "ClassName", "past.lang");

@@ -1,21 +1,7 @@
 package org.openprovenance.prov.template.compiler.past.checker;
 
-import org.openprovenance.prov.template.compiler.past.ArrayAccessor;
-import org.openprovenance.prov.template.compiler.past.ArrayAllocator;
-import org.openprovenance.prov.template.compiler.past.ArrayInitialiser;
-import org.openprovenance.prov.template.compiler.past.BinaryOp;
-import org.openprovenance.prov.template.compiler.past.CastExpression;
+import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
-import org.openprovenance.prov.template.compiler.past.Constant;
-import org.openprovenance.prov.template.compiler.past.Expression;
-import org.openprovenance.prov.template.compiler.past.IfExpression;
-import org.openprovenance.prov.template.compiler.past.LambdaExpression;
-import org.openprovenance.prov.template.compiler.past.MethodCall;
-import org.openprovenance.prov.template.compiler.past.Parameter;
-import org.openprovenance.prov.template.compiler.past.PostIncrement;
-import org.openprovenance.prov.template.compiler.past.Return;
-import org.openprovenance.prov.template.compiler.past.Statement;
-import org.openprovenance.prov.template.compiler.past.Variable;
 import org.openprovenance.prov.template.compiler.past.type.ArrayType;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
@@ -91,6 +77,9 @@ public class TypeInferrer {
             case METHOD_CALL:
                 result = inferMethodCall((MethodCall) expr, env, className, methodName);
                 break;
+            case INSTANCEOF:
+                result = inferInstanceOf((InstanceOf)expr, env, className, methodName);
+                break;
             default:
                 result = ClassName.OBJECT;
                 break;
@@ -98,6 +87,11 @@ public class TypeInferrer {
 
         expr.inferredType = result;
         return result;
+    }
+
+    private TypeName inferInstanceOf(InstanceOf expr, TypeEnvironment env, String className, String methodName) {
+        infer(expr.expression, env, className, methodName);
+        return ClassName.BOOLEAN;
     }
 
     // --- Constant ---
@@ -194,7 +188,6 @@ public class TypeInferrer {
             case ">":
             case "<=":
             case ">=":
-            case "instanceof":
             case "&&":
             case "||":
                 return ClassName.BOOLEAN;
@@ -210,6 +203,8 @@ public class TypeInferrer {
                 return TypeCompatibility.numericPromotion(leftType, rightType);
             case "Objects.equals":
                 return ClassName.BOOLEAN;
+            case "instanceof":
+                throw new UnsupportedOperationException("instanceof should be handled as a separate expression kind");
             default:
                 return ClassName.OBJECT;
         }

@@ -20,6 +20,8 @@ import org.openprovenance.prov.template.compiler.past.SuperConstructorCall;
 import org.openprovenance.prov.template.compiler.past.ThrowStatement;
 import org.openprovenance.prov.template.compiler.past.TryCatch;
 import org.openprovenance.prov.template.compiler.past.Variable;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
+import org.openprovenance.prov.template.compiler.past.type.ArrayType;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
@@ -105,6 +107,9 @@ public class TypeChecker {
 
         // Check interface implementation
         checkInterfaceImplementation(pastClass, packageName);
+
+        // Annotate overloaded methods
+        annotateOverloadedMethods(pastClass, packageName);
     }
 
     // --- Field checking ---
@@ -518,6 +523,42 @@ public class TypeChecker {
         }
 
         return env;
+    }
+
+    // --- Overloaded method annotation ---
+
+    private void annotateOverloadedMethods(Class pastClass, String packageName) {
+        ClassSignature sig = registry.lookup(pastClass.name, packageName);
+        if (sig == null) return;
+
+        Map<String, List<MethodSignature>> byName = new HashMap<>();
+        for (MethodSignature m : sig.methods) {
+            byName.computeIfAbsent(m.name, k -> new ArrayList<>()).add(m);
+        }
+
+        for (List<MethodSignature> overloads : byName.values()) {
+            if (overloads.size() > 1) {
+                for (MethodSignature m : overloads) {
+                    m.getAnnotations().add(new OverloadedMethod(buildAltName(m)));
+                }
+            }
+        }
+    }
+
+    private static String buildAltName(MethodSignature m) {
+        StringBuilder sb = new StringBuilder(m.name);
+        for (TypeName param : m.parameterTypes) {
+            sb.append("_").append(typeSimpleName(param).toLowerCase());
+        }
+        return sb.toString();
+    }
+
+    private static String typeSimpleName(TypeName type) {
+        if (type instanceof ClassName) return ((ClassName) type).simpleName;
+        if (type instanceof ParameterizedType) return ((ParameterizedType) type).getRawType().simpleName;
+        if (type instanceof ArrayType) return typeSimpleName(((ArrayType) type).elementType) + "Array";
+        if (type instanceof TypeVariable) return ((TypeVariable) type).name;
+        return type.toString();
     }
 
     // --- Helpers ---

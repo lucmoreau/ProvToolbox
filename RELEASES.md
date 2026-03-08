@@ -21,6 +21,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: PAST expression type checking
 * service-templates-core: TemplateQuery: fixed issue in recursive traversal query
 * service-templates-core: fixed issues, while generating screenshots for book
+* prov-template-compiler: PAST expression, detecting overloaded methods
 
 
 `2.2.2`

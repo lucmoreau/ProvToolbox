@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler.test;
 import junit.framework.TestCase;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
 import org.openprovenance.prov.template.compiler.past.checker.*;
 import org.openprovenance.prov.template.compiler.past.type.ArrayType;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
@@ -823,5 +824,306 @@ public class TypeCheckerTest extends TestCase {
         assertEquals("super.method() call should have no errors", 0, errors);
         assertEquals("super.method() call should have no warnings", 0, warnings);
     }
+
+
+    public void testAnnotateOverloadedMethods() {
+
+        ExternalTypeRegistry extReg = new ExternalTypeRegistry();
+        extReg.forClass(ClassName.STRING_BUILDER)
+                .method("append", ClassName.STRING_BUILDER, ClassName.STRING)
+                .method("append", ClassName.STRING_BUILDER, ClassName.OBJECT)
+                .method("toString", ClassName.STRING)
+                .constructor()
+                .register();
+        TypeRegistry registry = new TypeRegistry(extReg);
+
+
+        TypeChecker checker = new TypeChecker(extReg);
+
+        Class parent = new Class("Parent", true)
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .METHODS(
+                        METHOD("method1")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("x", ClassName.STRING)),
+
+                        METHOD("method1")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("x", ClassName.INTEGER)),
+
+                        METHOD("method2")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("x", ClassName.INTEGER)));
+
+        checker.registerClass(parent, "com.example");
+
+        Class child = new Class("child")
+                .SUPERCLASS(ClassName.get("Parent", "com.example"))
+                .METHODS(
+                        METHOD("method1")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("x", ClassName.STRING))
+                                .BODY(RETURN(CONSTANT("string version"))),
+
+                        METHOD("method1")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("x", ClassName.INTEGER))
+                                .BODY(RETURN(CONSTANT("integer version"))),
+
+                        METHOD("method2")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("x", ClassName.INTEGER))
+                                .BODY(RETURN(CONSTANT("method2 implementation")))
+                );
+
+
+        checker.registerClass(child, "com.example");
+
+
+        List<TypeDiagnostic> diagnostics = checker.checkAll();
+
+        TypeRegistry checkerRegistry=checker.getRegistry();
+        ClassSignature iSig=checkerRegistry.lookup("Parent", "com.example" );
+       // System.out.println("Parent class signature: " + iSig);
+        assertTrue(iSig.isInterface);
+        iSig.methods.forEach(m -> {
+           // System.out.println("Parent method: " + m);
+            if (m.name.equals("method1")) {
+                assertEquals(1, m.getAnnotations().size());
+                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
+                OverloadedMethod overloadedMethod = (OverloadedMethod) m.getAnnotations().get(0);
+                if (m.parameterTypes.get(0).equals(ClassName.STRING)) {
+                    assertEquals("method1_string", overloadedMethod.getAltName());
+                } else if (m.parameterTypes.get(0).equals(ClassName.INTEGER)) {
+                    assertEquals("method1_integer", overloadedMethod.getAltName());
+                } else {
+                    fail("Unexpected parameter type for method1: " + m.parameterTypes.get(0));
+                }
+
+            } else if (m.name.equals("method2")) {
+                assertEquals(0, m.getAnnotations().size());
+            } else {
+                fail("Unexpected method signature: " + m);
+            }
+        });
+
+
+
+        ClassSignature childSig = checkerRegistry.lookup("child", "com.example");
+       // System.out.println("Child class signature: " + childSig);
+        assertFalse(childSig.isInterface);
+        childSig.methods.forEach(m -> {
+          //  System.out.println("Child method: " + m);
+            if (m.name.equals("method1")) {
+                assertEquals(1, m.getAnnotations().size());
+                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
+                OverloadedMethod overloadedMethod = (OverloadedMethod) m.getAnnotations().get(0);
+                if (m.parameterTypes.get(0).equals(ClassName.STRING)) {
+                    assertEquals("method1_string", overloadedMethod.getAltName());
+                } else if (m.parameterTypes.get(0).equals(ClassName.INTEGER)) {
+                    assertEquals("method1_integer", overloadedMethod.getAltName());
+                } else {
+                    fail("Unexpected parameter type for method1: " + m.parameterTypes.get(0));
+                }
+            } else if (m.name.equals("method2")) {
+                assertEquals(0, m.getAnnotations().size());
+            } else {
+                fail("Unexpected method in child: " + m);
+            }
+        });
+
+
+        long errors = 0;
+        for (TypeDiagnostic d : diagnostics) {
+            if (d.severity == TypeDiagnostic.Severity.ERROR) {
+                errors++;
+                System.out.println("Error: " + d);
+            }
+        }
+        assertEquals("Overloaded external method should resolve correctly", 0, errors);
+
+        System.out.println("*********************** testAnnotateOverloadedMethods(): Diagnostics successful");
+    }
+
+
+    public void testAnnotateOverloadedMethods_ParameterizedType() {
+        TypeChecker checker = new TypeChecker();
+
+        Class cls = new Class("ProcessorInterface", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(
+                        METHOD("process")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("x", ParameterizedType.get(ClassName.LIST, ClassName.STRING))),
+
+                        METHOD("process")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("x", ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.INTEGER))),
+
+                        METHOD("identity")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("x", ParameterizedType.get(ClassName.LIST, ClassName.INTEGER))));
+
+        checker.registerClass(cls, "com.example");
+        checker.checkAll();
+
+        ClassSignature sig = checker.getRegistry().lookup("ProcessorInterface", "com.example");
+        sig.methods.forEach(m -> {
+            //System.out.println("ParameterizedType method: " + m);
+            if (m.name.equals("process")) {
+                assertEquals(1, m.getAnnotations().size());
+                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
+                OverloadedMethod ann = (OverloadedMethod) m.getAnnotations().get(0);
+                String rawName = ((ParameterizedType) m.parameterTypes.get(0)).getRawType().simpleName;
+                if (rawName.equals("List")) {
+                    assertEquals("process_list", ann.getAltName());
+                } else if (rawName.equals("Map")) {
+                    assertEquals("process_map", ann.getAltName());
+                } else {
+                    fail("Unexpected raw type for process: " + rawName);
+                }
+            } else if (m.name.equals("identity")) {
+                assertEquals(0, m.getAnnotations().size());
+            } else {
+                fail("Unexpected method: " + m);
+            }
+        });
+
+        System.out.println("*********************** testAnnotateOverloadedMethods_ParameterizedType(): Diagnostics successful");
+    }
+
+
+    public void testAnnotateOverloadedMethods_ArrayType() {
+        TypeChecker checker = new TypeChecker();
+
+        Class cls = new Class("ArrayInterface", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(
+                        METHOD("convert")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("arr", ArrayType.of(ClassName.STRING))),
+
+                        METHOD("convert")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("arr", ArrayType.of(ClassName.INTEGER))),
+
+                        METHOD("single")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("arr", ArrayType.of(ClassName.STRING))));
+
+        checker.registerClass(cls, "com.example");
+        checker.checkAll();
+
+        ClassSignature sig = checker.getRegistry().lookup("ArrayInterface", "com.example");
+        sig.methods.forEach(m -> {
+            //System.out.println("ArrayType method: " + m);
+            if (m.name.equals("convert")) {
+                assertEquals(1, m.getAnnotations().size());
+                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
+                OverloadedMethod ann = (OverloadedMethod) m.getAnnotations().get(0);
+                TypeName elementType = ((ArrayType) m.parameterTypes.get(0)).elementType;
+                if (elementType.equals(ClassName.STRING)) {
+                    assertEquals("convert_stringarray", ann.getAltName());
+                } else if (elementType.equals(ClassName.INTEGER)) {
+                    assertEquals("convert_integerarray", ann.getAltName());
+                } else {
+                    fail("Unexpected array element type: " + elementType);
+                }
+            } else if (m.name.equals("single")) {
+                assertEquals(0, m.getAnnotations().size());
+            } else {
+                fail("Unexpected method: " + m);
+            }
+        });
+
+        System.out.println("*********************** testAnnotateOverloadedMethods_ArrayType(): Diagnostics successful");
+    }
+
+
+    public void testAnnotateOverloadedMethods_TwoArgs() {
+        TypeChecker checker = new TypeChecker();
+
+        Class cls = new Class("TwoArgInterface", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(
+                        METHOD("combine")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("x", ClassName.STRING), PARAMETER("y", ClassName.INTEGER)),
+
+                        METHOD("combine")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("x", ClassName.INTEGER), PARAMETER("y", ClassName.STRING)),
+
+                        METHOD("mixed")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("x", ClassName.STRING), PARAMETER("arr", ArrayType.of(ClassName.INTEGER))),
+
+                        METHOD("mixed")
+                                .RETURNS(ClassName.STRING)
+                                .PARAMETERS(PARAMETER("x", ClassName.INTEGER), PARAMETER("col", ParameterizedType.get(ClassName.LIST, ClassName.STRING))));
+
+        checker.registerClass(cls, "com.example");
+        checker.checkAll();
+
+        ClassSignature sig = checker.getRegistry().lookup("TwoArgInterface", "com.example");
+        sig.methods.forEach(m -> {
+            //System.out.println("TwoArgs method: " + m);
+            assertEquals(1, m.getAnnotations().size());
+            assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
+            OverloadedMethod ann = (OverloadedMethod) m.getAnnotations().get(0);
+            if (m.name.equals("combine")) {
+                if (m.parameterTypes.get(0).equals(ClassName.STRING)) {
+                    assertEquals("combine_string_integer", ann.getAltName());
+                } else {
+                    assertEquals("combine_integer_string", ann.getAltName());
+                }
+            } else if (m.name.equals("mixed")) {
+                if (m.parameterTypes.get(0).equals(ClassName.STRING)) {
+                    assertEquals("mixed_string_integerarray", ann.getAltName());
+                } else {
+                    assertEquals("mixed_integer_list", ann.getAltName());
+                }
+            } else {
+                fail("Unexpected method: " + m);
+            }
+        });
+
+        System.out.println("*********************** testAnnotateOverloadedMethods_TwoArgs(): Diagnostics successful");
+    }
+
+
+    public void testAnnotateOverloadedMethods_TypeVariable() {
+        TypeChecker checker = new TypeChecker();
+
+        Class cls = new Class("TVInterface", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(
+                        METHOD("wrap")
+                                .RETURNS(ClassName.OBJECT)
+                                .PARAMETERS(PARAMETER("x", TypeVariable.get("T"))),
+
+                        METHOD("wrap")
+                                .RETURNS(ClassName.OBJECT)
+                                .PARAMETERS(PARAMETER("x", ClassName.STRING)));
+
+        checker.registerClass(cls, "com.example");
+        checker.checkAll();
+
+        ClassSignature sig = checker.getRegistry().lookup("TVInterface", "com.example");
+        sig.methods.forEach(m -> {
+           // System.out.println("TypeVariable method: " + m);
+            assertEquals(1, m.getAnnotations().size());
+            assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
+            OverloadedMethod ann = (OverloadedMethod) m.getAnnotations().get(0);
+            if (m.parameterTypes.get(0) instanceof TypeVariable) {
+                assertEquals("wrap_t", ann.getAltName());
+            } else {
+                assertEquals("wrap_string", ann.getAltName());
+            }
+        });
+
+        System.out.println("*********************** testAnnotateOverloadedMethods_TypeVariable(): Diagnostics successful");
+    }
+
 
 }

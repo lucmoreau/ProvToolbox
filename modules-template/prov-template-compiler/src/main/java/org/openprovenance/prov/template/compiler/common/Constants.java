@@ -156,6 +156,7 @@ public interface Constants {
     String CONFIGURATOR = "configurator";
     String SUB_PACKAGE_LOGGER = "logger";
     String SUB_PACKAGE_INTEGRATOR = "integrator";
+    String SUB_PACKAGE_WORKFLOW = "workflow";
     String SUB_PACKAGE_ACCESS_CONTROL = "access_control";
     String SUB_PACKAGE_COMMON = "common";
     String SUB_PACKAGE_CLIENT = "client";

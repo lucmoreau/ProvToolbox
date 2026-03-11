@@ -25,9 +25,13 @@ import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.GENERATED_VAR_PREFIX;
 import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.MethodCallKind.FUNCTIONAL_INTERFACE_CALL;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.INTEGER;
 
 /**
  * Emitter that generates Python class definitions from PAST abstract syntax tree.
@@ -40,6 +44,7 @@ public class Python implements Emitter<StringBuilder> {
     private int lambdaCount=0;
     private String currentPackageName;
     private ClassSignature currentClassSignature;
+    private String currentClassName;
 
     public Python(TypeRegistry registry) {
         this.typeRegistry = registry;
@@ -55,6 +60,7 @@ public class Python implements Emitter<StringBuilder> {
 
     public WritableObject toWritableObject(Class clazz, String className, String packge, StackTraceElement stackTraceElement) {
         this.currentPackageName = packge;
+        this.currentClassName=className;
         StringBuilder theBuffer=emit(clazz);
 
         addHeader(theBuffer, className, packge, stackTraceElement);
@@ -73,6 +79,10 @@ public class Python implements Emitter<StringBuilder> {
     @Override
     public StringBuilder emit(Class clazz) {
         this.sb = new StringBuilder();
+        return emit(clazz, sb);
+    }
+
+    public StringBuilder emit(Class clazz, StringBuilder sb) {
         this.currentClassSignature = (typeRegistry != null && currentPackageName != null)
                 ? typeRegistry.lookup(clazz.name, currentPackageName) : null;
 
@@ -103,11 +113,25 @@ public class Python implements Emitter<StringBuilder> {
             emitDefaultConstructor(clazz.fields);
         } else {
             for (Constructor constructor : clazz.constructors) {
-                emitMethod(METHOD("____init__") // note the quadruple _ because the first two will be removed in sanitizeName, and we want to end up with __init__
+                String constructorName="____init__"; // note the quadruple _ because the first two will be removed in sanitizeName, and we want to end up with __init__
+                // "python:@OverloadedMethod" in annotations
+                if (constructor.annotation != null) {
+                    Optional<PythonAnnotation> annotation=constructor.annotation.stream()
+                            .filter(annot -> annot instanceof PythonAnnotation)
+                            .map(annot -> (PythonAnnotation) annot)
+                            .filter(annot -> OverloadedMethod.NAME.equals(annot.getName()))
+                            .findFirst()
+                            ;
+                    if (annotation.isPresent()) {
+                        constructorName= ((OverloadedMethod) annotation.get()).getAltName();
+                        System.out.println("Constructor with @OverloadedMethod annotation, using alt name: " + constructorName);
+                    }
+                }
+                emitMethod(METHOD(constructorName)
                                 .PARAMETERS(constructor.parameters)
                                 .MODIFIERS(constructor.modifiers.toArray(new Modifier[0]))
                                 .BODY(constructor.body.toArray(new Statement[0]))
-                                .ANNOTATIONS(constructor.annotation.toArray(new String[0]))
+                                //.ANNOTATIONS(constructor.annotation.toArray(new String[0]))
                                 .COMMENTS(constructor.comments.toArray(new Comment[0])));
             }
         }
@@ -139,6 +163,7 @@ public class Python implements Emitter<StringBuilder> {
             String suffix = getLocalName(imprt);
             // ignore LOGGER
             if (LOGGER.equals(suffix)) continue;
+            if (imprt.startsWith(INTEGER.packge)) continue;
             //functools.singledispatch
             if (imprt.equals("functools.singledispatch")) {
                 sb.insert(0, "from functools import singledispatch, update_wrapper\n");
@@ -147,6 +172,17 @@ public class Python implements Emitter<StringBuilder> {
             }
         }
 
+        if (!lateEmittedClasses.isEmpty()) {
+            List<LateEmittedClass> tmp=lateEmittedClasses.stream().map(c -> c).collect(Collectors.toList());
+            lateEmittedClasses.clear();
+            sb.append("\n\n");
+
+            for (Class lateClazz : tmp) {
+                sb.append("# Late emitted class due to anonymous class\n");
+                emit(lateClazz,sb);
+                sb.append("\n\n");
+            }
+        }
         return sb;
     }
 
@@ -155,7 +191,14 @@ public class Python implements Emitter<StringBuilder> {
         this.lateMethods.add(method);
     }
     private String getLocalName(String imprt) {
-        return imprt.substring(imprt.lastIndexOf('.') + 1);
+        return switch (imprt) {
+            case "past.lang.String" -> "str";
+            case "past.lang.Integer" -> "int";
+            case "past.lang.Float" -> "float";
+            case "past.lang.Boolean" -> "bool";
+            case "past.lang.Double" -> "float";
+            default -> imprt.substring(imprt.lastIndexOf('.') + 1);
+        };
     }
     private String importAndGetLocalName(String imprt) {
         imports.add(imprt);
@@ -486,6 +529,26 @@ public class Python implements Emitter<StringBuilder> {
         return null;
     }
 
+
+
+    private String findAltNameForCall(ClassName className,String methodName, List<TypeName> argTypes) {
+        if (typeRegistry==null) return null;
+        ClassSignature sig=typeRegistry.lookup(className.simpleName, className.packge);
+        if (sig == null) return null;
+        for (MethodSignature ms : sig.methods) {
+            if (!ms.name.equals(methodName)) continue;
+            if (!paramTypesMatch(argTypes, ms)) continue;
+            for (PastAnnotation ann : ms.getAnnotations()) {
+                if (ann instanceof OverloadedMethod) return ((OverloadedMethod) ann).getAltName();
+            }
+        }
+        return null;
+    }
+
+
+
+
+
     /**
      * Check whether the parameter types of a PAST Method match those of a registry MethodSignature.
      */
@@ -600,7 +663,7 @@ public class Python implements Emitter<StringBuilder> {
                 Comment cs = (Comment) statement;
                 sb.append(indent)
                         .append("# ")
-                        .append(convert(cs))
+                        .append(convert(cs).stream().map(line -> line.replace("\n", "\n" + indent + "# ")).collect(Collectors.joining("\n")))
                         .append("\n");
             }
             case EXPRESSION_STATEMENT -> {
@@ -654,11 +717,11 @@ public class Python implements Emitter<StringBuilder> {
                 for (Statement bodyStmt : doLoop.body) {
                     emitStatement(bodyStmt, indent + INDENT);
                 }
-                sb.append(indent + INDENT)
+                sb.append(indent).append(INDENT)
                         .append("if not (")
                         .append(convert(doLoop.condition))
                         .append("):\n");
-                sb.append(indent + INDENT + INDENT)
+                sb.append(indent).append(INDENT).append(INDENT)
                         .append("break\n");
             }
 
@@ -886,7 +949,7 @@ public class Python implements Emitter<StringBuilder> {
         switch(mc.operatorKind) {
             case CONSTRUCTOR_CALL -> {
                 if (mc.clazz!=null) {
-                    return "new " + "fixmeGetter" + "()";
+                    return emitAnonymous(mc.clazz) ;
                 }
                 assert mc.className!=null;
                 if (isMap(mc.className)) {
@@ -908,19 +971,8 @@ public class Python implements Emitter<StringBuilder> {
             case OBJECT_METHOD_CALL -> {
                 assert mc.object!=null;
                 String convertedObject = convert(mc.object);
-                String callMethodName = sanitizeName(mc.methodName);
+                String callMethodName = updateMethodNameIfOverloaded(mc, convertedObject, sanitizeName(mc.methodName));
 
-                // For self-calls to overloaded methods, use the registry alt name
-                if ("self".equals(convertedObject)) {
-                    int argCount = mc.arguments == null ? 0 : mc.arguments.size();
-                    if (argCount!=0) {
-                        List<TypeName> argumentTypes= mc.arguments.stream().map(a -> a.inferredType).collect(Collectors.toList());
-                        String resolvedAlt = findAltNameForCall(mc.methodName, argumentTypes);
-                        if (resolvedAlt != null) {
-                            callMethodName = sanitizeName(resolvedAlt);
-                        }
-                    }
-                }
                 result.append(convertedObject).append(".").append(callMethodName).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
@@ -956,19 +1008,8 @@ public class Python implements Emitter<StringBuilder> {
                     // methodName is a method of a functional interface. In python, the function is called directly instead, without naming a method
                     result.append(convert(mc.object)).append("(");
                 } else {
-
                     String convertedObject = convert(mc.object);
-                    String callMethodName = sanitizeName(mc.methodName);
-                    if ("self".equals(convertedObject)) {
-                        int argCount = mc.arguments == null ? 0 : mc.arguments.size();
-                        if (argCount!=0) {
-                            List<TypeName> argumentTypes= mc.arguments.stream().map(a -> a.inferredType).collect(Collectors.toList());
-                            String resolvedAlt = findAltNameForCall(mc.methodName, argumentTypes);
-                            if (resolvedAlt != null) {
-                                callMethodName = sanitizeName(resolvedAlt);
-                            }
-                        }
-                    }
+                    String callMethodName = updateMethodNameIfOverloaded(mc, convertedObject, sanitizeName(mc.methodName));
                     result.append(convertedObject).append(".").append(callMethodName).append("(");
                 }
                 if (mc.arguments != null) {
@@ -1007,7 +1048,13 @@ public class Python implements Emitter<StringBuilder> {
                 return result.toString();
             }
             case NO_OPERATOR -> {
-                result.append(sanitizeName(mc.methodName)).append("(");
+
+                String str = sanitizeName(mc.methodName);
+                if (str.equals("getMap")) {
+                    str="self.outer.getMap"; // this a hack to deal with anonymous class;
+                    // Ideally, we should add an annotation to drive the behaviour of the emitter instead of hardcoding this logic here
+                }
+                result.append(str).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
                             .map(this::convert)
@@ -1021,6 +1068,58 @@ public class Python implements Emitter<StringBuilder> {
         }
         throw new IllegalArgumentException("Unsupported method call type " + mc);
 
+    }
+
+    int anonymousClassCount=0;
+
+    private String emitAnonymous(Class clazz) {
+        // create an internal class, and create an instance
+        String intf=clazz.interfaces.isEmpty() ? "Nointerface" : ((ClassName)clazz.interfaces.get(0)).simpleName;
+        String className="Anonymous" + intf + (anonymousClassCount++);
+        ClassName outer=new ClassName(currentClassName, currentPackageName);
+        lateEmittedClasses.add(new LateEmittedClass(className, clazz, outer));
+        return className + "(self)";
+    }
+
+    List<LateEmittedClass> lateEmittedClasses=new ArrayList<>();
+
+    static class LateEmittedClass extends Class {
+        Class clazz;
+
+        public LateEmittedClass(String className, Class clazz, TypeName outer) {
+            super(className);
+            this.clazz = clazz;
+            this.comments.addAll(clazz.comments);
+            constructors.add(
+                    new Constructor()
+                            .MODIFIERS(Modifier.PUBLIC)
+                            .PARAMETER(outer, "outer")
+                            .BODY(ASSIGNMENT( METHOD_CALL(VARIABLE("this"),"outer"), VARIABLE( "outer"))));
+
+            methods.addAll(clazz.methods);
+            interfaces.addAll(clazz.interfaces);
+            typeVariables.addAll(clazz.typeVariables);
+            modifiers.addAll(clazz.modifiers);
+        }
+    }
+
+    private String updateMethodNameIfOverloaded(MethodCall mc, String convertedObject, String callMethodName) {
+        if ("self".equals(convertedObject) || (mc.object.inferredType instanceof ClassName)) {
+            int argCount = mc.arguments == null ? 0 : mc.arguments.size();
+            if (argCount!=0) {
+                List<TypeName> argumentTypes= mc.arguments.stream().map(a -> a.inferredType).collect(Collectors.toList());
+                String resolvedAlt;
+                if ("self".equals(convertedObject)) {
+                    resolvedAlt=findAltNameForCall(mc.methodName, argumentTypes);
+                } else {
+                    resolvedAlt=findAltNameForCall((ClassName) mc.object.inferredType, callMethodName, argumentTypes);
+                }
+                if (resolvedAlt != null) {
+                    callMethodName = sanitizeName(resolvedAlt);
+                }
+            }
+        }
+        return callMethodName;
     }
 
     private boolean isMap(TypeName typeName) {
@@ -1123,7 +1222,6 @@ public class Python implements Emitter<StringBuilder> {
         put("Boolean.valueOf", "bool");
         put("add", "append");
         put("class", "__class__");
-     //   put("__plead_transforming", "plead_transforming");
     }};
 
     private String sanitizeName(String name) {

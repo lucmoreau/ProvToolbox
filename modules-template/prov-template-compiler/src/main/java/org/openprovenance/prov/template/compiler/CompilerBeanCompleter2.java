@@ -4,6 +4,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
@@ -68,7 +69,7 @@ public class CompilerBeanCompleter2 {
                 .addTypeVariables(T())
                 .BODY(RETURN(
                         CAST(T(),
-                                METHOD_CALL(VARIABLE("m"), "get", List.of(VARIABLE("key"))))));
+                                METHOD_CALL(METHOD_CALL(VARIABLE("this"),"m"), "get", List.of(VARIABLE("key"))))));
         pastClass.METHOD(callMe2);
 
         Constructor constructor1 = CONSTRUCTOR()
@@ -113,6 +114,8 @@ public class CompilerBeanCompleter2 {
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "m"), Constant.getNull()),
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), GETTER_VAR), VARIABLE(GETTER_VAR)));
 
+        constructor2.annotation.add(new OverloadedMethod("____init2__"));
+
         pastClass.CONSTRUCTOR(constructor2);
 
         for (TemplateCompilerConfig config : configs.templates) {
@@ -134,12 +137,13 @@ public class CompilerBeanCompleter2 {
 
                                 ASSIGNMENT(
                                         METHOD_CALL(VARIABLE(BEAN_VAR), "ID"),
-                                        METHOD_CALL(VARIABLE(GETTER_VAR), "get", List.of(METHOD_CALL(get("Integer", "java.lang"), "class"), CONSTANT("ID")))
+                                        METHOD_CALL(METHOD_CALL(VARIABLE("this"),GETTER_VAR), "get",
+                                                List.of(METHOD_CALL(INTEGER, "class"), CONSTANT("ID")))
                                 ),
 
                                 // call postEnactmentProcessing(bean.ID, fullyQualifiedName)
 
-                                METHOD_CALL(POST_PROCESS_METHOD_NAME, List.of(METHOD_CALL(VARIABLE(BEAN_VAR), "ID"), CONSTANT(config.fullyQualifiedName)))
+                                METHOD_CALL(VARIABLE("this"),POST_PROCESS_METHOD_NAME, List.of(METHOD_CALL(VARIABLE(BEAN_VAR), "ID"), CONSTANT(config.fullyQualifiedName)))
                         );
 
                 for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
@@ -148,7 +152,7 @@ public class CompilerBeanCompleter2 {
                         mspecOut.BODY(ASSIGNMENT(
                                 METHOD_CALL(VARIABLE(BEAN_VAR), key),
                                 METHOD_CALL(
-                                        VARIABLE(GETTER_VAR),
+                                        METHOD_CALL(VARIABLE("this"),GETTER_VAR),
                                         "get",
                                         List.of(
                                                 METHOD_CALL(cl, "class"),
@@ -176,7 +180,7 @@ public class CompilerBeanCompleter2 {
                         mspecIn.BODY(ASSIGNMENT(
                                 METHOD_CALL(VARIABLE(BEAN_VAR), key),
                                 METHOD_CALL(
-                                        VARIABLE(GETTER_VAR),
+                                        METHOD_CALL(VARIABLE("this"),GETTER_VAR),
                                         "get",
                                         List.of(
                                                 METHOD_CALL(cl, "class"),

@@ -56,7 +56,6 @@ public class CompilerTemplateInvoker {
 
 
             Method m = METHOD(PROCESS_METHOD_NAME)
-                    .commentFileLocation()
                     .MODIFIERS(Modifier.PUBLIC)
                     .PARAMETER(inputClassName, BEAN_VAR)
                     .RETURNS(outputClassName);
@@ -65,10 +64,12 @@ public class CompilerTemplateInvoker {
             if (config instanceof SimpleTemplateCompilerConfig) {
                 completerClass =ClassName.get(BEAN_COMPLETER2, locations.getFilePackage(configs.name, BEAN_COMPLETER2) );
 
+                m.commentFileLocation();
                 m.BODY(RETURN(
                         METHOD_CALL(
+                                VARIABLE("this"),
                                 GENERIC_POST_AND_RETURN,
-                                List.of(METHOD_CALL(outputClassName, "class"),
+                                List.of(CONSTRUCTOR_CALL(outputClassName, List.of()),
                                         VARIABLE(BEAN_VAR),
                                         LAMBDA(PARAMETER("m", MAP_STRING_OBJECT),
                                                 PARAMETER("o", outputClassName))
@@ -79,11 +80,12 @@ public class CompilerTemplateInvoker {
                                                                 List.of(VARIABLE("o")))))))));
 
             } else {
+                m.commentFileLocation();
                 completerClass =ClassName.get(COMPOSITE_BEAN_COMPLETER2, locations.getFilePackage(configs.name, COMPOSITE_BEAN_COMPLETER2) );
                 m.BODY(RETURN(
                         METHOD_CALL(
                                 GENERIC_POST_AND_RETURN,
-                                List.of(METHOD_CALL(outputClassName, "class"),
+                                List.of(CONSTRUCTOR_CALL(outputClassName, List.of()),
                                         VARIABLE(BEAN_VAR),
                                         LAMBDA(PARAMETER("m", MAP_STRING_OBJECT),
                                                 PARAMETER("o", outputClassName))
@@ -106,7 +108,8 @@ public class CompilerTemplateInvoker {
         Method generic = METHOD(GENERIC_POST_AND_RETURN)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .PARAMETERS(
-                        PARAMETER("clazz", CLASS_OUT),
+                       // PARAMETER("clazz", CLASS_OUT),
+                        PARAMETER("outbean", TYPE_OUT),
                         PARAMETER("inputs", TYPE_IN),
                         PARAMETER( "completer", BIFUNCTION_MAP_OUT_OUT)
                 )

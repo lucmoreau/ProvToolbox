@@ -265,7 +265,7 @@ public class SpecificationFile {
         if (destinationDir == null) return false;
         codeGenCoordinator.addTask(registry -> {
             try {
-                new org.openprovenance.prov.template.compiler.past.emitter.JavaScript()
+                new org.openprovenance.prov.template.compiler.past.emitter.JavaScript(registry)
                         .toWritableObject(pastClass, pastClass.name, packageName, stackTraceElement)
                         .writeTo(new File(destinationDir));
                 return true;

@@ -16,7 +16,9 @@ import static org.openprovenance.prov.template.compiler.common.Constants.*;
 public class Locations {
     Logger logger = LogManager.getLogger(Locations.class);
     public static final String NODEFAULT_FOR = "nodefault.for.";
-    final private String cli_src_dir;
+
+
+    final public String cli_src_dir;
     final private TemplatesProjectConfiguration configs;
     final private String l2p_src_dir;
     private final Map<String, String> packages;
@@ -178,11 +180,15 @@ public class Locations {
         return getPackageForTemplate(name) +  "." + Constants.SUB_PACKAGE_INTEGRATOR;
     }
 
-    private String getClientIntegratorPackage(String name) {
+    public String getClientWorkflowPackage(String name) {
+        return getPackageForTemplate(name) + "." + Constants.SUB_PACKAGE_CLIENT + "." + SUB_PACKAGE_WORKFLOW;
+    }
+
+    public String getClientIntegratorPackage(String name) {
         return getPackageForTemplate(name) + "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_INTEGRATOR;
     }
 
-    private String getCommonPackage(String name) {
+    public String getCommonPackage(String name) {
         return getPackageForTemplate(name) + "." + Constants.SUB_PACKAGE_COMMON;
     }
 
@@ -253,5 +259,14 @@ public class Locations {
     }
     public Map<String, String> getCbindingsRegistrations() {
         return cbindingsRegistrations;
+    }
+
+
+    public String getCli_src_dir() {
+        return cli_src_dir;
+    }
+
+    public String getL2p_src_dir() {
+        return l2p_src_dir;
     }
 }

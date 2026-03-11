@@ -550,11 +550,20 @@ public class TypeChecker {
     private static String buildAltName(MethodSignature m) {
         StringBuilder sb = new StringBuilder(m.name);
         for (TypeName param : m.parameterTypes) {
-            sb.append("_").append(typeSimpleName(param).toLowerCase());
+            String simpleName = typeSimpleName(param);
+            sb.append("_").append(toSnakeCase(simpleName));
         }
         return sb.toString();
     }
 
+    static String toSnakeCase(String s) {
+        return s
+                // "HTTPRequest" → "HTTP_Request"  (acronym followed by capitalized word)
+                .replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2")
+                // "myMethod" → "my_Method"        (lowercase→uppercase transition)
+                .replaceAll("([a-z\\d])([A-Z])", "$1_$2")
+                .toLowerCase();
+    }
     private static String typeSimpleName(TypeName type) {
         if (type instanceof ClassName) return ((ClassName) type).simpleName;
         if (type instanceof ParameterizedType) return ((ParameterizedType) type).getRawType().simpleName;

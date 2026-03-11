@@ -51,13 +51,6 @@ public class ConfigProcessor implements Constants {
     public static final TypeVariableName typeIn = TypeVariableName.get("IN");
 
     public static final TypeVariableName typeT = TypeVariableName.get("T");
-    public static final TypeName biconsumerType2=ParameterizedTypeName.get(ClassName.get(BiConsumer.class), typeResult, typeT);
-    public static final TypeName biconsumerTypeOut=ParameterizedTypeName.get(ClassName.get(BiConsumer.class), typeResult, typeOut);
-    public static final TypeName consumerT=ParameterizedTypeName.get(ClassName.get(Consumer.class), typeT);
-    public static final TypeName consumerIn=ParameterizedTypeName.get(ClassName.get(Consumer.class), typeIn);
-    public static final TypeName biconsumerType=ParameterizedTypeName.get(ClassName.get(BiConsumer.class),ClassName.get(StringBuilder.class), typeT);
-    public static final TypeName biconsumerTypeIn=ParameterizedTypeName.get(ClassName.get(BiConsumer.class),ClassName.get(StringBuilder.class), typeIn);
-    static final TypeName listTypeT=ParameterizedTypeName.get(ClassName.get(List.class), typeT);
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
     private final boolean debugComment;
@@ -108,7 +101,7 @@ public class ConfigProcessor implements Constants {
     private final CompilerProcessor compilerProcessor;
     private final CompilerJsonSchema compilerJsonSchema;
     private final CompilerClientTest compilerClientTest;
-
+    private final CompilerGenerator compilerGenerator;
     static {
         descriptorUtils = new DescriptorUtils();
         descriptorUtils.setupDeserializer(objectMapper);
@@ -162,6 +155,7 @@ public class ConfigProcessor implements Constants {
         this.compilerQueryInvokerWithPrincipal = new CompilerQueryInvokerWithPrincipal(pFactory,compilerQueryInvoker);
         this.compilerBeanEnactor2compositeWP = new CompilerBeanEnactor2CompositeWithPrincipal(pFactory);
         this.compilerCatalogueDispatcher=new CompilerCatalogueDispatcher(pFactory);
+        this.compilerGenerator=new CompilerGenerator(pFactory);
     }
 
     public int processTemplateGenerationConfig(String template_builder, String inputBaseDir, String cbindingsBaseDir, String outputBaseDir, List<String> templatePath, ProvFactory pFactory) {
@@ -641,13 +635,25 @@ public class ConfigProcessor implements Constants {
         SpecificationFile compositeConfigurationEnactor= compilerCompositeConfigurations.generateCompositeEnactorConfigurator(configs, locations, COMPOSITE_ENACTOR_CONFIGURATOR);
         compositeConfigurationEnactor.save();
 
+        if (configs.generators!=null) {
+            for (String key: configs.generators.keySet()) {
+                Generator gen=configs.generators.get(key);
+                String clazz=gen.clazz;
+                List<String> classpath=gen.classpath;
+                Map<String, Object> parameters=gen.parameters;
+                System.out.println("################## Generating code for generator " + key + " with class " + clazz);
+                SpecificationFile generator = compilerGenerator.generateGenerator(configs, locations, key, clazz, classpath, parameters);
+                generator.save();
+            }
+        }
+
         SpecificationFile.finalizeTypeChecking();
         System.out.println("################## Type Checking done, now generating code...");
 
         SpecificationFile.finalizeCodeGeneration();
 
         System.out.println("##################Rust compilation started...");
-        compileRustProject();
+        compileRustProject(configs.name,configs.version);
 
     }
 

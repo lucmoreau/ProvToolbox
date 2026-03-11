@@ -24,7 +24,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: PAST expression, detecting overloaded methods
 * prov-template-compiler: Python emitter, making use of overload annotation to disambiguate overloaded methods
 * prov-template-archetype: various improvements.
-
+* prov-template-compiler: support for generators in catalogue definition
+* prov-template-compiler: testing python generation of workflows
 
 `2.2.2`
 * prov-template: added ptm-merging template

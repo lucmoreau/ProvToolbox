@@ -1023,9 +1023,9 @@ public class TypeCheckerTest extends TestCase {
                 OverloadedMethod ann = (OverloadedMethod) m.getAnnotations().get(0);
                 TypeName elementType = ((ArrayType) m.parameterTypes.get(0)).elementType;
                 if (elementType.equals(ClassName.STRING)) {
-                    assertEquals("convert_stringarray", ann.getAltName());
+                    assertEquals("convert_string_array", ann.getAltName());
                 } else if (elementType.equals(ClassName.INTEGER)) {
-                    assertEquals("convert_integerarray", ann.getAltName());
+                    assertEquals("convert_integer_array", ann.getAltName());
                 } else {
                     fail("Unexpected array element type: " + elementType);
                 }
@@ -1079,7 +1079,7 @@ public class TypeCheckerTest extends TestCase {
                 }
             } else if (m.name.equals("mixed")) {
                 if (m.parameterTypes.get(0).equals(ClassName.STRING)) {
-                    assertEquals("mixed_string_integerarray", ann.getAltName());
+                    assertEquals("mixed_string_integer_array", ann.getAltName());
                 } else {
                     assertEquals("mixed_integer_list", ann.getAltName());
                 }

@@ -14,14 +14,6 @@
         .sidebar-nav {
             padding: 9px 0;
         }
-
-        .navbar {
-            margin: 0;
-
-            line-height: 18px;
-            color: #333333;
-            background-color: #ffffff;
-        }
     </style>
     <style>
         html
@@ -49,22 +41,22 @@
 <body>
 
 
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-        <ul class="nav navbar-nav">
-            <li id="header-translator"> <a href="translator.html">Translate</a></li>
-            <li id="header-expander">   <a href="expander.html">Expand</a></li>
-            <li id="header-validator">  <a href="validator.html">Validate</a></li>
-            <li id="header-rator">      <a href="rator.html">Rate</a></li>
-            <li id="header-api">        <a href="api.html">API</a></li>
-            <li id="header-about">      <a href="about.html">About</a></li>
-            <li id="header-contact">    <a href="contact.html">Contact</a></li>
+        <ul class="navbar-nav flex-row gap-3">
+            <li id="header-translator" class="nav-item"><a href="translator.html" class="nav-link">Translate</a></li>
+            <li id="header-expander"   class="nav-item"><a href="expander.html"   class="nav-link">Expand</a></li>
+            <li id="header-validator"  class="nav-item"><a href="validator.html"  class="nav-link">Validate</a></li>
+            <li id="header-rator"      class="nav-item"><a href="rator.html"      class="nav-link">Rate</a></li>
+            <li id="header-api"        class="nav-item"><a href="api.html"        class="nav-link">API</a></li>
+            <li id="header-about"      class="nav-item"><a href="about.html"      class="nav-link">About</a></li>
+            <li id="header-contact"    class="nav-item"><a href="contact.html"    class="nav-link">Contact</a></li>
         </ul>
     </div>
 </nav>
 
 <script>
-    $('#header-api').addClass("active");
+    $('#header-api a').addClass("active");
 </script>
 
 <section>
@@ -118,7 +110,7 @@
 
 
 
-<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
 
 <script src="provservice.js"></script>
 

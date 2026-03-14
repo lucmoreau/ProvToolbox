@@ -137,6 +137,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>bootstrap-icons</artifactId>
+            <version>${webjars.bootstrap-icons.version}</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>font-awesome</artifactId>
             <version>${webjars.fontawesome.version}</version>

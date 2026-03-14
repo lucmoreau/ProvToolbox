@@ -18,7 +18,7 @@
     </style>
     <script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
     <link href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="${service.context}/webjars/bootstrap-icons/${webjars.bootstrap-icons.version}/font/bootstrap-icons.min.css" rel="stylesheet">
 
 </head>
 
@@ -29,7 +29,7 @@
 
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-        <ul class="navbar-nav flex-row">
+        <ul class="navbar-nav flex-row gap-3">
             <li id="header-translator" class="nav-item"><a href="translator.html" class="nav-link disabled">Translate</a></li>
             <li id="header-signer"     class="nav-item"><a href="signer.html" class="nav-link disabled">Sign</a></li>
             <li id="header-checker"    class="nav-item"><a href="checker.html" class="nav-link">Check</a></li>

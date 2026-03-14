@@ -29,11 +29,7 @@
       .pretty .provkeyword { color: saddlebrown; }
       .pretty .feature { color: #8910ff; }
 
-      .active .navbar-brand {
-	  color: white;
-      }
-
-      #top_sum {display: none; }
+#top_sum {display: none; }
       #top_pt{display: none; }
 
     </style>
@@ -144,9 +140,9 @@
                 </div>
                 <div id="menu_sum_anim" class="tab-pane fade summary-animation-tab animation-tab">
                   <div class="row">
-                    <div class="col-xs-6 left">left
+                    <div class="col-6 left">left
                     </div>
-                    <div class="col-xs-6 right">right
+                    <div class="col-6 right">right
                     </div>
                   </div>
                 </div>
@@ -205,9 +201,9 @@
                 </div>
                 <div id="menu_ptype_anim" class="tab-pane fade ptype-animation-tab animation-tab">
                   <div class="row">
-                    <div class="col-xs-6 left">left
+                    <div class="col-6 left">left
                     </div>
-                    <div class="col-xs-6 right">right
+                    <div class="col-6 right">right
                     </div>
                   </div>
                 </div>
@@ -547,7 +543,7 @@
           return false;
         }
         const pane = $(this);
-        $(pane).tab('show');
+        bootstrap.Tab.getOrCreateInstance(pane[0]).show();
       }
 
       function showInnerTabFunction (e) {
@@ -558,7 +554,7 @@
         const pane = $(this);
         const href = $(this).attr('href');
         doLoadContent(pane,href);
-        $(pane).tab('show');
+        bootstrap.Tab.getOrCreateInstance(pane[0]).show();
       }
 
       function showAnimInnerTabFunction (e) {
@@ -569,7 +565,7 @@
         const pane = $(this);
         const href = $(this).attr('href');
         doAnimLoadContent(pane,href);
-        $(pane).tab('show');
+        bootstrap.Tab.getOrCreateInstance(pane[0]).show();
       }
 
       function showAnimPtypeInnerTabFunction (e) {
@@ -580,7 +576,7 @@
         const pane = $(this);
         const href = $(this).attr('href');
         doAnimPtypeLoadContent(pane,href);
-        $(pane).tab('show');
+        bootstrap.Tab.getOrCreateInstance(pane[0]).show();
 
 
 
@@ -1198,7 +1194,7 @@
     </script>
 
 
-    <script type="text/javascript" src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="${service.context}/webjars/bootstrap-table/${webjars.bootstrap.tables.version}/bootstrap-table.min.js"></script>
     <script type="text/javascript" src="${service.context}/webjars/ace-builds/src-min-noconflict/ace.js"></script>
     <script type="text/javascript" src="${service.context}/webjars/ace-builds/src-min-noconflict/ext-static_highlight.js"></script>

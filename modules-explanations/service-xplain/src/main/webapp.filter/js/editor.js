@@ -258,7 +258,7 @@ function toXml() {
 
 function fromXml() {
     var input = document.getElementById('importExport');
-    var xml = Blockly.Xml.textToDom(input.value);
+    var xml = new DOMParser().parseFromString(input.value, 'text/xml').documentElement;
     Blockly.Xml.domToWorkspace(xml, workspace);
 }
 

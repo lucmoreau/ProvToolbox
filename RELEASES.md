@@ -26,7 +26,9 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-archetype: various improvements.
 * prov-template-compiler: support for generators in catalogue definition
 * prov-template-compiler: testing python generation of workflows
-* service-signature: upgrade to bootstrap 5.
+* service-signature: upgrade to bootstrap 5
+* service-metrics, service-translator, service-signature,  service-summary: upgrade to bootstrap 5
+* service-xplain: upgrade to bootstrap 5
 
 `2.2.2`
 * prov-template: added ptm-merging template

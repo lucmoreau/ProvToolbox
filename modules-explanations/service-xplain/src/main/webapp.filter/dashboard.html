@@ -1,5 +1,5 @@
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <title>PROV Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,67 +18,55 @@
   -->
 
     <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
 
 
-      pre .pretty {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
-      .pretty .string { color: green; }
-      .pretty .uri { color: darkolivegreen; }
-      .pretty .number { color: darkorange; }
-      .pretty .boolean { color: blue; }
-      .pretty .symbol { color: blue; }
-      .pretty .indent { color: #23ff51; }
-      .pretty .null { color: magenta; }
-      .pretty .operator { color: red; }
-      .pretty .key { color: red; }
-      .pretty .date { color: red; }
-      .pretty .feature { color: saddlebrown; }
-      .pretty .attribute { color: skyblue; }
-      .pretty .category { color: green; }
-      .pretty .provkeyword { color: saddlebrown; }
-      .pretty .querykeyword { color: coral;  font-weight: bold; }
-      .pretty .phrasekeyword { color: coral;  font-weight: bold; }
-      .pretty .snlgkeyword { color: saddlebrown; font-weight: bold; }
-      .pretty .templatekeyword { color: royalblue; font-weight: bold; text-decoration: underline; font-variant: small-caps;}
+        pre .pretty {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+        .pretty .string { color: green; }
+        .pretty .uri { color: darkolivegreen; }
+        .pretty .number { color: darkorange; }
+        .pretty .boolean { color: blue; }
+        .pretty .symbol { color: blue; }
+        .pretty .indent { color: #23ff51; }
+        .pretty .null { color: magenta; }
+        .pretty .operator { color: red; }
+        .pretty .key { color: red; }
+        .pretty .date { color: red; }
+        .pretty .feature { color: saddlebrown; }
+        .pretty .attribute { color: skyblue; }
+        .pretty .category { color: green; }
+        .pretty .provkeyword { color: saddlebrown; }
+        .pretty .querykeyword { color: coral;  font-weight: bold; }
+        .pretty .phrasekeyword { color: coral;  font-weight: bold; }
+        .pretty .snlgkeyword { color: saddlebrown; font-weight: bold; }
+        .pretty .templatekeyword { color: royalblue; font-weight: bold; text-decoration: underline; font-variant: small-caps;}
 
-      .active .navbar-brand {
-	  color: white;
-      }
+        .provelement_IGNORE:hover {
+            background-color: gold;
+        }
 
-
-      .provelement_IGNORE:hover {
-        background-color: gold;
-      }
-
-      #top_xplain {display: none; }
+        #top_xplain {display: none; }
 
     </style>
 
-    <script type="text/javascript" src="/xplain/webjars/jquery/3.3.1/jquery.min.js"></script>
 
-    
-    <link rel="stylesheet" type="text/css" href="/xplain/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="/xplain/webjars/bootstrap-table/1.9.1/bootstrap-table.min.css" />
-    <link rel="stylesheet" type="text/css" href="/xplain/webjars/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+    <link href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${service.context}/webjars/bootstrap-icons/${webjars.bootstrap-icons.version}/font/bootstrap-icons.min.css" rel="stylesheet">
 
 
-  </head>
+</head>
 
   <body>
     <section class="round">
 
-
-
-
-
       <div class="container">
-
 
         <div class="document-block">
           <ul class="nav nav-tabs" id="topTabs">
@@ -87,7 +75,6 @@
             <li class="nav-item disabled" id="top_newxplain"><a href="#top_newexplanation" class="nav-link repr"><i class="fa fa-plus-square"></i> Explanation</a></li>
             <li class="nav-item disabled" id="top_xplain"><a href="#top_explanation" 	 class="nav-link repr"><i class="fa fa-cog"></i> Explanation</a></li>
           </ul>
-
 
           <div class="tab-content" id="all-tab-contents">
             <div id="top_newdocument" class="tab-pane fade">
@@ -153,9 +140,9 @@
                 </div>
                 <div id="menu_xpl_anim" class="tab-pane fade">
                   <div class="row">
-                    <div class="col-xs-8 left">left
+                    <div class="col-8 left">left
                     </div>
-                    <div class="col-xs-4 right">right
+                    <div class="col-4 right">right
                     </div>
                   </div>
                 </div>
@@ -173,36 +160,32 @@
                   <tr>
                     <td>Explanation plans:</td>
                     <td>
-                      <div class="input-append btn-group">
-                        <input id="the-xplain-templates" type="text" name="xplain-template" class="input-large" style="width:300px; "  />
-
-                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-                          <span class="caret"></span>
-                        </a>
-
-
+                      <div class="input-group">
+                          <label for="the-xplain-templates"></label>
+                          <input id="the-xplain-templates" type="text" name="xplain-template" class="form-control" style="width:300px;">
+                        <button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></button>
                         <ul class="dropdown-menu">
-                          <li>Explanation Plans</li>
-                          <li><a href="#" onclick="updateXplainTemplateInputBox('batch:[plead.cs-1a],[plead.cs-1b],[plead.cs-1c],[plead.cs-1d],[plead.cs-4a],[plead.cs-4b],[plead.cs-4c],[plead.cs-4d],[plead.cs-5a],[plead.cs-5b],[plead.cs-5c],[plead.cs-5d]')">
-                            <i class="icon-ok"></i> credit scoring (1)</a>
+                          <li class="dropdown-header">Explanation Plans</li>
+                          <li><a class="dropdown-item" href="#" onclick="updateXplainTemplateInputBox('batch:[plead.cs-1a],[plead.cs-1b],[plead.cs-1c],[plead.cs-1d],[plead.cs-4a],[plead.cs-4b],[plead.cs-4c],[plead.cs-4d],[plead.cs-5a],[plead.cs-5b],[plead.cs-5c],[plead.cs-5d]')">
+                            <i class="bi bi-check"></i> credit scoring (1)</a>
                           </li>
-                          <li><a href="#" onclick="updateXplainTemplateInputBox('batch:[plead.cs-2a],[plead.cs-2b],[plead.cs-2c],[plead.cs-2d],[plead.cs-3a],[plead.cs-3b],[plead.cs-3c],[plead.cs-6a],[plead.cs-6b],[plead.cs-6c]')">
-                            <i class="icon-ok"></i> credit scoring (2)</a>
+                          <li><a class="dropdown-item" href="#" onclick="updateXplainTemplateInputBox('batch:[plead.cs-2a],[plead.cs-2b],[plead.cs-2c],[plead.cs-2d],[plead.cs-3a],[plead.cs-3b],[plead.cs-3c],[plead.cs-6a],[plead.cs-6b],[plead.cs-6c]')">
+                            <i class="bi bi-check"></i> credit scoring (2)</a>
                           </li>
-                          <li class="divider"></li>
-                          <li><a href="#" onclick="updateXplainTemplateInputBox('batch:[plead.erasure.accept2a],[plead.erasure.accept2b],[plead.erasure.reject],[plead.rectification.accept2a],[plead.rectification.accept2b],[plead.rectification.reject]')">
-                            <i class="icon-ok"></i> erasure/rectification</a>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="#" onclick="updateXplainTemplateInputBox('batch:[plead.erasure.accept2a],[plead.erasure.accept2b],[plead.erasure.reject],[plead.rectification.accept2a],[plead.rectification.accept2b],[plead.rectification.reject]')">
+                            <i class="bi bi-check"></i> erasure/rectification</a>
                           </li>
                           <!--
-                          <li><a href="#" onclick="updateXplainTemplateInputBox('batch:[data.sources2],[automatic.decision3,human.decision1],[responsibility6],[inclusion3],[performance4],[relevancy2],[exclusion1]')">
-                            <i class="icon-ok"></i> loan templates</a>
+                          <li><a class="dropdown-item" href="#" onclick="updateXplainTemplateInputBox('batch:[data.sources2],[automatic.decision3,human.decision1],[responsibility6],[inclusion3],[performance4],[relevancy2],[exclusion1]')">
+                            <i class="bi bi-check"></i> loan templates</a>
                           </li>
-                          <li><a href="#" onclick="updateXplainTemplateInputBox('human.decision1')">
-                            <i class="icon-ok"></i> human.decision1</a>
+                          <li><a class="dropdown-item" href="#" onclick="updateXplainTemplateInputBox('human.decision1')">
+                            <i class="bi bi-check"></i> human.decision1</a>
                           </li>
                           -->
-                          <li class="divider"></li>
-                          <li><a href="#" onclick="updateXplainTemplateInputBox('')"><i class="icon-trash"></i> Clear</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="#" onclick="updateXplainTemplateInputBox('')"><i class="bi bi-trash"></i> Clear</a></li>
                         </ul>
                       </div>
                     </td>
@@ -211,36 +194,31 @@
                   <tr>
                     <td>Explanation profiles:</td>
                     <td>
-                      <div class="input-append btn-group">
-                        <input id="the-xplain-profiles" type="text" name="xplain-profile" class="input-large" style="width:300px; "  />
-
-                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-                          <span class="caret"></span>
-                        </a>
-
-
+                      <div class="input-group">
+                        <input id="the-xplain-profiles" type="text" name="xplain-profile" class="form-control" style="width:300px;">
+                        <button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></button>
                         <ul class="dropdown-menu">
-                          <li>Explanation Profiles</li>
-                          <li><a href="#" onclick="updateXplainProfileInputBox('ln:company-pronoun-1,ln:borrower-person2')">
-                            <i class="icon-ok"></i> ln:company-pronoun-1,ln:borrower-person2</a>
+                          <li class="dropdown-header">Explanation Profiles</li>
+                          <li><a class="dropdown-item" href="#" onclick="updateXplainProfileInputBox('ln:company-pronoun-1,ln:borrower-person2')">
+                            <i class="bi bi-check"></i> ln:company-pronoun-1,ln:borrower-person2</a>
                           </li>
-                          <li><a href="#" onclick="updateXplainProfileInputBox('ln:borrower-noun')">
-                            <i class="icon-ok"></i> ln:borrower-noun</a>
+                          <li><a class="dropdown-item" href="#" onclick="updateXplainProfileInputBox('ln:borrower-noun')">
+                            <i class="bi bi-check"></i> ln:borrower-noun</a>
                           </li>
-                          <li><a href="#" onclick="updateXplainProfileInputBox('ln:borrower-person1')">
-                            <i class="icon-ok"></i> ln:borrower-person1</a>
+                          <li><a class="dropdown-item" href="#" onclick="updateXplainProfileInputBox('ln:borrower-person1')">
+                            <i class="bi bi-check"></i> ln:borrower-person1</a>
                           </li>
-                          <li><a href="#" onclick="updateXplainProfileInputBox('ln:borrower-person2')">
-                            <i class="icon-ok"></i> ln:borrower-person2</a>
+                          <li><a class="dropdown-item" href="#" onclick="updateXplainProfileInputBox('ln:borrower-person2')">
+                            <i class="bi bi-check"></i> ln:borrower-person2</a>
                           </li>
-                          <li><a href="#" onclick="updateXplainProfileInputBox('ln:borrower-person3-f')">
-                            <i class="icon-ok"></i> ln:borrower-person3-f</a>
+                          <li><a class="dropdown-item" href="#" onclick="updateXplainProfileInputBox('ln:borrower-person3-f')">
+                            <i class="bi bi-check"></i> ln:borrower-person3-f</a>
                           </li>
-                          <li><a href="#" onclick="updateXplainProfileInputBox('xxx')">
-                            <i class="icon-ok"></i> xxx</a>
+                          <li><a class="dropdown-item" href="#" onclick="updateXplainProfileInputBox('xxx')">
+                            <i class="bi bi-check"></i> xxx</a>
                           </li>
-                          <li class="divider"></li>
-                          <li><a href="#" onclick="updateXplainProfileInputBox('')"><i class="icon-trash"></i> Clear</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="#" onclick="updateXplainProfileInputBox('')"><i class="bi bi-trash"></i> Clear</a></li>
                         </ul>
                       </div>
                     </td>
@@ -248,8 +226,8 @@
                   <tr>
                     <td>Tab id:</td>
                     <td>
-                      <div class="input-append btn-group">
-                        <input id="the-xplain-name" type="text" name="xplain-name" class="input-large" style="width:300px; "  />
+                      <div class="input-group">
+                        <input id="the-xplain-name" type="text" name="xplain-name" class="form-control" style="width:300px;">
                       </div>
                     </td>
                   <tr>
@@ -471,7 +449,7 @@
           return false;
         }
         var pane = $(this);
-        $(pane).tab('show');
+        bootstrap.Tab.getOrCreateInstance(pane[0]).show();
       }
 
       function showInnerTabFunction (lab) {
@@ -485,7 +463,7 @@
           var pane = $(this);
           var href = $(this).attr('href');
           doLoadContent(pane, href,lab);
-          $(pane).tab('show');
+          bootstrap.Tab.getOrCreateInstance(pane[0]).show();
         }
       }
 
@@ -497,7 +475,7 @@
         var pane = $(this);
         var href = $(this).attr('href');
         doAnimLoadContent(pane,href);
-        $(pane).tab('show');
+        bootstrap.Tab.getOrCreateInstance(pane[0]).show();
       }
 
       function displayPrettyHtmlWithNestedTabs(json, tabid, toextend) {
@@ -508,7 +486,7 @@
         $.each(json, function (key, value) {
           const cleanKey = key.replace(/\./g, '_').replace(/,/g, '_');
           const tab_cleanKey = tabid + "_" + "tab_" + cleanKey;
-          ul.append($('<li>').append($('<a class="nav-link">').attr("data-toggle", "tab").attr("href", "#" + tab_cleanKey).text(key)));
+          ul.append($('<li>').append($('<a class="nav-link">').attr("data-bs-toggle", "tab").attr("href", "#" + tab_cleanKey).text(key)));
           const mytab = $('<div class="tab-pane fade nested">').attr("id", tab_cleanKey);
 
           const ul2 = $('<ul class="nav nav-pills">');
@@ -529,7 +507,7 @@
           $.each(value, function (nestedKey, nestedValue) {
             const nested_tab_cleanKey = tab_cleanKey + "_" + nestedKey;
 
-            ul2.append($('<li>').append($('<a class="nav-link">').attr("data-toggle", "tab").attr("href", "#" + nested_tab_cleanKey).text(nestedKey)));
+            ul2.append($('<li>').append($('<a class="nav-link">').attr("data-bs-toggle", "tab").attr("href", "#" + nested_tab_cleanKey).text(nestedKey)));
             const mytab2 = $('<div class="tab-pane fade nestedb">').attr("id", nested_tab_cleanKey);
 
             var added = false;
@@ -612,7 +590,7 @@
         $.each(json, function (key, value) {
           var cleanKey = key.replace(/\./g, '_').replace(/,/g, '_');
           var tab_cleanKey = tabid + "_" + cleanKey;
-          ul.append($('<li>').append($('<a class="nav-link">').attr("data-toggle", "tab").attr("href", "#" + tab_cleanKey).text(key)));
+          ul.append($('<li>').append($('<a class="nav-link">').attr("data-bs-toggle", "tab").attr("href", "#" + tab_cleanKey).text(key)));
           var mytab = $('<div class="tab-pane fade nested">').attr("id", tab_cleanKey);
 
           var ul2=$('<ul class="nav nav-pills">');
@@ -1146,10 +1124,10 @@
     </script>
 
 
-    <script type="text/javascript" src="/xplain/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/xplain/webjars/bootstrap-table/1.9.1/bootstrap-table.min.js"></script>
-    <script type="text/javascript" src="/xplain/webjars/ace-builds/src-min-noconflict/ace.js"></script>
-    <script type="text/javascript" src="/xplain/webjars/ace-builds/src-min-noconflict/ext-static_highlight.js"></script>
+    <script type="text/javascript" src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="${service.context}/webjars/bootstrap-table/${webjars.bootstrap.tables.version}/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="${service.context}/webjars/ace-builds/src-min-noconflict/ace.js"></script>
+    <script type="text/javascript" src="${service.context}/webjars/ace-builds/src-min-noconflict/ext-static_highlight.js"></script>
 
     <script>
       var highlight = ace.require("ace/ext/static_highlight")

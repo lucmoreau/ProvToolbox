@@ -90,21 +90,15 @@
             <scope>provided</scope>
         </dependency>
 
+
+
+        <!--  web jars  -->
+
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-jaxrs2-jakarta</artifactId>
             <version>${swagger.version}</version>
         </dependency>
-
-        <!--
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <version>1.7.12</version>
-        </dependency>
-        -->
-
-        <!--  web jars  -->
 
         <dependency>
             <groupId>org.webjars</groupId>
@@ -115,25 +109,32 @@
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>
-            <version>3.3.1</version> <!-- need to change version in jsp files too -->
+            <version>${webjars.jquery.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap-table</artifactId>
-            <version>1.9.1</version>
+            <version>${webjars.bootstrap.tables.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
-            <version>3.3.7</version>
+            <version>${webjars.bootstrap.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>bootstrap-icons</artifactId>
+            <version>${webjars.bootstrap-icons.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>font-awesome</artifactId>
-            <version>4.7.0</version>
+            <version>${webjars.fontawesome.version}</version>
         </dependency>
 
         <dependency>
@@ -146,7 +147,7 @@
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>blockly</artifactId>
-            <version>10.4.1</version>
+            <version>${webjars.blockly.version}</version>
         </dependency>
 
         <!-- for testing -->
@@ -236,18 +237,36 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${war.plugin.version}</version>
                 <configuration>
+                    <classifier />
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <webXml>src/main/webapp.filter/WEB-INF/jetty-web.xml</webXml>
+                    <webappDirectory>${project.build.directory}/${project.build.finalName}-jetty</webappDirectory>
+                    <filters>
+                        <filter>src/main/resources/properties/prov.webapp.config.properties</filter>
+                        <filter>src/main/resources/properties/jetty.webapp.config.properties</filter>
+                    </filters>
                     <webResources>
                         <resource>
+                            <filtering>true</filtering>
                             <!-- this is relative to the pom.xml directory -->
-                            <directory>src/main/webapp</directory>
-                            <!-- there's no default value for this -->
+                            <directory>src/main/webapp.filter</directory>
                             <excludes>
-                                <exclude>**/node_modules</exclude>
+                                <exclude>WEB-INF/jetty-web.xml</exclude>
+                                <exclude>WEB-INF/tomcat-web.xml</exclude>
+                                <exclude>WEB-INF/classes</exclude>
                             </excludes>
+                            <includes>**/*</includes>
+                        </resource>
+                        <resource>
+                            <filtering>true</filtering>
+                            <!-- this is relative to the pom.xml directory -->
+                            <directory>src/main/resources/org</directory>
+                            <targetPath>WEB-INF/classes/org</targetPath>
                         </resource>
                     </webResources>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
+
                 </configuration>
+
             </plugin>
 
             <plugin>
@@ -287,9 +306,7 @@
                                 </property>
                                 <property>
                                     <name>XPLAIN_LEXICON</name>
-                                    <!--value><${project.basedir}/config/lexAccess2013.data</value>-->
-                                    <!--<value>${project.build.directory}/dictionary/lexAccess2013.data</value>-->
-                                    <value>${project.build.directory}/target/dictionary/lexAccess2013.data</value>
+                                    <value>${project.build.directory}/dictionary/lexAccess2013.data</value>
                                 </property>
                                 <property>
                                     <name>RESOURCES_HOST</name>
@@ -316,7 +333,7 @@
                 <directory>src/main/config</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>log4j.xml</include>
+                    <include>log4j2.xml</include>
                 </includes>
             </resource>
         </resources>

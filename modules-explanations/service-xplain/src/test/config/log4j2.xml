@@ -24,11 +24,6 @@
             <AppenderRef ref="Console"/>
         </Logger>
 
-        <Logger name="org.openprovenance.prov.scala.narrator" level="debug"  additivity="false">
-            <AppenderRef ref="Console"/>
-        </Logger>
-
-
 
 
     </Loggers>

@@ -10,10 +10,10 @@
     <script src="/xplain/static/js/google-blockly/javascript_compressed.js"></script>
     <script src="/xplain/static/js/google-blockly/msg/js/en.js"></script> -->
 
-    <script src="/xplain/webjars/blockly/10.4.1/blockly_compressed.js"></script>
-    <script src="/xplain/webjars/blockly/10.4.1/blocks_compressed.js"></script>
-    <script src="/xplain/webjars/blockly/10.4.1/javascript_compressed.js"></script>
-    <script src="/xplain/static/js/google-blockly-msg/js/en.jss"></script>
+    <script src="${service.context}/webjars/blockly/${webjars.blockly.version}/blockly_compressed.js"></script>
+    <script src="${service.context}/webjars/blockly/${webjars.blockly.version}/blocks_compressed.js"></script>
+    <script src="${service.context}/webjars/blockly/${webjars.blockly.version}/javascript_compressed.js"></script>
+    <script src="${service.context}/static/js/google-blockly-msg/js/en.js"></script>
     <style>
         body {
             background-color: #fff;
@@ -50,14 +50,15 @@
 
 
     </style>
-    <script type="text/javascript" src="/xplain/webjars/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/xplain/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="/xplain/webjars/bootstrap-table/1.9.1/bootstrap-table.min.css" />
-    <link rel="stylesheet" type="text/css" href="/xplain/webjars/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script type="text/javascript" src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" />
+    <link href="${service.context}/webjars/bootstrap-icons/${webjars.bootstrap-icons.version}/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="${service.context}/webjars/bootstrap-table/${webjars.bootstrap.tables.version}/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="${service.context}/webjars/font-awesome/${webjars.fontawesome.version}/css/font-awesome.min.css" />
 
 </head>
 <body>
-<h1><a href="/xplain/view/editor"><img src="/xplain/static/resources/images/plead-explanation-assistant.png"></a>Explanation Assistant Editor</h1>
+<h1><a href="${service.context}/view/editor"><img src="/xplain/static/resources/images/plead-explanation-assistant.png"></a>Explanation Assistant Editor</h1>
 
 
 <div class="container">
@@ -65,28 +66,28 @@
 
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a href="#tab_editor" data-toggle="pill" class="nav-link show active" role="tab" id="link_editor">Editor</a>
+                <a href="#tab_editor" data-bs-toggle="pill" class="nav-link show active" role="tab" id="link_editor">Editor</a>
             </li>
             <li class="nav-item">
-                <a href="#tab_document" data-toggle="pill" class="nav-link" role="tab">Document</a>
+                <a href="#tab_document" data-bs-toggle="pill" class="nav-link" role="tab">Document</a>
             </li>
             <li class="nav-item">
-                <a href="#tab_query" data-toggle="pill" class="nav-link" role="tab">Query</a>
+                <a href="#tab_query" data-bs-toggle="pill" class="nav-link" role="tab">Query</a>
             </li>
             <li class="nav-item">
-                <a href="#tab_dictionary" data-toggle="pill" class="nav-link" role="tab">Dictionary</a>
+                <a href="#tab_dictionary" data-bs-toggle="pill" class="nav-link" role="tab">Dictionary</a>
             </li>
             <li class="nav-item">
-                <a href="#tab_debug" data-toggle="pill" class="nav-link" role="tab">Debug</a>
+                <a href="#tab_debug" data-bs-toggle="pill" class="nav-link" role="tab">Debug</a>
             </li>
             <li class="nav-item">
-                <a href="#tab_configuration" data-toggle="pill" class="nav-link disabled" role="tab" id="link_configuration">Configuration</a>
+                <a href="#tab_configuration" data-bs-toggle="pill" class="nav-link disabled" role="tab" id="link_configuration">Configuration</a>
             </li>
             <li class="nav-item">
-                <a href="#tab_imports" data-toggle="pill" class="nav-link disabled" role="tab">Import/Export XPlan</a>
+                <a href="#tab_imports" data-bs-toggle="pill" class="nav-link disabled" role="tab">Import/Export XPlan</a>
             </li>
             <li class="nav-item">
-                <a href="#tab_dev" data-toggle="pill" class="nav-link disabled" role="tab">Dev</a>
+                <a href="#tab_dev" data-bs-toggle="pill" class="nav-link disabled" role="tab">Dev</a>
             </li>
 
         </ul>
@@ -111,10 +112,10 @@
 
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <a href="#tab_debug_request" data-toggle="pill" class="nav-link show active" role="tab">Request</a>
+                        <a href="#tab_debug_request" data-bs-toggle="pill" class="nav-link show active" role="tab">Request</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#tab_debug_response" data-toggle="pill" class="nav-link disabled" role="tab">Response</a>
+                        <a href="#tab_debug_response" data-bs-toggle="pill" class="nav-link disabled" role="tab">Response</a>
                     </li>
                 </ul>
 
@@ -132,10 +133,10 @@
 
             <div id="tab_document" class="tab-pane active" role="tabpanel">
                 <ul class="nav nav-tabs" id="myTabs">
-                    <li class="nav-item"><a href="#menu_jsonld"  data-toggle="pill"  class="nav-link show active" data-url=".jsonld" data-verbatim="true" data-json="true">PROV-JSON-LD</a></li>
-                    <li class="nav-item disabled"><a href="#menu_provn"	 data-toggle="pill"  class="nav-link disabled"    data-url=".provn"  data-verbatim="true" data-provn="true">PROV-N</a></li>
-                    <li class="nav-item disabled"><a href="#menu_json" 	 data-toggle="pill"  class="nav-link disabled"    data-url=".json"   data-verbatim="true" data-json="true">PROV-JSON</a></li>
-                    <li class="nav-item disabled"><a href="#menu_svg"  	 data-toggle="pill"  class="nav-link disabled"    data-url=".svg">SVG</a></li>
+                    <li class="nav-item"><a href="#menu_jsonld"  data-bs-toggle="pill"  class="nav-link show active" data-url=".jsonld" data-verbatim="true" data-json="true">PROV-JSON-LD</a></li>
+                    <li class="nav-item disabled"><a href="#menu_provn"	 data-bs-toggle="pill"  class="nav-link disabled"    data-url=".provn"  data-verbatim="true" data-provn="true">PROV-N</a></li>
+                    <li class="nav-item disabled"><a href="#menu_json" 	 data-bs-toggle="pill"  class="nav-link disabled"    data-url=".json"   data-verbatim="true" data-json="true">PROV-JSON</a></li>
+                    <li class="nav-item disabled"><a href="#menu_svg"  	 data-bs-toggle="pill"  class="nav-link disabled"    data-url=".svg">SVG</a></li>
                 </ul>
 
                 <div class="tab-content">
@@ -203,29 +204,28 @@
                     <tr style="background-color: #FFCCCC20; ">
                         <td>X-Plan library&nbsp;&nbsp;&nbsp;</td>
                         <td>
-                            <div class="input-append btn-group">
-                                <input id="the-config-input" type="text" name="url" class="input-large" style="width:500px; "  />
+                            <div class="input-group">
+                                <input id="the-config-input" type="text" name="url" class="form-control" style="width:500px; "  />
 
-                                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-                                    <span class="caret"></span>
-                                </a>
+                                <button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                </button>
 
 
                                 <ul class="dropdown-menu">
-                                    <li>Examples</li>
-                                    <li><a href="#" onclick="updateDiv('the-config-input', 'https://api.github.com/repos/plead-project/explanations/contents/credit-scoring/xplan/plead/plead-template-library.json')">
-                                        <i class="icon-ok"></i> PLEAD (Credit Scoring)</a>
+                                    <li class="dropdown-header">Examples</li>
+                                    <li><a class="dropdown-item" href="#" onclick="updateDiv('the-config-input', 'https://api.github.com/repos/plead-project/explanations/contents/credit-scoring/xplan/plead/plead-template-library.json')">
+                                        <i class="bi bi-check"></i> PLEAD (Credit Scoring)</a>
                                     </li>
-                                    <li><a href="#" onclick="updateDiv('the-config-input', 'https://api.github.com/repos/plead-project/explanations/contents/school-allocation/xplan/plead/plead-template-library.json')">
-                                        <i class="icon-ok"></i> PLEAD (School Allocation)</a>
+                                    <li><a class="dropdown-item" href="#" onclick="updateDiv('the-config-input', 'https://api.github.com/repos/plead-project/explanations/contents/school-allocation/xplan/plead/plead-template-library.json')">
+                                        <i class="bi bi-check"></i> PLEAD (School Allocation)</a>
                                     </li>
-                                    <li><a href="#" onclick="updateDiv('the-config-input', 'https://raw.githubusercontent.com/plead-project/explanations/master/credit-scoring/xplan/plead/plead-template-library.json')">
-                                        <i class="icon-ok"></i> Thump</a>
+                                    <li><a class="dropdown-item" href="#" onclick="updateDiv('the-config-input', 'https://raw.githubusercontent.com/plead-project/explanations/master/credit-scoring/xplan/plead/plead-template-library.json')">
+                                        <i class="bi bi-check"></i> Thump</a>
                                     </li>
 
 
-                                    <li class="divider"></li>
-                                    <li><a href="#" onclick="updateDiv('the-config-input','')"><i class="icon-trash"></i> Clear</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" onclick="updateDiv('the-config-input','')"><i class="bi bi-trash"></i> Clear</a></li>
                                 </ul>
 
                                 <input type="button" value="Load Configuration" onclick="loadConfiguration('the-config-input')">
@@ -243,7 +243,7 @@
                         <td>X-Plan</td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="xplan-dropdown-menu-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="xplan-dropdown-menu-button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
                                     Select from Dropdown
                                 </button>
                                 <span id="xplan-menu-list" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -263,28 +263,27 @@
                     <tr style="background-color: #AAEEAA20; ">
                         <td>Document</td>
                         <td>
-                            <div class="input-append btn-group">
-                                <input id="the-document-input" type="text" name="url" class="input-large" style="width:500px; "  />
+                            <div class="input-group">
+                                <input id="the-document-input" type="text" name="url" class="form-control" style="width:500px; "  />
 
-                                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-                                    <span class="caret"></span>
-                                </a>
+                                <button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                </button>
 
 
                                 <ul class="dropdown-menu">
-                                    <li>Documents</li>
-                                    <li><a href="#" onclick="updateDiv('the-document-input', 'https://api.github.com/repos/plead-project/explanations/contents/credit-scoring/provenance/scenario.v2.provn')">
-                                        <i class="icon-ok"></i> cs:scenario.v2</a>
+                                    <li class="dropdown-header">Documents</li>
+                                    <li><a class="dropdown-item" href="#" onclick="updateDiv('the-document-input', 'https://api.github.com/repos/plead-project/explanations/contents/credit-scoring/provenance/scenario.v2.provn')">
+                                        <i class="bi bi-check"></i> cs:scenario.v2</a>
                                     </li>
-                                    <li><a href="#" onclick="updateDiv('the-document-input', 'https://api.github.com/repos/plead-project/explanations/contents/credit-scoring/provenance/human-review.provn')">
-                                        <i class="icon-ok"></i> cs:human-review</a>
+                                    <li><a class="dropdown-item" href="#" onclick="updateDiv('the-document-input', 'https://api.github.com/repos/plead-project/explanations/contents/credit-scoring/provenance/human-review.provn')">
+                                        <i class="bi bi-check"></i> cs:human-review</a>
                                     </li>
-                                    <li><a href="#" onclick="updateDiv('the-document-input', 'https://api.github.com/repos/plead-project/explanations/contents/school-allocation/provenance/second_choice.provn')">
-                                        <i class="icon-ok"></i> sa:second_choice</a>
+                                    <li><a class="dropdown-item" href="#" onclick="updateDiv('the-document-input', 'https://api.github.com/repos/plead-project/explanations/contents/school-allocation/provenance/second_choice.provn')">
+                                        <i class="bi bi-check"></i> sa:second_choice</a>
                                     </li>
 
-                                    <li class="divider"></li>
-                                    <li><a href="#" onclick="updateDiv('the-document-input','')"><i class="icon-trash"></i> Clear</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" onclick="updateDiv('the-document-input','')"><i class="bi bi-trash"></i> Clear</a></li>
                                 </ul>
 
                                 <input type="button" value="Load Document" onclick="loadDocument('the-document-input')">
@@ -316,15 +315,15 @@
                         <td>Format</td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="format-dropdown-menu-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="format-dropdown-menu-button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Select Format
                                 </button>
                                 <span id="format-menu-list" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <li>
-                                        <a classname="dropdown-item" href="#" onclick="selectFormat(0,'plain text')">plain text</a>
+                                        <a class="dropdown-item" href="#" onclick="selectFormat(0,'plain text')">plain text</a>
                                     </li>
                                     <li>
-                                        <a classname="dropdown-item" href="#" onclick="selectFormat(1,'html')">html</a>
+                                        <a class="dropdown-item" href="#" onclick="selectFormat(1,'html')">html</a>
                                     </li>
                                 </span>
                             </div>
@@ -457,11 +456,11 @@
 
 <xml id="workspaceBlocks" style="display: none"/>
 
-<script src="/xplain/static/js/nlg.js"></script>
-<script src="/xplain/static/js/generator.js"></script>
-<script src="/xplain/static/js/editor.js"></script>
+<script src="${service.context}/static/js/nlg.js"></script>
+<script src="${service.context}/static/js/generator.js"></script>
+<script src="${service.context}/static/js/editor.js"></script>
 
-<script type="text/javascript" src="/xplain/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

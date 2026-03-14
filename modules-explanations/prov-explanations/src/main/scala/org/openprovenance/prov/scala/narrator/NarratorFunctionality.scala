@@ -21,7 +21,7 @@ object NarratorFunctionality {
   def randomConfig(): XConfig = XplainConfig()
 
 
-  val logger: Logger = LogManager.getLogger("Narrator")
+  val logger: Logger = LogManager.getLogger(NarratorFunctionality)
 
 
   def getTextOnly(text: Map[String, Narrative]): Map[String, List[String]] = {
@@ -133,6 +133,8 @@ object NarratorFunctionality {
         case _ => throw new UnsupportedOperationException // never here
       }
     } else {
+      logger.debug("realise_aux " + config.selected_templates)
+
       val compactNarrative: Narrative = realiser.realise(config.profile, config.selected_templates, format_option, allp)
       Map(config.selected_templates.mkString(",") ->  compactNarrative.copy(sentences=compactNarrative.sentences.reverse))
     }

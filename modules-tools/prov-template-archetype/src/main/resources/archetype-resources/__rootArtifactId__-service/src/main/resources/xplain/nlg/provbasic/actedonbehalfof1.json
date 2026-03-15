@@ -1,0 +1,34 @@
+
+{
+
+    "select": {"aobo": {"@type": "prov:ActedOnBehalfOf"}},
+
+    "query": "select * from aobo a prov:ActedOnBehalfOf",        
+ 
+    "sentence": {
+	"type": "clause",
+	"subject":  {"type": "noun_phrase",
+		     "head": {"type": "@funcall",
+			      "@object": "aobo",
+			      "@field":  "delegate",
+			      "@function": "localname"},
+		    "features": {"number": {"type": "@funcall",
+					    "@object": "aobo",
+					    "@field": "delegate",
+					    "@function": "pluralp"}}},
+	"verb": "act",
+	"modifiers": [{"type": "preposition_phrase",
+		       "preposition": "on behalf of",
+		       "noun": {"type": "@funcall",
+				"@object": "aobo",
+				"@field": "responsible",
+				"@function": "localname"}}],	
+	"features" : {"tense": "past"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#"
+    }
+    
+}

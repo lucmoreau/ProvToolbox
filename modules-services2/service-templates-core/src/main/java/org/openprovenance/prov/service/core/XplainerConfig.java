@@ -10,6 +10,20 @@ import java.util.List;
 
 
 public class XplainerConfig implements XConfig {
+
+    private final String   libraryPath      ;
+    private final List<String> templateList;
+
+    public XplainerConfig() {
+        this.libraryPath  = "/xplain/plead/template-library.json";
+        this.templateList = List.of("plead-generic-responsibility");
+    }
+
+    public XplainerConfig(String libraryPath, List<String> templateList) {
+        this.libraryPath = libraryPath;
+        this.templateList = templateList;
+    }
+
     @Override
     public Output snlg() {
         return null;
@@ -22,8 +36,7 @@ public class XplainerConfig implements XConfig {
 
     @Override
     public Seq<String> selected_templates() {
-        List<String> ll = List.of("plead-generic-responsibility");
-        return scala.jdk.CollectionConverters.CollectionHasAsScala(ll).asScala().toSeq();
+        return scala.jdk.CollectionConverters.CollectionHasAsScala(templateList).asScala().toSeq();
     }
 
     @Override
@@ -39,7 +52,7 @@ public class XplainerConfig implements XConfig {
     @Override
     public Seq<String> language() {
         //List<String> ll = List.of("/nlg/templates/plead.cs/plead-template-library.json");
-        List<String> ll = List.of("/xplain/plead/template-library.json");
+        List<String> ll = List.of(libraryPath);
         return scala.jdk.CollectionConverters.CollectionHasAsScala(ll).asScala().toSeq();
     }
 

@@ -16,6 +16,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
@@ -85,7 +86,7 @@ public class TemplateService {
     protected final Map<String, Linker> compositeLinker;
     protected final Map<String, Function<Object[], Object[]>> recordMaker;
     protected final PrincipalManager principalManager;
-    protected final Map<String, String> templateConfiguration;
+    protected final Map<String, Object> templateConfiguration;
     protected final Querier querier;
     protected final HashMap<String, String> map;
     protected final String postgresUsername=getSystemOrEnvironmentVariableOrDefault(DB_USER, "user");
@@ -133,8 +134,11 @@ public class TemplateService {
         this.templateConfiguration=(NO_TEMPLATE_CONFIG.equals(templateConfig))?new HashMap<>():readTemplateConfiguration(templateConfig);
 
         String fullClassName=templateConfiguration.get("catalogue.package")+".CatalogueDispatcher";
-        String sqlInitializer=templateConfiguration.get("sql.initializer");
-        String jdbcURL=templateConfiguration.get("jdbc.url");
+        String sqlInitializer= (String) templateConfiguration.get("sql.initializer");
+        String jdbcURL= (String) templateConfiguration.get("jdbc.url");
+        String nlgXplanLibary= (String) templateConfiguration.get("nlg.xplan.library");
+        List<String> nlgPlanList= (List<String>) templateConfiguration.get("nlg.xplan.list");
+
 
         Connection conn=storageSetup(jdbcURL);
         Function<String, ResultSet> queryExecutor = storage.queryExecutor(conn);
@@ -176,9 +180,28 @@ public class TemplateService {
         this.documentBuilderDispatcher=catalogueDispatcher.getDocumentBuilderDispatcher();
         this.recordMaker=catalogueDispatcher.getRecordMaker();
         this.queryTemplate=new TemplateQuery(querier, this.catalogueDispatcher, principalManager, compositeLinker, om);
-        this.templateLogic=new TemplateLogic(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om);
+        this.templateLogic=new TemplateLogicWithConfig(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om,nlgXplanLibary,nlgPlanList);
 
 
+    }
+
+    static class TemplateLogicWithConfig extends TemplateLogic {
+        private final String nlgXplanLibrary;
+        private final List<String> nlgXplanList;
+
+
+        public TemplateLogicWithConfig(ProvFactory pf, TemplateQuery queryTemplate, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om, String nlgXplanLibrary, List<String> nlgXplanList) {
+            super(pf, queryTemplate, shortNames, catalogueDispatcher, principalManager, utils, om);
+            this.nlgXplanLibrary = nlgXplanLibrary;
+            this.nlgXplanList = nlgXplanList;
+        }
+
+        @Override
+        public @NonNull XplainerConfig makeXplainerConfig() {
+            System.out.println("calling new XplainerConfig " + nlgXplanLibrary);
+
+            return new XplainerConfig(nlgXplanLibrary, nlgXplanList);
+        }
     }
 
     public void storageInitialize(Connection conn, String sqlInitializer) {
@@ -747,9 +770,9 @@ public class TemplateService {
     }
 
 
-    public Map<String,String> readTemplateConfiguration(String configFileName) {
+    public Map<String,Object> readTemplateConfiguration(String configFileName) {
         try {
-            return (Map<String, String>) om.readValue(new File(configFileName), Map.class);
+            return (Map<String, Object>) om.readValue(new File(configFileName), Map.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -29,6 +29,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-signature: upgrade to bootstrap 5
 * service-metrics, service-translator, service-signature,  service-summary: upgrade to bootstrap 5
 * service-xplain: upgrade to bootstrap 5
+* prov-template-archetype: service now producing explanations
 
 `2.2.2`
 * prov-template: added ptm-merging template

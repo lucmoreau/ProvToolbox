@@ -25,6 +25,15 @@
         </dependency>
 
         <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-explanations</artifactId>
+            <version>${provtoolboxVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+
+
+
+        <dependency>
             <groupId>${templateLibraryGroupId}</groupId>
             <artifactId>${templateLibraryArtifactId}</artifactId>
             <version>${templateLibraryVersion}</version>
@@ -307,6 +316,8 @@
         <pom.jdbc.url>${jdbcURL}</pom.jdbc.url>
         <pom.form.dashboard.title>Book Templates Dashboard</pom.form.dashboard.title> <!--  removing ${project.version} from page title -->
         <pom.logger.constructor>${loggerConstructor}</pom.logger.constructor>
+        <pom.nlg.xplan.library>/xplain/nlg/provbasic/provbasic.json</pom.nlg.xplan.library> <!-- /xplain/nlg/xplans-config.json -->
+        <pom.nlg.xplan.list>["actedonbehalfof1", "activity1", "agent1", "alternate1", "association1", "attribution1", "derivation1", "end1", "entity1", "generation1", "invalidation1", "specialization1", "start1", "usage1", "member1"]</pom.nlg.xplan.list>
         <unsecure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-no-security.xml</unsecure.webxml.location>
         <secure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-with-security.xml</secure.webxml.location>
         <lexicon.location>/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/nlg-wrapper/target/dictionary/lexAccess2013.data</lexicon.location>

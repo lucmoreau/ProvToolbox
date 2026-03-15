@@ -1,0 +1,38 @@
+
+{
+
+    "select": {"web": {"@type": "prov:WasStartedBy"}},
+ 
+    "sentence": {
+	"type": "clause",
+	"subject": {"type": "noun_phrase",
+		    "head":  {"type": "@funcall",
+			      "@object": "web",
+			      "@field":  "ender",
+			      "@function": "localname"}},
+	"object":  {"type": "noun_phrase",
+		    "head": {"type": "@funcall",
+			     "@object": "web",
+			     "@field":  "activity",
+			     "@function": "localname"},
+		    "determiner": "the activity",
+		    "features": {"number": "singular"}},
+	"verb": "end",
+	"modifiers": [{"type": "preposition_phrase",
+		       "preposition": "at",
+		       "noun": {"type": "@funcall",
+				"@object": "web",
+				"@field": "time",
+				"@optional": "true",				
+				"@function": "timestring"}}],	
+	"features" : {"tense": "past",
+		      "passive": "true"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#"
+    }
+    
+    
+}

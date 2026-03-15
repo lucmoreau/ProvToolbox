@@ -8,6 +8,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
@@ -257,7 +258,7 @@ public class TemplateLogic {
 
         org.openprovenance.prov.scala.immutable.Document sdoc = (org.openprovenance.prov.scala.immutable.Document) new BeanTraversal(pFactoryS, pFactoryS).doAction(doc);
 
-        XplainerConfig config = new XplainerConfig();
+        XplainerConfig config = makeXplainerConfig();
         //scala.collection.immutable.Map<String, Narrative> foo=explainer.explain(sdoc, config);
         //System.out.println("foo " + foo);
         scala.collection.immutable.Map<String, scala.collection.immutable.List<String>> result = narrator.getTextOnly(explainer.explain(sdoc, config));
@@ -270,5 +271,10 @@ public class TemplateLogic {
 
         //result.put("default", "No explanation available for " + template + " " + id);
         return javaResult;
+    }
+
+    public @NonNull XplainerConfig makeXplainerConfig() {
+        System.out.println("calling default XplainerConfig");
+        return new XplainerConfig();
     }
 }

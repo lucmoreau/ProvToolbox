@@ -555,7 +555,7 @@
                 if (anchor_result_prov_link) {
                     let ID=parsed[0]["ID"];
                     let prov_link = createProvLink(name, ID);
-                    ${symbol_dollar}(anchor_result_prov_link).html(prov_link).append("<p/>").append("<div id='xplain-id'></div>").append("<p/>");
+                    ${symbol_dollar}(anchor_result_prov_link).html(prov_link).append("<p/>").append("<div id='xplain_id'></div>").append("<p/>");
                     getExplanation('${symbol_dollar}{service.context}/provapi/explanation/template/' + name + '/' + ID, 'default', anchor_explanation);
                 }
 

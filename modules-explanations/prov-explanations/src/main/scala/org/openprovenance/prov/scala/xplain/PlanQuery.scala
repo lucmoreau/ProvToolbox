@@ -1,5 +1,6 @@
 package org.openprovenance.prov.scala.xplain
 
+import org.apache.logging.log4j.{LogManager, Logger}
 import org.openprovenance.prov.scala.iface.QFactory.makeDocumentAccessor
 import org.openprovenance.prov.scala.immutable
 import org.openprovenance.prov.scala.immutable.{Kind, Statement}
@@ -12,6 +13,8 @@ import org.openprovenance.prov.scala.query.{Processor, QuerySetup, Record}
 import scala.collection.mutable
 
 class PlanQuery(statements:Seq[immutable.Statement], documents: Map[String, Seq[immutable.Statement]]) {
+
+  val logger:Logger=LogManager.getLogger(classOf[PlanQuery])
 
 
   def processQuery(plan: Plan,
@@ -28,6 +31,7 @@ class PlanQuery(statements:Seq[immutable.Statement], documents: Map[String, Seq[
       case a: Seq[String]@unchecked => a.mkString(" \n")
       case _ => println(plan.name); println(plan); throw new UnsupportedOperationException("incorrect query for " + plan.name)
     }
+
 
     val records: mutable.Set[Record] = engine.newRecords()
 

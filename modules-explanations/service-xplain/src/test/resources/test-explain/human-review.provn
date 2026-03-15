@@ -1,0 +1,90 @@
+document
+  prefix cs <http://openprovenance.org/ns/creditscoring#>
+  prefix pl <http://openprovenance.org/ns/plead#>
+  prefix app <https://explain.openprovenance.org/creditscoring/>
+  prefix csd <https://explain.openprovenance.org/creditscoring/ns#>
+  prefix ex <http://example.org/>
+
+
+  agent(app:the_bank, [prov:type='prov:Organization', prov:type='pl:DataController'])
+  agent(ex:machine/2c2a79264728, [prov:type='prov:SoftwareAgent', cs:machine_system="Linux", cs:machine_release="3.10.0-1160.11.1.el7.x86_64", cs:machine_version="#1 SMP Fri Dec 18 16:34:56 UTC 2020", cs:machine_python_version="3.7.7"])
+  actedOnBehalfOf(ex:machine/2c2a79264728, app:the_bank, -)
+
+  agent(app:applicants/437, [prov:type='prov:Person', prov:type='cs:Applicant', prov:type='pl:DataSubject', prov:label="Anna"])
+  entity(app:applications/437, [cs:attr_emp_title="Technician", cs:attr_emp_length="10+ years", cs:attr_home_ownership="MORTGAGE", cs:attr_annual_income=100000, cs:attr_address="Some address", cs:attr_applicant_name="Anna", cs:attr_dob="1970-01-01" %% xsd:date, prov:type='pl:SubjectData', prov:type='pl:Data', prov:type='pl:Request', prov:type='cs:CreditCardApplication', pl:created_at="2021-02-17T22:07:03" %% xsd:dateTime])
+  wasAttributedTo(app:applications/437, app:applicants/437)
+
+  entity(app:applications/437/id, [cs:attr_dob="1970-01-01" %% xsd:date, cs:attr_address="Some address", cs:attr_applicant_name="Anna", prov:type='cs:PersonIdentifier', prov:type='pl:SubjectData', prov:type='pl:Data'])
+  wasDerivedFrom(app:applications/437/id, app:applications/437)
+
+  agent(app:CRA, [prov:type='cs:CreditReferencingAgency', prov:type='prov:Organization', prov:label="the Credit Referencing Agency"])
+  activity(ex:credit_search/437, -, -, [prov:type='cs:CreditReferencing'])
+  wasAssociatedWith(ex:credit_search/437, app:CRA, -)
+  used(ex:credit_search/437, app:applications/437/id, -)
+
+  entity(app:credit_history/437, [cs:attr_earliest_cr_line="Feb-1983", cs:attr_open_acc=9, cs:attr_pub_rec=0, cs:attr_revol_bal=3902, cs:attr_revol_util="14.6" %% xsd:float, cs:attr_mort_acc=1, cs:attr_pub_rec_bankruptcies=0, cs:credit_score=776, pl:created_at="2021-02-15T15:13:46.618981" %% xsd:dateTime,
+    prov:type='cs:CreditHistory', prov:type='pl:ExternalData', prov:type='pl:Data']
+  )
+  wasGeneratedBy(app:credit_history/437, ex:credit_search/437, -)
+  wasDerivedFrom(app:credit_history/437, app:applications/437/id)
+  wasAttributedTo(app:credit_history/437, app:CRA)
+
+  // Automated machine assessment
+  activity(ex:assess_credit_application/437, 2021-02-17T22:07:06.715250, 2021-02-17T22:07:06.717305, [prov:type='pl:MachineLedActivity'])
+  wasAssociatedWith(ex:assess_credit_application/437, ex:machine/2c2a79264728, -)
+  used(ex:assess_credit_application/437, app:credit_history/437, -)
+
+  entity(ex:recommendation/437, [prov:type='pl:AutomatedRecommendation', prov:type='cs:AutomatedRecommendation', cs:recommendation='cs:rejected', pl:reason='cs:high_indebtedness', cs:credit_worthiness="0.254497" %% xsd:float, cs:credit_score_threshold=750, cs:credit_worthiness_threshold="0.64" %% xsd:float])
+  wasGeneratedBy(ex:recommendation/437, ex:assess_credit_application/437, -)
+  wasDerivedFrom(ex:recommendation/437, app:applications/437)
+  wasDerivedFrom(ex:recommendation/437, app:credit_history/437)
+
+  // Human review
+  agent(app:staff/142, [prov:type='prov:Person'])
+  actedOnBehalfOf(app:staff/142, app:the_bank)
+  activity(ex:review_credit_application/437, 2021-02-18T10:04:05, 2021-02-18T10:25:45, [prov:type='pl:HumanLedActivity', prov:type='cs:ReviewingCreditCardRecommendation'])
+  wasAssociatedWith(ex:review_credit_application/437, app:staff/142, -)
+  used(ex:review_credit_application/437, app:applications/437, -)
+  used(ex:review_credit_application/437, app:credit_history/437, -)
+  used(ex:review_credit_application/437, ex:recommendation/437, -)
+
+  entity(app:applications/437/decision, [prov:type='pl:HumanDecision', prov:type='cs:CreditDecision', prov:type='pl:Decision', prov:type='pl:RejectionDecision', cs:result='cs:rejected', pl:reason='cs:negative_credit_history'])
+  wasGeneratedBy(app:applications/437/decision, ex:review_credit_application/437, -)
+  wasAttributedTo(app:applications/437/decision, app:staff/142)
+  wasDerivedFrom(app:applications/437/decision, app:credit_history/437)
+  wasDerivedFrom(app:applications/437/decision, ex:recommendation/437)
+
+  // Overall processing of the application
+  activity(ex:process_application/437, 2021-02-17T22:07:06.714538, 2021-02-17T22:07:06.718322, [prov:type='cs:AssessingCreditApplication', prov:type='pl:MachineLedActivity'])
+  used(ex:process_application/437, app:applications/437, -)
+  wasAssociatedWith(ex:process_application/437, app:the_bank, -)
+  wasAttributedTo(app:applications/437/decision, ex:machine/2c2a79264728)
+  wasGeneratedBy(app:applications/437/decision, ex:process_application/437, -)
+  wasDerivedFrom(app:applications/437/decision, app:applications/437, ex:process_application/437, -, -)
+
+  // Credit data sources
+  agent(app:provider/694, [prov:type='cs:DataProvider', prov:label="Lender 1"])
+  entity(app:records/70551, [prov:type='cs:CreditRecord', prov:type='csd:LatePayment', prov:type='pl:ExternalData', prov:type='pl:Data', pl:created_at="2020-09-01T01:00:00" %% xsd:dateTime])
+  wasAttributedTo(app:records/70551, app:provider/694)
+  wasDerivedFrom(app:credit_history/437, app:records/70551, -, -, -,
+                 [prov:type='cs:NegativeInfluence'])
+
+  entity(app:records/70552, [prov:type='cs:CreditRecord', prov:type='csd:LatePayment', prov:type='pl:ExternalData', prov:type='pl:Data', pl:created_at="2020-10-01T01:00:00" %% xsd:dateTime])
+  wasAttributedTo(app:records/70552, app:provider/694)
+  wasDerivedFrom(app:credit_history/437, app:records/70552, -, -, -,
+                 [prov:type='cs:NegativeInfluence'])
+
+  agent(app:provider/685, [prov:type='cs:DataProvider', prov:label="Lender 2"])
+  entity(app:records/70553, [prov:type='cs:CreditRecord', prov:type='csd:LatePayment', prov:type='pl:ExternalData', prov:type='pl:Data', pl:created_at="2020-07-01T01:00:00" %% xsd:dateTime])
+  wasAttributedTo(app:records/70553, app:provider/685)
+  wasDerivedFrom(app:credit_history/437, app:records/70553, -, -, -,
+                 [prov:type='cs:NegativeInfluence'])
+
+  // Electoral register
+  agent(app:provider/11, [prov:type='cs:DataProvider', prov:label="The Electoral Commission"])
+  entity(app:records/70554, [prov:type='cs:IdentityRecord', prov:type='cs:ElectoralRegisterEntry', prov:type='pl:ExternalData', prov:type='pl:Data', cs:attr_address="Some address", cs:attr_applicant_name="Anna", cs:attr_dob="1970-01-01" %% xsd:date, cs:on_electoral_register_since="2017-09-25" %% xsd:date, pl:created_at="2021-01-03T02:00:00" %% xsd:dateTime])
+  wasAttributedTo(app:records/70554, app:provider/11)
+  wasDerivedFrom(app:credit_history/437, app:records/70554, -, -, -,
+                 [prov:type='cs:IdentityMatching'])
+
+endDocument

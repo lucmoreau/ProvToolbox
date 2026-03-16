@@ -106,7 +106,6 @@ public class Python implements Emitter<StringBuilder> {
         sb.append(":\n");
 
 
-
         // Constructor (__init__)
 
         if (clazz.constructors.isEmpty()) {
@@ -115,6 +114,7 @@ public class Python implements Emitter<StringBuilder> {
             for (Constructor constructor : clazz.constructors) {
                 String constructorName="____init__"; // note the quadruple _ because the first two will be removed in sanitizeName, and we want to end up with __init__
                 // "python:@OverloadedMethod" in annotations
+                boolean overloaded=false;
                 if (constructor.annotation != null) {
                     Optional<PythonAnnotation> annotation=constructor.annotation.stream()
                             .filter(annot -> annot instanceof PythonAnnotation)
@@ -124,15 +124,31 @@ public class Python implements Emitter<StringBuilder> {
                             ;
                     if (annotation.isPresent()) {
                         constructorName= ((OverloadedMethod) annotation.get()).getAltName();
+                        overloaded=true;
                         System.out.println("Constructor with @OverloadedMethod annotation, using alt name: " + constructorName);
                     }
                 }
-                emitMethod(METHOD(constructorName)
-                                .PARAMETERS(constructor.parameters)
-                                .MODIFIERS(constructor.modifiers.toArray(new Modifier[0]))
-                                .BODY(constructor.body.toArray(new Statement[0]))
-                                //.ANNOTATIONS(constructor.annotation.toArray(new String[0]))
-                                .COMMENTS(constructor.comments.toArray(new Comment[0])));
+                Method pythonMethodAsConstructor = METHOD(constructorName)
+                        .PARAMETERS(constructor.parameters)
+                        .MODIFIERS(constructor.modifiers.toArray(new Modifier[0]))
+                        .BODY(constructor.body.toArray(new Statement[0]))
+                        //.ANNOTATIONS(constructor.annotation.toArray(new String[0]))
+                        .COMMENTS(constructor.comments.toArray(new Comment[0]));
+
+                for (Field field : clazz.fields) {
+                    String fieldName = sanitizeName(field.name);
+                    if (!field.modifiers.contains(Modifier.STATIC)) {
+                        if (field.initialiser != null) {
+                            pythonMethodAsConstructor.BODY(
+                                    ASSIGNMENT(METHOD_CALL(VARIABLE("this"), fieldName), field.initialiser));
+
+                        }
+                    }
+                }
+                if (overloaded) {
+                    pythonMethodAsConstructor.COMMENT("Note: this method was originally a PAST constructor, but was renamed to avoid name clashes due to overloading. \n It will not be recognized as a constructor by Python code, so it should be called explicitly by its name.");
+                }
+                emitMethod(pythonMethodAsConstructor);
             }
         }
 
@@ -307,11 +323,30 @@ public class Python implements Emitter<StringBuilder> {
             default=lambda o: o.__dict__,
             sort_keys=False,
             indent=4)
+         or
+        def toJSON(self):
+        import json
+        d = {('__elements' if k == 'elements' else k): v
+                 for k, v in self.__dict__.items()}
+        return json.dumps(
+            d,
+            default=lambda o: o.__dict__,
+            sort_keys=False,
+            indent=4)
+
          */
         sb.append(INDENT).append("def toJSON(self):\n");
         sb.append(INDENT).append(INDENT).append("import json\n");
+        if (true) { // LUC, TODO, need an annotation to trigger this renaming when serializing, to avoid breaking existing code that relies on the field being named 'elements' in the JSON output
+            sb.append(INDENT).append(INDENT).append("d = {('__elements' if k == 'elements' else k): v\n");
+            sb.append(INDENT).append(INDENT).append(INDENT).append("for k, v in self.__dict__.items()}\n");
+        }
         sb.append(INDENT).append(INDENT).append("return json.dumps(\n");
-        sb.append(INDENT).append(INDENT).append(INDENT).append("self,\n");
+        if (true) { // LUC, same TODO
+            sb.append(INDENT).append(INDENT).append(INDENT).append("d,\n");
+        } else {
+            sb.append(INDENT).append(INDENT).append(INDENT).append("self,\n");
+        }
         sb.append(INDENT).append(INDENT).append(INDENT).append("default=lambda o: o.__dict__,\n");
         sb.append(INDENT).append(INDENT).append(INDENT).append("sort_keys=False,\n");
         sb.append(INDENT).append(INDENT).append(INDENT).append("indent=4)\n\n");
@@ -940,8 +975,15 @@ public class Python implements Emitter<StringBuilder> {
             case DOUBLE -> c.value.toString();
             case BOOLEAN -> c.value.toString();
             case NULL -> "0";
-            case BOOL -> c.value.toString();
+            case BOOL -> capitalise(c.value.toString());
         };
+    }
+
+    private String capitalise(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+        return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
 
     private String convertMethodCall(MethodCall mc) {
@@ -1221,7 +1263,7 @@ public class Python implements Emitter<StringBuilder> {
         put("Double.valueOf", "float");
         put("Boolean.valueOf", "bool");
         put("add", "append");
-        put("class", "__class__");
+        put("class", "__name__");
     }};
 
     private String sanitizeName(String name) {

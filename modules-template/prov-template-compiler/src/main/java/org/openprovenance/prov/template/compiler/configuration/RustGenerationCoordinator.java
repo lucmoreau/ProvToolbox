@@ -27,7 +27,7 @@ import java.util.function.Supplier;
  * coordinator.finalizeGeneration();
  * </pre>
  */
-public class RustGenerationCoordinator {
+abstract public class RustGenerationCoordinator {
     private final RustCodeGenerator codeGenerator = new RustCodeGenerator();
     private final List<Supplier<Boolean>> deferredGenerators = new ArrayList<>();
     private boolean finalized = false;

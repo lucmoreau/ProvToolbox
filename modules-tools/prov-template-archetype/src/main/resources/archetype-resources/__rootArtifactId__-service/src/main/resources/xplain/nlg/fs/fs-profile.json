@@ -1,0 +1,113 @@
+
+{
+	"ln:company": {
+	},
+
+	"ln:company-possessive": {
+		"ln:company-noun":
+		{
+			"features":
+			{
+				"pronominal": "false",
+				"possessive": "true"
+			}
+		}
+	},
+
+	"ln:borrower": {
+		"ln:borrower-person1":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"person": "first"
+			}
+		},
+		"ln:borrower-person2":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "false",
+				"person": "second"
+			}
+		},
+		"ln:borrower-noun":
+		{
+			"features":
+			{
+				"pronominal": "false",
+				"possessive": "false"
+			}
+		},
+		"ln:borrower-person3-f":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "false",
+				"gender": "feminine",
+				"person": "third"
+			}
+		},
+		"ln:borrower-person3-m":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "false",
+				"gender": "masculine",
+				"person": "third"
+			}
+		}
+	},
+	"ln:borrower-possessive": {
+		"ln:borrower-person1":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "true",
+				"person": "first"
+			}
+		},
+		"ln:borrower-person2":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "true",
+				"person": "second"
+			}
+		},
+		"ln:borrower-noun":
+		{
+			"features":
+			{
+				"pronominal": "false",
+				"possessive": "true"
+			}
+		},
+		"ln:borrower-person3-f":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "true",
+				"gender": "feminine",
+				"person": "third"
+			}
+		},
+		"ln:borrower-person3-m":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"gender": "masculine",
+				"possessive": "true",
+				"person": "third"
+			}
+		}
+	}
+
+}

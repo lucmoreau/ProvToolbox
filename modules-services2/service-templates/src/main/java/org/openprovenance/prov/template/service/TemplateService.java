@@ -31,8 +31,8 @@ public class TemplateService extends org.openprovenance.prov.service.core.Templa
 
         ps.addToConfiguration("security.config", securityConfiguration);
 
-        String sqlInitializer=templateConfiguration.get("sql.initializer");
-        String jdbcURL=templateConfiguration.get("jdbc.url");
+        String sqlInitializer= (String) templateConfiguration.get("sql.initializer");
+        String jdbcURL= (String) templateConfiguration.get("jdbc.url");
 
         this.jdbcURL=jdbcURL;
 

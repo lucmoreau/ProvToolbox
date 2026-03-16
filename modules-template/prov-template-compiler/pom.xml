@@ -90,6 +90,12 @@
       <version>${commons.cli.version}</version>
       <scope>compile</scope>
     </dependency>
+      <dependency>
+          <groupId>org.apache.jena</groupId>
+          <artifactId>jena-core</artifactId>
+          <version>5.2.0</version>
+          <scope>compile</scope>
+      </dependency>
 
       <!-- testing
 

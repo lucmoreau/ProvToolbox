@@ -84,6 +84,7 @@ public class CompilerTemplateInvoker {
                 completerClass =ClassName.get(COMPOSITE_BEAN_COMPLETER2, locations.getFilePackage(configs.name, COMPOSITE_BEAN_COMPLETER2) );
                 m.BODY(RETURN(
                         METHOD_CALL(
+                                VARIABLE("this"),
                                 GENERIC_POST_AND_RETURN,
                                 List.of(CONSTRUCTOR_CALL(outputClassName, List.of()),
                                         VARIABLE(BEAN_VAR),

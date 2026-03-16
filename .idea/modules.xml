@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ProvToolbox.iml" filepath="$PROJECT_DIR$/.idea/ProvToolbox.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-summarisation/modules-summarisation.iml" filepath="$PROJECT_DIR$/modules-summarisation/modules-summarisation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template-library/prov-template-library.iml" filepath="$PROJECT_DIR$/modules-template/prov-template-library/prov-template-library.iml" />
     </modules>
   </component>
 </project>

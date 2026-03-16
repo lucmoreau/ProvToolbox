@@ -1,0 +1,9 @@
+{
+    "name": "fs",
+    "templates": [
+        "fs-generic-responsibility.json"
+    ],
+    "dictionaries": ["fs-dictionary.json"],
+    "profiles": ["fs-profile.json"]
+}
+	

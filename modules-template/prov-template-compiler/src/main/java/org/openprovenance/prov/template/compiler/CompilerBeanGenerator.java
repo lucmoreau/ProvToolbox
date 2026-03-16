@@ -267,10 +267,10 @@ public class CompilerBeanGenerator {
 
         ParameterizedType classofUnknown1= ParameterizedType.get(CLASS, TypeVariable.get("?"));
 
-        Field b2=new Field("consistsOf", classofUnknown1)
+        Field b2=new Field("consistsOf", STRING)
                 .MODIFIERS(Modifier.PUBLIC)
                 .COMMENT("Class of elements inside this composite")
-                .INITIALIZER(METHOD_CALL(consistsOfClass,"class"));
+                .INITIALIZER(CONSTANT(consistsOfClass.packge + "." + consistsOfClass.simpleName));
         builder.FIELDS(b2);
 
         if (variant!=null) {

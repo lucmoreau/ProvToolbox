@@ -1,0 +1,2053 @@
+package org.openprovenance.prov.template.compiler.past.emitter;
+
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.Iterator;
+import org.openprovenance.prov.template.compiler.past.annotations.ClassInitialiser;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
+import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation;
+import org.openprovenance.prov.template.compiler.past.annotations.PythonAnnotation;
+import org.openprovenance.prov.template.compiler.past.checker.ClassSignature;
+import org.openprovenance.prov.template.compiler.past.checker.MethodSignature;
+import org.openprovenance.prov.template.compiler.past.checker.TypeRegistry;
+import org.openprovenance.prov.template.compiler.past.type.ArrayType;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
+import org.openprovenance.prov.template.compiler.past.type.TypeName;
+import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
+
+import java.io.File;
+import java.io.IOException;
+import javax.lang.model.element.Modifier;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.openprovenance.prov.template.compiler.common.Constants.GENERATED_VAR_PREFIX;
+import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
+
+/**
+ * Emitter that generates Rust code from PAST abstract syntax tree.
+ * Generates idiomatic Rust with structs, impl blocks, and proper ownership semantics.
+ */
+public class Rust implements Emitter<StringBuilder> {
+    private StringBuilder sb;
+    private static final String INDENT = "    ";
+    private int closureCount = 0;
+    private Set<String> imports;
+    private List<Method> lateMethods = new ArrayList<>();
+    private Class currentClass;
+    private String postDecrement = null;
+    private Set<String> knownTraits; // Track known trait names (shared across instances)
+    private Set<String> statefulTraits; // Track traits with stateful methods (shared across instances)
+    private boolean needsValueEnum = false; // Track if Value enum needs to be generated for heterogeneous arrays
+    private final TypeRegistry typeRegistry; // Type registry from type checking phase (may be null)
+    private String currentPackageName;       // Set in toWritableObject; used to look up ClassSignature
+    private ClassSignature currentClassSignature; // Looked up at start of emit(); null when no registry
+
+    /**
+     * Create a Rust emitter with a shared trait registry
+     * @param knownTraits A shared set of known trait names across all code generation
+     */
+    public Rust(Set<String> knownTraits) {
+        this(knownTraits, new HashSet<>(), null);
+    }
+
+    /**
+     * Create a Rust emitter with shared trait and stateful trait registries
+     * @param knownTraits A shared set of known trait names across all code generation
+     * @param statefulTraits A shared set of trait names that have stateful methods
+     */
+    public Rust(Set<String> knownTraits, Set<String> statefulTraits) {
+        this(knownTraits, statefulTraits, null);
+    }
+
+    /**
+     * Create a Rust emitter with shared trait registries and the PAST type registry.
+     * @param knownTraits A shared set of known trait names across all code generation
+     * @param statefulTraits A shared set of trait names that have stateful methods
+     * @param typeRegistry The TypeRegistry produced by type checking (may be null)
+     */
+    public Rust(Set<String> knownTraits, Set<String> statefulTraits, TypeRegistry typeRegistry) {
+        this.knownTraits = knownTraits;
+        this.statefulTraits = statefulTraits;
+        this.typeRegistry = typeRegistry;
+    }
+
+    /**
+     * Create a Rust emitter with an empty trait registry (for standalone use)
+     */
+    public Rust() {
+        this(new HashSet<>(), new HashSet<>(), null);
+    }
+
+    /**
+     * Discover traits from a Class definition without generating code.
+     * Call this in a first pass to build up the trait registry.
+     */
+    public void discoverTraits(Class clazz) {
+        if (clazz.isInterface) {
+            String traitName = toPascalCase(clazz.name);
+            knownTraits.add(traitName);
+
+            // Check if this trait has any stateful methods
+            for (Method method : clazz.methods) {
+                if (modifiesSelf(method)) {
+                    statefulTraits.add(traitName);
+                    break; // One stateful method is enough to mark the trait as stateful
+                }
+            }
+        }
+        // Also register any interfaces this class implements
+        for (TypeName intfce : clazz.interfaces) {
+            registerTraitFromTypeName(intfce);
+        }
+    }
+
+    /**
+     * Helper to register a trait from a TypeName
+     */
+    private void registerTraitFromTypeName(TypeName tn) {
+        if (tn instanceof ClassName) {
+            ClassName cn = (ClassName) tn;
+            String traitName = toPascalCase(cn.simpleName);
+            knownTraits.add(traitName);
+        } else if (tn instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) tn;
+            registerTraitFromTypeName(pt.rawType);
+        }
+    }
+
+    public StringBuilder addHeader(StringBuilder sb, String templateName, String packge, StackTraceElement stackTraceElement) {
+        sb.insert(0, "// Generated by ProvToolbox for template configuration '" + templateName + "'\n"
+                + "// by class " + stackTraceElement.getClassName() + ", method " + stackTraceElement.getMethodName() +
+                ",\n// in file " + stackTraceElement.getFileName() + ", at line " + stackTraceElement.getLineNumber() + "\n\n");
+        return sb;
+    }
+
+    public WritableObject toWritableObject(Class clazz, String className, String packge, StackTraceElement stackTraceElement) {
+        this.currentPackageName = packge;
+        StringBuilder theBuffer = emit(clazz);
+
+        addHeader(theBuffer, className, packge, stackTraceElement);
+        return new WritableObject() {
+            @Override
+            public void writeTo(File directory) throws IOException {
+                Path destination = Paths.get(directory.getAbsolutePath()).resolve(packge.replace('.', '/'));
+                destination.toFile().mkdirs();
+                java.nio.file.Path path = destination.resolve(toSnakeCase(clazz.name) + ".rs");
+                java.nio.file.Files.writeString(path, theBuffer.toString());
+            }
+        };
+    }
+
+    @Override
+    public StringBuilder emit(Class clazz) {
+        this.sb = new StringBuilder();
+        this.imports = new HashSet<>();
+        this.lateMethods = new ArrayList<>();
+        this.closureCount = 0;
+        this.currentClass = clazz;
+        this.currentClassSignature = (typeRegistry != null && currentPackageName != null)
+                ? typeRegistry.lookup(clazz.name, currentPackageName) : null;
+
+        // Check if this is an interface (trait in Rust)
+        if (clazz.isInterface) {
+            return emitTrait(clazz);
+        }
+
+        // Add common imports
+        imports.add("serde::{Serialize, Deserialize}");
+
+        // Only import HashMap if actually used by a field type
+        if (clazz.fields.stream().anyMatch(f -> isMap(f.type))) {
+            imports.add("std::collections::HashMap");
+        }
+
+        // Collect imports for types used in field declarations, method parameters, and return types
+        for (Field field : clazz.fields) {
+            addTypeImport(field.type);
+        }
+        for (Method method : clazz.methods) {
+            if (method.parameters != null) {
+                for (Parameter param : method.parameters) {
+                    addTypeImport(param.type);
+                }
+            }
+            if (method.returnType != null) {
+                addTypeImport(method.returnType);
+            }
+        }
+
+        // Struct documentation
+        if (!clazz.comments.isEmpty()) {
+            for (Comment comment : clazz.comments) {
+                List<String> lines = convert(comment);
+                for (String line : lines) {
+                    sb.append("/// ").append(line).append("\n");
+                }
+            }
+        }
+
+        // Derive common traits
+        sb.append("#[derive(Debug, Clone, Serialize, Deserialize)]\n");
+
+        // Struct declaration with trait bounds
+        sb.append("pub struct ").append(toPascalCase(clazz.name));
+
+        // Add trait implementations (interfaces)
+        if (!clazz.interfaces.isEmpty()) {
+            // Traits are implemented in a separate impl block, not in declaration
+        }
+
+        sb.append(" {\n");
+
+        // Instance fields
+        List<Field> instanceFields = clazz.fields.stream()
+                .filter(f -> !f.modifiers.contains(Modifier.STATIC))
+                .collect(Collectors.toList());
+
+        for (Field field : instanceFields) {
+            if (!field.comments.isEmpty()) {
+                for (Comment comment : field.comments) {
+                    List<String> lines = convert(comment);
+                    for (String line : lines) {
+                        sb.append(INDENT).append("/// ").append(line).append("\n");
+                    }
+                }
+            }
+            String visibility = field.modifiers.contains(Modifier.PUBLIC) ? "pub " : "";
+            String rustType = convertTypeToRust(field.type);
+            if (field.initialiser == null) {
+                rustType = "Option<" + rustType + ">";
+                sb.append(INDENT).append("#[serde(skip_serializing_if = \"Option::is_none\")]\n");
+            }
+            sb.append(INDENT).append(visibility)
+                    .append(sanitizeName(toSnakeCase(field.name)))
+                    .append(": ")
+                    .append(rustType)
+                    .append(",\n");
+        }
+
+        sb.append("}\n\n");
+
+        // Implementation block
+        sb.append("impl ").append(toPascalCase(clazz.name)).append(" {\n");
+
+        // Constructor (new method)
+        if (clazz.constructors.isEmpty()) {
+            emitDefaultConstructor(instanceFields);
+        } else {
+            for (Constructor constructor : clazz.constructors) {
+                emitConstructor(constructor);
+            }
+        }
+
+        // Instance methods
+        for (Method method : clazz.methods) {
+            if (!method.modifiers.contains(Modifier.STATIC)) {
+                emitMethod(method);
+            }
+        }
+
+        // Late methods (from closure conversions)
+        for (Method method : lateMethods) {
+            emitMethod(method);
+        }
+
+        sb.append("}\n\n");
+
+        // Static methods and associated functions
+        List<Method> staticMethods = clazz.methods.stream()
+                .filter(m -> m.modifiers.contains(Modifier.STATIC))
+                .collect(Collectors.toList());
+
+        if (!staticMethods.isEmpty() || hasStaticFields(clazz.fields)) {
+            sb.append("impl ").append(toPascalCase(clazz.name)).append(" {\n");
+
+            for (Method method : staticMethods) {
+                emitMethod(method);
+            }
+
+            // Static fields as associated constants or static items
+            emitStaticFields(clazz.fields);
+
+            sb.append("}\n\n");
+        }
+
+        // Add imports at the beginning
+        if (!imports.isEmpty()) {
+            StringBuilder importSection = new StringBuilder();
+            for (String imprt : imports) {
+                if (LOGGER.equals(imprt)) continue;
+                importSection.append("use ").append(imprt).append(";\n");
+            }
+            if (importSection.length() > 0) {
+                importSection.append("\n");
+                sb.insert(0, importSection.toString());
+            }
+        }
+
+        // Add Value enum if heterogeneous arrays were used
+        if (needsValueEnum) {
+            emitValueEnum();
+        }
+
+        // Add trait implementations if interfaces are specified
+        if (!clazz.interfaces.isEmpty()) {
+            emitTraitImplementations(clazz);
+        }
+
+        return sb;
+    }
+
+    /**
+     * Emit the Value enum for heterogeneous arrays
+     */
+    private void emitValueEnum() {
+        sb.append("/// Enum for heterogeneous array values\n");
+        sb.append("#[derive(Debug, Clone, Serialize, Deserialize)]\n");
+        sb.append("pub enum Value {\n");
+        sb.append(INDENT).append("String(String),\n");
+        sb.append(INDENT).append("Int(i32),\n");
+        sb.append(INDENT).append("Float(f32),\n");
+        sb.append(INDENT).append("Bool(bool),\n");
+        sb.append(INDENT).append("Null,\n");
+        sb.append("}\n\n");
+
+        // Generate helper methods for type extraction
+        sb.append("impl Value {\n");
+
+        // as_string() -> Option<&String>
+        sb.append(INDENT).append("/// Extract String value as reference\n");
+        sb.append(INDENT).append("pub fn as_string(&self) -> Option<&String> {\n");
+        sb.append(INDENT).append(INDENT).append("match self {\n");
+        sb.append(INDENT).append(INDENT).append(INDENT).append("Value::String(s) => Some(s),\n");
+        sb.append(INDENT).append(INDENT).append(INDENT).append("_ => None,\n");
+        sb.append(INDENT).append(INDENT).append("}\n");
+        sb.append(INDENT).append("}\n\n");
+
+        // as_int() -> Option<i32>
+        sb.append(INDENT).append("/// Extract Int value\n");
+        sb.append(INDENT).append("pub fn as_int(&self) -> Option<i32> {\n");
+        sb.append(INDENT).append(INDENT).append("match self {\n");
+        sb.append(INDENT).append(INDENT).append(INDENT).append("Value::Int(i) => Some(*i),\n");
+        sb.append(INDENT).append(INDENT).append(INDENT).append("_ => None,\n");
+        sb.append(INDENT).append(INDENT).append("}\n");
+        sb.append(INDENT).append("}\n\n");
+
+        // as_float() -> Option<f32>
+        sb.append(INDENT).append("/// Extract Float value\n");
+        sb.append(INDENT).append("pub fn as_float(&self) -> Option<f32> {\n");
+        sb.append(INDENT).append(INDENT).append("match self {\n");
+        sb.append(INDENT).append(INDENT).append(INDENT).append("Value::Float(f) => Some(*f),\n");
+        sb.append(INDENT).append(INDENT).append(INDENT).append("_ => None,\n");
+        sb.append(INDENT).append(INDENT).append("}\n");
+        sb.append(INDENT).append("}\n\n");
+
+        // as_bool() -> Option<bool>
+        sb.append(INDENT).append("/// Extract Bool value\n");
+        sb.append(INDENT).append("pub fn as_bool(&self) -> Option<bool> {\n");
+        sb.append(INDENT).append(INDENT).append("match self {\n");
+        sb.append(INDENT).append(INDENT).append(INDENT).append("Value::Bool(b) => Some(*b),\n");
+        sb.append(INDENT).append(INDENT).append(INDENT).append("_ => None,\n");
+        sb.append(INDENT).append(INDENT).append("}\n");
+        sb.append(INDENT).append("}\n");
+
+        sb.append("}\n\n");
+    }
+
+    /**
+     * Emit a trait definition (Rust equivalent of interface)
+     */
+    private StringBuilder emitTrait(Class clazz) {
+        // Note: Trait should already be registered via discoverTraits()
+        String traitName = toPascalCase(clazz.name);
+
+        // Trait documentation
+        if (!clazz.comments.isEmpty()) {
+            for (Comment comment : clazz.comments) {
+                List<String> lines = convert(comment);
+                for (String line : lines) {
+                    sb.append("/// ").append(line).append("\n");
+                }
+            }
+        }
+
+        // Trait declaration
+        sb.append("pub trait ").append(traitName);
+
+        // Add generic type parameters to trait
+        if (!clazz.typeVariables.isEmpty()) {
+            sb.append("<");
+            for (int i = 0; i < clazz.typeVariables.size(); i++) {
+                if (i > 0) sb.append(", ");
+                sb.append(clazz.typeVariables.get(i).name);
+            }
+            sb.append(">");
+        }
+
+        // Super traits (interfaces this trait extends)
+        if (!clazz.interfaces.isEmpty()) {
+            sb.append(": ");
+            for (int i = 0; i < clazz.interfaces.size(); i++) {
+                if (i > 0) sb.append(" + ");
+                TypeName intfce = clazz.interfaces.get(i);
+                String superTraitName = convertInterfaceToTrait(intfce);
+                sb.append(superTraitName);
+                addTraitImport(intfce);
+            }
+        }
+
+        sb.append(" {\n");
+
+        // Collect imports for types used in method signatures
+        for (Method method : clazz.methods) {
+            if (method.parameters != null) {
+                for (Parameter param : method.parameters) {
+                    addTypeImport(param.type);
+                }
+            }
+            if (method.returnType != null) {
+                addTypeImport(method.returnType);
+            }
+        }
+
+        // Trait methods (only method signatures for interfaces)
+        for (Method method : clazz.methods) {
+            emitTraitMethod(method);
+        }
+
+        sb.append("}\n\n");
+
+        // Add imports at the beginning
+        if (!imports.isEmpty()) {
+            StringBuilder importSection = new StringBuilder();
+            for (String imprt : imports) {
+                if (LOGGER.equals(imprt)) continue;
+                importSection.append("use ").append(imprt).append(";\n");
+            }
+            if (importSection.length() > 0) {
+                importSection.append("\n");
+                sb.insert(0, importSection.toString());
+            }
+        }
+
+        return sb;
+    }
+
+    /**
+     * Emit trait method signature (no body)
+     */
+    private void emitTraitMethod(Method method) {
+        // Method documentation
+        if (method.comments != null && !method.comments.isEmpty()) {
+            for (Comment comment : method.comments) {
+                List<String> lines = convert(comment);
+                for (String line : lines) {
+                    sb.append(INDENT).append("/// ").append(line).append("\n");
+                }
+            }
+        }
+
+        String traitMethodAltName = findAltNameForDeclaration(method);
+        String traitMethodName = (traitMethodAltName != null) ? traitMethodAltName : method.name;
+        sb.append(INDENT).append("fn ").append(sanitizeName(toSnakeCase(traitMethodName)));
+
+        // Generic type parameters
+        if (method.typeVariables != null && !method.typeVariables.isEmpty()) {
+            sb.append("<");
+            for (int i = 0; i < method.typeVariables.size(); i++) {
+                if (i > 0) sb.append(", ");
+                sb.append(convertTypeToRust(method.typeVariables.get(i)));
+            }
+            sb.append(">");
+        }
+
+        sb.append("(");
+
+        // Self parameter for instance methods
+        if (!method.modifiers.contains(Modifier.STATIC)) {
+            sb.append("&");
+            if (modifiesSelf(method)) {
+                sb.append("mut ");
+            }
+            sb.append("self");
+            if (method.parameters != null && !method.parameters.isEmpty()) {
+                sb.append(", ");
+            }
+        }
+
+        // Parameters
+        if (method.parameters != null) {
+            for (int i = 0; i < method.parameters.size(); i++) {
+                if (i > 0) sb.append(", ");
+                Parameter param = method.parameters.get(i);
+                sb.append(sanitizeName(toSnakeCase(param.name)))
+                        .append(": ")
+                        .append(convertTypeToRustTraitParam(param.type));
+            }
+        }
+
+        sb.append(")");
+
+        // Return type
+        if (method.returnType != null && !isVoidType(method.returnType)) {
+            sb.append(" -> ").append(convertTypeToRust(method.returnType));
+        }
+
+        sb.append(";\n\n");
+    }
+
+    /**
+     * Emit trait implementations for a struct
+     */
+    private void emitTraitImplementations(Class clazz) {
+        for (TypeName intfce : clazz.interfaces) {
+            String traitName = convertInterfaceToTrait(intfce);
+            addTraitImport(intfce);
+
+            sb.append("impl ").append(traitName)
+                    .append(" for ").append(toPascalCase(clazz.name))
+                    .append(" {\n");
+
+            // Emit implementations for trait methods
+            // Note: This assumes the methods in the class are implementations
+            for (Method method : clazz.methods) {
+                if (!method.modifiers.contains(Modifier.STATIC)) {
+                    emitMethod(method);
+                }
+            }
+
+            sb.append("}\n\n");
+        }
+    }
+
+    /**
+     * Convert an interface TypeName to its Rust trait name
+     */
+    private String convertInterfaceToTrait(TypeName intfce) {
+        if (intfce instanceof ClassName) {
+            ClassName cn = (ClassName) intfce;
+            return toPascalCase(cn.simpleName);
+        } else if (intfce instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) intfce;
+            String baseName = convertInterfaceToTrait(pt.rawType);
+            StringBuilder result = new StringBuilder(baseName);
+            if (pt.typeArguments.length > 0) {
+                result.append("<");
+                for (int i = 0; i < pt.typeArguments.length; i++) {
+                    if (i > 0) result.append(", ");
+                    result.append(convertTypeToRust(pt.typeArguments[i]));
+                }
+                result.append(">");
+            }
+            return result.toString();
+        }
+        return intfce.toString();
+    }
+
+    /**
+     * Add import for a trait based on its package
+     */
+    private void addTraitImport(TypeName intfce) {
+        if (intfce instanceof ClassName) {
+            ClassName cn = (ClassName) intfce;
+
+            // Always add import for traits in the same crate using crate:: prefix
+            // Skip only if it's a built-in Rust trait or from past.* (which are mapped to std types)
+            if (cn.packge == null || cn.packge.isEmpty() || !cn.packge.startsWith("past.")) {
+                // Build full module path from package, using original name to preserve underscores before digits
+                String modulePath = buildModulePath(cn.packge, cn.simpleName);
+                imports.add(modulePath);
+            }
+        } else if (intfce instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) intfce;
+            addTraitImport(pt.rawType);
+        }
+    }
+
+    /**
+     * Add import for any type used in method signatures (parameters, return types).
+     * Skips primitive types and types from past.* packages (mapped to std types).
+     */
+    private void addTypeImport(TypeName typeName) {
+        if (typeName instanceof ClassName) {
+            ClassName cn = (ClassName) typeName;
+            // Skip primitive/common types and past.* package types (mapped to Rust builtins)
+            if (cn.packge != null && !cn.packge.isEmpty() && !cn.packge.startsWith("past.")) {
+                if (convertCommonType(cn.simpleName) == null) {
+                    // Use original name to preserve underscores before digits in file path
+                    String modulePath = buildModulePath(cn.packge, cn.simpleName);
+                    imports.add(modulePath);
+                }
+            }
+        } else if (typeName instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) typeName;
+            addTypeImport(pt.rawType);
+            for (TypeName arg : pt.typeArguments) {
+                addTypeImport(arg);
+            }
+        }
+    }
+
+    /**
+     * Build a Rust module path from a package name and type name
+     * E.g., "org.example.templates.block.client.common" + "TemplateBlockProcessor"
+     *    -> "crate::org::example::templates::block::client::common::template_block_processor::TemplateBlockProcessor"
+     */
+    /**
+     * Build a Rust module path from a package name and the original PAST type name.
+     * The original name is used to derive both the file name (snake_case) and the Rust type name (PascalCase),
+     * preserving underscores before digits (e.g., Inputs_1 -> inputs_1 for file, Inputs1 for type).
+     */
+    private String buildModulePath(String packageName, String originalName) {
+        String fileName = toSnakeCase(originalName);
+        String rustTypeName = toPascalCase(originalName);
+
+        if (packageName == null || packageName.isEmpty()) {
+            return "crate::" + rustTypeName;
+        }
+
+        // Convert package to Rust module path (replace . with ::)
+        String modulePath = packageName.replace(".", "::");
+
+        return "crate::" + modulePath + "::" + fileName + "::" + rustTypeName;
+    }
+
+    /**
+     * Check if a type is a known trait
+     */
+    private boolean isKnownTrait(TypeName tn) {
+        if (tn instanceof ClassName) {
+            ClassName cn = (ClassName) tn;
+            String name = toPascalCase(cn.simpleName);
+            return knownTraits.contains(name);
+        } else if (tn instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) tn;
+            return isKnownTrait(pt.rawType);
+        }
+        return false;
+    }
+
+    /**
+     * Convert a type for use in a parameter position, using impl for traits
+     */
+    private String convertTypeToRustParam(TypeName tn) {
+        if (tn == null) return "()";
+
+        // If this is a known trait type, use impl for static dispatch
+        if (isKnownTrait(tn)) {
+            // Add import for this trait since it's being used
+            addTraitImport(tn);
+
+            if (tn instanceof ParameterizedType) {
+                ParameterizedType pt = (ParameterizedType) tn;
+                StringBuilder result = new StringBuilder("impl ");
+                result.append(toPascalCase(getSimpleNameFromType(pt.rawType)));
+                if (pt.typeArguments.length > 0) {
+                    result.append("<");
+                    for (int i = 0; i < pt.typeArguments.length; i++) {
+                        if (i > 0) result.append(", ");
+                        result.append(convertTypeToRust(pt.typeArguments[i]));
+                    }
+                    result.append(">");
+                }
+                return result.toString();
+            } else if (tn instanceof ClassName) {
+                return "impl " + toPascalCase(((ClassName) tn).simpleName);
+            }
+        }
+
+        // Otherwise use the regular conversion
+        return convertTypeToRust(tn);
+    }
+
+    /**
+     * Convert a type for use in trait method parameters, using Option<&str> for String
+     * and Option<T> for other types to mirror Java's nullable semantics.
+     */
+    private String convertTypeToRustTraitParam(TypeName tn) {
+        if (tn == null) return "()";
+
+        // If this is a known trait type, use impl for static dispatch (not wrapped in Option)
+        if (isKnownTrait(tn)) {
+            // Add import for this trait since it's being used
+            addTraitImport(tn);
+
+            if (tn instanceof ParameterizedType) {
+                ParameterizedType pt = (ParameterizedType) tn;
+                StringBuilder result = new StringBuilder("impl ");
+                result.append(toPascalCase(getSimpleNameFromType(pt.rawType)));
+                if (pt.typeArguments.length > 0) {
+                    result.append("<");
+                    for (int i = 0; i < pt.typeArguments.length; i++) {
+                        if (i > 0) result.append(", ");
+                        result.append(convertTypeToRust(pt.typeArguments[i]));
+                    }
+                    result.append(">");
+                }
+                return result.toString();
+            } else if (tn instanceof ClassName) {
+                return "impl " + toPascalCase(((ClassName) tn).simpleName);
+            }
+        }
+
+        // For String types, use Option<&str> to mirror Java's nullable String
+        if (tn instanceof ClassName) {
+            ClassName cn = (ClassName) tn;
+            if ("String".equals(cn.simpleName)) {
+                return "Option<&str>";
+            }
+        }
+
+        // Collection types (Vec, HashMap) don't need Option wrapping — they can be empty
+        // Pass by reference since they don't implement Copy
+        if (isList(tn) || isMap(tn)) {
+            return "&" + convertTypeToRust(tn);
+        }
+
+        // Primitive types are Copy in Rust, wrap in Option to mirror Java's nullable semantics
+        if (isPrimitiveType(tn)) {
+            return "Option<" + convertTypeToRust(tn) + ">";
+        }
+
+        // Non-primitive struct/bean types: pass by reference
+        return "&" + convertTypeToRust(tn);
+    }
+
+    /**
+     * Get simple name from a TypeName
+     */
+    private String getSimpleNameFromType(TypeName tn) {
+        if (tn instanceof ClassName) {
+            return ((ClassName) tn).simpleName;
+        }
+        return tn.toString();
+    }
+
+    private boolean hasStaticFields(List<Field> fields) {
+        return fields.stream().anyMatch(f -> f.modifiers.contains(Modifier.STATIC));
+    }
+
+    private void emitDefaultConstructor(List<Field> fields) {
+        sb.append(INDENT).append("/// Creates a new instance\n");
+        sb.append(INDENT).append("pub fn new(");
+
+        // Parameters (skip fields with initialisers — they have predetermined values)
+        boolean first = true;
+        for (Field field : fields) {
+            if (field.initialiser != null) continue;
+            if (!first) sb.append(", ");
+            first = false;
+            sb.append(sanitizeName(toSnakeCase(field.name)))
+                    .append(": Option<")
+                    .append(convertTypeToRust(field.type))
+                    .append(">");
+        }
+        sb.append(") -> Self {\n");
+
+        // Struct initialization
+        sb.append(INDENT).append(INDENT).append("Self {\n");
+        for (Field field : fields) {
+            String fieldName = sanitizeName(toSnakeCase(field.name));
+            sb.append(INDENT).append(INDENT).append(INDENT)
+                    .append(fieldName);
+            if (field.initialiser != null) {
+                sb.append(": ").append(convertWithType(field.initialiser, field.type));
+            }
+            sb.append(",\n");
+        }
+        sb.append(INDENT).append(INDENT).append("}\n");
+        sb.append(INDENT).append("}\n\n");
+
+        // Add to_json method
+        sb.append(INDENT).append("/// Converts to JSON string\n");
+        sb.append(INDENT).append("pub fn to_json(&self) -> Result<String, serde_json::Error> {\n");
+        sb.append(INDENT).append(INDENT).append("serde_json::to_string_pretty(self)\n");
+        sb.append(INDENT).append("}\n\n");
+
+        imports.add("serde_json");
+    }
+
+    private void emitConstructor(Constructor constructor) {
+        sb.append(INDENT).append("/// Constructor\n");
+        sb.append(INDENT).append("pub fn new(");
+
+        // Parameters
+        if (constructor.parameters != null) {
+            for (int i = 0; i < constructor.parameters.size(); i++) {
+                if (i > 0) sb.append(", ");
+                Parameter param = constructor.parameters.get(i);
+                sb.append(sanitizeName(toSnakeCase(param.name)))
+                        .append(": ")
+                        .append(convertTypeToRust(param.type));
+            }
+        }
+        sb.append(") -> Self {\n");
+
+        // Constructor body
+        for (Statement statement : constructor.body) {
+            emitStatement(statement, INDENT + INDENT);
+        }
+
+        sb.append(INDENT).append("}\n\n");
+    }
+
+    private void emitStaticFields(List<Field> fields) {
+        for (Field field : fields) {
+            if (field.modifiers.contains(Modifier.STATIC)) {
+                String fieldName = sanitizeName(toSnakeCase(field.name).toUpperCase());
+
+                if (field.modifiers.contains(Modifier.FINAL) && field.initialiser != null) {
+                    // Use const for compile-time constants
+                    sb.append(INDENT).append("pub const ").append(fieldName)
+                            .append(": ").append(convertTypeToRust(field.type))
+                            .append(" = ").append(convert(field.initialiser)).append(";\n");
+                } else {
+                    // Use lazy_static for runtime initialization
+                    sb.append(INDENT).append("// Static field: ").append(fieldName).append("\n");
+                    imports.add("lazy_static::lazy_static");
+                }
+            }
+        }
+    }
+
+    private void emitMethod(Method method) {
+        // Method documentation
+        if (method.comments != null && !method.comments.isEmpty()) {
+            for (Comment comment : method.comments) {
+                List<String> lines = convert(comment);
+                for (String line : lines) {
+                    sb.append(INDENT).append("/// ").append(line).append("\n");
+                }
+            }
+        }
+
+        sb.append(INDENT);
+
+        // Visibility
+        if (method.modifiers.contains(Modifier.PUBLIC)) {
+            sb.append("pub ");
+        }
+
+        // Function signature — use registry alt name for overloaded methods if available
+        String methodAltName = findAltNameForDeclaration(method);
+        String methodName = (methodAltName != null) ? methodAltName : method.name;
+        sb.append("fn ").append(sanitizeName(toSnakeCase(methodName)));
+
+        // Generic type parameters
+        if (method.typeVariables != null && !method.typeVariables.isEmpty()) {
+            sb.append("<");
+            for (int i = 0; i < method.typeVariables.size(); i++) {
+                if (i > 0) sb.append(", ");
+                sb.append(convertTypeToRust(method.typeVariables.get(i)));
+            }
+            sb.append(">");
+        }
+
+        sb.append("(");
+
+        // Self parameter for instance methods
+        if (!method.modifiers.contains(Modifier.STATIC)) {
+            sb.append("&");
+            if (modifiesSelf(method)) {
+                sb.append("mut ");
+            }
+            sb.append("self");
+            if (method.parameters != null && !method.parameters.isEmpty()) {
+                sb.append(", ");
+            }
+        }
+
+        // Parameters
+        if (method.parameters != null) {
+            for (int i = 0; i < method.parameters.size(); i++) {
+                if (i > 0) sb.append(", ");
+                Parameter param = method.parameters.get(i);
+
+                // Add 'mut' prefix for trait parameters only if they might be stateful
+                // This is determined by checking if the trait has stateful methods
+                if (isKnownTrait(param.type) && traitNeedsStatefulAccess(param.type)) {
+                    sb.append("mut ");
+                }
+
+                // If parameter type is Object, try to infer concrete type from body casts
+                TypeName paramType = param.type;
+                if (isObjectType(paramType) && method.body != null) {
+                    TypeName inferredType = inferConcreteTypeFromCasts(param.name, method.body);
+                    if (inferredType != null) {
+                        paramType = inferredType;
+                    }
+                }
+
+                sb.append(sanitizeName(toSnakeCase(param.name)))
+                        .append(": ")
+                        .append(convertTypeToRustParam(paramType));
+            }
+        }
+
+        sb.append(")");
+
+        // Return type
+        if (method.returnType != null && !isVoidType(method.returnType)) {
+            sb.append(" -> ").append(convertTypeToRust(method.returnType));
+        }
+
+        sb.append(" {\n");
+
+        // Method body
+        if (method.body != null && !method.body.isEmpty()) {
+            for (int i = 0; i < method.body.size(); i++) {
+                Statement statement = method.body.get(i);
+                boolean isLastStatement = (i == method.body.size() - 1);
+                emitStatement(statement, INDENT + INDENT, isLastStatement);
+            }
+        }
+
+        sb.append(INDENT).append("}\n\n");
+    }
+
+    /**
+     * Check if a trait needs stateful access (requires mut parameter)
+     */
+    private boolean traitNeedsStatefulAccess(TypeName tn) {
+        if (tn instanceof ClassName) {
+            ClassName cn = (ClassName) tn;
+            String name = toPascalCase(cn.simpleName);
+            return statefulTraits.contains(name);
+        } else if (tn instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) tn;
+            return traitNeedsStatefulAccess(pt.rawType);
+        }
+        return false;
+    }
+
+    // ---- OverloadedMethod alt-name resolution (mirrors Python.java) -------------------------
+
+    /** Look up the alt name for a method declaration from the TypeRegistry. */
+    private String findAltNameForDeclaration(Method method) {
+        if (currentClassSignature == null || typeRegistry == null) return null;
+        int paramCount = method.parameters == null ? 0 : method.parameters.size();
+        for (MethodSignature ms : currentClassSignature.methods) {
+            if (!ms.name.equals(method.name)) continue;
+            if (ms.parameterTypes.size() != paramCount) continue;
+            for (PastAnnotation ann : ms.getAnnotations()) {
+                if (ann instanceof OverloadedMethod) {
+                    if (paramCount == 0 || paramTypesMatch(method, ms)) {
+                        return ((OverloadedMethod) ann).getAltName();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Look up the alt name for a self-method call site from the TypeRegistry.
+     * Returns non-null only when there is exactly one overloaded candidate with the given arg count.
+     */
+    private String findAltNameForCall(String methodName, int argCount) {
+        if (currentClassSignature == null || typeRegistry == null) return null;
+        List<MethodSignature> candidates = new ArrayList<>();
+        for (MethodSignature ms : currentClassSignature.methods) {
+            if (!ms.name.equals(methodName)) continue;
+            if (ms.parameterTypes.size() != argCount) continue;
+            for (PastAnnotation ann : ms.getAnnotations()) {
+                if (ann instanceof OverloadedMethod) {
+                    candidates.add(ms);
+                    break;
+                }
+            }
+        }
+        if (candidates.size() == 1) {
+            for (PastAnnotation ann : candidates.get(0).getAnnotations()) {
+                if (ann instanceof OverloadedMethod) return ((OverloadedMethod) ann).getAltName();
+            }
+        }
+        return null;
+    }
+
+    private boolean paramTypesMatch(Method method, MethodSignature ms) {
+        if (method.parameters.size() != ms.parameterTypes.size()) return false;
+        List<TypeName> argTypes = new ArrayList<>();
+        for (Parameter p : method.parameters) argTypes.add(p.type);
+        return paramTypesMatch(argTypes, ms);
+    }
+
+    private boolean paramTypesMatch(List<TypeName> argTypes, MethodSignature ms) {
+        if (argTypes.size() != ms.parameterTypes.size()) return false;
+        for (int i = 0; i < argTypes.size(); i++) {
+            String argTypeName = altNameTypeSimpleName(argTypes.get(i)).toLowerCase();
+            String regTypeName = altNameTypeSimpleName(ms.parameterTypes.get(i)).toLowerCase();
+            if (!argTypeName.equals(regTypeName)) return false;
+        }
+        return true;
+    }
+
+    private static String altNameTypeSimpleName(TypeName type) {
+        if (type instanceof ClassName) return ((ClassName) type).simpleName;
+        if (type instanceof ParameterizedType) return ((ParameterizedType) type).getRawType().simpleName;
+        if (type instanceof ArrayType) return altNameTypeSimpleName(((ArrayType) type).elementType) + "Array";
+        if (type instanceof TypeVariable) return ((TypeVariable) type).name;
+        return type.toString();
+    }
+
+    // ---- end OverloadedMethod helpers -------------------------------------------------------
+
+    private boolean modifiesSelf(Method method) {
+        // Check for StatefulProcessor annotation
+        // If present, method needs &mut self
+        for (org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation annot : method.annotation) {
+            if (annot instanceof org.openprovenance.prov.template.compiler.past.annotations.RustAnnotation) {
+                if (annot.getName().equals(org.openprovenance.prov.template.compiler.past.annotations.StatefulProcessor.NAME)) {
+                    return true;
+                }
+            }
+        }
+        // Check if the method body contains calls that mutate fields (e.g., forEach on a field, add to a field)
+        if (method.body != null) {
+            for (Statement stmt : method.body) {
+                if (bodyContainsMutatingCall(stmt)) {
+                    return true;
+                }
+            }
+        }
+        return false; // Default: stateless processors (&self)
+    }
+
+    private boolean bodyContainsMutatingCall(Statement stmt) {
+        // Expression statements are Expression objects with statementKind == EXPRESSION_STATEMENT
+        if (stmt.statementKind == Statement.StatementKind.EXPRESSION_STATEMENT && stmt instanceof Expression) {
+            return expressionContainsMutatingCall((Expression) stmt);
+        }
+        return false;
+    }
+
+    private boolean expressionContainsMutatingCall(Expression expr) {
+        if (expr instanceof MethodCall) {
+            MethodCall mc = (MethodCall) expr;
+            // forEach or add on a field variable implies mutation
+            if (mc.operatorKind == MethodCall.MethodCallKind.OPERATOR_VARIABLE && mc.object instanceof Variable) {
+                Variable v = (Variable) mc.object;
+                if (v.field == Variable.VariableKind.FIELD_VARIABLE) {
+                    if ("forEach".equals(mc.methodName) || "add".equals(mc.methodName)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isVoidType(TypeName returnType) {
+        if (returnType instanceof ClassName) {
+            ClassName cn = (ClassName) returnType;
+            return cn.packge != null && cn.packge.equals("past.lang") && cn.simpleName.equals("Void");
+        }
+        return false;
+    }
+
+    private void emitStatement(Statement statement, String indent) {
+        emitStatement(statement, indent, false);
+    }
+
+    private void emitStatement(Statement statement, String indent, boolean isLastStatement) {
+        switch (statement.statementKind) {
+            case ASSIGNMENT -> {
+                Assignment assignment = (Assignment) statement;
+
+                if (assignment.leftHandExpression instanceof Variable
+                        && ((Variable) assignment.leftHandExpression).name.equals("self")) {
+                    return;
+                }
+
+                sb.append(indent);
+
+                // Check if LHS is a field access on a non-self variable (e.g., b.field in a forEach closure).
+                // Such fields are Option<T> in Rust, so the RHS needs to be wrapped in Some(...)
+                boolean needsSomeWrap = isNonSelfFieldAccess(assignment.leftHandExpression);
+                String rhs = convert(assignment.value);
+                if (needsSomeWrap) {
+                    rhs = "Some(" + rhs + ")";
+                }
+
+                sb.append(sanitizeName(toSnakeCase(convertLH(assignment.leftHandExpression))))
+                        .append(" = ")
+                        .append(rhs)
+                        .append(";\n");
+
+                if (postDecrement != null) {
+                    sb.append(indent)
+                            .append(postDecrement)
+                            .append(" -= 1;\n");
+                    postDecrement = null;
+                }
+            }
+
+            case DEFINITION -> {
+                Definition definition = (Definition) statement;
+
+                if (definition.leftHandExpression instanceof Variable
+                        && ((Variable) definition.leftHandExpression).name.equals("self")) {
+                    return;
+                }
+
+                // Evaluate value first so side effects (like postDecrement) are visible
+                String valueStr = convert(definition.value);
+
+                sb.append(indent);
+
+                // Add let for new variables
+                if (definition.leftHandExpression instanceof Variable) {
+                    // In Java, final arrays/collections can still have their contents mutated.
+                    // In Rust, we need `let mut` if the variable will be mutated (e.g. via index assignment).
+                    // Detect this by checking if postDecrement was set during value conversion, or if the
+                    // type is an array/collection that may be mutated.
+                    boolean needsMut = !definition.modifiers.contains(Modifier.FINAL)
+                            || postDecrement != null
+                            || isArrayType(definition.type);
+                    if (needsMut) {
+                        sb.append("let mut ");
+                    } else {
+                        sb.append("let ");
+                    }
+                }
+
+                sb.append(sanitizeName(toSnakeCase(convertLH(definition.leftHandExpression))))
+                        .append(" = ")
+                        .append(valueStr)
+                        .append(";\n");
+
+                if (postDecrement != null) {
+                    sb.append(indent)
+                            .append(postDecrement)
+                            .append(" -= 1;\n");
+                    postDecrement = null;
+                }
+            }
+
+            case RETURN -> {
+                Return ret = (Return) statement;
+                if (isLastStatement) {
+                    // Rust implicit return - no semicolon
+                    sb.append(indent)
+                            .append(convert(ret.expression))
+                            .append("\n");
+                } else {
+                    sb.append(indent)
+                            .append("return ")
+                            .append(convert(ret.expression))
+                            .append(";\n");
+                }
+            }
+
+            case COMMENT -> {
+                Comment cs = (Comment) statement;
+                List<String> lines = convert(cs);
+                for (String line : lines) {
+                    sb.append(indent)
+                            .append("// ")
+                            .append(line)
+                            .append("\n");
+                }
+            }
+
+            case EXPRESSION_STATEMENT -> {
+                Expression es = (Expression) statement;
+                sb.append(indent)
+                        .append(convert(es))
+                        .append(";\n");
+            }
+
+            case IF_STATEMENT -> {
+                IfStatement ifs = (IfStatement) statement;
+                sb.append(indent)
+                        .append("if ")
+                        .append(convert(ifs.condition))
+                        .append(" {\n");
+                if (ifs.thenBlock.isEmpty()) {
+                    sb.append(indent).append(INDENT).append("// empty\n");
+                } else {
+                    for (Statement thenStmt : ifs.thenBlock) {
+                        emitStatement(thenStmt, indent + INDENT);
+                    }
+                }
+                if (!ifs.elseBlock.isEmpty()) {
+                    sb.append(indent)
+                            .append("} else {\n");
+                    for (Statement elseStmt : ifs.elseBlock) {
+                        emitStatement(elseStmt, indent + INDENT);
+                    }
+                }
+                sb.append(indent).append("}\n");
+            }
+
+            case FOR_LOOP -> {
+                ForLoop forLoop = (ForLoop) statement;
+                Statement initialization = forLoop.initialization;
+                Expression condition = forLoop.condition;
+                Statement update = forLoop.update;
+
+                // Rust doesn't have C-style for loops, convert to while
+                emitStatement(initialization, indent);
+                sb.append(indent)
+                        .append("while ")
+                        .append(convert(condition))
+                        .append(" {\n");
+                for (Statement bodyStmt : forLoop.body) {
+                    emitStatement(bodyStmt, indent + INDENT);
+                }
+                emitStatement(update, indent + INDENT);
+                sb.append(indent).append("}\n");
+            }
+
+            case ITERATOR -> {
+                Iterator iterator = (Iterator) statement;
+                sb.append(indent)
+                        .append("for ")
+                        .append(sanitizeName(toSnakeCase(iterator.parameter.name)))
+                        .append(" in ")
+                        .append(convert(iterator.collection))
+                        .append(" {\n");
+                for (Statement bodyStmt : iterator.body) {
+                    emitStatement(bodyStmt, indent + INDENT);
+                }
+                sb.append(indent).append("}\n");
+            }
+
+            default -> {
+                throw new IllegalArgumentException("Unsupported statement type " + statement);
+            }
+        }
+    }
+
+    private String convertStatementForClosure(Statement statement) {
+        StringBuilder result = new StringBuilder();
+        switch (statement.statementKind) {
+            case RETURN -> {
+                Return ret = (Return) statement;
+                result.append(convert(ret.expression));
+            }
+            case EXPRESSION_STATEMENT -> {
+                Expression es = (Expression) statement;
+                result.append(convert(es));
+            }
+            default -> {
+                throw new IllegalArgumentException("Unsupported statement in closure: " + statement);
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Convert an argument expression, handling Option<T> fields for nullable semantics.
+     * - Option<String> fields use .as_deref() to yield Option<&str>
+     * - Other Option<T> fields (i32, etc.) are passed by value (Copy types)
+     * - Non-optional String fields (with initialiser) use & to borrow as &str
+     */
+    private String convertArgument(Expression expression) {
+        if (expression instanceof Variable) {
+            Variable ve = (Variable) expression;
+            if (ve.field == Variable.VariableKind.FIELD_VARIABLE) {
+                Field field = getField(ve.name);
+                if (field != null) {
+                    TypeName fieldType = field.type;
+                    if (field.initialiser == null) {
+                        // This is an Option<T> field
+                        if (isStringType(fieldType)) {
+                            // Option<String> → Option<&str> via .as_deref()
+                            return "self." + sanitizeName(toSnakeCase(ve.name)) + ".as_deref()";
+                        } else {
+                            // Option<i32> etc. — pass by value (Copy)
+                            return "self." + sanitizeName(toSnakeCase(ve.name));
+                        }
+                    } else {
+                        // Non-optional field (has initialiser)
+                        if (isStringType(fieldType)) {
+                            return "&self." + sanitizeName(toSnakeCase(ve.name));
+                        } else if (isList(fieldType) || isMap(fieldType)) {
+                            // Vec/HashMap — pass by reference since they don't implement Copy
+                            return "&self." + sanitizeName(toSnakeCase(ve.name));
+                        }
+                    }
+                }
+            }
+        }
+        // For other expressions (including Constant.NULL → "None"), use normal conversion
+        return convert(expression);
+    }
+
+    /**
+     * Get the Field object by name from the current class
+     */
+    private Field getField(String fieldName) {
+        if (currentClass == null) return null;
+        for (Field field : currentClass.fields) {
+            if (field.name.equals(fieldName)) {
+                return field;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the type of a field by name from the current class
+     */
+    private TypeName getFieldType(String fieldName) {
+        Field field = getField(fieldName);
+        return field != null ? field.type : null;
+    }
+
+    private String convert(Expression expression) {
+        switch (expression.expressionKind) {
+            case VARIABLE: {
+                Variable ve = (Variable) expression;
+                return switch (ve.field) {
+                    case STATIC_FIELD_VARIABLE -> currentClass.name + "::" + sanitizeName(toSnakeCase(ve.name).toUpperCase());
+                    case FIELD_VARIABLE -> "self." + sanitizeName(toSnakeCase(ve.name));
+                    case LOCAL_VARIABLE -> sanitizeName(toSnakeCase(ve.name));
+                };
+            }
+
+            case CONSTANT: {
+                Constant constant = (Constant) expression;
+                return convertConstant(constant);
+            }
+
+            case METHOD_CALL: {
+                MethodCall mc = (MethodCall) expression;
+                return convertMethodCall(mc);
+            }
+
+            case ARRAY_INITIALISER: {
+                ArrayInitialiser ai = (ArrayInitialiser) expression;
+
+                // Check for HeterogeneousArray annotation
+                boolean isHeterogeneous = ai.annotation.stream()
+                        .anyMatch(annot -> annot instanceof org.openprovenance.prov.template.compiler.past.annotations.HeterogeneousArray);
+
+                if (isHeterogeneous) {
+                    // Generate Vec<Value> with wrapped elements
+                    needsValueEnum = true;  // Flag to generate Value enum
+                    return "vec![" + ai.values.stream()
+                            .map(this::wrapInValueEnum)
+                            .collect(Collectors.joining(", ")) + "]";
+                } else {
+                    // Normal homogeneous array
+                    return "vec![" + ai.values.stream()
+                            .map(this::convert)
+                            .collect(Collectors.joining(", ")) + "]";
+                }
+            }
+
+            case CAST: {
+                CastExpression c = (CastExpression) expression;
+                // In Rust, 'as' only works for primitive type casts
+                // For reference/struct types, skip the cast (use proper parameter typing instead)
+                if (isPrimitiveType(c.targetType)) {
+                    return convert(c.expression) + " as " + convertTypeToRust(c.targetType);
+                }
+                // Non-primitive cast: just return the expression (the parameter type should be correct)
+                return convert(c.expression);
+            }
+
+            case LAMBDA_EXPRESSION: {
+                LambdaExpression le = (LambdaExpression) expression;
+
+                // Simple closure
+                if (le.body.size() == 1 && isSimpleClosureBody(le.body.get(0))) {
+                    StringBuilder result = new StringBuilder();
+                    result.append("|");
+                    if (!le.parameters.isEmpty()) {
+                        result.append(le.parameters.stream()
+                                .map(p -> sanitizeName(toSnakeCase(p.name)))
+                                .collect(Collectors.joining(", ")));
+                    }
+                    result.append("| ");
+                    result.append(convertStatementForClosure(le.body.get(0)));
+                    return result.toString();
+                }
+
+                // Complex closure - extract to method
+                String fnName = "closure_" + (closureCount++);
+                Method method = new Method(fnName);
+                method.parameters.addAll(le.parameters);
+                method.body.addAll(le.body);
+                lateEmitMethod(method);
+
+                return "Self::" + sanitizeName(toSnakeCase(fnName));
+            }
+
+            case POST_INCREMENT: {
+                PostIncrement pi = (PostIncrement) expression;
+                Expression expr = pi.expression;
+                String exprStr = convert(expr);
+                if (pi.increment < 0) {
+                    postDecrement = exprStr;
+                    return exprStr;
+                } else {
+                    // Rust doesn't have post-increment, use statement form
+                    return exprStr + " + 1";
+                }
+            }
+
+            case ARRAY_ACCESSOR: {
+                ArrayAccessor aa = (ArrayAccessor) expression;
+
+                // Check for HeterogeneousArray annotation with expected type
+                String expectedType = getExpectedTypeFromAnnotation(aa.annotation);
+
+                if (expectedType != null) {
+                    // Generate accessor with unwrapping method call
+                    needsValueEnum = true;  // Ensure Value enum is generated
+                    String helperMethod = "as_" + expectedType.toLowerCase();
+                    return convert(aa.arrayExpression) + "[" + convert(aa.indexExpression) + "]." + helperMethod + "()";
+                } else {
+                    // Normal accessor (returns Value or normal element)
+                    return convert(aa.arrayExpression) + "[" + convert(aa.indexExpression) + "]";
+                }
+            }
+
+            case BINARY_OP: {
+                BinaryOp bo = (BinaryOp) expression;
+                if (bo.op.equals(INSTANCEOF)) {
+                    // Rust uses 'is_instance_of' from a trait or type checking
+                    // For now, generate a type check pattern
+                    return "/* instanceof check */ true";
+                } else {
+                    return convert(bo.left) + " " + bo.op + " " + convert(bo.right);
+                }
+            }
+
+            case IF_EXPRESSION: {
+                IfExpression ie = (IfExpression) expression;
+                return "if " + convert(ie.condition) + " { " + convert(ie.thenExpression) + " } else { " + convert(ie.elseExpression) + " }";
+            }
+
+            case ARRAY_ALLOCATOR: {
+                ArrayAllocator aa = (ArrayAllocator) expression;
+                return "vec![Default::default(); " + convert(aa.size) + "]";
+            }
+
+            default:
+                throw new IllegalArgumentException("Unsupported expression type " + expression);
+        }
+    }
+
+    /**
+     * Extract expected type from HeterogeneousArray annotation
+     * @param annotations List of annotations to check
+     * @return Expected type name (e.g., "String", "Int"), or null if not specified
+     */
+    private String getExpectedTypeFromAnnotation(List<org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation> annotations) {
+        for (org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation annot : annotations) {
+            if (annot instanceof org.openprovenance.prov.template.compiler.past.annotations.HeterogeneousArray) {
+                org.openprovenance.prov.template.compiler.past.annotations.HeterogeneousArray ha =
+                    (org.openprovenance.prov.template.compiler.past.annotations.HeterogeneousArray) annot;
+                return ha.getExpectedType();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Wrap an expression in a Value enum variant for heterogeneous arrays
+     */
+    private String wrapInValueEnum(Expression expr) {
+        // Handle constants by type
+        if (expr instanceof Constant) {
+            Constant c = (Constant) expr;
+            return switch (c.constantType) {
+                case STRING -> "Value::String(" + convertConstant(c) + ".to_string())";
+                case INTEGER, LONG -> "Value::Int(" + convertConstant(c) + ")";
+                case FLOAT, DOUBLE -> "Value::Float(" + convertConstant(c) + ")";
+                case BOOLEAN -> "Value::Bool(" + convertConstant(c) + ")";
+                case NULL -> "Value::Null";
+                default -> throw new IllegalArgumentException("Unsupported constant type for heterogeneous array: " + c.constantType);
+            };
+        }
+
+        // Handle variables - need to determine type at runtime or use generic conversion
+        if (expr instanceof Variable) {
+            Variable ve = (Variable) expr;
+            String varExpr = convert(expr);
+
+            // Try to determine type from field if it's a field variable
+            if (ve.field == Variable.VariableKind.FIELD_VARIABLE) {
+                TypeName fieldType = getFieldType(ve.name);
+                if (fieldType != null) {
+                    if (isStringType(fieldType)) {
+                        return "Value::String(" + varExpr + ".to_string())";
+                    }
+                    // Could add more type checks here for i32, bool, etc.
+                }
+            }
+
+            // Default: assume it's already a Value or needs explicit conversion
+            return varExpr;
+        }
+
+        // For other expressions, convert normally
+        // (they might already be Value types or need explicit wrapping)
+        return convert(expr);
+    }
+
+    private boolean isSimpleClosureBody(Statement statement) {
+        return statement.statementKind == Statement.StatementKind.RETURN ||
+                statement.statementKind == Statement.StatementKind.EXPRESSION_STATEMENT;
+    }
+
+    private void lateEmitMethod(Method method) {
+        this.lateMethods.add(method);
+    }
+
+    private String convertConstant(Constant c) {
+        return switch (c.constantType) {
+            case STRING -> "\"" + c.value.toString().replace("\"", "\\\"") + "\"";
+            case INTEGER -> c.value.toString();
+            case LONG -> c.value.toString();
+            case FLOAT -> c.value.toString();
+            case DOUBLE -> c.value.toString();
+            case BOOLEAN -> c.value.toString();
+            case NULL -> "None";
+            case BOOL -> c.value.toString();
+        };
+    }
+
+    private String convertConstant(Constant c, TypeName targetType) {
+        String base = convertConstant(c);
+        // If it's a string literal and target type is String, add .to_string()
+        if (c.constantType == Constant.ConstantType.STRING && isStringType(targetType)) {
+            return base + ".to_string()";
+        }
+        return base;
+    }
+
+    private boolean isStringType(TypeName tn) {
+        if (tn == null) return false;
+        if (tn.typeKind == TypeName.TypeKind.CLASS) {
+            ClassName cn = (ClassName) tn;
+            return cn.simpleName.equals("String");
+        }
+        return false;
+    }
+
+    private String convertWithType(Expression expression, TypeName targetType) {
+        if (expression instanceof Constant) {
+            return convertConstant((Constant) expression, targetType);
+        }
+        return convert(expression);
+    }
+
+    private String convertMethodCall(MethodCall mc) {
+        StringBuilder result = new StringBuilder();
+        switch (mc.operatorKind) {
+            case CONSTRUCTOR_CALL -> {
+                assert mc.className != null;
+                if (isMap(mc.className)) {
+                    return "HashMap::new()";
+                }
+                if (isList(mc.className)) {
+                    return "Vec::new()";
+                }
+                String className = getSimpleName(convert(mc.className));
+                result.append(className).append("::new(");
+                if (mc.arguments != null) {
+                    result.append(mc.arguments.stream()
+                            .map(this::convert)
+                            .collect(Collectors.joining(", ")));
+                }
+                result.append(")");
+                return result.toString();
+            }
+
+            case OBJECT_METHOD_CALL -> {
+                assert mc.object != null;
+
+                // Convert Java's forEach(lambda) to Rust's iter_mut().for_each(|params| { body })
+                if ("forEach".equals(mc.methodName) && mc.arguments != null && mc.arguments.size() == 1
+                        && mc.arguments.get(0) instanceof LambdaExpression) {
+                    LambdaExpression le = (LambdaExpression) mc.arguments.get(0);
+                    result.append(convert(mc.object)).append(".iter_mut().for_each(|");
+                    result.append(le.parameters.stream()
+                            .map(p -> sanitizeName(toSnakeCase(p.name)))
+                            .collect(Collectors.joining(", ")));
+                    result.append("| {\n");
+                    // Emit closure body into a temporary buffer to avoid interleaving with sb
+                    StringBuilder savedSb = this.sb;
+                    this.sb = new StringBuilder();
+                    String closureIndent = INDENT + INDENT + INDENT;
+                    for (Statement stmt : le.body) {
+                        emitStatement(stmt, closureIndent);
+                    }
+                    result.append(this.sb);
+                    this.sb = savedSb;
+                    result.append(INDENT).append(INDENT).append("})");
+                    return result.toString();
+                }
+
+                String convertedObject = convert(mc.object);
+                String callMethodName = sanitizeName(toSnakeCase(mc.methodName));
+                // For self-calls to overloaded methods, use the registry alt name
+                if ("self".equals(convertedObject)) {
+                    int argCount = mc.arguments == null ? 0 : mc.arguments.size();
+                    String resolvedAlt = findAltNameForCall(mc.methodName, argCount);
+                    if (resolvedAlt != null) {
+                        callMethodName = sanitizeName(resolvedAlt);
+                    }
+                }
+                result.append(convertedObject).append(".").append(callMethodName).append("(");
+                if (mc.arguments != null) {
+                    result.append(mc.arguments.stream()
+                            .map(this::convert)
+                            .collect(Collectors.joining(", ")));
+                }
+                result.append(")");
+                return result.toString();
+            }
+
+            case OBJECT_ACCESSOR -> {
+                if (mc.className != null) {
+                    String className = getSimpleName(convert(mc.className));
+                    // Java's .class literal → Rust string literal with the class name
+                    if ("class".equals(mc.methodName)) {
+                        result.append("\"").append(className).append("\"");
+                        return result.toString();
+                    }
+                    result.append(className).append("::").append(sanitizeName(toSnakeCase(mc.methodName).toUpperCase()));
+                } else if (mc.object instanceof Variable) {
+                    result.append(convert(mc.object)).append(".").append(sanitizeName(toSnakeCase(mc.methodName)));
+                } else {
+                    throw new IllegalArgumentException("Unsupported object type in accessor: " + mc.object);
+                }
+                return result.toString();
+            }
+
+            case FUNCTIONAL_INTERFACE_CALL -> {
+                // In Rust (like Java), traits have named methods that must be called
+                // Unlike Python where functional interfaces can be called directly
+                assert mc.object != null;
+                result.append(convert(mc.object)).append(".").append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
+                if (mc.arguments != null) {
+                    result.append(mc.arguments.stream()
+                            .map(this::convertArgument)
+                            .collect(Collectors.joining(", ")));
+                }
+                result.append(")");
+                return result.toString();
+            }
+
+            case OPERATOR_VARIABLE -> {
+                assert mc.object != null;
+
+                // Convert Java's forEach(lambda) to Rust's iter_mut().for_each(|params| { body })
+                if ("forEach".equals(mc.methodName) && mc.arguments != null && mc.arguments.size() == 1
+                        && mc.arguments.get(0) instanceof LambdaExpression) {
+                    LambdaExpression le = (LambdaExpression) mc.arguments.get(0);
+                    result.append(convert(mc.object)).append(".iter_mut().for_each(|");
+                    result.append(le.parameters.stream()
+                            .map(p -> sanitizeName(toSnakeCase(p.name)))
+                            .collect(Collectors.joining(", ")));
+                    result.append("| {\n");
+                    // Emit closure body into a temporary buffer to avoid interleaving with sb
+                    StringBuilder savedSb = this.sb;
+                    this.sb = new StringBuilder();
+                    String closureIndent = INDENT + INDENT + INDENT;
+                    for (Statement stmt : le.body) {
+                        emitStatement(stmt, closureIndent);
+                    }
+                    result.append(this.sb);
+                    this.sb = savedSb;
+                    result.append(INDENT).append(INDENT).append("})");
+                    return result.toString();
+                }
+
+                result.append(convert(mc.object)).append(".").append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
+                if (mc.arguments != null) {
+                    result.append(mc.arguments.stream()
+                            .map(this::convert)
+                            .collect(Collectors.joining(", ")));
+                }
+                result.append(")");
+                return result.toString();
+            }
+
+            case STATIC_METHOD_CALL -> {
+                assert mc.className != null;
+                String className = getSimpleName(convert(mc.className));
+                result.append(className).append("::").append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
+                if (mc.arguments != null) {
+                    result.append(mc.arguments.stream()
+                            .map(this::convert)
+                            .collect(Collectors.joining(", ")));
+                }
+                result.append(")");
+                return result.toString();
+            }
+
+            case NO_OPERATOR -> {
+                result.append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
+                if (mc.arguments != null) {
+                    result.append(mc.arguments.stream()
+                            .map(this::convert)
+                            .collect(Collectors.joining(", ")));
+                }
+                result.append(")");
+                return result.toString();
+            }
+        }
+        throw new IllegalArgumentException("Unsupported method call type " + mc);
+    }
+
+    private String convertLH(Expression leftHandExpression) {
+        if (leftHandExpression instanceof Variable) {
+            Variable ve = (Variable) leftHandExpression;
+            return ve.name;
+        } else if (leftHandExpression instanceof MethodCall) {
+            MethodCall mc = (MethodCall) leftHandExpression;
+            return convertMethodCall(mc);
+        } else if (leftHandExpression instanceof ArrayAccessor) {
+            ArrayAccessor aa = (ArrayAccessor) leftHandExpression;
+            return convert(aa.arrayExpression) + "[" + convert(aa.indexExpression) + "]";
+        }
+        throw new IllegalArgumentException("Unsupported left-hand expression type");
+    }
+
+    /**
+     * Check if an expression is a field access on a non-self variable (e.g., b.field_name).
+     * Such fields on bean elements are Option&lt;T&gt; in Rust and need Some(...) wrapping on assignment.
+     */
+    private boolean isNonSelfFieldAccess(Expression expr) {
+        if (expr instanceof MethodCall) {
+            MethodCall mc = (MethodCall) expr;
+            if (mc.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR && mc.object instanceof Variable) {
+                Variable v = (Variable) mc.object;
+                // Field access on a non-self, non-field variable (i.e., a local/closure parameter like "b")
+                return v.field == Variable.VariableKind.LOCAL_VARIABLE && !"self".equals(v.name);
+            }
+        }
+        return false;
+    }
+
+    private String convertTypeToRust(TypeName tn) {
+        if (tn == null) return "()";
+
+        switch (tn.typeKind) {
+            case CLASS: {
+                ClassName cn = (ClassName) tn;
+
+                // Check for common types regardless of package
+                String rustType = convertCommonType(cn.simpleName);
+                if (rustType != null) {
+                    return rustType;
+                }
+
+                // Package-specific handling
+                if (cn.packge != null && cn.packge.equals("past.util")) {
+                    return switch (cn.simpleName) {
+                        case "List", "ArrayList", "LinkedList" -> "Vec";
+                        case "Map", "HashMap" -> "HashMap";
+                        default -> toPascalCase(cn.simpleName);
+                    };
+                }
+
+                // Handle Class type (java.lang.Class -> &'static str in Rust)
+                if (cn.packge != null && cn.packge.equals("past.lang") && "Class".equals(cn.simpleName)) {
+                    return "&'static str";
+                }
+
+                return toPascalCase(cn.simpleName);
+            }
+            case ARRAY: {
+                ArrayType at = (ArrayType) tn;
+                return "Vec<" + convertTypeToRust(at.elementType) + ">";
+            }
+            case PARAMETERIZED: {
+                ParameterizedType pt = (ParameterizedType) tn;
+
+                // Check if this is Class<?> — in Rust, there's no Class type; use &'static str
+                if (isClassType(pt.rawType)) {
+                    return "&'static str";
+                }
+
+                // Check if this is a Function type
+                if (isFunctionType(pt.rawType)) {
+                    // Convert Function<A, B> to impl Fn(A) -> B
+                    if (pt.typeArguments.length == 2) {
+                        return "impl Fn(" + convertTypeToRust(pt.typeArguments[0]) + ") -> " + convertTypeToRust(pt.typeArguments[1]);
+                    }
+                }
+
+                StringBuilder result = new StringBuilder();
+                result.append(convertTypeToRust(pt.rawType));
+                if (pt.typeArguments.length > 0) {
+                    result.append("<");
+                    for (int i = 0; i < pt.typeArguments.length; i++) {
+                        if (i > 0) result.append(", ");
+                        result.append(convertTypeToRust(pt.typeArguments[i]));
+                    }
+                    result.append(">");
+                }
+                return result.toString();
+            }
+            case VARIABLE: {
+                org.openprovenance.prov.template.compiler.past.type.TypeVariable tv =
+                        (org.openprovenance.prov.template.compiler.past.type.TypeVariable) tn;
+                return tv.name;
+            }
+            default:
+                return tn.toString();
+        }
+    }
+
+    private String convert(TypeName tn) {
+        switch (tn.typeKind) {
+            case CLASS: {
+                ClassName cn = (ClassName) tn;
+                if (cn.packge != null && !cn.packge.isEmpty()) {
+                    return cn.packge + "." + cn.simpleName;
+                } else {
+                    return cn.simpleName;
+                }
+            }
+            case VARIABLE:
+            case ARRAY:
+            case PARAMETERIZED:
+            default:
+                return tn.toString();
+        }
+    }
+
+    private String getSimpleName(String fullName) {
+        String simpleName;
+        if (fullName.contains(".")) {
+            simpleName = fullName.substring(fullName.lastIndexOf('.') + 1);
+        } else {
+            simpleName = fullName;
+        }
+        return toPascalCase(simpleName);
+    }
+
+    private List<String> convert(Comment c) {
+        return List.of(String.format(c.format.replace("$L", "%s").replace("$N", "%s"), c.objects).split("\n"));
+    }
+
+    private boolean isMap(TypeName typeName) {
+        switch (typeName.typeKind) {
+            case CLASS:
+                ClassName cn = (ClassName) typeName;
+                String fullName = (cn.packge != null && !cn.packge.isEmpty()) ? (cn.packge + "." + cn.simpleName) : cn.simpleName;
+                return fullName.equals("past.util.Map") || fullName.equals("past.util.HashMap");
+            case PARAMETERIZED:
+                ParameterizedType pt = (ParameterizedType) typeName;
+                return isMap(pt.rawType);
+            default:
+                return false;
+        }
+    }
+
+    private boolean isList(TypeName typeName) {
+        switch (typeName.typeKind) {
+            case CLASS:
+                ClassName cn = (ClassName) typeName;
+                String fullName = (cn.packge != null && !cn.packge.isEmpty()) ? (cn.packge + "." + cn.simpleName) : cn.simpleName;
+                return fullName.equals("past.util.List") || fullName.equals("past.util.LinkedList") || fullName.equals("past.util.ArrayList");
+            case PARAMETERIZED:
+                ParameterizedType pt = (ParameterizedType) typeName;
+                return isList(pt.rawType);
+            default:
+                return false;
+        }
+    }
+
+    private boolean isFunctionType(TypeName typeName) {
+        if (typeName.typeKind != TypeName.TypeKind.CLASS) {
+            return false;
+        }
+        ClassName cn = (ClassName) typeName;
+        String fullName = (cn.packge != null && !cn.packge.isEmpty()) ? (cn.packge + "." + cn.simpleName) : cn.simpleName;
+        return fullName.equals("past.lang.Function") ||
+                fullName.equals("java.util.function.Function") ||
+                cn.simpleName.equals("Function");
+    }
+
+    private boolean isClassType(TypeName typeName) {
+        if (typeName.typeKind != TypeName.TypeKind.CLASS) {
+            return false;
+        }
+        ClassName cn = (ClassName) typeName;
+        String fullName = (cn.packge != null && !cn.packge.isEmpty()) ? (cn.packge + "." + cn.simpleName) : cn.simpleName;
+        return fullName.equals("past.lang.Class") || cn.simpleName.equals("Class");
+    }
+
+    private boolean isObjectType(TypeName typeName) {
+        if (typeName.typeKind != TypeName.TypeKind.CLASS) {
+            return false;
+        }
+        ClassName cn = (ClassName) typeName;
+        return "Object".equals(cn.simpleName);
+    }
+
+    /**
+     * Scan method body for a CastExpression targeting the given parameter name,
+     * and return the cast target type. This allows inferring the concrete type
+     * for Object-typed parameters in Rust (avoiding Box&lt;dyn Any&gt;).
+     */
+    private TypeName inferConcreteTypeFromCasts(String paramName, List<Statement> body) {
+        for (Statement stmt : body) {
+            TypeName result = findCastTargetInStatement(paramName, stmt);
+            if (result != null) return result;
+        }
+        return null;
+    }
+
+    private TypeName findCastTargetInStatement(String paramName, Statement stmt) {
+        if (stmt.statementKind == Statement.StatementKind.EXPRESSION_STATEMENT && stmt instanceof Expression) {
+            return findCastTargetInExpression(paramName, (Expression) stmt);
+        }
+        return null;
+    }
+
+    private TypeName findCastTargetInExpression(String paramName, Expression expr) {
+        if (expr instanceof CastExpression) {
+            CastExpression c = (CastExpression) expr;
+            if (c.expression instanceof Variable) {
+                Variable v = (Variable) c.expression;
+                if (paramName.equals(v.name)) {
+                    return c.targetType;
+                }
+            }
+        }
+        if (expr instanceof MethodCall) {
+            MethodCall mc = (MethodCall) expr;
+            if (mc.arguments != null) {
+                for (Expression arg : mc.arguments) {
+                    TypeName result = findCastTargetInExpression(paramName, arg);
+                    if (result != null) return result;
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean isArrayType(TypeName typeName) {
+        if (typeName == null) return false;
+        if (typeName.typeKind == TypeName.TypeKind.ARRAY) return true;
+        // Also detect ClassName "int[]" which is used for PAST int arrays
+        if (typeName instanceof ClassName) {
+            ClassName cn = (ClassName) typeName;
+            return cn.simpleName != null && cn.simpleName.endsWith("[]");
+        }
+        return false;
+    }
+
+    private boolean isPrimitiveType(TypeName typeName) {
+        if (typeName.typeKind != TypeName.TypeKind.CLASS) {
+            return false;
+        }
+        ClassName cn = (ClassName) typeName;
+        return switch (cn.simpleName) {
+            case "int", "Integer", "long", "Long", "float", "Float",
+                 "double", "Double", "boolean", "Boolean", "byte", "Byte",
+                 "short", "Short", "char", "Character" -> true;
+            default -> false;
+        };
+    }
+
+    private String convertCommonType(String typeName) {
+        return switch (typeName) {
+            case "String" -> "String";
+            case "Integer", "int" -> "i32";
+            case "Long", "long" -> "i64";
+            case "Float", "float" -> "f32";
+            case "Double", "double" -> "f64";
+            case "Boolean", "boolean" -> "bool";
+            case "Void", "void" -> "()";
+            case "Object" -> "Box<dyn std::any::Any>";
+            case "Byte", "byte" -> "i8";
+            case "Short", "short" -> "i16";
+            case "Character", "char" -> "char";
+            default -> null;
+        };
+    }
+
+    Map<String, String> methodNameConversion = new HashMap<>() {{
+        put("add", "push");
+        put("size", "len");
+        put("isEmpty", "is_empty");
+        put("toString", "to_string");
+    }};
+
+    private String sanitizeName(String name) {
+        if (name == null) return "unknown";
+        if (methodNameConversion.containsKey(name)) {
+            return methodNameConversion.get(name);
+        }
+        if (name.startsWith(GENERATED_VAR_PREFIX)) {
+            return name.substring(2);
+        }
+
+        // Handle Rust reserved keywords
+        if (isRustKeyword(name)) {
+            return "r#" + name;
+        }
+        return name;
+    }
+
+    private boolean isRustKeyword(String name) {
+        return List.of("as", "break", "const", "continue", "crate", "else", "enum", "extern",
+                        "false", "fn", "for", "if", "impl", "in", "let", "loop", "match", "mod",
+                        "move", "mut", "pub", "ref", "return", "self", "Self", "static", "struct",
+                        "super", "trait", "true", "type", "unsafe", "use", "where", "while",
+                        "async", "await", "dyn", "abstract", "become", "box", "do", "final",
+                        "macro", "override", "priv", "typeof", "unsized", "virtual", "yield")
+                .contains(name);
+    }
+
+    private String toSnakeCase(String name) {
+        if (name == null || name.isEmpty()) return name;
+
+        // Convert camelCase to snake_case
+        StringBuilder result = new StringBuilder();
+        result.append(Character.toLowerCase(name.charAt(0)));
+
+        for (int i = 1; i < name.length(); i++) {
+            char c = name.charAt(i);
+            if (Character.isUpperCase(c)) {
+                result.append('_');
+                result.append(Character.toLowerCase(c));
+            } else {
+                result.append(c);
+            }
+        }
+
+        return result.toString();
+    }
+
+    private String toPascalCase(String name) {
+        if (name == null || name.isEmpty()) return name;
+
+        // Convert snake_case or camelCase to PascalCase
+        StringBuilder result = new StringBuilder();
+        boolean capitalizeNext = true;
+
+        for (int i = 0; i < name.length(); i++) {
+            char c = name.charAt(i);
+            if (c == '_') {
+                capitalizeNext = true;
+            } else {
+                if (capitalizeNext) {
+                    result.append(Character.toUpperCase(c));
+                    capitalizeNext = false;
+                } else {
+                    result.append(c);
+                }
+            }
+        }
+
+        return result.toString();
+    }
+}

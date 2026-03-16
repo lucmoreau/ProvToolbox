@@ -1,6 +1,6 @@
 
 
-class List:
+class List(list):
     def __init__(self):
         self._list = []
 

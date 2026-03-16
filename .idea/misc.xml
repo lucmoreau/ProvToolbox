@@ -4,6 +4,9 @@
     <option name="sdkName" value="Python 3.11 virtualenv at ~/IdeaProjects/ProvToolbox/venv" />
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/src/main/webapp/WEB-INF/web.xml" />
+  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>

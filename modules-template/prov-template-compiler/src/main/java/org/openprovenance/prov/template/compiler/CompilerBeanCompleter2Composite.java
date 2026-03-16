@@ -85,11 +85,11 @@ public class CompilerBeanCompleter2Composite {
                             ASSIGNMENT(
                                     METHOD_CALL(VARIABLE(BEAN_VAR), "ID"),
                                     CAST(INTEGER,
-                                            METHOD_CALL(VARIABLE(M_VAR), "get", List.of(CONSTANT("ID")))  )   ),
+                                            METHOD_CALL(METHOD_CALL(VARIABLE("this"),M_VAR), "get", List.of(CONSTANT("ID")))  )   ),
 
                             ITERATOR(
                                     PARAMETER(ELEM_VAR, MAP_STRING_OBJECT),
-                                    VARIABLE(LL_VAR))
+                                    METHOD_CALL(VARIABLE("this"),LL_VAR))
                                     .BODY(
                                             DEFINITION(composeeClass, VARIABLE(OUT_VAR), CONSTRUCTOR_CALL(composeeClass, List.of())),
                                             METHOD_CALL(

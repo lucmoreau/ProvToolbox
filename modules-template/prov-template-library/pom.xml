@@ -113,7 +113,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>compile-template-plead</id>
+<!--                        <id>compile-template-plead</id>-->
                         <phase>generate-sources</phase>
                         <goals><goal>exec</goal></goals>
                         <configuration>
@@ -130,6 +130,8 @@
                             </arguments>
                         </configuration>
                     </execution>
+
+                    
 
                     <execution>
                         <id>compile-template-ptm</id>

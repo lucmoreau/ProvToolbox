@@ -366,7 +366,7 @@
         <interop.config>light</interop.config>
         <prov.factory>org.openprovenance.prov.vanilla.ProvFactory</prov.factory>
 
-        <cached.dictionary.folder>${basedir}/dictionary</cached.dictionary.folder>
+        <cached.dictionary.folder>${project.basedir}/dictionary</cached.dictionary.folder>
         <deployed.dictionary.folder>${project.build.directory}/dictionary</deployed.dictionary.folder>
     </properties>
 

@@ -1,6 +1,6 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.2.3-SNAPSHOT`
+`2.2.3`
 * prov-template: update to instantiation
 * prov-template: variable-checker: pretty printing name
 * prov-template: tmpl:ID attribute, and capturing unused vars

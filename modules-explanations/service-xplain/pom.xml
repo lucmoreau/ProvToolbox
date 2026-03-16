@@ -529,8 +529,7 @@
             <activation>
                 <!-- this is used to ensure that jetty profile is always activated -->
                 <file>
-                    <missing>${cached.dictionary.folder}/lexAccess2013.data.zip</missing>
-                    <exists>${cached.dictionary.folder}/lexAccess2013.data.zip</exists>
+                    <exists>${project.basedir}/pom.xml</exists>
                 </file>
             </activation>
             <dependencies>

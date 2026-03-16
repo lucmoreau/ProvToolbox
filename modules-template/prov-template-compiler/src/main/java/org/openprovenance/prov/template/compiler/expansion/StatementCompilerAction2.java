@@ -30,7 +30,7 @@ import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 /**
- * Variant of {@link StatementCompilerAction} that generates PAST statements
+ * Variant of {@link StatementCompilerAction2} that generates PAST statements
  * (provenance abstract syntax tree) instead of JavaPoet code.
  *
  * <p>Each {@code doAction} method appends PAST {@link Statement} objects to
@@ -112,10 +112,19 @@ public class StatementCompilerAction2 implements StatementAction {
     private Expression notNull(String varName) {
         return BINARY_OP(VARIABLE(varName), "!=", getNull());
     }
+    private Expression notNull(Expression expr) {
+        return BINARY_OP(expr, "!=", getNull());
+    }
 
     // --- helper: ($N!=null) && ($N!=null) ---
     private Expression andNotNull(String var1, String var2) {
         return BINARY_OP(notNull(var1), "&&", notNull(var2));
+    }
+    private Expression orNotNull(String var1, String var2) {
+        return BINARY_OP(notNull(var1), "||", notNull(var2));
+    }
+    private Expression orNotNull(String var1, Expression expr2) {
+        return BINARY_OP(notNull(var1), "||", expr2);
     }
 
     // --- helper to convert a list of variable name strings to VARIABLE expressions ---
@@ -265,23 +274,46 @@ public class StatementCompilerAction2 implements StatementAction {
         Expression attrs = doAttributesActionPast(s);
         boolean hasAttrs = (attrs != null);
 
+        String activity = local(s.getActivity());
+        String agent = local(s.getAgent());
+        String id = local(s.getId());
+
         List<Expression> args = new ArrayList<>();
-        args.add(VARIABLE(local(s.getId())));
-        args.add(VARIABLE(local(s.getActivity())));
-        args.add(VARIABLE(local(s.getAgent())));
+        args.add(VARIABLE(id));
+        args.add(VARIABLE(activity));
+        args.add(VARIABLE(agent));
         args.add(VARIABLE(local(s.getPlan())));
         if (hasAttrs) args.add(VARIABLE("attrs"));
 
-        statements.add(targetAdd(pfCall("newWasAssociatedWith", args)));
+        if (hasAttrs) {
+            statements.add(targetAdd(pfCall("newWasAssociatedWith", args)));
+        } else {
+            Expression condition = orNotNull(id,andNotNull(activity, agent));
+            statements.add(ifThenTargetAdd(condition,pfCall("newWasAssociatedWith", args)));
+        }
     }
 
     @Override
     public void doAction(WasAttributedTo s) {
+        Expression attrs = doAttributesActionPast(s);
+        boolean hasAttrs = (attrs != null);
+
+        String id = local(s.getId());
+        String entity = local(s.getEntity());
+        String agent = local(s.getAgent());
+
         List<Expression> args = new ArrayList<>();
-        args.add(VARIABLE(local(s.getId())));
-        args.add(VARIABLE(local(s.getEntity())));
-        args.add(VARIABLE(local(s.getAgent())));
-        statements.add(targetAdd(pfCall("newWasAttributedTo", args)));
+        args.add(VARIABLE(id));
+        args.add(VARIABLE(entity));
+        args.add(VARIABLE(agent));
+        if (hasAttrs) args.add(VARIABLE("attrs"));
+
+        if (hasAttrs) {
+            statements.add(targetAdd(pfCall("newWasAttributedTo", args)));
+        } else {
+            Expression condition = orNotNull(id,andNotNull(entity, agent));
+            statements.add(ifThenTargetAdd(condition,pfCall("newWasAttributedTo", args)));
+        }
     }
 
     @Override
@@ -565,7 +597,7 @@ public class StatementCompilerAction2 implements StatementAction {
 
     /**
      * Generates PAST statements for attribute construction, equivalent to
-     * {@link StatementCompilerAction#doAttributesAction}.
+     * {@link StatementCompilerAction2#doAttributesActionPast}.
      * Returns the collection of attributes (for isEmpty check), or null if empty.
      * Adds assignment and attribute-add statements to the statements list.
      */

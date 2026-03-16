@@ -1,5 +1,8 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
+`2.2.4-SNAPSHOT`
+* prov-template-compiler: StatementCompilerAction2: refined past code generator for Attribution and Association
+
 `2.2.3`
 * prov-template: update to instantiation
 * prov-template: variable-checker: pretty printing name

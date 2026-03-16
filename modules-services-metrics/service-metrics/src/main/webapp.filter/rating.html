@@ -5,6 +5,7 @@
     <title>Rating</title>
     <script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
     <link href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${service.context}/webjars/bootstrap-icons/${webjars.bootstrap-icons.version}/font/bootstrap-icons.min.css" rel="stylesheet">
 
 </head>
 
@@ -33,11 +34,11 @@
 
     function trafficRepresentation(traffic) {
         if (traffic.kind === "PERCENTAGE") {
-            return "<span data-toggle='tooltip' data-trigger='click' data-html='true' title='<b>" + traffic.comment + "</b><p>" + traffic.explanation + "'><b> " + traffic.comment + "</b>: " + fixed(traffic.ratio, 2) + "% " + symbolFor(traffic.color) + " [Weight: " + fixed(traffic.weight,2) + "]</span>";
+            return "<span data-bs-toggle='tooltip' data-bs-trigger='click' data-bs-html='true' title='<b>" + traffic.comment + "</b><p>" + traffic.explanation + "'><b> " + traffic.comment + "</b>: " + fixed(traffic.ratio, 2) + "% " + symbolFor(traffic.color) + " [Weight: " + fixed(traffic.weight,2) + "]</span>";
         } else if (traffic.kind === "ABSOLUTE") {
-            return "<span data-toggle='tooltip' data-trigger='click' data-html='true' title='<b>" + traffic.comment + "</b><p>" + traffic.explanation + "'><b> " + traffic.comment + "</b>: " + fixed(traffic.ratio,2) + " " +  symbolFor(traffic.color) + " [Weight: " + fixed(traffic.weight,2) + "]";;
+            return "<span data-bs-toggle='tooltip' data-bs-trigger='click' data-bs-html='true' title='<b>" + traffic.comment + "</b><p>" + traffic.explanation + "'><b> " + traffic.comment + "</b>: " + fixed(traffic.ratio,2) + " " +  symbolFor(traffic.color) + " [Weight: " + fixed(traffic.weight,2) + "]";;
         } else if (traffic.kind === "COMPOSITE") {
-            return "<span data-toggle='tooltip' data-trigger='click' data-html='true' title='<b>" + traffic.comment + "</b><p>" + traffic.explanation + "'><b> " + traffic.comment + "</b>: " + fixed(traffic.ratio,2) + "(/3) " +  symbolFor(traffic.color) + " [Weight: " + fixed(traffic.weight,2) + "]";;
+            return "<span data-bs-toggle='tooltip' data-bs-trigger='click' data-bs-html='true' title='<b>" + traffic.comment + "</b><p>" + traffic.explanation + "'><b> " + traffic.comment + "</b>: " + fixed(traffic.ratio,2) + "(/3) " +  symbolFor(traffic.color) + " [Weight: " + fixed(traffic.weight,2) + "]";;
         } else {
             // error
             return "<b> " + traffic.comment + "</b>: unknown kind  " + traffic.kind;
@@ -101,7 +102,7 @@
             }
 
             $(function () {
-                $('[data-toggle="tooltip"]').tooltip()
+                $('[data-bs-toggle="tooltip"]').tooltip()
             })
 
         }
@@ -109,20 +110,20 @@
 </script>
 <body>
 
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-        <ul class="nav navbar-nav">
-            <li id="header-rator">      <a href="rator.html">Rate</a></li>
-            <li id="header-mapper">     <a href="mapper.html">Map</a></li>
-            <li id="header-api">        <a href="api.html">API</a></li>
-            <li id="header-about">      <a href="about.html">About</a></li>
-            <li id="header-contact">    <a href="contact.html">Contact</a></li>
+        <ul class="navbar-nav flex-row gap-3">
+            <li id="header-rator"   class="nav-item"><a href="rator.html"   class="nav-link">Rate</a></li>
+            <li id="header-mapper"  class="nav-item"><a href="mapper.html"  class="nav-link">Map</a></li>
+            <li id="header-api"     class="nav-item"><a href="api.html"     class="nav-link">API</a></li>
+            <li id="header-about"   class="nav-item"><a href="about.html"   class="nav-link">About</a></li>
+            <li id="header-contact" class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
         </ul>
     </div>
 </nav>
 
 <script>
-    $('#header-rator').addClass("active");
+    $('#header-rator a').addClass("active");
 </script>
 
 <section>
@@ -146,12 +147,9 @@
 </section>
 
 
-<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
 
 <script src="provservice.js"></script>
-<script>
-    $('.dropdown-toggle').dropdown()
-</script>
 
 </body>
 </html>

@@ -3,32 +3,48 @@ package org.openprovenance.prov.template.compiler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
-import org.openprovenance.prov.template.log2prov.FileBuilder;
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.CompilerCompositeConfigurations.recordsProcessorOfUnknown;
-import static org.openprovenance.prov.template.compiler.CompilerConfigurations.*;
-import static org.openprovenance.prov.template.compiler.CompilerUtil.mapString2StringType;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY_ACCESSOR;
+import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.LambdaExpression.LAMBDA;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.ThrowStatement.THROW;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+
 
 public class CompilerCatalogueDispatcher {
+
+
     public static final String POST_PROCESSING_VAR = "postProcessing";
-    static final ParameterizedTypeName FunctionOfString2StringArray = ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ClassName.get(CLIENT_PACKAGE,BUILDER_INTERFACE), ArrayTypeName.of(ClassName.get(String.class)));
 
-    static final ParameterizedTypeName FunctionStringResultSet = ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ClassName.get(String.class), ClassName.get(java.sql.ResultSet.class));
-    static final ParameterizedTypeName BiFunctionIntegerStringObject=ParameterizedTypeName.get(ClassName.get(java.util.function.BiFunction.class), ClassName.get(Integer.class), ClassName.get(String.class), ClassName.get(Object.class));
+       public static final ParameterizedTypeName poetSupplierOfString = ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(java.util.function.Supplier.class), com.squareup.javapoet.ClassName.get(String.class));
 
-    //  Function<Object[], Object[]>
-    static final ParameterizedTypeName FunctionObjArray2ObjArray= ParameterizedTypeName.get(ClassName.get(java.util.function.Function.class), ArrayTypeName.of(ClassName.get(Object.class)), ArrayTypeName.of(ClassName.get(Object.class)));
-   // Supplier<String>
-    static final ParameterizedTypeName SupplierOfString= ParameterizedTypeName.get(ClassName.get(java.util.function.Supplier.class), ClassName.get(String.class));
+    // PAST types for field type declarations
 
     public static Map<String,String> dataConfiguratorMap=new java.util.HashMap<>() {{
         put(PROPERTY_ORDER, PROPERTY_ORDER_CONFIGURATOR);
@@ -46,28 +62,26 @@ public class CompilerCatalogueDispatcher {
         put("documentBuilderDispatcher", TABLE_CONFIGURATOR + WITH_MAP);
         put("typeAssignment", TABLE_CONFIGURATOR + "ForTypes" + WITH_MAP);
         put("recordMaker", OBJECT_RECORD_MAKER_CONFIGURATOR);
-
-
     }};
-    public static Map<String,TypeName> dataTypeMap=new java.util.HashMap<>() {{
-        put(PROPERTY_ORDER, mapOf(stringArray));
-        put("inputs", mapOf(stringArray));
-        put("outputs", mapOf(stringArray));
-        put("sqlConverter", mapOf(processorOfString));
-        put("csvConverter", mapOf(processorOfString));
-        put("sqlInsert", mapOf(ClassName.get(String.class)));
-        put("beanConverter", mapOf(processorOfUnknown));
-        put("relation0", mapOf(mapString2MapString2IntArray));
-        put("foreignTables", mapOf(stringArray));
-        put("successors", mapOf(mapString2StringList));
-        put("enactorConverter", mapOf(processorOfUnknown));
-        put("compositeEnactorConverter", mapOf(recordsProcessorOfUnknown));
-        put("documentBuilderDispatcher", mapOf(ClassName.get(FileBuilder.class)));
-        put("typeAssignment", mapOf(mapOf(ParameterizedTypeName.get(ClassName.get(Set.class),ClassName.get(String.class)))));
-        put("recordMaker", mapOf(FunctionObjArray2ObjArray));
 
-
+    public static Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> pastDataTypeMap =new java.util.HashMap<>() {{
+        put(PROPERTY_ORDER,              ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING_ARRAY));
+        put("inputs",                    ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING_ARRAY));
+        put("outputs",                   ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING_ARRAY));
+        put("sqlConverter",              ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_STRING));
+        put("csvConverter",              ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_STRING));
+        put("sqlInsert",                 ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING));
+        put("beanConverter",             ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_ANY));
+        put("relation0",                 ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_MAP_STRING_INTARRAY));
+        put("foreignTables",             ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING_ARRAY));
+        put("successors",                ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_LIST_STRING));
+        put("enactorConverter",          ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_ANY));
+        put("compositeEnactorConverter", ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_LIST_OBJARRAY_TO_ANY));
+        put("documentBuilderDispatcher", ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.PROV_FILE_BUILDER));
+        put("typeAssignment",            MAP_STRING_MAP_STRING_SET_STRING);
+        put("recordMaker",               ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_OBJ_ARRAY));
     }};
+
 
 
     public static Set<String> integratorRequired= new HashSet<>(List.of("inputs", "outputs"));
@@ -89,225 +103,339 @@ public class CompilerCatalogueDispatcher {
     SpecificationFile generateCatalogueDispatcher(TemplatesProjectConfiguration configs, Map<String, Map<String, Map<String, String>>> inputOutputMaps, Locations locations, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
+        final ParameterizedType catalogueDispatcherInterfaceType = ParameterizedType.get(CATALOGUE_DISPATCHER_INTERFACE, PROV_FILE_BUILDER);
 
-        TypeSpec.Builder builder = compilerUtil
-                .generateClassInit(Constants.CATALOGUE_DISPATCHER)
-                .addSuperinterface(ParameterizedTypeName.get(ClassName.get(CatalogueDispatcherInterface.class), ClassName.get(FileBuilder.class)));
+        PastFactory pastFactory = new PastFactory();
+        Class pastClass = pastFactory.CLASS(Constants.CATALOGUE_DISPATCHER)
+                .MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(catalogueDispatcherInterfaceType);
 
 
-        MethodSpec.Builder cspec = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(mapString2StringType, "map")
-                .addParameter(ProvFactory.class, "pf");
-        compilerUtil.specWithComment(cspec);
-
+        // Add fields for each data entry
         for (String data: dataConfiguratorMap.keySet()) {
             if (!configs.integrator && (integratorRequired.contains(data) || storageRequired.contains(data))) {
-                builder.addMethod(createNullGetterBuilder(data, dataTypeMap.get(data)).build());
-                if (storageRequired.contains(data)) {
-                    builder.addMethod(createNullInitBuilder(data).build());
-                }
                 continue;
-            };
+            }
             if (configs.sqlFile==null && storageRequired.contains(data)) {
-                builder.addMethod(createNullGetterBuilder(data, dataTypeMap.get(data)).build());
-                builder.addMethod(createNullInitBuilder(data).build());
                 continue;
-            };
-
-            String configurator = dataConfiguratorMap.get(data);
-            TypeName typeName = dataTypeMap.get(data);
-
-            if (storageRequired.contains(data)) {
-                builder.addField(typeName, data, Modifier.PRIVATE);
-
-                MethodSpec.Builder initSpec = MethodSpec.methodBuilder("init" + capitalizeFirstLetter(data))
-                        .returns(void.class)
-                        .addModifiers(Modifier.PUBLIC);
-                compilerUtil.specWithComment(initSpec);
-                initSpec.addParameter(FunctionStringResultSet, QUERIER_VAR);
-                initSpec.addParameter(BiFunctionIntegerStringObject, POST_PROCESSING_VAR);
-                initSpec.addParameter(SupplierOfString, GET_PRINCIPAL_VAR);
-                initSpec.addStatement("this.$N=$T.$N(new $T($N,$N,$N))",
-                        data,
-                        ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
-                        ("compositeEnactorConverter".equals(data))?"initializeCompositeBeanTable":"initializeBeanTable",
-                        ClassName.get(locations.getFilePackage(configs.name,configurator), configurator),
-                        QUERIER_VAR,POST_PROCESSING_VAR, GET_PRINCIPAL_VAR);
-                builder.addMethod(initSpec.build());
-
-            } else {
-
-
-                builder.addField(typeName, data, Modifier.PRIVATE, Modifier.FINAL);
-
-
-                if ("foreignTables".equals(data)) {
-                    cspec.addStatement("this.$N=$T.initializeBeanTable(new $T<>($T::getForeign))",
-                            data,
-                            ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
-                            ClassName.get(locations.getFilePackage(configs.name,configurator), configurator),
-                            ClassName.get(CLIENT_PACKAGE, BUILDER_INTERFACE));
-
-                } else if ("successors".equals(data)) {
-                    cspec.addStatement("this.$N=$T.initializeBeanTable(new $T<>($T::process))",
-                            data,
-                            ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
-                            ClassName.get(locations.getFilePackage(configs.name,configurator), configurator),
-                            ClassName.get(configs.root_package, CATALOGUE_DISPATCHER));
-
-                } else if ("documentBuilderDispatcher".equals(data)) {
-                    cspec.addStatement("this.$N=$T.initializeBeanTable(new $T(map,pf))",
-                            data,
-                            ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
-                            ClassName.get(locations.getFilePackage(configs.name,configurator), configurator));
-                } else if ("typeAssignment".equals(data)) {
-                    cspec.addStatement("this.$N=$T.initializeBeanTable(new $T(map,propertyOrder,documentBuilderDispatcher,pf))",
-                            data,
-                            ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
-                            ClassName.get(locations.getFilePackage(configs.name,configurator), configurator));
-                } else if ("recordMaker".equals(data)) {
-                    cspec.addStatement("this.$N=$T.initializeBeanTable(new $T(documentBuilderDispatcher))",
-                            data,
-                            ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
-                            ClassName.get(locations.getFilePackage(configs.name,configurator), configurator));
-                } else {
-                    if (sqlRelated.contains(data) && configs.sqlFile==null) {
-                        cspec.addStatement("this.$N=null /* no sql file*/", data);
-                    } else {
-                        cspec.addStatement("this.$N=$T.initializeBeanTable(new $T())",
-                                data,
-                                ClassName.get(locations.getFilePackage(configs.name,Constants.LOGGER), Constants.LOGGER),
-                                ClassName.get(locations.getFilePackage(configs.name,configurator), configurator));
-                    }
-                }
-
             }
 
+            org.openprovenance.prov.template.compiler.past.type.TypeName pastTypeName = pastDataTypeMap.get(data);
 
-            MethodSpec.Builder getterSpec = createGetterBuilder(configs, data, typeName);
-            builder.addMethod(getterSpec.build());
-
-
-
-
+            if (storageRequired.contains(data)) {
+                pastClass.FIELDS(FIELD(data, pastTypeName).MODIFIERS(Modifier.PRIVATE));
+            } else {
+                pastClass.FIELDS(FIELD(data, pastTypeName).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL));
+            }
         }
 
-        builder.addMethod(cspec.build());
+        // Add simple getters (return field) for non-storage, non-null-guard data
+        for (String data: dataConfiguratorMap.keySet()) {
+            if (!configs.integrator && (integratorRequired.contains(data) || storageRequired.contains(data))) {
+                continue;
+            }
+            if (configs.sqlFile==null && storageRequired.contains(data)) {
+                continue;
+            }
+            if (!storageRequired.contains(data)) {
+                org.openprovenance.prov.template.compiler.past.type.TypeName pastTypeName = pastDataTypeMap.get(data);
+                pastClass.METHOD(METHOD("get" + capitalizeFirstLetter(data))
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .commentFileLocation()
+                        .RETURNS(pastTypeName)
+                        .BODY(RETURN(VARIABLE(data))));
+            }
+        }
 
-
-
+        // Add static string fields with JSON initializers
         try {
-            builder.addField(FieldSpec
-                    .builder(  ClassName.get(String.class), "ioMap", Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL)
-                    .initializer("$S", objectMapper.writeValueAsString(inputOutputMaps))
-                    .build());
-            builder.addField(FieldSpec
-                    .builder(  ClassName.get(String.class), "shortNames", Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL)
-                    .initializer("$S", objectMapper.writeValueAsString(locations.getShortNames()))
-                    .build());
-            builder.addField(FieldSpec
-                    .builder(  ClassName.get(String.class), "linkers", Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL)
-                    .initializer("$S", objectMapper.writeValueAsString(locations.getLinkerTableDeclarations()))
-                    .build());
+            pastClass.FIELDS(FIELD("ioMap", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(inputOutputMaps))));
+            pastClass.FIELDS(FIELD("shortNames", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(locations.getShortNames()))));
+            pastClass.FIELDS(FIELD("linkers", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(locations.getLinkerTableDeclarations()))));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
 
+        // Add simple string getters for static fields
+        pastClass.METHODS(
+                METHOD("getIoMap")
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .commentFileLocation()
+                        .RETURNS(STRING)
+                        .BODY(RETURN(VARIABLE("ioMap"))),
 
-        MethodSpec.Builder getterSpec = createGetterBuilder(configs, "ioMap", ClassName.get(String.class));
-        builder.addMethod(getterSpec.build());
-        MethodSpec.Builder getterSpec2 = createGetterBuilder(configs, "shortNames", ClassName.get(String.class));
-        builder.addMethod(getterSpec2.build());
-        MethodSpec.Builder getterSpec3 = createGetterBuilder(configs, "linkers", ClassName.get(String.class));
-        builder.addMethod(getterSpec3.build());
+                METHOD("getShortNames")
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .commentFileLocation()
+                        .RETURNS(STRING)
+                        .BODY(RETURN(VARIABLE("shortNames"))),
+
+                METHOD("getLinkers")
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .commentFileLocation()
+                        .RETURNS(STRING)
+                        .BODY(RETURN(VARIABLE("linkers"))));
 
 
+        // Add constructor via PAST
+        Constructor cspec = CONSTRUCTOR()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(MAP_STRING_STRING, "map")
+                .PARAMETER(PROV_FACTORY, "pf");
+        compilerUtil.debugFileLocation(cspec);
+
+        for (String data: dataConfiguratorMap.keySet()) {
+            if (!configs.integrator && (integratorRequired.contains(data) || storageRequired.contains(data))) {
+                continue;
+            }
+            if (configs.sqlFile==null && storageRequired.contains(data)) {
+                continue;
+            }
+
+            String configurator = dataConfiguratorMap.get(data);
+
+            if (!storageRequired.contains(data)) {
+                ClassName loggerClass =
+                        ClassName.get(Constants.LOGGER, locations.getFilePackage(configs.name, Constants.LOGGER));
+                ClassName configuratorClass =
+                        ClassName.get(configurator, locations.getFilePackage(configs.name, configurator));
+
+                if ("foreignTables".equals(data)) {
+                    // new BuilderProcessorConfigurator<>(b -> b.getForeign())
+                    ParameterizedType diamondConfiguratorType = ParameterizedType.get(configuratorClass);
+                    LambdaExpression lambda = LAMBDA(PARAMETER("b", ClassName.BUILDER_INTERFACE))
+                            .BODY(RETURN(METHOD_CALL(VARIABLE("b"), "getForeign", List.of())));
+                    cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
+                            METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
+                                    List.of(CONSTRUCTOR_CALL(diamondConfiguratorType, List.of(lambda))))));
+                } else if ("successors".equals(data)) {
+                    // new BuilderProcessorConfigurator<>(b -> CatalogueDispatcher.process(b))
+                    ParameterizedType diamondConfiguratorType = ParameterizedType.get(configuratorClass);
+                    ClassName catalogueDispatcherClass =
+                            ClassName.get(CATALOGUE_DISPATCHER, configs.root_package);
+                    LambdaExpression lambda = LAMBDA(PARAMETER("b", ClassName.BUILDER_INTERFACE))
+                            .BODY(RETURN(METHOD_CALL(catalogueDispatcherClass, "process", List.of(VARIABLE("b")))));
+                    cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
+                            METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
+                                    List.of(CONSTRUCTOR_CALL(diamondConfiguratorType, List.of(lambda))))));
+                } else if ("documentBuilderDispatcher".equals(data)) {
+                    // new TableConfiguratorWithMap(map, pf)
+                    cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
+                            METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
+                                    List.of(CONSTRUCTOR_CALL(configuratorClass, List.of(VARIABLE("map"), VARIABLE("pf")))))));
+                } else if ("typeAssignment".equals(data)) {
+                    // new TableConfiguratorForTypesWithMap(map, propertyOrder, documentBuilderDispatcher, pf)
+                    cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
+                            METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
+                                    List.of(CONSTRUCTOR_CALL(configuratorClass, List.of(VARIABLE("map"), VARIABLE("propertyOrder"), VARIABLE("documentBuilderDispatcher"), VARIABLE("pf")))))));
+                } else if ("recordMaker".equals(data)) {
+                    // new ObjectRecordMakerConfigurator(documentBuilderDispatcher)
+                    cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
+                            METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
+                                    List.of(CONSTRUCTOR_CALL(configuratorClass, List.of(VARIABLE("documentBuilderDispatcher")))))));
+                } else {
+                    if (sqlRelated.contains(data) && configs.sqlFile==null) {
+                        cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data), Constant.getNull()));
+                    } else {
+                        // new ConfiguratorClass()
+                        cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
+                                METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
+                                        List.of(CONSTRUCTOR_CALL(configuratorClass, List.of())))));
+                    }
+                }
+            }
+        }
+        pastClass.CONSTRUCTOR(cspec);
+
+        // Add null getters and null init methods for skipped entries
+        for (String data: dataConfiguratorMap.keySet()) {
+            if (!configs.integrator && (integratorRequired.contains(data) || storageRequired.contains(data))) {
+                pastClass.METHOD(createNullGetter(data, pastDataTypeMap.get(data)));
+                if (storageRequired.contains(data)) {
+                    pastClass.METHOD(createNullInit(data));
+                }
+            } else if (configs.sqlFile==null && storageRequired.contains(data)) {
+                pastClass.METHODS(
+                        createNullGetter(data, pastDataTypeMap.get(data)),
+                        createNullInit(data));
+            }
+        }
+
+        // Add storage-required init methods and null-guard getters
+        for (String data: dataConfiguratorMap.keySet()) {
+            if (!configs.integrator && (integratorRequired.contains(data) || storageRequired.contains(data))) {
+                continue;
+            }
+            if (configs.sqlFile==null && storageRequired.contains(data)) {
+                continue;
+            }
+            if (storageRequired.contains(data)) {
+                String configurator = dataConfiguratorMap.get(data);
+                ClassName loggerClass =
+                        ClassName.get(Constants.LOGGER, locations.getFilePackage(configs.name, Constants.LOGGER));
+                ClassName configuratorClass =
+                        ClassName.get(configurator, locations.getFilePackage(configs.name, configurator));
+                String initMethodName = ("compositeEnactorConverter".equals(data)) ? "initializeCompositeBeanTable" : INITIALIZE_BEAN_TABLE;
+
+                pastClass.METHODS(
+
+                        METHOD("init" + capitalizeFirstLetter(data))
+                                .MODIFIERS(Modifier.PUBLIC)
+                                .commentFileLocation()
+                                .RETURNS(VOID)
+                                .PARAMETER(FUNCTION_STRING_RESULTSET, QUERIER_VAR)
+                                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, POST_PROCESSING_VAR)
+                                .PARAMETER(SUPPLIER_OF_STRING, GET_PRINCIPAL_VAR)
+                                .BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
+                                        METHOD_CALL(loggerClass, initMethodName,
+                                                List.of(CONSTRUCTOR_CALL(configuratorClass,
+                                                        List.of(VARIABLE(QUERIER_VAR), VARIABLE(POST_PROCESSING_VAR), VARIABLE(GET_PRINCIPAL_VAR))))))),
+
+                        createGetter(configs, data, pastDataTypeMap.get(data)));
+            }
+        }
+
+        // Add the process method
+        pastClass.METHOD(processMethodGenerator());
 
 
-        // construct MethodSpec for
-            /* static public Map<String, List<String>> process(Builder builder) {
-        Map<Integer, int[]>  successors = builder.getSuccessors();
-        String [] order = builder.getPropertyOrder();
-        return successors
-                .keySet()
-                .stream()
-                .filter(k -> successors.get(k).length!=0)
-                .collect(Collectors.toMap(
-                        k -> order[k],
-                        k -> Arrays
-                                .stream(successors.get(k))
-                                .mapToObj(v -> order[v])
-                                .collect(Collectors.toList())));
-                                */
+        Supplier<Boolean> pythonGenerator=() -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, configs.root_package, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
 
-        MethodSpec.Builder processSpec = MethodSpec.methodBuilder("process")
-                .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
-                .returns(mapString2StringList)
-                .addParameter(ClassName.get(CLIENT_PACKAGE, BUILDER_INTERFACE), "builder");
-        compilerUtil.specWithComment(processSpec);
-        processSpec.addStatement("""
-                Map<Integer, int[]>  successors = builder.getSuccessors();
-                $T order = builder.getPropertyOrder();
-                return successors
-                        .keySet()
-                        .stream()
-                        .filter(k -> successors.get(k).length!=0)
-                        .collect($T.toMap(
-                                  k -> order[k],
-                                  k -> $T
-                                        .stream(successors.get(k))
-                                        .mapToObj(v -> order[v])
-                                        .collect($T.toList())))""",
-                stringArray, Collectors.class, Arrays.class, Collectors.class);
+        return new SpecificationFile(javaGenerator,pythonGenerator);
 
-        builder.addMethod(processSpec.build());
-
+        /*
+        // Emit PAST class to TypeSpec.Builder
+        TypeSpec.Builder builder = new Poet().emitBuilder(pastClass);
 
         TypeSpec theCatalogueDispatcher=builder.build();
 
         JavaFile myfile = compilerUtil.specWithComment(theCatalogueDispatcher, configs, configs.root_package, stackTraceElement);
 
         return new SpecificationFile(myfile, directory, fileName, configs.root_package);
+        */
+
     }
 
-    private MethodSpec.Builder createGetterBuilder(TemplatesProjectConfiguration configs, String data, TypeName typeName) {
-        MethodSpec.Builder getterSpec = MethodSpec.methodBuilder("get" + capitalizeFirstLetter(data))
-                .returns(typeName)
-                .addModifiers(Modifier.PUBLIC);
-        compilerUtil.specWithComment(getterSpec);
+    private Method createGetter(TemplatesProjectConfiguration configs, String data, org.openprovenance.prov.template.compiler.past.type.TypeName typeName) {
+        Method getterSpec = METHOD("get" + capitalizeFirstLetter(data))
+                .MODIFIERS(Modifier.PUBLIC)
+                .commentFileLocation()
+                .RETURNS(typeName);
         if (storageRequired.contains(data)) {
-            getterSpec.addStatement("if ($N==null) throw new $T(\"non initialized field $N\")", data, IllegalStateException.class, data);
+            getterSpec.BODY(
+                    IF(BINARY_OP(VARIABLE(data), "==", Constant.getNull()))
+                    .THEN(THROW(
+                            CONSTRUCTOR_CALL(ILLEGAL_STATE_EXCEPTION,
+                                    List.of(CONSTANT("non initialized field " + data))))));
         }
         if (configs.sqlFile==null && storageRequired.contains(data)) {
-            getterSpec.addStatement("return null", data);
+            getterSpec.BODY(RETURN(Constant.getNull()));
         } else {
-            getterSpec.addStatement("return $N", data);
+            getterSpec.BODY(RETURN(VARIABLE(data)));
         }
         return getterSpec;
     }
 
-    private MethodSpec.Builder createNullGetterBuilder(String data, TypeName typeName) {
-        MethodSpec.Builder getterSpec = MethodSpec.methodBuilder("get" + capitalizeFirstLetter(data))
-                .returns(typeName)
-                .addModifiers(Modifier.PUBLIC);
-        compilerUtil.specWithComment(getterSpec);
-        getterSpec.addStatement("return null", data);
-        return getterSpec;
+    private Method createNullGetter(String data, org.openprovenance.prov.template.compiler.past.type.TypeName typeName) {
+        return METHOD("get" + capitalizeFirstLetter(data))
+                .MODIFIERS(Modifier.PUBLIC)
+                .commentFileLocation()
+                .RETURNS(typeName)
+                .BODY(RETURN(Constant.getNull()));
+    }
+
+    private Method createNullInit(String data) {
+        return METHOD("init" + capitalizeFirstLetter(data))
+                .MODIFIERS(Modifier.PUBLIC)
+                .commentFileLocation()
+                .RETURNS(VOID)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, QUERIER_VAR)
+                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, POST_PROCESSING_VAR)
+                .PARAMETER(SUPPLIER_OF_STRING, GET_PRINCIPAL_VAR)
+                .COMMENT(true, "null sqlFile or false integrator flag");
     }
 
 
-    private MethodSpec.Builder createNullInitBuilder(String data) {
-        MethodSpec.Builder initSpec = MethodSpec.methodBuilder("init" + capitalizeFirstLetter(data))
-                .returns(void.class)
-                .addModifiers(Modifier.PUBLIC);
-        compilerUtil.specWithComment(initSpec);
-        initSpec.addComment("null sqlFile or false integrator flag");
-        initSpec.addParameter(FunctionStringResultSet, QUERIER_VAR);
-        initSpec.addParameter(BiFunctionIntegerStringObject, POST_PROCESSING_VAR);
-        initSpec.addParameter(SupplierOfString, GET_PRINCIPAL_VAR);
-        initSpec.addStatement("return");
-        return initSpec;
+    private Method processMethodGenerator() {
+        // Map<Integer, int[]> successors = builder.getSuccessors();
+        // String[] order = builder.getPropertyOrder();
+        // Map<String, List<String>> map = new HashMap<>();
+        // for (Integer k : successors.keySet()) {
+        //     if (successors.get(k).length != 0) {
+        //         List<String> list = new ArrayList<>();
+        //         for (int v : successors.get(k)) {
+        //             String s = order[v];
+        //             list.add(s);
+        //         }
+        //         if (map.put(order[k], list) != null) {
+        //             throw new IllegalStateException("Duplicate key");
+        //         }
+        //     }
+        // }
+        // return map;
+
+        return METHOD("process")
+                .MODIFIERS(Modifier.STATIC, Modifier.PUBLIC)
+                .commentFileLocation()
+                .RETURNS(MAP_STRING_LIST_STRING)
+                .PARAMETER(ClassName.BUILDER_INTERFACE, "builder")
+                .BODY(
+                        // Map<Integer, int[]> successors = builder.getSuccessors();
+                        DEFINITION(MAP_INTEGER_INTARRAY, VARIABLE("successors"),
+                                METHOD_CALL(VARIABLE("builder"), "getSuccessors", List.of())),
+
+                        // String[] order = builder.getPropertyOrder();
+                        DEFINITION(STRING_ARRAY, VARIABLE("order"),
+                                METHOD_CALL(VARIABLE("builder"), "getPropertyOrder", List.of())),
+
+                        // Map<String, List<String>> map = new HashMap<>();
+                        DEFINITION(MAP_STRING_LIST_STRING, VARIABLE("map"),
+                                CONSTRUCTOR_CALL(HASH_MAP_GENERICS, List.of())),
+
+                        // for (Integer k : successors.keySet()) { ... }
+                        ITERATOR(PARAMETER("k", INTEGER),
+                                METHOD_CALL(VARIABLE("successors"), "keySet", List.of()))
+                                .BODY(
+                                        // if (successors.get(k).length != 0) { ... }
+                                        IF(BINARY_OP(
+                                                METHOD_CALL(METHOD_CALL(VARIABLE("successors"), "get", List.of(VARIABLE("k"))), "length"),
+                                                "!=",
+                                                CONSTANT(0)))
+                                        .THEN(
+                                                // List<String> list = new ArrayList<>();
+                                                DEFINITION(LIST_OF_STRING, VARIABLE("list"),
+                                                        CONSTRUCTOR_CALL(ARRAY_LIST_GENERICS, List.of())),
+
+                                                // for (int v : successors.get(k)) { ... }
+                                                ITERATOR(PARAMETER("v", _int),
+                                                        METHOD_CALL(VARIABLE("successors"), "get", List.of(VARIABLE("k"))))
+                                                        .BODY(
+                                                                // String s = order[v];
+                                                                DEFINITION(STRING, VARIABLE("s"),
+                                                                        ARRAY_ACCESSOR(VARIABLE("order"), VARIABLE("v"))),
+                                                                // list.add(s);
+                                                                METHOD_CALL(VARIABLE("list"), "add", VARIABLE("s"))
+                                                        ),
+
+                                                // if (map.put(order[k], list) != null) { throw ... }
+                                                IF(BINARY_OP(
+                                                        METHOD_CALL(VARIABLE("map"), "put", List.of(
+                                                                ARRAY_ACCESSOR(VARIABLE("order"), VARIABLE("k")),
+                                                                VARIABLE("list"))),
+                                                        "!=",
+                                                        Constant.getNull()))
+                                                .THEN(
+                                                        THROW(
+                                                                CONSTRUCTOR_CALL(ILLEGAL_STATE_EXCEPTION,
+                                                                        List.of(CONSTANT("Duplicate key"))))
+                                                )
+                                        )
+                                ),
+
+                        // return map;
+                        RETURN(VARIABLE("map"))
+                );
     }
 
 
@@ -315,8 +443,8 @@ public class CompilerCatalogueDispatcher {
         return s.substring(0,1).toUpperCase()+s.substring(1);
     }
 
-    static private TypeName mapOf(TypeName t) {
-        return ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), t);
+    static private com.squareup.javapoet.TypeName poetMapOf(com.squareup.javapoet.TypeName t) {
+        return ParameterizedTypeName.get(com.squareup.javapoet.ClassName.get(Map.class), com.squareup.javapoet.ClassName.get(String.class), t);
     }
 
 }

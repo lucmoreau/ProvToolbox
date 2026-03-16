@@ -29,6 +29,8 @@ public class TemplateBindingsSchema {
     private String template;
     @JsonProperty("@documentation")
     private String documentation;
+    @JsonProperty("@return")
+    private String returnValue;
 
     @JsonProperty("var")
     public Map<String, List<Descriptor>> getVar() {
@@ -68,6 +70,16 @@ public class TemplateBindingsSchema {
     @JsonProperty("@documentation")
     public void setDocumentation(String documentation) {
         this.documentation = documentation;
+    }
+
+    @JsonProperty("@return")
+    public String getReturnValue() {
+        return returnValue;
+    }
+
+    @JsonProperty("@return")
+    public void setReturnValue(String returnValue) {
+        this.returnValue = returnValue;
     }
 
     @Override

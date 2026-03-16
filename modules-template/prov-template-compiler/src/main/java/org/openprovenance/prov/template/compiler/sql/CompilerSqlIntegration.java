@@ -1,1654 +1,1138 @@
 package org.openprovenance.prov.template.compiler.sql;
 
-import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
-import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
+import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 
 import javax.lang.model.element.Modifier;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.List;
+import java.util.function.Supplier;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Constant.getNull;
+import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.SuperConstructorCall.SUPER_CALL;
+import static org.openprovenance.prov.template.compiler.past.ThrowStatement.THROW;
+import static org.openprovenance.prov.template.compiler.past.TryCatch.TRY_CATCH;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 public class CompilerSqlIntegration {
     private final CompilerUtil compilerUtil;
-    static final ParameterizedTypeName SupplierOfString= ParameterizedTypeName.get(ClassName.get(java.util.function.Supplier.class), ClassName.get(String.class));
+
+
+    private final PastFactory pastFactory = new PastFactory();
 
     public CompilerSqlIntegration(ProvFactory pFactory) {
         this.compilerUtil = new CompilerUtil(pFactory);
     }
 
+    /** Helper to build the anonymous Getter class with try/catch wrapping rs.getObject(col,cl). */
+    private Class buildGetterAnonymousClass(TemplatesProjectConfiguration configs, Locations locations) {
+        return pastFactory
+                .CLASS(null, Class.ClassKind.ANONYMOUS)
+                .INTERFACES(ClassName.get(Constants.GETTER, locations.getFilePackage(configs.name, Constants.GETTER)))
+                .METHOD(
+                        METHOD("get")
+                                .MODIFIERS(Modifier.PUBLIC)
+                                .PARAMETER(CLASS_T, "cl")
+                                .PARAMETER(STRING, "col")
+                                .RETURNS(TypeVariable.T())
+                                .addTypeVariables(TypeVariable.T())
+                                .BODY(
+                                        TRY_CATCH(SQL_EXCEPTION, "e")
+                                                .TRY(
+                                                        RETURN(METHOD_CALL(VARIABLE("rs"), "getObject", List.of(VARIABLE("col"), VARIABLE("cl"))))
+                                                )
+                                                .CATCH(
+                                                        METHOD_CALL(VARIABLE("e"), "printStackTrace", List.of()),
+                                                        THROW(CONSTRUCTOR_CALL(RUNTIME_EXCEPTION, List.of(VARIABLE("e"))))
+                                                )
+                                )
+                );
+    }
+
+    /** Helper for try { return rs.next(); } catch (SQLException e) { throw new RuntimeException(e); } */
+    private TryCatch buildNextTryCatch() {
+        return TRY_CATCH(SQL_EXCEPTION, "e")
+                .TRY(
+                        RETURN(METHOD_CALL(VARIABLE("rs"), "next", List.of()))
+                )
+                .CATCH(
+                        THROW(CONSTRUCTOR_CALL(RUNTIME_EXCEPTION, List.of(VARIABLE("e"))))
+                );
+    }
+
+    /** Helper for the generic_enact try/catch body used in EnactorImplementation and IntegratorEnactorImplementation. */
+    private TryCatch buildGenericEnactTryCatch(String returnVar) {
+        return TRY_CATCH(SQL_EXCEPTION, "e")
+                .TRY(
+                        ASSIGNMENT(VARIABLE("rs"), METHOD_CALL(VARIABLE("querier"), "apply", List.of(VARIABLE("statement")))),
+                        IF(BINARY_OP(METHOD_CALL(VARIABLE("rs"), "next", List.of()), "==", CONSTANT(false)))
+                                .THEN(
+                                        METHOD_CALL(VARIABLE("rs"), "close", List.of()),
+                                        THROW(CONSTRUCTOR_CALL(SQL_EXCEPTION, List.of(CONSTANT("Single row result was expected but result set is empty "))))
+                                ),
+                        METHOD_CALL(VARIABLE("completeBean"), "accept", List.of(VARIABLE("rs"), VARIABLE(returnVar))),
+                        IF(METHOD_CALL(VARIABLE("rs"), "next", List.of()))
+                                .THEN(
+                                        METHOD_CALL(VARIABLE("rs"), "close", List.of()),
+                                        THROW(CONSTRUCTOR_CALL(SQL_EXCEPTION, List.of(CONSTANT("Single row result was expected for query "))))
+                                )
+                                .ELSE(
+                                        METHOD_CALL(VARIABLE("rs"), "close", List.of())
+                                )
+                )
+                .CATCH(
+                        METHOD_CALL(VARIABLE("e"), "printStackTrace", List.of()),
+                        THROW(CONSTRUCTOR_CALL(UNCHECKED_EXCEPTION, List.of(
+                                BINARY_OP(CONSTANT("Issue in enactment "), "+", VARIABLE("statement")),
+                                VARIABLE("e"))))
+                );
+    }
+
+
     public SpecificationFile generateSqlIntegration_BeanCompleter(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        /* class with following code
-        import org.openprovenance.prov.template.library.plead.client.common.BeanCompleter;
+        ClassName superclass = ClassName.get(Constants.BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER));
 
-            import java.sql.ResultSet;
-            import java.sql.SQLException;
+        Constructor constructor = CONSTRUCTOR()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(RESULT_SET, "rs")
+                .BODY(
+                        SUPER_CALL(CONSTRUCTOR_CALL(buildGetterAnonymousClass(configs, locations), List.of()))
+                );
 
-            public class SqlBeanCompleter extends BeanCompleter {
+        Class pastClass = pastFactory.CLASS(Constants.SQL_BEAN_COMPLETER)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor);
 
-                public SqlBeanCompleter(ResultSet rs) {
-                    super(new Getter() {
-                        @Override
-                        public <T> T get(Class<T> cl, String col) {
-                            try {
-                                return rs.getObject(col,cl);
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    });
-                }
-            }
-
-         */
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_BEAN_COMPLETER);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER), Constants.BEAN_COMPLETER));
-
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ResultSet.class, "rs");
-
-        constructor.addStatement("super(new Getter() {\n" +
-                "            @Override\n" +
-                "            public <T> T get(Class<T> cl, String col) {\n" +
-                "                try {\n" +
-                "                    return rs.getObject(col,cl);\n" +
-                "                } catch ($T e) {\n" +
-                "                    e.printStackTrace();\n" +
-                "                    throw new RuntimeException(e);\n" +
-                "                }\n" +
-                "            }\n" +
-                "        })", SQLException.class);
-
-        builder.addMethod(constructor.build());
-
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
-
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeBeanCompleter(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        /* class with following code
-              class SqlCompositeBeanCompleter extends org.openprovenance.prov.template.library.plead.sql.SqlBeanCompleter {
+        ClassName superclass = ClassName.get(Constants.SQL_BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPLETER));
 
-            private final ResultSet rs;
+        Constructor constructor = CONSTRUCTOR()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(RESULT_SET, "rs")
+                .BODY(
+                        SUPER_CALL(VARIABLE("rs")),
+                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), "rs"), VARIABLE("rs"))
+                );
 
-            public SqlCompositeBeanCompleter(ResultSet rs) {
-                super(rs);
-                this.rs=rs;
-            }
+        Method nextMethod = METHOD("next")
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(_bool)
+                .BODY(buildNextTryCatch());
 
-            @Override
-            public boolean next() {
-                try {
-                    return rs.next();  // ResultSet next() has already been called in generic_enact
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_BEAN_COMPLETER)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .FIELDS(
+                        FIELD("rs", RESULT_SET).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL)
+                )
+                .CONSTRUCTOR(constructor)
+                .METHOD(nextMethod);
 
-
-
-         */
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_COMPOSITE_BEAN_COMPLETER);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_COMPLETER), Constants.SQL_BEAN_COMPLETER));
-
-        // field
-        FieldSpec.Builder field = FieldSpec.builder(ResultSet.class, "rs", Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field.build());
-
-        // constructor
-
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ResultSet.class, "rs");
-        constructor.addStatement("super(rs)");
-        constructor.addStatement("this.rs=rs");
-        builder.addMethod(constructor.build());
-
-        // method
-        MethodSpec.Builder mspec = MethodSpec.methodBuilder("next")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(boolean.class);
-        mspec.beginControlFlow("try");
-        mspec.addStatement("return rs.next()");
-        mspec.nextControlFlow("catch ($T e)", SQLException.class);
-        mspec.addStatement("throw new RuntimeException(e)");
-        mspec.endControlFlow();
-
-
-        builder.addMethod(mspec.build());
-
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the backend
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
-
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_BeanCompleter3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        /* class with following code
-                    public class SqlBeanCompleter3 extends BeanCompleter2 {
+        ClassName superclass = ClassName.get(Constants.BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
+        ClassName getterType = ClassName.get(Constants.GETTER, locations.getFilePackage(configs.name, Constants.GETTER));
 
-                public SqlBeanCompleter3(ResultSet rs) {
-                    super(newGetter(rs));
-                }
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(RESULT_SET, "rs")
+                .BODY(
+                        SUPER_CALL(METHOD_CALL("newGetter", List.of(VARIABLE("rs"))))
+                );
 
-                public static Getter newGetter(ResultSet rs) {
-                    return new Getter() {
-                        @Override
-                        public <T> T get(Class<T> cl, String col) {
-                            try {
-                                return rs.getObject(col, cl);
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    };
-                }
-            }
-         */
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_BEAN_COMPLETER3);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2));
+        Method staticMethod = METHOD("newGetter")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
+                .RETURNS(getterType)
+                .PARAMETER(RESULT_SET, "rs")
+                .BODY(
+                        RETURN(CONSTRUCTOR_CALL(buildGetterAnonymousClass(configs, locations), List.of()))
+                );
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ResultSet.class, "rs")
-                .addStatement("super(newGetter(rs))");
-        builder.addMethod(constructor.build());
+        Class pastClass = pastFactory.CLASS(Constants.SQL_BEAN_COMPLETER3)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor)
+                .METHOD(staticMethod);
 
-        // static method
-        MethodSpec.Builder staticMethod = MethodSpec.methodBuilder("newGetter")
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2, Constants.GETTER))
-                .addParameter(ResultSet.class, "rs");
-
-
-        staticMethod.addStatement("return new Getter() {\n" +
-                "            @Override\n" +
-                "            public <T> T get(Class<T> cl, String col) {\n" +
-                "                try {\n" +
-                "                    return rs.getObject(col,cl);\n" +
-                "                } catch ($T e) {\n" +
-                "                    e.printStackTrace();\n" +
-                "                    throw new RuntimeException(e);\n" +
-                "                }\n" +
-                "            }\n" +
-                "        }", SQLException.class);
-
-        builder.addMethod(staticMethod.build());
-
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
-
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
+
     public SpecificationFile generateSqlIntegration_BeanCompleter4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        /* class with following code
-                    public class SqlBeanCompleter4 extends SqlBeanCompleter3 {
+        ClassName superclass = ClassName.get(Constants.SQL_BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPLETER3));
 
-                public SqlBeanCompleter4(ResultSet rs) {
-                    super(rs);
-                }
-                public void postEnactmentProcessing(Integer id, String template) {
-                    if (postProcessing != null) {
-                        postProcessing.apply(id, template);
-                    }
-                }
-                }
-            }
-         */
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_BEAN_COMPLETER4);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_COMPLETER3), Constants.SQL_BEAN_COMPLETER3));
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(RESULT_SET, "rs")
+                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
+                .BODY(
+                        SUPER_CALL(VARIABLE("rs")),
+                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), Constants.POST_PROCESSING_VAR), VARIABLE(Constants.POST_PROCESSING_VAR))
+                );
 
-        // field
-        FieldSpec.Builder field = FieldSpec.builder(BIFUN, CompilerCommon.POST_PROCESSING_VAR, Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field.build());
+        Method postMethod = METHOD(Constants.POST_PROCESS_METHOD_NAME)
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(INTEGER, "id")
+                .PARAMETER(STRING, "template")
+                .RETURNS(VOID)
+                .BODY(
+                        IF(BINARY_OP(VARIABLE(Constants.POST_PROCESSING_VAR), "!=", getNull()))
+                                .THEN(
+                                        METHOD_CALL(VARIABLE(Constants.POST_PROCESSING_VAR), "apply", List.of(VARIABLE("id"), VARIABLE("template")))
+                                )
+                );
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR)
-                .addStatement("super(rs)")
-                .addStatement("this.postProcessing=postProcessing");
-        builder.addMethod(constructor.build());
+        Class pastClass = pastFactory.CLASS(Constants.SQL_BEAN_COMPLETER4)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .FIELDS(
+                        FIELD(Constants.POST_PROCESSING_VAR, BIFUNCTION_INTEGER_STRING_OBJECT).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL)
+                )
+                .CONSTRUCTOR(constructor)
+                .METHOD(postMethod);
 
-        // method
-
-        MethodSpec.Builder method = MethodSpec.methodBuilder("postEnactmentProcessing")
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(Integer.class, "id")
-                .addParameter(String.class, "template");
-        method.addStatement("if (postProcessing != null) {\n" +
-                "            postProcessing.apply(id, template);\n" +
-                "        }");
-        builder.addMethod(method.build());
-
-
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
-
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_EnactorImplementation(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        /* class with following code
+        ClassName enactorImpl1 = ClassName.get(ENACTOR_IMPLEMENTATION1, locations.getFilePackage(configs.name, ENACTOR_IMPLEMENTATION1));
+        ParameterizedType paramEnactorImpl1 = ParameterizedType.get(enactorImpl1, RESULT_SET);
 
-            @Override
-            public <T> T generic_enact(T bean,
-                                       Consumer<T> check,
-                                       BiConsumer<StringBuilder, T> composeQuery,
-                                       BiConsumer<ResultSet, T> completeBean) {
-                check.accept(bean);
-                StringBuilder sb = new StringBuilder();
-                composeQuery.accept(sb, bean);
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .BODY(
+                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), "querier"), VARIABLE("querier"))
+                );
 
-                String statement = sb.toString();
-                ResultSet rs;
-                try {
-                    rs = getExecuteQuery(statement);
-                    if (!rs.next()) {
-                        rs.close();
-                        throw new SQLException("Single row result was expected but result set is empty ");
-                    }
-                    completeBean.accept(rs, bean);
-                    if (rs.next()) {
-                        rs.close();
-                        throw new SQLException("Single row result was expected for query ");
-                    } else {
-                        rs.close();
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    throw new UncheckedException("Issue in enactment " + statement, e);
-                }
-                return bean;
-            }
+        // generic_enact method
+        Method genericEnact = METHOD("generic_enact")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .addTypeVariables(TypeVariable.T())
+                .PARAMETER(TypeVariable.T(), "bean")
+                .PARAMETER(ParameterizedType.get(CONSUMER, TypeVariable.T()), "check")
+                .PARAMETER(ParameterizedType.get(BICONSUMER, STRING_BUILDER, TypeVariable.T()), "composeQuery")
+                .PARAMETER(ParameterizedType.get(BICONSUMER, RESULT_SET, TypeVariable.T()), "completeBean")
+                .RETURNS(TypeVariable.T())
+                .BODY(
+                        METHOD_CALL(VARIABLE("check"), "accept", List.of(VARIABLE("bean"))),
+                        DEFINITION(STRING_BUILDER, VARIABLE("sb"), CONSTRUCTOR_CALL(STRING_BUILDER, List.of())),
+                        METHOD_CALL(VARIABLE("composeQuery"), "accept", List.of(VARIABLE("sb"), VARIABLE("bean"))),
+                        DEFINITION(STRING, VARIABLE("statement"), METHOD_CALL(VARIABLE("sb"), "toString", List.of())),
+                        DEFINITION(RESULT_SET, VARIABLE("rs"), getNull()),
+                        buildGenericEnactTryCatch("bean"),
+                        RETURN(VARIABLE("bean"))
+                );
 
-                          @Override
-              public BeanCompleter beanCompleterFactory(ResultSet rs) {
-                return new SqlBeanCompleter(rs);
-              }
+        // beanCompleterFactory method
+        ClassName beanCompleterType = ClassName.get(Constants.BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER));
+        ClassName sqlBeanCompleterType = ClassName.get(Constants.SQL_BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPLETER));
 
-            abstract public ResultSet getExecuteQuery(String statement) throws SQLException;
+        Method beanCompleterFactory = METHOD("beanCompleterFactory")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(beanCompleterType)
+                .PARAMETER(RESULT_SET, "rs")
+                .BODY(
+                        RETURN(CONSTRUCTOR_CALL(sqlBeanCompleterType, List.of(VARIABLE("rs"))))
+                );
 
-                     public static void printResultSet(ResultSet resultSet) {
-                try {
-                    ResultSetMetaData rsmd = resultSet.getMetaData();
-                    int columnsNumber = rsmd.getColumnCount();
-                    do  {  // in generic_enact, we have already done next(), we are on the first record
-                        System.out.print ("Row " + resultSet.getRow() + " ");
-                        for (int i = 1; i <= columnsNumber; i++) {
-                            if (i > 1) System.out.print(",  ");
-                            String columnValue = resultSet.getString(i);
-                            System.out.print(columnValue + " " + rsmd.getColumnName(i));
-                        }
-                        System.out.println("");
-                    } while (resultSet.next());
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        // printResultSet static method
+        Method printResultSet = METHOD("printResultSet")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
+                .PARAMETER(RESULT_SET, "resultSet")
+                .RETURNS(VOID)
+                .BODY(
+                        TRY_CATCH(SQL_EXCEPTION, "e")
+                                .TRY(
+                                        DEFINITION(RESULT_SET_META_DATA, VARIABLE("rsmd"), METHOD_CALL(VARIABLE("resultSet"), "getMetaData", List.of())),
+                                        DEFINITION(_int, VARIABLE("columnsNumber"), METHOD_CALL(VARIABLE("rsmd"), "getColumnCount", List.of())),
+                                        DoLoop.DO()
+                                                .BODY(
+                                                        new Comment("in generic_enact, we have already done next(), we are on the first record"),
+                                                        METHOD_CALL(SYSTEM, "out.print", List.of(
+                                                                BINARY_OP(BINARY_OP(CONSTANT("Row "), "+", METHOD_CALL(VARIABLE("resultSet"), "getRow", List.of())), "+", CONSTANT(" "))
+                                                        )),
+                                                        new ForLoop(
+                                                                new Definition(_int, new Variable("i"), CONSTANT(1)),
+                                                                BINARY_OP(VARIABLE("i"), "<=", VARIABLE("columnsNumber")),
+                                                                new Assignment(VARIABLE("i"), new PostIncrement(VARIABLE("i"), 1)),
+                                                                null
+                                                        ).BODY(
+                                                                IF(BINARY_OP(VARIABLE("i"), ">", CONSTANT(1)))
+                                                                        .THEN(
+                                                                                METHOD_CALL(SYSTEM, "out.print", List.of(CONSTANT(",  ")))
+                                                                        ),
+                                                                DEFINITION(STRING, VARIABLE("columnValue"), METHOD_CALL(VARIABLE("resultSet"), "getString", List.of(VARIABLE("i")))),
+                                                                METHOD_CALL(SYSTEM, "out.print", List.of(
+                                                                        BINARY_OP(BINARY_OP(VARIABLE("columnValue"), "+", CONSTANT(" ")), "+", METHOD_CALL(VARIABLE("rsmd"), "getColumnName", List.of(VARIABLE("i"))))
+                                                                ))
+                                                        ),
+                                                        METHOD_CALL(SYSTEM, "out.println", List.of(CONSTANT("")))
+                                                )
+                                                .WHILE(METHOD_CALL(VARIABLE("resultSet"), "next", List.of()))
+                                )
+                                .CATCH(
+                                        THROW(CONSTRUCTOR_CALL(RUNTIME_EXCEPTION, List.of(VARIABLE("e"))))
+                                )
+                );
 
-         */
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_ENACTOR_IMPLEMENTATION);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR), Constants.BEAN_ENACTOR, "EnactorImplementation"), TypeName.get(ResultSet.class)));
+        Class pastClass = pastFactory.CLASS(Constants.SQL_ENACTOR_IMPLEMENTATION)
+                .MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(paramEnactorImpl1)
+                .FIELDS(
+                        FIELD("querier", FUNCTION_STRING_RESULTSET).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL)
+                )
+                .CONSTRUCTOR(constructor)
+                .METHOD(genericEnact)
+                .METHOD(beanCompleterFactory)
+                .METHOD(printResultSet);
 
-        ParameterizedTypeName querierType = ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class));
-        // fields
-        FieldSpec.Builder field1 = FieldSpec.builder(querierType, "querier", Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field1.build());
-
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(querierType, "querier");
-        constructor.addStatement("this.querier=querier");
-        builder.addMethod(constructor.build());
-
-        /*
-        // fields
-        FieldSpec.Builder field1 = FieldSpec.builder(Storage.class, "storage", Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field1.build());
-
-        FieldSpec.Builder field2 = FieldSpec.builder(Connection.class, "conn", Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field2.build());
-
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(Storage.class, "storage")
-                .addParameter(Connection.class, "conn");
-
-        constructor.addStatement("this.storage=storage");
-        constructor.addStatement("this.conn=conn");
-        builder.addMethod(constructor.build());
-         */
-
-        // method
-        MethodSpec.Builder mspec = MethodSpec.methodBuilder("generic_enact")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .addTypeVariable(TypeVariableName.get("T"))
-                .addParameter(TypeVariableName.get("T"), "bean")
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), TypeVariableName.get("T")), "check")
-                .addParameter(ParameterizedTypeName.get(ClassName.get(BiConsumer.class), ClassName.get(StringBuilder.class), TypeVariableName.get("T")), "composeQuery")
-                .addParameter(ParameterizedTypeName.get(ClassName.get(BiConsumer.class), TypeName.get(ResultSet.class), TypeVariableName.get("T")), "completeBean")
-                .returns(TypeVariableName.get("T"));
-
-        mspec.addStatement("check.accept(bean)");
-        mspec.addStatement("$T sb = new $T()", StringBuilder.class, StringBuilder.class);
-        mspec.addStatement("composeQuery.accept(sb, bean)");
-        mspec.addStatement("String statement = sb.toString()");
-        mspec.addStatement("$T rs", ResultSet.class);
-        mspec.beginControlFlow("try");
-        mspec.addStatement("rs = querier.apply(statement)");
-        mspec.beginControlFlow("if (!rs.next())");
-        mspec.addStatement("rs.close()");
-        mspec.addStatement("throw new $T(\"Single row result was expected but result set is empty \")", SQLException.class);
-        mspec.endControlFlow();
-        mspec.addStatement("completeBean.accept(rs, bean)");
-        mspec.beginControlFlow("if (rs.next())");
-        mspec.addStatement("rs.close()");
-        mspec.addStatement("throw new $T(\"Single row result was expected for query \")", SQLException.class);
-        mspec.nextControlFlow("else");
-        mspec.addStatement("rs.close()");
-        mspec.endControlFlow();
-        mspec.nextControlFlow("catch ($T e)", SQLException.class);
-        mspec.addStatement("e.printStackTrace()");
-        mspec.addStatement("throw new $T(\"Issue in enactment \" + statement, e)", UncheckedException.class);
-        mspec.endControlFlow();
-        mspec.addStatement("return bean");
-
-        builder.addMethod(mspec.build());
-
-        // method
-        MethodSpec.Builder method = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER), Constants.BEAN_COMPLETER))
-                .addParameter(ResultSet.class, "rs");
-
-        method.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_COMPLETER), Constants.SQL_BEAN_COMPLETER));
-        builder.addMethod(method.build());
-
-
-
-        /*
-        // abstract method
-        MethodSpec.Builder abstractMethod = MethodSpec.methodBuilder("executeQuery")
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(ResultSet.class)
-                .addException(SQLException.class)
-                .addParameter(String.class, "statement");
-
-        builder.addMethod(abstractMethod.build());
-
-         */
-
-        // static method
-        MethodSpec.Builder staticMethod = MethodSpec.methodBuilder("printResultSet")
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .addParameter(ResultSet.class, "resultSet");
-
-        staticMethod.beginControlFlow("try");
-        staticMethod.addStatement("$T rsmd = resultSet.getMetaData()", ResultSetMetaData.class);
-        staticMethod.addStatement("int columnsNumber = rsmd.getColumnCount()");
-        staticMethod.beginControlFlow("do");
-        staticMethod.addStatement("// in generic_enact, we have already done next(), we are on the first record");
-        staticMethod.addStatement("System.out.print (\"Row \" + resultSet.getRow() + \" \")");
-        staticMethod.beginControlFlow("for (int i = 1; i <= columnsNumber; i++)");
-        staticMethod.beginControlFlow("if (i > 1)");
-        staticMethod.addStatement("System.out.print(\",  \")");
-        staticMethod.endControlFlow();
-        staticMethod.addStatement("String columnValue = resultSet.getString(i)");
-        staticMethod.addStatement("System.out.print(columnValue + \" \" + rsmd.getColumnName(i))");
-        staticMethod.endControlFlow();
-        staticMethod.addStatement("System.out.println(\"\")");
-        staticMethod.endControlFlow("while (resultSet.next())");
-        staticMethod.nextControlFlow("catch ($T e)", SQLException.class);
-        staticMethod.addStatement("throw new $T(e)", RuntimeException.class);
-        staticMethod.endControlFlow();
-
-
-        builder.addMethod(staticMethod.build());
-
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
-
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_IntegratorEnactorImplementation(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        /* class with following code
+        ClassName enactorImpl = ClassName.get(ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.ENACTOR_IMPLEMENTATION));
+        ParameterizedType paramEnactorImpl = ParameterizedType.get(enactorImpl, RESULT_SET);
 
-             @Override
-    public <IN, OUT> OUT generic_enact(OUT output,
-                                       IN bean,
-                                       Consumer<IN> check,
-                                       BiConsumer<StringBuilder, IN> composeQuery,
-                                       BiConsumer<ResultSet, OUT> completeBean) {
-        check.accept(bean);
-        StringBuilder sb = new StringBuilder();
-        composeQuery.accept(sb, bean);
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .BODY(
+                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), "querier"), VARIABLE("querier"))
+                );
 
-        String statement = sb.toString();
-        System.out.println("statement = " + statement);
-        ResultSet rs;
-        try {
-            rs = executeQuery(statement);
-            if (!rs.next()) {
-                rs.close();
-                throw new SQLException("Single row result was expected but result set is empty ");
-            }
-            completeBean.accept(rs,output);
-            if (rs.next()) {
-                rs.close();
-                throw new SQLException("Single row result was expected for query ");
-            } else {
-                rs.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new UncheckedException("Issue in enactment " + statement, e);
-        }
-        return output;
-    }
-                          @Override
-              public BeanCompleter2 beanCompleterFactory(ResultSet rs) {
-                return new SqlBeanCompleter3(rs);
-              }
-                              @Override
-                public BeanCompleter2 beanCompleterFactory(ResultSet rs, Object [] extra) {
-                    return new  SqlBeanCompleter3(rs);
-                }
+        // generic_enact method with IN, OUT type variables
+        Method genericEnact = METHOD("generic_enact")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .addTypeVariables(TYPE_IN)
+                .addTypeVariables(TYPE_OUT)
+                .PARAMETER(TYPE_OUT, "output")
+                .PARAMETER(TYPE_IN, "bean")
+                .PARAMETER(CONSUMER_OF_IN, "check")
+                .PARAMETER(BICONSUMER_STRINGBUILDER_TYPEIN, "composeQuery")
+                .PARAMETER(ParameterizedType.get(BICONSUMER, RESULT_SET, TYPE_OUT), "completeBean")
+                .RETURNS(TYPE_OUT)
+                .BODY(
+                        METHOD_CALL(VARIABLE("check"), "accept", List.of(VARIABLE("bean"))),
+                        DEFINITION(STRING_BUILDER, VARIABLE("sb"), CONSTRUCTOR_CALL(STRING_BUILDER, List.of())),
+                        METHOD_CALL(VARIABLE("composeQuery"), "accept", List.of(VARIABLE("sb"), VARIABLE("bean"))),
+                        DEFINITION(STRING, VARIABLE("statement"), METHOD_CALL(VARIABLE("sb"), "toString", List.of())),
+                        DEFINITION(RESULT_SET, VARIABLE("rs"), getNull()),
+                        buildGenericEnactTryCatch("output"),
+                        RETURN(VARIABLE("output"))
+                );
 
+        // beanCompleterFactory methods
+        ClassName beanCompleter2Type = ClassName.get(Constants.BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
+        ClassName sqlBeanCompleter3Type = ClassName.get(Constants.SQL_BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPLETER3));
 
+        Method beanCompleterFactory = METHOD("beanCompleterFactory")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(beanCompleter2Type)
+                .PARAMETER(RESULT_SET, "rs")
+                .BODY(
+                        RETURN(CONSTRUCTOR_CALL(sqlBeanCompleter3Type, List.of(VARIABLE("rs"))))
+                );
 
-         */
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_ENACTOR_IMPLEMENTATION3);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR2), Constants.BEAN_ENACTOR2, "EnactorImplementation"), TypeName.get(ResultSet.class)));
+        Method beanCompleterFactory2 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(beanCompleter2Type)
+                .PARAMETER(RESULT_SET, "rs")
+                .PARAMETER(INTEGER_ARRAY, "extra")
+                .BODY(
+                        RETURN(CONSTRUCTOR_CALL(sqlBeanCompleter3Type, List.of(VARIABLE("rs"))))
+                );
 
-        ParameterizedTypeName querierType = ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class));
-        // fields
-        FieldSpec.Builder field1 = FieldSpec.builder(querierType, "querier", Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field1.build());
+        Class pastClass = pastFactory.CLASS(Constants.SQL_ENACTOR_IMPLEMENTATION3)
+                .MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(paramEnactorImpl)
+                .FIELDS(
+                        FIELD("querier", FUNCTION_STRING_RESULTSET).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL)
+                )
+                .CONSTRUCTOR(constructor)
+                .METHOD(genericEnact)
+                .METHOD(beanCompleterFactory)
+                .METHOD(beanCompleterFactory2);
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(querierType, "querier");
-        constructor.addStatement("this.querier=querier");
-        builder.addMethod(constructor.build());
-
-        /*
-        // fields
-        FieldSpec.Builder field1 = FieldSpec.builder(Storage.class, "storage", Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field1.build());
-
-        FieldSpec.Builder field2 = FieldSpec.builder(Connection.class, "conn", Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field2.build());
-
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(Storage.class, "storage")
-                .addParameter(Connection.class, "conn");
-
-        constructor.addStatement("this.storage=storage");
-        constructor.addStatement("this.conn=conn");
-        builder.addMethod(constructor.build());
-         */
-
-        // method
-        MethodSpec.Builder mspec = MethodSpec.methodBuilder("generic_enact")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .addTypeVariable(TypeVariableName.get("IN"))
-                .addTypeVariable(TypeVariableName.get("OUT"))
-                .addParameter(TypeVariableName.get("OUT"), "output")
-                .addParameter(TypeVariableName.get("IN"), "bean")
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), TypeVariableName.get("IN")), "check")
-                .addParameter(ParameterizedTypeName.get(ClassName.get(BiConsumer.class), ClassName.get(StringBuilder.class), TypeVariableName.get("IN")), "composeQuery")
-                .addParameter(ParameterizedTypeName.get(ClassName.get(BiConsumer.class), TypeName.get(ResultSet.class), TypeVariableName.get("OUT")), "completeBean")
-                .returns(TypeVariableName.get("OUT"));
-
-
-        mspec.addStatement("check.accept(bean)");
-        mspec.addStatement("$T sb = new $T()", StringBuilder.class, StringBuilder.class);
-        mspec.addStatement("composeQuery.accept(sb, bean)");
-        mspec.addStatement("String statement = sb.toString()");
-        if(false) mspec.addStatement("System.out.println(\"statement = \" + statement)");
-        mspec.addStatement("$T rs", ResultSet.class);
-        mspec.beginControlFlow("try");
-        mspec.addStatement("rs = querier.apply(statement)");
-        mspec.beginControlFlow("if (!rs.next())");
-        mspec.addStatement("rs.close()");
-        mspec.addStatement("throw new $T(\"Single row result was expected but result set is empty \")", SQLException.class);
-        mspec.endControlFlow();
-        mspec.addStatement("completeBean.accept(rs, output)");
-        if(false) mspec.addStatement(" try {\n" +
-                "            System.out.println(\"found =>\" + new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(output));\n" +
-                "        } catch (Exception e) {\n" +
-                "            throw new RuntimeException(e);\n" +
-                "        }");
-
-        mspec.beginControlFlow("if (rs.next())");
-        if (false) mspec.addStatement("  java.sql.ResultSetMetaData rsmd = rs.getMetaData();\n" +
-                "        int columnsNumber = rsmd.getColumnCount();\n" +
-                "        StringBuilder sb2=new StringBuilder();\n" +
-                "        for (int i = 1; i <= columnsNumber; i++) {\n" +
-                "            if (i > 1) sb2.append(\",  \");\n" +
-                "            String columnValue = rs.getString(i);\n" +
-                "            sb2.append(columnValue).append(\" \").append(rsmd.getColumnName(i));\n" +
-                "        }\n" +
-                "        System.out.println(\"found =>\" + sb2.toString());");
-        mspec.addStatement("rs.close()");
-
-        mspec.addStatement("throw new $T(\"Single row result was expected for query \")", SQLException.class);
-        mspec.nextControlFlow("else");
-        mspec.addStatement("rs.close()");
-        mspec.endControlFlow();
-        mspec.nextControlFlow("catch ($T e)", SQLException.class);
-        mspec.addStatement("e.printStackTrace()");
-        mspec.addStatement("throw new $T(\"Issue in enactment \" + statement, e)", UncheckedException.class);
-        mspec.endControlFlow();
-        mspec.addStatement("return output");
-
-        builder.addMethod(mspec.build());
-
-
-        // method
-        MethodSpec.Builder method = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs");
-
-        method.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_COMPLETER3), Constants.SQL_BEAN_COMPLETER3));
-        builder.addMethod(method.build());
-
-        MethodSpec.Builder method2 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra");
-
-        method2.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_COMPLETER3), Constants.SQL_BEAN_COMPLETER3));
-        builder.addMethod(method2.build());
-
-        /*
-        MethodSpec.Builder method3 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra")
-                .addParameter(BIFUN, "postProcessing");
-
-        method3.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(Constants.SQL_BEAN_COMPLETER3), Constants.SQL_BEAN_COMPLETER3));
-        builder.addMethod(method3.build());
-
-        MethodSpec.Builder method4 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(BIFUN, "postProcessing");
-
-        method4.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_COMPLETER3), Constants.SQL_BEAN_COMPLETER3));
-        builder.addMethod(method4.build());
-         */
-
-
-
-        /*
-        // abstract method
-        MethodSpec.Builder abstractMethod = MethodSpec.methodBuilder("executeQuery")
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(ResultSet.class)
-                .addException(SQLException.class)
-                .addParameter(String.class, "statement");
-
-        builder.addMethod(abstractMethod.build());
-
-         */
-
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
-
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_IntegratorEnactorImplementation4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
+        ClassName superclass = ClassName.get(Constants.SQL_ENACTOR_IMPLEMENTATION3, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_IMPLEMENTATION3));
+        ClassName enactorImpl = ClassName.get(ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.ENACTOR_IMPLEMENTATION));
+        ParameterizedType paramEnactorImpl = ParameterizedType.get(enactorImpl, RESULT_SET);
+        ClassName enactorImpl4 = ClassName.get(ENACTOR_IMPLEMENTATION4, locations.getFilePackage(configs.name, Constants.ENACTOR_IMPLEMENTATION4));
+        ParameterizedType paramEnactorImpl4 = ParameterizedType.get(enactorImpl4, RESULT_SET);
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_ENACTOR_IMPLEMENTATION4);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_ENACTOR_IMPLEMENTATION3), Constants.SQL_ENACTOR_IMPLEMENTATION3));
-        builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR2), Constants.BEAN_ENACTOR2, "EnactorImplementation"), TypeName.get(ResultSet.class)));
-        builder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR2_WP), Constants.BEAN_ENACTOR2_WP, "EnactorImplementation"), TypeName.get(ResultSet.class)));
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .BODY(
+                        SUPER_CALL(VARIABLE("querier")),
+                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), "querier"), VARIABLE("querier"))
+                );
 
-        ParameterizedTypeName querierType = ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class));
-        // fields
-        FieldSpec.Builder field1 = FieldSpec.builder(querierType, "querier", Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field1.build());
+        ClassName beanCompleter2Type = ClassName.get(Constants.BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
+        ClassName sqlBeanCompleter4Type = ClassName.get(Constants.SQL_BEAN_COMPLETER4, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPLETER4));
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(querierType, "querier");
-        constructor.addStatement("super(querier)");
-        constructor.addStatement("this.querier=querier");
-        builder.addMethod(constructor.build());
+        Method beanCompleterFactory3 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(beanCompleter2Type)
+                .PARAMETER(RESULT_SET, "rs")
+                .PARAMETER(INTEGER_ARRAY, "extra")
+                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
+                .BODY(
+                        METHOD_CALL(METHOD_CALL(SYSTEM, "out"), "println", List.of(
+                                BINARY_OP(CONSTANT("LUC In beanCompleterFactory 4 with extra of length "), "+",
+                                        IfExpression.IFEXPRESSION(BINARY_OP(VARIABLE("extra"), "==", getNull()), CONSTANT(0), METHOD_CALL(VARIABLE("extra"), "length")))
+                        )),
+                        RETURN(CONSTRUCTOR_CALL(sqlBeanCompleter4Type, List.of(VARIABLE("rs"), VARIABLE(Constants.POST_PROCESSING_VAR))))
+                );
 
-        /*
-        // fields
-        FieldSpec.Builder field1 = FieldSpec.builder(Storage.class, "storage", Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field1.build());
+        Method beanCompleterFactory4 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(beanCompleter2Type)
+                .PARAMETER(RESULT_SET, "rs")
+                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
+                .BODY(
+                        METHOD_CALL(METHOD_CALL(SYSTEM, "out"), "println", List.of(CONSTANT("LUC In beanCompleterFactory 4 without extra"))),
+                        RETURN(CONSTRUCTOR_CALL(sqlBeanCompleter4Type, List.of(VARIABLE("rs"), VARIABLE(Constants.POST_PROCESSING_VAR))))
+                );
 
-        FieldSpec.Builder field2 = FieldSpec.builder(Connection.class, "conn", Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field2.build());
+        Class pastClass = pastFactory.CLASS(Constants.SQL_ENACTOR_IMPLEMENTATION4)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+               // .INTERFACES(paramEnactorImpl), already implemented by superclass
+                .INTERFACES(paramEnactorImpl4)
+                .FIELDS(
+                        FIELD("querier", FUNCTION_STRING_RESULTSET).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL)
+                )
+                .CONSTRUCTOR(constructor)
+                .METHOD(beanCompleterFactory3)
+                .METHOD(beanCompleterFactory4);
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(Storage.class, "storage")
-                .addParameter(Connection.class, "conn");
-
-        constructor.addStatement("this.storage=storage");
-        constructor.addStatement("this.conn=conn");
-        builder.addMethod(constructor.build());
-         */
-
-        /*
-        // method
-        MethodSpec.Builder mspec = MethodSpec.methodBuilder("generic_enact")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .addTypeVariable(TypeVariableName.get("IN"))
-                .addTypeVariable(TypeVariableName.get("OUT"))
-                .addParameter(TypeVariableName.get("OUT"), "output")
-                .addParameter(TypeVariableName.get("IN"), "bean")
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Consumer.class), TypeVariableName.get("IN")), "check")
-                .addParameter(ParameterizedTypeName.get(ClassName.get(BiConsumer.class), ClassName.get(StringBuilder.class), TypeVariableName.get("IN")), "composeQuery")
-                .addParameter(ParameterizedTypeName.get(ClassName.get(BiConsumer.class), TypeName.get(ResultSet.class), TypeVariableName.get("OUT")), "completeBean")
-                .returns(TypeVariableName.get("OUT"));
-
-
-        mspec.addStatement("check.accept(bean)");
-        mspec.addStatement("$T sb = new $T()", StringBuilder.class, StringBuilder.class);
-        mspec.addStatement("composeQuery.accept(sb, bean)");
-        mspec.addStatement("String statement = sb.toString()");
-        mspec.addStatement("$T rs", ResultSet.class);
-        mspec.beginControlFlow("try");
-        mspec.addStatement("rs = querier.apply(statement)");
-        mspec.beginControlFlow("if (!rs.next())");
-        mspec.addStatement("rs.close()");
-        mspec.addStatement("throw new $T(\"Single row result was expected but result set is empty \")", SQLException.class);
-        mspec.endControlFlow();
-        mspec.addStatement("completeBean.accept(rs, output)");
-        mspec.beginControlFlow("if (rs.next())");
-        mspec.addStatement("  java.sql.ResultSetMetaData rsmd = rs.getMetaData();\n" +
-                "        int columnsNumber = rsmd.getColumnCount();\n" +
-                "        StringBuilder sb2=new StringBuilder();\n" +
-                "        for (int i = 1; i <= columnsNumber; i++) {\n" +
-                "            if (i > 1) sb2.append(\",  \");\n" +
-                "            String columnValue = rs.getString(i);\n" +
-                "            sb2.append(columnValue).append(\" \").append(rsmd.getColumnName(i));\n" +
-                "        }\n" +
-                "        System.out.println(\"found =>\" + sb2.toString());");
-        mspec.addStatement("rs.close()");
-
-        mspec.addStatement("throw new $T(\"Single row result was expected for query \")", SQLException.class);
-        mspec.nextControlFlow("else");
-        mspec.addStatement("rs.close()");
-        mspec.endControlFlow();
-        mspec.nextControlFlow("catch ($T e)", SQLException.class);
-        mspec.addStatement("e.printStackTrace()");
-        mspec.addStatement("throw new $T(\"Issue in enactment \" + statement, e)", UncheckedException.class);
-        mspec.endControlFlow();
-        mspec.addStatement("return output");
-
-        builder.addMethod(mspec.build());
-
-
-         */
-
-        /*
-        // method
-        MethodSpec.Builder method = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs");
-
-        method.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(Constants.SQL_BEAN_COMPLETER3), Constants.SQL_BEAN_COMPLETER3));
-        builder.addMethod(method.build());
-
-        MethodSpec.Builder method2 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra");
-
-        method2.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(Constants.SQL_BEAN_COMPLETER3), Constants.SQL_BEAN_COMPLETER3));
-        builder.addMethod(method2.build());
-
-         */
-
-        MethodSpec.Builder method3 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
-
-        method3.addStatement("System.out.println(\"LUC In beanCompleterFactory 4 with extra of length \" + (extra==null?0:extra.length));");
-
-        method3.addStatement("return new $T(rs,$N)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_COMPLETER4), Constants.SQL_BEAN_COMPLETER4),CompilerCommon.POST_PROCESSING_VAR);
-        builder.addMethod(method3.build());
-
-        MethodSpec.Builder method4 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
-
-        method4.addStatement("System.out.println(\"LUC In beanCompleterFactory 4 without extra\");");
-
-        method4.addStatement("return new $T(rs,$N)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_COMPLETER4), Constants.SQL_BEAN_COMPLETER4),CompilerCommon.POST_PROCESSING_VAR);
-        builder.addMethod(method4.build());
-
-
-
-
-        /*
-        // abstract method
-        MethodSpec.Builder abstractMethod = MethodSpec.methodBuilder("executeQuery")
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(ResultSet.class)
-                .addException(SQLException.class)
-                .addParameter(String.class, "statement");
-
-        builder.addMethod(abstractMethod.build());
-
-         */
-
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
-
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeEnactorImplementation(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        /* should generate
-                public class SqlCompositeEnactorImplementation extends SqlEnactorImplementation {
+        ClassName superclass = ClassName.get(Constants.SQL_ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_IMPLEMENTATION));
 
-            public SqlCompositeEnactorImplementation(Function<String,ResultSet> querier) {
-                super(querier);
-            }
+        Constructor constructor = CONSTRUCTOR()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .BODY(
+                        SUPER_CALL(VARIABLE("querier"))
+                );
 
-            @Override
-            public BeanCompleter beanCompleterFactory(ResultSet rs) {
-                return new SqlCompositeBeanCompleter(rs);
-            }
-        }
+        ClassName beanCompleterType = ClassName.get(Constants.BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER));
+        ClassName sqlCompositeBeanCompleterType = ClassName.get(Constants.SQL_COMPOSITE_BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_COMPLETER));
 
-         */
+        Method beanCompleterFactory = METHOD("beanCompleterFactory")
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(beanCompleterType)
+                .PARAMETER(RESULT_SET, "rs")
+                .BODY(
+                        RETURN(CONSTRUCTOR_CALL(sqlCompositeBeanCompleterType, List.of(VARIABLE("rs"))))
+                );
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_ENACTOR_IMPLEMENTATION), Constants.SQL_ENACTOR_IMPLEMENTATION));
+        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor)
+                .METHOD(beanCompleterFactory);
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier");
-        constructor.addStatement("super(querier)");
-        builder.addMethod(constructor.build());
-
-        // method
-        MethodSpec.Builder method = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER), Constants.BEAN_COMPLETER))
-                .addParameter(ResultSet.class, "rs");
-        method.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_COMPLETER), Constants.SQL_COMPOSITE_BEAN_COMPLETER));
-        builder.addMethod(method.build());
-
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
-
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_CompositeBeanEnactor(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        /* should generate
-            public class SqlCompositeBeanEnactor extends BeanEnactor<ResultSet> {
+        ClassName beanEnactorType = ClassName.get(Constants.BEAN_ENACTOR, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR));
+        ParameterizedType superclass = ParameterizedType.get(beanEnactorType, RESULT_SET);
 
+        ClassName sqlCompositeEnactorImplType = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION));
+        ClassName beanCheckerType = ClassName.get(Constants.BEAN_CHECKER, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER));
 
-                public SqlCompositeBeanEnactor(Function<String,ResultSet> querier) {
-                    super(new  SqlCompositeEnactorImplementation(querier), new BeanChecker());
-                }
+        Constructor constructor = CONSTRUCTOR()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .BODY(
+                        SUPER_CALL(CONSTRUCTOR_CALL(sqlCompositeEnactorImplType, List.of(VARIABLE("querier"))),
+                                CONSTRUCTOR_CALL(beanCheckerType, List.of()))
+                );
 
-            }
+        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_BEAN_ENACTOR)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor);
 
-
-
-         */
-
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_COMPOSITE_BEAN_ENACTOR);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR), Constants.BEAN_ENACTOR), TypeName.get(ResultSet.class)));
-
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier");
-        constructor.addStatement("super(new  $T(querier), new $T())", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION), Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION), ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_CHECKER), Constants.BEAN_CHECKER));
-        builder.addMethod(constructor.build());
-
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
-
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_BeanEnactor(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        /* should generate
+        ClassName beanEnactorType = ClassName.get(Constants.BEAN_ENACTOR, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR));
+        ParameterizedType superclass = ParameterizedType.get(beanEnactorType, RESULT_SET);
 
+        ClassName sqlEnactorImplType = ClassName.get(Constants.SQL_ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_IMPLEMENTATION));
+        ClassName beanCheckerType = ClassName.get(Constants.BEAN_CHECKER, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER));
 
-            public class SqlBeanEnactor extends BeanEnactor<ResultSet> {
+        Constructor constructor = CONSTRUCTOR()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .BODY(
+                        SUPER_CALL(CONSTRUCTOR_CALL(sqlEnactorImplType, List.of(VARIABLE("querier"))),
+                                CONSTRUCTOR_CALL(beanCheckerType, List.of()))
+                );
 
-                public SqlBeanEnactor(Function<String,ResultSet> querier) {
-                    super(new  SqlEnactorImplementation(querier), new BeanChecker());
-                }
+        Class pastClass = pastFactory.CLASS(Constants.SQL_BEAN_ENACTOR)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor);
 
-
-
-            }
-
-         */
-
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_BEAN_ENACTOR);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR), Constants.BEAN_ENACTOR), TypeName.get(ResultSet.class)));
-
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier");
-        constructor.addStatement("super(new  $T(querier), new $T())", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_ENACTOR_IMPLEMENTATION), Constants.SQL_ENACTOR_IMPLEMENTATION), ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_CHECKER), Constants.BEAN_CHECKER));
-        builder.addMethod(constructor.build());
-
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
-
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_BeanEnactor3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        /* should generate
+        ClassName beanEnactor2Type = ClassName.get(Constants.BEAN_ENACTOR2, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2));
+        ParameterizedType superclass = ParameterizedType.get(beanEnactor2Type, RESULT_SET);
 
+        ClassName sqlCompositeEnactorImpl3Type = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3));
+        ClassName beanChecker2Type = ClassName.get(Constants.BEAN_CHECKER2, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER2));
 
-            public class SqlBeanEnactor3 extends BeanEnactor2<ResultSet> {
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .PARAMETER(SUPPLIER_OF_STRING, Constants.PRINCIPAL_MANAGER_VAR)
+                .BODY(
+                        SUPER_CALL(CONSTRUCTOR_CALL(sqlCompositeEnactorImpl3Type, List.of(VARIABLE("querier"))),
+                                CONSTRUCTOR_CALL(beanChecker2Type, List.of()))
+                );
 
-                public SqlBeanEnactor3(Function<String,ResultSet> querier) {
-                    super(new SqlCompositeEnactorImplementation3(querier), new BeanChecker2());
-                }
+        Class pastClass = pastFactory.CLASS(Constants.SQL_BEAN_ENACTOR3)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor);
 
-            }
-
-         */
-
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_BEAN_ENACTOR3);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR2), Constants.BEAN_ENACTOR2), TypeName.get(ResultSet.class)));
-
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier")
-                .addParameter(SupplierOfString,PRINCIPAL_MANAGER_VAR);
-        constructor.addStatement("super(new  $T(querier), new $T())", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3), Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3), ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_CHECKER2), Constants.BEAN_CHECKER2));
-        builder.addMethod(constructor.build());
-
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
-
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
+
     public SpecificationFile generateSqlIntegration_BeanEnactor4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        /* should generate
+        ClassName beanEnactor2WPType = ClassName.get(Constants.BEAN_ENACTOR2_WP, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2_WP));
+        ParameterizedType superclass = ParameterizedType.get(beanEnactor2WPType, RESULT_SET);
 
+        ClassName sqlCompositeEnactorImpl4Type = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4));
+        ClassName beanChecker2Type = ClassName.get(Constants.BEAN_CHECKER2, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER2));
 
-            public class SqlBeanEnactor3 extends BeanEnactor2<ResultSet> {
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
+                .PARAMETER(SUPPLIER_OF_STRING, Constants.PRINCIPAL_MANAGER_VAR)
+                .BODY(
+                        SUPER_CALL(CONSTRUCTOR_CALL(sqlCompositeEnactorImpl4Type, List.of(VARIABLE("querier"))),
+                                CONSTRUCTOR_CALL(beanChecker2Type, List.of()),
+                                VARIABLE(Constants.POST_PROCESSING_VAR),
+                                VARIABLE(Constants.PRINCIPAL_MANAGER_VAR))
+                );
 
-                public SqlBeanEnactor3(Function<String,ResultSet> querier) {
-                    super(new SqlCompositeEnactorImplementation3(querier), new BeanChecker2());
-                }
+        Class pastClass = pastFactory.CLASS(Constants.SQL_BEAN_ENACTOR4)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor);
 
-            }
-
-         */
-
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_BEAN_ENACTOR4);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR2_WP), Constants.BEAN_ENACTOR2_WP), TypeName.get(ResultSet.class)));
-
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR)
-                .addParameter(SupplierOfString,PRINCIPAL_MANAGER_VAR);
-        constructor.addStatement("super(new  $T(querier), new $T(), $N, $N)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4), Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4), ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_CHECKER2), Constants.BEAN_CHECKER2), CompilerCommon.POST_PROCESSING_VAR, PRINCIPAL_MANAGER_VAR);
-        builder.addMethod(constructor.build());
-
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
-
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
-    /* define the method to generate the following class;
-      public class SqlCompositeEnactorImplementation3 extends SqlEnactorImplementation3 {
-
-            public SqlCompositeEnactorImplementation3(Function<String,ResultSet> querier) {
-                super( querier);
-            }
-
-            @Override
-            public BeanCompleter2 beanCompleterFactory(ResultSet rs) {
-                return new SqlCompositeBeanCompleter3(rs);
-            }
-
-            @Override
-            public BeanCompleter2 beanCompleterFactory(ResultSet rs, Object [] extra) {
-                return new SqlCompositeBeanCompleter3(rs, extra);
-            }
-        }
-
-     */
     public SpecificationFile generateSqlIntegration_CompositeEnactorImplementation3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        /* should generate
-                public class SqlCompositeEnactorImplementation3 extends SqlEnactorImplementation3 {
+        ClassName superclass = ClassName.get(Constants.SQL_ENACTOR_IMPLEMENTATION3, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_IMPLEMENTATION3));
 
-            public SqlCompositeEnactorImplementation3(Function<String,ResultSet> querier) {
-                super( querier);
-            }
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .BODY(
+                        SUPER_CALL(VARIABLE("querier"))
+                );
 
-            @Override
-            public BeanCompleter2 beanCompleterFactory(ResultSet rs) {
-                return new SqlCompositeBeanCompleter3(rs);
-            }
+        ClassName beanCompleter2Type = ClassName.get(Constants.BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
+        ClassName sqlCompositeBeanCompleter3Type = ClassName.get(Constants.SQL_COMPOSITE_BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_COMPLETER3));
 
-            @Override
-            public BeanCompleter2 beanCompleterFactory(ResultSet rs, Object [] extra) {
-                return new SqlCompositeBeanCompleter3(rs, extra);
-            }
-        }
+        Method beanCompleterFactory = METHOD("beanCompleterFactory")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(beanCompleter2Type)
+                .PARAMETER(RESULT_SET, "rs")
+                .BODY(
+                        RETURN(CONSTRUCTOR_CALL(sqlCompositeBeanCompleter3Type, List.of(VARIABLE("rs"))))
+                );
 
-         */
+        Method beanCompleterFactory2 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(beanCompleter2Type)
+                .PARAMETER(RESULT_SET, "rs")
+                .PARAMETER(INTEGER_ARRAY, "extra")
+                .BODY(
+                        RETURN(CONSTRUCTOR_CALL(sqlCompositeBeanCompleter3Type, List.of(VARIABLE("rs"), VARIABLE("extra"))))
+                );
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_ENACTOR_IMPLEMENTATION3), Constants.SQL_ENACTOR_IMPLEMENTATION3));
+        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor)
+                .METHOD(beanCompleterFactory)
+                .METHOD(beanCompleterFactory2);
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier");
-        constructor.addStatement("super(querier)");
-        builder.addMethod(constructor.build());
-
-        // method
-        MethodSpec.Builder method = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs");
-        method.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_COMPLETER3), Constants.SQL_COMPOSITE_BEAN_COMPLETER3));
-        builder.addMethod(method.build());
-
-        // method
-        MethodSpec.Builder method2 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra");
-        method2.addStatement("return new $T(rs, extra)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_COMPLETER3), Constants.SQL_COMPOSITE_BEAN_COMPLETER3));
-        builder.addMethod(method2.build());
-
-        /*
-        // method
-        MethodSpec.Builder method3 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra")
-                .addParameter(BIFUN, "postProcessing");
-        method3.addStatement("return new $T(rs, extra,postProcessing)", ClassName.get(locations.getFilePackage(Constants.SQL_COMPOSITE_BEAN_COMPLETER3), Constants.SQL_COMPOSITE_BEAN_COMPLETER3));
-        builder.addMethod(method3.build());
-
-        // method
-        MethodSpec.Builder method4 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(BIFUN, "postProcessing");
-        method4.addStatement("return new $T(rs, null,postProcessing)", ClassName.get(locations.getFilePackage(Constants.SQL_COMPOSITE_BEAN_COMPLETER3), Constants.SQL_COMPOSITE_BEAN_COMPLETER3));
-        builder.addMethod(method4.build());
-
-         */
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
+
     public SpecificationFile generateSqlIntegration_CompositeEnactorImplementation4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        /* should generate
-                public class SqlCompositeEnactorImplementation3 extends SqlEnactorImplementation3 {
+        ClassName superclass = ClassName.get(Constants.SQL_ENACTOR_IMPLEMENTATION4, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_IMPLEMENTATION4));
 
-            public SqlCompositeEnactorImplementation3(Function<String,ResultSet> querier) {
-                super( querier);
-            }
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .BODY(
+                        SUPER_CALL(VARIABLE("querier"))
+                );
 
-            @Override
-            public BeanCompleter2 beanCompleterFactory(ResultSet rs) {
-                return new SqlCompositeBeanCompleter3(rs);
-            }
+        ClassName beanCompleter2Type = ClassName.get(Constants.BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
+        ClassName sqlCompositeBeanCompleter4Type = ClassName.get(Constants.SQL_COMPOSITE_BEAN_COMPLETER4, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_COMPLETER4));
 
-            @Override
-            public BeanCompleter2 beanCompleterFactory(ResultSet rs, Object [] extra) {
-                return new SqlCompositeBeanCompleter3(rs, extra);
-            }
-        }
+        Method beanCompleterFactory = METHOD("beanCompleterFactory")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(beanCompleter2Type)
+                .PARAMETER(RESULT_SET, "rs")
+                .BODY(
+                        RETURN(CONSTRUCTOR_CALL(sqlCompositeBeanCompleter4Type, List.of(VARIABLE("rs"))))
+                );
 
-         */
+        Method beanCompleterFactory2 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(beanCompleter2Type)
+                .PARAMETER(RESULT_SET, "rs")
+                .PARAMETER(INTEGER_ARRAY, "extra")
+                .BODY(
+                        METHOD_CALL(SYSTEM, "out.println", List.of(
+                                BINARY_OP(CONSTANT("LUCXXX In beanCompleterFactory 4 with extra of length "), "+",
+                                        IfExpression.IFEXPRESSION(BINARY_OP(VARIABLE("extra"), "==", getNull()), CONSTANT(0), METHOD_CALL(VARIABLE("extra"), "length")))
+                        )),
+                        RETURN(CONSTRUCTOR_CALL(sqlCompositeBeanCompleter4Type, List.of(VARIABLE("rs"), VARIABLE("extra"))))
+                );
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_ENACTOR_IMPLEMENTATION4), Constants.SQL_ENACTOR_IMPLEMENTATION4));
+        Method beanCompleterFactory3 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(beanCompleter2Type)
+                .PARAMETER(RESULT_SET, "rs")
+                .PARAMETER(INTEGER_ARRAY, "extra")
+                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
+                .BODY(
+                        METHOD_CALL(SYSTEM, "out.println", List.of(
+                                BINARY_OP(CONSTANT("LUC YYYY In beanCompleterFactory 4 with extra of length "), "+",
+                                        IfExpression.IFEXPRESSION(BINARY_OP(VARIABLE("extra"), "==", getNull()), CONSTANT(0), METHOD_CALL(VARIABLE("extra"), "length")))
+                        )),
+                        RETURN(CONSTRUCTOR_CALL(sqlCompositeBeanCompleter4Type, List.of(VARIABLE("rs"), VARIABLE("extra"), VARIABLE(Constants.POST_PROCESSING_VAR))))
+                );
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier");
-        constructor.addStatement("super(querier)");
-        builder.addMethod(constructor.build());
+        Method beanCompleterFactory4 = METHOD("beanCompleterFactory")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(beanCompleter2Type)
+                .PARAMETER(RESULT_SET, "rs")
+                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
+                .BODY(
+                        METHOD_CALL(SYSTEM, "out.println", List.of(CONSTANT("LUC YYYY In beanCompleterFactory No extra"))),
+                        RETURN(CONSTRUCTOR_CALL(sqlCompositeBeanCompleter4Type, List.of(VARIABLE("rs"), VARIABLE(Constants.POST_PROCESSING_VAR))))
+                );
 
-        // method
-        MethodSpec.Builder method = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs");
-        method.addStatement("return new $T(rs)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_COMPLETER4), Constants.SQL_COMPOSITE_BEAN_COMPLETER4));
-        builder.addMethod(method.build());
+        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor)
+                .METHOD(beanCompleterFactory)
+                .METHOD(beanCompleterFactory2)
+                .METHOD(beanCompleterFactory3)
+                .METHOD(beanCompleterFactory4);
 
-        // method
-        MethodSpec.Builder method2 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra");
-        method2.addStatement("System.out.println(\"LUCXXX In beanCompleterFactory 4 with extra of length \" + (extra==null?0:extra.length));");
-
-        method2.addStatement("return new $T(rs, extra)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_COMPLETER4), Constants.SQL_COMPOSITE_BEAN_COMPLETER4));
-        builder.addMethod(method2.build());
-
-        // method
-        MethodSpec.Builder method3 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
-        method3.addStatement("System.out.println(\"LUC YYYY In beanCompleterFactory 4 with extra of length \" + (extra==null?0:extra.length));");
-
-        method3.addStatement("return new $T(rs, extra,postProcessing)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_COMPLETER4), Constants.SQL_COMPOSITE_BEAN_COMPLETER4));
-        builder.addMethod(method3.build());
-
-        // method
-        MethodSpec.Builder method4 = MethodSpec.methodBuilder("beanCompleterFactory")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2))
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR);
-        method3.addStatement("System.out.println(\"LUC YYYY In beanCompleterFactory No extra\");");
-
-        method4.addStatement("return new $T(rs,postProcessing)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_COMPLETER4), Constants.SQL_COMPOSITE_BEAN_COMPLETER4));
-        builder.addMethod(method4.build());
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
-
-    /* define the method to generate the following class;
-                public class SqlCompositeBeanCompleter3 extends BeanCompleter3 {
-
-                    public static final String PARENT_COLUMN = "parent";
-                    private final Object[] extra;
-                    private final ResultSet rs;
-
-                    public SqlCompositeBeanCompleter3(ResultSet rs) {
-                        this(rs,null);
-                    }
-
-                    public SqlCompositeBeanCompleter3(ResultSet rs, Object[] extra) {
-                        super(newGetter(rs));
-                        this.rs=rs;
-                        this.extra=extra;
-                    }
-
-                    public Integer getValueFromLocation() {
-                        return (Integer) extra[0];
-                    }
-
-
-                    @Override
-                    public boolean next() {
-                        try {
-                            return rs.next();  // ResultSet next() has already been called in generic_enact
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-
-                    public void setValueInLocation() {
-                        if (extra != null) {
-                            int parent = getter.get(Integer.class, PARENT_COLUMN);
-                            extra[0]= parent;
-                        }
-                    }
-
-                }
-
-
-     */
-
-    public static ParameterizedTypeName BIFUN = ParameterizedTypeName.get(BiFunction.class, Integer.class, String.class, Object.class);
 
     public SpecificationFile generateSqlIntegration_CompositeBeanCompleter3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_COMPOSITE_BEAN_COMPLETER3);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_COMPLETER3), Constants.BEAN_COMPLETER3));
+        ClassName superclass = ClassName.get(Constants.BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER3));
+        ClassName sqlBeanCompleter3Type = ClassName.get(Constants.SQL_BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPLETER3));
 
-        // fields
-        FieldSpec.Builder field1 = FieldSpec.builder(Object[].class, "extra", Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field1.build());
+        Constructor constructor1 = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(RESULT_SET, "rs")
+                .BODY(
+                        METHOD_CALL("this", List.of(VARIABLE("rs"), CastExpression.CAST(INTEGER_ARRAY, getNull())))
+                );
 
-        FieldSpec.Builder field2 = FieldSpec.builder(ResultSet.class, "rs", Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field2.build());
+        Constructor constructor2 = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(RESULT_SET, "rs")
+                .PARAMETER(INTEGER_ARRAY, "extra")
+                .BODY(
+                        SUPER_CALL(METHOD_CALL(sqlBeanCompleter3Type, "newGetter", List.of(VARIABLE("rs")))),
+                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), "rs"), VARIABLE("rs")),
+                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), "extra"), VARIABLE("extra"))
+                );
 
+        Method getValueFromLocation = METHOD("getValueFromLocation")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(INTEGER)
+                .BODY(
+                        RETURN(CastExpression.CAST(INTEGER, new ArrayAccessor(VARIABLE("extra"), CONSTANT(0))))
+                );
 
-        // constants
-        FieldSpec.Builder field3 = FieldSpec.builder(String.class, "PARENT_COLUMN", Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                .initializer("$S", "parent");
-        builder.addField(field3.build());
+        Method nextMethod = METHOD("next")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .RETURNS(_bool)
+                .BODY(buildNextTryCatch());
 
-        // constructor
-        MethodSpec.Builder constructor1 = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ResultSet.class, "rs")
-                .addStatement("this(rs,(Object[]) null)");
-        builder.addMethod(constructor1.build());
+        Method setValueInLocation = METHOD("setValueInLocation")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(VOID)
+                .BODY(
+                        METHOD_CALL(SYSTEM, "out.println", List.of(
+                                BINARY_OP(CONSTANT("LUC WWWW In setValueInLocation with extra of length "), "+",
+                                        IfExpression.IFEXPRESSION(BINARY_OP(VARIABLE("extra"), "==", getNull()), CONSTANT(0), METHOD_CALL(VARIABLE("extra"), "length")))
+                        )),
+                        IF(BINARY_OP(VARIABLE("extra"), "!=", getNull()))
+                                .THEN(
+                                        DEFINITION(_int, VARIABLE("parent"), METHOD_CALL(VARIABLE("getter"), "get", List.of(METHOD_CALL(INTEGER, "class"), VARIABLE("PARENT_COLUMN")))),
+                                        METHOD_CALL(SYSTEM, "out.println", List.of(
+                                                BINARY_OP(CONSTANT("LUC LUC Setting parent to "), "+", VARIABLE("parent"))
+                                        )),
+                                        ASSIGNMENT(new ArrayAccessor(VARIABLE("extra"), CONSTANT(0)), VARIABLE("parent"))
+                                )
+                );
 
-        MethodSpec.Builder constructor2 = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra")
-                .addStatement("super($T.newGetter(rs))", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_COMPLETER3), Constants.SQL_BEAN_COMPLETER3))
-                .addStatement("this.rs=rs")
-                .addStatement("this.extra=extra");
-        builder.addMethod(constructor2.build());
+        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_BEAN_COMPLETER3)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .FIELDS(
+                        FIELD("extra", INTEGER_ARRAY).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL),
+                        FIELD("rs", RESULT_SET).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL),
+                        FIELD("PARENT_COLUMN", STRING).MODIFIERS(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL).INITIALIZER(CONSTANT("parent"))
+                )
+                .CONSTRUCTOR(constructor1)
+                .CONSTRUCTOR(constructor2)
+                .METHOD(getValueFromLocation)
+                .METHOD(nextMethod)
+                .METHOD(setValueInLocation);
 
-
-
-        // method
-        MethodSpec.Builder method = MethodSpec.methodBuilder("getValueFromLocation")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(Integer.class)
-                .addStatement("return (Integer) extra[0]");
-        builder.addMethod(method.build());
-
-
-
-        // method
-        MethodSpec.Builder method2 = MethodSpec.methodBuilder("next")
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
-                .returns(boolean.class);
-        method2.beginControlFlow("try");
-        method2.addStatement("return rs.next()");
-        method2.nextControlFlow("catch ($T e)", SQLException.class);
-        method2.addStatement("throw new $T(e)", RuntimeException.class);
-        method2.endControlFlow();
-        builder.addMethod(method2.build());
-
-        // method
-        MethodSpec.Builder method3 = MethodSpec.methodBuilder("setValueInLocation")
-                .addModifiers(Modifier.PUBLIC);
-        method3.addStatement("System.out.println(\"LUC WWWW In setValueInLocation with extra of length \" + (extra==null?0:extra.length));");
-        method3.beginControlFlow("if (extra != null)");
-        method3.addStatement("int parent = getter.get(Integer.class, PARENT_COLUMN)");
-        method3.addStatement("System.out.println(\"LUC LUC Setting parent to \" + parent);");
-        method3.addStatement("extra[0]= parent");
-        method3.endControlFlow();
-        builder.addMethod(method3.build());
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
+
     public SpecificationFile generateSqlIntegration_CompositeBeanCompleter4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_COMPOSITE_BEAN_COMPLETER4);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_COMPLETER3), Constants.SQL_COMPOSITE_BEAN_COMPLETER3));
+        ClassName superclass = ClassName.get(Constants.SQL_COMPOSITE_BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_COMPLETER3));
 
-        // fields
+        Constructor constructor1 = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(RESULT_SET, "rs")
+                .BODY(
+                        METHOD_CALL("this", List.of(VARIABLE("rs"), CastExpression.CAST(INTEGER_ARRAY, getNull())))
+                );
 
-        FieldSpec.Builder field4 = FieldSpec.builder(BIFUN, CompilerCommon.POST_PROCESSING_VAR, Modifier.PRIVATE, Modifier.FINAL);
-        builder.addField(field4.build());
+        Constructor constructor2 = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(RESULT_SET, "rs")
+                .PARAMETER(INTEGER_ARRAY, "extra")
+                .BODY(
+                        SUPER_CALL(VARIABLE("rs"), VARIABLE("extra")),
+                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), Constants.POST_PROCESSING_VAR), getNull())
+                );
 
+        Constructor constructor3 = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(RESULT_SET, "rs")
+                .PARAMETER(INTEGER_ARRAY, "extra")
+                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
+                .BODY(
+                        SUPER_CALL(VARIABLE("rs"), VARIABLE("extra")),
+                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), Constants.POST_PROCESSING_VAR), VARIABLE(Constants.POST_PROCESSING_VAR))
+                );
 
-        // constructor
-        MethodSpec.Builder constructor1 = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ResultSet.class, "rs")
-                .addStatement("this(rs,(Object[]) null)");
-        builder.addMethod(constructor1.build());
+        Constructor constructor4 = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(RESULT_SET, "rs")
+                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
+                .BODY(
+                        SUPER_CALL(VARIABLE("rs"), getNull()),
+                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), Constants.POST_PROCESSING_VAR), VARIABLE(Constants.POST_PROCESSING_VAR))
+                );
 
-        MethodSpec.Builder constructor2 = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra")
-                .addStatement("super(rs,extra)")
-                .addStatement("this.postProcessing=null");
-        builder.addMethod(constructor2.build());
+        Method postMethod = METHOD(Constants.POST_PROCESS_METHOD_NAME)
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(INTEGER, "id")
+                .PARAMETER(STRING, "template")
+                .RETURNS(VOID)
+                .BODY(
+                        IF(BINARY_OP(VARIABLE(Constants.POST_PROCESSING_VAR), "!=", getNull()))
+                                .THEN(
+                                        METHOD_CALL(VARIABLE(Constants.POST_PROCESSING_VAR), "apply", List.of(VARIABLE("id"), VARIABLE("template")))
+                                )
+                );
 
-        MethodSpec.Builder constructor3 = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(Object[].class, "extra")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR)
-                .addStatement("super(rs,extra)")
-                .addStatement("this.postProcessing=postProcessing");
-        builder.addMethod(constructor3.build());
+        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_BEAN_COMPLETER4)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .FIELDS(
+                        FIELD(Constants.POST_PROCESSING_VAR, BIFUNCTION_INTEGER_STRING_OBJECT).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL)
+                )
+                .CONSTRUCTOR(constructor1)
+                .CONSTRUCTOR(constructor2)
+                .CONSTRUCTOR(constructor3)
+                .CONSTRUCTOR(constructor4)
+                .METHOD(postMethod);
 
-        MethodSpec.Builder constructor4 = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ResultSet.class, "rs")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR)
-                .addStatement("super(rs,null)")
-                .addStatement("this.postProcessing=postProcessing");
-        builder.addMethod(constructor4.build());
-
-
-        //method
-        MethodSpec.Builder postMethod = MethodSpec.methodBuilder(POST_PROCESS_METHOD_NAME)
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(Integer.class, "id")
-                .addParameter(String.class, "template")
-                .beginControlFlow("if (postProcessing != null)")
-                .addStatement("postProcessing.apply(id, template)")
-                .endControlFlow()
-                .returns(void.class);
-        builder.addMethod(postMethod.build());
-
-        TypeSpec theClass = builder.build();
-
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
-
-    /* define the method to generate the following class;
-                public class SqlCompositeBeanEnactor3 extends BeanEnactor2<ResultSet> {
-
-                    public SqlCompositeBeanEnactor3(Function<String,ResultSet> querier) {
-                        super(new SqlCompositeEnactorImplementation3(querier), new BeanChecker2());
-                    }
-
-                }
-
-     */
 
     public SpecificationFile generateSqlIntegration_CompositeBeanEnactor3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_COMPOSITE_BEAN_ENACTOR3);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR2_COMPOSITE), Constants.BEAN_ENACTOR2_COMPOSITE), TypeName.get(ResultSet.class)));
+        ClassName beanEnactor2CompositeType = ClassName.get(Constants.BEAN_ENACTOR2_COMPOSITE, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2_COMPOSITE));
+        ParameterizedType superclass = ParameterizedType.get(beanEnactor2CompositeType, RESULT_SET);
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier");
-        constructor.addStatement("super(new  $T(querier), new $T())", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3), Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3), ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_CHECKER2), Constants.BEAN_CHECKER2));
-        builder.addMethod(constructor.build());
+        ClassName sqlCompositeEnactorImpl3Type = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3));
+        ClassName beanChecker2Type = ClassName.get(Constants.BEAN_CHECKER2, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER2));
 
-        TypeSpec theClass = builder.build();
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .BODY(
+                        SUPER_CALL(CONSTRUCTOR_CALL(sqlCompositeEnactorImpl3Type, List.of(VARIABLE("querier"))),
+                                CONSTRUCTOR_CALL(beanChecker2Type, List.of()))
+                );
 
-        String myPackage = locations.getFilePackage(configs.name,fileName);
+        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_BEAN_ENACTOR3)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor);
 
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
-
 
     public SpecificationFile generateSqlIntegration_CompositeBeanEnactor4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_COMPOSITE_BEAN_ENACTOR4);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_ENACTOR2_COMPOSITE_WP), Constants.BEAN_ENACTOR2_COMPOSITE_WP), TypeName.get(ResultSet.class)));
+        ClassName beanEnactor2CompositeWPType = ClassName.get(Constants.BEAN_ENACTOR2_COMPOSITE_WP, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2_COMPOSITE_WP));
+        ParameterizedType superclass = ParameterizedType.get(beanEnactor2CompositeWPType, RESULT_SET);
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR)
-                .addParameter(SupplierOfString,PRINCIPAL_MANAGER_VAR);
-        constructor.addStatement("super(new  $T(querier), new $T(),$N, $N)", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4), Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4), ClassName.get(locations.getFilePackage(configs.name,Constants.BEAN_CHECKER2), Constants.BEAN_CHECKER2), CompilerCommon.POST_PROCESSING_VAR, PRINCIPAL_MANAGER_VAR);
-        builder.addMethod(constructor.build());
+        ClassName sqlCompositeEnactorImpl4Type = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4));
+        ClassName beanChecker2Type = ClassName.get(Constants.BEAN_CHECKER2, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER2));
 
-        TypeSpec theClass = builder.build();
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
+                .PARAMETER(SUPPLIER_OF_STRING, Constants.PRINCIPAL_MANAGER_VAR)
+                .BODY(
+                        SUPER_CALL(CONSTRUCTOR_CALL(sqlCompositeEnactorImpl4Type, List.of(VARIABLE("querier"))),
+                                CONSTRUCTOR_CALL(beanChecker2Type, List.of()),
+                                VARIABLE(Constants.POST_PROCESSING_VAR),
+                                VARIABLE(Constants.PRINCIPAL_MANAGER_VAR))
+                );
 
-        String myPackage = locations.getFilePackage(configs.name,fileName);
+        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_BEAN_ENACTOR4)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor);
 
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
-
-
-    /* define the method to generate the following class;
-            public class SqlCompositeEnactorConfigurator3 extends CompositeEnactorConfigurator2 {
-
-                public SqlCompositeEnactorConfigurator3(Function<String, ResultSet> querier) {
-                    super(new SqlCompositeBeanEnactor3(querier));
-                }
-
-            }
-
-     */
 
     public SpecificationFile generateSqlIntegration_CompositeEnactorConfigurator3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_COMPOSITE_ENACTOR_CONFIGURATOR3);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.COMPOSITE_ENACTOR_CONFIGURATOR2), Constants.COMPOSITE_ENACTOR_CONFIGURATOR2));
+        ClassName superclass = ClassName.get(Constants.COMPOSITE_ENACTOR_CONFIGURATOR2, locations.getFilePackage(configs.name, Constants.COMPOSITE_ENACTOR_CONFIGURATOR2));
+        ClassName sqlCompositeBeanEnactor3Type = ClassName.get(Constants.SQL_COMPOSITE_BEAN_ENACTOR3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_ENACTOR3));
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier");
-        constructor.addStatement("super(new  $T(querier))", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_ENACTOR3), Constants.SQL_COMPOSITE_BEAN_ENACTOR3));
-        builder.addMethod(constructor.build());
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .BODY(
+                        SUPER_CALL(CONSTRUCTOR_CALL(sqlCompositeBeanEnactor3Type, List.of(VARIABLE("querier"))))
+                );
 
-        TypeSpec theClass = builder.build();
+        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_ENACTOR_CONFIGURATOR3)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor);
 
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
+
     public SpecificationFile generateSqlIntegration_CompositeEnactorConfigurator4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_COMPOSITE_ENACTOR_CONFIGURATOR4);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.COMPOSITE_ENACTOR_CONFIGURATOR2), Constants.COMPOSITE_ENACTOR_CONFIGURATOR2));
+        ClassName superclass = ClassName.get(Constants.COMPOSITE_ENACTOR_CONFIGURATOR2, locations.getFilePackage(configs.name, Constants.COMPOSITE_ENACTOR_CONFIGURATOR2));
+        ClassName sqlCompositeBeanEnactor4Type = ClassName.get(Constants.SQL_COMPOSITE_BEAN_ENACTOR4, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_ENACTOR4));
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR)
-                .addParameter(SupplierOfString,PRINCIPAL_MANAGER_VAR);
-        constructor.addStatement("super(new  $T($N,$N,$N))", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_COMPOSITE_BEAN_ENACTOR4), Constants.SQL_COMPOSITE_BEAN_ENACTOR4), "querier", CompilerCommon.POST_PROCESSING_VAR, PRINCIPAL_MANAGER_VAR);
-        builder.addMethod(constructor.build());
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
+                .PARAMETER(SUPPLIER_OF_STRING, Constants.PRINCIPAL_MANAGER_VAR)
+                .BODY(
+                        SUPER_CALL(CONSTRUCTOR_CALL(sqlCompositeBeanEnactor4Type, List.of(VARIABLE("querier"), VARIABLE(Constants.POST_PROCESSING_VAR), VARIABLE(Constants.PRINCIPAL_MANAGER_VAR))))
+                );
 
-        TypeSpec theClass = builder.build();
+        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_ENACTOR_CONFIGURATOR4)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor);
 
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
-
-    /* define the method to generate the following class;
-
-        public class SqlEnactorConfigurator3 extends EnactorConfigurator2 {
-            public SqlEnactorConfigurator3(Function<String, ResultSet> querier) {
-                super(new SqlBeanEnactor3(querier));
-            }
-
-        }
-
-     */
 
     public SpecificationFile generateSqlIntegration_EnactorConfigurator3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_ENACTOR_CONFIGURATOR3);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.ENACTOR_CONFIGURATOR2), Constants.ENACTOR_CONFIGURATOR2));
+        ClassName superclass = ClassName.get(Constants.ENACTOR_CONFIGURATOR2, locations.getFilePackage(configs.name, Constants.ENACTOR_CONFIGURATOR2));
+        ClassName sqlBeanEnactor3Type = ClassName.get(Constants.SQL_BEAN_ENACTOR3, locations.getFilePackage(configs.name, Constants.SQL_BEAN_ENACTOR3));
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier")
-                .addParameter(SupplierOfString,PRINCIPAL_MANAGER_VAR);
-        constructor.addStatement("super(new  $T(querier,$N))", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_ENACTOR3), Constants.SQL_BEAN_ENACTOR3), PRINCIPAL_MANAGER_VAR);
-        builder.addMethod(constructor.build());
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .PARAMETER(SUPPLIER_OF_STRING, Constants.PRINCIPAL_MANAGER_VAR)
+                .BODY(
+                        SUPER_CALL(CONSTRUCTOR_CALL(sqlBeanEnactor3Type, List.of(VARIABLE("querier"), VARIABLE(Constants.PRINCIPAL_MANAGER_VAR))))
+                );
 
-        TypeSpec theClass = builder.build();
+        Class pastClass = pastFactory.CLASS(Constants.SQL_ENACTOR_CONFIGURATOR3)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor);
 
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
     public SpecificationFile generateSqlIntegration_EnactorConfigurator4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.SQL_ENACTOR_CONFIGURATOR4);
-        builder.addModifiers(Modifier.PUBLIC);
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name,Constants.ENACTOR_CONFIGURATOR2), Constants.ENACTOR_CONFIGURATOR2));
+        ClassName superclass = ClassName.get(Constants.ENACTOR_CONFIGURATOR2, locations.getFilePackage(configs.name, Constants.ENACTOR_CONFIGURATOR2));
+        ClassName sqlBeanEnactor4Type = ClassName.get(Constants.SQL_BEAN_ENACTOR4, locations.getFilePackage(configs.name, Constants.SQL_BEAN_ENACTOR4));
 
-        // constructor
-        MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterizedTypeName.get(ClassName.get(Function.class), ClassName.get(String.class), ClassName.get(ResultSet.class)), "querier")
-                .addParameter(BIFUN, CompilerCommon.POST_PROCESSING_VAR)
-                .addParameter(SupplierOfString,PRINCIPAL_MANAGER_VAR);
-        constructor.addStatement("super(new  $T($N,$N,$N))", ClassName.get(locations.getFilePackage(configs.name,Constants.SQL_BEAN_ENACTOR4), Constants.SQL_BEAN_ENACTOR4), "querier", CompilerCommon.POST_PROCESSING_VAR, PRINCIPAL_MANAGER_VAR);
-        builder.addMethod(constructor.build());
+        Constructor constructor = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(FUNCTION_STRING_RESULTSET, "querier")
+                .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
+                .PARAMETER(SUPPLIER_OF_STRING, Constants.PRINCIPAL_MANAGER_VAR)
+                .BODY(
+                        SUPER_CALL(CONSTRUCTOR_CALL(sqlBeanEnactor4Type, List.of(VARIABLE("querier"), VARIABLE(Constants.POST_PROCESSING_VAR), VARIABLE(Constants.PRINCIPAL_MANAGER_VAR))))
+                );
 
-        TypeSpec theClass = builder.build();
+        Class pastClass = pastFactory.CLASS(Constants.SQL_ENACTOR_CONFIGURATOR4)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(superclass)
+                .CONSTRUCTOR(constructor);
 
-        String myPackage = locations.getFilePackage(configs.name,fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theClass, configs, myPackage, stackTraceElement);
-
-        // note, this goes to the back
-        return new SpecificationFile(myfile, locations.convertToBackendDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
+        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
 
 }
-
-
-

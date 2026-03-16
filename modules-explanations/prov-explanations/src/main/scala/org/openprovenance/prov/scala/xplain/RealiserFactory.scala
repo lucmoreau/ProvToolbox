@@ -107,13 +107,16 @@ class RealiserFactory(plans:Seq[Plan],
 
   class Realiser(statements:Seq[immutable.Statement],
                  documents: Map[String, Seq[immutable.Statement]])  {
+    //val logger: Logger = LogManager.getLogger(classOf[Realiser])
 
     def realise(the_profile: String, templates: Seq[String] = Seq(), format_option: Int=0, allp: Boolean=true): Narrative = {
+      //logger.debug("realise: " + the_profile + templates + " allp is " + allp)
       if (allp) {
         val narratives: Set[Narrative] = realise_all(statements, Set(Narrative()), the_profile, templates, format_option)
         val narrative = selectBestNarrative(narratives)
         optimiseNarrative(narrative)
       } else {
+        //logger.debug("realise_one: " + the_profile + templates)
         realise_one(statements, the_profile, templates, format_option)
       }
     }
@@ -131,6 +134,7 @@ class RealiserFactory(plans:Seq[Plan],
 
     final def realise_one(statements: Seq[Statement], the_profile: String, selected_templates: Seq[String], format_option: Int): Narrative = {
 
+     // logger.debug("realise_one " + the_profile + selected_templates)
       val kinds: Set[Kind] = statements.map(_.enumType).toSet
       val plans: Set[Plan] = kinds.flatMap(kind => index.getOrElse(kind, Set[Plan]())).filter(template => if (selected_templates.isEmpty) true else selected_templates.contains(template.name))
 
@@ -139,7 +143,7 @@ class RealiserFactory(plans:Seq[Plan],
         val context: Map[String, String] = provContext(plan.context)
         val (environment: Environment, all_matching_objects: Seq[Map[String, RField]]) = planQuery.processQuery(plan, dictionaries, profiles, the_profile, context)
 
-        logger.debug("realise_one: found objects_ok " + all_matching_objects.size + "  for " + plan.name)
+       // logger.debug("realise_one: found objects_ok " + all_matching_objects.size + "  for " + plan.name)
 
         realise(all_matching_objects, plan, environment, format_option)
       })
@@ -155,6 +159,7 @@ class RealiserFactory(plans:Seq[Plan],
                           the_profile: String,
                           select_plans: Seq[String],
                           format_option: Int): Set[Narrative] = {
+     // logger.debug("realise_all " + the_profile + select_plans)
 
       if (statements.isEmpty) {
         accumulator
@@ -172,7 +177,7 @@ class RealiserFactory(plans:Seq[Plan],
             val environment = Environment(context, dictionaries, profiles, the_profile)
             val all_matching_objects: Seq[Map[String, RField]] = planQuery.processQuery(plan, currentStatement, dictionaries, profiles, the_profile, context)
 
-            logger.debug("realise_all: found objects_ok " + all_matching_objects.size + "  for " + plan.name)
+            //logger.debug("realise_all: found objects_ok " + all_matching_objects.size + "  for " + plan.name)
 
             realise(all_matching_objects, plan, environment, format_option)
           })

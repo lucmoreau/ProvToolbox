@@ -2,8 +2,8 @@ document
   prefix pd <https://pandas.pydata.org/#>
   prefix py <urn:python:var:>
   prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>
-  prefix ln <https://plead-project.org/ns/loan#>
-  prefix pl <https://plead-project.org/ns/plead#>
+  prefix ln <http://openprovenance.org/ns/loan#>
+  prefix pl <http://openprovenance.org/ns/plead#>
   prefix localfile <file:///Users/me/mlpipeline/>
   prefix ex <http://example.org/>
   

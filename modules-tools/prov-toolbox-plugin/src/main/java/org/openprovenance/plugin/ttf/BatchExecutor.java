@@ -1,6 +1,5 @@
 package org.openprovenance.plugin.ttf;
 
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -9,11 +8,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvDeserialiser;
-import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvSerialiser;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -86,7 +82,7 @@ public class BatchExecutor extends AbstractMojo {
             }
 
 
-            org.openprovenance.prov.template.expander.ttf.BatchExecutor executor=new org.openprovenance.prov.template.expander.ttf.BatchExecutor( serializerMap2, deserializerMap2);
+            org.openprovenance.prov.template.core.ttf.BatchExecutor executor=new org.openprovenance.prov.template.core.ttf.BatchExecutor( serializerMap2, deserializerMap2);
             //Class<?> clazz = Class.forName(className, true, loader);
             //Method method = clazz.getMethod("main", String[].class);
             String[] argsArray = finalList.toArray(new String[0]);

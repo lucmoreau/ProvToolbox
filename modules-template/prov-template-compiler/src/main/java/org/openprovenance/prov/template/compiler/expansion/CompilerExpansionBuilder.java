@@ -1,13 +1,9 @@
 package org.openprovenance.prov.template.compiler.expansion;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.MissingNode;
-import com.squareup.javapoet.*;
+
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.text.StringSubstitutor;
-import org.openprovenance.prov.model.interop.Formats;
-import org.openprovenance.prov.model.interop.Framework;
-import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.model.Identifiable;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.template.compiler.*;
@@ -17,172 +13,721 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
-import org.openprovenance.prov.template.descriptors.Descriptor;
-import org.openprovenance.prov.template.descriptors.DescriptorUtils;
-import org.openprovenance.prov.template.descriptors.NameDescriptor;
-import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
-import org.openprovenance.prov.template.expander.ExpandAction;
-import org.openprovenance.prov.template.expander.ExpandUtil;
-import org.openprovenance.prov.template.expander.exception.MissingAttributeValue;
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
+import org.openprovenance.prov.template.descriptors.*;
+import org.openprovenance.prov.template.core.InstantiateUtil;
+import org.openprovenance.prov.template.core.exception.MissingAttributeValue;
 import org.openprovenance.prov.template.types.TypesRecordProcessor;
 
 import javax.lang.model.element.Modifier;
+import java.lang.Class;
 import java.util.*;
+import java.util.Iterator;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.template.compiler.CompilerUtil.typeT;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
-import static org.openprovenance.prov.template.compiler.common.CompilerCommon.makeArgsList;
-import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.*;
-import static org.openprovenance.prov.template.expander.ExpandUtil.*;
+import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
+import static org.openprovenance.prov.template.compiler.common.Constants.PROCESSOR;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY_ACCESSOR;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.EQ;
+import static org.openprovenance.prov.template.compiler.past.Constant.getNull;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import org.openprovenance.prov.template.compiler.past.ArrayInitialiser;
+import org.openprovenance.prov.template.compiler.past.LambdaExpression;
+import org.openprovenance.prov.template.compiler.past.MethodCall;
+import org.openprovenance.prov.template.compiler.past.Parameter;
+import org.openprovenance.prov.template.compiler.past.Statement;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
+
+import static org.openprovenance.prov.template.compiler.past.IfExpression.IF_;
+import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
+import static org.openprovenance.prov.template.core.InstantiateUtil.*;
 
 public class CompilerExpansionBuilder {
     private final CompilerUtil compilerUtil;
-    private final ProvFactory pFactory;
+    private final org.openprovenance.prov.model.ProvFactory pFactory;
     private final boolean withMain;
     private final CompilerCommon compilerCommon;
-    private final boolean debugComment;
     private final CompilerTypeManagement compilerTypeManagement;
-
-    private TypeName processorInterfaceType(String template, String packge) {
-        return ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.templateNameClass(template)+"Interface"),TypeVariableName.get("T"));
-    }
+    private final PastFactory pastFactory;
 
 
-    public CompilerExpansionBuilder(boolean withMain, CompilerCommon compilerCommon, ProvFactory pFactory, boolean debugComment, CompilerTypeManagement compilerTypeManagement) {
+
+    public CompilerExpansionBuilder(boolean withMain, CompilerCommon compilerCommon, org.openprovenance.prov.model.ProvFactory pFactory, boolean debugComment, CompilerTypeManagement compilerTypeManagement) {
         this.pFactory=pFactory;
         this.withMain=withMain;
         this.compilerCommon = compilerCommon;
-        this.debugComment=debugComment;
         this.compilerTypeManagement=compilerTypeManagement;
         this.compilerUtil=new CompilerUtil(pFactory);
+        this.pastFactory=compilerUtil.getPastFactory();
     }
 
 
 
 
-    public SpecificationFile generateBuilderInterfaceSpecification(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+    public SpecificationFile generateBuilderSpecification(TemplatesProjectConfiguration configs, Locations locations, org.openprovenance.prov.model.Document doc, String name, String templateName, String templateFullyQualifiedName, String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
 
 
-        Bundle bun = u.getBundle(doc).get(0);
+        org.openprovenance.prov.model.Bundle bun = u.getBundle(doc).get(0);
 
         Set<QualifiedName> allVars = new HashSet<>();
         Set<QualifiedName> allAtts = new HashSet<>();
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
-        return generateBuilderInterfaceSpecification_aux(configs, locations, name, templateName, packge, bindingsSchema, directory, fileName);
-
-    }
-
-    SpecificationFile generateBuilderInterfaceSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
-        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
-
-        TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(name+"Interface", "T");
-
-        builder.addMethod(generateTemplateGeneratorInterface(bindingsSchema));
-
-        TypeSpec theInterface = builder.build();
-
-        JavaFile myfile = compilerUtil.specWithComment(theInterface, templateName, packge, stackTraceElement);
-
-        return new SpecificationFile(myfile, directory, fileName, packge);
-    }
-
-
-    public SpecificationFile generateBuilderSpecification(TemplatesProjectConfiguration configs, Locations locations, Document doc, String name, String templateName, String templateFullyQualifiedName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
-
-
-        Bundle bun = u.getBundle(doc).get(0);
-
-        Set<QualifiedName> allVars = new HashSet<>();
-        Set<QualifiedName> allAtts = new HashSet<>();
-
-        compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
-
-        return generateBuilderSpecification_aux(configs, locations, doc, new ArrayList<>(allVars), new ArrayList<>(allAtts), name, templateName, templateFullyQualifiedName, packge, bindings_schema, bindingsSchema, successorTable, directory, fileName);
+        return generateBuilderSpecification_aux(configs, locations, doc, new ArrayList<>(allVars), new ArrayList<>(allAtts), name, templateName, templateFullyQualifiedName, packge, bindingsSchema, successorTable, directory, fileName);
 
     }
 
 
-    public MethodSpec generateTemplateGeneratorInterface(TemplateBindingsSchema bindingsSchema) {
 
+    SpecificationFile generateBuilderSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, org.openprovenance.prov.model.Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String templateFullyQualifiedName, String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
+        StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("call")
-                .addModifiers(Modifier.PUBLIC)
-                .addModifiers(Modifier.ABSTRACT)
-                .returns(typeT);
+        org.openprovenance.prov.template.compiler.past.Class pastClass =
+                pastFactory.CLASS(name)
+                        .SUPERCLASS(PROV_FILE_BUILDER)
+                        .INTERFACES(PROV_PROXY_CLIENT_ACCESSOR)
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .FIELDS(
+                                FIELD("pf", PROV_FACTORY).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL),
+                                FIELD("vc", PROV_VALUE_CONVERTER).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL)
+                        );
 
+        pastClass.METHOD(compilerCommon.generateNameAccessor(templateName));
+        pastClass.METHOD(compilerCommon.generateFullyQualifiedNameAccessor(templateFullyQualifiedName));
+        Hashtable<QualifiedName, String> vmap = generateQualifiedNames(doc, pastClass);
+        pastClass.METHOD(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindingsSchema, true));
 
-        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
-        Collection<String> variables=descriptorUtils.fieldNames(bindingsSchema);
-        compilerUtil.generateDocumentSpecializedParameters(builder, theVar, variables);
+        pastClass.CONSTRUCTOR(generateConstructor2(vmap));
+        pastClass.METHOD(commonAccessorGenerato(templateName, locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON)));
+        if (withMain) pastClass.METHOD(generateMain(allVars, allAtts, name, packge, bindingsSchema));
+        pastClass.METHOD(generateFactoryMethod(allVars, allAtts, name, bindingsSchema));
+        pastClass.METHOD(generateFactoryMethodWithContinuation(allVars, allAtts, name, templateName, packge, bindingsSchema));
+        pastClass.METHOD(generateFactoryMethodWithArray(allVars, allAtts, name, bindingsSchema));
+        pastClass.METHOD(generateFactoryMethodWithArrayAndContinuation(name, templateName, packge, bindingsSchema));
+        pastClass.METHOD(generateUniqueRecordFactoryMethodWithArrayAndContinuation(name, templateName, packge, bindingsSchema));
+        pastClass.METHOD(typedRecordGenerator(templateName, packge));
+        pastClass.METHOD(typeManagerGenerator(templateName, packge));
+        pastClass.METHOD(generateTypePropagatorN());
+        pastClass.METHOD(generateTypePropagator(packge + ".client", bindingsSchema, successorTable));
 
-        return builder.build();
+        //builder.addMethod(generateTemplateGenerator_old(allVars, allAtts, doc, vmap, bindingsSchema));
+        // builder.addMethod(generateTypePropagator_old(packge+".client", bindingsSchema, successorTable));
+
+        Supplier<Boolean> pythonGenerator = () -> true;
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
-    SpecificationFile generateBuilderSpecification_aux(TemplatesProjectConfiguration configs, Locations locations, Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String templateFullyQualifiedName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
-        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateClassBuilder2(name);
+    /**
+     * Returns a PAST {@link Constructor} .
+     */
+    public Constructor generateConstructor2(Hashtable<QualifiedName, String> vmap) {
+        Constructor constructor = CONSTRUCTOR()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(PROV_FACTORY, "pf")
+                .commentFileLocation();
 
-        Hashtable<QualifiedName, String> vmap = generateQualifiedNames(doc, builder);
+        // this.pf = pf
+        constructor.BODY(ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "pf"), VARIABLE("pf")));
 
-        builder.addMethod(compilerUtil.generateConstructor2(vmap));
-
-        builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindings_schema, bindingsSchema));
-
-
-        builder.addMethod(compilerCommon.generateNameAccessor(templateName));
-        builder.addMethod(compilerCommon.generateFullyQualifiedNameAccessor(templateFullyQualifiedName));
-
-        builder.addMethod(compilerCommon.commonAccessorGenerator(templateName,locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON)));
-
-        builder.addMethod(typeManagerGenerator(templateName,packge));
-       // builder.addMethod(compilerClient.typePropagateGenerator(templateName,packge));
-        builder.addMethod(compilerCommon.typedRecordGenerator(templateName,packge));
-
-
-        builder.addMethod(generateTypePropagator(allVars, allAtts, doc, vmap, packge+".client", bindings_schema,successorTable));
-
-        //builder.addMethod(generateTypePropagatorN_OLD());
-        builder.addMethod(generateTypePropagatorN_new());
-
-
-        if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindings_schema, bindingsSchema));
-
-        if (bindings_schema != null) {
-            builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindings_schema, bindingsSchema));
-            builder.addMethod(generateFactoryMethodWithContinuation(allVars, allAtts, name,  templateName, packge, bindings_schema, bindingsSchema));
-            builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema, bindingsSchema));
-            builder.addMethod(generateFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindings_schema, bindingsSchema));
-            builder.addMethod(generateUniqueRecordFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindingsSchema));
+        // For each qualified name in the map: this.varName = pf.newQualifiedName(nsURI, localPart, prefix)
+        for (Map.Entry<QualifiedName, String> e : vmap.entrySet()) {
+            final QualifiedName q = e.getKey();
+            constructor.BODY(
+                    ASSIGNMENT(
+                            METHOD_CALL(VARIABLE("this"), e.getValue()),
+                            METHOD_CALL(VARIABLE("pf"), "newQualifiedName",
+                                    CONSTANT(q.getNamespaceURI()),
+                                    CONSTANT(q.getLocalPart()),
+                                    CONSTANT(q.getPrefix()))));
         }
 
+        constructor.BODY(
+                // this.vc = new ValueConverter(pf)
+                ASSIGNMENT(
+                        METHOD_CALL(VARIABLE("this"), "vc"),
+                        CONSTRUCTOR_CALL(PROV_VALUE_CONVERTER, List.of(VARIABLE("pf")))),
+
+                // register(this)
+                METHOD_CALL("register", List.of(VARIABLE("this"))));
+
+        return constructor;
+    }
+
+    /**
+     * Returns a PAST {@link Method} .
+     */
+    public Method commonAccessorGenerato(String templateName, String packge) {
+        Method method = METHOD("getClientBuilder")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(BUILDER_INTERFACE)
+                .BODY(
+                        RETURN(CONSTRUCTOR_CALL(
+                                ClassName.get(
+                                        compilerUtil.templateNameClass(templateName), packge),
+                                List.of())));
+
+        return method;
+    }
+
+    /**
+     * Returns a PAST {@link Expression}
+     */
+    public Expression createExamplarExpression(Map<String, List<Descriptor>> theVars, String key, int num, org.openprovenance.prov.model.ProvFactory pFactory) {
+        List<Descriptor> descriptors = theVars.get(key);
+        Descriptor descriptor = (descriptors == null) ? null : descriptors.get(0);
+        Object examplar = (descriptor == null) ? null : descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getExamplar, NameDescriptor::getExamplar);
+
+        if (examplar != null) {
+            Class<?> declaredJavaType = compilerUtil.getJavaTypeForDeclaredType(theVars, key);
+            //final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+            final Function<List<Expression>, Expression> converter = compilerUtil.getConverterForDeclaredType3(declaredJavaType);
+
+            if (converter == null) {
+                return CONSTANT(examplar.toString());
+            } else {
+                // converter(examplar) — e.g., Integer.valueOf(123)
+                /*
+                String[] parts = converter.split("\\.");
+                if (parts.length == 2) {
+                    ClassName cls =
+                            ClassName.get(parts[0], "past.lang");
+                    return METHOD_CALL(cls, parts[1], CONSTANT(examplar.toString()));
+                }
+                return CONSTANT(examplar.toString());
+
+                 */
+                return converter.apply(List.of(CONSTANT(examplar.toString())));
+            }
+        } else {
+            if (descriptor != null) {
+                switch (descriptor.getDescriptorType()) {
+                    case NAME:
+                        Class<?> declaredJavaType = compilerUtil.getJavaTypeForDeclaredType(theVars, key);
+                        //final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+                        final Function<List<Expression>, Expression> converter = compilerUtil.getConverterForDeclaredType3(declaredJavaType);
+
+                        if (converter == null) {
+                            return CONSTANT("v" + num);
+                        } else {
+                            String example = compilerUtil.generateExampleForType(
+                                    descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getType, NameDescriptor::getType),
+                                    key, pFactory);
+                            /*
+                            String[] parts = converter.split("\\.");
+                            if (parts.length == 2) {
+                                ClassName cls =
+                                        ClassName.get(parts[0], "past.lang");
+                                return METHOD_CALL(cls, parts[1], CONSTANT(example));
+                            }
+                            return CONSTANT(example);
+
+                             */
+                            return converter.apply(List.of(CONSTANT(example)));
+                        }
+                    case ATTRIBUTE:
+                        AttributeDescriptor ad = ((AttributeDescriptorList) descriptor).getItems().get(0);
+                        String hasType = ad.getType();
+                        if (hasType != null) {
+                            return switch (hasType) {
+                                case "xsd:int" -> CONSTANT(num);
+                                case "xsd:long" -> CONSTANT(Long.valueOf(num));
+                                case "xsd:string" -> CONSTANT("v" + num);
+                                case "xsd:boolean" -> CONSTANT(true);
+                                case "xsd:float" -> CONSTANT(Float.valueOf((float) (num + 0.01)));
+                                case "xsd:double" -> CONSTANT(Double.valueOf(num + 0.01));
+                                case "xsd:date", "xsd:dateTime" -> CONSTANT(pFactory.newTimeNow().toXMLFormat());
+                                default -> throw new UnsupportedOperationException("createExamplarExpression: unsupported type " + hasType);
+                            };
+                        } else {
+                            throw new UnsupportedOperationException("No type for " + key);
+                        }
+                    default:
+                        throw new UnsupportedOperationException("This exception is never reached");
+                }
+            } else {
+                throw new UnsupportedOperationException("cannot find null descriptor here!!");
+            }
+        }
+    }
+
+    /**
+     * Returns a PAST {@link Method}
+     */
+    public Method generateMain(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String packge, TemplateBindingsSchema bindingsSchema) {
+        Method method = METHOD("main")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
+                .RETURNS(VOID)
+                .PARAMETER(STRING_ARRAY, "args");
+        compilerUtil.debugFileLocation(method);
+
+        Map<String, List<Descriptor>> theVars = bindingsSchema.getVar();
+
+        ClassName nameClass =
+                ClassName.get(name, packge);
+
+        // Framework fr = Framework.dynamicLoad()
+        method.addStatement(DEFINITION(PROV_FRAMEWORK, VARIABLE("fr"),
+                METHOD_CALL(PROV_FRAMEWORK, "dynamicLoad", List.of())));
+        // ProvFactory pf = fr.getFactory()
+        method.addStatement(DEFINITION(PROV_FACTORY, VARIABLE("pf"),
+                METHOD_CALL(VARIABLE("fr"), "getFactory", List.of())));
+        // <Name> me = new <Name>(pf)
+        method.addStatement(DEFINITION(nameClass, VARIABLE("me"),
+                CONSTRUCTOR_CALL(nameClass, List.of(VARIABLE("pf")))));
+
+        // For each var: QualifiedName __var_X = pf.newQualifiedName("http://example.org/", "X", "ex")
+        for (QualifiedName q : allVars) {
+            method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(compilerUtil.varPrefix(q.getLocalPart())),
+                    METHOD_CALL(VARIABLE("pf"), "newQualifiedName",
+                            CONSTANT("http://example.org/"), CONSTANT(q.getLocalPart()), CONSTANT("ex"))));
+        }
+
+        // For each att: either String __att_X = "example" or Object __att_X = null
+        for (QualifiedName q : allAtts) {
+            String declaredType = null;
+            if (theVars != null) {
+                for (String key : theVars.keySet()) {
+                    if (q.getLocalPart().equals(key)) {
+                        if (theVars.containsKey(key) && theVars.get(key) != null) {
+                            declaredType = compilerUtil.getDeclaredType(theVars, key);
+                        }
+                    }
+                }
+            }
+
+            if (declaredType != null) {
+                String example = compilerUtil.generateExampleForType(declaredType, q.getLocalPart(), pFactory);
+                method.addStatement(DEFINITION(STRING, VARIABLE(compilerUtil.attPrefix(q.getLocalPart())),
+                        CONSTANT(example)));
+            } else {
+                method.addStatement(DEFINITION(OBJECT, VARIABLE(compilerUtil.attPrefix(q.getLocalPart())),
+                        getNull()));
+            }
+        }
+
+        // Build argument list for me.generator(...)
+        List<Expression> generatorArgs = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+        for (QualifiedName q : allVars) {
+            generatorArgs.add(VARIABLE(compilerUtil.varPrefix(q.getLocalPart())));
+            seen.add(q.getLocalPart());
+        }
+        for (QualifiedName q : allAtts) {
+            if (!seen.contains(q.getLocalPart())) {
+                generatorArgs.add(VARIABLE(compilerUtil.attPrefix(q.getLocalPart())));
+            }
+        }
+
+        // System.out accessor
+        Expression systemOut =
+                new MethodCall(
+                        ClassName.get("System", "past.lang"), "out");
+        // Formats.ProvFormat.PROVN accessor
+        Expression provFormatProvn =
+                new MethodCall(
+                        new MethodCall(PROV_FORMATS, "ProvFormat"),
+                        "PROVN");
+
+        // Document document = me.generator(args...)
+        method.addStatement(DEFINITION(PROV_DOCUMENT, VARIABLE("document"),
+                METHOD_CALL(VARIABLE("me"), "generator", generatorArgs)));
+        // fr.writeDocument(System.out, document, Formats.ProvFormat.PROVN)
+        method.addStatement(METHOD_CALL(VARIABLE("fr"), "writeDocument",
+                systemOut, VARIABLE("document"), provFormatProvn));
+
+        // if (theVars != null): second call using make(exemplars...)
+        if (theVars != null) {
+            List<Expression> makeArgs = new ArrayList<>();
+            int count = 0;
+            for (String key : theVars.keySet()) {
+                if (theVars.get(key) == null) continue;
+                makeArgs.add(createExamplarExpression(theVars, key, count++, pFactory));
+            }
+
+            // document = me.make(args...)
+            method.addStatement(ASSIGNMENT( VARIABLE("document"),
+                    METHOD_CALL(VARIABLE("me"), "make", makeArgs)));
+            // fr.writeDocument(System.out, document, Formats.ProvFormat.PROVN)
+            method.addStatement(METHOD_CALL(VARIABLE("fr"), "writeDocument",
+                    systemOut, VARIABLE("document"), provFormatProvn));
+        }
+
+        return method;
+    }
+
+    /**
+     * Builds a PAST string concatenation expression from a descriptor ID pattern
+     * where {@code *} is replaced by the variable value at runtime.
+     * For example, {@code "ex:*"} becomes {@code "ex:" + key + ""} via
+     * {@code METHOD_CALL(STRING, "concat", CONSTANT("ex:"), VARIABLE(key), CONSTANT(""))}.
+     */
+    private Expression buildIdStringExpression(String idPattern, String variableName) {
+        String[] parts = idPattern.split("\\*", -1);
+        List<Expression> concatArgs = new ArrayList<>();
+        for (int i = 0; i < parts.length; i++) {
+            concatArgs.add(CONSTANT(parts[i]));
+            if (i < parts.length - 1) {
+                concatArgs.add(VARIABLE(variableName));
+            }
+        }
+        if (concatArgs.size() == 1) {
+            return concatArgs.get(0);
+        }
+        return METHOD_CALL(STRING, "concat", concatArgs);
+    }
+
+    /**
+     * Returns a PAST {@link Method}.
+     */
+    public Method generateFactoryMethod(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
+        Method method = METHOD("make")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(PROV_DOCUMENT);
 
 
-        TypeSpec bean = builder.build();
+        // Document __C_document = null
+        method.addStatement(DEFINITION(PROV_DOCUMENT, VARIABLE("__C_document"), getNull()));
+        // Namespace __C_ns = new Namespace()
+        method.addStatement(DEFINITION(PROV_NAMESPACE, VARIABLE(Constants.C_NS),
+                CONSTRUCTOR_CALL(PROV_NAMESPACE, List.of())));
+        // StringSubstitutor subst = new StringSubstitutor(getVariableMap())
+        method.addStatement(DEFINITION(APACHE_STRING_SUBSTITUTOR, VARIABLE("subst"),
+                CONSTRUCTOR_CALL(APACHE_STRING_SUBSTITUTOR,
+                        List.of(METHOD_CALL("getVariableMap", List.of())))));
 
-        JavaFile myfile = compilerUtil.specWithComment(bean, templateName, packge, stackTraceElement);
+        Map<String, String> theContext = bindingsSchema.getContext();
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
 
-        return new SpecificationFile(myfile, directory, fileName, packge);
+        // Parameters
+        compilerUtil.generateSpecializedParameters(method, bindingsSchema.getVar());
 
+        // Register namespace prefixes
+        for (String prefix : theContext.keySet()) {
+            String uri = theContext.get(prefix);
+            // __C_ns.register(prefix, subst.replace(uri))
+            method.addStatement(METHOD_CALL(VARIABLE(Constants.C_NS), "register",
+                    CONSTANT(prefix),
+                    METHOD_CALL(VARIABLE("subst"), "replace", CONSTANT(uri))));
+        }
 
+        // Process variables
+        List<Expression> generatorArgs = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+
+        for (QualifiedName q : allVars) {
+            final String key = q.getLocalPart();
+            seen.add(key);
+            final String newName = compilerUtil.varPrefix(key);
+            List<Descriptor> descriptors = theVar.get(key);
+            if (descriptors != null && !descriptors.isEmpty() && (descriptors.get(0) instanceof NameDescriptor)) {
+                NameDescriptor descriptor = (NameDescriptor) descriptors.get(0);
+                String s = descriptor.getId();
+                int existsColumn = s.indexOf(":");
+                if (existsColumn >= 0) {
+                    String pre = s.substring(0, existsColumn);
+                    if (pre != null && !pre.isEmpty() && theContext.get(pre) == null) {
+                        throw new InvalidCaseException("CompilerExpansionBuilder: Reference to prefix '" + pre + "' in '" + s + "' for key '" + key + "', not available in context " + theContext);
+                    }
+                }
+                String escape = descriptor.getEscape();
+                boolean toEscape = escape != null && "true".equals(escape);
+
+                // Build: QualifiedName newName = (key==null) ? null : __C_ns.stringToQualifiedName(idExpr, pf [, false])
+                Expression idExpr = buildIdStringExpression(s, key);
+                List<Expression> stqArgs = new ArrayList<>();
+                stqArgs.add(idExpr);
+                stqArgs.add(VARIABLE("pf"));
+                if (toEscape) {
+                    stqArgs.add(CONSTANT(false));
+                }
+                Expression stqCall =
+                        METHOD_CALL(VARIABLE(Constants.C_NS), "stringToQualifiedName", stqArgs);
+                method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(newName),
+                        IfExpression.IFEXPRESSION(
+                                BINARY_OP(VARIABLE(key), EQ, getNull()),
+                                getNull(),
+                                stqCall)));
+            } else {
+                // QualifiedName newName = null
+                method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(newName), getNull()));
+            }
+            generatorArgs.add(VARIABLE(newName));
+        }
+
+        // Process attributes
+        for (QualifiedName q : allAtts) {
+            final String key = q.getLocalPart();
+            String newName = key;
+            if (!seen.contains(key)) {
+                List<Descriptor> descriptors = theVar.get(key);
+                if (descriptors != null && !descriptors.isEmpty() && (descriptors.get(0) instanceof NameDescriptor)) {
+                    NameDescriptor descriptor = (NameDescriptor) descriptors.get(0);
+                    String s = descriptor.getId();
+                    int existsColumn = s.indexOf(":");
+                    if (existsColumn >= 0) {
+                        String pre = s.substring(0, existsColumn);
+                        if (pre != null && !pre.isEmpty() && theContext.get(pre) == null) {
+                            throw new InvalidCaseException("CompilerExpansionBuilder: Reference to prefix '" + pre + "' in '" + s + "' for key '" + key + "', not available in context " + theContext);
+                        }
+                    }
+                    newName = compilerUtil.attPrefix(key);
+                    // QualifiedName newName = (key==null) ? null : __C_ns.stringToQualifiedName(idExpr, pf)
+                    Expression idExpr = buildIdStringExpression(s, key);
+                    Expression stqCall =
+                            METHOD_CALL(VARIABLE(Constants.C_NS), "stringToQualifiedName", idExpr, VARIABLE("pf"));
+                    method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(newName),
+                            IF_(BINARY_OP(VARIABLE(key), EQ, getNull()))
+                                    .THEN(getNull())
+                                    .ELSE(stqCall)));
+                } else {
+                    if (descriptors != null && !descriptors.isEmpty()) {
+                        // is already declared, but not with @id — no statement needed
+                    } else {
+                        method.addStatement(DEFINITION(OBJECT, VARIABLE(newName), getNull()));
+                    }
+                }
+                generatorArgs.add(VARIABLE(newName));
+            }
+        }
+
+        // __C_document = generator(args...)
+        method.addStatement(ASSIGNMENT( VARIABLE("__C_document"),
+                METHOD_CALL("generator", generatorArgs)));
+        // return __C_document
+        method.addStatement(RETURN(VARIABLE("__C_document")));
+
+        return method;
+    }
+
+    /**
+     * Returns a PAST {@link Method}.
+     */
+    public Method generateFactoryMethodWithContinuation(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String template, String packge, TemplateBindingsSchema bindingsSchema) {
+
+        Method method = METHOD("make")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(T())
+                .addTypeVariables(T());
+
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
+        Map<String, String> theContext = bindingsSchema.getContext();
+
+        // T __C_result = null
+        method.addStatement(DEFINITION(T(), VARIABLE("__C_result"), getNull()));
+        // Namespace __C_ns = new Namespace()
+        method.addStatement(DEFINITION(PROV_NAMESPACE, VARIABLE(Constants.C_NS),
+                CONSTRUCTOR_CALL(PROV_NAMESPACE, List.of())));
+        // StringSubstitutor subst = new StringSubstitutor(getVariableMap())
+        method.addStatement(DEFINITION(APACHE_STRING_SUBSTITUTOR, VARIABLE("subst"),
+                CONSTRUCTOR_CALL(APACHE_STRING_SUBSTITUTOR,
+                        List.of(METHOD_CALL("getVariableMap", List.of())))));
+
+        // Parameters from bindings schema
+        compilerUtil.generateSpecializedParameters(method, theVar);
+
+        // Parameter: processor of type <TemplateName>Interface<T>
+        ClassName interfaceClass =
+                ClassName.get(
+                        compilerUtil.templateNameClass(template) + "Interface", packge);
+        ParameterizedType processorType = ParameterizedType.get(interfaceClass, T());
+        method.PARAMETER(processorType, "processor");
+
+        // Register namespace prefixes
+        for (String prefix : theContext.keySet()) {
+            String uri = theContext.get(prefix);
+            method.addStatement(METHOD_CALL(VARIABLE(Constants.C_NS), "register",
+                    CONSTANT(prefix),
+                    METHOD_CALL(VARIABLE("subst"), "replace", CONSTANT(uri))));
+        }
+
+        // Track variable name translation (key -> translated name)
+        Map<String, String> translator = new HashMap<>();
+
+        // Process variables
+        Set<String> seen = new HashSet<>();
+        for (QualifiedName q : allVars) {
+            final String key = q.getLocalPart();
+            seen.add(key);
+            final String newName = compilerUtil.varPrefix(key);
+            translator.put(key, newName);
+            List<Descriptor> descriptors = theVar.get(key);
+            if (descriptors != null && !descriptors.isEmpty() && (descriptors.get(0) instanceof NameDescriptor)) {
+                NameDescriptor descriptor = (NameDescriptor) descriptors.get(0);
+                String escape = descriptor.getEscape();
+                boolean toEscape = "true".equals(escape);
+                String id = descriptor.getId();
+
+                Expression idExpr = buildIdStringExpression(id, key);
+                List<Expression> stqArgs = new ArrayList<>();
+                stqArgs.add(idExpr);
+                stqArgs.add(VARIABLE("pf"));
+                if (toEscape) {
+                    stqArgs.add(CONSTANT(false));
+                }
+                Expression stqCall = METHOD_CALL(VARIABLE(Constants.C_NS), "stringToQualifiedName", stqArgs);
+                method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(newName),
+                        IF_(BINARY_OP(VARIABLE(key), EQ, getNull()))
+                                .THEN(getNull())
+                                .ELSE(stqCall)));
+            } else {
+                // QualifiedName newName = null
+                method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(newName), getNull()));
+            }
+        }
+
+        // Process attributes
+        for (QualifiedName q : allAtts) {
+            final String key = q.getLocalPart();
+            if (!seen.contains(key)) {
+                List<Descriptor> descriptors = theVar.get(key);
+                if (descriptors != null && !descriptors.isEmpty() && (descriptors.get(0) instanceof NameDescriptor)) {
+                    NameDescriptor descriptor = (NameDescriptor) descriptors.get(0);
+                    String escape = descriptor.getEscape();
+                    boolean toEscape = "true".equals(escape);
+                    String id = descriptor.getId();
+                    final String newName = compilerUtil.attPrefix(key);
+                    translator.put(key, newName);
+
+                    Expression idExpr = buildIdStringExpression(id, key);
+                    List<Expression> stqArgs = new ArrayList<>();
+                    stqArgs.add(idExpr);
+                    stqArgs.add(VARIABLE("pf"));
+                    if (toEscape) {
+                        stqArgs.add(CONSTANT(false));
+                    }
+                    Expression stqCall =
+                            METHOD_CALL(VARIABLE(Constants.C_NS), "stringToQualifiedName", stqArgs);
+                    method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(newName),
+                            IF_(BINARY_OP(VARIABLE(key), EQ, getNull()))
+                                    .THEN(getNull())
+                                    .ELSE(stqCall)));
+                }
+            }
+        }
+
+        // Build argument list for processor.call(args...) using translator
+        List<Expression> callArgs = new ArrayList<>();
+        for (String key : theVar.keySet()) {
+            if (!theVar.containsKey(key)) continue;
+            if (theVar.get(key) == null) continue;
+            String argName = key;
+            if (translator.get(key) != null) {
+                argName = translator.get(key);
+            }
+            callArgs.add(VARIABLE(argName));
+        }
+
+        // __C_result = processor.call(args...)
+        method.addStatement(ASSIGNMENT( VARIABLE("__C_result"),
+                METHOD_CALL(VARIABLE("processor"), "call", callArgs)));
+        // return __C_result
+        method.addStatement(RETURN(VARIABLE("__C_result")));
+
+        return method;
+    }
+
+    /**
+     *
+     * Returns a PAST {@link Method} .
+     */
+    public Method generateTemplateGenerator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, org.openprovenance.prov.model.Document doc, Hashtable<QualifiedName, String> vmap, TemplateBindingsSchema bindingsSchema, boolean past) {
+
+        Method method = METHOD("generator")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(PROV_DOCUMENT);
+
+        // Parameters
+        for (QualifiedName q : allVars) {
+            method.PARAMETER(PROV_QUALIFIED_NAME, q.getLocalPart());
+        }
+        for (QualifiedName q : allAtts) {
+            if (!allVars.contains(q)) {
+                method.PARAMETER(ClassName.OBJECT, q.getLocalPart());
+            }
+        }
+
+        // Body: variable declarations
+        // QualifiedName nullqn = null
+        method.addStatement(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE("nullqn"), getNull()));
+        // Collection<Attribute> attrs = null
+        method.addStatement(DEFINITION(PROV_COLLECTION_OF_ATTRIBUTES, VARIABLE("attrs"), getNull()));
+        // Document __C_document = pf.newDocument()
+        method.addStatement(DEFINITION(PROV_DOCUMENT, VARIABLE("__C_document"),
+                METHOD_CALL(VARIABLE("pf"), "newDocument", List.of())));
+
+        // Gensym variable handling
+        for (QualifiedName q : allVars) {
+            if (InstantiateUtil.isGensymVariable(q)) {
+                final String vgen = q.getLocalPart();
+                // if (vgen==null) vgen=InstantiateAction.getUUIDQualifiedName2(pf)
+                method.addStatement(
+                        IF(BINARY_OP(VARIABLE(vgen), EQ, getNull()))
+                                .THEN(ASSIGNMENT( VARIABLE(vgen),
+                                        METHOD_CALL(PROV_INSTANTIATE_ACTION, "getUUIDQualifiedName2", VARIABLE("pf")))));
+            }
+        }
+
+        // Process PROV template statements using StatementCompilerAction2
+        List<Statement> bodyStatements = new ArrayList<>();
+        StatementCompilerAction2 action = new StatementCompilerAction2(pFactory, allVars, allAtts, vmap, bodyStatements, "__C_document.getStatementOrBundle()", bindingsSchema);
+        for (org.openprovenance.prov.model.StatementOrBundle s : doc.getStatementOrBundle()) {
+            u.doAction(s, action);
+        }
+        for (Statement stmt : bodyStatements) {
+            method.addStatement(stmt);
+        }
+
+        // new ProvUtilities().updateNamespaces(__C_document)
+        method.addStatement(
+                METHOD_CALL(
+                        CONSTRUCTOR_CALL(PROV_UTILITIES, List.of()),
+                        "updateNamespaces",
+                        List.of(VARIABLE("__C_document"))));
+
+        // return __C_document
+        method.addStatement(RETURN(VARIABLE("__C_document")));
+
+        return method;
     }
 
 
-    public MethodSpec generateTemplateGenerator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    /*
+    public MethodSpec generateTemplateGenerator_old(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, TemplateBindingsSchema bindingsSchema) {
 
 
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("generator")
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("generator_old")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(Document.class);
 
         compilerUtil.specWithComment(builder);
 
-        Map<String, List<Descriptor>> theVars=bindingsSchema.getVar();
-        DescriptorUtils utils=new DescriptorUtils();
 
 
 
@@ -201,14 +746,14 @@ public class CompilerExpansionBuilder {
             }
         }
         for (QualifiedName q : allVars) {
-            if (ExpandUtil.isGensymVariable(q)) {
+            if (InstantiateUtil.isGensymVariable(q)) {
                 final String vgen = q.getLocalPart();
-                builder.addStatement("if ($N==null) $N=$T.getUUIDQualifiedName2(pf)", vgen, vgen, ExpandAction.class);
+                builder.addStatement("if ($N==null) $N=$T.getUUIDQualifiedName2(pf)", vgen, vgen, InstantiateAction.class);
             }
         }
 
 
-        StatementCompilerAction action = new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, "__C_document.getStatementOrBundle()", bindings_schema, bindingsSchema);
+        StatementCompilerAction action = new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, "__C_document.getStatementOrBundle()", bindingsSchema);
         for (StatementOrBundle s : doc.getStatementOrBundle()) {
             u.doAction(s, action);
         }
@@ -223,20 +768,164 @@ public class CompilerExpansionBuilder {
     }
 
 
-    static final ArrayTypeName recordType = ArrayTypeName.of(ClassName.get(Object.class));
-    public static final ParameterizedTypeName levelNMapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeName.get(Integer.class));
-    static final ParameterizedTypeName levelNP1MapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeName.get(int[].class));
-    public static final ParameterizedTypeName levelNP1CMapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), ParameterizedTypeName.get(ClassName.get(Collection.class), TypeName.get(int[].class)));
-
-
-    static final ParameterizedTypeName successorType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(Integer.class), TypeName.get(int[].class));
+     */
 
 
 
-    public MethodSpec generateTypePropagator(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, String packge, JsonNode bindings_schema, Map<Integer, List<Integer>> successorTable) {
+    private Expression propagateTypesNCall(int count, int successor, int relation, Expression specificRelation) {
+        return METHOD_CALL("propagateTypes_n", List.of(
+                VARIABLE("record"),
+                VARIABLE("mapLevelN"),
+                VARIABLE("mapLevelNP1"),
+                CONSTANT(count),
+                CONSTANT(successor),
+                CONSTANT(relation),
+                specificRelation,
+                VARIABLE("uniqId")));
+    }
+
+    private <ARELATION extends Identifiable> void generateStatementForRelation(Method method, int count, int successor, int relation, Map<String,List<Descriptor>> theVar, Map<String, Set<Pair<QualifiedName, ARELATION>>> successors, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, String key) {
+        if (successors.get(key) != null) {
+
+            final List<ARELATION> relations = successors.get(key).stream().map(Pair::getRight).collect(Collectors.toList());
+            final List<QualifiedName> identifiers = relations.stream().map(Identifiable::getId).collect(Collectors.toList());
+
+            method.COMMENT(true, "Identifiers: " + identifiers);
+            method.COMMENT(true, "KnownTypes: "   + successors.get(key).stream().map(p -> knownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
+            method.COMMENT(true, "UnknownTypes: " + successors.get(key).stream().map(p -> unknownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
+
+            final List<Collection<QualifiedName>> optionalActivityTypes = relations.stream().map(p -> doCollectElementVariables((org.openprovenance.prov.model.Statement)p, ACTIVITY_TYPE_URI)).collect(Collectors.toList());
+            final List<Collection<QualifiedName>> optionalActivities    = relations.stream().map(p -> doCollectElementVariables((org.openprovenance.prov.model.Statement)p, TMPL_ACTIVITY_URI)).collect(Collectors.toList());
+
+            method.COMMENT(true, "ActivityTypes: " + optionalActivityTypes);
+            method.COMMENT(true, "Activities: "    + optionalActivities);
+
+            if (optionalActivityTypes.isEmpty() || optionalActivityTypes.get(0) == null) {
+                method.addStatement(propagateTypesNCall(count, successor, relation, CONSTANT(-1)));
+            } else {
+
+                final QualifiedName firstRelationIdentifier = identifiers.get(0);
+                final ARELATION firstRelation = relations.get(0);
+
+                final Optional<QualifiedName> firstActivityType = optionalActivityTypes.get(0).stream().findFirst();
+                if (firstActivityType.isEmpty()) {
+
+                    method.addStatement(propagateTypesNCall(count, successor, relation, CONSTANT(-1)));
+
+                } else {
+
+                    if (optionalActivities.isEmpty() || optionalActivities.get(0) == null)
+                        throw new MissingAttributeValue(TMPL_ACTIVITY_URI + " in " + firstRelation);
+                    final Optional<QualifiedName> firstActivity = optionalActivities.get(0).stream().findFirst();
+                    if (firstActivity.isEmpty())
+                        throw new MissingAttributeValue(TMPL_ACTIVITY_URI + " in " + firstRelation);
+
+                    method.COMMENT(true, "propagating for $N", key);
+                    method.COMMENT(true, "URI: " + firstActivity.get().getUri());
+
+                    final String tmpa = "l1a_" + count;
+                    final String tmpb = "l1b_" + count;
+
+                    method.COMMENT(true, "Position: " + findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), theVar));
+
+                    // Integer tmpa = mapLevel0.get(uri + ((QualifiedName)record[pos]).getLocalPart())
+                    int pos = findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), theVar);
+                    Expression getLocalPart =
+                            METHOD_CALL(CAST(PROV_QUALIFIED_NAME, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(pos))), "getLocalPart", List.of());
+                    Expression concatUri =
+                            METHOD_CALL(STRING, "concat", CONSTANT(firstRelationIdentifier.getUri() + "."), getLocalPart);
+                    method.addStatement(DEFINITION(INTEGER, VARIABLE(tmpa),
+                            METHOD_CALL(VARIABLE("mapLevel0"), "get", concatUri)));
+
+                    // int tmpb = (tmpa==null) ? -1 : tmpa
+                    method.addStatement(DEFINITION(_int, VARIABLE(tmpb),
+                            IF_(BINARY_OP(VARIABLE(tmpa), EQ, getNull()))
+                                    .THEN(CONSTANT(-1))
+                                    .ELSE(VARIABLE(tmpa))));
+
+                    method.addStatement(propagateTypesNCall(count, successor, relation, VARIABLE(tmpb)));
+                }
+            }
+        } else {
+            method.addStatement(propagateTypesNCall(count, successor, relation, CONSTANT(-1)));
+        }
+    }
+
+    public Method generateTypePropagator(String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable) {
+
+        ParameterizedType levelNMap =
+                ParameterizedType.get(MAP, STRING, INTEGER);
+        ParameterizedType collectionIntArray =
+                ParameterizedType.get(COLLECTION, intArray);
+        ParameterizedType levelNP1CMap =
+                ParameterizedType.get(MAP, STRING, collectionIntArray);
+
+        Method method = METHOD("propagateTypes")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(VOID);
+
+        method.PARAMETER(OBJECT_ARRAY, "record");
+        method.PARAMETER(levelNMap, "mapLevelN");
+        method.PARAMETER(levelNP1CMap, "mapLevelNP1");
+        method.PARAMETER(levelNMap, "mapLevel0");
+        method.PARAMETER(levelNMap, "uniqId");
+
+        method.COMMENT(true, successorTable.toString());
+
+        int count = 1;
+
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
+        java.util.Iterator<String> iter = theVar.keySet().iterator();
+
+        Map<String, Set<Pair<QualifiedName, org.openprovenance.prov.model.WasDerivedFrom>>>  successors1  = compilerCommon.getSuccessors1();
+        Map<String, Set<Pair<QualifiedName, org.openprovenance.prov.model.WasAttributedTo>>> successors2  = compilerCommon.getSuccessors2();
+        Map<String, Set<Pair<QualifiedName, org.openprovenance.prov.model.HadMember>>>       successors3  = compilerCommon.getSuccessors3();
+        Map<String, Set<Pair<QualifiedName, QualifiedHadMember>>> successors3b = compilerCommon.getSuccessors3b();
+        Map<String, Set<Pair<QualifiedName, org.openprovenance.prov.model.SpecializationOf>>> successors4 = compilerCommon.getSuccessors4();
+
+        Map<String, Collection<String>> knownTypes   = compilerTypeManagement.getKnownTypes();
+        Map<String, Collection<String>> unknownTypes  = compilerTypeManagement.getUnknownTypes();
+
+        while (iter.hasNext()) {
+            String key = iter.next();
+            if (compilerUtil.isVariableDenotingQualifiedName(key, theVar)) {
+                method.COMMENT(true, "Variable: " + key);
+                method.COMMENT(true, "Count: " + count);
+
+                if ((successors1.get(key) != null) || (successors2.get(key) != null) || (successors3.get(key) != null) || (successors3b.get(key) != null) || (successors4.get(key) != null)) {
+
+                    List<Integer> rowValues = successorTable.get(count);
+                    if (rowValues == null || rowValues.isEmpty()) throw new InvalidCaseException("successor table incorrect");
+
+                    for (int i = 0; i < rowValues.size() / 2; i++) {
+                        int successor = rowValues.get(i * 2);
+                        int relation = rowValues.get(i * 2 + 1);
+
+                        if (relation == org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_DERIVATION.ordinal()) {
+                            generateStatementForRelation(method, count, successor, relation, theVar, successors1, knownTypes, unknownTypes, key);
+                        } else if (relation == org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_MEMBERSHIP.ordinal()) {
+                            generateStatementForRelation(method, count, successor, relation, theVar, successors3b, knownTypes, unknownTypes, key);
+                        } else {
+                            method.addStatement(propagateTypesNCall(count, successor, relation, CONSTANT(-1)));
+                        }
+                    }
+                } else {
+                    method.COMMENT(true, "No successor for: " + count);
+                }
+            }
+            method.COMMENT(true, "");
+
+            count++;
+        }
+        return method;
+    }
+
+    /*
+    public MethodSpec generateTypePropagator_old(String packge, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable) {
 
 
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("propagateTypes")
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("propagateTypes_old")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class);
 
@@ -251,12 +940,12 @@ public class CompilerExpansionBuilder {
 
         builder.addComment(successorTable.toString());
 
-        //builder.addStatement("$T builder=getClientBuilder()", ClassName.get("org.openprovenance.prov.client","Builder"));
 
         int count=1; // ignore the tempalte name
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
-        Iterator<String> iter = the_var.fieldNames();
+
+        Map<String,List<Descriptor>> theVar=bindingsSchema.getVar();
+        Iterator<String> iter = theVar.keySet().iterator();
+
 
         Map<String, Set<Pair<QualifiedName, WasDerivedFrom>>>  successors1= compilerCommon.getSuccessors1();
         Map<String, Set<Pair<QualifiedName, WasAttributedTo>>> successors2= compilerCommon.getSuccessors2();
@@ -270,7 +959,7 @@ public class CompilerExpansionBuilder {
 
         while (iter.hasNext()) {
             String key = iter.next();
-            if (compilerUtil.isVariableDenotingQualifiedName(key,the_var)) {
+            if (compilerUtil.isVariableDenotingQualifiedName(key,theVar)) {
                 builder.addComment("Variable: " + key);
                 builder.addComment("Count: " + count);
 
@@ -286,9 +975,9 @@ public class CompilerExpansionBuilder {
                         int relation = rowValues.get(i * 2 + 1);
 
                         if (relation == StatementOrBundle.Kind.PROV_DERIVATION.ordinal()) {
-                            generateStatementForRelation_NEW(builder, count, successor, relation, the_var, successors1, knownTypes, unknownTypes, key);
+                            generateStatementForRelation_NEW(builder, count, successor, relation, theVar, successors1, knownTypes, unknownTypes, key);
                         } else if (relation == StatementOrBundle.Kind.PROV_MEMBERSHIP.ordinal()) {
-                            generateStatementForRelation_NEW(builder, count, successor, relation, the_var, successors3b, knownTypes, unknownTypes, key);
+                            generateStatementForRelation_NEW(builder, count, successor, relation, theVar, successors3b, knownTypes, unknownTypes, key);
                         } else {
                             builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$L,$L,$L,uniqId)", count, successor, relation, -1);
                         }
@@ -303,67 +992,10 @@ public class CompilerExpansionBuilder {
         }
         return builder.build();
     }
-/*
-    private <ARELATION extends Identifiable> void generateStatementForRelation_OLD(MethodSpec.Builder builder, int count, JsonNode the_var, Map<String, Set<Pair<QualifiedName, ARELATION>>> successors, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, String key) {
-        if (successors.get(key) != null) {
-
-            final List<ARELATION> relations = successors.get(key).stream().map(Pair::getRight).collect(Collectors.toList());
-            final List<QualifiedName> identifiers = relations.stream().map(Identifiable::getId).collect(Collectors.toList());
-
-            builder.addComment("Identifiers: " + identifiers);
-            builder.addComment("KnownTypes: "   + successors.get(key).stream().map(p -> knownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
-            builder.addComment("UnknownTypes: " + successors.get(key).stream().map(p -> unknownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
-
-            final List<Collection<QualifiedName>> optionalActivityTypes = relations.stream().map(p -> doCollectElementVariables((Statement)p, ACTIVITY_TYPE_URI)).collect(Collectors.toList());
-            final List<Collection<QualifiedName>> optionalActivities    = relations.stream().map(p -> doCollectElementVariables((Statement)p, TMPL_ACTIVITY_URI)).collect(Collectors.toList());
-
-            builder.addComment("ActivityTypes: " + optionalActivityTypes);
-            builder.addComment("Activities: "    + optionalActivities);
-
-            if (optionalActivityTypes.isEmpty() || optionalActivityTypes.get(0) == null) {
-                builder.addStatement("propagateTypes_n_old(record,mapLevelN,mapLevelNP1,$L,$L)", count, -1);
-            } else {
-
-                final QualifiedName firstRelationIdentifier = identifiers.get(0);
-                final ARELATION firstRelation = relations.get(0);
-
-                final Optional<QualifiedName> firstActivityType = optionalActivityTypes.get(0).stream().findFirst();
-                if (firstActivityType.isEmpty()) {
-
-                    builder.addStatement("propagateTypes_n_old(record,mapLevelN,mapLevelNP1,$L,$L)", count, -1);
-
-                } else {
-
-                    if (optionalActivities.isEmpty() || optionalActivities.get(0) == null)
-                        throw new MissingAttributeValue(TMPL_ACTIVITY_URI + " in " + firstRelation);
-                    final Optional<QualifiedName> firstActivity = optionalActivities.get(0).stream().findFirst();
-                    if (firstActivity.isEmpty())
-                        throw new MissingAttributeValue(TMPL_ACTIVITY_URI + " in " + firstRelation);
-
-                    builder.addComment("propagating for $N", key);
-                    builder.addComment("URI: " + firstActivity.get().getUri());
-
-                    //builder.addStatement("System.out.println(\"maplevelN \" + mapLevelN.get($S))",identifiers.get(0).getUri());
-                    final String tmpa = "l0a_" + count;
-                    final String tmpb = "l0b_" + count;
-
-                    builder.addComment("Position: " + findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), the_var));
-
-                    //TypesRecordProcessor.localName(firstActivity.get().getUri())
-                    builder.addStatement("$T $N=mapLevel0.get($S + (($T)record[$L]).getLocalPart())", Integer.class, tmpa, firstRelationIdentifier.getUri() + ".", QualifiedName.class, findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), the_var));
-                    builder.addStatement("int $N=($N==null)?-1:$N", tmpb, tmpa, tmpa);
-
-                    builder.addStatement("propagateTypes_n_old(record,mapLevelN,mapLevelNP1,$L,$N)", count, tmpb);
-                }
-            }
-        } else {
-            builder.addStatement("propagateTypes_n_old(record,mapLevelN,mapLevelNP1,$L,$L)", count, -1);
-        }
-    }
 
 
- */
-    private <ARELATION extends Identifiable> void generateStatementForRelation_NEW(MethodSpec.Builder builder, int count, int successor, int relation, JsonNode the_var, Map<String, Set<Pair<QualifiedName, ARELATION>>> successors, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, String key) {
+
+    private <ARELATION extends Identifiable> void generateStatementForRelation_NEW(MethodSpec.Builder builder, int count, int successor, int relation, Map<String,List<Descriptor>> theVar, Map<String, Set<Pair<QualifiedName, ARELATION>>> successors, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, String key) {
         if (successors.get(key) != null) {
 
             final List<ARELATION> relations = successors.get(key).stream().map(Pair::getRight).collect(Collectors.toList());
@@ -406,10 +1038,12 @@ public class CompilerExpansionBuilder {
                     final String tmpa = "l1a_" + count;
                     final String tmpb = "l1b_" + count;
 
-                    builder.addComment("Position: " + findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), the_var));
+                    builder.addComment("Position: " + findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), theVar));
 
                     //TypesRecordProcessor.localName(firstActivity.get().getUri())
-                    builder.addStatement("$T $N=mapLevel0.get($S + (($T)record[$L]).getLocalPart())", Integer.class, tmpa, firstRelationIdentifier.getUri() + ".", QualifiedName.class, findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), the_var));
+                    builder.addStatement("$T $N=mapLevel0.get($S + (($T)record[$L]).getLocalPart())", Integer.class, tmpa, firstRelationIdentifier.getUri() + ".", QualifiedName.class, findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), theVar
+
+                    ));
                     builder.addStatement("int $N=($N==null)?-1:$N", tmpb, tmpa, tmpa);
 
                     builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$L,$L,$N, uniqId)", count, successor, relation, tmpb);
@@ -420,8 +1054,10 @@ public class CompilerExpansionBuilder {
         }
     }
 
-    private int findPosition(String name, JsonNode the_var) {
-        Iterator<String> iter = the_var.fieldNames();
+     */
+
+    private int findPosition(String name, Map<String, List<Descriptor>> theVar) {
+        Iterator<String> iter = theVar.keySet().iterator();
 
         int count=1;
         while (iter.hasNext()) {
@@ -438,17 +1074,17 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public Collection<QualifiedName> doCollectElementVariables(Statement s, String search) {
+    public Collection<QualifiedName> doCollectElementVariables(org.openprovenance.prov.model.Statement s, String search) {
         return doCollectElementVariables(pFactory,s,search);
     }
 
 
-    static public Collection<QualifiedName> doCollectElementVariables(ProvFactory pFactory, Statement s, String search) {
-        Collection<Attribute> attributes = pFactory.getAttributes(s);
+    static public Collection<QualifiedName> doCollectElementVariables(org.openprovenance.prov.model.ProvFactory pFactory, org.openprovenance.prov.model.Statement s, String search) {
+        Collection<org.openprovenance.prov.model.Attribute> attributes = pFactory.getAttributes(s);
         if (!(attributes.isEmpty())) {
             boolean found=false;
             Collection<QualifiedName> res=new LinkedList<>();
-            for (Attribute attribute:attributes) {
+            for (org.openprovenance.prov.model.Attribute attribute:attributes) {
                 QualifiedName element=attribute.getElementName();
                 Object value=attribute.getValue();
                 if (value instanceof QualifiedName) {
@@ -463,611 +1099,321 @@ public class CompilerExpansionBuilder {
         }
         return null;
     }
-    /*
-    public MethodSpec generateTypePropagatorN_new1() {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("propagateTypes_n")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(void.class);
-        final String var_successor = "successor";
-        final String var_genericRelation = "genericRelation";
 
-        builder.addParameter(ParameterSpec.builder(recordType, "record").build());
-        builder.addParameter(ParameterSpec.builder(levelNMapType, "mapLevelN").build());
-        builder.addParameter(ParameterSpec.builder(levelNP1CMapType, "mapLevelNP1").build());
-        builder.addParameter(ParameterSpec.builder(Integer.class, "count").build());
-        builder.addParameter(ParameterSpec.builder(int.class, var_successor).build());
-        builder.addParameter(ParameterSpec.builder(int.class, var_genericRelation).build());
-        builder.addParameter(ParameterSpec.builder(int.class, "specificRelation").build());
-        return builder.build();
-    }
-         */
-    public MethodSpec generateTypePropagatorN_new() {
-
-
-
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("propagateTypes_n")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(void.class);
-        compilerUtil.specWithComment(builder);
+    public Method generateTypePropagatorN() {
         final String var_successor = "successor";
         final String var_genericRelation = "genericRelation";
         final String var_record = "record";
         final String var_specificRelation = "specificRelation";
         final String var_count = "count";
-        final String var_in_type="in_type";
+        final String var_in_type = "in_type";
 
+        ParameterizedType levelNMap =
+                ParameterizedType.get(MAP, STRING, INTEGER);
+        ParameterizedType collectionIntArray =
+                ParameterizedType.get(COLLECTION, intArray);
+        ParameterizedType levelNP1CMap =
+                ParameterizedType.get(MAP, STRING, collectionIntArray);
 
-        builder.addParameter(ParameterSpec.builder(recordType, var_record).build());
-        builder.addParameter(ParameterSpec.builder(levelNMapType, "mapLevelN").build());
-        builder.addParameter(ParameterSpec.builder(levelNP1CMapType, "mapLevelNP1").build());
-        builder.addParameter(ParameterSpec.builder(Integer.class, var_count).build());
-        builder.addParameter(ParameterSpec.builder(int.class, var_successor).build());
-        builder.addParameter(ParameterSpec.builder(int.class, var_genericRelation).build());
-        builder.addParameter(ParameterSpec.builder(int.class, var_specificRelation).build());
-        builder.addParameter(ParameterSpec.builder(levelNMapType, "uniqId").build());
+        Method method = METHOD("propagateTypes_n")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(VOID);
 
+        method.PARAMETER(OBJECT_ARRAY, var_record);
+        method.PARAMETER(levelNMap, "mapLevelN");
+        method.PARAMETER(levelNP1CMap, "mapLevelNP1");
+        method.PARAMETER(INTEGER, var_count);
+        method.PARAMETER(_int, var_successor);
+        method.PARAMETER(_int, var_genericRelation);
+        method.PARAMETER(_int, var_specificRelation);
+        method.PARAMETER(levelNMap, "uniqId");
 
-        builder.beginControlFlow("if ($N[$N]!=null)", var_record, var_count);
-        builder.addStatement("String uri=(($T)($N[$L])).getUri()",QualifiedName.class, var_record, var_count);
-        builder.addStatement("Integer $N=mapLevelN.get(uri)", var_in_type);
-        builder.beginControlFlow("if ($N!=null)",var_in_type);
-        builder.beginControlFlow("if ($N[$N]!=null)", var_record, var_successor);
-        builder.addStatement("String uri2=(($T)($N[$N])).getUri()",QualifiedName.class, var_record, var_successor);
-        builder.addStatement("mapLevelNP1.computeIfAbsent(uri2, k -> new $T<>())",  LinkedList.class); //store in Lists initially
-        builder.addStatement("mapLevelNP1.get(uri2).add(new int[] { $N, $N, $N, $N, $N, uniqId.get($N)})", var_successor, var_genericRelation, var_specificRelation, var_in_type, var_count, "uri");
-        builder.endControlFlow();
-        builder.endControlFlow();
-        builder.endControlFlow();
-        return builder.build();
+        // if (record[count]!=null) {
+        Expression recordCount =
+                ARRAY_ACCESSOR(VARIABLE(var_record), VARIABLE(var_count));
+
+        //   String uri=((QualifiedName)(record[count])).getUri()
+        Statement uriAssignment =
+                DEFINITION(STRING, VARIABLE("uri"),
+                        METHOD_CALL(CAST(PROV_QUALIFIED_NAME, recordCount), "getUri", List.of()));
+
+        //   Integer in_type=mapLevelN.get(uri)
+        Statement inTypeAssignment =
+                DEFINITION(INTEGER, VARIABLE(var_in_type),
+                        METHOD_CALL(VARIABLE("mapLevelN"), "get", VARIABLE("uri")));
+
+        // if (record[successor]!=null) {
+        Expression recordSuccessor =
+                ARRAY_ACCESSOR(VARIABLE(var_record), VARIABLE(var_successor));
+
+        //   String uri2=((QualifiedName)(record[successor])).getUri()
+        Statement uri2Assignment =
+                DEFINITION(STRING, VARIABLE("uri2"),
+                        METHOD_CALL(CAST(PROV_QUALIFIED_NAME, recordSuccessor), "getUri", List.of()));
+
+        //   mapLevelNP1.computeIfAbsent(uri2, k -> new LinkedList<>())
+        Expression computeIfAbsent =
+                METHOD_CALL(VARIABLE("mapLevelNP1"), "computeIfAbsent",
+                        VARIABLE("uri2"),
+                        LambdaExpression.LAMBDA(Parameter.PARAMETER("k", null))
+                                .BODY(RETURN(CONSTRUCTOR_CALL(LINKED_LIST_GENERICS, List.of()))));
+
+        //   mapLevelNP1.get(uri2).add(new int[] { successor, genericRelation, specificRelation, in_type, count, uniqId.get(uri) })
+        MethodCall getUri2 =
+                METHOD_CALL(VARIABLE("mapLevelNP1"), "get", VARIABLE("uri2"));
+        Expression arrayInit =
+                ArrayInitialiser.ARRAY_INITIALISER(_int,
+                        VARIABLE(var_successor),
+                        VARIABLE(var_genericRelation),
+                        VARIABLE(var_specificRelation),
+                        VARIABLE(var_in_type),
+                        VARIABLE(var_count),
+                        METHOD_CALL(VARIABLE("uniqId"), "get", VARIABLE("uri")));
+        Expression addCall =
+                METHOD_CALL(getUri2, "add", List.of(arrayInit));
+
+        // Build nested if statements (innermost first)
+        // if (record[successor]!=null) { uri2=...; computeIfAbsent; add }
+        // if (in_type!=null) { if (record[successor]!=null) { ... } }
+        // if (record[count]!=null) { uri=...; in_type=...; if (in_type!=null) { ... } }
+        IfStatement outerIf =
+                IF(BINARY_OP(recordCount, "!=", getNull()))
+                        .THEN(uriAssignment,
+                                inTypeAssignment,
+                                IF(BINARY_OP(VARIABLE(var_in_type), "!=", getNull()))
+                                        .THEN(IF(BINARY_OP(recordSuccessor, "!=", getNull()))
+                                                .THEN(uri2Assignment,
+                                                        computeIfAbsent,
+                                                        addCall)));
+
+        method.addStatement(outerIf);
+
+        return method;
     }
 
-/*
-
-    public MethodSpec generateTypePropagatorN_OLD() {
 
 
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("propagateTypes_n_old")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(void.class);
-
-        builder.addParameter(ParameterSpec.builder(recordType,"record").build());
-        builder.addParameter(ParameterSpec.builder(levelNMapType,"mapLevelN").build());
-        builder.addParameter(ParameterSpec.builder(levelNP1CMapType,"mapLevelNP1").build());
-        builder.addParameter(ParameterSpec.builder(Integer.class,"count").build());
-        builder.addParameter(ParameterSpec.builder(int.class,"rel").build());
-
-        if (debugComment)
-            builder.addComment("Generated by method $N", getClass().getName() + ".generateTypePropagatorN_OLD()");
-
-        builder.addStatement("$T builder=getClientBuilder()", ClassName.get("org.openprovenance.prov.client","Builder"));
-        builder.addStatement("$T successors=builder.getTypedSuccessors()", successorType);
-
-
-        String tmpVar="tmp";
-
-        builder.beginControlFlow("if ($N[$N]!=null)", "record", "count");
-        builder.addStatement("String uri=(($T)($N[$L])).getUri()",QualifiedName.class, "record", "count");
-        builder.addStatement("Integer $N=mapLevelN.get(uri)", tmpVar);
-        builder.beginControlFlow("if ($N!=null)",tmpVar);
-        builder.addStatement("$T the_type=successors.get($N)", TypeName.get(int[].class), "count");
-        builder.beginControlFlow("if (the_type!=null && the_type.length!=0)");
-        builder.addStatement("int theLength=the_type.length/2");
-        builder.beginControlFlow("for (int _count=0; _count<theLength; _count++) ");
-        //builder.addStatement("System.out.println(\"count is \" + count + \" and _count is \" + _count)");
-
-        builder.beginControlFlow("if ($N[the_type[_count*2+0]]!=null)", "record");
-        builder.addStatement("String uri2=(($T)($N[the_type[_count*2+0]])).getUri()",QualifiedName.class, "record");
-
-        builder.addStatement("mapLevelNP1.computeIfAbsent(uri2, k -> new $T<>())",  LinkedList.class); //store in Lists initially
-
-        builder.addStatement("mapLevelNP1.get(uri2).add(new int[] { the_type[_count*2+0], the_type[_count*2+1], rel, $N, $N })", tmpVar, "count");
-        builder.endControlFlow();
-        builder.endControlFlow();
-        builder.endControlFlow();
-        builder.endControlFlow();
-        builder.endControlFlow();
-
-
-        return builder.build();
-    }
-
-
-
- */
-    public Hashtable<QualifiedName, String> generateQualifiedNames(Document doc, TypeSpec.Builder builder) {
-        Bundle bun = u.getBundle(doc).get(0);
+    public Hashtable<QualifiedName, String> generateQualifiedNames(org.openprovenance.prov.model.Document doc, org.openprovenance.prov.template.compiler.past.Class builder) {
+        org.openprovenance.prov.model.Bundle bun = u.getBundle(doc).get(0);
         Set<QualifiedName> set = new HashSet<>();
         compilerUtil.allQualifiedNames(bun, set, pFactory);
-        set.remove(pFactory.newQualifiedName(ExpandUtil.TMPL_NS, ExpandUtil.LABEL, ExpandUtil.TMPL_PREFIX));
+        set.remove(pFactory.newQualifiedName(InstantiateUtil.TMPL_NS, InstantiateUtil.LABEL, InstantiateUtil.TMPL_PREFIX));
         set.add(pFactory.getName().PROV_LABEL);
         Hashtable<QualifiedName, String> qnVariables = new Hashtable<>();
         for (QualifiedName qn : set) {
-            if (!(ExpandUtil.isVariable(qn))) {
+            if (!(InstantiateUtil.isVariable(qn))) {
                 final String v = variableForQualifiedName(qn);
                 qnVariables.put(qn, v);
-
-                builder.addField(QualifiedName.class, v, Modifier.PUBLIC, Modifier.FINAL);
+                builder.FIELDS(FIELD(v,PROV_QUALIFIED_NAME).MODIFIERS(Modifier.PUBLIC, Modifier.FINAL));
             }
-
-
         }
         return qnVariables;
-
     }
 
     public String variableForQualifiedName(QualifiedName qn) {
         return "_Q_" + qn.getPrefix() + "_" + qn.getLocalPart();
     }
 
-    public MethodSpec generateFactoryMethod(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(Document.class);
-
-        compilerUtil.specWithComment(builder);
-
-        Map<String, List<Descriptor>> theVars=bindingsSchema.getVar();
-
-        builder
-                .addStatement("$T __C_document = null", Document.class)
-                .addStatement("$T __C_ns = new Namespace()", Namespace.class)
-                .addStatement("$T subst= new StringSubstitutor(getVariableMap())", StringSubstitutor.class);
-
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
-
-        compilerUtil.generateSpecializedParameters(builder, the_var, bindingsSchema.getVar());
-
-        Iterator<String> iter2 = the_context.fieldNames();
-        while (iter2.hasNext()) {
-            String prefix = iter2.next();
-            String uri = the_context.get(prefix).textValue();
-            builder.addStatement("__C_ns.register($S,subst.replace($S))", prefix, uri);  // TODO: needs substitution here, to expand the URI potentially containing *
-        }
 
 
-        String args = "";
-        boolean first = true;
-        Set<String> seen = new HashSet<>();
-        for (QualifiedName q : allVars) {
-            final String key = q.getLocalPart();
-            seen.add(key);
-            final String newName = compilerUtil.varPrefix(key);
-            final JsonNode entry = the_var.path(key);
-            if (entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode)) {
-                String s = entry.get(0).get("@id").textValue();
-                // substring of s preceding first occurrence of :
-                int existsColumn = s.indexOf(":");
-                if (existsColumn >= 0) {
-                    String pre = s.substring(0, existsColumn);
-                    if (pre != null && !pre.isEmpty() && the_context.get(pre) == null) {
-                        throw new InvalidCaseException("CompilerExpansionBuilder (line 629): Reference to prefix '" + pre + "' in '" + s + "' for key '" + key + "', not available in context " + the_context.toPrettyString());
-                    }
-                }
-                JsonNode toEscapeEntry = entry.get(0).get("@escape");
-                boolean toEscape = toEscapeEntry != null && toEscapeEntry.textValue() != null && "true".equals(toEscapeEntry.textValue());
-                String s2 = "\"" + s.replace("*", "\" + $N + \"") + "\"";
-                if (toEscape) {
-                    builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf,false)", QualifiedName.class, newName, key, key);
-                } else {
-                    builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
+    public Method generateFactoryMethodWithArray(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
+        Method method = METHOD("make")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(PROV_DOCUMENT);
 
-                }
-            } else {
-                // TODO: check if it was a gensym, because then i can generate it!
-                builder.addStatement("$T $N=null", QualifiedName.class, newName);
-            }
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
 
-
-            if (first) {
-                first = false;
-                args = newName;
-            } else {
-                args = args + ", " + newName;
-            }
-        }
-
-        for (QualifiedName q : allAtts) {
-            final String key = q.getLocalPart();
-            String newName = key;
-            if (!(seen.contains(key))) {
-                final JsonNode entry = the_var.path(key);
-                JsonNode jentry;
-                if (entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode) && ((jentry = entry.get(0).get("@id")) != null)) {
-                    String s = jentry.textValue();
-                    String s2 = "\"" + s.replace("*", "\" + $N + \"") + "\"";
-                    newName = compilerUtil.attPrefix(key);
-                    builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
-                } else {
-                    if (entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode)) {
-                        // is already declared, but not with @id
-                    } else {
-                        builder.addStatement("$T $N=null", Object.class, newName);
-                    }
-                }
-                //if (entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode)) { // if not entry, then don't add to list of arguments
-                if (first) {
-                    first = false;
-                    args = newName;
-                } else {
-                    args = args + ", " + newName;
-                }
-                //}
-            }
-        }
-
-        builder.addStatement("__C_document = generator(" + args + ")");
-
-
-        builder.addStatement("return __C_document");
-
-
-        MethodSpec method = builder.build();
-
-        return method;
-    }
-
-    public MethodSpec generateFactoryMethodWithContinuation(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String template, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(TypeVariableName.get("T"))
-                .addTypeVariable(TypeVariableName.get("T"));
-
-        compilerUtil.specWithComment(builder);
-
-        builder
-                .addStatement("$T __C_result = null", TypeVariableName.get("T"))
-                .addStatement("$T __C_ns = new Namespace()", Namespace.class)
-                .addStatement("$T subst= new StringSubstitutor(getVariableMap())", StringSubstitutor.class);
-
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
-
-        compilerUtil.generateSpecializedParameters(builder, the_var, bindingsSchema.getVar());
-
-        builder.addParameter(processorInterfaceType(template, packge), "processor");
-
-        Iterator<String> iter2 = the_context.fieldNames();
-        while (iter2.hasNext()) {
-            String prefix = iter2.next();
-            String uri = the_context.get(prefix).textValue();
-            builder.addStatement("__C_ns.register($S,subst.replace($S))", prefix, uri);  // TODO: needs substitution here, to expand the URI potentially containing *
-        }
-
-
-        Map<String,String> translator=new HashMap<>();
-
-        Set<String> seen = new HashSet<>();
-        for (QualifiedName q : allVars) {
-            final String key = q.getLocalPart();
-            seen.add(key);
-            final String newName = compilerUtil.varPrefix(key);
-            translator.put(key,newName);
-            final JsonNode entry = the_var.path(key);
-            if (entry != null && (!entry.isEmpty()) &&!(entry instanceof MissingNode)) {
-                String s = entry.get(0).get("@id").textValue();
-                JsonNode toEscapeEntry = entry.get(0).get("@escape");
-                boolean toEscape = toEscapeEntry != null && toEscapeEntry.textValue() != null && "true".equals(toEscapeEntry.textValue());
-                String s2 = "\"" + s.replace("*", "\" + $N + \"") + "\"";
-                if (toEscape) {
-                    builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf,false)", QualifiedName.class, newName, key, key);
-                } else {
-                    builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
-                }
-            } else {
-                // TODO: check if it was a gensym, because then i can generate it!
-                builder.addStatement("$T $N=null", QualifiedName.class, newName);
-            }
-        }
-
-        for (QualifiedName q : allAtts) {
-            final String key = q.getLocalPart();
-            if (!(seen.contains(key))) {
-                final JsonNode entry = the_var.path(key);
-                JsonNode jentry;
-                if (entry != null && (!entry.isEmpty()) && !(entry instanceof MissingNode) && ((jentry = entry.get(0).get("@id")) != null)) {
-                    String s = jentry.textValue();
-                    String s2 = "\"" + s.replace("*", "\" + $N + \"") + "\"";
-                    final String newName = compilerUtil.attPrefix(key);
-                    translator.put(key,newName);
-                    builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
-                }
-            }
-        }
-
-        final String args = compilerUtil.generateArgumentsListForCall(the_var,translator,bindingsSchema.getVar());
-
-        builder.addStatement("__C_result = processor.call(" + args + ")");
-
-
-        builder.addStatement("return __C_result");
-
-
-        MethodSpec method = builder.build();
-
-        return method;
-    }
-
-
-
-    public MethodSpec generateFactoryMethodWithArray(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(Document.class);
-
-        compilerUtil.specWithComment(builder);
-
-
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
-
-        builder.addParameter(Object[].class, "__record");
+        method.PARAMETER(OBJECT_ARRAY, "__record");
 
         int count = 1;
-        Iterator<String> iter = the_var.fieldNames();
-        String args = "";
-        while (iter.hasNext()) {
-            String key = iter.next();
-            if (bindingsSchema.getVar().get(key)==null) {
+        List<Expression> args = new ArrayList<>();
+        for (String key : theVar.keySet()) {
+            if (theVar.get(key) == null) {
                 continue;
             }
-            final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
+            final ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, key);
+            final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
             final String converter = compilerUtil.getConverterForDeclaredType(atype);
+            Expression arrayAccess =
+                    ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count));
             if (converter == null) {
-                String statement = "$T $N=($T) __record[" + count + "]";
-                builder.addStatement(statement, atype, key, atype);
+                // Type key = (Type) __record[count]
+                method.addStatement(DEFINITION(pastType, VARIABLE(key), CAST(pastType, arrayAccess)));
             } else {
-                String statement = "$T $N=$N(__record[" + count + "])";
-                builder.addStatement(statement, atype, key, converter);
+                // Type key = converter(__record[count])
+                method.addStatement(DEFINITION(pastType, VARIABLE(key), METHOD_CALL(converter, List.of(arrayAccess))));
             }
-            if (count > 1) args = args + ", ";
-            args = args + key;
+            args.add(VARIABLE(key));
             count++;
         }
-        builder.addStatement("return make(" + args + ")");
-
-
-        MethodSpec method = builder.build();
+        // return make(args...)
+        method.addStatement(RETURN(METHOD_CALL("make", args)));
 
         return method;
     }
 
-    public MethodSpec generateFactoryMethodWithArrayAndContinuation(String name, String template, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(TypeVariableName.get("T"))
-                .addTypeVariable(TypeVariableName.get("T"));
+    public Method generateFactoryMethodWithArrayAndContinuation(String name, String template, String packge, TemplateBindingsSchema bindingsSchema) {
 
-        compilerUtil.specWithComment(builder);
+        Method method = METHOD("make")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(T())
+                .addTypeVariables(T());
 
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
 
+        method.PARAMETER(OBJECT_ARRAY, "__record");
 
-
-        JsonNode the_var = bindings_schema.get("var");
-
-        builder.addParameter(Object[].class, "__record");
-        builder.addParameter(processorInterfaceType(template, packge), Constants.PROCESSOR);
+        // Parameter: processor of type <TemplateName>Interface<T>
+        ClassName interfaceClass =
+                ClassName.get(
+                        compilerUtil.templateNameClass(template) + "Interface", packge);
+        ParameterizedType processorType =
+                ParameterizedType.get(interfaceClass, T());
+        method.PARAMETER(processorType, PROCESSOR);
 
         int count = 1;
-        Iterator<String> iter = the_var.fieldNames();
-        String args = "";
-        while (iter.hasNext()) {
-            String key = iter.next();
-            if (bindingsSchema.getVar().get(key)!=null) {
-                final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
-                final String converter = compilerUtil.getConverterForDeclaredType(atype);
-                if (converter == null) {
-                    String statement = "$T $N=($T) __record[" + count + "]";
-                    builder.addStatement(statement, atype, key, atype);
-                } else {
-                    String statement = "$T $N=$N(__record[" + count + "])";
-                    builder.addStatement(statement, atype, key, converter);
-                }
-                if (count > 1) args = args + ", ";
-                args = args + key;
-                count++;
+        List<Expression> args = new ArrayList<>();
+        for (String key : theVar.keySet()) {
+            if (theVar.get(key) == null) {
+                continue;
             }
+            final ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, key);
+            final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
+            //final String converter = compilerUtil.getConverterForDeclaredType2(atype);
+            final Function<List<Expression>, Expression> converter= compilerUtil.getConverterForDeclaredType3(atype);
+
+            if (converter == null) {
+                // Type key = (Type) __record[count]
+                method.addStatement(DEFINITION(pastType, VARIABLE(key), CAST(pastType, ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)))));
+            } else {
+                // Type key = converter(__record[count])
+                method.addStatement(DEFINITION(pastType, VARIABLE(key),
+                        IF_(BINARY_OP(ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)), EQ, Constant.getNull()))
+                                .THEN(Constant.getNull())
+                                .ELSE(converter.apply(List.of(METHOD_CALL(ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count)), "toString", List.of()))))));
+            }
+            args.add(VARIABLE(key));
+            count++;
         }
-
-        builder.addStatement("return make(" + args + ",_processor)");
-
-
-        MethodSpec method = builder.build();
+        // return make(args..., _processor)
+        args.add(VARIABLE(PROCESSOR));
+        method.addStatement(RETURN(METHOD_CALL("make", args)));
 
         return method;
     }
 
-    public MethodSpec generateUniqueRecordFactoryMethodWithArrayAndContinuation(String name, String template, String packge, TemplateBindingsSchema bindingsSchema) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(TypeVariableName.get("T"))
-                .addTypeVariable(TypeVariableName.get("T"));
+    public Method generateUniqueRecordFactoryMethodWithArrayAndContinuation(String name, String template, String packge, TemplateBindingsSchema bindingsSchema) {
 
-        compilerUtil.specWithComment(builder);
+        Method method = METHOD("make")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(T())
+                .addTypeVariables(T());
 
-        builder.addParameter(processorInterfaceType(template, packge), Constants.PROCESSOR);
+        // Parameter: processor of type <TemplateName>Interface<T>
+        ClassName interfaceClass =
+                ClassName.get(
+                        compilerUtil.templateNameClass(template) + "Interface", packge);
+        ParameterizedType processorType =
+                ParameterizedType.get(interfaceClass, T());
+        method.PARAMETER(processorType, PROCESSOR);
 
-        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
-        Collection<String> variables=descriptorUtils.fieldNames(bindingsSchema);
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
+        Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
 
         int count = 1;
-        for (String variable: variables) {
+        for (String variable : variables) {
             List<Descriptor> descriptors = theVar.get(variable);
-            if (descriptors!=null) {
-                for (Descriptor descriptor: descriptors) {
+            if (descriptors != null) {
+                for (Descriptor descriptor : descriptors) {
+                    final ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, variable);
                     final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, variable);
                     final String converter = compilerUtil.getConverterForDeclaredType(atype);
                     if (descriptor instanceof NameDescriptor) {
-
                         if (converter == null) {
-                            String statement = "$T $N=($T) \"" + count + "\"";
-                            builder.addStatement(statement, atype, variable, atype);
+                            // Type var = (Type) "count"
+                            method.addStatement(DEFINITION(pastType, VARIABLE(variable), CAST(pastType, CONSTANT("" + count))));
                         } else {
-                            String statement = "$T $N=$N(" + count + ")";
-                            builder.addStatement(statement, atype, variable, converter);
+                            // Type var = converter(count)
+                            method.addStatement(DEFINITION(pastType, VARIABLE(variable), METHOD_CALL(converter, List.of(CONSTANT(count)))));
                         }
                     } else {
-                        String statement = "$T $N=$N /* $L */";
-                        builder.addStatement(statement, atype, variable, "null", count);
+                        // Type var = null /* count */
+                        method.addStatement(DEFINITION(pastType, VARIABLE(variable), getNull()));
                     }
                     count++;
                 }
             }
         }
-        CodeBlock argsList=makeArgsList(variables);
-        builder.addStatement("return make($L,$N)", argsList, Constants.PROCESSOR);
-
-        MethodSpec method = builder.build();
+        // return make(args..., _processor)
+        List<Expression> args = new ArrayList<>();
+        for (String variable : variables) {
+            args.add(VARIABLE(variable));
+        }
+        args.add(VARIABLE(PROCESSOR));
+        method.addStatement(RETURN(METHOD_CALL("make", args)));
 
         return method;
     }
 
 
-    public MethodSpec generateMain(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
-
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("main")
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .returns(void.class)
-                .addParameter(String[].class, "args");
-
-        compilerUtil.specWithComment(builder);
-
-        Map<String, List<Descriptor>> theVars=bindingsSchema.getVar();
-
-        builder
-                .addStatement("$T fr=$T.dynamicLoad()", Framework.class, Framework.class)
-                .addStatement("$T pf=fr.getFactory()", ProvFactory.class)
-                //.addStatement("$T pf2=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()", ProvFactory.class)
-                .addStatement("$N me=new $N(pf)", name, name);
 
 
-        for (QualifiedName q : allVars) {
-            builder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, compilerUtil.varPrefix(q.getLocalPart()), "http://example.org/", q.getLocalPart(), "ex");
-        }
-
-        JsonNode the_var2 = (bindings_schema == null) ? null : bindings_schema.get("var");
-
-        for (QualifiedName q : allAtts) {
-            String declaredType = null;
-            if (the_var2 != null) {
-                Iterator<String> iter = the_var2.fieldNames();
-
-                while (iter.hasNext()) {
-                    String key = iter.next();
-                    if (q.getLocalPart().equals(key)) {
-                        if (theVars.containsKey(key) && theVars.get(key)!=null) {
-                            declaredType = compilerUtil.getDeclaredType(theVars, key);
-                        }
-                    }
-                }
-            }
-
-            if (declaredType != null) {
-                String example = compilerUtil.generateExampleForType(declaredType, q.getLocalPart(), pFactory);
-
-                builder.addStatement("$T $N=$S", String.class, compilerUtil.attPrefix(q.getLocalPart()), example);
-            } else {
-                builder.addStatement("$T $N=null", Object.class, compilerUtil.attPrefix(q.getLocalPart()));
-            }
-        }
-
-        String args = "";
-        boolean first = true;
-        Set<String> seen = new HashSet<>();
-        for (QualifiedName q : allVars) {
-            if (first) {
-                first = false;
-                args = compilerUtil.varPrefix(q.getLocalPart());
-            } else {
-                args = args + ", " + compilerUtil.varPrefix(q.getLocalPart());
-            }
-            seen.add(q.getLocalPart());
-
-        }
 
 
-        for (QualifiedName q : allAtts) {
-            if (!(seen.contains(q.getLocalPart()))) {
-                final String key = compilerUtil.attPrefix(q.getLocalPart());
-                if (first) {
-                    first = false;
-                    args = key;
-                } else {
-                    args = args + ", " + key;
-                }
-            }
-        }
 
 
-        builder.addStatement("$T document=me.generator(" + args + ")", Document.class);
-        builder.addStatement("fr.writeDocument($T.out,document,$T.PROVN)", System.class, Formats.ProvFormat.class);
+    public Method typeManagerGenerator(String templateName, String packge) {
 
+        ClassName typeManagementClass =
+                ClassName.get(
+                        compilerUtil.templateNameClass(templateName) + "TypeManagement", packge);
+        ParameterizedType returnType =
+                ParameterizedType.get(typeManagementClass, T());
 
-        if (bindings_schema != null) {
-            JsonNode the_var = bindings_schema.get("var");
+        Method method = METHOD("getTypeManager")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(returnType)
+                .addTypeVariables(T());
 
-            Iterator<String> iter = the_var.fieldNames();
-            args = "";
-            first = true;
-            int count = 0;
-            while (iter.hasNext()) {
-                String key = iter.next();
+        method.PARAMETER(MAP_QUALIFIEDNAME_STRING_SET, "knownTypeMap");
+        method.PARAMETER(MAP_QUALIFIEDNAME_STRING_SET, "unknownTypeMap");
+        method.PARAMETER(MAP_STRING_MAP_STRING_BIFUNCTION, "propertyConverters");
+        method.PARAMETER(MAP_QUALIFIEDNAME_MAP_STRING_COLLECTION_OF_STRING, "idata");
+        method.PARAMETER(MAP_STRING_MAP_STRING_TRIFUNCTION, "idataConverters");
 
-                if (theVars.get(key)==null) continue;
-
-                if (first) {
-                    first = false;
-                    args = compilerUtil.createExamplar(the_var, key, count++, pFactory);
-                } else {
-                    args = args + ", " + compilerUtil.createExamplar(the_var, key, count++, pFactory);
-                }
-            }
-
-
-            builder.addStatement("document=me.make(" + args + ")");
-            builder.addStatement("fr.writeDocument($T.out,document,$T.PROVN)", System.class, Formats.ProvFormat.class);
-
-
-        }
-
-
-        MethodSpec method = builder.build();
+        // return new <TemplateName>TypeManagement<>(pf, knownTypeMap, unknownTypeMap, propertyConverters, idata, idataConverters)
+        ParameterizedType diamondType =
+                ParameterizedType.get(typeManagementClass);
+        method.addStatement(RETURN(CONSTRUCTOR_CALL(diamondType, List.of(
+                VARIABLE("pf"),
+                VARIABLE("knownTypeMap"),
+                VARIABLE("unknownTypeMap"),
+                VARIABLE("propertyConverters"),
+                VARIABLE("idata"),
+                VARIABLE("idataConverters")))));
 
         return method;
     }
 
 
-    // move to expansion subpackage
+    public Method typedRecordGenerator(String templateName, String packge) {
+        ClassName typedRecordClass =
+                ClassName.get(
+                        compilerUtil.templateNameClass(templateName) + "TypedRecord", packge);
 
-    public MethodSpec typeManagerGenerator(String templateName, String packge) {
+        Method method = METHOD("getTypedRecord")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(typedRecordClass)
+                // return new <TemplateName>TypedRecord()
+                .BODY(RETURN(CONSTRUCTOR_CALL(typedRecordClass, List.of())));
 
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("getTypeManager")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypeManagement"));
-
-        compilerUtil.specWithComment(builder);
-
-        builder.addParameter(ParameterSpec.builder(Map_QN_S_of_String,"knownTypeMap").build());
-        builder.addParameter(ParameterSpec.builder(Map_QN_S_of_String,"unknownTypeMap").build());
-        builder.addParameter(ParameterSpec.builder(Map_S_Map_S_to_Function,"propertyConverters").build());
-
-        builder.addParameter(ParameterSpec.builder(Map_QN_Col_of_String,"idata").build());
-        builder.addParameter(ParameterSpec.builder(Map_S_Map_S_to_Function,"idataConverters").build());
-
-
-        builder.addStatement(
-                "return new $T($N,$N,$N,$N,$N,$N)",
-                ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypeManagement"),
-                "pf",
-                "knownTypeMap",
-                "unknownTypeMap",
-                "propertyConverters",
-                "idata",
-                "idataConverters");
-
-        return builder.build();
-
+        return method;
     }
-
 
 }

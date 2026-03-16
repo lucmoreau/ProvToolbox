@@ -4,3 +4,5 @@ src/main/python/org/openprovenance/apache/__pycache__/
 src/main/python/org/openprovenance/apache/commons/__pycache__/
 src/main/python/org/openprovenance/apache/commons/lang/__pycache__/
 src/main/python/org/openprovenance/prov/client/__pycache__/
+src/main/python/past/exception/__pycache__/
+src/main/python/past/util/__pycache__/

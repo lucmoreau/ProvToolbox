@@ -3,7 +3,7 @@
 	"name": "template_library",
 	"destination": "target",
 	"description": "PROV templates for prov template management",
-	"version": "2.2.2-SNAPSHOT",
+	"version": "2.2.3-SNAPSHOT",
 	"root_package": "org.openprovenance.prov.template.library.ptm",
 	"script": "ptm_run",
 	"script_dir": "target/bin",

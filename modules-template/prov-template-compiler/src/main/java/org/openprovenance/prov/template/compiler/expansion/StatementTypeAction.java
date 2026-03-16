@@ -1,24 +1,36 @@
 package org.openprovenance.prov.template.compiler.expansion;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.MethodSpec.Builder;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
+import org.openprovenance.prov.template.compiler.past.Comment;
+import org.openprovenance.prov.template.compiler.past.Statement;
+import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
-import org.openprovenance.prov.template.expander.ExpandUtil;
-import org.openprovenance.prov.template.expander.exception.MissingAttributeValue;
+import org.openprovenance.prov.template.core.InstantiateUtil;
+import org.openprovenance.prov.template.core.exception.MissingAttributeValue;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS;
-import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.*;
-import static org.openprovenance.prov.template.expander.ExpandUtil.*;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Constant.getNull;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.LambdaExpression.LAMBDA;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+import static org.openprovenance.prov.template.core.InstantiateUtil.*;
 
 public class StatementTypeAction implements StatementAction {
 
@@ -29,10 +41,9 @@ public class StatementTypeAction implements StatementAction {
     public static String WASDERIVEDFROM_URI=PROV_NS+"WasDerivedFrom";
     public static String QUALIFIEDHADMEMBER_URI=PROV_EXT_NS+"HadMember";
 
-    private final JsonNode bindings_schema;
     private final Map<String, Collection<String>> knownTypes;
     private final Map<String, Collection<String>> unknownTypes;
-    private final Builder mbuilder;
+    private final List<Statement> statements;
     private final CompilerUtil compilerUtil;
     private final TemplateBindingsSchema bindingsSchema;
 
@@ -44,18 +55,15 @@ public class StatementTypeAction implements StatementAction {
     final public QualifiedName PROV_EXT_NS_ID;
 
 
-    public StatementTypeAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, Builder mbuilder, CompilerUtil compilerUtil) {
+    public StatementTypeAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, TemplateBindingsSchema bindingsSchema, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, List<Statement> statements, CompilerUtil compilerUtil) {
         this.pFactory=pFactory;
         this.allVars=allVars;
         this.allAtts=allAtts;
-        //this.builder=builder;
-        //this.target=target;
         this.vmap=vmap;
-        this.bindings_schema=bindings_schema;
         this.bindingsSchema=bindingsSchema;
         this.knownTypes=knownTypes;
         this.unknownTypes=unknownTypes;
-        this.mbuilder=mbuilder;
+        this.statements=statements;
         this.compilerUtil=compilerUtil;
         PROV_EXT_NS_ID = pFactory.newQualifiedName(PROV_EXT_NS, "id", "provxt");
 
@@ -77,7 +85,7 @@ public class StatementTypeAction implements StatementAction {
                 Object o=type.getValue();
                 if (o instanceof QualifiedName) {
                     QualifiedName qn=(QualifiedName) o;
-                    if (ExpandUtil.isVariable(qn)) {
+                    if (InstantiateUtil.isVariable(qn)) {
                         registerUnknownType(id,qn.getUri());
                     } else {
                         registerAType(id,qn.getUri());
@@ -92,7 +100,7 @@ public class StatementTypeAction implements StatementAction {
                 Object o=type.getValue();
                 if (o instanceof QualifiedName) {
                     QualifiedName qn=(QualifiedName) o;
-                    if (ExpandUtil.isVariable(qn)) {
+                    if (InstantiateUtil.isVariable(qn)) {
                         registerUnknownType(id,suffix,qn.getUri());
                     } else {
                         registerAType(id,suffix,qn.getUri());
@@ -104,7 +112,7 @@ public class StatementTypeAction implements StatementAction {
     public void registerTypes2(QualifiedName id, Collection<QualifiedName> types) {
         if ((id !=null) && (types!=null)) {
             types.forEach(qn -> {
-                if (ExpandUtil.isVariable(qn)) {
+                if (InstantiateUtil.isVariable(qn)) {
                     registerUnknownType(id,qn.getUri());
                 } else {
                     registerAType(id,qn.getUri());
@@ -116,7 +124,7 @@ public class StatementTypeAction implements StatementAction {
     public void registerTypes2(QualifiedName id, String suffix, Collection<QualifiedName> types) {
         if ((id !=null) && (types!=null)) {
             types.forEach(qn -> {
-                if (ExpandUtil.isVariable(qn)) {
+                if (InstantiateUtil.isVariable(qn)) {
                     registerUnknownType(id,suffix, qn.getUri());
                 } else {
                     registerAType(id, suffix, qn.getUri());
@@ -266,7 +274,7 @@ public class StatementTypeAction implements StatementAction {
 
 
 
-    public Collection<QualifiedName> doCollectElementVariables(Statement s, String search) {
+    public Collection<QualifiedName> doCollectElementVariables(org.openprovenance.prov.model.Statement s, String search) {
         return CompilerExpansionBuilder.doCollectElementVariables(pFactory,s,search);
     }
 
@@ -282,12 +290,11 @@ public class StatementTypeAction implements StatementAction {
 
     @Override
     public void doAction(WasDerivedFrom s) {
-        final Collection<QualifiedName> qualifiedNames = doCollectElementVariables(s, ExpandUtil.ACTIVITY_TYPE_URI);
+        final Collection<QualifiedName> qualifiedNames = doCollectElementVariables(s, InstantiateUtil.ACTIVITY_TYPE_URI);
         if (s.getId()==null) {
             s.setId(gensym());
         }
-        compilerUtil.specWithComment(mbuilder);
-        mbuilder.addComment("wdf $N", s.getId().getUri());
+        statements.add(new Comment("wdf $N", s.getId().getUri()));
 
         registerAType(s.getId(),WASDERIVEDFROM_URI);
         registerTypes(s.getId(), s.getType());
@@ -309,16 +316,20 @@ public class StatementTypeAction implements StatementAction {
     static int anotherCounter=0;
     private void doRegisterTypesForAttributes(Identifiable s,Collection<Attribute> attributes, String expressionUri) {
 
-
-        if (ExpandUtil.isGensymVariable(s.getId())) return;
-        JsonNode the_var = bindings_schema.get("var");
-
-        mbuilder.beginControlFlow("if ($N!=null) ", s.getId().getLocalPart());
+        if (InstantiateUtil.isGensymVariable(s.getId())) return;
+        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
 
         String tmp_Conv="tmp_Conv"+(anotherCounter++);
-        mbuilder.addStatement("$T $N=propertyConverters.get($S)", Map_S_to_Function, tmp_Conv, expressionUri);
 
-        mbuilder.beginControlFlow("if ($N!=null) ", tmp_Conv);
+        // Build the inner statements for the if-blocks
+        List<Statement> innerStatements = new ArrayList<>();
+
+        // tmp_Conv = propertyConverters.get(expressionUri)
+        innerStatements.add(DEFINITION(MAP_STRING_BIFUNCTION_OBJECT_STRING_COLLECTION_STRING, VARIABLE(tmp_Conv),
+                METHOD_CALL(VARIABLE("propertyConverters"), "get", List.of(CONSTANT(expressionUri)))));
+
+        List<Statement> innerInnerStatements = new ArrayList<>();
+
         Map<String,String> seen=new HashMap<>();
 
         attributes.forEach(attr -> {
@@ -335,25 +346,48 @@ public class StatementTypeAction implements StatementAction {
             } else {
                 first_encounter=false;
             }
-            if (first_encounter) mbuilder.addStatement("$T $N=$N.get($S)", Function_O_Col_S, tmp_Conv2, tmp_Conv, attributeUri);
-            mbuilder.beginControlFlow("if ($N!=null) ", tmp_Conv2);
+
+            List<Statement> attrStatements = new ArrayList<>();
+
+            if (first_encounter) {
+                // BiFunction<Object, String, Collection<String>> tmp_Conv2 = tmp_Conv.get(attributeUri)
+                innerInnerStatements.add(DEFINITION(BIFUNCTION_OBJECT_STRING_COLLECTION_STRING, VARIABLE(tmp_Conv2),
+                        METHOD_CALL(VARIABLE(tmp_Conv), "get", List.of(CONSTANT(attributeUri)))));
+            }
 
             if (value instanceof QualifiedName) {
                 QualifiedName qn=(QualifiedName) value;
-                if (ExpandUtil.isVariable(qn)) {
+                if (InstantiateUtil.isVariable(qn)) {
                     String key=qn.getLocalPart();
                     if (bindingsSchema.getVar().containsKey(key) && (bindingsSchema.getVar().get(key)!=null)) {
-                        final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
-                        mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new HashSet<>())", s.getId().getLocalPart());
+                        final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
+                        attrStatements.add(METHOD_CALL(VARIABLE("unknownTypeMap"), "computeIfAbsent",
+                                List.of(VARIABLE(s.getId().getLocalPart()), LAMBDA(PARAMETER("k", STRING)).BODY(RETURN(CONSTRUCTOR_CALL(HASH_SET_GENERICS, List.of()))))));
                         if (atype.equals(QualifiedName.class)) {
-                            mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).addAll($N.apply($N.getUri(), $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
+                            // if (key!=null) unknownTypeMap.get(id).addAll(tmp_Conv2.apply(key.getUri(), id.getUri()))
+                            attrStatements.add(IF(BINARY_OP(VARIABLE(key), "!=", getNull()))
+                                    .THEN(METHOD_CALL(METHOD_CALL(VARIABLE("unknownTypeMap"), "get", List.of(VARIABLE(s.getId().getLocalPart()))), "addAll",
+                                            List.of(METHOD_CALL(VARIABLE(tmp_Conv2), "apply",
+                                                    List.of(METHOD_CALL(VARIABLE(key), "getUri", List.of()),
+                                                            METHOD_CALL(VARIABLE(s.getId().getLocalPart()), "getUri", List.of())))))));
                         } else {
-                            mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).addAll($N.apply($N, $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
+                            // if (key!=null) unknownTypeMap.get(id).addAll(tmp_Conv2.apply(key, id.getUri()))
+                            attrStatements.add(IF(BINARY_OP(VARIABLE(key), "!=", getNull()))
+                                    .THEN(METHOD_CALL(METHOD_CALL(VARIABLE("unknownTypeMap"), "get", List.of(VARIABLE(s.getId().getLocalPart()))), "addAll",
+                                            List.of(METHOD_CALL(VARIABLE(tmp_Conv2), "apply",
+                                                    List.of(VARIABLE(key),
+                                                            METHOD_CALL(VARIABLE(s.getId().getLocalPart()), "getUri", List.of())))))));
                         }
                     }
                 } else {
-                    mbuilder.addStatement("knownTypeMap.computeIfAbsent($N, k -> new HashSet<>())",s.getId().getLocalPart());
-                    mbuilder.addStatement("knownTypeMap.get($N).addAll($N.apply($S,$N.getUri()))", s.getId().getLocalPart(), tmp_Conv2, qn.getUri(), s.getId().getLocalPart());
+                    // knownTypeMap.computeIfAbsent(id, k -> new HashSet<>())
+                    attrStatements.add(METHOD_CALL(VARIABLE("knownTypeMap"), "computeIfAbsent",
+                            List.of(VARIABLE(s.getId().getLocalPart()), LAMBDA(PARAMETER("k", STRING)).BODY(RETURN(CONSTRUCTOR_CALL(HASH_SET_GENERICS, List.of()))))));
+                    // knownTypeMap.get(id).addAll(tmp_Conv2.apply(qn.getUri(), id.getUri()))
+                    attrStatements.add(METHOD_CALL(METHOD_CALL(VARIABLE("knownTypeMap"), "get", List.of(VARIABLE(s.getId().getLocalPart()))), "addAll",
+                            List.of(METHOD_CALL(VARIABLE(tmp_Conv2), "apply",
+                                    List.of(CONSTANT(qn.getUri()),
+                                            METHOD_CALL(VARIABLE(s.getId().getLocalPart()), "getUri", List.of()))))));
                 }
             } else if ((value instanceof String)  || (value instanceof LangString) || (value instanceof Integer)) {
                 String aString=String.valueOf(value);
@@ -366,54 +400,82 @@ public class StatementTypeAction implements StatementAction {
                         aString = ls.getValue();
                     }
                 }
-                mbuilder.addStatement("unknownTypeMap.get($N).addAll($N.apply($S,$N.getUri()))", s.getId().getLocalPart(), tmp_Conv2, aString, s.getId().getLocalPart());
+                attrStatements.add(METHOD_CALL(METHOD_CALL(VARIABLE("unknownTypeMap"), "get", List.of(VARIABLE(s.getId().getLocalPart()))), "addAll",
+                        List.of(METHOD_CALL(VARIABLE(tmp_Conv2), "apply",
+                                List.of(CONSTANT(aString),
+                                        METHOD_CALL(VARIABLE(s.getId().getLocalPart()), "getUri", List.of()))))));
             } else {
                 throw new UnsupportedOperationException("doRegisterTypesForAttributes with attribute value " + value + " for element " +attributeUri);
             }
-            mbuilder.endControlFlow();
+            // if (tmp_Conv2 != null) { ...attrStatements... }
+            innerInnerStatements.add(IF(BINARY_OP(VARIABLE(tmp_Conv2), "!=", getNull()))
+                    .THEN(attrStatements.toArray(new Statement[0])));
         });
 
-        mbuilder.endControlFlow();
-        mbuilder.endControlFlow();
+        // if (tmp_Conv != null) { ...innerInnerStatements... }
+        innerStatements.add(IF(BINARY_OP(VARIABLE(tmp_Conv), "!=", getNull()))
+                .THEN(innerInnerStatements.toArray(new Statement[0])));
+
+        // if (id != null) { ...innerStatements... }
+        statements.add(IF(BINARY_OP(VARIABLE(s.getId().getLocalPart()), "!=", getNull()))
+                .THEN(innerStatements.toArray(new Statement[0])));
     }
 
     static int iDataCounter=0;
 
     private void doRegisterIDataForAttributes(Identifiable s, Collection<Attribute> attributes, List<Type> types, String expressionUri) {
-        if (ExpandUtil.isGensymVariable(s.getId())) return;
-        JsonNode the_var = bindings_schema.get("var");
-
-        mbuilder.beginControlFlow("if ($N!=null) ", s.getId().getLocalPart());
+        if (InstantiateUtil.isGensymVariable(s.getId())) return;
+        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
 
         String tmp_Conv="itmp_Conv"+(iDataCounter++);
-        mbuilder.addStatement("$T $N=null;", Map_S_to_TriFunction, tmp_Conv);
+
+        List<Statement> outerStatements = new ArrayList<>();
+
+        // Map<String, TriFunction<...>> tmp_Conv = null;
+        outerStatements.add(DEFINITION(MAP_STRING_TRIFUNCTION, VARIABLE(tmp_Conv), getNull()));
 
         for (Type type: types) {
-// LUC use each tyep here
             Object o=type.getValue();
             if (o instanceof QualifiedName) {
                 QualifiedName qn=(QualifiedName) o;
                 if (isVariable(qn)) {
-                    mbuilder.addStatement("if (($N==null)&&($N!=null)) $N=idataConverters.get($N.getUri())", tmp_Conv, qn.getLocalPart(), tmp_Conv, qn.getLocalPart());
+                    // if ((tmp_Conv==null)&&(qn.localPart!=null)) tmp_Conv=idataConverters.get(qn.localPart.getUri())
+                    outerStatements.add(IF(BINARY_OP(
+                                    BINARY_OP(VARIABLE(tmp_Conv), "==", getNull()),
+                                    "&&",
+                                    BINARY_OP(VARIABLE(qn.getLocalPart()), "!=", getNull())))
+                            .THEN(ASSIGNMENT(VARIABLE(tmp_Conv),
+                                    METHOD_CALL(VARIABLE("idataConverters"), "get",
+                                            List.of(METHOD_CALL(VARIABLE(qn.getLocalPart()), "getUri", List.of()))))));
                 } else {
-                    mbuilder.addStatement("if ($N==null) $N=idataConverters.get($S)", tmp_Conv, tmp_Conv, qn.getUri());
+                    // if (tmp_Conv==null) tmp_Conv=idataConverters.get(qn.getUri())
+                    outerStatements.add(IF(BINARY_OP(VARIABLE(tmp_Conv), "==", getNull()))
+                            .THEN(ASSIGNMENT(VARIABLE(tmp_Conv),
+                                    METHOD_CALL(VARIABLE("idataConverters"), "get",
+                                            List.of(CONSTANT(qn.getUri()))))));
                 }
             } else if (o instanceof String) {
                 String str=(String)o;
-                mbuilder.addStatement("if ($N==null) $N=idataConverters.get($S)", tmp_Conv, tmp_Conv, str);
-
+                // if (tmp_Conv==null) tmp_Conv=idataConverters.get(str)
+                outerStatements.add(IF(BINARY_OP(VARIABLE(tmp_Conv), "==", getNull()))
+                        .THEN(ASSIGNMENT(VARIABLE(tmp_Conv),
+                                METHOD_CALL(VARIABLE("idataConverters"), "get",
+                                        List.of(CONSTANT(str))))));
             } else {
                 throw new UnsupportedOperationException("doRegisterIDataForAttributes: Not supported type " + o);
             }
         }
 
-        mbuilder.addStatement("if ($N==null) $N=idataConverters.get($S)", tmp_Conv, tmp_Conv, expressionUri);
+        // if (tmp_Conv==null) tmp_Conv=idataConverters.get(expressionUri)
+        outerStatements.add(IF(BINARY_OP(VARIABLE(tmp_Conv), "==", getNull()))
+                .THEN(ASSIGNMENT(VARIABLE(tmp_Conv),
+                        METHOD_CALL(VARIABLE("idataConverters"), "get",
+                                List.of(CONSTANT(expressionUri))))));
 
-        mbuilder.beginControlFlow("if ($N!=null) ", tmp_Conv);
+        List<Statement> innerStatements = new ArrayList<>();
         Map<String,String> seen=new HashMap<>();
 
         Collection<Attribute> attributes2= new LinkedList<>(attributes);
-
         attributes2.add(pFactory.newAttribute(PROV_EXT_NS_ID,s.getId(), pFactory.getName().PROV_QUALIFIED_NAME) );
 
         attributes2.forEach(attr -> {
@@ -430,56 +492,74 @@ public class StatementTypeAction implements StatementAction {
             } else {
                 first_encounter=false;
             }
-            if (first_encounter) mbuilder.addStatement("$T $N=$N.get($S)", TriFunction_O_Col_S, tmp_Conv2, tmp_Conv, attributeUri);
-            mbuilder.beginControlFlow("if ($N!=null) ", tmp_Conv2);
+
+            if (first_encounter) {
+                // TriFunction<...> tmp_Conv2 = tmp_Conv.get(attributeUri)
+                innerStatements.add(DEFINITION(TRIFUNCTION_OBJECT_STRING_STRING_COLLECTION_PAIRS, VARIABLE(tmp_Conv2),
+                        METHOD_CALL(VARIABLE(tmp_Conv), "get", List.of(CONSTANT(attributeUri)))));
+            }
+
+            List<Statement> attrStatements = new ArrayList<>();
 
             if (value instanceof QualifiedName) {
                 QualifiedName qn=(QualifiedName) value;
-                if (ExpandUtil.isVariable(qn)) {
+                if (InstantiateUtil.isVariable(qn)) {
                     String key=qn.getLocalPart();
                     if (bindingsSchema.getVar().containsKey(key) && (bindingsSchema.getVar().get(key)!=null)) {
-                        final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
-                        mbuilder.addStatement("idata.computeIfAbsent($N, k -> new $T<>())", s.getId().getLocalPart(), HashMap.class);
+                        final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
+                        // idata.computeIfAbsent(id, k -> new HashMap<>())
+                        attrStatements.add(METHOD_CALL(VARIABLE("idata"), "computeIfAbsent",
+                                List.of(VARIABLE(s.getId().getLocalPart()), LAMBDA(PARAMETER("k", STRING)).BODY(RETURN(CONSTRUCTOR_CALL(HASH_MAP_GENERICS, List.of()))))));
                         if (atype.equals(QualifiedName.class)) {
-                            //mbuilder.addStatement("if ($N!=null) idata.get($N).addAll($N.apply($N.getUri(), $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
-                            mbuilder.beginControlFlow("if /* option 1 */ ($N!=null)", key);
+                            // if (key!=null) { ... option 1 ... }
                             String pairVariable = "p";
                             String pairVariable2 = "p2";
-                            mbuilder.addStatement("$T $N=$N.apply($N.getUri(), $N.getUri(), $S))", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, key, s.getId().getLocalPart(), attributeUri);
-                            CodeBlock.Builder subBuilder = CodeBlock.builder();
-                            subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())", s.getId().getLocalPart(), pairVariable2, collectionClass);
-                            subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(), pairVariable2, pairVariable2);
-                            mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
-                            mbuilder.addCode(subBuilder.build());
-                            mbuilder.endControlFlow(")");
-                            mbuilder.endControlFlow();
+                            attrStatements.add(new Comment("option 1"));
+                            attrStatements.add(IF(BINARY_OP(VARIABLE(key), "!=", getNull()))
+                                    .THEN(
+                                            // Collection<Pair<String, Collection<String>>> p = tmp_Conv2.apply(key.getUri(), id.getUri(), attributeUri)
+                                            DEFINITION(COLLECTION_OF_PAIRS_STRING_COLLECTION_STRING, VARIABLE(pairVariable),
+                                                    METHOD_CALL(VARIABLE(tmp_Conv2), "apply",
+                                                            List.of(METHOD_CALL(VARIABLE(key), "getUri", List.of()),
+                                                                    METHOD_CALL(VARIABLE(s.getId().getLocalPart()), "getUri", List.of()),
+                                                                    CONSTANT(attributeUri)))),
+                                            // p.forEach(p2 -> { idata.get(id).computeIfAbsent(p2.getLeft(), k -> new HashSet<>()); idata.get(id).get(p2.getLeft()).addAll(p2.getRight()) })
+                                            METHOD_CALL(VARIABLE(pairVariable), "forEach", List.of(
+                                                    forEachPairLambda(s.getId().getLocalPart())))
+                                    ));
                         } else {
-                            //mbuilder.addStatement("if ($N!=null) idata.get($N).addAll($N.apply($N, $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
-                            mbuilder.beginControlFlow("if /* option 2 */ ($N!=null)", key);
+                            // if (key!=null) { ... option 2 ... }
                             String pairVariable = "p";
-                            String pairVariable2 = "p2";
-                            mbuilder.addStatement("$T $N=$N.apply($N,  $N.getUri(), $S)", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, key, s.getId().getLocalPart(), attributeUri);
-                            CodeBlock.Builder subBuilder = CodeBlock.builder();
-                            subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())", s.getId().getLocalPart(), pairVariable2, collectionClass);
-                            subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(), pairVariable2, pairVariable2);
-                            mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
-                            mbuilder.addCode(subBuilder.build());
-                            mbuilder.endControlFlow(")");
-                            mbuilder.endControlFlow();
+                            attrStatements.add(new Comment("option 2"));
+                            attrStatements.add(IF(BINARY_OP(VARIABLE(key), "!=", getNull()))
+                                    .THEN(
+                                            // Collection<Pair<String, Collection<String>>> p = tmp_Conv2.apply(key, id.getUri(), attributeUri)
+                                            DEFINITION(COLLECTION_OF_PAIRS_STRING_COLLECTION_STRING, VARIABLE(pairVariable),
+                                                    METHOD_CALL(VARIABLE(tmp_Conv2), "apply",
+                                                            List.of(VARIABLE(key),
+                                                                    METHOD_CALL(VARIABLE(s.getId().getLocalPart()), "getUri", List.of()),
+                                                                    CONSTANT(attributeUri)))),
+                                            // p.forEach(p2 -> { ... })
+                                            METHOD_CALL(VARIABLE(pairVariable), "forEach", List.of(
+                                                    forEachPairLambda(s.getId().getLocalPart())))
+                                    ));
                         }
                     }
                 } else {
-                    mbuilder.addStatement("// option 3");
-                    mbuilder.addStatement("idata.computeIfAbsent($N, k -> new $T<>())",s.getId().getLocalPart(), HashMap.class);
+                    // option 3
+                    attrStatements.add(new Comment("option 3"));
+                    attrStatements.add(METHOD_CALL(VARIABLE("idata"), "computeIfAbsent",
+                            List.of(VARIABLE(s.getId().getLocalPart()), LAMBDA(PARAMETER("k", STRING)).BODY(RETURN(CONSTRUCTOR_CALL(HASH_MAP_GENERICS, List.of()))))));
                     String pairVariable="p";
-                    String pairVariable2="p2";
-                    mbuilder.addStatement("$T $N=$N.apply($S,  $N.getUri(), $S)", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, attributeUri,  s.getId().getLocalPart(), attributeUri);
-                    CodeBlock.Builder subBuilder = CodeBlock.builder();
-                    subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, collectionClass);
-                    subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(), pairVariable2, pairVariable2);
-                    mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
-                    mbuilder.addCode(subBuilder.build());
-                    mbuilder.endControlFlow(")");
+                    // Collection<Pair<String, Collection<String>>> p = tmp_Conv2.apply(attributeUri, id.getUri(), attributeUri)
+                    attrStatements.add(DEFINITION(COLLECTION_OF_PAIRS_STRING_COLLECTION_STRING, VARIABLE(pairVariable),
+                            METHOD_CALL(VARIABLE(tmp_Conv2), "apply",
+                                    List.of(CONSTANT(attributeUri),
+                                            METHOD_CALL(VARIABLE(s.getId().getLocalPart()), "getUri", List.of()),
+                                            CONSTANT(attributeUri)))));
+                    // p.forEach(p2 -> { ... })
+                    attrStatements.add(METHOD_CALL(VARIABLE(pairVariable), "forEach", List.of(
+                            forEachPairLambda(s.getId().getLocalPart()))));
                 }
             } else if ((value instanceof String)  || (value instanceof LangString) || (value instanceof Integer)) {
                 String aString=String.valueOf(value);
@@ -492,48 +572,89 @@ public class StatementTypeAction implements StatementAction {
                         aString = ls.getValue();
                     }
                 }
-                mbuilder.addStatement("// option 4");
-                mbuilder.addStatement("idata.computeIfAbsent($N, k -> new $T<>())",s.getId().getLocalPart(), HashMap.class);
+                // option 4
+                attrStatements.add(new Comment("option 4"));
+                attrStatements.add(METHOD_CALL(VARIABLE("idata"), "computeIfAbsent",
+                        List.of(VARIABLE(s.getId().getLocalPart()), LAMBDA(PARAMETER("k", STRING)).BODY(RETURN(CONSTRUCTOR_CALL(HASH_MAP_GENERICS, List.of()))))));
                 String pairVariable="p";
-                String pairVariable2="p2";
-                mbuilder.addStatement("$T $N=$N.apply($S, $N.getUri(), $S)", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, aString, s.getId().getLocalPart(),attributeUri);
-                CodeBlock.Builder subBuilder = CodeBlock.builder();
-                subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, collectionClass);
-                subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(),  pairVariable2, pairVariable2);
-                mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
-                mbuilder.addCode(subBuilder.build());
-                mbuilder.endControlFlow(")");
+                attrStatements.add(DEFINITION(COLLECTION_OF_PAIRS_STRING_COLLECTION_STRING, VARIABLE(pairVariable),
+                        METHOD_CALL(VARIABLE(tmp_Conv2), "apply",
+                                List.of(CONSTANT(aString),
+                                        METHOD_CALL(VARIABLE(s.getId().getLocalPart()), "getUri", List.of()),
+                                        CONSTANT(attributeUri)))));
+                attrStatements.add(METHOD_CALL(VARIABLE(pairVariable), "forEach", List.of(
+                        forEachPairLambda(s.getId().getLocalPart()))));
             } else {
                 throw new UnsupportedOperationException("doRegisterIDataForAttributes with attribute value " + value + " for element " +attributeUri);
             }
-            mbuilder.endControlFlow();
+            // if (tmp_Conv2 != null) { ...attrStatements... }
+            innerStatements.add(IF(BINARY_OP(VARIABLE(tmp_Conv2), "!=", getNull()))
+                    .THEN(attrStatements.toArray(new Statement[0])));
         });
 
-        mbuilder.endControlFlow();
-        mbuilder.endControlFlow();
+        // if (tmp_Conv != null) { ...innerStatements... }
+        outerStatements.add(IF(BINARY_OP(VARIABLE(tmp_Conv), "!=", getNull()))
+                .THEN(innerStatements.toArray(new Statement[0])));
+
+        // if (id != null) { ...outerStatements... }
+        statements.add(IF(BINARY_OP(VARIABLE(s.getId().getLocalPart()), "!=", getNull()))
+                .THEN(outerStatements.toArray(new Statement[0])));
     }
 
     private String cleanUpName(String elementName) {
         return Base64.getEncoder().withoutPadding().encodeToString(elementName.getBytes(StandardCharsets.UTF_8));
     }
 
+    /**
+     * Creates a PAST lambda expression: p2 -> { idata.get(id).computeIfAbsent(p2.getLeft(), k -> new HashSet<>()); idata.get(id).get(p2.getLeft()).addAll(p2.getRight()); }
+     */
+    private org.openprovenance.prov.template.compiler.past.LambdaExpression forEachPairLambda(String idLocalPart) {
+        return LAMBDA(PARAMETER("p2", OBJECT)).BODY(
+                METHOD_CALL(METHOD_CALL(VARIABLE("idata"), "get", List.of(VARIABLE(idLocalPart))), "computeIfAbsent",
+                        List.of(METHOD_CALL(VARIABLE("p2"), "getLeft", List.of()),
+                                LAMBDA(PARAMETER("k", STRING)).BODY(RETURN(CONSTRUCTOR_CALL(HASH_SET_GENERICS, List.of()))))),
+                METHOD_CALL(METHOD_CALL(METHOD_CALL(VARIABLE("idata"), "get", List.of(VARIABLE(idLocalPart))), "get",
+                                List.of(METHOD_CALL(VARIABLE("p2"), "getLeft", List.of()))),
+                        "addAll",
+                        List.of(METHOD_CALL(VARIABLE("p2"), "getRight", List.of())))
+        );
+    }
+
     private void dynamicRegisterTypes(Identifiable s, Collection<QualifiedName> qualifiedNames, String relationURI) {
         if (qualifiedNames==null) return;
         String tmp="_tmp_"+ s.getId().getLocalPart();
-        Collection<QualifiedName> activities=doCollectElementVariables((Statement) s, TMPL_ACTIVITY_URI);
+        Collection<QualifiedName> activities=doCollectElementVariables((org.openprovenance.prov.model.Statement) s, TMPL_ACTIVITY_URI);
         if (activities==null || activities.isEmpty()) throw new MissingAttributeValue(TMPL_ACTIVITY_URI + " in relation " + s);
         final String localPart = s.getId().getLocalPart() + "." ;
         String suffix = activities.stream().findFirst().get().getLocalPart();
-        mbuilder.addStatement("$T $N=pf.newQualifiedName($S,$S+$N.getLocalPart(),$S)", QualifiedName.class, tmp, s.getId().getNamespaceURI(), localPart, suffix, s.getId().getPrefix());
-        mbuilder.addStatement("knownTypeMap.computeIfAbsent($N, k -> new $T<>())", tmp, HashSet.class);
-        mbuilder.addStatement("knownTypeMap.get($N).add($S)", tmp, relationURI);
+
+        // QualifiedName tmp = pf.newQualifiedName(ns, localPart+suffix.getLocalPart(), prefix)
+        statements.add(DEFINITION(PROV_QUALIFIED_NAME, VARIABLE(tmp),
+                METHOD_CALL(VARIABLE("pf"), "newQualifiedName",
+                        List.of(CONSTANT(s.getId().getNamespaceURI()),
+                                CONSTANT(localPart + "\" + " + suffix + ".getLocalPart() + \""),
+                                CONSTANT(s.getId().getPrefix())))));
+
+        // knownTypeMap.computeIfAbsent(tmp, k -> new HashSet<>())
+        statements.add(METHOD_CALL(VARIABLE("knownTypeMap"), "computeIfAbsent",
+                List.of(VARIABLE(tmp), LAMBDA(PARAMETER("k", STRING)).BODY(RETURN(CONSTRUCTOR_CALL(HASH_SET_GENERICS, List.of()))))));
+
+        // knownTypeMap.get(tmp).add(relationURI)
+        statements.add(METHOD_CALL(METHOD_CALL(VARIABLE("knownTypeMap"), "get", List.of(VARIABLE(tmp))), "add",
+                List.of(CONSTANT(relationURI))));
 
         qualifiedNames.forEach(q -> {
-            if (ExpandUtil.isVariable(q)) {
-                mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new $T<>())", tmp, HashSet.class);
-                mbuilder.addStatement("unknownTypeMap.get($N).add($N.getUri())", tmp, q.getLocalPart());
+            if (InstantiateUtil.isVariable(q)) {
+                // unknownTypeMap.computeIfAbsent(tmp, k -> new HashSet<>())
+                statements.add(METHOD_CALL(VARIABLE("unknownTypeMap"), "computeIfAbsent",
+                        List.of(VARIABLE(tmp), LAMBDA(PARAMETER("k", STRING)).BODY(RETURN(CONSTRUCTOR_CALL(HASH_SET_GENERICS, List.of()))))));
+                // unknownTypeMap.get(tmp).add(q.localPart.getUri())
+                statements.add(METHOD_CALL(METHOD_CALL(VARIABLE("unknownTypeMap"), "get", List.of(VARIABLE(tmp))), "add",
+                        List.of(METHOD_CALL(VARIABLE(q.getLocalPart()), "getUri", List.of()))));
             } else {
-                mbuilder.addStatement("knownTypeMap.get($N).add($S)", tmp, q.getUri());
+                // knownTypeMap.get(tmp).add(q.getUri())
+                statements.add(METHOD_CALL(METHOD_CALL(VARIABLE("knownTypeMap"), "get", List.of(VARIABLE(tmp))), "add",
+                        List.of(CONSTANT(q.getUri()))));
             }
         });
     }
@@ -541,13 +662,13 @@ public class StatementTypeAction implements StatementAction {
     @Override
     public void doAction(DictionaryMembership s) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void doAction(DerivedByRemovalFrom s) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -556,7 +677,7 @@ public class StatementTypeAction implements StatementAction {
         registerActivity(s.getActivity());
         registerEntity(s.getEnder());
         registerEntity(s.getTrigger());
-        
+
     }
 
 
@@ -572,7 +693,7 @@ public class StatementTypeAction implements StatementAction {
     @Override
     public void doAction(MentionOf s) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -598,12 +719,11 @@ public class StatementTypeAction implements StatementAction {
 
     @Override
     public void doAction(QualifiedHadMember s) {
-        final Collection<QualifiedName> qualifiedNames = doCollectElementVariables(s, ExpandUtil.ACTIVITY_TYPE_URI);
+        final Collection<QualifiedName> qualifiedNames = doCollectElementVariables(s, InstantiateUtil.ACTIVITY_TYPE_URI);
         if (s.getId()==null) {
             s.setId(gensym());
         }
-        compilerUtil.specWithComment(mbuilder);
-        mbuilder.addComment("qualified mem $N", s.getId().getUri());
+        statements.add(new Comment("qualified mem $N", s.getId().getUri()));
 
         registerTypes(s.getId(),s.getType());
         registerEntity(s.getCollection());
@@ -624,7 +744,7 @@ public class StatementTypeAction implements StatementAction {
     @Override
     public void doAction(DerivedByInsertionFrom s) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -637,9 +757,9 @@ public class StatementTypeAction implements StatementAction {
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
         registerBundle(bun.getId());
-        StatementTypeAction action2=new StatementTypeAction(pFactory, allVars, allAtts, vmap, null, null, bindings_schema, bindingsSchema, knownTypes, unknownTypes, mbuilder, compilerUtil);
-        
-        for (Statement s: bun.getStatement()) {
+        StatementTypeAction action2=new StatementTypeAction(pFactory, allVars, allAtts, vmap, bindingsSchema, knownTypes, unknownTypes, statements, compilerUtil);
+
+        for (org.openprovenance.prov.model.Statement s: bun.getStatement()) {
             provUtilities.doAction(s, action2);
 
         }

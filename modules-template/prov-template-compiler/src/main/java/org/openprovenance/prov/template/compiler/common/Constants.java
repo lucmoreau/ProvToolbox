@@ -4,7 +4,8 @@ public interface Constants {
     String IS_A = "isA";
     String GENERATED_VAR_PREFIX = "__";
     String ELEMENTS = GENERATED_VAR_PREFIX + "elements";
-    String ADD_ELEMENTS = GENERATED_VAR_PREFIX + "addElements";
+    String ELEMENTS1 = "elements1";
+    String ADD_ELEMENTS = "addElements";
     String GET_NODES_METHOD = "getNodes";
     String BUILDER_INTERFACE = "Builder";
     String INIT = "Init";
@@ -91,7 +92,10 @@ public interface Constants {
     String PROCESS_METHOD_NAME = "process";
     String PROCESSOR_PROCESS_METHOD_NAME = "process";
     String GETTER = "Getter";
+    String TYPED_GETTER = "TypedGetter";
     String ENACTOR_IMPLEMENTATION = "EnactorImplementation";
+    String ENACTOR_IMPLEMENTATION1 = "EnactorImplementation1";
+    String ENACTOR_IMPLEMENTATION4 = "EnactorImplementation4";
     String INSERT_PREFIX = "insert_";
     String NOT_NULL_METHOD = "notNull";
     String INPUT_PREFIX = "input_";
@@ -152,6 +156,7 @@ public interface Constants {
     String CONFIGURATOR = "configurator";
     String SUB_PACKAGE_LOGGER = "logger";
     String SUB_PACKAGE_INTEGRATOR = "integrator";
+    String SUB_PACKAGE_WORKFLOW = "workflow";
     String SUB_PACKAGE_ACCESS_CONTROL = "access_control";
     String SUB_PACKAGE_COMMON = "common";
     String SUB_PACKAGE_CLIENT = "client";
@@ -194,4 +199,21 @@ public interface Constants {
     String MAP_VAR="map";
     String ARGS_2_RECORDS = "args2Records";
     String _I_ = "_i_";
+    String TABLE = "table";
+    String METHOD_GET_NODES = "__getNodes";
+    String METHOD_GET_TYPED_SUCCESSORS = "__getTypedSuccessors";
+    String METHOD_GET_SUCCESSORS = "__getSuccessors";
+    String METHOD_GET_RELATIONS = "__getRelations";
+    String ARGS_2_BEAN = "args2bean";
+    String GETTER_VAR = "getter";
+    String ELEM_VAR = "elem";
+    String CONVERT_TO_NON_NULLABLE_TEXT = "convertToNonNullableTEXT";
+    String PRINCIPAL_VAR ="principal";
+    String QUERY_INVOKER_VAR ="queryInvoker";
+    String SB_VAR = "sb";
+    String LINKING_VAR = "linking";
+
+    String C_NS = "__C_ns";
+    String POST_PROCESSING_VAR = "postProcessing";
+    String TABLE_VAR = "table";
 }

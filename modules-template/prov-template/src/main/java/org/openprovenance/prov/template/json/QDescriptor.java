@@ -42,4 +42,15 @@ public class QDescriptor implements SingleDescriptor {
     public int hashCode() {
         return Objects.hash(id, namespace);
     }
+
+    @JsonIgnore
+    private String[] parts=null;
+
+    @JsonIgnore
+    public String[] getParts() {
+        if (parts==null) {
+            parts=id.split(":");
+        }
+        return parts;
+    }
 }

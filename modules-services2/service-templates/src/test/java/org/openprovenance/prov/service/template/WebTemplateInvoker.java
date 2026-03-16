@@ -60,7 +60,7 @@ public class WebTemplateInvoker extends TemplateInvoker {
     }
 
 
-    public  <IN, OUT> OUT generic_post_and_return(Class<OUT> clazz,
+    public  <IN, OUT> OUT generic_post_and_return(OUT outbean,
                                                   IN inputs0,
                                                   BiFunction<Map<String, Object>, OUT, OUT> completer) {
         List<IN> inputs = Collections.singletonList(inputs0);
@@ -72,11 +72,7 @@ public class WebTemplateInvoker extends TemplateInvoker {
         } else {
             List<Map<String, Object>> result0 = out1.get();
             Map<String, Object> result1 = result0.get(0);
-            try {
-                return completer.apply(result1,clazz.newInstance());
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
+            return completer.apply(result1,outbean);
         }
     }
 

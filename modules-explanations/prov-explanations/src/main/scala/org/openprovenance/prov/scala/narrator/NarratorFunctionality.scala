@@ -21,7 +21,7 @@ object NarratorFunctionality {
   def randomConfig(): XConfig = XplainConfig()
 
 
-  val logger: Logger = LogManager.getLogger("Narrator")
+  val logger: Logger = LogManager.getLogger(NarratorFunctionality)
 
 
   def getTextOnly(text: Map[String, Narrative]): Map[String, List[String]] = {
@@ -107,7 +107,6 @@ object NarratorFunctionality {
     if (config.language.isEmpty) {
       val config1=new XplainConfig(config)
       val config2: XConfig =config1.copy(language = Seq("nlg/templates/provbasic/provbasic.json"), languageAsFilep = false)
-      logger.debug("config2 is " + config2)
       realise_aux(config2, theOrderedStatements, config.format_option, allp)
     } else {
       logger.debug("With vocabulary " + config.language.toList)
@@ -123,9 +122,12 @@ object NarratorFunctionality {
     val factory=new RealiserFactory(config)
     val realiser: factory.Realiser = factory.make(theOrderedStatements)
     if (!allp && config.batch_templates.isDefined) {
+      //logger.debug("!allp " + theOrderedStatements)
+
       config.batch_templates match {
         case Some(s:String) =>
           val batch=extractBracketContents(s)
+          //logger.debug("batch is " + batch)
           batch.map(b => {
             val compactNarrative: Narrative = realiser.realise(config.profile, b.split(","), format_option, allp)
             b -> compactNarrative.copy(sentences=compactNarrative.sentences.reverse)
@@ -133,6 +135,8 @@ object NarratorFunctionality {
         case _ => throw new UnsupportedOperationException // never here
       }
     } else {
+      //logger.debug("realise_aux " + config.selected_templates)
+
       val compactNarrative: Narrative = realiser.realise(config.profile, config.selected_templates, format_option, allp)
       Map(config.selected_templates.mkString(",") ->  compactNarrative.copy(sentences=compactNarrative.sentences.reverse))
     }

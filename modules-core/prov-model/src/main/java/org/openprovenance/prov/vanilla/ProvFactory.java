@@ -89,21 +89,15 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
     @Override
     public Attribute newAttribute(Attribute.AttributeKind kind, Object value, org.openprovenance.prov.model.QualifiedName type) {
-        switch (kind) {
+        return switch (kind) {
+            case PROV_TYPE -> newType(value, type);
+            case PROV_LABEL -> newLabel(value, type);
+            case PROV_ROLE -> newRole(value, type);
+            case PROV_LOCATION -> newLocation(value, type);
+            case PROV_VALUE -> newValue(value, type);
+            default -> throw new UnsupportedOperationException("Should never be here, unknown " + kind);
+        };
 
-            case PROV_TYPE:
-                return newType(value, type);
-            case PROV_LABEL:
-                return newLabel(value, type);
-            case PROV_ROLE:
-                return newRole(value, type);
-            case PROV_LOCATION:
-                return newLocation(value, type);
-            case PROV_VALUE:
-                return newValue(value, type);
-        }
-
-        throw new UnsupportedOperationException("Should never be here, unknown " + kind);
     }
 
     @Override

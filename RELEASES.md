@@ -1,6 +1,36 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.2.3-SNAPSHOT`
+`2.2.3`
+* prov-template: update to instantiation
+* prov-template: variable-checker: pretty printing name
+* prov-template: tmpl:ID attribute, and capturing unused vars
+* prov-template: fixed isue with groups
+* prov-template: preparing to replace oldBindings by new Bindings
+* prov-template: WIP: running new Bindings in parallel with OldBindings, and comparing
+* prov-template: relying on new descriptor-based Bindings (no longer using OldBindings and old env structure)
+* prov-template-compiler: moved away from JsonNode, and using Bindings Descriptor
+* prov-template-compiler: introduced PAST (provenance abstract syntax tree), intermediate to Poet and Python (WIP)
+* prov-template: gensym variable, accept null binding, and ensure uniqueness
+* prov-template-compiler: fixed issue with generics in generated code
+* prov-template-compiler: predecessor table initialisation
+* prov-template-compiler: json schema disallowing ID variable
+* prov-template-compiler: generation of PAST (Provenance Abstract Syntax Tree) instead of Poet, and then conversion to Poet
+* service-translator: upgraded to bootstrap 5.
+* service-templates: upgraded to bootstrap 5.
+* prov-template-compiler: PAST expression type checking (simple bindings)
+* prov-template-compiler: PAST expression type checking
+* service-templates-core: TemplateQuery: fixed issue in recursive traversal query
+* service-templates-core: fixed issues, while generating screenshots for book
+* prov-template-compiler: PAST expression, detecting overloaded methods
+* prov-template-compiler: Python emitter, making use of overload annotation to disambiguate overloaded methods
+* prov-template-archetype: various improvements.
+* prov-template-compiler: support for generators in catalogue definition
+* prov-template-compiler: testing python generation of workflows
+* service-signature: upgrade to bootstrap 5
+* service-metrics, service-translator, service-signature,  service-summary: upgrade to bootstrap 5
+* service-xplain: upgrade to bootstrap 5
+* prov-template-archetype: service now producing explanations
+* prov-template-compiler: preliminary support for javascript and rust generation (WIP)
 
 `2.2.2`
 * prov-template: added ptm-merging template

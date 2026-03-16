@@ -104,6 +104,32 @@
                 "created_at"
             ],
             "additionalProperties": false
+        },
+        "GeneratorDescriptor": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "class": {
+                    "type": "string"
+                },
+                "parameters": {
+                    "type": "object"
+                },
+                "classpath": {
+                    "type": "array",
+                    "items": [
+                        {
+                            "type": "string"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "class"
+            ],
+            "additionalProperties": false
         }
     },
     "type": "object",
@@ -174,6 +200,14 @@
             "patternProperties": {
                 "^(.*)$": {
                     "$ref": "#/definitions/TableDescriptor"
+                }
+            }
+        },
+        "past-generators": {
+            "type": "object",
+            "patternProperties": {
+                "^(.*)$": {
+                    "$ref": "#/definitions/GeneratorDescriptor"
                 }
             }
         }

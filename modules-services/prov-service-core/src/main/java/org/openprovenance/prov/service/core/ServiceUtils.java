@@ -144,8 +144,8 @@ public class ServiceUtils {
                 }
             }
         }
-        if (formData.get("expand") != null) {
-            String val = getFormDataValue(formData, "expand");
+        if (formData.get("instantiate") != null) {
+            String val = getFormDataValue(formData, "instantiate");
             if (val != null) {
                 switch (val) {
                     case "json":
@@ -194,7 +194,7 @@ public class ServiceUtils {
     }
 
     public enum Action {
-        UNKNOWN("UNKNOWN"), VALIDATE("VALIDATE"), EXPAND("EXPAND"), METRICS("METRICS"), NF("NF"), SIGN("SIGN"), SIGNATURE("SIGNATURE)"), CHECK("CHECK"), RANDOM("RANDOM"), LINEAR("LINEAR"), EXPLANATION("EXPLANATION"), TRANSLATE("TRANSLATE"), SUMMARISE("SUMMARISE"), UPLOAD("UPLOAD");
+        UNKNOWN("UNKNOWN"), VALIDATE("VALIDATE"), INSTANTIATE("INSTANTIATE"), METRICS("METRICS"), NF("NF"), SIGN("SIGN"), SIGNATURE("SIGNATURE)"), CHECK("CHECK"), RANDOM("RANDOM"), LINEAR("LINEAR"), EXPLANATION("EXPLANATION"), TRANSLATE("TRANSLATE"), SUMMARISE("SUMMARISE"), UPLOAD("UPLOAD");
         // JSON("json"), XML("provx"), PROVN("provn"), TURTLE("ttl"), TRIG("trig"), SVG("svg"), JPG("jpg") ;
 
         Action(String text) {
@@ -285,8 +285,8 @@ public class ServiceUtils {
             return Action.SUMMARISE;
         }
 
-        if (formData.get("expand") != null) {
-            return Action.EXPAND;
+        if (formData.get("instantiate") != null) {
+            return Action.INSTANTIATE;
         }
         return Action.UNKNOWN;
     }

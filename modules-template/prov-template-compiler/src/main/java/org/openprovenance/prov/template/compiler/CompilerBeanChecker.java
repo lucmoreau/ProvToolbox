@@ -1,11 +1,13 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Triple;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
@@ -13,54 +15,79 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.common.BeanDirection.COMMON;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.ThrowStatement.THROW;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
 public class CompilerBeanChecker {
     private final CompilerUtil compilerUtil;
+    private final PastFactory pastFactory;
 
     public CompilerBeanChecker(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
+        this.pastFactory=compilerUtil.getPastFactory();
     }
+
 
 
     public SpecificationFile generateBeanChecker(TemplatesProjectConfiguration configs, Locations locations, BeanDirection direction, Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(fileName);
+        Class pastClass= pastFactory
+                .CLASS(fileName)
+                .MODIFIERS(Modifier.PUBLIC);
 
         String packageForBeanProcessor;
-        if (direction==BeanDirection.COMMON) {
+        if (direction== COMMON) {
             packageForBeanProcessor=locations.getFilePackage(configs.name, Constants.BEAN_PROCESSOR);
-            builder.addSuperinterface(ClassName.get(packageForBeanProcessor, Constants.BEAN_PROCESSOR));
+            pastClass.INTERFACES(ClassName.get(BEAN_PROCESSOR, packageForBeanProcessor));
         } else {
             packageForBeanProcessor=locations.getFilePackage(configs.name, INPUT_PROCESSOR);
-            builder.addSuperinterface(ClassName.get(packageForBeanProcessor, INPUT_PROCESSOR));
+            pastClass.INTERFACES(ClassName.get(INPUT_PROCESSOR, packageForBeanProcessor));
         }
 
-        MethodSpec.Builder mspec0 = MethodSpec.methodBuilder(Constants.NOT_NULL_METHOD)
-                .addModifiers(Modifier.PRIVATE,Modifier.FINAL, Modifier.STATIC)
-                .addParameter(ParameterSpec.builder(typeT,"object").build())
-                .addParameter(ParameterSpec.builder(String.class,"field").build())
-                .addParameter(ParameterSpec.builder(String.class,"template").build())
-                .addTypeVariable(typeT)
-                .returns(typeT);
-        compilerUtil.specWithComment(mspec0);
-        mspec0
-                .beginControlFlow("if (object==null)")
-                .addStatement("throw new $T(\"The object field \" + field + \" is null in template \" + template)", IllegalStateException.class)
-                .nextControlFlow("else")
-                .addStatement("return object")
-                .endControlFlow();
+        Method mspec0 = METHOD(Constants.NOT_NULL_METHOD)
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PRIVATE,Modifier.FINAL, Modifier.STATIC)
+                .PARAMETER(T(),"object")
+                .PARAMETER(STRING,"field")
+                .PARAMETER(STRING,"template")
+                .addTypeVariables(T())
+                .RETURNS(T()).BODY(
+                        IF(BINARY_OP(VARIABLE("object"), "==", Constant.getNull()))
+                                .THEN(THROW(
+                                        CONSTRUCTOR_CALL(ILLEGAL_ARGUMENT_EXCEPTION,
+                                                List.of(CONSTANT("The object field is null in template")
+                                                        //   VARIABLE("field"),
+                                                        //   CONSTANT(" is null in template "),
 
-        builder.addMethod(mspec0.build());
+                                                        //  VARIABLE("template")
+                                                )))  ),
+                        RETURN(VARIABLE("object")));
+
+        pastClass.METHOD(mspec0);
 
 
         for (TemplateCompilerConfig config : configs.templates) {
+
             String packageForBeans2=locations.getBeansPackage(config.fullyQualifiedName, direction);
-            builder.addMethod(generateCheckerMethod(config.name, null, config, direction, packageForBeans2, null));
+            pastClass.METHOD(generateCheckerMethod(config.name, null, config, direction, packageForBeans2, null, locations));
         }
 
         if (variantTable!=null) {
@@ -79,7 +106,7 @@ public class CompilerBeanChecker {
                                     SimpleTemplateCompilerConfig sConfig2 = sConfig.cloneAsInstanceInComposition(sConfig.name + extension, templateFullyQualifiedName + extension, null);
                                     String packageForBeans2=locations.getBeansPackage(config.fullyQualifiedName, direction);
 
-                                    builder.addMethod(generateCheckerMethod(sConfig.name , extension, sConfig2, direction, packageForBeans2, sharing));
+                                    pastClass.METHOD(generateCheckerMethod(sConfig.name , extension, sConfig2, direction, packageForBeans2, sharing, locations));
 
                                 }
                         );
@@ -87,26 +114,27 @@ public class CompilerBeanChecker {
             );
         }
 
-
-
-        TypeSpec theLogger = builder.build();
-
         String myPackage=locations.getFilePackage(configs.name,fileName);
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+
+        return new SpecificationFile(javaGenerator,pythonGenerator);
+
+
+
     }
 
-    public MethodSpec generateCheckerMethod(String templateName, String extension, TemplateCompilerConfig config, BeanDirection direction, String packageForBeans, List<String> sharing) {
+    public Method generateCheckerMethod(String templateName, String extension, TemplateCompilerConfig config, BeanDirection direction, String packageForBeans, List<String> sharing, Locations locations) {
         final String beanNameClass = compilerUtil.beanNameClass(templateName, direction, extension);
 
-        final ClassName className = ClassName.get(packageForBeans, beanNameClass);
-        MethodSpec.Builder mspec = MethodSpec.methodBuilder(PROCESS_METHOD_NAME)
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                .addParameter(ParameterSpec.builder(className,"bean").build())
-                .returns(className);
-        compilerUtil.specWithComment(mspec);
+        final ClassName className = get(beanNameClass, packageForBeans);
+        Method mspec = METHOD(PROCESS_METHOD_NAME)
+                .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                .PARAMETER(className,"bean")
+                .RETURNS(className);
+        compilerUtil.debugFileLocation(mspec);
 
 
         if (config instanceof SimpleTemplateCompilerConfig) {
@@ -114,7 +142,7 @@ public class CompilerBeanChecker {
 
             for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
                 if (descriptorUtils.isCompulsoryInput(key, bindingsSchema)) {
-                    mspec.addStatement("$N(bean.$N,$S,$S)", NOT_NULL_METHOD, key, key,templateName);
+                    mspec.BODY(METHOD_CALL(NOT_NULL_METHOD, List.of(METHOD_CALL(VARIABLE("bean"), key),CONSTANT(key), CONSTANT(templateName))));
 
                 }
             }
@@ -122,16 +150,28 @@ public class CompilerBeanChecker {
 
             if (sharing != null) {
                 sharing.forEach(shared -> {
-                    mspec.addStatement("$N(bean.$N,$S,$S) /* shared */", NOT_NULL_METHOD, shared, shared, templateName);
+                    mspec.BODY(METHOD_CALL(NOT_NULL_METHOD, List.of(METHOD_CALL(VARIABLE("bean"), shared),CONSTANT("shared"), CONSTANT(templateName))));
 
                 });
             }
         } else {
-            mspec.addStatement("bean.$N.forEach(el -> $N(el));", ELEMENTS, PROCESS_METHOD_NAME);
-        }
-        mspec.addStatement("return bean");
 
-        return (mspec.build());
+            CompositeTemplateCompilerConfig config1 = (CompositeTemplateCompilerConfig) config;
+
+            String shortConsistOfName = locations.getShortNames().get(config1.consistsOf);
+            final String innerNameClass2 = compilerUtil.beanNameClass(shortConsistOfName, direction, direction.equals(COMMON)?extension:"_1"); // LUC: TODO FIXME: extension is hard coded
+            final ClassName innerClassName2 = get(innerNameClass2, locations.getBeansPackage(config1.fullyQualifiedName, direction));
+
+            mspec.BODY(
+                    ITERATOR(
+                            PARAMETER("el", innerClassName2),
+                            METHOD_CALL(VARIABLE("bean"), ELEMENTS))
+                            .BODY(
+                                    METHOD_CALL(PROCESS_METHOD_NAME, List.of(VARIABLE("el")))));
+        }
+        mspec.BODY(RETURN(VARIABLE("bean")));
+
+        return mspec;
     }
 
 }

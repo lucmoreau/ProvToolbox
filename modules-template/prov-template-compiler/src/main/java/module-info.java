@@ -20,7 +20,13 @@ module prov.template.compiler {
     requires com.networknt.schema;
 
     exports org.openprovenance.prov.template.compiler;
+    exports org.openprovenance.prov.template.compiler.past;
+    exports org.openprovenance.prov.template.compiler.past.annotations;
+    exports org.openprovenance.prov.template.compiler.past.checker;
+    exports org.openprovenance.prov.template.compiler.past.emitter;
+    exports org.openprovenance.prov.template.compiler.past.type;
     exports org.openprovenance.prov.template.compiler.configuration;
+    exports org.openprovenance.prov.template.compiler.common;
     exports org.openprovenance.prov.template.compiler.util;
     exports org.openprovenance.prov.template.descriptors;
     exports org.openprovenance.prov.template.log2prov;

@@ -1,102 +1,128 @@
+// java
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
-import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.Method;
+import org.openprovenance.prov.template.compiler.past.PastFactory;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 
 import javax.lang.model.element.Modifier;
-
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.LambdaExpression.LAMBDA;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
+/**
+ * PAST-based generator for TEMPLATE_INVOKER
+ */
 public class CompilerTemplateInvoker {
-    public static final String BEAN = "bean";
     private final CompilerUtil compilerUtil;
+    private final PastFactory pastFactory;
 
     public CompilerTemplateInvoker(ProvFactory pFactory) {
-        this.compilerUtil=new CompilerUtil(pFactory);
+        this.compilerUtil = new CompilerUtil(pFactory);
+        this.pastFactory = compilerUtil.getPastFactory();
     }
 
-    static TypeName mapType=ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), ClassName.get(Object.class));
-
     SpecificationFile generateTemplateInvoker(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
-        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(TEMPLATE_INVOKER).addSuperinterface(ClassName.get(locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR),INPUT_OUTPUT_PROCESSOR)).addModifiers(Modifier.ABSTRACT);
+        StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
+        ClassName processorInterface = get(INPUT_OUTPUT_PROCESSOR, locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR));
 
+        Class pastClass = pastFactory.CLASS(TEMPLATE_INVOKER)
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .INTERFACES(processorInterface);
 
         for (TemplateCompilerConfig config : configs.templates) {
-            final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
-            final String outputsNameClass = compilerUtil.outputsNameClass(config.name);
+            final String inputsClass = compilerUtil.inputsNameClass(config.name);
+            final String outputsClass = compilerUtil.outputsNameClass(config.name);
 
-            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputsNameClass);
-            final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputsNameClass);
-            MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                    .addModifiers(Modifier.PUBLIC)
-                    .addParameter(ParameterSpec.builder(inputClassName, BEAN).build())
-                    .returns(outputClassName);
-            compilerUtil.specWithComment(mspec);
+            final ClassName inputClassName = get(inputsClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS));
+            final ClassName outputClassName = get(outputsClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
 
 
-            //return generic_post_and_return(Defining_environmentOutputs.class, inputs0, (m, o) -> new BeanCompleter2(m).process(o));
-            ClassName completerClass;
+            Method m = METHOD(PROCESS_METHOD_NAME)
+                    .MODIFIERS(Modifier.PUBLIC)
+                    .PARAMETER(inputClassName, BEAN_VAR)
+                    .RETURNS(outputClassName);
 
+            final ClassName completerClass;
             if (config instanceof SimpleTemplateCompilerConfig) {
-                completerClass = ClassName.get(locations.getFilePackage(configs.name, BEAN_COMPLETER2), BEAN_COMPLETER2);
-                mspec.addStatement("return $N($T.class, $N, (m, o) -> new $T(m).process(o))", GENERIC_POST_AND_RETURN, outputClassName, BEAN, completerClass);
+                completerClass =ClassName.get(BEAN_COMPLETER2, locations.getFilePackage(configs.name, BEAN_COMPLETER2) );
+
+                m.commentFileLocation();
+                m.BODY(RETURN(
+                        METHOD_CALL(
+                                VARIABLE("this"),
+                                GENERIC_POST_AND_RETURN,
+                                List.of(CONSTRUCTOR_CALL(outputClassName, List.of()),
+                                        VARIABLE(BEAN_VAR),
+                                        LAMBDA(PARAMETER("m", MAP_STRING_OBJECT),
+                                                PARAMETER("o", outputClassName))
+                                                .BODY(RETURN(
+                                                        METHOD_CALL(
+                                                                CONSTRUCTOR_CALL(completerClass,List.of(VARIABLE("m"))),
+                                                                "process",
+                                                                List.of(VARIABLE("o")))))))));
 
             } else {
-                completerClass = ClassName.get(locations.getFilePackage(configs.name, COMPOSITE_BEAN_COMPLETER2), COMPOSITE_BEAN_COMPLETER2);
-                mspec.addStatement("return $N($T.class, $N, (m, o) -> {o.$N=new $T<>(); return new $T(m).process(o); })", GENERIC_POST_AND_RETURN, outputClassName, BEAN, ELEMENTS, LinkedList.class, completerClass);
+                m.commentFileLocation();
+                completerClass =ClassName.get(COMPOSITE_BEAN_COMPLETER2, locations.getFilePackage(configs.name, COMPOSITE_BEAN_COMPLETER2) );
+                m.BODY(RETURN(
+                        METHOD_CALL(
+                                VARIABLE("this"),
+                                GENERIC_POST_AND_RETURN,
+                                List.of(CONSTRUCTOR_CALL(outputClassName, List.of()),
+                                        VARIABLE(BEAN_VAR),
+                                        LAMBDA(PARAMETER("m", MAP_STRING_OBJECT),
+                                                PARAMETER("o", outputClassName))
+                                                .BODY(
+                                                        ASSIGNMENT(
+                                                                METHOD_CALL(VARIABLE("o"), ELEMENTS),
+                                                                CONSTRUCTOR_CALL(LINKED_LIST_GENERICS, List.of())),
+                                                        RETURN(
+                                                                METHOD_CALL(
+                                                                        CONSTRUCTOR_CALL(completerClass, List.of(VARIABLE("m"))),
+                                                                        "process",
+                                                                        List.of(VARIABLE("o")))))))));
+
 
             }
 
-
-
-
-
-            builder.addMethod(mspec.build());
+            pastClass.METHOD(m);
         }
 
-        TypeVariableName inVar = TypeVariableName.get("IN");
-        TypeVariableName outVar = TypeVariableName.get("OUT");
+        Method generic = METHOD(GENERIC_POST_AND_RETURN)
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .PARAMETERS(
+                       // PARAMETER("clazz", CLASS_OUT),
+                        PARAMETER("outbean", TYPE_OUT),
+                        PARAMETER("inputs", TYPE_IN),
+                        PARAMETER( "completer", BIFUNCTION_MAP_OUT_OUT)
+                )
+                .addTypeVariables(TYPE_IN, TYPE_OUT)
+                .RETURNS(TYPE_OUT);
 
-        TypeName biFunctionType=ParameterizedTypeName.get(ClassName.get(BiFunction.class), mapType, outVar, outVar);
+        pastClass.METHOD(generic);
 
-        MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.GENERIC_POST_AND_RETURN)
-                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
-                .addParameter(ParameterSpec.builder(ParameterizedTypeName.get(ClassName.get(Class.class),outVar), "clazz").build())
-                .addParameter(ParameterSpec.builder(inVar, "inputs").build())
-                .addParameter(ParameterSpec.builder(biFunctionType, "completer").build())
-                .addTypeVariables(List.of(inVar, outVar))
-                .returns(outVar);
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
 
-        builder.addMethod(mspec.build());
-
-
-
-        TypeSpec theLogger = builder.build();
-
-        String myPackage=locations.getFilePackage(configs.name, fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
-
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
-
-
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
-
-
-
-
-
-
-
-
 }

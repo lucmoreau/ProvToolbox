@@ -7,6 +7,7 @@ module prov.template.compiler.test{
     requires prov.notation;
     requires prov.template;
     requires prov.template.compiler;
+    requires java.compiler;
 
     exports org.openprovenance.prov.template.compiler.test;
     exports org.example.remote;

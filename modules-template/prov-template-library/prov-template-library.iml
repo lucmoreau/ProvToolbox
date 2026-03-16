@@ -2,7 +2,7 @@
 <module version="4">
   <component name="FacetManager">
     <facet type="Python" name="Python">
-      <configuration sdkName="Python 3.11 (ProvToolbox)" />
+      <configuration sdkName="Python 3.11 virtualenv at ~/IdeaProjects/ProvToolbox/venv" />
     </facet>
   </component>
 </module>

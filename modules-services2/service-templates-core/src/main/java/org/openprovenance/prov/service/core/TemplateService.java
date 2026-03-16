@@ -16,6 +16,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
@@ -85,7 +86,7 @@ public class TemplateService {
     protected final Map<String, Linker> compositeLinker;
     protected final Map<String, Function<Object[], Object[]>> recordMaker;
     protected final PrincipalManager principalManager;
-    protected final Map<String, String> templateConfiguration;
+    protected final Map<String, Object> templateConfiguration;
     protected final Querier querier;
     protected final HashMap<String, String> map;
     protected final String postgresUsername=getSystemOrEnvironmentVariableOrDefault(DB_USER, "user");
@@ -133,8 +134,11 @@ public class TemplateService {
         this.templateConfiguration=(NO_TEMPLATE_CONFIG.equals(templateConfig))?new HashMap<>():readTemplateConfiguration(templateConfig);
 
         String fullClassName=templateConfiguration.get("catalogue.package")+".CatalogueDispatcher";
-        String sqlInitializer=templateConfiguration.get("sql.initializer");
-        String jdbcURL=templateConfiguration.get("jdbc.url");
+        String sqlInitializer= (String) templateConfiguration.get("sql.initializer");
+        String jdbcURL= (String) templateConfiguration.get("jdbc.url");
+        String nlgXplanLibary= (String) templateConfiguration.get("nlg.xplan.library");
+        List<String> nlgPlanList= (List<String>) templateConfiguration.get("nlg.xplan.list");
+
 
         Connection conn=storageSetup(jdbcURL);
         Function<String, ResultSet> queryExecutor = storage.queryExecutor(conn);
@@ -151,7 +155,6 @@ public class TemplateService {
 
         try {
             this.compositeLinker= om.readValue(this.catalogueDispatcher.getLinkers(), om.getTypeFactory().constructMapType(HashMap.class, String.class, Linker.class));
-
 
 
         } catch (JsonProcessingException e) {
@@ -173,12 +176,32 @@ public class TemplateService {
 
         storageInitialize(conn, sqlInitializer);
 
+
         this.documentBuilderDispatcher=catalogueDispatcher.getDocumentBuilderDispatcher();
         this.recordMaker=catalogueDispatcher.getRecordMaker();
         this.queryTemplate=new TemplateQuery(querier, this.catalogueDispatcher, principalManager, compositeLinker, om);
-        this.templateLogic=new TemplateLogic(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om);
+        this.templateLogic=new TemplateLogicWithConfig(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om,nlgXplanLibary,nlgPlanList);
 
 
+    }
+
+    static class TemplateLogicWithConfig extends TemplateLogic {
+        private final String nlgXplanLibrary;
+        private final List<String> nlgXplanList;
+
+
+        public TemplateLogicWithConfig(ProvFactory pf, TemplateQuery queryTemplate, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om, String nlgXplanLibrary, List<String> nlgXplanList) {
+            super(pf, queryTemplate, shortNames, catalogueDispatcher, principalManager, utils, om);
+            this.nlgXplanLibrary = nlgXplanLibrary;
+            this.nlgXplanList = nlgXplanList;
+        }
+
+        @Override
+        public @NonNull XplainerConfig makeXplainerConfig() {
+            System.out.println("calling new XplainerConfig " + nlgXplanLibrary);
+
+            return new XplainerConfig(nlgXplanLibrary, nlgXplanList);
+        }
     }
 
     public void storageInitialize(Connection conn, String sqlInitializer) {
@@ -448,7 +471,7 @@ public class TemplateService {
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
         List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
-        //debugDisplay("records.size ", records.size());
+        debugDisplay("records.size ", records);
 
 
         Document doc=queryTemplate.constructDocument(documentBuilderDispatcher,records);
@@ -605,6 +628,7 @@ public class TemplateService {
             Object[] record=records.get(i);
             String property=ll.get(i).property;
             String template=(String)record[0];
+            System.out.println("template " + template + " property " + property + " record " + java.util.Arrays.asList(record));
             //logger.info("template " + template);
             //logger.info("property " + property);
             //logger.info("record " + java.util.Arrays.asList(record));
@@ -650,16 +674,16 @@ public class TemplateService {
                                               @Context HttpHeaders headers,
                                               @Context UriInfo uriInfo,
 
-                                              @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
+                                              @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String fullyQualifiedName,
                                               @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id) {
 
-        logger.info("getHash " + template + " " + id );
+        logger.info("getHash " + fullyQualifiedName + " " + id );
 
         Principal principal = request.getUserPrincipal();
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
-        Map<String, String> hash=queryTemplate.retrieveHash(template,id,principalAsPreferredUsername);
+        Map<String, String> hash=queryTemplate.retrieveHash(fullyQualifiedName,id,principalAsPreferredUsername);
 
         StreamingOutput promise= out -> om.writeValue(out,hash);
 
@@ -676,25 +700,25 @@ public class TemplateService {
                             @Context HttpHeaders headers,
                             @Context UriInfo uriInfo,
 
-                            @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
+                            @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String fullyQualifiedName,
                             @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id) {
 
-        logger.info("getHash " + template + " " + id );
+        logger.info("getHash " + fullyQualifiedName + " " + id );
 
         Principal principal = request.getUserPrincipal();
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
-        List<Object[]> records = queryTemplate.query(template, id, false, principalAsPreferredUsername);
+        List<Object[]> records = queryTemplate.query(fullyQualifiedName, id, false, principalAsPreferredUsername);
         if (records.size()!=1) {
             return utils.composeResponseBadRequest("record not found", new IllegalArgumentException("size not 1:" + records.size()));
         }
 
         Object[] record=records.get(0);
 
-        Map<String, String> hash=queryTemplate.computeHash(template, id, record);
+        Map<String, String> hash=queryTemplate.computeHash(fullyQualifiedName, id, record);
 
-        Map<String,String> storedHash=queryTemplate.retrieveHash(template,id,principalAsPreferredUsername);
+        Map<String,String> storedHash=queryTemplate.retrieveHash(fullyQualifiedName,id,principalAsPreferredUsername);
         for (String key: storedHash.keySet()) {
             if (key.equals("csv")) continue;
             hash.put(key+".check", String.valueOf(storedHash.get(key).equals(hash.get(key))));
@@ -746,9 +770,9 @@ public class TemplateService {
     }
 
 
-    public Map<String,String> readTemplateConfiguration(String configFileName) {
+    public Map<String,Object> readTemplateConfiguration(String configFileName) {
         try {
-            return (Map<String, String>) om.readValue(new File(configFileName), Map.class);
+            return (Map<String, Object>) om.readValue(new File(configFileName), Map.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

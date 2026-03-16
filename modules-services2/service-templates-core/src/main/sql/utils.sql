@@ -101,6 +101,7 @@ CREATE TABLE IF NOT EXISTS __PROV_MEMBERSHIP
     rel TEXT
 );
 
+/*
 
 CREATE TABLE if not exists predecessor_table  (template text, output text, input text);
 
@@ -123,6 +124,8 @@ values
     ('weighing', 'item1', 'item0'),
     ('handover', 'item1', 'item0')
 ;
+
+ */
 
 /*
 

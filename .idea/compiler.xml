@@ -9,41 +9,31 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="prov-jsonld-xml (1)" />
         <module name="prov-nf" />
         <module name="service-xplain" />
         <module name="prov-template-library" />
-        <module name="prov-storage-api" />
         <module name="prov-explanations" />
+        <module name="prov-storage-api" />
         <module name="prov-service-summary" />
-        <module name="prov-service-translation" />
         <module name="prov-n" />
+        <module name="prov-service-translation" />
         <module name="docker-service-translator" />
         <module name="prov-service-xplain" />
-        <module name="templates_cli (1)" />
         <module name="benchmarks" />
         <module name="prov-model" />
-        <module name="templates_l2p (1)" />
         <module name="prov-toolbox-js-embedding" />
         <module name="service-metrics" />
         <module name="modules-executable-provman" />
         <module name="docker-service-templates" />
         <module name="prov-toolbox-plugin" />
-        <module name="templates_l2p" />
         <module name="prov-scala-misc" />
         <module name="prov-model-scala" />
-        <module name="tutorial5" />
-        <module name="toolbox" />
         <module name="prov-generator" />
-        <module name="app-template-service" />
         <module name="docker-service-metrics" />
         <module name="prov-template-compiler" />
-        <module name="app-template-library" />
         <module name="prov-service-core" />
         <module name="prov-storage-filesystem" />
-        <module name="demo" />
         <module name="prov-jsonld-xml" />
-        <module name="templates_cli" />
         <module name="prov-typemap" />
         <module name="prov-validation" />
         <module name="prov-storage-index-redis" />
@@ -53,16 +43,16 @@
         <module name="nlg-wrapper" />
         <module name="ProvToolbox-Tutorial4" />
         <module name="ProvToolbox-Tutorial3" />
-        <module name="ProvToolbox-Tutorial1" />
+        <module name="ProvToolbox-Tutorial2" />
         <module name="provconvert" />
         <module name="prov-sparql-query" />
-        <module name="service-translator" />
+        <module name="ProvToolbox-Tutorial1" />
         <module name="prov-service-security-pac" />
+        <module name="service-translator" />
         <module name="nlg-spec-transformer" />
         <module name="service-templates" />
         <module name="prov-summarisation" />
         <module name="prov-service-validation" />
-        <module name="prov-interop-light" />
         <module name="prov-interop" />
         <module name="prov-log" />
         <module name="prov-service-signature" />
@@ -78,32 +68,6 @@
         <module name="prov-summary-explanations" />
         <module name="service-signature" />
       </profile>
-      <profile name="Annotation profile for ProvToolbox: JVM (Java and Scala) for W3C PROV" enabled="true">
-        <sourceOutputDir name="../prov-scala/target/generated-sources/annotations" />
-        <sourceTestOutputDir name="../prov-scala/target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <module name="prov-scala" />
-      </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="app-template-library" target="11" />
-      <module name="app-template-service" target="11" />
-      <module name="arti" target="11" />
-      <module name="demo (1)" target="1.5" />
-      <module name="modules-executable (1)" target="1.5" />
-      <module name="mojos" target="11" />
-      <module name="prov-jsonld-xml (1)" target="11" />
-      <module name="prov-plugin" target="1.5" />
-      <module name="prov-scala" target="9" />
-      <module name="ProvToolbox-Tutorial2" target="1.5" />
-      <module name="templates (1)" target="1.5" />
-      <module name="toolbox" target="1.8" />
-    </bytecodeTargetLevel>
-  </component>
-  <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="benchmarks" options="" />
-      <module name="prov-toolbox-js-embedding" options="" />
-    </option>
   </component>
 </project>

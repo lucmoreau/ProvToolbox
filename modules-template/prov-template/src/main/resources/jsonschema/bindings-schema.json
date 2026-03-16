@@ -41,6 +41,9 @@
                 },
                 {
                     "$ref": "#/definitions/ArrayOfIds"
+                },
+                {
+                    "type": "null"
                 }
             ]
         },
@@ -154,7 +157,7 @@
         "var": {
             "type": "object",
             "patternProperties": {
-                "^[^:\\[\\]()/\\\\,\\-]+$": { "$ref": "#/definitions/ValuesOrIds" }
+                "^(?![iI][dD]$)[^:\\[\\]()/\\\\,\\-]+$": { "$ref": "#/definitions/ValuesOrIds" }
             }
         },
         "vargen": {

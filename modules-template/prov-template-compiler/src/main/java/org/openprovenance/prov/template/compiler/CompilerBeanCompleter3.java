@@ -1,146 +1,151 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
-
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
+
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.SUPER_METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.SuperConstructorCall.SUPER_CALL;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 public class CompilerBeanCompleter3 {
     private final CompilerUtil compilerUtil;
-    private final boolean debugComment=true;
-
+    private final PastFactory pastFactory;
 
     public CompilerBeanCompleter3(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
+        this.pastFactory=compilerUtil.getPastFactory();
     }
-
 
     SpecificationFile generateBeanCompleter3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_COMPLETER3);
+        ClassName GETTER_TYPE = get(GETTER, locations.getFilePackage("ignoreme", GETTER ));
 
-        builder.superclass(ClassName.get(locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2));
-        builder.addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);
+        Class pastClass = pastFactory.CLASS(BEAN_COMPLETER3)
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .SUPERCLASS(get(BEAN_COMPLETER2, locations.getFilePackage(configs.name, BEAN_COMPLETER2)));
 
-        MethodSpec.Builder cbuilder2= MethodSpec.constructorBuilder();
-        compilerUtil.specWithComment(cbuilder2);
-        cbuilder2
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(CompilerUtil.mapType, "m")
-                .addStatement("super(m)");
+        // constructors mirroring super(m) and super(getter)
+        Constructor cons1 = CONSTRUCTOR()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(MAP_STRING_OBJECT, "m")
+                .commentFileLocation()
+                .BODY(
+                        // call super(m)
+                        SUPER_CALL( List.of(VARIABLE("m")) )
+                );
+        pastClass.CONSTRUCTOR(cons1);
 
+        Constructor cons2 = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(GETTER_TYPE, "getter")
+                .BODY(
+                        SUPER_CALL( List.of(VARIABLE("getter")) )
+                );
+        pastClass.CONSTRUCTOR(cons2);
 
-        builder.addMethod(cbuilder2.build());
+        // abstract methods
+        Method getValue = METHOD("getValueFromLocation")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .RETURNS(INTEGER);
+        pastClass.METHOD(getValue);
 
-        MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder();
-        compilerUtil.specWithComment(cbuilder3);
-        cbuilder3
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(TypeVariableName.get(Constants.GETTER), "getter")
-                .addStatement("super(getter)");
+        Method setValue = METHOD("setValueInLocation")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .RETURNS(VOID);
+        pastClass.METHOD(setValue);
 
-        builder.addMethod(cbuilder3.build());
-
-        builder.addMethod(MethodSpec.methodBuilder("getValueFromLocation")
-                .addModifiers(Modifier.ABSTRACT,Modifier.PUBLIC)
-                .returns(Integer.class)
-                .build());
-        builder.addMethod(MethodSpec.methodBuilder("setValueInLocation")
-                .addModifiers(Modifier.ABSTRACT,Modifier.PUBLIC)
-                .returns(TypeName.VOID)
-                .build());
-
-        // gather all composee templates by finding composite templates, and then finding the templates they consist of
+        // gather composee templates
         Set<String> composeeTemplates = new HashSet<>();
         for (TemplateCompilerConfig config : configs.templates) {
             if (config instanceof CompositeTemplateCompilerConfig) {
-                CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
+                CompositeTemplateCompilerConfig config1 = (CompositeTemplateCompilerConfig) config;
                 composeeTemplates.add(config1.consistsOf);
             }
         }
 
-
         for (TemplateCompilerConfig config : configs.templates) {
-            if  (config instanceof SimpleTemplateCompilerConfig) {
+            if (config instanceof SimpleTemplateCompilerConfig) {
                 if (composeeTemplates.contains(config.fullyQualifiedName)) {
-
-
                     final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
+                    final ClassName outputClassName = get(outputBeanNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
 
-                    final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
-                    MethodSpec.Builder mspec = createSimpleProcessMethod(outputClassName,config.name);
-
-                    builder.addMethod(mspec.build());
-
-
+                    Method mspec = METHOD(PROCESS_METHOD_NAME)
+                            .MODIFIERS(Modifier.PUBLIC)
+                            .PARAMETER(outputClassName, BEAN_VAR)
+                            .RETURNS(outputClassName)
+                            .commentFileLocation()
+                            .BODY(
+                                    // super.process(bean)
+                                    SUPER_METHOD_CALL(PROCESS_METHOD_NAME, List.of(VARIABLE(BEAN_VAR))),
+                                    METHOD_CALL("setValueInLocation",List.of()),
+                                    // placeholder for calling super.process
+                                    RETURN(VARIABLE(BEAN_VAR))
+                            );
+                    // Note: we cannot directly express a super.method call as a MethodCall object, the emitter will render it from code patterns in other places.
+                    pastClass.METHOD(mspec);
                 }
             } else {
-                CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
+                final ClassName outputClassName = get(outputBeanNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
 
-                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
-
-                MethodSpec.Builder mspec = createCompositeProcessMethod(config.fullyQualifiedName,outputClassName);
-                builder.addMethod(mspec.build());
+                Method mspec = createCompositeProcessMethod(config.fullyQualifiedName,outputClassName);
+                pastClass.METHOD(mspec);
 
             }
         }
 
-
-
-        TypeSpec theLogger = builder.build();
-
         String myPackage=locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
-
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
-
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
+    private Method createCompositeProcessMethod(String templateFullyQualifiedName, ClassName outputClassName) {
+        Method mspec = METHOD(Constants.PROCESS_METHOD_NAME)
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(outputClassName,BEAN_VAR)
+                .RETURNS(outputClassName);
 
-    private MethodSpec.Builder createSimpleProcessMethod(ClassName outputClassName, String template) {
-        MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
-                .returns(outputClassName);
-        compilerUtil.specWithComment(mspec);
+        mspec.BODY(
 
-        mspec.addStatement("super.$N($N)", Constants.PROCESS_METHOD_NAME, BEAN_VAR);
-        mspec.addStatement("setValueInLocation()");
-        mspec.addStatement("return $N", BEAN_VAR);
-        mspec.addAnnotation(Override.class);
+                DEFINITION(outputClassName, VARIABLE("result"), SUPER_METHOD_CALL(PROCESS_METHOD_NAME, List.of(VARIABLE(BEAN_VAR)))),
+
+                ASSIGNMENT( METHOD_CALL(VARIABLE("result"), "ID"), METHOD_CALL("getValueFromLocation",List.of())),
+
+                // PRINT STATEMENT
+
+                METHOD_CALL(POST_PROCESS_METHOD_NAME, List.of(METHOD_CALL(VARIABLE("result"), "ID"), CONSTANT(templateFullyQualifiedName))),
+
+                RETURN(VARIABLE("result"))         );
 
         return mspec;
     }
-
-    private MethodSpec.Builder createCompositeProcessMethod(String templateFullyQualifiedName, ClassName outputClassName) {
-        MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
-                .returns(outputClassName);
-        compilerUtil.specWithComment(mspec);
-
-
-        mspec.addStatement("$T result=super.$N($N)", outputClassName, Constants.PROCESS_METHOD_NAME, BEAN_VAR);
-        mspec.addStatement("result.ID=getValueFromLocation()");
-        mspec.addStatement("System.out.println($S+result.ID+$S)", "Assigned ID in completer: ", "  " + templateFullyQualifiedName);
-        mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, "result", templateFullyQualifiedName);
-
-        mspec.addStatement("return $N", "result");
-        mspec.addAnnotation(Override.class);
-
-        return mspec;
-    }
-
 
 }

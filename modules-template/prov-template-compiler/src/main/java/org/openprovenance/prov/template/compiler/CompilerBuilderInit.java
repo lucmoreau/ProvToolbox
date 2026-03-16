@@ -1,101 +1,119 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
-import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
-import org.openprovenance.prov.template.log2prov.FileBuilder;
-import org.openprovenance.prov.template.log2prov.Runner;
-import org.openprovenance.prov.template.types.ProvenanceKernels;
+import org.openprovenance.prov.template.compiler.past.Statement;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.Method;
+import org.openprovenance.prov.template.compiler.past.PastFactory;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 
 import javax.lang.model.element.Modifier;
-
 import java.util.List;
+import java.util.function.Supplier;
+
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY_ACCESSOR;
+import static org.openprovenance.prov.template.compiler.past.ArrayAllocator.ARRAY_ALLOCATOR;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 public class CompilerBuilderInit {
     private final CompilerUtil compilerUtil;
-
-    private final ProvFactory pFactory;
+    private final PastFactory pastFactory;
 
     public CompilerBuilderInit(ProvFactory pFactory) {
-        this.pFactory=pFactory;
-        this.compilerUtil=new CompilerUtil(pFactory);
+        this.compilerUtil = new CompilerUtil(pFactory);
+        this.pastFactory = compilerUtil.getPastFactory();
     }
 
-
     SpecificationFile generateInitializer(TemplatesProjectConfiguration configs, Locations locations, String directory, String fileName) {
-        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+        StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
+
+        String className = Constants.INIT;
+
+        Class pastClass = pastFactory.CLASS(className)
+                .MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(
+                        FIELD(BUILDERS, STRING_ARRAY).MODIFIERS(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL),
+                        FIELD(TYPEMANAGERS, STRING_ARRAY).MODIFIERS(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL),
+                        FIELD(PF, PROV_FACTORY).MODIFIERS(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+        );
+
+        Method init = METHOD("init")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
+                .RETURNS(ClassName.BOOLEAN)
+                .BODY(
+                        RETURN(METHOD_CALL(PROV_FILE_BUILDER, "registerBuilders",
+                                List.of(VARIABLE(BUILDERS), VARIABLE(PF))))
+                );
+        pastClass.METHOD(init);
+
+        Method main = METHOD("main")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC, Modifier.STATIC)
+                .PARAMETER(STRING_ARRAY, "args")
+                .RETURNS(VOID)
+                .THROWS(PAST_EXCEPTION)
+                .BODY(
+                        METHOD_CALL( "init", List.of()),
+                        IF(BINARY_OP(ARRAY_ACCESSOR(VARIABLE("args"),CONSTANT(0)),"Objects.equals",CONSTANT("kernel")))
+                                .THEN(
+                                        METHOD_CALL(METHOD_CALL(SYSTEM,"out"),
+                                                "println",
+
+                                                List.of(METHOD_CALL(LIST, "of", List.of(VARIABLE("args"))))),
+
+                                        METHOD_CALL(PROV_PROVENANCE_KERNELS, "main", List.of(VARIABLE("args"))))
+                                .ELSE(
+                                        METHOD_CALL(PROV_RUNNER, "main", List.of(VARIABLE("args")))
+                                )
+                );
+
+        pastClass.METHOD(main);
 
         int size=configs.templates.length;
+        List<Statement> staticBlockStatements=
+                new java.util.ArrayList<>(List.of(
+                        ASSIGNMENT( VARIABLE(BUILDERS), ARRAY_ALLOCATOR(STRING, CONSTANT(size))),
+                        ASSIGNMENT( VARIABLE(TYPEMANAGERS), ARRAY_ALLOCATOR(STRING, CONSTANT(size))),
+                        ASSIGNMENT( VARIABLE(PF), METHOD_CALL(PROV_VANILLA_FACTORY, "getFactory", List.of()))
+                ));
 
-
-
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.INIT);
-
-        builder.addField(String[].class, Constants.BUILDERS, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
-        builder.addField(String[].class, Constants.TYPEMANAGERS, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
-
-
-        builder.addField(ProvFactory.class, Constants.PF, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
-
-        CodeBlock.Builder block = CodeBlock.builder();
-        block.addStatement("$N = new String[$L]", Constants.BUILDERS, size);
-        block.addStatement("$N = new String[$L]", Constants.TYPEMANAGERS, size);
         int count=0;
         for (TemplateCompilerConfig config: configs.templates) {
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
-            block.addStatement("$N[$L]=$S", Constants.BUILDERS,count,locations.getBackendPackage(config.fullyQualifiedName)+"."+compilerUtil.templateNameClass(config.name));
-            block.addStatement("$N[$L]=$S", Constants.TYPEMANAGERS,count,locations.getBackendPackage(config.fullyQualifiedName)+"."+compilerUtil.templateNameClass(config.name)+"TypeManagement");
-            count++;
+            staticBlockStatements.add(
+                    ASSIGNMENT(
+                            ARRAY_ACCESSOR(VARIABLE(BUILDERS), CONSTANT(count)),
+                            CONSTANT(locations.getBackendPackage(config.fullyQualifiedName)+"."+compilerUtil.templateNameClass(config.name))));
+            staticBlockStatements.add(
+                    ASSIGNMENT(
+                            ARRAY_ACCESSOR(VARIABLE(TYPEMANAGERS), CONSTANT(count)),
+                            CONSTANT(locations.getBackendPackage(config.fullyQualifiedName)+"."+compilerUtil.templateNameClass(config.name)+"TypeManagement")));
+
+             count++;
         }
-        block.addStatement("pf=$T.getFactory()", org.openprovenance.prov.vanilla.ProvFactory.class);
+
+        pastClass.STATIC_BLOCK(staticBlockStatements);
 
 
+        String myPackage = configs.root_package;
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
 
-        builder.addStaticBlock(block.build());
-
-
-        MethodSpec.Builder mspec = MethodSpec.methodBuilder("init")
-                .returns(boolean.class)
-                .addModifiers(Modifier.STATIC)
-                .addModifiers(Modifier.PUBLIC);
-        compilerUtil.specWithComment(mspec);
-        mspec.addStatement("return $T.registerBuilders($N,$N)", FileBuilder.class, Constants.BUILDERS, Constants.PF);
-
-
-        builder.addMethod(mspec.build());
-
-        builder.addMethod(generateMain());
-
-        TypeSpec theInitializer=builder.build();
-
-        JavaFile myfile = compilerUtil.specWithComment(theInitializer, configs, configs.root_package, stackTraceElement);
-
-        return new SpecificationFile(myfile, directory, fileName, configs.root_package);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
-
-    public MethodSpec generateMain() {
-
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("main")
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .returns(void.class)
-                .addParameter(String[].class, "args")
-                .addException(Exception.class);
-        compilerUtil.specWithComment(builder);
-        builder
-                .addStatement("init()")
-                .beginControlFlow("if ($S.equals(args[0]))","kernel")
-                .addStatement("System.out.println(\"arguments \" + $T.of(args))", List.class)
-                .addStatement("$T.main($N)", ProvenanceKernels.class, "args")
-                .nextControlFlow("else")
-                .addStatement("$T.main($N)", Runner.class, "args")
-                .endControlFlow();
-
-        return builder.build();
-
-    }
-
 }

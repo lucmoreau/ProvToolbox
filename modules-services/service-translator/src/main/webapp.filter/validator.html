@@ -1,138 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>ProvValidator</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="">
-	<meta name="author" content="">
+    <meta charset="utf-8">
+    <title>ProvValidator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-	<style type="text/css">
-		body {
-			padding-left: 5px;
-		}
-		.sidebar-nav {
-			padding: 9px 0;
-		}
-	</style>
-	<script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
-	<link href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+        body {
+            padding-left: 5px;
+        }
+        .navbar-brand {
+            width: 160px;          /* fixed length */
+            display: inline-block; /* required for width to apply properly */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* adds ... if text too long */
+        }
+    </style>
+    <script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+    <link href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
 <body>
 
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">PROV Validator</a>
 
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-<nav class="navbar navbar-inverse">
-	<div class="container-fluid">
-		<ul class="nav navbar-nav">
-			<li id="header-translator"> <a href="translator.html">Translate</a></li>
-			<li id="header-expander">   <a href="expander.html">Expand</a></li>
-			<li id="header-validator">  <a href="validator.html">Validate</a></li>
-			<li id="header-rator">      <a href="rator.html">Rate</a></li>
-			<li id="header-api">        <a href="api.html">API</a></li>
-			<li id="header-about">      <a href="about.html">About</a></li>
-			<li id="header-contact">    <a href="contact.html">Contact</a></li>
-		</ul>
-	</div>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item" id="header-translator"><a class="nav-link" href="translator.html">Translate</a></li>
+                <li class="nav-item" id="header-expander"><a class="nav-link" href="instantiator.html">Instantiate</a></li>
+                <li class="nav-item" id="header-validator"><a class="nav-link" href="validator.html">Validate</a></li>
+                <li class="nav-item" id="header-rator"><a class="nav-link" href="rator.html">Rate</a></li>
+                <li class="nav-item" id="header-api"><a class="nav-link" href="api.html">API</a></li>
+                <li class="nav-item" id="header-about"><a class="nav-link" href="about.html">About</a></li>
+                <li class="nav-item" id="header-contact"><a class="nav-link" href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </div>
 </nav>
 
 <script>
-	$('#header-validator').addClass("active");
+    $('#header-validator > a').addClass("active");
 </script>
 
-<section>
-	<div class="row">
-		<div class="col-sm-8" style="text-align:center;margin-top:80px;margin-bottom:50px">
-			<form action="${service.context}/provapi/documents_form/" method="post" enctype="multipart/form-data">
-				<style type="text/css">
-					.input-append .btn .dropdown-toggle {
-						float: none;
-					}
-				</style>
-				<div style="text-align:left;">
-					<table style="margin-left: auto; margin-right: auto;">
-						<tr>
-							<td>Select a file:</td>
-							<td>
-								<input type="file"   name="file" class="primary" style="width:320px; "/>
-							</td>
-							<td rowspan="3">
-								<input type="submit" value="Validate" name="validate" class="btn btn-primary btn-large" style="text-align:center; width:80px; " />
-							</td>
-						</tr>
-						<tr>
-							<td>Enter a URL:</td>
-							<td>
-								<div class="input-append btn-group">
-									<input id="the-url-input" type="text" name="url" class="input-large" style="width:317px; height:30px;"  />
-									<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-										<span class="caret"></span>
-									</a>
+<section class="container mt-5 mb-5">
+    <div class="row">
 
-									<ul class="dropdown-menu">
-										<li>Examples</li>
-										<li><a href="#" onclick="updateRootURLInputBox('${service.context}/provapi/resources/prov/primer.provn')">
-											<i class="icon-ok"></i> Primer</a>
-										</li>
+        <!-- Main Form -->
+        <div class="col-lg-9">
 
-										<li><a href="#" onclick="updateRootURLInputBox('${service.context}/provapi/resources/prov/pc1.provn')">
-											<i class="icon-ok"></i> PC1</a>
-										</li>
-										<li><a href="#" onclick="updateRootURLInputBox('${service.context}/provapi/resources/prov/invalid.provn')">
-											<i class="icon-remove"></i> Invalid</a>
-										</li>
+            <form action="${service.context}/provapi/documents_form/"
+                  method="post"
+                  enctype="multipart/form-data">
 
-										<li class="divider"></li>
-										<li><a href="#" onclick="updateURLInputBox('')"><i class="icon-trash"></i> Clear</a></li>
-									</ul>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>Enter PROV statements:
-								<br>
-								<table>
-									<tr>
-										<td><input type="radio" name="type" value="provn"/>provn</td>
-										<td><input type="radio" name="type" value="provx"/>provx</td>
-									</tr>
-									<tr>
-										<td><input type="radio" name="type" value="jsonld"/>jsonld</td>
-										<td><input type="radio" name="type" value="json"/>json</td>
-									</tr>
-								</table>
-							</td>
+                <div class="row justify-content-evenly">
+                    <div class="col-lg-7">
+                        <!-- File upload -->
+                        <div class="mb-4">
+                            <label class="form-label">Select a file:</label>
+                            <input type="file" name="file"
+                                   class="form-control"
+                                   style="max-width:400px;">
+                        </div>
 
-							<td>
-								<textarea rows="10" name="statements" style="width:350px; "></textarea>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</form>
-		</div>
+                        <!-- URL input -->
+                        <div class="mb-4">
+                            <label class="form-label">Or, enter a URL:</label>
 
-		<div class="col-sm-4" id="what-do-we?" style="text-align:left; width:350px; font-size: 90%; " >
-			<p style="font-size: 90%; "><b>What do we store?</b></p>
-			<p style="font-size: 90%; ">With this service, you can validate PROV representations or translate them into other representations.  This service does not store the PROV representations that you submit, but it stores <em>Collected Data</em> (our generic term for web access logs, provenance metrics, validation reports, provenance digest and anonymous summaries).</p>
-			<p style="font-size: 90%; "><b>Agreement</b></p>
-			<p style="font-size: 90%; ">By pressing the validate/translate buttons, you agree with the terms and conditions  of this service (for full details, <a href="https://openprovenance.org/ethics/provenance-web-services/consent-form-anonymous-users.html">see ethics application</a>). Specifically, you agree for <em>Collected Data</em> being stored and used for research purpose by University of Sussex; you also agree that no guarantees are provided as to the correctness of the validation/analysis results. The information we capture is anonymous and we will not seek to try and identify users from  IP addresses. Given this, we provide no mechanism by which logged information can be erased.</p>
-		</div>
+                            <div class="input-group" style="max-width:500px;">
+                                <input id="the-url-input"
+                                       type="text"
+                                       name="url"
+                                       class="form-control">
+
+                                <button class="btn btn-outline-primary dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown">
+                                </button>
+
+                                <ul class="dropdown-menu">
+                                    <li><h6 class="dropdown-header">Examples</h6></li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="#"
+                                           onclick="updateRootURLInputBox('${service.context}/provapi/resources/prov/primer.provn')">
+                                            Primer
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="#"
+                                           onclick="updateRootURLInputBox('${service.context}/provapi/resources/prov/pc1.provn')">
+                                            PC1
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="#"
+                                           onclick="updateRootURLInputBox('${service.context}/provapi/resources/prov/invalid.provn')">
+                                            Invalid
+                                        </a>
+                                    </li>
+
+                                    <li><hr class="dropdown-divider"></li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="#"
+                                           onclick="updateURLInputBox('')">
+                                            Clear
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- PROV statements -->
+                        <div class="mb-4">
+                            <label class="form-label">Or, enter PROV statements:</label>
+
+                            <div class="mb-2">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="type" value="provn">
+                                    <label class="form-check-label">provn</label>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="type" value="provx">
+                                    <label class="form-check-label">provx</label>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="type" value="jsonld">
+                                    <label class="form-check-label">jsonld</label>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="type" value="json">
+                                    <label class="form-check-label">json</label>
+                                </div>
+                            </div>
+
+                            <textarea rows="10"
+                                      name="statements"
+                                      class="form-control"
+                                      style="max-width:600px;"></textarea>
+                        </div>
+                    </div>
 
 
-	</div>
+                    <div class="col-lg-2 d-flex justify-content-end align-items-center">
 
+                        <!-- Submit button -->
+                        <div class="mb-3 translate-buttons">
+                            <button type="submit"
+                                    name="validate"
+                                    value="Validate"
+                                    class="btn btn-primary btn-lg">
+                                Validate
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-3 small">
+
+            <p><strong>What do we store?</strong></p>
+            <p>
+                This service does not store submitted PROV representations,
+                but stores <em>Collected Data</em> (logs, metrics, validation reports,
+                provenance digests and anonymous summaries).
+            </p>
+
+            <p><strong>Agreement</strong></p>
+            <p>
+                By pressing validate/translate/instantiate/rate, you agree with the terms
+                (<a href="https://openprovenance.org/ethics/provenance-web-services/consent-form-anonymous-users.html">
+                see ethics application
+            </a>).
+            </p>
+
+        </div>
+
+    </div>
 </section>
 
 
-<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
 
 <script src="provservice.js"></script>
-<script>
-	$('.dropdown-toggle').dropdown()
-</script>
+
 
 </body>
 </html>

@@ -198,9 +198,10 @@ public class TemplatesToDot extends ProvToDot {
 
         // pairs <template, templateInstance>
         Set<TemplateInfo> allTemplates = new HashSet<>();
+        Map<String, String> shortNames = templateQuery.getShortNames();
         for (TemplateQuery.TemplateConnection templateConnection : templateConnections) {
-            allTemplates.add(TemplateInfo.of(templateConnection.in_template, templateName(templateConnection.in_template, templateConnection.in_id),  url(templateConnection.in_template,  templateConnection.in_id)));
-            allTemplates.add(TemplateInfo.of(templateConnection.out_template,templateName(templateConnection.out_template,templateConnection.out_id), url(templateConnection.out_template, templateConnection.out_id)));
+            allTemplates.add(TemplateInfo.of(templateConnection.in_template, templateName(shortNames.get(templateConnection.in_template), templateConnection.in_id),  url(templateConnection.in_template,  templateConnection.in_id)));
+            allTemplates.add(TemplateInfo.of(templateConnection.out_template,templateName(shortNames.get(templateConnection.out_template),templateConnection.out_id), url(templateConnection.out_template, templateConnection.out_id)));
         }
 
         Map<String, Map<String, String>> inputs=ioMap.get("input"); //templateDispatcher.getInputs();
@@ -208,34 +209,40 @@ public class TemplatesToDot extends ProvToDot {
 
 
         for (TemplateInfo templateInfo: allTemplates) {
-           // System.out.println("- templateInfo: " + templateInfo);
+           System.out.println("- templateInfo: " + templateInfo);
 
-            String template = templateInfo.template;
+            String templateFullyQualifiedName = templateInfo.template;
             String templateId = templateInfo.templateId;
-            Map<String, String> templateBaseTypes = baseTypes.get(template);
+            Map<String, String> templateBaseTypes = baseTypes.get(templateFullyQualifiedName);
 
 
+            String template = shortNames.get(templateFullyQualifiedName);
 
             System.out.println("- template: " + template + " id: " + templateId);
+            System.out.println("  baseTypes: " + templateBaseTypes);
+            System.out.println("  inputs: " + inputs);
+            System.out.println("  outputs: " + outputs);
+
             Map<String, String> templateInputs = inputs.get(template);
             List<String> inputsNames  = (templateInputs==null)? List.of() : new ArrayList<>(templateInputs.keySet());
             List<String> inputPorts   = inputsNames.stream().map(s -> portName(template,templateId,s)).collect(Collectors.toList());
             List<String> inputsColors = inputsNames.stream().map(s -> provcolors.get(templateBaseTypes.get(s))).collect(Collectors.toList()); //inputPorts.stream().map(s -> "lightgreen").collect(Collectors.toList());
 
             Map<String, String> templateOutputs = outputs.get(template);
-            List<String> outputsNames  = new ArrayList<>(outputs.get(template).keySet());
+            List<String> outputsNames  = new ArrayList<>(templateOutputs.keySet());
             List<String> outputsPorts  = outputsNames.stream().map(s -> portName(template, templateId,s)).collect(Collectors.toList());
             List<String> outputsColors = outputsNames.stream().map(s -> provcolors.get(templateBaseTypes.get(s))).collect(Collectors.toList()); //outputsPorts.stream().map(s -> "orange").collect(Collectors.toList());
 
 
             String html = createHtmlTable(templateInfo, inputsNames, inputPorts, inputsColors, outputsNames, outputsPorts, outputsColors);
+
             emitTemplate(template, templateId, html, out);
 
         }
 
         for (TemplateQuery.TemplateConnection templateConnection : templateConnections) {
-            emitEdge(qualifiedPortName(templateConnection.in_template,  templateName(templateConnection.in_template, templateConnection.in_id),  templateConnection.in_property),
-                     qualifiedPortName(templateConnection.out_template, templateName(templateConnection.out_template,templateConnection.out_id), templateConnection.out_property),
+            emitEdge(qualifiedPortName(shortNames.get(templateConnection.in_template),  templateName(shortNames.get(templateConnection.in_template), templateConnection.in_id),  templateConnection.in_property),
+                     qualifiedPortName(shortNames.get(templateConnection.out_template), templateName(shortNames.get(templateConnection.out_template),templateConnection.out_id), templateConnection.out_property),
                      out);
         }
 
@@ -321,6 +328,15 @@ public class TemplatesToDot extends ProvToDot {
         @Override
         public int hashCode() {
             return Objects.hash(template, templateId, url);
+        }
+
+        @Override
+        public String toString() {
+            return "TemplateInfo{" +
+                    "template='" + template + '\'' +
+                    ", templateId='" + templateId + '\'' +
+                    ", url='" + url + '\'' +
+                    '}';
         }
     }
 }

@@ -2,7 +2,6 @@ package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -11,28 +10,53 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer;
 import org.openprovenance.prov.template.compiler.util.CompilerException;
 import org.openprovenance.prov.template.descriptors.*;
 
 import javax.lang.model.element.Modifier;
 import java.io.*;
+import java.lang.Class;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+
+import static org.openprovenance.prov.template.compiler.common.CompilerCommon.generateUnsupportedException;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.FIELD_VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.LOCAL_VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.STRING;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.STRING_BUILDER;
 import static org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer.getTheSqlType;
 
 public class CompilerSQL {
     public static final String SMALL_INDENTATION = "  ";
     private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
+    private final PastFactory pastFactory;
     ObjectMapper om = new ObjectMapper();
     private final String tableKey;
 
     public CompilerSQL(ProvFactory pFactory, String tableKey) {
         this.tableKey=tableKey;
         this.compilerUtil=new CompilerUtil(pFactory);
+        this.pastFactory=compilerUtil.getPastFactory();
         this.pFactory=pFactory;
     }
 
@@ -193,53 +217,73 @@ public class CompilerSQL {
         return descriptorUtils.getFromDescriptor(entry, AttributeDescriptor::getDocumentation,NameDescriptor::getDocumentation);
     }
 
-    public void generateSQLstatements(TypeSpec.Builder builder, String templateName, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
+    public void generateSQLstatements(org.openprovenance.prov.template.compiler.past.Class clazz, String templateName, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
 
         StringBuffer sb=new StringBuffer();
         getInsertStringAndCount(templateName,descriptorUtils.fieldNames(bindingsSchema),sb);
 
-        FieldSpec.Builder builder1=FieldSpec.builder(String.class,"_sqlInsert1", Modifier.PRIVATE, Modifier.STATIC);
-        builder1.initializer("$S",sb.toString());
-        builder.addField(builder1.build());
-        builder.addMethod(generateSQLInsert(templateName,beanKind));
-        builder.addMethod(generateSQLInsertStatement(templateName, bindingsSchema,beanKind));
+        clazz.FIELDS(FIELD("_sqlInsert1", STRING).MODIFIERS(Modifier.PRIVATE, Modifier.STATIC).INITIALIZER(CONSTANT(sb.toString())));
 
+        clazz.METHOD(generateSQLInsert(templateName,beanKind));
+        clazz.METHOD(generateSQLInsertStatement(templateName, bindingsSchema,beanKind));
     }
-    public MethodSpec generateSQLInsert(String template, BeanKind beanKind) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("getSQLInsert")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(String.class);
-        compilerUtil.specWithComment(builder);
 
+
+
+
+    public SpecificationFile generateSQLInterface(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
+        org.openprovenance.prov.template.compiler.past.Class pastClass = pastFactory.INTERFACE("SQL")
+                .MODIFIERS(Modifier.PUBLIC);
+
+        Method method1 = METHOD("getSQLInsert")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .RETURNS(STRING);
+        pastClass.METHOD(method1);
+
+        Method method2 = METHOD("getSQLInsertStatement")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .RETURNS(STRING);
+        pastClass.METHOD(method2);
+
+        String myPackage=locations.getFilePackage(configs.name,fileName);
+        String directory=locations.convertToDirectory(myPackage);
+
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName+ DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+
+        return new SpecificationFile(javaGenerator,pythonGenerator);
+    }
+
+
+    public Method generateSQLInsert(String template, BeanKind beanKind) {
+        Method method = METHOD("getSQLInsert")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(STRING);
+        compilerUtil.debugFileLocation(method);
         if (beanKind.equals(BeanKind.COMPOSITE)) {
-            builder.addStatement("throw new $T()", UnsupportedOperationException.class);
+            generateUnsupportedException(method);
         } else {
-            builder.addStatement("return _sqlInsert1");
+            method.BODY(RETURN(VARIABLE("_sqlInsert1", FIELD_VARIABLE)));
         }
-        return builder.build();
+        return method;
     }
 
-    public MethodSpec generateSQLInsertStatement(String template, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("getSQLInsertStatement")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(String.class);
-        compilerUtil.specWithComment(builder);
-
-
+    public Method generateSQLInsertStatement(String template, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
+        Method builder = METHOD("getSQLInsertStatement")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(STRING);
+        compilerUtil.debugFileLocation(builder);
         if (beanKind.equals(BeanKind.COMPOSITE)) {
-            builder.addStatement("throw new $T()", UnsupportedOperationException.class);
+            generateUnsupportedException(builder);
         } else {
             Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
-
             StringBuffer sb = new StringBuffer();
-
             int count = getInsertStringAndCount(template, variables, sb);
             boolean first;
-
             sb = new StringBuffer();
-
             sb.append(" VALUES (");
-
             first = true;
             for (int i = 0; i < count; i++) {
                 if (first) {
@@ -250,11 +294,9 @@ public class CompilerSQL {
                 sb.append("?");
             }
             sb.append(");");
-
-            builder.addStatement("return _sqlInsert1+$S", sb.toString());
+            builder.BODY(RETURN(CONSTANT("_sqlInsert1" + sb.toString())));
         }
-
-        return builder.build();
+        return builder;
     }
 
     public int getInsertStringAndCount(String template, Collection<String> variables, StringBuffer sb) {
@@ -315,24 +357,22 @@ public class CompilerSQL {
     private final boolean debugComment=true;
 
 
-    public MethodSpec generateCommonSQLMethod2(String template, TemplateBindingsSchema bindingsSchema)  {
-        MethodSpec.Builder builder
-                = MethodSpec
-                .methodBuilder(compilerUtil.sqlName(template))
-                .addModifiers(Modifier.PUBLIC)
-                .returns(void.class);
+    public Method generateSqlTupleMethod(String template, TemplateBindingsSchema bindingsSchema)  {
+        Method method
+                = METHOD(compilerUtil.sqlName(template))
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(org.openprovenance.prov.template.compiler.past.type.ClassName.VOID);
         String var = "sb";
-        compilerUtil.specWithComment(builder);
+        compilerUtil.debugFileLocation(method);
 
 
         Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
         Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
 
-        builder.addParameter(StringBuffer.class, var);
-        for (String key: fieldNames) {
-            String newkey = "__" + key;
-            builder.addParameter(compilerUtil.getJavaTypeForDeclaredType(theVar, key), newkey);
-        }
+        method.PARAMETER(STRING_BUILDER, var);
+        method.PARAMETERS(fieldNames.stream()
+                .map(key -> PARAMETER("__" + key, compilerUtil.getPastTypeForDeclaredType(theVar, key)))
+                .collect(Collectors.toList()));
 
 
         String constant = "(";
@@ -347,12 +387,11 @@ public class CompilerSQL {
             } else {
                 constant = constant + ',';
             }
-            builder.addStatement("$N.append($S)", var, constant);
+            method.BODY(METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT(constant))));
             constant = "";
 
             if (String.class.equals(clazz)) {
-                String myStatement = "$N.append($N)";
-                String myEscapeStatement = "$N.append($T.escapeJavaScript($N))";
+
                 boolean doEscape=false;
                 if (!isQualifiedName) {
                     Descriptor descriptor = theVar.get(key).get(0);
@@ -361,31 +400,33 @@ public class CompilerSQL {
                         //foundEscape=true;
                     }
                 }
-                builder.beginControlFlow("if ($N==null)", newName);
-                builder.addStatement("$N.append($S)", var, "''"); // is it correct, or should it be null?
-                builder.nextControlFlow("else")
-                        .addStatement("$N.append($S)", var, "'");
 
-                if (doEscape) {
-                    builder.addStatement(myEscapeStatement, var, ClassName.get("org.openprovenance.apache.commons.lang", "StringEscapeUtils"), newName);
-                } else {
-                    builder.addStatement(myStatement, var, newName);
-                }
-                builder.addStatement("$N.append($S)", var, "'")
-                        .endControlFlow();
+                method.BODY(IF(BINARY_OP(VARIABLE(newName), "==", Constant.getNull()))
+                        .THEN(METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT("''")))) // is it correct, or should it be null?
+                        .ELSE(
+                                METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT("'"))),
+
+                                (doEscape)
+                                        ?
+                                        METHOD_CALL(VARIABLE(var),
+                                                "append",
+                                                List.of(METHOD_CALL(org.openprovenance.prov.template.compiler.past.type.ClassName.get("StringEscapeUtils","org.openprovenance.apache.commons.lang"),
+                                                        "escapeJavaScript",
+                                                        List.of(VARIABLE(newName)))))
+                                        :
+                                        METHOD_CALL(VARIABLE(var), "append", List.of(VARIABLE(newName))),
+
+
+                                METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT("'")))));
             } else {
-                builder.beginControlFlow("if ($N==null)", newName);
-                builder.addStatement("$N.append($S)", var, "''");  // is it correct, or should it be null?
-                builder.nextControlFlow("else");
-                builder.addStatement("$N.append($S)", var, constant);
-                builder.addStatement("$N.append($N)", var, newName);
-                builder.endControlFlow();
+                method.BODY(IF(BINARY_OP(VARIABLE(newName), "==", Constant.getNull()))
+                        .THEN(METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT("''"))))  // is it correct, or should it be null?
+                        .ELSE(METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT(constant))),
+                                METHOD_CALL(VARIABLE(var), "append", List.of(VARIABLE(newName)))));
+
             }
         }
-        builder.addStatement("$N.append($S)", var, ")");
-
-
-        MethodSpec method = builder.build();
+        method.BODY(METHOD_CALL(VARIABLE(var), "append", List.of(CONSTANT(")"))));
 
         return method;
     }

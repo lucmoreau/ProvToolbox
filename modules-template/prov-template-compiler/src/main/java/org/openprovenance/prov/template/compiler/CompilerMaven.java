@@ -1,9 +1,5 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
 import org.apache.maven.model.*;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -14,20 +10,43 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 
 import javax.lang.model.element.Modifier;
 import java.io.*;
+import java.util.List;
 import java.util.Properties;
+import java.util.function.Supplier;
 
+import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
 import static org.openprovenance.prov.template.compiler.common.Constants.TESTER_FILE;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Constant.getNull;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 public class CompilerMaven {
     private final ConfigProcessor configProcessor;
     private final CompilerUtil compilerUtil;
+    private final PastFactory pastFactory;
+
+    static final ClassName PRINT_STREAM = ClassName.get("PrintStream", "java.io");
+    static final ClassName TEST_CASE = ClassName.get("TestCase", "junit.framework");
+    static final ClassName INTEROP_FRAMEWORK = ClassName.get("InteropFramework", "org.openprovenance.prov.interop");
 
     public CompilerMaven(ProvFactory pFactory, ConfigProcessor configProcessor) {
         this.configProcessor = configProcessor;
         this.compilerUtil=new CompilerUtil(pFactory);
+        this.pastFactory=compilerUtil.getPastFactory();
     }
 
     public boolean makeRootPom(TemplatesProjectConfiguration configs, String root_dir, String cli_lib, String l2p_lib) {
@@ -530,33 +549,49 @@ mvn -f jsweet/jsweet-pom.xml jsweet:jsweet
 
 
     public SpecificationFile generateTestFile_l2p(TemplatesProjectConfiguration configs, String directory, String fileName) {
+        StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInitExtends(TESTER_FILE,"junit.framework","TestCase");
+        Class pastClass = pastFactory.CLASS(TESTER_FILE)
+                .MODIFIERS(Modifier.PUBLIC)
+                .SUPERCLASS(TEST_CASE);
 
-        MethodSpec.Builder mbuilder = MethodSpec.methodBuilder("testMain")
-                .addModifiers(Modifier.PUBLIC)
-                .addException(Exception.class)
-                .returns(void.class)
-                .addStatement("$T pf=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()", ProvFactory.class)
-                ;
+        Method method = METHOD("testMain")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .THROWS(PAST_EXCEPTION)
+                .RETURNS(VOID);
+
+        // ProvFactory pf = InteropFramework.getDefaultFactory()
+        method.BODY(
+                DEFINITION(PROV_FACTORY, VARIABLE("pf"),
+                        METHOD_CALL(INTEROP_FRAMEWORK, "getDefaultFactory", List.of())));
 
         for (TemplateCompilerConfig template: configs.templates) {
             String bn=compilerUtil.templateNameClass(template.name);
-            mbuilder.addStatement("System.setOut(new java.io.PrintStream(\"target/" + template.name + ".provn\"))");
-            mbuilder.addStatement("$T.main(null)", ClassName.get(template.package_, bn));
+            ClassName templateClass = ClassName.get(bn, template.package_);
+
+            // System.setOut(new java.io.PrintStream("target/" + template.name + ".provn"))
+            Expression fileNameExpr = BINARY_OP(
+                    BINARY_OP(CONSTANT("target/"), "+", CONSTANT(template.name)),
+                    "+",
+                    CONSTANT(".provn"));
+            method.BODY(
+                    METHOD_CALL(SYSTEM, "setOut",
+                            CONSTRUCTOR_CALL(PRINT_STREAM, List.of(fileNameExpr))));
+
+            // Bn.main(null)
+            method.BODY(
+                    METHOD_CALL(templateClass, "main", List.of(getNull())));
         }
 
-        MethodSpec method=mbuilder.build();
+        pastClass.METHOD(method);
 
-        builder.addMethod(method);
+        String myPackage = configs.root_package;
 
-        TypeSpec theInitializer=builder.build();
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, null, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName, directory, stackTraceElement, compilerUtil);
 
-        JavaFile myfile = JavaFile.builder(configs.root_package, theInitializer)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $N",getClass().getName(), configs.name)
-                .build();
-        return new SpecificationFile(myfile, directory, fileName, configs.root_package);
-
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
 

@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -11,358 +10,376 @@ import javax.lang.model.element.Modifier;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
+
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 public class CompilerQueryInvoker {
-    public static final String CONVERT_TO_NULLABLE_TEXT = "convertToNullableTEXT";
-    public static final String CONVERT_TO_NON_NULLABLE_TEXT = "convertToNonNullableTEXT";
-    public static final String sbVar="sb";
-    public static final String linkingVar="linking";
     private final CompilerUtil compilerUtil;
+    private final PastFactory pastFactory;
 
 
     public CompilerQueryInvoker(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
+        this.pastFactory=compilerUtil.getPastFactory();
     }
-
 
     public SpecificationFile generateQueryInvoker(TemplatesProjectConfiguration configs, Locations locations, boolean withBean, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
+        String className = (withBean)? QUERY_INVOKER : QUERY_INVOKER2;
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit((withBean)?Constants.QUERY_INVOKER:Constants.QUERY_INVOKER2);
+        Class pastClass = pastFactory.CLASS(className)
+                .MODIFIERS(Modifier.PUBLIC);
 
         if (withBean) {
-            builder.addSuperinterface(compilerUtil.getClass(configs.name, BEAN_PROCESSOR,locations));
+            pastClass.INTERFACES(get(BEAN_PROCESSOR, locations.getFilePackage(configs.name, BEAN_PROCESSOR)));
         } else {
-            builder.addSuperinterface(ClassName.get(locations.getFilePackage(configs.name, INPUT_PROCESSOR), INPUT_PROCESSOR));
+            pastClass.INTERFACES(get(INPUT_PROCESSOR, locations.getFilePackage(configs.name, INPUT_PROCESSOR)));
         }
 
+        pastClass.FIELDS(
+                FIELD(SB_VAR, STRING_BUILDER).MODIFIERS(Modifier.FINAL),
+                FIELD(LINKING_VAR, _bool).MODIFIERS(Modifier.FINAL)
+        );
 
-        builder.addField(StringBuilder.class, sbVar, Modifier.FINAL);
-        builder.addField(boolean.class, linkingVar, Modifier.FINAL);
-
-        MethodSpec.Builder cbuilder = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(StringBuilder.class, sbVar)
-                .addStatement("this.$N = $N", sbVar, sbVar)
-                .addStatement("this.$N = false", linkingVar);
-        builder.addMethod(cbuilder.build());
+        Constructor c1 = CONSTRUCTOR()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(STRING_BUILDER, SB_VAR)
+                .commentFileLocation()
+                .BODY(
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LINKING_VAR), CONSTANT(false))
+                );
+        pastClass.CONSTRUCTOR(c1);
 
         if (!withBean) {
-            // add an additional constructor for QUERY_INVOKER2
-            MethodSpec.Builder cbuilder2 = MethodSpec.constructorBuilder()
-                    .addModifiers(Modifier.PUBLIC)
-                    .addParameter(StringBuilder.class, sbVar)
-                    .addParameter(boolean.class, linkingVar)
-                    .addStatement("this.$N = $N", sbVar, sbVar)
-                    .addStatement("this.$N = $N", linkingVar, linkingVar);
-            builder.addMethod(cbuilder2.build());
+            Constructor c2 = CONSTRUCTOR()
+                    .MODIFIERS(Modifier.PUBLIC)
+                    .PARAMETER(STRING_BUILDER, SB_VAR)
+                    .PARAMETER(_bool, LINKING_VAR)
+                    .commentFileLocation()
+                    .BODY(
+                            ASSIGNMENT( METHOD_CALL(VARIABLE("this"), SB_VAR), VARIABLE(SB_VAR)),
+                            ASSIGNMENT( METHOD_CALL(VARIABLE("this"), LINKING_VAR), VARIABLE(LINKING_VAR))
+                    );
+            pastClass.CONSTRUCTOR(c2);
         }
 
+        Set<String> foundSpecialTypes = new HashSet<>();
+        foundSpecialTypes.add(NON_NULLABLE_TEXT);
 
-        Set<String> foundSpecialTypes=new HashSet<>();
-        foundSpecialTypes.add(NON_NULLABLE_TEXT); // always add this one, as it is required in QueryInvoker2WP
-
+        // For each template generate process method
         for (TemplateCompilerConfig config : configs.templates) {
-
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
-            final ClassName className = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), beanNameClass);
-            final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputsNameClass);
 
-            MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                    .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
-            compilerUtil.specWithComment(mspec);
-            mspec
-                    .addParameter(ParameterSpec.builder((withBean)?className:inputClassName, VARIABLE_BEAN).build())
-                    .returns((withBean)?className:inputClassName);
+            ClassName beanType = get(beanNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
+            ClassName inputType = get(inputsNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS));
+
+            Method m = METHOD(PROCESS_METHOD_NAME)
+                    .commentFileLocation()
+                    .MODIFIERS(Modifier.PUBLIC)
+                    .PARAMETER((withBean)?beanType:inputType, BEAN_VAR)
+                    .RETURNS((withBean)?beanType:inputType)
+                    ;
 
             if (config instanceof SimpleTemplateCompilerConfig) {
-                simpleQueryInvoker(configs, config, foundSpecialTypes, sbVar, mspec, VARIABLE_BEAN);
-                mspec.addStatement("return $N", VARIABLE_BEAN);
+                simpleQueryInvoker(configs, config, foundSpecialTypes, m, BEAN_VAR, null);
             } else {
-                compositeQueryInvoker(configs, locations, config, foundSpecialTypes, sbVar, mspec, VARIABLE_BEAN, withBean);
-                mspec.addStatement("return $N", VARIABLE_BEAN);
+                CompositeTemplateCompilerConfig comp = (CompositeTemplateCompilerConfig) config;
             }
-
-            builder.addMethod(mspec.build());
+            m.BODY(
+                    METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(";\n"))),
+                    RETURN(VARIABLE(BEAN_VAR))
+            );
+            pastClass.METHOD(m);
         }
 
-        if (foundSpecialTypes.contains(Constants.TIMESTAMPTZ)) {
-            final String timeVariable = "time";
-            MethodSpec.Builder mbuilder2= MethodSpec.methodBuilder("convertToTimestamptz");
-            compilerUtil.specWithComment(mbuilder2);
-            mbuilder2
-                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-                    .addParameter(String.class, timeVariable)
-                    .returns(String.class)
-                    .beginControlFlow("if ($N==null)", timeVariable)
-                    .addStatement("return $S",  "NULL")
-                    .nextControlFlow("else")
-                    .addStatement("return $S+$N+$S", "'", timeVariable, "'::timestamptz")
-                    .endControlFlow();
+        addSpecialTypesMethods(foundSpecialTypes, pastClass);
 
-            builder.addMethod(mbuilder2.build());
-        }
-        if (foundSpecialTypes.contains(Constants.SQL_DATE)) {
-            final String dateVariable = "date";
-            MethodSpec.Builder mbuilder2= MethodSpec.methodBuilder("convertToDate");
-            compilerUtil.specWithComment(mbuilder2);
-            mbuilder2
-                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-                    .addParameter(String.class, dateVariable)
-                    .returns(String.class)
-                    .beginControlFlow("if ($N==null)", dateVariable)
-                    .addStatement("return $S",  "NULL")
-                    .nextControlFlow("else")
-                    .addStatement("return $S+$N+$S", "'", dateVariable, "'::date")
-                    .endControlFlow();
+        String myPackage = locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
 
-            builder.addMethod(mbuilder2.build());
-        }
-        if (foundSpecialTypes.contains(Constants.NULLABLE_TEXT)) {
-            final String strVariable = "str";
-            MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder(CONVERT_TO_NULLABLE_TEXT);
-            compilerUtil.specWithComment(mbuilder3);
-            mbuilder3
-                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-                    .addParameter(String.class, strVariable)
-                    .returns(String.class)
-                    .beginControlFlow("if ($N==null)", strVariable)
-                    .addStatement("return $S",  "''::TEXT")
-                    .nextControlFlow("else")
-                    .addStatement("return $S+$N.replace($S,$S)+$S", "'", strVariable, "'", "''", "'::TEXT")
-                    .endControlFlow();
-
-            builder.addMethod(mbuilder3.build());
-        }
-        if (foundSpecialTypes.contains(Constants.NON_NULLABLE_TEXT)) {
-            final String strVariable = "str";
-            MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder(CONVERT_TO_NON_NULLABLE_TEXT);
-            compilerUtil.specWithComment(mbuilder3);
-            mbuilder3
-                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-                    .addParameter(String.class, strVariable)
-                    .returns(String.class)
-                    .addStatement("return $S+$N.replace($S,$S)+$S", "'", strVariable, "'", "''", "'::TEXT");
-
-            builder.addMethod(mbuilder3.build());
-        }
-
-        if (foundSpecialTypes.contains(Constants.JSON_TEXT)) {
-            final String strVariable = "str";
-            MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder("convertToJsonTEXT");
-            compilerUtil.specWithComment(mbuilder3);
-            mbuilder3
-                    .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-                    .addParameter(String.class, strVariable)
-                    .returns(String.class)
-                    .beginControlFlow("if ($N==null)", strVariable)
-                    .addStatement("return $S",  "''::json")
-                    .nextControlFlow("else")
-                    .addStatement("return $S+$N.replace($S,$S)+$S", "'", strVariable, "'", "''", "'::json")
-                    .endControlFlow();
-
-            builder.addMethod(mbuilder3.build());
-        }
-
-
-
-        TypeSpec theLogger = builder.build();
-
-
-        String myPackage=locations.getFilePackage(configs.name, fileName);
-
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
-
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
-
+        return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
-    private void simpleQueryInvoker(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean) {
-        TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
-        String startCallString= Constants.INSERT_PREFIX + config.name + " (";
-        compilerUtil.specWithComment(mspec);
+    private void addSpecialTypesMethods(Set<String> foundSpecialTypes, Class pastClass) {
+        // add special type converters as methods
+        if (foundSpecialTypes.contains(TIMESTAMPTZ)) {
+            Method ms = METHOD("convertToTimestamptz")
+                    .commentFileLocation()
+                    .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                    .PARAMETER(STRING, "time")
+                    .RETURNS(STRING)
+                    .BODY(
+                            IF(BINARY_OP(VARIABLE("time"),"==",Constant.getNull()))
+                                    .THEN(RETURN(CONSTANT("NULL"))),
 
-        mspec.addStatement("$N.append($S)", sbVar, "select * from ");
-        mspec.addStatement("$N.append($S)", sbVar, startCallString);
+                            RETURN(
+                                    METHOD_CALL(STRING,"concat",
+                                            List.of(
+                                                    CONSTANT("'"),
+                                                    VARIABLE("time"),
+                                                    CONSTANT("'::timestamptz"))))
 
 
-        boolean first=true;
+                    );
+            pastClass.METHOD(ms);
+        }
 
+        if (foundSpecialTypes.contains(SQL_DATE)) {
+            Method ms2 = METHOD("convertToDate")
+                    .commentFileLocation()
+                    .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                    .PARAMETER(STRING, "date")
+                    .RETURNS(STRING)
+                    .BODY(
+                            IF(BINARY_OP(VARIABLE("date"),"==",Constant.getNull()))
+                                    .THEN(RETURN(Constant.getNull())),
+
+                            RETURN(
+                                    METHOD_CALL(STRING,"concat",
+                                            List.of(
+                                                    CONSTANT("'"),
+                                                    VARIABLE("date"),
+                                                    CONSTANT("'::date"))))
+
+
+                    );
+            pastClass.METHOD(ms2);
+        }
+
+        if (foundSpecialTypes.contains(NULLABLE_TEXT)) {
+            Method ms3 = METHOD("convertToNullableTEXT")
+                    .commentFileLocation()
+                    .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                    .PARAMETER(STRING, "str")
+                    .RETURNS(STRING)
+                    .BODY(
+                            IF(BINARY_OP(VARIABLE("str"),"==",Constant.getNull()))
+                                    .THEN(RETURN(CONSTANT("''::TEXT"))),
+
+                            RETURN(METHOD_CALL(STRING,"concat",
+                                    List.of(
+                                            CONSTANT("'"),
+                                            METHOD_CALL(VARIABLE("str"),
+                                                    "replace",
+                                                    List.of(
+                                                            CONSTANT("'"),
+                                                            CONSTANT("''")
+                                                    )),
+                                            CONSTANT("'::TEXT"))))
+                    );
+            pastClass.METHOD(ms3);
+        }
+
+        if (foundSpecialTypes.contains(NON_NULLABLE_TEXT)) {
+            Method ms4 = METHOD(CONVERT_TO_NON_NULLABLE_TEXT)
+                    .commentFileLocation()
+                    .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                    .PARAMETER(STRING, "str")
+                    .RETURNS(STRING)
+                    .BODY(
+                            RETURN(METHOD_CALL(STRING,"concat",
+                                    List.of(
+                                            CONSTANT("'"),
+                                            METHOD_CALL(VARIABLE("str"),
+                                                    "replace",
+                                                    List.of(
+                                                            CONSTANT("'"),
+                                                            CONSTANT("''")
+                                                    )),
+                                            CONSTANT("'::TEXT"))))
+                    );
+            pastClass.METHOD(ms4);
+        }
+
+        if (foundSpecialTypes.contains(JSON_TEXT)) {
+            Method ms5 = METHOD("convertToJsonTEXT")
+                    .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                    .PARAMETER(STRING, "str")
+                    .RETURNS(STRING)
+                    .BODY(
+                            IF(BINARY_OP(VARIABLE("str"),"==",Constant.getNull())).THEN(METHOD_CALL("return", List.of(CONSTANT("''::json"))))
+                    );
+            pastClass.METHOD(ms5);
+        }
+    }
+
+
+    public String converterForSpecialType(String specialType) {
+        return switch (specialType) {
+            case Constants.SQL_DATE -> "convertToDate";
+            case Constants.TIMESTAMPTZ -> "convertToTimestamptz";
+            case Constants.NULLABLE_TEXT -> "convertToNullableTEXT";
+            case Constants.NON_NULLABLE_TEXT -> CONVERT_TO_NON_NULLABLE_TEXT;
+            case Constants.JSON_TEXT -> "convertToJsonTEXT";
+            default -> null;
+        };
+    }
+
+    public void simpleQueryInvoker(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, Method m, String beanVar, String queryInvoker) {
+        TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
+
+        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("select * from "))));
+        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(INSERT_PREFIX + config.name + " ("))));
+
+        boolean first = true;
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
-            if (descriptorUtils.isInput(key,bindingsSchema)) {
-                Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-                if (first) {
-                    first=false;
-                } else {
-                    mspec.addStatement("$N.append($S)", sbVar, ",");
+            if (descriptorUtils.isInput(key, bindingsSchema)) {
+                if (!first) {
+                    m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(","))));
                 }
+                first = false;
                 final String sqlType = descriptorUtils.getSqlType(key, bindingsSchema);
-                if (sqlType !=null) {
-                    String fun= converterForSpecialType(sqlType);
-                    if (fun!=null) {
-                        mspec.addStatement("$N.append($N($N.$N))", sbVar, fun, variableBean, key);
+                if (sqlType != null) {
+                    String fun = converterForSpecialType(sqlType);
+                    if (fun != null) {
+                        if (queryInvoker == null) {
+                            m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(fun, List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
+                        } else {
+                            m.BODY(METHOD_CALL(VARIABLE(SB_VAR),
+                                    "append",
+                                    List.of(METHOD_CALL(VARIABLE(queryInvoker),
+                                            fun,
+                                            List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
+                        }
                         foundSpecialTypes.add(sqlType);
                     } else {
-                        mspec.addStatement("$N.append($N.$N)", sbVar, variableBean, key);
+                        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(VARIABLE(beanVar), key))));
                     }
                 } else {
-                    mspec.addStatement("$N.append($N.$N)", sbVar, variableBean, key);
+                    m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(VARIABLE(beanVar), key))));
                 }
             }
         }
-        String endCallString= ");";
-        mspec.addStatement("$N.append($S)", sbVar, endCallString);
 
+        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(")"))));
     }
-    private void simpleQueryInvokerEmbedded(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, List<String> sharing) {
-        TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
-        String startCallString= Constants.INSERT_PREFIX + config.name + " (";
-        compilerUtil.specWithComment(mspec);
 
+    public void simpleQueryInvokerEmbedded(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, Iterator m, String beanVar, List<String> sharing, String queryInvoker) {
+        TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
+        compilerUtil.debugFileLocation(m);
+        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("( "))));
 
-
-        mspec.addStatement("$N.append($S)", sbVar, "( ");
-
-        boolean first=true;
-
+        boolean first = true;
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
-            boolean doProcess=true;
-            //doProcess=!"anticipating".equals(key);  //FIXME
+            boolean doProcess = true;
+            if (!doProcess) continue;
+            if (!first) {
+                m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(","))));
+            }
+            first = false;
 
-            if (doProcess) {
-                Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-                if (first) {
-                    first=false;
-                } else {
-                    mspec.addStatement("$N.append($S)", sbVar, ",");
-                }
-                if (descriptorUtils.isInput(key,bindingsSchema) || (sharing!=null && sharing.contains(key))) {
-                    String comment="";
-                    if (sharing!=null && sharing.contains(key)) {
-                        comment="/* sharing */";
-                    }
-                    final String sqlType = descriptorUtils.getSqlType(key, bindingsSchema);
-                    if (sqlType != null) {
-                        String fun = converterForSpecialType(sqlType);
-                        if (fun!=null) {
-                            mspec.addStatement("$N.append($N($N.$N)) $L", sbVar, fun, variableBean, key, comment);
-                            foundSpecialTypes.add(sqlType);
+            if (descriptorUtils.isInput(key, bindingsSchema) || (sharing != null && sharing.contains(key))) {
+                String comment = (sharing != null && sharing.contains(key)) ? "/* sharing */" : "";
+                final String sqlType = descriptorUtils.getSqlType(key, bindingsSchema);
+                if (sqlType != null) {
+                    String fun = converterForSpecialType(sqlType);
+                    if (fun != null) {
+                        if (!comment.isEmpty()) m.COMMENT(comment);
+                        if (queryInvoker != null) {
+                            m.BODY(METHOD_CALL(VARIABLE(SB_VAR),
+                                    "append",
+                                    List.of(METHOD_CALL(VARIABLE(queryInvoker),
+                                            fun,
+                                            List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
                         } else {
-                            mspec.addStatement("$N.append($N.$N) $L", sbVar, variableBean, key, comment);
+                            m.BODY(METHOD_CALL(VARIABLE(SB_VAR),
+                                    "append",
+                                    List.of(METHOD_CALL(fun, List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
                         }
+                        foundSpecialTypes.add(sqlType);
+
                     } else {
-                        mspec.addStatement("$N.append($N.$N) $L", sbVar, variableBean, key, comment);
+                        if (!comment.isEmpty()) m.COMMENT(comment);
+                        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(VARIABLE(beanVar), key)))) ;
                     }
                 } else {
-                    mspec.addStatement("$N.append($S) /* output */", sbVar, "null");
+                    if (!comment.isEmpty()) m.COMMENT(comment);
+                    m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(VARIABLE(beanVar), key))));
                 }
+            } else {
+                m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("null"))));
             }
         }
-        String endCallString= ") :: " + config.name + "_type";
-        mspec.addStatement("$N.append($S)", sbVar, endCallString);
-
+        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(") :: " + config.name + "_type"))));
     }
 
-    public void compositeQueryInvoker(TemplatesProjectConfiguration configs, Locations locations, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, boolean withBean) {
-        CompositeTemplateCompilerConfig compositeConfig=(CompositeTemplateCompilerConfig ) config;
-        compilerUtil.specWithComment(mspec);
+    public void compositeQueryInvoker(TemplatesProjectConfiguration configs, Locations locations, TemplateCompilerConfig config, Set<String> foundSpecialTypes, Method m, String beanVar, boolean withBean, String queryInvoker) {
+        CompositeTemplateCompilerConfig compositeConfig = (CompositeTemplateCompilerConfig) config;
 
-        mspec.addStatement("$N.append($S)", sbVar, "---- query invoker for  " + compositeConfig.name + "\n\n");
+        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("---- query invoker for  " + compositeConfig.name + "\n\n"))))
+         .BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("select * from "))));
 
+        // if (linking) append insert_composite_and_linker else insert_composite_array
+        m.BODY(IF(VARIABLE(LINKING_VAR))
+                .THEN(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(INSERT_PREFIX + config.name + INSERT_COMPOSITE_AND_LINKER_SUFFIX + " ("))))
+                .ELSE(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(INSERT_PREFIX + config.name + INSERT_ARRAY_SUFFIX + " (")))))
+        ;
 
-        mspec.addStatement("$N.append($S)", sbVar, "select * from ");
+        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("ARRAY[\n"))));
 
-        mspec.beginControlFlow("if ($N)", linkingVar);
-        String startCallString= Constants.INSERT_PREFIX + config.name + INSERT_COMPOSITE_AND_LINKER_SUFFIX +" (";
-        mspec.addStatement("$N.append($S)", sbVar, startCallString);
-        mspec.nextControlFlow("else");
-        String startCallString2= Constants.INSERT_PREFIX + config.name + INSERT_ARRAY_SUFFIX   +" (";
-        mspec.addStatement("$N.append($S)", sbVar, startCallString2);
-        mspec.endControlFlow();
+        String variableBean1 = beanVar + "_1";
 
-        mspec.addStatement("$N.append($S)", sbVar, "ARRAY[\n");
-        String variableBean1=variableBean+"_1";
-        mspec.addStatement("boolean first=true");
-
-        SimpleTemplateCompilerConfig composee=null;
+        // find composee template
+        SimpleTemplateCompilerConfig composee = null;
         for (TemplateCompilerConfig c: configs.templates) {
             if (compositeConfig.consistsOf.equals(c.fullyQualifiedName)) {
                 composee=(SimpleTemplateCompilerConfig) c;
             }
         }
-
-        // Luc, this seems the same as composee above.
-        String shortConsistsOf=locations.getShortNames().get(compositeConfig.consistsOf);
-
-        mspec.beginControlFlow("for ($T $N: $N.$N)",
-                                  (withBean)?ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON), compilerUtil.commonNameClass(shortConsistsOf))
-                                            :ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.INPUTS, "_1")),
-                                  variableBean1,
-                                  variableBean,
-                                  ELEMENTS);
-
-        mspec.beginControlFlow("if (first)")
-                .addStatement("first=false")
-                .nextControlFlow("else")
-                .addStatement("$N.append($S)", sbVar, ",\n     ")
-                .endControlFlow();
-
-
         if (composee==null) throw new IllegalStateException("No composee found " + compositeConfig.consistsOf + " for composite " + compositeConfig.fullyQualifiedName);
 
-        simpleQueryInvokerEmbedded(configs,composee,foundSpecialTypes,sbVar,mspec, variableBean1,compositeConfig.sharing);
+        String shortConsistsOf = locations.getShortNames().get(compositeConfig.consistsOf);
 
-        mspec.endControlFlow();
-
-        mspec.addStatement("$N.append($S)", sbVar, "]);\n");
-
-
-        /*
-
-select *
-from insert_anticipating_impact_composite_array(
-    ARRAY[  (-1, -1, 20,14,5,8, 0,  '2018-10-24T22:20:13.456Z'::timestamptz)::anticipating_impact_type,
-                    (-2, -1, 21,15,7,9, 0,  '2018-11-24T22:20:13.456Z'::timestamptz)::anticipating_impact_type,
-                    (-2, -1, 11,15,7,1, 1,  '2018-12-24T22:20:13.456Z'::timestamptz)::anticipating_impact_type ]);
-
-ssue in enactment ---- query invoker for  anticipating_impact_composite
-
-select * from insert_anticipating_impact_composite_array (ARRAY[
-[ 20,14,5,8,'2018-10-24T22:20:13.456Z'::timestamptz],
-     [ 21,15,7,9,'2018-11-24T22:20:13.456Z'::timestamptz],
-     [ 11,15,7,1,'2018-12-24T22:20:13.456Z'::timestamptz]]);
-
-select * from insert_anticipating_impact_composite_array (ARRAY[
-[ -1,-1,20,14,5,8, 0,'2018-10-24T22:20:13.456Z'::timestamptz] :: anticipating_impact_type,
-     [ -2,-1,21,15,7,9,1,'2018-11-24T22:20:13.456Z'::timestamptz] :: anticipating_impact_type,
-     [ -2,-1,11,15,7,1,1,'2018-12-24T22:20:13.456Z'::timestamptz] :: anticipating_impact_type]);
-
-*/
-
-
-    }
-
-    public String converterForSpecialType(String specialType) {
-        switch (specialType) {
-            case Constants.SQL_DATE:
-                return "convertToDate";
-            case Constants.TIMESTAMPTZ:
-                return "convertToTimestamptz";
-            case Constants.NULLABLE_TEXT:
-                return CONVERT_TO_NULLABLE_TEXT;
-            case Constants.NON_NULLABLE_TEXT:
-                return CONVERT_TO_NON_NULLABLE_TEXT;
-            case Constants.JSON_TEXT:
-                return "convertToJsonTEXT";
-            default:
-                return null;
-                //throw new IllegalStateException("Unexpected value: " + specialType);
+        // determine iterator element type
+        org.openprovenance.prov.template.compiler.past.type.TypeName iterType;
+        if (withBean) {
+            iterType = get(compilerUtil.commonNameClass(shortConsistsOf), locations.getBeansPackage(compositeConfig.fullyQualifiedName, BeanDirection.COMMON));
+        } else {
+            iterType = get(compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.INPUTS, "_1"), locations.getBeansPackage(compositeConfig.fullyQualifiedName, BeanDirection.INPUTS));
         }
+
+        m.BODY(DEFINITION(_bool, VARIABLE("first"), CONSTANT(true)));
+
+        Iterator iterator = ITERATOR(PARAMETER(variableBean1, iterType), METHOD_CALL(VARIABLE(beanVar), ELEMENTS));
+        iterator.BODY(
+                IF(VARIABLE("first")).THEN(
+                        ASSIGNMENT( VARIABLE("first"), CONSTANT(false))
+                ).ELSE(
+                        METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(",\n     ")))
+                )
+        );
+        simpleQueryInvokerEmbedded(configs, composee, foundSpecialTypes, iterator, variableBean1, compositeConfig.sharing, queryInvoker);
+
+        m.BODY(iterator);
+
+
+
+        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\n])"))));
+
     }
-
-
 }

@@ -1,0 +1,41 @@
+
+{
+
+    "select": {"wsb": {"@type": "prov:WasStartedBy"}},
+ 
+    "sentence": {
+	"type": "clause",
+	"subject": {"type": "noun_phrase",
+		    "head":  {"type": "@funcall",
+			      "@object": "wsb",
+			      "@field":  "trigger",
+			      "@function": "localname"}},
+	"object":  {"type": "noun_phrase",
+		    "head": "start",
+		    "determiner": "the",
+		    "post-modifiers": [{"type": "preposition_phrase",
+					"preposition": "of",
+					"noun":  {"type": "@funcall",
+						  "@object": "wsb",
+						  "@field":  "activity",
+						  "@function": "localname"}}],
+		    "features": {"number": "singular"}},
+	"verb": "trigger",
+	"modifiers": [{"type": "preposition_phrase",
+		       "preposition": "at",
+		       "noun": {"type": "@funcall",
+				"@object": "wsb",
+				"@field": "time",
+				"@optional": "true",				
+				"@function": "timestring"}}],	
+	"features" : {"tense": "past",
+		      "passive": "true"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#"
+    }
+    
+    
+}

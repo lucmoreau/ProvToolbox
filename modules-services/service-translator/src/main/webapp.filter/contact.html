@@ -2,82 +2,112 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>ProvValidator</title>
+    <title>PROV Contact</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
-    <!-- Le styles -->
+
     <style type="text/css">
         body {
             padding-left: 5px;
         }
-        .sidebar-nav {
-            padding: 9px 0;
+        .navbar-brand {
+            width: 160px;          /* fixed length */
+            display: inline-block; /* required for width to apply properly */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* adds ... if text too long */
         }
     </style>
     <script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
     <link href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
+
 <body>
 
-
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <ul class="nav navbar-nav">
-            <li id="header-translator"> <a href="translator.html">Translate</a></li>
-            <li id="header-expander">   <a href="expander.html">Expand</a></li>
-            <li id="header-validator">  <a href="validator.html">Validate</a></li>
-            <li id="header-rator">      <a href="rator.html">Rate</a></li>
-            <li id="header-api">        <a href="api.html">API</a></li>
-            <li id="header-about">      <a href="about.html">About</a></li>
-            <li id="header-contact">    <a href="contact.html">Contact</a></li>
-        </ul>
+        <a class="navbar-brand" href="#">PROV Contact</a>
+
+        <!-- Mobile toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar" aria-controls="mainNavbar"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item" id="header-translator">
+                    <a class="nav-link" href="translator.html">Translate</a>
+                </li>
+                <li class="nav-item" id="header-expander">
+                    <a class="nav-link" href="instantiator.html">Instantiate</a>
+                </li>
+                <li class="nav-item" id="header-validator">
+                    <a class="nav-link" href="validator.html">Validate</a>
+                </li>
+                <li class="nav-item" id="header-rator">
+                    <a class="nav-link" href="rator.html">Rate</a>
+                </li>
+                <li class="nav-item" id="header-api">
+                    <a class="nav-link" href="api.html">API</a>
+                </li>
+                <li class="nav-item" id="header-about">
+                    <a class="nav-link" href="about.html">About</a>
+                </li>
+                <li class="nav-item" id="header-contact">
+                    <a class="nav-link" href="contact.html">Contact</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>
 
 <script>
-    $('#header-contact').addClass("active");
+    $('#header-contact > a').addClass("active");
 </script>
 
-<section>
+<section class="container">
     <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-8" style="text-align:left;margin-top:80px;margin-bottom:50px">
-            <p>For any inquiry about PROV Validator, Translator, Expander and ProvToolbox, please contact:</p>
-            <p/><p/><p/>
+        <div class="col-md-2"></div>
+
+        <div class="col-md-8 text-start" style="margin-top:80px;margin-bottom:50px">
+            <p>
+                For any inquiry about PROV Validator, Translator, Expander and ProvToolbox, please contact:
+            </p>
+
             <address>
-                Professor Luc Moreau<br/>
-                Faculty of Science, Engineering and Medicine<br/>
-                University of Sussex<br/>
-                or<br/>
-                report issues on github<br/>
-                <a href="https://github.com/lucmoreau/ProvToolbox">https://github.com/lucmoreau/ProvToolbox</a><br/>
+                Professor Luc Moreau<br>
+                Faculty of Science, Engineering and Medicine<br>
+                University of Sussex<br>
+                or<br>
+                report issues on github<br>
+                <a href="https://github.com/lucmoreau/ProvToolbox">
+                    https://github.com/lucmoreau/ProvToolbox
+                </a><br>
             </address>
 
-            <div>
-                When reporting an issue about ProvToolbox <code>provconvert</code>, please provide the information returned by the command
+            <div class="mb-3">
+                When reporting an issue about ProvToolbox <code>provconvert</code>,
+                please provide the information returned by the command
                 <code>provconvert --version</code>.
             </div>
 
             <div>
-                When reporting an issue about this service, please provide the information returned by <a href="${service.context}/provapi/configuration">/provapi/configuration</a>.
+                When reporting an issue about this service, please provide the information returned by
+                <a href="/service/provapi/configuration">/provapi/configuration</a>.
             </div>
-
         </div>
+
+        <div class="col-md-2"></div>
     </div>
-
-
-
 </section>
 
-
-
-<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+<!-- Bootstrap 5.3 JS bundle (includes Popper) -->
+<script src="/service/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 
 <script src="provservice.js"></script>
 
 </body>
-
 </html>

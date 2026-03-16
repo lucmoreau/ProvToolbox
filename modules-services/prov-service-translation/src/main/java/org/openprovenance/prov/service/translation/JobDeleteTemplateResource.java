@@ -7,7 +7,7 @@ import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.ResourceStorage;
 import org.openprovenance.prov.storage.api.TemplateResource;
-import org.openprovenance.prov.template.json.Bindings;
+import org.openprovenance.prov.template.core.Bindings;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.SchedulerContext;

@@ -32,6 +32,9 @@ public class TemplatesProjectConfiguration {
     public String sqlFile;
     public List<String> search;
 
+    @JsonProperty("past-generators")
+    public Map<String, Generator> generators;
+
 
     @Override
     public String toString() {

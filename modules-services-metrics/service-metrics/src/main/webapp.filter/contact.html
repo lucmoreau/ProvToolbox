@@ -7,7 +7,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- Le styles -->
     <style type="text/css">
         body {
             padding-left: 5px;
@@ -23,20 +22,20 @@
 <body>
 
 
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-        <ul class="nav navbar-nav">
-            <li id="header-rator">      <a href="rator.html">Rate</a></li>
-            <li id="header-mapper">     <a href="mapper.html">Map</a></li>
-            <li id="header-api">        <a href="api.html">API</a></li>
-            <li id="header-about">      <a href="about.html">About</a></li>
-            <li id="header-contact">    <a href="contact.html">Contact</a></li>
+        <ul class="navbar-nav flex-row gap-3">
+            <li id="header-rator"   class="nav-item"><a href="rator.html"   class="nav-link">Rate</a></li>
+            <li id="header-mapper"  class="nav-item"><a href="mapper.html"  class="nav-link">Map</a></li>
+            <li id="header-api"     class="nav-item"><a href="api.html"     class="nav-link">API</a></li>
+            <li id="header-about"   class="nav-item"><a href="about.html"   class="nav-link">About</a></li>
+            <li id="header-contact" class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
         </ul>
     </div>
 </nav>
 
 <script>
-    $('#header-contact').addClass("active");
+    $('#header-contact a').addClass("active");
 </script>
 
 <section>
@@ -72,7 +71,7 @@
 
 
 
-<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
 
 <script src="provservice.js"></script>
 

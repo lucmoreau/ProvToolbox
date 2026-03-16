@@ -297,6 +297,8 @@ public class NarrativeLogic {
             logger.debug("explanation id: " + explanationId);
 
 
+
+
             try {
                 org.openprovenance.prov.model.Document doc = utils.getDocumentFromCacheOrStore(dr.getStorageId());
 

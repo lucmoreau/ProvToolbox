@@ -16,7 +16,9 @@ import static org.openprovenance.prov.template.compiler.common.Constants.*;
 public class Locations {
     Logger logger = LogManager.getLogger(Locations.class);
     public static final String NODEFAULT_FOR = "nodefault.for.";
-    final private String cli_src_dir;
+
+
+    final public String cli_src_dir;
     final private TemplatesProjectConfiguration configs;
     final private String l2p_src_dir;
     private final Map<String, String> packages;
@@ -85,6 +87,7 @@ public class Locations {
             case SQL_COMPOSITE_ENACTOR_CONFIGURATOR4:
             case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4:
             case SQL_COMPOSITE_BEAN_COMPLETER4:
+            case ENACTOR_IMPLEMENTATION4:
                 return getSqlAccessControlBackendPackage(name);
 
             case LOGGER:
@@ -92,6 +95,7 @@ public class Locations {
                 return getLoggerPackage(name);
 
             case BEAN_ENACTOR2:
+            case ENACTOR_IMPLEMENTATION:
             case BEAN_LOCAL_ENACTOR2:
             case BEAN_ENACTOR2_COMPOSITE:
             case TEMPLATE_INVOKER:
@@ -134,15 +138,18 @@ public class Locations {
                 return getConfiguratorPackage2(name);
 
             case TYPE_CONVERTER:
+            case TYPED_GETTER:
             case DELEGATOR:
             case BEAN_COMPLETER:
             case BEAN_CHECKER:
             case QUERY_INVOKER:
             case BEAN_ENACTOR:
             case BEAN_PROCESSOR:
+            case ENACTOR_IMPLEMENTATION1:
                 return getCommonPackage(name);
 
             case SQL_INTERFACE:
+            case GETTER:
                 return Constants.CLIENT_PACKAGE;
 
         }
@@ -173,11 +180,15 @@ public class Locations {
         return getPackageForTemplate(name) +  "." + Constants.SUB_PACKAGE_INTEGRATOR;
     }
 
-    private String getClientIntegratorPackage(String name) {
+    public String getClientWorkflowPackage(String name) {
+        return getPackageForTemplate(name) + "." + Constants.SUB_PACKAGE_CLIENT + "." + SUB_PACKAGE_WORKFLOW;
+    }
+
+    public String getClientIntegratorPackage(String name) {
         return getPackageForTemplate(name) + "." + Constants.SUB_PACKAGE_CLIENT + "." + Constants.SUB_PACKAGE_INTEGRATOR;
     }
 
-    private String getCommonPackage(String name) {
+    public String getCommonPackage(String name) {
         return getPackageForTemplate(name) + "." + Constants.SUB_PACKAGE_COMMON;
     }
 
@@ -248,5 +259,14 @@ public class Locations {
     }
     public Map<String, String> getCbindingsRegistrations() {
         return cbindingsRegistrations;
+    }
+
+
+    public String getCli_src_dir() {
+        return cli_src_dir;
+    }
+
+    public String getL2p_src_dir() {
+        return l2p_src_dir;
     }
 }

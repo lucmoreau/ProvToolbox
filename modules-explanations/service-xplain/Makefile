@@ -8,7 +8,7 @@ build.docker:
 
 # will run on port 7070 as per root pom.xml
 jetty:
-	 mvn -Pjetty jetty:run-war
+	 export XPLAIN_LEXICON=/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/nlg-wrapper/target/dictionary/lexAccess2013.data; mvn -Pjetty jetty:run-war
 
 jetty.post:
 	 mvn -Pjetty,postgres jetty:run
@@ -416,11 +416,11 @@ post.url:
 	curl -D - $(EXTRA) -H "Content-Type: $(CONTENT_MIME_TYPE)" -H "ACCEPT: $(ACCEPT_MIME_TYPE)" -X POST --data-binary @$(FILE_TO_POST) $(HTTP_SERVICE)$(SERVICE_URL)
 
 post.realiser:
-	$(MAKE) SERVICE_URL=/provapi/nlg/realiser CONTENT_MIME_TYPE=$(MIME_TYPE) ACCEPT_MIME_TYPE=$(MIME_TYPE) post.url
+	$(MAKE) SERVICE_URL=/xplain/provapi/nlg/realiser CONTENT_MIME_TYPE=$(MIME_TYPE) ACCEPT_MIME_TYPE=$(MIME_TYPE) post.url
 post.expander:
-	$(MAKE) SERVICE_URL=/provapi/nlg/expander CONTENT_MIME_TYPE=$(MIME_TYPE) ACCEPT_MIME_TYPE=$(MIME_TYPE) EXTRA="-H \"prov_xpand_only: true\"" post.url
+	$(MAKE) SERVICE_URL=/xplain/provapi/nlg/expander CONTENT_MIME_TYPE=$(MIME_TYPE) ACCEPT_MIME_TYPE=$(MIME_TYPE) EXTRA="-H \"prov_xpand_only: true\"" post.url
 post.expander.realiser:
-	$(MAKE) SERVICE_URL=/provapi/nlg/expander CONTENT_MIME_TYPE=$(MIME_TYPE) ACCEPT_MIME_TYPE=$(MIME_TYPE) post.url
+	$(MAKE) SERVICE_URL=/xplain/provapi/nlg/expander CONTENT_MIME_TYPE=$(MIME_TYPE) ACCEPT_MIME_TYPE=$(MIME_TYPE) post.url
 
 realiser1:
 	$(MAKE) MIME_TYPE=application/json FILE_TO_POST=../../modules-explanations/nlg-wrapper/src/test/resources/examples/data.sources1.json post.realiser

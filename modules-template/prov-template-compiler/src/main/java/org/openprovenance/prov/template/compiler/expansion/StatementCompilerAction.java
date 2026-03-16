@@ -2,13 +2,12 @@ package org.openprovenance.prov.template.compiler.expansion;
 
 import java.util.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
-import org.openprovenance.prov.template.expander.ExpandUtil;
+import org.openprovenance.prov.template.core.InstantiateUtil;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec.Builder;
@@ -20,7 +19,6 @@ import static org.openprovenance.prov.template.compiler.expansion.StatementTypeA
 
 public class StatementCompilerAction implements StatementAction {
 
-    private final JsonNode bindings_schema;
     private final TemplateBindingsSchema bindingsSchema;
     private Collection<QualifiedName> allVars;
     private Collection<QualifiedName> allAtts;
@@ -36,14 +34,13 @@ public class StatementCompilerAction implements StatementAction {
     static final TypeName  cl_linkedListOfAttributes = ParameterizedTypeName.get(cl_linkedList, cl_attribute);
     public static final TypeName  cl_collectionOfAttributes = ParameterizedTypeName.get(cl_collection, cl_attribute);
 
-    public StatementCompilerAction(ProvFactory pFactory, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    public StatementCompilerAction(ProvFactory pFactory, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, TemplateBindingsSchema bindingsSchema) {
         this.pFactory=pFactory;
         this.allVars=allVars;
         this.allAtts=allAtts;
         this.builder=builder;
         this.target=target;
         this.vmap=vmap;
-        this.bindings_schema=bindings_schema;
         this.bindingsSchema=bindingsSchema;
     }
 
@@ -62,8 +59,8 @@ public class StatementCompilerAction implements StatementAction {
 	public void doAction(Activity s) {
 		// TODO, start and end time
 		final String var = s.getId().getLocalPart();
-		final String start = doCollectElementVariable(s, ExpandUtil.STARTTIME_URI);
-		final String end = doCollectElementVariable(s, ExpandUtil.ENDTIME_URI);
+		final String start = doCollectElementVariable(s, InstantiateUtil.STARTTIME_URI);
+		final String end = doCollectElementVariable(s, InstantiateUtil.ENDTIME_URI);
 		if (start == null) {
 			if (end == null) {
 				builder.addStatement(
@@ -134,7 +131,7 @@ public class StatementCompilerAction implements StatementAction {
             if (reservedIfVar(element)) {
                 if (value instanceof QualifiedName) {
                     QualifiedName vq=(QualifiedName) value;
-                    if (ExpandUtil.isVariable(vq)) {
+                    if (InstantiateUtil.isVariable(vq)) {
                         ifVarValue=vq.getLocalPart();
 
                     }
@@ -270,7 +267,7 @@ public class StatementCompilerAction implements StatementAction {
                 Object value=attribute.getValue();
                 if (value instanceof QualifiedName) {
                     QualifiedName vq=(QualifiedName) value;
-                    if (ExpandUtil.isVariable(vq)) {
+                    if (InstantiateUtil.isVariable(vq)) {
                         if (reservedElement(element)) {
 
                         } else {
@@ -309,7 +306,7 @@ public class StatementCompilerAction implements StatementAction {
                     if (reservedElement(element)) {
                         doReservedAttributeAction(builder, element, vq, typeq);
                     } else {
-                        if (ExpandUtil.isVariable(vq))  {
+                        if (InstantiateUtil.isVariable(vq))  {
                             // use attribute variables (expected to be of type Object) and calculates its type as a QualifiedName dynamically.
                             String localPart = vq.getLocalPart();
 
@@ -364,24 +361,24 @@ public class StatementCompilerAction implements StatementAction {
                                            QualifiedName vq,
                                            QualifiedName typeq) {
         final String elementUri = element.getUri();
-        if (ExpandUtil.LABEL_URI.equals(elementUri)) {
+        if (InstantiateUtil.LABEL_URI.equals(elementUri)) {
             builder.addStatement("if ($N!=null) attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
                                  vq.getLocalPart(),
                                  vmap.get(pFactory.getName().PROV_LABEL),
                                  vq.getLocalPart(),
                                  vq.getLocalPart());
            
-        } else if (ExpandUtil.TIME_URI.equals(elementUri)) {
+        } else if (InstantiateUtil.TIME_URI.equals(elementUri)) {
            // don't include it!
-        } else if (ExpandUtil.STARTTIME_URI.equals(elementUri)) {
+        } else if (InstantiateUtil.STARTTIME_URI.equals(elementUri)) {
             // don't include it!
-        } else if (ExpandUtil.ENDTIME_URI.equals(elementUri)) {
+        } else if (InstantiateUtil.ENDTIME_URI.equals(elementUri)) {
             // don't include it!
-        } else if (ExpandUtil.IFVAR_URI.equals(elementUri)) {
+        } else if (InstantiateUtil.IFVAR_URI.equals(elementUri)) {
             // don't include it!
-        } else if (ExpandUtil.ACTIVITY_TYPE_URI.equals(elementUri)) {
+        } else if (InstantiateUtil.ACTIVITY_TYPE_URI.equals(elementUri)) {
             // don't include it!
-        }else if (ExpandUtil.TMPL_ACTIVITY_URI.equals(elementUri)) {
+        }else if (InstantiateUtil.TMPL_ACTIVITY_URI.equals(elementUri)) {
             // don't include it!
         } else {
             // can never be here
@@ -392,18 +389,18 @@ public class StatementCompilerAction implements StatementAction {
 
     public boolean reservedElement(QualifiedName element) {
         final String elementName = element.getUri();
-        return (ExpandUtil.LABEL_URI.equals(elementName)) 
-                || (ExpandUtil.TIME_URI.equals(elementName))
-                || (ExpandUtil.STARTTIME_URI.equals(elementName))
-                || (ExpandUtil.ENDTIME_URI.equals(elementName))
-                || (ExpandUtil.ACTIVITY_TYPE_URI.equals(elementName))
-                || (ExpandUtil.TMPL_ACTIVITY_URI.equals(elementName))
-                || (ExpandUtil.IFVAR_URI.equals(elementName));
+        return (InstantiateUtil.LABEL_URI.equals(elementName))
+                || (InstantiateUtil.TIME_URI.equals(elementName))
+                || (InstantiateUtil.STARTTIME_URI.equals(elementName))
+                || (InstantiateUtil.ENDTIME_URI.equals(elementName))
+                || (InstantiateUtil.ACTIVITY_TYPE_URI.equals(elementName))
+                || (InstantiateUtil.TMPL_ACTIVITY_URI.equals(elementName))
+                || (InstantiateUtil.IFVAR_URI.equals(elementName));
 
     }
     public boolean reservedIfVar(QualifiedName element) {
         final String elementName = element.getUri();
-        return (ExpandUtil.IFVAR_URI.equals(elementName));
+        return (InstantiateUtil.IFVAR_URI.equals(elementName));
     }
 
 
@@ -416,7 +413,7 @@ public class StatementCompilerAction implements StatementAction {
                 Object value=attribute.getValue();
                 if (value instanceof QualifiedName) {
                     QualifiedName vq=(QualifiedName) value;
-                    if (ExpandUtil.isVariable(vq)) {
+                    if (InstantiateUtil.isVariable(vq)) {
                         if (search.equals(element.getUri())) {
                             return vq.getLocalPart();
                         } 
@@ -515,7 +512,7 @@ public class StatementCompilerAction implements StatementAction {
         builder.addStatement(target + ".add($N)", id_);
 
         String target2 = id_+".getStatement()";
-        StatementCompilerAction action2=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, target2, bindings_schema, bindingsSchema);
+        StatementCompilerAction action2=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, target2, bindingsSchema);
         
         for (Statement s: bun.getStatement()) {
             provUtilities.doAction(s, action2);

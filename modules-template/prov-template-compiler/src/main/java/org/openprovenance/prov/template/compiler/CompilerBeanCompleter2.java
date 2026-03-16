@@ -1,187 +1,292 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
+import java.util.List;
+import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
-import static org.openprovenance.prov.template.compiler.common.Constants.*;
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
+
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
+import static org.openprovenance.prov.template.compiler.past.Class.ClassKind.ANONYMOUS;
+import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
+import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
+import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.DoLoop.DO;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
+import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.ThrowStatement.THROW;
+import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
+import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
 public class CompilerBeanCompleter2 {
     private final CompilerUtil compilerUtil;
+    private final PastFactory pastFactory;
     private final boolean debugComment=true;
 
 
     public CompilerBeanCompleter2(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
+        this.pastFactory=compilerUtil.getPastFactory();
     }
-
 
     SpecificationFile generateBeanCompleter2(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+        ClassName GETTER_TYPE = get(GETTER, locations.getFilePackage("ignoreme", GETTER ));
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_COMPLETER2);
+        Class pastClass = pastFactory.CLASS(BEAN_COMPLETER2)
+                .MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(
+                        FIELD("m", MAP_STRING_OBJECT).MODIFIERS(Modifier.FINAL),
+                        FIELD(GETTER_VAR, GETTER_TYPE).MODIFIERS(Modifier.FINAL, Modifier.PROTECTED)
+                );
 
+        Method callMe2 = METHOD("getMap")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(CLASS_T, "cl")
+                .PARAMETER(STRING, "key")
+                .RETURNS(T())
+                .addTypeVariables(T())
+                .BODY(RETURN(
+                        CAST(T(),
+                                METHOD_CALL(METHOD_CALL(VARIABLE("this"),"m"), "get", List.of(VARIABLE("key"))))));
+        pastClass.METHOD(callMe2);
 
-        builder.addField(CompilerUtil.mapType,"m", Modifier.FINAL);
+        Constructor constructor1 = CONSTRUCTOR()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(MAP_STRING_OBJECT, "m")
+                .commentFileLocation()
+                .BODY(ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "m"), VARIABLE("m")))
+                .COMMENT("The following code implements this assignment, in a way that jsweet can compile")
+                .COMMENT("this.getter = this::getMap")
+                .BODY(
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), GETTER_VAR),
+                                CONSTRUCTOR_CALL(
+                                        pastFactory
+                                                .CLASS(null, ANONYMOUS)
+                                                .INTERFACES(GETTER_TYPE)
+                                                .METHOD(
+                                                        METHOD("get")
+                                                                .MODIFIERS(Modifier.PUBLIC)
+                                                                .PARAMETER(CLASS_T, "cl")
+                                                                .PARAMETER(STRING, "col")
+                                                                .RETURNS(T())
+                                                                .addTypeVariables(T())
+                                                                .BODY(
+                                                                        RETURN(
+                                                                                METHOD_CALL(
+                                                                                        //VARIABLE("this"), /// note this, would refer to the anonymous class itself, not the object
+                                                                                        "getMap",
+                                                                                        List.of(VARIABLE("cl"), VARIABLE("col"))
+                                                                                )
+                                                                        )
+                                                                )
+                                                ),
+                                        List.of())));
 
+        pastClass.CONSTRUCTOR(constructor1);
 
+        Constructor constructor2 = CONSTRUCTOR()
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(GETTER_TYPE, GETTER_VAR)
+                .BODY(
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "m"), Constant.getNull()),
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), GETTER_VAR), VARIABLE(GETTER_VAR)));
 
-        MethodSpec.Builder callMe2=MethodSpec.methodBuilder("getMap");
-        compilerUtil.specWithComment(callMe2);
-        callMe2 .addModifiers(Modifier.PUBLIC)
-                .addParameter(CompilerUtil.classType, "cl")
-                .addParameter(String.class, "key")
-                .returns(CompilerUtil.typeT)
-                .addTypeVariable(CompilerUtil.typeT)
-                .addStatement("return ($T) m.get($N)", CompilerUtil.typeT, "key");
-        builder.addMethod(callMe2.build());
+        constructor2.annotation.add(new OverloadedMethod("____init2__"));
 
-        TypeSpec.Builder inface=compilerUtil.generateInterfaceInit(Constants.GETTER);
-        inface.addMethod(MethodSpec.methodBuilder("get")
-                .addModifiers(Modifier.ABSTRACT,Modifier.PUBLIC)
-                .addParameter(CompilerUtil.classType,"cl")
-                .addParameter(String.class,"col")
-                .returns(CompilerUtil.typeT)
-                .addTypeVariable(CompilerUtil.typeT)
-                .build());
-        builder.addType(inface.build());
-
-
-        builder.addField(TypeVariableName.get(Constants.GETTER),"getter", Modifier.FINAL, Modifier.PROTECTED);
-
-
-        MethodSpec.Builder cbuilder2= MethodSpec.constructorBuilder();
-        compilerUtil.specWithComment(cbuilder2);
-        cbuilder2
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(CompilerUtil.mapType, "m")
-                .addStatement("this.$N = $N", "m", "m")
-                .addComment("The following code implements this assignment, in a way that jsweet can compile")
-                .addComment("this.getter = this::getMap");
-        cbuilder2.addStatement("this.getter = $L",
-                TypeSpec.anonymousClassBuilder("")
-                        .addSuperinterface(TypeVariableName.get(Constants.GETTER))
-                        .addMethod(MethodSpec.methodBuilder("get")
-                                .addModifiers(Modifier.PUBLIC)
-                                .addParameter(CompilerUtil.classType,"cl")
-                                .addParameter(String.class,"col")
-                                .returns(CompilerUtil.typeT)
-                                .addTypeVariable(CompilerUtil.typeT)
-                                .addStatement("return getMap(cl, col)").build()).build());
-
-
-        builder.addMethod(cbuilder2.build());
-
-        MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder();
-        compilerUtil.specWithComment(cbuilder3);
-        cbuilder3
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(TypeVariableName.get(Constants.GETTER), "getter")
-                .addStatement("this.$N = null", "m")
-                .addStatement("this.getter = ($N) getter", Constants.GETTER);
-
-        builder.addMethod(cbuilder3.build());
+        pastClass.CONSTRUCTOR(constructor2);
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if  (config instanceof SimpleTemplateCompilerConfig) {
+            if (config instanceof SimpleTemplateCompilerConfig) {
+
                 TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
                 final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
 
-                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
-                MethodSpec.Builder mspec = createProcessMethod(config.name, config.fullyQualifiedName, bindingsSchema, outputClassName, true);
+                final ClassName outputClassName = get(outputBeanNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
+                Method mspecOut = METHOD(Constants.PROCESS_METHOD_NAME)
+                        .commentFileLocation()
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .PARAMETER(outputClassName, BEAN_VAR)
+                        .RETURNS(outputClassName)
+                        .BODY(
+                                // if output, set ID and call post processing
 
-                builder.addMethod(mspec.build());
+                                ASSIGNMENT(
+                                        METHOD_CALL(VARIABLE(BEAN_VAR), "ID"),
+                                        METHOD_CALL(METHOD_CALL(VARIABLE("this"),GETTER_VAR), "get",
+                                                List.of(METHOD_CALL(INTEGER, "class"), CONSTANT("ID")))
+                                ),
 
+                                // call postEnactmentProcessing(bean.ID, fullyQualifiedName)
 
-                final ClassName inputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS), inputBeanNameClass);
-                MethodSpec.Builder mspec2 = createProcessMethod(config.name, config.fullyQualifiedName, bindingsSchema, inputClassName, false);
-                builder.addMethod(mspec2.build());
+                                METHOD_CALL(VARIABLE("this"),POST_PROCESS_METHOD_NAME, List.of(METHOD_CALL(VARIABLE(BEAN_VAR), "ID"), CONSTANT(config.fullyQualifiedName)))
+                        );
+
+                for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
+                    if (descriptorUtils.isOutput(key, bindingsSchema)) {
+                        ClassName cl = compilerUtil.getPastTypeForDeclaredType(bindingsSchema.getVar(), key);
+                        mspecOut.BODY(ASSIGNMENT(
+                                METHOD_CALL(VARIABLE(BEAN_VAR), key),
+                                METHOD_CALL(
+                                        METHOD_CALL(VARIABLE("this"),GETTER_VAR),
+                                        "get",
+                                        List.of(
+                                                METHOD_CALL(cl, "class"),
+                                                CONSTANT(key)
+                                        )
+                                )
+                        ));
+                    }
+                }
+
+                mspecOut.BODY(RETURN(VARIABLE(BEAN_VAR)));
+                pastClass.METHOD(mspecOut);
+
+                // input variant
+                final ClassName inputClassName = get(inputBeanNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS));
+                Method mspecIn = METHOD(Constants.PROCESS_METHOD_NAME)
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .PARAMETER(inputClassName, BEAN_VAR)
+                        .RETURNS(inputClassName);
+                compilerUtil.debugFileLocation(mspecIn);
+
+                for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
+                    if (descriptorUtils.isInput(key, bindingsSchema)) {
+                        ClassName cl = compilerUtil.getPastTypeForDeclaredType(bindingsSchema.getVar(), key);
+                        mspecIn.BODY(ASSIGNMENT(
+                                METHOD_CALL(VARIABLE(BEAN_VAR), key),
+                                METHOD_CALL(
+                                        METHOD_CALL(VARIABLE("this"),GETTER_VAR),
+                                        "get",
+                                        List.of(
+                                                METHOD_CALL(cl, "class"),
+                                                CONSTANT(key)
+                                        )
+                                )
+                        ));
+                    }
+                }
+
+                mspecIn.BODY(RETURN(VARIABLE(BEAN_VAR)));
+                pastClass.METHOD(mspecIn);
+
             } else {
-                CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
+
+                CompositeTemplateCompilerConfig config1 = (CompositeTemplateCompilerConfig) config;
 
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
-                final ClassName outputClassName = ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS), outputBeanNameClass);
+                final ClassName outputClassName = get(outputBeanNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
 
-                String shortConsistsOf=locations.getShortNames().get(config1.consistsOf);
-                String composeeName=compilerUtil.outputsNameClass(shortConsistsOf);
-                ClassName composeeClass=ClassName.get(locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS),composeeName);
-
-                MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                        .addModifiers(Modifier.PUBLIC)
-                        .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
-                        .returns(outputClassName);
-
-                compilerUtil.specWithComment(mspec);
-
-                mspec.beginControlFlow("do ");
-                mspec.addStatement("$T composee=new $T()", composeeClass,composeeClass);
-                mspec.addStatement("$N.$N(composee)", BEAN_VAR,ADD_ELEMENTS);
-                mspec.addStatement("$N(composee)", PROCESS_METHOD_NAME);
-                mspec.endControlFlow("while (next()) ");
+                String shortConsistsOf = locations.getShortNames().get(config1.consistsOf);
+                String composeeName = compilerUtil.outputsNameClass(shortConsistsOf);
+                ClassName composeeClass = get(composeeName, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
 
 
-                mspec.addStatement("return $N", BEAN_VAR);
-                builder.addMethod(mspec.build());
+
+                Method mspec0=METHOD(Constants.PROCESS_METHOD_NAME)
+                        .commentFileLocation()
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .PARAMETER(outputClassName, BEAN_VAR)
+                        .RETURNS(outputClassName)
+                        .BODY(
+                                DO()
+                                        .BODY(
+                                                DEFINITION(composeeClass, VARIABLE("composee"), CONSTRUCTOR_CALL(composeeClass, List.of())),
+                                                METHOD_CALL(
+                                                        VARIABLE(BEAN_VAR),
+                                                        ADD_ELEMENTS,
+                                                        List.of(VARIABLE("composee"))
+                                                ),
+                                                METHOD_CALL(
+                                                        VARIABLE("this"),
+                                                        PROCESS_METHOD_NAME,
+                                                        List.of(VARIABLE("composee"))))
+                                        .WHILE(METHOD_CALL("next", List.of())),
+                                RETURN(VARIABLE(BEAN_VAR)));
+                pastClass.METHOD(mspec0);
+
+                Method mspec_incorrect = METHOD(Constants.PROCESS_METHOD_NAME+"Incorrect")
+                        .commentFileLocation()
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .PARAMETER(outputClassName, BEAN_VAR)
+                        .RETURNS(outputClassName)
+                        .BODY(
+                                DEFINITION(_bool, VARIABLE("nextExists"), CONSTANT(true)),
+                                ITERATOR(
+                                        PARAMETER("composee", composeeClass),
+                                        METHOD_CALL(VARIABLE(BEAN_VAR), ELEMENTS))
+                                        .BODY(
+                                                IF(VARIABLE("nextExists"))
+                                                        .THEN(
+                                                                METHOD_CALL(
+                                                                        VARIABLE("this"),
+                                                                        PROCESS_METHOD_NAME,
+                                                                        List.of(VARIABLE("composee"))),
+                                                                ASSIGNMENT(
+                                                                        VARIABLE("nextExists"),
+                                                                        METHOD_CALL(
+                                                                                VARIABLE("this"),
+                                                                                "next",
+                                                                                List.of())))
+                                                        .ELSE(
+                                                                THROW(
+                                                                        CONSTRUCTOR_CALL(ILLEGAL_ARGUMENT_EXCEPTION,
+                                                                                List.of(CONSTANT("Not enough record in the result")))))),
+
+
+                                RETURN(VARIABLE(BEAN_VAR)));
+
+                pastClass.METHOD(mspec_incorrect);
 
             }
         }
 
-        builder.addMethod(MethodSpec.methodBuilder(POST_PROCESS_METHOD_NAME)
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(Integer.class, "id")
-                .addParameter(String.class, "template")
-                .returns(void.class).build());
+        Method nMethod = METHOD("next")
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(_bool)
+                .BODY(RETURN(CONSTANT(true)));
+        pastClass.METHOD(nMethod);
 
-        builder.addMethod(MethodSpec.methodBuilder("next").addModifiers(Modifier.PUBLIC).returns(boolean.class).addStatement("return true").build());
-
-
-        TypeSpec theLogger = builder.build();
+        Method pMethod = METHOD(POST_PROCESS_METHOD_NAME)
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(INTEGER, "id")
+                .PARAMETER(STRING, "template")
+                .RETURNS(VOID)
+                .BODY(); // empty body
+        pastClass.METHOD(pMethod);
 
         String myPackage=locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
+        return new SpecificationFile(javaGenerator, pythonGenerator);
 
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
-
-    }
-
-
-    private MethodSpec.Builder createProcessMethod(String template, String fullyQualifiedName, TemplateBindingsSchema bindingsSchema, ClassName outputClassName, boolean isOutput) {
-        MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
-                .returns(outputClassName);
-        compilerUtil.specWithComment(mspec);
-
-
-        if (isOutput) {
-            mspec.addStatement("$N.ID= getter.get(Integer.class,$S)", BEAN_VAR, "ID");
-            //mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, BEAN_VAR, template);
-            mspec.addStatement("$N($N.ID,$S)", POST_PROCESS_METHOD_NAME, BEAN_VAR, fullyQualifiedName);
-        }
-
-        for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
-            if (isOutput && descriptorUtils.isOutput(key, bindingsSchema)) {
-                Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-                mspec.addStatement("$N.$N= getter.get($N.class,$S)", BEAN_VAR, key, cl.getSimpleName(), key);
-            } else {
-                if (!isOutput && descriptorUtils.isInput(key, bindingsSchema)) {
-                    Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-                    mspec.addStatement("$N.$N= getter.get($N.class,$S)", BEAN_VAR, key, cl.getSimpleName(), key);
-                }
-            }
-        }
-
-        mspec.addStatement("return bean");
-        return mspec;
     }
 
 

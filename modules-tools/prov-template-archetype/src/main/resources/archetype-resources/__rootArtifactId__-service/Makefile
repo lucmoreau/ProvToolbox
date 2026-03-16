@@ -1,3 +1,6 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 FILE=/home/lavm/workspace/validation-project/prov-validation/src/test/resources/pc1-full.xml
 URL=https://raw.github.com/lucmoreau/ProvToolbox/master/prov-n/src/test/resources/prov/primer.pn
 OUT=target/primer
@@ -13,14 +16,14 @@ SERVICE_SECURITY_CONFIG=/Users/luc/git-papers/papers/book-ptm/project/service-bo
 TEMPLATE_CONFIG=target/test-classes/template-config.json
 
 display.config:
-	@echo "PROV_STORAGE_CONFIG_BOOKPTM: ${PROV_STORAGE_CONFIG_BOOKPTM}"
+	@echo "PROV_STORAGE_CONFIG_BOOKPTM: ${symbol_dollar}{PROV_STORAGE_CONFIG_BOOKPTM}"
 
 install.sec:
-	@$(MAKE) display.config
+	@${symbol_dollar}(MAKE) display.config
 	export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=$(SERVICE_SECURITY_CONFIG);  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,security clean install
 
 jetty:
-	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=$(SERVICE_SECURITY_CONFIG); export XPLAIN_LEXICON=${XPLAIN_LEXICON}; export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,security jetty:run-war
+	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)/${symbol_dollar}(SERVICE_CONTEXT); export PROV_API=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)/${symbol_dollar}(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${symbol_dollar}{PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=${symbol_dollar}(SERVICE_SECURITY_CONFIG); export XPLAIN_LEXICON=${symbol_dollar}{XPLAIN_LEXICON}; export TEMPLATE_CONFIG=${symbol_dollar}(TEMPLATE_CONFIG); mvn -Pjetty,security jetty:run-war
 
 jetty.nosec:
 	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; unset TPL_SECURITY_CONFIG;  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,nosecurity jetty:run-war

@@ -24,8 +24,7 @@ import java.util.function.Supplier;
 import static org.openprovenance.prov.template.compiler.common.BeanDirection.INPUTS;
 import static org.openprovenance.prov.template.compiler.common.BeanDirection.OUTPUTS;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
@@ -90,8 +89,9 @@ public class CompilerIntegrator {
 
         Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, integrator_package, locations.python_dir, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, integrator_package, configs, fileName, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator=() -> generateJavaScript(pastClass, integrator_package, "target/generated-js", stackTraceElement);
 
-        return new SpecificationFile(javaGenerator,pythonGenerator);
+        return new SpecificationFile(javaGenerator,pythonGenerator, jsGenerator, emptyGenerator);
 
     }
 

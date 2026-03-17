@@ -261,9 +261,9 @@ public class CompilerBeanLocalEnactor2 {
         String directory = locations.convertToDirectory(myPackage);
         Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + ".java", directory, stackTraceElement, compilerUtil);
-        //Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, "target/generated-js", stackTraceElement);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, "target/generated-js", stackTraceElement);
         //Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, myPackage, "target/generated-rust/src", stackTraceElement);
-        return new SpecificationFile(javaGenerator,pythonGenerator);
+        return new SpecificationFile(javaGenerator,pythonGenerator, jsGenerator, emptyGenerator);
     }
 
 

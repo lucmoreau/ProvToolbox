@@ -267,5 +267,28 @@ public class InstantiateUtil {
         return pf.newQualifiedName(VAR_NS,name,VAR_PREFIX);
     }
 
+    public static boolean attributesAllowForStatementsIdentification(HasOther statement) {
+        List<Other> others=statement.getOther();
+        if (others==null) return false;
+        for (Other other:others) {
+            QualifiedName elementName = other.getElementName();
+            if (isVariable(elementName)) {
+                Object value= other.getValue();
+                if (value instanceof QualifiedName) {
+                    QualifiedName qname=(QualifiedName)value;
+                    if (isVariable(qname)) {
+                        return true;
+                    }
+                }
+            } else {
+                String uri=elementName.getNamespaceURI();
+                if (IDVAR_URI.equals(uri)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }
 

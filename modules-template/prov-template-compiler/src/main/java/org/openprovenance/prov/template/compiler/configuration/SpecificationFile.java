@@ -73,6 +73,9 @@ public class SpecificationFile {
 
     }
 
+    static public Supplier<Boolean> emptyGenerator= () -> true;
+
+
     class JavaInUse {
         public java.util.function.BiFunction<String, String, Integer> f() {
             return (String x, String y) -> 5;
@@ -271,6 +274,7 @@ public class SpecificationFile {
                 return true;
             } catch (RuntimeException | IOException e) {
                 try {
+                    e.printStackTrace();
                     new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);

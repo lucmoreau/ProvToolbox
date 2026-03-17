@@ -28,6 +28,7 @@ import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_C
 import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+import static org.openprovenance.prov.template.core.InstantiateUtil.attributesAllowForStatementsIdentification;
 
 /**
  * Variant of {@link StatementCompilerAction2} that generates PAST statements
@@ -190,9 +191,13 @@ public class StatementCompilerAction2 implements StatementAction {
         args.add(getNull()); // time
         if (hasAttrs) args.add(VARIABLE("attrs"));
 
-        statements.add(ifThenTargetAdd(
-                andNotNull(activity, entity),
-                pfCall("newUsed", args)));
+        if (hasAttrs && attributesAllowForStatementsIdentification(s)) {
+            statements.add(targetAdd(pfCall("newUsed", args)));
+        } else {
+            statements.add(ifThenTargetAdd(
+                    andNotNull(activity, entity),
+                    pfCall("newUsed", args)));
+        }
     }
 
     @Override
@@ -209,9 +214,13 @@ public class StatementCompilerAction2 implements StatementAction {
         args.add(getNull()); // time
         if (hasAttrs) args.add(VARIABLE("attrs"));
 
-        statements.add(ifThenTargetAdd(
-                notNull(entity),
-                pfCall("newWasGeneratedBy", args)));
+        if (hasAttrs && attributesAllowForStatementsIdentification(s)) {
+            statements.add(targetAdd(pfCall("newWasGeneratedBy", args)));
+        } else {
+            statements.add(ifThenTargetAdd(
+                    notNull(entity),
+                    pfCall("newWasGeneratedBy", args)));
+        }
     }
 
     @Override
@@ -238,6 +247,7 @@ public class StatementCompilerAction2 implements StatementAction {
                     "&&",
                     notNull(entity));
         }
+
 
         statements.add(ifThenTargetAdd(condition, pfCall("newWasInvalidatedBy", args)));
     }
@@ -285,13 +295,14 @@ public class StatementCompilerAction2 implements StatementAction {
         args.add(VARIABLE(local(s.getPlan())));
         if (hasAttrs) args.add(VARIABLE("attrs"));
 
-        if (hasAttrs) {
+        if (hasAttrs && attributesAllowForStatementsIdentification(s)) {
             statements.add(targetAdd(pfCall("newWasAssociatedWith", args)));
         } else {
             Expression condition = orNotNull(id,andNotNull(activity, agent));
             statements.add(ifThenTargetAdd(condition,pfCall("newWasAssociatedWith", args)));
         }
     }
+
 
     @Override
     public void doAction(WasAttributedTo s) {
@@ -308,7 +319,7 @@ public class StatementCompilerAction2 implements StatementAction {
         args.add(VARIABLE(agent));
         if (hasAttrs) args.add(VARIABLE("attrs"));
 
-        if (hasAttrs) {
+        if (hasAttrs && attributesAllowForStatementsIdentification(s)) {
             statements.add(targetAdd(pfCall("newWasAttributedTo", args)));
         } else {
             Expression condition = orNotNull(id,andNotNull(entity, agent));
@@ -344,9 +355,14 @@ public class StatementCompilerAction2 implements StatementAction {
         }
         if (hasAttrs) args.add(VARIABLE("attrs"));
 
-        statements.add(ifThenTargetAdd(
-                andNotNull(delegate, responsible),
-                pfCall("newActedOnBehalfOf", args)));
+        if (hasAttrs && attributesAllowForStatementsIdentification(s)) {
+            statements.add(targetAdd(pfCall("newActedOnBehalfOf", args)));
+        } else {
+            statements.add(ifThenTargetAdd(
+                    andNotNull(delegate, responsible),
+                    pfCall("newActedOnBehalfOf", args)));
+        }
+
     }
 
     public String localNotBlank(QualifiedName id) {

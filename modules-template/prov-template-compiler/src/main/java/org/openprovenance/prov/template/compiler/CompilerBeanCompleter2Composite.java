@@ -13,8 +13,7 @@ import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
@@ -114,8 +113,9 @@ public class CompilerBeanCompleter2Composite {
         String myPackage=locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, "target/generated-js", stackTraceElement);
 
-        return new SpecificationFile(javaGenerator, pythonGenerator);
+        return new SpecificationFile(javaGenerator, pythonGenerator,  jsGenerator, emptyGenerator);
     }
 
 

@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
 
 public class CompilerGenerator {
     private final ProvFactory provFactory;
@@ -46,8 +45,9 @@ public class CompilerGenerator {
 
             Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, packageName, configs.python_dir, stackTraceElement);
             Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packageName, configs, filename + ".java", javaOutputDirectory, stackTraceElement, compilerUtil);
+            Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packageName, "target/generated-js", stackTraceElement);
 
-            SpecificationFile specFile = new SpecificationFile(javaGenerator, pythonGenerator);
+            SpecificationFile specFile = new SpecificationFile(javaGenerator, pythonGenerator, jsGenerator, emptyGenerator);
             return specFile;
 
 

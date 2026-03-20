@@ -141,7 +141,7 @@ public class RustProjectGenerator {
 
         Path libRs = srcDir.resolve("lib.rs");
         Files.writeString(libRs, lib.toString());
-        System.out.println("Generated: " + libRs);
+        //System.out.println("Generated: " + libRs);
     }
 
     /**
@@ -183,20 +183,19 @@ public class RustProjectGenerator {
             main.append("    println!();\n\n");
 
             main.append("    // Create an instance of ").append(typeName).append("\n");
-            main.append("    let instance = ").append(typeName).append("::new(\n");
-            main.append("        // Add default constructor arguments here\n");
-            main.append("        // TODO: Customize based on actual constructor signature\n");
-            main.append("""
-                            Some(1),
-                            Some(2),
-                            Some(3),
-                            Some(4),
-                            Some(5),
-                            Some(6),
-                            Some("some date".to_string())
-                    """);
+            main.append("    let mut instance = ").append(typeName).append("::new();\n");
 
-            main.append("    );\n\n");
+            main.append("""
+                instance.item1=Some(1);
+                instance.item0=Some(2);
+                instance.item= Some(3);
+                instance.receiver=     Some(4);
+                instance.giver=     Some(5);
+                instance.handingover=     Some(6);
+                instance.time=     Some("some date".to_string());
+                """);
+
+            main.append("\n\n");
 
             main.append("    println!(\"Created instance of ").append(typeName).append("\");\n");
             main.append("    println!(\"{:?}\", instance);\n");
@@ -221,7 +220,7 @@ public class RustProjectGenerator {
 
         Path mainRs = srcDir.resolve("main.rs");
         Files.writeString(mainRs, main.toString());
-        System.out.println("Generated: " + mainRs);
+        //System.out.println("Generated: " + mainRs);
     }
 
 
@@ -261,9 +260,9 @@ public class RustProjectGenerator {
                             Some("output".to_string()),
                             None,
                             Some(118)\
-                    """);
+                            """);
 
-            main.append("    );\n\n");
+            main.append("   \n\n");
 
             main.append("    println!(\"Created instance of ").append(typeName).append("\");\n");
             main.append("    println!(\"{:?}\", instance);\n");
@@ -288,7 +287,7 @@ public class RustProjectGenerator {
 
         Path mainRs = srcDir.resolve("main.rs");
         Files.writeString(mainRs, main.toString());
-        System.out.println("Generated: " + mainRs);
+       // System.out.println("Generated: " + mainRs);
     }
 
     /**
@@ -345,7 +344,7 @@ public class RustProjectGenerator {
 
         Path modFile = dir.resolve("mod.rs");
         Files.writeString(modFile, modRs.toString());
-        System.out.println("Generated: " + modFile);
+        //System.out.println("Generated: " + modFile);
     }
 
     /**

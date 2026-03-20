@@ -155,6 +155,8 @@ public class Rust implements Emitter<StringBuilder> {
         this.currentClassSignature = (typeRegistry != null && currentPackageName != null)
                 ? typeRegistry.lookup(clazz.name, currentPackageName) : null;
 
+
+
         // Check if this is an interface (trait in Rust)
         if (clazz.isInterface) {
             return emitTrait(clazz);
@@ -294,6 +296,11 @@ public class Rust implements Emitter<StringBuilder> {
             emitTraitImplementations(clazz);
         }
 
+        // insert string "foo" at the beginning of sb
+
+        insertRustDirectives();
+
+
         return sb;
     }
 
@@ -421,7 +428,14 @@ public class Rust implements Emitter<StringBuilder> {
             declareImports("Importing (emitTraits) ");
         }
 
+        insertRustDirectives();
+
+
         return sb;
+    }
+
+    private void insertRustDirectives() {
+        sb.insert(0,"#![allow(dead_code, unused_variables, unused_imports, unused_mut)]\n\n");
     }
 
     private void declareImports(String x) {
@@ -536,6 +550,8 @@ public class Rust implements Emitter<StringBuilder> {
                 declareImports("Importing (emitTraitImplementations) ");
             }
         }
+        insertRustDirectives();
+
     }
 
     /**
@@ -1303,11 +1319,19 @@ public class Rust implements Emitter<StringBuilder> {
 
             case ITERATOR -> {
                 Iterator iterator = (Iterator) statement;
+                // When iterating over a field of a borrowed local struct (e.g. bean.elements where
+                // bean is &T), iterating by value would move the Vec out of the borrow.
+                // Use .iter().cloned() to produce owned items without moving: all generated
+                // structs derive Clone, so this is safe and preserves by-value method signatures.
+                String collectionExpr = convert(iterator.collection);
+                if (isLocalFieldAccess(iterator.collection)) {
+                    collectionExpr = collectionExpr + ".iter().cloned()";
+                }
                 sb.append(indent)
                         .append("for ")
                         .append(sanitizeName(toSnakeCase(iterator.parameter.name)))
                         .append(" in ")
-                        .append(convert(iterator.collection))
+                        .append(collectionExpr)
                         .append(" {\n");
                 for (Statement bodyStmt : iterator.body) {
                     emitStatement(bodyStmt, indent + INDENT);
@@ -1691,19 +1715,6 @@ public class Rust implements Emitter<StringBuilder> {
                 String convertedObject = convert(mc.object);
                 String callMethodName = updateMethodNameIfOverloaded(mc, convertedObject, sanitizeName(mc.methodName));
 
-                /*
-//               / String callMethodName = sanitizeName(toSnakeCase(mc.methodName));
-                // For self-calls to overloaded methods, use the registry alt name
-                if ("self".equals(convertedObject)) {
-                    int argCount = mc.arguments == null ? 0 : mc.arguments.size();
-                    String resolvedAlt = findAltNameForCall(mc.methodName, argCount);
-                    if (resolvedAlt != null) {
-                        callMethodName = sanitizeName(resolvedAlt);
-                    }
-                }
-
-                 */
-
                 // Handle Option unwrapping for chained HashMap method calls.
                 // HashMap::get() returns Option<&V>; calling methods on Option directly won't compile.
                 // When the object is itself a .get() call, we must .unwrap() the Option first.
@@ -1754,7 +1765,7 @@ public class Rust implements Emitter<StringBuilder> {
                 result.append(convertedObject).append(".").append(callMethodName).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
-                            .map(this::convert)
+                            .map(this::convertCallArg)
                             .collect(Collectors.joining(", ")));
                 }
                 result.append(")");
@@ -1822,9 +1833,16 @@ public class Rust implements Emitter<StringBuilder> {
 
                 result.append(convertedObject).append(".").append(toSnakeCase(callMethodName)).append("(");
                 if (mc.arguments != null) {
-                    result.append(mc.arguments.stream()
-                            .map(this::convert)
-                            .collect(Collectors.joining(", ")));
+                    for (int i = 0; i < mc.arguments.size(); i++) {
+                        if (i > 0) result.append(", ");
+                        Expression arg = mc.arguments.get(i);
+                        // For HashMap::insert, the key (i==0) must be an owned String, not &str
+                        if ("insert".equals(callMethodName) && i == 0) {
+                            result.append(convertOwnedStringArg(arg));
+                        } else {
+                            result.append(convertCallArg(arg));
+                        }
+                    }
                 }
                 result.append(")");
                 return result.toString();
@@ -1908,6 +1926,36 @@ public class Rust implements Emitter<StringBuilder> {
      */
     private String convertHashMapKeyArg(Expression arg) {
         return "&" + convertOptionArg(arg);
+    }
+
+    /**
+     * Convert a string constant argument to an owned {@code String} via {@code .to_string()}.
+     * Used for HashMap {@code insert(key, value)} where the key must be {@code String}, not {@code &str}.
+     * Non-string-constant expressions are converted normally.
+     */
+    private String convertOwnedStringArg(Expression arg) {
+        if (arg instanceof Constant) {
+            Constant c = (Constant) arg;
+            if (c.constantType == Constant.ConstantType.STRING) {
+                return "\"" + c.value.toString().replace("\"", "\\\"") + "\".to_string()";
+            }
+        }
+        return convert(arg);
+    }
+
+    /**
+     * Convert a call-site argument, adding {@code &mut} when passing a local {@code HashMap} variable.
+     * All HashMap parameters are declared {@code &mut} by the emitter; callers must pass a mutable borrow.
+     */
+    private String convertCallArg(Expression arg) {
+        if (arg instanceof Variable) {
+            Variable v = (Variable) arg;
+            if (v.field == Variable.VariableKind.LOCAL_VARIABLE
+                    && arg.inferredType != null && isMap(arg.inferredType)) {
+                return "&mut " + sanitizeName(toSnakeCase(v.name));
+            }
+        }
+        return convert(arg);
     }
 
     /**

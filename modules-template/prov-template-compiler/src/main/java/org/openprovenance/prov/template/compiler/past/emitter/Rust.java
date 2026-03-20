@@ -3,10 +3,9 @@ package org.openprovenance.prov.template.compiler.past.emitter;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Iterator;
-import org.openprovenance.prov.template.compiler.past.annotations.ClassInitialiser;
 import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
+import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
 import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation;
-import org.openprovenance.prov.template.compiler.past.annotations.PythonAnnotation;
 import org.openprovenance.prov.template.compiler.past.checker.ClassSignature;
 import org.openprovenance.prov.template.compiler.past.checker.MethodSignature;
 import org.openprovenance.prov.template.compiler.past.checker.TypeRegistry;
@@ -46,6 +45,9 @@ public class Rust implements Emitter<StringBuilder> {
     private final TypeRegistry typeRegistry; // Type registry from type checking phase (may be null)
     private String currentPackageName;       // Set in toWritableObject; used to look up ClassSignature
     private ClassSignature currentClassSignature; // Looked up at start of emit(); null when no registry
+
+    // configuration for default constructor
+    boolean emitDefaultConstructorParameters =false;
 
     /**
      * Create a Rust emitter with a shared trait registry
@@ -245,9 +247,9 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
 
-        // Instance methods
+        // Instance methods (excluding those that implement an interface, emitted in trait impl blocks)
         for (Method method : clazz.methods) {
-            if (!method.modifiers.contains(Modifier.STATIC)) {
+            if (!method.modifiers.contains(Modifier.STATIC) && !isInterfaceImplementation(method)) {
                 emitMethod(method);
             }
         }
@@ -279,15 +281,7 @@ public class Rust implements Emitter<StringBuilder> {
 
         // Add imports at the beginning
         if (!imports.isEmpty()) {
-            StringBuilder importSection = new StringBuilder();
-            for (String imprt : imports) {
-                if (LOGGER.equals(imprt)) continue;
-                importSection.append("use ").append(imprt).append(";\n");
-            }
-            if (importSection.length() > 0) {
-                importSection.append("\n");
-                sb.insert(0, importSection.toString());
-            }
+            declareImports("Importing ");
         }
 
         // Add Value enum if heterogeneous arrays were used
@@ -424,18 +418,25 @@ public class Rust implements Emitter<StringBuilder> {
 
         // Add imports at the beginning
         if (!imports.isEmpty()) {
-            StringBuilder importSection = new StringBuilder();
-            for (String imprt : imports) {
-                if (LOGGER.equals(imprt)) continue;
-                importSection.append("use ").append(imprt).append(";\n");
-            }
-            if (importSection.length() > 0) {
-                importSection.append("\n");
-                sb.insert(0, importSection.toString());
-            }
+            declareImports("Importing (emitTraits) ");
         }
 
         return sb;
+    }
+
+    private void declareImports(String x) {
+        StringBuilder importSection = new StringBuilder();
+        for (String imprt : imports) {
+           // System.out.println(x + imprt);
+
+            if (LOGGER.equals(imprt)) continue;
+            importSection.append("use ").append(imprt).append(";\n");
+        }
+        if (!importSection.isEmpty()) {
+            importSection.append("\n");
+            sb.insert(0, importSection.toString());
+        }
+        imports.clear();
     }
 
     /**
@@ -502,26 +503,38 @@ public class Rust implements Emitter<StringBuilder> {
     }
 
     /**
+     * Returns true if the method implements an interface method (i.e. carries @Override).
+     */
+    private boolean isInterfaceImplementation(Method method) {
+        return method.annotation.stream()
+                .anyMatch(a -> a instanceof OverrideAnnotation);
+    }
+
+    /**
      * Emit trait implementations for a struct
      */
     private void emitTraitImplementations(Class clazz) {
         for (TypeName intfce : clazz.interfaces) {
             String traitName = convertInterfaceToTrait(intfce);
+            System.out.println("addTraintImport for " + intfce + " "  + traitName);
             addTraitImport(intfce);
 
             sb.append("impl ").append(traitName)
                     .append(" for ").append(toPascalCase(clazz.name))
                     .append(" {\n");
 
-            // Emit implementations for trait methods
-            // Note: This assumes the methods in the class are implementations
+            // Emit only methods that implement this trait (annotated with @Override)
             for (Method method : clazz.methods) {
-                if (!method.modifiers.contains(Modifier.STATIC)) {
-                    emitMethod(method);
+                if (!method.modifiers.contains(Modifier.STATIC) && isInterfaceImplementation(method)) {
+                    emitMethod(method, true);
                 }
             }
 
             sb.append("}\n\n");
+
+            if (!imports.isEmpty()) {
+                declareImports("Importing (emitTraitImplementations) ");
+            }
         }
     }
 
@@ -633,7 +646,9 @@ public class Rust implements Emitter<StringBuilder> {
     }
 
     /**
-     * Convert a type for use in a parameter position, using impl for traits
+     * Convert a type for use in a parameter position, using impl for traits.
+     * String parameters use &str (borrowed slice) since callers pass string literals
+     * and read-only string views are the idiomatic Rust parameter type.
      */
     private String convertTypeToRustParam(TypeName tn) {
         if (tn == null) return "()";
@@ -659,6 +674,17 @@ public class Rust implements Emitter<StringBuilder> {
             } else if (tn instanceof ClassName) {
                 return "impl " + toPascalCase(((ClassName) tn).simpleName);
             }
+        }
+
+        // String parameters use &str: callers pass bare string literals (&'static str)
+        // and Rust idiom prefers borrowing over ownership for read-only string params.
+        if (tn instanceof ClassName && "String".equals(((ClassName) tn).simpleName)) {
+            return "&str";
+        }
+
+        // HashMap parameters are passed by mutable reference — callers may insert entries.
+        if (isMap(tn)) {
+            return "&mut " + convertTypeToRust(tn);
         }
 
         // Otherwise use the regular conversion
@@ -703,10 +729,13 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
 
-        // Collection types (Vec, HashMap) don't need Option wrapping — they can be empty
-        // Pass by reference since they don't implement Copy
-        if (isList(tn) || isMap(tn)) {
+        // Collection types don't need Option wrapping — they can be empty
+        // Vec: pass by immutable reference; HashMap: pass by mutable reference (callers may insert)
+        if (isList(tn)) {
             return "&" + convertTypeToRust(tn);
+        }
+        if (isMap(tn)) {
+            return "&mut " + convertTypeToRust(tn);
         }
 
         // Primitive types are Copy in Rust, wrap in Option to mirror Java's nullable semantics
@@ -732,20 +761,72 @@ public class Rust implements Emitter<StringBuilder> {
         return fields.stream().anyMatch(f -> f.modifiers.contains(Modifier.STATIC));
     }
 
+
+    private String updateMethodNameIfOverloaded(MethodCall mc, String convertedObject, String callMethodName) {
+        if ("self".equals(convertedObject) || (mc.object.inferredType instanceof ClassName)) {
+            int argCount = mc.arguments == null ? 0 : mc.arguments.size();
+            if (argCount!=0) {
+                List<TypeName> argumentTypes= mc.arguments.stream().map(a -> a.inferredType).collect(Collectors.toList());
+                String resolvedAlt;
+                if ("self".equals(convertedObject)) {
+                    resolvedAlt=findAltNameForCall(mc.methodName, argumentTypes);
+                } else {
+                    resolvedAlt=findAltNameForCall((ClassName) mc.object.inferredType, callMethodName, argumentTypes);
+                }
+                if (resolvedAlt != null) {
+                    callMethodName = sanitizeName(resolvedAlt);
+                }
+            }
+        }
+        return callMethodName;
+    }
+
+
+    private String findAltNameForCall(String methodName, List<TypeName> argTypes) {
+        if (currentClassSignature == null || typeRegistry == null) return null;
+        for (MethodSignature ms : currentClassSignature.methods) {
+            if (!ms.name.equals(methodName)) continue;
+            if (!paramTypesMatch(argTypes, ms)) continue;
+            for (PastAnnotation ann : ms.getAnnotations()) {
+                if (ann instanceof OverloadedMethod) return ((OverloadedMethod) ann).getAltName();
+            }
+        }
+        return null;
+    }
+
+    private String findAltNameForCall(ClassName className,String methodName, List<TypeName> argTypes) {
+        if (typeRegistry==null) return null;
+        ClassSignature sig=typeRegistry.lookup(className.simpleName, className.packge);
+        if (sig == null) return null;
+        for (MethodSignature ms : sig.methods) {
+            if (!ms.name.equals(methodName)) continue;
+            if (!paramTypesMatch(argTypes, ms)) continue;
+            for (PastAnnotation ann : ms.getAnnotations()) {
+                if (ann instanceof OverloadedMethod) return ((OverloadedMethod) ann).getAltName();
+            }
+        }
+        return null;
+    }
+
+
+
+
     private void emitDefaultConstructor(List<Field> fields) {
         sb.append(INDENT).append("/// Creates a new instance\n");
         sb.append(INDENT).append("pub fn new(");
 
         // Parameters (skip fields with initialisers — they have predetermined values)
-        boolean first = true;
-        for (Field field : fields) {
-            if (field.initialiser != null) continue;
-            if (!first) sb.append(", ");
-            first = false;
-            sb.append(sanitizeName(toSnakeCase(field.name)))
-                    .append(": Option<")
-                    .append(convertTypeToRust(field.type))
-                    .append(">");
+        if (emitDefaultConstructorParameters) {
+            boolean first = true;
+            for (Field field : fields) {
+                if (field.initialiser != null) continue;
+                if (!first) sb.append(", ");
+                first = false;
+                sb.append(sanitizeName(toSnakeCase(field.name)))
+                        .append(": Option<")
+                        .append(convertTypeToRust(field.type))
+                        .append(">");
+            }
         }
         sb.append(") -> Self {\n");
 
@@ -757,6 +838,8 @@ public class Rust implements Emitter<StringBuilder> {
                     .append(fieldName);
             if (field.initialiser != null) {
                 sb.append(": ").append(convertWithType(field.initialiser, field.type));
+            } else if (!emitDefaultConstructorParameters) {
+                sb.append(": None");
             }
             sb.append(",\n");
         }
@@ -814,8 +897,11 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
     }
-
     private void emitMethod(Method method) {
+        emitMethod(method, false);
+    }
+
+    private void emitMethod(Method method, boolean inTrait) {
         // Method documentation
         if (method.comments != null && !method.comments.isEmpty()) {
             for (Comment comment : method.comments) {
@@ -829,14 +915,15 @@ public class Rust implements Emitter<StringBuilder> {
         sb.append(INDENT);
 
         // Visibility
-        if (method.modifiers.contains(Modifier.PUBLIC)) {
+        if (!inTrait && method.modifiers.contains(Modifier.PUBLIC)) {
             sb.append("pub ");
         }
 
         // Function signature — use registry alt name for overloaded methods if available
         String methodAltName = findAltNameForDeclaration(method);
         String methodName = (methodAltName != null) ? methodAltName : method.name;
-        sb.append("fn ").append(sanitizeName(toSnakeCase(methodName)));
+        String sanitizeName = sanitizeName(toSnakeCase(methodName));
+        sb.append("fn ").append(sanitizeName);
 
         // Generic type parameters
         if (method.typeVariables != null && !method.typeVariables.isEmpty()) {
@@ -885,7 +972,7 @@ public class Rust implements Emitter<StringBuilder> {
 
                 sb.append(sanitizeName(toSnakeCase(param.name)))
                         .append(": ")
-                        .append(convertTypeToRustParam(paramType));
+                        .append(inTrait ? convertTypeToRustTraitParam(paramType) : convertTypeToRustParam(paramType));
             }
         }
 
@@ -898,12 +985,18 @@ public class Rust implements Emitter<StringBuilder> {
 
         sb.append(" {\n");
 
-        // Method body
-        if (method.body != null && !method.body.isEmpty()) {
-            for (int i = 0; i < method.body.size(); i++) {
-                Statement statement = method.body.get(i);
-                boolean isLastStatement = (i == method.body.size() - 1);
-                emitStatement(statement, INDENT + INDENT, isLastStatement);
+        if (method.modifiers.contains(Modifier.ABSTRACT)) {
+            //        panic!("new_identifier is unimplemented (field={field}, counter={counter})")
+            sb.append(INDENT + INDENT).append("panic! (\"method ").append(sanitizeName).append(" (").append(methodName).append(") is declared abstract in PAST and unimplemented\")\n");
+        } else {
+            // Method body
+
+            if (method.body != null && !method.body.isEmpty()) {
+                for (int i = 0; i < method.body.size(); i++) {
+                    Statement statement = method.body.get(i);
+                    boolean isLastStatement = (i == method.body.size() - 1);
+                    emitStatement(statement, INDENT + INDENT, isLastStatement);
+                }
             }
         }
 
@@ -1068,7 +1161,10 @@ public class Rust implements Emitter<StringBuilder> {
 
                 // Check if LHS is a field access on a non-self variable (e.g., b.field in a forEach closure).
                 // Such fields are Option<T> in Rust, so the RHS needs to be wrapped in Some(...)
-                boolean needsSomeWrap = isNonSelfFieldAccess(assignment.leftHandExpression);
+                // Exception: if the RHS already produces Option<T> (e.g. inner HashMap get + .copied()),
+                // wrapping in Some() would produce Option<Option<T>> — suppress in that case.
+                boolean needsSomeWrap = isNonSelfFieldAccess(assignment.leftHandExpression)
+                        && !expressionProducesOption(assignment.value);
                 String rhs = convert(assignment.value);
                 if (needsSomeWrap) {
                     rhs = "Some(" + rhs + ")";
@@ -1095,8 +1191,9 @@ public class Rust implements Emitter<StringBuilder> {
                     return;
                 }
 
-                // Evaluate value first so side effects (like postDecrement) are visible
-                String valueStr = convert(definition.value);
+                // Evaluate value first so side effects (like postDecrement) are visible.
+                // Use convertWithType so string literals get .to_string() when the variable is typed String.
+                String valueStr = convertWithType(definition.value, definition.type);
 
                 sb.append(indent);
 
@@ -1506,6 +1603,7 @@ public class Rust implements Emitter<StringBuilder> {
 
     private String convertConstant(Constant c) {
         return switch (c.constantType) {
+            // Emit bare &str literal by default; callers that need an owned String use convertConstant(c, targetType)
             case STRING -> "\"" + c.value.toString().replace("\"", "\\\"") + "\"";
             case INTEGER -> c.value.toString();
             case LONG -> c.value.toString();
@@ -1519,7 +1617,7 @@ public class Rust implements Emitter<StringBuilder> {
 
     private String convertConstant(Constant c, TypeName targetType) {
         String base = convertConstant(c);
-        // If it's a string literal and target type is String, add .to_string()
+        // Add .to_string() only when the storage target is an owned String
         if (c.constantType == Constant.ConstantType.STRING && isStringType(targetType)) {
             return base + ".to_string()";
         }
@@ -1548,6 +1646,7 @@ public class Rust implements Emitter<StringBuilder> {
             case CONSTRUCTOR_CALL -> {
                 assert mc.className != null;
                 if (isMap(mc.className)) {
+                    imports.add("std::collections::HashMap");
                     return "HashMap::new()";
                 }
                 if (isList(mc.className)) {
@@ -1590,7 +1689,10 @@ public class Rust implements Emitter<StringBuilder> {
                 }
 
                 String convertedObject = convert(mc.object);
-                String callMethodName = sanitizeName(toSnakeCase(mc.methodName));
+                String callMethodName = updateMethodNameIfOverloaded(mc, convertedObject, sanitizeName(mc.methodName));
+
+                /*
+//               / String callMethodName = sanitizeName(toSnakeCase(mc.methodName));
                 // For self-calls to overloaded methods, use the registry alt name
                 if ("self".equals(convertedObject)) {
                     int argCount = mc.arguments == null ? 0 : mc.arguments.size();
@@ -1599,6 +1701,56 @@ public class Rust implements Emitter<StringBuilder> {
                         callMethodName = sanitizeName(resolvedAlt);
                     }
                 }
+
+                 */
+
+                // Handle Option unwrapping for chained HashMap method calls.
+                // HashMap::get() returns Option<&V>; calling methods on Option directly won't compile.
+                // When the object is itself a .get() call, we must .unwrap() the Option first.
+                // For mutable operations (insert), also switch .get() to .get_mut() to obtain &mut V.
+                if (mc.object instanceof MethodCall) {
+                    MethodCall innerMc = (MethodCall) mc.object;
+                    if ("get".equals(innerMc.methodName)) {
+                        if ("insert".equals(callMethodName)) {
+                            // Need a mutable reference into the map — replace .get( with .get_mut(
+                            int idx = convertedObject.lastIndexOf(".get(");
+                            if (idx >= 0) {
+                                convertedObject = convertedObject.substring(0, idx)
+                                        + ".get_mut("
+                                        + convertedObject.substring(idx + 5);
+                            }
+                        }
+                        // Unwrap the Option in all cases — we are in the else-branch
+                        // where the key is known to exist.
+                        convertedObject += ".unwrap()";
+
+                        // Use specialized argument conversion for inner HashMap operations.
+                        // Bean/out field accesses (e.g. bean.transformed_file) are Option<T> in Rust;
+                        // HashMap key params need T (or &T for contains_key / get).
+                        result.append(convertedObject).append(".").append(callMethodName).append("(");
+                        if (mc.arguments != null) {
+                            for (int i = 0; i < mc.arguments.size(); i++) {
+                                if (i > 0) result.append(", ");
+                                Expression arg = mc.arguments.get(i);
+                                if ("contains_key".equals(callMethodName) || "get".equals(callMethodName)) {
+                                    // Key must be &T — borrow and unwrap Option if it's a local field access
+                                    result.append(convertHashMapKeyArg(arg));
+                                } else {
+                                    // insert(key, value): both must be T — unwrap Option for local field accesses
+                                    result.append(convertOptionArg(arg));
+                                }
+                            }
+                        }
+                        result.append(")");
+                        // HashMap::get() returns Option<&T>; .copied() converts to Option<T> for Copy types,
+                        // avoiding the need to wrap in Some(...) at the assignment site.
+                        if ("get".equals(callMethodName)) {
+                            result.append(".copied()");
+                        }
+                        return result.toString();
+                    }
+                }
+
                 result.append(convertedObject).append(".").append(callMethodName).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
@@ -1665,7 +1817,10 @@ public class Rust implements Emitter<StringBuilder> {
                     return result.toString();
                 }
 
-                result.append(convert(mc.object)).append(".").append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
+                String convertedObject = convert(mc.object);
+                String callMethodName = updateMethodNameIfOverloaded(mc, convertedObject, sanitizeName(mc.methodName));
+
+                result.append(convertedObject).append(".").append(toSnakeCase(callMethodName)).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
                             .map(this::convert)
@@ -1727,6 +1882,58 @@ public class Rust implements Emitter<StringBuilder> {
                 Variable v = (Variable) mc.object;
                 // Field access on a non-self, non-field variable (i.e., a local/closure parameter like "b")
                 return v.field == Variable.VariableKind.LOCAL_VARIABLE && !"self".equals(v.name);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * True when expr is a field access on a non-self local variable (always Option&lt;T&gt; in generated structs).
+     * This is the same predicate as isNonSelfFieldAccess but named for clarity when used in HashMap key contexts.
+     */
+    private boolean isLocalFieldAccess(Expression expr) {
+        if (expr instanceof MethodCall) {
+            MethodCall mc = (MethodCall) expr;
+            if (mc.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR && mc.object instanceof Variable) {
+                Variable v = (Variable) mc.object;
+                return v.field == Variable.VariableKind.LOCAL_VARIABLE && !"self".equals(v.name);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Convert a HashMap key argument: for local field accesses (Option&lt;T&gt;), adds {@code &} and {@code .unwrap()}.
+     * HashMap::contains_key and HashMap::get expect {@code &K}, so we borrow and unwrap the Option.
+     */
+    private String convertHashMapKeyArg(Expression arg) {
+        return "&" + convertOptionArg(arg);
+    }
+
+    /**
+     * Convert an argument that must be plain {@code T} (not {@code Option&lt;T&gt;}).
+     * For local field accesses (which are {@code Option&lt;T&gt;} in generated Rust structs), appends {@code .unwrap()}.
+     */
+    private String convertOptionArg(Expression arg) {
+        if (isLocalFieldAccess(arg)) {
+            return convert(arg) + ".unwrap()";
+        }
+        return convert(arg);
+    }
+
+    /**
+     * True when expr already evaluates to {@code Option&lt;T&gt;} — used to suppress {@code Some(...)} wrapping
+     * on the LHS of an assignment.
+     *
+     * <p>The primary case is an inner HashMap get chain:
+     * {@code map.get(outerKey).get(innerKey)} where the emitter adds {@code .copied()} → {@code Option&lt;T&gt;}.
+     */
+    private boolean expressionProducesOption(Expression expr) {
+        // Chained inner-HashMap get: map.get(outerKey).get(innerKey) — emitter appends .copied() → Option<T>
+        if (expr instanceof MethodCall) {
+            MethodCall mc = (MethodCall) expr;
+            if ("get".equals(mc.methodName) && mc.object instanceof MethodCall) {
+                return "get".equals(((MethodCall) mc.object).methodName);
             }
         }
         return false;
@@ -1979,6 +2186,9 @@ public class Rust implements Emitter<StringBuilder> {
         put("size", "len");
         put("isEmpty", "is_empty");
         put("toString", "to_string");
+        // HashMap method translations
+        put("containsKey", "contains_key");
+        put("put", "insert");
     }};
 
     private String sanitizeName(String name) {
@@ -1988,6 +2198,9 @@ public class Rust implements Emitter<StringBuilder> {
         }
         if (name.startsWith(GENERATED_VAR_PREFIX)) {
             return name.substring(2);
+        }
+        if (name.equals("this")) {
+            return "self";
         }
 
         // Handle Rust reserved keywords

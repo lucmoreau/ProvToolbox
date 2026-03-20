@@ -152,6 +152,8 @@ public class JavaScript implements Emitter<StringBuilder> {
                 if (LOGGER.equals(localName)) continue;
                 if (imprt.startsWith("past.util")) {
                     importSection.append("const ").append(localName).append(" = ").append(imprt).append(";\n");
+                } else if (imprt.startsWith("past.exception")) {
+                    importSection.append("const ").append(localName).append(" = ").append(imprt).append(";\n");
                 } else if (imprt.startsWith("past.lang")) {
                     // ignore
                 }
@@ -301,7 +303,7 @@ public class JavaScript implements Emitter<StringBuilder> {
                 Assignment assignment = (Assignment) statement;
 
                 // Handle import annotations
-                if (!assignment.annotation.isEmpty()) {
+                if (false && !assignment.annotation.isEmpty()) {
                     for (String annot : assignment.annotation) {
                         if (annot.startsWith("@import")) {
                             String importString = annot.substring(7).trim();
@@ -334,7 +336,7 @@ public class JavaScript implements Emitter<StringBuilder> {
                 Definition definition = (Definition) statement;
 
                 // Handle import annotations
-                if (!definition.annotation.isEmpty()) {
+                if (false && !definition.annotation.isEmpty()) {
                     for (String annot : definition.annotation) {
                         if (annot.startsWith("@import")) {
                             String importString = annot.substring(7).trim();

@@ -9,6 +9,7 @@ import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.Constant;
 import org.openprovenance.prov.template.compiler.past.Method;
 import org.openprovenance.prov.template.compiler.past.Parameter;
+import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
 import org.openprovenance.prov.template.compiler.past.annotations.RegisterMethod;
 import org.openprovenance.prov.template.compiler.past.annotations.SingleDispatchMethod;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
@@ -88,7 +89,7 @@ public class CompilerBeanLocalEnactor2 {
                     .MODIFIERS(Modifier.PUBLIC)
                     .PARAMETER(inputClassName,"bean")
                     .RETURNS(outputClassName)
-                    .ANNOTATIONS(RegisterMethod.NAME);
+                    .ANNOTATIONS(RegisterMethod.NAME, OverrideAnnotation.NAME);
 
             if (isFirst) {
                 mspec.ANNOTATIONS(SingleDispatchMethod.NAME);
@@ -174,6 +175,7 @@ public class CompilerBeanLocalEnactor2 {
 
 
                 Method mspec2 = METHOD(Constants.PROCESS_METHOD_NAME)
+                        .commentFileLocation()
                         .MODIFIERS(Modifier.PUBLIC)
                         .PARAMETER(inputClassName2, "bean")
                         .PARAMETER(MAP_STRING_MAP_INTEGER_INTEGER, MAP_VAR)
@@ -181,7 +183,6 @@ public class CompilerBeanLocalEnactor2 {
                         .ANNOTATIONS(RegisterMethod.NAME);
 
 
-                compilerUtil.debugFileLocation(mspec2);
 
                 mspec2.BODY(DEFINITION(outputClassName2, VARIABLE(OUT_BEAN), CONSTRUCTOR_CALL(outputClassName2, List.of())));
 
@@ -262,8 +263,8 @@ public class CompilerBeanLocalEnactor2 {
         Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + ".java", directory, stackTraceElement, compilerUtil);
         Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, "target/generated-js", stackTraceElement);
-        //Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, myPackage, "target/generated-rust/src", stackTraceElement);
-        return new SpecificationFile(javaGenerator,pythonGenerator, jsGenerator, emptyGenerator);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, myPackage, "target/generated-rust/src", stackTraceElement);
+        return new SpecificationFile(javaGenerator,pythonGenerator, jsGenerator, rustGenerator);
     }
 
 

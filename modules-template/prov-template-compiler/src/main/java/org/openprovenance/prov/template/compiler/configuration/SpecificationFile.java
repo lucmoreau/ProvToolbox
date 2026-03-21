@@ -7,12 +7,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.past.checker.ExternalTypeRegistry;
+import org.openprovenance.prov.template.compiler.past.checker.TypeDiagnostic;
 import org.openprovenance.prov.template.compiler.past.checker.TypeRegistry;
 import org.openprovenance.prov.template.compiler.past.emitter.Poet;
 import org.openprovenance.prov.template.compiler.past.emitter.RustCodeGenerator;
 import org.openprovenance.prov.template.compiler.past.emitter.RustProjectGenerator;
-
-import org.openprovenance.prov.template.compiler.past.checker.TypeDiagnostic;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +35,6 @@ public class SpecificationFile {
     private final Supplier<String> pyContent;
     private final Supplier<Boolean> javaGenerator;
     private final Supplier<Boolean> pythonGenerator;
-    private final SpecificationFile javaSpec;
     private final Supplier<Boolean> jsGenerator;
     private final Supplier<Boolean> rustGenerator;
 
@@ -51,7 +49,6 @@ public class SpecificationFile {
         this.pyContent=null;
         this.javaGenerator=javaGenerator;
         this.pythonGenerator=pythonGenerator;
-        this.javaSpec=null;
         this.jsGenerator=null;
         this.rustGenerator=null;
 
@@ -68,7 +65,6 @@ public class SpecificationFile {
         this.javaGenerator=javaGenerator;
         this.pythonGenerator=pythonGenerator;
         this.jsGenerator=jsGenerator;
-        this.javaSpec=null;
         this.rustGenerator=rustGenerator;
 
     }
@@ -150,33 +146,25 @@ public class SpecificationFile {
     }
 
     public boolean save() {
-        if (javaGenerator!=null && pythonGenerator!=null) {
-            boolean javaGen=javaGenerator.get();
-            boolean pyGen=pythonGenerator.get();
-            if (jsGenerator!=null) {
-                boolean jsGen=jsGenerator.get();
-                if (rustGenerator!=null) {
-                    boolean rustGen=rustGenerator.get();
-                    //compileRustProject();
-                    return javaGen && pyGen && jsGen && rustGen;
-                }
-                return javaGen && pyGen && jsGen;
-            }
-            return javaGen && pyGen;
+        boolean javaGen=true;
+        boolean pyGen=true;
+        boolean jsGen=true;
+        boolean rustGen=true;
+        if (javaGenerator!=null) {
+            javaGen = javaGenerator.get();
         }
-
-
-
-        // old method
-
-        boolean pySaved=true;
-        if (pyDirectory!=null && pyFilename!=null && pyContent!=null)
-            pySaved=compilerUtil.saveToFile(pyDirectory, pyDirectory+pyFilename, pyContent);
-
-        boolean javaSaved=compilerUtil.saveToFile(directory, directory + fileName, javaFile);
-
-        return javaSaved && pySaved;
+        if ( pythonGenerator!=null) {
+            pyGen = pythonGenerator.get();
+        }
+        if (jsGenerator!=null) {
+            jsGen = jsGenerator.get();
+        }
+        if (rustGenerator!=null) {
+            rustGen = rustGenerator.get();
+        }
+        return javaGen && pyGen && jsGen && rustGen;
     }
+
 
     public static void compileRustProject(String projectName, String version) {
         if (!rustProjectCreated) {
@@ -287,6 +275,8 @@ public class SpecificationFile {
 
     public static boolean generateRust(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
         if (destinationDir == null) return false;
+        // create destinationDir
+        new File(destinationDir).mkdirs();
         // Pass 1: Defer trait discovery to the type checking phase (same phase as typeCheckCoordinator.register)
         typeCheckCoordinator.registerPreCheckTask(() ->
                 rustCodeGenerator.registerClass(pastClass, packageName, destinationDir, stackTraceElement));

@@ -15,6 +15,7 @@ public class AnnotationConverter {
         map.put(SingleDispatchMethod.NAME, new SingleDispatchMethod());
         map.put(OverrideAnnotation.NAME, new OverrideAnnotation());
         map.put(StaticMethod.NAME, new StaticMethod());
+        map.put(NoSerialization.NAME, new NoSerialization());
         return map;
     }
 

@@ -230,10 +230,13 @@ public class ExternalTypeRegistry {
         externalRegistry.forClass(ClassName.LIST, TypeVariable.get("alpha"))
                 .method("size", INTEGER)
                 .method("get", TypeVariable.get("alpha"), INTEGER)
+                .method("add", _bool, TypeVariable.get("alpha"))
                 .register();
+
         externalRegistry.forClass(ClassName.LINKED_LIST, TypeVariable.get("alpha"))
                 .method("size", INTEGER)
                 .method("get", TypeVariable.get("alpha"), INTEGER)
+                .method("add", _bool, TypeVariable.get("alpha"))
                 .constructor()
                 .register();
 

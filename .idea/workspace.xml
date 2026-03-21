@@ -22,9 +22,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="44a1f447-c308-479f-be3a-95e05d37ae08" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/annotations/NoSerialization.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/configuration/SpecificationFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/configuration/SpecificationFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/Class.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/Class.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/annotations/AnnotationConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/annotations/AnnotationConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/checker/ExternalTypeRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/checker/ExternalTypeRegistry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/emitter/RUST_OWNERSHIP.md" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/emitter/RUST_OWNERSHIP.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/emitter/Rust.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/emitter/Rust.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/emitter/RustProjectGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/past/emitter/RustProjectGenerator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,8 +52,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="module-info" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -286,7 +292,7 @@
       <workItem from="1773505451640" duration="3011000" />
       <workItem from="1773508487932" duration="22562000" />
       <workItem from="1773658328362" duration="945000" />
-      <workItem from="1773850336582" duration="19954000" />
+      <workItem from="1773850336582" duration="33448000" />
     </task>
     <servers />
   </component>

@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler.past.emitter;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Iterator;
+import org.openprovenance.prov.template.compiler.past.annotations.NoSerialization;
 import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
 import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
 import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation;
@@ -41,6 +42,13 @@ public class Rust implements Emitter<StringBuilder> {
     private String postDecrement = null;
     private Set<String> knownTraits; // Track known trait names (shared across instances)
     private Set<String> statefulTraits; // Track traits with stateful methods (shared across instances)
+    /**
+     * Registry of PAST Class definitions keyed by PascalCase simple name.
+     * Populated in a first pass via discoverClass().  Used to look up field
+     * initialiser status across class boundaries (e.g. when a workflow method
+     * accesses fields of an output struct that lives in a different class).
+     */
+    private final Map<String, Class> classRegistry = new HashMap<>();
     private boolean needsValueEnum = false; // Track if Value enum needs to be generated for heterogeneous arrays
     private final TypeRegistry typeRegistry; // Type registry from type checking phase (may be null)
     private String currentPackageName;       // Set in toWritableObject; used to look up ClassSignature
@@ -109,6 +117,19 @@ public class Rust implements Emitter<StringBuilder> {
     }
 
     /**
+     * Register a Class definition so the emitter can look up field initialisers across
+     * class boundaries.  Call this in the same first pass as discoverTraits().
+     *
+     * <p>The principled rule used during emission is: a PAST field with no initialiser is
+     * emitted as {@code Option<T>}; a field with an initialiser is emitted as plain {@code T}.
+     * Without this registry the emitter cannot check whether a cross-class field access
+     * already produces {@code Option<T>}, so it would incorrectly double-wrap with {@code Some()}.
+     */
+    public void discoverClass(Class clazz) {
+        classRegistry.put(toPascalCase(clazz.name), clazz);
+    }
+
+    /**
      * Helper to register a trait from a TypeName
      */
     private void registerTraitFromTypeName(TypeName tn) {
@@ -162,8 +183,13 @@ public class Rust implements Emitter<StringBuilder> {
             return emitTrait(clazz);
         }
 
+        // Suppress Serialize/Deserialize when the class is annotated with @NoSerialization
+        boolean noSerialization = clazz.annotation.stream().anyMatch(a -> a instanceof NoSerialization);
+
         // Add common imports
-        imports.add("serde::{Serialize, Deserialize}");
+        if (!noSerialization) {
+            imports.add("serde::{Serialize, Deserialize}");
+        }
 
         // Only import HashMap if actually used by a field type
         if (clazz.fields.stream().anyMatch(f -> isMap(f.type))) {
@@ -195,8 +221,12 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
 
-        // Derive common traits
-        sb.append("#[derive(Debug, Clone, Serialize, Deserialize)]\n");
+        // Derive common traits — omit Serialize/Deserialize when @NoSerialization is present
+        if (noSerialization) {
+            sb.append("#[derive(Debug, Clone)]\n");
+        } else {
+            sb.append("#[derive(Debug, Clone, Serialize, Deserialize)]\n");
+        }
 
         // Struct declaration with trait bounds
         sb.append("pub struct ").append(toPascalCase(clazz.name));
@@ -223,10 +253,15 @@ public class Rust implements Emitter<StringBuilder> {
                 }
             }
             String visibility = field.modifiers.contains(Modifier.PUBLIC) ? "pub " : "";
-            String rustType = convertTypeToRust(field.type);
+            // Trait types cannot be stored by value in a struct — use Box<dyn Trait>
+            String rustType = isKnownTrait(field.type)
+                    ? "Box<dyn " + convertTypeToRust(field.type) + ">"
+                    : convertTypeToRust(field.type);
             if (field.initialiser == null) {
                 rustType = "Option<" + rustType + ">";
-                sb.append(INDENT).append("#[serde(skip_serializing_if = \"Option::is_none\")]\n");
+                if (!noSerialization) {
+                    sb.append(INDENT).append("#[serde(skip_serializing_if = \"Option::is_none\")]\n");
+                }
             }
             sb.append(INDENT).append(visibility)
                     .append(sanitizeName(toSnakeCase(field.name)))
@@ -245,7 +280,7 @@ public class Rust implements Emitter<StringBuilder> {
             emitDefaultConstructor(instanceFields);
         } else {
             for (Constructor constructor : clazz.constructors) {
-                emitConstructor(constructor);
+                emitConstructor(constructor, instanceFields);
             }
         }
 
@@ -281,25 +316,25 @@ public class Rust implements Emitter<StringBuilder> {
             sb.append("}\n\n");
         }
 
-        // Add imports at the beginning
-        if (!imports.isEmpty()) {
-            declareImports("Importing ");
-        }
-
         // Add Value enum if heterogeneous arrays were used
         if (needsValueEnum) {
             emitValueEnum();
         }
 
-        // Add trait implementations if interfaces are specified
+        // Add trait implementations if interfaces are specified.
+        // emitTraitImplementations calls emitMethod() which may add further imports via
+        // addTypeImport(), so we must not call declareImports() before this point.
         if (!clazz.interfaces.isEmpty()) {
             emitTraitImplementations(clazz);
         }
 
-        // insert string "foo" at the beginning of sb
+        // Single declareImports call — all emission (struct impl + trait impls) is done,
+        // so the imports set is complete and no type will be added twice.
+        if (!imports.isEmpty()) {
+            declareImports("Importing ");
+        }
 
         insertRustDirectives();
-
 
         return sb;
     }
@@ -530,7 +565,7 @@ public class Rust implements Emitter<StringBuilder> {
     private void emitTraitImplementations(Class clazz) {
         for (TypeName intfce : clazz.interfaces) {
             String traitName = convertInterfaceToTrait(intfce);
-            System.out.println("addTraintImport for " + intfce + " "  + traitName);
+            //System.out.println("addTraintImport for " + intfce + " "  + traitName);
             addTraitImport(intfce);
 
             sb.append("impl ").append(traitName)
@@ -545,13 +580,8 @@ public class Rust implements Emitter<StringBuilder> {
             }
 
             sb.append("}\n\n");
-
-            if (!imports.isEmpty()) {
-                declareImports("Importing (emitTraitImplementations) ");
-            }
         }
-        insertRustDirectives();
-
+        // imports and insertRustDirectives are handled by the caller (emit(Class))
     }
 
     /**
@@ -669,7 +699,10 @@ public class Rust implements Emitter<StringBuilder> {
     private String convertTypeToRustParam(TypeName tn) {
         if (tn == null) return "()";
 
-        // If this is a known trait type, use impl for static dispatch
+        // If this is a known trait type, use impl for static dispatch.
+        // + 'static is required because the value may be stored in Box<dyn Trait + 'static>
+        // (the implicit lifetime bound on Box<dyn Trait>). All generated concrete types are
+        // fully owned and satisfy 'static, so this restriction is safe.
         if (isKnownTrait(tn)) {
             // Add import for this trait since it's being used
             addTraitImport(tn);
@@ -686,9 +719,10 @@ public class Rust implements Emitter<StringBuilder> {
                     }
                     result.append(">");
                 }
+                result.append(" + 'static");
                 return result.toString();
             } else if (tn instanceof ClassName) {
-                return "impl " + toPascalCase(((ClassName) tn).simpleName);
+                return "impl " + toPascalCase(((ClassName) tn).simpleName) + " + 'static";
             }
         }
 
@@ -871,28 +905,87 @@ public class Rust implements Emitter<StringBuilder> {
         imports.add("serde_json");
     }
 
-    private void emitConstructor(Constructor constructor) {
+    private void emitConstructor(Constructor constructor, List<Field> classFields) {
         sb.append(INDENT).append("/// Constructor\n");
         sb.append(INDENT).append("pub fn new(");
 
-        // Parameters
+        // Parameters — use convertTypeToRustParam for idiomatic types (&str, &mut HashMap, etc.)
         if (constructor.parameters != null) {
             for (int i = 0; i < constructor.parameters.size(); i++) {
                 if (i > 0) sb.append(", ");
                 Parameter param = constructor.parameters.get(i);
                 sb.append(sanitizeName(toSnakeCase(param.name)))
                         .append(": ")
-                        .append(convertTypeToRust(param.type));
+                        .append(convertTypeToRustParam(param.type));
             }
         }
         sb.append(") -> Self {\n");
 
-        // Constructor body
+        // Collect field assignments from constructor body.
+        // Each statement is expected to be an Assignment of the form: this.field = expr.
+        Map<String, String> fieldValues = new LinkedHashMap<>();
         for (Statement statement : constructor.body) {
-            emitStatement(statement, INDENT + INDENT);
+            if (statement instanceof Assignment) {
+                Assignment a = (Assignment) statement;
+                String fieldName = extractConstructorFieldName(a.leftHandExpression);
+                if (fieldName != null) {
+                    String baseRhs = convert(a.value);
+
+                    // Trait-typed fields are stored as Box<dyn Trait>; wrap the concrete value
+                    // so the constructor parameter (impl Trait) is heap-allocated on assignment.
+                    Field matchingField = classFields.stream()
+                            .filter(f -> sanitizeName(toSnakeCase(f.name)).equals(fieldName))
+                            .findFirst().orElse(null);
+                    if (matchingField != null && isKnownTrait(matchingField.type)) {
+                        baseRhs = "Box::new(" + baseRhs + ")";
+                    }
+
+                    boolean needsSomeWrap = isNonSelfFieldAccess(a.leftHandExpression)
+                            && !expressionProducesOption(a.value);
+                    String rhs = needsSomeWrap ? "Some(" + baseRhs + ")" : baseRhs;
+                    fieldValues.put(fieldName, rhs);
+                }
+            }
         }
 
+        // Emit Self { field: value, ... } — assigned fields use computed RHS,
+        // unassigned fields with an initialiser use the initialiser, others default to None.
+        sb.append(INDENT).append(INDENT).append("Self {\n");
+        for (Field field : classFields) {
+            if (field.modifiers.contains(Modifier.STATIC)) continue;
+            String fieldName = sanitizeName(toSnakeCase(field.name));
+            sb.append(INDENT).append(INDENT).append(INDENT).append(fieldName).append(": ");
+            if (fieldValues.containsKey(fieldName)) {
+                sb.append(fieldValues.get(fieldName));
+            } else if (field.initialiser != null) {
+                sb.append(convertWithType(field.initialiser, field.type));
+            } else {
+                sb.append("None");
+            }
+            sb.append(",\n");
+        }
+        sb.append(INDENT).append(INDENT).append("}\n");
         sb.append(INDENT).append("}\n\n");
+    }
+
+    /**
+     * Extract the Rust field name from a constructor LHS expression of the form {@code this.fieldName}.
+     * Returns the sanitised snake_case field name, or {@code null} if the expression is not a direct
+     * field assignment on {@code this}.
+     */
+    private String extractConstructorFieldName(Expression lhs) {
+        if (lhs instanceof MethodCall) {
+            MethodCall mc = (MethodCall) lhs;
+            if (mc.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
+                    && mc.object instanceof Variable) {
+                Variable v = (Variable) mc.object;
+                // 'this' in a Java constructor body (sanitizeName maps it to 'self' later)
+                if ("this".equals(v.name) || "self".equals(v.name)) {
+                    return sanitizeName(toSnakeCase(mc.methodName));
+                }
+            }
+        }
+        return null;
     }
 
     private void emitStaticFields(List<Field> fields) {
@@ -1132,17 +1225,42 @@ public class Rust implements Emitter<StringBuilder> {
         if (stmt.statementKind == Statement.StatementKind.EXPRESSION_STATEMENT && stmt instanceof Expression) {
             return expressionContainsMutatingCall((Expression) stmt);
         }
+        // Recurse into IF bodies: add() calls on self-fields are typically inside
+        // if (this.inputs != null) { ... } guards, not at the top level of the method.
+        if (stmt instanceof IfStatement) {
+            IfStatement ifs = (IfStatement) stmt;
+            for (Statement s : ifs.thenBlock) {
+                if (bodyContainsMutatingCall(s)) return true;
+            }
+            for (Statement s : ifs.elseBlock) {
+                if (bodyContainsMutatingCall(s)) return true;
+            }
+        }
         return false;
     }
 
     private boolean expressionContainsMutatingCall(Expression expr) {
         if (expr instanceof MethodCall) {
             MethodCall mc = (MethodCall) expr;
-            // forEach or add on a field variable implies mutation
+            // OPERATOR_VARIABLE: forEach/add directly on a field variable
             if (mc.operatorKind == MethodCall.MethodCallKind.OPERATOR_VARIABLE && mc.object instanceof Variable) {
                 Variable v = (Variable) mc.object;
                 if (v.field == Variable.VariableKind.FIELD_VARIABLE) {
                     if ("forEach".equals(mc.methodName) || "add".equals(mc.methodName)) {
+                        return true;
+                    }
+                }
+            }
+            // OBJECT_METHOD_CALL: this.inputs.add(...) — the object is an OBJECT_ACCESSOR
+            // on this/self. Workflow generators use this form.
+            if (mc.operatorKind == MethodCall.MethodCallKind.OBJECT_METHOD_CALL
+                    && "add".equals(mc.methodName)
+                    && mc.object instanceof MethodCall) {
+                MethodCall accessor = (MethodCall) mc.object;
+                if (accessor.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
+                        && accessor.object instanceof Variable) {
+                    Variable v = (Variable) accessor.object;
+                    if ("this".equals(v.name) || "self".equals(v.name)) {
                         return true;
                     }
                 }
@@ -1183,6 +1301,25 @@ public class Rust implements Emitter<StringBuilder> {
                         && !expressionProducesOption(assignment.value);
                 String rhs = convert(assignment.value);
                 if (needsSomeWrap) {
+                    // If the RHS has Java type String, its Rust representation is &str (for variables /
+                    // field accesses / string literals).  Wrapping &str in Some() would yield Option<&str>
+                    // which mismatches the Option<String> field.  Append .to_string() to produce an owned
+                    // String before wrapping.  Method calls that return String already yield an owned
+                    // String and do not need .to_string().
+                    boolean rhsIsMethodCallResult = (assignment.value instanceof MethodCall)
+                            && (((MethodCall) assignment.value).operatorKind == MethodCall.MethodCallKind.OBJECT_METHOD_CALL
+                                    || ((MethodCall) assignment.value).operatorKind == MethodCall.MethodCallKind.STATIC_METHOD_CALL
+                                    || ((MethodCall) assignment.value).operatorKind == MethodCall.MethodCallKind.CONSTRUCTOR_CALL);
+                    // BinaryOp + on strings is emitted as format!() which already returns an
+                    // owned String — no .to_string() needed (and adding it would be redundant).
+                    boolean rhsIsStringConcat = (assignment.value instanceof BinaryOp)
+                            && "+".equals(((BinaryOp) assignment.value).op);
+                    if (!rhsIsMethodCallResult
+                            && !rhsIsStringConcat
+                            && assignment.value.inferredType != null
+                            && isStringType(assignment.value.inferredType)) {
+                        rhs = rhs + ".to_string()";
+                    }
                     rhs = "Some(" + rhs + ")";
                 }
 
@@ -1402,6 +1539,28 @@ public class Rust implements Emitter<StringBuilder> {
     }
 
     /**
+     * Returns true when a push/add call targets a self-owned list field
+     * (i.e. the PAST receiver is an OBJECT_ACCESSOR on this/self for a field whose
+     * Java type is a List).  Such fields are emitted as Option&lt;Vec&lt;Box&lt;dyn Any&gt;&gt;&gt;;
+     * the push must therefore go through .as_mut().unwrap() and the argument must
+     * be wrapped in Box::new(…).
+     */
+    private boolean isSelfOptionListField(MethodCall mc) {
+        if (mc.object instanceof MethodCall) {
+            MethodCall accessor = (MethodCall) mc.object;
+            if (accessor.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
+                    && accessor.object instanceof Variable) {
+                Variable v = (Variable) accessor.object;
+                if ("this".equals(v.name) || "self".equals(v.name)) {
+                    TypeName fieldType = getFieldType(accessor.methodName);
+                    return fieldType != null && isList(fieldType);
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Get the Field object by name from the current class
      */
     private Field getField(String fieldName) {
@@ -1538,9 +1697,36 @@ public class Rust implements Emitter<StringBuilder> {
                     // Rust uses 'is_instance_of' from a trait or type checking
                     // For now, generate a type check pattern
                     return "/* instanceof check */ true";
-                } else {
-                    return convert(bo.left) + " " + bo.op + " " + convert(bo.right);
                 }
+                // null/None comparisons: use inferredType on the right operand to confirm it
+                // is a null constant, then emit idiomatic Option methods instead of != None /
+                // == None.  Option<T> does not implement PartialEq when T doesn't (e.g.
+                // Option<Vec<Box<dyn Any>>>), so != None won't compile.
+                if (bo.right instanceof Constant
+                        && ((Constant) bo.right).constantType == Constant.ConstantType.NULL) {
+                    if ("!=".equals(bo.op)) return convert(bo.left) + ".is_some()";
+                    if ("==".equals(bo.op)) return convert(bo.left) + ".is_none()";
+                }
+                // String concatenation via +: &str + &str / &str + String are not valid Rust.
+                // Use the inferredType on the left operand (populated by PAST TypeInferrer) to
+                // detect string concatenation, then emit a format!() macro instead.
+                if ("+".equals(bo.op)) {
+                    boolean leftIsString = bo.left.inferredType != null && isStringType(bo.left.inferredType);
+                    boolean rightIsStringLiteral = bo.right instanceof Constant
+                            && ((Constant) bo.right).constantType == Constant.ConstantType.STRING;
+                    if (leftIsString || rightIsStringLiteral) {
+                        if (rightIsStringLiteral) {
+                            // Embed literal text directly in the format string, escaping { and }
+                            String literal = ((Constant) bo.right).value.toString()
+                                    .replace("{", "{{").replace("}", "}}");
+                            // "format!(\"{}" starts the Rust format string, literal is the
+                            // suffix, "\", " closes it and adds the separator.
+                            return "format!(\"{}" + literal + "\", " + convert(bo.left) + ")";
+                        }
+                        return "format!(\"{}{}\", " + convert(bo.left) + ", " + convert(bo.right) + ")";
+                    }
+                }
+                return convert(bo.left) + " " + bo.op + " " + convert(bo.right);
             }
 
             case IF_EXPRESSION: {
@@ -1676,7 +1862,7 @@ public class Rust implements Emitter<StringBuilder> {
                 if (isList(mc.className)) {
                     return "Vec::new()";
                 }
-                String className = getSimpleName(convert(mc.className));
+                String className = importAndGetSimpleName(mc.className);
                 result.append(className).append("::new(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
@@ -1712,7 +1898,7 @@ public class Rust implements Emitter<StringBuilder> {
                     return result.toString();
                 }
 
-                String convertedObject = convert(mc.object);
+                String convertedObject = convertTraitReceiver(mc);
                 String callMethodName = updateMethodNameIfOverloaded(mc, convertedObject, sanitizeName(mc.methodName));
 
                 // Handle Option unwrapping for chained HashMap method calls.
@@ -1762,11 +1948,33 @@ public class Rust implements Emitter<StringBuilder> {
                     }
                 }
 
+                // self.inputs / self.outputs are Option<Vec<Box<dyn Any>>>.
+                // Calling .push() on them requires .as_mut().unwrap() to reach the Vec,
+                // and each element must be wrapped in Box::new(…) to satisfy Box<dyn Any>.
+                boolean isOptionListPush = "push".equals(callMethodName) && isSelfOptionListField(mc);
+                if (isOptionListPush) {
+                    convertedObject += ".as_mut().unwrap()";
+                }
                 result.append(convertedObject).append(".").append(callMethodName).append("(");
+                boolean traitCall = isTraitReceiver(mc);
                 if (mc.arguments != null) {
-                    result.append(mc.arguments.stream()
-                            .map(this::convertCallArg)
-                            .collect(Collectors.joining(", ")));
+                    for (int i = 0; i < mc.arguments.size(); i++) {
+                        if (i > 0) result.append(", ");
+                        Expression arg = mc.arguments.get(i);
+                        String argStr = traitCall ? convertTraitCallArg(arg) : convertCallArg(arg);
+                        // push() (Java add()) takes ownership; caller may use the value again
+                        // after this call.  Clone non-primitive arguments so the original
+                        // stays valid.  Skip clone when inferredType is a known Copy type.
+                        if ("push".equals(callMethodName)
+                                && (arg.inferredType == null || !isPrimitiveType(arg.inferredType))) {
+                            argStr = argStr + ".clone()";
+                        }
+                        // Wrap in Box::new(…) when pushing into a Vec<Box<dyn Any>> field.
+                        if (isOptionListPush) {
+                            argStr = "Box::new(" + argStr + ")";
+                        }
+                        result.append(argStr);
+                    }
                 }
                 result.append(")");
                 return result.toString();
@@ -1783,6 +1991,9 @@ public class Rust implements Emitter<StringBuilder> {
                     result.append(className).append("::").append(sanitizeName(toSnakeCase(mc.methodName).toUpperCase()));
                 } else if (mc.object instanceof Variable) {
                     result.append(convert(mc.object)).append(".").append(sanitizeName(toSnakeCase(mc.methodName)));
+                } else if (mc.object instanceof MethodCall) {
+                    MethodCall mc2 = (MethodCall) mc.object;
+                    result.append(convert(mc2)).append(".").append(sanitizeName(toSnakeCase(mc.methodName)));
                 } else {
                     throw new IllegalArgumentException("Unsupported object type in accessor: " + mc.object);
                 }
@@ -1793,10 +2004,10 @@ public class Rust implements Emitter<StringBuilder> {
                 // In Rust (like Java), traits have named methods that must be called
                 // Unlike Python where functional interfaces can be called directly
                 assert mc.object != null;
-                result.append(convert(mc.object)).append(".").append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
+                result.append(convertTraitReceiver(mc)).append(".").append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
-                            .map(this::convertArgument)
+                            .map(this::convertTraitCallArg)
                             .collect(Collectors.joining(", ")));
                 }
                 result.append(")");
@@ -1840,7 +2051,18 @@ public class Rust implements Emitter<StringBuilder> {
                         if ("insert".equals(callMethodName) && i == 0) {
                             result.append(convertOwnedStringArg(arg));
                         } else {
-                            result.append(convertCallArg(arg));
+                            String argStr = convertCallArg(arg);
+                            // push() takes ownership; the value may be used again after this call
+                            // (e.g. passed to a process_* method on the next line).  All generated
+                            // structs derive Clone, so clone non-primitive arguments to keep the
+                            // original value available.
+                            // If inferredType is null (type inference not run over this PAST),
+                            // assume struct and add clone; only skip for known Copy (primitive) types.
+                            if ("push".equals(toSnakeCase(callMethodName))
+                                    && (arg.inferredType == null || !isPrimitiveType(arg.inferredType))) {
+                                argStr = argStr + ".clone()";
+                            }
+                            result.append(argStr);
                         }
                     }
                 }
@@ -1905,10 +2127,95 @@ public class Rust implements Emitter<StringBuilder> {
         return false;
     }
 
+    private String importAndGetSimpleName(TypeName typeName) {
+
+        if (typeName instanceof ClassName) {
+            ClassName cn = (ClassName) typeName;
+            String modulePath = buildModulePath(cn.packge, cn.simpleName);
+            imports.add(modulePath);
+        }
+        return getSimpleName(convert(typeName));
+    }
+
+
     /**
      * True when expr is a field access on a non-self local variable (always Option&lt;T&gt; in generated structs).
      * This is the same predicate as isNonSelfFieldAccess but named for clarity when used in HashMap key contexts.
      */
+    /**
+     * Convert the receiver of a method call, appending {@code .as_ref().unwrap()} when the
+     * receiver is a self-field of a known trait type (stored as {@code Option<Box<dyn Trait>>}).
+     *
+     * <p>Two PAST representations are handled:
+     * <ul>
+     *   <li>{@code Variable(name, FIELD_VARIABLE)} — direct field variable (most common in
+     *       workflow generators using {@code FUNCTIONAL_INTERFACE_CALL}).</li>
+     *   <li>{@code MethodCall(OBJECT_ACCESSOR, Variable("this"/"self"))} — chained accessor
+     *       form used in some PAST constructions.</li>
+     * </ul>
+     */
+    /**
+     * Convert an argument passed to a {@code FUNCTIONAL_INTERFACE_CALL} (trait method call).
+     *
+     * <p>Trait methods declare struct/bean parameters as {@code &T} (see
+     * {@code convertTypeToRustTraitParam}).  When the caller holds an owned local variable of
+     * that type it must pass {@code &var} to satisfy the borrow.  Primitive ({@code Copy}) types
+     * and self-field accesses are left unchanged.
+     */
+    private String convertTraitCallArg(Expression expression) {
+        if (expression instanceof Variable) {
+            Variable ve = (Variable) expression;
+            if (ve.field == Variable.VariableKind.LOCAL_VARIABLE) {
+                TypeName ty = ve.inferredType;
+                // If inferredType is available, only borrow non-primitive, non-string, non-collection types.
+                // If inferredType is null (type inference not run), assume struct and borrow.
+                boolean isStruct = (ty == null)
+                        || (!isPrimitiveType(ty) && !isStringType(ty) && !isList(ty) && !isMap(ty));
+                if (isStruct) {
+                    return "&" + sanitizeName(toSnakeCase(ve.name));
+                }
+            }
+        }
+        return convertArgument(expression);
+    }
+
+    /** Returns the type of the receiver if it is a known-trait self-field, otherwise null. */
+    private TypeName traitReceiverType(MethodCall mc) {
+        if (mc.object instanceof Variable) {
+            Variable objVar = (Variable) mc.object;
+            if (objVar.field == Variable.VariableKind.FIELD_VARIABLE) {
+                TypeName t = mc.object.inferredType != null
+                        ? mc.object.inferredType
+                        : getFieldType(objVar.name);
+                return (t != null && isKnownTrait(t)) ? t : null;
+            }
+        } else if (mc.object instanceof MethodCall) {
+            MethodCall objMc = (MethodCall) mc.object;
+            if (objMc.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
+                    && objMc.object instanceof Variable) {
+                String varName = ((Variable) objMc.object).name;
+                if ("self".equals(varName) || "this".equals(varName)) {
+                    TypeName t = mc.object.inferredType;
+                    return (t != null && isKnownTrait(t)) ? t : null;
+                }
+            }
+        }
+        return null;
+    }
+
+    /** True when the method call receiver is a known-trait self-field (Option&lt;Box&lt;dyn Trait&gt;&gt;). */
+    private boolean isTraitReceiver(MethodCall mc) {
+        return traitReceiverType(mc) != null;
+    }
+
+    private String convertTraitReceiver(MethodCall mc) {
+        String convertedObject = convert(mc.object);
+        if (traitReceiverType(mc) != null) {
+            convertedObject += ".as_ref().unwrap()";
+        }
+        return convertedObject;
+    }
+
     private boolean isLocalFieldAccess(Expression expr) {
         if (expr instanceof MethodCall) {
             MethodCall mc = (MethodCall) expr;
@@ -1960,10 +2267,13 @@ public class Rust implements Emitter<StringBuilder> {
 
     /**
      * Convert an argument that must be plain {@code T} (not {@code Option&lt;T&gt;}).
-     * For local field accesses (which are {@code Option&lt;T&gt;} in generated Rust structs), appends {@code .unwrap()}.
+     * Uses the principled rule: a field access on a local variable is {@code Option<T>}
+     * if and only if the corresponding PAST field has no initialiser (looked up via
+     * {@link #isLocalFieldAccessProducingOption}).  Appends {@code .unwrap()} only in
+     * that case.  Initialized fields are plain {@code T} and need no unwrap.
      */
     private String convertOptionArg(Expression arg) {
-        if (isLocalFieldAccess(arg)) {
+        if (isLocalFieldAccessProducingOption(arg)) {
             return convert(arg) + ".unwrap()";
         }
         return convert(arg);
@@ -1976,6 +2286,41 @@ public class Rust implements Emitter<StringBuilder> {
      * <p>The primary case is an inner HashMap get chain:
      * {@code map.get(outerKey).get(innerKey)} where the emitter adds {@code .copied()} → {@code Option&lt;T&gt;}.
      */
+    /**
+     * Returns true when a local (non-self) field access resolves to an {@code Option<T>} in
+     * the generated Rust.  The determination uses the principled rule:
+     * <ul>
+     *   <li>A PAST field <em>with</em> an initialiser is emitted as plain {@code T}.</li>
+     *   <li>A PAST field <em>without</em> an initialiser is emitted as {@code Option<T>}.</li>
+     * </ul>
+     * The field definition is looked up in {@link #classRegistry} (populated by
+     * {@link #discoverClass}).  If the class is not yet registered, the method returns
+     * {@code true} as a conservative fallback (all fields in the generated workflow pattern
+     * are uninitialised and therefore {@code Option<T>}).
+     */
+    private boolean isLocalFieldAccessProducingOption(Expression expr) {
+        if (!isLocalFieldAccess(expr)) return false;
+        MethodCall mc = (MethodCall) expr;
+        Variable objVar = (Variable) mc.object;
+        TypeName objType = objVar.inferredType;
+        if (objType instanceof ClassName) {
+            String simpleClassName = ((ClassName) objType).simpleName;
+            Class fieldClass = classRegistry.get(toPascalCase(simpleClassName));
+            if (fieldClass != null) {
+                String fieldName = mc.methodName; // Java camelCase, same as PAST field.name
+                for (Field f : fieldClass.fields) {
+                    if (f.name.equals(fieldName)) {
+                        return f.initialiser == null; // no initialiser → Option<T>
+                    }
+                }
+                // Field not found in class — not expected; fall through to conservative true
+            }
+        }
+        // Conservative: if the class is not registered or the type is unknown,
+        // assume the field is Option<T> (correct for all current workflow output structs).
+        return true;
+    }
+
     private boolean expressionProducesOption(Expression expr) {
         // Chained inner-HashMap get: map.get(outerKey).get(innerKey) — emitter appends .copied() → Option<T>
         if (expr instanceof MethodCall) {
@@ -1984,6 +2329,9 @@ public class Rust implements Emitter<StringBuilder> {
                 return "get".equals(((MethodCall) mc.object).methodName);
             }
         }
+        // A field access on a local (non-self) variable e.g. transforming_outputs.transformed_file.
+        // The field is Option<T> when it has no initialiser (principled rule — see isLocalFieldAccessProducingOption).
+        if (isLocalFieldAccessProducingOption(expr)) return true;
         return false;
     }
 

@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler.past;
 
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 
@@ -9,6 +10,8 @@ import javax.lang.model.element.Modifier;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import static org.openprovenance.prov.template.compiler.past.annotations.AnnotationConverter.toAnnotation;
 
 @JsonPropertyOrder ({ "comments", "name","modifiers","interfaces","fields","methods" })
 
@@ -29,6 +32,7 @@ public class Class {
     final public ClassKind classKind;
     final public List<Statement> staticBlock=new LinkedList<>();
     public TypeName superclass = null;
+    final public List<PastAnnotation> annotation=new LinkedList<>();
 
     public Class (String name) {
         this.name = name;
@@ -95,6 +99,7 @@ public class Class {
                 ", classKind=" + classKind +
                 ", staticBlock=" + staticBlock +
                 ", superclass=" + superclass +
+                ", annotations=" + annotation +
                 '}';
     }
 
@@ -145,4 +150,27 @@ public class Class {
         staticBlock.addAll(statements);
         return this;
     }
+
+
+    public Class ANNOTATION(PastAnnotation... annot) {
+        for (PastAnnotation a: annot) {
+            if (a==null) {
+                throw new IllegalArgumentException("Annotation cannot be null");
+            }
+            this.annotation.add(a);
+        }
+        return this;
+    }
+
+    public Class ANNOTATION(String... annot) {
+        for (String a: annot) {
+            if (a==null) {
+                throw new IllegalArgumentException("Annotation cannot be null");
+            }
+            this.annotation.add(toAnnotation(a));
+        }
+        return this;
+    }
+
+
 }

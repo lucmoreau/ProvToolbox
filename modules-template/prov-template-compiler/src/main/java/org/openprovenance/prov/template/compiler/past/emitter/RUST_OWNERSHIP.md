@@ -193,7 +193,126 @@ map.get_mut("key").unwrap().insert(k, v)
 
 ---
 
-## 5. Summary table
+## 5. Trait types and `dyn` / `'static`
+
+### Struct field storage
+
+A trait cannot be stored by value in a Rust struct — its size is unknown at
+compile time.  The idiomatic solution is to heap-allocate it:
+
+```rust
+template_invoker: Option<Box<dyn InputOutputProcessor>>,
+```
+
+The emitter (struct field emission in `emit()`) detects `isKnownTrait(field.type)`
+and wraps the type as `Box<dyn TraitName>` before the optional `Option<…>` wrap.
+
+### Constructor parameter and `'static`
+
+The constructor parameter uses static dispatch (`impl Trait`) so the caller can
+pass any concrete type without a vtable.  However, `Box<dyn Trait>` implicitly
+expands to `Box<dyn Trait + 'static>`, meaning the stored object must not
+contain non-static borrows.  Without matching the parameter to this constraint,
+the compiler emits **E0310** ("the parameter type may not live long enough").
+
+The fix is to add `+ 'static` to the parameter:
+
+```rust
+pub fn new(template_invoker: impl InputOutputProcessor + 'static, …) -> Self {
+    Self {
+        template_invoker: Some(Box::new(template_invoker)),
+        …
+    }
+}
+```
+
+`+ 'static` simply requires that the concrete type passed in owns all its data.
+All generated concrete types (e.g. `BeanLocalEnactor2`) are fully owned structs
+and satisfy this bound.  The emitter (`convertTypeToRustParam`) appends
+`" + 'static"` to every `impl KnownTrait` parameter.
+
+### Why not a lifetime parameter on the struct?
+
+An alternative is `Box<dyn Trait + 'a>` with a `'a` bound on the struct:
+
+```rust
+pub struct Workflow<'a> {
+    template_invoker: Option<Box<dyn InputOutputProcessor + 'a>>,
+}
+```
+
+This is more expressive but propagates `'a` to every method signature, every
+call site, and every containing struct.  For generated workflow code — where
+the concrete implementor is always a fully-owned type — the `'static` bound is
+simpler and equally correct.
+
+---
+
+## 6. `&str` → `String` coercion in `Option<String>` assignments
+
+### Background
+
+PAST method parameters of Java type `String` are emitted as `&str` in Rust (see §2).  When such
+a parameter (or a `String`-typed field access, which also yields `&str`) is assigned to an
+`Option<String>` struct field, wrapping it in `Some(...)` produces `Option<&str>` — a type
+mismatch against `Option<String>` (E0308).
+
+### Fix
+
+In the ASSIGNMENT case of `emitStatement`, when `needsSomeWrap` is true the emitter checks
+`assignment.value.inferredType` (populated by the PAST type-inference phase for every
+`Expression` node) to detect whether the RHS has Java type `String`:
+
+```rust
+// Generated without fix:
+transforming_inputs.path = Some(path);          // E0308: &str ≠ String
+
+// Generated with fix:
+transforming_inputs.path = Some(path.to_string());
+```
+
+Method-call results (operatorKind `OBJECT_METHOD_CALL`, `STATIC_METHOD_CALL`,
+`CONSTRUCTOR_CALL`) already yield an owned `String` in Rust and are exempted from the
+`.to_string()` append.
+
+### Why `inferredType`, not a parameter-type map
+
+Every PAST `Expression` node carries a public `TypeName inferredType` field set by the
+`TypeInferrer` during the type-checking phase.  Re-using this existing information avoids
+building and maintaining a separate `currentMethodParams` map and is robust to all sites where
+a `String`-typed expression appears (variables, field accesses, string constants).
+
+---
+
+## 7. Calling methods on `Option<Box<dyn Trait>>` self-fields
+
+### Background
+
+Trait-typed struct fields are stored as `Option<Box<dyn TraitName>>` (see §5).  Calling a
+method on such a field via `self.field.method()` fails to compile because `Option<Box<…>>` does
+not implement the trait directly.
+
+### Fix
+
+In the `OBJECT_METHOD_CALL` path of `convertMethodCall`, after computing `convertedObject`, the
+emitter checks whether the receiver is a self-field access (`OBJECT_ACCESSOR` on `self`) whose
+`inferredType` is a known trait.  If so, it appends `.as_ref().unwrap()`:
+
+```rust
+// Generated without fix:
+self.template_instantiation.process_file_transforming_inputs(…)   // E0599
+
+// Generated with fix:
+self.template_instantiation.as_ref().unwrap().process_file_transforming_inputs(…)
+```
+
+`.as_ref()` converts `&Option<Box<dyn T>>` to `Option<&Box<dyn T>>`, avoiding a move out of
+the borrowed `self`.  `.unwrap()` then gives `&Box<dyn T>`, which auto-derefs to `&dyn T` for
+the method dispatch.
+
+---
+
+## 8. Summary table
 
 | Type | Parameter (struct impl) | Parameter (trait impl) | Struct field |
 |------|------------------------|----------------------|-------------|
@@ -202,10 +321,11 @@ map.get_mut("key").unwrap().insert(k, v)
 | Struct / bean | `T` (by value) | `&T` | `Option<T>` |
 | `Vec<T>` | `T` (by value, emitter default) | `&Vec<T>` | `Vec<T>` |
 | `HashMap<K,V>` | `&mut HashMap<K,V>` | `&mut HashMap<K,V>` | `HashMap<K,V>` |
+| Known trait | `impl Trait + 'static` | `impl Trait + 'static` | `Option<Box<dyn Trait>>` |
 
 ---
 
-## 6. Helper methods in `Rust.java`
+## 9. Helper methods in `Rust.java`
 
 | Method | Purpose |
 |--------|---------|

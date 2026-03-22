@@ -10,6 +10,13 @@ import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation
 import org.openprovenance.prov.template.compiler.past.checker.ClassSignature;
 import org.openprovenance.prov.template.compiler.past.checker.MethodSignature;
 import org.openprovenance.prov.template.compiler.past.checker.TypeRegistry;
+import org.openprovenance.prov.template.compiler.past.emitter.registry.ArgTreatment;
+import org.openprovenance.prov.template.compiler.past.emitter.registry.ChainedGetBehavior;
+import org.openprovenance.prov.template.compiler.past.emitter.registry.ReceiverTransform;
+import org.openprovenance.prov.template.compiler.past.emitter.registry.ResultTransform;
+import org.openprovenance.prov.template.compiler.past.emitter.registry.RustMethodRegistry;
+import org.openprovenance.prov.template.compiler.past.emitter.registry.RustMethodSpec;
+import org.openprovenance.prov.template.compiler.past.emitter.registry.RustTypeCategory;
 import org.openprovenance.prov.template.compiler.past.type.ArrayType;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
@@ -33,6 +40,28 @@ import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF
  * Generates idiomatic Rust with structs, impl blocks, and proper ownership semantics.
  */
 public class Rust implements Emitter<StringBuilder> {
+
+    /**
+     * Shared type/method registry loaded once from {@code rust-registry.json}.
+     * Drives all type-category checks ({@link #isMap}, {@link #isList}, etc.) and
+     * the {@link #convertCommonType} switch.  Populated at class-load time; safe to
+     * share across threads.
+     */
+    private static final RustMethodRegistry METHOD_REGISTRY;
+    static {
+        RustMethodRegistry r;
+        try {
+            r = RustMethodRegistry.loadFromClasspath();
+        } catch (Exception e) {
+            // Emit a warning but allow the class to load so existing unit tests
+            // that do not exercise the registry-backed helpers still pass.
+            System.err.println("[Rust emitter] WARNING: Failed to load rust-registry.json — " +
+                               "type-category helpers will return false. " + e.getMessage());
+            r = RustMethodRegistry.builder().build();
+        }
+        METHOD_REGISTRY = r;
+    }
+
     private StringBuilder sb;
     private static final String INDENT = "    ";
     private int closureCount = 0;
@@ -1242,26 +1271,29 @@ public class Rust implements Emitter<StringBuilder> {
     private boolean expressionContainsMutatingCall(Expression expr) {
         if (expr instanceof MethodCall) {
             MethodCall mc = (MethodCall) expr;
-            // OPERATOR_VARIABLE: forEach/add directly on a field variable
+            // OPERATOR_VARIABLE: mutating call directly on a field variable
             if (mc.operatorKind == MethodCall.MethodCallKind.OPERATOR_VARIABLE && mc.object instanceof Variable) {
                 Variable v = (Variable) mc.object;
                 if (v.field == Variable.VariableKind.FIELD_VARIABLE) {
-                    if ("forEach".equals(mc.methodName) || "add".equals(mc.methodName)) {
+                    RustMethodSpec spec = METHOD_REGISTRY.resolveMethodGlobal(mc.methodName);
+                    if (spec != null && spec.mutatesReceiver) {
                         return true;
                     }
                 }
             }
-            // OBJECT_METHOD_CALL: this.inputs.add(...) — the object is an OBJECT_ACCESSOR
-            // on this/self. Workflow generators use this form.
+            // OBJECT_METHOD_CALL: this.<field>.mutatingMethod(...) — the object is an OBJECT_ACCESSOR
+            // on this/self. Workflow generators use this form for e.g. this.inputs.add(…).
             if (mc.operatorKind == MethodCall.MethodCallKind.OBJECT_METHOD_CALL
-                    && "add".equals(mc.methodName)
                     && mc.object instanceof MethodCall) {
-                MethodCall accessor = (MethodCall) mc.object;
-                if (accessor.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
-                        && accessor.object instanceof Variable) {
-                    Variable v = (Variable) accessor.object;
-                    if ("this".equals(v.name) || "self".equals(v.name)) {
-                        return true;
+                RustMethodSpec spec = METHOD_REGISTRY.resolveMethodGlobal(mc.methodName);
+                if (spec != null && spec.mutatesReceiver) {
+                    MethodCall accessor = (MethodCall) mc.object;
+                    if (accessor.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
+                            && accessor.object instanceof Variable) {
+                        Variable v = (Variable) accessor.object;
+                        if ("this".equals(v.name) || "self".equals(v.name)) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -1314,11 +1346,17 @@ public class Rust implements Emitter<StringBuilder> {
                     // owned String — no .to_string() needed (and adding it would be redundant).
                     boolean rhsIsStringConcat = (assignment.value instanceof BinaryOp)
                             && "+".equals(((BinaryOp) assignment.value).op);
-                    if (!rhsIsMethodCallResult
-                            && !rhsIsStringConcat
-                            && assignment.value.inferredType != null
-                            && isStringType(assignment.value.inferredType)) {
-                        rhs = rhs + ".to_string()";
+                    if (!rhsIsMethodCallResult && !rhsIsStringConcat) {
+                        if (assignment.value.inferredType != null
+                                && isStringType(assignment.value.inferredType)) {
+                            // Known String type — produce an owned String via .to_string().
+                            rhs = rhs + ".to_string()";
+                        } else if (assignment.value.inferredType == null && isSelfFieldRef(assignment.value)) {
+                            // Self-field with no inferred type (e.g. this.agent1Time via &self).
+                            // .clone() avoids moving a non-Copy field out of &self, and is safe
+                            // for all field types (String, struct, etc.).
+                            rhs = rhs + ".clone()";
+                        }
                     }
                     rhs = "Some(" + rhs + ")";
                 }
@@ -1834,13 +1872,10 @@ public class Rust implements Emitter<StringBuilder> {
         return base;
     }
 
+    /** @deprecated use {@code METHOD_REGISTRY.isCategory(tn, STRING)} directly. */
+    @Deprecated
     private boolean isStringType(TypeName tn) {
-        if (tn == null) return false;
-        if (tn.typeKind == TypeName.TypeKind.CLASS) {
-            ClassName cn = (ClassName) tn;
-            return cn.simpleName.equals("String");
-        }
-        return false;
+        return METHOD_REGISTRY.isCategory(tn, RustTypeCategory.STRING);
     }
 
     private String convertWithType(Expression expression, TypeName targetType) {
@@ -1904,11 +1939,16 @@ public class Rust implements Emitter<StringBuilder> {
                 // Handle Option unwrapping for chained HashMap method calls.
                 // HashMap::get() returns Option<&V>; calling methods on Option directly won't compile.
                 // When the object is itself a .get() call, we must .unwrap() the Option first.
-                // For mutable operations (insert), also switch .get() to .get_mut() to obtain &mut V.
+                // Registry ChainedGetBehavior drives whether to also switch to .get_mut().
                 if (mc.object instanceof MethodCall) {
                     MethodCall innerMc = (MethodCall) mc.object;
                     if ("get".equals(innerMc.methodName)) {
-                        if ("insert".equals(callMethodName)) {
+                        // Use the original Java method name to look up registry metadata
+                        RustMethodSpec chainSpec = METHOD_REGISTRY.resolveMethodGlobal(mc.methodName);
+                        ChainedGetBehavior cgb = (chainSpec != null)
+                                ? chainSpec.chainedGetBehavior : ChainedGetBehavior.NONE;
+
+                        if (cgb == ChainedGetBehavior.SWITCH_TO_GET_MUT) {
                             // Need a mutable reference into the map — replace .get( with .get_mut(
                             int idx = convertedObject.lastIndexOf(".get(");
                             if (idx >= 0) {
@@ -1921,38 +1961,33 @@ public class Rust implements Emitter<StringBuilder> {
                         // where the key is known to exist.
                         convertedObject += ".unwrap()";
 
-                        // Use specialized argument conversion for inner HashMap operations.
-                        // Bean/out field accesses (e.g. bean.transformed_file) are Option<T> in Rust;
-                        // HashMap key params need T (or &T for contains_key / get).
                         result.append(convertedObject).append(".").append(callMethodName).append("(");
                         if (mc.arguments != null) {
                             for (int i = 0; i < mc.arguments.size(); i++) {
                                 if (i > 0) result.append(", ");
                                 Expression arg = mc.arguments.get(i);
-                                if ("contains_key".equals(callMethodName) || "get".equals(callMethodName)) {
-                                    // Key must be &T — borrow and unwrap Option if it's a local field access
-                                    result.append(convertHashMapKeyArg(arg));
-                                } else {
-                                    // insert(key, value): both must be T — unwrap Option for local field accesses
-                                    result.append(convertOptionArg(arg));
-                                }
+                                ArgTreatment treatment = (chainSpec != null)
+                                        ? chainSpec.argTreatment(i) : ArgTreatment.PASS_BY_VALUE;
+                                result.append(applyArgTreatment(treatment, arg));
                             }
                         }
                         result.append(")");
-                        // HashMap::get() returns Option<&T>; .copied() converts to Option<T> for Copy types,
-                        // avoiding the need to wrap in Some(...) at the assignment site.
-                        if ("get".equals(callMethodName)) {
+                        // Apply result transform: COPIED appends .copied() after HashMap::get()
+                        if (chainSpec != null && chainSpec.resultTransform == ResultTransform.COPIED) {
                             result.append(".copied()");
                         }
                         return result.toString();
                     }
                 }
 
+                // Resolve method spec by original Java name for receiver/arg metadata.
+                RustMethodSpec pushSpec = METHOD_REGISTRY.resolveMethodGlobal(mc.methodName);
                 // self.inputs / self.outputs are Option<Vec<Box<dyn Any>>>.
-                // Calling .push() on them requires .as_mut().unwrap() to reach the Vec,
-                // and each element must be wrapped in Box::new(…) to satisfy Box<dyn Any>.
-                boolean isOptionListPush = "push".equals(callMethodName) && isSelfOptionListField(mc);
-                if (isOptionListPush) {
+                // ReceiverTransform.AS_MUT_UNWRAP signals that .as_mut().unwrap() is required
+                // to reach the inner Vec, and each element must be Box::new(…) wrapped.
+                boolean isOptionListField = isSelfOptionListField(mc);
+                ReceiverTransform rt = (pushSpec != null) ? pushSpec.receiverTransform : ReceiverTransform.NONE;
+                if (rt == ReceiverTransform.AS_MUT_UNWRAP && isOptionListField) {
                     convertedObject += ".as_mut().unwrap()";
                 }
                 result.append(convertedObject).append(".").append(callMethodName).append("(");
@@ -1961,16 +1996,16 @@ public class Rust implements Emitter<StringBuilder> {
                     for (int i = 0; i < mc.arguments.size(); i++) {
                         if (i > 0) result.append(", ");
                         Expression arg = mc.arguments.get(i);
-                        String argStr = traitCall ? convertTraitCallArg(arg) : convertCallArg(arg);
-                        // push() (Java add()) takes ownership; caller may use the value again
-                        // after this call.  Clone non-primitive arguments so the original
-                        // stays valid.  Skip clone when inferredType is a known Copy type.
-                        if ("push".equals(callMethodName)
-                                && (arg.inferredType == null || !isPrimitiveType(arg.inferredType))) {
-                            argStr = argStr + ".clone()";
+                        String argStr;
+                        if (traitCall) {
+                            argStr = convertTraitCallArg(arg);
+                        } else {
+                            ArgTreatment treatment = (pushSpec != null)
+                                    ? pushSpec.argTreatment(i) : ArgTreatment.PASS_BY_VALUE;
+                            argStr = applyArgTreatment(treatment, arg);
                         }
-                        // Wrap in Box::new(…) when pushing into a Vec<Box<dyn Any>> field.
-                        if (isOptionListPush) {
+                        // Wrap in Box::new(…) when pushing into an Option<Vec<Box<...>>> field.
+                        if (rt == ReceiverTransform.AS_MUT_UNWRAP && isOptionListField) {
                             argStr = "Box::new(" + argStr + ")";
                         }
                         result.append(argStr);
@@ -1993,7 +2028,12 @@ public class Rust implements Emitter<StringBuilder> {
                     result.append(convert(mc.object)).append(".").append(sanitizeName(toSnakeCase(mc.methodName)));
                 } else if (mc.object instanceof MethodCall) {
                     MethodCall mc2 = (MethodCall) mc.object;
-                    result.append(convert(mc2)).append(".").append(sanitizeName(toSnakeCase(mc.methodName)));
+                    String inner = convert(mc2);
+                    // get() returns Option<&T> — must .unwrap() before accessing a field.
+                    if ("get".equals(mc2.methodName)) {
+                        inner += ".unwrap()";
+                    }
+                    result.append(inner).append(".").append(sanitizeName(toSnakeCase(mc.methodName)));
                 } else {
                     throw new IllegalArgumentException("Unsupported object type in accessor: " + mc.object);
                 }
@@ -2042,28 +2082,17 @@ public class Rust implements Emitter<StringBuilder> {
                 String convertedObject = convert(mc.object);
                 String callMethodName = updateMethodNameIfOverloaded(mc, convertedObject, sanitizeName(mc.methodName));
 
+                // Resolve spec by original Java method name for per-argument treatment.
+                RustMethodSpec opVarSpec = METHOD_REGISTRY.resolveMethodGlobal(mc.methodName);
+
                 result.append(convertedObject).append(".").append(toSnakeCase(callMethodName)).append("(");
                 if (mc.arguments != null) {
                     for (int i = 0; i < mc.arguments.size(); i++) {
                         if (i > 0) result.append(", ");
                         Expression arg = mc.arguments.get(i);
-                        // For HashMap::insert, the key (i==0) must be an owned String, not &str
-                        if ("insert".equals(callMethodName) && i == 0) {
-                            result.append(convertOwnedStringArg(arg));
-                        } else {
-                            String argStr = convertCallArg(arg);
-                            // push() takes ownership; the value may be used again after this call
-                            // (e.g. passed to a process_* method on the next line).  All generated
-                            // structs derive Clone, so clone non-primitive arguments to keep the
-                            // original value available.
-                            // If inferredType is null (type inference not run over this PAST),
-                            // assume struct and add clone; only skip for known Copy (primitive) types.
-                            if ("push".equals(toSnakeCase(callMethodName))
-                                    && (arg.inferredType == null || !isPrimitiveType(arg.inferredType))) {
-                                argStr = argStr + ".clone()";
-                            }
-                            result.append(argStr);
-                        }
+                        ArgTreatment treatment = (opVarSpec != null)
+                                ? opVarSpec.argTreatment(i) : ArgTreatment.PASS_BY_VALUE;
+                        result.append(applyArgTreatment(treatment, arg));
                     }
                 }
                 result.append(")");
@@ -2221,24 +2250,101 @@ public class Rust implements Emitter<StringBuilder> {
             MethodCall mc = (MethodCall) expr;
             if (mc.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR && mc.object instanceof Variable) {
                 Variable v = (Variable) mc.object;
-                return v.field == Variable.VariableKind.LOCAL_VARIABLE && !"self".equals(v.name);
+                // "this" and "self" are self-references, not regular local variables.
+                // Treating "this" as a local variable would cause isLocalFieldAccessProducingOption
+                // to apply the conservative Option fallback to self-fields, suppressing Some() wraps.
+                return v.field == Variable.VariableKind.LOCAL_VARIABLE
+                        && !"self".equals(v.name)
+                        && !"this".equals(v.name);
             }
         }
         return false;
     }
 
     /**
-     * Convert a HashMap key argument: for local field accesses (Option&lt;T&gt;), adds {@code &} and {@code .unwrap()}.
-     * HashMap::contains_key and HashMap::get expect {@code &K}, so we borrow and unwrap the Option.
+     * Convert a HashMap key argument: borrows the argument so it can be passed to
+     * {@code HashMap::get} / {@code HashMap::contains_key} which expect {@code &K}.
+     *
+     * <p>String constants are already {@code &str} in Rust, so no extra {@code &} is added —
+     * adding one would produce {@code &&str} which is unnecessary (though Deref-coercible).</p>
      */
     private String convertHashMapKeyArg(Expression arg) {
+        // String constants are &str — passing them directly satisfies HashMap<String,_>::get(&str).
+        if (arg instanceof Constant && ((Constant) arg).constantType == Constant.ConstantType.STRING) {
+            return convertOptionArg(arg);
+        }
+        // Integer/long constants are Vec indices — no borrow needed (Vec::get takes usize, not &usize).
+        if (arg instanceof Constant) {
+            Constant.ConstantType ct = ((Constant) arg).constantType;
+            if (ct == Constant.ConstantType.INTEGER || ct == Constant.ConstantType.LONG) {
+                return convert(arg);
+            }
+        }
         return "&" + convertOptionArg(arg);
+    }
+
+    /**
+     * True when {@code expr} is a direct self-field reference that yields an owned (non-borrowed)
+     * value in Java but a borrowed value in Rust when accessed through {@code &self}.
+     * Covers both the {@code FIELD_VARIABLE} form and the {@code this.field} OBJECT_ACCESSOR form.
+     */
+    private boolean isSelfFieldRef(Expression expr) {
+        if (expr instanceof Variable) {
+            return ((Variable) expr).field == Variable.VariableKind.FIELD_VARIABLE;
+        }
+        if (expr instanceof MethodCall) {
+            MethodCall mc = (MethodCall) expr;
+            if (mc.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
+                    && mc.object instanceof Variable) {
+                String name = ((Variable) mc.object).name;
+                return "this".equals(name) || "self".equals(name);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Apply the given {@link ArgTreatment} to a call-site argument, returning the Rust source
+     * string for that argument position.
+     *
+     * <p>Dispatches to the appropriate existing converter helper:</p>
+     * <ul>
+     *   <li>{@link ArgTreatment#PASS_BY_VALUE} — {@link #convertCallArg}</li>
+     *   <li>{@link ArgTreatment#PASS_BY_REF}   — {@code &amp;} + {@link #convertCallArg}</li>
+     *   <li>{@link ArgTreatment#KEY_BORROW}    — {@link #convertHashMapKeyArg} ({@code &amp;} + unwrap)</li>
+     *   <li>{@link ArgTreatment#VALUE_UNWRAP}  — {@link #convertOptionArg} (unwrap Option)</li>
+     *   <li>{@link ArgTreatment#OWNED_STRING}  — {@link #convertOwnedStringArg} ({@code .to_string()})</li>
+     *   <li>{@link ArgTreatment#CLONE}         — {@link #convertCallArg} + {@code .clone()} unless Copy</li>
+     *   <li>{@link ArgTreatment#BOX_CLONE}     — {@code Box::new(} … {@code .clone())} unless Copy</li>
+     * </ul>
+     */
+    private String applyArgTreatment(ArgTreatment treatment, Expression arg) {
+        return switch (treatment) {
+            case PASS_BY_VALUE -> convertCallArg(arg);
+            case PASS_BY_REF   -> "&" + convertCallArg(arg);
+            case KEY_BORROW    -> convertHashMapKeyArg(arg);
+            case VALUE_UNWRAP  -> convertOptionArg(arg);
+            case OWNED_STRING  -> convertOwnedStringArg(arg);
+            case CLONE -> {
+                String base = convertCallArg(arg);
+                if (arg.inferredType != null && METHOD_REGISTRY.isCopy(arg.inferredType)) yield base;
+                yield base + ".clone()";
+            }
+            case BOX_CLONE -> {
+                String base = convertCallArg(arg);
+                if (arg.inferredType != null && METHOD_REGISTRY.isCopy(arg.inferredType))
+                    yield "Box::new(" + base + ")";
+                yield "Box::new(" + base + ".clone())";
+            }
+        };
     }
 
     /**
      * Convert a string constant argument to an owned {@code String} via {@code .to_string()}.
      * Used for HashMap {@code insert(key, value)} where the key must be {@code String}, not {@code &str}.
-     * Non-string-constant expressions are converted normally.
+     *
+     * <p>For non-String Option fields (e.g. {@code bean.transformed_file: Option<QualifiedName>}),
+     * appends {@code .unwrap()} so the insert receives an owned value rather than an Option.</p>
      */
     private String convertOwnedStringArg(Expression arg) {
         if (arg instanceof Constant) {
@@ -2246,6 +2352,10 @@ public class Rust implements Emitter<StringBuilder> {
             if (c.constantType == Constant.ConstantType.STRING) {
                 return "\"" + c.value.toString().replace("\"", "\\\"") + "\".to_string()";
             }
+        }
+        // Non-string Option field access — unwrap to get the owned key value.
+        if (isLocalFieldAccessProducingOption(arg)) {
+            return convert(arg) + ".unwrap()";
         }
         return convert(arg);
     }
@@ -2327,6 +2437,16 @@ public class Rust implements Emitter<StringBuilder> {
             MethodCall mc = (MethodCall) expr;
             if ("get".equals(mc.methodName) && mc.object instanceof MethodCall) {
                 return "get".equals(((MethodCall) mc.object).methodName);
+            }
+        }
+        // Field access on a struct element obtained via .get() — e.g. elements.get(0).container1.
+        // By convention, all uninitialized struct fields in the generated workflow pattern are Option<T>.
+        if (expr instanceof MethodCall) {
+            MethodCall mc = (MethodCall) expr;
+            if (mc.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
+                    && mc.object instanceof MethodCall
+                    && "get".equals(((MethodCall) mc.object).methodName)) {
+                return true;
             }
         }
         // A field access on a local (non-self) variable e.g. transforming_outputs.transformed_file.
@@ -2438,52 +2558,32 @@ public class Rust implements Emitter<StringBuilder> {
         return List.of(String.format(c.format.replace("$L", "%s").replace("$N", "%s"), c.objects).split("\n"));
     }
 
+    // ---- Type-category helpers (Phase 2: delegate to METHOD_REGISTRY) -----------------------
+    // These thin wrappers keep all existing call sites unchanged while routing the actual
+    // logic through the registry.  Phase 5 will inline the registry calls and delete these.
+
+    /** @deprecated use {@code METHOD_REGISTRY.isCategory(tn, MAP)} directly. */
+    @Deprecated
     private boolean isMap(TypeName typeName) {
-        switch (typeName.typeKind) {
-            case CLASS:
-                ClassName cn = (ClassName) typeName;
-                String fullName = (cn.packge != null && !cn.packge.isEmpty()) ? (cn.packge + "." + cn.simpleName) : cn.simpleName;
-                return fullName.equals("past.util.Map") || fullName.equals("past.util.HashMap");
-            case PARAMETERIZED:
-                ParameterizedType pt = (ParameterizedType) typeName;
-                return isMap(pt.rawType);
-            default:
-                return false;
-        }
+        return METHOD_REGISTRY.isCategory(typeName, RustTypeCategory.MAP);
     }
 
+    /** @deprecated use {@code METHOD_REGISTRY.isCategory(tn, LIST)} directly. */
+    @Deprecated
     private boolean isList(TypeName typeName) {
-        switch (typeName.typeKind) {
-            case CLASS:
-                ClassName cn = (ClassName) typeName;
-                String fullName = (cn.packge != null && !cn.packge.isEmpty()) ? (cn.packge + "." + cn.simpleName) : cn.simpleName;
-                return fullName.equals("past.util.List") || fullName.equals("past.util.LinkedList") || fullName.equals("past.util.ArrayList");
-            case PARAMETERIZED:
-                ParameterizedType pt = (ParameterizedType) typeName;
-                return isList(pt.rawType);
-            default:
-                return false;
-        }
+        return METHOD_REGISTRY.isCategory(typeName, RustTypeCategory.LIST);
     }
 
+    /** @deprecated use {@code METHOD_REGISTRY.isCategory(tn, FUNCTION)} directly. */
+    @Deprecated
     private boolean isFunctionType(TypeName typeName) {
-        if (typeName.typeKind != TypeName.TypeKind.CLASS) {
-            return false;
-        }
-        ClassName cn = (ClassName) typeName;
-        String fullName = (cn.packge != null && !cn.packge.isEmpty()) ? (cn.packge + "." + cn.simpleName) : cn.simpleName;
-        return fullName.equals("past.lang.Function") ||
-                fullName.equals("java.util.function.Function") ||
-                cn.simpleName.equals("Function");
+        return METHOD_REGISTRY.isCategory(typeName, RustTypeCategory.FUNCTION);
     }
 
+    /** @deprecated use {@code METHOD_REGISTRY.isCategory(tn, CLASS_REF)} directly. */
+    @Deprecated
     private boolean isClassType(TypeName typeName) {
-        if (typeName.typeKind != TypeName.TypeKind.CLASS) {
-            return false;
-        }
-        ClassName cn = (ClassName) typeName;
-        String fullName = (cn.packge != null && !cn.packge.isEmpty()) ? (cn.packge + "." + cn.simpleName) : cn.simpleName;
-        return fullName.equals("past.lang.Class") || cn.simpleName.equals("Class");
+        return METHOD_REGISTRY.isCategory(typeName, RustTypeCategory.CLASS_REF);
     }
 
     private boolean isObjectType(TypeName typeName) {
@@ -2547,34 +2647,21 @@ public class Rust implements Emitter<StringBuilder> {
         return false;
     }
 
+    /** @deprecated use {@code METHOD_REGISTRY.isCategory(tn, PRIMITIVE)} directly. */
+    @Deprecated
     private boolean isPrimitiveType(TypeName typeName) {
-        if (typeName.typeKind != TypeName.TypeKind.CLASS) {
-            return false;
-        }
-        ClassName cn = (ClassName) typeName;
-        return switch (cn.simpleName) {
-            case "int", "Integer", "long", "Long", "float", "Float",
-                 "double", "Double", "boolean", "Boolean", "byte", "Byte",
-                 "short", "Short", "char", "Character" -> true;
-            default -> false;
-        };
+        return METHOD_REGISTRY.isCategory(typeName, RustTypeCategory.PRIMITIVE);
     }
 
+    /**
+     * Map a Java simple type name to its Rust equivalent.
+     * Delegates to the registry; returns {@code null} for unknown types.
+     *
+     * @deprecated use {@code METHOD_REGISTRY.rustName(simpleName)} directly.
+     */
+    @Deprecated
     private String convertCommonType(String typeName) {
-        return switch (typeName) {
-            case "String" -> "String";
-            case "Integer", "int" -> "i32";
-            case "Long", "long" -> "i64";
-            case "Float", "float" -> "f32";
-            case "Double", "double" -> "f64";
-            case "Boolean", "boolean" -> "bool";
-            case "Void", "void" -> "()";
-            case "Object" -> "Box<dyn std::any::Any>";
-            case "Byte", "byte" -> "i8";
-            case "Short", "short" -> "i16";
-            case "Character", "char" -> "char";
-            default -> null;
-        };
+        return METHOD_REGISTRY.rustName(typeName);
     }
 
     Map<String, String> methodNameConversion = new HashMap<>() {{
@@ -2589,6 +2676,10 @@ public class Rust implements Emitter<StringBuilder> {
 
     private String sanitizeName(String name) {
         if (name == null) return "unknown";
+        // Registry-driven method name translation (replaces methodNameConversion, Phase 3).
+        RustMethodSpec spec = METHOD_REGISTRY.resolveMethodGlobal(name);
+        if (spec != null) return spec.rustName;
+        // Legacy fallback — to be removed in Phase 5 once all entries are in the registry.
         if (methodNameConversion.containsKey(name)) {
             return methodNameConversion.get(name);
         }

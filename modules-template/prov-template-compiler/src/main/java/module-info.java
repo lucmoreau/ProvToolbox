@@ -24,6 +24,7 @@ module prov.template.compiler {
     exports org.openprovenance.prov.template.compiler.past.annotations;
     exports org.openprovenance.prov.template.compiler.past.checker;
     exports org.openprovenance.prov.template.compiler.past.emitter;
+    exports org.openprovenance.prov.template.compiler.past.emitter.registry;
     exports org.openprovenance.prov.template.compiler.past.type;
     exports org.openprovenance.prov.template.compiler.configuration;
     exports org.openprovenance.prov.template.compiler.common;
@@ -33,6 +34,7 @@ module prov.template.compiler {
 
     opens org.openprovenance.prov.template.compiler.util;
     opens org.openprovenance.prov.template.compiler;
+    opens org.openprovenance.prov.template.compiler.past.emitter.registry;
     opens schema;
 
 }

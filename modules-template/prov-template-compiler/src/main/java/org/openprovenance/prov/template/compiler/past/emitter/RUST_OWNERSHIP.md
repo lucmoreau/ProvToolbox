@@ -155,15 +155,22 @@ map.insert("transformed_file".to_string(), HashMap::new());
 This is handled by `convertOwnedStringArg`, which appends `.to_string()` to
 string constants when they appear as the first (key) argument of `insert`.
 
-The **inner** map (`HashMap<i32, i32>`) has `i32` (Copy) keys.  When the key
-comes from an `Option<i32>` bean field, the emitter calls
-`convertHashMapKeyArg` which produces `&field.unwrap()`:
+The **inner** map (`HashMap<QualifiedName, QualifiedName>`) has typed keys.  When the key
+comes from an `Option<T>` bean field, the emitter calls `convertHashMapKeyArg` which produces
+`&field.unwrap()`:
 
 ```rust
 inner_map.contains_key(&bean.transformed_file.unwrap())
 inner_map.get(&bean.transformed_file.unwrap()).copied()
 inner_map.insert(bean.transformed_file.unwrap(), value.unwrap())
 ```
+
+`convertHashMapKeyArg` skips the `&` for two argument kinds where it would be incorrect:
+- **String constants** — already `&str` in Rust; adding `&` would give `&&str`.
+- **Integer/long constants** — used as `Vec` indices (`Vec::get(usize)`), not as HashMap keys.
+
+`convertOwnedStringArg` (for `insert` key position) also handles non-string `Option<T>` field
+accesses — it appends `.unwrap()` to strip the `Option` so the owned value is passed as the key.
 
 ### Return type from `HashMap::get`
 
@@ -331,9 +338,9 @@ the method dispatch.
 |--------|---------|
 | `convertTypeToRustParam(TypeName)` | Parameter type for struct impl methods |
 | `convertTypeToRustTraitParam(TypeName)` | Parameter type for trait impl methods |
-| `convertHashMapKeyArg(Expression)` | `&expr.unwrap()` for Option field used as map key |
+| `convertHashMapKeyArg(Expression)` | `&expr.unwrap()` for Option field used as map key; no `&` for string/int constants |
 | `convertOptionArg(Expression)` | `expr.unwrap()` for Option field used by value |
-| `convertOwnedStringArg(Expression)` | `"str".to_string()` for string constant map key |
+| `convertOwnedStringArg(Expression)` | `"str".to_string()` for string constant; `.unwrap()` for non-string Option field |
 | `convertCallArg(Expression)` | `&mut var` when local HashMap is passed as argument |
 | `isLocalFieldAccess(Expression)` | True when expr is `localVar.field` (non-self) |
 | `isNonSelfFieldAccess(Expression)` | Alias used for LHS `Some()` wrapping decisions |

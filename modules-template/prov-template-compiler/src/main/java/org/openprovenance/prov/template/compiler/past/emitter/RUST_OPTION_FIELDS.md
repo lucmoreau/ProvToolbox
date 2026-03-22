@@ -56,11 +56,14 @@ if (needsSomeWrap) {
 }
 ```
 
-`needsSomeWrap` is suppressed (`expressionProducesOption` returns `true`) in two cases:
+`needsSomeWrap` is suppressed (`expressionProducesOption` returns `true`) in three cases:
 
 * **Chained HashMap get** — `map.get(outer).get(inner)` already returns `Option<T>` after the
   emitter appends `.copied()`.
 * **Cross-class field access that is itself `Option<T>`** — see section 4 below.
+* **Field access on a `Vec::get()` element** — `elements.get(n).field` where `field` is
+  `Option<T>` in the element struct (e.g. `packing_composite_outputs.elements.get(0).container1`).
+  Detected when the expression is an `OBJECT_ACCESSOR` whose object is a `get()` MethodCall.
 
 ### 4. Cross-class field accesses — `isLocalFieldAccessProducingOption`
 
@@ -110,18 +113,29 @@ all current workflow output structs (none of their data fields have initialisers
 
 ---
 
-## HashMap Arguments — `convertOptionArg` and `convertHashMapKeyArg`
+## HashMap Arguments — `convertOptionArg`, `convertHashMapKeyArg`, and `convertOwnedStringArg`
 
 When a local struct field is used as a HashMap key or value argument, its `Option<T>` must be
-unwrapped to `T` (or `&T` for keys):
+unwrapped to `T` (or `&T` for keys).
+
+### `convertHashMapKeyArg` — borrow key for `get`/`contains_key`
+
+Adds `&` before the unwrapped value.  Special cases avoid adding `&` where it would be wrong:
+
+- **String constants** are already `&str` in Rust — adding `&` would produce `&&str`.
+- **Integer/long constants** are `usize` Vec indices — `Vec::get` takes `usize` not `&usize`.
 
 ```java
-// key: &T
 private String convertHashMapKeyArg(Expression arg) {
+    if (STRING constant)  return convertOptionArg(arg);        // already &str
+    if (INTEGER/LONG constant) return convert(arg);            // Vec index, no &
     return "&" + convertOptionArg(arg);
 }
+```
 
-// value: T
+### `convertOptionArg` — unwrap Option field for values
+
+```java
 private String convertOptionArg(Expression arg) {
     if (isLocalFieldAccessProducingOption(arg)) {
         return convert(arg) + ".unwrap()";
@@ -130,9 +144,22 @@ private String convertOptionArg(Expression arg) {
 }
 ```
 
-`convertOptionArg` uses `isLocalFieldAccessProducingOption` (not the raw
-`isLocalFieldAccess`) so that **initialized fields** — which are plain `T` — are passed as-is
-without a spurious `.unwrap()`.
+Uses `isLocalFieldAccessProducingOption` (not the raw `isLocalFieldAccess`) so that
+**initialized fields** — which are plain `T` — are passed as-is without a spurious `.unwrap()`.
+
+### `convertOwnedStringArg` — owned key for `insert`
+
+Used for the first argument of `HashMap::insert`.  String constants get `.to_string()` to produce
+an owned `String`.  Non-string `Option<T>` field accesses (e.g. `bean.transformed_file`) get
+`.unwrap()` to strip the `Option` before passing the owned value as the map key:
+
+```java
+private String convertOwnedStringArg(Expression arg) {
+    if (STRING constant)                  return "\"…\".to_string()";
+    if (isLocalFieldAccessProducingOption) return convert(arg) + ".unwrap()";
+    return convert(arg);
+}
+```
 
 ---
 
@@ -142,10 +169,11 @@ without a spurious `.unwrap()`.
 |--------|---------|
 | `isNonSelfFieldAccess(expr)` | LHS is a non-self struct field → needs `Some()` wrap |
 | `expressionProducesOption(expr)` | RHS already yields `Option<T>` → suppress `Some()` wrap |
-| `isLocalFieldAccess(expr)` | Structural check: OBJECT_ACCESSOR on LOCAL_VARIABLE ≠ self |
+| `isLocalFieldAccess(expr)` | Structural check: OBJECT_ACCESSOR on LOCAL_VARIABLE ≠ self/this |
 | `isLocalFieldAccessProducingOption(expr)` | Principled check: field has no initialiser → `Option<T>` |
 | `convertOptionArg(arg)` | Unwrap `Option<T>` → `T` for HashMap values (only when needed) |
-| `convertHashMapKeyArg(arg)` | Borrow + unwrap `Option<T>` → `&T` for HashMap keys |
+| `convertHashMapKeyArg(arg)` | Borrow + unwrap → `&T` for HashMap keys; skips `&` for string/int constants |
+| `convertOwnedStringArg(arg)` | Owned key for `insert`: `.to_string()` for strings, `.unwrap()` for Option fields |
 
 ---
 

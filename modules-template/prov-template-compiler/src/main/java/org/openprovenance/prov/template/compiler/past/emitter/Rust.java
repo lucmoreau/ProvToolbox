@@ -250,11 +250,17 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
 
-        // Derive common traits — omit Serialize/Deserialize when @NoSerialization is present
-        if (noSerialization) {
-            sb.append("#[derive(Debug, Clone)]\n");
-        } else {
-            sb.append("#[derive(Debug, Clone, Serialize, Deserialize)]\n");
+        // Derive common traits — omit entirely when any field holds a Box<dyn Trait> or
+        // Vec<Box<dyn Any>>, because those types do not implement Clone or Debug.
+        boolean hasDynField = clazz.fields.stream()
+                .filter(f -> !f.modifiers.contains(Modifier.STATIC))
+                .anyMatch(f -> isKnownTrait(f.type) || hasObjectTypeArgument(f.type));
+        if (!hasDynField) {
+            if (noSerialization) {
+                sb.append("#[derive(Debug, Clone)]\n");
+            } else {
+                sb.append("#[derive(Debug, Clone, Serialize, Deserialize)]\n");
+            }
         }
 
         // Struct declaration with trait bounds
@@ -2592,6 +2598,22 @@ public class Rust implements Emitter<StringBuilder> {
         }
         ClassName cn = (ClassName) typeName;
         return "Object".equals(cn.simpleName);
+    }
+
+    /**
+     * Returns true if {@code tn} is, or contains as a type argument, the Java {@code Object}
+     * type — which maps to {@code Box<dyn std::any::Any>} in Rust and therefore cannot
+     * implement {@code Clone} or {@code Debug} automatically.
+     */
+    private boolean hasObjectTypeArgument(TypeName tn) {
+        if (isObjectType(tn)) return true;
+        if (tn instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) tn;
+            for (TypeName arg : pt.typeArguments) {
+                if (hasObjectTypeArgument(arg)) return true;
+            }
+        }
+        return false;
     }
 
     /**

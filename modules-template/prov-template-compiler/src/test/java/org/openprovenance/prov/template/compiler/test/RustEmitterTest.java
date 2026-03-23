@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler.test;
 import org.junit.Test;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;  // explicit: shadows java.lang.Class
+import org.openprovenance.prov.template.compiler.past.annotations.MutableReceiver;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
@@ -503,5 +504,195 @@ public class RustEmitterTest {
         String out = emit(clazz);
         assertTrue("for self-field iterator should iterate over self.my_items",
                 out.contains("for item in self.my_items"));
+    }
+
+    // =========================================================================
+    // Group 10 — OBJECT_METHOD_CALL: camelCase method names are snake_cased
+    // =========================================================================
+
+    @Test
+    public void objectMethodCall_camelCaseName_snakeCased() {
+        // someExpr.addElements(arg) via OBJECT_METHOD_CALL → .add_elements(arg)
+        // Regression for: addElements was emitted verbatim (E0599) because toSnakeCase
+        // was applied only in the OPERATOR_VARIABLE path, not OBJECT_METHOD_CALL.
+        Variable receiver = local("myObj");
+        MethodCall innerCall = new MethodCall(receiver, "getItems", List.of());  // OPERATOR_VARIABLE
+        MethodCall outerCall = new MethodCall(innerCall, "addElements", List.of(local("item")));  // OBJECT_METHOD_CALL
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doAdd", outerCall));
+        String out = emit(clazz);
+        assertTrue("camelCase OBJECT_METHOD_CALL name should be snake_cased",
+                out.contains("add_elements("));
+        assertFalse("camelCase should not remain in output", out.contains("addElements("));
+    }
+
+    @Test
+    public void objectMethodCall_chainedGetEarlyReturn_methodNameSnakeCased() {
+        // map.get(k).addItem(v) via chained-get early-return path → .add_item(v)
+        Variable mapVar = local("myMap");
+        Variable keyVar = local("k");
+        Variable valVar = local("v");
+        MethodCall innerGet = new MethodCall(mapVar, "get", List.of(keyVar));    // OPERATOR_VARIABLE
+        MethodCall chainedCall = new MethodCall(innerGet, "addItem", List.of(valVar));  // OBJECT_METHOD_CALL chained-get path
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doChain", chainedCall));
+        String out = emit(clazz);
+        assertTrue("chained-get method name should be snake_cased", out.contains("add_item("));
+        assertFalse("camelCase should not remain", out.contains("addItem("));
+    }
+
+    // =========================================================================
+    // Group 11 — Vec index access: __elements.get(i) → [i as usize].clone()
+    // =========================================================================
+
+    @Test
+    public void vecGet_onElements_emitsIndexAccess() {
+        // self.__elements.get(count) → self.elements[count as usize].clone()
+        // Regression for: generated Vec::get() which returns Option<&T>, causing type mismatch (E0308).
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall elementsAccess = new MethodCall(thisVar, "__elements");  // OBJECT_ACCESSOR, name = "__elements"
+        MethodCall getCall = new MethodCall(elementsAccess, "get", List.of(local("count")));  // OBJECT_METHOD_CALL
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("fetch", new Return(getCall)));
+        String out = emit(clazz);
+        assertTrue("Vec::get should become index access",
+                out.contains("elements[count as usize].clone()"));
+        assertFalse("Vec::get should not remain as .get(count)",
+                out.contains(".get(count)"));
+    }
+
+    @Test
+    public void vecGet_onElements_noSpuriousUnwrap_onFieldAccess() {
+        // Accessing a field on the Vec index result must NOT add .unwrap():
+        // self.__elements.get(idx).myField → elements[idx as usize].clone().my_field
+        // Regression for: OBJECT_ACCESSOR case added .unwrap() for any mc2.methodName == "get",
+        // but Vec index returns T (not Option<T>) so no .unwrap() is needed.
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall elementsAccess = new MethodCall(thisVar, "__elements");
+        MethodCall getCall = new MethodCall(elementsAccess, "get", List.of(local("idx")));
+        // Field access on the Vec index result
+        MethodCall fieldOnGet = new MethodCall((Expression) getCall, "myField");  // OBJECT_ACCESSOR
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("getField", new Return(fieldOnGet)));
+        String out = emit(clazz);
+        assertTrue("Field access on Vec index should use .clone().my_field",
+                out.contains("elements[idx as usize].clone().my_field"));
+        assertFalse("No .unwrap() should appear for Vec index result",
+                out.contains(".clone().unwrap()"));
+    }
+
+    // =========================================================================
+    // Group 12 — Self Option field passed as by-value argument
+    // =========================================================================
+
+    @Test
+    public void selfOptionField_passedByValue_cloneUnwrap() {
+        // this.myBean (Option<MyBean>) as a PASS_BY_VALUE argument → self.my_bean.clone().unwrap()
+        // Regression for: add_elements(self.bean__x) failed with E0308 because
+        // Option<T> was passed where T was expected.
+        Field optField = new Field("myBean", ClassName.get("MyBean", "com.example"));  // no initialiser → Option<T>
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall fieldAccess = new MethodCall(thisVar, "myBean");  // OBJECT_ACCESSOR for Option field
+        Variable receiver = local("someList");
+        MethodCall call = new MethodCall(receiver, "addItem", List.of(fieldAccess));  // OPERATOR_VARIABLE
+        Class clazz = new Class("Merger").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(optField)
+                .METHODS(publicMethod("doAdd", call));
+        String out = emit(clazz);
+        assertTrue("Self Option field passed by value should be .clone().unwrap()",
+                out.contains("my_bean.clone().unwrap()"));
+    }
+
+    @Test
+    public void selfInitialisedField_passedByValue_noUnwrap() {
+        // A field WITH an initialiser is plain T (not Option<T>) — no .clone().unwrap() needed.
+        Field initField = new Field("myBean", ClassName.get("MyBean", "com.example"));
+        initField.initialiser = new Constant("default");  // has initialiser → plain T
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall fieldAccess = new MethodCall(thisVar, "myBean");
+        Variable receiver = local("someList");
+        MethodCall call = new MethodCall(receiver, "addItem", List.of(fieldAccess));
+        Class clazz = new Class("Merger").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(initField)
+                .METHODS(publicMethod("doAdd", call));
+        String out = emit(clazz);
+        assertFalse("Initialised field passed by value should not get .clone().unwrap()",
+                out.contains("my_bean.clone().unwrap()"));
+    }
+
+    // =========================================================================
+    // Group 13 — MutableReceiver annotation
+    // =========================================================================
+
+    @Test
+    public void mutableReceiver_emitsMutSelf() {
+        // A method annotated with MutableReceiver should emit &mut self.
+        TypeName beanType = ClassName.get("MyBean", "com.example");
+        Method m = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(MutableReceiver.NAME)
+                .RETURNS(beanType);
+        Class clazz = new Class("Merger").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        assertTrue("MutableReceiver annotation should emit &mut self", out.contains("&mut self"));
+    }
+
+    @Test
+    public void mutableReceiver_returnSelf_appendsClone() {
+        // return this/self in a MutableReceiver method → self.clone() (not just self)
+        // Regression for: &mut self methods return Self by value — returning a reference
+        // would give &BeanMerger instead of BeanMerger (E0308).
+        TypeName mergerType = ClassName.get("Merger", "com.example");
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        Method m = new Method("merge")
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(MutableReceiver.NAME)
+                .RETURNS(mergerType)
+                .BODY(new Return(thisVar));
+        Class clazz = new Class("Merger").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        assertTrue("Returning self in MutableReceiver method should emit self.clone()",
+                out.contains("self.clone()"));
+    }
+
+    @Test
+    public void mutableReceiver_returnOptionField_appendsCloneUnwrap() {
+        // return this.myBean (Option<T>) in a MutableReceiver method → self.my_bean.clone().unwrap()
+        // Regression for: returning a raw Option field gave Option<T> when T was expected.
+        TypeName beanType = ClassName.get("MyBean", "com.example");
+        Field optField = new Field("myBean", beanType);  // no initialiser → Option<MyBean>
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall fieldReturn = new MethodCall(thisVar, "myBean");  // OBJECT_ACCESSOR
+        Method m = new Method("getBean")
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(MutableReceiver.NAME)
+                .RETURNS(beanType)
+                .BODY(new Return(fieldReturn));
+        Class clazz = new Class("Merger").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(optField)
+                .METHODS(m);
+        String out = emit(clazz);
+        assertTrue("MutableReceiver return of Option field should emit .clone().unwrap()",
+                out.contains("my_bean.clone().unwrap()"));
+    }
+
+    @Test
+    public void mutableReceiver_assignToOptionSubField_asMutUnwrap() {
+        // LHS: this.myBean.time = value  →  self.my_bean.as_mut().unwrap().time = ...
+        // Regression for: self.bean__x.time = ... failed (E0609) because intermediate
+        // field is Option<T> and field access on Option<T> is not allowed directly.
+        TypeName beanType = ClassName.get("MyBean", "com.example");
+        Field optField = new Field("myBean", beanType);  // no initialiser → Option<MyBean>
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall fieldAccess = new MethodCall(thisVar, "myBean");   // OBJECT_ACCESSOR: this.myBean
+        MethodCall subField    = new MethodCall(fieldAccess, "time"); // OBJECT_ACCESSOR: .time
+        Variable inputTime = local("inputTime");
+        Assignment assignment = new Assignment(subField, inputTime);
+        Class clazz = new Class("Merger").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(optField)
+                .METHODS(publicMethod("setTime", assignment));
+        String out = emit(clazz);
+        assertTrue("LHS 2-level Option chain should insert .as_mut().unwrap()",
+                out.contains("my_bean.as_mut().unwrap().time"));
     }
 }

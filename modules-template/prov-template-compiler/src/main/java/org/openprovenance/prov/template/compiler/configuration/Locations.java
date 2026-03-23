@@ -102,10 +102,12 @@ public class Locations {
             case INPUT_OUTPUT_PROCESSOR:
             case QUERY_INVOKER2:
             case INPUT_PROCESSOR:
+            case OUTPUT_PROCESSOR:
             case COMPOSITE_BEAN_COMPLETER2:
             case BEAN_CHECKER2:
             case BEAN_COMPLETER2:
             case BEAN_COMPLETER3:
+            case BEAN_MERGER:
                 return getIntegratorPackage(name);
 
             case TABLE_CONFIGURATOR+WITH_MAP:

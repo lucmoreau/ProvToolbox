@@ -1,9 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeVariableName;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -35,8 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.RECORD_2_RECORD;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
@@ -108,6 +103,7 @@ public class ConfigProcessor implements Constants {
     }
 
     private Optional<StatementChecker> statementChecker;
+    private CompilerBeanMerger compilerBeanMerger;
 
 
     public ConfigProcessor(ProvFactory pFactory) {
@@ -116,6 +112,7 @@ public class ConfigProcessor implements Constants {
         this.compilerUtil= new CompilerUtil(pFactory);
         this.compilerTypeConverter=new CompilerTypeConverter(pFactory);
         this.compilerBeanCompleter=new CompilerBeanCompleter(pFactory);
+        this.compilerBeanMerger=new CompilerBeanMerger(pFactory);
         this.compilerSQL=new CompilerSQL(pFactory, "ID");
         this.compilerCommon = new CompilerCommon(pFactory,compilerSQL);
         this.compilerBeanGenerator =new CompilerBeanGenerator(pFactory);
@@ -451,6 +448,9 @@ public class ConfigProcessor implements Constants {
 
             SpecificationFile outputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(configs, locations, integrator_package, CompilerInputOutputProcessor.ProcessorType.OUTPUT, integrator_dir, OUTPUT_PROCESSOR + DOT_JAVA_EXTENSION);
             outputProcessor.save();
+
+            SpecificationFile beanMerger=compilerBeanMerger.generateBeanMerger(configs, locations, BEAN_MERGER);
+            beanMerger.save();
 
             SpecificationFile templateInvoker = compilerTemplateInvoker.generateTemplateInvoker(configs, locations, TEMPLATE_INVOKER);
             templateInvoker.save();

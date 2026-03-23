@@ -125,7 +125,7 @@ public class Python implements Emitter<StringBuilder> {
                     if (annotation.isPresent()) {
                         constructorName= ((OverloadedMethod) annotation.get()).getAltName();
                         overloaded=true;
-                        System.out.println("Constructor with @OverloadedMethod annotation, using alt name: " + constructorName);
+                        //System.out.println("Constructor with @OverloadedMethod annotation, using alt name: " + constructorName);
                     }
                 }
                 Method pythonMethodAsConstructor = METHOD(constructorName)
@@ -361,7 +361,7 @@ public class Python implements Emitter<StringBuilder> {
                 for (PastAnnotation annot : field.annotation) {
                     if (annot instanceof PythonAnnotation) {
                         if (ClassInitialiser.NAME.equals(annot.getName())) {
-                            System.out.println("----------- Not Processing @ClassInitialiser annotation");
+                            //System.out.println("----------- Not Processing @ClassInitialiser annotation");
                             isClassInitialised=true;
                         }
                     }

@@ -16,6 +16,7 @@ public class AnnotationConverter {
         map.put(OverrideAnnotation.NAME, new OverrideAnnotation());
         map.put(StaticMethod.NAME, new StaticMethod());
         map.put(NoSerialization.NAME, new NoSerialization());
+        map.put(MutableReceiver.NAME, new MutableReceiver());
         return map;
     }
 

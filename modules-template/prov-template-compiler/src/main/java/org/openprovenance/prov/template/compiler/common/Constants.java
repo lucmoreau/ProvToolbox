@@ -63,6 +63,7 @@ public interface Constants {
     String COMPOSITE_ENACTOR_CONFIGURATOR = "CompositeEnactorConfigurator";
     String COMPOSITE_ENACTOR_CONFIGURATOR2 = "CompositeEnactorConfigurator2";
     String ENACTOR_CONFIGURATOR2 = "EnactorConfigurator2";
+    String BEAN_MERGER = "BeanMerger";
     String BEAN_COMPLETER = "BeanCompleter";
     String BEAN_COMPLETER2 = "BeanCompleter2";
     String BEAN_COMPLETER3 = "BeanCompleter3";
@@ -90,6 +91,7 @@ public interface Constants {
     String INPUTS_CONFIGURATOR = "InputsConfigurator";
     String OUTPUTS_CONFIGURATOR = "OutputsConfigurator";
     String PROCESS_METHOD_NAME = "process";
+    String MERGE_METHOD_NAME = "mergeInto";
     String PROCESSOR_PROCESS_METHOD_NAME = "process";
     String GETTER = "Getter";
     String TYPED_GETTER = "TypedGetter";
@@ -125,6 +127,9 @@ public interface Constants {
     String LL_VAR = "ll";
 
     String BEAN_VAR = "bean";
+    String INPUT_BEAN_VAR = "inputBean";
+    String OUTPUT_BEAN_VAR = "outputBean";
+    String BEAN_METHOD = "bean";
     String DELEGATOR_VAR = "delegator";
     String TO_INPUTS = "toInputs";
     String DOT_JAVA_EXTENSION = ".java";

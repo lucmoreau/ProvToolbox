@@ -79,6 +79,7 @@ public class Rust implements Emitter<StringBuilder> {
      */
     private final Map<String, Class> classRegistry = new HashMap<>();
     private boolean needsValueEnum = false; // Track if Value enum needs to be generated for heterogeneous arrays
+    private boolean currentMethodConsumesSelf = false; // True when the current method uses consuming (mut self) receiver
     private final TypeRegistry typeRegistry; // Type registry from type checking phase (may be null)
     private String currentPackageName;       // Set in toWritableObject; used to look up ClassSignature
     private ClassSignature currentClassSignature; // Looked up at start of emit(); null when no registry
@@ -654,8 +655,14 @@ public class Rust implements Emitter<StringBuilder> {
             // Skip only if it's a built-in Rust trait or from past.* (which are mapped to std types)
             if (cn.packge == null || cn.packge.isEmpty() || !cn.packge.startsWith("past.")) {
                 // Build full module path from package, using original name to preserve underscores before digits
-                String modulePath = buildModulePath(cn.packge, cn.simpleName);
-                imports.add(modulePath);
+
+                // don't add an import for the current class
+                if (cn.simpleName.equals(this.currentClass.name) &&
+                        Objects.equals(cn.packge, this.currentPackageName)) {
+                } else {
+                    String modulePath = buildModulePath(cn.packge, cn.simpleName);
+                    imports.add(modulePath);
+                }
             }
         } else if (intfce instanceof ParameterizedType) {
             ParameterizedType pt = (ParameterizedType) intfce;
@@ -673,9 +680,14 @@ public class Rust implements Emitter<StringBuilder> {
             // Skip primitive/common types and past.* package types (mapped to Rust builtins)
             if (cn.packge != null && !cn.packge.isEmpty() && !cn.packge.startsWith("past.")) {
                 if (convertCommonType(cn.simpleName) == null) {
-                    // Use original name to preserve underscores before digits in file path
-                    String modulePath = buildModulePath(cn.packge, cn.simpleName);
-                    imports.add(modulePath);
+                    // don't add an import for the current class
+                    if (cn.simpleName.equals(this.currentClass.name) &&
+                            Objects.equals(cn.packge, this.currentPackageName)) {
+                    } else {
+                        // Use original name to preserve underscores before digits in file path
+                        String modulePath = buildModulePath(cn.packge, cn.simpleName);
+                        imports.add(modulePath);
+                    }
                 }
             }
         } else if (typeName instanceof ParameterizedType) {
@@ -1082,9 +1094,10 @@ public class Rust implements Emitter<StringBuilder> {
         sb.append("(");
 
         // Self parameter for instance methods
+        currentMethodConsumesSelf = consumesSelf(method);
         if (!method.modifiers.contains(Modifier.STATIC)) {
             sb.append("&");
-            if (modifiesSelf(method)) {
+            if (currentMethodConsumesSelf || modifiesSelf(method)) {
                 sb.append("mut ");
             }
             sb.append("self");
@@ -1253,6 +1266,21 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
         return false; // Default: stateless processors (&self)
+    }
+
+    /**
+     * Returns true if the method should use a consuming (mut self) receiver.
+     * Triggered by the MutableReceiver annotation.
+     */
+    private boolean consumesSelf(Method method) {
+        for (org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation annot : method.annotation) {
+            if (annot instanceof org.openprovenance.prov.template.compiler.past.annotations.RustAnnotation) {
+                if (annot.getName().equals(org.openprovenance.prov.template.compiler.past.annotations.MutableReceiver.NAME)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean bodyContainsMutatingCall(Statement stmt) {
@@ -1425,15 +1453,26 @@ public class Rust implements Emitter<StringBuilder> {
 
             case RETURN -> {
                 Return ret = (Return) statement;
+                String retExpr = convert(ret.expression);
+                if (currentMethodConsumesSelf) {
+                    // Returning self in a &mut self method: self is &mut T, return type is T → clone.
+                    if (isSelfVariableReturn(ret.expression)) {
+                        retExpr += ".clone()";
+                    }
+                    // Returning self.optionField in a &mut self method: Option<T>, return type is T → clone + unwrap.
+                    else if (isSelfOptionFieldAccess(ret.expression)) {
+                        retExpr += ".clone().unwrap()";
+                    }
+                }
                 if (isLastStatement) {
                     // Rust implicit return - no semicolon
                     sb.append(indent)
-                            .append(convert(ret.expression))
+                            .append(retExpr)
                             .append("\n");
                 } else {
                     sb.append(indent)
                             .append("return ")
-                            .append(convert(ret.expression))
+                            .append(retExpr)
                             .append(";\n");
                 }
             }
@@ -1623,6 +1662,51 @@ public class Rust implements Emitter<StringBuilder> {
     private TypeName getFieldType(String fieldName) {
         Field field = getField(fieldName);
         return field != null ? field.type : null;
+    }
+
+    /**
+     * Returns true if the named field of the current class is emitted as Option<T>
+     * (i.e. it has no initialiser in the PAST).
+     */
+    private boolean isOptionField(String fieldName) {
+        Field field = getField(fieldName);
+        return field != null && field.initialiser == null;
+    }
+
+    /**
+     * Returns true if the expression is a bare self/this variable (i.e. the method returns self).
+     * Used to detect RETURN(VARIABLE("this")) in a MutableReceiver method.
+     */
+    private boolean isSelfVariableReturn(Expression expr) {
+        if (!(expr instanceof Variable)) return false;
+        Variable v = (Variable) expr;
+        return "this".equals(v.name) || "self".equals(v.name);
+    }
+
+    /**
+     * Returns true if the expression is a direct OBJECT_ACCESSOR of an Option field on self/this.
+     * Used to decide whether to append .clone().unwrap() on a return statement in a MutableReceiver method.
+     */
+    private boolean isSelfOptionFieldAccess(Expression expr) {
+        if (!(expr instanceof MethodCall)) return false;
+        MethodCall mc = (MethodCall) expr;
+        if (mc.operatorKind != MethodCall.MethodCallKind.OBJECT_ACCESSOR) return false;
+        if (!(mc.object instanceof Variable)) return false;
+        Variable v = (Variable) mc.object;
+        return ("this".equals(v.name) || "self".equals(v.name)) && isOptionField(mc.methodName);
+    }
+
+    /**
+     * True when {@code mc} is a Vec index access disguised as {@code get}: i.e.
+     * {@code someExpr.__elements.get(i)}.  These are converted to {@code [i as usize].clone()}
+     * which returns {@code T} directly — no further {@code .unwrap()} is needed.
+     */
+    private boolean isVecIndexAccessGet(MethodCall mc) {
+        return "get".equals(mc.methodName)
+                && mc.arguments != null && mc.arguments.size() == 1
+                && mc.object instanceof MethodCall
+                && ((MethodCall) mc.object).operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
+                && "__elements".equals(((MethodCall) mc.object).methodName);
     }
 
     private String convert(Expression expression) {
@@ -1967,7 +2051,7 @@ public class Rust implements Emitter<StringBuilder> {
                         // where the key is known to exist.
                         convertedObject += ".unwrap()";
 
-                        result.append(convertedObject).append(".").append(callMethodName).append("(");
+                        result.append(convertedObject).append(".").append(toSnakeCase(callMethodName)).append("(");
                         if (mc.arguments != null) {
                             for (int i = 0; i < mc.arguments.size(); i++) {
                                 if (i > 0) result.append(", ");
@@ -1986,6 +2070,19 @@ public class Rust implements Emitter<StringBuilder> {
                     }
                 }
 
+                // Vec index access: someExpr.elements.get(count) → someExpr.elements[count as usize].clone()
+                // Vec::get(usize) returns Option<&T> which is incompatible with the Option<T> LHS field.
+                // Using index notation returns T directly, and .clone() gives an owned value.
+                if ("get".equals(mc.methodName) && mc.arguments != null && mc.arguments.size() == 1
+                        && mc.object instanceof MethodCall) {
+                    MethodCall objectMc = (MethodCall) mc.object;
+                    if (objectMc.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
+                            && "__elements".equals(objectMc.methodName)) {
+                        result.append(convertedObject).append("[").append(convert(mc.arguments.get(0))).append(" as usize].clone()");
+                        return result.toString();
+                    }
+                }
+
                 // Resolve method spec by original Java name for receiver/arg metadata.
                 RustMethodSpec pushSpec = METHOD_REGISTRY.resolveMethodGlobal(mc.methodName);
                 // self.inputs / self.outputs are Option<Vec<Box<dyn Any>>>.
@@ -1996,7 +2093,7 @@ public class Rust implements Emitter<StringBuilder> {
                 if (rt == ReceiverTransform.AS_MUT_UNWRAP && isOptionListField) {
                     convertedObject += ".as_mut().unwrap()";
                 }
-                result.append(convertedObject).append(".").append(callMethodName).append("(");
+                result.append(convertedObject).append(".").append(toSnakeCase(callMethodName)).append("(");
                 boolean traitCall = isTraitReceiver(mc);
                 if (mc.arguments != null) {
                     for (int i = 0; i < mc.arguments.size(); i++) {
@@ -2036,8 +2133,14 @@ public class Rust implements Emitter<StringBuilder> {
                     MethodCall mc2 = (MethodCall) mc.object;
                     String inner = convert(mc2);
                     // get() returns Option<&T> — must .unwrap() before accessing a field.
-                    if ("get".equals(mc2.methodName)) {
+                    // Exception: Vec index access (elements.get(i)) is converted to [i].clone()
+                    // which already returns T — no further .unwrap() is needed.
+                    if ("get".equals(mc2.methodName) && !isVecIndexAccessGet(mc2)) {
                         inner += ".unwrap()";
+                    }
+                    // Self Option field access: self.optionField.subField — unwrap to reach the inner T.
+                    else if (isSelfOptionFieldAccess(mc2)) {
+                        inner += ".as_ref().unwrap()";
                     }
                     result.append(inner).append(".").append(sanitizeName(toSnakeCase(mc.methodName)));
                 } else {
@@ -2138,6 +2241,20 @@ public class Rust implements Emitter<StringBuilder> {
             return ve.name;
         } else if (leftHandExpression instanceof MethodCall) {
             MethodCall mc = (MethodCall) leftHandExpression;
+            // Detect self.optionField.subField pattern: OBJECT_ACCESSOR(OBJECT_ACCESSOR(Variable("this"), outerField), innerField)
+            // The outer field is Option<T> in Rust, so we must insert .as_mut().unwrap() to get &mut T.
+            if (mc.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
+                    && mc.object instanceof MethodCall) {
+                MethodCall innerMc = (MethodCall) mc.object;
+                if (innerMc.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
+                        && innerMc.object instanceof Variable) {
+                    Variable v = (Variable) innerMc.object;
+                    if (("this".equals(v.name) || "self".equals(v.name)) && isOptionField(innerMc.methodName)) {
+                        String inner = convert(innerMc);
+                        return inner + ".as_mut().unwrap()." + sanitizeName(toSnakeCase(mc.methodName));
+                    }
+                }
+            }
             return convertMethodCall(mc);
         } else if (leftHandExpression instanceof ArrayAccessor) {
             ArrayAccessor aa = (ArrayAccessor) leftHandExpression;
@@ -2167,7 +2284,12 @@ public class Rust implements Emitter<StringBuilder> {
         if (typeName instanceof ClassName) {
             ClassName cn = (ClassName) typeName;
             String modulePath = buildModulePath(cn.packge, cn.simpleName);
-            imports.add(modulePath);
+            // don't add an import for the current class
+            if (cn.simpleName.equals(this.currentClass.name) &&
+                    Objects.equals(cn.packge, this.currentPackageName)) {
+            } else {
+                imports.add(modulePath);
+            }
         }
         return getSimpleName(convert(typeName));
     }
@@ -2247,6 +2369,10 @@ public class Rust implements Emitter<StringBuilder> {
         String convertedObject = convert(mc.object);
         if (traitReceiverType(mc) != null) {
             convertedObject += ".as_ref().unwrap()";
+        } else if (isSelfOptionFieldAccess(mc.object) && !isSelfOptionListField(mc)) {
+            // Method called on an Option<T> self-field — must unwrap to reach the inner T.
+            // Exception: Option<Vec> fields are handled downstream by the AS_MUT_UNWRAP transform.
+            convertedObject += ".as_mut().unwrap()";
         }
         return convertedObject;
     }
@@ -2377,6 +2503,11 @@ public class Rust implements Emitter<StringBuilder> {
                     && arg.inferredType != null && isMap(arg.inferredType)) {
                 return "&mut " + sanitizeName(toSnakeCase(v.name));
             }
+        }
+        // Self Option fields (self.bean__x : Option<T>) need .clone().unwrap() to produce T
+        // when passed by value to a method that expects T (e.g. add_elements(T)).
+        if (isSelfOptionFieldAccess(arg)) {
+            return convert(arg) + ".clone().unwrap()";
         }
         return convert(arg);
     }

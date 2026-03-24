@@ -599,6 +599,105 @@ for (int i = 0; i < mc.arguments.size(); i++) {
 
 ---
 
+## 10e-ii. Call-Site Argument Injection Through a Trait Field (OBJECT_METHOD_CALL)
+
+§10e covers calls directly on `self` (`this.process(bean, composee)`), handled in the
+`OPERATOR_VARIABLE` path via `calledMethodHasMutableFirstParam`.  A different situation
+arises when the call is routed through a trait-typed field, e.g.:
+
+```java
+// CompilerBeanHistory — calling through this.merger (a BeanMergerInterface field)
+METHOD_CALL(METHOD_CALL(VARIABLE("this"), MERGER_VAR), PROCESS_METHOD_NAME,
+            List.of(VARIABLE(BEAN_VAR), VARIABLE(INPUT_BEAN_VAR)))
+```
+
+This produces an `OBJECT_METHOD_CALL` whose receiver is `self.merger`.  Without
+special handling the first argument receives `&` (shared reference), but
+`BeanMergerInterface.process` expects `&'a mut T`:
+
+```
+E0308: expected `&mut FileInitBean`, found `&FileInitBean`
+```
+
+### Detection: `traitReceiverType` fallback to `getFieldType`
+
+`traitReceiverType(mc)` is the predicate that decides whether `mc` is a call
+through a trait-typed self-field.  When the receiver is an OBJECT_ACCESSOR
+(`this.merger`) without an `inferredType` set on the expression (the common
+case when the PAST tree is built structurally), the method must fall back to
+`getFieldType(accessorName)` to look the field type up from the current class
+definition:
+
+```java
+} else if (mc.object instanceof MethodCall) {
+    MethodCall objMc = (MethodCall) mc.object;
+    if (objMc.operatorKind == OBJECT_ACCESSOR
+            && objMc.object instanceof Variable) {
+        String varName = ((Variable) objMc.object).name;
+        if ("self".equals(varName) || "this".equals(varName)) {
+            // Prefer inferredType; fall back to getFieldType so that
+            // this.merger.process(…) is resolved even when inferredType
+            // was never explicitly set on the accessor expression.
+            TypeName t = mc.object.inferredType != null
+                    ? mc.object.inferredType
+                    : getFieldType(objMc.methodName);   // ← fallback
+            return (t != null && isKnownTrait(t)) ? t : null;
+        }
+    }
+}
+```
+
+Without the fallback `traitReceiverType` returns `null`, `traitCall` stays
+`false`, and `traitMFP` is never set — so `&mut` is never injected.
+
+### Detection: scoped `mutableFirstParamMethodNames` set
+
+To avoid false positives when two traits share a generic method name (e.g. both
+`BeanMergerInterface` and `InputOutputProcessor` have a method named `"process"`),
+the set stores **`"TraitName.methodName"` pairs** rather than bare names:
+
+```java
+// In discoverTraits(), inside the clazz.isInterface branch:
+if (hasMutableFirstParam(method)) {
+    mutableFirstParamMethodNames.add(traitName + "." + method.name);
+}
+```
+
+The set is **shared across all `Rust` emitter instances** via `RustCodeGenerator`
+(like `knownTraits` and `statefulTraits`) so that discoveries from
+`BeanMergerInterface` are visible when emitting `BeanHistory`.
+
+```java
+// RustCodeGenerator
+private final Set<String> mutableFirstParamMethodNames = new HashSet<>();
+// Passed to every Rust instance:
+new Rust(knownTraits, statefulTraits, mutableFirstParamMethodNames, typeRegistry)
+```
+
+### Injection in `OBJECT_METHOD_CALL`
+
+```java
+TypeName receiverTraitType = traitCall ? traitReceiverType(mc) : null;
+boolean traitMFP = receiverTraitType != null
+        && mutableFirstParamMethodNames.contains(
+                toPascalCase(getSimpleNameFromType(receiverTraitType)) + "." + mc.methodName);
+// …
+if (traitMFP && i == 0) {
+    argStr = "&mut " + convert(arg);   // first arg: &mut T
+} else if (traitCall) {
+    argStr = convertTraitCallArg(arg); // rest: & added by convertTraitCallArg for struct types
+}
+```
+
+Generated (in `bean_history.rs`):
+
+```rust
+self.merger.as_ref().unwrap().process_file_init_bean_file_init_inputs(&mut bean, &input_bean);
+//                                                                     ^^^^^^^^ injected
+```
+
+---
+
 ## 10f. Two Separate Code Paths
 
 `Rust.java` has two distinct paths for emitting method signatures:
@@ -637,6 +736,229 @@ check `AnnotationConverter` first.
 
 ---
 
+## 10g. String Constant Return Coercion
+
+### Problem
+
+A method whose declared return type is `String` but whose body returns a string
+literal (PAST `Constant("xyz")`) fails to compile:
+
+```rust
+pub fn new_s_identifier(&self, field: &str, counter: &str) -> String {
+    "xyz"   // E0308: expected String, found &str
+}
+```
+
+String literals in Rust are `&str` (static string slices); the declared return
+type is `String` (owned).
+
+### Fix — `convertWithType` + `currentMethodReturnType`
+
+`emitMethod` records the declared return type at the start of each method:
+
+```java
+currentMethodReturnType = method.returnType;   // NEW field, set before emitting body
+```
+
+The RETURN handler uses `convertWithType(expr, currentMethodReturnType)` instead
+of bare `convert(expr)`.  `convertWithType` appends `.to_string()` when:
+- the declared return type is `String` (or `ClassName.STRING`), and
+- the expression converts to a quoted string literal (`starts with "\""`)
+
+```java
+String retExpr = convertWithType(ret.expression, currentMethodReturnType);
+```
+
+Generated:
+
+```rust
+pub fn new_s_identifier(&self, field: &str, counter: &str) -> String {
+    "xyz".to_string()   // ← .to_string() appended automatically
+}
+```
+
+---
+
+## 10h. Non-`MutableReceiver` Option-field Getter Returns
+
+### Problem
+
+A plain getter method (`&self`, no `MutableReceiver`) that returns `this.field`
+where the field is `Option<T>` (no initialiser) has two issues:
+
+1. The declared return type `T` is emitted verbatim, but the raw field is
+   `Option<T>` — so `self.field` has type `Option<T>` where `T` is expected
+   (E0308).
+2. When the field type is a known trait `T`, the return type should be `&dyn T`,
+   not bare `T` (E0782: missing `dyn`).
+
+### Detection — scanning the last RETURN before emitting `->`
+
+`emitMethod` scans the last statement in the body before emitting the return
+type arrow:
+
+```java
+boolean returnsTraitFieldRef  = false;
+boolean returnsOptionFieldRef = false;
+if (!currentMethodConsumesSelf && method.body != null && !method.body.isEmpty()) {
+    Statement lastStmt = method.body.get(method.body.size() - 1);
+    if (lastStmt instanceof Return) {
+        Expression retExpr = ((Return) lastStmt).expression;
+        if (isSelfOptionFieldAccess(retExpr)) {
+            MethodCall mc   = (MethodCall) retExpr;
+            TypeName fieldType = getFieldType(mc.methodName);
+            if (fieldType != null && isKnownTrait(fieldType)) {
+                returnsTraitFieldRef = true;
+            } else {
+                returnsOptionFieldRef = true;
+            }
+        }
+    }
+}
+```
+
+### Return type emission
+
+| Condition | Emitted return type |
+|-----------|-------------------|
+| `returnsTraitFieldRef`  | `&dyn T`   (with `dyn` keyword) |
+| `returnsOptionFieldRef` | `&T`       (plain reference) |
+| neither                 | `T`        (unchanged) |
+
+```java
+if (returnsTraitFieldRef)       sb.append(" -> &dyn ").append(convertTypeToRust(method.returnType));
+else if (returnsOptionFieldRef) sb.append(" -> &")    .append(convertTypeToRust(method.returnType));
+else                            sb.append(" -> ")      .append(convertTypeToRust(method.returnType));
+```
+
+### Body suffix in RETURN handler
+
+The RETURN handler appends the correct suffix based on which flag is set:
+
+```java
+} else if (isSelfOptionFieldAccess(ret.expression)) {
+    MethodCall mc = (MethodCall) ret.expression;
+    TypeName fieldType = getFieldType(mc.methodName);
+    if (fieldType != null && isKnownTrait(fieldType)) {
+        retExpr += ".as_ref().unwrap().as_ref()";  // &Box<dyn T> → &dyn T
+    } else {
+        retExpr += ".as_ref().unwrap()";            // &Option<T> → &T
+    }
+}
+```
+
+Generated:
+
+```rust
+// field: Option<Vec<Box<dyn Any>>>
+pub fn get_history(&self) -> &Vec<Box<dyn std::any::Any>> {
+    self.history.as_ref().unwrap()
+}
+
+// field: Option<Box<dyn InputOutputProcessor>> — a known trait
+pub fn get_delegator(&self) -> &dyn InputOutputProcessor {
+    self.delegator.as_ref().unwrap().as_ref()
+}
+```
+
+---
+
+## 10i. Stateful Trait Propagation
+
+### Problem
+
+When a trait (interface) method carries `MutableReceiver`, implementing classes
+must also emit `&mut self` for the corresponding `@Override` methods.  Without
+this, the trait definition uses `&mut self` but the impl uses `&self`, and the
+Rust compiler reports E0053 (incompatible type for trait method).
+
+### Three-step cascade
+
+**Step 1 — `discoverTraits` marks the trait as stateful**
+
+```java
+// In discoverTraits(), for interface classes:
+for (Method method : clazz.methods) {
+    if (modifiesSelf(method) || consumesSelf(method)) {
+        statefulTraits.add(traitName);   // e.g. "InputOutputProcessor"
+    }
+}
+```
+
+**Step 2 — `emitTraitMethod` emits `&mut self` for the method definition**
+
+The trait definition is emitted by `emitTraitMethod`, which already checked
+`modifiesSelf(method)`.  It now also checks `consumesSelf(method)`:
+
+```java
+// In emitTraitMethod:
+if (modifiesSelf(method) || consumesSelf(method)) {
+    sb.append("mut ");
+}
+```
+
+Generated:
+```rust
+pub trait InputOutputProcessor {
+    fn process_file_init_inputs(&mut self, bean: &FileInitInputs) -> FileInitOutputs;
+    …
+}
+```
+
+**Step 3 — `implementsStatefulTrait` forces `&mut self` on impl methods**
+
+```java
+private boolean implementsStatefulTrait(Method method) {
+    if (!isInterfaceImplementation(method)) return false;
+    if (currentClass == null) return false;
+    for (TypeName intf : currentClass.interfaces) {
+        if (intf instanceof ClassName) {
+            String traitName = toPascalCase(((ClassName) intf).simpleName);
+            if (statefulTraits.contains(traitName)) return true;
+        }
+    }
+    return false;
+}
+```
+
+In `emitMethod`, the receiver check becomes:
+
+```java
+currentMethodReturnType = method.returnType;
+if (currentMethodConsumesSelf || modifiesSelf(method) || implementsStatefulTrait(method)) {
+    sb.append("mut ");
+}
+```
+
+This ensures that even `@Override` methods without an explicit `MutableReceiver`
+annotation emit `&mut self` when the implemented trait is stateful.
+
+**Step 4 — `convertTraitReceiver` uses `.as_mut()` for stateful trait fields**
+
+When a method is called through a field whose type is a stateful trait, the
+field is `Option<Box<dyn T>>`, so `.as_ref().unwrap()` yields `&dyn T` — but
+`&mut self` methods require a `&mut self` receiver (i.e. `&mut dyn T`).  The
+emitter switches to `.as_mut().unwrap()`:
+
+```java
+TypeName trt = traitReceiverType(mc);
+if (trt != null) {
+    String traitName = toPascalCase(getSimpleNameFromType(trt));
+    if (statefulTraits.contains(traitName)) {
+        convertedObject += ".as_mut().unwrap()";   // → &mut dyn T
+    } else {
+        convertedObject += ".as_ref().unwrap()";   // → &dyn T
+    }
+}
+```
+
+Generated:
+```rust
+let mut output_bean = self.delegator.as_mut().unwrap().process_file_init_inputs(&input_bean);
+```
+
+---
+
 ## 12. State Variables Driven by Annotations
 
 | Variable | Set by | Cleared by | Used by |
@@ -645,6 +967,7 @@ check `AnnotationConverter` first.
 | `currentMethodMutableFirstParam` | `emitMethod`, from `hasMutableFirstParam(method)` | next `emitMethod` | `<'a>` lifetime, `&'a mut T` first param, `&'a mut T` return type, `.clone()` on ref-param field reads |
 | `currentMethodFirstParamName` | `emitMethod` param loop (i==0, MutableFirstParam) | next `emitMethod` | (reserved; used by `isMutableFirstParamReturn`) |
 | `currentMethodRefParamNames` | `emitMethod` param loop (i>0, MutableFirstParam) | next `emitMethod` | OBJECT_ACCESSOR `.clone()` detection |
+| `currentMethodReturnType` | `emitMethod`, at method start | next `emitMethod` | `convertWithType` in RETURN handler (string literal `.to_string()` coercion); Option-field getter return type detection |
 
 ---
 
@@ -778,6 +1101,13 @@ by the `calledMethodHasMutableFirstParam` check.
 | Method has `MutableFirstParam` annotation (trait impl) | `hasMutableFirstParam` in `emitMethod(m, true)` | `<'a>`, `&'a mut T` first param, `&T` rest, `&'a mut T` return |
 | Field read from `&T` ref param in `MutableFirstParam` method | `currentMethodRefParamNames` in OBJECT_ACCESSOR | `.clone()` appended |
 | Call to `MutableFirstParam` method on `self` | `calledMethodHasMutableFirstParam` in OPERATOR_VARIABLE | `&mut arg0`, `&arg1`, … |
+| Call to `MutableFirstParam` method through a trait field | scoped `mutableFirstParamMethodNames` in OBJECT_METHOD_CALL | `&mut arg0`, `&arg1`, … |
+| `return "literal"` in method returning `String` | `convertWithType` + `currentMethodReturnType` in RETURN handler | `"literal".to_string()` |
+| Plain getter returns `this.field` (Option, non-trait type, `&self`) | `returnsOptionFieldRef` scan in `emitMethod` | `-> &T`, body `.as_ref().unwrap()` |
+| Plain getter returns `this.field` (Option, known-trait type, `&self`) | `returnsTraitFieldRef` scan in `emitMethod` | `-> &dyn T`, body `.as_ref().unwrap().as_ref()` |
+| Interface method has `MutableReceiver` | `consumesSelf` in `emitTraitMethod`; adds trait to `statefulTraits` | `&mut self` in trait definition |
+| `@Override` method in class implementing a stateful trait | `implementsStatefulTrait(method)` in `emitMethod` | `&mut self` on impl method |
+| Call through a stateful-trait field | `statefulTraits` check in `convertTraitReceiver` | `.as_mut().unwrap()` instead of `.as_ref().unwrap()` |
 
 ---
 
@@ -796,13 +1126,17 @@ by the `calledMethodHasMutableFirstParam` check.
 | `hasMutableFirstParam(Method)` | `Rust.java` | True when method carries `MutableFirstParam` annotation |
 | `calledMethodHasMutableFirstParam(MethodCall)` | `Rust.java` | True when call is to a `MutableFirstParam` method on `this` in the current class |
 | `isMutableFirstParamReturn(Expression)` | `Rust.java` | True when expression is the first param variable (reserved; `&'a mut T` return is implicit) |
+| `convertWithType(Expression, TypeName)` | `Rust.java` | Like `convert` but appends `.to_string()` when declared type is `String` and the expression converts to a string literal |
+| `implementsStatefulTrait(Method)` | `Rust.java` | True when the method is an `@Override` in a class that implements at least one trait in `statefulTraits`; forces `&mut self` without requiring the impl method to carry `MutableReceiver` |
+| `getFieldType(String fieldName)` | `Rust.java` | Returns the declared `TypeName` for a named field in `currentClass`, or `null` if not found; used by Option-field getter detection |
+| `isKnownTrait(TypeName)` | `Rust.java` | True when the simple class name of the type is in `knownTraits`; used to choose `&dyn T` vs `&T` return type for Option-field getters |
 
 ---
 
 ## 16. Unit Tests
 
-`MutableReceiver` and `MutableFirstParam` are covered in
-`RustEmitterTest.java`:
+`MutableReceiver`, `MutableFirstParam`, and the BeanHistory-derived fixes are
+covered in `RustEmitterTest.java`:
 
 | Test group | Tests | What is covered |
 |-----------|-------|----------------|
@@ -819,4 +1153,13 @@ by the `calledMethodHasMutableFirstParam` check.
 | | `mutableFirstParam_impl_subsequentParamIsSharedBorrow` | `input_bean: &T` in impl |
 | | `mutableFirstParam_impl_returnTypeIsMutableBorrow` | `-> &'a mut T` in impl |
 | | `mutableFirstParam_fieldReadFromRefParam_appendsClone` | `.clone()` on `&T` ref-param field reads |
-| | `mutableFirstParam_callSite_firstArgGetsMutRef_secondArgGetsRef` | `&mut arg0`, `&arg1` at call site |
+| | `mutableFirstParam_callSite_firstArgGetsMutRef_secondArgGetsRef` | `&mut arg0`, `&arg1` at `this.method()` call site |
+| Group 15 — String constant coercion | `stringConstant_returnFromStringMethod_appendsToString` | `"literal".to_string()` when return type is `String` (E0308 fix) |
+| | `intConstant_returnFromIntMethod_noToString` | integer literals are not coerced |
+| Group 16 — Option-field getter returns | `optionFieldGetter_valueType_returnsRef` | `-> &T` + `.as_ref().unwrap()` for non-trait Option field (E0308 fix) |
+| | `optionFieldGetter_traitType_returnsRefDyn` | `-> &dyn T` + `.as_ref().unwrap().as_ref()` for trait-type Option field (E0782 fix) |
+| Group 17 — Stateful trait propagation | `statefulTrait_traitDef_hasMutSelf` | `&mut self` in trait definition when method has `MutableReceiver` |
+| | `statefulTrait_implementingClass_implMethodGetsMutSelf` | `&mut self` on impl method via `implementsStatefulTrait`, no explicit `MutableReceiver` needed (E0053 fix) |
+| | `nonStatefulTrait_implementingClass_implMethodGetsSharedSelf` | `&self` on impl method when trait has no `MutableReceiver` methods (sanity check) |
+| Group 18 — MFP through trait field | `mutableFirstParam_throughTraitField_firstArgGetsMutRef` | `&mut arg0`, `&arg1` when call routes through an Option trait field (OBJECT_METHOD_CALL; E0308 fix) |
+| | `mutableFirstParam_throughTraitField_noFalsePositiveOnOtherTrait` | No spurious `&mut` when trait shares a method name but lacks `MutableFirstParam` (scoped key validation) |

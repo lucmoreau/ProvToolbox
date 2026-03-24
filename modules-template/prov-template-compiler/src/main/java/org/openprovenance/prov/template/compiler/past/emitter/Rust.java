@@ -83,6 +83,13 @@ public class Rust implements Emitter<StringBuilder> {
     private boolean currentMethodMutableFirstParam = false; // True when first param is mut T (MutableFirstParam annotation)
     private String currentMethodFirstParamName = null;      // Raw name of the first param when MutableFirstParam
     private Set<String> currentMethodRefParamNames = new HashSet<>(); // Raw names of &T ref params in current MutableFirstParam method
+    private TypeName currentMethodReturnType = null;         // Declared return type of the current method (for convertWithType in RETURN handler)
+    /**
+     * "TraitName.methodName" pairs for all methods carrying MutableFirstParam — shared across
+     * all emitter instances via RustCodeGenerator.  Scoped by trait name to avoid false matches
+     * when two traits happen to share a generic method name (e.g. "process").
+     */
+    private final Set<String> mutableFirstParamMethodNames;
     private final TypeRegistry typeRegistry; // Type registry from type checking phase (may be null)
     private String currentPackageName;       // Set in toWritableObject; used to look up ClassSignature
     private ClassSignature currentClassSignature; // Looked up at start of emit(); null when no registry
@@ -95,7 +102,7 @@ public class Rust implements Emitter<StringBuilder> {
      * @param knownTraits A shared set of known trait names across all code generation
      */
     public Rust(Set<String> knownTraits) {
-        this(knownTraits, new HashSet<>(), null);
+        this(knownTraits, new HashSet<>(), new HashSet<>(), null);
     }
 
     /**
@@ -104,7 +111,7 @@ public class Rust implements Emitter<StringBuilder> {
      * @param statefulTraits A shared set of trait names that have stateful methods
      */
     public Rust(Set<String> knownTraits, Set<String> statefulTraits) {
-        this(knownTraits, statefulTraits, null);
+        this(knownTraits, statefulTraits, new HashSet<>(), null);
     }
 
     /**
@@ -114,8 +121,20 @@ public class Rust implements Emitter<StringBuilder> {
      * @param typeRegistry The TypeRegistry produced by type checking (may be null)
      */
     public Rust(Set<String> knownTraits, Set<String> statefulTraits, TypeRegistry typeRegistry) {
+        this(knownTraits, statefulTraits, new HashSet<>(), typeRegistry);
+    }
+
+    /**
+     * Create a Rust emitter with all shared registries and the PAST type registry.
+     * @param knownTraits A shared set of known trait names across all code generation
+     * @param statefulTraits A shared set of trait names that have stateful methods
+     * @param mutableFirstParamMethodNames A shared set of method names that carry MutableFirstParam
+     * @param typeRegistry The TypeRegistry produced by type checking (may be null)
+     */
+    public Rust(Set<String> knownTraits, Set<String> statefulTraits, Set<String> mutableFirstParamMethodNames, TypeRegistry typeRegistry) {
         this.knownTraits = knownTraits;
         this.statefulTraits = statefulTraits;
+        this.mutableFirstParamMethodNames = mutableFirstParamMethodNames;
         this.typeRegistry = typeRegistry;
     }
 
@@ -135,11 +154,16 @@ public class Rust implements Emitter<StringBuilder> {
             String traitName = toPascalCase(clazz.name);
             knownTraits.add(traitName);
 
-            // Check if this trait has any stateful methods
+            // Check if this trait has any stateful methods (either auto-detected or explicit MutableReceiver)
             for (Method method : clazz.methods) {
-                if (modifiesSelf(method)) {
+                if (modifiesSelf(method) || consumesSelf(method)) {
                     statefulTraits.add(traitName);
-                    break; // One stateful method is enough to mark the trait as stateful
+                }
+                // Track "TraitName.methodName" for all MutableFirstParam methods — used in
+                // OBJECT_METHOD_CALL to inject &mut for the first argument without false-
+                // positives from other traits sharing the same generic method name.
+                if (hasMutableFirstParam(method)) {
+                    mutableFirstParamMethodNames.add(traitName + "." + method.name);
                 }
             }
         }
@@ -573,7 +597,7 @@ public class Rust implements Emitter<StringBuilder> {
         // Self parameter for instance methods
         if (!method.modifiers.contains(Modifier.STATIC)) {
             sb.append("&");
-            if (modifiesSelf(method)) {
+            if (modifiesSelf(method) || consumesSelf(method)) {
                 sb.append("mut ");
             }
             sb.append("self");
@@ -1136,11 +1160,12 @@ public class Rust implements Emitter<StringBuilder> {
 
         // Self parameter for instance methods
         currentMethodConsumesSelf = consumesSelf(method);
+        currentMethodReturnType = method.returnType;
         currentMethodFirstParamName = null;
         currentMethodRefParamNames = new HashSet<>();
         if (!method.modifiers.contains(Modifier.STATIC)) {
             sb.append("&");
-            if (currentMethodConsumesSelf || modifiesSelf(method)) {
+            if (currentMethodConsumesSelf || modifiesSelf(method) || implementsStatefulTrait(method)) {
                 sb.append("mut ");
             }
             sb.append("self");
@@ -1200,7 +1225,34 @@ public class Rust implements Emitter<StringBuilder> {
             if (currentMethodMutableFirstParam && inTrait) {
                 sb.append(" -> &'a mut ").append(convertTypeToRust(method.returnType));
             } else {
-                sb.append(" -> ").append(convertTypeToRust(method.returnType));
+                // Inspect the last RETURN statement to detect self-Option-field getters.
+                // Option<Box<dyn T>>  → return &dyn T  (Box<dyn T> is not Clone)
+                // Option<Vec<…>>      → return &ReturnType  (Vec<Box<dyn Any>> is not Clone)
+                // These references are borrowed from &self so no Clone is needed.
+                boolean returnsTraitFieldRef = false;
+                boolean returnsOptionFieldRef = false;
+                if (!currentMethodConsumesSelf && method.body != null && !method.body.isEmpty()) {
+                    Statement lastStmt = method.body.get(method.body.size() - 1);
+                    if (lastStmt instanceof Return) {
+                        Expression retExpr = ((Return) lastStmt).expression;
+                        if (isSelfOptionFieldAccess(retExpr)) {
+                            MethodCall mc = (MethodCall) retExpr;
+                            TypeName fieldType = getFieldType(mc.methodName);
+                            if (fieldType != null && isKnownTrait(fieldType)) {
+                                returnsTraitFieldRef = true;
+                            } else {
+                                returnsOptionFieldRef = true;
+                            }
+                        }
+                    }
+                }
+                if (returnsTraitFieldRef) {
+                    sb.append(" -> &dyn ").append(convertTypeToRust(method.returnType));
+                } else if (returnsOptionFieldRef) {
+                    sb.append(" -> &").append(convertTypeToRust(method.returnType));
+                } else {
+                    sb.append(" -> ").append(convertTypeToRust(method.returnType));
+                }
             }
         }
 
@@ -1373,6 +1425,24 @@ public class Rust implements Emitter<StringBuilder> {
                     && m.parameters != null && m.parameters.size() == argCount
                     && hasMutableFirstParam(m)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true when {@code method} is an {@code @Override} implementation of a trait that is
+     * in {@code statefulTraits} (i.e. the trait declares {@code &mut self} methods).  Used to
+     * force {@code &mut self} on implementing methods even when the body does not auto-detect
+     * mutation — required when the trait has been marked stateful via {@code MutableReceiver}.
+     */
+    private boolean implementsStatefulTrait(Method method) {
+        if (!isInterfaceImplementation(method)) return false;
+        if (currentClass == null) return false;
+        for (TypeName intf : currentClass.interfaces) {
+            if (intf instanceof ClassName) {
+                String traitName = toPascalCase(((ClassName) intf).simpleName);
+                if (statefulTraits.contains(traitName)) return true;
             }
         }
         return false;
@@ -1569,7 +1639,9 @@ public class Rust implements Emitter<StringBuilder> {
 
             case RETURN -> {
                 Return ret = (Return) statement;
-                String retExpr = convert(ret.expression);
+                // Use convertWithType so that a string constant returned from a String method
+                // gets .to_string() appended (avoids E0308 &str vs String).
+                String retExpr = convertWithType(ret.expression, currentMethodReturnType);
                 if (currentMethodConsumesSelf) {
                     // Returning self in a &mut self method: self is &mut T, return type is T → clone.
                     if (isSelfVariableReturn(ret.expression)) {
@@ -1578,6 +1650,17 @@ public class Rust implements Emitter<StringBuilder> {
                     // Returning self.optionField in a &mut self method: Option<T>, return type is T → clone + unwrap.
                     else if (isSelfOptionFieldAccess(ret.expression)) {
                         retExpr += ".clone().unwrap()";
+                    }
+                } else if (isSelfOptionFieldAccess(ret.expression)) {
+                    // Non-MutableReceiver getter returning a self Option field — borrow instead of clone.
+                    // Option<Box<dyn T>>  → .as_ref().unwrap().as_ref()  gives &dyn T
+                    // Option<Vec<T>>      → .as_ref().unwrap()            gives &Vec<T>
+                    MethodCall mc = (MethodCall) ret.expression;
+                    TypeName fieldType = getFieldType(mc.methodName);
+                    if (fieldType != null && isKnownTrait(fieldType)) {
+                        retExpr += ".as_ref().unwrap().as_ref()";
+                    } else {
+                        retExpr += ".as_ref().unwrap()";
                     }
                 }
                 // MutableFirstParam: return &'a mut T directly — no clone needed.
@@ -2213,12 +2296,22 @@ public class Rust implements Emitter<StringBuilder> {
                 }
                 result.append(convertedObject).append(".").append(toSnakeCase(callMethodName)).append("(");
                 boolean traitCall = isTraitReceiver(mc);
+                // MutableFirstParam call through a trait field: first arg needs &mut, rest &T.
+                // Detected via the scoped "TraitName.methodName" set — avoids false positives when
+                // two traits share the same generic method name (e.g. "process").
+                TypeName receiverTraitType = traitCall ? traitReceiverType(mc) : null;
+                boolean traitMFP = receiverTraitType != null
+                        && mutableFirstParamMethodNames.contains(
+                                toPascalCase(getSimpleNameFromType(receiverTraitType)) + "." + mc.methodName);
                 if (mc.arguments != null) {
                     for (int i = 0; i < mc.arguments.size(); i++) {
                         if (i > 0) result.append(", ");
                         Expression arg = mc.arguments.get(i);
                         String argStr;
-                        if (traitCall) {
+                        if (traitMFP && i == 0) {
+                            // First arg of MutableFirstParam trait method: pass as &mut T
+                            argStr = "&mut " + convert(arg);
+                        } else if (traitCall) {
                             argStr = convertTraitCallArg(arg);
                         } else {
                             ArgTreatment treatment = (pushSpec != null)
@@ -2488,7 +2581,12 @@ public class Rust implements Emitter<StringBuilder> {
                     && objMc.object instanceof Variable) {
                 String varName = ((Variable) objMc.object).name;
                 if ("self".equals(varName) || "this".equals(varName)) {
-                    TypeName t = mc.object.inferredType;
+                    // Mirror the FIELD_VARIABLE branch: prefer inferredType, fall back to
+                    // getFieldType(accessor name) so that e.g. this.merger.process(…) is
+                    // resolved even when no inferredType was set on the accessor expression.
+                    TypeName t = mc.object.inferredType != null
+                            ? mc.object.inferredType
+                            : getFieldType(objMc.methodName);
                     return (t != null && isKnownTrait(t)) ? t : null;
                 }
             }
@@ -2503,8 +2601,16 @@ public class Rust implements Emitter<StringBuilder> {
 
     private String convertTraitReceiver(MethodCall mc) {
         String convertedObject = convert(mc.object);
-        if (traitReceiverType(mc) != null) {
-            convertedObject += ".as_ref().unwrap()";
+        TypeName trt = traitReceiverType(mc);
+        if (trt != null) {
+            // Use as_mut() when the trait is stateful (declares &mut self methods) so the
+            // caller can invoke mutable methods through Box<dyn Trait>.  Use as_ref() otherwise.
+            String traitName = toPascalCase(getSimpleNameFromType(trt));
+            if (statefulTraits.contains(traitName)) {
+                convertedObject += ".as_mut().unwrap()";
+            } else {
+                convertedObject += ".as_ref().unwrap()";
+            }
         } else if (isSelfOptionFieldAccess(mc.object) && !isSelfOptionListField(mc)) {
             // Method called on an Option<T> self-field — must unwrap to reach the inner T.
             // Exception: Option<Vec> fields are handled downstream by the AS_MUT_UNWRAP transform.

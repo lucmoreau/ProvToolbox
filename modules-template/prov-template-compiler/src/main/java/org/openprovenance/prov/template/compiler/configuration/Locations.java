@@ -109,6 +109,8 @@ public class Locations {
             case BEAN_COMPLETER3:
             case BEAN_MERGER:
             case BEAN_MERGER_INTERFACE:
+            case BEAN_HISTORY_INTERFACE:
+            case BEAN_HISTORY:
                 return getIntegratorPackage(name);
 
             case TABLE_CONFIGURATOR+WITH_MAP:

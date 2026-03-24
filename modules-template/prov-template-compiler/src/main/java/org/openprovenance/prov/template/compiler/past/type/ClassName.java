@@ -87,6 +87,8 @@ public class ClassName extends TypeName {
     public static final ParameterizedType HASH_MAP_STRING_INTARRAY = ParameterizedType.get(HASHMAP, STRING, intArray);
     public static final ParameterizedType MAP_STRING_MAP_STRING_INTARRAY = ParameterizedType.get(MAP, STRING, MAP_STRING_INTARRAY);
     public static final ParameterizedType HASH_MAP_STRING_MAP_STRING_INTARRAY = ParameterizedType.get(HASHMAP, STRING, MAP_STRING_INTARRAY);
+    public static final TypeName LIST_OF_OBJECTS = ParameterizedType.get(LIST,OBJECT);
+    public static final TypeName LINKED_LIST_OF_OBJECTS = ParameterizedType.get(LINKED_LIST,OBJECT);
     public static final TypeName LIST_OF_OBJECT_ARRAYS = ParameterizedType.get(LIST,OBJECT_ARRAY);
     public static final TypeName LIST_OF_OBJECT_ARRAYS_ARRAYS = ParameterizedType.get(LIST,OBJECT_ARRAY_ARRAY);
     public static final ParameterizedType HASH_MAP_STRING_T= ParameterizedType.get(HASHMAP, STRING, T());

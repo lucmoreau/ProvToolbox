@@ -97,13 +97,16 @@ public class ConfigProcessor implements Constants {
     private final CompilerJsonSchema compilerJsonSchema;
     private final CompilerClientTest compilerClientTest;
     private final CompilerGenerator compilerGenerator;
+    private final CompilerBeanMerger compilerBeanMerger;
+    private final CompilerBeanHistory compilerBeanHistory;
+
     static {
         descriptorUtils = new DescriptorUtils();
         descriptorUtils.setupDeserializer(objectMapper);
     }
 
     private Optional<StatementChecker> statementChecker;
-    private CompilerBeanMerger compilerBeanMerger;
+
 
 
     public ConfigProcessor(ProvFactory pFactory) {
@@ -113,6 +116,7 @@ public class ConfigProcessor implements Constants {
         this.compilerTypeConverter=new CompilerTypeConverter(pFactory);
         this.compilerBeanCompleter=new CompilerBeanCompleter(pFactory);
         this.compilerBeanMerger=new CompilerBeanMerger(pFactory);
+        this.compilerBeanHistory=new CompilerBeanHistory(pFactory);
         this.compilerSQL=new CompilerSQL(pFactory, "ID");
         this.compilerCommon = new CompilerCommon(pFactory,compilerSQL);
         this.compilerBeanGenerator =new CompilerBeanGenerator(pFactory);
@@ -451,6 +455,9 @@ public class ConfigProcessor implements Constants {
 
             SpecificationFile beanMerger=compilerBeanMerger.generateBeanMerger(configs, locations, BEAN_MERGER);
             beanMerger.save();
+
+            SpecificationFile beanHistory=compilerBeanHistory.generateBeanHistory(configs, locations, BEAN_HISTORY);
+            beanHistory.save();
 
             SpecificationFile templateInvoker = compilerTemplateInvoker.generateTemplateInvoker(configs, locations, TEMPLATE_INVOKER);
             templateInvoker.save();

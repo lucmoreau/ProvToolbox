@@ -12,6 +12,7 @@ import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.Method;
 import org.openprovenance.prov.template.compiler.past.PastFactory;
+import org.openprovenance.prov.template.compiler.past.annotations.MutableReceiver;
 
 import javax.lang.model.element.Modifier;
 
@@ -70,6 +71,7 @@ public class CompilerInputOutputProcessor {
             Method mspec =METHOD(Constants.PROCESS_METHOD_NAME)
                     .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                     .PARAMETER(receivedClassName,"bean")
+                    .ANNOTATIONS(MutableReceiver.NAME)
                     .RETURNS(returnedClassName);
 
             pastClass.METHOD(mspec);

@@ -908,4 +908,341 @@ public class RustEmitterTest {
         assertTrue("Second arg to MutableFirstParam method should be &",
                 out.contains("&input_arg"));
     }
+
+    // =========================================================================
+    // Group 15 — currentMethodReturnType: string constant coercion
+    // =========================================================================
+    //
+    // When a method declares a String return type and the body returns a string
+    // literal (Constant), the emitter must append .to_string() so the &str
+    // literal is coerced to an owned String (E0308 fix).
+    //
+    // Fix: emitMethod records currentMethodReturnType; the RETURN handler calls
+    // convertWithType(expr, currentMethodReturnType) which appends .to_string()
+    // when the declared return type is String.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void stringConstant_returnFromStringMethod_appendsToString() {
+        // A method returning a string literal where the return type is String must
+        // emit "xyz".to_string(), not bare "xyz" (&str).
+        // Regression for: E0308 on bean_history.rs line 56.
+        Method m = new Method("getSuffix")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(ClassName.STRING)
+                .BODY(new Return(new Constant("xyz")));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        assertTrue("String constant return should have .to_string() appended",
+                out.contains("\"xyz\".to_string()"));
+    }
+
+    @Test
+    public void intConstant_returnFromIntMethod_noToString() {
+        // Integer literals must NOT get .to_string() — only String returns are coerced.
+        Method m = new Method("getCount")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(ClassName._int)
+                .BODY(new Return(new Constant(42)));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        assertFalse("Integer constant return must not get .to_string()",
+                out.contains("to_string()"));
+        assertTrue("Integer constant should appear as-is", out.contains("42"));
+    }
+
+    // =========================================================================
+    // Group 16 — Non-MutableReceiver Option-field getter returns
+    // =========================================================================
+    //
+    // A plain getter (&self, no MutableReceiver) that returns this.field where
+    // the field is Option<T> (no initialiser) must:
+    //   (a) emit &T  or  &dyn T  as the return type (not T)
+    //   (b) append .as_ref().unwrap()  or  .as_ref().unwrap().as_ref()  to the body
+    //
+    // Two sub-cases:
+    //   - Field type is a plain class → &T  + .as_ref().unwrap()
+    //   - Field type is a known trait → &dyn T  + .as_ref().unwrap().as_ref()
+    //
+    // Fix: emitMethod scans the last RETURN before emitting "-> …" to detect the
+    // self-Option-field pattern; sets returnsOptionFieldRef / returnsTraitFieldRef.
+    // -------------------------------------------------------------------------
+
+    /**
+     * Helper: emit {@code target} after pre-discovering {@code traitPrelude} as a trait.
+     * This is needed when {@code target} has a field whose type is the trait, so that
+     * {@code isKnownTrait} / {@code statefulTraits} checks in the emitter succeed.
+     */
+    private String emitWithTraitPrelude(Class traitPrelude, Class target) {
+        Rust rust = new Rust();
+        rust.discoverTraits(traitPrelude);
+        rust.discoverClass(target);
+        return rust.emit(target).toString();
+    }
+
+    @Test
+    public void optionFieldGetter_valueType_returnsRef() {
+        // A getter returning this.items (Option<MyList>, no initialiser) from a &self
+        // method must emit "-> &MyList" and append .as_ref().unwrap() in the body.
+        // Regression for: E0308 on bean_history.rs line 60 (get_history returning
+        // Option<Vec<…>> where &Vec<…> was expected).
+        TypeName myListType = ClassName.get("MyList", "com.example");
+        Field optField = new Field("items", myListType);   // no initialiser → Option<MyList>
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall fieldReturn = new MethodCall(thisVar, "items");  // OBJECT_ACCESSOR
+        Method getter = new Method("getItems")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(myListType)
+                .BODY(new Return(fieldReturn));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(optField)
+                .METHODS(getter);
+        String out = emit(clazz);
+        assertTrue("Return type of Option-field getter should be &MyList",
+                out.contains("-> &MyList"));
+        assertTrue("Body of Option-field getter should use .as_ref().unwrap()",
+                out.contains("as_ref().unwrap()"));
+        assertFalse("Plain Option-field getter should not emit &mut self",
+                out.contains("&mut self"));
+        assertFalse("Return type must not be bare T (would give Option<T> where &T expected)",
+                out.contains("-> MyList"));
+    }
+
+    @Test
+    public void optionFieldGetter_traitType_returnsRefDyn() {
+        // A getter returning this.processor (Option<Box<dyn MyProcessor>>, no init)
+        // from a &self method must emit "-> &dyn MyProcessor" and append
+        // .as_ref().unwrap().as_ref() (extra .as_ref() to go from &Box<dyn T> to &dyn T).
+        // Regression for: E0782 on bean_history.rs line 63 (missing 'dyn' keyword).
+        TypeName traitType = ClassName.get("MyProcessor", "com.example");
+
+        // An empty interface so the emitter adds "MyProcessor" to knownTraits
+        Class traitClass = new Class("MyProcessor", true).MODIFIERS(Modifier.PUBLIC);
+
+        Field optField = new Field("processor", traitType);  // no initialiser
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall fieldReturn = new MethodCall(thisVar, "processor");  // OBJECT_ACCESSOR
+        Method getter = new Method("getProcessor")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(traitType)
+                .BODY(new Return(fieldReturn));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(optField)
+                .METHODS(getter);
+
+        String out = emitWithTraitPrelude(traitClass, clazz);
+        assertTrue("Return type of trait-type Option-field getter should be &dyn MyProcessor",
+                out.contains("-> &dyn MyProcessor"));
+        assertTrue("Body of trait-type getter should use .as_ref().unwrap().as_ref()",
+                out.contains("as_ref().unwrap().as_ref()"));
+        assertFalse("Must not emit bare T (missing dyn keyword, E0782)",
+                out.contains("-> MyProcessor"));
+    }
+
+    // =========================================================================
+    // Group 17 — Stateful trait propagation
+    // =========================================================================
+    //
+    // When a trait (interface) carries MutableReceiver on at least one method it
+    // is "stateful" — added to statefulTraits during discoverTraits().  This has
+    // two downstream effects:
+    //
+    //   (a) emitTraitMethod emits &mut self for methods with MutableReceiver
+    //   (b) implementsStatefulTrait() forces &mut self on ALL @Override methods
+    //       in any class that implements the stateful trait — even when the impl
+    //       method itself carries no explicit MutableReceiver annotation.
+    //
+    // Fix for E0053 on bean_history.rs line 70.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void statefulTrait_traitDef_hasMutSelf() {
+        // A trait method annotated with MutableReceiver must emit &mut self in the
+        // trait definition (emitTraitMethod path).
+        TypeName inputType  = ClassName.get("InputBean",  "com.example");
+        TypeName outputType = ClassName.get("OutputBean", "com.example");
+        Method m = new Method("process")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .ANNOTATIONS(MutableReceiver.NAME)
+                .PARAMETER(inputType, "bean")
+                .RETURNS(outputType);
+        Class traitClass = new Class("MyProcessor", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(m);
+        String out = emit(traitClass);
+        assertTrue("Stateful trait method should emit &mut self in trait definition",
+                out.contains("fn process(&mut self"));
+    }
+
+    @Test
+    public void statefulTrait_implementingClass_implMethodGetsMutSelf() {
+        // An impl method annotated only with @Override (no explicit MutableReceiver)
+        // must still emit &mut self when the implemented trait is stateful.
+        // This is the implementsStatefulTrait() path — the mutation requirement
+        // propagates from the trait into the implementing class automatically.
+        // Regression for: E0053 on bean_history.rs line 70.
+        TypeName inputType  = ClassName.get("InputBean",  "com.example");
+        TypeName outputType = ClassName.get("OutputBean", "com.example");
+
+        // Trait with a MutableReceiver method → makes the trait "stateful"
+        Method traitMethod = new Method("process")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .ANNOTATIONS(MutableReceiver.NAME)
+                .PARAMETER(inputType, "bean")
+                .RETURNS(outputType);
+        Class traitClass = new Class("MyProcessor", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(traitMethod);
+
+        // Impl method carries only @Override — no explicit MutableReceiver
+        Method implMethod = new Method("process")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                .ANNOTATIONS(OverrideAnnotation.NAME)   // intentionally no MutableReceiver
+                .PARAMETER(inputType, "bean")
+                .RETURNS(outputType)
+                .BODY(new Return(local("bean")));
+        Class implClass = new Class("ConcreteProcessor").MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(ClassName.get("MyProcessor", "com.example"))
+                .METHODS(implMethod);
+
+        String out = emitWithTraitPrelude(traitClass, implClass);
+        assertTrue("Impl of stateful trait must emit &mut self even without explicit MutableReceiver",
+                out.contains("fn process(&mut self"));
+    }
+
+    @Test
+    public void nonStatefulTrait_implementingClass_implMethodGetsSharedSelf() {
+        // Sanity check: when the trait is NOT stateful (no MutableReceiver methods),
+        // the impl method must emit &self, not &mut self.
+        TypeName inputType  = ClassName.get("InputBean",  "com.example");
+        TypeName outputType = ClassName.get("OutputBean", "com.example");
+
+        // Trait with NO MutableReceiver methods → not stateful
+        Method traitMethod = new Method("process")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                // No MutableReceiver annotation
+                .PARAMETER(inputType, "bean")
+                .RETURNS(outputType);
+        Class traitClass = new Class("ReadOnlyProcessor", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(traitMethod);
+
+        Method implMethod = new Method("process")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .PARAMETER(inputType, "bean")
+                .RETURNS(outputType)
+                .BODY(new Return(local("bean")));
+        Class implClass = new Class("ConcreteReader").MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(ClassName.get("ReadOnlyProcessor", "com.example"))
+                .METHODS(implMethod);
+
+        String out = emitWithTraitPrelude(traitClass, implClass);
+        assertFalse("Impl of non-stateful trait must NOT emit &mut self",
+                out.contains("fn process(&mut self"));
+        assertTrue("Impl of non-stateful trait should emit &self",
+                out.contains("fn process(&self"));
+    }
+
+    // =========================================================================
+    // Group 18 — MutableFirstParam through a trait field (OBJECT_METHOD_CALL)
+    // =========================================================================
+    //
+    // §10e covers MutableFirstParam call-site injection for direct this.method()
+    // calls (OPERATOR_VARIABLE path, calledMethodHasMutableFirstParam).  A
+    // different path applies when the call is routed through a trait-typed field:
+    //
+    //   this.merger.processBean(bean, input)
+    //   →  self.merger.as_ref().unwrap().process_bean(&mut bean, &input)
+    //
+    // The set mutableFirstParamMethodNames contains scoped "TraitName.methodName"
+    // pairs (discovered via discoverTraits).  In OBJECT_METHOD_CALL, the emitter
+    // looks up "TraitName.methodName" to inject &mut for arg 0 and & for arg 1+.
+    //
+    // Using scoped names avoids false positives when two traits share a generic
+    // method name (e.g. BeanMergerInterface and InputOutputProcessor both have
+    // a method named "process").
+    //
+    // Regression for: E0308 on bean_history.rs line 75.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void mutableFirstParam_throughTraitField_firstArgGetsMutRef() {
+        // Calling a MutableFirstParam method through a trait-typed Option field must
+        // inject &mut for argument 0 and & for argument 1 in the OBJECT_METHOD_CALL path.
+        // Regression for: E0308 on bean_history.rs line 75 (merger calls).
+        TypeName beanType   = ClassName.get("FileInitBean",   "com.example");
+        TypeName inputType  = ClassName.get("FileInitInputs", "com.example");
+        TypeName ifaceType  = ClassName.get("BeanMergerIface","com.example");
+
+        // Trait with a MutableFirstParam method
+        Method traitMethod = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .ANNOTATIONS(MutableFirstParam.NAME)
+                .PARAMETER(beanType,  "bean")
+                .PARAMETER(inputType, "inputBean")
+                .RETURNS(beanType);
+        Class traitClass = new Class("BeanMergerIface", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(traitMethod);
+
+        // Host class with a field of the trait type and a method that calls through it
+        Field mergerField = new Field("merger", ifaceType);   // no initialiser → Option<Box<dyn …>>
+        Variable thisVar   = new Variable("this", LOCAL_VARIABLE);
+        MethodCall mergerAccess = new MethodCall(thisVar, "merger");        // OBJECT_ACCESSOR
+        Variable beanArg   = local("beanArg");
+        Variable inputArg  = local("inputArg");
+        MethodCall callThrough = new MethodCall(
+                mergerAccess, "processBean", List.of(beanArg, inputArg));   // OBJECT_METHOD_CALL
+        Method outerMethod = publicMethod("doProcess", callThrough);
+
+        Class hostClass = new Class("BeanHistory").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(mergerField)
+                .METHODS(outerMethod);
+
+        String out = emitWithTraitPrelude(traitClass, hostClass);
+        assertTrue("First arg of MFP call through trait field should be &mut",
+                out.contains("&mut bean_arg"));
+        assertTrue("Second arg of MFP call through trait field should be &",
+                out.contains("&input_arg"));
+    }
+
+    @Test
+    public void mutableFirstParam_throughTraitField_noFalsePositiveOnOtherTrait() {
+        // When two traits share a method name (e.g. "processBean"), only the one
+        // annotated with MutableFirstParam should inject &mut.  The other trait's
+        // method must not get spurious &mut on its first argument.
+        // This validates the scoped "TraitName.methodName" key in mutableFirstParamMethodNames.
+        TypeName beanType  = ClassName.get("FileInitBean",   "com.example");
+        TypeName inputType = ClassName.get("FileInitInputs", "com.example");
+
+        // Trait WITHOUT MutableFirstParam — plain method sharing the same name
+        Method plainMethod = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                // intentionally no MutableFirstParam
+                .PARAMETER(beanType,  "bean")
+                .PARAMETER(inputType, "inputBean")
+                .RETURNS(beanType);
+        Class plainTrait = new Class("PlainProcessor", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(plainMethod);
+
+        TypeName plainIfaceType = ClassName.get("PlainProcessor", "com.example");
+        Field processorField = new Field("processor", plainIfaceType);  // no initialiser
+        Variable thisVar    = new Variable("this", LOCAL_VARIABLE);
+        MethodCall procAccess = new MethodCall(thisVar, "processor");          // OBJECT_ACCESSOR
+        Variable beanArg    = local("beanArg");
+        Variable inputArg   = local("inputArg");
+        MethodCall callThrough = new MethodCall(
+                procAccess, "processBean", List.of(beanArg, inputArg));         // OBJECT_METHOD_CALL
+        Method outerMethod = publicMethod("doProcess", callThrough);
+
+        Class hostClass = new Class("Host").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(processorField)
+                .METHODS(outerMethod);
+
+        String out = emitWithTraitPrelude(plainTrait, hostClass);
+        assertFalse("Call through non-MFP trait must NOT inject &mut for first arg",
+                out.contains("&mut bean_arg"));
+    }
 }

@@ -70,6 +70,10 @@ public class RustProjectGenerator {
         cargo.append("name = \"").append(toSnakeCase(projectName)).append("\"\n");
         cargo.append("path = \"src/main.rs\"\n");
         cargo.append("\n");
+        cargo.append("[registries.crates-io]\n" +
+                "protocol = \"sparse\"\n" );
+
+
         /*
         cargo.append("[source.crates-io]\n" +
                 "replace-with = \"vendored-sources\"\n" +
@@ -255,7 +259,7 @@ public class RustProjectGenerator {
             main.append("    println!();\n\n");
 
             main.append("    // Create an instance of ").append(typeName).append("\n");
-            main.append("    let instance = ").append(typeName).append("::new(\n");
+            main.append("    let instance = ").append(typeName).append("::new()l\n");
             main.append("        // Add default constructor arguments here\n");
             main.append("        // TODO: Customize based on actual constructor signature\n");
             main.append("""

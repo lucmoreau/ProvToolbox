@@ -80,6 +80,9 @@ public class Rust implements Emitter<StringBuilder> {
     private final Map<String, Class> classRegistry = new HashMap<>();
     private boolean needsValueEnum = false; // Track if Value enum needs to be generated for heterogeneous arrays
     private boolean currentMethodConsumesSelf = false; // True when the current method uses consuming (mut self) receiver
+    private boolean currentMethodMutableFirstParam = false; // True when first param is mut T (MutableFirstParam annotation)
+    private String currentMethodFirstParamName = null;      // Raw name of the first param when MutableFirstParam
+    private Set<String> currentMethodRefParamNames = new HashSet<>(); // Raw names of &T ref params in current MutableFirstParam method
     private final TypeRegistry typeRegistry; // Type registry from type checking phase (may be null)
     private String currentPackageName;       // Set in toWritableObject; used to look up ClassSignature
     private ClassSignature currentClassSignature; // Looked up at start of emit(); null when no registry
@@ -542,8 +545,21 @@ public class Rust implements Emitter<StringBuilder> {
         String traitMethodName = (traitMethodAltName != null) ? traitMethodAltName : method.name;
         sb.append(INDENT).append("fn ").append(sanitizeName(toSnakeCase(traitMethodName)));
 
+        // MutableFirstParam methods need explicit lifetime '<'a> on the trait signature too.
+        boolean traitMFP = hasMutableFirstParam(method);
         // Generic type parameters
-        if (method.typeVariables != null && !method.typeVariables.isEmpty()) {
+        if (traitMFP) {
+            if (method.typeVariables != null && !method.typeVariables.isEmpty()) {
+                sb.append("<'a, ");
+                for (int i = 0; i < method.typeVariables.size(); i++) {
+                    if (i > 0) sb.append(", ");
+                    sb.append(convertTypeToRust(method.typeVariables.get(i)));
+                }
+                sb.append(">");
+            } else {
+                sb.append("<'a>");
+            }
+        } else if (method.typeVariables != null && !method.typeVariables.isEmpty()) {
             sb.append("<");
             for (int i = 0; i < method.typeVariables.size(); i++) {
                 if (i > 0) sb.append(", ");
@@ -568,20 +584,31 @@ public class Rust implements Emitter<StringBuilder> {
 
         // Parameters
         if (method.parameters != null) {
+            boolean mutableFirst = hasMutableFirstParam(method);
             for (int i = 0; i < method.parameters.size(); i++) {
                 if (i > 0) sb.append(", ");
                 Parameter param = method.parameters.get(i);
+                // MutableFirstParam: first param is &'a mut T (lifetime-annotated mutable borrow).
+                // The trait declaration and the impl must agree on the lifetime parameter.
+                String rustParamType = (mutableFirst && i == 0)
+                        ? "&'a mut " + convertTypeToRustParam(param.type)
+                        : convertTypeToRustTraitParam(param.type);
                 sb.append(sanitizeName(toSnakeCase(param.name)))
                         .append(": ")
-                        .append(convertTypeToRustTraitParam(param.type));
+                        .append(rustParamType);
             }
         }
 
         sb.append(")");
 
         // Return type
+        // MutableFirstParam: return &'a mut T — the same reference passed as first param.
         if (method.returnType != null && !isVoidType(method.returnType)) {
-            sb.append(" -> ").append(convertTypeToRust(method.returnType));
+            if (traitMFP) {
+                sb.append(" -> &'a mut ").append(convertTypeToRust(method.returnType));
+            } else {
+                sb.append(" -> ").append(convertTypeToRust(method.returnType));
+            }
         }
 
         sb.append(";\n\n");
@@ -1082,7 +1109,21 @@ public class Rust implements Emitter<StringBuilder> {
         sb.append("fn ").append(sanitizeName);
 
         // Generic type parameters
-        if (method.typeVariables != null && !method.typeVariables.isEmpty()) {
+        // MutableFirstParam methods need an explicit lifetime '<'a> that ties the first
+        // parameter (&'a mut T) to the return type (&'a mut T).
+        currentMethodMutableFirstParam = hasMutableFirstParam(method);
+        if (currentMethodMutableFirstParam && inTrait) {
+            if (method.typeVariables != null && !method.typeVariables.isEmpty()) {
+                sb.append("<'a, ");
+                for (int i = 0; i < method.typeVariables.size(); i++) {
+                    if (i > 0) sb.append(", ");
+                    sb.append(convertTypeToRust(method.typeVariables.get(i)));
+                }
+                sb.append(">");
+            } else {
+                sb.append("<'a>");
+            }
+        } else if (method.typeVariables != null && !method.typeVariables.isEmpty()) {
             sb.append("<");
             for (int i = 0; i < method.typeVariables.size(); i++) {
                 if (i > 0) sb.append(", ");
@@ -1095,6 +1136,8 @@ public class Rust implements Emitter<StringBuilder> {
 
         // Self parameter for instance methods
         currentMethodConsumesSelf = consumesSelf(method);
+        currentMethodFirstParamName = null;
+        currentMethodRefParamNames = new HashSet<>();
         if (!method.modifiers.contains(Modifier.STATIC)) {
             sb.append("&");
             if (currentMethodConsumesSelf || modifiesSelf(method)) {
@@ -1127,17 +1170,38 @@ public class Rust implements Emitter<StringBuilder> {
                     }
                 }
 
-                sb.append(sanitizeName(toSnakeCase(param.name)))
-                        .append(": ")
-                        .append(inTrait ? convertTypeToRustTraitParam(paramType) : convertTypeToRustParam(paramType));
+                String snakeName = sanitizeName(toSnakeCase(param.name));
+
+                // MutableFirstParam: first param is &mut T (mutable borrow); rest are &T (read-only refs).
+                // The caller retains ownership of the bean; the method writes fields into it and
+                // returns bean.clone() so the API still looks like a transformer.
+                // No lifetime annotation is needed: the return type is owned (not derived from &mut T).
+                if (currentMethodMutableFirstParam && inTrait && i == 0) {
+                    sb.append(snakeName).append(": &'a mut ").append(convertTypeToRustParam(paramType));
+                    currentMethodFirstParamName = param.name; // store raw name for RETURN / call-site lookup
+                } else {
+                    sb.append(snakeName).append(": ")
+                            .append(inTrait ? convertTypeToRustTraitParam(paramType) : convertTypeToRustParam(paramType));
+                    // Track which params are &T references so .clone() can be appended when their
+                    // fields are read (non-Copy field access through a shared reference requires clone).
+                    if (currentMethodMutableFirstParam && inTrait && i > 0) {
+                        currentMethodRefParamNames.add(param.name);
+                    }
+                }
             }
         }
 
         sb.append(")");
 
         // Return type
+        // MutableFirstParam: return &'a mut T — the same mutable reference that was passed in,
+        // so the caller can chain calls without cloning.
         if (method.returnType != null && !isVoidType(method.returnType)) {
-            sb.append(" -> ").append(convertTypeToRust(method.returnType));
+            if (currentMethodMutableFirstParam && inTrait) {
+                sb.append(" -> &'a mut ").append(convertTypeToRust(method.returnType));
+            } else {
+                sb.append(" -> ").append(convertTypeToRust(method.returnType));
+            }
         }
 
         sb.append(" {\n");
@@ -1276,6 +1340,58 @@ public class Rust implements Emitter<StringBuilder> {
         for (org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation annot : method.annotation) {
             if (annot instanceof org.openprovenance.prov.template.compiler.past.annotations.RustAnnotation) {
                 if (annot.getName().equals(org.openprovenance.prov.template.compiler.past.annotations.MutableReceiver.NAME)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true when the return expression is the first (bean) parameter of a
+     * MutableFirstParam method.  Because that parameter is {@code &mut T}, returning
+     * the variable as {@code T} requires appending {@code .clone()}.
+     */
+    private boolean isMutableFirstParamReturn(Expression expr) {
+        if (currentMethodFirstParamName == null) return false;
+        if (!(expr instanceof Variable)) return false;
+        return currentMethodFirstParamName.equals(((Variable) expr).name);
+    }
+
+    /**
+     * Returns true when a method-call on {@code this}/{@code self} resolves to a
+     * MutableFirstParam method in the current class.  Used by the OPERATOR_VARIABLE
+     * emitter to add {@code &mut} to argument 0 and {@code &} to arguments 1+.
+     */
+    private boolean calledMethodHasMutableFirstParam(MethodCall mc) {
+        if (currentClass == null) return false;
+        if (!(mc.object instanceof Variable)) return false;
+        if (!"this".equals(((Variable) mc.object).name)) return false;
+        int argCount = mc.arguments == null ? 0 : mc.arguments.size();
+        for (Method m : currentClass.methods) {
+            if (m.name.equals(mc.methodName)
+                    && m.parameters != null && m.parameters.size() == argCount
+                    && hasMutableFirstParam(m)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the method's first non-self parameter should be taken by owned
+     * mutable value ({@code &mut T}) rather than shared reference ({@code &T}).
+     * Triggered by the MutableFirstParam annotation.
+     * <p>
+     * This is used for the BeanMerger pattern: the method receives a bean, writes
+     * fields from an input/output into it, and returns the updated owned bean.
+     * No lifetime annotation is needed because both the parameter and return type
+     * are owned values.
+     */
+    private boolean hasMutableFirstParam(Method method) {
+        for (org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation annot : method.annotation) {
+            if (annot instanceof org.openprovenance.prov.template.compiler.past.annotations.RustAnnotation) {
+                if (annot.getName().equals(org.openprovenance.prov.template.compiler.past.annotations.MutableFirstParam.NAME)) {
                     return true;
                 }
             }
@@ -1464,6 +1580,8 @@ public class Rust implements Emitter<StringBuilder> {
                         retExpr += ".clone().unwrap()";
                     }
                 }
+                // MutableFirstParam: return &'a mut T directly — no clone needed.
+                // (The returned reference carries lifetime 'a, same as the first parameter.)
                 if (isLastStatement) {
                     // Rust implicit return - no semicolon
                     sb.append(indent)
@@ -2129,6 +2247,14 @@ public class Rust implements Emitter<StringBuilder> {
                     result.append(className).append("::").append(sanitizeName(toSnakeCase(mc.methodName).toUpperCase()));
                 } else if (mc.object instanceof Variable) {
                     result.append(convert(mc.object)).append(".").append(sanitizeName(toSnakeCase(mc.methodName)));
+                    // In MutableFirstParam methods, params 1..n are &T references.
+                    // Reading a field through &T requires .clone() for non-Copy types.
+                    // We always emit .clone() here — it is a no-op for Copy types and
+                    // required (E0507) for non-Copy types such as Option<String>.
+                    if (currentMethodMutableFirstParam
+                            && currentMethodRefParamNames.contains(((Variable) mc.object).name)) {
+                        result.append(".clone()");
+                    }
                 } else if (mc.object instanceof MethodCall) {
                     MethodCall mc2 = (MethodCall) mc.object;
                     String inner = convert(mc2);
@@ -2194,14 +2320,24 @@ public class Rust implements Emitter<StringBuilder> {
                 // Resolve spec by original Java method name for per-argument treatment.
                 RustMethodSpec opVarSpec = METHOD_REGISTRY.resolveMethodGlobal(mc.methodName);
 
+                // For MutableFirstParam methods called on self: arg 0 is &mut (mutable borrow of the
+                // bean being updated); args 1+ are & (read-only borrows of input/output beans).
+                boolean calleeMFP = calledMethodHasMutableFirstParam(mc);
+
                 result.append(convertedObject).append(".").append(toSnakeCase(callMethodName)).append("(");
                 if (mc.arguments != null) {
                     for (int i = 0; i < mc.arguments.size(); i++) {
                         if (i > 0) result.append(", ");
                         Expression arg = mc.arguments.get(i);
-                        ArgTreatment treatment = (opVarSpec != null)
-                                ? opVarSpec.argTreatment(i) : ArgTreatment.PASS_BY_VALUE;
-                        result.append(applyArgTreatment(treatment, arg));
+                        if (calleeMFP && i == 0) {
+                            result.append("&mut ").append(convert(arg));
+                        } else if (calleeMFP && i > 0) {
+                            result.append("&").append(convert(arg));
+                        } else {
+                            ArgTreatment treatment = (opVarSpec != null)
+                                    ? opVarSpec.argTreatment(i) : ArgTreatment.PASS_BY_VALUE;
+                            result.append(applyArgTreatment(treatment, arg));
+                        }
                     }
                 }
                 result.append(")");

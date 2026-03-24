@@ -3,7 +3,9 @@ package org.openprovenance.prov.template.compiler.test;
 import org.junit.Test;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;  // explicit: shadows java.lang.Class
+import org.openprovenance.prov.template.compiler.past.annotations.MutableFirstParam;
 import org.openprovenance.prov.template.compiler.past.annotations.MutableReceiver;
+import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
@@ -694,5 +696,216 @@ public class RustEmitterTest {
         String out = emit(clazz);
         assertTrue("LHS 2-level Option chain should insert .as_mut().unwrap()",
                 out.contains("my_bean.as_mut().unwrap().time"));
+    }
+
+    // =========================================================================
+    // Group 14 — MutableFirstParam annotation
+    // =========================================================================
+    //
+    // These tests cover the &'a mut T pattern introduced for the BeanMerger:
+    //   - trait definition signatures get <'a>, &'a mut T for the first param and return
+    //   - trait impl signatures agree with the trait (same lifetime / mutability)
+    //   - field reads from &T parameters (params 1..n) get .clone() appended
+    //   - call sites on self add &mut to arg 0 and & to args 1+
+    //
+    // The "two code-path" structure (emitTraitMethod for trait defs, emitMethod(m, true)
+    // for trait impls) means both paths must be exercised independently.
+    //
+    // Setup shared between most tests in this group:
+    //   beanType  = FileInitBean   (first param / return type)
+    //   inputType = FileInitInputs (second param — a read-only borrow)
+    //   method    = processBean(bean, inputBean) annotated with MutableFirstParam
+    // -------------------------------------------------------------------------
+
+    /** Helper: build a minimal interface (trait) class with one MutableFirstParam method. */
+    private Class buildMfpTrait() {
+        TypeName beanType  = ClassName.get("FileInitBean",   "com.example");
+        TypeName inputType = ClassName.get("FileInitInputs", "com.example");
+        Method m = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .ANNOTATIONS(MutableFirstParam.NAME)
+                .PARAMETER(beanType,  "bean")
+                .PARAMETER(inputType, "inputBean")
+                .RETURNS(beanType);
+        Class traitClass = new Class("BeanMergerInterface", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(m);
+        return traitClass;
+    }
+
+    /** Helper: build a minimal impl class with one MutableFirstParam method (inTrait path). */
+    private Class buildMfpImpl() {
+        TypeName beanType  = ClassName.get("FileInitBean",   "com.example");
+        TypeName inputType = ClassName.get("FileInitInputs", "com.example");
+        Method m = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                .ANNOTATIONS(OverrideAnnotation.NAME, MutableFirstParam.NAME)
+                .PARAMETER(beanType,  "bean")
+                .PARAMETER(inputType, "inputBean")
+                .RETURNS(beanType);
+        return new Class("BeanMerger").MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(ClassName.get("BeanMergerInterface", "com.example"))
+                .METHODS(m);
+    }
+
+    // ---- trait definition (emitTraitMethod path) ----------------------------
+
+    @Test
+    public void mutableFirstParam_traitDef_hasLifetimeParam() {
+        // MutableFirstParam on a trait method → <'a> lifetime must appear on the signature.
+        // Without the lifetime, &'a mut T in the param and -> &'a mut T in the return
+        // would be an undeclared lifetime (E0261).
+        String out = emit(buildMfpTrait());
+        assertTrue("Trait method with MutableFirstParam should declare <'a>",
+                out.contains("<'a>"));
+    }
+
+    @Test
+    public void mutableFirstParam_traitDef_firstParamIsMutableBorrow() {
+        // The first non-self parameter must be &'a mut T.
+        // Without this, writing bean.field = ... fails with E0594.
+        String out = emit(buildMfpTrait());
+        assertTrue("First param in trait def should be &'a mut FileInitBean",
+                out.contains("bean: &'a mut FileInitBean"));
+    }
+
+    @Test
+    public void mutableFirstParam_traitDef_subsequentParamIsSharedBorrow() {
+        // Params 1..n must remain &T (read-only borrow) — only the first param is mutable.
+        String out = emit(buildMfpTrait());
+        assertTrue("Subsequent param in trait def should be &FileInitInputs",
+                out.contains("input_bean: &FileInitInputs"));
+        assertFalse("Subsequent param must NOT be &'a mut",
+                out.contains("input_bean: &'a mut"));
+    }
+
+    @Test
+    public void mutableFirstParam_traitDef_returnTypeIsMutableBorrow() {
+        // Return type must be &'a mut T to tie the returned reference to the input
+        // bean's lifetime (no clone needed, E0308 is avoided).
+        String out = emit(buildMfpTrait());
+        assertTrue("Return type in trait def should be &'a mut FileInitBean",
+                out.contains("-> &'a mut FileInitBean"));
+    }
+
+    // ---- trait implementation (emitMethod(m, inTrait=true) path) ------------
+
+    @Test
+    public void mutableFirstParam_impl_hasLifetimeParam() {
+        // The impl-side signature must also carry <'a> so it matches the trait declaration
+        // (E0053 if the two signatures differ).
+        String out = emit(buildMfpImpl());
+        assertTrue("Impl method with MutableFirstParam should declare <'a>",
+                out.contains("<'a>"));
+    }
+
+    @Test
+    public void mutableFirstParam_impl_firstParamIsMutableBorrow() {
+        // The impl-side first param must be &'a mut T to match the trait signature.
+        String out = emit(buildMfpImpl());
+        assertTrue("First param in impl should be &'a mut FileInitBean",
+                out.contains("bean: &'a mut FileInitBean"));
+    }
+
+    @Test
+    public void mutableFirstParam_impl_subsequentParamIsSharedBorrow() {
+        // Params 1..n are emitted via convertTypeToRustTraitParam → &T in impl too.
+        String out = emit(buildMfpImpl());
+        assertTrue("Subsequent param in impl should be &FileInitInputs",
+                out.contains("input_bean: &FileInitInputs"));
+        assertFalse("Subsequent param in impl must NOT be &'a mut",
+                out.contains("input_bean: &'a mut"));
+    }
+
+    @Test
+    public void mutableFirstParam_impl_returnTypeIsMutableBorrow() {
+        // Impl-side return type must agree with the trait: &'a mut T.
+        String out = emit(buildMfpImpl());
+        assertTrue("Return type in impl should be &'a mut FileInitBean",
+                out.contains("-> &'a mut FileInitBean"));
+    }
+
+    // ---- field reads from &T reference params get .clone() ------------------
+
+    @Test
+    public void mutableFirstParam_fieldReadFromRefParam_appendsClone() {
+        // Within a MutableFirstParam impl method, params 1..n are &T references.
+        // Reading a field through a &T reference for a non-Copy type requires .clone()
+        // to avoid E0507 ("cannot move out of a shared reference").
+        //
+        // body:  myBean.time = inputRef.time   →   my_bean.time = input_ref.time.clone()
+        //
+        // Note: variable names are chosen so "my_bean.time.clone()" is NOT a substring
+        // of "input_ref.time.clone()" (avoids false assertion failure from prefix overlap).
+        TypeName beanType  = ClassName.get("FileInitBean",   "com.example");
+        TypeName inputType = ClassName.get("FileInitInputs", "com.example");
+
+        // First param (mutable, &'a mut T): "myBean"  → snake_case: "my_bean"
+        // Second param (read-only, &T):    "inputRef" → snake_case: "input_ref"
+        Variable myBeanVar   = local("myBean");
+        Variable inputRefVar = local("inputRef");
+        MethodCall myBeanTime  = new MethodCall(myBeanVar,   "time");  // OBJECT_ACCESSOR (LHS — &mut T field write)
+        MethodCall inputRefTime = new MethodCall(inputRefVar, "time"); // OBJECT_ACCESSOR (RHS — &T field read)
+        Assignment assign = new Assignment(myBeanTime, inputRefTime);
+        Return ret = new Return(myBeanVar);
+
+        Method m = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                .ANNOTATIONS(OverrideAnnotation.NAME, MutableFirstParam.NAME)
+                .PARAMETER(beanType,  "myBean")
+                .PARAMETER(inputType, "inputRef")
+                .RETURNS(beanType)
+                .BODY(assign, ret);
+
+        Class implClass = new Class("BeanMerger").MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(ClassName.get("BeanMergerInterface", "com.example"))
+                .METHODS(m);
+
+        String out = emit(implClass);
+        assertTrue("Field read from &T ref param should have .clone()",
+                out.contains("input_ref.time.clone()"));
+        assertFalse("First param field (my_bean.time) must NOT get .clone() when read via &mut T",
+                out.contains("my_bean.time.clone()"));
+    }
+
+    // ---- call-site &mut / & argument injection ------------------------------
+
+    @Test
+    public void mutableFirstParam_callSite_firstArgGetsMutRef_secondArgGetsRef() {
+        // When calling a MutableFirstParam method on self, the emitter must add:
+        //   &mut  to argument 0  (the bean being updated)
+        //   &     to arguments 1+ (the read-only input/output)
+        //
+        // Regression for: E0308 "expected FileTransformingInputs1, found &FileTransformingInputs1"
+        // when the composite-loop body called self.process_*(bean, composee) without the
+        // correct reference decorators.
+        TypeName beanType  = ClassName.get("FileInitBean",   "com.example");
+        TypeName inputType = ClassName.get("FileInitInputs", "com.example");
+
+        // The MutableFirstParam method that will be called.
+        Method processMethod = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                .ANNOTATIONS(OverrideAnnotation.NAME, MutableFirstParam.NAME)
+                .PARAMETER(beanType,  "bean")
+                .PARAMETER(inputType, "inputBean")
+                .RETURNS(beanType)
+                .BODY(new Return(local("bean")));
+
+        // A regular outer method that calls this.processBean(beanArg, inputArg).
+        Variable thisVar   = new Variable("this",     LOCAL_VARIABLE);
+        Variable beanArg   = local("beanArg");
+        Variable inputArg  = local("inputArg");
+        MethodCall callSite = new MethodCall(thisVar, "processBean", List.of(beanArg, inputArg));
+        Method outerMethod = publicMethod("callProcess", callSite);
+
+        Class implClass = new Class("BeanMerger").MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(ClassName.get("BeanMergerInterface", "com.example"))
+                .METHODS(processMethod, outerMethod);
+
+        String out = emit(implClass);
+        assertTrue("First arg to MutableFirstParam method should be &mut",
+                out.contains("&mut bean_arg"));
+        assertTrue("Second arg to MutableFirstParam method should be &",
+                out.contains("&input_arg"));
     }
 }

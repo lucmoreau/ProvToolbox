@@ -6,7 +6,9 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.annotations.MutableFirstParam;
 import org.openprovenance.prov.template.compiler.past.annotations.MutableReceiver;
+import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
@@ -47,8 +49,14 @@ public class CompilerBeanMerger {
 
         ClassName mergerClass=ClassName.get(BEAN_MERGER,locations.getFilePackage(configs.name, BEAN_MERGER));
 
-        Class pastClass = pastFactory.CLASS(BEAN_MERGER)
+        Class pastInterface = pastFactory.CLASS(BEAN_MERGER_INTERFACE,true)
                 .MODIFIERS(Modifier.PUBLIC);
+
+
+        Class pastClass = pastFactory.CLASS(BEAN_MERGER)
+                .MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(get(BEAN_MERGER_INTERFACE, locations.getFilePackage(configs.name, BEAN_MERGER_INTERFACE)));
+
 
 
 
@@ -71,42 +79,44 @@ public class CompilerBeanMerger {
                 Method mspec_in = METHOD(Constants.PROCESS_METHOD_NAME)
                         .commentFileLocation()
                         .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                        .PARAMETER(className, BEAN_VAR)
                         .PARAMETER(inputClassName, INPUT_BEAN_VAR)
-                        .ANNOTATIONS(MutableReceiver.NAME)
+                        .ANNOTATIONS(OverrideAnnotation.NAME, MutableFirstParam.NAME)
                         .RETURNS(className);
                 Method mspec_out = METHOD(Constants.PROCESS_METHOD_NAME)
                         .commentFileLocation()
                         .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                        .PARAMETER(className, BEAN_VAR)
                         .PARAMETER(outputClassName, OUTPUT_BEAN_VAR)
-                        .ANNOTATIONS(MutableReceiver.NAME)
+                        .ANNOTATIONS(OverrideAnnotation.NAME, MutableFirstParam.NAME)
                         .RETURNS(className);
 
+                Method mspec_inI = METHOD(Constants.PROCESS_METHOD_NAME)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .PARAMETER(className, BEAN_VAR)
+                        .PARAMETER(inputClassName, INPUT_BEAN_VAR)
+                        .ANNOTATIONS(MutableFirstParam.NAME)
+                        .RETURNS(className);
+                Method mspec_outI = METHOD(Constants.PROCESS_METHOD_NAME)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .PARAMETER(className, BEAN_VAR)
+                        .PARAMETER(outputClassName, OUTPUT_BEAN_VAR)
+                        .ANNOTATIONS(MutableFirstParam.NAME)
+                        .RETURNS(className);
 
+                pastInterface.METHODS(mspec_inI,mspec_outI);
 
                 for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
                     if (descriptorUtils.isOutput(key, bindingsSchema)) {
-                        mspec_out.BODY(ASSIGNMENT(METHOD_CALL(METHOD_CALL(VARIABLE("this"),beanLocalVar), key), METHOD_CALL(VARIABLE(OUTPUT_BEAN_VAR), key)));
+                        mspec_out.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE(BEAN_VAR),key), METHOD_CALL(VARIABLE(OUTPUT_BEAN_VAR), key)));
                     } else if (descriptorUtils.isInput(key, bindingsSchema)) {
-                        mspec_in.BODY(ASSIGNMENT(METHOD_CALL(METHOD_CALL(VARIABLE("this"), beanLocalVar), key), METHOD_CALL(VARIABLE(INPUT_BEAN_VAR), key)));
+                        mspec_in.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE(BEAN_VAR), key), METHOD_CALL(VARIABLE(INPUT_BEAN_VAR), key)));
                     }
                 }
-                mspec_out.BODY(RETURN(METHOD_CALL(VARIABLE("this"), beanLocalVar)));
-                mspec_in.BODY(RETURN(METHOD_CALL(VARIABLE("this"), beanLocalVar)));
 
+                mspec_out.BODY(RETURN(VARIABLE(BEAN_VAR)));
+                mspec_in.BODY(RETURN(VARIABLE(BEAN_VAR)));
 
-                pastClass.FIELDS(FIELD(beanLocalVar,className).MODIFIERS(Modifier.PRIVATE));
-
-                Method mspecMerge = METHOD(Constants.MERGE_METHOD_NAME)
-                        .commentFileLocation()
-                        .MODIFIERS(Modifier.PUBLIC)
-                        .PARAMETER(className, BEAN_VAR)
-                        .RETURNS(mergerClass)
-                        .ANNOTATIONS(MutableReceiver.NAME)
-                        .BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), beanLocalVar), VARIABLE(BEAN_VAR)),
-                                RETURN(VARIABLE("this")));
-
-
-                pastClass.METHOD(mspecMerge);
                 pastClass.METHOD(mspec_in);
                 pastClass.METHOD(mspec_out);
 
@@ -122,15 +132,33 @@ public class CompilerBeanMerger {
                 Method mspec_in = METHOD(Constants.PROCESS_METHOD_NAME)
                         .commentFileLocation()
                         .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
-                        .PARAMETER(inputClassName, INPUT_BEAN_VAR)
-                        .ANNOTATIONS(MutableReceiver.NAME)
+                        .PARAMETER(className, COMPOSITE_VAR)
+                        .PARAMETER(inputClassName, INPUT_COMPOSITE_VAR)
+                        .ANNOTATIONS(OverrideAnnotation.NAME, MutableFirstParam.NAME)
                         .RETURNS(className);
                 Method mspec_out = METHOD(Constants.PROCESS_METHOD_NAME)
                         .commentFileLocation()
                         .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
-                        .PARAMETER(outputClassName, OUTPUT_BEAN_VAR)
-                        .ANNOTATIONS(MutableReceiver.NAME)
+                        .PARAMETER(className, COMPOSITE_VAR)
+                        .PARAMETER(outputClassName, OUTPUT_COMPOSITE_VAR)
+                        .ANNOTATIONS(OverrideAnnotation.NAME, MutableFirstParam.NAME)
                         .RETURNS(className);
+
+                Method mspec_inI = METHOD(Constants.PROCESS_METHOD_NAME)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .PARAMETER(className, COMPOSITE_VAR)
+                        .PARAMETER(inputClassName, INPUT_BEAN_VAR)
+                        .ANNOTATIONS(MutableFirstParam.NAME)
+                        .RETURNS(className);
+                Method mspec_outI = METHOD(Constants.PROCESS_METHOD_NAME)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .PARAMETER(className, COMPOSITE_VAR)
+                        .PARAMETER(outputClassName, OUTPUT_COMPOSITE_VAR)
+                        .ANNOTATIONS(MutableFirstParam.NAME)
+                        .RETURNS(className);
+
+                pastInterface.METHODS(mspec_inI,mspec_outI);
+
 
                 compilerUtil.debugFileLocation(mspec_in);
 
@@ -140,112 +168,74 @@ public class CompilerBeanMerger {
 
                 String shortConsistsOf = locations.getShortNames().get(config1.consistsOf);
                 String composeeName = compilerUtil.commonNameClass(shortConsistsOf);
-                String inputComposeeName0 = compilerUtil.inputsNameClass(shortConsistsOf);  // extension hardcoded
                 String inputComposeeName = compilerUtil.inputsNameClass(shortConsistsOf, "_1");  // extension hardcoded
                 ClassName beanComposeeClass = get(composeeName, locations.getBeansPackage(config1.fullyQualifiedName, BeanDirection.COMMON));
                 ClassName inComposeeClass = get(inputComposeeName, locations.getBeansPackage(config1.fullyQualifiedName, BeanDirection.INPUTS));
                 String outputComposeeName = compilerUtil.outputsNameClass(shortConsistsOf);
                 ClassName outComposeeClass = get(outputComposeeName, locations.getBeansPackage(config1.fullyQualifiedName, BeanDirection.OUTPUTS));
 
-                String beanLocalVar0=BEAN_VAR+composeeName;
-                String beanLocalVar1=BEAN_VAR+inputComposeeName;
 
                 Method mspec_in1 = METHOD(Constants.PROCESS_METHOD_NAME)
                         .commentFileLocation()
                         .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                        .PARAMETER(beanComposeeClass, BEAN_VAR)
                         .PARAMETER(inComposeeClass, INPUT_BEAN_VAR)
-                        .ANNOTATIONS(MutableReceiver.NAME)
-                        .RETURNS(className);
+                        .ANNOTATIONS(OverrideAnnotation.NAME, MutableFirstParam.NAME)
+                        .RETURNS(beanComposeeClass);
 
-                pastClass.FIELDS(FIELD(beanLocalVar1,beanComposeeClass).MODIFIERS(Modifier.PRIVATE));
-
+                Method mspec_in1I = METHOD(Constants.PROCESS_METHOD_NAME)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .PARAMETER(beanComposeeClass, BEAN_VAR)
+                        .PARAMETER(inComposeeClass, INPUT_BEAN_VAR)
+                        .ANNOTATIONS(MutableFirstParam.NAME)
+                        .RETURNS(beanComposeeClass);
 
                 SimpleTemplateCompilerConfig theConfig1=(SimpleTemplateCompilerConfig)Arrays.stream(configs.templates).filter(cfg -> cfg.name.equals(shortConsistsOf)).findFirst().get();
                 TemplateBindingsSchema bindingsSchema1 = compilerUtil.getBindingsSchema(theConfig1);
 
                 for (String key : descriptorUtils.fieldNames(bindingsSchema1)) {
                   if (descriptorUtils.isInput(key, bindingsSchema1)) {
-                        mspec_in1.BODY(ASSIGNMENT(METHOD_CALL(METHOD_CALL(VARIABLE("this"), beanLocalVar1), key), METHOD_CALL(VARIABLE(INPUT_BEAN_VAR), key)));
+                        mspec_in1.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE(BEAN_VAR), key), METHOD_CALL(VARIABLE(INPUT_BEAN_VAR), key)));
                     }
                 }
-                mspec_in1.BODY(RETURN(METHOD_CALL(VARIABLE("this"), beanLocalVar)));
+                mspec_in1.BODY(RETURN(VARIABLE(BEAN_VAR)));
 
                 mspec_in.BODY(
-                       // DEFINITION(_bool, VARIABLE("nextExists"), CONSTANT(true)),
+                        DEFINITION(_int, VARIABLE("count"), CONSTANT(0)),
                         ITERATOR(
                                 PARAMETER("composee", inComposeeClass),
-                                METHOD_CALL(VARIABLE(INPUT_BEAN_VAR), ELEMENTS))
+                                METHOD_CALL(VARIABLE(INPUT_COMPOSITE_VAR), ELEMENTS))
                                 .BODY(
-                                        //IF(VARIABLE("nextExists"))
-                                            //    .THEN(
-                                                        //        this.mergeInto(new Plead_transforming_compositeBean());
-                                                        METHOD_CALL(VARIABLE("this"), MERGE_METHOD_NAME, List.of(CONSTRUCTOR_CALL(beanComposeeClass, List.of()))),
-                                                        METHOD_CALL(
-                                                                VARIABLE("this"),
-                                                                PROCESS_METHOD_NAME,
-                                                                List.of(VARIABLE("composee"))),
-                                                        //        this.bean_Plead_transforming_compositeBean.addElements(bean_Plead_transformingInputs_1);
-                                                        METHOD_CALL(METHOD_CALL(VARIABLE("this"), beanLocalVar), ADD_ELEMENTS, List.of(METHOD_CALL(VARIABLE("this"), beanLocalVar0)))
-                                                //        ASSIGNMENT(
-                                                  //              VARIABLE("nextExists"),
-                                                    ///            METHOD_CALL(
-                                                       //                 VARIABLE("this"),
-                                                         //               "next",
-                                                           //             List.of())))
-
-                                             //   .ELSE(
-
-                                              //          THROW(
-                                              //                  CONSTRUCTOR_CALL(ILLEGAL_ARGUMENT_EXCEPTION,
-                                               //                         List.of(CONSTANT("Not enough record in the result")))))
-                                ),
-
-                        RETURN(METHOD_CALL(VARIABLE("this"), beanLocalVar))
+                                        DEFINITION(beanComposeeClass,VARIABLE(BEAN_VAR),
+                                                METHOD_CALL(METHOD_CALL(VARIABLE(COMPOSITE_VAR), ELEMENTS), "get", List.of(VARIABLE("count")))),
+                                        METHOD_CALL(
+                                                VARIABLE("this"),
+                                                PROCESS_METHOD_NAME,
+                                                List.of(VARIABLE(BEAN_VAR), VARIABLE("composee"))),
+                                        ASSIGNMENT(VARIABLE("count"), BINARY_OP(VARIABLE("count"), "+", CONSTANT(1)))),
+                        RETURN(VARIABLE(COMPOSITE_VAR))
                 );
 
                 mspec_out.BODY(
-                       // DEFINITION(_bool, VARIABLE("nextExists"), CONSTANT(true)),
                         DEFINITION(_int, VARIABLE("count"), CONSTANT(0)),
                         ITERATOR(
                                 PARAMETER("composee", outComposeeClass),
-                                METHOD_CALL(VARIABLE(OUTPUT_BEAN_VAR), ELEMENTS))
+                                METHOD_CALL(VARIABLE(OUTPUT_COMPOSITE_VAR), ELEMENTS))
                                 .BODY(
-                                      //  IF(VARIABLE("nextExists"))
-                                        //        .THEN(
-                                                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), beanLocalVar0),METHOD_CALL(METHOD_CALL(METHOD_CALL(VARIABLE("this"), beanLocalVar), ELEMENTS), "get", List.of(VARIABLE("count")))),
-                                                        METHOD_CALL(
-                                                                VARIABLE("this"),
-                                                                PROCESS_METHOD_NAME,
-                                                                List.of(VARIABLE("composee"))),
 
-                                      //                  ASSIGNMENT(
-                                     //                           VARIABLE("nextExists"),
-                                       //                         METHOD_CALL(
-                                         //                               VARIABLE("this"),
-                                           //                             "next",
-                                             ///                           List.of())),
-                                                       ASSIGNMENT(VARIABLE("count"), BINARY_OP(VARIABLE("count"), "+", CONSTANT(1))))
-                                               // .ELSE(
+                                        DEFINITION(beanComposeeClass,VARIABLE(BEAN_VAR),
+                                                METHOD_CALL(METHOD_CALL(VARIABLE(COMPOSITE_VAR), ELEMENTS), "get", List.of(VARIABLE("count")))),
+                                        METHOD_CALL(
+                                                VARIABLE("this"),
+                                                PROCESS_METHOD_NAME,
+                                                List.of(VARIABLE(BEAN_VAR), VARIABLE("composee"))),
 
-                                                //        THROW(
-                                                  ///              CONSTRUCTOR_CALL(ILLEGAL_ARGUMENT_EXCEPTION,
-                                                     //                   List.of(CONSTANT("Not enough record in the result")))))
-                                ,
-
-                        RETURN(METHOD_CALL(VARIABLE("this"), beanLocalVar))
+                                        ASSIGNMENT(VARIABLE("count"), BINARY_OP(VARIABLE("count"), "+", CONSTANT(1)))),
+                        RETURN(VARIABLE(COMPOSITE_VAR))
                 );
 
-                Method mspecMerge = METHOD(Constants.MERGE_METHOD_NAME)
-                        .commentFileLocation()
-                        .MODIFIERS(Modifier.PUBLIC)
-                        .ANNOTATIONS(MutableReceiver.NAME)
-                        .PARAMETER(className, BEAN_VAR)
-                        .RETURNS(mergerClass)
-                        .BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), beanLocalVar), VARIABLE(BEAN_VAR)),
-                                RETURN(VARIABLE("this")));
 
-
-                pastClass.METHOD(mspecMerge);
+                pastInterface.METHODS(mspec_in1I);
                 pastClass.METHOD(mspec_in);
                 pastClass.METHOD(mspec_in1);
                 pastClass.METHOD(mspec_out);
@@ -262,6 +252,12 @@ public class CompilerBeanMerger {
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
         Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, "target/generated-js", stackTraceElement);
         Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, myPackage, "target/generated-rust/src", stackTraceElement);
+
+        Supplier<Boolean> pythonGenerator2 = () -> generatePython(pastInterface, myPackage, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator2 = () -> generateJava(pastInterface, myPackage, configs, BEAN_MERGER_INTERFACE + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator2 = () -> generateJavaScript(pastInterface, myPackage, "target/generated-js", stackTraceElement);
+        Supplier<Boolean> rustGenerator2 = () -> generateRust(pastInterface, myPackage, "target/generated-rust/src", stackTraceElement);
+        new SpecificationFile(javaGenerator2, pythonGenerator2, jsGenerator2, rustGenerator2).save();
 
         return new SpecificationFile(javaGenerator, pythonGenerator, jsGenerator, rustGenerator);
     }

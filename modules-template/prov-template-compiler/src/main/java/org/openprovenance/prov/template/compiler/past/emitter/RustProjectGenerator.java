@@ -69,6 +69,15 @@ public class RustProjectGenerator {
         cargo.append("[[bin]]\n");
         cargo.append("name = \"").append(toSnakeCase(projectName)).append("\"\n");
         cargo.append("path = \"src/main.rs\"\n");
+        cargo.append("\n");
+        /*
+        cargo.append("[source.crates-io]\n" +
+                "replace-with = \"vendored-sources\"\n" +
+                "\n" +
+                "[source.vendored-sources]\n" +
+                "directory = \"vendor\"\n") ;
+
+         */
 
         Path cargoToml = projectRoot.resolve("Cargo.toml");
         Files.writeString(cargoToml, cargo.toString());

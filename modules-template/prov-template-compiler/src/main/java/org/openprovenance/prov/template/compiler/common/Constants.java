@@ -64,6 +64,7 @@ public interface Constants {
     String COMPOSITE_ENACTOR_CONFIGURATOR2 = "CompositeEnactorConfigurator2";
     String ENACTOR_CONFIGURATOR2 = "EnactorConfigurator2";
     String BEAN_MERGER = "BeanMerger";
+    String BEAN_MERGER_INTERFACE = "BeanMergerInterface";
     String BEAN_COMPLETER = "BeanCompleter";
     String BEAN_COMPLETER2 = "BeanCompleter2";
     String BEAN_COMPLETER3 = "BeanCompleter3";
@@ -126,8 +127,11 @@ public interface Constants {
     String M_VAR = "m";
     String LL_VAR = "ll";
 
+    String COMPOSITE_VAR = "composite";
     String BEAN_VAR = "bean";
     String INPUT_BEAN_VAR = "inputBean";
+    String INPUT_COMPOSITE_VAR = "inputComposite";
+    String OUTPUT_COMPOSITE_VAR = "outputComposite";
     String OUTPUT_BEAN_VAR = "outputBean";
     String BEAN_METHOD = "bean";
     String DELEGATOR_VAR = "delegator";

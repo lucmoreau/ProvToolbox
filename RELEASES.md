@@ -5,6 +5,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: javascript emitter updates to run workflow in js
 * prov-template-compiler: rust emitter updates to run workflow in rust
 * prov-template-compiler: CompilerBeanMerger, and PAST translation to Rust
+* prov-template-compiler: util for workflows, CompilerBeanHistory and LocalEnactor
 
 `2.2.3`
 * prov-template: update to instantiation

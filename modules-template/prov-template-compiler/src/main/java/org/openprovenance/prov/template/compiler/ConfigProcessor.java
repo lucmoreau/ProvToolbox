@@ -99,6 +99,7 @@ public class ConfigProcessor implements Constants {
     private final CompilerGenerator compilerGenerator;
     private final CompilerBeanMerger compilerBeanMerger;
     private final CompilerBeanHistory compilerBeanHistory;
+    private final CompilerIdentifierRegistry compilerIdentifierRegistry;
 
     static {
         descriptorUtils = new DescriptorUtils();
@@ -106,7 +107,6 @@ public class ConfigProcessor implements Constants {
     }
 
     private Optional<StatementChecker> statementChecker;
-
 
 
     public ConfigProcessor(ProvFactory pFactory) {
@@ -157,6 +157,7 @@ public class ConfigProcessor implements Constants {
         this.compilerBeanEnactor2compositeWP = new CompilerBeanEnactor2CompositeWithPrincipal(pFactory);
         this.compilerCatalogueDispatcher=new CompilerCatalogueDispatcher(pFactory);
         this.compilerGenerator=new CompilerGenerator(pFactory);
+        this.compilerIdentifierRegistry = new CompilerIdentifierRegistry(pFactory);
     }
 
     public int processTemplateGenerationConfig(String template_builder, String inputBaseDir, String cbindingsBaseDir, String outputBaseDir, List<String> templatePath, ProvFactory pFactory) {
@@ -458,6 +459,9 @@ public class ConfigProcessor implements Constants {
 
             SpecificationFile beanHistory=compilerBeanHistory.generateBeanHistory(configs, locations, BEAN_HISTORY);
             beanHistory.save();
+
+            SpecificationFile identifierRegistry=compilerIdentifierRegistry.generateIdentifierRegistry(configs, locations, IDENTIFIER_REGISTRY);
+            identifierRegistry.save();
 
             SpecificationFile templateInvoker = compilerTemplateInvoker.generateTemplateInvoker(configs, locations, TEMPLATE_INVOKER);
             templateInvoker.save();

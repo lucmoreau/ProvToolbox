@@ -78,6 +78,9 @@ public class ClassName extends TypeName {
     public static final ClassName APACHE_STRING_SUBSTITUTOR= ClassName.get("StringSubstitutor", "org.apache.commons.text");
 
 
+    public static final ClassName ATOMIC_INTEGER = ClassName.get("AtomicInteger", "past.lang");
+    public static final ParameterizedType MAP_STRING_ATOMIC_INTEGER = ParameterizedType.get(MAP,STRING, ATOMIC_INTEGER);
+    public static final ParameterizedType HASHMAP_STRING_ATOMIC_INTEGER = ParameterizedType.get(HASHMAP,STRING, ATOMIC_INTEGER);
     public static final ParameterizedType SET_STRING = ParameterizedType.get(SET, STRING);
     public static final ParameterizedType MAP_STRING_T= ParameterizedType.get(MAP, STRING, T());
     public static final ParameterizedType MAP_STRING_STRING= ParameterizedType.get(MAP, STRING, STRING);
@@ -87,7 +90,9 @@ public class ClassName extends TypeName {
     public static final ParameterizedType HASH_MAP_STRING_INTARRAY = ParameterizedType.get(HASHMAP, STRING, intArray);
     public static final ParameterizedType MAP_STRING_MAP_STRING_INTARRAY = ParameterizedType.get(MAP, STRING, MAP_STRING_INTARRAY);
     public static final ParameterizedType HASH_MAP_STRING_MAP_STRING_INTARRAY = ParameterizedType.get(HASHMAP, STRING, MAP_STRING_INTARRAY);
+    public static final TypeName LIST_OF_INTEGER = ParameterizedType.get(LIST,INTEGER);
     public static final TypeName LIST_OF_OBJECTS = ParameterizedType.get(LIST,OBJECT);
+    public static final TypeName LINKED_LIST_OF_INTEGER = ParameterizedType.get(LINKED_LIST,INTEGER);
     public static final TypeName LINKED_LIST_OF_OBJECTS = ParameterizedType.get(LINKED_LIST,OBJECT);
     public static final TypeName LIST_OF_OBJECT_ARRAYS = ParameterizedType.get(LIST,OBJECT_ARRAY);
     public static final TypeName LIST_OF_OBJECT_ARRAYS_ARRAYS = ParameterizedType.get(LIST,OBJECT_ARRAY_ARRAY);
@@ -95,6 +100,8 @@ public class ClassName extends TypeName {
     public static final ClassName BUILDER_INTERFACE=ClassName.get("Builder", CLIENT_PACKAGE);
     public static final ParameterizedType MAP_STRING_BUILDER=ParameterizedType.get(MAP, STRING, BUILDER_INTERFACE);
     public static final ParameterizedType MAP_STRING_FILEBUILDER= ParameterizedType.get(MAP, STRING, PROV_FILE_BUILDER);
+    public static final ParameterizedType MAP_STRING_LIST_INTEGER = ParameterizedType.get(MAP,STRING, LIST_OF_INTEGER);
+    public static final ParameterizedType HASH_STRING_LIST_INTEGER = ParameterizedType.get(HASHMAP,STRING, LIST_OF_INTEGER);
 
     public static final TypeVariable TYPE_RESULT = TypeVariable.get("RESULT");
     public static final TypeVariable TYPE_OUTPUT = TypeVariable.get("OUTPUT");

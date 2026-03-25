@@ -97,6 +97,7 @@ public class Locations {
             case BEAN_ENACTOR2:
             case ENACTOR_IMPLEMENTATION:
             case BEAN_LOCAL_ENACTOR2:
+            case BEAN_LOCAL_ENACTOR3:
             case BEAN_ENACTOR2_COMPOSITE:
             case TEMPLATE_INVOKER:
             case INPUT_OUTPUT_PROCESSOR:
@@ -111,6 +112,8 @@ public class Locations {
             case BEAN_MERGER_INTERFACE:
             case BEAN_HISTORY_INTERFACE:
             case BEAN_HISTORY:
+            case IDENTIFIER_REGISTRY: // should it be elsewhere?
+            case LOCAL_ENACTOR:
                 return getIntegratorPackage(name);
 
             case TABLE_CONFIGURATOR+WITH_MAP:

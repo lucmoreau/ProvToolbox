@@ -27,6 +27,7 @@ import static org.openprovenance.prov.template.compiler.common.Constants.GENERAT
 import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.MethodCallKind.FUNCTIONAL_INTERFACE_CALL;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.MethodCallKind.SUPER_METHOD_CALL;
 
 /**
  * Emitter that generates JavaScript class definitions from PAST abstract syntax tree.
@@ -105,6 +106,17 @@ public class JavaScript implements Emitter<StringBuilder> {
         sb.append("class ");
         if (clazz.name!=null) { // don't do it for anonymous classes
             sb.append(clazz.name);
+        }
+
+        if (clazz.superclass!=null) {
+            sb.append(" extends ");
+            if (clazz.superclass instanceof ParameterizedType) {
+                ParameterizedType pt = (ParameterizedType) clazz.superclass;
+                System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ extends " + pt + " " + typeSimpleName(pt.rawType));
+                sb.append(importAndGetLocalName(convert(pt.rawType)));
+            } else {
+                sb.append(importAndGetLocalName(sanitizeName(convert(clazz.superclass))));
+            }
         }
 
         // Base classes - JavaScript only supports single inheritance
@@ -486,6 +498,8 @@ public class JavaScript implements Emitter<StringBuilder> {
 
             }
 
+
+
             default -> {
                 System.out.println("Unsupported statement type: " + statement);
                 throw new IllegalArgumentException("Unsupported statement type " + statement);
@@ -814,6 +828,22 @@ public class JavaScript implements Emitter<StringBuilder> {
                             .collect(Collectors.joining(", ")));
                 }
                 result.append(")");
+                return result.toString();
+            }
+            case SUPER_METHOD_CALL -> {
+                if (mc.methodName == null) {
+                    result.append("super");
+                } else {
+                    result.append("super.")
+                            .append(sanitizeName(mc.methodName));
+                }
+                result.append("(");
+                if (mc.arguments != null) {
+                    result.append(mc.arguments.stream()
+                            .map(this::convert)
+                            .collect(Collectors.joining(", ")));
+                }
+                result.append(")\n");
                 return result.toString();
             }
         }

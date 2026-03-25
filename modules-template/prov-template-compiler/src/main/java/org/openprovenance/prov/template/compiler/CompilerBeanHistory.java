@@ -12,6 +12,7 @@ import org.openprovenance.prov.template.compiler.past.annotations.MutableFirstPa
 import org.openprovenance.prov.template.compiler.past.annotations.NoSerialization;
 import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
+import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
@@ -36,6 +37,7 @@ import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.STRING;
+import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
 public class CompilerBeanHistory {
     private final CompilerUtil compilerUtil;
@@ -54,20 +56,23 @@ public class CompilerBeanHistory {
         ClassName mergerInterface = ClassName.get(BEAN_MERGER_INTERFACE, locations.getFilePackage(configs.name, BEAN_MERGER_INTERFACE));
 
 
+        TypeVariable typeVariable = T().withBounds(ioProcessorClass);
+
         Class pastClass = pastFactory.CLASS(BEAN_HISTORY)
                 .MODIFIERS(Modifier.PUBLIC)
                 .SUPERCLASS(get(BEAN_LOCAL_ENACTOR2, locations.getFilePackage(configs.name, BEAN_LOCAL_ENACTOR2)))
                 .INTERFACES(ioProcessorClass)
                 .ANNOTATION(NoSerialization.NAME)
-                .FIELDS(FIELD(DELEGATOR_VAR, ioProcessorClass).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL),
+                .FIELDS(FIELD(DELEGATOR_VAR, typeVariable).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL),
                         FIELD(MERGER_VAR, mergerInterface).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL),
-                        FIELD(HISTORY_VAR, LIST_OF_OBJECTS).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL));
+                        FIELD(HISTORY_VAR, LIST_OF_OBJECTS).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL))
+                .TYPE_VARIABLES(typeVariable);
 
 
         Constructor ctor = CONSTRUCTOR()
                 .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
-                .PARAMETER(ioProcessorClass, DELEGATOR_VAR)
+                .PARAMETER(typeVariable, DELEGATOR_VAR)
                 .PARAMETER(LIST_OF_OBJECTS, HISTORY_VAR)
                 .BODY(
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), DELEGATOR_VAR), VARIABLE(DELEGATOR_VAR)),
@@ -99,7 +104,7 @@ public class CompilerBeanHistory {
 
         Method method4=METHOD("getDelegator")
                 .MODIFIERS(Modifier.PUBLIC)
-                .RETURNS(ioProcessorClass)
+                .RETURNS(typeVariable)
                 .BODY(RETURN(METHOD_CALL(VARIABLE("this"),DELEGATOR_VAR)));
 
 

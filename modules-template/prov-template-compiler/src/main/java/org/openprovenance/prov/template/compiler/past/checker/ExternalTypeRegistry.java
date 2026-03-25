@@ -277,6 +277,7 @@ public class ExternalTypeRegistry {
                 .method("replace", STRING, STRING, STRING)
                 .staticMethod("concat", STRING, STRING, STRING)
                 .staticMethod("concat", STRING, STRING, STRING, STRING)
+                .staticMethod("valueOf", STRING, OBJECT)
                 .register();
 
         externalRegistry.forClass(STRING_BUILDER)
@@ -341,6 +342,13 @@ public class ExternalTypeRegistry {
                 .method("getColumnCount", INTEGER)
                 .method("getColumnName", STRING, _int)
                 .register();
+
+        externalRegistry.forClass(ATOMIC_INTEGER)
+                .method("get", INTEGER)
+                .method("getAndIncrement", INTEGER)
+                .method("getAndDecrement", INTEGER)
+                .register();
+
 
 
         return externalRegistry;

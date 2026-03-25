@@ -376,6 +376,12 @@ public class TypeInferrer {
         if (sig != null) {
             return resolveReturnType(sig.returnType, receiverType);
         }
+        // When the receiver is a type variable, the return type cannot be determined statically
+        // without knowing the concrete type argument. Return the TypeVariable so that
+        // isAssignable() treats it as compatible rather than falling back to Object.
+        if (receiverType instanceof TypeVariable) {
+            return receiverType;
+        }
         return ClassName.OBJECT;
     }
 
@@ -607,6 +613,12 @@ public class TypeInferrer {
     private static ClassName resolveClassName(TypeName type) {
         if (type instanceof ClassName) return (ClassName) type;
         if (type instanceof ParameterizedType) return ((ParameterizedType) type).getRawType();
+        if (type instanceof TypeVariable) {
+            TypeVariable tv = (TypeVariable) type;
+            if (!tv.bounds.isEmpty()) {
+                return resolveClassName(tv.bounds.get(0));
+            }
+        }
         return null;
     }
 }

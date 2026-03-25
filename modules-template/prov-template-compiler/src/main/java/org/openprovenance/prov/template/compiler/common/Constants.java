@@ -63,6 +63,7 @@ public interface Constants {
     String COMPOSITE_ENACTOR_CONFIGURATOR = "CompositeEnactorConfigurator";
     String COMPOSITE_ENACTOR_CONFIGURATOR2 = "CompositeEnactorConfigurator2";
     String ENACTOR_CONFIGURATOR2 = "EnactorConfigurator2";
+    String IDENTIFIER_REGISTRY = "IdentifierRegistry";
     String BEAN_HISTORY = "BeanHistory";
     String BEAN_MERGER = "BeanMerger";
     String BEAN_MERGER_INTERFACE = "BeanMergerInterface";
@@ -76,6 +77,8 @@ public interface Constants {
     String BEAN_ENACTOR2 = "BeanEnactor2";
     String BEAN_ENACTOR2_COMPOSITE = "BeanEnactor2Composite";
     String BEAN_LOCAL_ENACTOR2="BeanLocalEnactor2";
+    String BEAN_LOCAL_ENACTOR3="BeanLocalEnactor3";
+    String LOCAL_ENACTOR="LocalEnactor";
 
     String BEAN_ENACTOR2_WP = "BeanEnactor4"; //"BeanEnactor2WithPrincipal";
     String BEAN_ENACTOR2_COMPOSITE_WP = "BeanEnactor4Composite"; //"BeanEnactor2CompositeWithPrincipal";

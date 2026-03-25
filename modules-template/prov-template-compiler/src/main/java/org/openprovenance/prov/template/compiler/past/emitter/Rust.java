@@ -3,10 +3,7 @@ package org.openprovenance.prov.template.compiler.past.emitter;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Iterator;
-import org.openprovenance.prov.template.compiler.past.annotations.NoSerialization;
-import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
-import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
-import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation;
+import org.openprovenance.prov.template.compiler.past.annotations.*;
 import org.openprovenance.prov.template.compiler.past.checker.ClassSignature;
 import org.openprovenance.prov.template.compiler.past.checker.MethodSignature;
 import org.openprovenance.prov.template.compiler.past.checker.TypeRegistry;
@@ -26,6 +23,7 @@ import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 import java.io.File;
 import java.io.IOException;
 import javax.lang.model.element.Modifier;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -217,8 +215,8 @@ public class Rust implements Emitter<StringBuilder> {
             public void writeTo(File directory) throws IOException {
                 Path destination = Paths.get(directory.getAbsolutePath()).resolve(packge.replace('.', '/'));
                 destination.toFile().mkdirs();
-                java.nio.file.Path path = destination.resolve(toSnakeCase(clazz.name) + ".rs");
-                java.nio.file.Files.writeString(path, theBuffer.toString());
+                Path path = destination.resolve(toSnakeCase(clazz.name) + ".rs");
+                Files.writeString(path, theBuffer.toString());
             }
         };
     }
@@ -1366,9 +1364,9 @@ public class Rust implements Emitter<StringBuilder> {
     private boolean modifiesSelf(Method method) {
         // Check for StatefulProcessor annotation
         // If present, method needs &mut self
-        for (org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation annot : method.annotation) {
-            if (annot instanceof org.openprovenance.prov.template.compiler.past.annotations.RustAnnotation) {
-                if (annot.getName().equals(org.openprovenance.prov.template.compiler.past.annotations.StatefulProcessor.NAME)) {
+        for (PastAnnotation annot : method.annotation) {
+            if (annot instanceof RustAnnotation) {
+                if (annot.getName().equals(StatefulProcessor.NAME)) {
                     return true;
                 }
             }
@@ -1389,9 +1387,9 @@ public class Rust implements Emitter<StringBuilder> {
      * Triggered by the MutableReceiver annotation.
      */
     private boolean consumesSelf(Method method) {
-        for (org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation annot : method.annotation) {
-            if (annot instanceof org.openprovenance.prov.template.compiler.past.annotations.RustAnnotation) {
-                if (annot.getName().equals(org.openprovenance.prov.template.compiler.past.annotations.MutableReceiver.NAME)) {
+        for (PastAnnotation annot : method.annotation) {
+            if (annot instanceof RustAnnotation) {
+                if (annot.getName().equals(MutableReceiver.NAME)) {
                     return true;
                 }
             }
@@ -1459,9 +1457,9 @@ public class Rust implements Emitter<StringBuilder> {
      * are owned values.
      */
     private boolean hasMutableFirstParam(Method method) {
-        for (org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation annot : method.annotation) {
-            if (annot instanceof org.openprovenance.prov.template.compiler.past.annotations.RustAnnotation) {
-                if (annot.getName().equals(org.openprovenance.prov.template.compiler.past.annotations.MutableFirstParam.NAME)) {
+        for (PastAnnotation annot : method.annotation) {
+            if (annot instanceof RustAnnotation) {
+                if (annot.getName().equals(MutableFirstParam.NAME)) {
                     return true;
                 }
             }
@@ -1936,7 +1934,7 @@ public class Rust implements Emitter<StringBuilder> {
 
                 // Check for HeterogeneousArray annotation
                 boolean isHeterogeneous = ai.annotation.stream()
-                        .anyMatch(annot -> annot instanceof org.openprovenance.prov.template.compiler.past.annotations.HeterogeneousArray);
+                        .anyMatch(annot -> annot instanceof HeterogeneousArray);
 
                 if (isHeterogeneous) {
                     // Generate Vec<Value> with wrapped elements
@@ -2078,11 +2076,11 @@ public class Rust implements Emitter<StringBuilder> {
      * @param annotations List of annotations to check
      * @return Expected type name (e.g., "String", "Int"), or null if not specified
      */
-    private String getExpectedTypeFromAnnotation(List<org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation> annotations) {
-        for (org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation annot : annotations) {
-            if (annot instanceof org.openprovenance.prov.template.compiler.past.annotations.HeterogeneousArray) {
-                org.openprovenance.prov.template.compiler.past.annotations.HeterogeneousArray ha =
-                    (org.openprovenance.prov.template.compiler.past.annotations.HeterogeneousArray) annot;
+    private String getExpectedTypeFromAnnotation(List<PastAnnotation> annotations) {
+        for (PastAnnotation annot : annotations) {
+            if (annot instanceof HeterogeneousArray) {
+                HeterogeneousArray ha =
+                    (HeterogeneousArray) annot;
                 return ha.getExpectedType();
             }
         }
@@ -2452,6 +2450,21 @@ public class Rust implements Emitter<StringBuilder> {
 
             case NO_OPERATOR -> {
                 result.append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
+                if (mc.arguments != null) {
+                    result.append(mc.arguments.stream()
+                            .map(this::convert)
+                            .collect(Collectors.joining(", ")));
+                }
+                result.append(")");
+                return result.toString();
+            }
+
+            case SUPER_METHOD_CALL -> {
+                if (mc.methodName==null) {
+                    result.append("super.").append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
+                } else {
+                    result.append("super(");
+                }
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
                             .map(this::convert)
@@ -2857,9 +2870,17 @@ public class Rust implements Emitter<StringBuilder> {
                 }
 
                 // Handle Class type (java.lang.Class -> &'static str in Rust)
-                if (cn.packge != null && cn.packge.equals("past.lang") && "Class".equals(cn.simpleName)) {
-                    return "&'static str";
+                //if (cn.packge != null && cn.packge.equals("past.lang") && "Class".equals(cn.simpleName)) {
+                //    return "&'static str";
+               // }
+                if (cn.packge != null && cn.packge.equals("past.lang")) {
+                    return switch (cn.simpleName) {
+                        case "AtomicInteger" -> "AtomicI32";
+                        case "Class" -> "&'static str";
+                        default -> toPascalCase(cn.simpleName);
+                    };
                 }
+
 
                 return toPascalCase(cn.simpleName);
             }
@@ -2896,8 +2917,8 @@ public class Rust implements Emitter<StringBuilder> {
                 return result.toString();
             }
             case VARIABLE: {
-                org.openprovenance.prov.template.compiler.past.type.TypeVariable tv =
-                        (org.openprovenance.prov.template.compiler.past.type.TypeVariable) tn;
+                TypeVariable tv =
+                        (TypeVariable) tn;
                 return tv.name;
             }
             default:
@@ -3067,6 +3088,8 @@ public class Rust implements Emitter<StringBuilder> {
         // HashMap method translations
         put("containsKey", "contains_key");
         put("put", "insert");
+        put("getAndIncrement", "fetch_add");
+        put("getAndDecrement", "fetch_sub");
     }};
 
     private String sanitizeName(String name) {

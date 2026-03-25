@@ -7,7 +7,6 @@ import org.openprovenance.prov.template.compiler.past.type.TypeName;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 
 import javax.lang.model.element.Modifier;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 

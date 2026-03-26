@@ -12,6 +12,7 @@ import org.openprovenance.prov.template.compiler.past.Parameter;
 import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
 import org.openprovenance.prov.template.compiler.past.annotations.RegisterMethod;
 import org.openprovenance.prov.template.compiler.past.annotations.SingleDispatchMethod;
+import org.openprovenance.prov.template.compiler.past.annotations.StatefulProcessor;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
@@ -64,12 +65,14 @@ public class CompilerBeanLocalEnactor2 {
                 .MODIFIERS(Modifier.PUBLIC,Modifier.ABSTRACT)
                 .PARAMETER(STRING,"field")
                 .PARAMETER(STRING,"counter")
+                .ANNOTATIONS(StatefulProcessor.NAME)
                 .RETURNS(INTEGER);
 
         Method method2=METHOD("newSIdentifier")
                 .MODIFIERS(Modifier.PUBLIC,Modifier.ABSTRACT)
                 .PARAMETER(STRING,"field")
                 .PARAMETER(STRING,"counter")
+                .ANNOTATIONS(StatefulProcessor.NAME)
                 .RETURNS(STRING);
 
 
@@ -180,7 +183,7 @@ public class CompilerBeanLocalEnactor2 {
                         .PARAMETER(inputClassName2, "bean")
                         .PARAMETER(MAP_STRING_MAP_INTEGER_INTEGER, MAP_VAR)
                         .RETURNS(outputClassName2)
-                        .ANNOTATIONS(RegisterMethod.NAME);
+                        .ANNOTATIONS(RegisterMethod.NAME, StatefulProcessor.NAME);
 
 
 

@@ -8,6 +8,7 @@ import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.annotations.NoSerialization;
 import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
+import org.openprovenance.prov.template.compiler.past.annotations.StatefulProcessor;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
@@ -71,7 +72,8 @@ public class CompilerIdentifierRegistry {
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "recordedValues"), VARIABLE("recordedValues")),
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "negative"), VARIABLE("negative")),
 
-                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "counterInitialValue"), BINARY_OP(METHOD_CALL(VARIABLE("this"),"sign", List.of()), "*", CONSTANT(1000)))
+                        // Inline sign()*1000 because self.sign() cannot be called inside Self{…}
+                        ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "counterInitialValue"), IFEXPRESSION(VARIABLE("negative"), CONSTANT(-1000), CONSTANT(1000)))
                 );
         pastClass.CONSTRUCTOR(ctor);
 
@@ -219,7 +221,8 @@ public class CompilerIdentifierRegistry {
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(STRING, "field")
                 .PARAMETER(STRING, "counter")
-                //.ANNOTATIONS(OverrideAnnotation.NAME)  // not in InputOutputProcessor
+                // StatefulProcessor forces &mut self because this method mutates identifierRegistry
+                .ANNOTATIONS(StatefulProcessor.NAME)
                 .RETURNS(INTEGER)
                 .BODY(
                         RETURN(METHOD_CALL(METHOD_CALL(VARIABLE("this"), "identifierRegistry"),
@@ -235,7 +238,8 @@ public class CompilerIdentifierRegistry {
                 .MODIFIERS(Modifier.PUBLIC)
                 .PARAMETER(STRING,"field")
                 .PARAMETER(STRING,"counter")
-                // .ANNOTATIONS(OverrideAnnotation.NAME) // not in InputOutputProcessor
+                // StatefulProcessor forces &mut self because this method mutates identifierRegistry
+                .ANNOTATIONS(StatefulProcessor.NAME)
                 .RETURNS(STRING)
                 .BODY(
                         RETURN(METHOD_CALL(METHOD_CALL(VARIABLE("this"), "identifierRegistry"),

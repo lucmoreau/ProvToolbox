@@ -11,6 +11,7 @@ import org.openprovenance.prov.template.compiler.past.PastFactory;
 import org.openprovenance.prov.template.compiler.past.annotations.MutableFirstParam;
 import org.openprovenance.prov.template.compiler.past.annotations.NoSerialization;
 import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
+import org.openprovenance.prov.template.compiler.past.annotations.StatefulProcessor;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
@@ -86,6 +87,7 @@ public class CompilerBeanHistory {
                 .PARAMETER(STRING,"field")
                 .PARAMETER(STRING,"counter")
                 //.ANNOTATIONS(OverrideAnnotation.NAME)  // not in InputOutputProcessor
+                .ANNOTATIONS(StatefulProcessor.NAME)
                 .RETURNS(INTEGER)
                 .BODY(RETURN(CONSTANT(0)));
 
@@ -94,6 +96,7 @@ public class CompilerBeanHistory {
                 .PARAMETER(STRING,"field")
                 .PARAMETER(STRING,"counter")
                // .ANNOTATIONS(OverrideAnnotation.NAME) // not in InputOutputProcessor
+                .ANNOTATIONS(StatefulProcessor.NAME)
                 .RETURNS(STRING)
                 .BODY(RETURN(CONSTANT("xyz")));
 

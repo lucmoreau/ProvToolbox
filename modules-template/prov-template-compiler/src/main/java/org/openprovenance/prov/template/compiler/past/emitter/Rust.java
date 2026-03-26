@@ -34,8 +34,54 @@ import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
 
 /**
- * Emitter that generates Rust code from PAST abstract syntax tree.
- * Generates idiomatic Rust with structs, impl blocks, and proper ownership semantics.
+ * Emitter that generates Rust code from a PAST (Programming Abstract Syntax Tree).
+ *
+ * <p>PAST classes map to Rust as follows:
+ * <ul>
+ *   <li>Concrete classes → {@code struct} + {@code impl} block.</li>
+ *   <li>Interfaces and abstract classes → {@code trait} (with optional default bodies).</li>
+ *   <li>{@code @Override} methods → emitted inside {@code impl TraitName for StructName} blocks.</li>
+ * </ul>
+ *
+ * <h2>Ownership and borrowing</h2>
+ * <p>The emitter applies several rules to generate correct Rust ownership semantics:
+ * <ul>
+ *   <li><b>Option wrapping</b>: PAST fields without an initialiser are emitted as
+ *       {@code Option<T>}; fields with an initialiser are plain {@code T}.</li>
+ *   <li><b>Trait parameters</b>: struct-type parameters in trait methods are emitted
+ *       as {@code &T} (shared borrow); primitive types as {@code Option<T>}; String as
+ *       {@code &str}; HashMap as {@code &mut HashMap}.</li>
+ *   <li><b>Null arguments</b>: {@code Constant.NULL} passed to a {@code FUNCTIONAL_INTERFACE_CALL}
+ *       is emitted as {@code ""} when the corresponding parameter type is {@code String}
+ *       (to satisfy {@code &str}), and as {@code None} for all other types.
+ *       Parameter types are resolved via {@link #findMethodParameters}.</li>
+ *   <li><b>Self-method calls</b>: struct-type arguments to {@code self.method()} calls
+ *       receive an automatic {@code &} prefix, looked up via {@link #findSelfMethodParameters}.</li>
+ *   <li><b>Super-delegation chains</b>: methods that return via a {@code SUPER_METHOD_CALL}
+ *       chain yield a reference ({@code &T}).  The emitter appends {@code .clone()} for
+ *       cloneable collections and adjusts the return type to {@code &Collection<...>}
+ *       for non-cloneable element types (e.g. {@code AtomicInteger}).</li>
+ *   <li><b>Trait default bodies</b>: inside a trait default method body,
+ *       primitive-type parameters are already {@code Option<T>}; the emitter suppresses
+ *       double-wrapping in {@code Some()} via {@code expressionProducesOption()}.</li>
+ * </ul>
+ *
+ * <h2>Cross-class lookup</h2>
+ * <p>The emitter maintains a {@link #classRegistry} (PascalCase name → PAST {@link Class})
+ * populated by {@link #discoverClass}.  This registry enables:
+ * <ul>
+ *   <li>{@link #findMethodParameters} — resolves callee parameter types for
+ *       {@code FUNCTIONAL_INTERFACE_CALL} null-arg handling.</li>
+ *   <li>{@link #findSelfMethodParameters} — resolves self-method parameter types
+ *       for automatic {@code &} injection on struct arguments.</li>
+ *   <li>{@link #isLocalFieldAccessProducingOption} — determines whether a local field
+ *       access already yields {@code Option<T>} (suppresses extra {@code Some()} wrapping).</li>
+ * </ul>
+ *
+ * <h2>Two-pass generation</h2>
+ * <p>For multi-class projects use {@link RustCodeGenerator}:
+ * pass 1 calls {@link #discoverTraits}/{@link #discoverClass} on all classes;
+ * pass 2 calls {@link #toWritableObject} so cross-class type information is complete.
  */
 public class Rust implements Emitter<StringBuilder> {
 
@@ -46,6 +92,8 @@ public class Rust implements Emitter<StringBuilder> {
      * share across threads.
      */
     private static final RustMethodRegistry METHOD_REGISTRY;
+    public static final String STD_SYNC_ATOMIC_ATOMIC_I_32_ORDERING = "std::sync::atomic::{AtomicI32,Ordering}";
+
     static {
         RustMethodRegistry r;
         try {
@@ -78,7 +126,9 @@ public class Rust implements Emitter<StringBuilder> {
     private final Map<String, Class> classRegistry = new HashMap<>();
     private boolean needsValueEnum = false; // Track if Value enum needs to be generated for heterogeneous arrays
     private boolean currentMethodConsumesSelf = false; // True when the current method uses consuming (mut self) receiver
+    private boolean currentMethodIsMutable = false;    // True when the current method uses &mut self receiver
     private boolean currentMethodMutableFirstParam = false; // True when first param is mut T (MutableFirstParam annotation)
+    private boolean currentEmittingTraitDefaultBody = false; // True when inside a trait's default method body
     private String currentMethodFirstParamName = null;      // Raw name of the first param when MutableFirstParam
     private Set<String> currentMethodRefParamNames = new HashSet<>(); // Raw names of &T ref params in current MutableFirstParam method
     private TypeName currentMethodReturnType = null;         // Declared return type of the current method (for convertWithType in RETURN handler)
@@ -148,7 +198,7 @@ public class Rust implements Emitter<StringBuilder> {
      * Call this in a first pass to build up the trait registry.
      */
     public void discoverTraits(Class clazz) {
-        if (clazz.isInterface) {
+        if (clazz.isInterface || clazz.modifiers.contains(Modifier.ABSTRACT)) {
             String traitName = toPascalCase(clazz.name);
             knownTraits.add(traitName);
 
@@ -233,8 +283,8 @@ public class Rust implements Emitter<StringBuilder> {
 
 
 
-        // Check if this is an interface (trait in Rust)
-        if (clazz.isInterface) {
+        // Check if this is an interface or abstract class (both become Rust traits)
+        if (clazz.isInterface || clazz.modifiers.contains(Modifier.ABSTRACT)) {
             return emitTrait(clazz);
         }
 
@@ -246,8 +296,12 @@ public class Rust implements Emitter<StringBuilder> {
             imports.add("serde::{Serialize, Deserialize}");
         }
 
-        // Only import HashMap if actually used by a field type
-        if (clazz.fields.stream().anyMatch(f -> isMap(f.type))) {
+        // Import HashMap if used by any field type, method parameter, or return type
+        boolean needsHashMap = clazz.fields.stream().anyMatch(f -> isMap(f.type))
+                || clazz.methods.stream().anyMatch(m ->
+                        (m.returnType != null && isMap(m.returnType))
+                        || (m.parameters != null && m.parameters.stream().anyMatch(p -> isMap(p.type))));
+        if (needsHashMap) {
             imports.add("std::collections::HashMap");
         }
 
@@ -281,21 +335,28 @@ public class Rust implements Emitter<StringBuilder> {
         boolean hasDynField = clazz.fields.stream()
                 .filter(f -> !f.modifiers.contains(Modifier.STATIC))
                 .anyMatch(f -> isKnownTrait(f.type) || hasObjectTypeArgument(f.type));
+        // Classes with a concrete superclass contain an inner_parent field whose type
+        // may not implement Clone/Debug (e.g. BeanHistory contains Box<dyn Any> fields).
+        boolean hasConcreteSuperclass = hasConcreteSuperclass(clazz);
+        if (hasConcreteSuperclass) hasDynField = true; // conservative: suppress derives
+        // AtomicI32 (mapped from AtomicInteger) does not implement Clone, so structs that
+        // contain it (directly or transitively via a field whose type is a no-clone struct)
+        // must not derive Clone (or Serialize/Deserialize which imply Clone).
+        boolean hasAtomicField = clazz.fields.stream()
+                .filter(f -> !f.modifiers.contains(Modifier.STATIC))
+                .anyMatch(f -> containsAtomicType(f.type) || fieldTypeHasAtomicField(f.type));
         if (!hasDynField) {
-            if (noSerialization) {
+            if (hasAtomicField) {
+                sb.append("#[derive(Debug)]\n");
+            } else if (noSerialization) {
                 sb.append("#[derive(Debug, Clone)]\n");
             } else {
                 sb.append("#[derive(Debug, Clone, Serialize, Deserialize)]\n");
             }
         }
 
-        // Struct declaration with trait bounds
-        sb.append("pub struct ").append(toPascalCase(clazz.name));
-
-        // Add trait implementations (interfaces)
-        if (!clazz.interfaces.isEmpty()) {
-            // Traits are implemented in a separate impl block, not in declaration
-        }
+        // Struct declaration with optional generic type parameters
+        sb.append("pub struct ").append(toPascalCase(clazz.name)).append(typeParamDecl(clazz));
 
         sb.append(" {\n");
 
@@ -331,10 +392,19 @@ public class Rust implements Emitter<StringBuilder> {
                     .append(",\n");
         }
 
+        // Synthetic inner_parent field for concrete superclass inheritance via composition.
+        if (hasConcreteSuperclass) {
+            String superTypeStr = convertTypeToRust(clazz.superclass);
+            addTypeImport(clazz.superclass);
+            sb.append(INDENT).append("inner_parent: Option<").append(superTypeStr).append(">,\n");
+        }
+
         sb.append("}\n\n");
 
-        // Implementation block
-        sb.append("impl ").append(toPascalCase(clazz.name)).append(" {\n");
+        // Implementation block (inherent methods)
+        sb.append("impl").append(typeParamDecl(clazz))
+                .append(" ").append(toPascalCase(clazz.name)).append(typeParamArgs(clazz))
+                .append(" {\n");
 
         // Constructor (new method)
         if (clazz.constructors.isEmpty()) {
@@ -345,9 +415,13 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
 
-        // Instance methods (excluding those that implement an interface, emitted in trait impl blocks)
+        // Instance methods (excluding those that implement an interface or override abstract superclass
+        // methods — those are emitted in their respective trait impl blocks)
+        Set<String> superclassAbstractMethods = getSuperclassAbstractMethodNames(clazz.superclass);
         for (Method method : clazz.methods) {
-            if (!method.modifiers.contains(Modifier.STATIC) && !isInterfaceImplementation(method)) {
+            if (!method.modifiers.contains(Modifier.STATIC)
+                    && !isInterfaceImplementation(method)
+                    && !superclassAbstractMethods.contains(method.name)) {
                 emitMethod(method);
             }
         }
@@ -365,7 +439,9 @@ public class Rust implements Emitter<StringBuilder> {
                 .collect(Collectors.toList());
 
         if (!staticMethods.isEmpty() || hasStaticFields(clazz.fields)) {
-            sb.append("impl ").append(toPascalCase(clazz.name)).append(" {\n");
+            sb.append("impl").append(typeParamDecl(clazz))
+                    .append(" ").append(toPascalCase(clazz.name)).append(typeParamArgs(clazz))
+                    .append(" {\n");
 
             for (Method method : staticMethods) {
                 emitMethod(method);
@@ -385,7 +461,7 @@ public class Rust implements Emitter<StringBuilder> {
         // Add trait implementations if interfaces are specified.
         // emitTraitImplementations calls emitMethod() which may add further imports via
         // addTypeImport(), so we must not call declareImports() before this point.
-        if (!clazz.interfaces.isEmpty()) {
+        if (!clazz.interfaces.isEmpty() || clazz.superclass != null) {
             emitTraitImplementations(clazz);
         }
 
@@ -512,9 +588,35 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
 
-        // Trait methods (only method signatures for interfaces)
+        // Import HashMap if used in any method parameter or return type
+        boolean needsHashMap = clazz.methods.stream().anyMatch(m ->
+                (m.returnType != null && isMap(m.returnType))
+                || (m.parameters != null && m.parameters.stream().anyMatch(p -> isMap(p.type))));
+        if (needsHashMap) {
+            imports.add("std::collections::HashMap");
+        }
+
+        // Trait methods: abstract methods and non-@Override concrete methods (e.g. helpers).
+        // @Override methods (interface implementations) are NOT emitted here — they belong in
+        // impl InterfaceName for ConcreteType blocks emitted by emitTraitImplementations().
         for (Method method : clazz.methods) {
+            if (isInterfaceImplementation(method)) continue;
             emitTraitMethod(method);
+        }
+
+        // Abstract getter methods for instance fields — traits cannot have fields in Rust,
+        // so we expose them via &mut getters that trait implementations must provide.
+        if (!clazz.isInterface && !clazz.fields.isEmpty()) {
+            for (Field field : clazz.fields) {
+                if (field.modifiers.contains(Modifier.STATIC)) continue;
+                String fieldSnake = sanitizeName(toSnakeCase(field.name));
+                String rustType = isKnownTrait(field.type)
+                        ? "Box<dyn " + convertTypeToRust(field.type) + ">"
+                        : convertTypeToRust(field.type);
+                if (field.initialiser == null) rustType = "Option<" + rustType + ">";
+                addTypeImport(field.type);
+                sb.append(INDENT).append("fn ").append(fieldSnake).append("(&mut self) -> &mut ").append(rustType).append(";\n");
+            }
         }
 
         sb.append("}\n\n");
@@ -595,7 +697,7 @@ public class Rust implements Emitter<StringBuilder> {
         // Self parameter for instance methods
         if (!method.modifiers.contains(Modifier.STATIC)) {
             sb.append("&");
-            if (modifiesSelf(method) || consumesSelf(method)) {
+            if (modifiesSelf(method) || consumesSelf(method) || implementsStatefulTrait(method)) {
                 sb.append("mut ");
             }
             sb.append("self");
@@ -633,7 +735,26 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
 
-        sb.append(";\n\n");
+        // For abstract class traits: if the method has a body (non-abstract concrete method),
+        // emit a default implementation.  Interface traits always get just `;`.
+        // @Override methods are NOT emitted here — they belong in impl InterfaceName for ConcreteType blocks.
+        boolean hasBody = !method.modifiers.contains(Modifier.ABSTRACT)
+                && !isInterfaceImplementation(method)
+                && method.body != null && !method.body.isEmpty();
+        if (hasBody) {
+            sb.append(" {\n");
+            currentMethodIsMutable = modifiesSelf(method) || consumesSelf(method) || implementsStatefulTrait(method);
+            currentEmittingTraitDefaultBody = true;
+            for (int i = 0; i < method.body.size(); i++) {
+                Statement stmt = method.body.get(i);
+                boolean isLast = (i == method.body.size() - 1);
+                emitStatement(stmt, INDENT + INDENT, isLast);
+            }
+            currentEmittingTraitDefaultBody = false;
+            sb.append(INDENT).append("}\n\n");
+        } else {
+            sb.append(";\n\n");
+        }
     }
 
     /**
@@ -653,8 +774,9 @@ public class Rust implements Emitter<StringBuilder> {
             //System.out.println("addTraintImport for " + intfce + " "  + traitName);
             addTraitImport(intfce);
 
-            sb.append("impl ").append(traitName)
-                    .append(" for ").append(toPascalCase(clazz.name))
+            sb.append("impl").append(typeParamDecl(clazz))
+                    .append(" ").append(traitName)
+                    .append(" for ").append(toPascalCase(clazz.name)).append(typeParamArgs(clazz))
                     .append(" {\n");
 
             // Emit only methods that implement this trait (annotated with @Override)
@@ -666,7 +788,118 @@ public class Rust implements Emitter<StringBuilder> {
 
             sb.append("}\n\n");
         }
+
+        // Superclass handling: if the class extends an abstract class (now a Rust trait),
+        // emit impl SuperclassTrait for Self containing the overriding methods.
+        if (clazz.superclass != null) {
+            Set<String> abstractMethodNames = getSuperclassAbstractMethodNames(clazz.superclass);
+            if (!abstractMethodNames.isEmpty()) {
+                String superTraitName = convertInterfaceToTrait(clazz.superclass);
+                addTraitImport(clazz.superclass);
+                sb.append("impl").append(typeParamDecl(clazz))
+                        .append(" ").append(superTraitName)
+                        .append(" for ").append(toPascalCase(clazz.name)).append(typeParamArgs(clazz))
+                        .append(" {\n");
+                for (Method method : clazz.methods) {
+                    if (!method.modifiers.contains(Modifier.STATIC)
+                            && abstractMethodNames.contains(method.name)) {
+                        emitMethod(method, true);
+                    }
+                }
+                sb.append("}\n\n");
+            }
+
+            // Also emit impl InterfaceName for ConcreteClass using method bodies from the superclass.
+            // When the class extends an abstract superclass (a Rust trait) that itself implements
+            // interfaces, each interface must be explicitly implemented by the concrete class.
+            // The method bodies come from the superclass PAST Class object (looked up in classRegistry).
+            // NOTE: skip this for classes with a concrete superclass — those use inner_parent
+            // composition and cannot re-use the parent's method bodies (which reference parent fields).
+            if (!hasConcreteSuperclass(clazz)) {
+                ClassName superCn = null;
+                if (clazz.superclass instanceof ClassName) {
+                    superCn = (ClassName) clazz.superclass;
+                } else if (clazz.superclass instanceof ParameterizedType) {
+                    TypeName raw = ((ParameterizedType) clazz.superclass).rawType;
+                    if (raw instanceof ClassName) superCn = (ClassName) raw;
+                }
+                if (superCn != null) {
+                    Class superclazz = classRegistry.get(toPascalCase(superCn.simpleName));
+                    if (superclazz != null && !superclazz.interfaces.isEmpty()) {
+                        // Collect imports for all types referenced by the superclass's methods,
+                        // since those methods will be emitted into the current file.
+                        for (Method superMethod : superclazz.methods) {
+                            if (superMethod.parameters != null) {
+                                for (Parameter param : superMethod.parameters) {
+                                    addTypeImport(param.type);
+                                }
+                            }
+                            if (superMethod.returnType != null) {
+                                addTypeImport(superMethod.returnType);
+                            }
+                        }
+                        // Temporarily switch currentClass and currentClassSignature to the superclass
+                        // so that implementsStatefulTrait() and findAltNameForDeclaration() resolve
+                        // correctly against the superclass's interfaces and overloaded method names.
+                        Class savedCurrentClass = currentClass;
+                        ClassSignature savedCurrentClassSignature = currentClassSignature;
+                        currentClass = superclazz;
+                        currentClassSignature = (typeRegistry != null && superCn.packge != null)
+                                ? typeRegistry.lookup(superclazz.name, superCn.packge) : null;
+                        for (TypeName intfce : superclazz.interfaces) {
+                            // Skip if clazz already implements this interface directly
+                            // (its own @Override methods handle it in the first loop above).
+                            boolean alreadyImplemented = clazz.interfaces.stream()
+                                    .anyMatch(i -> convertInterfaceToTrait(i).equals(convertInterfaceToTrait(intfce)));
+                            if (alreadyImplemented) continue;
+                            String traitName = convertInterfaceToTrait(intfce);
+                            addTraitImport(intfce);
+                            sb.append("impl").append(typeParamDecl(clazz))
+                                    .append(" ").append(traitName)
+                                    .append(" for ").append(toPascalCase(clazz.name)).append(typeParamArgs(clazz))
+                                    .append(" {\n");
+                            for (Method method : superclazz.methods) {
+                                if (!method.modifiers.contains(Modifier.STATIC)
+                                        && isInterfaceImplementation(method)
+                                        && method.body != null && !method.body.isEmpty()) {
+                                    // true = in trait impl block (suppress 'pub' on methods)
+                                    emitMethod(method, true);
+                                }
+                            }
+                            sb.append("}\n\n");
+                        }
+                        currentClass = savedCurrentClass;
+                        currentClassSignature = savedCurrentClassSignature;
+                    }
+                }
+            }
+        }
         // imports and insertRustDirectives are handled by the caller (emit(Class))
+    }
+
+    /**
+     * Returns the set of abstract method names declared in the superclass (if resolvable).
+     * Used to decide which methods of the current class override abstract superclass methods.
+     */
+    private Set<String> getSuperclassAbstractMethodNames(TypeName superclass) {
+        if (superclass == null || typeRegistry == null) return java.util.Collections.emptySet();
+        ClassName cn = null;
+        if (superclass instanceof ClassName) {
+            cn = (ClassName) superclass;
+        } else if (superclass instanceof ParameterizedType) {
+            TypeName raw = ((ParameterizedType) superclass).rawType;
+            if (raw instanceof ClassName) cn = (ClassName) raw;
+        }
+        if (cn == null) return java.util.Collections.emptySet();
+        ClassSignature sig = typeRegistry.lookup(cn.simpleName, cn.packge);
+        if (sig == null) return java.util.Collections.emptySet();
+        Set<String> names = new java.util.HashSet<>();
+        for (MethodSignature ms : sig.methods) {
+            if (ms.modifiers.contains(Modifier.ABSTRACT)) {
+                names.add(ms.name);
+            }
+        }
+        return names;
     }
 
     /**
@@ -691,6 +924,46 @@ public class Rust implements Emitter<StringBuilder> {
             return result.toString();
         }
         return intfce.toString();
+    }
+
+    /**
+     * Returns {@code "<T: Bound1 + Bound2>"} for the class generic-parameter declaration,
+     * or {@code ""} if the class has no type variables.
+     * Used in struct and impl headers.
+     */
+    private String typeParamDecl(Class clazz) {
+        if (clazz.typeVariables == null || clazz.typeVariables.isEmpty()) return "";
+        StringBuilder s = new StringBuilder("<");
+        for (int i = 0; i < clazz.typeVariables.size(); i++) {
+            if (i > 0) s.append(", ");
+            TypeVariable tv = clazz.typeVariables.get(i);
+            s.append(tv.name);
+            if (!tv.bounds.isEmpty()) {
+                s.append(": ");
+                for (int j = 0; j < tv.bounds.size(); j++) {
+                    if (j > 0) s.append(" + ");
+                    s.append(convertInterfaceToTrait(tv.bounds.get(j)));
+                }
+            }
+        }
+        s.append(">");
+        return s.toString();
+    }
+
+    /**
+     * Returns {@code "<T>"} for use as the concrete type argument after the struct name in impl
+     * headers (e.g. {@code impl<T: Foo> Bar<T>}), or {@code ""} if the class has no type
+     * variables.
+     */
+    private String typeParamArgs(Class clazz) {
+        if (clazz.typeVariables == null || clazz.typeVariables.isEmpty()) return "";
+        StringBuilder s = new StringBuilder("<");
+        for (int i = 0; i < clazz.typeVariables.size(); i++) {
+            if (i > 0) s.append(", ");
+            s.append(clazz.typeVariables.get(i).name);
+        }
+        s.append(">");
+        return s.toString();
     }
 
     /**
@@ -743,7 +1016,17 @@ public class Rust implements Emitter<StringBuilder> {
             ParameterizedType pt = (ParameterizedType) typeName;
             addTypeImport(pt.rawType);
             for (TypeName arg : pt.typeArguments) {
-                addTypeImport(arg);
+                if (arg instanceof ClassName) {
+                    ClassName cn = (ClassName) arg;
+                    if (cn.simpleName.equals("AtomicInteger") && Objects.equals(cn.packge, "past.lang")) {
+                        imports.add(STD_SYNC_ATOMIC_ATOMIC_I_32_ORDERING);
+                    } else {
+                        addTypeImport(arg);
+                    }
+
+                } else {
+                    addTypeImport(arg);
+                }
             }
         }
     }
@@ -785,6 +1068,17 @@ public class Rust implements Emitter<StringBuilder> {
             return isKnownTrait(pt.rawType);
         }
         return false;
+    }
+
+    /**
+     * Returns true when {@code clazz} has a superclass that is a concrete struct (not a trait).
+     * In Rust, concrete superclasses cannot be inherited; instead we use composition via a
+     * synthetic {@code inner_parent} field.
+     */
+    private boolean hasConcreteSuperclass(Class clazz) {
+        if (clazz.superclass == null) return false;
+        // If the superclass type is a known trait, it maps to a Rust trait (no inner_parent needed).
+        return !isKnownTrait(clazz.superclass);
     }
 
     /**
@@ -867,11 +1161,12 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
 
-        // For String types, use Option<&str> to mirror Java's nullable String
+        // For String types, use &str (same as convertTypeToRustParam):
+        // callers pass bare string literals and trait impls delegate to methods expecting &str.
         if (tn instanceof ClassName) {
             ClassName cn = (ClassName) tn;
             if ("String".equals(cn.simpleName)) {
-                return "Option<&str>";
+                return "&str";
             }
         }
 
@@ -909,7 +1204,7 @@ public class Rust implements Emitter<StringBuilder> {
 
 
     private String updateMethodNameIfOverloaded(MethodCall mc, String convertedObject, String callMethodName) {
-        if ("self".equals(convertedObject) || (mc.object.inferredType instanceof ClassName)) {
+        if ("self".equals(convertedObject) || (mc.object.inferredType instanceof ClassName) || isTypeVariableWithBound(mc.object.inferredType)) {
             int argCount = mc.arguments == null ? 0 : mc.arguments.size();
             if (argCount!=0) {
                 List<TypeName> argumentTypes= mc.arguments.stream().map(a -> a.inferredType).collect(Collectors.toList());
@@ -917,7 +1212,9 @@ public class Rust implements Emitter<StringBuilder> {
                 if ("self".equals(convertedObject)) {
                     resolvedAlt=findAltNameForCall(mc.methodName, argumentTypes);
                 } else {
-                    resolvedAlt=findAltNameForCall((ClassName) mc.object.inferredType, callMethodName, argumentTypes);
+                    ClassName cl=classForPurposeOfLookup(mc.object.inferredType);
+
+                    resolvedAlt=findAltNameForCall(cl, callMethodName, argumentTypes);
                 }
                 if (resolvedAlt != null) {
                     callMethodName = sanitizeName(resolvedAlt);
@@ -925,6 +1222,23 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
         return callMethodName;
+    }
+
+    private ClassName classForPurposeOfLookup(TypeName inferredType) {
+        if (inferredType instanceof ClassName) {
+            return (ClassName) inferredType;
+        } else if (inferredType instanceof TypeVariable) {
+            TypeVariable var = (TypeVariable) inferredType;
+            return (ClassName) var.bounds.get(0);
+        } else {
+            throw new IllegalArgumentException("Unsupported type: " + inferredType);
+        }
+    }
+
+    private boolean isTypeVariableWithBound(TypeName tn) {
+        return tn instanceof TypeVariable &&
+                !((TypeVariable) tn).bounds.isEmpty() &&
+                ((TypeVariable) tn).bounds.get(0) instanceof ClassName;
     }
 
 
@@ -1005,14 +1319,19 @@ public class Rust implements Emitter<StringBuilder> {
         sb.append(INDENT).append("/// Constructor\n");
         sb.append(INDENT).append("pub fn new(");
 
-        // Parameters — use convertTypeToRustParam for idiomatic types (&str, &mut HashMap, etc.)
+        // Parameters — constructors take ownership, so use convertTypeToRust (owned types).
+        // Exception: known-trait types use "impl Trait + 'static" so the concrete impl
+        // is heap-allocated into Box<dyn Trait> when stored in the struct.
         if (constructor.parameters != null) {
             for (int i = 0; i < constructor.parameters.size(); i++) {
                 if (i > 0) sb.append(", ");
                 Parameter param = constructor.parameters.get(i);
+                String paramType = isKnownTrait(param.type)
+                        ? convertTypeToRustParam(param.type)   // impl Trait + 'static
+                        : convertTypeToRust(param.type);       // owned (HashMap, Vec, String, bool…)
                 sb.append(sanitizeName(toSnakeCase(param.name)))
                         .append(": ")
-                        .append(convertTypeToRustParam(param.type));
+                        .append(paramType);
             }
         }
         sb.append(") -> Self {\n");
@@ -1041,6 +1360,23 @@ public class Rust implements Emitter<StringBuilder> {
                     String rhs = needsSomeWrap ? "Some(" + baseRhs + ")" : baseRhs;
                     fieldValues.put(fieldName, rhs);
                 }
+            } else if (statement instanceof MethodCall) {
+                // SUPER_METHOD_CALL(null, args) — super constructor call.
+                // Store as inner_parent initialization when the class has a concrete superclass.
+                MethodCall mc = (MethodCall) statement;
+                if (mc.operatorKind == MethodCall.MethodCallKind.SUPER_METHOD_CALL
+                        && mc.methodName == null
+                        && currentClass != null && hasConcreteSuperclass(currentClass)) {
+                    // Convert the superclass type to a Rust constructor call prefix.
+                    // BeanHistory<BeanLocalEnactor3> → BeanHistory::<BeanLocalEnactor3>
+                    addTypeImport(currentClass.superclass);
+                    String superTypeRust = convertTypeToRust(currentClass.superclass);
+                    // Insert turbofish syntax: BeanHistory<T> -> BeanHistory::<T>
+                    String superConstructorPrefix = superTypeRust.replace("<", "::<");
+                    String superArgs = mc.arguments == null ? "" :
+                            mc.arguments.stream().map(this::convert).collect(Collectors.joining(", "));
+                    fieldValues.put("inner_parent", "Some(" + superConstructorPrefix + "::new(" + superArgs + "))");
+                }
             }
         }
 
@@ -1055,6 +1391,16 @@ public class Rust implements Emitter<StringBuilder> {
                 sb.append(fieldValues.get(fieldName));
             } else if (field.initialiser != null) {
                 sb.append(convertWithType(field.initialiser, field.type));
+            } else {
+                sb.append("None");
+            }
+            sb.append(",\n");
+        }
+        // Add inner_parent field for concrete superclass composition.
+        if (currentClass != null && hasConcreteSuperclass(currentClass)) {
+            sb.append(INDENT).append(INDENT).append(INDENT).append("inner_parent: ");
+            if (fieldValues.containsKey("inner_parent")) {
+                sb.append(fieldValues.get("inner_parent"));
             } else {
                 sb.append("None");
             }
@@ -1163,7 +1509,8 @@ public class Rust implements Emitter<StringBuilder> {
         currentMethodRefParamNames = new HashSet<>();
         if (!method.modifiers.contains(Modifier.STATIC)) {
             sb.append("&");
-            if (currentMethodConsumesSelf || modifiesSelf(method) || implementsStatefulTrait(method)) {
+            currentMethodIsMutable = currentMethodConsumesSelf || modifiesSelf(method) || implementsStatefulTrait(method);
+            if (currentMethodIsMutable) {
                 sb.append("mut ");
             }
             sb.append("self");
@@ -1239,6 +1586,24 @@ public class Rust implements Emitter<StringBuilder> {
                             if (fieldType != null && isKnownTrait(fieldType)) {
                                 returnsTraitFieldRef = true;
                             } else {
+                                returnsOptionFieldRef = true;
+                            }
+                        } else if (retExpr instanceof MethodCall) {
+                            // Delegation pattern: this.optionField.method() — the called method
+                            // returns a reference into the inner struct; use &ReturnType.
+                            MethodCall retMc = (MethodCall) retExpr;
+                            if (retMc.operatorKind == MethodCall.MethodCallKind.OBJECT_METHOD_CALL
+                                    && isSelfOptionFieldAccess(retMc.object)
+                                    && !currentMethodIsMutable) {
+                                returnsOptionFieldRef = true;
+                            }
+                            // Super-delegation chain (inner_parent.get_delegator().getXxx()) that returns
+                            // a non-cloneable collection (e.g. HashMap<String, AtomicI32>).
+                            // Emit &ReturnType so we return a reference instead of trying to clone.
+                            else if (containsSuperMethodCall(retExpr)
+                                    && method.returnType != null
+                                    && (isMap(method.returnType) || isList(method.returnType))
+                                    && containsNonCloneableElement(method.returnType)) {
                                 returnsOptionFieldRef = true;
                             }
                         }
@@ -1640,6 +2005,18 @@ public class Rust implements Emitter<StringBuilder> {
                 // Use convertWithType so that a string constant returned from a String method
                 // gets .to_string() appended (avoids E0308 &str vs String).
                 String retExpr = convertWithType(ret.expression, currentMethodReturnType);
+                // When the return expression goes through a SUPER_METHOD_CALL delegation chain
+                // (e.g. self.inner_parent.as_ref().unwrap().get_delegator().get_counter_map()),
+                // the chain passes through as_ref() and the final call returns &Map/&List.
+                // We need to .clone() to produce an owned value — unless the map contains a
+                // non-Clone element type like AtomicI32, in which case we return &Map directly
+                // (the method signature has been adjusted to &HashMap<...> in emitMethod).
+                if (currentMethodReturnType != null
+                        && (isMap(currentMethodReturnType) || isList(currentMethodReturnType))
+                        && containsSuperMethodCall(ret.expression)
+                        && !containsNonCloneableElement(currentMethodReturnType)) {
+                    retExpr += ".clone()";
+                }
                 if (currentMethodConsumesSelf) {
                     // Returning self in a &mut self method: self is &mut T, return type is T → clone.
                     if (isSelfVariableReturn(ret.expression)) {
@@ -1784,7 +2161,7 @@ public class Rust implements Emitter<StringBuilder> {
 
     /**
      * Convert an argument expression, handling Option<T> fields for nullable semantics.
-     * - Option<String> fields use .as_deref() to yield Option<&str>
+     * - Option<String> fields use .as_deref().unwrap_or_default() to yield &str
      * - Other Option<T> fields (i32, etc.) are passed by value (Copy types)
      * - Non-optional String fields (with initialiser) use & to borrow as &str
      */
@@ -1798,8 +2175,8 @@ public class Rust implements Emitter<StringBuilder> {
                     if (field.initialiser == null) {
                         // This is an Option<T> field
                         if (isStringType(fieldType)) {
-                            // Option<String> → Option<&str> via .as_deref()
-                            return "self." + sanitizeName(toSnakeCase(ve.name)) + ".as_deref()";
+                            // Option<String> → &str: processor trait methods take &str (not Option<&str>)
+                            return "self." + sanitizeName(toSnakeCase(ve.name)) + ".as_deref().unwrap_or_default()";
                         } else {
                             // Option<i32> etc. — pass by value (Copy)
                             return "self." + sanitizeName(toSnakeCase(ve.name));
@@ -1864,6 +2241,103 @@ public class Rust implements Emitter<StringBuilder> {
     }
 
     /**
+     * Look up the parameter list of a method named {@code methodName} in the current class and
+     * its superclass chain (via {@link #classRegistry}).  Used by the OPERATOR_VARIABLE handler
+     * to determine whether struct-type arguments to self method calls need {@code &} borrowing.
+     *
+     * @param methodName the PAST-level method name (e.g. "process")
+     * @param argCount   the number of arguments in the call (used to disambiguate overloads)
+     * @return the parameter list of the first matching method, or {@code null} if not found
+     */
+    private List<Parameter> findSelfMethodParameters(String methodName, int argCount) {
+        Class clazz = currentClass;
+        while (clazz != null) {
+            for (Method m : clazz.methods) {
+                if (methodName.equals(m.name)) {
+                    int paramCount = (m.parameters != null) ? m.parameters.size() : 0;
+                    if (paramCount == argCount) return m.parameters;
+                }
+            }
+            // Climb the superclass chain
+            if (clazz.superclass instanceof ClassName) {
+                String superName = ((ClassName) clazz.superclass).simpleName;
+                clazz = classRegistry.get(toPascalCase(superName));
+            } else {
+                break;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns true if the collection type contains a non-Clone element type (e.g. AtomicInteger).
+     * Used to decide whether to return {@code &Map<K,V>} (reference) or clone an owned map.
+     */
+    private boolean containsNonCloneableElement(TypeName tn) {
+        if (tn instanceof ParameterizedType) {
+            for (TypeName arg : ((ParameterizedType) tn).typeArguments) {
+                if (arg instanceof ClassName) {
+                    String name = ((ClassName) arg).simpleName;
+                    if ("AtomicInteger".equals(name) || "AtomicI32".equals(name)) return true;
+                }
+                if (containsNonCloneableElement(arg)) return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the expression tree contains a SUPER_METHOD_CALL node.
+     * Used to detect delegation chains that pass through get_delegator() and therefore
+     * produce reference values (&T) instead of owned values (T).
+     */
+    private boolean containsSuperMethodCall(Expression expr) {
+        if (expr instanceof MethodCall) {
+            MethodCall mc = (MethodCall) expr;
+            if (mc.operatorKind == MethodCall.MethodCallKind.SUPER_METHOD_CALL) return true;
+            if (mc.object != null && containsSuperMethodCall(mc.object)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Look up the PAST parameter list for a method on the class identified by {@code receiverType}.
+     * Used by the FUNCTIONAL_INTERFACE_CALL handler to resolve which null arguments should become
+     * {@code ""} (for {@code &str} params) vs {@code None} (for {@code Option<T>} params).
+     *
+     * @param receiverType the inferred type of the call receiver (may be {@code ParameterizedType},
+     *                     {@code ClassName}, or {@code TypeVariable})
+     * @param methodName   the Java-style method name (e.g. "process")
+     * @return the parameter list of the first matching method, or {@code null} if not found
+     */
+    private List<Parameter> findMethodParameters(TypeName receiverType, String methodName) {
+        if (receiverType == null) return null;
+        String className = null;
+        if (receiverType instanceof ClassName) {
+            className = ((ClassName) receiverType).simpleName;
+        } else if (receiverType instanceof ParameterizedType) {
+            TypeName rawType = ((ParameterizedType) receiverType).getRawType();
+            if (rawType instanceof ClassName) {
+                className = ((ClassName) rawType).simpleName;
+            }
+        } else if (receiverType instanceof TypeVariable) {
+            TypeVariable tv = (TypeVariable) receiverType;
+            if (!tv.bounds.isEmpty() && tv.bounds.get(0) instanceof ClassName) {
+                className = ((ClassName) tv.bounds.get(0)).simpleName;
+            }
+        }
+        if (className == null) return null;
+        Class clazz = classRegistry.get(toPascalCase(className));
+        if (clazz == null) return null;
+        for (Method m : clazz.methods) {
+            if (methodName.equals(m.name)) {
+                return m.parameters;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns true if the named field of the current class is emitted as Option<T>
      * (i.e. it has no initialiser in the PAST).
      */
@@ -1893,6 +2367,19 @@ public class Rust implements Emitter<StringBuilder> {
         if (!(mc.object instanceof Variable)) return false;
         Variable v = (Variable) mc.object;
         return ("this".equals(v.name) || "self".equals(v.name)) && isOptionField(mc.methodName);
+    }
+
+    /**
+     * Returns true when {@code fieldName} is an instance field declared on the current
+     * (abstract) class.  Used to translate direct field access to getter calls inside
+     * trait default method bodies, where Rust does not allow field access.
+     */
+    private boolean isFieldOfCurrentAbstractClass(String fieldName) {
+        if (currentClass == null) return false;
+        String snakeName = sanitizeName(toSnakeCase(fieldName));
+        return currentClass.fields.stream()
+                .filter(f -> !f.modifiers.contains(Modifier.STATIC))
+                .anyMatch(f -> sanitizeName(toSnakeCase(f.name)).equals(snakeName));
     }
 
     /**
@@ -2260,6 +2747,13 @@ public class Rust implements Emitter<StringBuilder> {
                                 result.append(applyArgTreatment(treatment, arg));
                             }
                         }
+                        // AtomicI32::fetch_add / fetch_sub require (delta, order) args even
+                        // when reached through the chained-get path (which returns early).
+                        if (("fetch_add".equals(callMethodName) || "fetch_sub".equals(callMethodName))
+                                && (mc.arguments == null || mc.arguments.isEmpty())) {
+                            imports.add(STD_SYNC_ATOMIC_ATOMIC_I_32_ORDERING);
+                            result.append("1, Ordering::SeqCst");
+                        }
                         result.append(")");
                         // Apply result transform: COPIED appends .copied() after HashMap::get()
                         if (chainSpec != null && chainSpec.resultTransform == ResultTransform.COPIED) {
@@ -2323,6 +2817,14 @@ public class Rust implements Emitter<StringBuilder> {
                         result.append(argStr);
                     }
                 }
+                // AtomicI32::fetch_add / fetch_sub require (delta: i32, order: Ordering).
+                // Java's getAndIncrement/getAndDecrement take no args, so we inject the
+                // standard delta=1 and SeqCst ordering when the PAST call has no arguments.
+                if (("fetch_add".equals(callMethodName) || "fetch_sub".equals(callMethodName))
+                        && (mc.arguments == null || mc.arguments.isEmpty())) {
+                    imports.add(STD_SYNC_ATOMIC_ATOMIC_I_32_ORDERING);
+                    result.append("1, Ordering::SeqCst");
+                }
                 result.append(")");
                 return result.toString();
             }
@@ -2337,6 +2839,17 @@ public class Rust implements Emitter<StringBuilder> {
                     }
                     result.append(className).append("::").append(sanitizeName(toSnakeCase(mc.methodName).toUpperCase()));
                 } else if (mc.object instanceof Variable) {
+                    // In a trait default method, fields cannot be accessed directly.
+                    // Replace self.fieldName with self.fieldName() (abstract getter call).
+                    Variable objVar2 = (Variable) mc.object;
+                    if (currentEmittingTraitDefaultBody
+                            && ("this".equals(objVar2.name) || "self".equals(objVar2.name))
+                            && currentClass != null
+                            && (currentClass.isInterface || currentClass.modifiers.contains(Modifier.ABSTRACT))
+                            && isFieldOfCurrentAbstractClass(mc.methodName)) {
+                        result.append("self.").append(sanitizeName(toSnakeCase(mc.methodName))).append("()");
+                        return result.toString();
+                    }
                     result.append(convert(mc.object)).append(".").append(sanitizeName(toSnakeCase(mc.methodName)));
                     // In MutableFirstParam methods, params 1..n are &T references.
                     // Reading a field through &T requires .clone() for non-Copy types.
@@ -2345,6 +2858,19 @@ public class Rust implements Emitter<StringBuilder> {
                     if (currentMethodMutableFirstParam
                             && currentMethodRefParamNames.contains(((Variable) mc.object).name)) {
                         result.append(".clone()");
+                    }
+                    // Primitive self-fields are stored as Option<T> in the struct.
+                    // When read in a value context (arithmetic, if-condition, function arg),
+                    // they must be unwrapped.  Non-primitive fields (HashMap, Vec, trait objects)
+                    // are handled by their respective call-site converters (convertTraitReceiver,
+                    // AS_MUT_UNWRAP, etc.) and must NOT get an extra .unwrap() here.
+                    Variable objVar = (Variable) mc.object;
+                    if (("this".equals(objVar.name) || "self".equals(objVar.name))
+                            && isOptionField(mc.methodName)) {
+                        TypeName ft = getFieldType(mc.methodName);
+                        if (ft != null && isPrimitiveType(ft)) {
+                            result.append(".unwrap()");
+                        }
                     }
                 } else if (mc.object instanceof MethodCall) {
                     MethodCall mc2 = (MethodCall) mc.object;
@@ -2372,9 +2898,21 @@ public class Rust implements Emitter<StringBuilder> {
                 assert mc.object != null;
                 result.append(convertTraitReceiver(mc)).append(".").append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
                 if (mc.arguments != null) {
-                    result.append(mc.arguments.stream()
-                            .map(this::convertTraitCallArg)
-                            .collect(Collectors.joining(", ")));
+                    // Look up the method's parameter types so that Constant.NULL arguments
+                    // can be emitted as "" (empty string slice) for &str parameters instead of None.
+                    List<Parameter> methodParams = findMethodParameters(mc.object.inferredType, mc.methodName);
+                    List<String> convertedArgs = new ArrayList<>();
+                    for (int i = 0; i < mc.arguments.size(); i++) {
+                        Expression arg = mc.arguments.get(i);
+                        if (arg instanceof Constant && ((Constant) arg).constantType == Constant.ConstantType.NULL
+                                && methodParams != null && i < methodParams.size()
+                                && isStringType(methodParams.get(i).type)) {
+                            convertedArgs.add("\"\"");
+                        } else {
+                            convertedArgs.add(convertTraitCallArg(arg));
+                        }
+                    }
+                    result.append(String.join(", ", convertedArgs));
                 }
                 result.append(")");
                 return result.toString();
@@ -2415,6 +2953,12 @@ public class Rust implements Emitter<StringBuilder> {
                 // bean being updated); args 1+ are & (read-only borrows of input/output beans).
                 boolean calleeMFP = calledMethodHasMutableFirstParam(mc);
 
+                // For self-method calls that are trait methods, look up parameter types so that
+                // struct/bean arguments are passed as &arg (matching &T trait param declarations).
+                int selfArgCount = (mc.arguments != null) ? mc.arguments.size() : 0;
+                List<Parameter> traitParams = "self".equals(convertedObject)
+                        ? findSelfMethodParameters(mc.methodName, selfArgCount) : null;
+
                 result.append(convertedObject).append(".").append(toSnakeCase(callMethodName)).append("(");
                 if (mc.arguments != null) {
                     for (int i = 0; i < mc.arguments.size(); i++) {
@@ -2424,6 +2968,19 @@ public class Rust implements Emitter<StringBuilder> {
                             result.append("&mut ").append(convert(arg));
                         } else if (calleeMFP && i > 0) {
                             result.append("&").append(convert(arg));
+                        } else if (traitParams != null && i < traitParams.size()) {
+                            TypeName paramType = traitParams.get(i).type;
+                            // Trait methods declare struct/bean params as &T via convertTypeToRustTraitParam.
+                            // Pass the argument as &arg to match the expected &T signature.
+                            boolean isStructParam = !isPrimitiveType(paramType) && !isStringType(paramType)
+                                    && !isList(paramType) && !isMap(paramType) && !isKnownTrait(paramType);
+                            if (isStructParam) {
+                                result.append("&").append(convert(arg));
+                            } else {
+                                ArgTreatment treatment = (opVarSpec != null)
+                                        ? opVarSpec.argTreatment(i) : ArgTreatment.PASS_BY_VALUE;
+                                result.append(applyArgTreatment(treatment, arg));
+                            }
                         } else {
                             ArgTreatment treatment = (opVarSpec != null)
                                     ? opVarSpec.argTreatment(i) : ArgTreatment.PASS_BY_VALUE;
@@ -2438,6 +2995,12 @@ public class Rust implements Emitter<StringBuilder> {
             case STATIC_METHOD_CALL -> {
                 assert mc.className != null;
                 String className = getSimpleName(convert(mc.className));
+                // Java's String.valueOf(x) → x.to_string() in Rust (no String::value_of exists)
+                if ("String".equals(className) && "valueOf".equals(mc.methodName)
+                        && mc.arguments != null && mc.arguments.size() == 1) {
+                    result.append(convert(mc.arguments.get(0))).append(".to_string()");
+                    return result.toString();
+                }
                 result.append(className).append("::").append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
@@ -2460,17 +3023,19 @@ public class Rust implements Emitter<StringBuilder> {
             }
 
             case SUPER_METHOD_CALL -> {
-                if (mc.methodName==null) {
-                    result.append("super.").append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
+                // In Rust there is no super() syntax. Delegate via inner_parent composition.
+                String superArgs = mc.arguments == null ? "" :
+                        mc.arguments.stream().map(this::convert).collect(Collectors.joining(", "));
+                if (mc.methodName == null) {
+                    // super constructor call — handled in emitConstructor via inner_parent init;
+                    // if we reach here outside a constructor, emit a commented-out placeholder.
+                    result.append("/* super(").append(superArgs).append(") */");
                 } else {
-                    result.append("super(");
+                    // super.method(args) — delegate to inner_parent
+                    String mutableAccess = currentMethodIsMutable ? "as_mut()" : "as_ref()";
+                    result.append("self.inner_parent.").append(mutableAccess).append(".unwrap().")
+                          .append(sanitizeName(toSnakeCase(mc.methodName))).append("(").append(superArgs).append(")");
                 }
-                if (mc.arguments != null) {
-                    result.append(mc.arguments.stream()
-                            .map(this::convert)
-                            .collect(Collectors.joining(", ")));
-                }
-                result.append(")");
                 return result.toString();
             }
         }
@@ -2495,6 +3060,16 @@ public class Rust implements Emitter<StringBuilder> {
                         String inner = convert(innerMc);
                         return inner + ".as_mut().unwrap()." + sanitizeName(toSnakeCase(mc.methodName));
                     }
+                }
+            }
+            // Simple this.field = … assignment: return "self.field_name" directly.
+            // Must NOT fall through to convertMethodCall, which adds .unwrap() for primitive
+            // Option fields — that would produce unassignable `self.x.unwrap() = …`.
+            if (mc.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
+                    && mc.object instanceof Variable) {
+                Variable v = (Variable) mc.object;
+                if ("this".equals(v.name) || "self".equals(v.name)) {
+                    return "self." + sanitizeName(toSnakeCase(mc.methodName));
                 }
             }
             return convertMethodCall(mc);
@@ -2525,6 +3100,10 @@ public class Rust implements Emitter<StringBuilder> {
 
         if (typeName instanceof ClassName) {
             ClassName cn = (ClassName) typeName;
+            if (Objects.equals(cn.packge,"past.lang") && cn.simpleName.equals("AtomicInteger")) {
+                imports.add(STD_SYNC_ATOMIC_ATOMIC_I_32_ORDERING);
+                return "AtomicI32";
+            }
             String modulePath = buildModulePath(cn.packge, cn.simpleName);
             // don't add an import for the current class
             if (cn.simpleName.equals(this.currentClass.name) &&
@@ -2627,7 +3206,8 @@ public class Rust implements Emitter<StringBuilder> {
         } else if (isSelfOptionFieldAccess(mc.object) && !isSelfOptionListField(mc)) {
             // Method called on an Option<T> self-field — must unwrap to reach the inner T.
             // Exception: Option<Vec> fields are handled downstream by the AS_MUT_UNWRAP transform.
-            convertedObject += ".as_mut().unwrap()";
+            // Use as_mut() only when the enclosing method takes &mut self; otherwise as_ref().
+            convertedObject += currentMethodIsMutable ? ".as_mut().unwrap()" : ".as_ref().unwrap()";
         }
         return convertedObject;
     }
@@ -2665,6 +3245,15 @@ public class Rust implements Emitter<StringBuilder> {
             Constant.ConstantType ct = ((Constant) arg).constantType;
             if (ct == Constant.ConstantType.INTEGER || ct == Constant.ConstantType.LONG) {
                 return convert(arg);
+            }
+        }
+        // String-typed local variable parameters are already &str — adding & would yield &&str,
+        // which does not satisfy Borrow<str> for HashMap<String, V> lookups.
+        // Non-string local variables (e.g. i32 keys) still need & to borrow them.
+        if (arg instanceof Variable && ((Variable) arg).field == Variable.VariableKind.LOCAL_VARIABLE) {
+            Variable ve = (Variable) arg;
+            if (ve.inferredType != null && isStringType(ve.inferredType)) {
+                return convertOptionArg(arg);
             }
         }
         return "&" + convertOptionArg(arg);
@@ -2743,6 +3332,11 @@ public class Rust implements Emitter<StringBuilder> {
         // Non-string Option field access — unwrap to get the owned key value.
         if (isLocalFieldAccessProducingOption(arg)) {
             return convert(arg) + ".unwrap()";
+        }
+        // Plain &str variable (e.g. a method parameter) needs .to_string() to produce an
+        // owned String for HashMap key insertion.
+        if (arg instanceof Variable) {
+            return convert(arg) + ".to_string()";
         }
         return convert(arg);
     }
@@ -2844,6 +3438,16 @@ public class Rust implements Emitter<StringBuilder> {
         // A field access on a local (non-self) variable e.g. transforming_outputs.transformed_file.
         // The field is Option<T> when it has no initialiser (principled rule — see isLocalFieldAccessProducingOption).
         if (isLocalFieldAccessProducingOption(expr)) return true;
+        // Inside a trait default body, method parameters of primitive type (e.g. INTEGER → i32) are
+        // emitted as Option<T> via convertTypeToRustTraitParam.  Wrapping them again in Some() would
+        // produce Option<Option<T>> which doesn't match the Option<T> struct field.
+        if (currentEmittingTraitDefaultBody && expr instanceof Variable) {
+            Variable ve = (Variable) expr;
+            if (ve.field == Variable.VariableKind.LOCAL_VARIABLE
+                    && ve.inferredType != null && isPrimitiveType(ve.inferredType)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -2877,6 +3481,8 @@ public class Rust implements Emitter<StringBuilder> {
                     return switch (cn.simpleName) {
                         case "AtomicInteger" -> "AtomicI32";
                         case "Class" -> "&'static str";
+                        // "bool" is already a Rust keyword; toPascalCase would wrongly give "Bool"
+                        case "bool" -> "bool";
                         default -> toPascalCase(cn.simpleName);
                     };
                 }
@@ -3005,6 +3611,48 @@ public class Rust implements Emitter<StringBuilder> {
             ParameterizedType pt = (ParameterizedType) tn;
             for (TypeName arg : pt.typeArguments) {
                 if (hasObjectTypeArgument(arg)) return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the field type {@code tn} is a class (by simple name) that is known
+     * to the type registry and itself has fields containing {@code AtomicInteger}.
+     * Used to propagate no-Clone transitively: {@code BeanLocalEnactor3} holds
+     * {@code IdentifierRegistry} which holds {@code AtomicI32}, so neither can derive Clone.
+     */
+    private boolean fieldTypeHasAtomicField(TypeName tn) {
+        if (typeRegistry == null) return false;
+        ClassName cn = null;
+        if (tn instanceof ClassName) cn = (ClassName) tn;
+        else if (tn instanceof ParameterizedType) {
+            TypeName raw = ((ParameterizedType) tn).rawType;
+            if (raw instanceof ClassName) cn = (ClassName) raw;
+        }
+        if (cn == null) return false;
+        Class pastClass = typeRegistry.getPastClass(cn.simpleName, cn.packge);
+        if (pastClass == null) return false;
+        return pastClass.fields.stream()
+                .filter(f -> !f.modifiers.contains(Modifier.STATIC))
+                .anyMatch(f -> containsAtomicType(f.type));
+    }
+
+    /**
+     * Returns true if {@code tn} is, or transitively contains, {@code AtomicInteger}
+     * (which maps to {@code AtomicI32} in Rust).  {@code AtomicI32} does not implement
+     * {@code Clone}, so structs with such fields must omit the {@code Clone} derive.
+     */
+    private boolean containsAtomicType(TypeName tn) {
+        if (tn instanceof ClassName) {
+            ClassName cn = (ClassName) tn;
+            return "AtomicInteger".equals(cn.simpleName);
+        }
+        if (tn instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) tn;
+            if (containsAtomicType(pt.rawType)) return true;
+            for (TypeName arg : pt.typeArguments) {
+                if (containsAtomicType(arg)) return true;
             }
         }
         return false;

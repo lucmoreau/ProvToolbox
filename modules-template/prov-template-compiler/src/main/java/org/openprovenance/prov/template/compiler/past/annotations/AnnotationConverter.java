@@ -18,6 +18,7 @@ public class AnnotationConverter {
         map.put(NoSerialization.NAME, new NoSerialization());
         map.put(MutableReceiver.NAME, new MutableReceiver());
         map.put(MutableFirstParam.NAME, new MutableFirstParam());
+        map.put(StatefulProcessor.NAME, new StatefulProcessor());
         return map;
     }
 

@@ -32,6 +32,23 @@ import static org.openprovenance.prov.template.compiler.past.Variable.VariableKi
  *   <li>Mutation detection — methods containing mutating calls emit {@code &mut self}.</li>
  *   <li>Control flow — if/else, return (implicit last-expression vs. explicit).</li>
  *   <li>Static method calls and constructor calls.</li>
+ *   <li>Variable conversion — self prefix, snake_case.</li>
+ *   <li>Iterator (for-each).</li>
+ *   <li>OBJECT_METHOD_CALL camelCase snake_casing.</li>
+ *   <li>Vec index access.</li>
+ *   <li>Self Option field passed as by-value argument.</li>
+ *   <li>MutableReceiver annotation.</li>
+ *   <li>MutableFirstParam annotation.</li>
+ *   <li>currentMethodReturnType: string constant coercion.</li>
+ *   <li>Non-MutableReceiver Option-field getter returns.</li>
+ *   <li>Stateful trait propagation.</li>
+ *   <li>MutableFirstParam through a trait field (OBJECT_METHOD_CALL).</li>
+ *   <li>FUNCTIONAL_INTERFACE_CALL: {@code null} arg for {@code &str} param emits {@code ""}.</li>
+ *   <li>HashMap key borrowing: string-typed local variable is not double-borrowed.</li>
+ *   <li>Self-method call with struct argument borrows the argument.</li>
+ *   <li>Super-delegation chain returning a cloneable collection appends {@code .clone()}.</li>
+ *   <li>Super-delegation chain returning a non-cloneable collection uses {@code &} return type.</li>
+ *   <li>Trait default body: primitive parameter is not double-wrapped in {@code Some()}.</li>
  * </ol>
  */
 public class RustEmitterTest {
@@ -1244,5 +1261,285 @@ public class RustEmitterTest {
         String out = emitWithTraitPrelude(plainTrait, hostClass);
         assertFalse("Call through non-MFP trait must NOT inject &mut for first arg",
                 out.contains("&mut bean_arg"));
+    }
+
+    // =========================================================================
+    // Helpers for groups 19+
+    // =========================================================================
+
+    /**
+     * Emit {@code target} after registering each {@code helper} class both as a trait
+     * (so {@code isKnownTrait} returns true) and as a registry entry (so
+     * {@code findMethodParameters} can look up parameter types).
+     */
+    private String emitWithPrelude(Class target, Class... helpers) {
+        Rust rust = new Rust();
+        for (Class h : helpers) {
+            rust.discoverTraits(h);
+            rust.discoverClass(h);
+        }
+        rust.discoverClass(target);
+        return rust.emit(target).toString();
+    }
+
+    // =========================================================================
+    // Group 19 — FUNCTIONAL_INTERFACE_CALL: null arg for &str param → ""
+    // =========================================================================
+    //
+    // When a FUNCTIONAL_INTERFACE_CALL passes Constant.NULL for a parameter whose
+    // declared type is String, the emitter must emit "" (empty &str slice) rather
+    // than None.  Trait method signatures use &str for String parameters, so None
+    // would produce E0308.
+    //
+    // Fix: findMethodParameters() looks up the callee parameter types from classRegistry.
+    // The FUNCTIONAL_INTERFACE_CALL handler emits "" for null String params and delegates
+    // to convertTraitCallArg for all other args (which produces None for null non-String).
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void functionalInterfaceCall_nullArgForStringParam_emitsEmptyString() {
+        // Processor trait: handle(String key)
+        TypeName processorType = ClassName.get("Processor", "com.example");
+        Method handleMethod = new Method("handle")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .PARAMETER(ClassName.STRING, "key")
+                .RETURNS(ClassName.VOID);
+        Class processorClass = new Class("Processor", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(handleMethod);
+
+        // Host class: field 'proc' of type Processor, calling proc.handle(null)
+        Variable procField = new Variable("proc", FIELD_VARIABLE);
+        procField.inferredType = processorType;
+        MethodCall call = MethodCall.FUNCTIONAL_METHOD_CALL(procField, "handle", Constant.getNull());
+
+        Class hostClass = new Class("Host").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doHandle", call));
+
+        String out = emitWithPrelude(hostClass, processorClass);
+        assertTrue("Null String arg in FUNCTIONAL_INTERFACE_CALL should emit \"\"",
+                out.contains("handle(\"\")"));
+        assertFalse("Null String arg must not emit None for &str param",
+                out.contains("handle(None)"));
+    }
+
+    @Test
+    public void functionalInterfaceCall_nullArgForNonStringParam_emitsNone() {
+        // Processor trait: handle(int n) — int param → null should produce None (Option<i32>)
+        TypeName processorType = ClassName.get("Processor", "com.example");
+        Method handleMethod = new Method("handle")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .PARAMETER(ClassName._int, "n")
+                .RETURNS(ClassName.VOID);
+        Class processorClass = new Class("Processor", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(handleMethod);
+
+        Variable procField = new Variable("proc", FIELD_VARIABLE);
+        procField.inferredType = processorType;
+        MethodCall call = MethodCall.FUNCTIONAL_METHOD_CALL(procField, "handle", Constant.getNull());
+
+        Class hostClass = new Class("Host").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doHandle", call));
+
+        String out = emitWithPrelude(hostClass, processorClass);
+        assertTrue("Null non-String arg in FUNCTIONAL_INTERFACE_CALL should emit None",
+                out.contains("handle(None)"));
+        assertFalse("Non-String null arg must not emit \"\"",
+                out.contains("handle(\"\")"));
+    }
+
+    // =========================================================================
+    // Group 20 — HashMap key borrowing: string-typed local variable
+    // =========================================================================
+    //
+    // convertHashMapKeyArg skips the & prefix for String-typed local variables
+    // because they are already &str in Rust.  Adding & would produce &&str, which
+    // does not satisfy Borrow<str> for HashMap<String, V> lookups.
+    //
+    // Non-string and untyped local variables still receive &.
+    // The existing test hashMap_containsKey_keyIsBorrowed (Group 3) covers the
+    // non-typed case (no inferredType → gets &).  This group covers the string case.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void hashMap_containsKey_stringTypedLocalVar_notDoubleBorrowed() {
+        // myMap.containsKey(strKey) where strKey has inferredType = String
+        // String-typed local variables are &str — adding & would give &&str.
+        Variable mapVar = local("myMap");
+        Variable strKey = local("strKey", ClassName.STRING);   // already &str in Rust
+        MethodCall call = new MethodCall(mapVar, "containsKey", List.of(strKey));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("check", ClassName.BOOLEAN, new Return(call)));
+        String out = emit(clazz);
+        assertTrue("containsKey should be contains_key", out.contains("contains_key("));
+        assertTrue("String-typed local var should pass without & borrow",
+                out.contains("contains_key(str_key)"));
+        assertFalse("String-typed local var must not be double-borrowed",
+                out.contains("contains_key(&str_key)"));
+    }
+
+    // =========================================================================
+    // Group 21 — Self-method call with struct argument borrows the argument
+    // =========================================================================
+    //
+    // When a method on self (OPERATOR_VARIABLE with receiver="self") takes a
+    // struct-type parameter, the emitter looks up the parameter type via
+    // findSelfMethodParameters() and prepends & to match the &T trait declaration.
+    //
+    // Primitive and string params are Copy / &str respectively and must NOT be
+    // prefixed with & by this path.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void selfMethodCall_structArg_addsBorrowPrefix() {
+        // processItem(MyStruct item) declared; this.processItem(localItem) called.
+        // Struct arg should become &local_item to match &T trait param.
+        // Regression for: E0308 when composite-loop body called self.process_*(bean, …)
+        // without the correct & decorator.
+        TypeName structType = ClassName.get("MyStruct", "com.example");
+
+        Method processMethod = new Method("processItem")
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(structType, "item")
+                .RETURNS(ClassName.VOID);
+
+        Variable thisVar  = new Variable("this", LOCAL_VARIABLE);
+        Variable localItem = local("localItem");
+        localItem.inferredType = structType;
+        MethodCall call = new MethodCall(thisVar, "processItem", List.of(localItem));
+        Method callerMethod = publicMethod("doProcess", call);
+
+        Class clazz = new Class("MyProcessor").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(processMethod, callerMethod);
+        String out = emit(clazz);
+        assertTrue("Struct arg to self method should have & prefix",
+                out.contains("process_item(&local_item)"));
+    }
+
+    @Test
+    public void selfMethodCall_primitiveArg_noBorrowPrefix() {
+        // setCount(int n) declared; this.setCount(n) called.
+        // Primitive args are Copy (i32) — must NOT be prefixed with &.
+        Method setCount = new Method("setCount")
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(ClassName._int, "n")
+                .RETURNS(ClassName.VOID);
+
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        Variable nVar    = local("n", ClassName._int);
+        MethodCall call  = new MethodCall(thisVar, "setCount", List.of(nVar));
+        Method callerMethod = publicMethod("doSet", call);
+
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(setCount, callerMethod);
+        String out = emit(clazz);
+        assertTrue("Primitive arg to self method should not have & prefix",
+                out.contains("set_count(n)"));
+        assertFalse("Primitive arg must not be borrowed",
+                out.contains("set_count(&n)"));
+    }
+
+    // =========================================================================
+    // Group 22 — Super-delegation chain: cloneable collection return → .clone()
+    // =========================================================================
+    //
+    // When a method body returns via a SUPER_METHOD_CALL chain and the declared
+    // return type is a cloneable collection (e.g. HashMap<String, Vec<Integer>>),
+    // the chain passes through as_ref() and the final value is &T, not T.
+    // .clone() must be appended to produce the owned T expected by the caller.
+    //
+    // Fix: RETURN handler detects containsSuperMethodCall() + isMap/isList and
+    // appends .clone() unless containsNonCloneableElement() is true.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void superDelegation_cloneableMapReturn_appendsClone() {
+        // Method returns HashMap<String, List<Integer>> via SUPER_METHOD_CALL chain.
+        // The chain yields &HashMap — .clone() is needed to produce an owned value.
+        TypeName returnType = ClassName.HASH_STRING_LIST_INTEGER;  // HashMap<String, List<Integer>>
+        MethodCall superCall = MethodCall.SUPER_METHOD_CALL("getRecords", List.of());
+        Method m = new Method("getRecords")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(returnType)
+                .BODY(new Return(superCall));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        assertTrue("Super delegation returning cloneable map should append .clone()",
+                out.contains(".clone()"));
+    }
+
+    // =========================================================================
+    // Group 23 — Super-delegation chain: non-cloneable collection → & return type
+    // =========================================================================
+    //
+    // When the return type contains AtomicInteger (AtomicI32 in Rust), which does
+    // not implement Clone, .clone() cannot be used.  Instead the emitter must
+    // emit &HashMap<...> as the return type and return the reference as-is.
+    //
+    // Fix: emitMethod detects containsSuperMethodCall() + containsNonCloneableElement()
+    // and sets returnsOptionFieldRef = true → "-> &HashMap<...>" return type.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void superDelegation_atomicIntegerMapReturn_emitsRefReturnType() {
+        // Method returns HashMap<String, AtomicInteger> via SUPER_METHOD_CALL chain.
+        // AtomicInteger does not implement Clone → return &HashMap instead.
+        TypeName returnType = ClassName.HASHMAP_STRING_ATOMIC_INTEGER;  // HashMap<String, AtomicInteger>
+        MethodCall superCall = MethodCall.SUPER_METHOD_CALL("getCounterMap", List.of());
+        Method m = new Method("getCounterMap")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(returnType)
+                .BODY(new Return(superCall));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        assertTrue("Super delegation with AtomicInteger should emit &HashMap return type",
+                out.contains("-> &HashMap<"));
+        assertFalse("Non-cloneable AtomicInteger map must not have .clone() appended",
+                out.contains(".clone()"));
+    }
+
+    // =========================================================================
+    // Group 24 — Trait default body: primitive parameter is not double-wrapped
+    // =========================================================================
+    //
+    // In a trait (abstract class) default method body, primitive-type parameters
+    // are emitted as Option<T> by convertTypeToRustTraitParam.  At the call site
+    // the parameter variable therefore already holds Option<T>.  Assigning it to
+    // an Option<T> struct field must NOT add an extra Some() wrapper, which would
+    // produce Option<Option<T>> (E0308).
+    //
+    // Fix: expressionProducesOption() returns true when currentEmittingTraitDefaultBody
+    // is true and the expression is a LOCAL_VARIABLE with primitive inferredType.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void traitDefaultBody_primitiveParamAssigned_noSomeWrapping() {
+        // Abstract class with a non-abstract (default) method:
+        //   processData(int transforming) { out.transforming = transforming; }
+        //
+        // Because the method is emitted as a trait default body, `transforming` is
+        // declared as Option<i32> in Rust.  The assignment must produce:
+        //   out.transforming = transforming;   ← not Some(transforming)
+        Variable outVar           = local("out");
+        Variable transformingParam = local("transforming", ClassName._int);
+        MethodCall outField       = new MethodCall(outVar, "transforming");  // OBJECT_ACCESSOR
+        Assignment assign         = new Assignment(outField, transformingParam);
+
+        Method m = new Method("processData")
+                .MODIFIERS(Modifier.PUBLIC)   // non-abstract: has a body
+                .PARAMETER(ClassName._int, "transforming")
+                .RETURNS(ClassName.VOID)
+                .BODY(assign);
+
+        Class abstractClass = new Class("BaseProcessor")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .METHODS(m);
+
+        String out = emit(abstractClass);
+        assertFalse("Primitive param in trait default body must not be wrapped in Some()",
+                out.contains("Some(transforming)"));
+        assertTrue("Assignment should emit the parameter directly without Some() wrapping",
+                out.contains("out.transforming = transforming"));
     }
 }

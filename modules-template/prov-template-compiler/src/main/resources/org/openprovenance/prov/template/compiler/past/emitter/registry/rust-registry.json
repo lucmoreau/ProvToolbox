@@ -44,7 +44,7 @@
       "copy": true
     },
     {
-      "javaNames": ["boolean", "Boolean"],
+      "javaNames": ["boolean", "Boolean", "bool", "past.lang.bool"],
       "category": "PRIMITIVE",
       "rustName": "bool",
       "copy": true
@@ -129,7 +129,7 @@
         "rustName": "push",
         "mutatesReceiver": true,
         "receiverTransform": "AS_MUT_UNWRAP",
-        "chainedGetBehavior": "NONE",
+        "chainedGetBehavior": "SWITCH_TO_GET_MUT",
         "argTreatments": ["CLONE"],
         "resultTransform": "NONE"
       },

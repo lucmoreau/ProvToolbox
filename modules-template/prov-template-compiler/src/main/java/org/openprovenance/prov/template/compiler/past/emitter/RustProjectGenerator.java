@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler.past.emitter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -174,7 +175,7 @@ public class RustProjectGenerator {
         }
     }
 
-    private void generateMainRsForTransport() throws IOException {
+    private void generateMainRsForTransportOLD() throws IOException {
 
         StringBuilder main = new StringBuilder();
         main.append("// Generated main file to test compiled PAST modules\n\n");
@@ -236,6 +237,30 @@ public class RustProjectGenerator {
         //System.out.println("Generated: " + mainRs);
     }
 
+    private void generateMainRsForTransport() throws IOException {
+        Path mainRs = srcDir.resolve("main.rs");
+
+        // Read the resource /rs/main.rs from the classpath and write it to src/main.rs
+        try (InputStream in = RustProjectGenerator.class.getResourceAsStream("/rs/main.rs")) {
+            if (in == null) {
+                String msg = "// Resource /rs/main.rs not found on classpath\n";
+                Files.writeString(mainRs, msg);
+                System.err.println("Resource /rs/main.rs not found in classpath; wrote placeholder main.rs");
+                return;
+            }
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append(System.lineSeparator());
+                }
+                Files.writeString(mainRs, sb.toString());
+            }
+        }
+
+        System.out.println("Generated: " + mainRs);
+    }
 
     private void generateMainRsForTemplates() throws IOException {
 
@@ -259,7 +284,7 @@ public class RustProjectGenerator {
             main.append("    println!();\n\n");
 
             main.append("    // Create an instance of ").append(typeName).append("\n");
-            main.append("    let instance = ").append(typeName).append("::new()l\n");
+            main.append("    let instance = ").append(typeName).append("::new()\n");
             main.append("        // Add default constructor arguments here\n");
             main.append("        // TODO: Customize based on actual constructor signature\n");
             main.append("""

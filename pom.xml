@@ -426,7 +426,9 @@
 
 
 		<jackson.version>2.20.2</jackson.version><!--2.19.4, 2.18.5, 2.17.1, 2.15.2, 2.14.2, 2.11.2, 2.9.9 -->
-        <mongojack.version>5.0.3</mongojack.version> <!-- 4.11.1,4.0.3, 3.0.3, 2.10.1, 2.10.1, 2.10.0 -->  <!-- https://github.com/mongojack/mongojack/blob/master/MIGRATING.md -->
+		<jackson.annotation.version>2.20</jackson.annotation.version>
+
+		<mongojack.version>5.0.3</mongojack.version> <!-- 4.11.1,4.0.3, 3.0.3, 2.10.1, 2.10.1, 2.10.0 -->  <!-- https://github.com/mongojack/mongojack/blob/master/MIGRATING.md -->
 		<poet.version>1.13.0</poet.version> <!--1.11.1 -->
 
 		<scm.version>2.1.0</scm.version> <!-- 1.3 -->

@@ -23,11 +23,9 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.GENERATED_VAR_PREFIX;
 import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.MethodCallKind.FUNCTIONAL_INTERFACE_CALL;
-import static org.openprovenance.prov.template.compiler.past.MethodCall.MethodCallKind.SUPER_METHOD_CALL;
 
 /**
  * Emitter that generates JavaScript class definitions from PAST abstract syntax tree.
@@ -112,7 +110,6 @@ public class JavaScript implements Emitter<StringBuilder> {
             sb.append(" extends ");
             if (clazz.superclass instanceof ParameterizedType) {
                 ParameterizedType pt = (ParameterizedType) clazz.superclass;
-                System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ extends " + pt + " " + typeSimpleName(pt.rawType));
                 sb.append(importAndGetLocalName(convert(pt.rawType)));
             } else {
                 sb.append(importAndGetLocalName(sanitizeName(convert(clazz.superclass))));
@@ -230,6 +227,8 @@ public class JavaScript implements Emitter<StringBuilder> {
     private void emitConstructor(Constructor constructor, StringBuilder sb) {
         sb.append(INDENT).append("constructor(");
 
+
+
         // Parameters
         if (constructor.parameters != null) {
             for (int i = 0; i < constructor.parameters.size(); i++) {
@@ -239,12 +238,44 @@ public class JavaScript implements Emitter<StringBuilder> {
         }
         sb.append(") {\n");
 
+        // emit call to super() if superclass exists
+        if (this.currentClass != null
+                && this.currentClass.superclass != null) {
+            if (constructor.body.isEmpty()) {
+                sb.append(INDENT).append("super();\n");
+            } else {
+
+                if (firstNonCommentStatementIsSuper(constructor.body)) {
+                    // super call, no need to insert 1
+
+                } else {
+                    // No explicit super() call, emit default
+
+                    sb.append(INDENT).append(INDENT).append("super();\n");
+                }
+
+            }
+        }
+
         // Constructor body
         for (Statement statement : constructor.body) {
             emitStatement(statement, INDENT + INDENT, sb);
         }
 
         sb.append(INDENT).append("}\n\n");
+    }
+
+    private boolean firstNonCommentStatementIsSuper(List<Statement> statements) {
+        for (Statement statement : statements) {
+            if (!(statement instanceof Comment)) {
+                if (statement instanceof MethodCall) {
+                    return ((MethodCall) statement).operatorKind == MethodCall.MethodCallKind.SUPER_METHOD_CALL;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     private void emitStaticFields(List<Field> fields, StringBuilder sb) {
@@ -843,7 +874,7 @@ public class JavaScript implements Emitter<StringBuilder> {
                             .map(this::convert)
                             .collect(Collectors.joining(", ")));
                 }
-                result.append(")\n");
+                result.append(")");
                 return result.toString();
             }
         }
@@ -863,7 +894,7 @@ public class JavaScript implements Emitter<StringBuilder> {
     }
 
     private String updateMethodNameIfOverloaded(MethodCall mc, String convertedObject, String callMethodName) {
-        if ("this".equals(convertedObject) || (mc.object.inferredType instanceof ClassName)) {
+        if ("this".equals(convertedObject) || (mc.object.inferredType instanceof ClassName) || isTypeVariableWithBound(mc.object.inferredType)) {
             int argCount = mc.arguments == null ? 0 : mc.arguments.size();
             if (argCount!=0) {
                 List<TypeName> argumentTypes= mc.arguments.stream().map(a -> a.inferredType).collect(Collectors.toList());
@@ -871,7 +902,8 @@ public class JavaScript implements Emitter<StringBuilder> {
                 if ("self".equals(convertedObject)) {
                     resolvedAlt=findAltNameForCall(mc.methodName, argumentTypes);
                 } else {
-                    resolvedAlt=findAltNameForCall((ClassName) mc.object.inferredType, callMethodName, argumentTypes);
+                    ClassName cl=classForPurposeOfLookup(mc.object.inferredType);
+                    resolvedAlt=findAltNameForCall(cl, callMethodName, argumentTypes);
                 }
                 if (resolvedAlt != null) {
                     callMethodName = sanitizeName(resolvedAlt);
@@ -879,6 +911,23 @@ public class JavaScript implements Emitter<StringBuilder> {
             }
         }
         return callMethodName;
+    }
+
+    private ClassName classForPurposeOfLookup(TypeName inferredType) {
+        if (inferredType instanceof ClassName) {
+            return (ClassName) inferredType;
+        } else if (inferredType instanceof TypeVariable) {
+            TypeVariable var = (TypeVariable) inferredType;
+            return (ClassName) var.bounds.get(0);
+        } else {
+            throw new IllegalArgumentException("Unsupported type: " + inferredType);
+        }
+    }
+
+    private boolean isTypeVariableWithBound(TypeName tn) {
+        return tn instanceof TypeVariable &&
+                !((TypeVariable) tn).bounds.isEmpty() &&
+                ((TypeVariable) tn).bounds.get(0) instanceof ClassName;
     }
 
     private String findAltNameForCall(ClassName className,String methodName, List<TypeName> argTypes) {

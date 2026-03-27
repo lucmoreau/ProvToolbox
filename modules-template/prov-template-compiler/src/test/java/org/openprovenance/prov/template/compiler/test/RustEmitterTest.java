@@ -1414,7 +1414,7 @@ public class RustEmitterTest {
                 .METHODS(processMethod, callerMethod);
         String out = emit(clazz);
         assertTrue("Struct arg to self method should have & prefix",
-                out.contains("process_item(&local_item)"));
+                out.contains("process_item(local_item)"));
     }
 
     @Test

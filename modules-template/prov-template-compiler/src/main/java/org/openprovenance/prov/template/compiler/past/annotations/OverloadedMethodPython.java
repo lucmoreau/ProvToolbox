@@ -1,11 +1,11 @@
 package org.openprovenance.prov.template.compiler.past.annotations;
 
-public class OverloadedMethod extends PythonAnnotation {
+public class OverloadedMethodPython extends PythonAnnotation {
 
     public static final String NAME = "python:@OverloadedMethod";
     private final String altName;
 
-    public OverloadedMethod(String altName) {
+    public OverloadedMethodPython(String altName) {
         super(NAME);
         this.altName = altName;
     }

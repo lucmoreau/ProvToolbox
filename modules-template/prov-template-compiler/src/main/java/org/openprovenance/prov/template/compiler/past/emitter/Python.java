@@ -5,7 +5,7 @@ import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Iterator;
 import org.openprovenance.prov.template.compiler.past.annotations.*;
-import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethodPython;
 import org.openprovenance.prov.template.compiler.past.checker.ClassSignature;
 import org.openprovenance.prov.template.compiler.past.checker.MethodSignature;
 import org.openprovenance.prov.template.compiler.past.checker.TypeRegistry;
@@ -392,11 +392,11 @@ public class Python implements Emitter<StringBuilder> {
             Optional<PythonAnnotation> annotation=constructor.annotation.stream()
                     .filter(annot -> annot instanceof PythonAnnotation)
                     .map(annot -> (PythonAnnotation) annot)
-                    .filter(annot -> OverloadedMethod.NAME.equals(annot.getName()))
+                    .filter(annot -> OverloadedMethodPython.NAME.equals(annot.getName()))
                     .findFirst()
                     ;
             if (annotation.isPresent()) {
-                overloaded= Optional.of(((OverloadedMethod) annotation.get()).getAltName());
+                overloaded= Optional.of(((OverloadedMethodPython) annotation.get()).getAltName());
                 //System.out.println("Constructor with @OverloadedMethod annotation, using alt name: " + constructorName);
             }
         }
@@ -529,9 +529,9 @@ public class Python implements Emitter<StringBuilder> {
             if (!ms.name.equals(method.name)) continue;
             if (ms.parameterTypes.size() != paramCount) continue;
             for (PastAnnotation ann : ms.getAnnotations()) {
-                if (ann instanceof OverloadedMethod) {
+                if (ann instanceof OverloadedMethodPython) {
                     if (paramCount == 0 || paramTypesMatch(method, ms)) {
-                        return ((OverloadedMethod) ann).getAltName();
+                        return ((OverloadedMethodPython) ann).getAltName();
                     }
                 }
             }
@@ -551,7 +551,7 @@ public class Python implements Emitter<StringBuilder> {
             if (!ms.name.equals(methodName)) continue;
             if (ms.parameterTypes.size() != argCount) continue;
             for (PastAnnotation ann : ms.getAnnotations()) {
-                if (ann instanceof OverloadedMethod) {
+                if (ann instanceof OverloadedMethodPython) {
                     candidates.add(ms);
                     break;
                 }
@@ -559,7 +559,7 @@ public class Python implements Emitter<StringBuilder> {
         }
         if (candidates.size() == 1) {
             for (PastAnnotation ann : candidates.get(0).getAnnotations()) {
-                if (ann instanceof OverloadedMethod) return ((OverloadedMethod) ann).getAltName();
+                if (ann instanceof OverloadedMethodPython) return ((OverloadedMethodPython) ann).getAltName();
             }
         }
         return null;
@@ -577,7 +577,7 @@ public class Python implements Emitter<StringBuilder> {
             if (!ms.name.equals(methodName)) continue;
             if (!paramTypesMatch(argTypes, ms)) continue;
             for (PastAnnotation ann : ms.getAnnotations()) {
-                if (ann instanceof OverloadedMethod) return ((OverloadedMethod) ann).getAltName();
+                if (ann instanceof OverloadedMethodPython) return ((OverloadedMethodPython) ann).getAltName();
             }
         }
         return null;
@@ -593,7 +593,7 @@ public class Python implements Emitter<StringBuilder> {
             if (!ms.name.equals(methodName)) continue;
             if (!paramTypesMatch(argTypes, ms)) continue;
             for (PastAnnotation ann : ms.getAnnotations()) {
-                if (ann instanceof OverloadedMethod) return ((OverloadedMethod) ann).getAltName();
+                if (ann instanceof OverloadedMethodPython) return ((OverloadedMethodPython) ann).getAltName();
             }
         }
         return null;

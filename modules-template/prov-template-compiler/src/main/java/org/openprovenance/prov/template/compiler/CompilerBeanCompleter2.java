@@ -5,7 +5,7 @@ import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.annotations.NoSerialization;
-import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethodPython;
 import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethodJavascript;
 import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethodRust;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
@@ -118,7 +118,7 @@ public class CompilerBeanCompleter2 {
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "m"), Constant.getNull()),
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), GETTER_VAR), VARIABLE(GETTER_VAR)));
 
-        constructor2.annotation.add(new OverloadedMethod("____init2__"));
+        constructor2.annotation.add(new OverloadedMethodPython("____init2__"));
         constructor2.annotation.add(new OverloadedMethodRust("make" + BEAN_COMPLETER2));
         constructor2.annotation.add(new OverloadedMethodJavascript("make" + BEAN_COMPLETER2));
 
@@ -148,8 +148,10 @@ public class CompilerBeanCompleter2 {
                                 ),
 
                                 // call postEnactmentProcessing(bean.ID, fullyQualifiedName)
+                                // CAST(INTEGER, ...) triggers unwrap_or_default() in the Rust emitter,
+                                // since struct fields are Option<i32> in Rust.
 
-                                METHOD_CALL(VARIABLE("this"),POST_PROCESS_METHOD_NAME, List.of(METHOD_CALL(VARIABLE(BEAN_VAR), "ID"), CONSTANT(config.fullyQualifiedName)))
+                                METHOD_CALL(VARIABLE("this"),POST_PROCESS_METHOD_NAME, List.of(CAST(INTEGER, METHOD_CALL(VARIABLE(BEAN_VAR), "ID")), CONSTANT(config.fullyQualifiedName)))
                         );
 
                 for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
@@ -222,15 +224,15 @@ public class CompilerBeanCompleter2 {
                                 DO()
                                         .BODY(
                                                 DEFINITION(composeeClass, VARIABLE("composee"), CONSTRUCTOR_CALL(composeeClass, List.of())),
+                                                ASSIGNMENT(VARIABLE("composee"), METHOD_CALL(
+                                                        VARIABLE("this"),
+                                                        PROCESS_METHOD_NAME,
+                                                        List.of(VARIABLE("composee")))),
                                                 METHOD_CALL(
                                                         VARIABLE(BEAN_VAR),
                                                         ADD_ELEMENTS,
                                                         List.of(VARIABLE("composee"))
-                                                ),
-                                                METHOD_CALL(
-                                                        VARIABLE("this"),
-                                                        PROCESS_METHOD_NAME,
-                                                        List.of(VARIABLE("composee"))))
+                                                ))
                                         .WHILE(METHOD_CALL(VARIABLE("this"), "next", List.of())),
                                 RETURN(VARIABLE(BEAN_VAR)));
                 pastClass.METHOD(mspec0);

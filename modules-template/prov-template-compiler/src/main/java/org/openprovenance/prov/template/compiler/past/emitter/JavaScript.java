@@ -22,8 +22,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.MethodCallKind.FUNCTIONAL_INTERFACE_CALL;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 
 /**
  * Emitter that generates JavaScript class definitions from PAST abstract syntax tree.
@@ -33,10 +37,11 @@ public class JavaScript implements Emitter<StringBuilder> {
     private final TypeRegistry typeRegistry;
     private String currentPackageName;
     private ClassSignature currentClassSignature;
-    private StringBuilder sb;
+    private String currentClassName;
     private static final String INDENT = "  ";
     private int lambdaCount = 0;
     private Set<String> imports;
+    private Set<String> exports;
     private List<Method> lateMethods = new ArrayList<>();
     private Class currentClass;
     private String postDecrement = null;
@@ -58,6 +63,7 @@ public class JavaScript implements Emitter<StringBuilder> {
 
     public WritableObject toWritableObject(Class clazz, String className, String packge, StackTraceElement stackTraceElement) {
         this.currentPackageName = packge;
+        this.currentClassName = className;
         StringBuilder theBuffer = emit(clazz);
 
         addHeader(theBuffer, className, packge, stackTraceElement);
@@ -74,17 +80,58 @@ public class JavaScript implements Emitter<StringBuilder> {
 
     @Override
     public StringBuilder emit(Class clazz) {
-        StringBuilder sb = new StringBuilder();
-        return emit(clazz, sb);
-    }
-
-    public StringBuilder emit(Class clazz, StringBuilder sb) {
         this.imports = new HashSet<>();
+        this.exports = new HashSet<>();
         this.lateMethods = new ArrayList<>();
         this.lambdaCount = 0;
         this.currentClass = clazz;
         this.currentClassSignature = (typeRegistry != null && currentPackageName != null)
                 ? typeRegistry.lookup(clazz.name, currentPackageName) : null;
+
+        StringBuilder sb = emit(clazz, new StringBuilder());
+
+
+
+        // Add requires at the beginning
+        if (!imports.isEmpty()) {
+            StringBuilder importSection = new StringBuilder();
+            for (String imprt : imports) {
+                if (!imprt.contains(".")) continue;
+                String localName = getLocalName(imprt);
+                if (LOGGER.equals(localName)) continue;
+                if (imprt.startsWith("past.util")) {
+                    importSection.append("const ").append(localName).append(" = ").append(imprt).append(";\n");
+                } else if (imprt.startsWith("past.exception")) {
+                    importSection.append("const ").append(localName).append(" = ").append(imprt).append(";\n");
+                } else if (imprt.startsWith("past.lang")) {
+                    // ignore
+                }
+                else {
+
+                    // Convert package path to  require path (was relative to ./ ; now not specified)
+                    String importPath = imprt.replace('.', '/');
+                    importSection.append("const { ").append(localName).append(" } = require('").append(importPath).append(".js');\n");
+                }
+            }
+            if (importSection.length() > 0) {
+                importSection.append("\n");
+                sb.insert(0, importSection.toString());
+            }
+        }
+
+        if (!exports.isEmpty()) {
+            if (clazz.name!=null) {
+                // Export the class
+                sb.append("module.exports = { ");
+                exports.stream().forEach(exported -> sb.append(exported).append(", "));
+                       sb.append(" };\n");
+            }
+        }
+
+        return sb;
+    }
+
+    public StringBuilder emit(Class clazz, StringBuilder sb) {
 
         // Class JSDoc comment
         if (!clazz.comments.isEmpty()) {
@@ -124,7 +171,35 @@ public class JavaScript implements Emitter<StringBuilder> {
             emitDefaultConstructor(clazz.fields, sb);
         } else {
             for (Constructor constructor : clazz.constructors) {
-                emitConstructor(constructor, sb);
+                Optional<String> overloaded=isOverloadedConstructor(constructor);
+
+                if (overloaded.isPresent()) {
+                    String constructorName = overloaded.get();
+
+                    Method jsMethodAsConstructor = METHOD(constructorName)
+                            .PARAMETERS(constructor.parameters)
+                            .MODIFIERS(constructor.modifiers.toArray(new Modifier[0]))
+                            .BODY(constructor.body.toArray(new Statement[0]))
+                            //.ANNOTATIONS(constructor.annotation.toArray(new String[0]))
+                            .COMMENTS(constructor.comments.toArray(new Comment[0]));
+
+                    for (Field field : clazz.fields) {
+                        String fieldName = sanitizeName(field.name);
+                        if (!field.modifiers.contains(Modifier.STATIC)) {
+                            if (field.initialiser != null) {
+                                jsMethodAsConstructor.BODY(
+                                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), fieldName), field.initialiser));
+
+                            }
+                        }
+                    }
+
+                    jsMethodAsConstructor.COMMENT("//Note: this method was originally a PAST constructor, but was renamed to avoid name clashes due to overloading. \n It will not be recognized as a constructor by js code, so it should be called explicitly by its name.");
+
+                    emitMethod(jsMethodAsConstructor, sb);
+                } else {
+                    emitConstructor(constructor, sb);
+                }
             }
         }
 
@@ -147,33 +222,19 @@ public class JavaScript implements Emitter<StringBuilder> {
 
         if (clazz.name!=null) {
             // Export the class
-            sb.append("module.exports = { ").append(clazz.name).append(" };\n");
+            exports.add(clazz.name);
         }
 
-        // Add requires at the beginning
-        if (!imports.isEmpty()) {
-            StringBuilder importSection = new StringBuilder();
-            for (String imprt : imports) {
-                if (!imprt.contains(".")) continue;
-                String localName = getLocalName(imprt);
-                if (LOGGER.equals(localName)) continue;
-                if (imprt.startsWith("past.util")) {
-                    importSection.append("const ").append(localName).append(" = ").append(imprt).append(";\n");
-                } else if (imprt.startsWith("past.exception")) {
-                    importSection.append("const ").append(localName).append(" = ").append(imprt).append(";\n");
-                } else if (imprt.startsWith("past.lang")) {
-                    // ignore
-                }
-                else {
 
-                    // Convert package path to  require path (was relative to ./ ; now not specified)
-                    String importPath = imprt.replace('.', '/');
-                    importSection.append("const { ").append(localName).append(" } = require('").append(importPath).append(".js');\n");
-                }
-            }
-            if (importSection.length() > 0) {
-                importSection.append("\n");
-                sb.insert(0, importSection.toString());
+        if (!lateEmittedClasses.isEmpty()) {
+            List<LateEmittedClass> tmp=lateEmittedClasses.stream().map(c -> c).collect(Collectors.toList());
+            lateEmittedClasses.clear();
+            sb.append("\n\n");
+
+            for (Class lateClazz : tmp) {
+                sb.append("// Late emitted class due to anonymous class\n");
+                emit(lateClazz,sb);
+                sb.append("\n\n");
             }
         }
 
@@ -850,7 +911,14 @@ public class JavaScript implements Emitter<StringBuilder> {
                         result.append(this.currentClass.name).append(".");
                     }
                 }
-                result.append(sanitizeName(mc.methodName)).append("(");
+
+                String str = sanitizeName(mc.methodName);
+                if (str.equals("getMap")) {
+                    str="this.outer.getMap"; // this a hack to deal with anonymous class;
+                    // Ideally, we should add an annotation to drive the behaviour of the emitter instead of hardcoding this logic here
+                }
+
+                result.append(str).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
                             .map(this::convert)
@@ -879,17 +947,45 @@ public class JavaScript implements Emitter<StringBuilder> {
         throw new IllegalArgumentException("Unsupported method call type " + mc);
     }
 
+    int anonymousClassCount=0;
+
     private String emitAnonymous(Class clazz, StringBuilder result) {
-       // String className = "AnonymousClass" + (lambdaCount++);
-     //   ClassSignature sig = typeRegistry != null ? typeRegistry.lookup(clazz.name, currentPackageName) : null;
-       // if (sig != null) {
-      //      className = sig.name;
-      //  }
-        result.append("new ");
-        emit(clazz, result);
-        return result.toString();
+
+       // result.append("new ");
+       // emit(clazz, result);
+       // return result.toString();
+
+        String intf=clazz.interfaces.isEmpty() ? "Nointerface" : ((ClassName)clazz.interfaces.get(0)).simpleName;
+        String className="Anonymous" + intf + (anonymousClassCount++);
+        ClassName outer=new ClassName(currentClassName, currentPackageName);
+        lateEmittedClasses.add(new LateEmittedClass(className, clazz, outer));
+        return "new " + className + "(this)";
 
     }
+
+
+    List<LateEmittedClass> lateEmittedClasses=new ArrayList<>();
+
+    static class LateEmittedClass extends Class {
+        Class clazz;
+
+        public LateEmittedClass(String className, Class clazz, TypeName outer) {
+            super(className);
+            this.clazz = clazz;
+            this.comments.addAll(clazz.comments);
+            constructors.add(
+                    new Constructor()
+                            .MODIFIERS(Modifier.PUBLIC)
+                            .PARAMETER(outer, "outer")
+                            .BODY(ASSIGNMENT( METHOD_CALL(VARIABLE("this"),"outer"), VARIABLE( "outer"))));
+
+            methods.addAll(clazz.methods);
+            interfaces.addAll(clazz.interfaces);
+            typeVariables.addAll(clazz.typeVariables);
+            modifiers.addAll(clazz.modifiers);
+        }
+    }
+
 
     private String updateMethodNameIfOverloaded(MethodCall mc, String convertedObject, String callMethodName) {
         if ("this".equals(convertedObject) || (mc.object.inferredType instanceof ClassName) || isTypeVariableWithBound(mc.object.inferredType)) {
@@ -953,7 +1049,9 @@ public class JavaScript implements Emitter<StringBuilder> {
             if (!ms.name.equals(methodName)) continue;
             if (!paramTypesMatch(argTypes, ms)) continue;
             for (PastAnnotation ann : ms.getAnnotations()) {
-                if (ann instanceof OverloadedMethod) return ((OverloadedMethod) ann).getAltName();
+                if (ann instanceof OverloadedMethodJavascript) {
+                    return ((OverloadedMethodJavascript) ann).getAltName();
+                }
             }
         }
         return null;
@@ -966,14 +1064,15 @@ public class JavaScript implements Emitter<StringBuilder> {
 
     private String findAltNameForDeclaration(Method method) {
         if (currentClassSignature == null || typeRegistry == null) return null;
+
         int paramCount = method.parameters == null ? 0 : method.parameters.size();
         for (MethodSignature ms : currentClassSignature.methods) {
             if (!ms.name.equals(method.name)) continue;
             if (ms.parameterTypes.size() != paramCount) continue;
             for (PastAnnotation ann : ms.getAnnotations()) {
-                if (ann instanceof OverloadedMethod) {
+                if (ann instanceof OverloadedMethodJavascript) {
                     if (paramCount == 0 || paramTypesMatch(method, ms)) {
-                        return ((OverloadedMethod) ann).getAltName();
+                        return ((OverloadedMethodJavascript) ann).getAltName();
                     }
                 }
             }
@@ -987,7 +1086,7 @@ public class JavaScript implements Emitter<StringBuilder> {
             if (!ms.name.equals(methodName)) continue;
             if (!paramTypesMatch(argTypes, ms)) continue;
             for (PastAnnotation ann : ms.getAnnotations()) {
-                if (ann instanceof OverloadedMethod) return ((OverloadedMethod) ann).getAltName();
+                if (ann instanceof OverloadedMethodJavascript) return ((OverloadedMethodJavascript) ann).getAltName();
             }
         }
         return null;

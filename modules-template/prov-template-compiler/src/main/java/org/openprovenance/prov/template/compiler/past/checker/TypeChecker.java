@@ -2,7 +2,6 @@ package org.openprovenance.prov.template.compiler.past.checker;
 
 import org.openprovenance.prov.template.compiler.past.Assignment;
 import org.openprovenance.prov.template.compiler.past.Class;
-import org.openprovenance.prov.template.compiler.past.Comment;
 import org.openprovenance.prov.template.compiler.past.Constructor;
 import org.openprovenance.prov.template.compiler.past.Definition;
 import org.openprovenance.prov.template.compiler.past.DoLoop;
@@ -11,7 +10,6 @@ import org.openprovenance.prov.template.compiler.past.Field;
 import org.openprovenance.prov.template.compiler.past.ForLoop;
 import org.openprovenance.prov.template.compiler.past.IfStatement;
 import org.openprovenance.prov.template.compiler.past.Iterator;
-import org.openprovenance.prov.template.compiler.past.LambdaExpression;
 import org.openprovenance.prov.template.compiler.past.Method;
 import org.openprovenance.prov.template.compiler.past.Parameter;
 import org.openprovenance.prov.template.compiler.past.Return;
@@ -20,7 +18,8 @@ import org.openprovenance.prov.template.compiler.past.SuperConstructorCall;
 import org.openprovenance.prov.template.compiler.past.ThrowStatement;
 import org.openprovenance.prov.template.compiler.past.TryCatch;
 import org.openprovenance.prov.template.compiler.past.Variable;
-import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethodPython;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethodJavascript;
 import org.openprovenance.prov.template.compiler.past.type.ArrayType;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
@@ -529,6 +528,10 @@ public class TypeChecker {
 
     private void annotateOverloadedMethods(Class pastClass, String packageName) {
         ClassSignature sig = registry.lookup(pastClass.name, packageName);
+        if (pastClass.name.equals("BeanCompleter2")) {
+            System.out.println("*************** " + sig);
+        }
+
         if (sig == null) return;
 
         Map<String, List<MethodSignature>> byName = new HashMap<>();
@@ -539,10 +542,14 @@ public class TypeChecker {
         for (List<MethodSignature> overloads : byName.values()) {
             if (overloads.size() > 1) {
                 for (MethodSignature m : overloads) {
-                    m.getAnnotations().add(new OverloadedMethod(buildAltName(m)));
+                    String altName = buildAltName(m);
+                    m.getAnnotations().add(new OverloadedMethodPython(altName));
+                    m.getAnnotations().add(new OverloadedMethodJavascript(altName));
+
                 }
             }
         }
+
 
         //System.out.println("********* Annotated overloaded methods in class '" + pastClass.name);
     }

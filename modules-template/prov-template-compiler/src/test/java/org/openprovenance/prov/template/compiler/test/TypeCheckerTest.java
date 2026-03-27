@@ -3,7 +3,7 @@ package org.openprovenance.prov.template.compiler.test;
 import junit.framework.TestCase;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.*;
-import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethodPython;
 import org.openprovenance.prov.template.compiler.past.checker.*;
 import org.openprovenance.prov.template.compiler.past.type.ArrayType;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
@@ -889,13 +889,13 @@ public class TypeCheckerTest extends TestCase {
         iSig.methods.forEach(m -> {
            // System.out.println("Parent method: " + m);
             if (m.name.equals("method1")) {
-                assertEquals(1, m.getAnnotations().size());
-                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
-                OverloadedMethod overloadedMethod = (OverloadedMethod) m.getAnnotations().get(0);
+                assertEquals(2, m.getAnnotations().size());
+                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethodPython);
+                OverloadedMethodPython overloadedMethodPython = (OverloadedMethodPython) m.getAnnotations().get(0);
                 if (m.parameterTypes.get(0).equals(ClassName.STRING)) {
-                    assertEquals("method1_string", overloadedMethod.getAltName());
+                    assertEquals("method1_string", overloadedMethodPython.getAltName());
                 } else if (m.parameterTypes.get(0).equals(ClassName.INTEGER)) {
-                    assertEquals("method1_integer", overloadedMethod.getAltName());
+                    assertEquals("method1_integer", overloadedMethodPython.getAltName());
                 } else {
                     fail("Unexpected parameter type for method1: " + m.parameterTypes.get(0));
                 }
@@ -915,13 +915,13 @@ public class TypeCheckerTest extends TestCase {
         childSig.methods.forEach(m -> {
           //  System.out.println("Child method: " + m);
             if (m.name.equals("method1")) {
-                assertEquals(1, m.getAnnotations().size());
-                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
-                OverloadedMethod overloadedMethod = (OverloadedMethod) m.getAnnotations().get(0);
+                assertEquals(2, m.getAnnotations().size());
+                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethodPython);
+                OverloadedMethodPython overloadedMethodPython = (OverloadedMethodPython) m.getAnnotations().get(0);
                 if (m.parameterTypes.get(0).equals(ClassName.STRING)) {
-                    assertEquals("method1_string", overloadedMethod.getAltName());
+                    assertEquals("method1_string", overloadedMethodPython.getAltName());
                 } else if (m.parameterTypes.get(0).equals(ClassName.INTEGER)) {
-                    assertEquals("method1_integer", overloadedMethod.getAltName());
+                    assertEquals("method1_integer", overloadedMethodPython.getAltName());
                 } else {
                     fail("Unexpected parameter type for method1: " + m.parameterTypes.get(0));
                 }
@@ -971,9 +971,9 @@ public class TypeCheckerTest extends TestCase {
         sig.methods.forEach(m -> {
             //System.out.println("ParameterizedType method: " + m);
             if (m.name.equals("process")) {
-                assertEquals(1, m.getAnnotations().size());
-                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
-                OverloadedMethod ann = (OverloadedMethod) m.getAnnotations().get(0);
+                assertEquals(2, m.getAnnotations().size());
+                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethodPython);
+                OverloadedMethodPython ann = (OverloadedMethodPython) m.getAnnotations().get(0);
                 String rawName = ((ParameterizedType) m.parameterTypes.get(0)).getRawType().simpleName;
                 if (rawName.equals("List")) {
                     assertEquals("process_list", ann.getAltName());
@@ -1018,9 +1018,9 @@ public class TypeCheckerTest extends TestCase {
         sig.methods.forEach(m -> {
             //System.out.println("ArrayType method: " + m);
             if (m.name.equals("convert")) {
-                assertEquals(1, m.getAnnotations().size());
-                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
-                OverloadedMethod ann = (OverloadedMethod) m.getAnnotations().get(0);
+                assertEquals(2, m.getAnnotations().size());
+                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethodPython);
+                OverloadedMethodPython ann = (OverloadedMethodPython) m.getAnnotations().get(0);
                 TypeName elementType = ((ArrayType) m.parameterTypes.get(0)).elementType;
                 if (elementType.equals(ClassName.STRING)) {
                     assertEquals("convert_string_array", ann.getAltName());
@@ -1068,9 +1068,9 @@ public class TypeCheckerTest extends TestCase {
         ClassSignature sig = checker.getRegistry().lookup("TwoArgInterface", "com.example");
         sig.methods.forEach(m -> {
             //System.out.println("TwoArgs method: " + m);
-            assertEquals(1, m.getAnnotations().size());
-            assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
-            OverloadedMethod ann = (OverloadedMethod) m.getAnnotations().get(0);
+            assertEquals(2, m.getAnnotations().size());
+            assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethodPython);
+            OverloadedMethodPython ann = (OverloadedMethodPython) m.getAnnotations().get(0);
             if (m.name.equals("combine")) {
                 if (m.parameterTypes.get(0).equals(ClassName.STRING)) {
                     assertEquals("combine_string_integer", ann.getAltName());
@@ -1112,9 +1112,9 @@ public class TypeCheckerTest extends TestCase {
         ClassSignature sig = checker.getRegistry().lookup("TVInterface", "com.example");
         sig.methods.forEach(m -> {
            // System.out.println("TypeVariable method: " + m);
-            assertEquals(1, m.getAnnotations().size());
-            assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
-            OverloadedMethod ann = (OverloadedMethod) m.getAnnotations().get(0);
+            assertEquals(2, m.getAnnotations().size());
+            assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethodPython);
+            OverloadedMethodPython ann = (OverloadedMethodPython) m.getAnnotations().get(0);
             if (m.parameterTypes.get(0) instanceof TypeVariable) {
                 assertEquals("wrap_t", ann.getAltName());
             } else {

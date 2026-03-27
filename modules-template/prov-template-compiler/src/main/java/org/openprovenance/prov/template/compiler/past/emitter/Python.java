@@ -148,6 +148,17 @@ public class Python implements Emitter<StringBuilder> {
                             .BODY(constructor.body.toArray(new Statement[0]))
                             //.ANNOTATIONS(constructor.annotation.toArray(new String[0]))
                             .COMMENTS(constructor.comments.toArray(new Comment[0]));
+
+                    for (Field field : clazz.fields) {
+                        String fieldName = sanitizeName(field.name);
+                        if (!field.modifiers.contains(Modifier.STATIC)) {
+                            if (field.initialiser != null) {
+                                pythonMethodAsConstructor.BODY(
+                                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), fieldName), field.initialiser));
+
+                            }
+                        }
+                    }
                     emitMethod(pythonMethodAsConstructor);
 
                 }

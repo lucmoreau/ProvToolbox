@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.annotations.NoSerialization;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
@@ -44,7 +45,9 @@ public class CompilerBeanCompleter2Composite {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         Class pastClass = pastFactory.CLASS(COMPOSITE_BEAN_COMPLETER2)
-                .MODIFIERS(Modifier.PUBLIC);
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATION(NoSerialization.NAME);
+
 
         // fields
         pastClass.FIELDS(
@@ -114,8 +117,9 @@ public class CompilerBeanCompleter2Composite {
         Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
         Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, myPackage, locations, stackTraceElement);
 
-        return new SpecificationFile(javaGenerator, pythonGenerator,  jsGenerator, emptyGenerator);
+        return new SpecificationFile(javaGenerator, pythonGenerator,  jsGenerator, rustGenerator);
     }
 
 

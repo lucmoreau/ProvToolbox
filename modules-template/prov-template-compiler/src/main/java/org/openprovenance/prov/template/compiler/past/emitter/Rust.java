@@ -2068,6 +2068,17 @@ public class Rust implements Emitter<StringBuilder> {
                 if (bodyContainsMutatingCall(s)) return true;
             }
         }
+        // ITERATOR over a self Option<Vec<Map>> field: the emitter uses self.field.take() which
+        // requires &mut self. Detect this here so modifiesSelf() returns true for the method.
+        if (stmt instanceof Iterator) {
+            Iterator iter = (Iterator) stmt;
+            if (isSelfOptionFieldAccess(iter.collection)
+                    && iter.parameter != null
+                    && iter.parameter.type != null
+                    && isMap(iter.parameter.type)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -2132,8 +2143,17 @@ public class Rust implements Emitter<StringBuilder> {
                 // Such fields are Option<T> in Rust, so the RHS needs to be wrapped in Some(...)
                 // Exception: if the RHS already produces Option<T> (e.g. inner HashMap get + .copied()),
                 // wrapping in Some() would produce Option<Option<T>> — suppress in that case.
+                // Suppress Some() wrapping when the RHS is a collection constructor (e.g. Vec::new(),
+                // HashMap::new()). Those values are plain collection types, not Option-wrapped, and the
+                // non-self field is expected to hold Vec<T>/HashMap<K,V> not Option<Vec<T>>.
+                boolean rhsIsCollectionConstructor = (assignment.value instanceof MethodCall)
+                        && ((MethodCall) assignment.value).operatorKind == MethodCall.MethodCallKind.CONSTRUCTOR_CALL
+                        && ((MethodCall) assignment.value).className != null
+                        && (isList(((MethodCall) assignment.value).className)
+                                || isMap(((MethodCall) assignment.value).className));
                 boolean needsSomeWrap = isNonSelfFieldAccess(assignment.leftHandExpression)
-                        && !expressionProducesOption(assignment.value);
+                        && !expressionProducesOption(assignment.value)
+                        && !rhsIsCollectionConstructor;
                 String rhs = convert(assignment.value);
                 // If assigning to a trait-type self field in a regular method body, wrap in Box::new
                 // (the constructor emitter handles this separately)
@@ -2358,19 +2378,55 @@ public class Rust implements Emitter<StringBuilder> {
                 // Use .iter().cloned() to produce owned items without moving: all generated
                 // structs derive Clone, so this is safe and preserves by-value method signatures.
                 String collectionExpr = convert(iterator.collection);
-                if (isLocalFieldAccess(iterator.collection)) {
-                    collectionExpr = collectionExpr + ".iter().cloned()";
+                String paramSnake = sanitizeName(toSnakeCase(iterator.parameter.name));
+
+                if (isSelfOptionFieldAccess(iterator.collection)) {
+                    String rawFieldName = ((MethodCall) iterator.collection).methodName;
+                    boolean elemIsMap = iterator.parameter != null
+                            && iterator.parameter.type != null
+                            && isMap(iterator.parameter.type);
+                    if (elemIsMap) {
+                        // self.ll is Option<Vec<HashMap<...>>>; Box<dyn Any> is not Clone so we cannot
+                        // use .iter().cloned(). Instead, take() the Option (requires &mut self) to get
+                        // an owned Vec and use into_iter() for owned HashMap elements.
+                        sb.append(indent)
+                          .append("if let Some(").append("__ll_owned") .append(") = ")
+                          .append(collectionExpr).append(".take() {\n");
+                        sb.append(indent + INDENT)
+                          .append("for ").append(paramSnake)
+                          .append(" in ").append("__ll_owned").append(".into_iter() {\n");
+                        for (Statement bodyStmt : iterator.body) {
+                            emitStatement(bodyStmt, indent + INDENT + INDENT, sb);
+                        }
+                        sb.append(indent + INDENT).append("}\n");
+                        sb.append(indent).append("}\n");
+                    } else {
+                        // self.ll is Option<Vec<T>> where T: Clone; unwrap with if-let and iterate.
+                        String tmpRef = "__" + sanitizeName(toSnakeCase(rawFieldName));
+                        sb.append(indent)
+                          .append("if let Some(ref ").append(tmpRef).append(") = ")
+                          .append(collectionExpr).append(" {\n");
+                        sb.append(indent + INDENT)
+                          .append("for ").append(paramSnake)
+                          .append(" in ").append(tmpRef).append(".iter().cloned() {\n");
+                        for (Statement bodyStmt : iterator.body) {
+                            emitStatement(bodyStmt, indent + INDENT + INDENT, sb);
+                        }
+                        sb.append(indent + INDENT).append("}\n");
+                        sb.append(indent).append("}\n");
+                    }
+                } else {
+                    if (isLocalFieldAccess(iterator.collection)) {
+                        collectionExpr = collectionExpr + ".iter().cloned()";
+                    }
+                    sb.append(indent)
+                            .append("for ").append(paramSnake)
+                            .append(" in ").append(collectionExpr).append(" {\n");
+                    for (Statement bodyStmt : iterator.body) {
+                        emitStatement(bodyStmt, indent + INDENT, sb);
+                    }
+                    sb.append(indent).append("}\n");
                 }
-                sb.append(indent)
-                        .append("for ")
-                        .append(sanitizeName(toSnakeCase(iterator.parameter.name)))
-                        .append(" in ")
-                        .append(collectionExpr)
-                        .append(" {\n");
-                for (Statement bodyStmt : iterator.body) {
-                    emitStatement(bodyStmt, indent + INDENT, sb);
-                }
-                sb.append(indent).append("}\n");
             }
 
             case DO_LOOP -> {
@@ -2725,7 +2781,34 @@ public class Rust implements Emitter<StringBuilder> {
                     if (isNonSelfFieldAccess(c.expression)) {
                         return convert(c.expression) + ".unwrap_or_default()";
                     }
+                    // HashMap.get(key) returns Option<&Box<dyn Any>> — downcast to i32/i64/etc.
+                    if (isMapGetCall(c.expression)) {
+                        String rustPrimitive = convertTypeToRust(c.targetType);
+                        return convert(c.expression)
+                                + ".and_then(|v| v.downcast_ref::<" + rustPrimitive + ">()).copied().unwrap_or_default()";
+                    }
                     return convert(c.expression) + " as " + convertTypeToRust(c.targetType);
+                }
+                // Cast to a collection type from a HashMap.get() — downcast Box<dyn Any> to the
+                // collection type.  Vec<HashMap<String,Box<dyn Any>>> cannot be cloned because
+                // Box<dyn Any> does not implement Clone.  For that specific pattern (Vec of maps),
+                // emit Vec::new() as a safe placeholder.  For simple Vec<T> where T: Clone,
+                // emit the normal downcast-and-clone.
+                if (isList(c.targetType) && isMapGetCall(c.expression)) {
+                    TypeName elemType = null;
+                    if (c.targetType instanceof ParameterizedType) {
+                        ParameterizedType pt = (ParameterizedType) c.targetType;
+                        if (pt.typeArguments != null && pt.typeArguments.length > 0) {
+                            elemType = pt.typeArguments[0];
+                        }
+                    }
+                    // If the element type is also a map, Box<dyn Any> values are not Clone —
+                    // emit Vec::new() as a placeholder to keep the code compiling.
+                    if (elemType != null && isMap(elemType)) {
+                        return "Vec::new()";
+                    }
+                    return convert(c.expression)
+                            + ".and_then(|v| v.downcast_ref::<" + convertTypeToRust(c.targetType) + ">()).cloned().unwrap_or_default()";
                 }
                 // Non-primitive cast: just return the expression (the parameter type should be correct)
                 return convert(c.expression);
@@ -2752,11 +2835,26 @@ public class Rust implements Emitter<StringBuilder> {
                 // Rust supports |params| { stmt; stmt; expr } natively, so there is no need
                 // to extract to a helper method.  (The old Self::closure_N approach required
                 // a generated associated function on the trait which callers never provided.)
+                // Type annotations are included on parameters to help Rust's type inference when
+                // the closure is passed to a generic function (e.g. impl Fn(A, B) -> C).
                 StringBuilder result = new StringBuilder();
                 result.append("|");
                 if (!le.parameters.isEmpty()) {
+                    List<Statement> closureBody = le.body;
                     result.append(le.parameters.stream()
-                            .map(p -> sanitizeName(toSnakeCase(p.name)))
+                            .map(p -> {
+                                String pName = sanitizeName(toSnakeCase(p.name));
+                                // Add 'mut' if the closure body mutates this parameter
+                                // (e.g. assigns to o.field or passes o to a method that takes &mut).
+                                boolean paramMutated = stmtListMutatesParam(p.name, closureBody);
+                                String prefix = paramMutated ? "mut " : "";
+                                if (p.type != null && !(p.type instanceof TypeVariable)) {
+                                    // Use the plain Rust type (not the method-param convention which adds
+                                    // &mut for maps and & for structs — closures receive owned values).
+                                    return prefix + pName + ": " + convertTypeToRust(p.type);
+                                }
+                                return prefix + pName;
+                            })
                             .collect(Collectors.joining(", ")));
                 }
                 result.append("| {\n");
@@ -3850,6 +3948,20 @@ public class Rust implements Emitter<StringBuilder> {
      * In the PAST tree this is an OBJECT_ACCESSOR MethodCall with methodName "class" and a
      * non-null {@code className} field.
      */
+    /**
+     * Returns true if {@code expr} is a {@code HashMap.get(key)} or {@code map.get(key)} call
+     * (i.e. a method call named "get" with a single non-class-literal argument).
+     * Used to detect patterns where a Box&lt;dyn Any&gt; result needs to be downcast.
+     */
+    private boolean isMapGetCall(Expression expr) {
+        if (!(expr instanceof MethodCall)) return false;
+        MethodCall mc = (MethodCall) expr;
+        return "get".equals(mc.methodName)
+                && mc.arguments != null
+                && mc.arguments.size() == 1
+                && !isClassLiteralArg(mc.arguments.get(0));
+    }
+
     private boolean isClassLiteralArg(Expression expr) {
         if (!(expr instanceof MethodCall)) return false;
         MethodCall mc = (MethodCall) expr;

@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.annotations.NoSerialization;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
@@ -46,7 +47,9 @@ public class CompilerBeanCompleter3 {
 
         Class pastClass = pastFactory.CLASS(BEAN_COMPLETER3)
                 .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .SUPERCLASS(get(BEAN_COMPLETER2, locations.getFilePackage(configs.name, BEAN_COMPLETER2)));
+                .SUPERCLASS(get(BEAN_COMPLETER2, locations.getFilePackage(configs.name, BEAN_COMPLETER2)))
+                .ANNOTATION(NoSerialization.NAME);
+
 
         // constructors mirroring super(m) and super(getter)
         Constructor cons1 = CONSTRUCTOR()

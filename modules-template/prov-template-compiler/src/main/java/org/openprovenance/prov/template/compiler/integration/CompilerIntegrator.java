@@ -87,9 +87,9 @@ public class CompilerIntegrator {
         pastClass.METHOD(generateNewOutputConstructor(templateName, integrator_package, bindingsSchema, OUTPUTS));
 
 
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, integrator_package, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, integrator_package, configs, fileName, directory, stackTraceElement, compilerUtil);
-        Supplier<Boolean> jsGenerator=() -> generateJavaScript(pastClass, integrator_package, "target/generated-js", stackTraceElement);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, integrator_package, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, integrator_package, configs, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator=() -> generateJavaScript(pastClass, integrator_package, locations, stackTraceElement);
 
         return new SpecificationFile(javaGenerator,pythonGenerator, jsGenerator, emptyGenerator);
 

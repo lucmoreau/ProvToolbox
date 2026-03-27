@@ -3,9 +3,7 @@ package org.openprovenance.prov.template.compiler.past.emitter;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Iterator;
-import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
-import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation;
-import org.openprovenance.prov.template.compiler.past.annotations.StaticMethod;
+import org.openprovenance.prov.template.compiler.past.annotations.*;
 import org.openprovenance.prov.template.compiler.past.checker.ClassSignature;
 import org.openprovenance.prov.template.compiler.past.checker.MethodSignature;
 import org.openprovenance.prov.template.compiler.past.checker.TypeRegistry;
@@ -913,7 +911,7 @@ public class JavaScript implements Emitter<StringBuilder> {
         return callMethodName;
     }
 
-    private ClassName classForPurposeOfLookup(TypeName inferredType) {
+    public static ClassName classForPurposeOfLookup(TypeName inferredType) {
         if (inferredType instanceof ClassName) {
             return (ClassName) inferredType;
         } else if (inferredType instanceof TypeVariable) {
@@ -928,6 +926,23 @@ public class JavaScript implements Emitter<StringBuilder> {
         return tn instanceof TypeVariable &&
                 !((TypeVariable) tn).bounds.isEmpty() &&
                 ((TypeVariable) tn).bounds.get(0) instanceof ClassName;
+    }
+
+    private Optional<String> isOverloadedConstructor(Constructor constructor) {
+        Optional<String> overloaded=Optional.empty();
+        if (constructor.annotation != null) {
+            Optional<OverloadedMethodJavascript> annotation=constructor.annotation.stream()
+                    .filter(annot -> annot instanceof OverloadedMethodJavascript)
+                    .map(annot -> (OverloadedMethodJavascript) annot)
+                    .filter(annot -> OverloadedMethodJavascript.NAME.equals(annot.getName()))
+                    .findFirst()
+                    ;
+            if (annotation.isPresent()) {
+                overloaded= Optional.of(annotation.get().getAltName());
+                //System.out.println("Constructor with @OverloadedMethod annotation, using alt name: " + constructorName);
+            }
+        }
+        return overloaded;
     }
 
     private String findAltNameForCall(ClassName className,String methodName, List<TypeName> argTypes) {

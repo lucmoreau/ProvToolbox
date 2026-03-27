@@ -50,8 +50,8 @@ public class CompilerBuilderInterface {
 
         pastClass.METHOD(callMethod);
 
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, templateName, fileName, directory, stackTraceElement, compilerUtil);
-        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, packge, locations.python_dir, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, templateName, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, packge, locations, stackTraceElement);
 
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }

@@ -300,7 +300,7 @@ public class CompilerCatalogueDispatcher {
 
 
         Supplier<Boolean> pythonGenerator=() -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, configs.root_package, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, configs.root_package, configs, directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator,pythonGenerator);
 

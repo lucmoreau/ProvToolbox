@@ -13,7 +13,6 @@ import javax.lang.model.element.Modifier;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
@@ -117,8 +116,8 @@ public class    CompilerTableConfiguratorWithMap {
 
 
         String myPackage = locations.getConfiguratorBackendPackage(configs.name);
-        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, tableClassName + DOT_JAVA_EXTENSION,
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs,
                 locations.convertToBackendDirectory(myPackage), stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator, pythonGenerator);

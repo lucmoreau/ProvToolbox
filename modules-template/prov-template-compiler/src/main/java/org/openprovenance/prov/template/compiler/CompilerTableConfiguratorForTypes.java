@@ -187,8 +187,8 @@ public class CompilerTableConfiguratorForTypes {
         String myPackage = locations.getConfiguratorBackendPackage(configs.name);
         String directory=locations.convertToDirectory(l2p_src_dir,"");
 
-        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, tableClassName + DOT_JAVA_EXTENSION,
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs,
                 directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator, pythonGenerator);

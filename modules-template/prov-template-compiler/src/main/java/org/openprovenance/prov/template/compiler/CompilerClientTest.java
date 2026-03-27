@@ -14,7 +14,6 @@ import javax.lang.model.element.Modifier;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
 import static org.openprovenance.prov.template.compiler.common.Constants.TESTER_FILE;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
@@ -90,8 +89,8 @@ public class CompilerClientTest {
 
         String myPackage = configs.root_package;
 
-        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }

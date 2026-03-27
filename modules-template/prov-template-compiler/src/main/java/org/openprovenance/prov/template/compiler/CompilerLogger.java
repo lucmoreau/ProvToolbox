@@ -116,8 +116,8 @@ public class CompilerLogger {
         String packageName = locations.getFilePackage(configs.name, LOGGER);
 
         String directory = locations.convertToDirectory(packageName);
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packageName, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packageName, configs, fileName, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packageName, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packageName, configs, directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator,pythonGenerator);
 
@@ -244,8 +244,8 @@ public class CompilerLogger {
                 .RETURNS(STRING);
         pastClass.METHOD(method9);
 
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, Constants.CLIENT_PACKAGE, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, Constants.CLIENT_PACKAGE, configs, fileName+ DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, Constants.CLIENT_PACKAGE, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, Constants.CLIENT_PACKAGE, configs, directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator,pythonGenerator);
     }
@@ -263,8 +263,8 @@ public class CompilerLogger {
 
         pastClass.METHOD(builder2);
 
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, CLIENT_PACKAGE, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, CLIENT_PACKAGE, configs, fileName+ DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, CLIENT_PACKAGE, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, CLIENT_PACKAGE, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator,pythonGenerator);
     }
 

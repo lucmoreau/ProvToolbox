@@ -31,7 +31,13 @@ import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.GENERATED_VAR_PREFIX;
 import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
+import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.emitter.JavaScript.classForPurposeOfLookup;
 
 /**
  * Emitter that generates Rust code from a PAST (Programming Abstract Syntax Tree).
@@ -108,7 +114,7 @@ public class Rust implements Emitter<StringBuilder> {
         METHOD_REGISTRY = r;
     }
 
-    private StringBuilder sb;
+    //private StringBuilder sb;
     private static final String INDENT = "    ";
     private int closureCount = 0;
     private Set<String> imports;
@@ -141,6 +147,7 @@ public class Rust implements Emitter<StringBuilder> {
     private final TypeRegistry typeRegistry; // Type registry from type checking phase (may be null)
     private String currentPackageName;       // Set in toWritableObject; used to look up ClassSignature
     private ClassSignature currentClassSignature; // Looked up at start of emit(); null when no registry
+    private String currentClassName;
 
     // configuration for default constructor
     boolean emitDefaultConstructorParameters =false;
@@ -257,6 +264,7 @@ public class Rust implements Emitter<StringBuilder> {
 
     public WritableObject toWritableObject(Class clazz, String className, String packge, StackTraceElement stackTraceElement) {
         this.currentPackageName = packge;
+        this.currentClassName = className;
         StringBuilder theBuffer = emit(clazz);
 
         addHeader(theBuffer, className, packge, stackTraceElement);
@@ -273,7 +281,21 @@ public class Rust implements Emitter<StringBuilder> {
 
     @Override
     public StringBuilder emit(Class clazz) {
-        this.sb = new StringBuilder();
+
+        StringBuilder sb = emit(clazz, new StringBuilder());
+
+        // Single declareImports call — all emission (struct impl + trait impls) is done,
+        // so the imports set is complete and no type will be added twice.
+        if (!imports.isEmpty()) {
+            declareImports("Importing ", sb);
+        }
+
+        insertRustDirectives(sb);
+
+        return sb;
+    }
+
+    public StringBuilder emit(Class clazz,StringBuilder sb) {
         this.imports = new HashSet<>();
         this.lateMethods = new ArrayList<>();
         this.closureCount = 0;
@@ -285,7 +307,7 @@ public class Rust implements Emitter<StringBuilder> {
 
         // Check if this is an interface or abstract class (both become Rust traits)
         if (clazz.isInterface || clazz.modifiers.contains(Modifier.ABSTRACT)) {
-            return emitTrait(clazz);
+            return emitTrait(clazz,sb);
         }
 
         // Suppress Serialize/Deserialize when the class is annotated with @NoSerialization
@@ -375,6 +397,14 @@ public class Rust implements Emitter<StringBuilder> {
                 }
             }
             String visibility = field.modifiers.contains(Modifier.PUBLIC) ? "pub " : "";
+            // LateEmittedClass: the 'outer' field is a lifetime-annotated borrow, not owned.
+            if (currentClass instanceof LateEmittedClass && "outer".equals(field.name)) {
+                sb.append(INDENT).append(visibility)
+                        .append("outer: &'a ")
+                        .append(convertTypeToRust(field.type))
+                        .append(",\n");
+                continue;
+            }
             // Trait types cannot be stored by value in a struct — use Box<dyn Trait>
             String rustType = isKnownTrait(field.type)
                     ? "Box<dyn " + convertTypeToRust(field.type) + ">"
@@ -408,10 +438,38 @@ public class Rust implements Emitter<StringBuilder> {
 
         // Constructor (new method)
         if (clazz.constructors.isEmpty()) {
-            emitDefaultConstructor(instanceFields);
+            emitDefaultConstructor(instanceFields, sb);
         } else {
             for (Constructor constructor : clazz.constructors) {
-                emitConstructor(constructor, instanceFields);
+                Optional<String> name=isOverloadedConstructor(constructor);
+
+                if (name.isPresent()) {
+                    String constructorName = name.get();
+
+                    Method rustMethodAsConstructor = METHOD(constructorName)
+                            .PARAMETERS(constructor.parameters)
+                            .MODIFIERS(constructor.modifiers.toArray(new Modifier[0]))
+                            .BODY(constructor.body.toArray(new Statement[0]))
+                            //.ANNOTATIONS(constructor.annotation.toArray(new String[0]))
+                            .COMMENTS(constructor.comments.toArray(new Comment[0]));
+                    for (Field field : clazz.fields) {
+                        String fieldName = sanitizeName(field.name);
+                        if (!field.modifiers.contains(Modifier.STATIC)) {
+                            if (field.initialiser != null) {
+                                rustMethodAsConstructor.BODY(
+                                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), fieldName), field.initialiser));
+
+                            }
+                        }
+                    }
+                    rustMethodAsConstructor.COMMENT("Note: this method was originally a PAST constructor, but was renamed to avoid name clashes due to overloading. \n It will not be recognized as a constructor by Python code, so it should be called explicitly by its name.");
+
+                    emitMethod(rustMethodAsConstructor, sb);
+
+
+                } else {
+                    emitConstructor(constructor, instanceFields, sb);
+                }
             }
         }
 
@@ -422,13 +480,13 @@ public class Rust implements Emitter<StringBuilder> {
             if (!method.modifiers.contains(Modifier.STATIC)
                     && !isInterfaceImplementation(method)
                     && !superclassAbstractMethods.contains(method.name)) {
-                emitMethod(method);
+                emitMethod(method, sb);
             }
         }
 
         // Late methods (from closure conversions)
         for (Method method : lateMethods) {
-            emitMethod(method);
+            emitMethod(method, sb);
         }
 
         sb.append("}\n\n");
@@ -444,34 +502,46 @@ public class Rust implements Emitter<StringBuilder> {
                     .append(" {\n");
 
             for (Method method : staticMethods) {
-                emitMethod(method);
+                emitMethod(method, sb);
             }
 
             // Static fields as associated constants or static items
-            emitStaticFields(clazz.fields);
+            emitStaticFields(clazz.fields,sb);
 
             sb.append("}\n\n");
         }
 
         // Add Value enum if heterogeneous arrays were used
         if (needsValueEnum) {
-            emitValueEnum();
+            emitValueEnum(sb);
         }
 
         // Add trait implementations if interfaces are specified.
         // emitTraitImplementations calls emitMethod() which may add further imports via
         // addTypeImport(), so we must not call declareImports() before this point.
         if (!clazz.interfaces.isEmpty() || clazz.superclass != null) {
-            emitTraitImplementations(clazz);
+            emitTraitImplementations(clazz, sb);
         }
 
-        // Single declareImports call — all emission (struct impl + trait impls) is done,
-        // so the imports set is complete and no type will be added twice.
-        if (!imports.isEmpty()) {
-            declareImports("Importing ");
+
+
+        Set<String> savedImports=imports;
+
+        if (!lateEmittedClasses.isEmpty()) {
+            List<LateEmittedClass> tmp=lateEmittedClasses.stream().map(c -> c).collect(Collectors.toList());
+            lateEmittedClasses.clear();
+            sb.append("\n\n");
+
+            for (Class lateClazz : tmp) {
+                sb.append("// Late emitted class due to anonymous class\n");
+                emit(lateClazz,sb);
+                sb.append("\n\n");
+            }
         }
 
-        insertRustDirectives();
+        imports.addAll(savedImports);
+
+
 
         return sb;
     }
@@ -479,7 +549,7 @@ public class Rust implements Emitter<StringBuilder> {
     /**
      * Emit the Value enum for heterogeneous arrays
      */
-    private void emitValueEnum() {
+    private void emitValueEnum(StringBuilder sb) {
         sb.append("/// Enum for heterogeneous array values\n");
         sb.append("#[derive(Debug, Clone, Serialize, Deserialize)]\n");
         sb.append("pub enum Value {\n");
@@ -532,10 +602,28 @@ public class Rust implements Emitter<StringBuilder> {
         sb.append("}\n\n");
     }
 
+
+    private Optional<String> isOverloadedConstructor(Constructor constructor) {
+        Optional<String> overloaded=Optional.empty();
+        if (constructor.annotation != null) {
+            Optional<RustAnnotation> annotation=constructor.annotation.stream()
+                    .filter(annot -> annot instanceof RustAnnotation)
+                    .map(annot -> (RustAnnotation) annot)
+                    .filter(annot -> OverloadedMethodRust.NAME.equals(annot.getName()))
+                    .findFirst()
+                    ;
+            if (annotation.isPresent()) {
+                overloaded= Optional.of(((OverloadedMethodRust) annotation.get()).getAltName());
+                //System.out.println("Constructor with @OverloadedMethod annotation, using alt name: " + constructorName);
+            }
+        }
+        return overloaded;
+    }
+
     /**
      * Emit a trait definition (Rust equivalent of interface)
      */
-    private StringBuilder emitTrait(Class clazz) {
+    private StringBuilder emitTrait(Class clazz, StringBuilder sb) {
         // Note: Trait should already be registered via discoverTraits()
         String traitName = toPascalCase(clazz.name);
 
@@ -601,7 +689,7 @@ public class Rust implements Emitter<StringBuilder> {
         // impl InterfaceName for ConcreteType blocks emitted by emitTraitImplementations().
         for (Method method : clazz.methods) {
             if (isInterfaceImplementation(method)) continue;
-            emitTraitMethod(method);
+            emitTraitMethod(method, sb);
         }
 
         // Abstract getter methods for instance fields — traits cannot have fields in Rust,
@@ -623,20 +711,20 @@ public class Rust implements Emitter<StringBuilder> {
 
         // Add imports at the beginning
         if (!imports.isEmpty()) {
-            declareImports("Importing (emitTraits) ");
+            declareImports("Importing (emitTraits) ", sb);
         }
 
-        insertRustDirectives();
+        insertRustDirectives(sb);
 
 
         return sb;
     }
 
-    private void insertRustDirectives() {
+    private void insertRustDirectives(StringBuilder sb) {
         sb.insert(0,"#![allow(dead_code, unused_variables, unused_imports, unused_mut)]\n\n");
     }
 
-    private void declareImports(String x) {
+    private void declareImports(String x, StringBuilder sb) {
         StringBuilder importSection = new StringBuilder();
         for (String imprt : imports) {
            // System.out.println(x + imprt);
@@ -654,7 +742,7 @@ public class Rust implements Emitter<StringBuilder> {
     /**
      * Emit trait method signature (no body)
      */
-    private void emitTraitMethod(Method method) {
+    private void emitTraitMethod(Method method, StringBuilder sb) {
         // Method documentation
         if (method.comments != null && !method.comments.isEmpty()) {
             for (Comment comment : method.comments) {
@@ -683,7 +771,11 @@ public class Rust implements Emitter<StringBuilder> {
             } else {
                 sb.append("<'a>");
             }
-        } else if (method.typeVariables != null && !method.typeVariables.isEmpty()) {
+        } else if (method.typeVariables != null && !method.typeVariables.isEmpty()
+                && !hasPhantomTypeVariable(method)) {
+            // Phantom type variables (e.g. T in `get<T>(Class<T>, String) -> T`) are suppressed:
+            // Class<T> maps to &'static str so T is invisible in Rust, making the trait
+            // non-dyn-compatible. We erase T and emit Box<dyn Any> as the return type instead.
             sb.append("<");
             for (int i = 0; i < method.typeVariables.size(); i++) {
                 if (i > 0) sb.append(", ");
@@ -730,6 +822,9 @@ public class Rust implements Emitter<StringBuilder> {
         if (method.returnType != null && !isVoidType(method.returnType)) {
             if (traitMFP) {
                 sb.append(" -> &'a mut ").append(convertTypeToRust(method.returnType));
+            } else if (hasPhantomTypeVariable(method)) {
+                // Phantom T erased: return Box<dyn Any> to keep the trait dyn-compatible.
+                sb.append(" -> Box<dyn std::any::Any>");
             } else {
                 sb.append(" -> ").append(convertTypeToRust(method.returnType));
             }
@@ -748,7 +843,7 @@ public class Rust implements Emitter<StringBuilder> {
             for (int i = 0; i < method.body.size(); i++) {
                 Statement stmt = method.body.get(i);
                 boolean isLast = (i == method.body.size() - 1);
-                emitStatement(stmt, INDENT + INDENT, isLast);
+                emitStatement(stmt, INDENT + INDENT, isLast, sb);
             }
             currentEmittingTraitDefaultBody = false;
             sb.append(INDENT).append("}\n\n");
@@ -768,7 +863,7 @@ public class Rust implements Emitter<StringBuilder> {
     /**
      * Emit trait implementations for a struct
      */
-    private void emitTraitImplementations(Class clazz) {
+    private void emitTraitImplementations(Class clazz, StringBuilder sb) {
         for (TypeName intfce : clazz.interfaces) {
             String traitName = convertInterfaceToTrait(intfce);
             //System.out.println("addTraintImport for " + intfce + " "  + traitName);
@@ -782,7 +877,7 @@ public class Rust implements Emitter<StringBuilder> {
             // Emit only methods that implement this trait (annotated with @Override)
             for (Method method : clazz.methods) {
                 if (!method.modifiers.contains(Modifier.STATIC) && isInterfaceImplementation(method)) {
-                    emitMethod(method, true);
+                    emitMethod(method, true, sb);
                 }
             }
 
@@ -803,7 +898,7 @@ public class Rust implements Emitter<StringBuilder> {
                 for (Method method : clazz.methods) {
                     if (!method.modifiers.contains(Modifier.STATIC)
                             && abstractMethodNames.contains(method.name)) {
-                        emitMethod(method, true);
+                        emitMethod(method, true, sb);
                     }
                 }
                 sb.append("}\n\n");
@@ -863,7 +958,7 @@ public class Rust implements Emitter<StringBuilder> {
                                         && isInterfaceImplementation(method)
                                         && method.body != null && !method.body.isEmpty()) {
                                     // true = in trait impl block (suppress 'pub' on methods)
-                                    emitMethod(method, true);
+                                    emitMethod(method, true, sb);
                                 }
                             }
                             sb.append("}\n\n");
@@ -932,18 +1027,24 @@ public class Rust implements Emitter<StringBuilder> {
      * Used in struct and impl headers.
      */
     private String typeParamDecl(Class clazz) {
-        if (clazz.typeVariables == null || clazz.typeVariables.isEmpty()) return "";
+        // LateEmittedClass structs capture the outer class via a &'a reference — include lifetime.
+        boolean hasLifetime = clazz instanceof LateEmittedClass;
+        if (!hasLifetime && (clazz.typeVariables == null || clazz.typeVariables.isEmpty())) return "";
         StringBuilder s = new StringBuilder("<");
-        for (int i = 0; i < clazz.typeVariables.size(); i++) {
-            if (i > 0) s.append(", ");
-            TypeVariable tv = clazz.typeVariables.get(i);
-            s.append(tv.name);
-            if (!tv.bounds.isEmpty()) {
-                s.append(": ");
-                for (int j = 0; j < tv.bounds.size(); j++) {
-                    if (j > 0) s.append(" + ");
-                    s.append(convertInterfaceToTrait(tv.bounds.get(j)));
+        boolean first = true;
+        if (hasLifetime) { s.append("'a"); first = false; }
+        if (clazz.typeVariables != null) {
+            for (TypeVariable tv : clazz.typeVariables) {
+                if (!first) s.append(", ");
+                s.append(tv.name);
+                if (!tv.bounds.isEmpty()) {
+                    s.append(": ");
+                    for (int j = 0; j < tv.bounds.size(); j++) {
+                        if (j > 0) s.append(" + ");
+                        s.append(convertInterfaceToTrait(tv.bounds.get(j)));
+                    }
                 }
+                first = false;
             }
         }
         s.append(">");
@@ -956,11 +1057,17 @@ public class Rust implements Emitter<StringBuilder> {
      * variables.
      */
     private String typeParamArgs(Class clazz) {
-        if (clazz.typeVariables == null || clazz.typeVariables.isEmpty()) return "";
+        boolean hasLifetime = clazz instanceof LateEmittedClass;
+        if (!hasLifetime && (clazz.typeVariables == null || clazz.typeVariables.isEmpty())) return "";
         StringBuilder s = new StringBuilder("<");
-        for (int i = 0; i < clazz.typeVariables.size(); i++) {
-            if (i > 0) s.append(", ");
-            s.append(clazz.typeVariables.get(i).name);
+        boolean first = true;
+        if (hasLifetime) { s.append("'a"); first = false; }
+        if (clazz.typeVariables != null) {
+            for (TypeVariable tv : clazz.typeVariables) {
+                if (!first) s.append(", ");
+                s.append(tv.name);
+                first = false;
+            }
         }
         s.append(">");
         return s.toString();
@@ -981,7 +1088,8 @@ public class Rust implements Emitter<StringBuilder> {
                 // don't add an import for the current class
                 if (cn.simpleName.equals(this.currentClass.name) &&
                         Objects.equals(cn.packge, this.currentPackageName)) {
-                } else {
+                    //don't add an import for the outer class
+                }  else{
                     String modulePath = buildModulePath(cn.packge, cn.simpleName);
                     imports.add(modulePath);
                 }
@@ -1005,6 +1113,8 @@ public class Rust implements Emitter<StringBuilder> {
                     // don't add an import for the current class
                     if (cn.simpleName.equals(this.currentClass.name) &&
                             Objects.equals(cn.packge, this.currentPackageName)) {
+                    } else if (isParentClass(cn)) {
+
                     } else {
                         // Use original name to preserve underscores before digits in file path
                         String modulePath = buildModulePath(cn.packge, cn.simpleName);
@@ -1184,8 +1294,11 @@ public class Rust implements Emitter<StringBuilder> {
             return "Option<" + convertTypeToRust(tn) + ">";
         }
 
-        // Non-primitive struct/bean types: pass by reference
-        return "&" + convertTypeToRust(tn);
+        // Non-primitive struct/bean types: pass by reference.
+        // Guard against double-referencing: if convertTypeToRust already produces a reference
+        // (e.g. Class<T> → &'static str), do not prepend another &.
+        String converted = convertTypeToRust(tn);
+        return converted.startsWith("&") ? converted : "&" + converted;
     }
 
     /**
@@ -1213,7 +1326,6 @@ public class Rust implements Emitter<StringBuilder> {
                     resolvedAlt=findAltNameForCall(mc.methodName, argumentTypes);
                 } else {
                     ClassName cl=classForPurposeOfLookup(mc.object.inferredType);
-
                     resolvedAlt=findAltNameForCall(cl, callMethodName, argumentTypes);
                 }
                 if (resolvedAlt != null) {
@@ -1224,16 +1336,6 @@ public class Rust implements Emitter<StringBuilder> {
         return callMethodName;
     }
 
-    private ClassName classForPurposeOfLookup(TypeName inferredType) {
-        if (inferredType instanceof ClassName) {
-            return (ClassName) inferredType;
-        } else if (inferredType instanceof TypeVariable) {
-            TypeVariable var = (TypeVariable) inferredType;
-            return (ClassName) var.bounds.get(0);
-        } else {
-            throw new IllegalArgumentException("Unsupported type: " + inferredType);
-        }
-    }
 
     private boolean isTypeVariableWithBound(TypeName tn) {
         return tn instanceof TypeVariable &&
@@ -1271,7 +1373,7 @@ public class Rust implements Emitter<StringBuilder> {
 
 
 
-    private void emitDefaultConstructor(List<Field> fields) {
+    private void emitDefaultConstructor(List<Field> fields, StringBuilder sb) {
         sb.append(INDENT).append("/// Creates a new instance\n");
         sb.append(INDENT).append("pub fn new(");
 
@@ -1315,7 +1417,7 @@ public class Rust implements Emitter<StringBuilder> {
         imports.add("serde_json");
     }
 
-    private void emitConstructor(Constructor constructor, List<Field> classFields) {
+    private void emitConstructor(Constructor constructor, List<Field> classFields, StringBuilder sb) {
         sb.append(INDENT).append("/// Constructor\n");
         sb.append(INDENT).append("pub fn new(");
 
@@ -1326,9 +1428,15 @@ public class Rust implements Emitter<StringBuilder> {
             for (int i = 0; i < constructor.parameters.size(); i++) {
                 if (i > 0) sb.append(", ");
                 Parameter param = constructor.parameters.get(i);
-                String paramType = isKnownTrait(param.type)
-                        ? convertTypeToRustParam(param.type)   // impl Trait + 'static
-                        : convertTypeToRust(param.type);       // owned (HashMap, Vec, String, bool…)
+                // LateEmittedClass: 'outer' is borrowed, not owned — use &'a OuterType.
+                String paramType;
+                if (currentClass instanceof LateEmittedClass && "outer".equals(param.name)) {
+                    paramType = "&'a " + convertTypeToRust(param.type);
+                } else if (isKnownTrait(param.type)) {
+                    paramType = convertTypeToRustParam(param.type);   // impl Trait + 'static
+                } else {
+                    paramType = convertTypeToRust(param.type);        // owned (HashMap, Vec, String…)
+                }
                 sb.append(sanitizeName(toSnakeCase(param.name)))
                         .append(": ")
                         .append(paramType);
@@ -1355,7 +1463,11 @@ public class Rust implements Emitter<StringBuilder> {
                         baseRhs = "Box::new(" + baseRhs + ")";
                     }
 
-                    boolean needsSomeWrap = isNonSelfFieldAccess(a.leftHandExpression)
+                    // LateEmittedClass: 'outer' is stored as a plain reference, not Option<T>.
+                    boolean isOuterRefField = currentClass instanceof LateEmittedClass
+                            && "outer".equals(fieldName);
+                    boolean needsSomeWrap = !isOuterRefField
+                            && isNonSelfFieldAccess(a.leftHandExpression)
                             && !expressionProducesOption(a.value);
                     String rhs = needsSomeWrap ? "Some(" + baseRhs + ")" : baseRhs;
                     fieldValues.put(fieldName, rhs);
@@ -1430,7 +1542,7 @@ public class Rust implements Emitter<StringBuilder> {
         return null;
     }
 
-    private void emitStaticFields(List<Field> fields) {
+    private void emitStaticFields(List<Field> fields, StringBuilder sb) {
         for (Field field : fields) {
             if (field.modifiers.contains(Modifier.STATIC)) {
                 String fieldName = sanitizeName(toSnakeCase(field.name).toUpperCase());
@@ -1448,11 +1560,11 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
     }
-    private void emitMethod(Method method) {
-        emitMethod(method, false);
+    private void emitMethod(Method method, StringBuilder sb) {
+        emitMethod(method, false, sb);
     }
 
-    private void emitMethod(Method method, boolean inTrait) {
+    private void emitMethod(Method method, boolean inTrait, StringBuilder sb) {
         // Method documentation
         if (method.comments != null && !method.comments.isEmpty()) {
             for (Comment comment : method.comments) {
@@ -1491,7 +1603,8 @@ public class Rust implements Emitter<StringBuilder> {
             } else {
                 sb.append("<'a>");
             }
-        } else if (method.typeVariables != null && !method.typeVariables.isEmpty()) {
+        } else if (method.typeVariables != null && !method.typeVariables.isEmpty()
+                && !hasPhantomTypeVariable(method)) {
             sb.append("<");
             for (int i = 0; i < method.typeVariables.size(); i++) {
                 if (i > 0) sb.append(", ");
@@ -1613,6 +1726,10 @@ public class Rust implements Emitter<StringBuilder> {
                     sb.append(" -> &dyn ").append(convertTypeToRust(method.returnType));
                 } else if (returnsOptionFieldRef) {
                     sb.append(" -> &").append(convertTypeToRust(method.returnType));
+                } else if (hasPhantomTypeVariable(method)) {
+                    // Phantom T (e.g. from Class<T> → &'static str): erase T and use Box<dyn Any>
+                    // so the impl matches the dyn-compatible trait declaration.
+                    sb.append(" -> Box<dyn std::any::Any>");
                 } else {
                     sb.append(" -> ").append(convertTypeToRust(method.returnType));
                 }
@@ -1631,7 +1748,7 @@ public class Rust implements Emitter<StringBuilder> {
                 for (int i = 0; i < method.body.size(); i++) {
                     Statement statement = method.body.get(i);
                     boolean isLastStatement = (i == method.body.size() - 1);
-                    emitStatement(statement, INDENT + INDENT, isLastStatement);
+                    emitStatement(statement, INDENT + INDENT, isLastStatement, sb);
                 }
             }
         }
@@ -1892,11 +2009,11 @@ public class Rust implements Emitter<StringBuilder> {
         return false;
     }
 
-    private void emitStatement(Statement statement, String indent) {
-        emitStatement(statement, indent, false);
+    private void emitStatement(Statement statement, String indent, StringBuilder sb) {
+        emitStatement(statement, indent, false, sb);
     }
 
-    private void emitStatement(Statement statement, String indent, boolean isLastStatement) {
+    private void emitStatement(Statement statement, String indent, boolean isLastStatement, StringBuilder sb) {
         switch (statement.statementKind) {
             case ASSIGNMENT -> {
                 Assignment assignment = (Assignment) statement;
@@ -2081,14 +2198,14 @@ public class Rust implements Emitter<StringBuilder> {
                     sb.append(indent).append(INDENT).append("// empty\n");
                 } else {
                     for (Statement thenStmt : ifs.thenBlock) {
-                        emitStatement(thenStmt, indent + INDENT);
+                        emitStatement(thenStmt, indent + INDENT, sb);
                     }
                 }
                 if (!ifs.elseBlock.isEmpty()) {
                     sb.append(indent)
                             .append("} else {\n");
                     for (Statement elseStmt : ifs.elseBlock) {
-                        emitStatement(elseStmt, indent + INDENT);
+                        emitStatement(elseStmt, indent + INDENT, sb);
                     }
                 }
                 sb.append(indent).append("}\n");
@@ -2101,15 +2218,15 @@ public class Rust implements Emitter<StringBuilder> {
                 Statement update = forLoop.update;
 
                 // Rust doesn't have C-style for loops, convert to while
-                emitStatement(initialization, indent);
+                emitStatement(initialization, indent, sb);
                 sb.append(indent)
                         .append("while ")
                         .append(convert(condition))
                         .append(" {\n");
                 for (Statement bodyStmt : forLoop.body) {
-                    emitStatement(bodyStmt, indent + INDENT);
+                    emitStatement(bodyStmt, indent + INDENT, sb);
                 }
-                emitStatement(update, indent + INDENT);
+                emitStatement(update, indent + INDENT, sb);
                 sb.append(indent).append("}\n");
             }
 
@@ -2130,9 +2247,34 @@ public class Rust implements Emitter<StringBuilder> {
                         .append(collectionExpr)
                         .append(" {\n");
                 for (Statement bodyStmt : iterator.body) {
-                    emitStatement(bodyStmt, indent + INDENT);
+                    emitStatement(bodyStmt, indent + INDENT, sb);
                 }
                 sb.append(indent).append("}\n");
+            }
+
+            case DO_LOOP -> {
+                DoLoop doLoop = (DoLoop) statement;
+                sb.append(indent)
+                        .append("loop {\n");
+                for (Statement bodyStmt : doLoop.body) {
+                    emitStatement(bodyStmt, indent + INDENT, sb);
+                }
+                sb.append(indent+INDENT).append("if !").append(convert(doLoop.condition)).append(" {\n");
+                sb.append(indent+INDENT+INDENT).append("break;\n");
+                sb.append(indent+INDENT).append("}\n");
+                sb.append(indent).append("}\n");
+            }
+
+            case THROW -> {
+                ThrowStatement throwStmt = (ThrowStatement) statement;
+                sb.append(indent)
+                        .append("panic! (\"")
+                        .append(convert(throwStmt.expression).replace("\"", "\\\""))
+                        .append("\");\n");
+
+                ClassName cn=(ClassName) throwStmt.expression.inferredType;
+                String modulePath = buildModulePath(cn.packge, cn.simpleName);
+                imports.remove(modulePath); //
             }
 
             default -> {
@@ -2665,6 +2807,9 @@ public class Rust implements Emitter<StringBuilder> {
         StringBuilder result = new StringBuilder();
         switch (mc.operatorKind) {
             case CONSTRUCTOR_CALL -> {
+                if (mc.clazz!=null) {
+                    return emitAnonymous(mc.clazz,result) ;
+                }
                 assert mc.className != null;
                 if (isMap(mc.className)) {
                     imports.add("std::collections::HashMap");
@@ -2696,15 +2841,15 @@ public class Rust implements Emitter<StringBuilder> {
                             .map(p -> sanitizeName(toSnakeCase(p.name)))
                             .collect(Collectors.joining(", ")));
                     result.append("| {\n");
+
                     // Emit closure body into a temporary buffer to avoid interleaving with sb
-                    StringBuilder savedSb = this.sb;
-                    this.sb = new StringBuilder();
+                    StringBuilder newsb = new StringBuilder();
                     String closureIndent = INDENT + INDENT + INDENT;
                     for (Statement stmt : le.body) {
-                        emitStatement(stmt, closureIndent);
+                        emitStatement(stmt, closureIndent, newsb);
                     }
-                    result.append(this.sb);
-                    this.sb = savedSb;
+                    result.append(newsb);
+
                     result.append(INDENT).append(INDENT).append("})");
                     return result.toString();
                 }
@@ -2931,14 +3076,12 @@ public class Rust implements Emitter<StringBuilder> {
                             .collect(Collectors.joining(", ")));
                     result.append("| {\n");
                     // Emit closure body into a temporary buffer to avoid interleaving with sb
-                    StringBuilder savedSb = this.sb;
-                    this.sb = new StringBuilder();
+                    StringBuilder newSb = new StringBuilder();
                     String closureIndent = INDENT + INDENT + INDENT;
                     for (Statement stmt : le.body) {
-                        emitStatement(stmt, closureIndent);
+                        emitStatement(stmt, closureIndent, newSb);
                     }
-                    result.append(this.sb);
-                    this.sb = savedSb;
+                    result.append(newSb);
                     result.append(INDENT).append(INDENT).append("})");
                     return result.toString();
                 }
@@ -3012,7 +3155,13 @@ public class Rust implements Emitter<StringBuilder> {
             }
 
             case NO_OPERATOR -> {
-                result.append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
+                String str = sanitizeName(toSnakeCase(mc.methodName));
+                if (str.equals("get_map")) {
+                    str="self.outer.get_map"; // this a hack to deal with anonymous class;
+                    // Ideally, we should add an annotation to drive the behaviour of the emitter instead of hardcoding this logic here
+                    // Same behaviour as Python emitter
+                }
+                result.append(str).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
                             .map(this::convert)
@@ -3040,6 +3189,58 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
         throw new IllegalArgumentException("Unsupported method call type " + mc);
+    }
+
+    private String emitAnonymousOLD(Class clazz, StringBuilder result) {
+        result.append("new ");
+        emit(clazz, result);
+        return result.toString();
+    }
+
+    int anonymousClassCount=0;
+
+    private String emitAnonymous(Class clazz, StringBuilder result) {
+        // create an internal class, and create an instance
+        String intf=clazz.interfaces.isEmpty() ? "Nointerface" : ((ClassName)clazz.interfaces.get(0)).simpleName;
+        String className="Anonymous" + intf + (anonymousClassCount++);
+        ClassName outer=new ClassName(currentClassName, currentPackageName);
+        lateEmittedClasses.add(new LateEmittedClass(className, clazz, outer));
+        return className + "::new(Self)";
+    }
+
+    List<LateEmittedClass> lateEmittedClasses=new ArrayList<>();
+
+    static class LateEmittedClass extends Class {
+        private final ClassName outer;
+        Class clazz;
+
+        public LateEmittedClass(String className, Class clazz, ClassName outer) {
+            super(className);
+            this.clazz = clazz;
+            this.comments.addAll(clazz.comments);
+            this.outer=outer;
+
+            constructors.add(
+                    new Constructor()
+                            .MODIFIERS(Modifier.PUBLIC)
+                            .PARAMETER(outer, "outer")
+                            .BODY(ASSIGNMENT( METHOD_CALL(VARIABLE("this"),"outer"), VARIABLE( "outer"))));
+
+            // All methods from the anonymous class implement the declared interface — add
+            // @Override so the Rust emitter routes them to the correct
+            // `impl TraitName for StructName` block rather than the inherent impl block.
+            clazz.methods.forEach(m -> {
+                if (m.annotation.stream().noneMatch(a -> a instanceof OverrideAnnotation)) {
+                    m.annotation.add(new OverrideAnnotation());
+                }
+            });
+            methods.addAll(clazz.methods);
+            interfaces.addAll(clazz.interfaces);
+            typeVariables.addAll(clazz.typeVariables);
+            modifiers.addAll(clazz.modifiers);
+            annotation.add(new NoSerialization());
+            fields.add(FIELD("outer", outer));
+        }
     }
 
     private String convertLH(Expression leftHandExpression) {
@@ -3108,11 +3309,29 @@ public class Rust implements Emitter<StringBuilder> {
             // don't add an import for the current class
             if (cn.simpleName.equals(this.currentClass.name) &&
                     Objects.equals(cn.packge, this.currentPackageName)) {
+            } else if (isParentClass(cn)) {
+                // The class we are currently emitting as a late-emitted class references its own outer class.
+                // This can happen when an anonymous class implements an interface and calls another method on the same interface.
+                // In this case, we must not import the outer class
             } else {
                 imports.add(modulePath);
             }
         }
         return getSimpleName(convert(typeName));
+    }
+
+    private boolean isParentClass(ClassName cn) {
+        if (this.currentClass instanceof LateEmittedClass) {
+            LateEmittedClass lec = (LateEmittedClass) this.currentClass;
+            if (lec.outer !=null) {
+                ClassName outerCn = lec.outer;
+                return (outerCn.simpleName.equals(cn.simpleName) &&
+                        Objects.equals(outerCn.packge, cn.packge));
+
+
+            }
+        }
+        return false;
     }
 
 
@@ -3508,6 +3727,10 @@ public class Rust implements Emitter<StringBuilder> {
                     if (pt.typeArguments.length == 2) {
                         return "impl Fn(" + convertTypeToRust(pt.typeArguments[0]) + ") -> " + convertTypeToRust(pt.typeArguments[1]);
                     }
+                    // Convert BiFunction<A, B, C> to impl Fn(A,B) -> C
+                    if (pt.typeArguments.length == 3) {
+                        return "impl Fn(" + convertTypeToRust(pt.typeArguments[0]) + "," + convertTypeToRust(pt.typeArguments[1]) + ") -> " + convertTypeToRust(pt.typeArguments[2]);
+                    }
                 }
 
                 StringBuilder result = new StringBuilder();
@@ -3590,6 +3813,36 @@ public class Rust implements Emitter<StringBuilder> {
     @Deprecated
     private boolean isClassType(TypeName typeName) {
         return METHOD_REGISTRY.isCategory(typeName, RustTypeCategory.CLASS_REF);
+    }
+
+    /**
+     * Returns true when the method has a "phantom" type variable in Rust: the variable
+     * appears as the return type but every parameter that references it does so only through
+     * {@code Class<T>} (which maps to {@code &'static str}, erasing {@code T}).
+     * Such methods are not dyn-compatible as {@code fn get<T>(...) -> T}; they must be
+     * emitted without the generic and with {@code Box<dyn std::any::Any>} as return type.
+     */
+    private boolean hasPhantomTypeVariable(Method method) {
+        if (method.typeVariables == null || method.typeVariables.isEmpty()) return false;
+        if (!(method.returnType instanceof TypeVariable)) return false;
+        if (method.parameters == null || method.parameters.isEmpty()) return true;
+        String tvName = ((TypeVariable) method.returnType).name;
+        for (Parameter p : method.parameters) {
+            if (isClassType(p.type)) continue;           // Class<T> → &'static str: T is erased
+            if (typeContainsVariable(p.type, tvName)) return false; // T appears concretely
+        }
+        return true;
+    }
+
+    /** Returns true if {@code tn} references the type variable named {@code varName}. */
+    private boolean typeContainsVariable(TypeName tn, String varName) {
+        if (tn instanceof TypeVariable) return ((TypeVariable) tn).name.equals(varName);
+        if (tn instanceof ParameterizedType) {
+            for (TypeName arg : ((ParameterizedType) tn).typeArguments) {
+                if (typeContainsVariable(arg, varName)) return true;
+            }
+        }
+        return false;
     }
 
     private boolean isObjectType(TypeName typeName) {

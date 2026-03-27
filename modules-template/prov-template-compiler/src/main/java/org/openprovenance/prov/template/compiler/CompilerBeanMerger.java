@@ -244,15 +244,15 @@ public class CompilerBeanMerger {
 
         String myPackage = locations.getFilePackage(configs.name, fileName);
 
-        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
-        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, "target/generated-js", stackTraceElement);
-        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, myPackage, "target/generated-rust/src", stackTraceElement);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, myPackage, locations, stackTraceElement);
 
-        Supplier<Boolean> pythonGenerator2 = () -> generatePython(pastInterface, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator2 = () -> generateJava(pastInterface, myPackage, configs, BEAN_MERGER_INTERFACE + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
-        Supplier<Boolean> jsGenerator2 = () -> generateJavaScript(pastInterface, myPackage, "target/generated-js", stackTraceElement);
-        Supplier<Boolean> rustGenerator2 = () -> generateRust(pastInterface, myPackage, "target/generated-rust/src", stackTraceElement);
+        Supplier<Boolean> pythonGenerator2 = () -> generatePython(pastInterface, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator2 = () -> generateJava(pastInterface, myPackage, configs, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator2 = () -> generateJavaScript(pastInterface, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> rustGenerator2 = () -> generateRust(pastInterface, myPackage, locations, stackTraceElement);
         new SpecificationFile(javaGenerator2, pythonGenerator2, jsGenerator2, rustGenerator2).save();
 
         return new SpecificationFile(javaGenerator, pythonGenerator, jsGenerator, rustGenerator);

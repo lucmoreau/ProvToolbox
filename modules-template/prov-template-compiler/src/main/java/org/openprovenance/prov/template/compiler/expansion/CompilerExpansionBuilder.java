@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
-import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
 import static org.openprovenance.prov.template.compiler.common.Constants.PROCESSOR;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY_ACCESSOR;
@@ -134,7 +133,7 @@ public class CompilerExpansionBuilder {
         // builder.addMethod(generateTypePropagator_old(packge+".client", bindingsSchema, successorTable));
 
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }

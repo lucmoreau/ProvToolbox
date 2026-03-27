@@ -131,8 +131,8 @@ public class CompilerConfigurations {
 
 
         String thePackage=locations.getFilePackage(configs.name, theConfiguratorName);
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, thePackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, thePackage, configs, fileName, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, thePackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, thePackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator,pythonGenerator);
     }
 

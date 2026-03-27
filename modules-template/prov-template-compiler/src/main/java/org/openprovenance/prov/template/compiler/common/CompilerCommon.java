@@ -182,9 +182,9 @@ public class CompilerCommon {
         }
 
         String directory = locations.convertToDirectory(packageName);
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packageName, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packageName, configs, fileName, directory, stackTraceElement, compilerUtil);
-        Supplier<Boolean> jsGenerator=() -> generateJavaScript(pastClass, packageName, "target/generated-js", stackTraceElement);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packageName, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packageName, configs, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator=() -> generateJavaScript(pastClass, packageName, locations, stackTraceElement);
         SpecificationFile specFile=new SpecificationFile(javaGenerator,pythonGenerator, jsGenerator, emptyGenerator);
         return Pair.of(specFile, successorTable);
     }

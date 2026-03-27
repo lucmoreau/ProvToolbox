@@ -23,6 +23,8 @@ public class Locations {
     final private String l2p_src_dir;
     private final Map<String, String> packages;
     public final String python_dir;
+    public final String javascript_dir;
+    public final String rust_dir;
 
 
     static final String CONFIG2_EXTENSION = "2";
@@ -38,6 +40,8 @@ public class Locations {
         this.cli_src_dir=cli_src_dir;
         this.l2p_src_dir=l2p_src_dir;
         this.python_dir=configs.python_dir;
+        this.javascript_dir=configs.javascript_dir;
+        this.rust_dir=configs.rust_dir;
         this.packages=packages;
         this.shortNames=shortNames;
         this.templateLibraryPath =new TemplateIndexPath(templateLibraryPath.stream().map(loc-> new TemplateIndex(loc,true)).collect(Collectors.toList()));

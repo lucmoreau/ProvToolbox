@@ -43,10 +43,10 @@ public class CompilerGenerator {
 
             String javaOutputDirectory= javaRootDirectory + packageName.replace(".", "/") + "/";
 
-            Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, packageName, configs.python_dir, stackTraceElement);
-            Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packageName, configs, filename + ".java", javaOutputDirectory, stackTraceElement, compilerUtil);
-            Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packageName, "target/generated-js", stackTraceElement);
-            Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, packageName, "target/generated-rust/src", stackTraceElement);
+            Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, packageName, locations, stackTraceElement);
+            Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packageName, configs, javaOutputDirectory, stackTraceElement, compilerUtil);
+            Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packageName, locations, stackTraceElement);
+            Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, packageName, locations, stackTraceElement);
 
             SpecificationFile specFile = new SpecificationFile(javaGenerator, pythonGenerator, jsGenerator, rustGenerator);
             return specFile;

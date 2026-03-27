@@ -80,6 +80,12 @@
       "copy": false
     },
     {
+      "javaNames": ["past.lang.BiFunction", "java.util.function.BiFunction", "BiFunction"],
+      "category": "FUNCTION",
+      "rustName": "fn",
+      "copy": false
+    },
+    {
       "javaNames": ["past.lang.Class", "Class"],
       "category": "CLASS_REF",
       "rustName": "&'static str",

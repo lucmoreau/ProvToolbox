@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
-import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
@@ -134,7 +133,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -169,7 +168,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -205,7 +204,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -249,7 +248,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -357,7 +356,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -437,7 +436,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -505,7 +504,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -542,7 +541,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -571,7 +570,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -600,7 +599,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -631,7 +630,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -665,7 +664,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -716,7 +715,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -798,10 +797,10 @@ public class CompilerSqlIntegration {
                 .METHOD(beanCompleterFactory3)
                 .METHOD(beanCompleterFactory4);
 
-        String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
+        String directory = locations.convertToBackendDirectory(myPackage);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -881,7 +880,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -957,7 +956,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -987,7 +986,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -1021,7 +1020,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -1047,7 +1046,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -1075,7 +1074,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -1102,7 +1101,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
@@ -1130,7 +1129,7 @@ public class CompilerSqlIntegration {
         String directory = locations.convertToBackendDirectory(locations.getFilePackage(configs.name, fileName));
         String myPackage = locations.getFilePackage(configs.name, fileName);
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 

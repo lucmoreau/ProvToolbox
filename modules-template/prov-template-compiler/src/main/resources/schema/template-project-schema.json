@@ -161,6 +161,12 @@
         "python_dir": {
             "type": "string"
         },
+        "javascript_dir": {
+            "type": "string"
+        },
+        "rust_dir": {
+            "type": "string"
+        },
         "integrator": {
             "type": "boolean"
         },
@@ -221,7 +227,6 @@
         "root_package",
         "script",
         "script_dir",
-        "python_dir",
         "jsweet",
         "jsonschema",
         "documentation",

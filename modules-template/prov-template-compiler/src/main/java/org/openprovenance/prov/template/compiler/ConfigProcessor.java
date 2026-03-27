@@ -383,7 +383,7 @@ public class ConfigProcessor implements Constants {
 
 
 
-        SpecificationFile testfile=compilerMaven.generateTestFile_l2p(configs, l2p_test_dir, TESTER_FILE+ DOT_JAVA_EXTENSION);
+        SpecificationFile testfile=compilerMaven.generateTestFile_l2p(configs, locations, l2p_test_dir, TESTER_FILE+ DOT_JAVA_EXTENSION);
         testfile.save();
 
         compilerMaven.makeRootPom(configs, root_dir, cli_lib, l2p_lib);

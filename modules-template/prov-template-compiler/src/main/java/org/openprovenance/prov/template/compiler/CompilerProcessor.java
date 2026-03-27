@@ -110,10 +110,10 @@ public class CompilerProcessor {
 
         String directory=locations.convertToDirectory(packge);
 
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packge, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, fileName, directory, stackTraceElement, compilerUtil);
-        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packge, "target/generated-js", stackTraceElement);
-        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, packge, "target/generated-rust/src", stackTraceElement);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packge, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packge, locations, stackTraceElement);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, packge, locations, stackTraceElement);
         return new SpecificationFile(javaGenerator,pythonGenerator,jsGenerator,rustGenerator);
 
 
@@ -142,10 +142,10 @@ public class CompilerProcessor {
 
         String directory=locations.convertToDirectory(packge);
 
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packge, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, fileName, directory, stackTraceElement, compilerUtil);
-        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packge, "target/generated-js", stackTraceElement);
-        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, packge, "target/generated-rust/src", stackTraceElement);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packge, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packge, locations, stackTraceElement);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, packge, locations, stackTraceElement);
         return new SpecificationFile(javaGenerator,pythonGenerator,jsGenerator,rustGenerator);
 
 

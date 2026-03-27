@@ -31,6 +31,7 @@ import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.MethodCallKind.FUNCTIONAL_INTERFACE_CALL;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
+import static org.openprovenance.prov.template.compiler.past.emitter.JavaScript.classForPurposeOfLookup;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.INTEGER;
 
 /**
@@ -112,43 +113,44 @@ public class Python implements Emitter<StringBuilder> {
             emitDefaultConstructor(clazz.fields);
         } else {
             for (Constructor constructor : clazz.constructors) {
-                String constructorName="____init__"; // note the quadruple _ because the first two will be removed in sanitizeName, and we want to end up with __init__
                 // "python:@OverloadedMethod" in annotations
-                boolean overloaded=false;
-                if (constructor.annotation != null) {
-                    Optional<PythonAnnotation> annotation=constructor.annotation.stream()
-                            .filter(annot -> annot instanceof PythonAnnotation)
-                            .map(annot -> (PythonAnnotation) annot)
-                            .filter(annot -> OverloadedMethod.NAME.equals(annot.getName()))
-                            .findFirst()
-                            ;
-                    if (annotation.isPresent()) {
-                        constructorName= ((OverloadedMethod) annotation.get()).getAltName();
-                        overloaded=true;
-                        //System.out.println("Constructor with @OverloadedMethod annotation, using alt name: " + constructorName);
-                    }
-                }
-                Method pythonMethodAsConstructor = METHOD(constructorName)
-                        .PARAMETERS(constructor.parameters)
-                        .MODIFIERS(constructor.modifiers.toArray(new Modifier[0]))
-                        .BODY(constructor.body.toArray(new Statement[0]))
-                        //.ANNOTATIONS(constructor.annotation.toArray(new String[0]))
-                        .COMMENTS(constructor.comments.toArray(new Comment[0]));
+                Optional<String> overloaded=isOverloadedConstructor(constructor);
 
-                for (Field field : clazz.fields) {
-                    String fieldName = sanitizeName(field.name);
-                    if (!field.modifiers.contains(Modifier.STATIC)) {
-                        if (field.initialiser != null) {
-                            pythonMethodAsConstructor.BODY(
-                                    ASSIGNMENT(METHOD_CALL(VARIABLE("this"), fieldName), field.initialiser));
+                if (overloaded.isPresent()) {
+                    String constructorName = overloaded.get();
 
+                    Method pythonMethodAsConstructor = METHOD(constructorName)
+                            .PARAMETERS(constructor.parameters)
+                            .MODIFIERS(constructor.modifiers.toArray(new Modifier[0]))
+                            .BODY(constructor.body.toArray(new Statement[0]))
+                            //.ANNOTATIONS(constructor.annotation.toArray(new String[0]))
+                            .COMMENTS(constructor.comments.toArray(new Comment[0]));
+
+                    for (Field field : clazz.fields) {
+                        String fieldName = sanitizeName(field.name);
+                        if (!field.modifiers.contains(Modifier.STATIC)) {
+                            if (field.initialiser != null) {
+                                pythonMethodAsConstructor.BODY(
+                                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), fieldName), field.initialiser));
+
+                            }
                         }
                     }
-                }
-                if (overloaded) {
+
                     pythonMethodAsConstructor.COMMENT("Note: this method was originally a PAST constructor, but was renamed to avoid name clashes due to overloading. \n It will not be recognized as a constructor by Python code, so it should be called explicitly by its name.");
+
+                    emitMethod(pythonMethodAsConstructor);
+                } else {
+                    String constructorName="____init__"; // note the quadruple _ because the first two will be removed in sanitizeName, and we want to end up with __init__
+                    Method pythonMethodAsConstructor = METHOD(constructorName)
+                            .PARAMETERS(constructor.parameters)
+                            .MODIFIERS(constructor.modifiers.toArray(new Modifier[0]))
+                            .BODY(constructor.body.toArray(new Statement[0]))
+                            //.ANNOTATIONS(constructor.annotation.toArray(new String[0]))
+                            .COMMENTS(constructor.comments.toArray(new Comment[0]));
+                    emitMethod(pythonMethodAsConstructor);
+
                 }
-                emitMethod(pythonMethodAsConstructor);
             }
         }
 
@@ -382,6 +384,23 @@ public class Python implements Emitter<StringBuilder> {
                 }
             }
         }
+    }
+
+    private Optional<String> isOverloadedConstructor(Constructor constructor) {
+        Optional<String> overloaded=Optional.empty();
+        if (constructor.annotation != null) {
+            Optional<PythonAnnotation> annotation=constructor.annotation.stream()
+                    .filter(annot -> annot instanceof PythonAnnotation)
+                    .map(annot -> (PythonAnnotation) annot)
+                    .filter(annot -> OverloadedMethod.NAME.equals(annot.getName()))
+                    .findFirst()
+                    ;
+            if (annotation.isPresent()) {
+                overloaded= Optional.of(((OverloadedMethod) annotation.get()).getAltName());
+                //System.out.println("Constructor with @OverloadedMethod annotation, using alt name: " + constructorName);
+            }
+        }
+        return overloaded;
     }
 
     private void emitMethod(Method method) {
@@ -1154,7 +1173,9 @@ public class Python implements Emitter<StringBuilder> {
                 if ("self".equals(convertedObject)) {
                     resolvedAlt=findAltNameForCall(mc.methodName, argumentTypes);
                 } else {
-                    resolvedAlt=findAltNameForCall((ClassName) mc.object.inferredType, callMethodName, argumentTypes);
+                    //resolvedAlt=findAltNameForCall((ClassName) mc.object.inferredType, callMethodName, argumentTypes);
+                    ClassName cl=classForPurposeOfLookup(mc.object.inferredType);
+                    resolvedAlt=findAltNameForCall(cl, callMethodName, argumentTypes);
                 }
                 if (resolvedAlt != null) {
                     callMethodName = sanitizeName(resolvedAlt);

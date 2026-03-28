@@ -1,39 +1,39 @@
-// Rust equivalent of src/test/js/fs_run_workflow.js (local-mode path only).
-//
-// The JS file (from line 50 onward) does the following:
-//
-//   1. const { LocalEnactor } = require('.../LocalEnactor.js');
-//   2. templateInstantion2 = new LocalEnactor(false);
-//   3. class ThisWorkflow extends PleadWorkflow { time() { return now().toISOString() } }
-//   4. new ThisWorkflow(templateInstantion2, inputs0, outputs0).workflow(111,333,...)
-//   5. console.log(templateInstantion2.getHistory())
-//   6. console.log("ID of last element in history " + outputs[outputs.length-1].ID)
-//   7. console.log(templateInstantion2.getCounterMap())
-//   8. console.log(templateInstantion2.getRecordedValues())
-//
-// Design note – why not `LocalEnactor` directly?
-// ------------------------------------------------
-// In the generated Rust, `LocalEnactor` is a thin facade around
-// `BeanHistory<BeanLocalEnactor3>` but does NOT implement `InputOutputProcessor`
-// and keeps its `inner_parent` field private.  `PleadWorkflow::template_instantiation()`
-// requires `&mut Option<Box<dyn InputOutputProcessor>>`, so we cannot hand a
-// `LocalEnactor` to the workflow directly.
-//
-// We mirror the internal construction of `LocalEnactor::new(false)` by building the
-// `BeanHistory<BeanLocalEnactor3>` ourselves and wrapping it in an
-// `Rc<RefCell<>>` so we can share one instance between:
-//   * `ThisWorkflow` (as the `InputOutputProcessor` the workflow calls into), and
-//   * `main` (for post-workflow introspection of history / counters).
+//! Rust equivalent of src/test/js/fs_run_workflow.js
+//!
+//! Usage:
+//!   transport_template_library local    – run the PleadWorkflow using the local enactor
+//!   transport_template_library remote   – run the PleadWorkflow against the remote web service
+//!
+//! # Local mode
+//!
+//!   JS: templateInstantion = new LocalEnactor(false);
+//!
+//!   Constructs `BeanHistory<BeanLocalEnactor3>` and runs the workflow through it.
+//!   After the workflow, prints history (as JSON), the ID of the last output bean,
+//!   the counter map, and the recorded values — matching every console.log in the JS.
+//!
+//! # Remote mode
+//!
+//!   JS:
+//!     var accessToken = fs.readFileSync('/Users/luc/.keycloak_token', 'utf8').trim();
+//!     templateInstantion = new RemoteEnactor(url, accessToken);
+//!
+//!   Reads the Keycloak token from `~/.keycloak_token`, constructs
+//!   `BeanHistory<WebTemplateInvoker>` (= `RemoteEnactor`), and runs the same
+//!   workflow.  After the workflow prints history and the last output ID.
+//!   Counter map / recorded values are not available in remote mode.
 
 mod org;
+mod web_template_invoker;
 
 use std::any::Any;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 use std::sync::atomic::Ordering;
-use serde::{Serialize, Deserialize};
-use serde_json;
+
+use serde::{Deserialize, Serialize};
+
 use org::openprovenance::book::fs::client::integrator::{
     file_approving_inputs::FileApprovingInputs,
     file_approving_outputs::FileApprovingOutputs,
@@ -52,21 +52,27 @@ use org::openprovenance::book::fs::client::integrator::{
     file_validating_inputs::FileValidatingInputs,
     file_validating_outputs::FileValidatingOutputs,
 };
-use crate::org::openprovenance::book::fs::client::common::file_approving_bean::FileApprovingBean;
-use crate::org::openprovenance::book::fs::client::common::file_init_bean::FileInitBean;
-use crate::org::openprovenance::book::fs::client::common::file_filtering_bean::FileFilteringBean;
-use crate::org::openprovenance::book::fs::client::common::file_training_bean::FileTrainingBean;
-use crate::org::openprovenance::book::fs::client::common::file_transforming_bean::FileTransformingBean;
-use crate::org::openprovenance::book::fs::client::common::file_splitting_bean::FileSplittingBean;
-use crate::org::openprovenance::book::fs::client::common::file_validating_bean::FileValidatingBean;
-use crate::org::openprovenance::book::fs::client::common::file_transforming_composite_bean::FileTransformingCompositeBean;
-
+use crate::org::openprovenance::book::fs::client::common::{
+    file_approving_bean::FileApprovingBean,
+    file_filtering_bean::FileFilteringBean,
+    file_init_bean::FileInitBean,
+    file_splitting_bean::FileSplittingBean,
+    file_training_bean::FileTrainingBean,
+    file_transforming_bean::FileTransformingBean,
+    file_transforming_composite_bean::FileTransformingCompositeBean,
+    file_validating_bean::FileValidatingBean,
+};
 use org::openprovenance::book::workflows::plead_workflow::PleadWorkflow;
 use org::openprovenance::templates::catalogue::fs::integrator::{
     bean_history::BeanHistory,
     bean_local_enactor3::BeanLocalEnactor3,
     input_output_processor::InputOutputProcessor,
 };
+use web_template_invoker::{WebTemplateInvoker, new_remote_enactor};
+
+// ---------------------------------------------------------------------------
+// HistoryEntry — typed envelope for JSON serialisation of the history vec.
+// ---------------------------------------------------------------------------
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type")]
@@ -80,7 +86,6 @@ pub enum HistoryEntry {
     FileSplitting(FileSplittingBean),
     FileTransformingComposite(FileTransformingCompositeBean),
 }
-
 
 fn to_history_entries(vec: &[Box<dyn Any>]) -> Vec<HistoryEntry> {
     vec.iter()
@@ -101,18 +106,16 @@ fn try_convert(entry: &dyn Any) -> Option<HistoryEntry> {
 }
 
 // ---------------------------------------------------------------------------
-// HistoryProcessor
+// HistoryProcessor<T>
 //
-// Rc<RefCell<BeanHistory<BeanLocalEnactor3>>> wrapper that implements
-// InputOutputProcessor by delegating each call to the shared inner history.
-// This lets us keep a second Rc handle in `main` for post-workflow inspection
-// while the workflow holds the first handle inside its Box<dyn InputOutputProcessor>.
+// Generic Rc<RefCell<BeanHistory<T>>> wrapper that implements InputOutputProcessor
+// by delegating to the shared inner history.  Keeping a second Rc handle in `main`
+// lets us inspect history / counters after the workflow has consumed the first handle.
 // ---------------------------------------------------------------------------
-type SharedHistory = Rc<RefCell<BeanHistory<BeanLocalEnactor3>>>;
 
-struct HistoryProcessor(SharedHistory);
+struct HistoryProcessor<T: InputOutputProcessor>(Rc<RefCell<BeanHistory<T>>>);
 
-impl InputOutputProcessor for HistoryProcessor {
+impl<T: InputOutputProcessor> InputOutputProcessor for HistoryProcessor<T> {
     fn process_file_init_inputs(&mut self, bean: &FileInitInputs) -> FileInitOutputs {
         self.0.borrow_mut().process_file_init_inputs(bean)
     }
@@ -145,24 +148,26 @@ impl InputOutputProcessor for HistoryProcessor {
 // ---------------------------------------------------------------------------
 // ThisWorkflow
 //
-// Concrete implementor of PleadWorkflow — mirrors the JS class:
-//
+// Mirrors the JS:
 //   class ThisWorkflow extends PleadWorkflow {
 //       constructor(templateInstantion, inputs, outputs) { super(...) }
 //       time() { return new Date().toISOString() }
 //   }
+//
+// Holds a Box<dyn InputOutputProcessor> so it works for both local and remote modes.
 // ---------------------------------------------------------------------------
+
 struct ThisWorkflow {
     template_instantiation: Option<Box<dyn InputOutputProcessor>>,
-    inputs: Option<Vec<Box<dyn Any>>>,
+    inputs:  Option<Vec<Box<dyn Any>>>,
     outputs: Option<Vec<Box<dyn Any>>>,
 }
 
 impl ThisWorkflow {
-    fn new(processor: HistoryProcessor) -> Self {
+    fn new(processor: impl InputOutputProcessor + 'static) -> Self {
         Self {
             template_instantiation: Some(Box::new(processor)),
-            inputs: Some(Vec::new()),
+            inputs:  Some(Vec::new()),
             outputs: Some(Vec::new()),
         }
     }
@@ -193,17 +198,15 @@ impl PleadWorkflow for ThisWorkflow {
 }
 
 // ---------------------------------------------------------------------------
-// Minimal ISO-8601 UTC formatter (avoids a `chrono` dependency).
+// Minimal ISO-8601 UTC formatter (no chrono dependency).
 // ---------------------------------------------------------------------------
 
-/// Format a Unix timestamp (whole seconds) as `YYYY-MM-DDTHH:MM:SSZ`.
 fn unix_secs_to_iso8601(secs: u64) -> String {
     let sec  = secs % 60;
     let min  = (secs / 60) % 60;
     let hour = (secs / 3600) % 24;
-    let days = secs / 86400; // days elapsed since 1970-01-01
+    let days = secs / 86400;
 
-    // Determine year
     let mut year = 1970u32;
     let mut rem  = days;
     loop {
@@ -213,7 +216,6 @@ fn unix_secs_to_iso8601(secs: u64) -> String {
         year += 1;
     }
 
-    // Determine month and day-of-month (rem=0 → day 1)
     let month_days: [u64; 12] = [
         31, if is_leap(year) { 29 } else { 28 },
         31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
@@ -233,142 +235,173 @@ fn days_in_year(y: u32) -> u32 { if is_leap(y) { 366 } else { 365 } }
 fn is_leap(y: u32) -> bool { (y % 4 == 0 && y % 100 != 0) || y % 400 == 0 }
 
 // ---------------------------------------------------------------------------
-// main
+// Shared printing helpers
 // ---------------------------------------------------------------------------
-fn main() {
-    // -----------------------------------------------------------------------
-    // Step 1: Build the shared enactor.
-    //
-    // JS: templateInstantion2 = new LocalEnactor(false);
-    //
-    // LocalEnactor::new(false) internally constructs:
-    //   BeanHistory::<BeanLocalEnactor3>::new(
-    //       BeanLocalEnactor3::new(HashMap::new(), HashMap::new(), false),
-    //       Vec::new())
-    // We replicate that and share ownership via Rc<RefCell<>>.
-    // -----------------------------------------------------------------------
-    let shared: SharedHistory = Rc::new(RefCell::new(
-        BeanHistory::<BeanLocalEnactor3>::new(
-            BeanLocalEnactor3::new(HashMap::new(), HashMap::new(), false),
-            Vec::new(),
-        ),
-    ));
 
-    // -----------------------------------------------------------------------
-    // Step 2: Build and run the workflow.
-    //
-    // JS:
-    //   var inputs0=[], outputs0=[];
-    //   const pleadWorkflow = new ThisWorkflow(templateInstantion2, inputs0, outputs0);
-    //   pleadWorkflow.workflow(111, 333, "inputfile", 123, 56, 78, 456, 768,
-    //                          '/home/bob',
-    //                          "2026-03-01T09:03:51.168987Z",
-    //                          "2026-03-01T09:03:51.168987Z");
-    // -----------------------------------------------------------------------
-    let mut plead_workflow = ThisWorkflow::new(HistoryProcessor(Rc::clone(&shared)));
-
-    plead_workflow.workflow(
-        Some(111),                          // engineer
-        Some(333),                          // manager
-        "inputfile",                        // filename_root
-        Some(123),                          // old_file_id
-        Some(56),                           // tmethod
-        Some(78),                           // fmethod
-        Some(456),                          // n_rows
-        Some(768),                          // n_cols
-        "/home/bob",                        // path
-        "2026-03-01T09:03:51.168987Z",      // start
-        "2026-03-01T09:03:51.168987Z",      // end
-    );
-
-    // -----------------------------------------------------------------------
-    // Step 3: Print history.
-    //
-    // JS: console.log(templateInstantion2.getHistory());
-    //
-    // BeanHistory records one merged bean (combined input + output view) per
-    // workflow step.  Each entry is erased to Box<dyn Any> in the Vec.
-    // -----------------------------------------------------------------------
-    println!("=== History ===");
-    {
-        let enactor = shared.borrow();
-        let history = enactor.get_history();
-        println!("  {} entries", history.len());
-        for (i, _entry) in history.iter().enumerate() {
-            // Each entry is a Box<dyn Any> (FileTransformingBean, FileFilteringBean, …).
-            // Without a common Debug/Display supertrait on the history entries we
-            // report their index; the count alone mirrors the JS output faithfully.
-            println!("  [{i}] <bean>");
-        }
-        let entries: Vec<HistoryEntry> = to_history_entries(history);
-        match serde_json::to_string_pretty(&entries) {
-            Ok(json)  => println!("{}", json),
-            Err(e)    => println!("serialization error: {}", e),
-        }
-    }
-
-    // -----------------------------------------------------------------------
-    // Step 4: Print the ID of the last workflow output.
-    //
-    // JS:
-    //   inputs0.forEach(i => inputs.push(i));
-    //   outputs0.forEach(o => outputs.push(o));
-    //   console.log("ID of last element in history " + outputs[outputs.length-1].ID);
-    //
-    // PleadWorkflow pushes each step's raw output into self.outputs().  The
-    // final step is "Approving", whose Rust type is FileApprovingOutputs.
-    // The JS `.ID` property corresponds to Rust's `i_d` field.
-    // -----------------------------------------------------------------------
-    println!("\n=== ID of last element in history ===");
-    {
-        let outputs = plead_workflow.outputs.as_ref().unwrap();
-        match outputs.last() {
-            None => println!("  (no outputs)"),
-            Some(last) => match last.downcast_ref::<FileApprovingOutputs>() {
-                Some(approving) => println!("  {:?}", approving.i_d),
-                None => println!("  (unexpected type for last output)"),
-            },
-        }
-    }
-
-    // -----------------------------------------------------------------------
-    // Step 5: Print counter map.
-    //
-    // JS: console.log(templateInstantion2.getCounterMap());
-    // -----------------------------------------------------------------------
-    println!("\n=== Counter map ===");
-    {
-        let enactor = shared.borrow();
-        let counter_map = enactor.get_delegator().get_counter_map();
-        if counter_map.is_empty() {
-            println!("  (empty)");
-        } else {
-            let mut keys: Vec<&String> = counter_map.keys().collect();
-            keys.sort();
-            for k in keys {
-                println!("  {}: {}", k, counter_map[k].load(Ordering::Relaxed));
-            }
-        }
-    }
-
-    // -----------------------------------------------------------------------
-    // Step 6: Print recorded values.
-    //
-    // JS: console.log(templateInstantion2.getRecordedValues());
-    // -----------------------------------------------------------------------
-    println!("\n=== Recorded values ===");
-    {
-        let enactor = shared.borrow();
-        let recorded = enactor.get_delegator().get_recorded_values();
-        if recorded.is_empty() {
-            println!("  (empty)");
-        } else {
-            let mut keys: Vec<&String> = recorded.keys().collect();
-            keys.sort();
-            for k in keys {
-                println!("  {}: {:?}", k, recorded[k]);
-            }
-        }
+/// Print history as JSON — used by both local and remote modes.
+fn print_history(history: &[Box<dyn Any>]) {
+    println!("=== History ({} entries) ===", history.len());
+    let entries = to_history_entries(history);
+    match serde_json::to_string_pretty(&entries) {
+        Ok(json) => println!("{}", json),
+        Err(e)   => eprintln!("  serialization error: {}", e),
     }
 }
 
+/// Print the ID of the last workflow output — used by both modes.
+fn print_last_output_id(outputs: &[Box<dyn Any>]) {
+    println!("\n=== ID of last element in history ===");
+    match outputs.last() {
+        None       => println!("  (no outputs)"),
+        Some(last) => match last.downcast_ref::<FileApprovingOutputs>() {
+            Some(o) => println!("  {:?}", o.i_d),
+            None    => println!("  (unexpected type for last output)"),
+        },
+    }
+}
+
+// ---------------------------------------------------------------------------
+// main
+// ---------------------------------------------------------------------------
+
+fn main() {
+    // -----------------------------------------------------------------------
+    // Parse command-line argument: local | remote
+    //
+    // JS:
+    //   const mode = (process.argv[2] || 'notdefined').toLowerCase();
+    // -----------------------------------------------------------------------
+    let args: Vec<String> = std::env::args().collect();
+    let mode  = args.get(1).map(String::as_str).unwrap_or("notdefined");
+    let debug = args.iter().any(|a| a == "--debug");
+
+    // Fixed workflow parameters — same values as in the JS script.
+    let workflow_args = (
+        Some(111i32),                        // engineer
+        Some(333i32),                        // manager
+        "inputfile",                         // filename_root
+        Some(123i32),                        // old_file_id
+        Some(56i32),                         // tmethod
+        Some(78i32),                         // fmethod
+        Some(456i32),                        // n_rows
+        Some(768i32),                        // n_cols
+        "/home/bob",                         // path
+        "2026-03-01T09:03:51.168987Z",       // start
+        "2026-03-01T09:03:51.168987Z",       // end
+    );
+
+    match mode {
+        // -------------------------------------------------------------------
+        // LOCAL mode
+        //
+        // JS:
+        //   templateInstantion = new LocalEnactor(false);
+        //   …
+        //   console.log(templateInstantion.getCounterMap());
+        //   console.log(templateInstantion.getRecordedValues());
+        // -------------------------------------------------------------------
+        "local" => {
+            // Build BeanHistory<BeanLocalEnactor3> and share via Rc<RefCell<>>.
+            let shared: Rc<RefCell<BeanHistory<BeanLocalEnactor3>>> = Rc::new(RefCell::new(
+                BeanHistory::<BeanLocalEnactor3>::new(
+                    BeanLocalEnactor3::new(HashMap::new(), HashMap::new(), false),
+                    Vec::new(),
+                ),
+            ));
+
+            let mut workflow = ThisWorkflow::new(HistoryProcessor(Rc::clone(&shared)));
+
+            workflow.workflow(
+                workflow_args.0,  workflow_args.1,  workflow_args.2,
+                workflow_args.3,  workflow_args.4,  workflow_args.5,
+                workflow_args.6,  workflow_args.7,  workflow_args.8,
+                workflow_args.9,  workflow_args.10,
+            );
+
+            // JS: console.log(templateInstantion.getHistory())
+            print_history(shared.borrow().get_history());
+
+            // JS: console.log("ID of last element in history " + outputs[outputs.length-1].ID)
+            print_last_output_id(workflow.outputs.as_deref().unwrap_or_default());
+
+            // JS: console.log(templateInstantion.getCounterMap())
+            println!("\n=== Counter map ===");
+            {
+                let enactor = shared.borrow();
+                let counter_map = enactor.get_delegator().get_counter_map();
+                if counter_map.is_empty() {
+                    println!("  (empty)");
+                } else {
+                    let mut keys: Vec<&String> = counter_map.keys().collect();
+                    keys.sort();
+                    for k in keys {
+                        println!("  {}: {}", k, counter_map[k].load(Ordering::Relaxed));
+                    }
+                }
+            }
+
+            // JS: console.log(templateInstantion.getRecordedValues())
+            println!("\n=== Recorded values ===");
+            {
+                let enactor = shared.borrow();
+                let recorded = enactor.get_delegator().get_recorded_values();
+                if recorded.is_empty() {
+                    println!("  (empty)");
+                } else {
+                    let mut keys: Vec<&String> = recorded.keys().collect();
+                    keys.sort();
+                    for k in keys {
+                        println!("  {}: {:?}", k, recorded[k]);
+                    }
+                }
+            }
+        }
+
+        // -------------------------------------------------------------------
+        // REMOTE mode
+        //
+        // JS:
+        //   var accessToken = fs.readFileSync('/Users/luc/.keycloak_token', 'utf8').trim();
+        //   templateInstantion = new RemoteEnactor(url, accessToken);
+        // -------------------------------------------------------------------
+        "remote" => {
+            let token = std::fs::read_to_string("/Users/luc/.keycloak_token")
+                .expect("Cannot read /Users/luc/.keycloak_token — is the Keycloak token file present?")
+                .trim()
+                .to_string();
+
+            let url = "http://localhost:7075/book/provapi/statements";
+
+            // RemoteEnactor = BeanHistory<WebTemplateInvoker>
+            let shared: Rc<RefCell<BeanHistory<WebTemplateInvoker>>> = Rc::new(RefCell::new(
+                new_remote_enactor(url, token, debug),
+            ));
+
+            let mut workflow = ThisWorkflow::new(HistoryProcessor(Rc::clone(&shared)));
+
+            workflow.workflow(
+                workflow_args.0,  workflow_args.1,  workflow_args.2,
+                workflow_args.3,  workflow_args.4,  workflow_args.5,
+                workflow_args.6,  workflow_args.7,  workflow_args.8,
+                workflow_args.9,  workflow_args.10,
+            );
+
+            // JS: console.log(templateInstantion.getHistory())
+            print_history(shared.borrow().get_history());
+
+            // JS: console.log("ID of last element in history " + outputs[outputs.length-1].ID)
+            print_last_output_id(workflow.outputs.as_deref().unwrap_or_default());
+
+            // Counter map / recorded values are on BeanLocalEnactor3, not available remotely.
+        }
+
+        // -------------------------------------------------------------------
+        // Unknown mode
+        // -------------------------------------------------------------------
+        other => {
+            eprintln!("Unknown mode: {:?}", other);
+            eprintln!("Usage: transport_template_library [local|remote] [--debug]");
+            std::process::exit(1);
+        }
+    }
+}

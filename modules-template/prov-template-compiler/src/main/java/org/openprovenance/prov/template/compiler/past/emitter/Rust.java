@@ -419,8 +419,12 @@ public class Rust implements Emitter<StringBuilder> {
                     sb.append(INDENT).append("#[serde(skip_serializing_if = \"Option::is_none\")]\n");
                 }
             }
+            String sanitizedName = sanitizeName(toSnakeCase(field.name));
+            if (!sanitizedName.equals(field.name) && !noSerialization) {
+                sb.append(INDENT).append("#[serde(rename = \"").append(field.name).append("\")]\n");
+            }
             sb.append(INDENT).append(visibility)
-                    .append(sanitizeName(toSnakeCase(field.name)))
+                    .append(sanitizedName)
                     .append(": ")
                     .append(rustType)
                     .append(",\n");

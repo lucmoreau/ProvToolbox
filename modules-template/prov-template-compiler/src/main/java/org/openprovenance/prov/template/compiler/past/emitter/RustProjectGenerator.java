@@ -58,31 +58,30 @@ public class RustProjectGenerator {
      */
     private void generateCargoToml(String projectName, String version) throws IOException {
         StringBuilder cargo = new StringBuilder();
-        cargo.append("[package]\n");
-        cargo.append("name = \"").append(toSnakeCase(projectName)).append("\"\n");
-        cargo.append("version = \"").append(version).append("\"\n");
-        cargo.append("edition = \"2021\"\n");
-        cargo.append("\n");
-        cargo.append("[dependencies]\n");
-        cargo.append("serde = { version = \"1.0\", features = [\"derive\"] }\n");
-        cargo.append("serde_json = \"1.0\"\n");
-        cargo.append("\n");
-        cargo.append("[[bin]]\n");
-        cargo.append("name = \"").append(toSnakeCase(projectName)).append("\"\n");
-        cargo.append("path = \"src/main.rs\"\n");
-        cargo.append("\n");
-        cargo.append("[registries.crates-io]\n" +
-                "protocol = \"sparse\"\n" );
-
-
-        /*
-        cargo.append("[source.crates-io]\n" +
-                "replace-with = \"vendored-sources\"\n" +
-                "\n" +
-                "[source.vendored-sources]\n" +
-                "directory = \"vendor\"\n") ;
-
-         */
+        cargo.append(
+                """
+        [package]
+        name = "transport_template_library"
+        version = "0.1.0"
+        edition = "2021"
+        
+        [dependencies]
+        # Serialisation — all generated beans derive Serialize/Deserialize
+        serde      = { version = "1.0", features = ["derive"] }
+        serde_json = "1.0"
+        
+        # Synchronous HTTP client used by ServiceInvoker / WebTemplateInvoker
+        ureq = { version = "2", features = ["json"] }
+        
+        [[bin]]
+        name = "transport_template_library"
+        path = "src/main.rs"
+        
+        [registries.crates-io]
+        protocol = "sparse"
+                        
+                        """
+        );
 
         Path cargoToml = projectRoot.resolve("Cargo.toml");
         Files.writeString(cargoToml, cargo.toString());
@@ -167,7 +166,7 @@ public class RustProjectGenerator {
                 generateMainRsForTemplates();
                 return;
             case "transport_template_library":
-                generateMainRsForTransport();
+            //    generateMainRsForTransport();
                 return; 
             default:
                 System.out.println("No custom main.rs generation logic for project: " + projectName + ", generating default main.rs");

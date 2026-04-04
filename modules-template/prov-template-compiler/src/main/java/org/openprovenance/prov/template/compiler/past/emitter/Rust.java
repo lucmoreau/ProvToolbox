@@ -1452,6 +1452,11 @@ public class Rust implements Emitter<StringBuilder> {
                 } else {
                     paramType = convertTypeToRust(param.type);        // owned (HashMap, Vec, String…)
                 }
+                // If the constructor body uses remove() on this parameter (CAST List<Map> pattern),
+                // the parameter must be declared 'mut' to allow the in-place remove() call.
+                if (constructorParamNeedsMut(constructor, param.name)) {
+                    sb.append("mut ");
+                }
                 sb.append(sanitizeName(toSnakeCase(param.name)))
                         .append(": ")
                         .append(paramType);
@@ -1991,6 +1996,47 @@ public class Rust implements Emitter<StringBuilder> {
         return stmtListMutatesParam(param.name, method.body);
     }
 
+    /**
+     * Returns {@code true} if any statement in the constructor body contains a
+     * {@code CAST(List<Map<...>>, param.get(key))} expression for the named parameter.
+     * Such a cast is emitted as {@code param.remove(key)} (consuming ownership), which
+     * requires the parameter to be declared {@code mut}.
+     */
+    private boolean constructorParamNeedsMut(Constructor constructor, String paramName) {
+        if (constructor.body == null) return false;
+        for (Statement stmt : constructor.body) {
+            if (stmt instanceof Assignment
+                    && castRequiresRemoveOnParam(((Assignment) stmt).value, paramName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns {@code true} when {@code expr} is a {@code CAST(List<Map<...>>, param.get(key))}
+     * pattern where the receiver of {@code get} is the variable named {@code paramName}.
+     * The emitter converts such a cast to {@code param.remove(key).and_then(...).map(...)},
+     * which requires the parameter to be {@code mut}.
+     */
+    private boolean castRequiresRemoveOnParam(Expression expr, String paramName) {
+        if (!(expr instanceof CastExpression)) return false;
+        CastExpression c = (CastExpression) expr;
+        if (!isList(c.targetType) || !isMapGetCall(c.expression)) return false;
+        // Verify the list element type is a Map (the pattern that triggers remove-downcast).
+        TypeName elemType = null;
+        if (c.targetType instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) c.targetType;
+            if (pt.typeArguments != null && pt.typeArguments.length > 0) {
+                elemType = pt.typeArguments[0];
+            }
+        }
+        if (elemType == null || !isMap(elemType)) return false;
+        // Verify the receiver of the get() call is the named parameter.
+        MethodCall mc = (MethodCall) c.expression;
+        return mc.object instanceof Variable && paramName.equals(((Variable) mc.object).name);
+    }
+
     /** Recursively checks if any statement in the list mutates the named parameter. */
     private boolean stmtListMutatesParam(String paramName, List<Statement> stmts) {
         if (stmts == null) return false;
@@ -2083,7 +2129,35 @@ public class Rust implements Emitter<StringBuilder> {
                 return true;
             }
         }
+        // FOR_LOOP (DO_LOOP pattern from CompilerBeanCompleter2Composite) that calls get(i) on a
+        // self Option<Vec<Map>> field: the emitter uses std::mem::take which requires &mut self.
+        if (stmt instanceof ForLoop) {
+            ForLoop fl = (ForLoop) stmt;
+            for (Statement bodyStmt : fl.body) {
+                if (bodyStmt instanceof Definition
+                        && isSelfOptionListGetCall(((Definition) bodyStmt).value)) {
+                    return true;
+                }
+            }
+        }
         return false;
+    }
+
+    /**
+     * Returns true if {@code expr} is a {@code get(i)} call on a self {@code Option<Vec<Map>>}
+     * field — the pattern emitted as {@code std::mem::take(&amp;mut self.ll.as_mut().unwrap()[i as usize])}.
+     * Used by {@link #bodyContainsMutatingCall} to mark the enclosing method as {@code &mut self}.
+     */
+    private boolean isSelfOptionListGetCall(Expression expr) {
+        if (!(expr instanceof MethodCall)) return false;
+        MethodCall mc = (MethodCall) expr;
+        if (!"get".equals(mc.methodName) || mc.arguments == null || mc.arguments.size() != 1) return false;
+        if (!isSelfOptionListField(mc)) return false;
+        String fieldName = ((MethodCall) mc.object).methodName;
+        TypeName fieldType = getFieldType(fieldName);
+        if (!(fieldType instanceof ParameterizedType)) return false;
+        ParameterizedType pt = (ParameterizedType) fieldType;
+        return pt.typeArguments.length > 0 && isMap(pt.typeArguments[0]);
     }
 
     private boolean expressionContainsMutatingCall(Expression expr) {
@@ -2734,6 +2808,25 @@ public class Rust implements Emitter<StringBuilder> {
                 && "__elements".equals(((MethodCall) mc.object).methodName);
     }
 
+    /**
+     * Emits a direct borrow into a Vec element accessed via {@code __elements.get(index)},
+     * bypassing the ref-param {@code .clone()} that the OBJECT_ACCESSOR field-access path
+     * would otherwise append and the element {@code .clone()} from the index-access emitter.
+     * <p>Used at MutableFirstParam argument sites so that the method can write back through
+     * the borrow to the actual collection element rather than mutating a discarded clone.
+     *
+     * @param mc      an {@code __elements.get(index)} MethodCall (caller ensures isVecIndexAccessGet)
+     * @param mutable {@code true} → {@code &mut list[i as usize]},
+     *                {@code false} → {@code &list[i as usize]}
+     */
+    private String convertVecElementRef(MethodCall mc, boolean mutable) {
+        MethodCall accessor = (MethodCall) mc.object;          // OBJECT_ACCESSOR "__elements"
+        String varExpr   = convert(accessor.object);           // e.g. "composite"
+        String fieldName = sanitizeName(accessor.methodName);  // "__elements" → "elements"
+        String indexExpr = convert(mc.arguments.get(0));       // e.g. "count"
+        return (mutable ? "&mut " : "&") + varExpr + "." + fieldName + "[" + indexExpr + " as usize]";
+    }
+
     private String convert(Expression expression) {
         switch (expression.expressionKind) {
             case VARIABLE: {
@@ -2794,10 +2887,7 @@ public class Rust implements Emitter<StringBuilder> {
                     return convert(c.expression) + " as " + convertTypeToRust(c.targetType);
                 }
                 // Cast to a collection type from a HashMap.get() — downcast Box<dyn Any> to the
-                // collection type.  Vec<HashMap<String,Box<dyn Any>>> cannot be cloned because
-                // Box<dyn Any> does not implement Clone.  For that specific pattern (Vec of maps),
-                // emit Vec::new() as a safe placeholder.  For simple Vec<T> where T: Clone,
-                // emit the normal downcast-and-clone.
+                // collection type.
                 if (isList(c.targetType) && isMapGetCall(c.expression)) {
                     TypeName elemType = null;
                     if (c.targetType instanceof ParameterizedType) {
@@ -2806,10 +2896,18 @@ public class Rust implements Emitter<StringBuilder> {
                             elemType = pt.typeArguments[0];
                         }
                     }
-                    // If the element type is also a map, Box<dyn Any> values are not Clone —
-                    // emit Vec::new() as a placeholder to keep the code compiling.
+                    // Vec<Map<...>>: Box<dyn Any> is not Clone, so we cannot use downcast_ref + clone.
+                    // Instead, use remove() to take ownership from the HashMap (which is passed by value
+                    // in the constructor), then downcast the Box<dyn Any> to the concrete Vec type.
+                    // The result is Option<Vec<...>>, which maps directly to the Option<Vec<...>> field.
                     if (elemType != null && isMap(elemType)) {
-                        return "Vec::new()";
+                        MethodCall getCall = (MethodCall) c.expression;
+                        String receiverExpr = convert(getCall.object);
+                        String keyExpr = convert(getCall.arguments.get(0));
+                        String vecType = convertTypeToRust(c.targetType);
+                        return receiverExpr + ".remove(" + keyExpr + ")"
+                                + ".and_then(|v| v.downcast::<" + vecType + ">().ok())"
+                                + ".map(|b| *b)";
                     }
                     return convert(c.expression)
                             + ".and_then(|v| v.downcast_ref::<" + convertTypeToRust(c.targetType) + ">()).cloned().unwrap_or_default()";
@@ -3173,6 +3271,26 @@ public class Rust implements Emitter<StringBuilder> {
                         result.append(convertedObject).append("[").append(convert(mc.arguments.get(0))).append(" as usize].clone()");
                         return result.toString();
                     }
+                    // self.ll.get(i) where ll: Option<Vec<HashMap<...>>> — Box<dyn Any> is not Clone,
+                    // so Vec::get(i) cannot yield an owned value via .cloned(). Use std::mem::take to
+                    // consume the HashMap element in-place (Vec slot becomes default empty HashMap).
+                    // This pattern is generated by the DO_LOOP in CompilerBeanCompleter2Composite.
+                    if (isSelfOptionListField(mc)) {
+                        String listFieldName = objectMc.methodName;
+                        TypeName listFieldType = getFieldType(listFieldName);
+                        if (listFieldType instanceof ParameterizedType) {
+                            ParameterizedType lpt = (ParameterizedType) listFieldType;
+                            if (lpt.typeArguments.length > 0 && isMap(lpt.typeArguments[0])) {
+                                String indexExpr = convert(mc.arguments.get(0));
+                                result.append("std::mem::take(&mut ")
+                                      .append(convertedObject)
+                                      .append(".as_mut().unwrap()[")
+                                      .append(indexExpr)
+                                      .append(" as usize])");
+                                return result.toString();
+                            }
+                        }
+                    }
                 }
 
                 // Getter.get(Class.class, key) → downcast Box<dyn Any> to the concrete type.
@@ -3233,6 +3351,11 @@ public class Rust implements Emitter<StringBuilder> {
                 ReceiverTransform rt = (pushSpec != null) ? pushSpec.receiverTransform : ReceiverTransform.NONE;
                 if (rt == ReceiverTransform.AS_MUT_UNWRAP && isOptionListField) {
                     convertedObject += ".as_mut().unwrap()";
+                } else if (isOptionListField) {
+                    // Read-only method on an Option<Vec<...>> self-field (e.g. size()/len()):
+                    // the AS_MUT_UNWRAP transform only covers push/add; for any other call we must
+                    // still unwrap the Option to reach the inner Vec.
+                    convertedObject += ".as_ref().unwrap()";
                 }
                 result.append(convertedObject).append(".").append(toSnakeCase(callMethodName)).append("(");
                 boolean traitCall = isTraitReceiver(mc);
@@ -3411,9 +3534,21 @@ public class Rust implements Emitter<StringBuilder> {
                         if (i > 0) result.append(", ");
                         Expression arg = mc.arguments.get(i);
                         if (calleeMFP && i == 0) {
-                            result.append("&mut ").append(convert(arg));
+                            if (arg instanceof MethodCall && isVecIndexAccessGet((MethodCall) arg)) {
+                                // Pass a direct mutable borrow into the Vec element; no .clone()
+                                // needed and the modification propagates back to the collection.
+                                result.append(convertVecElementRef((MethodCall) arg, true));
+                            } else {
+                                result.append("&mut ").append(convert(arg));
+                            }
                         } else if (calleeMFP && i > 0) {
-                            result.append("&").append(convert(arg));
+                            if (arg instanceof MethodCall && isVecIndexAccessGet((MethodCall) arg)) {
+                                // Pass a direct shared borrow — avoids the spurious Vec .clone()
+                                // that the ref-param field-access rule would otherwise add.
+                                result.append(convertVecElementRef((MethodCall) arg, false));
+                            } else {
+                                result.append("&").append(convert(arg));
+                            }
                         } else if (traitParams != null && i < traitParams.size()) {
                             TypeName paramType = traitParams.get(i).type;
                             // Trait methods declare struct/bean params as &T via convertTypeToRustTraitParam.
@@ -3994,6 +4129,23 @@ public class Rust implements Emitter<StringBuilder> {
         // Null constant (maps to None in Rust) is already an Option variant — don't wrap in Some()
         if (expr instanceof Constant && ((Constant) expr).constantType == Constant.ConstantType.NULL) {
             return true;
+        }
+        // CAST(List<Map<...>>, m.get(key)) emits remove()+downcast chain → Option<Vec<...>>.
+        // Do not wrap again in Some().
+        if (expr instanceof CastExpression) {
+            CastExpression c = (CastExpression) expr;
+            if (isList(c.targetType) && isMapGetCall(c.expression)) {
+                TypeName elemType = null;
+                if (c.targetType instanceof ParameterizedType) {
+                    ParameterizedType pt = (ParameterizedType) c.targetType;
+                    if (pt.typeArguments != null && pt.typeArguments.length > 0) {
+                        elemType = pt.typeArguments[0];
+                    }
+                }
+                if (elemType != null && isMap(elemType)) {
+                    return true;
+                }
+            }
         }
         // Getter.get(Class.class, key) → returns Box<dyn Any> after downcast chain → Option<T>
         if (expr instanceof MethodCall) {

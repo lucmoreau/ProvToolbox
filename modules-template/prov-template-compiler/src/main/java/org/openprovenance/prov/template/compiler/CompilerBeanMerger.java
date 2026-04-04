@@ -23,6 +23,7 @@ import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.ForLoop.FOR;
 import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
@@ -197,36 +198,35 @@ public class CompilerBeanMerger {
                 mspec_in1.BODY(RETURN(VARIABLE(BEAN_VAR)));
 
                 mspec_in.BODY(
-                        DEFINITION(_int, VARIABLE("count"), CONSTANT(0)),
-                        ITERATOR(
-                                PARAMETER("composee", inComposeeClass),
-                                METHOD_CALL(VARIABLE(INPUT_COMPOSITE_VAR), ELEMENTS))
+
+                        FOR(DEFINITION(_int,VARIABLE("count"), CONSTANT(0)),
+                                BINARY_OP(VARIABLE("count"), "<", METHOD_CALL(METHOD_CALL(VARIABLE(COMPOSITE_VAR),ELEMENTS), "size", List.of())),
+                                ASSIGNMENT(VARIABLE("count"), BINARY_OP(VARIABLE("count"), "+", CONSTANT(1)))
+                        )
+
                                 .BODY(
-                                        DEFINITION(beanComposeeClass,VARIABLE(BEAN_VAR),
-                                                METHOD_CALL(METHOD_CALL(VARIABLE(COMPOSITE_VAR), ELEMENTS), "get", List.of(VARIABLE("count")))),
                                         METHOD_CALL(
                                                 VARIABLE("this"),
                                                 PROCESS_METHOD_NAME,
-                                                List.of(VARIABLE(BEAN_VAR), VARIABLE("composee"))),
-                                        ASSIGNMENT(VARIABLE("count"), BINARY_OP(VARIABLE("count"), "+", CONSTANT(1)))),
+                                                List.of(
+                                                        METHOD_CALL(METHOD_CALL(VARIABLE(COMPOSITE_VAR), ELEMENTS), "get", List.of(VARIABLE("count"))),
+                                                        METHOD_CALL(METHOD_CALL(VARIABLE(INPUT_COMPOSITE_VAR), ELEMENTS), "get", List.of(VARIABLE("count")))))),
                         RETURN(VARIABLE(COMPOSITE_VAR))
                 );
 
                 mspec_out.BODY(
-                        DEFINITION(_int, VARIABLE("count"), CONSTANT(0)),
-                        ITERATOR(
-                                PARAMETER("composee", outComposeeClass),
-                                METHOD_CALL(VARIABLE(OUTPUT_COMPOSITE_VAR), ELEMENTS))
-                                .BODY(
+                        FOR(DEFINITION(_int,VARIABLE("count"), CONSTANT(0)),
+                                BINARY_OP(VARIABLE("count"), "<", METHOD_CALL(METHOD_CALL(VARIABLE(COMPOSITE_VAR),ELEMENTS), "size", List.of())),
+                                ASSIGNMENT(VARIABLE("count"), BINARY_OP(VARIABLE("count"), "+", CONSTANT(1)))
+                        )
 
-                                        DEFINITION(beanComposeeClass,VARIABLE(BEAN_VAR),
-                                                METHOD_CALL(METHOD_CALL(VARIABLE(COMPOSITE_VAR), ELEMENTS), "get", List.of(VARIABLE("count")))),
+                                .BODY(
                                         METHOD_CALL(
                                                 VARIABLE("this"),
                                                 PROCESS_METHOD_NAME,
-                                                List.of(VARIABLE(BEAN_VAR), VARIABLE("composee"))),
-
-                                        ASSIGNMENT(VARIABLE("count"), BINARY_OP(VARIABLE("count"), "+", CONSTANT(1)))),
+                                                List.of(
+                                                        METHOD_CALL(METHOD_CALL(VARIABLE(COMPOSITE_VAR), ELEMENTS), "get", List.of(VARIABLE("count"))),
+                                                        METHOD_CALL(METHOD_CALL(VARIABLE(OUTPUT_COMPOSITE_VAR), ELEMENTS), "get", List.of(VARIABLE("count")))))),
                         RETURN(VARIABLE(COMPOSITE_VAR))
                 );
 

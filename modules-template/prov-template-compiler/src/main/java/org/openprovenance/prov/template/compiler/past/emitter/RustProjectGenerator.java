@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -153,7 +154,33 @@ public class RustProjectGenerator {
         }
 
         Path libRs = srcDir.resolve("lib.rs");
-        Files.writeString(libRs, lib.toString());
+        if (Files.exists(libRs)) {
+            // Read the existing file and collect every non-blank, non-comment line as a set
+            // so we can skip lines that are already present (idempotent re-generation).
+            Set<String> existingLines = new HashSet<>();
+            for (String line : Files.readAllLines(libRs)) {
+                String trimmed = line.trim();
+                if (!trimmed.isEmpty() && !trimmed.startsWith("//")) {
+                    existingLines.add(trimmed);
+                }
+            }
+            StringBuilder toAppend = new StringBuilder();
+            for (String line : lib.toString().split("\n", -1)) {
+                String trimmed = line.trim();
+                // Always keep blank lines and comments as-is; only deduplicate declarations.
+                if (trimmed.isEmpty() || trimmed.startsWith("//")) {
+                    continue; // skip header/comment/blank lines when appending
+                }
+                if (!existingLines.contains(trimmed)) {
+                    toAppend.append(line).append("\n");
+                }
+            }
+            if (!toAppend.isEmpty()) {
+                Files.writeString(libRs, toAppend.toString(), StandardOpenOption.APPEND);
+            }
+        } else {
+            Files.writeString(libRs, lib.toString());
+        }
         //System.out.println("Generated: " + libRs);
     }
 

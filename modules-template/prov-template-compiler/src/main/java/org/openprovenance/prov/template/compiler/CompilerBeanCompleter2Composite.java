@@ -16,7 +16,9 @@ import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.ForLoop.FOR;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
@@ -89,10 +91,13 @@ public class CompilerBeanCompleter2Composite {
                                     CAST(INTEGER,
                                             METHOD_CALL(METHOD_CALL(VARIABLE("this"),M_VAR), "get", List.of(CONSTANT("ID")))  )   ),
 
-                            ITERATOR(
-                                    PARAMETER(ELEM_VAR, MAP_STRING_OBJECT),
-                                    METHOD_CALL(VARIABLE("this"),LL_VAR))
+                            FOR(DEFINITION(_int,VARIABLE("i"), CONSTANT(0)),
+                                    BINARY_OP(VARIABLE("i"), "<", METHOD_CALL(METHOD_CALL(VARIABLE("this"),LL_VAR), "size", List.of())),
+                                     ASSIGNMENT(VARIABLE("i"), BINARY_OP(VARIABLE("i"), "+", CONSTANT(1)))
+                                    )
+
                                     .BODY(
+                                            DEFINITION(MAP_STRING_OBJECT, VARIABLE(ELEM_VAR), METHOD_CALL(METHOD_CALL(VARIABLE("this"),LL_VAR), "get", List.of(VARIABLE("i")))),
                                             DEFINITION(composeeClass, VARIABLE(OUT_VAR), CONSTRUCTOR_CALL(composeeClass, List.of())),
                                             METHOD_CALL(
                                                     VARIABLE(BEAN_VAR),

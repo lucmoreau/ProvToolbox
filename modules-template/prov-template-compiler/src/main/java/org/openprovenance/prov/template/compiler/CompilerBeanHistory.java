@@ -23,10 +23,12 @@ import java.util.function.Supplier;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
+import static org.openprovenance.prov.template.compiler.past.ForLoop.FOR;
 import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
@@ -212,11 +214,14 @@ public class CompilerBeanHistory {
 
                         DEFINITION(className, VARIABLE(BEAN_VAR), CONSTRUCTOR_CALL(className,List.of())),
 
-                        ITERATOR(
-                                PARAMETER("composee", outComposeeClass),
-                                METHOD_CALL(VARIABLE(OUTPUT_COMPOSITE_VAR), ELEMENTS))
-                                .BODY(
-                                        METHOD_CALL(VARIABLE(BEAN_VAR), ADD_ELEMENTS, List.of(CONSTRUCTOR_CALL(beanComposeeClass, List.of())))),
+                        FOR(DEFINITION(_int,VARIABLE("i"), CONSTANT(0)),
+                                BINARY_OP(VARIABLE("i"), "<", METHOD_CALL(METHOD_CALL(VARIABLE(OUTPUT_COMPOSITE_VAR),ELEMENTS), "size", List.of())),
+                                ASSIGNMENT(VARIABLE("i"), BINARY_OP(VARIABLE("i"), "+", CONSTANT(1)))
+                        ).BODY(
+                                METHOD_CALL(VARIABLE(BEAN_VAR), ADD_ELEMENTS, List.of(CONSTRUCTOR_CALL(beanComposeeClass, List.of())))
+                        ),
+
+
 
                         METHOD_CALL(METHOD_CALL(VARIABLE("this"), MERGER_VAR), PROCESS_METHOD_NAME, List.of(VARIABLE(BEAN_VAR), VARIABLE(INPUT_COMPOSITE_VAR))),
                         METHOD_CALL(METHOD_CALL(VARIABLE("this"), MERGER_VAR), PROCESS_METHOD_NAME, List.of(VARIABLE(BEAN_VAR), VARIABLE(OUTPUT_COMPOSITE_VAR))),

@@ -272,7 +272,7 @@ fn main() {
     //   const mode = (process.argv[2] || 'notdefined').toLowerCase();
     // -----------------------------------------------------------------------
     let args: Vec<String> = std::env::args().collect();
-    let mode  = args.get(1).map(String::as_str).unwrap_or("notdefined");
+    let mode  = args.get(1).map(String::as_str).unwrap_or("local");
     let debug = args.iter().any(|a| a == "--debug");
 
     // Fixed workflow parameters — same values as in the JS script.

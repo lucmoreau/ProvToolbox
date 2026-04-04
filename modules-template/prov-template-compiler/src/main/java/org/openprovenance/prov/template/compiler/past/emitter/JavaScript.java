@@ -198,7 +198,7 @@ public class JavaScript implements Emitter<StringBuilder> {
 
                     emitMethod(jsMethodAsConstructor, sb);
                 } else {
-                    emitConstructor(constructor, sb);
+                    emitConstructor(constructor,  clazz.fields, sb);
                 }
             }
         }
@@ -283,7 +283,7 @@ public class JavaScript implements Emitter<StringBuilder> {
         //sb.append(INDENT).append("}\n\n");
     }
 
-    private void emitConstructor(Constructor constructor, StringBuilder sb) {
+    private void emitConstructor(Constructor constructor, List<Field> fields, StringBuilder sb) {
         sb.append(INDENT).append("constructor(");
 
 
@@ -320,6 +320,20 @@ public class JavaScript implements Emitter<StringBuilder> {
         for (Statement statement : constructor.body) {
             emitStatement(statement, INDENT + INDENT, sb);
         }
+        // Field assignments
+        for (Field field : fields) {
+            if (!field.modifiers.contains(Modifier.STATIC) && field.initialiser != null) {
+                String fieldName = sanitizeName(field.name);
+                sb.append(INDENT).append(INDENT)
+                        .append("this.").append(fieldName).append(" = ");
+                if (field.initialiser != null) {
+                    sb.append(convert(field.initialiser));
+                }
+                sb.append(";\n");
+            }
+        }
+
+
 
         sb.append(INDENT).append("}\n\n");
     }
@@ -553,7 +567,7 @@ public class JavaScript implements Emitter<StringBuilder> {
                 sb.append(indent)
                         .append("for (const ")
                         .append(sanitizeName(iterator.parameter.name))
-                        .append(" of ")
+                        .append(" in ")
                         .append(convert(iterator.collection))
                         .append(") {\n");
                 for (Statement bodyStmt : iterator.body) {

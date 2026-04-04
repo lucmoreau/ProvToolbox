@@ -167,7 +167,10 @@ public class SpecificationFile {
     }
 
 
-    public static void compileRustProject(String projectName, String version) {
+    public static void compileRustProject(String rust_dir, String projectName, String version) {
+        if (rust_dir==null) return;
+        System.out.println("##################Rust compilation started...");
+
         if (!rustProjectCreated) {
             // create a Cargo.toml file
             rustProjectCreated=true;

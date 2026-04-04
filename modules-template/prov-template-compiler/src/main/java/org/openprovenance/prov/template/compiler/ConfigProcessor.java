@@ -663,8 +663,7 @@ public class ConfigProcessor implements Constants {
 
         SpecificationFile.finalizeCodeGeneration();
 
-        System.out.println("##################Rust compilation started...");
-        compileRustProject(configs.name,configs.version);
+        compileRustProject(configs.rust_dir, configs.name,configs.version);
 
     }
 

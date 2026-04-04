@@ -222,7 +222,9 @@ public class CompilerQueryInvoker {
                     .PARAMETER(STRING, "str")
                     .RETURNS(STRING)
                     .BODY(
-                            IF(BINARY_OP(VARIABLE("str"),"==",Constant.getNull())).THEN(METHOD_CALL("return", List.of(CONSTANT("''::json"))))
+                            IF(BINARY_OP(VARIABLE("str"),"==",Constant.getNull()))
+                                    .THEN(METHOD_CALL("return", List.of(CONSTANT("''::json"))))
+                                    .ELSE(RETURN(BINARY_OP(VARIABLE("str"), "+", CONSTANT("'::json"))))
                     );
             pastClass.METHOD(ms5);
         }

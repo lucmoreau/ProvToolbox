@@ -9,7 +9,8 @@
     <title>${symbol_dollar}{pom.form.dashboard.title}</title>
     <link rel="stylesheet" href="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/css/bootstrap.min.css" />
     <link rel="stylesheet" href="${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/css/provtemplate.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">-->
+    <link href="https://cdn.datatables.net/v/dt/dt-2.3.7/datatables.min.css" rel="stylesheet" integrity="sha384-wCnlGUpaekN+Mtc+qIoipdqIqe2dvC7hWyzVg8wajZ1sxKnVTbnyBd7pyx7JT0Su" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="${symbol_dollar}{service.context}/webjars/font-awesome/${symbol_dollar}{webjars.fontawesome.version}/css/font-awesome.min.css"/>
     <link rel="stylesheet" type="text/css"  href="${symbol_dollar}{service.context}/webjars/swagger-ui/${symbol_dollar}{webjars.swagger-ui.version}/swagger-ui.css" >
     <link rel="icon"       type="image/png" href="${symbol_dollar}{service.context}/webjars/swagger-ui/${symbol_dollar}{webjars.swagger-ui.version}/favicon-32x32.png" sizes="32x32" />
@@ -21,13 +22,14 @@
 
 <body>
 <script src="${symbol_dollar}{service.context}/webjars/jquery/${symbol_dollar}{webjars.jquery.version}/jquery.min.js"></script>
-<script src="${symbol_dollar}{service.context}/webjars/datatables.net/${symbol_dollar}{webjars.datatables.version}/js/jquery.dataTables.min.js" type="text/javascript" charset="utf8" ></script>
+<!--<script src="${symbol_dollar}{service.context}/webjars/datatables.net/${symbol_dollar}{webjars.datatables.version}/js/jquery.dataTables.min.js" type="text/javascript" charset="utf8" ></script> -->
+<script src="https://cdn.datatables.net/v/dt/dt-2.3.7/datatables.min.js" integrity="sha384-aQ8I1X2x8U0AR8D7C4Ah0OvZlwMslQdN5YDAQBA56jXrrhcECijs/i7H+5DDrlV1" crossorigin="anonymous"></script>
 <script src="${symbol_dollar}{service.context}/webjars/JSV/lib/jsv.js"></script>
 <script src="${symbol_dollar}{service.context}/webjars/underscore/${symbol_dollar}{webjars.underscore.version}/underscore.js"></script>
 <script src="${symbol_dollar}{service.context}/webjars/jsonform/lib/jsonform.js"></script>
 <script src="${symbol_dollar}{service.context}/webjars/jsonform/deps/opt/jquery-ui.js"></script>
 <script src="${symbol_dollar}{service.context}/webjars/jquery-csv/${symbol_dollar}{webjars.jquery.csv.version}/src/jquery.csv.js"></script>
-
+<script src="${symbol_dollar}{service.context}/webjars/plotly.js/${symbol_dollar}{webjars.plotlyjs.version}/dist/plotly.min.js"></script>
 
 <script src="${symbol_dollar}{service.context}/webjars/j4ts/${symbol_dollar}{webjars.j4ts.version}/bundle.js"></script>
 
@@ -92,6 +94,19 @@
         font-size: 1rem;
         font-weight: bold;
     }
+
+    pre .pretty {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+    .pretty .string { color: green; }
+    .pretty .uri { color: green; }
+    .pretty .number { color: darkorange; }
+    .pretty .boolean { color: blue; }
+    .pretty .symbol { color: blue; }
+    .pretty .null { color: magenta; }
+    .pretty .key { color: red; }
+    .pretty .date { color: red; }
+    .pretty .provkeyword { color: saddlebrown; }
+    .pretty .feature { color: #8910ff; }
+
 </style>
 
     <div class="row header small">
@@ -115,8 +130,13 @@
             <li class="nav-item">
                 <a href="#tab_navigator" data-bs-toggle="tab" class="nav-link" role="tab">Navigator</a>
             </li>
+
             <li class="nav-item">
-                <a href="#tab_instantiate" data-bs-toggle="tab" class="nav-link" role="tab">Instantiate</a>
+                <a href="#tab_query" data-bs-toggle="tab" class="nav-link" role="tab">Querier</a>
+            </li>
+
+            <li class="nav-item">
+                <a href="#tab_instantiate" data-bs-toggle="tab" class="nav-link" role="tab">Instantiater</a>
             </li>
             <li class="nav-item">
                 <a href="#tab_api" data-bs-toggle="tab" class="nav-link" role="tab">API</a>
@@ -221,6 +241,60 @@
                         <button id="navigator_refresh" type="button" class="btn btn-info" onclick="submitNavigate('${symbol_pound}navigator_div')">Refresh</button>
                     </div>
                     <div class="col-lg-10 first-column" id="navigator_div">
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab_query" class="tab-pane" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label for="query_select">Available queries</label>
+                        <div class="d-flex">
+                            <select id="query_select" class="form-select me-2" aria-label="List of queries">
+                                <option value="">(loading...)</option>
+                            </select>
+                            <!--<button id="query_exec_selected" type="button" class="btn btn-secondary btn-sm" onclick="execSelectedQuery()">Execute Selected</button>-->
+                        </div>
+
+                        <div><p/></div>
+                        <div><p/></div>
+                        <label for="query_name" class="visually-hidden">Query name</label>
+                        <input type="text" id="query_name" class="form-control" placeholder="Query name">
+                        <label for="query_params">Parameters (JSON)</label>
+                        <textarea id="query_params" class="form-control" rows="6" placeholder='{"key":"value"}'></textarea>
+                        <p></p>
+                        <button id="query_run" type="button" class="btn btn-primary" onclick="runQuery()">Run Query</button>
+                    </div>
+                    <div class="col-lg-10 first-column" id="query_result">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a href="#tab_query_result" data-bs-toggle="tab" class="nav-link show active" role="tab" >Query Result</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#tab_query_table" data-bs-toggle="tab" class="nav-link" role="tab">Table</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#tab_query_plot" data-bs-toggle="tab" class="nav-link" role="tab">Plot</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="all-subtab-contents">
+                            <div id="tab_query_result" class="tab-pane show active" role="tabpanel">
+                                <pre id="query_result_pre" class="pretty grey"></pre>
+                            </div>
+                            <div id="tab_query_table" class="tab-pane" role="tabpanel">
+                                <div id="query_table_comment"></div>
+                                <table id="query_result_table"
+                                       class="display"
+                                       style="width:100%">
+                                </table>
+                            </div>
+                            <div id="tab_query_plot" class="tab-pane" role="tabpanel">
+                                <div id="query_plot_comment"></div>
+                                <div id="query_plot_div"></div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -503,6 +577,7 @@
         xhr.setRequestHeader("Accept", "text/plain");
         xhr.send();
     }
+
 
 
     function submitService(jsonSubmit, url, anchor_result_box, anchor_csv, anchor_result_prov_link, anchor_explanation, enactorp, allRecordsp) {
@@ -820,6 +895,24 @@
         xhr.send();
     }
 
+    function updateDataTable (id, data) {
+        //console.log("updateDataTable " + id)
+        //console.log(data);
+
+        var columns = data[0];
+        var titles = $.map(columns, function (column) {
+            return {"title": column}
+        })
+        // console.log(titles)
+        data.shift()
+
+        $(id).DataTable({
+            destroy: true,
+            "data": data,
+            "columns": titles
+        });
+    }
+
 
     const tm=new TemplateManager(logger,SCHEMA_URL,DOC_URL,profile);
     tm.setCsvResult(HTML_ANCHOR_CSV_RESULT);
@@ -841,9 +934,304 @@
 
 
 </script>
+<script>
+    // Populate the Available queries select box by calling the QueryService
+    function populateQueryList() {
+        const url = '${symbol_dollar}{service.context}/provapi/query/list-of-queries';
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onerror = function () { console.log('Failed to load query list'); };
+        xhr.onabort = function () { console.log('Query list request aborted'); };
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                try {
+                    const list = JSON.parse(xhr.responseText);
+                    const sel = document.getElementById('query_select');
+                    if (!sel) return;
+                    sel.innerHTML = '';
+                    const emptyOpt = document.createElement('option');
+                    emptyOpt.value = '';
+                    emptyOpt.text = '(select...)';
+                    sel.appendChild(emptyOpt);
+                    if (Array.isArray(list)) {
+                        list.forEach(function(q) {
+                            const opt = document.createElement('option');
+                            opt.value = q;
+                            opt.text = q;
+                            sel.appendChild(opt);
+                        });
+                    }
+                    sel.addEventListener('change', function() {
+                        const nameInput = document.getElementById('query_name');
+                        if (nameInput) nameInput.value = this.value;
+                    });
+                    // mark as populated to avoid re-fetching
+                    //sel.dataset.populated = 'true';
+                } catch (e) {
+                    console.log('Error parsing query list: ' + e);
+                }
+            } else {
+                console.log('Failed to obtain query list: ' + xhr.status);
+            }
+        };
+        xhr.setRequestHeader('Accept', 'application/json');
+        xhr.send();
+    }
+
+    (function() {
+        function attachTriggers(sel) {
+            if (!sel) return;
+            const menuHandler = function menuHandler(evt) {
+                populateQueryList();
+            };
+            sel.addEventListener('focus', menuHandler);
+            sel.addEventListener('mousedown', menuHandler);
+            sel.addEventListener('touchstart', menuHandler);
+        }
+
+        const selNow = document.getElementById('query_select');
+        if (selNow) {
+            attachTriggers(selNow);
+        } else {
+            document.addEventListener('DOMContentLoaded', function() {
+                const selLater = document.getElementById('query_select');
+                attachTriggers(selLater);
+            });
+        }
+    })();
+</script>
+<script>
+
+    function createPlotlyPlot(query, plot_url, id, queryResult) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', plot_url, true);
+        xhr.onerror = function () {
+            showPlotResult('<div class="alert alert-danger">Failed to load plot: ' + query + '</div>');
+        };
+        xhr.onabort = function () {
+            ('<div class="alert alert-danger">Plot load aborted: ' + query + '</div>');
+            console.log('Query list request aborted');
+        };
+        xhr.onload = function () {
+            // check status
+            if (xhr.status < 200 || xhr.status >= 300) {
+                let msg = 'HTTP status ' + xhr.status + ': ' + (xhr.responseText || xhr.statusText);
+                showPlotResult('<div class="alert alert-warning">URL: ' + plot_url + '<br>' + escapeHtml(msg) + '</div>');
+                return;
+            }
+            // check content type
+            const ct = xhr.getResponseHeader('Content-Type') || '';
+            if (ct.indexOf('application/json') === -1) {
+                let msg = 'Error ' + xhr.status + ': ' + (xhr.responseText || xhr.statusText) || '';
+                showPlotResult('<div class="alert alert-danger">content type (' + ct + '):' + escapeHtml(msg) + '</div>');
+                return;
+            }
+
+            // update plot  tab
+            let parsed;
+            try {
+                parsed = JSON.parse(xhr.responseText);
+            } catch (e) {
+                console.log('Error parsing query list: ' + e);
+                showPlotResult('<div class="alert alert-warning">Response is not valid JSON</div><pre class="grey">' + escapeHtml(xhr.responseText) + '</pre>');
+                return;
+            }
+
+            let xInstruction=parsed.trace.x
+            let yInstruction=parsed.trace.y
+            let headers=queryResult[0]
+            queryResult.shift();
+            let xValue=extract(headers, queryResult, xInstruction);
+            let yValue=extract(headers, queryResult, yInstruction);
+
+
+
+            let trace=parsed.trace;
+            trace.x=xValue;
+            trace.y=yValue;
+            let data = [trace]
+            let layout=parsed.layout;
+
+            console.log(trace);
+            console.log(layout);
+
+            try {
+                Plotly.newPlot(id, data, layout);
+            } catch (e) {
+                console.log('Error creating plot ' + e);
+                showPlotResult('<div class="alert alert-warning">Problem creating plotN</div>');
+                return;
+            }
+
+
+        }
+        xhr.setRequestHeader('Accept', 'application/json');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send("{}"); // giving an opportunity to pass some arguments
+
+        /*
+        var trace1 = {
+            x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            y: [20, 14, 25, 16, 18, 22, 19, 15, 12, 16, 14, 17],
+            type: 'bar',
+            name: 'Primary Product',
+            marker: {
+                color: 'rgb(49,130,189)',
+                opacity: 0.7,
+            }
+        };
+
+        var trace2 = {
+            x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            y: [19, 14, 22, 14, 16, 19, 15, 14, 10, 12, 12, 16],
+            type: 'bar',
+            name: 'Secondary Product',
+            marker: {
+                color: 'rgb(204,204,204)',
+                opacity: 0.5
+            }
+        };
+
+        var data = [trace1, trace2];
+
+        var layout = {
+            title: {
+                text: '2013 Sales Report'
+            },
+            xaxis: {
+                tickangle: -45
+            },
+            barmode: 'group'
+        };
+
+        Plotly.newPlot(id, data, layout);
+
+         */
+
+    }
+
+    function extract(headers, queryResult, xInstruction) {
+        console.log(JSON.stringify(queryResult));
+        let parts=xInstruction.split('::');
+        let column=parts[1]
+        // find position of colum in headers (an array of strings)
+        let position = headers.indexOf(column)
+        if (position >= 0) {
+            // select element in position, for each row in queryResult
+            let slice = queryResult.map(function(value,index) { return value[position]; });
+            return slice;
+        } else {
+            return [];
+        }
+    }
+
+    function showQueryResult(html) {
+        const box = document.getElementById('query_result_pre');
+        if (box) box.innerHTML = html;
+    }
+    function showPlotResult(html) {
+        console.log(html);
+        const box = document.getElementById('query_plot_comment');
+        if (box) box.innerHTML = html;
+    }
+
+    function execSelectedQuery() {
+        const sel = document.getElementById('query_select');
+        if (!sel) return;
+        const q = sel.value;
+        if (!q || q.trim() === '') {
+            showQueryResult('<div class="alert alert-warning">No query selected</div>');
+            return;
+        }
+        document.getElementById('query_name').value = q;
+    }
+
+    function runQuery() {
+        document.getElementById('query_result_pre').innerHTML = '';
+        document.getElementById('query_plot_comment').innerHTML = '';
+        document.getElementById('query_table_comment').innerHTML = '';
+
+        const q = (document.getElementById('query_name') || {}).value;
+        if (!q || q.trim() === '') {
+            showQueryResult('<div class="alert alert-warning">No query name specified</div>');
+            return;
+        }
+
+        const paramsText = (document.getElementById('query_params') || {}).value || '';
+        let paramsObj = {};
+        if (paramsText.trim() !== '') {
+            try {
+                paramsObj = JSON.parse(paramsText);
+            } catch (e) {
+                showQueryResult('<div class="alert alert-danger">Invalid JSON in parameters: ' + e.message + '</div>');
+                return;
+            }
+        }
+
+        const url = '${symbol_dollar}{service.context}/provapi/query/' + encodeURIComponent(q) + '/post';
+        const plot_url = '${symbol_dollar}{service.context}/provapi/query.plot/' + encodeURIComponent(q) + '/post';
+
+        showQueryResult('<div class="text-muted">Running query...</div>');
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Accept', 'application/json, text/plain');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onerror = function() { showQueryResult('<div class="alert alert-danger">Network error while executing query</div>'); };
+        xhr.onload = function() {
+            // check status
+            if (xhr.status < 200 || xhr.status >= 300) {
+                let msg = 'Error ' + xhr.status + ': ' + (xhr.responseText || xhr.statusText);
+                showQueryResult('<div class="alert alert-danger">' + escapeHtml(msg) + '</div>');
+                return;
+            }
+            // check content type
+            const ct = xhr.getResponseHeader('Content-Type') || '';
+            if (ct.indexOf('application/json') === -1) {
+                showQueryResult('<pre class="grey">' + escapeHtml(xhr.responseText) + '</pre>');
+                return;
+            }
+            // update query result tab
+            let parsed;
+            let pretty;
+            try {
+                parsed = JSON.parse(xhr.responseText);
+                pretty = JSON.stringify(parsed, null, 2);
+                showQueryResult(tm.syntaxHighlight_json(pretty)) ;
+            } catch (e) {
+                console.log('Error parsing query list: ' + e);
+                showQueryResult('<div class="alert alert-warning">Response is not valid JSON</div><pre class="grey">' + escapeHtml(xhr.responseText) + '</pre>');
+                return;
+            }
+            // update data table
+            try {
+                // make a copy of parsed, since updateDataTable mutates the structure
+                let copy=JSON.parse(xhr.responseText)
+                updateDataTable('#query_result_table', copy);
+            } catch (e) {
+                console.log('Error creating table: ' + e);
+                document.getElementById('query_table_comment').innerHTML = '<div class="alert alert-warning">Issue creating table</div><pre class="grey">' + escapeHtml(xhr.responseText) + '</pre>';
+                return;
+            }
+            // update plot tab
+            try {
+                createPlotlyPlot(q, plot_url,'query_plot_div', parsed);
+            } catch (e) {
+                console.log('Error creating plot: ' + e);
+                showPlotResult('<div class="alert alert-danger">Error creating plot: ' + e + '</div>');
+                return;
+            }
+        }
+        xhr.send(JSON.stringify(paramsObj));
+    }
+
+    function escapeHtml(s) {
+        if (!s) return '';
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+</script>
 <script src="provservice.js"></script>
 <script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
-<!--<script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/tab.js"></script>-->
 
 </body>
 </html>

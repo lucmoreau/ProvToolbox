@@ -32,20 +32,22 @@ archetype.generate.book:
         -DProjectArtifactId=$(ARTIFACT_ID) \
         -DarchetypeGroupId=org.openprovenance.prov \
         -DarchetypeArtifactId=prov-template-archetype \
-	-DarchetypeVersion=$(PROVTOOLBOX_VERSION) \
-	-DtemplateLibraryGroupId=org.openprovenance.bookptm \
-	-DtemplateLibraryArtifactId=template-intro1 \
-	-DtemplateLibraryVersion=0.1.0-SNAPSHOT \
-	-DtemplateLibraryServiceName=ServiceBookPTM \
-	-DcataloguePackage=org.openprovenance.templates.catalogue.transport \
-	-DtemplateSubLibrary=-transport \
-	-DloggerConstructor=org.openprovenance.templates.catalogue.transport.client.logger.Logger \
-	-DjdbcURL="jdbc:postgresql://localhost:5432/bookptm?sslmode=disable" \
-	-Dimage.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
-	-Dtemplate.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
-	-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
-	-DserviceContext=/book \
-	-DservicePort=7075
+		-DarchetypeVersion=$(PROVTOOLBOX_VERSION) \
+		-DtemplateLibraryGroupId=org.openprovenance.bookptm \
+		-DtemplateLibraryArtifactId=template-intro1 \
+		-DtemplateLibraryVersion=0.1.0-SNAPSHOT \
+		-DtemplateLibraryServiceName=ServiceBookPTM \
+		-DtemplatesButtonLabel="Book Templates" \
+		-DcataloguePackage=org.openprovenance.templates.catalogue.transport \
+		-DtemplateSubLibrary=-transport \
+		-DloggerConstructor=org.openprovenance.templates.catalogue.transport.client.logger.Logger \
+		-DjdbcURL="jdbc:postgresql://localhost:5432/bookptm?sslmode=disable" \
+		-Dimage.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
+		-Dtemplate.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
+		-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
+		-DserviceContext=/book \
+		-DservicePort=7075 \
+		-DdashboardTitle="Book PTM Dashboard"
 
 archetype.generate.book.fs:
 	@echo "Generating project $(GROUP_ID):$(ARTIFACT_ID):$(VERSION)"
@@ -56,20 +58,22 @@ archetype.generate.book.fs:
         -DProjectArtifactId=$(ARTIFACT_ID) \
         -DarchetypeGroupId=org.openprovenance.prov \
         -DarchetypeArtifactId=prov-template-archetype \
-	-DarchetypeVersion=$(PROVTOOLBOX_VERSION) \
-	-DtemplateLibraryGroupId=org.openprovenance.bookptm \
-	-DtemplateLibraryArtifactId=template-intro1 \
-	-DtemplateLibraryVersion=0.1.0-SNAPSHOT \
-	-DtemplateLibraryServiceName=ServiceBookFS \
-	-DcataloguePackage=org.openprovenance.templates.catalogue.fs \
-	-DtemplateSubLibrary=-fs \
-	-DloggerConstructor=org.openprovenance.templates.catalogue.fs.client.logger.Logger \
-	-DjdbcURL="jdbc:postgresql://localhost:5432/bookptm?sslmode=disable" \
-	-Dimage.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
-	-Dtemplate.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
-	-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
-	-DserviceContext=/book \
-	-DservicePort=7075
+		-DarchetypeVersion=$(PROVTOOLBOX_VERSION) \
+		-DtemplateLibraryGroupId=org.openprovenance.bookptm \
+		-DtemplateLibraryArtifactId=template-intro1 \
+		-DtemplateLibraryVersion=0.1.0-SNAPSHOT \
+		-DtemplateLibraryServiceName=ServiceBookFS \
+		-DdashboardTitle="Book FS Dashboard" \
+		-DtemplatesButtonLabel="Book Templates" \
+		-DcataloguePackage=org.openprovenance.templates.catalogue.fs \
+		-DtemplateSubLibrary=-fs \
+		-DloggerConstructor=org.openprovenance.templates.catalogue.fs.client.logger.Logger \
+		-DjdbcURL="jdbc:postgresql://localhost:5432/bookptm?sslmode=disable" \
+		-Dimage.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
+		-Dtemplate.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
+		-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
+		-DserviceContext=/book \
+		-DservicePort=7075
 
 
 archetype.generate.ptl:
@@ -80,17 +84,19 @@ archetype.generate.ptl:
         -Dversion=$(VERSION) \
         -DarchetypeGroupId=org.openprovenance.prov \
         -DarchetypeArtifactId=prov-template-archetype \
-	-DarchetypeVersion=$(PROVTOOLBOX_VERSION) \
-	-DtemplateLibraryGroupId=org.openprovenance.prov \
-	-DtemplateLibraryArtifactId=prov-template-library \
-	-DtemplateLibraryVersion=$(PROVTOOLBOX_VERSION) \
-	-DtemplateLibraryServiceName=ServiceTemplateLibary \
-	-DcataloguePackage=org.openprovenance.prov.template.library.plead \
-	-DtemplateSubLibrary=-plead \
-	-DloggerConstructor=org.openprovenance.prov.template.library.plead.client.logger.Logger \
-	-DjdbcURL="jdbc:postgresql://localhost:5432/templates?sslmode=disable" \
-	-DserviceContext=/ptl \
-	-DservicePort=7076
+		-DarchetypeVersion=$(PROVTOOLBOX_VERSION) \
+		-DtemplateLibraryGroupId=org.openprovenance.prov \
+		-DtemplateLibraryArtifactId=prov-template-library \
+		-DtemplateLibraryVersion=$(PROVTOOLBOX_VERSION) \
+		-DtemplateLibraryServiceName=ServiceTemplateLibary \
+		-DtemplatesButtonLabel="PLEAD Templates" \
+		-DcataloguePackage=org.openprovenance.prov.template.library.plead \
+		-DtemplateSubLibrary=-plead \
+		-DloggerConstructor=org.openprovenance.prov.template.library.plead.client.logger.Logger \
+		-DjdbcURL="jdbc:postgresql://localhost:5432/templates?sslmode=disable" \
+		-DserviceContext=/ptl \
+		-DservicePort=7076 \
+		-DdashboardTitle="PTL Dashboard"
 
 
 

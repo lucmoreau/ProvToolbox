@@ -30,11 +30,11 @@
         <pom.the.template.library>${templateLibraryArtifactId}</pom.the.template.library>
         <pom.the.template.library.version>${templateLibraryVersion}</pom.the.template.library.version>
         <pom.the.template.sublibrary>${templateSubLibrary}</pom.the.template.sublibrary>
-        <pom.templates.button.label>Book Templates</pom.templates.button.label>
+        <pom.templates.button.label>${templatesButtonLabel}</pom.templates.button.label>
         <pom.project.version>${project.version}</pom.project.version>
         <pom.catalogue.package>${cataloguePackage}</pom.catalogue.package>
         <pom.jdbc.url>${jdbcURL}</pom.jdbc.url>
-        <pom.form.dashboard.title>Book Templates Dashboard</pom.form.dashboard.title> <!-- removing ${project.version} from title -->
+        <pom.form.dashboard.title>${dashboardTitle}</pom.form.dashboard.title>
         <pom.logger.constructor>${loggerConstructor}</pom.logger.constructor>
         <unsecure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-no-security.xml</unsecure.webxml.location>
         <secure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-with-security.xml</secure.webxml.location>

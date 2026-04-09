@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>org.openprovenance.prov</groupId>
-        <artifactId>modules-tools</artifactId>
-        <version>${provtoolboxVersion}</version>
+        <groupId>${groupId}</groupId>
+        <artifactId>${rootArtifactId}-root</artifactId>
+        <version>${version}</version>
     </parent>
 
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>${rootArtifactId}-service</artifactId>
-    <groupId>${groupId}</groupId>
     <name>|---- ${rootArtifactId}-service</name>
     <packaging>war</packaging>
     <description>A REST service for Provenance Template Management</description>
@@ -142,6 +141,14 @@
                     <artifactId>jsweet-transpiler</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <!-- Source: https://mvnrepository.com/artifact/org.webjars.bower/plotly.js -->
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>plotly.js</artifactId>
+            <version>${webjars.plotlyjs.version}</version>
+            <scope>compile</scope>
         </dependency>
 
 
@@ -310,11 +317,11 @@
         <pom.the.template.library>${templateLibraryArtifactId}</pom.the.template.library>
         <pom.the.template.library.version>${templateLibraryVersion}</pom.the.template.library.version>
         <pom.the.template.sublibrary>${templateSubLibrary}</pom.the.template.sublibrary>
-        <pom.templates.button.label>Book Templates</pom.templates.button.label>
+        <pom.templates.button.label>${templatesButtonLabel}</pom.templates.button.label>
         <pom.project.version>${project.version}</pom.project.version>
         <pom.catalogue.package>${cataloguePackage}</pom.catalogue.package>
         <pom.jdbc.url>${jdbcURL}</pom.jdbc.url>
-        <pom.form.dashboard.title>Book Templates Dashboard</pom.form.dashboard.title> <!--  removing ${project.version} from page title -->
+        <pom.form.dashboard.title>${dashboardTitle}</pom.form.dashboard.title>
         <pom.logger.constructor>${loggerConstructor}</pom.logger.constructor>
         <pom.nlg.xplan.library>/xplain/nlg/provbasic/provbasic.json</pom.nlg.xplan.library> <!-- /xplain/nlg/xplans-config.json -->
         <pom.nlg.xplan.list>["actedonbehalfof1", "activity1", "agent1", "alternate1", "association1", "attribution1", "derivation1", "end1", "entity1", "generation1", "invalidation1", "specialization1", "start1", "usage1", "member1"]</pom.nlg.xplan.list>

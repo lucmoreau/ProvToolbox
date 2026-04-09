@@ -7,6 +7,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: CompilerBeanMerger, and PAST translation to Rust
 * prov-template-compiler: util for workflows, CompilerBeanHistory and LocalEnactor
 * prov-template-compiler: remote js workflow
+* service-templates-core, prov-template-archetype: support for sql testing sql queries and plots for developers
 
 `2.2.3`
 * prov-template: update to instantiation

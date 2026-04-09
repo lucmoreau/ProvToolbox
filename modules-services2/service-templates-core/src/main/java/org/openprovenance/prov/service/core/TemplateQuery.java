@@ -963,5 +963,34 @@ System.out.println("templateConnections: " + templateConnections.stream().map(Te
 
     }
 
+    public List<Object[]> queryFromSql(String sql, boolean withHeader) {
+        List<Object> linked_records = new LinkedList<>();
+
+        return querier.do_query(linked_records,
+                null,
+                (sb, data) -> {
+                    sb.append(sql);
+                },
+                (rs, data) -> {
+                    int columnCount = rs.getMetaData().getColumnCount();
+                    if (withHeader) {
+                        Object[] header = new Object[columnCount];
+                        for (int i = 1; i <= columnCount; i++) {
+                            header[i - 1] = rs.getMetaData().getColumnLabel(i);
+                        }
+                        data.add(header);
+                    }
+                    while (rs.next()) {
+                        Object[] record = new Object[columnCount];
+                        for (int i = 1; i <= columnCount; i++) {
+                            record[i-1] = rs.getObject(i);
+                        }
+                        data.add(record);
+                    }
+                }).stream().map(o -> (Object[]) o).collect(Collectors.toList());
+
+
+    }
+
 
 }

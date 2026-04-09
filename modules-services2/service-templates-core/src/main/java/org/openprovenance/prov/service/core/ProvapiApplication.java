@@ -86,6 +86,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 	protected final Set<Object> singletons = new HashSet<>();
 
 	public final StorageSetup storageSetup = new StorageSetup();
+	private final TemplateService templateService;
 
 	public ProvapiApplication() {
 		logger.info("ProvapiApplication (service-templates-core) constructor ... start");
@@ -110,8 +111,11 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 		singletons.add(ps);
 		singletons.add(new TranslationService(ps));
 		singletons.add(new org.openprovenance.prov.service.translation.TemplateService(ps));
-		singletons.add(newTemplateService(ps));
+		this.templateService = newTemplateService(ps);
+		singletons.add(templateService);
+		singletons.add(newQueryService(ps));
 		singletons.add(new ResourcesService());
+
 
 
 		singletons.add(new OpenApiResource());
@@ -139,6 +143,10 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
     public TemplateService newTemplateService(PostService ps) {
         return new TemplateService(ps);
     }
+
+	public QueryService newQueryService(PostService ps) {
+		return new QueryService(ps, templateService.getQueryTemplate());
+	}
 
 
     @Override

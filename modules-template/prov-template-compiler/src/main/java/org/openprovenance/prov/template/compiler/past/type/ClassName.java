@@ -46,10 +46,15 @@ public class ClassName extends TypeName {
     public static final ClassName ILLEGAL_STATE_EXCEPTION=ClassName.get("IllegalStateException", "past.exception");
     public static final ClassName ILLEGAL_ARGUMENT_EXCEPTION=ClassName.get("IllegalArgumentException", "past.exception");
     public static final ClassName PAST_EXCEPTION=ClassName.get("Exception", "past.exception");
-    public static final ClassName SQL_EXCEPTION=ClassName.get("SQLException", "java.sql");
     public static final ClassName RUNTIME_EXCEPTION=ClassName.get("RuntimeException", "past.exception");
     public static final ClassName UNCHECKED_EXCEPTION=ClassName.get("UncheckedException", "org.openprovenance.prov.model.exception");
+
+
+    // sql related
+    public static final ClassName SQL_EXCEPTION=ClassName.get("SQLException", "java.sql");
+    public static final ClassName RESULT_SET = ClassName.get("ResultSet", "java.sql");
     public static final ClassName RESULT_SET_META_DATA = ClassName.get("ResultSetMetaData", "java.sql");
+    public static final ClassName POSTGRES_PGOBJECT=ClassName.get("PGobject", "org.postgresql.util");
 
     public static final ClassName PROV_FILE_BUILDER = ClassName.get("FileBuilder", "org.openprovenance.prov.template.log2prov");
     public static final ClassName PROV_FACTORY = ClassName.get("ProvFactory", "org.openprovenance.prov.model");
@@ -152,7 +157,6 @@ public class ClassName extends TypeName {
     public static final ParameterizedType MAP_STRING_STRING_ARRAY = ParameterizedType.get(MAP, STRING, STRING_ARRAY);
     public static final ParameterizedType LIST_OF_STRING = ParameterizedType.get(LIST, STRING);
     public static final ParameterizedType MAP_STRING_LIST_STRING = ParameterizedType.get(MAP, STRING, LIST_OF_STRING);
-    public static final ClassName RESULT_SET = ClassName.get("ResultSet", "java.sql");
     public static final ParameterizedType FUNCTION_STRING_RESULTSET = ParameterizedType.get(FUNCTION, STRING, RESULT_SET);
     public static final ClassName CATALOGUE_DISPATCHER_INTERFACE = ClassName.get("CatalogueDispatcherInterface", "org.openprovenance.prov.model.interop");
     public static final ClassName COLLECTORS = ClassName.get("Collectors", "past.util.stream");

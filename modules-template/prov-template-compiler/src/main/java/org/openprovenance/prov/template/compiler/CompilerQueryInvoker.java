@@ -125,7 +125,7 @@ public class CompilerQueryInvoker {
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
-    private void addSpecialTypesMethods(Set<String> foundSpecialTypes, Class pastClass) {
+    public static void addSpecialTypesMethods(Set<String> foundSpecialTypes, Class pastClass) {
         // add special type converters as methods
         if (foundSpecialTypes.contains(TIMESTAMPTZ)) {
             Method ms = METHOD("convertToTimestamptz")
@@ -228,10 +228,23 @@ public class CompilerQueryInvoker {
                     );
             pastClass.METHOD(ms5);
         }
+
+        if (foundSpecialTypes.contains(FROM_JSON_TEXT)) {
+            Method ms6 = METHOD(CONVERT_FROM_JSON_OBJECT)
+                    .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                    .PARAMETER(OBJECT, "jsonObj")
+                    .RETURNS(STRING)
+                    .BODY(
+                            IF(BINARY_OP(VARIABLE("jsonObj"),"==",Constant.getNull()))
+                                    .THEN(METHOD_CALL("return", List.of(Constant.getNull())))
+                                    .ELSE(RETURN(METHOD_CALL(CastExpression.CAST(POSTGRES_PGOBJECT,VARIABLE("jsonObj")),"getValue", List.of())))
+                    );
+            pastClass.METHOD(ms6);
+        }
     }
 
 
-    public String converterForSpecialType(String specialType) {
+    static public String converterForSpecialType(String specialType) {
         return switch (specialType) {
             case Constants.SQL_DATE -> "convertToDate";
             case Constants.TIMESTAMPTZ -> "convertToTimestamptz";

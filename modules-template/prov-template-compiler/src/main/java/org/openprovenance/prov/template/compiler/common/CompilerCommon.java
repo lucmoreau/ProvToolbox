@@ -25,7 +25,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.openprovenance.prov.model.StatementOrBundle.ALL_RELATIONS;
+import static org.openprovenance.prov.template.compiler.CompilerQueryInvoker.addSpecialTypesMethods;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
+import static org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder.converterForJsonType;
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.InstanceOf.INSTANCE_OF;
 import static org.openprovenance.prov.template.core.InstantiateUtil.isVariable;
@@ -89,6 +91,7 @@ public class CompilerCommon {
 
     Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib_aux(TemplatesProjectConfiguration configs, Locations locations, Set<QualifiedName> allVars, String name, String templateName, String templateFullyQualifiedName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, BeanKind beanKind, String fileName, String consistsOf) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+        Set<String> foundSpecialTypes=new HashSet<>();
 
         org.openprovenance.prov.template.compiler.past.Class pastClass=pastFactory
                 .CLASS(name)
@@ -156,7 +159,7 @@ public class CompilerCommon {
             pastClass.FIELDS(generateField4aBeanConverter2("record2bean", templateName,packageName, Constants.A_RECORD_BEAN_CONVERTER, BeanDirection.COMMON));
             pastClass.FIELDS(generateFieldRecord2CsvConverter(name,templateName,packageName));
 
-            pastClass.METHOD(generateProcessorConverter2(templateName, packageName, bindingsSchema));
+            pastClass.METHOD(generateProcessorConverter2(templateName, packageName, bindingsSchema, foundSpecialTypes));
             pastClass.METHOD(generateFactoryMethodWithBean(templateName, packageName, bindingsSchema));
             pastClass.FIELDS(generateField4aBeanConverter(templateName, packageName, name, bindingsSchema));
 
@@ -180,6 +183,9 @@ public class CompilerCommon {
             pastClass.FIELDS(generateStaticFieldIntegrator(locations, templateName, templateFullyQualifiedName));
             pastClass.METHOD(generateMethodGetIntegrator(locations, templateName, templateFullyQualifiedName));
         }
+
+        addSpecialTypesMethods(foundSpecialTypes,pastClass);
+
 
         String directory = locations.convertToDirectory(packageName);
         Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packageName, locations, stackTraceElement);
@@ -797,7 +803,7 @@ public class CompilerCommon {
     }
 
 
-    public Method generateProcessorConverter2(String template, String packge, TemplateBindingsSchema bindingsSchema) {
+    public Method generateProcessorConverter2(String template, String packge, TemplateBindingsSchema bindingsSchema, Set<String> foundSpecialTypes) {
         final ParameterizedType processorClassName = processorClassType(template, packge, T());
         TypeName returnTypeNotParametrised =ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE);
 
@@ -827,22 +833,31 @@ public class CompilerCommon {
             final ClassName declaredJavaType2 = compilerUtil.getPastTypeForDeclaredType(theVar, key);
             //final String type=declaredJavaType.getName();
             //final String converter2 = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+            String jsonSqlConverter=converterForJsonType(key, bindingsSchema, foundSpecialTypes);
             final Function<List<Expression>, Expression> converter2 = compilerUtil.getConverterForDeclaredType3(declaredJavaType);
 
             Expression expression;
-            if (converter2 == null) {
+            //
+            if (converter2 == null && jsonSqlConverter==null) {
                 expression= CAST(declaredJavaType2, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)));
             } else {
-                expression=
+                IfExpression ifexpression=
                         IF_(
                                 BINARY_OP(
                                         ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)),
-                                        BinaryOp.EQ,
-                                        Constant.getNull()))
-                                .THEN(Constant.getNull())
-                                .ELSE(IF_(INSTANCE_OF(ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)), STRING))
-                                        .THEN(converter2.apply(List.of(CAST(STRING, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count))))))
-                                        .ELSE(CAST(declaredJavaType2, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)))));
+                                        EQ,
+                                        getNull()))
+                                .THEN(getNull());
+                if (converter2 != null && jsonSqlConverter==null) {
+                    ifexpression
+                            .ELSE(IF_(INSTANCE_OF(ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)), STRING))
+                                    .THEN(converter2.apply(List.of(CAST(STRING, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count))))))
+                                    .ELSE(CAST(declaredJavaType2, ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)))));
+                } else {
+                    ifexpression
+                            .ELSE( METHOD_CALL(jsonSqlConverter, List.of(ARRAY_ACCESSOR(VARIABLE("record"), CONSTANT(count)))));
+                }
+                expression=ifexpression;
 
             }
             args2.add(expression);

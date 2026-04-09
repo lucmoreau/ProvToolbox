@@ -17,6 +17,8 @@
         <requiredProperty key="jdbcURL"/>
         <requiredProperty key="serviceContext"/>
         <requiredProperty key="servicePort"/>
+        <requiredProperty key="dashboardTitle"/>
+        <requiredProperty key="templatesButtonLabel"/>
         <requiredProperty key="provtoolboxVersion">
             <defaultValue>${project.version}</defaultValue>
         </requiredProperty>

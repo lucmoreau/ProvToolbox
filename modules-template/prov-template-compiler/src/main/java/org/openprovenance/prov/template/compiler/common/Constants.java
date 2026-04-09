@@ -111,6 +111,7 @@ public interface Constants {
     String NULLABLE_TEXT = "nullableTEXT";
     String NON_NULLABLE_TEXT = "nonNullableTEXT";
     String JSON_TEXT = "json";
+    String FROM_JSON_TEXT = "from_json";
     String TIMESTAMPTZ = "timestamptz";
     String SQL_DATE = "date";
     String RECORDS_VAR = "_records";
@@ -232,4 +233,6 @@ public interface Constants {
     String C_NS = "__C_ns";
     String POST_PROCESSING_VAR = "postProcessing";
     String TABLE_VAR = "table";
+    String CONVERT_FROM_JSON_OBJECT = "convertFromJsonObject";
+    String BUILD_DATE_VAR = "buildDate";
 }

@@ -39,6 +39,8 @@ import static org.openprovenance.prov.template.compiler.past.type.ClassName.INTE
 
 public class CompilerUtil {
 
+
+
     private final ProvFactory pFactory;
     private final PastFactory pastFactory;
     boolean debugComment=true;
@@ -854,5 +856,9 @@ public class CompilerUtil {
 
     public PastFactory getPastFactory() {
         return pastFactory;
+    }
+
+    public ProvFactory getpFactory() {
+        return pFactory;
     }
 }

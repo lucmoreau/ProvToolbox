@@ -778,7 +778,7 @@ public class TemplateService {
         }
     }
 
-
-
-
+    public TemplateQuery getQueryTemplate() {
+        return queryTemplate;
+    }
 }

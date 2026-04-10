@@ -118,6 +118,7 @@ public class Locations {
             case BEAN_HISTORY:
             case IDENTIFIER_REGISTRY: // should it be elsewhere?
             case LOCAL_ENACTOR:
+            case CSV_CONFIGURATOR4OUTPUTS:
                 return getIntegratorPackage(name);
 
             case TABLE_CONFIGURATOR+WITH_MAP:
@@ -138,6 +139,7 @@ public class Locations {
             case INPUTS_CONFIGURATOR:
             case SQL_CONFIGURATOR:
             case CSV_CONFIGURATOR:
+            case CSV_CONFIGURATOR4BEANS:
             case ENACTOR_CONFIGURATOR:
             case COMPOSITE_ENACTOR_CONFIGURATOR:
             case RECORD_2_RECORD_CONFIGURATOR:

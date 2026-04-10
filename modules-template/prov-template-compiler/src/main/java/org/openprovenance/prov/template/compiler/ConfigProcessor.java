@@ -612,6 +612,9 @@ public class ConfigProcessor implements Constants {
         SpecificationFile configurationCsv= compilerConfigurations.generateCsvConfigurator(configs,CSV_CONFIGURATOR, locations,locations.convertToDirectory(locations.getFilePackage(configs.name,CSV_CONFIGURATOR)), CSV_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationCsv.save();
 
+        SpecificationFile configurationCsv2= compilerConfigurations.generateCsvConfigurator2(configs, CSV_CONFIGURATOR4BEANS, locations,locations.convertToDirectory(locations.getFilePackage(configs.name, CSV_CONFIGURATOR4BEANS)), CSV_CONFIGURATOR4BEANS + DOT_JAVA_EXTENSION);
+        configurationCsv2.save();
+
         SpecificationFile configurationBuilder= compilerConfigurations.generateBuilderConfigurator(configs,BUILDER_CONFIGURATOR, locations,locations.convertToDirectory(locations.getFilePackage(configs.name,BUILDER_CONFIGURATOR)), BUILDER_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationBuilder.save();
 
@@ -629,6 +632,10 @@ public class ConfigProcessor implements Constants {
         if (configs.integrator) {
             SpecificationFile configurationInputPropertyOrder = compilerConfigurations.generateInputsConfigurator(configs, INPUTS_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,INPUTS_CONFIGURATOR)), INPUTS_CONFIGURATOR + DOT_JAVA_EXTENSION);
             configurationInputPropertyOrder.save();
+
+            SpecificationFile configurationCsv3= compilerConfigurations.generateCsvConfiguratorOutput(configs, CSV_CONFIGURATOR4OUTPUTS, locations,locations.convertToDirectory(locations.getFilePackage(configs.name, CSV_CONFIGURATOR4OUTPUTS)), CSV_CONFIGURATOR4OUTPUTS + DOT_JAVA_EXTENSION);
+            configurationCsv3.save();
+
 
             SpecificationFile configurationOutputPropertyOrder = compilerConfigurations.generateOutputsConfigurator(configs, OUTPUTS_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,OUTPUTS_CONFIGURATOR)), OUTPUTS_CONFIGURATOR + DOT_JAVA_EXTENSION);
             configurationOutputPropertyOrder.save();

@@ -147,7 +147,7 @@ public class TemplateService {
 
 
         // dynamically load class org.openprovenance.bk.physical.CatalogueDispatcher with map and pf as arguments;
-        BiFunction<Object, org.openprovenance.prov.model.ProvFactory, CatalogueDispatcherInterface> factory=dynamicallyLoadClass(fullClassName, CatalogueDispatcherInterface.class);
+        BiFunction<Object, ProvFactory, CatalogueDispatcherInterface> factory=dynamicallyLoadClass(fullClassName, CatalogueDispatcherInterface.class);
 
         this.catalogueDispatcher = getCatalogueDispatcher(factory, this.map, queryExecutor);
         this.querier = new Querier(storage, conn);
@@ -258,8 +258,8 @@ public class TemplateService {
     @POST
     @Path("/statements")
     @Tag(name = "template")
-    @Consumes({InteropMediaType.MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON})
-    @Produces({InteropMediaType.MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON}) //InteropMediaType.MEDIA_TEXT_CSV,
+    @Consumes({MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON})
+    @Produces({MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON})
     public Response submitStatements(@Context HttpServletRequest request,
                                       @Context HttpHeaders headers,
                                       @Context UriInfo uriInfo,
@@ -278,22 +278,30 @@ public class TemplateService {
 
         logger.info("post statements id: principal " + principal);
 
+        String acceptHeader = request.getHeader(HttpHeaders.ACCEPT).toLowerCase();
+        logger.info("post statements id: accept header " + acceptHeader);
+        switch (acceptHeader) {
+            case MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON:
+                break;
+            default: return utils.composeResponseBadRequest("unknown accept header " + acceptHeader, new UnsupportedOperationException(acceptHeader));
+        }
 
         List<Object> result;
         if (documentOrCsv.csv!=null) {
-            result=templateLogic.processIncomingCsv(documentOrCsv.csv);
+            result=templateLogic.processIncomingCsv(documentOrCsv.csv,acceptHeader);
         } else if (documentOrCsv.json!=null) {
-            result=templateLogic.processIncomingJson(documentOrCsv.json);
+            // not accepting yet csv return
+            result=templateLogic.processIncomingJson(documentOrCsv.json,acceptHeader);
         } else {
             return utils.composeResponseInternalServerError("unknown input document", new UnsupportedOperationException());
         }
         String hash= (headerAcceptProvHash==null)?null:headerInfo.get().get(HTTP_HEADER_CONTENT_PROV_HASH);
         String location= headerInfo.get().get(HTTP_HEADER_LOCATION);
-        switch (request.getHeader(HttpHeaders.ACCEPT).toLowerCase()) {
-            case InteropMediaType.MEDIA_TEXT_CSV:
+        switch (acceptHeader) {
+            case MEDIA_TEXT_CSV:
                 return ServiceUtils
                         .composeResponseOK(templateLogic.streamOutRecordsToCSV(result))
-                        .type(InteropMediaType.MEDIA_TEXT_CSV)
+                        .type(MEDIA_TEXT_CSV)
                         .header(HTTP_HEADER_CONTENT_PROV_HASH, hash)
                         .location((location==null)?null:URI.create(location))
                         .build();
@@ -312,7 +320,7 @@ public class TemplateService {
     @GET
     @Path("/template/{template}/{id}.{extension}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML, InteropMediaType.MEDIA_TEXT_CSV  })
+    @Produces({ MEDIA_APPLICATION_JSONLD, MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML, MEDIA_TEXT_CSV  })
     public Response getTemplateInstanceWithId(@Context HttpServletResponse response,
                                                  @Context HttpServletRequest request,
                                                  @Context HttpHeaders headers,
@@ -338,15 +346,15 @@ public class TemplateService {
                 ll.add(csv);
                 ll.add("\n");
             }
-            return ServiceUtils.composeResponseOK(templateLogic.streamOutRecordsToCSV(ll)).type(InteropMediaType.MEDIA_TEXT_CSV).build();
+            return ServiceUtils.composeResponseOK(templateLogic.streamOutRecordsToCSV(ll)).type(MEDIA_TEXT_CSV).build();
         }
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 
         switch (extension) {
             case "jsonld":
-                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_APPLICATION_JSONLD).build();
+                return ServiceUtils.composeResponseOK(result).type(MEDIA_APPLICATION_JSONLD).build();
             case "provn":
-                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
+                return ServiceUtils.composeResponseOK(result).type(MEDIA_TEXT_PROVENANCE_NOTATION).build();
             case "svg":
                 return ServiceUtils.composeResponseOK(result).type(MEDIA_IMAGE_SVG_XML).build();
 
@@ -369,7 +377,7 @@ public class TemplateService {
     @GET
     @Path("/template/{template}/{id}/{variable:\\w+}{extension:(\\.\\w+)?}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML})
+    @Produces({ MEDIA_APPLICATION_JSONLD, MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML})
     public Response getTemplatePropertyInstanceWithId(@Context HttpServletResponse response,
                                                       @Context HttpServletRequest request,
                                                       @Context HttpHeaders headers,
@@ -394,7 +402,7 @@ public class TemplateService {
 
         List<Object> selections=new LinkedList<>();
         for (Object[] record: records) {
-            int index=java.util.Arrays.asList(catalogueDispatcher.getPropertyOrder().get(template)).indexOf(variable);
+            int index= Arrays.asList(catalogueDispatcher.getPropertyOrder().get(template)).indexOf(variable);
             Object[] objectRecord=recordMaker.get(template).apply(record);
             selections.add(objectRecord[index]);
         }
@@ -416,9 +424,9 @@ public class TemplateService {
 
         switch (extension) {
             case "jsonld":
-                return ServiceUtils.composeResponseOK(newDoc).type(InteropMediaType.MEDIA_APPLICATION_JSONLD).build();
+                return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_APPLICATION_JSONLD).build();
             case "provn":
-                return ServiceUtils.composeResponseOK(newDoc).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
+                return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_TEXT_PROVENANCE_NOTATION).build();
             case "svg":
                 return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_IMAGE_SVG_XML).build();
 
@@ -438,7 +446,7 @@ public class TemplateService {
 
     @POST
     @Path("/explanation/templates")
-    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Consumes({MEDIA_APPLICATION_JSON})
     public Response getExplanation(@Context HttpServletResponse response,
                                    @Context HttpServletRequest request,
                                    @Context HttpHeaders headers,
@@ -453,7 +461,7 @@ public class TemplateService {
 
     @GET
     @Path("/explanation/template/{template}/{id}")
-    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Consumes({MEDIA_APPLICATION_JSON})
     @Produces({MediaType.TEXT_PLAIN, MEDIA_APPLICATION_JSON})
     public Response getExplanation(@Context HttpServletResponse response,
                                    @Context HttpServletRequest request,
@@ -486,9 +494,9 @@ public class TemplateService {
                     sb.append(explanations.get(key)).append("\n");
                 }
                 return ServiceUtils.composeResponseOK(sb.toString()).type(MediaType.TEXT_PLAIN_TYPE).build();
-            case InteropMediaType.MEDIA_APPLICATION_JSON:
+            case MEDIA_APPLICATION_JSON:
                 StreamingOutput promise= out -> om.writeValue(out,explanations);
-                return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_APPLICATION_JSON).build();
+                return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
         }
         return utils.composeResponseBadRequest("unknown accept header " + request.getHeader(HttpHeaders.ACCEPT), new UnsupportedOperationException(request.getHeader(HttpHeaders.ACCEPT)));
 
@@ -498,8 +506,8 @@ public class TemplateService {
     @POST
     @Path("/templates.{extension}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
-    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Produces({ MEDIA_APPLICATION_JSONLD, MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
+    @Consumes({MEDIA_APPLICATION_JSON})
     public Response getTemplates(@Context HttpServletResponse response,
                                  @Context HttpServletRequest request,
                                  @Context HttpHeaders headers,
@@ -516,9 +524,9 @@ public class TemplateService {
 
         switch (extension) {
             case "jsonld":
-                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_APPLICATION_JSONLD).build();
+                return ServiceUtils.composeResponseOK(result).type(MEDIA_APPLICATION_JSONLD).build();
             case "provn":
-                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
+                return ServiceUtils.composeResponseOK(result).type(MEDIA_TEXT_PROVENANCE_NOTATION).build();
             case "svg":
                 return ServiceUtils.composeResponseOK(result).type(MEDIA_IMAGE_SVG_XML).build();
         }
@@ -530,8 +538,8 @@ public class TemplateService {
     @POST
     @Path("/templates/records")
     @Tag(name = "template")
-    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
-    @Produces({InteropMediaType.MEDIA_TEXT_CSV})
+    @Consumes({MEDIA_APPLICATION_JSON})
+    @Produces({MEDIA_TEXT_CSV})
     public Response getTemplatesRecords(@Context HttpServletResponse response,
                                         @Context HttpServletRequest request,
                                         @Context HttpHeaders headers,
@@ -564,7 +572,7 @@ public class TemplateService {
             }
         };
 
-        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_TEXT_CSV).build();
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_TEXT_CSV).build();
 
     }
 
@@ -572,7 +580,7 @@ public class TemplateService {
     @POST
     @Path("/templates/viz")
     @Tag(name = "template")
-    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Consumes({MEDIA_APPLICATION_JSON})
     @Produces({MEDIA_IMAGE_SVG_XML})
     public Response getTemplatesViz(@Context HttpServletResponse response,
                                     @Context HttpServletRequest request,
@@ -586,15 +594,15 @@ public class TemplateService {
 
         StreamingOutput promise= out -> templateLogic.generateViz(config, principalAsPreferredUsername, out);
 
-        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_IMAGE_SVG_XML).build();
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_IMAGE_SVG_XML).build();
 
     }
 
     @GET
     @Path("/live/{relation}/{id:\\d+}{extension:(\\.\\w+)?}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
-    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Produces({ MEDIA_APPLICATION_JSONLD, MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
+    @Consumes({MEDIA_APPLICATION_JSON})
     public Response getLiveNode(@Context HttpServletResponse response,
                                 @Context HttpServletRequest request,
                                 @Context HttpHeaders headers,
@@ -628,12 +636,12 @@ public class TemplateService {
             Object[] record=records.get(i);
             String property=ll.get(i).property;
             String template=(String)record[0];
-            System.out.println("template " + template + " property " + property + " record " + java.util.Arrays.asList(record));
+            System.out.println("template " + template + " property " + property + " record " + Arrays.asList(record));
             //logger.info("template " + template);
             //logger.info("property " + property);
             //logger.info("record " + java.util.Arrays.asList(record));
 
-            int index=java.util.Arrays.asList(catalogueDispatcher.getPropertyOrder().get(template)).indexOf(property);
+            int index= Arrays.asList(catalogueDispatcher.getPropertyOrder().get(template)).indexOf(property);
             Object[] objectRecord=recordMaker.get(template).apply(record);
             selections.add(objectRecord[index]);
         }
@@ -654,9 +662,9 @@ public class TemplateService {
 
         switch (extension) {
             case "jsonld":
-                return ServiceUtils.composeResponseOK(newDoc).type(InteropMediaType.MEDIA_APPLICATION_JSONLD).build();
+                return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_APPLICATION_JSONLD).build();
             case "provn":
-                return ServiceUtils.composeResponseOK(newDoc).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
+                return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_TEXT_PROVENANCE_NOTATION).build();
             case "svg":
                 return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_IMAGE_SVG_XML).build();
         }
@@ -668,7 +676,7 @@ public class TemplateService {
     @GET
     @Path("/hash/template/{template}/{id}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Produces({ MEDIA_APPLICATION_JSON})
     public Response getHash(@Context HttpServletResponse response,
                                               @Context HttpServletRequest request,
                                               @Context HttpHeaders headers,
@@ -687,14 +695,14 @@ public class TemplateService {
 
         StreamingOutput promise= out -> om.writeValue(out,hash);
 
-        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_APPLICATION_JSON).build();
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
 
     }
 
     @GET
     @Path("/rehash/template/{template}/{id}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Produces({ MEDIA_APPLICATION_JSON})
     public Response reHash(@Context HttpServletResponse response,
                             @Context HttpServletRequest request,
                             @Context HttpHeaders headers,
@@ -726,15 +734,15 @@ public class TemplateService {
 
         StreamingOutput promise= out -> om.writeValue(out,hash);
 
-        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_APPLICATION_JSON).build();
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
 
     }
 
     private String determineOptionalExtension(HttpHeaders headers, String extension) {
         if (extension ==null || extension.isEmpty()) {
-            if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION))) {
+            if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(MEDIA_TEXT_PROVENANCE_NOTATION))) {
                 extension ="provn";
-            } else if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(InteropMediaType.MEDIA_APPLICATION_JSONLD))) {
+            } else if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(MEDIA_APPLICATION_JSONLD))) {
                 extension ="jsonld";
             } else if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(MEDIA_IMAGE_SVG_XML))) {
                 extension ="svg";
@@ -751,7 +759,7 @@ public class TemplateService {
 
 
     @SuppressWarnings("unchecked")
-    static <T> BiFunction<Object,org.openprovenance.prov.model.ProvFactory,T> dynamicallyLoadClass(String factory, Class<T> iface) {
+    static <T> BiFunction<Object, ProvFactory,T> dynamicallyLoadClass(String factory, Class<T> iface) {
         Class<?> clazz;
         try {
             clazz = Class.forName(factory);

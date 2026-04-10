@@ -19,9 +19,7 @@ public class EnactCsvRecords<T> {
 
 
 
-    public List<T> process(CSVParser parser, Map<String, Function<Object[],T>> enactors, Map<String,  Function<List<Object[]>,T>> enactors_N) throws IOException {
-        return process(parser.getRecords(),enactors,enactors_N);
-    }
+
 
     public List<T> process(Collection<CSVRecord> records, Map<String, Function<Object[],T>> enactors, Map<String,  Function<List<Object[]>,T>> enactors_N) {
 
@@ -54,6 +52,46 @@ public class EnactCsvRecords<T> {
                 }).collect(Collectors.toList());
                 T populatedRecords0 = processor_N.apply(ll);
                 populatedRecords.add(populatedRecords0);
+            } else {
+                throw new EnactorException("Unknown method " + method, method);
+            }
+        }
+
+        return populatedRecords;
+    }
+
+    public List<Object> process(Collection<CSVRecord> records, Map<String, Function<Object[],T>> enactors, Map<String,  Function<List<Object[]>,T>> enactors_N, Map<String, Function<Object,String>> csvConverter4Outputs) {
+
+        List<Object> populatedRecords=new LinkedList<>();
+
+        CSVRecord record0=records.iterator().next();
+        int size0=record0.size();
+        Object[] args0=new Object[size0];
+        String method = populateRecordAndExtractMethod(record0, size0, args0);
+        Function<Object[],T> processor_1=enactors.get(method);
+        Function<Object,String> csv_processor_1=csvConverter4Outputs.get(method);
+
+        // NOTE
+        // distinguish the processor for a single record (enactors.get(method)) from the processor for N (enactors_N.get(method)).
+        // Assumption: we receive a single record, or we receive multiple records of the same type
+        if (processor_1!=null) {
+            for (CSVRecord record : records) {
+                int size = record.size();
+                Object[] args = new Object[size];
+                populateRecordAndExtractMethod(record, size, args);
+                populatedRecords.add(csv_processor_1.apply(processor_1.apply(args)));
+            }
+        } else {
+            Function<List<Object[]>,T> processor_N=enactors_N.get(method);
+            if (processor_N!=null) {
+                List<Object[]> ll = records.stream().map(record -> {
+                    int size = record.size();
+                    Object[] args = new Object[size];
+                    populateRecordAndExtractMethod(record, size, args);
+                    return args;
+                }).collect(Collectors.toList());
+                T populatedRecords0 = processor_N.apply(ll);
+                populatedRecords.add(csv_processor_1.apply(populatedRecords0));
             } else {
                 throw new EnactorException("Unknown method " + method, method);
             }

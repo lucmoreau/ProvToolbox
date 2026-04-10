@@ -124,6 +124,7 @@ public class ClassName extends TypeName {
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_ANY=FUNCTION_OBJARRAY_TO_TYPE(TypeVariable.get("?"));
     public static final ParameterizedType FUNCTION_LIST_OBJARRAY_TO_ANY=FUNCTION_LIST_OBJARRAY_TO_TYPE(TypeVariable.get("?"));
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_STRING=FUNCTION_OBJARRAY_TO_TYPE(STRING);
+    public static final ParameterizedType FUNCTION_BEAN_TO_STRING=FUNCTION_BEAN_TO_TYPE(STRING);
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_OBJ_ARRAY = FUNCTION_OBJARRAY_TO_TYPE(OBJECT_ARRAY);
     public static final ParameterizedType BIFUNCTION_MAP_STRING_MAP_STRING_INTARRAY_STRINGARRAY_TO_T= ParameterizedType.get(BIFUNCTION, MAP_STRING_MAP_STRING_INTARRAY, STRING_ARRAY, T());
     public static final ParameterizedType LIST_MAP_STRING_OBJECT=ParameterizedType.get(LIST, MAP_STRING_OBJECT);
@@ -168,6 +169,9 @@ public class ClassName extends TypeName {
     public static final ParameterizedType HASH_SET_GENERICS= ParameterizedType.get(HASH_SET);
     public static final ParameterizedType BIFUNCTION_MAP_OUT_OUT = ParameterizedType.get(BIFUNCTION, MAP_STRING_OBJECT, TYPE_OUT, TYPE_OUT);
 
+    public static ParameterizedType FUNCTION_BEAN_TO_TYPE(TypeName returnType) {
+        return ParameterizedType.get(FUNCTION, OBJECT, returnType);
+    }
     public static ParameterizedType FUNCTION_OBJARRAY_TO_TYPE(TypeName returnType) {
         return ParameterizedType.get(FUNCTION, OBJECT_ARRAY, returnType);
     }

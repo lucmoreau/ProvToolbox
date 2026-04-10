@@ -3,6 +3,7 @@ package org.openprovenance.prov.service.core;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.StreamingOutput;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -27,6 +28,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.model.interop.InteropMediaType.MEDIA_TEXT_CSV;
 import static org.openprovenance.prov.service.core.TemplateService.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
@@ -66,7 +68,7 @@ public class TemplateLogic {
         this.shortNames=shortNames;
     }
 
-    public List<Object> processIncomingJson(List<Map<String, Object>> entries) {
+    public List<Object> processIncomingJson(List<Map<String, Object>> entries, String acceptHeader) {
         //logger.info("Processing incoming JSON " + entries);
 
         // assumption: all entries use the same template
@@ -137,16 +139,22 @@ public class TemplateLogic {
         }
     }
 
-    public List<Object> processIncomingCsv(CSVParser csv) {
+    public List<Object> processIncomingCsv(CSVParser csv, String acceptHeader) {
         Collection<CSVRecord> collection=csv.getRecords();
         Map<String, Function<Object[],?>> enactors = templateDispatcher.getEnactorConverter();
         Map<String, Function<Object[],Object>> enactors2= enactors.entrySet().stream().filter(e->e.getValue()!=null).collect(Collectors.toMap(Map.Entry::getKey, e -> (Function<Object[],Object>) e.getValue()));
 
         Map<String, Function<List<Object[]>,?>> compositeEnactors= templateDispatcher.getCompositeEnactorConverter();
+        Map<String, Function<Object,String>> csvConverter4Outputs= templateDispatcher.getCsvConverter4Outputs();
         Map<String, Function<List<Object[]>,Object>> compositeEnactors2= compositeEnactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (Function<List<Object[]>,Object>) e.getValue()));
-        List<Object> newRecords=enactCsvRecords.process(collection, enactors2, compositeEnactors2);
-
-        return newRecords;
+        List<Object> newRecords;
+        return switch (acceptHeader) {
+            case MEDIA_TEXT_CSV ->
+                    enactCsvRecords.process(collection, enactors2, compositeEnactors2, csvConverter4Outputs);
+            case APPLICATION_VND_KCL_PROV_TEMPLATE_JSON ->
+                    enactCsvRecords.process(collection, enactors2, compositeEnactors2);
+            default -> throw new IllegalStateException("Unsupported accept header " + acceptHeader);
+        };
     }
 
     @NotNull

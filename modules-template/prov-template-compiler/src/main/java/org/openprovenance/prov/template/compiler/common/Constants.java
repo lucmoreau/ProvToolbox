@@ -54,6 +54,8 @@ public interface Constants {
     String SQL_CONFIGURATOR = "SqlConfigurator";
     String SQL_INSERT_CONFIGURATOR = "SqlInsertConfigurator";
     String CSV_CONFIGURATOR = "CsvConfigurator";
+    String CSV_CONFIGURATOR4BEANS = "CsvConfigurator4Beans";
+    String CSV_CONFIGURATOR4OUTPUTS = "CsvConfigurator4Outputs";
     String TABLE_CONFIGURATOR = "TableConfigurator";
     String COMPOSITE_TABLE_CONFIGURATOR = "CompositeTableConfigurator";
     String BUILDER_CONFIGURATOR = "BuilderConfigurator";

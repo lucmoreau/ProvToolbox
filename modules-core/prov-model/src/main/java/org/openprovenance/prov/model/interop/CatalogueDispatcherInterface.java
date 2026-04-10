@@ -24,6 +24,9 @@ public interface CatalogueDispatcherInterface<T> {
 
     Map<String, Function<Object[], String>> getCsvConverter();
 
+    Map<String, Function<Object, String>> getCsvConverter4Beans();
+    Map<String, Function<Object, String>> getCsvConverter4Outputs();
+
     Map<String, String[]> getForeignTables();
 
     void initEnactorConverter(Function<String, ResultSet> querier,

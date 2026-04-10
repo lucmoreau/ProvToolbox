@@ -104,11 +104,32 @@ post.template:
 					-d @src/test/resources/json/bindings.json \
 					-H "Content-type: application/vnd.kcl.prov-template+json" \
 					-H "Accept: application/vnd.kcl.prov-template+json" \
-					$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/provapi/statements
+					$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/statements
 
 post.template2:
 	bin/keycloak-get-token.sh
 	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" -H "Accept-PROV-Hash: SHA3-512" -d @src/test/resources/json/bindings2.json -H "Content-type: application/vnd.kcl.prov-template+json" -H "Accept: application/vnd.kcl.prov-template+json" $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/ptl/provapi/statements
+
+
+CSV_LINE="org.openprovenance.book.fs.FileInit,,,,,xxx,"
+post.template.csv:
+	sh bin/keycloak-get-token.sh
+	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" \
+					-d $(CSV_LINE) \
+					-H "Accept: text/csv" \
+					-H "Content-type: text/csv" \
+					$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/statements
+
+JSON_BEAN='[{"isA": "org.openprovenance.book.fs.FileInit",  "type": "xxx" }]'
+post.template.json:
+	sh bin/keycloak-get-token.sh
+	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" \
+					-d $(JSON_BEAN) \
+					-H "Content-type: application/vnd.kcl.prov-template+json" \
+					-H "Accept: text/csv" \
+					$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/statements
+
+
 
 
 

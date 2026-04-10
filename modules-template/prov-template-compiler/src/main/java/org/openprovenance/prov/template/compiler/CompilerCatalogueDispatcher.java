@@ -52,6 +52,8 @@ public class CompilerCatalogueDispatcher {
         put("outputs", OUTPUTS_CONFIGURATOR);
         put("sqlConverter", SQL_CONFIGURATOR);
         put("csvConverter", CSV_CONFIGURATOR);
+        put("csvConverter4Beans", CSV_CONFIGURATOR4BEANS);
+        put("csvConverter4Outputs", CSV_CONFIGURATOR4OUTPUTS);
         put("sqlInsert", SQL_INSERT_CONFIGURATOR);
         put("beanConverter", CONVERTER_CONFIGURATOR);
         put("relation0", RELATION0_CONFIGURATOR);
@@ -70,6 +72,8 @@ public class CompilerCatalogueDispatcher {
         put("outputs",                   ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING_ARRAY));
         put("sqlConverter",              ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_STRING));
         put("csvConverter",              ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_STRING));
+        put("csvConverter4Beans",        ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_BEAN_TO_STRING));
+        put("csvConverter4Outputs",      ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_BEAN_TO_STRING));
         put("sqlInsert",                 ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING));
         put("beanConverter",             ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_ANY));
         put("relation0",                 ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_MAP_STRING_INTARRAY));

@@ -3,16 +3,13 @@
 
 # TODO
 ## template-compiler:
-csv DeSerializer:
 
-issue with WS ignoring \n.
-See /Users/luc/IdeaProjects/ProvToolbox/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/readers/JsonOrCsvMessageBodyReader.java
-lines 60-64
+CompilerCommon
+/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/CompilerCommon.java
 
-And the artificially introduced ! in the examples
-/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/test/resources/enact/payloadComposite1.csv
+Line 486, handling of the Common Bean, is older code, reference Logger, not ideal
 
-
+The new code: for Input/Output is much neater. Can it be used for all cases? to test.
 
 ## template-compiler:
 Revisit TableConfigurator so that generic type is per method, rather than class level, allowing unnecessary casts.

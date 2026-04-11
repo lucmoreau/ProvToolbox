@@ -7,10 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -57,19 +54,17 @@ public class EnactCsvRecords<T> {
                 throw new EnactorException("Unknown method " + method, method);
             }
         } else {
-            Function<Object,Object> outputTransformer = (csvConverter4OutputsComposite != null) ? csvConverter4OutputsComposite.get(method)::apply : t -> t;
+            Function<Object,Object[]> outputTransformer = (csvConverter4OutputsComposite != null) ?
+                    (o) -> csvConverter4OutputsComposite.get(method).apply(o).split("\\\\n") :
+                    t -> new Object[] { t };
             List<Object[]> ll = records.stream().map(record -> {
                 int size = record.size();
                 Object[] args = new Object[size];
                 populateRecordAndExtractMethod(record, size, args);
                 return args;
             }).collect(Collectors.toList());
-            try {
-                System.out.println(new ObjectMapper().writeValueAsString(ll));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-            populatedRecords.add(outputTransformer.apply(processor_N.apply(ll)));
+            Collections.addAll(populatedRecords, outputTransformer.apply(processor_N.apply(ll)));
+
         }
 
         return populatedRecords;

@@ -166,46 +166,7 @@ public class CompilerBeanGenerator {
         return new SpecificationFile(javaGenerator,pythonGenerator,jsGenerator,rustGenerator);
     }
 
-    /*
-    static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, String templateName, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
-        return newSpecificationFiles(locations, spec, myfile, directory, fileName, packge, selectedExports, compilerUtil.pySpecWithComment(templateName, stackTraceElement));
-    }
 
-
-    static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, TemplatesProjectConfiguration configs, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
-        return newSpecificationFiles(locations, spec, myfile, directory, fileName, packge, selectedExports, compilerUtil.pySpecWithComment(configs, stackTraceElement));
-    }
-
-     */
-
-    /*
-    private static SpecificationFile newSpecificationFiles(Locations locations, TypeSpec spec, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports, String prelude) {
-        final PoetParser poetParser = new PoetParser();
-        poetParser.emitPrelude(prelude);
-        int importPoint=poetParser.getSb().length();
-        org.openprovenance.prov.template.compiler.past0.Class clazz = poetParser.parse(spec, selectedExports);
-        Python emitter = new Python(poetParser.getSb(), 0);
-        clazz.emit(emitter);
-        // a bit of a trick: defined delayed fields outside the class, after the class definition, this allows the initialiser to refer to class methods.
-        clazz.emitClassInitialiser(emitter,0);
-
-        poetParser.getSb().insert(importPoint,"#end imports\n\n");
-        for (String imprt: new HashSet<>(emitter.getImports()).stream().sorted().collect(Collectors.toList())) {
-            poetParser.getSb().insert(importPoint,"\n");
-            poetParser.getSb().insert(importPoint,imprt);
-        }
-        poetParser.getSb().insert(importPoint,"\n\n#start imports\n");
-
-
-
-        String pyDirectory = locations.python_dir + "/" + packge.replace('.', '/') + "/";
-        String pyFilename = myfile.typeSpec.name + ".py";
-        return new SpecificationFile(myfile, directory, fileName, packge,
-                pyDirectory, pyFilename, () -> poetParser.getSb().toString());
-    }
-
-
-     */
     public Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable=new HashMap<>();
 
     String newVariant(String templateFullyQualifiedName, List<String> sharing, TemplatesProjectConfiguration configs) {
@@ -235,11 +196,6 @@ public class CompilerBeanGenerator {
         return sharing.stream().sorted().collect(Collectors.joining("_"));
     }
 
-    /*
-    static final ParameterizedTypeName classOfUnknown = ParameterizedTypeName.get(ClassName.get(Class.class), TypeVariableName.get("?"));
-
-
-     */
 
     private void generateCompositeList(String templateName, String packge, Locations locations, org.openprovenance.prov.template.compiler.past.Class builder, BeanDirection beanDirection, String variant, List<String> sharing) {
 

@@ -241,6 +241,7 @@ public class CompilerBeanCompleter2 {
                                 RETURN(VARIABLE(BEAN_VAR)));
                 pastClass.METHOD(mspec0);
 
+                /*
                 Method mspec_incorrect = METHOD(Constants.PROCESS_METHOD_NAME+"Incorrect")
                         .commentFileLocation()
                         .MODIFIERS(Modifier.PUBLIC)
@@ -273,6 +274,8 @@ public class CompilerBeanCompleter2 {
                                 RETURN(VARIABLE(BEAN_VAR)));
 
                 pastClass.METHOD(mspec_incorrect);
+
+                 */
 
             }
         }

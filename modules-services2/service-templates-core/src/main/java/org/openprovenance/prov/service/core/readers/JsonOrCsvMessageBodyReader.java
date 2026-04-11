@@ -57,11 +57,7 @@ public class JsonOrCsvMessageBodyReader implements MessageBodyReader<JsonOrCsv> 
         final String mediaString = trimCharSet(mediaType);
 
         if (mediaString.equals(InteropMediaType.MEDIA_TEXT_CSV)) {
-            String str=new String(inputStream.readAllBytes(),  StandardCharsets.UTF_8);
-            String str2= String.join("\n", Arrays.asList(str.split("!")));
-            System.out.println("CSV input: "+str2);
-            CSVParser parser = CSVParser.parse(str2, CSVFormat.DEFAULT);
-            //CSVParser parser = CSVParser.parse(inputStream, StandardCharsets.UTF_8, CSVFormat.DEFAULT);
+            CSVParser parser = CSVParser.parse(inputStream, StandardCharsets.UTF_8, CSVFormat.DEFAULT);
             JsonOrCsv res = new JsonOrCsv();
             res.csv = parser;
             res.json = null;

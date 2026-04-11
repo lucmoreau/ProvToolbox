@@ -115,10 +115,11 @@ post.template2:
 JSON_BEAN='[{"isA": "org.openprovenance.book.fs.FileInit",  "type": "xxx" }]'
 CSV_LINE="org.openprovenance.book.fs.FileInit,,,,,xxx,"
 
+## note that curl ignores the newlines in the CSV, so we have to use --data-binary because -d does not split on newlines
 post.template.csv:
 	sh bin/keycloak-get-token.sh
 	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" \
-					-d $(CSV_LINE) \
+					--data-binary $(CSV_LINE) \
 					-H "Accept: text/csv" \
 					-H "Content-type: text/csv" \
 					$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/statements
@@ -126,7 +127,7 @@ post.template.csv:
 post.template.json:
 	sh bin/keycloak-get-token.sh
 	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" \
-					-d $(JSON_BEAN) \
+					--data-binary $(JSON_BEAN) \
 					-H "Content-type: application/vnd.kcl.prov-template+json" \
 					-H "Accept: text/csv" \
 					$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/statements

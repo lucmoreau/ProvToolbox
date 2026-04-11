@@ -70,52 +70,46 @@ public class TemplateLogic {
 
     public List<Object> processIncomingJson(List<Map<String, Object>> entries, String acceptHeader) {
         //logger.info("Processing incoming JSON " + entries);
-
-        // assumption: all entries use the same template
         final String isA=(String) entries.get(0).get(IS_A);
         List<Object> recordsResult=new LinkedList<>();
         Map<String, String[]> properties= templateDispatcher.getPropertyOrder();
         Map<String, Function<Object[],?>> enactorConverters= templateDispatcher.getEnactorConverter();
         Map<String, Function<List<Object[]>,?>> compositeEnactorConverters= templateDispatcher.getCompositeEnactorConverter();
-
-
+        Map<String, Function<Object,String>> csvConverter4Outputs= templateDispatcher.getCsvConverter4Outputs();
 
         String[] props=properties.get(isA);
         Function<Object[],?> enactor=enactorConverters.get(isA);
-
+        Function<Object,String> csv_processor_1=csvConverter4Outputs.get(isA);
 
         if (enactor!=null) {
-            //debugDisplay("entries ", entries) ;
             for (Map<String, Object> entry : entries) {
                 Object[] array = convertToArray(entry, props);
-                //debugDisplay("array ", array) ;
-                recordsResult.add(enactor.apply(array));
+                if (acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
+                    recordsResult.add(enactor.apply(array));
+                } else {
+                    // csv here
+                    recordsResult.add(csv_processor_1.apply(enactor.apply(array)));
+                }
             }
         } else {
             for (Map<String, Object> composite : entries) {
                 List<Object[]> objects = new LinkedList<>();
                 Object[] array = convertToArray(composite, props);
                 objects.add(array);
-
                 for (Map<String, Object> composee: (List<Map<String, Object>>) composite.get(ELEMENTS)) {
-
                     String is2A=(String) composee.get(IS_A);
                     String[] props2=properties.get(is2A);
                     Object[] array2 = convertToArray(composee, props2);
                     objects.add(array2);
                 }
-
-
-                //debugDisplay("founds objects " , objects);
-
-
-                //System.out.println("need composite converter for " + isA);
-                //System.out.println("need composite converter for " + compositeEnactorConverters);
                 Function<List<Object[]>,?> compositeEnactor = compositeEnactorConverters.get(isA);
-                //System.out.println("found composite converter for " + compositeEnactor);
-                Object res=compositeEnactor.apply(objects);
-                //debugDisplay("found result " , res);
-                recordsResult.add(res);
+                if (acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
+                    recordsResult.add(compositeEnactor.apply(objects));
+                } else {
+                    // csv here
+                    throw new UnsupportedOperationException("CSV output not supported for composite templates yet");
+                }
+
             }
         }
         return recordsResult;
@@ -147,7 +141,6 @@ public class TemplateLogic {
         Map<String, Function<List<Object[]>,?>> compositeEnactors= templateDispatcher.getCompositeEnactorConverter();
         Map<String, Function<Object,String>> csvConverter4Outputs= templateDispatcher.getCsvConverter4Outputs();
         Map<String, Function<List<Object[]>,Object>> compositeEnactors2= compositeEnactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (Function<List<Object[]>,Object>) e.getValue()));
-        List<Object> newRecords;
         return switch (acceptHeader) {
             case MEDIA_TEXT_CSV ->
                     enactCsvRecords.process(collection, enactors2, compositeEnactors2, csvConverter4Outputs);

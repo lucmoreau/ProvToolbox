@@ -472,7 +472,7 @@ public class ConfigProcessor implements Constants {
             SpecificationFile beanCompleter3 = compilerBeanCompleter3.generateBeanCompleter3(configs, locations, BEAN_COMPLETER3);
             beanCompleter3.save();
 
-            SpecificationFile beanCompleter2Composite = compilerBeanCompleter2Composite.generateBeanCompleter2Composite(configs, locations, COMPOSITE_BEAN_COMPLETER2);
+            SpecificationFile beanCompleter2Composite = compilerBeanCompleter2Composite.generateBeanCompleter2Composite(configs, locations, BEAN_COMPLETER2_COMPOSITE);
             beanCompleter2Composite.save();
         }
 

@@ -24,8 +24,6 @@ import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
-import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
-import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
@@ -46,7 +44,7 @@ public class CompilerBeanCompleter2Composite {
     SpecificationFile generateBeanCompleter2Composite(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        Class pastClass = pastFactory.CLASS(COMPOSITE_BEAN_COMPLETER2)
+        Class pastClass = pastFactory.CLASS(BEAN_COMPLETER2_COMPOSITE)
                 .MODIFIERS(Modifier.PUBLIC)
                 .ANNOTATION(NoSerialization.NAME);
 

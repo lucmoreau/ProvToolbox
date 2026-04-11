@@ -108,7 +108,7 @@ public class Locations {
             case QUERY_INVOKER2:
             case INPUT_PROCESSOR:
             case OUTPUT_PROCESSOR:
-            case COMPOSITE_BEAN_COMPLETER2:
+            case BEAN_COMPLETER2_COMPOSITE:
             case BEAN_CHECKER2:
             case BEAN_COMPLETER2:
             case BEAN_COMPLETER3:

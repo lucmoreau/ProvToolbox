@@ -21,46 +21,16 @@ public class EnactCsvRecords<T> {
 
 
 
+    @SuppressWarnings("unchecked")
     public List<T> process(Collection<CSVRecord> records, Map<String, Function<Object[],T>> enactors, Map<String,  Function<List<Object[]>,T>> enactors_N) {
-
-        List<T> populatedRecords=new LinkedList<>();
-
-        CSVRecord record0=records.iterator().next();
-        int size0=record0.size();
-        Object[] args0=new Object[size0];
-        String method = populateRecordAndExtractMethod(record0, size0, args0);
-        Function<Object[],T> processor_1=enactors.get(method);
-
-        // NOTE
-        // distinguish the processor for a single record (enactors.get(method)) from the processor for N (enactors_N.get(method)).
-        // Assumption: we receive a single record, or we receive multiple records of the same type
-        if (processor_1!=null) {
-            for (CSVRecord record : records) {
-                int size = record.size();
-                Object[] args = new Object[size];
-                populateRecordAndExtractMethod(record, size, args);
-                populatedRecords.add(processor_1.apply(args));
-            }
-        } else {
-            Function<List<Object[]>,T> processor_N=enactors_N.get(method);
-            if (processor_N!=null) {
-                List<Object[]> ll = records.stream().map(record -> {
-                    int size = record.size();
-                    Object[] args = new Object[size];
-                    populateRecordAndExtractMethod(record, size, args);
-                    return args;
-                }).collect(Collectors.toList());
-                T populatedRecords0 = processor_N.apply(ll);
-                populatedRecords.add(populatedRecords0);
-            } else {
-                throw new EnactorException("Unknown method " + method, method);
-            }
-        }
-
-        return populatedRecords;
+        return (List<T>) processInternal(records, enactors, enactors_N, null);
     }
 
     public List<Object> process(Collection<CSVRecord> records, Map<String, Function<Object[],T>> enactors, Map<String,  Function<List<Object[]>,T>> enactors_N, Map<String, Function<Object,String>> csvConverter4Outputs) {
+        return processInternal(records, enactors, enactors_N, csvConverter4Outputs);
+    }
+
+    private List<Object> processInternal(Collection<CSVRecord> records, Map<String, Function<Object[],T>> enactors, Map<String, Function<List<Object[]>,T>> enactors_N, Map<String, Function<Object,String>> csvConverter4Outputs) {
 
         List<Object> populatedRecords=new LinkedList<>();
 
@@ -69,7 +39,7 @@ public class EnactCsvRecords<T> {
         Object[] args0=new Object[size0];
         String method = populateRecordAndExtractMethod(record0, size0, args0);
         Function<Object[],T> processor_1=enactors.get(method);
-        Function<Object,String> csv_processor_1=csvConverter4Outputs.get(method);
+        Function<Object,Object> outputTransformer = (csvConverter4Outputs != null) ? csvConverter4Outputs.get(method)::apply : t -> t;
 
         // NOTE
         // distinguish the processor for a single record (enactors.get(method)) from the processor for N (enactors_N.get(method)).
@@ -79,7 +49,7 @@ public class EnactCsvRecords<T> {
                 int size = record.size();
                 Object[] args = new Object[size];
                 populateRecordAndExtractMethod(record, size, args);
-                populatedRecords.add(csv_processor_1.apply(processor_1.apply(args)));
+                populatedRecords.add(outputTransformer.apply(processor_1.apply(args)));
             }
         } else {
             Function<List<Object[]>,T> processor_N=enactors_N.get(method);
@@ -90,8 +60,10 @@ public class EnactCsvRecords<T> {
                     populateRecordAndExtractMethod(record, size, args);
                     return args;
                 }).collect(Collectors.toList());
-                T populatedRecords0 = processor_N.apply(ll);
-                populatedRecords.add(csv_processor_1.apply(populatedRecords0));
+                if (csvConverter4Outputs!=null) {
+                    throw new UnsupportedOperationException("csvConverter4Outputs not yet implemented for composite output beans");
+                }
+                populatedRecords.add(outputTransformer.apply(processor_N.apply(ll)));
             } else {
                 throw new EnactorException("Unknown method " + method, method);
             }

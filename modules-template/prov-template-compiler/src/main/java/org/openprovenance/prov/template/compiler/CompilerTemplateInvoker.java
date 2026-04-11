@@ -80,7 +80,7 @@ public class CompilerTemplateInvoker {
 
             } else {
                 m.commentFileLocation();
-                completerClass =ClassName.get(COMPOSITE_BEAN_COMPLETER2, locations.getFilePackage(configs.name, COMPOSITE_BEAN_COMPLETER2) );
+                completerClass =ClassName.get(BEAN_COMPLETER2_COMPOSITE, locations.getFilePackage(configs.name, BEAN_COMPLETER2_COMPOSITE) );
                 m.BODY(RETURN(
                         METHOD_CALL(
                                 VARIABLE("this"),

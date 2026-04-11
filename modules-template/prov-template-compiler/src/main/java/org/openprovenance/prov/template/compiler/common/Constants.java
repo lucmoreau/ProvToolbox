@@ -42,6 +42,8 @@ public interface Constants {
     String ARGS_CSV_CONVERSION_METHOD   = "args2csv";
     String BEAN_SQL_CONVERSION_METHOD   = "bean2sql";
     String PROCESSOR_CONVERTER          = "processorConverter";
+    String PROCESSOR_INPUT_CONVERTER          = "processorInputConverter";
+    String PROCESSOR_OUTPUT_CONVERTER          = "processorOutputConverter";
     String ARGS2RECORD_CONVERTER        = "aArgs2RecordConverter";
     String A_BEAN_SQL_CONVERTER         = "aBean2SqlConverter";
     String A_ARGS_BEAN_CONVERTER        = "aArgs2BeanConverter";
@@ -54,16 +56,19 @@ public interface Constants {
     String SQL_CONFIGURATOR = "SqlConfigurator";
     String SQL_INSERT_CONFIGURATOR = "SqlInsertConfigurator";
     String CSV_CONFIGURATOR = "CsvConfigurator";
-    String CSV_CONFIGURATOR4BEANS = "CsvConfigurator4Beans";
-    String CSV_CONFIGURATOR4OUTPUTS = "CsvConfigurator4Outputs";
+    String CSV_CONFIGURATOR_4_BEANS = "CsvConfigurator4Beans";
+    String CSV_CONFIGURATOR_4_OUTPUTS = "CsvConfigurator4Outputs";
+    String CSV_CONFIGURATOR_4_OUTPUTS_COMPOSITE = "CsvConfigurator4OutputsComposite";
+
     String TABLE_CONFIGURATOR = "TableConfigurator";
-    String COMPOSITE_TABLE_CONFIGURATOR = "CompositeTableConfigurator";
+    String TABLE_CONFIGURATOR_COMPOSITE = "TableConfiguratorComposite";
     String BUILDER_CONFIGURATOR = "BuilderConfigurator";
     String CONVERTER_CONFIGURATOR = "ConverterConfigurator";
     String RECORD_2_RECORD_CONFIGURATOR = "CsvRecord2ObjectRecordConfigurator";
+
     String ENACTOR_CONFIGURATOR = "EnactorConfigurator";
-    String COMPOSITE_ENACTOR_CONFIGURATOR = "CompositeEnactorConfigurator";
-    String COMPOSITE_ENACTOR_CONFIGURATOR2 = "CompositeEnactorConfigurator2";
+    String ENACTOR_CONFIGURATOR_COMPOSITE = "EnactorConfiguratorComposite";
+    String ENACTOR_CONFIGURATOR_COMPOSITE_2 = "EnactorConfiguratorComposite2";
     String ENACTOR_CONFIGURATOR2 = "EnactorConfigurator2";
     String IDENTIFIER_REGISTRY = "IdentifierRegistry";
     String BEAN_HISTORY = "BeanHistory";
@@ -153,6 +158,8 @@ public interface Constants {
     String VAR_CSV = "csv";
     String VAR_CSV_CONVERTER = "csvConverter";
     String VAR_ELEMENT = "element";
+    String VAR_ELEMENT_INTEGRATOR = "elementIntegrator";
+    String VAR_ELEMENT_BUILDER = "elementBuilder";
     String INSERTED_CONSISTS_OF = "inserted_consistsOf";
     String LINKER_SUFFIX = "_linker";
     String THE_PRODUCT = "the_product";
@@ -185,29 +192,29 @@ public interface Constants {
     String principalVar = "principal";
 
 
+
     String SQL_BEAN_COMPLETER = "SqlBeanCompleter";
     String SQL_BEAN_COMPLETER3 = "SqlBeanCompleter3";
     String SQL_BEAN_COMPLETER4 = "SqlBeanCompleter4";
-    String SQL_COMPOSITE_BEAN_COMPLETER = "SqlCompositeBeanCompleter";
+    String SQL_BEAN_COMPLETER_COMPOSITE = "SqlBeanCompleterComposite";
+    String SQL_BEAN_COMPOSITE_COMPLETER_3 = "SqlBeanCompositeCompleter3";
+    String SQL_BEAN_COMPOSITE_COMPLETER_4 = "SqlBeanCompositeCompleter4";
+    String SQL_BEAN_COMPOSITE_ENACTOR = "SqlBeanCompositeEnactor";
+    String SQL_BEAN_COMPOSITE_ENACTOR_3 = "SqlBeanCompositeEnactor3";
+    String SQL_BEAN_COMPOSITE_ENACTOR_4 = "SqlBeanCompositeEnactor4";
+    String SQL_BEAN_ENACTOR3= "SqlBeanEnactor3";
+    String SQL_BEAN_ENACTOR4= "SqlBeanEnactor4";
+    String SQL_BEAN_ENACTOR= "SqlBeanEnactor";
+    String SQL_ENACTOR_COMPOSITE_CONFIGURATOR_3 = "SqlEnactorCompositeConfigurator3";
+    String SQL_ENACTOR_COMPOSITE_CONFIGURATOR_4 = "SqlEnactorCompositeConfigurator4";
+    String SQL_ENACTOR_COMPOSITE_IMPLEMENTATION = "SqlEnactorCompositeImplementation";
+    String SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_3 = "SqlEnactorCompositeImplementation3";
+    String SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_4 = "SqlEnactorCompositeImplementation4";
+    String SQL_ENACTOR_CONFIGURATOR3= "SqlEnactorConfigurator3";
+    String SQL_ENACTOR_CONFIGURATOR4= "SqlEnactorConfigurator4";
     String SQL_ENACTOR_IMPLEMENTATION = "SqlEnactorImplementation";
     String SQL_ENACTOR_IMPLEMENTATION3 = "SqlEnactorImplementation3";
     String SQL_ENACTOR_IMPLEMENTATION4 = "SqlEnactorImplementation4";
-    String SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3 = "SqlCompositeEnactorImplementation3";
-    String SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4 = "SqlCompositeEnactorImplementation4";
-    String SQL_COMPOSITE_ENACTOR_IMPLEMENTATION = "SqlCompositeEnactorImplementation";
-    String SQL_COMPOSITE_BEAN_ENACTOR= "SqlCompositeBeanEnactor";
-    String SQL_COMPOSITE_BEAN_COMPLETER3 = "SqlCompositeBeanCompleter3";
-    String SQL_COMPOSITE_BEAN_COMPLETER4 = "SqlCompositeBeanCompleter4";
-    String SQL_BEAN_ENACTOR= "SqlBeanEnactor";
-    String SQL_BEAN_ENACTOR3= "SqlBeanEnactor3";
-    String SQL_BEAN_ENACTOR4= "SqlBeanEnactor4";
-    String SQL_COMPOSITE_BEAN_ENACTOR3= "SqlCompositeBeanEnactor3";
-    String SQL_COMPOSITE_BEAN_ENACTOR4= "SqlCompositeBeanEnactor4";
-    String SQL_ENACTOR_CONFIGURATOR3= "SqlEnactorConfigurator3";
-    String SQL_ENACTOR_CONFIGURATOR4= "SqlEnactorConfigurator4";
-    String SQL_COMPOSITE_ENACTOR_CONFIGURATOR3= "SqlCompositeEnactorConfigurator3";
-    String SQL_COMPOSITE_ENACTOR_CONFIGURATOR4= "SqlCompositeEnactorConfigurator4";
-
 
     String POST_PROCESS_METHOD_NAME = "postEnactmentProcessing";
     String OUT_BEAN = "out";

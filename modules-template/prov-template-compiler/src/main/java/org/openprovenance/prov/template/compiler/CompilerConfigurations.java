@@ -220,7 +220,11 @@ public class CompilerConfigurations {
     public void generateMethodRecord2CsvConverterOutputs(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
         mspec.BODY(RETURN(LAMBDA(PARAMETER("o", OBJECT))
                 .returns(STRING)
-                .BODY(RETURN(METHOD_CALL(CAST(_out,VARIABLE("o")), PROCESS_METHOD_NAME, List.of(METHOD_CALL(VARIABLE(builderParameter), "aArgs2CsVConverter")))))));
+                .BODY(RETURN(METHOD_CALL(CAST(_out,VARIABLE("o")),
+                        PROCESS_METHOD_NAME,
+                        List.of(METHOD_CALL(METHOD_CALL(VARIABLE(builderParameter), "getIntegrator", List.of()),
+                                PROCESSOR_OUTPUT_CONVERTER,
+                                List.of(METHOD_CALL(VARIABLE(builderParameter), A_RECORD_CSV_CONVERTER)))))))));
     }
 
 

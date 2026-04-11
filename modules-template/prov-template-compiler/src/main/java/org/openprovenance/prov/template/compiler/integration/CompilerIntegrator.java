@@ -46,14 +46,16 @@ public class CompilerIntegrator {
     public SpecificationFile generateIntegrator(TemplatesProjectConfiguration configs, Locations locations, String templateName, String templateFullyQualifiedName, String integrator_package, TemplateBindingsSchema bindingsSchema, String logger, BeanKind beanKind, String consistsOf, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
+        String integratorBuilderNameClass = compilerUtil.integratorBuilderNameClass(templateName);
         org.openprovenance.prov.template.compiler.past.Class pastClass=pastFactory
-                .CLASS(compilerUtil.integratorBuilderNameClass(templateName))
+                .CLASS(integratorBuilderNameClass)
                 .MODIFIERS(Modifier.PUBLIC)
                 .COMMENT("Integrator class for $N", templateName);
 
 
         if (beanKind==BeanKind.SIMPLE) {
-            pastClass.METHOD(compilerCommon.generateProcessorConverter(templateName, integrator_package, bindingsSchema, OUTPUTS));
+            pastClass.METHOD(compilerCommon.generateProcessorConverter(PROCESSOR_INPUT_CONVERTER, templateName, integrator_package, bindingsSchema, INPUTS));
+            pastClass.METHOD(compilerCommon.generateProcessorConverter(PROCESSOR_OUTPUT_CONVERTER, templateName, integrator_package, bindingsSchema, OUTPUTS));
             pastClass.METHOD(compilerCommon.generateFactoryMethodToBeanWithArray(locations, TO_INPUTS, templateName, integrator_package, bindingsSchema, INPUTS, null, null));
             pastClass.FIELDS(compilerCommon.generateField4aBeanConverter2(TO_INPUTS, templateName, integrator_package, A_RECORD_INPUTS_CONVERTER, INPUTS));
 
@@ -77,6 +79,10 @@ public class CompilerIntegrator {
             } else {
                 pastClass.METHOD(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, locations.getFilePackage(templateName,logger), logger, INPUTS, null, null));
             }
+
+            pastClass.METHOD(compilerCommon.generateLoggerMethod(templateName, templateFullyQualifiedName, bindingsSchema));
+            pastClass.METHOD(compilerCommon.generateCommonCSVConverterMethod(locations, integratorBuilderNameClass, templateName, compilerUtil.loggerName(templateName), integrator_package, bindingsSchema, beanKind, OUTPUTS, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
+
 
         }
 

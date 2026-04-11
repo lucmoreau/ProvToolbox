@@ -65,19 +65,19 @@ public class Locations {
             case SQL_BEAN_COMPLETER:
             case SQL_BEAN_ENACTOR:
             case SQL_ENACTOR_IMPLEMENTATION:
-            case SQL_COMPOSITE_BEAN_COMPLETER:
-            case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION:
-            case SQL_COMPOSITE_BEAN_ENACTOR:
+            case SQL_BEAN_COMPLETER_COMPOSITE:
+            case SQL_ENACTOR_COMPOSITE_IMPLEMENTATION:
+            case SQL_BEAN_COMPOSITE_ENACTOR:
                 return getSqlCommonBackendPackage(name);
 
             case SQL_BEAN_COMPLETER3:
             case SQL_ENACTOR_IMPLEMENTATION3:
-            case SQL_COMPOSITE_BEAN_ENACTOR3:
-            case SQL_COMPOSITE_BEAN_COMPLETER3:
-            case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3:
+            case SQL_BEAN_COMPOSITE_ENACTOR_3:
+            case SQL_BEAN_COMPOSITE_COMPLETER_3:
+            case SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_3:
             case SQL_BEAN_ENACTOR3:
             case SQL_ENACTOR_CONFIGURATOR3:
-            case SQL_COMPOSITE_ENACTOR_CONFIGURATOR3:
+            case SQL_ENACTOR_COMPOSITE_CONFIGURATOR_3:
                 return getSqlIntegrationBackendPackage(name);
 
             case SQL_BEAN_COMPLETER4:
@@ -87,10 +87,10 @@ public class Locations {
             case SQL_ENACTOR_IMPLEMENTATION4:
             case SQL_BEAN_ENACTOR4:
             case SQL_ENACTOR_CONFIGURATOR4:
-            case SQL_COMPOSITE_BEAN_ENACTOR4:
-            case SQL_COMPOSITE_ENACTOR_CONFIGURATOR4:
-            case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4:
-            case SQL_COMPOSITE_BEAN_COMPLETER4:
+            case SQL_BEAN_COMPOSITE_ENACTOR_4:
+            case SQL_ENACTOR_COMPOSITE_CONFIGURATOR_4:
+            case SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_4:
+            case SQL_BEAN_COMPOSITE_COMPLETER_4:
             case ENACTOR_IMPLEMENTATION4:
                 return getSqlAccessControlBackendPackage(name);
 
@@ -118,7 +118,8 @@ public class Locations {
             case BEAN_HISTORY:
             case IDENTIFIER_REGISTRY: // should it be elsewhere?
             case LOCAL_ENACTOR:
-            case CSV_CONFIGURATOR4OUTPUTS:
+            case CSV_CONFIGURATOR_4_OUTPUTS:
+            case CSV_CONFIGURATOR_4_OUTPUTS_COMPOSITE:
                 return getIntegratorPackage(name);
 
             case TABLE_CONFIGURATOR+WITH_MAP:
@@ -139,14 +140,14 @@ public class Locations {
             case INPUTS_CONFIGURATOR:
             case SQL_CONFIGURATOR:
             case CSV_CONFIGURATOR:
-            case CSV_CONFIGURATOR4BEANS:
+            case CSV_CONFIGURATOR_4_BEANS:
             case ENACTOR_CONFIGURATOR:
-            case COMPOSITE_ENACTOR_CONFIGURATOR:
+            case ENACTOR_CONFIGURATOR_COMPOSITE:
             case RECORD_2_RECORD_CONFIGURATOR:
-            case COMPOSITE_TABLE_CONFIGURATOR:
+            case TABLE_CONFIGURATOR_COMPOSITE:
                 return getConfiguratorPackage(name);
 
-            case COMPOSITE_ENACTOR_CONFIGURATOR2:
+            case ENACTOR_CONFIGURATOR_COMPOSITE_2:
             case ENACTOR_CONFIGURATOR2:
 
                 return getConfiguratorPackage2(name);

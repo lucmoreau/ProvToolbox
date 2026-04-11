@@ -60,6 +60,9 @@ public class CompilerUtil {
     public String capitalize(String str) {
         return str.substring(0, 1).toUpperCase()+str.substring(1);
     }
+    public String capitalize1(String str) {
+        return str.substring(0, 1).toUpperCase()+str.substring(1).toLowerCase();
+    }
 
     public String templateNameClass(String templateName) {
         return capitalize(templateName) + "Builder";
@@ -116,12 +119,19 @@ public class CompilerUtil {
     public String processorNameClass(String templateName) {
         return capitalize(templateName) + "Processor";
     }
+    public String processorNameClass(String templateName, BeanDirection direction) {
+        if (direction==BeanDirection.COMMON) {
+            return processorNameClass(templateName);
+        } else {
+            return capitalize(templateName) + capitalize1(direction.toString()) + "Processor";
+        }
+    }
 
     public String integratorBuilderNameClass(String templateName) {
         return capitalize(templateName) + "IntegratorBuilder";
     }
-    public String integratorNameClass(String templateName) {
-        return capitalize(templateName) + "Integrator";
+    public String integratorNameClass(String templateName, BeanDirection direction) {
+        return capitalize(templateName) + capitalize1(direction.toString()) +  "Integrator";
     }
     public String loggerName(String template) {
         return "log" + capitalize(template);

@@ -166,7 +166,7 @@ public class CompilerLogger {
     }
 
     private Method generateInitializeCompositeBeanTableMethod(TemplatesProjectConfiguration configs, Locations locations) {
-        ParameterizedType parameterType = ParameterizedType.get(get(COMPOSITE_TABLE_CONFIGURATOR,locations.getFilePackage(configs.name, COMPOSITE_TABLE_CONFIGURATOR) ), T());
+        ParameterizedType parameterType = ParameterizedType.get(get(TABLE_CONFIGURATOR_COMPOSITE,locations.getFilePackage(configs.name, TABLE_CONFIGURATOR_COMPOSITE) ), T());
 
         Method method = METHOD("initializeCompositeBeanTable")
                 .COMMENT("Initialize a table of composite bean builders\n")

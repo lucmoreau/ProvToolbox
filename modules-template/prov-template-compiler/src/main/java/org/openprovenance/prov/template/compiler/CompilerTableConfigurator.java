@@ -41,7 +41,7 @@ public class CompilerTableConfigurator {
     SpecificationFile generateTableConfigurator(TemplatesProjectConfiguration configs, boolean compositeOnly, Locations locations) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        String tableClassName = (compositeOnly) ? Constants.COMPOSITE_TABLE_CONFIGURATOR : Constants.TABLE_CONFIGURATOR;
+        String tableClassName = (compositeOnly) ? Constants.TABLE_CONFIGURATOR_COMPOSITE : Constants.TABLE_CONFIGURATOR;
 
         Class iface = pastFactory.INTERFACE(tableClassName)
                 .MODIFIERS(Modifier.PUBLIC)

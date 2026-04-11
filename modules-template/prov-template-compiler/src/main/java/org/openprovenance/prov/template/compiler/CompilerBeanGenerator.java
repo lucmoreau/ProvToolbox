@@ -135,11 +135,11 @@ public class CompilerBeanGenerator {
 
 
 
-        String beanPackge=locations.getBeansPackage(templateFullyQualifiedName, beanDirection);
-        String beanProcessorPackage=locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON);
+        String beanPackge=          locations.getBeansPackage(templateFullyQualifiedName, beanDirection);
+        String beanProcessorPackage=locations.getBeansPackage(templateFullyQualifiedName, beanDirection);
 
         if (beanKind== SIMPLE ) {
-            Method method = generateInvokeProcessor(templateName, beanProcessorPackage, bindingsSchema, null, beanDirection);
+            Method method = generateInvokeProcessor(templateName, beanProcessorPackage, bindingsSchema, null, beanDirection, beanKind);
             pastClass.METHOD(method);
 
         } else if (beanKind==BeanKind.COMPOSITE) {
@@ -149,10 +149,10 @@ public class CompilerBeanGenerator {
             if (sharing!=null) {
                 variant = newVariant(consistOf, sharing, configs);
             }
-            if (beanDirection==BeanDirection.COMMON) {
-                Method method = generateInvokeProcessor(templateName, beanProcessorPackage, bindingsSchema, ELEMENTS, beanDirection);
-                pastClass.METHOD(method);
-            }
+
+            Method method = generateInvokeProcessor(templateName, beanProcessorPackage, bindingsSchema, ELEMENTS, beanDirection, beanKind);
+            pastClass.METHOD(method);
+
             generateCompositeList(consistOf, beanPackge, locations, pastClass, beanDirection, variant, sharing);
             generateCompositeListExtender(consistOf, beanPackge, locations, pastClass, beanDirection, variant, sharing);
         }
@@ -353,10 +353,10 @@ public class CompilerBeanGenerator {
 
 
 
-    private org.openprovenance.prov.template.compiler.past.type.TypeName processorClassType(String template, String packge) {
-        return ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get(compilerUtil.processorNameClass(template),packge), T());
+    private org.openprovenance.prov.template.compiler.past.type.TypeName processorClassType(String template, String packge, BeanDirection beanDirection) {
+        return ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get(compilerUtil.processorNameClass(template,beanDirection),packge), T());
     }
-    public Method generateInvokeProcessor(String template, String processorPackage, TemplateBindingsSchema bindingsSchema, String elements, BeanDirection beanDirection) {
+    public Method generateInvokeProcessor(String template, String processorPackage, TemplateBindingsSchema bindingsSchema, String elements, BeanDirection beanDirection, BeanKind beanKind) {
 
         List<String> fieldNames = (List<String>) descriptorUtils.fieldNames(bindingsSchema);
         if (fieldNames.contains(PROCESSOR_PARAMETER_NAME)) {
@@ -365,9 +365,10 @@ public class CompilerBeanGenerator {
 
         Method method=METHOD(PROCESSOR_PROCESS_METHOD_NAME)
                 .MODIFIERS(Modifier.PUBLIC)
+                .commentFileLocation()
                 .RETURNS(T())
                 .addTypeVariables(T())
-                .PARAMETER(processorClassType(template,processorPackage), PROCESSOR_PARAMETER_NAME);
+                .PARAMETER(processorClassType(template,processorPackage,beanDirection), PROCESSOR_PARAMETER_NAME);
 
         List<String> actualFieldNames;
         if (elements!=null) {
@@ -393,7 +394,8 @@ public class CompilerBeanGenerator {
                             PROCESSOR_PROCESS_METHOD_NAME,
                             actualFieldNames
                                     .stream()
-                                    .map(field -> descriptorUtils.isInput(field,bindingsSchema)?VARIABLE(field, Variable.VariableKind.FIELD_VARIABLE):Constant.getNull())
+                                    .filter(field -> (descriptorUtils.isInput(field,bindingsSchema) || beanKind==BeanKind.COMPOSITE) )
+                                    . map(field -> VARIABLE(field, Variable.VariableKind.FIELD_VARIABLE))
                                     .collect(Collectors.toList()))));
         } else if (beanDirection==BeanDirection.OUTPUTS) {
             method.addStatement(RETURN(
@@ -402,7 +404,8 @@ public class CompilerBeanGenerator {
                             PROCESSOR_PROCESS_METHOD_NAME,
                             actualFieldNames
                                     .stream()
-                                    .map(field -> descriptorUtils.isOutput(field,bindingsSchema)?VARIABLE(field, Variable.VariableKind.FIELD_VARIABLE):Constant.getNull())
+                                    .filter(field -> (descriptorUtils.isOutput(field,bindingsSchema) || beanKind==BeanKind.COMPOSITE))
+                                    .map (field ->VARIABLE(field, Variable.VariableKind.FIELD_VARIABLE))
                                     .collect(Collectors.toList()))));
         } else {
             throw new IllegalStateException("Unexpected value: " + beanDirection);

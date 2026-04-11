@@ -9,6 +9,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: remote js workflow
 * service-templates-core, prov-template-archetype: support for sql testing sql queries and plots for developers
 * service-templates-core: return of csv format (for csv and json inputs)
+* prov-template-compiler: csv for composite, common, input, output
 
 `2.2.3`
 * prov-template: update to instantiation

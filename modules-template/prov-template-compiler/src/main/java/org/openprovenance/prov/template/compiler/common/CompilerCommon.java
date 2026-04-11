@@ -26,6 +26,8 @@ import java.util.stream.Stream;
 
 import static org.openprovenance.prov.model.StatementOrBundle.ALL_RELATIONS;
 import static org.openprovenance.prov.template.compiler.CompilerQueryInvoker.addSpecialTypesMethods;
+import static org.openprovenance.prov.template.compiler.common.Constants.INPUTS;
+import static org.openprovenance.prov.template.compiler.common.Constants.OUTPUTS;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder.converterForJsonType;
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
@@ -110,8 +112,8 @@ public class CompilerCommon {
         pastClass.METHOD(generateCBindingsAccessor(templateFullyQualifiedName,locations));
         pastClass.METHOD(generatePropertyOrderMethod());
         pastClass.FIELDS(generateFieldPropertyOrder(bindingsSchema));
-        pastClass.METHOD(generateLoggerMethod_new(templateName, templateFullyQualifiedName, bindingsSchema));
-        pastClass.METHOD(generateCommonCSVConverterMethod_aux_new(locations, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
+        pastClass.METHOD(generateLoggerMethod(templateName, templateFullyQualifiedName, bindingsSchema));
+        pastClass.METHOD(generateCommonCSVConverterMethod(locations, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, BeanDirection.COMMON, consistsOf, locations.getFilePackage(configs.name,LOGGER), LOGGER));
         pastClass.FIELDS(generateField4aArgs2CsvConverter_new(name,templateName,packageName));
         pastClass.METHOD(generateCommonMethodGetNodes2(beanKind));
         pastClass.METHOD(generateCommonMethodGetSuccessors(beanKind));
@@ -145,7 +147,7 @@ public class CompilerCommon {
             pastClass.FIELDS(generateStaticFieldAllTypes());
 
 
-            pastClass.METHOD(generateProcessorConverter(templateName, packageName, bindingsSchema, BeanDirection.COMMON));
+            pastClass.METHOD(generateProcessorConverter(PROCESSOR_CONVERTER, templateName, packageName, bindingsSchema, BeanDirection.COMMON));
             pastClass.METHOD(generateOutputsMethod());
             pastClass.METHOD(generateInputsMethod());
             pastClass.METHOD(generateCompulsoryInputsMethod());
@@ -424,8 +426,9 @@ public class CompilerCommon {
     }
 
 
-    public Method generateCommonCSVConverterMethod_aux_new(Locations locations, String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, String consistsOf, String loggerPackage, String logger) {
-        final org.openprovenance.prov.template.compiler.past.type.TypeName processorClassName = processorClassType(template, packge,STRING);
+    public Method generateCommonCSVConverterMethod(Locations locations, String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistsOf, String loggerPackage, String logger) {
+        final org.openprovenance.prov.template.compiler.past.type.TypeName processorClassName = processorClassType(template, packge,beanDirection, STRING);
+
         final org.openprovenance.prov.template.compiler.past.type.TypeName processorClassNameNotParametrised = processorClassTypeNotParametrised2(template, packge);
         Method method = METHOD(ARGS_CSV_CONVERSION_METHOD)
                 .MODIFIERS(Modifier.PUBLIC)
@@ -451,7 +454,7 @@ public class CompilerCommon {
 
             actualVariables = new LinkedList<>(variables);
             actualVariables.add(ELEMENTS1);
-            String beanNameClass = compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.COMMON);
+            String beanNameClass = compilerUtil.beanNameClass(shortConsistsOf, beanDirection);
             ParameterizedType listBeanType=ParameterizedType.get(LIST, org.openprovenance.prov.template.compiler.past.type.ClassName.get(beanNameClass,packge));
             paramsList= makeParamsListComposite2(actualVariables, var, compilerUtil, listBeanType);
         } else {
@@ -473,47 +476,98 @@ public class CompilerCommon {
         if (consistsOf!=null) {
             String[] variableArray = variables.toArray(new String[]{});
 
-            String beanNameClass = compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.COMMON);
+            String beanNameClass = compilerUtil.beanNameClass(shortConsistsOf, beanDirection);
             ClassName loggerClassName = get(logger, loggerPackage);
 
-            ParameterizedType parametericInterface=ParameterizedType.get(get(compilerUtil.processorNameClass(shortConsistsOf),packge), OBJECT_ARRAY);
+            ParameterizedType parametericInterface = ParameterizedType.get(get(compilerUtil.processorNameClass(shortConsistsOf), packge), OBJECT_ARRAY);
             ParameterizedType processorOfString = functionObjArrayTo(STRING);
 
-            lambda.BODY(
-                    DEFINITION(parametericInterface, VARIABLE("processor"),
-                            METHOD_CALL(METHOD_CALL(loggerClassName, GENERATED_VAR_PREFIX + shortConsistsOf), ARGS2RECORD_CONVERTER, List.of()))
-                            .ANNOTATION("@import " + loggerPackage + "." + logger),  //delayed import for python
-                    FOR(
-                            DEFINITION(_int, VARIABLE(_I_), CONSTANT(0)),
-                            BINARY_OP(VARIABLE(_I_), BinaryOp.LT, METHOD_CALL(VARIABLE(GENERATED_VAR_PREFIX+ELEMENTS1), "size", List.of())),
-                            ASSIGNMENT( VARIABLE(_I_), BINARY_OP(VARIABLE(_I_), "+", CONSTANT(1))))
 
-                            .BODY(
-                                    DEFINITION(ClassName.get(beanNameClass,packge),VARIABLE(VAR_ELEMENT),
-                                         METHOD_CALL(VARIABLE(GENERATED_VAR_PREFIX + ELEMENTS1),"get", List.of(VARIABLE(_I_)))),
+            if (beanDirection == BeanDirection.COMMON) {
 
+                lambda.BODY(
+                        DEFINITION(parametericInterface, VARIABLE("processor"),
+                                METHOD_CALL(METHOD_CALL(loggerClassName, GENERATED_VAR_PREFIX + shortConsistsOf), ARGS2RECORD_CONVERTER, List.of()))
+                                .ANNOTATION("@import " + loggerPackage + "." + logger),  //delayed import for python
+                        FOR(
+                                DEFINITION(_int, VARIABLE(_I_), CONSTANT(0)),
+                                BINARY_OP(VARIABLE(_I_), BinaryOp.LT, METHOD_CALL(VARIABLE(GENERATED_VAR_PREFIX + ELEMENTS1), "size", List.of())),
+                                ASSIGNMENT(VARIABLE(_I_), BINARY_OP(VARIABLE(_I_), "+", CONSTANT(1))))
 
-
-                                   new Comment("// the following line generates ts error: Untyped function calls may not accept type arguments."),
-
-
-                                    DEFINITION(OBJECT_ARRAY, VARIABLE(VAR_OBJECTS),
-                                            METHOD_CALL(VARIABLE(VAR_ELEMENT), "process", List.of(VARIABLE("processor")))),
+                                .BODY(
+                                        DEFINITION(ClassName.get(beanNameClass, packge), VARIABLE(VAR_ELEMENT),
+                                                METHOD_CALL(VARIABLE(GENERATED_VAR_PREFIX + ELEMENTS1), "get", List.of(VARIABLE(_I_)))),
 
 
-                                    DEFINITION(processorOfString, VARIABLE(VAR_CSV_CONVERTER),
-                                            METHOD_CALL(METHOD_CALL(loggerClassName, "simpleCSvConverters"),
-                                                    "get", List.of(VARIABLE(GENERATED_VAR_PREFIX + variableArray[2])))),
+                                        new Comment("// the following line generates ts error: Untyped function calls may not accept type arguments."),
 
-                                    DEFINITION(STRING, VARIABLE(VAR_CSV),
-                                            FUNCTIONAL_METHOD_CALL(VARIABLE(VAR_CSV_CONVERTER), "apply", List.of(VARIABLE(VAR_OBJECTS)))),
 
-                                    METHOD_CALL(
-                                            METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\\n"))),
-                                            "append",
-                                            List.of(VARIABLE(VAR_CSV)))
+                                        DEFINITION(OBJECT_ARRAY, VARIABLE(VAR_OBJECTS),
+                                                METHOD_CALL(VARIABLE(VAR_ELEMENT), "process", List.of(VARIABLE("processor")))),
 
-                            ));
+
+                                        DEFINITION(processorOfString, VARIABLE(VAR_CSV_CONVERTER),
+                                                METHOD_CALL(METHOD_CALL(loggerClassName, "simpleCSvConverters"),
+                                                        "get", List.of(VARIABLE(GENERATED_VAR_PREFIX + variableArray[2])))),
+
+                                        DEFINITION(STRING, VARIABLE(VAR_CSV),
+                                                FUNCTIONAL_METHOD_CALL(VARIABLE(VAR_CSV_CONVERTER), "apply", List.of(VARIABLE(VAR_OBJECTS)))),
+
+                                        METHOD_CALL(
+                                                METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\\n"))),
+                                                "append",
+                                                List.of(VARIABLE(VAR_CSV)))
+
+                                ));
+            } else {
+
+                String integratorBuilderName= compilerUtil.integratorBuilderNameClass(shortConsistsOf);
+                ClassName integratorBuilderClassName = get(integratorBuilderName, packge);
+                String templateBuilderName= compilerUtil.templateNameClass(shortConsistsOf);
+                ClassName templateBuilderClassName = get(templateBuilderName, locations.getBeansPackage(consistsOf,BeanDirection.COMMON));
+
+
+                lambda.BODY(
+                      //  DEFINITION(parametericInterface, VARIABLE("processor"),
+                      //          METHOD_CALL(METHOD_CALL(loggerClassName, GENERATED_VAR_PREFIX + shortConsistsOf), ARGS2RECORD_CONVERTER, List.of()))
+                      //          .ANNOTATION("@import " + loggerPackage + "." + logger),  //delayed import for python
+                        FOR(
+                                DEFINITION(_int, VARIABLE(_I_), CONSTANT(0)),
+                                BINARY_OP(VARIABLE(_I_), BinaryOp.LT, METHOD_CALL(VARIABLE(GENERATED_VAR_PREFIX + ELEMENTS1), "size", List.of())),
+                                ASSIGNMENT(VARIABLE(_I_), BINARY_OP(VARIABLE(_I_), "+", CONSTANT(1))))
+
+                                .BODY(
+                                        DEFINITION(ClassName.get(beanNameClass, packge), VARIABLE(VAR_ELEMENT),
+                                                METHOD_CALL(VARIABLE(GENERATED_VAR_PREFIX + ELEMENTS1), "get", List.of(VARIABLE(_I_)))),
+
+
+                                  //      DEFINITION(processorOfString, VARIABLE(VAR_CSV_CONVERTER),
+                                   //             METHOD_CALL(METHOD_CALL(loggerClassName, "simpleCSvConverters"),
+                                   //                     "get", List.of(VARIABLE(GENERATED_VAR_PREFIX + variableArray[2])))),
+
+
+                                        //new Comment("// the following line generates ts error: Untyped function calls may not accept type arguments."),
+
+                                        DEFINITION(integratorBuilderClassName, VARIABLE(VAR_ELEMENT_INTEGRATOR),
+                                                CONSTRUCTOR_CALL(integratorBuilderClassName, List.of())),
+                                        DEFINITION(templateBuilderClassName, VARIABLE(VAR_ELEMENT_BUILDER),
+                                                CONSTRUCTOR_CALL(templateBuilderClassName, List.of())),
+
+
+                                        DEFINITION(STRING, VARIABLE(VAR_CSV),
+                                                METHOD_CALL(VARIABLE(VAR_ELEMENT),
+                                                        "process",
+                                                        List.of(METHOD_CALL(VARIABLE(VAR_ELEMENT_INTEGRATOR), PROCESSOR_OUTPUT_CONVERTER, List.of(METHOD_CALL(VARIABLE(VAR_ELEMENT_BUILDER), A_RECORD_CSV_CONVERTER)))))),
+
+                                        METHOD_CALL(
+                                                METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\\n"))),
+                                                "append",
+                                                List.of(VARIABLE(VAR_CSV)))
+
+                                ));
+            }
+
+
         }
 
         lambda.BODY(RETURN(METHOD_CALL(VARIABLE(SB_VAR), "toString", List.of())));
@@ -752,12 +806,12 @@ public class CompilerCommon {
 
 
 
-    public Method generateProcessorConverter(String template, String packge, TemplateBindingsSchema bindingsSchema, BeanDirection beanDirection) {
+    public Method generateProcessorConverter(String processorConverter, String template, String packge, TemplateBindingsSchema bindingsSchema, BeanDirection beanDirection) {
 
-        final ParameterizedType returnClassName= beanDirection==BeanDirection.COMMON ? processorClassType(template, packge, T()) : integratorClassType(template, packge, T());
+        final ParameterizedType returnClassName= beanDirection==BeanDirection.COMMON ? processorClassType(template, packge, T()) : processorClassType(template, packge,beanDirection, T());
 
         final TypeName returnClassNameNotParametrised = beanDirection==BeanDirection.COMMON ? processorClassTypeNotParametrised(template, packge): integratorClassType (template, packge);
-        Method method = METHOD(Constants.PROCESSOR_CONVERTER)
+        Method method = METHOD(processorConverter)
                 .MODIFIERS(Modifier.PUBLIC)
                 .addTypeVariables(T())
                 .RETURNS(returnClassName);
@@ -782,19 +836,30 @@ public class CompilerCommon {
         for (String key : fieldNames) {
             String newKey = compilerUtil.generateNewNameForVariable(key);
             boolean isOutput=descriptorUtils.isOutput(key,bindingsSchema);
-            if (beanDirection==BeanDirection.COMMON || !isOutput) {
-                parameters.add(PARAMETER(newKey,compilerUtil.getPastTypeForDeclaredType(theVar, key)));
+            boolean isInput=descriptorUtils.isInput(key,bindingsSchema);
+            switch (beanDirection) {
+                case INPUTS -> {
+                    if (isInput) {
+                        parameters.add(PARAMETER(newKey,compilerUtil.getPastTypeForDeclaredType(theVar, key)));
+                        arguments.add(VARIABLE(newKey));
+                    } else {
+                        arguments.add(Constant.getNull());
+                    }
+                }
+                case OUTPUTS -> {
+                    if (isOutput) {
+                        parameters.add(PARAMETER(newKey,compilerUtil.getPastTypeForDeclaredType(theVar, key)));
+                        arguments.add(VARIABLE(newKey));
+                    } else {
+                        arguments.add(Constant.getNull());
+                    }
+                }
+                case COMMON -> {
+                    parameters.add(PARAMETER(newKey,compilerUtil.getPastTypeForDeclaredType(theVar, key)));
+                    arguments.add(VARIABLE(newKey));
+                }
             }
-        }
-        for (String key : fieldNames) {
-            String newKey = compilerUtil.generateNewNameForVariable(key);
-            boolean isOutput=descriptorUtils.isOutput(key,bindingsSchema);
 
-            if (beanDirection!=BeanDirection.COMMON && isOutput) {
-                arguments.add(CONSTANT((String)null));
-            } else {
-                arguments.add(VARIABLE(newKey));
-            }
 
         }
         List<Expression> values = Stream.concat(Stream.of(METHOD_CALL("getFullyQualifiedName",List.of())), arguments.stream()).collect(Collectors.toList());
@@ -901,8 +966,15 @@ public class CompilerCommon {
         return ParameterizedType.get(ClassName.get(compilerUtil.processorNameClass(template),packge),t);
     }
 
-    private ParameterizedType integratorClassType(String template, String packge, TypeVariable t) {
-        return ParameterizedType.get(get(compilerUtil.integratorNameClass(template),packge),t);
+    private ParameterizedType processorClassType(String template, String packge, BeanDirection beanDirection, TypeVariable t) {
+        return ParameterizedType.get(ClassName.get(compilerUtil.processorNameClass(template,beanDirection),packge),t);
+    }
+    private ParameterizedType processorClassType(String template, String packge, BeanDirection beanDirection, ClassName t) {
+        return ParameterizedType.get(ClassName.get(compilerUtil.processorNameClass(template,beanDirection),packge),t);
+    }
+
+    private ParameterizedType integratorClassType(String template, String packge, BeanDirection beanDirection, TypeVariable t) {
+        return ParameterizedType.get(get(compilerUtil.integratorNameClass(template, beanDirection),packge),t);
     }
 
     private ParameterizedType processorClassType(String template, String packge, ArrayType arrayTypeName) {
@@ -917,10 +989,10 @@ public class CompilerCommon {
         return ClassName.get(compilerUtil.processorNameClass(template), packge);
     }
     private TypeName integratorClassType(String template, String packge) {
-        return ClassName.get(packge,compilerUtil.integratorNameClass(template));
+        return ClassName.get(packge,compilerUtil.integratorNameClass(template, BeanDirection.INPUTS));
     }
 
-    public Method generateLoggerMethod_new(String template, String templateFullyQualifiedName, TemplateBindingsSchema bindingsSchema) {
+    public Method generateLoggerMethod(String template, String templateFullyQualifiedName, TemplateBindingsSchema bindingsSchema) {
         Method method = METHOD(compilerUtil.loggerName(template))
                 .MODIFIERS(Modifier.PUBLIC)
                 .RETURNS(VOID);

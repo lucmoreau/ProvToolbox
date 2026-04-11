@@ -107,9 +107,8 @@ public class TemplateLogic {
                     recordsResult.add(compositeEnactor.apply(objects));
                 } else {
                     // csv here
-                    throw new UnsupportedOperationException("CSV output not supported for composite templates yet");
+                    recordsResult.add(csv_processor_1.apply(compositeEnactor.apply(objects)));
                 }
-
             }
         }
         return recordsResult;

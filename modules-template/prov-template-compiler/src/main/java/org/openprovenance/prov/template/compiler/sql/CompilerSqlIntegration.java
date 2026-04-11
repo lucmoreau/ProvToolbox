@@ -156,7 +156,7 @@ public class CompilerSqlIntegration {
                 .RETURNS(_bool)
                 .BODY(buildNextTryCatch());
 
-        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_BEAN_COMPLETER)
+        Class pastClass = pastFactory.CLASS(Constants.SQL_BEAN_COMPLETER_COMPOSITE)
                 .MODIFIERS(Modifier.PUBLIC)
                 .SUPERCLASS(superclass)
                 .FIELDS(
@@ -521,7 +521,7 @@ public class CompilerSqlIntegration {
                 );
 
         ClassName beanCompleterType = ClassName.get(Constants.BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER));
-        ClassName sqlCompositeBeanCompleterType = ClassName.get(Constants.SQL_COMPOSITE_BEAN_COMPLETER, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_COMPLETER));
+        ClassName sqlCompositeBeanCompleterType = ClassName.get(Constants.SQL_BEAN_COMPLETER_COMPOSITE, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPLETER_COMPOSITE));
 
         Method beanCompleterFactory = METHOD("beanCompleterFactory")
                 .MODIFIERS(Modifier.PUBLIC)
@@ -532,7 +532,7 @@ public class CompilerSqlIntegration {
                         RETURN(CONSTRUCTOR_CALL(sqlCompositeBeanCompleterType, List.of(VARIABLE("rs"))))
                 );
 
-        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION)
+        Class pastClass = pastFactory.CLASS(Constants.SQL_ENACTOR_COMPOSITE_IMPLEMENTATION)
                 .MODIFIERS(Modifier.PUBLIC)
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor)
@@ -551,7 +551,7 @@ public class CompilerSqlIntegration {
         ClassName beanEnactorType = ClassName.get(Constants.BEAN_ENACTOR, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR));
         ParameterizedType superclass = ParameterizedType.get(beanEnactorType, RESULT_SET);
 
-        ClassName sqlCompositeEnactorImplType = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION));
+        ClassName sqlCompositeEnactorImplType = ClassName.get(Constants.SQL_ENACTOR_COMPOSITE_IMPLEMENTATION, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_COMPOSITE_IMPLEMENTATION));
         ClassName beanCheckerType = ClassName.get(Constants.BEAN_CHECKER, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER));
 
         Constructor constructor = CONSTRUCTOR()
@@ -562,7 +562,7 @@ public class CompilerSqlIntegration {
                                 CONSTRUCTOR_CALL(beanCheckerType, List.of()))
                 );
 
-        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_BEAN_ENACTOR)
+        Class pastClass = pastFactory.CLASS(Constants.SQL_BEAN_COMPOSITE_ENACTOR)
                 .MODIFIERS(Modifier.PUBLIC)
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
@@ -609,7 +609,7 @@ public class CompilerSqlIntegration {
         ClassName beanEnactor2Type = ClassName.get(Constants.BEAN_ENACTOR2, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2));
         ParameterizedType superclass = ParameterizedType.get(beanEnactor2Type, RESULT_SET);
 
-        ClassName sqlCompositeEnactorImpl3Type = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3));
+        ClassName sqlCompositeEnactorImpl3Type = ClassName.get(Constants.SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_3, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_3));
         ClassName beanChecker2Type = ClassName.get(Constants.BEAN_CHECKER2, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER2));
 
         Constructor constructor = CONSTRUCTOR()
@@ -640,7 +640,7 @@ public class CompilerSqlIntegration {
         ClassName beanEnactor2WPType = ClassName.get(Constants.BEAN_ENACTOR2_WP, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2_WP));
         ParameterizedType superclass = ParameterizedType.get(beanEnactor2WPType, RESULT_SET);
 
-        ClassName sqlCompositeEnactorImpl4Type = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4));
+        ClassName sqlCompositeEnactorImpl4Type = ClassName.get(Constants.SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_4, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_4));
         ClassName beanChecker2Type = ClassName.get(Constants.BEAN_CHECKER2, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER2));
 
         Constructor constructor = CONSTRUCTOR()
@@ -682,7 +682,7 @@ public class CompilerSqlIntegration {
                 );
 
         ClassName beanCompleter2Type = ClassName.get(Constants.BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
-        ClassName sqlCompositeBeanCompleter3Type = ClassName.get(Constants.SQL_COMPOSITE_BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_COMPLETER3));
+        ClassName sqlCompositeBeanCompleter3Type = ClassName.get(Constants.SQL_BEAN_COMPOSITE_COMPLETER_3, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPOSITE_COMPLETER_3));
 
         Method beanCompleterFactory = METHOD("beanCompleterFactory")
                 .commentFileLocation()
@@ -705,7 +705,7 @@ public class CompilerSqlIntegration {
                         RETURN(CONSTRUCTOR_CALL(sqlCompositeBeanCompleter3Type, List.of(VARIABLE("rs"), VARIABLE("extra"))))
                 );
 
-        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3)
+        Class pastClass = pastFactory.CLASS(Constants.SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_3)
                 .MODIFIERS(Modifier.PUBLIC)
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor)
@@ -733,7 +733,7 @@ public class CompilerSqlIntegration {
                 );
 
         ClassName beanCompleter2Type = ClassName.get(Constants.BEAN_COMPLETER2, locations.getFilePackage(configs.name, Constants.BEAN_COMPLETER2));
-        ClassName sqlCompositeBeanCompleter4Type = ClassName.get(Constants.SQL_COMPOSITE_BEAN_COMPLETER4, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_COMPLETER4));
+        ClassName sqlCompositeBeanCompleter4Type = ClassName.get(Constants.SQL_BEAN_COMPOSITE_COMPLETER_4, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPOSITE_COMPLETER_4));
 
         Method beanCompleterFactory = METHOD("beanCompleterFactory")
                 .commentFileLocation()
@@ -788,7 +788,7 @@ public class CompilerSqlIntegration {
                         RETURN(CONSTRUCTOR_CALL(sqlCompositeBeanCompleter4Type, List.of(VARIABLE("rs"), VARIABLE(Constants.POST_PROCESSING_VAR))))
                 );
 
-        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4)
+        Class pastClass = pastFactory.CLASS(Constants.SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_4)
                 .MODIFIERS(Modifier.PUBLIC)
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor)
@@ -863,7 +863,7 @@ public class CompilerSqlIntegration {
                                 )
                 );
 
-        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_BEAN_COMPLETER3)
+        Class pastClass = pastFactory.CLASS(Constants.SQL_BEAN_COMPOSITE_COMPLETER_3)
                 .MODIFIERS(Modifier.PUBLIC)
                 .SUPERCLASS(superclass)
                 .FIELDS(
@@ -887,7 +887,7 @@ public class CompilerSqlIntegration {
     public SpecificationFile generateSqlIntegration_CompositeBeanCompleter4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        ClassName superclass = ClassName.get(Constants.SQL_COMPOSITE_BEAN_COMPLETER3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_COMPLETER3));
+        ClassName superclass = ClassName.get(Constants.SQL_BEAN_COMPOSITE_COMPLETER_3, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPOSITE_COMPLETER_3));
 
         Constructor constructor1 = CONSTRUCTOR()
                 .commentFileLocation()
@@ -941,7 +941,7 @@ public class CompilerSqlIntegration {
                                 )
                 );
 
-        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_BEAN_COMPLETER4)
+        Class pastClass = pastFactory.CLASS(Constants.SQL_BEAN_COMPOSITE_COMPLETER_4)
                 .MODIFIERS(Modifier.PUBLIC)
                 .SUPERCLASS(superclass)
                 .FIELDS(
@@ -966,7 +966,7 @@ public class CompilerSqlIntegration {
         ClassName beanEnactor2CompositeType = ClassName.get(Constants.BEAN_ENACTOR2_COMPOSITE, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2_COMPOSITE));
         ParameterizedType superclass = ParameterizedType.get(beanEnactor2CompositeType, RESULT_SET);
 
-        ClassName sqlCompositeEnactorImpl3Type = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3));
+        ClassName sqlCompositeEnactorImpl3Type = ClassName.get(Constants.SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_3, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_3));
         ClassName beanChecker2Type = ClassName.get(Constants.BEAN_CHECKER2, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER2));
 
         Constructor constructor = CONSTRUCTOR()
@@ -978,7 +978,7 @@ public class CompilerSqlIntegration {
                                 CONSTRUCTOR_CALL(beanChecker2Type, List.of()))
                 );
 
-        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_BEAN_ENACTOR3)
+        Class pastClass = pastFactory.CLASS(Constants.SQL_BEAN_COMPOSITE_ENACTOR_3)
                 .MODIFIERS(Modifier.PUBLIC)
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
@@ -996,7 +996,7 @@ public class CompilerSqlIntegration {
         ClassName beanEnactor2CompositeWPType = ClassName.get(Constants.BEAN_ENACTOR2_COMPOSITE_WP, locations.getFilePackage(configs.name, Constants.BEAN_ENACTOR2_COMPOSITE_WP));
         ParameterizedType superclass = ParameterizedType.get(beanEnactor2CompositeWPType, RESULT_SET);
 
-        ClassName sqlCompositeEnactorImpl4Type = ClassName.get(Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4));
+        ClassName sqlCompositeEnactorImpl4Type = ClassName.get(Constants.SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_4, locations.getFilePackage(configs.name, Constants.SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_4));
         ClassName beanChecker2Type = ClassName.get(Constants.BEAN_CHECKER2, locations.getFilePackage(configs.name, Constants.BEAN_CHECKER2));
 
         Constructor constructor = CONSTRUCTOR()
@@ -1012,7 +1012,7 @@ public class CompilerSqlIntegration {
                                 VARIABLE(Constants.PRINCIPAL_MANAGER_VAR))
                 );
 
-        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_BEAN_ENACTOR4)
+        Class pastClass = pastFactory.CLASS(Constants.SQL_BEAN_COMPOSITE_ENACTOR_4)
                 .MODIFIERS(Modifier.PUBLIC)
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
@@ -1027,8 +1027,8 @@ public class CompilerSqlIntegration {
     public SpecificationFile generateSqlIntegration_CompositeEnactorConfigurator3(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        ClassName superclass = ClassName.get(Constants.COMPOSITE_ENACTOR_CONFIGURATOR2, locations.getFilePackage(configs.name, Constants.COMPOSITE_ENACTOR_CONFIGURATOR2));
-        ClassName sqlCompositeBeanEnactor3Type = ClassName.get(Constants.SQL_COMPOSITE_BEAN_ENACTOR3, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_ENACTOR3));
+        ClassName superclass = ClassName.get(Constants.ENACTOR_CONFIGURATOR_COMPOSITE_2, locations.getFilePackage(configs.name, Constants.ENACTOR_CONFIGURATOR_COMPOSITE_2));
+        ClassName sqlCompositeBeanEnactor3Type = ClassName.get(Constants.SQL_BEAN_COMPOSITE_ENACTOR_3, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPOSITE_ENACTOR_3));
 
         Constructor constructor = CONSTRUCTOR()
                 .commentFileLocation()
@@ -1038,7 +1038,7 @@ public class CompilerSqlIntegration {
                         SUPER_CALL(CONSTRUCTOR_CALL(sqlCompositeBeanEnactor3Type, List.of(VARIABLE("querier"))))
                 );
 
-        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_ENACTOR_CONFIGURATOR3)
+        Class pastClass = pastFactory.CLASS(Constants.SQL_ENACTOR_COMPOSITE_CONFIGURATOR_3)
                 .MODIFIERS(Modifier.PUBLIC)
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);
@@ -1053,8 +1053,8 @@ public class CompilerSqlIntegration {
     public SpecificationFile generateSqlIntegration_CompositeEnactorConfigurator4(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        ClassName superclass = ClassName.get(Constants.COMPOSITE_ENACTOR_CONFIGURATOR2, locations.getFilePackage(configs.name, Constants.COMPOSITE_ENACTOR_CONFIGURATOR2));
-        ClassName sqlCompositeBeanEnactor4Type = ClassName.get(Constants.SQL_COMPOSITE_BEAN_ENACTOR4, locations.getFilePackage(configs.name, Constants.SQL_COMPOSITE_BEAN_ENACTOR4));
+        ClassName superclass = ClassName.get(Constants.ENACTOR_CONFIGURATOR_COMPOSITE_2, locations.getFilePackage(configs.name, Constants.ENACTOR_CONFIGURATOR_COMPOSITE_2));
+        ClassName sqlCompositeBeanEnactor4Type = ClassName.get(Constants.SQL_BEAN_COMPOSITE_ENACTOR_4, locations.getFilePackage(configs.name, Constants.SQL_BEAN_COMPOSITE_ENACTOR_4));
 
         Constructor constructor = CONSTRUCTOR()
                 .commentFileLocation()
@@ -1066,7 +1066,7 @@ public class CompilerSqlIntegration {
                         SUPER_CALL(CONSTRUCTOR_CALL(sqlCompositeBeanEnactor4Type, List.of(VARIABLE("querier"), VARIABLE(Constants.POST_PROCESSING_VAR), VARIABLE(Constants.PRINCIPAL_MANAGER_VAR))))
                 );
 
-        Class pastClass = pastFactory.CLASS(Constants.SQL_COMPOSITE_ENACTOR_CONFIGURATOR4)
+        Class pastClass = pastFactory.CLASS(Constants.SQL_ENACTOR_COMPOSITE_CONFIGURATOR_4)
                 .MODIFIERS(Modifier.PUBLIC)
                 .SUPERCLASS(superclass)
                 .CONSTRUCTOR(constructor);

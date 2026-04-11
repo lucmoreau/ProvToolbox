@@ -53,7 +53,7 @@ public class CompilerTableConfiguratorForTypes {
     SpecificationFile generateTableConfigurator(TemplatesProjectConfiguration configs, boolean compositeOnly, Locations locations, String l2p_src_dir) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        String originalTableClassName = (compositeOnly) ? COMPOSITE_TABLE_CONFIGURATOR : TABLE_CONFIGURATOR;
+        String originalTableClassName = (compositeOnly) ? TABLE_CONFIGURATOR_COMPOSITE : TABLE_CONFIGURATOR;
         String tableClassName = originalTableClassName + "ForTypes" + WITH_MAP;
 
         ClassName originalInterface = get(originalTableClassName, locations.getFilePackage(configs.name, originalTableClassName));

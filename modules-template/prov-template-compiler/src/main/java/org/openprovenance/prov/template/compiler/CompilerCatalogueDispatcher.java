@@ -52,15 +52,15 @@ public class CompilerCatalogueDispatcher {
         put("outputs", OUTPUTS_CONFIGURATOR);
         put("sqlConverter", SQL_CONFIGURATOR);
         put("csvConverter", CSV_CONFIGURATOR);
-        put("csvConverter4Beans", CSV_CONFIGURATOR4BEANS);
-        put("csvConverter4Outputs", CSV_CONFIGURATOR4OUTPUTS);
+        put("csvConverter4Beans", CSV_CONFIGURATOR_4_BEANS);
+        put("csvConverter4Outputs", CSV_CONFIGURATOR_4_OUTPUTS);
         put("sqlInsert", SQL_INSERT_CONFIGURATOR);
         put("beanConverter", CONVERTER_CONFIGURATOR);
         put("relation0", RELATION0_CONFIGURATOR);
         put("foreignTables", BUILDER_PROCESSOR_CONFIGURATOR);
         put("successors", BUILDER_PROCESSOR_CONFIGURATOR);
         put("enactorConverter", SQL_ENACTOR_CONFIGURATOR4);
-        put("compositeEnactorConverter", SQL_COMPOSITE_ENACTOR_CONFIGURATOR4);
+        put("compositeEnactorConverter", SQL_ENACTOR_COMPOSITE_CONFIGURATOR_4);
         put("documentBuilderDispatcher", TABLE_CONFIGURATOR + WITH_MAP);
         put("typeAssignment", TABLE_CONFIGURATOR + "ForTypes" + WITH_MAP);
         put("recordMaker", OBJECT_RECORD_MAKER_CONFIGURATOR);

@@ -60,9 +60,6 @@ public class EnactCsvRecords<T> {
                     populateRecordAndExtractMethod(record, size, args);
                     return args;
                 }).collect(Collectors.toList());
-                if (csvConverter4Outputs!=null) {
-                    throw new UnsupportedOperationException("csvConverter4Outputs not yet implemented for composite output beans");
-                }
                 populatedRecords.add(outputTransformer.apply(processor_N.apply(ll)));
             } else {
                 throw new EnactorException("Unknown method " + method, method);

@@ -54,6 +54,7 @@ public class CompilerCatalogueDispatcher {
         put("csvConverter", CSV_CONFIGURATOR);
         put("csvConverter4Beans", CSV_CONFIGURATOR_4_BEANS);
         put("csvConverter4Outputs", CSV_CONFIGURATOR_4_OUTPUTS);
+        put("csvConverter4OutputsComposite", CSV_CONFIGURATOR_4_OUTPUTS_COMPOSITE);
         put("sqlInsert", SQL_INSERT_CONFIGURATOR);
         put("beanConverter", CONVERTER_CONFIGURATOR);
         put("relation0", RELATION0_CONFIGURATOR);
@@ -74,6 +75,7 @@ public class CompilerCatalogueDispatcher {
         put("csvConverter",              ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_STRING));
         put("csvConverter4Beans",        ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_BEAN_TO_STRING));
         put("csvConverter4Outputs",      ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_BEAN_TO_STRING));
+        put("csvConverter4OutputsComposite", ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_BEAN_TO_STRING));
         put("sqlInsert",                 ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING));
         put("beanConverter",             ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_ANY));
         put("relation0",                 ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_MAP_STRING_INTARRAY));
@@ -85,6 +87,8 @@ public class CompilerCatalogueDispatcher {
         put("typeAssignment",            MAP_STRING_MAP_STRING_SET_STRING);
         put("recordMaker",               ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_OBJ_ARRAY));
     }};
+
+    public static List<String> compositeTables =List.of("compositeEnactorConverter", "csvConverter4OutputsComposite");
 
 
 
@@ -242,8 +246,9 @@ public class CompilerCatalogueDispatcher {
                         cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data), Constant.getNull()));
                     } else {
                         // new ConfiguratorClass()
+                        String initialiser=(compositeTables.contains(data))? INITIALIZE_COMPOSITE_BEAN_TABLE : INITIALIZE_BEAN_TABLE;
                         cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
-                                METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
+                                METHOD_CALL(loggerClass, initialiser,
                                         List.of(CONSTRUCTOR_CALL(configuratorClass, List.of())))));
                     }
                 }
@@ -279,7 +284,7 @@ public class CompilerCatalogueDispatcher {
                         ClassName.get(Constants.LOGGER, locations.getFilePackage(configs.name, Constants.LOGGER));
                 ClassName configuratorClass =
                         ClassName.get(configurator, locations.getFilePackage(configs.name, configurator));
-                String initMethodName = ("compositeEnactorConverter".equals(data)) ? "initializeCompositeBeanTable" : INITIALIZE_BEAN_TABLE;
+                String initMethodName = compositeTables.contains(data) ? INITIALIZE_COMPOSITE_BEAN_TABLE : INITIALIZE_BEAN_TABLE;
 
                 pastClass.METHODS(
 
@@ -307,18 +312,6 @@ public class CompilerCatalogueDispatcher {
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, configs.root_package, configs, directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator,pythonGenerator);
-
-        /*
-        // Emit PAST class to TypeSpec.Builder
-        TypeSpec.Builder builder = new Poet().emitBuilder(pastClass);
-
-        TypeSpec theCatalogueDispatcher=builder.build();
-
-        JavaFile myfile = compilerUtil.specWithComment(theCatalogueDispatcher, configs, configs.root_package, stackTraceElement);
-
-        return new SpecificationFile(myfile, directory, fileName, configs.root_package);
-        */
-
     }
 
     private Method createGetter(TemplatesProjectConfiguration configs, String data, org.openprovenance.prov.template.compiler.past.type.TypeName typeName) {

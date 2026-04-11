@@ -514,7 +514,7 @@ public class CompilerCommon {
                                                 FUNCTIONAL_METHOD_CALL(VARIABLE(VAR_CSV_CONVERTER), "apply", List.of(VARIABLE(VAR_OBJECTS)))),
 
                                         METHOD_CALL(
-                                                METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\\n"))),
+                                                METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\n"))),
                                                 "append",
                                                 List.of(VARIABLE(VAR_CSV)))
 

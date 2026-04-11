@@ -76,10 +76,12 @@ public class TemplateLogic {
         Map<String, Function<Object[],?>> enactorConverters= templateDispatcher.getEnactorConverter();
         Map<String, Function<List<Object[]>,?>> compositeEnactorConverters= templateDispatcher.getCompositeEnactorConverter();
         Map<String, Function<Object,String>> csvConverter4Outputs= templateDispatcher.getCsvConverter4Outputs();
+        Map<String, Function<Object,String>> csvConverter4OutputsComposite= templateDispatcher.getCsvConverter4OutputsComposite();
 
         String[] props=properties.get(isA);
         Function<Object[],?> enactor=enactorConverters.get(isA);
         Function<Object,String> csv_processor_1=csvConverter4Outputs.get(isA);
+        Function<Object,String> csv_processor_Composite=csvConverter4OutputsComposite.get(isA);
 
         if (enactor!=null) {
             for (Map<String, Object> entry : entries) {
@@ -107,7 +109,9 @@ public class TemplateLogic {
                     recordsResult.add(compositeEnactor.apply(objects));
                 } else {
                     // csv here
-                    recordsResult.add(csv_processor_1.apply(compositeEnactor.apply(objects)));
+                    String csvLines = csv_processor_Composite.apply(compositeEnactor.apply(objects));
+                    logger.info(csvLines);
+                    Collections.addAll(recordsResult, csvLines.split("\\\\n"));
                 }
             }
         }
@@ -139,10 +143,12 @@ public class TemplateLogic {
 
         Map<String, Function<List<Object[]>,?>> compositeEnactors= templateDispatcher.getCompositeEnactorConverter();
         Map<String, Function<Object,String>> csvConverter4Outputs= templateDispatcher.getCsvConverter4Outputs();
+        Map<String, Function<Object,String>> csvConverter4OutputsComposite= templateDispatcher.getCsvConverter4OutputsComposite();
+
         Map<String, Function<List<Object[]>,Object>> compositeEnactors2= compositeEnactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (Function<List<Object[]>,Object>) e.getValue()));
         return switch (acceptHeader) {
             case MEDIA_TEXT_CSV ->
-                    enactCsvRecords.process(collection, enactors2, compositeEnactors2, csvConverter4Outputs);
+                    enactCsvRecords.process(collection, enactors2, compositeEnactors2, csvConverter4Outputs, csvConverter4OutputsComposite);
             case APPLICATION_VND_KCL_PROV_TEMPLATE_JSON ->
                     enactCsvRecords.process(collection, enactors2, compositeEnactors2);
             default -> throw new IllegalStateException("Unsupported accept header " + acceptHeader);

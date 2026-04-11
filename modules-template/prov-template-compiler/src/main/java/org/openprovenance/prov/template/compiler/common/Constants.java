@@ -133,6 +133,8 @@ public interface Constants {
     String __NODES_FIELD = GENERATED_VAR_PREFIX+ "nodes";
     String COMPOSITE = "Composite";
     String INITIALIZE_BEAN_TABLE = "initializeBeanTable";
+    String INITIALIZE_COMPOSITE_BEAN_TABLE = "initializeCompositeBeanTable";
+
     String INSERT_ARRAY_SUFFIX = "_array";
     String INSERT_COMPOSITE_AND_LINKER_SUFFIX = "_and_linker";
     String VARIABLE_BEAN = "bean";

@@ -3,7 +3,16 @@
 
 # TODO
 ## template-compiler:
-csv Serializer for output beans. Follow approach of composite common bean.
+csv DeSerializer:
+
+issue with WS ignoring \n.
+See /Users/luc/IdeaProjects/ProvToolbox/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/readers/JsonOrCsvMessageBodyReader.java
+lines 60-64
+
+And the artificially introduced ! in the examples
+/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/test/resources/enact/payloadComposite1.csv
+
+
 
 ## template-compiler:
 Revisit TableConfigurator so that generic type is per method, rather than class level, allowing unnecessary casts.

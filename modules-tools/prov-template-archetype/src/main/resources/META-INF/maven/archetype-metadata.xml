@@ -92,6 +92,7 @@
                         <include>**/*.json</include>
                         <include>**/*.provn</include>
                         <include>**/*.jsonld</include>
+                        <include>**/*.csv</include>
                     </includes>
                 </fileSet>
                 <fileSet encoding="UTF-8">

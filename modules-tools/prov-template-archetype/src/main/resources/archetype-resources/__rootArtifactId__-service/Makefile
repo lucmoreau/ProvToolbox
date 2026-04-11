@@ -111,7 +111,10 @@ post.template2:
 	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" -H "Accept-PROV-Hash: SHA3-512" -d @src/test/resources/json/bindings2.json -H "Content-type: application/vnd.kcl.prov-template+json" -H "Accept: application/vnd.kcl.prov-template+json" $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/ptl/provapi/statements
 
 
+
+JSON_BEAN='[{"isA": "org.openprovenance.book.fs.FileInit",  "type": "xxx" }]'
 CSV_LINE="org.openprovenance.book.fs.FileInit,,,,,xxx,"
+
 post.template.csv:
 	sh bin/keycloak-get-token.sh
 	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" \
@@ -120,7 +123,6 @@ post.template.csv:
 					-H "Content-type: text/csv" \
 					$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/statements
 
-JSON_BEAN='[{"isA": "org.openprovenance.book.fs.FileInit",  "type": "xxx" }]'
 post.template.json:
 	sh bin/keycloak-get-token.sh
 	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" \
@@ -129,8 +131,19 @@ post.template.json:
 					-H "Accept: text/csv" \
 					$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/statements
 
+JSON_COMPOSITE_BEAN='[{  "isA": "org.openprovenance.book.fs.FileTransformingComposite",  "count": 1,  "type": "org.openprovenance.book.fs.FileTransforming",  "__elements": [    {      "isA": "org.openprovenance.book.fs.FileTransforming",      "transformed_file": -2,      "filename": "ddd",      "file": 2,      "transforming": -4    }  ]}]'
 
+CSV_COMPOSITE_BEAN='org.openprovenance.book.fs.FileTransformingComposite,,1,org.openprovenance.book.fs.FileTransforming \n  org.openprovenance.book.fs.FileTransforming,-2,ddd,2,,,-4,,,,'
 
+post.template.csv1:
+	$(MAKE) post.template.csv CSV_LINE=@src/test/resources/enact/payloadComposite1.csv
+post.template.csv2:
+	$(MAKE) post.template.csv CSV_LINE=@src/test/resources/enact/payloadComposite2.csv
+
+post.template.json1:
+	$(MAKE) post.template.json JSON_BEAN=@src/test/resources/enact/payloadComposite1.json
+post.template.json2:
+	$(MAKE) post.template.json JSON_BEAN=@src/test/resources/enact/payloadComposite2.json
 
 
 create.archetype:

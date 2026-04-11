@@ -21,6 +21,7 @@ import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
 import static org.openprovenance.prov.template.compiler.past.Class.ClassKind.ANONYMOUS;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
@@ -221,6 +222,7 @@ public class CompilerBeanCompleter2 {
                         .PARAMETER(outputClassName, BEAN_VAR)
                         .RETURNS(outputClassName)
                         .BODY(
+                                ASSIGNMENT(METHOD_CALL(VARIABLE(BEAN_VAR),"count"),  CONSTANT(0)),
                                 DO()
                                         .BODY(
                                                 DEFINITION(composeeClass, VARIABLE("composee"), CONSTRUCTOR_CALL(composeeClass, List.of())),
@@ -231,8 +233,10 @@ public class CompilerBeanCompleter2 {
                                                 METHOD_CALL(
                                                         VARIABLE(BEAN_VAR),
                                                         ADD_ELEMENTS,
-                                                        List.of(VARIABLE("composee"))
-                                                ))
+                                                        List.of(VARIABLE("composee"))),
+                                                ASSIGNMENT(METHOD_CALL(VARIABLE(BEAN_VAR),"count"), BINARY_OP(METHOD_CALL(VARIABLE(BEAN_VAR),"count"), "+", CONSTANT(1))),
+                                                ASSIGNMENT(METHOD_CALL(VARIABLE(BEAN_VAR),"type"), METHOD_CALL(VARIABLE("composee"),"isA"))
+                                        )
                                         .WHILE(METHOD_CALL(VARIABLE("this"), "next", List.of())),
                                 RETURN(VARIABLE(BEAN_VAR)));
                 pastClass.METHOD(mspec0);

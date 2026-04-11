@@ -48,9 +48,7 @@ public class CompilerProcessor {
 
 
         String interfaceName = inIntegrator ? compilerUtil.processorNameClass(templateName, direction) : compilerUtil.processorNameClass(templateName);
-
-        System.out.println("----> Creating processor interface " +interfaceName + " " + fileName + " " + templateName);
-
+        
         Class pastClass = pastFactory.INTERFACE(interfaceName)
                 .MODIFIERS(Modifier.PUBLIC)
                 .TYPE_VARIABLES(T());

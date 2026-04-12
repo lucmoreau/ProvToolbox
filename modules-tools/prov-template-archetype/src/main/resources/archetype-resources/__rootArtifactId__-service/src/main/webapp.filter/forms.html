@@ -1002,6 +1002,56 @@
 </script>
 <script>
 
+    function createBarChart(parsed, queryResult) {
+        let xInstruction = parsed.trace.x
+        let yInstruction = parsed.trace.y
+        let headers = queryResult[0]
+        queryResult.shift();
+        let xValue = extract(headers, queryResult, xInstruction);
+        let yValue = extract(headers, queryResult, yInstruction);
+
+
+        let trace = parsed.trace;
+        trace.x = xValue;
+        trace.y = yValue;
+        let data = [trace]
+        let layout = parsed.layout;
+
+        console.log(trace);
+        console.log(layout);
+        return {data, layout};
+    }
+
+    function createPieChart(parsed, queryResult) {
+        let labelsInstruction = parsed.trace.labels
+        let valuesInstruction = parsed.trace.values
+        let headers = queryResult[0]
+        queryResult.shift();
+        let labelsValue = extract(headers, queryResult, labelsInstruction);
+        let valuesValue = extract(headers, queryResult, valuesInstruction);
+
+
+        let trace = parsed.trace;
+        trace.labels = labelsValue;
+        trace.values = valuesValue;
+        let data = [trace]
+        let layout = parsed.layout;
+
+        console.log(trace);
+        console.log(layout);
+        return {data, layout};
+    }
+
+    function doPlot(id, data, layout) {
+        try {
+            Plotly.newPlot(id, data, layout);
+        } catch (e) {
+            console.log('Error creating plot ' + e);
+            showPlotResult('<div class="alert alert-warning">Problem creating plotN</div>');
+            return;
+        }
+    }
+
     function createPlotlyPlot(query, plot_url, id, queryResult) {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', plot_url, true);
@@ -1037,31 +1087,15 @@
                 return;
             }
 
-            let xInstruction=parsed.trace.x
-            let yInstruction=parsed.trace.y
-            let headers=queryResult[0]
-            queryResult.shift();
-            let xValue=extract(headers, queryResult, xInstruction);
-            let yValue=extract(headers, queryResult, yInstruction);
+            if (parsed.trace.type==="bar") {
+                let {data, layout} = createBarChart(parsed, queryResult);
+                doPlot(id, data, layout);
 
-
-
-            let trace=parsed.trace;
-            trace.x=xValue;
-            trace.y=yValue;
-            let data = [trace]
-            let layout=parsed.layout;
-
-            console.log(trace);
-            console.log(layout);
-
-            try {
-                Plotly.newPlot(id, data, layout);
-            } catch (e) {
-                console.log('Error creating plot ' + e);
-                showPlotResult('<div class="alert alert-warning">Problem creating plotN</div>');
-                return;
+            } else if (parsed.trace.type==="pie") {
+                let {data, layout} = createPieChart(parsed, queryResult);
+                doPlot(id, data, layout);
             }
+
 
 
         }

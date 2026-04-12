@@ -23,13 +23,7 @@
   <component name="ChangeListManager">
     <list default="true" id="44a1f447-c308-479f-be3a-95e05d37ae08" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/dispatch/EnactCsvRecords.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/dispatch/EnactCsvRecords.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/readers/JsonOrCsvMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/readers/JsonOrCsvMessageBodyReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanCompleter2.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanCompleter2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/test/resources/enact/payloadComposite2.csv" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/test/resources/enact/payloadComposite2.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/webapp.filter/forms.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/webapp.filter/forms.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -331,7 +325,7 @@
       <workItem from="1774896782614" duration="68208000" />
       <workItem from="1775678928305" duration="2409000" />
       <workItem from="1775682541217" duration="8227000" />
-      <workItem from="1775722756273" duration="80747000" />
+      <workItem from="1775722756273" duration="84709000" />
     </task>
     <servers />
   </component>

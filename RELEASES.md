@@ -11,6 +11,9 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates-core: return of csv format (for csv and json inputs)
 * prov-template-compiler: csv for composite, common, input, output
 * prov-template-archetype: updated navigation form to select templates
+* prov-template-archetype, service-templates-core: support for selection of latest record of templates
+* prov-template-archetype: support for reception of csv, change the glyphicons
+
 
 `2.2.3`
 * prov-template: update to instantiation

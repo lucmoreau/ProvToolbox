@@ -17,6 +17,14 @@
     <link rel="icon"       type="image/png" href="${symbol_dollar}{service.context}/webjars/swagger-ui/${symbol_dollar}{webjars.swagger-ui.version}/favicon-16x16.png" sizes="16x16" />
 
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        /* Map jsonform's hardcoded glyphicon classes to Font Awesome equivalents */
+        .glyphicon { font-family: FontAwesome; font-style: normal; font-weight: normal; }
+        .glyphicon-remove:before    { content: "\f00d"; } /* fa-times        */
+        .glyphicon-plus-sign:before { content: "\f055"; } /* fa-plus-circle  */
+        .glyphicon-minus-sign:before{ content: "\f056"; } /* fa-minus-circle */
+        .glyphicon-list:before      { content: "\f03a"; } /* fa-list         */
+    </style>
 </head>
 
 
@@ -501,6 +509,12 @@
             if (builders[indx].getName() == shortName) return builders[indx].getOutputs();
         }
     }
+    function getBuilder(fullyQualifiedName) {
+        for (var indx in builders) {
+            if (builders[indx].getFullyQualifiedName() == fullyQualifiedName) return builders[indx];
+        }
+    }
+
 
     function constructMenusConfiguration() {
         let profile = {}
@@ -686,7 +700,9 @@
     function submitService(jsonSubmit, url, anchor_result_box, anchor_csv, anchor_result_prov_link, anchor_explanation, enactorp, allRecordsp) {
         console.log("submitService")
 
-        let csv_data=${symbol_dollar}(HTML_ANCHOR_CSV_RESULT).text()
+        let $csv_clone = ${symbol_dollar}(HTML_ANCHOR_CSV_RESULT).clone();
+        $csv_clone.find('br').replaceWith('\n');
+        let csv_data = $csv_clone.text();
         const input_bean = tm.getBean();
         const __elements=input_bean.__elements;
         let json_data=JSON.stringify(alreadySeen.concat([input_bean]))
@@ -711,7 +727,9 @@
             } else if (!enactorp && (xhr.status === 200)) {
                 ${symbol_dollar}(anchor_result_box).html('<i class="fa fa-check"></i>' + "Passed Validator!");
             } else {
-                if (preferred_accept_format === 'application/json') {
+                let responseType=xhr.getResponseHeader('Content-Type');
+                console.log(responseType);
+                if (responseType.includes(MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON)) {
                     const parsed = JSON.parse(xhr.responseText);
                     let name = parsed[0]["isA"];
                     if (__elements) {
@@ -729,26 +747,93 @@
                         console.log("csv_bean " + csv_bean);
                         let csv_with_brk = csv_bean[0].replace(/(?:\r\n|\r|\n)/g, '<br>').replaceAll('\\n', '<br>');
                         console.log("csv_with_brk " + csv_with_brk);
-                        $
-                        {
-                            symbol_dollar
-                        }
-                        (anchor_csv).append("<p>").append(csv_with_brk).append("</p>");
+                        ${symbol_dollar}(anchor_csv).append("<p>").append(csv_with_brk).append("</p>");
                     }
                     if (anchor_result_prov_link) {
                         let ID = parsed[0]["ID"];
                         let prov_link = createProvLink(name, ID);
-                        $
-                        {
-                            symbol_dollar
-                        }
-                        (anchor_result_prov_link).html(prov_link).append("<p/>").append("<div id='xplain_id'></div>").append("<p/>");
+                        ${symbol_dollar}(anchor_result_prov_link).html(prov_link).append("<p/>").append("<div id='xplain_id'></div>").append("<p/>");
                         getExplanation('${symbol_dollar}{service.context}/provapi/explanation/template/' + name + '/' + ID, 'default', anchor_explanation);
                     }
-                } else {
-                    const response = xhr.responseText;
+                } else if (responseType.includes(MEDIA_TYPE_TEXT_CSV)) {
+                    const response = xhr.responseText.trim();
                     console.log(response);
+
+                    // display table in result_box
                     ${symbol_dollar}(anchor_result_box).html(response);
+
+                    try {
+                        const records = ${symbol_dollar}.csv.toArrays(response)
+                            .map(function(row) {
+                                return row.map(function(cell) {
+                                    return cell === '' ? undefined : cell; }); });
+                        console.log(records);
+
+
+                        // if records contains a single element
+                        if (!records || records.length <= 0) {
+                            ${symbol_dollar}(anchor_result_box).html("Error processing response as record: " + response);
+                        } else if (records.length == 1) {
+                            // simple bean, get the type from the first column of the record
+                            let record0 = records[0]
+                            let record_type = records[0][0]
+                            console.log("Found " + record_type)
+                            var builder = getBuilder(record_type);
+                            console.log(builder)
+
+                            let bean = builder.record2bean(record0);
+                            console.log(bean)
+
+                            ${symbol_dollar}(anchor_result_box).append("<p/><p><b>Reconstructed bean:</b></p>")
+
+                            let highlighted = tm.syntaxHighlight_json(JSON.stringify(bean, null, 2), record_type)
+
+                            ${symbol_dollar}(anchor_result_box).append(highlighted);
+
+
+                        } else {
+                            // composite bean
+                            let record0 = records[0]
+                            let record_type = records[0][0]
+                            console.log("Found " + record_type)
+                            var builder = getBuilder(record_type);
+                            console.log(builder)
+
+                            // need to convert array into java list (since it's a conversion of code from java, via jsweet)
+                            let recordList=new java.util.ArrayList();
+                            for (let record of records) {
+                                recordList.add(record);
+                            }
+                            let bean = builder.aRecord2BeanConverter(recordList);
+                            console.log(bean)
+
+                            ${symbol_dollar}(anchor_result_box).append("<p/><p><b>Reconstructed bean:</b></p>")
+
+                            // encoding of java list have a circularity, which means the objects cannot be stringified.
+                            let elements=bean["__elements"]
+                            let size=elements.size()
+                            let newElements=[]
+                            for (let i=0; i<size; i++) {
+                                newElements.push(elements.get(i));
+                            }
+                            let newCompositeBean={}
+                            newCompositeBean.isA=bean.isA
+                            newCompositeBean.count=bean.count;
+                            newCompositeBean.type=bean.type;
+                            newCompositeBean["__elements"]=newElements;
+
+                            let highlighted = tm.syntaxHighlight_json(JSON.stringify(newCompositeBean, null, 2), record_type)
+                            ${symbol_dollar}(anchor_result_box).append(highlighted);
+
+                        }
+                    } catch (e) {
+                        console.log("Failed in the reconstruction of bean from csv");
+                        console.log(e)
+
+                        ${symbol_dollar}(anchor_result_box).append("Failed in the reconstruction of bean from csv");
+                    }
+                } else {
+                    ${symbol_dollar}(anchor_result_box).html("unknown response type " + responseType + "\n" + xhr.responseText);
                 }
 
             }

@@ -738,6 +738,35 @@ public class TemplateService {
 
     }
 
+    @GET
+    @Path("/template/{relation}/last/{count}.json")
+    @Tag(name = "template")
+    @Produces({ MEDIA_APPLICATION_JSON })
+    public Response getLastNrecords(@Context HttpServletResponse response,
+                                              @Context HttpServletRequest request,
+                                              @Context HttpHeaders headers,
+                                              @Context UriInfo uriInfo,
+
+                                              @Parameter(name = "relation", description = "relation name", required = true) @PathParam("relation") String relation,
+                                              @Parameter(name = "count", description = "record count", required = true) @PathParam("count") Integer count) {
+
+        logger.info("getLastNrecords " + relation + " " + count);
+
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+
+
+        List<Integer> ll=queryTemplate.queryMostRecentTemplatesRecords(relation, count, principalAsPreferredUsername);
+
+        logger.info("getLastNrecords " + ll);
+
+        StreamingOutput promise= out -> om.writeValue(out,ll);
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
+
+    }
+
+
     private String determineOptionalExtension(HttpHeaders headers, String extension) {
         if (extension ==null || extension.isEmpty()) {
             if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(MEDIA_TEXT_PROVENANCE_NOTATION))) {

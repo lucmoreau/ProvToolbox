@@ -670,6 +670,35 @@ System.out.println("templateConnections: " + templateConnections.stream().map(Te
         return linked_records;
     }
 
+
+    public List<Integer> queryMostRecentTemplatesRecords(String base_relation, Integer count, String principal) {
+        List<Integer> linked_records = new LinkedList<>();
+
+        querier.do_query(linked_records,
+                null,
+
+                (sb, data) -> {
+                    sb.append("select rel.id, idx.table_name, idx.id as overall_id\n")
+                            .append("from ").append(base_relation).append(" as rel\n")
+                            .append("join record_index as idx on rel.id=idx.key\n")
+                            .append("where idx.table_name='").append(base_relation).append("'\n")
+                            .append("and\n")
+                            .append("idx.principal='").append(principal).append("'\n")
+                            .append("order by rel.id DESC\n")
+                            .append("limit ")
+                            .append(count)
+                            .append("\n");
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        Integer id = rs.getObject("id", Integer.class);
+                        data.add(id);
+                    }
+                });
+
+        return linked_records;
+    }
+
     static class RecordEntry {
         public String table;
         public Integer key;

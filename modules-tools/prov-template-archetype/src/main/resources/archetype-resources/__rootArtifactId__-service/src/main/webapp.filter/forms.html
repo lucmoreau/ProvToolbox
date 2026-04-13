@@ -157,17 +157,24 @@
                         </div>
                     </div>
                     <div class="col-sm-3">
-                        <h6>CSV encoding</h6>
+                        <h6>Input CSV encoding</h6>
                         <pre id="csv_result" class="grey"><p> </p></pre>
                         <p> </p>
-                        <h6>JSON encoding</h6>
+                        <h6>Input JSON encoding</h6>
                         <pre id="json_result" class="pretty grey"><p> </p></pre>
                     </div>
                     <div class="col-sm-3">
                         <button id="button-submit-json" type="button" class="btn btn-warning" onclick="submitEnactor(true)">Submit (json)</button>
                         <button id="button-submit-csv"  type="button" class="btn btn-warning" onclick="submitEnactor(false)">Submit (csv)</button>
                         <button id="button-clear"       type="button" class="btn btn-info"    onclick="enactClear()">Clear</button>
-                        <h6>Submission Result</h6>
+                        <div class="d-flex align-items-center mt-2 mb-2">
+                            <span class="me-2 small">Receive JSON</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="toggle-accept-format" onchange="preferred_accept_format = this.checked ? 'text/csv' : 'application/json'">
+                            </div>
+                            <span class="ms-2 small">Receive CSV</span>
+                        </div>
+                        <h6 id="submission_result_section">Submission Result</h6>
                         <pre id="enact_result" class="pretty grey"> </pre>
                         <p id="prov_link"></p>
                         <h6>Explanation</h6>
@@ -223,12 +230,30 @@
             <div id="tab_navigator" class="tab-pane" role="tabpanel">
                 <div class="row">
                     <div class="col-lg-2">
-                        <label for="navigator_id" class="visually-hidden">Navigator ID</label>
-                        <input type="number" id="navigator_id" class="form-control" value="96">
                         <label for="navigator_template" class="visually-hidden">Navigator Template</label>
-                        <input type="text" id="navigator_template" class="form-control" value="weighing">
+                        <div class="input-group">
+                            <input type="text" id="navigator_template" class="form-control" placeholder="Select a template…">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-navigator-template" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-navigator-template-menu" aria-labelledby="dd-navigator-template"></ul>
+                            </div>
+                        </div>
+                        <label for="navigator_id" class="visually-hidden">Navigator ID</label>
+                        <div class="input-group">
+                            <input type="number" id="navigator_id" class="form-control" value="96">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-navigator-id" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-navigator-id-menu" aria-labelledby="dd-navigator-id"></ul>
+                            </div>
+                        </div>
                         <label for="navigator_property" class="visually-hidden">Navigator Property</label>
-                        <input type="text" id="navigator_property" class="form-control" value="item1">
+                        <div class="input-group">
+                            <input type="text" id="navigator_property" class="form-control" value="item1">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-navigator-property" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-navigator-property-menu" aria-labelledby="dd-navigator-property"></ul>
+                            </div>
+                        </div>
                         <label for="navigator_style" class="visually-hidden">Navigator Style</label>
                         <select name="navigator_style" id="navigator_style" class="form-select">
                             <option value="template">Template Viz</option>
@@ -471,6 +496,12 @@
     let shortNames = {}
     let longNames = {}
 
+    function getOutputs(shortName) {
+        for (var indx in builders) {
+            if (builders[indx].getName() == shortName) return builders[indx].getOutputs();
+        }
+    }
+
     function constructMenusConfiguration() {
         let profile = {}
         let composites = {}
@@ -536,6 +567,78 @@
 
     console.log(profile)
 
+    const NAVIGATOR_LAST_COUNT = 5;
+
+    function populateNavigatorPropertyDropdown(shortName) {
+        const outputs = getOutputs(shortName);
+        const menu = document.getElementById('dd-navigator-property-menu');
+        menu.innerHTML = '';
+        if (!outputs || outputs.length === 0) return;
+        outputs.forEach(function(output, index) {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.className = 'dropdown-item';
+            a.href = '#';
+            a.textContent = output;
+            a.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('navigator_property').value = output;
+            });
+            li.appendChild(a);
+            menu.appendChild(li);
+        });
+        // Select the first output by default
+        document.getElementById('navigator_property').value = outputs[0];
+    }
+
+    function populateNavigatorIdDropdown(relation) {
+        const url = '${symbol_dollar}{service.context}/provapi/template/' + encodeURIComponent(relation) + '/last/' + NAVIGATOR_LAST_COUNT + '.json';
+        const menu = document.getElementById('dd-navigator-id-menu');
+        menu.innerHTML = '';
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const ids = JSON.parse(xhr.responseText);
+                ids.forEach(function(id) {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.className = 'dropdown-item';
+                    a.href = '#';
+                    a.textContent = id;
+                    a.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.getElementById('navigator_id').value = id;
+                    });
+                    li.appendChild(a);
+                    menu.appendChild(li);
+                });
+            }
+        };
+        xhr.send();
+    }
+
+    // Populate navigator_template dropdown with short names
+    const ddTemplateMenu = document.getElementById('dd-navigator-template-menu');
+    for (const fqn in shortNames) {
+        const name = shortNames[fqn][0];
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.className = 'dropdown-item';
+        a.href = '#';
+        a.textContent = name;
+        a.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('navigator_template').value = name;
+            populateNavigatorIdDropdown(name);
+            populateNavigatorPropertyDropdown(name);
+        });
+        li.appendChild(a);
+        ddTemplateMenu.appendChild(li);
+    }
+
+
+    var preferred_accept_format = 'application/json';
 
     function submitEnactor(jsonSubmit) {
         ${symbol_dollar}(HTML_ANCHOR_ENACT_RESULT_BOX).html(${symbol_dollar}('<p>'));
@@ -608,30 +711,44 @@
             } else if (!enactorp && (xhr.status === 200)) {
                 ${symbol_dollar}(anchor_result_box).html('<i class="fa fa-check"></i>' + "Passed Validator!");
             } else {
-                const parsed = JSON.parse(xhr.responseText);
-                let name=parsed[0]["isA"];
-                if (__elements) {
-                    // this is a compositive bean, get the type from the input bean
-                    parsed[0].type=input_bean.type;
-                }
-                let highlighted=tm.syntaxHighlight_json(JSON.stringify(parsed, null, 2), name)
-                ${symbol_dollar}(anchor_result_box).html(highlighted);
-                if (anchor_csv) {
-                    let merged= {...input_bean, ...parsed[0]}
-                    let csv_bean=tm.populateBean(name, merged)
-                    // if we want json log
-                    //      ${symbol_dollar}(id2).append(JSON.stringify(merged, null, 2));
-                    // if we want csv log
-                    console.log("csv_bean " + csv_bean);
-                    let csv_with_brk=csv_bean[0].replace(/(?:\r\n|\r|\n)/g, '<br>').replaceAll('\\n','<br>');
-                    console.log("csv_with_brk " + csv_with_brk);
-                    ${symbol_dollar}(anchor_csv).append("<p>").append(csv_with_brk).append("</p>");
-                }
-                if (anchor_result_prov_link) {
-                    let ID=parsed[0]["ID"];
-                    let prov_link = createProvLink(name, ID);
-                    ${symbol_dollar}(anchor_result_prov_link).html(prov_link).append("<p/>").append("<div id='xplain_id'></div>").append("<p/>");
-                    getExplanation('${symbol_dollar}{service.context}/provapi/explanation/template/' + name + '/' + ID, 'default', anchor_explanation);
+                if (preferred_accept_format === 'application/json') {
+                    const parsed = JSON.parse(xhr.responseText);
+                    let name = parsed[0]["isA"];
+                    if (__elements) {
+                        // this is a compositive bean, get the type from the input bean
+                        parsed[0].type = input_bean.type;
+                    }
+                    let highlighted = tm.syntaxHighlight_json(JSON.stringify(parsed, null, 2), name)
+                    ${symbol_dollar}(anchor_result_box).html(highlighted);
+                    if (anchor_csv) {
+                        let merged = {...input_bean, ...parsed[0]}
+                        let csv_bean = tm.populateBean(name, merged)
+                        // if we want json log
+                        //      ${symbol_dollar}(id2).append(JSON.stringify(merged, null, 2));
+                        // if we want csv log
+                        console.log("csv_bean " + csv_bean);
+                        let csv_with_brk = csv_bean[0].replace(/(?:\r\n|\r|\n)/g, '<br>').replaceAll('\\n', '<br>');
+                        console.log("csv_with_brk " + csv_with_brk);
+                        $
+                        {
+                            symbol_dollar
+                        }
+                        (anchor_csv).append("<p>").append(csv_with_brk).append("</p>");
+                    }
+                    if (anchor_result_prov_link) {
+                        let ID = parsed[0]["ID"];
+                        let prov_link = createProvLink(name, ID);
+                        $
+                        {
+                            symbol_dollar
+                        }
+                        (anchor_result_prov_link).html(prov_link).append("<p/>").append("<div id='xplain_id'></div>").append("<p/>");
+                        getExplanation('${symbol_dollar}{service.context}/provapi/explanation/template/' + name + '/' + ID, 'default', anchor_explanation);
+                    }
+                } else {
+                    const response = xhr.responseText;
+                    console.log(response);
+                    ${symbol_dollar}(anchor_result_box).html(response);
                 }
 
             }
@@ -639,7 +756,7 @@
         }
 
         // Currently, the server does not support the csv format in the result
-        if (true) {
+        if (preferred_accept_format === 'application/json') {
             xhr.setRequestHeader("Accept", MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON);
         } else {
             xhr.setRequestHeader("Accept", MEDIA_TYPE_TEXT_CSV);

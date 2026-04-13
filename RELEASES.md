@@ -10,6 +10,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates-core, prov-template-archetype: support for sql testing sql queries and plots for developers
 * service-templates-core: return of csv format (for csv and json inputs)
 * prov-template-compiler: csv for composite, common, input, output
+* prov-template-archetype: updated navigation form to select templates
 
 `2.2.3`
 * prov-template: update to instantiation

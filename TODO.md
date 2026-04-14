@@ -11,6 +11,41 @@ Line 486, handling of the Common Bean, is older code, reference Logger, not idea
 
 The new code: for Input/Output is much neater. Can it be used for all cases? to test.
 
+Suggested we generate the following code for the Common Bean, and then use it in the compiler, instead of the current code which is more complex and less type safe.
+```
+    File_transforming_compositeBuilder self=this;
+    return (__bean, __count, __type, __elements1) -> {
+      StringBuilder sb=new StringBuilder();
+      self.logFile_transforming_composite(sb,__bean,__count,__type);
+      File_transformingBuilder elementBuilder=new File_transformingBuilder();
+      for ( int _i_=0; (_i_ < __elements1.size()); _i_=(_i_ + 1) ) {
+        File_transformingBean element=__elements1.get(_i_);
+        String csv=element.process(elementBuilder.args2csv());
+        sb.append("\\n").append(csv);
+      }
+      return sb.toString();
+    };
+```
+
+To compare, current code looks as follows:
+```
+File_transforming_compositeBuilder self=this;
+    return (__bean, __count, __type, __elements1) -> {
+          StringBuilder sb=new StringBuilder();
+          self.logFile_transforming_composite(sb,__bean,__count,__type);
+          File_transformingProcessor<Object[]> processor=Logger.__file_transforming.aArgs2RecordConverter();
+          for ( int _i_=0; (_i_ < __elements1.size()); _i_=(_i_ + 1) ) {
+            File_transformingBean element=__elements1.get(_i_);
+            // // the following line generates ts error: Untyped function calls may not accept type arguments.;
+            Object[] objects=element.process(processor);
+            Function<Object[], String> csvConverter=Logger.simpleCSvConverters.get(__type);
+            String csv=csvConverter.apply(objects);
+            sb.append("\n").append(csv);
+          }
+          return sb.toString();
+        };
+```
+
 ## template-compiler:
 Revisit TableConfigurator so that generic type is per method, rather than class level, allowing unnecessary casts.
 ```
@@ -53,7 +88,6 @@ __PROV_DELEGATION (delegate, delegate_rel, responsible, responsible_rel, activit
 
 
 - upgrade scala version
-- add template as options in pull down
 
 # templateIT fails when service is usign mongo.
 

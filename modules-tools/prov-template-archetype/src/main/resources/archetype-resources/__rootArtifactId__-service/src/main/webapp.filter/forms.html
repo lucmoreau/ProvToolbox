@@ -217,10 +217,20 @@
             <div id="tab_browser" class="tab-pane" role="tabpanel">
                 <div class="row">
                     <div class="col-lg-2">
-                        <label for="browser_base_relation">Base relation:</label><input type="text" id="browser_base_relation" class="form-control" value="activity">
-                        <label for="browser_from_date">From date:</label><input type="datetime-local" id="browser_from_date" class="form-control" value="2024-07-19T15:13">
-                        <label for="browser_to_date">To date:</label><input type="datetime-local" id="browser_to_date" class="form-control" >
-                        <label for="browser_limit"></label><input type="number" id="browser_limit" class="form-control" value="100">
+                        <label for="browser_base_relation">Base relation:</label>
+                        <div class="input-group">
+                            <input type="text" id="browser_base_relation" class="form-control" value="activity">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-browser-relation" data-bs-toggle="dropdown" aria-expanded="false" onclick="populateBrowserRelationDropdown()"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-browser-relation-menu" aria-labelledby="dd-browser-relation"></ul>
+                            </div>
+                        </div>
+                        <label for="browser_from_date">From date:</label>
+                        <input type="datetime-local" id="browser_from_date" class="form-control" value="2024-07-19T15:13">
+                        <label for="browser_to_date">To date:</label>
+                        <input type="datetime-local" id="browser_to_date" class="form-control" >
+                        <label for="browser_limit"></label>
+                        <input type="number" id="browser_limit" class="form-control" value="100">
 
                         <p></p>
                         <button id="browser_refresh" type="button" class="btn btn-info"    onclick="submitBrowse()">Refresh</button>
@@ -581,6 +591,17 @@
 
     console.log(profile)
 
+    function getBaseRelations() {
+        const seen = new Set();
+        for (var i in builders) {
+            const relations = JSON.parse(builders[i].getBaseRelations());
+            if (relations) {
+                relations.forEach(function(r) { seen.add(r); });
+            }
+        }
+        return Array.from(seen).sort();
+    }
+
     const NAVIGATOR_LAST_COUNT = 5;
 
     function populateNavigatorPropertyDropdown(shortName) {
@@ -650,6 +671,8 @@
         li.appendChild(a);
         ddTemplateMenu.appendChild(li);
     }
+
+    populateBrowserRelationDropdown();
 
 
     var preferred_accept_format = 'application/json';
@@ -873,6 +896,25 @@
         ${symbol_dollar}('${symbol_pound}browser_to_date').val("");
         ${symbol_dollar}('${symbol_pound}browser_base_relation').val("activity");
         ${symbol_dollar}('${symbol_pound}browser_limit').val("10");
+    }
+
+    function populateBrowserRelationDropdown() {
+        const menu = document.getElementById('dd-browser-relation-menu');
+        if (menu.childElementCount > 0) return; // already populated
+        const relations = getBaseRelations();
+        relations.forEach(function(name) {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.className = 'dropdown-item';
+            a.href = '#';
+            a.textContent = name;
+            a.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('browser_base_relation').value = name;
+            });
+            li.appendChild(a);
+            menu.appendChild(li);
+        });
     }
 
     function submitBrowse() {

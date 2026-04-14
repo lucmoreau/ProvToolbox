@@ -105,7 +105,7 @@ public class CompilerCommon {
 
         Map<Integer, List<Integer>> successorTable=null;
 
-
+        pastClass.METHOD(generateBaseRelationsAccessor(configs.sqlTables));
         pastClass.METHOD(generateNameAccessor(templateName));
         pastClass.METHOD(generateFullyQualifiedNameAccessor(templateFullyQualifiedName));
         pastClass.METHOD(generateTemplateNameAccessor(templateFullyQualifiedName,locations));
@@ -197,6 +197,21 @@ public class CompilerCommon {
         return Pair.of(specFile, successorTable);
     }
 
+    private Method generateBaseRelationsAccessor(Map<String, Map<String, String>> sqlTables) {
+        Method method = METHOD(METHOD_GET_BASE_RELATIONS)
+                .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                .RETURNS(STRING);
+        compilerUtil.debugFileLocation(method);
+        String relations;
+        if (sqlTables==null) {
+            relations="[]";
+        } else {
+            Collection<String> baseRelations = sqlTables.keySet();
+            relations = baseRelations.stream().map(r -> "\"" + r + "\"").collect(Collectors.joining(",","[",  "]"));
+        }
+        method.BODY(RETURN(CONSTANT(relations)));
+        return method;
+    }
 
 
     private Method generateMethodGetIntegrator(Locations locations, String templateName, String templateFullyQualifiedName) {
@@ -484,7 +499,12 @@ public class CompilerCommon {
 
 
             if (beanDirection == BeanDirection.COMMON) {
+                String templateBuilderName= compilerUtil.templateNameClass(shortConsistsOf);
+                ClassName templateBuilderClassName = get(templateBuilderName, locations.getBeansPackage(consistsOf,BeanDirection.COMMON));
 
+                method.commentFileLocation();
+
+                /*
                 lambda.BODY(
                         DEFINITION(parametericInterface, VARIABLE("processor"),
                                 METHOD_CALL(METHOD_CALL(loggerClassName, GENERATED_VAR_PREFIX + shortConsistsOf), ARGS2RECORD_CONVERTER, List.of()))
@@ -519,7 +539,58 @@ public class CompilerCommon {
                                                 List.of(VARIABLE(VAR_CSV)))
 
                                 ));
+
+
+                 */
+
+
+                /*
+                                File_transforming_compositeBuilder self=this;
+                return (__bean, __count, __type, __elements1) -> {
+                  StringBuilder sb=new StringBuilder();
+                  self.logFile_transforming_composite(sb,__bean,__count,__type);
+                  File_transformingBuilder elementBuilder=new File_transformingBuilder();
+                  for ( int _i_=0; (_i_ < __elements1.size()); _i_=(_i_ + 1) ) {
+                    File_transformingBean element=__elements1.get(_i_);
+                    String csv=element.process(elementBuilder.args2csv());
+                    sb.append("\\n").append(csv);
+                  }
+                  return sb.toString();
+                };
+                 */
+
+                lambda.BODY(
+
+                        DEFINITION(templateBuilderClassName, VARIABLE(VAR_ELEMENT_BUILDER),
+                                CONSTRUCTOR_CALL(templateBuilderClassName, List.of())),
+
+                        FOR(
+                                DEFINITION(_int, VARIABLE(_I_), CONSTANT(0)),
+                                BINARY_OP(VARIABLE(_I_), BinaryOp.LT, METHOD_CALL(VARIABLE(GENERATED_VAR_PREFIX + ELEMENTS1), "size", List.of())),
+                                ASSIGNMENT(VARIABLE(_I_), BINARY_OP(VARIABLE(_I_), "+", CONSTANT(1))))
+
+                                .BODY(
+
+                                        DEFINITION(ClassName.get(beanNameClass, packge), VARIABLE(VAR_ELEMENT),
+                                                METHOD_CALL(VARIABLE(GENERATED_VAR_PREFIX + ELEMENTS1), "get", List.of(VARIABLE(_I_)))),
+
+
+
+                                        DEFINITION(STRING, VARIABLE(VAR_CSV),
+                                                METHOD_CALL(VARIABLE(VAR_ELEMENT),
+                                                        "process",
+                                                        List.of(METHOD_CALL(VARIABLE(VAR_ELEMENT_BUILDER), ARGS_CSV_CONVERSION_METHOD, List.of())))),
+
+                                        METHOD_CALL(
+                                                METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\\n"))),
+                                                "append",
+                                                List.of(VARIABLE(VAR_CSV)))
+
+                                        ));
+
+
             } else {
+                method.commentFileLocation();
 
                 String integratorBuilderName= compilerUtil.integratorBuilderNameClass(shortConsistsOf);
                 ClassName integratorBuilderClassName = get(integratorBuilderName, packge);

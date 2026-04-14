@@ -13,12 +13,11 @@ import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.model.interop.InteropMediaType;
 
 import java.util.List;
-import java.util.Map;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+
 import org.apache.logging.log4j.Logger;
 
 import static org.openprovenance.prov.service.core.QueryConfiguration.*;
@@ -171,35 +170,23 @@ public class QueryService {
 
 
 
+/*
 
-    @Path("/query/list-of-queries")
+
+    @Path("/query/relations")
     @GET
     @Produces({InteropMediaType.MEDIA_APPLICATION_JSON})
-    public Response getListOfQueries() {
-        logger.info("getListOfQueries");
-        if (!enabled  || !this.configuration.enableExternalQueries) {
+    public Response getBaseRelations() {
+        logger.info("getBaseRelations");
+        if (!enabled) {
             return ServiceUtils.composeResponseOK("[]").build();
         }
-        // find files *.sql in query configuration path
-        List<String> queries = new java.util.ArrayList<>();
-        for (String path : this.configuration.externalQueryPath) {
-            if (path == null) continue;
-            File dir = new File(path);
-            if (dir.exists() && dir.isDirectory()) {
-                File[] files = dir.listFiles((d, name) -> name.endsWith(".sql"));
-                if (files != null) {
-                    for (File f : files) {
-                        String name = f.getName();
-                        if (name.endsWith(".sql")) {
-                            queries.add(name.substring(0, name.length() - 4));
-                        }
-                    }
-                }
-            }
-        }
-        StreamingOutput promise = (out) -> new ObjectMapper().writeValue(out, queries);
+        Set<String> relations=templateQuery.getRelations();
+        StreamingOutput promise = (out) -> new ObjectMapper().writeValue(out, relations);
         return  ServiceUtils.composeResponseOK(promise).build();
     }
+
+ */
 
 
 }

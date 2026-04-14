@@ -90,6 +90,8 @@ public class TemplateQuery {
         initializePredecessorTable();
     }
 
+
+
     private void initializePredecessorTable() {
 
         querier.do_statements(null,
@@ -105,6 +107,25 @@ public class TemplateQuery {
 
         ;
 
+    }
+
+    Set<String> getRelations() {
+        Set<String> set1=ioMap
+                .get(INPUT)
+                .values()
+                .stream()
+                .map(Map::values)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+        Set<String> set2=ioMap
+                .get(INPUT)
+                .values()
+                .stream()
+                .map(Map::values)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+        set1.addAll(set2);
+        return set1;
     }
 
     public Map<String, String> getLongNames() {

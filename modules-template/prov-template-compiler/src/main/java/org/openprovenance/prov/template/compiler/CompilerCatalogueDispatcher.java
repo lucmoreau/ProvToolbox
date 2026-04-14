@@ -108,7 +108,11 @@ public class CompilerCatalogueDispatcher {
 
 
 
-    SpecificationFile generateCatalogueDispatcher(TemplatesProjectConfiguration configs, Map<String, Map<String, Map<String, String>>> inputOutputMaps, Locations locations, String directory, String fileName) {
+    SpecificationFile generateCatalogueDispatcher(TemplatesProjectConfiguration configs,
+                                                  Map<String, Map<String, Map<String, String>>> inputOutputMaps,
+                                                  Locations locations,
+                                                  String directory,
+                                                  String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         final ParameterizedType catalogueDispatcherInterfaceType = ParameterizedType.get(CATALOGUE_DISPATCHER_INTERFACE, PROV_FILE_BUILDER);

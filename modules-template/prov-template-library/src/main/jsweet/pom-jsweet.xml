@@ -34,6 +34,9 @@
                     <excludes>
                         <exclude>**/node_modules/**</exclude>
                         <exclude>**/node/**</exclude>
+                        <exclude>**/IdentifierRegistry.java</exclude>
+                        <exclude>**/BeanLocalEnactor3.java</exclude>
+                        <exclude>**/LocalEnactor.java</exclude>
                     </excludes>
                     <targetVersion>ES6</targetVersion>
                     <module>commonjs</module>

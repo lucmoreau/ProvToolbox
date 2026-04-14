@@ -12,7 +12,9 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: csv for composite, common, input, output
 * prov-template-archetype: updated navigation form to select templates
 * prov-template-archetype, service-templates-core: support for selection of latest record of templates
-* prov-template-archetype: support for reception of csv, change the glyphicons
+* prov-template-archetype: form: support for reception of csv, change the glyphicons
+* prov-template-archetype: form: drop down menu for base relations in Browser tab.
+* prov-template-commpiler: updated CompilerCommon (with neater generated code for composite beans)
 
 
 `2.2.3`

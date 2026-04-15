@@ -20,7 +20,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
-import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.model.interop.PrincipalManager;
 import org.openprovenance.prov.service.core.readers.*;
 import org.openprovenance.prov.service.security.pac.RoleAuthorizationGenerator;
@@ -137,7 +136,7 @@ public class TemplateService {
         String sqlInitializer= (String) templateConfiguration.get("sql.initializer");
         String jdbcURL= (String) templateConfiguration.get("jdbc.url");
         String nlgXplanLibary= (String) templateConfiguration.get("nlg.xplan.library");
-        List<String> nlgPlanList= (List<String>) templateConfiguration.get("nlg.xplan.list");
+        List<String> nlgPlanSelection= (List<String>) templateConfiguration.get("nlg.xplan.selection");
 
 
         Connection conn=storageSetup(jdbcURL);
@@ -180,27 +179,28 @@ public class TemplateService {
         this.documentBuilderDispatcher=catalogueDispatcher.getDocumentBuilderDispatcher();
         this.recordMaker=catalogueDispatcher.getRecordMaker();
         this.queryTemplate=new TemplateQuery(querier, this.catalogueDispatcher, principalManager, compositeLinker, om);
-        this.templateLogic=new TemplateLogicWithConfig(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om,nlgXplanLibary,nlgPlanList);
+        this.templateLogic=new TemplateLogicWithConfig(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om,nlgXplanLibary,nlgPlanSelection);
 
 
     }
 
     static class TemplateLogicWithConfig extends TemplateLogic {
         private final String nlgXplanLibrary;
-        private final List<String> nlgXplanList;
+        private final List<String> nlgXplanSelection;
 
 
-        public TemplateLogicWithConfig(ProvFactory pf, TemplateQuery queryTemplate, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om, String nlgXplanLibrary, List<String> nlgXplanList) {
+        public TemplateLogicWithConfig(ProvFactory pf, TemplateQuery queryTemplate, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om, String nlgXplanLibrary, List<String> nlgXplanSelection) {
             super(pf, queryTemplate, shortNames, catalogueDispatcher, principalManager, utils, om);
             this.nlgXplanLibrary = nlgXplanLibrary;
-            this.nlgXplanList = nlgXplanList;
+            this.nlgXplanSelection = nlgXplanSelection;
         }
 
         @Override
         public @NonNull XplainerConfig makeXplainerConfig() {
             System.out.println("calling new XplainerConfig " + nlgXplanLibrary);
+            System.out.println("calling new XplainerConfig " + nlgXplanSelection);
 
-            return new XplainerConfig(nlgXplanLibrary, nlgXplanList);
+            return new XplainerConfig(nlgXplanLibrary, nlgXplanSelection);
         }
     }
 
@@ -809,6 +809,7 @@ public class TemplateService {
 
     public Map<String,Object> readTemplateConfiguration(String configFileName) {
         try {
+            System.out.println("---> readTemplateConfiguration" +  configFileName);
             return (Map<String, Object>) om.readValue(new File(configFileName), Map.class);
         } catch (IOException e) {
             throw new RuntimeException(e);

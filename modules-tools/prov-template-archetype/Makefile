@@ -3,6 +3,13 @@ PROVTOOLBOX_VERSION=$(shell cat $(FILE))
 
 DEPLOY_DIR=target
 
+NLG_BASIC_XPLAN_LIBRARY=/xplain/nlg/provbasic/provbasic.json
+NLG_BASIC_XPLAN_SELECTION='["actedonbehalfof1","activity1","agent1","alternate1","association1","attribution1","derivation1","end1","entity1","generation1","invalidation1","specialization1","start1","usage1","member1"]'
+
+NLG_FS_XPLAN_LIBRARY=/xplain/nlg/fs/fs-xplan-library.json
+NLG_FS_XPLAN_SELECTION='["fs-awk-column-selection","fs-file-transforming", "fs-generic-responsibility"]'
+
+
 run.book:
 	@echo "run.book: Using provtoolbox version $(PROVTOOLBOX_VERSION)"
 	@mkdir -p $(DEPLOY_DIR)
@@ -45,6 +52,8 @@ archetype.generate.book:
 		-Dimage.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-Dtemplate.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
+		-Dnlg.xplan.library=$(NLG_BASIC_XPLAN_LIBRARY) \
+		-Dnlg.xplan.selection=$(NLG_BASIC_XPLAN_SELECTION) \
 		-DserviceContext=/book \
 		-DservicePort=7075 \
 		-DdashboardTitle="Book PTM Dashboard"
@@ -72,6 +81,8 @@ archetype.generate.book.fs:
 		-Dimage.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-Dtemplate.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
+		-DnlgXplanLibrary=$(NLG_FS_XPLAN_LIBRARY) \
+		-DnlgXplanSelection=$(NLG_FS_XPLAN_SELECTION) \
 		-DserviceContext=/book \
 		-DservicePort=7075
 
@@ -94,6 +105,11 @@ archetype.generate.ptl:
 		-DtemplateSubLibrary=-plead \
 		-DloggerConstructor=org.openprovenance.prov.template.library.plead.client.logger.Logger \
 		-DjdbcURL="jdbc:postgresql://localhost:5432/templates?sslmode=disable" \
+		-Dimage.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
+		-Dtemplate.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
+		-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
+		-Dnlg.xplan.library=$(NLG_BASIC_XPLAN_LIBRARY) \
+		-Dnlg.xplan.selection=$(NLG_BASIC_XPLAN_SELECTION) \
 		-DserviceContext=/ptl \
 		-DservicePort=7076 \
 		-DdashboardTitle="PTL Dashboard"
@@ -128,7 +144,7 @@ NLG_XPLAIN=src/main/resources/archetype-resources/__rootArtifactId__-service/src
 DOCUMENTS=/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/test/prov/
 
 batch.explain:
-	@$(PROVMAN) explain --infile $(DOCUMENTS)/$(FILE).provn --outfile target/narrative-loan.provn --text target/narrative-loan.json --language $(NLG_XPLAIN)/fs/fs-template-library.json -s target/simplenlg2.txt --profile=$(PROFILE)  --batch-templates=$(BATCH)
+	@$(PROVMAN) explain --infile $(DOCUMENTS)/$(FILE).provn --outfile target/narrative-loan.provn --text target/narrative-loan.json --language $(NLG_XPLAIN)/fs/fs-xplan-library.json -s target/simplenlg2.txt --profile=$(PROFILE)  --batch-templates=$(BATCH)
 	@jq . target/narrative-loan.json
 
 

@@ -484,6 +484,8 @@
 	},
 
 	"context": {
+		"fs": "http://openprovenance.org/ns/fs#",
+
 		"foaf": "http://xmlns.com/foaf/0.1/",
 		"ln": "https://plead-project.org/ns/loan#",
 		"pl": "https://plead-project.org/ns/plead#",

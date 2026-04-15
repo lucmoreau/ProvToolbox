@@ -755,13 +755,14 @@ group by pipeline aggregate ancestor, act with Seq
 
 ## 3. Configuration
 
+/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/test/config/template-config.json
 ```json
 {
     "catalogue.package": "${pom.catalogue.package}",
     "jdbc.url": "${pom.jdbc.url}",
     "sql.initializer": "/META-INF/resources/webjars/${pom.the.template.library}/${pom.the.template.library.version}/sql/prov-template-library${pom.the.template.sublibrary}.sql",
     "nlg.xplan.library": "${pom.nlg.xplan.library}",
-    "nlg.xplan.list": ${pom.nlg.xplan.list}
+    "nlg.xplan.list": "${pom.nlg.xplan.selection}"
 }
 ```
 
@@ -772,7 +773,7 @@ File
 
 ```xml
 <pom.nlg.xplan.library>/xplain/nlg/provbasic/provbasic.json</pom.nlg.xplan.library> <!-- /xplain/nlg/xplans-config.json -->
-<pom.nlg.xplan.list>["actedonbehalfof1", "activity1", "agent1", "alternate1", "association1", "attribution1", "derivation1", "end1", "entity1", "generation1", "invalidation1", "specialization1", "start1", "usage1", "member1"]</pom.nlg.xplan.list>
+<pom.nlg.xplan.selection>["actedonbehalfof1", "activity1", "agent1", "alternate1", "association1", "attribution1", "derivation1", "end1", "entity1", "generation1", "invalidation1", "specialization1", "start1", "usage1", "member1"]</pom.nlg.xplan.selection>
 ```
 
 Folder [ProvToolbox: modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg](/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg) for example xplan libraries.

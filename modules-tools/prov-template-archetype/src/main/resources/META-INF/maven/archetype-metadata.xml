@@ -22,6 +22,12 @@
         <requiredProperty key="provtoolboxVersion">
             <defaultValue>${project.version}</defaultValue>
         </requiredProperty>
+        <requiredProperty key="nlgXplanLibrary">
+          <!--  <defaultValue></defaultValue> -->
+        </requiredProperty>
+        <requiredProperty key="nlgXplanSelection">
+           <!--  <defaultValue>[]</defaultValue> -->
+        </requiredProperty>
     </requiredProperties>
 
     <modules>

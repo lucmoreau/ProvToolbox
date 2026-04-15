@@ -20,13 +20,13 @@ display.config:
 
 install.sec:
 	@${symbol_dollar}(MAKE) display.config
-	export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=$(SERVICE_SECURITY_CONFIG);  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,security clean install
+	export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=$(SERVICE_SECURITY_CONFIG);  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,security clean install
 
 jetty:
-	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)/${symbol_dollar}(SERVICE_CONTEXT); export PROV_API=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)/${symbol_dollar}(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${symbol_dollar}{PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=${symbol_dollar}(SERVICE_SECURITY_CONFIG); export XPLAIN_LEXICON=${symbol_dollar}{XPLAIN_LEXICON}; export TEMPLATE_CONFIG=${symbol_dollar}(TEMPLATE_CONFIG); mvn -Pjetty,security jetty:run-war
+	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT); export PROV_API=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${symbol_dollar}{PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=${symbol_dollar}(SERVICE_SECURITY_CONFIG); export XPLAIN_LEXICON=${symbol_dollar}{XPLAIN_LEXICON}; export TEMPLATE_CONFIG=${symbol_dollar}(TEMPLATE_CONFIG); mvn -Pjetty,security jetty:run-war
 
 jetty.nosec:
-	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; unset TPL_SECURITY_CONFIG;  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,nosecurity jetty:run-war
+	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; unset TPL_SECURITY_CONFIG;  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,nosecurity jetty:run-war
 
 
 jetty.post:
@@ -49,9 +49,9 @@ test.luc:
 	sh target/shell1.sh
 
 test2:
-	bin/get-with-keycloak-standard-flow.sh $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/forms.html -o target/payload.html -D target/header.txt
+	bin/get-with-keycloak-standard-flow.sh $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/forms.html -o target/payload.html -D target/header.txt
 	@echo "Now, using cookie only, to access resources"
-	curl -s -o target/payload.html -D - --cookie-jar target/cookie.jar.txt --cookie target/cookie.jar.txt $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/forms.html
+	curl -s -o target/payload.html -D - --cookie-jar target/cookie.jar.txt --cookie target/cookie.jar.txt $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/forms.html
 
 
 test.bob:
@@ -76,12 +76,12 @@ test.ptl1:
 
 test.template:
 	bin/keycloak-get-token.sh
-	curl -i -X GET  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`"   $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/provapi/template/plead_transforming/480.jsonld
+	curl -i -X GET  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`"   $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/template/plead_transforming/480.jsonld
 
 
 get.template:
 	@export VERBOSE=false;bin/keycloak-get-token.sh
-	@curl -s -X GET  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`"   $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/provapi/template/${TEMPLATE}/${ID}.${EXTENSION}
+	@curl -s -X GET  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`"   $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/template/${TEMPLATE}/${ID}.${EXTENSION}
 
 hash.template:
 	@$(MAKE) get.template TEMPLATE=plead_transforming ID=$(ID) EXTENSION=csv | grep $(TEMPLATE) | sed 's/$(TEMPLATE)/$(ID),$(TEMPLATE)/g' > target/977.csv

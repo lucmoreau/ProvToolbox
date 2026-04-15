@@ -4,5 +4,5 @@
     "jdbc.url": "${pom.jdbc.url}",
     "sql.initializer": "/META-INF/resources/webjars/${pom.the.template.library}/${pom.the.template.library.version}/sql/prov-template-library${pom.the.template.sublibrary}.sql",
     "nlg.xplan.library": "${pom.nlg.xplan.library}",
-    "nlg.xplan.list": ${pom.nlg.xplan.list}
+    "nlg.xplan.selection": ${pom.nlg.xplan.selection}
 }

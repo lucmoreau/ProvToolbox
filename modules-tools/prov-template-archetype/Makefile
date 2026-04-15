@@ -118,3 +118,23 @@ go2:
 	cd $(DEPLOY_DIR)/artif/artif-service; mvn clean install
 	cd $(DEPLOY_DIR)/artif/artif-service; make jetty
 
+
+
+PROVTOOLBOX_DIR=/Users/luc/IdeaProjects/ProvToolbox
+JAVA_OPTS="-Dlog4j.configurationFile=src/test/resources/ptm/config/log4j2.xml -Djava.util.logging.config.file=src/test/resources/ptm/config/logging.properties"
+
+PROVMAN=export JAVA_OPTS=$(JAVA_OPTS2); $(PROVTOOLBOX_DIR)/modules-executable-provman/target/appassembler/bin/provmanagement
+NLG_XPLAIN=src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg
+DOCUMENTS=/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/test/prov/
+
+batch.explain:
+	@$(PROVMAN) explain --infile $(DOCUMENTS)/$(FILE).provn --outfile target/narrative-loan.provn --text target/narrative-loan.json --language $(NLG_XPLAIN)/fs/fs-template-library.json -s target/simplenlg2.txt --profile=$(PROFILE)  --batch-templates=$(BATCH)
+	@jq . target/narrative-loan.json
+
+
+
+xp.filtering:
+	$(MAKE) batch.explain FILE=file_filtering BATCH=[fs-awk-column-selection]
+
+xp.transforming:
+	$(MAKE) batch.explain FILE=file_transforming1 BATCH=[fs-file-transforming]

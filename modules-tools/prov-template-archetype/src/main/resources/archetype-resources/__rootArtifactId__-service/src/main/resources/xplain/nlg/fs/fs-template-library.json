@@ -1,7 +1,9 @@
 {
     "name": "fs",
     "templates": [
-        "fs-generic-responsibility.json"
+        "fs-generic-responsibility.json",
+        "fs-awk-column-selection.json",
+        "fs-file-transforming.json"
     ],
     "dictionaries": ["fs-dictionary.json"],
     "profiles": ["fs-profile.json"]

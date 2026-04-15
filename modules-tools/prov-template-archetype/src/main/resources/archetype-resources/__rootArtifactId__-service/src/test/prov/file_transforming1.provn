@@ -1,0 +1,18 @@
+document
+prefix fs <http://openprovenance.org/ns/fs#>
+prefix act <http://localhost:7075/book/provapi/live/activity/>
+prefix ag <http://localhost:7075/book/provapi/live/agent/>
+prefix provext <http://openprovenance.org/prov/extension#>
+prefix file <http://localhost:7075/book/provapi/live/file/>
+prefix method <http://localhost:7075/book/provapi/live/method/>
+entity(method:3)
+entity(file:3)
+entity(file:1550,[prov:type = 'fs:DataFile', fs:path = "/home/bob" %% xsd:string, fs:filename = "myfile.txt.gz" %% xsd:string])
+activity(act:6082,-,-,[prov:type = 'fs:TransformingData'])
+agent(ag:12)
+used(act:6082,file:3,-)
+wasGeneratedBy(file:1550,act:6082,-)
+wasDerivedFrom(file:1550, file:3, act:6082, -, -)
+wasAssociatedWith(act:6082,ag:12,method:3)
+wasAttributedTo(file:1550, ag:12,[provext:activity = 'act:6082'])
+endDocument

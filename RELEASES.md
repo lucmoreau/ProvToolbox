@@ -15,7 +15,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-archetype: form: support for reception of csv, change the glyphicons
 * prov-template-archetype: form: drop down menu for base relations in Browser tab.
 * prov-template-commpiler: updated CompilerCommon (with neater generated code for composite beans)
-
+* prov-explanations: generating some explanations and doc for book templates
 
 `2.2.3`
 * prov-template: update to instantiation

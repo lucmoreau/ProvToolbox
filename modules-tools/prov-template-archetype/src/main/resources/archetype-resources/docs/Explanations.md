@@ -1235,6 +1235,134 @@ When `agent` is unbound the `subject` noun phrase resolves to nothing, so simple
 }
 ```
 
+### 4.3. File registration with specialization
+
+**Target sentence**
+
+> A CSV file (file:1588) is registered alongside first version (file:1589) by agent (ag:9).
+
+This example is distinctive in that it must navigate a `prov:SpecializationOf` relation to distinguish the *file entity* (the general, stable identifier) from its *first version entity* (the specific instance created at registration time).
+
+**Provenance model**
+
+```
+spec              prov:SpecializationOf  —  spec.generalEntity = file:1588, spec.specificEntity = file:1589
+file:1588         prov:type  trs:CSV
+wgb               prov:WasGeneratedBy   —  wgb.entity = file:1588, wgb.activity = act:6119
+act:6119          prov:type  phys:RegisteringEntity
+waw               prov:WasAssociatedWith  —  waw.activity = act:6119, waw.agent = ag:9   (optional)
+```
+
+**Key constructs illustrated**
+
+| Construct | Where used |
+|---|---|
+| `provext:SpecializationOf` as scan type | Entry point to distinguish general entity from version |
+| `spec.generalEntity` / `spec.specificEntity` fields | Navigate from spec to file and version |
+| `@property: "prov:type"` + `@function: "localname"` as `adjective_phrase` pre-modifier | Extracts *CSV* from `trs:CSV` type attribute |
+| `preposition: "alongside"` | *alongside first version (file:1589)* |
+| Literal `adjective_phrase` head `"first"` as pre-modifier on a noun phrase | *first* version |
+| `present` tense passive | *is registered* |
+| `provext` prefix in `context` | Required for `provext:SpecializationOf` type lookup |
+
+**Query note:** The scan begins from `provext:SpecializationOf` (not `prov:Entity`), because the query needs to bind both the general entity (file) and the specific entity (version) simultaneously. An agent is optional via `optional join`.
+
+```
+prefix trs <https://openprovenance.org/transport/ns/#>
+prefix phys <http://openprovenance.org/ns/phys#>
+select * from spec a provext:SpecializationOf
+from file a prov:Entity
+ join spec.generalEntity = file.id
+from version a prov:Entity
+ join spec.specificEntity = version.id
+from wgb a prov:WasGeneratedBy
+ join file.id = wgb.entity
+from act a prov:Activity
+ join wgb.activity = act.id
+from waw a prov:WasAssociatedWith
+ optional join act.id = waw.activity
+from agent a prov:Agent
+ optional join waw.agent = agent.id
+where act[prov:type] >= 'phys:RegisteringEntity'
+```
+
+**Output:** `A CSV file (file:1588) is registered alongside first version (file:1589) by agent (ag:9).`
+
+**File:** [`xplain/nlg/fs/fs-file-init.json`](../__rootArtifactId__-service/src/main/resources/xplain/nlg/fs/fs-file-init.json)
+
+---
+
+### 4.4. File splitting
+
+**Target sentence** (one sentence per output file)
+
+> The file training_set.csv (file:1586) was split from file (file:2) with splitting method (method:3) by agent (ag:5).
+> The file validation_set.csv (file:1587) was split from file (file:2) with splitting method (method:3) by agent (ag:5).
+
+This example illustrates a *one-to-many* derivation: one input file is split into multiple output files, each recorded as a separate `prov:WasDerivedFrom` relation. The query returns one result row per derived file, so the realiser emits one sentence per row.
+
+**Provenance model**
+
+```
+file:1586  prov:wasDerivedFrom  file:2  (via act:6118, der1)   fs:filename = "training_set.csv"
+file:1587  prov:wasDerivedFrom  file:2  (via act:6118, der2)   fs:filename = "validation_set.csv"
+act:6118   prov:type  fs:SplittingData
+act:6118   prov:wasAssociatedWith  ag:5  plan method:3   (optional)
+```
+
+**Key constructs illustrated**
+
+| Construct | Where used |
+|---|---|
+| One query row per `prov:WasDerivedFrom` | Two sentences produced for one splitting activity |
+| `where act[prov:type] >= 'fs:SplittingData'` | Filters to splitting activities only |
+| `adjective_phrase` pre-modifier `"splitting"` | *splitting* method |
+| `verb: "split"` in past tense passive | *was split* |
+
+This x-plan is structurally identical to `fs-file-transforming.json`; only the activity-type filter (`SplittingData` vs `TransformingData`), the verb (`split` vs `compress`), and the method adjective (`splitting` vs `compression`) differ.
+
+**Output:**
+```
+The file training_set.csv (file:1586) was split from file (file:2) with splitting method (method:3) by agent (ag:5).
+The file validation_set.csv (file:1587) was split from file (file:2) with splitting method (method:3) by agent (ag:5).
+```
+
+**File:** [`xplain/nlg/fs/fs-file-splitting.json`](../__rootArtifactId__-service/src/main/resources/xplain/nlg/fs/fs-file-splitting.json)
+
+---
+
+### 4.5. Model fitting
+
+**Target sentence**
+
+> The model pipeline (file:1590) was fitted from data (file:3) with fitting method (method:100) by agent (ag:22).
+
+This example shows how the same `WasDerivedFrom`-based template is reused for a machine-learning fitting step, producing a *model* (of type `fs:Pipeline`) from a *data* file.
+
+**Provenance model**
+
+```
+file:1590  prov:wasDerivedFrom  file:3  (via act:6120)   fs:filename = "pipeline", prov:type = fs:Pipeline
+act:6120   prov:type  fs:FittingData
+act:6120   prov:wasAssociatedWith  ag:22  plan method:100   (optional)
+```
+
+**Key constructs illustrated**
+
+| Construct | Where used |
+|---|---|
+| `where act[prov:type] >= 'fs:FittingData'` | Filters to fitting activities only |
+| `adjective_phrase` pre-modifier `"model"` on object NP | *model* pipeline (file:1590) |
+| `@arg1: "data"` on source file `noun+identity` | *data* (file:3) — labels an unnamed entity with a domain term |
+| `verb: "fit"` in past tense passive | simpleNLG realises as *was fitted* |
+| `adjective_phrase` pre-modifier `"fitting"` | *fitting* method |
+
+**`@arg1` as a domain label:** When the source file entity has no `fs:filename` property the `noun+identity` function renders only the qualified name. Providing `"@arg1": "data"` prepends the label *data*, yielding *data (file:3)* — a clean domain-meaningful phrase even for bare entity nodes.
+
+**Output:** `The model pipeline (file:1590) was fitted from data (file:3) with fitting method (method:100) by agent (ag:22).`
+
+**File:** [`xplain/nlg/fs/fs-file-fitting.json`](../__rootArtifactId__-service/src/main/resources/xplain/nlg/fs/fs-file-fitting.json)
+
 ---
 
 ## 5. Rules for Writing X-Plans

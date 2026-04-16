@@ -162,3 +162,16 @@ xp.transforming.no.agent:
 	@$(MAKE) batch.explain FILE=file_transforming1_no_agent BATCH=[fs-file-transforming]
 xp.transforming.no.association:
 	@$(MAKE) batch.explain FILE=file_transforming1_no_association BATCH=[fs-file-transforming]
+
+xp.init:
+	@$(MAKE) batch.explain FILE=file_init BATCH=[fs-file-init]
+
+xp.splitting:
+	@$(MAKE) batch.explain FILE=file_splitting1 BATCH=[fs-file-splitting]
+
+xp.fitting:
+	@$(MAKE) batch.explain FILE=file_training BATCH=[fs-file-fitting]
+
+#| xgroup_by(.)
+xp.all:
+	@$(MAKE) xp.transforming.all xp.filtering xp.init xp.splitting xp.fitting | jq -s '.  '

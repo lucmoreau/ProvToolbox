@@ -1,0 +1,19 @@
+// The model model.mod (file:1590) results from the fitting of data (file:3) using method:100 by agent ag:22.
+document
+prefix fs <http://openprovenance.org/ns/fs#>
+prefix act <http://localhost:7075/book/provapi/live/activity/>
+prefix ag <http://localhost:7075/book/provapi/live/agent/>
+prefix provext <http://openprovenance.org/prov/extension#>
+prefix file <http://localhost:7075/book/provapi/live/file/>
+prefix method <http://localhost:7075/book/provapi/live/method/>
+entity(file:1590,[prov:type = 'fs:Pipeline', fs:path = "/home/bob" %% xsd:string, fs:filename = "pipeline.pip" %% xsd:string])
+entity(file:3)
+entity(method:100)
+activity(act:6120,-,-,[prov:type = 'fs:FittingData'])
+agent(ag:22)
+used(act:6120,file:3,-)
+wasGeneratedBy(file:1590,act:6120,-)
+wasDerivedFrom(file:1590, file:3, act:6120, -, -)
+wasAssociatedWith(act:6120,ag:22,method:100)
+wasAttributedTo(file:1590, ag:22,[provext:activity = 'act:6120'])
+endDocument

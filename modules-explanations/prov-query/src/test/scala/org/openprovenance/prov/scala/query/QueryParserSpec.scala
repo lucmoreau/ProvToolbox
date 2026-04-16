@@ -211,4 +211,54 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
 
   }
 
+  "A left join clause" should "parse to a LeftJoin node" in {
+
+    doCheckQuery(
+      """
+        select * from act a prov:Activity
+        from waw a prov:WasAssociatedWith
+         left join act.id = waw.activity
+      """.stripMargin) should be (
+        LeftJoin(
+          Scan("prov:Activity",         toSchema("act"), None), "act", "id",
+          Scan("prov:WasAssociatedWith", toSchema("waw"), None), "waw", "activity"))
+
+  }
+
+  "An optional join clause" should "parse to a LeftHashJoin node" in {
+
+    // Simple case: from waw optional join act.id = waw.activity → LeftHashJoin
+    doCheckQuery(
+      """
+        select * from act a prov:Activity
+        from waw a prov:WasAssociatedWith
+         optional join act.id = waw.activity
+      """.stripMargin) should be (
+        LeftHashJoin(
+          Scan("prov:Activity",         toSchema("act"), None), "act", "id",
+          Scan("prov:WasAssociatedWith", toSchema("waw"), None), "waw", "activity"))
+
+    // Chained: waw + optional agent + optional plan → nested LeftHashJoins
+    doCheckQuery(
+      """
+        select * from act a prov:Activity
+        from waw a prov:WasAssociatedWith
+         optional join act.id = waw.activity
+        from agent a prov:Agent
+         optional join waw.agent = agent.id
+        from plan a prov:Entity
+         optional join waw.plan = plan.id
+      """.stripMargin) should be (
+        LeftHashJoin(
+          LeftHashJoin(
+            LeftHashJoin(
+              Scan("prov:Activity",         toSchema("act"),   None), "act",  "id",
+              Scan("prov:WasAssociatedWith", toSchema("waw"),   None), "waw",  "activity"),
+            "waw", "agent",
+            Scan("prov:Agent",             toSchema("agent"), None), "agent", "id"),
+          "waw", "plan",
+          Scan("prov:Entity",             toSchema("plan"),  None), "plan",  "id"))
+
+  }
+
 }

@@ -152,5 +152,13 @@ batch.explain:
 xp.filtering:
 	$(MAKE) batch.explain FILE=file_filtering BATCH=[fs-awk-column-selection]
 
+xp.transforming.all: xp.transforming xp.transforming.no.method xp.transforming.no.agent xp.transforming.no.association
+
 xp.transforming:
 	$(MAKE) batch.explain FILE=file_transforming1 BATCH=[fs-file-transforming]
+xp.transforming.no.method:
+	$(MAKE) batch.explain FILE=file_transforming1_no_method BATCH=[fs-file-transforming]
+xp.transforming.no.agent:
+	$(MAKE) batch.explain FILE=file_transforming1_no_agent BATCH=[fs-file-transforming]
+xp.transforming.no.association:
+	$(MAKE) batch.explain FILE=file_transforming1_no_association BATCH=[fs-file-transforming]

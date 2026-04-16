@@ -34,7 +34,7 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
   }
 
   def tableJoinClause: Rule[Operator :: HNil, Operator :: HNil] =
-    rule { tableClause ~ WS ~ ("join" ~ WS ~ joinClause2 ~> makeTableJoin | "left" ~ WS ~ "join" ~ WS ~ joinClause2 ~> makeTableLJoin)}
+    rule { tableClause ~ WS ~ ("join" ~ WS ~ joinClause2 ~> makeTableJoin | "left" ~ WS ~ "join" ~ WS ~ joinClause2 ~> makeTableLJoin | "optional" ~ WS ~ "join" ~ WS ~ joinClause2 ~> makeTableOptJoin)}
 
   def pred: Rule[HNil, Predicate :: HNil] = rule {
     ref  ~ ( ">=" ~ WS ~ ref ~> makeIncludes ~ WS |
@@ -85,6 +85,7 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
   def makeJoinPair: (Ref,Ref) => (Ref,Ref)
   def makeTableJoin: (Operator, Operator,(Ref,Ref)) => Operator
   def makeTableLJoin: (Operator, Operator,(Ref,Ref)) => Operator
+  def makeTableOptJoin: (Operator, Operator,(Ref,Ref)) => Operator
   def makeJoin1:(Operator, Seq[Operator]) => Operator
   def makeGroup:(Operator, Seq[String], Seq[String], String, Option[Ref]) => Operator
   def makeOr: (Predicate,Predicate) => Predicate = (p,q) => OrPred(p,q)
@@ -144,6 +145,12 @@ class ProvQLParser (override val input: ParserInput, val ns: Namespace) extends 
   override def makeTableLJoin: (Operator, Operator,(Ref,Ref)) => Operator =
     (op1,op2,pair) => pair match {
       case (field1:Field, field2:Field) => LeftJoin(op1,field1.name,field1.field, op2,  field2.name,field2.field)
+      case _ => throw new IllegalStateException("illegal case")
+    }
+
+  override def makeTableOptJoin: (Operator, Operator,(Ref,Ref)) => Operator =
+    (op1,op2,pair) => pair match {
+      case (field1:Field, field2:Field) => LeftHashJoin(op1,field1.name,field1.field, op2,  field2.name,field2.field)
       case _ => throw new IllegalStateException("illegal case")
     }
 

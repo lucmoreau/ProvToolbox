@@ -12,11 +12,11 @@
         "from act a prov:Activity",
         " join der.activity = act.id",
         "from waw a prov:WasAssociatedWith",
-        " join act.id = waw.activity",
+        " optional join act.id = waw.activity",
         "from agent a prov:Agent",
-        " join waw.agent = agent.id",
+        " optional join waw.agent = agent.id",
         "from plan a prov:Entity",
-        " join waw.plan = plan.id",
+        " optional join waw.plan = plan.id",
 
         "where act[prov:type] >= 'fs:TransformingData'"
     ],
@@ -30,7 +30,8 @@
                 "@object": "agent",
                 "@field": "id",
                 "@function": "noun+identity",
-                "@arg1": "agent"
+                "@arg1": "agent",
+                "@optional": "true"
             }
         },
         "object": {
@@ -75,19 +76,23 @@
                 "type": "preposition_phrase",
                 "preposition": "from",
                 "noun": {
-                    "type": "@funcall",
-                    "@object": "file1",
-                    "@field": "id",
-                    "@function": "noun+identity",
-                    "@arg1": "file",
-                    "features": {
-                        "head_markup_element": "span",
-                        "head_markup_attributes": {
-                            "type": "@funcall",
-                            "@object": "file1",
-                            "@function": "markup-for-id",
-                            "@field": "id",
-                            "@arg1": "provelement"
+                    "type": "noun_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "file1",
+                        "@field": "id",
+                        "@function": "noun+identity",
+                        "@arg1": "file",
+                        "@optional": "true",
+                        "features": {
+                            "head_markup_element": "span",
+                            "head_markup_attributes": {
+                                "type": "@funcall",
+                                "@object": "file1",
+                                "@function": "markup-for-id",
+                                "@field": "id",
+                                "@arg1": "provelement"
+                            }
                         }
                     }
                 }
@@ -98,14 +103,18 @@
                 "noun": {
                     "type": "noun_phrase",
                     "pre-modifiers": [
-                        { "type": "adjective_phrase", "head": "compression" }
+                        {
+                            "type": "adjective_phrase",
+                            "head": "compression"
+                        }
                     ],
                     "head": {
                         "type": "@funcall",
                         "@object": "plan",
                         "@field": "id",
                         "@function": "noun+identity",
-                        "@arg1": "method"
+                        "@arg1": "method",
+                        "@optional": "true"
                     }
                 }
             }

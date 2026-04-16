@@ -146,6 +146,7 @@ trait QueryInterpreter extends SummaryTypesNames {
     case LeftJoin(left, _, _, right, _, _) => resultSchema(left) ++ resultSchema(right)
     case Group(keys, agg, _, _, _) => keys ++ agg
     case HashJoin(left, right) => resultSchema(left) ++ resultSchema(right)
+    case LeftHashJoin(left, _, _, right, _, _) => resultSchema(left) ++ resultSchema(right)
     case Print(parent) => toSchema()
     //case Order(f,parent,_)        => Schema()
   }
@@ -212,6 +213,36 @@ trait QueryInterpreter extends SummaryTypesNames {
                 //println("Supplying record (2) " + record)
                 yld(record)
               }
+            }
+          }
+        }
+
+      case LeftHashJoin(left, key1, property1, right, key2, property2) =>
+        // Build phase: evaluate right sub-plan once and index by the join key value.
+        val rightSchema = resultSchema(right)
+        val hm = new mutable.HashMap[Seq[Object], mutable.ArrayBuffer[Record]]()
+        execOp(right) { rec2 =>
+          val v2: (Seq[Object], Set[Triple]) = Primitive.applyField(property2, toStatement(rec2(key2)))
+          hm.getOrElseUpdate(v2._1, new mutable.ArrayBuffer[Record]) += rec2
+        }
+        // Probe phase: for each left record look up its join key in the hash map.
+        execOp(left) { rec1 =>
+          val noStatement: StatementOrNull = None
+          // If the left key is itself null (from an earlier outer join), propagate nulls
+          // for all right-side fields without attempting a field access on the null statement.
+          if (QueryInterpreter.getStatementOrNull(rec1(key1)).contains(None)) {
+            val nullRightFields: RFields = rightSchema.map[RField](_ => noStatement)
+            yld(Record(rec1.fields ++ nullRightFields, rec1.schema ++ rightSchema))
+          } else {
+            val v1: (Seq[Object], Set[Triple]) = Primitive.applyField(property1, toStatement(rec1(key1)))
+            hm.get(v1._1) match {
+              case Some(buf) =>
+                buf.foreach { rec2 =>
+                  yld(Record(rec1.fields ++ rec2.fields, rec1.schema ++ rec2.schema))
+                }
+              case None =>
+                val nullRightFields: RFields = rightSchema.map[RField](_ => noStatement)
+                yld(Record(rec1.fields ++ nullRightFields, rec1.schema ++ rightSchema))
             }
           }
         }

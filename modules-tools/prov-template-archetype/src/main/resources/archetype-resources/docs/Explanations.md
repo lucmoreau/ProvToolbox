@@ -58,7 +58,7 @@ The `provbasic` library, which covers the core PROV relations, requires no dicti
 
 Each x-plan file is a JSON object with the following properties:
 
-- `query`: specifies which provenance relations to retrieve from the instantiated graph. It may be a single string or a list of clause strings forming a template query. Each clause binds a variable to a PROV type (e.g. `prov:Entity`, `prov:WasDerivedFrom`); `join` and `left join` lines express how variables relate to one another; `where` lines add type filters.
+- `query`: specifies which provenance relations to retrieve from the instantiated graph. It may be a single string or a list of clause strings forming a template query. Each clause binds a variable to a PROV type (e.g. `prov:Entity`, `prov:WasDerivedFrom`); `join`, `left join`, and `optional join` lines express how variables relate to one another; `where` lines add type filters.
 - `sentence`: specifies the natural language clause to generate for each query result. It is a JSON tree of typed phrase objects (`clause`, `noun_phrase`, `verb_phrase`, `preposition_phrase`, `adjective_phrase`, etc.). Leaf values are either literal strings or `@funcall` objects that dynamically retrieve a value from the query result (e.g. the local name of an entity's URI, a plural test) or look up a domain term in a dictionary via `lookup-type`.
 - `context`: maps namespace prefixes to their full URIs, scoped to this x-plan, as in PROV documents.
 - `select` *(optional, not currently used)*: identifies the focus of the generated sentence.
@@ -514,7 +514,7 @@ A query consists of the following clauses, in order:
 [prefix <prefix> <uri>]*
 select *
 from <var> a <ProvType>
-[from <var> a <ProvType> [join | left join <lhs>.<field> = <rhs>.<field>]]*
+[from <var> a <ProvType> [join | left join | optional join <lhs>.<field> = <rhs>.<field>]]*
 [where <condition> [and|or <condition>]*]
 [group by <var>[, <var>]* aggregate <var>[, <var>]* with <AggFunc>]
 ```
@@ -607,14 +607,35 @@ from wat1 a prov:WasAttributedTo
 left join <lhs>.<field> = <rhs>.<field>
 ```
 
-Identical to `join` but optional: if no match exists for `<rhs>`, the row is kept with `<rhs>` unbound (null). Used for relations that may not be present in all instances, such as an optional `prov:ActedOnBehalfOf`.
+Identical to `join` but optional: if no match exists for `<rhs>`, the row is kept with `<rhs>` unbound (null). Used when a role within a relation may be absent but the relation itself is guaranteed to be present.
 
 ```
 from aobo1 a prov:ActedOnBehalfOf
  left join engineer.id = aobo1.delegate  -- optional; aobo1 may not match
 ```
 
-The same LHS-bound rule applies.
+The same LHS-bound rule applies. Note: if `<rhs>` is left unbound by a `left join`, any subsequent `join` or `left join` that references `<rhs>` as its LHS will fail. Use `optional join` instead when the unbound variable may propagate.
+
+---
+
+### optional join
+
+```
+optional join <lhs>.<field> = <rhs>.<field>
+```
+
+Like `left join`, but with null-safe propagation. If no match exists for `<rhs>`, the row is kept with `<rhs>` unbound. Unlike `left join`, any subsequent `optional join` whose LHS references an unbound variable will also leave its own RHS variable unbound rather than failing. This makes it safe to chain optional navigation steps:
+
+```
+from waw a prov:WasAssociatedWith
+ optional join act.id = waw.activity   -- waw may be absent entirely
+from agent a prov:Agent
+ optional join waw.agent = agent.id    -- safe even if waw is unbound
+from plan a prov:Entity
+ optional join waw.plan = plan.id      -- safe even if waw is unbound
+```
+
+If `waw` is unbound (no `WasAssociatedWith` exists), then `agent` and `plan` are also unbound, and all three `@optional`-marked `@funcall` nodes in the sentence tree suppress their phrases. Use `optional join` whenever the relation itself may be absent or when null must propagate through a chain.
 
 ---
 
@@ -1000,11 +1021,19 @@ clause  [tense: past]
 
 > The file myfile.txt.gz (file:1550) was compressed from file (file:3) with compression method (method:3) by agent (ag:12).
 
+The agent, method, and even the entire `WasAssociatedWith` relation are optional — if the provenance does not record them the corresponding phrases are silently omitted:
+
+> The file ffff (file:1556) was compressed from file (file:1) by agent (ag:7). *(no method/plan)*
+
+> The file ffff (file:1556) was compressed from file (file:1) with compression method (method:3). *(no agent)*
+
+> The file ffff (file:1556) was compressed from file (file:1). *(no WasAssociatedWith at all)*
+
 **Provenance model**
 
 ```
 file:1550  prov:wasDerivedFrom  file:3  (via activity act:6082, relation der)
-act:6082   prov:wasAssociatedWith  ag:12  (relation waw, with plan method:3)
+act:6082   prov:wasAssociatedWith  ag:12  (relation waw, with plan method:3)   -- entire relation, agent, and plan are all optional
 act:6082   prov:type  fs:TransformingData
 file:1550  prov:type  fs:DataFile
 file:1550  fs:filename  "myfile.txt.gz"
@@ -1023,8 +1052,10 @@ file:1550  fs:filename  "myfile.txt.gz"
 | `waw.plan` field — `prov:hadPlan` of `WasAssociatedWith` | Method identity: *compression method (method:3)* |
 | `adjective_phrase` pre-modifier on `noun_phrase` | *compression* method, *file* myfile.txt.gz |
 | `post-modifiers` at clause level for passive adjuncts | Ensures adjuncts follow "was compressed", not precede it |
+| `optional join` for waw, agent, and plan | Makes the entire `WasAssociatedWith` relation, and the agent and plan roles within it, all optional in the query |
+| `@optional: "true"` on `@funcall` head | Silently omits the enclosing `preposition_phrase` when the variable is unbound |
 
-**Query** — starts from `prov:WasDerivedFrom`, navigates to both files and the activity, then to the associated agent and plan. Filtered to activities of type `fs:TransformingData`.
+**Query** — starts from `prov:WasDerivedFrom`, navigates to both files and the activity, then optionally to the associated agent and plan. Filtered to activities of type `fs:TransformingData`.
 
 ```
 prefix fs <http://openprovenance.org/ns/fs#>
@@ -1036,36 +1067,41 @@ from file1 a prov:Entity
 from act a prov:Activity
  join der.activity = act.id
 from waw a prov:WasAssociatedWith
- join act.id = waw.activity
+ optional join act.id = waw.activity
 from agent a prov:Agent
- join waw.agent = agent.id
+ optional join waw.agent = agent.id
 from plan a prov:Entity
- join waw.plan = plan.id
+ optional join waw.plan = plan.id
 where act[prov:type] >= 'fs:TransformingData'
 ```
+
+`optional join` is used for `waw`, `agent`, and `plan`. When `optional join` finds no match for `waw` (i.e. no `WasAssociatedWith` exists for the activity), the variables `waw`, `agent`, and `plan` all become unbound — nulls propagate through the chain rather than filtering the row out. When `waw` is found but lacks an agent or plan role, only those variables are unbound. `@optional: "true"` on each sentence-tree `@funcall` that references an unbound variable then suppresses the enclosing phrase.
 
 **Sentence tree**
 
 ```
 clause  [tense: past, passive: true]
-├── subject: noun_phrase                          → "by agent (ag:12)" (passive by-phrase)
-│     └── head: noun+identity(agent.id, "agent")
-├── object: noun_phrase  [number: singular]       → surface subject "The file myfile.txt.gz (file:1550)"
+├── subject: noun_phrase                                   → "by agent (ag:12)" if bound, else omitted
+│     └── head: noun+identity(agent.id, "agent")  [@optional]
+├── object: noun_phrase  [number: singular]                → surface subject "The file myfile.txt.gz (file:1550)"
 │     ├── determiner: "The"
 │     ├── pre-modifiers: [adjective_phrase "file"]
-│     ├── head: string(@property fs:filename)     → "myfile.txt.gz"  [head_markup_element: span]
+│     ├── head: string(@property fs:filename)              → "myfile.txt.gz"  [head_markup_element: span]
 │     └── post-modifiers:
 │           └── adjective_phrase
-│               └── head: noun+identity(file2.id, "") → " (file:1550)"
-├── verb: "compress"                              → "was compressed"
+│               └── head: noun+identity(file2.id, "")      → " (file:1550)"
+├── verb: "compress"                                       → "was compressed"
 └── post-modifiers:
     ├── preposition_phrase "from"
-    │     └── noun: noun+identity(file1.id, "file")  → "file (file:3)"
-    └── preposition_phrase "with"
+    │     └── noun: noun_phrase
+    │           └── head: noun+identity(file1.id, "file")  → "file (file:3)"
+    └── preposition_phrase "with"                          → omitted if plan unbound
           └── noun: noun_phrase
                 ├── pre-modifiers: [adjective_phrase "compression"]
-                └── head: noun+identity(plan.id, "method") → "compression method (method:3)"
+                └── head: noun+identity(plan.id, "method") [@optional] → "compression method (method:3)"
 ```
+
+When `agent` is unbound the `subject` noun phrase resolves to nothing, so simpleNLG produces no "by …" phrase. When `plan` is unbound the `@optional` on its `@funcall` head causes the enclosing `preposition_phrase` to be dropped entirely.
 
 **File:** [`xplain/nlg/fs/fs-file-transforming.json`](../__rootArtifactId__-service/src/main/resources/xplain/nlg/fs/fs-file-transforming.json)
 
@@ -1083,11 +1119,11 @@ clause  [tense: past, passive: true]
         "from act a prov:Activity",
         " join der.activity = act.id",
         "from waw a prov:WasAssociatedWith",
-        " join act.id = waw.activity",
+        " optional join act.id = waw.activity",
         "from agent a prov:Agent",
-        " join waw.agent = agent.id",
+        " optional join waw.agent = agent.id",
         "from plan a prov:Entity",
-        " join waw.plan = plan.id",
+        " optional join waw.plan = plan.id",
         "where act[prov:type] >= 'fs:TransformingData'"
     ],
 
@@ -1100,7 +1136,8 @@ clause  [tense: past, passive: true]
                 "@object": "agent",
                 "@field": "id",
                 "@function": "noun+identity",
-                "@arg1": "agent"
+                "@arg1": "agent",
+                "@optional": "true"
             }
         },
         "object": {
@@ -1145,19 +1182,23 @@ clause  [tense: past, passive: true]
                 "type": "preposition_phrase",
                 "preposition": "from",
                 "noun": {
-                    "type": "@funcall",
-                    "@object": "file1",
-                    "@field": "id",
-                    "@function": "noun+identity",
-                    "@arg1": "file",
-                    "features": {
-                        "head_markup_element": "span",
-                        "head_markup_attributes": {
-                            "type": "@funcall",
-                            "@object": "file1",
-                            "@function": "markup-for-id",
-                            "@field": "id",
-                            "@arg1": "provelement"
+                    "type": "noun_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "file1",
+                        "@field": "id",
+                        "@function": "noun+identity",
+                        "@arg1": "file",
+                        "@optional": "true",
+                        "features": {
+                            "head_markup_element": "span",
+                            "head_markup_attributes": {
+                                "type": "@funcall",
+                                "@object": "file1",
+                                "@function": "markup-for-id",
+                                "@field": "id",
+                                "@arg1": "provelement"
+                            }
                         }
                     }
                 }
@@ -1175,7 +1216,8 @@ clause  [tense: past, passive: true]
                         "@object": "plan",
                         "@field": "id",
                         "@function": "noun+identity",
-                        "@arg1": "method"
+                        "@arg1": "method",
+                        "@optional": "true"
                     }
                 }
             }
@@ -1206,8 +1248,22 @@ This section distils what is known about x-plan authoring into a set of concrete
 **R-Q1 — Start from a PROV relation, not from an entity.**
 Every query begins with `select * from <rel> a prov:<RelationType>`. Navigate outward from that relation to entities, activities, agents, and plans using `from` + `join`. Do not start from an entity and try to reach a relation.
 
-**R-Q2 — The left-hand side of every `join` must already be bound.**
+**R-Q2 — The left-hand side of every `join` or `left join` must already be bound.**
 The LHS must reference a variable introduced by an earlier `from` clause. The RHS introduces or constrains the new variable. Correct: `join der.usedEntity = file1.id`. Wrong: `join file1.id = der.usedEntity`.
+
+**R-Q2b — Use `optional join` to make a PROV relation, or a role within one, optional.**
+When a PROV relation or one of its roles may be absent from the provenance, use `optional join` instead of `join`. If no match is found the introduced variable is left unbound rather than filtering the row out, and subsequent `optional join` clauses whose LHS references that variable will propagate the null rather than crash:
+
+```
+from waw a prov:WasAssociatedWith
+ optional join act.id = waw.activity    ← waw itself is optional
+from agent a prov:Agent
+ optional join waw.agent = agent.id     ← agent is optional; null-safe if waw is unbound
+from plan a prov:Entity
+ optional join waw.plan = plan.id       ← plan is optional; null-safe if waw is unbound
+```
+
+`left join` is also available (it makes an individual role optional when the relation is guaranteed to be present) but does **not** propagate null through a chain: if a `left join` yields an unbound variable, a subsequent `left join` or `join` that references it will fail. Use `optional join` whenever the variable being introduced may itself be unbound at a later step.
 
 **R-Q3 — Use PROV role names as `@field` values, not PROV-N property URIs.**
 In join expressions and `@funcall` nodes the field names come from the PROV data model: `id`, `activity`, `agent`, `entity`, `plan`, `generatedEntity`, `usedEntity`, `delegate`, `responsible`, `collection`, `time`. See the `@field` reference table in § 2.1.
@@ -1258,6 +1314,9 @@ When the NP head is a filename (from `@property` + `string`) and you also want t
 
 **R-F6 — Every `@property` prefix must be declared in the x-plan `context`.**
 A missing prefix causes a `NullPointerException` at runtime. If a prefix appears in `@property` values in the sentence tree, add it to `context` even if it is already declared as a query `prefix` line.
+
+**R-F7 — Use `@optional: "true"` on a `@funcall` head to silently suppress the enclosing phrase when the variable is unbound.**
+When a query variable may be unbound (because it was introduced via `left join` or `optional join`), mark the `@funcall` that reads it with `"@optional": "true"`. The effect propagates upward: the `@funcall` returns nothing, the `noun_phrase` it heads resolves to nothing, and the `preposition_phrase` containing that noun is omitted from the realised sentence. Place `@optional` on the `head` of the innermost noun phrase, not on the preposition phrase itself.
 
 ---
 
@@ -1321,14 +1380,47 @@ Use `markup-for-id` with `@field: "id"` (never `@property`) and `@arg1: "provele
 
 ---
 
+### 5.7. Join types: `join`, `left join`, and `optional join`
+
+ProvQL provides three join operators. Choosing the right one depends on whether a matched row is required and whether a null result must propagate safely through subsequent steps.
+
+| Syntax | AST node | Semantics |
+|---|---|---|
+| `join a.x = b.y` | `Join` | Inner join — both sides required; no match drops the row |
+| `left join a.x = b.y` | `LeftJoin` | Left outer join — right variable becomes null if no match; does **not** propagate null safely through further joins |
+| `optional join a.x = b.y` | `LeftHashJoin` | Left outer join — right variable becomes null if no match; null **propagates safely** through any subsequent `optional join` that references it |
+
+**When to use each:**
+
+- Use `join` for required navigation steps (e.g. from a derivation to the activity that performed it).
+- Use `left join` only when the relation being joined against is guaranteed to exist and only an optional *role within* it (such as a plan or an agent) may be absent, and no further `optional join` depends on it.
+- Use `optional join` whenever the relation itself may be absent, or when a null result must propagate through a chain of optional steps.
+
+**Example — the `WasAssociatedWith` subgraph is entirely optional:**
+
+```
+from waw a prov:WasAssociatedWith
+ optional join act.id = waw.activity    ← waw may not exist at all
+from agent a prov:Agent
+ optional join waw.agent = agent.id     ← waw may be null; null propagates to agent
+from plan a prov:Entity
+ optional join waw.plan = plan.id       ← waw may be null; null propagates to plan
+```
+
+If no `WasAssociatedWith` exists for the activity, `waw`, `agent`, and `plan` are all left unbound. The `@optional: "true"` markers in the sentence tree then suppress the corresponding phrases. The root constraint (R-Q2) is still respected: the LHS of each join (`act.id`, `waw.agent`, `waw.plan`) references a variable that was already introduced by an earlier `from` clause.
+
+---
+
 ### 5.6. General authoring checklist
 
 Before running an x-plan, verify each item:
 
 - [ ] Every namespace used in `where` filters or `@property` values is declared in both the query `prefix` lines and the x-plan `context` block.
-- [ ] Every `join` LHS references a variable already bound by a preceding `from` clause.
+- [ ] Every `join`, `left join`, and `optional join` LHS references a variable already bound by a preceding `from` clause.
 - [ ] No `@funcall` is placed directly as `clause.object` — it is always inside a `noun_phrase`.
 - [ ] Passive clauses use `subject` for the logical agent and `object` for the patient; prepositional adjuncts are `post-modifiers`, not `complements`.
 - [ ] `"form": "bareInfinitive"` is set on every `verb_phrase` coordinate inside an infinitive `coordinated_phrase`.
 - [ ] `"number"` is explicit on any NP whose head is produced by `@funcall`.
 - [ ] `@property` prefixes are present in the `context`; `@field` values are PROV role names, not property URIs.
+- [ ] Every `@funcall` that reads a variable introduced by `left join` or `optional join` carries `"@optional": "true"`.
+- [ ] If the variable introduced by a join may itself be used as the LHS of a further optional step, use `optional join` (not `left join`) so that null propagates safely through the chain.

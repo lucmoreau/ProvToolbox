@@ -22,6 +22,7 @@ case class Join(parent1: Operator, field1: String, property1: String, parent2: O
 case class Group(keys: Schema, agg: Schema, parent: Operator, kind: String, ref: Option[Ref]) extends Operator
 case class HashJoin(parent1: Operator, parent2: Operator) extends Operator
 case class LeftJoin(parent1: Operator, field1: String, property1: String, parent2: Operator, field2: String, property2: String) extends Operator
+case class LeftHashJoin(parent1: Operator, field1: String, property1: String, parent2: Operator, field2: String, property2: String) extends Operator
 // case class Order(field: Ref, parent: Operator, kind: String) extends Operator
 
 

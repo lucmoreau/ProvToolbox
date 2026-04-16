@@ -776,16 +776,26 @@ group by pipeline aggregate ancestor, act with Seq
 
 ## 3. Configuration
 
-/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/test/config/template-config.json
+Explanations x-plans, dictionaries, and profiles need to be in files on the file system and accessible to the Template Service.  
+In this archetype, some explanation files are already included in the [ProvToolbox: modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg](src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg)(../__rootArtifactId__-service/src/main/resources/xplain/nlg)
+`src/main/xplain/nlg` folder, 
+
+
+There is also a configuration file `template-config.json` (/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/test/config/template-config.json), acting as general configuration file, that needs to be found by the service.
+The `template-config.json` file is read by the service when deployed. It has the following structure with the last two properties
+`nlg.xplan.library` and `nlg.xplan.selection` being used to configure the x-plan library and the selection of x-plans to use from that library.
+
 ```json
 {
     "catalogue.package": "${pom.catalogue.package}",
     "jdbc.url": "${pom.jdbc.url}",
     "sql.initializer": "/META-INF/resources/webjars/${pom.the.template.library}/${pom.the.template.library.version}/sql/prov-template-library${pom.the.template.sublibrary}.sql",
     "nlg.xplan.library": "${pom.nlg.xplan.library}",
-    "nlg.xplan.list": "${pom.nlg.xplan.selection}"
+    "nlg.xplan.selection": ${pom.nlg.xplan.selection}
 }
 ```
+Given this is an archetype, the values of these properties need to be instantiated the archetype is itself instantiated.
+
 
 
 File
@@ -1552,3 +1562,9 @@ Before running an x-plan, verify each item:
 - [ ] `@property` prefixes are present in the `context`; `@field` values are PROV role names, not property URIs.
 - [ ] Every `@funcall` that reads a variable introduced by `left join` or `optional join` carries `"@optional": "true"`.
 - [ ] If the variable introduced by a join may itself be used as the LHS of a further optional step, use `optional join` (not `left join`) so that null propagates safely through the chain.
+
+## 6. TODO
+
+- The splitting explanation should have a group instruction, and iterate over all the file and make a conjunction
+- Add more examples, especially for `prov:Collection` and `prov:Membership`.
+

@@ -7,7 +7,7 @@ NLG_BASIC_XPLAN_LIBRARY=/xplain/nlg/provbasic/provbasic.json
 NLG_BASIC_XPLAN_SELECTION='["actedonbehalfof1","activity1","agent1","alternate1","association1","attribution1","derivation1","end1","entity1","generation1","invalidation1","specialization1","start1","usage1","member1"]'
 
 NLG_FS_XPLAN_LIBRARY=/xplain/nlg/fs/fs-xplan-library.json
-NLG_FS_XPLAN_SELECTION='["fs-awk-column-selection","fs-file-transforming", "fs-generic-responsibility"]'
+NLG_FS_XPLAN_SELECTION='["fs-awk-column-selection","fs-file-transforming", "fs-file-init", "fs-file-splitting","fs-file-fitting", "fs-generic-responsibility"]'
 
 
 run.book:
@@ -162,13 +162,10 @@ xp.transforming.no.agent:
 	@$(MAKE) batch.explain FILE=file_transforming1_no_agent BATCH=[fs-file-transforming]
 xp.transforming.no.association:
 	@$(MAKE) batch.explain FILE=file_transforming1_no_association BATCH=[fs-file-transforming]
-
 xp.init:
 	@$(MAKE) batch.explain FILE=file_init BATCH=[fs-file-init]
-
 xp.splitting:
 	@$(MAKE) batch.explain FILE=file_splitting1 BATCH=[fs-file-splitting]
-
 xp.fitting:
 	@$(MAKE) batch.explain FILE=file_training BATCH=[fs-file-fitting]
 

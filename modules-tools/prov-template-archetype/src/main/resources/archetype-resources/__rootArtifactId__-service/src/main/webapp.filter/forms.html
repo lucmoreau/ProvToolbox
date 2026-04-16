@@ -176,16 +176,25 @@
                         <button id="button-submit-csv"  type="button" class="btn btn-warning" onclick="submitEnactor(false)">Submit (csv)</button>
                         <button id="button-clear"       type="button" class="btn btn-info"    onclick="enactClear()">Clear</button>
                         <div class="d-flex align-items-center mt-2 mb-2">
-                            <span class="me-2 small">Receive JSON</span>
+                            Receive: <span class="me-2 small"> JSON</span>
                             <div class="form-check form-switch mb-0">
                                 <input class="form-check-input" type="checkbox" id="toggle-accept-format" onchange="preferred_accept_format = this.checked ? 'text/csv' : 'application/json'">
                             </div>
-                            <span class="ms-2 small">Receive CSV</span>
+                            <span class="ms-2 small">CSV</span>
+                        </div>
+                            <div class="d-flex align-items-center mt-2 mb-2">
+                            Explanations:
+                            <span class="me-2 small"> No</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="toggle-explanations" onchange="explanation_enabled = this.checked ? true : false; if(this.checked) { showExplanationTitle(); } else { hideExplanationTitle(); }">
+                            </div>
+                            <span class="ms-2 small">Yes</span>
                         </div>
                         <h6 id="submission_result_section">Submission Result</h6>
                         <pre id="enact_result" class="pretty grey"> </pre>
                         <p id="prov_link"></p>
-                        <h6>Explanation</h6>
+                        <!-- make the next title invisible by default -->
+                        <h6 id="explanation_title" class="d-none">Explanation</h6>
                         <p id="prov_xplain"></p>
                     </div>
                 </div>
@@ -676,6 +685,22 @@
 
 
     var preferred_accept_format = 'application/json';
+    var explanation_enabled=false;
+
+    /* Functions to show/hide the Explanation title */
+    function showExplanationTitle() {
+        const el = document.getElementById('explanation_title');
+        if (el) el.classList.remove('d-none');
+        const el2 = document.getElementById('prov_xplain');
+        if (el2) el2.classList.remove('d-none');
+    }
+
+    function hideExplanationTitle() {
+        const el = document.getElementById('explanation_title');
+        if (el) el.classList.add('d-none');
+        const el2 = document.getElementById('prov_xplain');
+        if (el2) el2.classList.add('d-none');
+    }
 
     function submitEnactor(jsonSubmit) {
         ${symbol_dollar}(HTML_ANCHOR_ENACT_RESULT_BOX).html(${symbol_dollar}('<p>'));
@@ -700,6 +725,7 @@
 
     // function getExplanation(url,accept,id) sends get request to url with http header Accept-Explanation set to parameter accept, and results added to html element with id
     function getExplanation(url, accept_explanation, id) {
+        if (!explanation_enabled) return;
         const xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
         xhr.onerror= function(xhr,event) {
@@ -888,6 +914,7 @@
     function enactClear() {
         ${symbol_dollar}(HTML_ANCHOR_ENACT_RESULT_BOX).html("");
         ${symbol_dollar}(HTML_ANCHOR_ENACT_RESULT_PROV_LINK).html("");
+        ${symbol_dollar}(HTML_ANCHOR_EXPLANATION_PROV_LINK).html("");
     }
 
     function clearBrowse() {

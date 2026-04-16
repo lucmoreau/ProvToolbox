@@ -18,6 +18,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-explanations: generating some explanations and doc for book templates
 * prov-explanations: optional join, to deal with missing relations
 * prov-template-compiler: compilation of Association without agent but with plan (T14)
+* prov-template-archetype: explanation toggle for explanations
 
 
 `2.2.3`

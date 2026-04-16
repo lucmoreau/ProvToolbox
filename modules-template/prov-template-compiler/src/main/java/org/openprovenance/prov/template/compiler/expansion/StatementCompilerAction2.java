@@ -121,6 +121,10 @@ public class StatementCompilerAction2 implements StatementAction {
     private Expression andNotNull(String var1, String var2) {
         return BINARY_OP(notNull(var1), "&&", notNull(var2));
     }
+    private Expression andNotNull(String var1, Expression notNullExp) {
+        return BINARY_OP(notNull(var1), "&&", notNullExp);
+    }
+
     private Expression orNotNull(String var1, String var2) {
         return BINARY_OP(notNull(var1), "||", notNull(var2));
     }
@@ -286,19 +290,20 @@ public class StatementCompilerAction2 implements StatementAction {
 
         String activity = local(s.getActivity());
         String agent = local(s.getAgent());
+        String plan = local(s.getPlan());
         String id = local(s.getId());
 
         List<Expression> args = new ArrayList<>();
         args.add(VARIABLE(id));
         args.add(VARIABLE(activity));
         args.add(VARIABLE(agent));
-        args.add(VARIABLE(local(s.getPlan())));
+        args.add(VARIABLE(plan));
         if (hasAttrs) args.add(VARIABLE("attrs"));
 
         if (hasAttrs && attributesAllowForStatementsIdentification(s)) {
             statements.add(targetAdd(pfCall("newWasAssociatedWith", args)));
         } else {
-            Expression condition = orNotNull(id,andNotNull(activity, agent));
+            Expression condition = orNotNull(id,andNotNull(activity, orNotNull(agent,plan)));
             statements.add(ifThenTargetAdd(condition,pfCall("newWasAssociatedWith", args)));
         }
     }

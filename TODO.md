@@ -3,6 +3,8 @@
 
 # TODO
 
+
+
 - T10 explanation for book templates
 
 - T9 rust code generation:
@@ -111,3 +113,5 @@ __PROV_DELEGATION (delegate, delegate_rel, responsible, responsible_rel, activit
 # Done
 * T1 template-compiler: 
 updated CompilerCommon to use the new code generation pattern for the Common Bean, and removed the old code.  
+
+* T14 template expansion with association without agent but with plan, does not include association.

@@ -17,6 +17,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-commpiler: updated CompilerCommon (with neater generated code for composite beans)
 * prov-explanations: generating some explanations and doc for book templates
 * prov-explanations: optional join, to deal with missing relations
+* prov-template-compiler: compilation of Association without agent but with plan (T14)
+
 
 `2.2.3`
 * prov-template: update to instantiation

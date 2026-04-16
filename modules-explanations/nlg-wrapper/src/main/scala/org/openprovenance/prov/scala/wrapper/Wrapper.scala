@@ -42,8 +42,8 @@ object defs {
       val prop = new java.util.Properties()
       prop.load(getClass.getResourceAsStream("/lexicon.properties"))
       val property = prop.get("lexicon.location").asInstanceOf[String]
-      println("lexicon.location=" + property)
-      if (property==null) {
+      //println("lexicon.location=" + property)
+      if (property==null || property.isEmpty || !property.contains("lexAccess2013")) {
         println("sysProperty (" + sysProperty + ") not defined, nor 'lexicon.location' in file /lexicon.properties" + prop)
       }
       property

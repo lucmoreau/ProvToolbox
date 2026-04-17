@@ -1,0 +1,310 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "X-Plan",
+    "description": "JSON schema for ProvToolbox NLG x-plan templates and library descriptors. Phrase types mirror the Scala trait hierarchy in SpecLoader.scala: Phrase (any phrase node), NounForm (noun positions), VerbForm (verb positions), HeadForm (lexical head positions).",
+
+    "anyOf": [
+        { "$ref": "#/definitions/XPlan" },
+        { "$ref": "#/definitions/Library" }
+    ],
+
+    "definitions": {
+
+        "XPlan": {
+            "description": "A single x-plan: query + NLG sentence template",
+            "type": "object",
+            "required": ["sentence"],
+            "properties": {
+                "select": {
+                    "description": "Declares the primary result variable(s) and their PROV types",
+                    "type": "object",
+                    "additionalProperties": { "$ref": "#/definitions/SelectVar" }
+                },
+                "query": {
+                    "description": "ProvQL query: a single string or an array of strings (lines joined before parsing)",
+                    "anyOf": [
+                        { "type": "string" },
+                        { "type": "array", "items": { "type": "string" } }
+                    ]
+                },
+                "sentence": {
+                    "description": "NLG sentence tree — the root phrase to realise",
+                    "$ref": "#/definitions/Phrase"
+                },
+                "context": {
+                    "description": "Namespace prefix declarations (prefix → URI)",
+                    "type": "object",
+                    "additionalProperties": { "type": "string" }
+                },
+                "where": {
+                    "description": "Reserved for future use"
+                }
+            },
+            "additionalProperties": false
+        },
+
+        "Library": {
+            "description": "A library descriptor listing x-plan template files and optional dictionaries/profiles",
+            "type": "object",
+            "required": ["name", "templates"],
+            "properties": {
+                "name":        { "type": "string" },
+                "templates":   { "type": "array", "items": { "type": "string" } },
+                "dictionaries":{ "type": "array", "items": { "type": "string" } },
+                "profiles":    { "type": "array", "items": { "type": "string" } }
+            },
+            "additionalProperties": false
+        },
+
+        "SelectVar": {
+            "description": "A query variable declaration: its PROV type",
+            "type": "object",
+            "properties": {
+                "@type": { "type": "string" }
+            },
+            "additionalProperties": false
+        },
+
+        "Features": {
+            "description": "Grammatical feature map. Values are strings, booleans, or @funcall objects for computed features",
+            "type": "object",
+            "properties": {
+                "type":               { "type": "string", "const": "features" },
+                "tense":              { "type": "string", "enum": ["past", "present", "future"] },
+                "passive":            { "type": "string" },
+                "number":             { "anyOf": [{ "type": "string" }, { "$ref": "#/definitions/Funcall" }, { "type": "object" }] },
+                "form":               { "type": "string" },
+                "modal":              { "type": "string" },
+                "perfect":            {},
+                "progressive":        {},
+                "cue_phrase":         { "type": "string" },
+                "complementiser":     { "type": "string" },
+                "pronominal":         {},
+                "possessive":         {},
+                "gender":             { "type": "string" },
+                "person":             { "type": "string" },
+                "negated":            {},
+                "head_markup_element":    { "type": "string" },
+                "head_markup_attributes": {}
+            },
+            "additionalProperties": {}
+        },
+
+        "PhraseArray": {
+            "description": "An ordered array of Phrase nodes",
+            "type": "array",
+            "items": { "$ref": "#/definitions/Phrase" }
+        },
+
+        "Phrase": {
+            "description": "Any phrase node. Corresponds to the Scala Phrase trait: Clause | NounPhrase | VerbPhrase | PrepositionPhrase | AdjectivePhrase | AdverbPhrase | CoordinatedPhrase | Funcall | Iterator | Paragraph | string (StringPhrase serialised as a plain string)",
+            "anyOf": [
+                { "$ref": "#/definitions/Clause" },
+                { "$ref": "#/definitions/NounPhrase" },
+                { "$ref": "#/definitions/VerbPhrase" },
+                { "$ref": "#/definitions/PrepositionPhrase" },
+                { "$ref": "#/definitions/AdjectivePhrase" },
+                { "$ref": "#/definitions/AdverbPhrase" },
+                { "$ref": "#/definitions/CoordinatedPhrase" },
+                { "$ref": "#/definitions/Funcall" },
+                { "$ref": "#/definitions/Iterator" },
+                { "$ref": "#/definitions/Paragraph" },
+                { "type": "string" }
+            ]
+        },
+
+        "NounForm": {
+            "description": "Phrases permitted in noun positions. Corresponds to the Scala NounForm trait: NounPhrase | CoordinatedPhrase | Funcall | string",
+            "anyOf": [
+                { "$ref": "#/definitions/NounPhrase" },
+                { "$ref": "#/definitions/CoordinatedPhrase" },
+                { "$ref": "#/definitions/Funcall" },
+                { "type": "string" }
+            ]
+        },
+
+        "VerbForm": {
+            "description": "Phrases permitted in verb positions. Corresponds to the Scala VerbForm trait: VerbPhrase | CoordinatedPhrase | Funcall | string",
+            "anyOf": [
+                { "$ref": "#/definitions/VerbPhrase" },
+                { "$ref": "#/definitions/CoordinatedPhrase" },
+                { "$ref": "#/definitions/Funcall" },
+                { "type": "string" }
+            ]
+        },
+
+        "HeadForm": {
+            "description": "Phrases permitted as a lexical head. Corresponds to the Scala HeadForm trait: Funcall | string",
+            "anyOf": [
+                { "$ref": "#/definitions/Funcall" },
+                { "type": "string" }
+            ]
+        },
+
+        "Clause": {
+            "description": "A full clause (subject + verb ± object ± modifiers). Discriminated by type=clause",
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+                "type":            { "const": "clause" },
+                "subject":         { "$ref": "#/definitions/NounForm" },
+                "verb":            { "$ref": "#/definitions/VerbForm" },
+                "object":          { "$ref": "#/definitions/Phrase" },
+                "indirect_object": { "$ref": "#/definitions/Phrase" },
+                "complements":     { "$ref": "#/definitions/PhraseArray" },
+                "modifiers":       { "$ref": "#/definitions/PhraseArray" },
+                "pre-modifiers":   { "$ref": "#/definitions/PhraseArray" },
+                "post-modifiers":  { "$ref": "#/definitions/PhraseArray" },
+                "front-modifiers": { "$ref": "#/definitions/PhraseArray" },
+                "complementiser":  { "type": "string" },
+                "comments":        { "type": "string" },
+                "features":        { "$ref": "#/definitions/Features" }
+            },
+            "additionalProperties": false
+        },
+
+        "NounPhrase": {
+            "description": "A noun phrase. Discriminated by type=noun_phrase",
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+                "type":          { "const": "noun_phrase" },
+                "head":          { "$ref": "#/definitions/HeadForm" },
+                "determiner":    { "type": "string" },
+                "specifier":     { "$ref": "#/definitions/NounForm" },
+                "modifiers":     { "$ref": "#/definitions/PhraseArray" },
+                "pre-modifiers": { "$ref": "#/definitions/PhraseArray" },
+                "post-modifiers":{ "$ref": "#/definitions/PhraseArray" },
+                "complements":   { "$ref": "#/definitions/PhraseArray" },
+                "comments":      { "type": "string" },
+                "features":      { "$ref": "#/definitions/Features" }
+            },
+            "additionalProperties": false
+        },
+
+        "VerbPhrase": {
+            "description": "An inline verb phrase used as the verb of a clause. Discriminated by type=verb_phrase",
+            "type": "object",
+            "required": ["type", "head"],
+            "properties": {
+                "type":            { "const": "verb_phrase" },
+                "head":            { "type": "string" },
+                "object":          { "$ref": "#/definitions/Phrase" },
+                "indirect_object": { "$ref": "#/definitions/Phrase" },
+                "modifiers":       { "$ref": "#/definitions/PhraseArray" },
+                "pre-modifiers":   { "$ref": "#/definitions/PhraseArray" },
+                "post-modifiers":  { "$ref": "#/definitions/PhraseArray" },
+                "complements":     { "$ref": "#/definitions/PhraseArray" },
+                "features":        { "$ref": "#/definitions/Features" }
+            },
+            "additionalProperties": false
+        },
+
+        "PrepositionPhrase": {
+            "description": "A prepositional phrase. Discriminated by type=preposition_phrase",
+            "type": "object",
+            "required": ["type", "preposition"],
+            "properties": {
+                "type":        { "const": "preposition_phrase" },
+                "preposition": { "type": "string" },
+                "noun":        { "$ref": "#/definitions/NounForm" },
+                "complements": { "$ref": "#/definitions/PhraseArray" },
+                "specifier":   { "$ref": "#/definitions/NounPhrase" },
+                "features":    { "$ref": "#/definitions/Features" }
+            },
+            "additionalProperties": false
+        },
+
+        "AdjectivePhrase": {
+            "description": "An adjectival phrase. Discriminated by type=adjective_phrase",
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+                "type":          { "const": "adjective_phrase" },
+                "head":          { "$ref": "#/definitions/HeadForm" },
+                "modifiers":     { "$ref": "#/definitions/PhraseArray" },
+                "pre-modifiers": { "$ref": "#/definitions/PhraseArray" },
+                "post-modifiers":{ "$ref": "#/definitions/PhraseArray" },
+                "features":      { "$ref": "#/definitions/Features" }
+            },
+            "additionalProperties": false
+        },
+
+        "AdverbPhrase": {
+            "description": "An adverbial phrase. Discriminated by type=adverb_phrase",
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+                "type":          { "const": "adverb_phrase" },
+                "head":          { "$ref": "#/definitions/HeadForm" },
+                "modifiers":     { "$ref": "#/definitions/PhraseArray" },
+                "pre-modifiers": { "$ref": "#/definitions/PhraseArray" },
+                "post-modifiers":{ "$ref": "#/definitions/PhraseArray" },
+                "features":      { "$ref": "#/definitions/Features" }
+            },
+            "additionalProperties": false
+        },
+
+        "CoordinatedPhrase": {
+            "description": "Two or more phrases joined by a conjunction. Discriminated by type=coordinated_phrase",
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+                "type":          { "const": "coordinated_phrase" },
+                "conjunction":   { "type": "string" },
+                "coordinates":   { "$ref": "#/definitions/PhraseArray" },
+                "@iterator":     { "$ref": "#/definitions/Iterator" },
+                "post-modifiers":{ "$ref": "#/definitions/PhraseArray" },
+                "features":      { "$ref": "#/definitions/Features" }
+            },
+            "additionalProperties": false
+        },
+
+        "Funcall": {
+            "description": "A dynamic value computed at runtime from query bindings or dictionary lookups. Discriminated by type=@funcall. Accepts arbitrary @-prefixed runtime properties via patternProperties",
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+                "type":          { "const": "@funcall" },
+                "pre-modifiers": { "$ref": "#/definitions/PhraseArray" },
+                "post-modifiers":{ "$ref": "#/definitions/PhraseArray" },
+                "@args":         { "$ref": "#/definitions/PhraseArray" },
+                "features":      { "$ref": "#/definitions/Features" }
+            },
+            "patternProperties": {
+                "^@": {}
+            },
+            "additionalProperties": false
+        },
+
+        "Iterator": {
+            "description": "A dynamic iterator that instantiates @element for each value in the sequence bound to @variable. Discriminated by type=@iterator",
+            "type": "object",
+            "required": ["type", "@variable", "@element"],
+            "properties": {
+                "type":       { "const": "@iterator" },
+                "@variable":  { "type": "string" },
+                "@element":   { "$ref": "#/definitions/Phrase" },
+                "@clause":    { "type": "string" },
+                "@property":  { "type": "string" },
+                "@flatten":   { "type": "string" },
+                "@from":      { "type": "string" },
+                "@until":     { "type": "string" },
+                "@iterator":  { "$ref": "#/definitions/Iterator" }
+            },
+            "additionalProperties": false
+        },
+
+        "Paragraph": {
+            "description": "A container for a sequence of phrases forming a multi-sentence explanation. Discriminated by type=paragraph",
+            "type": "object",
+            "required": ["type", "items"],
+            "properties": {
+                "type":       { "const": "paragraph" },
+                "items":      { "$ref": "#/definitions/PhraseArray" },
+                "properties": { "type": "object", "additionalProperties": { "type": "string" } }
+            },
+            "additionalProperties": false
+        }
+    }
+}

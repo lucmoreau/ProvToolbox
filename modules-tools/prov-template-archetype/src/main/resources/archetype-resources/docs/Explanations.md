@@ -63,6 +63,11 @@ Each x-plan file is a JSON object with the following properties:
 - `context`: maps namespace prefixes to their full URIs, scoped to this x-plan, as in PROV documents.
 - `select` *(optional, not currently used)*: identifies the focus of the generated sentence.
 
+A JSON Schema for x-plan files and library descriptors is provided at
+`src/main/resources/schema/xplan-schema.json`.  It validates both forms (x-plan and
+library) and mirrors the phrase-type hierarchy described in §2.1.  Run
+`make schema.validate` to check all x-plan files in the repository against the schema.
+
 Example — `xplain/nlg/provbasic/entity1.json`:
 
 ```json
@@ -120,11 +125,11 @@ The `sentence` field of an x-plan is a JSON tree that encodes a sentence as a hi
 
 Leaf values in the tree are either **literal strings** (for fixed words) or **`@funcall` objects** (for values derived dynamically from query results or dictionary lookups — see [§ Dynamic values](#dynamic-values-funcall)).
 
-The supported node types are summarised below.
+The supported node types are summarised below.  The full machine-readable definition is the JSON Schema at `src/main/resources/schema/xplan-schema.json`, which mirrors this type hierarchy directly and can be used to validate x-plan files (see §1.3).
 
 | Node type | Role |
 |---|---|
-| `paragraph` | Container for a sequence of clauses forming a multi-sentence explanation |
+| `paragraph` | Container for a sequence of phrases forming a multi-sentence explanation |
 | `clause` | A full clause; the root of a single-sentence tree |
 | `coordinated_phrase` | Two or more coordinated phrases joined by a conjunction (e.g. *and*) |
 | `noun_phrase` | A noun phrase: subject, object, or complement of a preposition |
@@ -132,6 +137,18 @@ The supported node types are summarised below.
 | `preposition_phrase` | A prepositional phrase: modifier, front-modifier, or complement |
 | `adjective_phrase` | An adjectival modifier on a noun phrase |
 | `adverb_phrase` | An adverbial modifier on a verb or clause |
+| `@funcall` | Dynamic leaf — computes a value at runtime from query bindings or dictionary lookups |
+| `string` | A literal string phrase wrapping a fixed word or phrase |
+
+Not every property slot accepts every node type. The property tables below use the following **named type sets** to express which node types are allowed in each position:
+
+| Type set | Permitted node types | Typical use |
+|---|---|---|
+| **`Phrase`** | Any node type in the table above, plus `@iterator` | General-purpose slot that places no restriction on what kind of phrase it contains (modifier arrays, complements, etc.) |
+| **`NounForm`** | `noun_phrase` \| `coordinated_phrase` \| `@funcall` \| `string` | Slots that fill a noun position: the `subject` of a clause, the `noun` of a preposition phrase, the `specifier` of a noun phrase |
+| **`VerbForm`** | `verb_phrase` \| `coordinated_phrase` \| `@funcall` \| `string` | Slots that fill a verb position: the `verb` of a clause |
+| **`HeadForm`** | `@funcall` \| `string` | Slots that supply the lexical head word of a phrase: the `head` of `noun_phrase`, `adjective_phrase`, `adverb_phrase` |
+| **`Head`** | Literal `string` only | The `head` of `verb_phrase` and the `conjunction` of `coordinated_phrase` — fixed words, not computed nodes |
 
 ---
 
@@ -142,7 +159,7 @@ A `paragraph` is a top-level container that wraps a sequence of clauses into a m
 | Property | Type | Required | Description |
 |---|---|---|---|
 | `type` | `"paragraph"` | yes | Node discriminator |
-| `items` | array of clause | yes | The sentences forming the paragraph, realised in order |
+| `items` | array of **Phrase** | yes | The phrases forming the paragraph, realised in order |
 | `properties` | object | no | Metadata (currently unused; pass `{}`) |
 
 **Example** (`plead.cs-6b.json` — abbreviated):
@@ -165,13 +182,15 @@ Represents a full clause (subject + verb ± object ± modifiers). The root of a 
 | Property | Type | Required | Description |
 |---|---|---|---|
 | `type` | `"clause"` | yes | Node discriminator |
-| `subject` | noun_phrase \| string | no | The grammatical subject. Omit for passive clauses where the subject is suppressed. May be a snippet reference string (e.g. `"##company"`) |
-| `verb` | string \| verb_phrase \| @funcall | yes | The main verb. A bare string (base form), an inline `verb_phrase` node, or a `lookup-type` @funcall returning a verb_phrase from the dictionary |
-| `object` | noun_phrase \| coordinated_phrase | no | The grammatical object |
-| `indirect_object` | preposition_phrase | no | An indirect object expressed as a prepositional phrase (e.g. *"because of the reason"*) |
-| `modifiers` | array of preposition_phrase | no | Adjunct prepositional phrases after the verb and object (e.g. *"at time T"*, *"from X"*) |
-| `front-modifiers` | array of preposition_phrase | no | Prepositional phrases fronted before the subject (e.g. *"on behalf of …"*) |
-| `complements` | array of clause \| preposition_phrase | no | Clausal or prepositional complements of the whole clause. A `clause` complement introduces a subordinate clause via `complementiser` (e.g. *"because …"*, *"which …"*, *"that …"*) |
+| `subject` | **NounForm** | no | The grammatical subject (`noun_phrase`, `coordinated_phrase`, `@funcall`, or `string`). Omit for passive clauses where the subject is suppressed. May be a snippet reference string (e.g. `"##company"`) |
+| `verb` | **VerbForm** | yes | The main verb: a bare `string` (base form), `verb_phrase`, `coordinated_phrase`, or a `lookup-type` `@funcall` returning a verb_phrase from the dictionary |
+| `object` | **Phrase** | no | The grammatical object — any phrase node |
+| `indirect_object` | **Phrase** | no | An indirect object — any phrase node (often a `preposition_phrase`, e.g. *"because of the reason"*) |
+| `complements` | array of **Phrase** | no | Clausal or prepositional complements of the whole clause. A `clause` complement introduces a subordinate clause via `complementiser` (e.g. *"because …"*, *"which …"*, *"that …"*) |
+| `modifiers` | array of **Phrase** | no | Adjunct phrases after the verb and object (e.g. *"at time T"*, *"from X"*) |
+| `pre-modifiers` | array of **Phrase** | no | Phrases placed before the subject |
+| `post-modifiers` | array of **Phrase** | no | Phrases placed after the verb phrase and all other elements (e.g. passive adjuncts such as *"with method M"*, *"from file F"*) |
+| `front-modifiers` | array of **Phrase** | no | Phrases fronted before the subject (e.g. *"on behalf of …"*) |
 | `complementiser` | string | no | Subordinating conjunction introducing this clause when it appears as a complement (e.g. `"because"`, `"that"`, `"which"`, `"because of"`). Present only on nested clause nodes inside `complements` arrays |
 | `features` | features object | no | Grammatical features: tense, voice (see [§ Features](#features)) |
 
@@ -233,12 +252,13 @@ Represents a noun phrase. Used for subjects, objects, and complements of preposi
 | Property | Type | Required | Description |
 |---|---|---|---|
 | `type` | `"noun_phrase"` | yes | Node discriminator |
-| `head` | string \| @funcall | yes | The head noun. A literal string or a @funcall producing a string or full phrase |
+| `head` | **HeadForm** | yes | The head noun: a literal `string` or a `@funcall` producing a string or full phrase |
 | `determiner` | string | no | Determiner, e.g. `"a"`, `"the"` |
-| `specifier` | string | no | Reference to a named snippet from the dictionary (prefixed with `##`, e.g. `"##borrower-possessive"`). Inserts a pre-built possessive or pronominal noun phrase before the head |
-| `pre-modifiers` | array of adjective_phrase | no | Adjective phrases placed before the head |
-| `post-modifiers` | array of preposition_phrase \| adjective_phrase | no | Phrases placed after the head (e.g. *"the end **of the activity**"*) |
-| `complements` | array of clause | no | Relative clauses modifying the noun, each introduced by a `complementiser` (e.g. *"the data **that the company excluded**"*) |
+| `specifier` | **NounForm** | no | A pre-built snippet or possessive phrase inserted before the head (`noun_phrase`, `coordinated_phrase`, `@funcall`, or `string`; snippet refs are strings prefixed with `##`, e.g. `"##borrower-possessive"`) |
+| `modifiers` | array of **Phrase** | no | Mid-position modifiers |
+| `pre-modifiers` | array of **Phrase** | no | Phrases placed before the head (adjectives, participial phrases, etc.) |
+| `post-modifiers` | array of **Phrase** | no | Phrases placed after the head (e.g. `preposition_phrase` *"of the activity"*, `adjective_phrase` post-modifier, `@funcall` identity suffix) |
+| `complements` | array of **Phrase** | no | Relative clauses or other complements modifying the noun, each introduced by a `complementiser` (e.g. *"the data **that the company excluded**"*) |
 | `features` | features object | no | Grammatical features, primarily `number` |
 
 **Post-modifier example** (`end2.json`):
@@ -281,8 +301,13 @@ An inline verb phrase used as the `verb` of a clause. Allows constructing compou
 | Property | Type | Required | Description |
 |---|---|---|---|
 | `type` | `"verb_phrase"` | yes | Node discriminator |
-| `head` | string | yes | The main verb or auxiliary (e.g. `"was"`, `"have"`) |
-| `post-modifiers` | array of preposition_phrase \| adverb_phrase | no | Modifiers after the verb head (e.g. a `to`-infinitive: *"was **to refuse**"*) |
+| `head` | **Head** (string) | yes | The main verb or auxiliary (e.g. `"was"`, `"have"`, `"select"`) — a literal string only |
+| `object` | **Phrase** | no | The direct object of this verb phrase |
+| `indirect_object` | **Phrase** | no | An indirect object |
+| `modifiers` | array of **Phrase** | no | Mid-position modifiers |
+| `pre-modifiers` | array of **Phrase** | no | Phrases placed before the verb head |
+| `post-modifiers` | array of **Phrase** | no | Phrases placed after the verb head (e.g. a `to`-infinitive `preposition_phrase`: *"was **to refuse**"*, or an `adverb_phrase`) |
+| `complements` | array of **Phrase** | no | Complements of the verb phrase |
 | `features` | features object | no | Grammatical features: tense, modal, form, perfect, passive |
 
 **Example** (`plead.cs-6b.json`):
@@ -307,7 +332,10 @@ Represents a prepositional phrase. Used as a modifier, front-modifier, complemen
 |---|---|---|---|
 | `type` | `"preposition_phrase"` | yes | Node discriminator |
 | `preposition` | string | yes | The preposition string, e.g. `"from"`, `"at"`, `"on behalf of"`, `"generated by"`, `"for the processing of"` |
-| `noun` | noun_phrase \| string \| @funcall | yes | The complement of the preposition. May be a literal string for simple fixed nouns |
+| `noun` | **NounForm** | yes | The complement of the preposition: `noun_phrase`, `coordinated_phrase`, `@funcall`, or a literal `string` |
+| `complements` | array of **Phrase** | no | Additional complements of the prepositional phrase |
+| `specifier` | `noun_phrase` | no | A specifier for the phrase |
+| `features` | features object | no | Grammatical features |
 
 ---
 
@@ -318,8 +346,11 @@ Represents an adjectival modifier on a noun phrase.
 | Property | Type | Required | Description |
 |---|---|---|---|
 | `type` | `"adjective_phrase"` | yes | Node discriminator |
-| `head` | string \| @funcall | yes | The adjective head |
-| `post-modifiers` | array of preposition_phrase | no | Further modifiers of the adjective (e.g. *"approved **by the manager**"*) |
+| `head` | **HeadForm** | yes | The adjective head: a literal `string` or a `@funcall` |
+| `modifiers` | array of **Phrase** | no | Mid-position modifiers |
+| `pre-modifiers` | array of **Phrase** | no | Phrases placed before the head |
+| `post-modifiers` | array of **Phrase** | no | Further modifiers after the head (e.g. `preposition_phrase` *"approved **by the manager**"*) |
+| `features` | features object | no | Grammatical features |
 
 ---
 
@@ -330,7 +361,11 @@ Represents an adverbial modifier. Used as a `post-modifier` on a verb phrase, or
 | Property | Type | Required | Description |
 |---|---|---|---|
 | `type` | `"adverb_phrase"` | yes | Node discriminator |
-| `head` | string | yes | The adverb (e.g. `"positively"`, `"negatively"`, `"hence"`) |
+| `head` | **HeadForm** | yes | The adverb head: a literal `string` or a `@funcall` (e.g. `"positively"`, `"negatively"`, `"hence"`) |
+| `modifiers` | array of **Phrase** | no | Mid-position modifiers |
+| `pre-modifiers` | array of **Phrase** | no | Phrases placed before the head |
+| `post-modifiers` | array of **Phrase** | no | Phrases placed after the head |
+| `features` | features object | no | Grammatical features |
 
 **Example** (`collabmap-dictionary.json`):
 ```json
@@ -349,8 +384,10 @@ Joins two or more phrases with a coordinating conjunction. Supports both a stati
 |---|---|---|---|
 | `type` | `"coordinated_phrase"` | yes | Node discriminator |
 | `conjunction` | string | yes | The coordinating conjunction, e.g. `"and"`, `"or"` |
-| `coordinates` | array of noun_phrase \| clause | one of `coordinates` or `@iterator` | Static list of phrases to coordinate |
+| `coordinates` | array of **Phrase** | one of `coordinates` or `@iterator` | Static list of phrases to coordinate — any phrase type |
 | `@iterator` | @iterator object | one of `coordinates` or `@iterator` | Dynamic iteration over query result values to build the coordinates at runtime (see below) |
+| `post-modifiers` | array of **Phrase** | no | Phrases placed after the coordinated phrase |
+| `features` | features object | no | Grammatical features (e.g. `negated`) |
 
 **Static example**:
 ```json
@@ -381,10 +418,14 @@ The `@iterator` object iterates over a set of values bound by the query and inst
 
 | @iterator property | Description |
 |---|---|
-| `@variable` | The loop variable name, or `"@values"` for the full result set |
-| `@element` | The phrase template to instantiate for each value |
-| `@clause` | The query clause or context to iterate over (e.g. `"coordinates"`, `"@arg1"`) |
-| `@flatten` | `"true"` — flatten a nested array before iterating |
+| `@variable` | Comma-separated query variable name(s) to iterate over, or `"@values"` for the full result set |
+| `@element` | The phrase template (any **Phrase**) to instantiate for each value |
+| `@clause` | Target slot for each instantiated element (e.g. `"coordinates"` to fill a `coordinated_phrase`) |
+| `@property` | Property name to iterate over (used when iterating over attribute values rather than variable bindings) |
+| `@flatten` | `"true"` — flatten a nested array of coordinates before collecting |
+| `@from` | Start index (integer string) for slicing the iteration range |
+| `@until` | End index (integer string, exclusive) for slicing the iteration range |
+| `@iterator` | A nested `@iterator` object for two-level iteration |
 
 ---
 
@@ -1304,12 +1345,11 @@ where act[prov:type] >= 'phys:RegisteringEntity'
 
 ### 4.4. File splitting
 
-**Target sentence** (one sentence per output file)
+**Target sentence** (single sentence)
 
-> The file training_set.csv (file:1586) was split from file (file:2) with splitting method (method:3) by agent (ag:5).
-> The file validation_set.csv (file:1587) was split from file (file:2) with splitting method (method:3) by agent (ag:5).
+> The file (file:2) was split into training_set.csv (file:1586) and validation_set.csv (file:1587) with splitting method (method:3) by agent (ag:5).
 
-This example illustrates a *one-to-many* derivation: one input file is split into multiple output files, each recorded as a separate `prov:WasDerivedFrom` relation. The query returns one result row per derived file, so the realiser emits one sentence per row.
+This example illustrates a *one-to-many* derivation: one input file is split into multiple output files, each recorded as a separate `prov:WasDerivedFrom` relation. Rather than emitting one sentence per output file, a `group by` clause collapses all output files into a single row, and an `@iterator` over the aggregated sequence builds a coordinated noun phrase naming all outputs in a single sentence.
 
 **Provenance model**
 
@@ -1324,18 +1364,55 @@ act:6118   prov:wasAssociatedWith  ag:5  plan method:3   (optional)
 
 | Construct | Where used |
 |---|---|
-| One query row per `prov:WasDerivedFrom` | Two sentences produced for one splitting activity |
-| `where act[prov:type] >= 'fs:SplittingData'` | Filters to splitting activities only |
-| `adjective_phrase` pre-modifier `"splitting"` | *splitting* method |
-| `verb: "split"` in past tense passive | *was split* |
+| `group by file1, act, waw, agent, plan aggregate file2 with Seq` | Collapses both `WasDerivedFrom` rows into one result row; `file2` becomes a sequence |
+| `coordinated_phrase` with `@iterator` as `noun` of `preposition_phrase` | Builds *"training_set.csv (file:1586) and validation_set.csv (file:1587)"* inside *into …* |
+| `"@variable": "file2"` on `@iterator` | Iterates over each element of the aggregated `file2` sequence |
+| `"@clause": "coordinates"` | Directs each instantiated element into the `coordinates` list of the `coordinated_phrase` |
+| `preposition: "into"` | *into training_set.csv … and validation_set.csv …* |
+| Input file (file1) as the passive surface subject | *The file (file:2) was split …* |
+| `noun+identity(file1.id, "file")` | Renders the unnamed source file as *file (file:2)* |
 
-This x-plan is structurally identical to `fs-file-transforming.json`; only the activity-type filter (`SplittingData` vs `TransformingData`), the verb (`split` vs `compress`), and the method adjective (`splitting` vs `compression`) differ.
+**Query**
+```
+prefix fs <http://openprovenance.org/ns/fs#>
+select * from der a prov:WasDerivedFrom
+from file2 a prov:Entity
+ join der.generatedEntity = file2.id
+from file1 a prov:Entity
+ join der.usedEntity = file1.id
+from act a prov:Activity
+ join der.activity = act.id
+from waw a prov:WasAssociatedWith
+ optional join act.id = waw.activity
+from agent a prov:Agent
+ optional join waw.agent = agent.id
+from plan a prov:Entity
+ optional join waw.plan = plan.id
+where act[prov:type] >= 'fs:SplittingData'
+group by file1, act, waw, agent, plan aggregate file2 with Seq
+```
 
-**Output:**
+The `der` variable is not included in `group by` — it is silently dropped, so the two `WasDerivedFrom` rows that share the same `(file1, act, waw, agent, plan)` key are merged into one result row with `file2 = [file:1586, file:1587]`.
+
+**Sentence tree (abbreviated)**
 ```
-The file training_set.csv (file:1586) was split from file (file:2) with splitting method (method:3) by agent (ag:5).
-The file validation_set.csv (file:1587) was split from file (file:2) with splitting method (method:3) by agent (ag:5).
+clause  [tense: past, passive: true]
+├── subject: noun+identity(agent.id, "agent") [@optional]   → "by agent (ag:5)"
+├── object: noun_phrase "The file (file:2)"                  → surface subject
+│     └── head: noun+identity(file1.id, "file")
+├── verb: "split"                                            → "was split"
+└── post-modifiers:
+    ├── preposition_phrase "into"
+    │     └── noun: coordinated_phrase [conjunction: "and"]
+    │           @iterator  @variable: "file2"  @clause: "coordinates"
+    │           @element: noun_phrase
+    │               head: string(@property fs:filename)      → "training_set.csv" / "validation_set.csv"
+    │               post-modifiers: noun+identity(file2.id, "")
+    └── preposition_phrase "with"                            → omitted if plan unbound
+          └── noun: "splitting method (method:3)" [@optional]
 ```
+
+**Output:** `The file (file:2) was split into training_set.csv (file:1586) and validation_set.csv (file:1587) with splitting method (method:3) by agent (ag:5).`
 
 **File:** [`xplain/nlg/fs/fs-file-splitting.json`](../__rootArtifactId__-service/src/main/resources/xplain/nlg/fs/fs-file-splitting.json)
 
@@ -1562,9 +1639,4 @@ Before running an x-plan, verify each item:
 - [ ] `@property` prefixes are present in the `context`; `@field` values are PROV role names, not property URIs.
 - [ ] Every `@funcall` that reads a variable introduced by `left join` or `optional join` carries `"@optional": "true"`.
 - [ ] If the variable introduced by a join may itself be used as the LHS of a further optional step, use `optional join` (not `left join`) so that null propagates safely through the chain.
-
-## 6. TODO
-
-- The splitting explanation should have a group instruction, and iterate over all the file and make a conjunction
-- Add more examples, especially for `prov:Collection` and `prov:Membership`.
 

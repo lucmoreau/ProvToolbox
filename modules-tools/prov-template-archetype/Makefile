@@ -52,8 +52,8 @@ archetype.generate.book:
 		-Dimage.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-Dtemplate.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
-		-Dnlg.xplan.library=$(NLG_BASIC_XPLAN_LIBRARY) \
-		-Dnlg.xplan.selection=$(NLG_BASIC_XPLAN_SELECTION) \
+		-DnlgXplanLibrary=$(NLG_BASIC_XPLAN_LIBRARY) \
+		-DnlgXplanSelection=$(NLG_BASIC_XPLAN_SELECTION) \
 		-DserviceContext=/book \
 		-DservicePort=7075 \
 		-DdashboardTitle="Book PTM Dashboard"
@@ -108,8 +108,8 @@ archetype.generate.ptl:
 		-Dimage.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-Dtemplate.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
-		-Dnlg.xplan.library=$(NLG_BASIC_XPLAN_LIBRARY) \
-		-Dnlg.xplan.selection=$(NLG_BASIC_XPLAN_SELECTION) \
+		-DnlgXplanLibrary=$(NLG_BASIC_XPLAN_LIBRARY) \
+		-DnlgXplanSelection=$(NLG_BASIC_XPLAN_SELECTION) \
 		-DserviceContext=/ptl \
 		-DservicePort=7076 \
 		-DdashboardTitle="PTL Dashboard"
@@ -141,6 +141,62 @@ JAVA_OPTS="-Dlog4j.configurationFile=src/test/resources/ptm/config/log4j2.xml -D
 
 PROVMAN=export JAVA_OPTS=$(JAVA_OPTS2); $(PROVTOOLBOX_DIR)/modules-executable-provman/target/appassembler/bin/provmanagement
 NLG_XPLAIN=src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg
+
+XPLAN_SCHEMA=src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/schema/xplan-schema.json
+AJV=ajv
+
+# X-plan template files to validate (excludes dictionaries, profiles, config, and
+# provbasic2.json which intentionally contains // comments and is not strict JSON)
+XPLAN_FILES = \
+    $(NLG_XPLAIN)/fs/fs-xplan-library.json \
+    $(NLG_XPLAIN)/fs/fs-awk-column-selection.json \
+    $(NLG_XPLAIN)/fs/fs-file-fitting.json \
+    $(NLG_XPLAIN)/fs/fs-file-init.json \
+    $(NLG_XPLAIN)/fs/fs-file-splitting.json \
+    $(NLG_XPLAIN)/fs/fs-file-transforming.json \
+    $(NLG_XPLAIN)/fs/fs-generic-responsibility.json \
+    $(NLG_XPLAIN)/provbasic/provbasic.json \
+    $(NLG_XPLAIN)/provbasic/actedonbehalfof1.json \
+    $(NLG_XPLAIN)/provbasic/activity1.json \
+    $(NLG_XPLAIN)/provbasic/agent1.json \
+    $(NLG_XPLAIN)/provbasic/alternate1.json \
+    $(NLG_XPLAIN)/provbasic/association1.json \
+    $(NLG_XPLAIN)/provbasic/attribution1.json \
+    $(NLG_XPLAIN)/provbasic/derivation1.json \
+    $(NLG_XPLAIN)/provbasic/end1.json \
+    $(NLG_XPLAIN)/provbasic/end2.json \
+    $(NLG_XPLAIN)/provbasic/end3.json \
+    $(NLG_XPLAIN)/provbasic/entity1.json \
+    $(NLG_XPLAIN)/provbasic/generation1.json \
+    $(NLG_XPLAIN)/provbasic/invalidation1.json \
+    $(NLG_XPLAIN)/provbasic/member1.json \
+    $(NLG_XPLAIN)/provbasic/specialization1.json \
+    $(NLG_XPLAIN)/provbasic/start1.json \
+    $(NLG_XPLAIN)/provbasic/start2.json \
+    $(NLG_XPLAIN)/provbasic/start3.json \
+    $(NLG_XPLAIN)/provbasic/usage1.json
+
+schema.validate:
+	@echo "Validating x-plan files against $(XPLAN_SCHEMA) ..."
+	@failed=0; \
+	for f in $(XPLAN_FILES); do \
+	    result=$$($(AJV) validate -s $(XPLAN_SCHEMA) -d "$$f" --errors=text 2>&1); \
+	    rc=$$?; \
+	    fname=$$(basename "$$f"); \
+	    if [ $$rc -eq 0 ]; then \
+	        echo "  OK   $$fname"; \
+	    else \
+	        echo "  FAIL $$fname"; \
+	        echo "$$result"; \
+	        failed=$$((failed+1)); \
+	    fi; \
+	done; \
+	if [ $$failed -eq 0 ]; then \
+	    echo "All x-plan files are valid."; \
+	else \
+	    echo "$$failed file(s) failed validation."; \
+	    exit 1; \
+	fi
 DOCUMENTS=/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/test/prov/
 
 batch.explain:

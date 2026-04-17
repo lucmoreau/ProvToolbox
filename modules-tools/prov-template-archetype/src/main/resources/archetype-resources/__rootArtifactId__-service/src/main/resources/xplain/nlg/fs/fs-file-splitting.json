@@ -18,7 +18,8 @@
         "from plan a prov:Entity",
         " optional join waw.plan = plan.id",
 
-        "where act[prov:type] >= 'fs:SplittingData'"
+        "where act[prov:type] >= 'fs:SplittingData'",
+        "group by file1, act, waw, agent, plan aggregate file2 with Seq"
     ],
 
     "sentence": {
@@ -37,62 +38,57 @@
         "object": {
             "type": "noun_phrase",
             "determiner": "The",
-            "pre-modifiers": [
-                { "type": "adjective_phrase", "head": "file" }
-            ],
             "head": {
                 "type": "@funcall",
-                "@object": "file2",
-                "@property": "fs:filename",
-                "@function": "string",
-                "features": {
-                    "head_markup_element": "span",
-                    "head_markup_attributes": {
-                        "type": "@funcall",
-                        "@object": "file2",
-                        "@function": "markup-for-id",
-                        "@field": "id",
-                        "@arg1": "provelement"
-                    }
-                }
+                "@object": "file1",
+                "@field": "id",
+                "@function": "noun+identity",
+                "@arg1": "file"
             },
-            "post-modifiers": [
-                {
-                    "type": "adjective_phrase",
-                    "head": {
-                        "type": "@funcall",
-                        "@object": "file2",
-                        "@field": "id",
-                        "@function": "noun+identity",
-                        "@arg1": ""
-                    }
-                }
-            ],
             "features": { "number": "singular" }
         },
         "verb": "split",
         "post-modifiers": [
             {
                 "type": "preposition_phrase",
-                "preposition": "from",
+                "preposition": "into",
                 "noun": {
-                    "type": "noun_phrase",
-                    "head": {
-                        "type": "@funcall",
-                        "@object": "file1",
-                        "@field": "id",
-                        "@function": "noun+identity",
-                        "@arg1": "file",
-                        "@optional": "true",
-                        "features": {
-                            "head_markup_element": "span",
-                            "head_markup_attributes": {
+                    "type": "coordinated_phrase",
+                    "conjunction": "and",
+                    "@iterator": {
+                        "type": "@iterator",
+                        "@variable": "file2",
+                        "@clause": "coordinates",
+                        "@element": {
+                            "type": "noun_phrase",
+                            "head": {
                                 "type": "@funcall",
-                                "@object": "file1",
-                                "@function": "markup-for-id",
-                                "@field": "id",
-                                "@arg1": "provelement"
-                            }
+                                "@object": "file2",
+                                "@property": "fs:filename",
+                                "@function": "string",
+                                "features": {
+                                    "head_markup_element": "span",
+                                    "head_markup_attributes": {
+                                        "type": "@funcall",
+                                        "@object": "file2",
+                                        "@function": "markup-for-id",
+                                        "@field": "id",
+                                        "@arg1": "provelement"
+                                    }
+                                }
+                            },
+                            "post-modifiers": [
+                                {
+                                    "type": "adjective_phrase",
+                                    "head": {
+                                        "type": "@funcall",
+                                        "@object": "file2",
+                                        "@field": "id",
+                                        "@function": "noun+identity",
+                                        "@arg1": ""
+                                    }
+                                }
+                            ]
                         }
                     }
                 }

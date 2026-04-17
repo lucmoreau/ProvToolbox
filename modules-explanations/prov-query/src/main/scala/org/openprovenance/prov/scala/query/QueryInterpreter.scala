@@ -335,7 +335,6 @@ trait QueryInterpreter extends SummaryTypesNames {
     }
     table foreach { case (k: RFields, a: Seq[AGGREGATE]) =>
       val record = Record(k ++ a.map(x => OrType.bToOr2(Seq(new Other(qother, ProvFactory.pf.getName.XSD_INT.asInstanceOf[QualifiedName], x.asInstanceOf[Seq[AnyRef]].size.toString)))), keys ++ agg)
-      println(record)
       yld(record)
     }
   }

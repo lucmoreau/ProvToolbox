@@ -23,9 +23,9 @@
   <component name="ChangeListManager">
     <list default="true" id="44a1f447-c308-479f-be3a-95e05d37ae08" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-tools/prov-template-archetype/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-template-archetype/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/webapp.filter/forms.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/webapp.filter/forms.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg/fs/fs-file-splitting.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg/fs/fs-file-splitting.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/docs/Explanations.md" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/docs/Explanations.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -158,6 +158,7 @@
       <recent name="org.openprovenance.prov.template.compiler.past.Constant" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/schema" />
       <recent name="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/test/resources/sql" />
       <recent name="$PROJECT_DIR$/modules-tools/prov-template-archetype/src/test/resources/projects/basic" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources" />
@@ -344,7 +345,7 @@
       <workItem from="1774896782614" duration="68208000" />
       <workItem from="1775678928305" duration="2409000" />
       <workItem from="1775682541217" duration="8227000" />
-      <workItem from="1775722756273" duration="177722000" />
+      <workItem from="1775722756273" duration="185330000" />
     </task>
     <servers />
   </component>

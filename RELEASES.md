@@ -19,6 +19,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-explanations: optional join, to deal with missing relations
 * prov-template-compiler: compilation of Association without agent but with plan (T14)
 * prov-template-archetype: explanation toggle for explanations
+* prov-explanations: json schema for xplans (in archetype)
 
 
 `2.2.3`

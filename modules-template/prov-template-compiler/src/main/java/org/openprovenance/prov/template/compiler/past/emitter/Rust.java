@@ -3034,7 +3034,18 @@ public class Rust implements Emitter<StringBuilder> {
                         return "format!(\"{}{}\", " + convert(bo.left) + ", " + convert(bo.right) + ")";
                     }
                 }
-                return convert(bo.left) + " " + bo.op + " " + convert(bo.right);
+                // If an operand is an Option<T> field on another bean (e.g. bean.count which is
+                // Option<i32>), the value must be unwrapped before arithmetic/comparison.
+                // We intentionally exclude "this" and "self" here: self-field accesses already
+                // get .unwrap() appended by the OBJECT_ACCESSOR emitter, so adding
+                // .unwrap_or_default() on top would produce a double-unwrap compile error.
+                String leftStr = isOtherBeanFieldAccess(bo.left)
+                        ? convert(bo.left) + ".unwrap_or_default()"
+                        : convert(bo.left);
+                String rightStr = isOtherBeanFieldAccess(bo.right)
+                        ? convert(bo.right) + ".unwrap_or_default()"
+                        : convert(bo.right);
+                return leftStr + " " + bo.op + " " + rightStr;
             }
 
             case IF_EXPRESSION: {
@@ -3563,8 +3574,18 @@ public class Rust implements Emitter<StringBuilder> {
                                 result.append(applyArgTreatment(treatment, arg));
                             }
                         } else {
-                            ArgTreatment treatment = (opVarSpec != null)
-                                    ? opVarSpec.argTreatment(i) : ArgTreatment.PASS_BY_VALUE;
+                            // Generated "addXxx" methods (e.g. addElements, addInputs → add_elements,
+                            // add_inputs) take ownership of their argument.  PAST treats them as
+                            // Java pass-by-reference so the variable may be used afterward; in Rust
+                            // we must clone so the binding remains valid after the call.
+                            // callMethodName is still camelCase here; toSnakeCase is applied at emit.
+                            ArgTreatment treatment;
+                            if (toSnakeCase(callMethodName).startsWith("add_")) {
+                                treatment = ArgTreatment.CLONE;
+                            } else {
+                                treatment = (opVarSpec != null)
+                                        ? opVarSpec.argTreatment(i) : ArgTreatment.PASS_BY_VALUE;
+                            }
                             result.append(applyArgTreatment(treatment, arg));
                         }
                     }
@@ -3738,6 +3759,24 @@ public class Rust implements Emitter<StringBuilder> {
                 Variable v = (Variable) mc.object;
                 // Field access on a non-self, non-field variable (i.e., a local/closure parameter like "b")
                 return v.field == Variable.VariableKind.LOCAL_VARIABLE && !"self".equals(v.name);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Like isNonSelfFieldAccess but also excludes "this".  Used in BINARY_OP to decide
+     * when to add .unwrap_or_default(): self/this field accesses are already unwrapped by
+     * the OBJECT_ACCESSOR emitter, so only fields on other bean variables need it here.
+     */
+    private boolean isOtherBeanFieldAccess(Expression expr) {
+        if (expr instanceof MethodCall) {
+            MethodCall mc = (MethodCall) expr;
+            if (mc.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR && mc.object instanceof Variable) {
+                Variable v = (Variable) mc.object;
+                return v.field == Variable.VariableKind.LOCAL_VARIABLE
+                        && !"self".equals(v.name)
+                        && !"this".equals(v.name);
             }
         }
         return false;

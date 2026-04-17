@@ -32,6 +32,7 @@ import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNME
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.ForLoop.FOR;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
 import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
@@ -152,6 +153,9 @@ public class CompilerBeanLocalEnactor2 {
 
                 mspec.BODY(
 
+
+                        /*
+                        // issue with js code, since it iterates over methods as well!
                         ITERATOR(
                                 Parameter.PARAMETER("in1", inputClassName2),
                                 METHOD_CALL(VARIABLE("bean"), ELEMENTS))
@@ -165,6 +169,22 @@ public class CompilerBeanLocalEnactor2 {
                                                         Constants.PROCESS_METHOD_NAME,
                                                         List.of(VARIABLE("in1"), VARIABLE(MAP_VAR)))
                                                 ))),
+
+*/
+
+
+                        FOR(DEFINITION(_int,VARIABLE("i"), CONSTANT(0)),
+                                BINARY_OP(VARIABLE("i"), "<", METHOD_CALL(METHOD_CALL(VARIABLE("bean"),ELEMENTS), "size", List.of())),
+                                ASSIGNMENT(VARIABLE("i"), BINARY_OP(VARIABLE("i"), "+", CONSTANT(1)))
+                        ).BODY(
+                                DEFINITION(inputClassName2, VARIABLE("in1"),METHOD_CALL(METHOD_CALL(VARIABLE("bean"), ELEMENTS), "get", List.of(VARIABLE("i")))),
+                                METHOD_CALL(VARIABLE(OUT_BEAN), ADD_ELEMENTS, List.of(METHOD_CALL(
+                                        VARIABLE("this"),
+                                        Constants.PROCESS_METHOD_NAME,
+                                        List.of(VARIABLE("in1"), VARIABLE(MAP_VAR)))
+                                ))
+                        ),
+
 
 
                         ASSIGNMENT(

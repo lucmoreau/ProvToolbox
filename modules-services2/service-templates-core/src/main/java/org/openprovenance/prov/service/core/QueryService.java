@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 
@@ -169,6 +170,36 @@ public class QueryService {
     }
 
 
+    /* Functionality to support development of queries over the provenance store. */
+
+    @Path("/query/list-of-queries")
+    @GET
+    @Produces({InteropMediaType.MEDIA_APPLICATION_JSON})
+    public Response getListOfQueries() {
+        logger.info("getListOfQueries");
+        if (!enabled  || !this.configuration.enableExternalQueries) {
+            return ServiceUtils.composeResponseOK("[]").build();
+        }
+        // find files *.sql in query configuration path
+        List<String> queries = new java.util.ArrayList<>();
+        for (String path : this.configuration.externalQueryPath) {
+            if (path == null) continue;
+            File dir = new File(path);
+            if (dir.exists() && dir.isDirectory()) {
+                File[] files = dir.listFiles((d, name) -> name.endsWith(".sql"));
+                if (files != null) {
+                    for (File f : files) {
+                        String name = f.getName();
+                        if (name.endsWith(".sql")) {
+                            queries.add(name.substring(0, name.length() - 4));
+                        }
+                    }
+                }
+            }
+        }
+        StreamingOutput promise = (out) -> new ObjectMapper().writeValue(out, queries);
+        return  ServiceUtils.composeResponseOK(promise).build();
+    }
 
 /*
 

@@ -7,7 +7,7 @@ prefix file <http://localhost:7075/book/provapi/live/file/>
 prefix method <http://localhost:7075/book/provapi/live/method/>
 entity(file:1)
 entity(method:3)
-entity(file:1556,[prov:type = 'fs:DataFile', fs:path = "/home" %% xsd:string, fs:filename = "ffff" %% xsd:string])
+entity(file:1556,[prov:type = 'fs:DataFile', fs:path = "/home" %% xsd:string, fs:filename = "data.csv.gz" %% xsd:string])
 activity(act:6088,-,-,[prov:type = 'fs:TransformingData'])
 agent(ag:7)
 used(act:6088,file:1,-)

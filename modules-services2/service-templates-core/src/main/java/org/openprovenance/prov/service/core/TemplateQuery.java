@@ -21,6 +21,7 @@ import org.postgresql.util.PGobject;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.ResultSetMetaData;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.function.Function;
@@ -692,7 +693,7 @@ public class TemplateQuery {
     }
 
 
-    public List<Integer> queryMostRecentTemplatesRecords(String base_relation, Integer count, String principal) {
+    public List<Integer> queryIds4MostRecentTemplatesRecords(String base_relation, Integer count, String principal) {
         List<Integer> linked_records = new LinkedList<>();
 
         querier.do_query(linked_records,
@@ -705,10 +706,12 @@ public class TemplateQuery {
                             .append("where idx.table_name='").append(base_relation).append("'\n")
                             .append("and\n")
                             .append("idx.principal='").append(principal).append("'\n")
-                            .append("order by rel.id DESC\n")
-                            .append("limit ")
-                            .append(count)
-                            .append("\n");
+                            .append("order by rel.id DESC\n");
+                    if (count != null && count > 0) {
+                        sb.append("limit ")
+                                .append(count)
+                                .append("\n");
+                    }
                 },
                 (rs, data) -> {
                     while (rs.next()) {
@@ -718,6 +721,59 @@ public class TemplateQuery {
                 });
 
         return linked_records;
+    }
+
+    public List<HashMap<String, Object>> queryMostRecentTemplatesRecords(String base_relation, Integer count, String principal) {
+
+        //fetch out rows
+        List<HashMap<String,Object>> rows = new ArrayList<>();
+
+        List<Integer> keys=queryIds4MostRecentTemplatesRecords(base_relation, count, principal);
+
+        // convert list into a string (k1, k2, ...)
+        String postgresKeys= keys.stream().map(String::valueOf).collect(Collectors.joining(", ", "(", ")"));
+
+
+        querier.do_query(rows,
+                null,
+
+                (sb, data) -> {
+                    sb.append("select idx.table_name, idx.id as overall_id, rel.*\n")
+                            .append("from ").append(base_relation).append(" as rel\n")
+                            .append("join record_index as idx on rel.id=idx.key\n")
+                            .append("where idx.table_name='").append(base_relation).append("'\n")
+                            .append("and\n")
+                            .append("rel.id IN ").append(postgresKeys).append("\n")
+                            .append("and\n")
+                            .append("idx.principal='").append(principal).append("'\n")
+                            .append("order by rel.id DESC\n");
+
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+
+                        //get metadata
+                        ResultSetMetaData meta = rs.getMetaData();
+
+                        //get column names
+                        int colCount = meta.getColumnCount();
+                        ArrayList<String> cols = new ArrayList<String>();
+                        for (int index=1; index<=colCount; index++)
+                            cols.add(meta.getColumnName(index));
+
+
+                        while (rs.next()) {
+                            HashMap<String,Object> row = new HashMap<>();
+                            for (String colName:cols) {
+                                Object val = rs.getObject(colName);
+                                row.put(colName,val);
+                            }
+                            data.add(row);
+                        }
+                    }
+                });
+
+        return rows;
     }
 
     static class RecordEntry {

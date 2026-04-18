@@ -742,25 +742,48 @@ public class TemplateService {
     @Path("/template/{relation}/last/{count}.json")
     @Tag(name = "template")
     @Produces({ MEDIA_APPLICATION_JSON })
-    public Response getLastNrecords(@Context HttpServletResponse response,
+    public Response getLastNrecordsIds(@Context HttpServletResponse response,
                                               @Context HttpServletRequest request,
                                               @Context HttpHeaders headers,
                                               @Context UriInfo uriInfo,
 
                                               @Parameter(name = "relation", description = "relation name", required = true) @PathParam("relation") String relation,
-                                              @Parameter(name = "count", description = "record count", required = true) @PathParam("count") Integer count) {
+                                              @Parameter(name = "count", description = "record count (if 0, means returns all", required = true) @PathParam("count") Integer count) {
 
-        logger.info("getLastNrecords " + relation + " " + count);
+        logger.info("getLastNrecordsIds " + relation + " " + count);
 
         Principal principal = request.getUserPrincipal();
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
 
-        List<Integer> ll=queryTemplate.queryMostRecentTemplatesRecords(relation, count, principalAsPreferredUsername);
+        List<Integer> ll=queryTemplate.queryIds4MostRecentTemplatesRecords(relation, count, principalAsPreferredUsername);
 
         logger.info("getLastNrecords " + ll);
 
+        StreamingOutput promise= out -> om.writeValue(out,ll);
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
+
+    }
+
+    @GET
+    @Path("/template/{relation}/records/{count}.json")
+    @Tag(name = "template")
+    @Produces({ MEDIA_APPLICATION_JSON, MEDIA_TEXT_PLAIN })
+    public Response getLastNrecords(@Context HttpServletResponse response,
+                                    @Context HttpServletRequest request,
+                                    @Context HttpHeaders headers,
+                                    @Context UriInfo uriInfo,
+
+                                    @Parameter(name = "relation", description = "relation name", required = true) @PathParam("relation") String relation,
+                                    @Parameter(name = "count", description = "record count (if 0, means returns all", required = true) @PathParam("count") Integer count) {
+
+        logger.info("getLastNrecords " + relation + " " + count);
+
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+        List<HashMap<String, Object>> ll=queryTemplate.queryMostRecentTemplatesRecords(relation, count, principalAsPreferredUsername);
         StreamingOutput promise= out -> om.writeValue(out,ll);
         return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
 

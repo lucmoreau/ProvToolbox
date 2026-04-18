@@ -20,6 +20,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: compilation of Association without agent but with plan (T14)
 * prov-template-archetype: explanation toggle for explanations
 * prov-explanations: json schema for xplans (in archetype)
+* service-templates-core: TemplateService, query to find registered entities/agents to avoid re-registration
 
 
 `2.2.3`

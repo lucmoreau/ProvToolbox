@@ -92,7 +92,8 @@ public class CompilerCatalogueDispatcher {
 
 
 
-    public static Set<String> integratorRequired= new HashSet<>(List.of("inputs", "outputs"));
+    public static Set<String> integratorRequired= new HashSet<>(List.of("inputs", "outputs",
+            "csvConverter4Outputs", "csvConverter4OutputsComposite"));
     public static Set<String> storageRequired= new HashSet<>(List.of("enactorConverter", "compositeEnactorConverter"));
     public static Set<String> sqlRelated= new HashSet<>(List.of("sqlConverter", "sqlInsert"));
 

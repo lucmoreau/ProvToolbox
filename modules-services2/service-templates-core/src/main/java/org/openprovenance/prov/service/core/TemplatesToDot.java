@@ -27,8 +27,9 @@ public class TemplatesToDot extends ProvToDot {
     private final String style;
     private final TemplateQuery templateQuery;
     private final String principal;
+    private final String provAPI;
 
-    public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections, String style, Map<String, Map<String, String>> baseTypes, Map<String, Map<String, Map<String, String>>> ioMap, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, Map<String, Map<String, List<String>>> successors, ProvFactory pf, TemplateQuery templateQuery, String principal) {
+    public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections, String style, Map<String, Map<String, String>> baseTypes, Map<String, Map<String, Map<String, String>>> ioMap, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, Map<String, Map<String, List<String>>> successors, ProvFactory pf, TemplateQuery templateQuery, String principal, String provAPI) {
         super(pf);
         this.pf=pf;
         this.templateConnections = templateConnections;
@@ -39,6 +40,7 @@ public class TemplatesToDot extends ProvToDot {
         this.style=style;
         this.templateQuery=templateQuery;
         this.principal=principal;
+        this.provAPI=provAPI;
     }
 
     public static String createHtmlTable(TemplateInfo templateInfo,
@@ -76,7 +78,7 @@ public class TemplatesToDot extends ProvToDot {
         return html.toString();
     }
 
-   final Map<String, String> provcolors = new HashMap<>() {{
+    final Map<String, String> provcolors = new HashMap<>() {{
         put("http://www.w3.org/ns/prov#Entity", ENTITY_FILLCOLOUR);
         put("http://www.w3.org/ns/prov#Activity", ACTIVITY_FILL_COLOUR);
         put("http://www.w3.org/ns/prov#Agent", AGENT_FILLCOLOUR);
@@ -209,7 +211,7 @@ public class TemplatesToDot extends ProvToDot {
 
 
         for (TemplateInfo templateInfo: allTemplates) {
-           System.out.println("- templateInfo: " + templateInfo);
+            //System.out.println("- templateInfo: " + templateInfo);
 
             String templateFullyQualifiedName = templateInfo.template;
             String templateId = templateInfo.templateId;
@@ -218,10 +220,10 @@ public class TemplatesToDot extends ProvToDot {
 
             String template = shortNames.get(templateFullyQualifiedName);
 
-            System.out.println("- template: " + template + " id: " + templateId);
-            System.out.println("  baseTypes: " + templateBaseTypes);
-            System.out.println("  inputs: " + inputs);
-            System.out.println("  outputs: " + outputs);
+            //System.out.println("- template: " + template + " id: " + templateId);
+            //System.out.println("  baseTypes: " + templateBaseTypes);
+            //System.out.println("  inputs: " + inputs);
+            //System.out.println("  outputs: " + outputs);
 
             Map<String, String> templateInputs = inputs.get(template);
             List<String> inputsNames  = (templateInputs==null)? List.of() : new ArrayList<>(templateInputs.keySet());
@@ -242,8 +244,8 @@ public class TemplatesToDot extends ProvToDot {
 
         for (TemplateQuery.TemplateConnection templateConnection : templateConnections) {
             emitEdge(qualifiedPortName(shortNames.get(templateConnection.in_template),  templateName(shortNames.get(templateConnection.in_template), templateConnection.in_id),  templateConnection.in_property),
-                     qualifiedPortName(shortNames.get(templateConnection.out_template), templateName(shortNames.get(templateConnection.out_template),templateConnection.out_id), templateConnection.out_property),
-                     out);
+                    qualifiedPortName(shortNames.get(templateConnection.out_template), templateName(shortNames.get(templateConnection.out_template),templateConnection.out_id), templateConnection.out_property),
+                    out);
         }
 
         postlude(doc,out);
@@ -274,7 +276,7 @@ public class TemplatesToDot extends ProvToDot {
         return templateId + ":" + portName(template, templateId, property);
     }
     private QualifiedName qualifiedPortNameAsQn(String template, String templateId, String property) {
-        return pf.newQualifiedName( "/book/provapi/template/", template + "/"+ templateId + "/" + property, "ex");
+        return pf.newQualifiedName( provAPI + "/template/", template + "/"+ templateId + "/" + property, "ex");
     }
 
     public void emitTemplate(String template, String templateId, String htmlTable, PrintStream out) {
@@ -292,6 +294,7 @@ public class TemplatesToDot extends ProvToDot {
         return template+"_"+id;
     }
 
+    /*
     private String livePrefix(String relation) {
         return "/book/provapi/live/" + relation+"/" ;
     }
@@ -299,8 +302,10 @@ public class TemplatesToDot extends ProvToDot {
     private String urlPrefix(String template) {
         return "/book/provapi/template/" + template+"/";
     }
+
+     */
     private String url(String template, Integer id) {
-        return "/book/provapi/template/" + template+"/"+id + ".svg";
+        return provAPI + "/template/" + template+"/"+id + ".svg";
     }
 
     public static class TemplateInfo {

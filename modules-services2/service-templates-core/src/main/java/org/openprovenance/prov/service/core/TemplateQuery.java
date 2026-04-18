@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.service.core.TemplateService.provAPI;
 import static org.openprovenance.prov.template.compiler.CompilerSQL.sqlify;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
@@ -249,9 +250,8 @@ public class TemplateQuery {
         // reverse list
         Collections.reverse(templateConnections);
 
-        //logger.info("templateConnections: " + templateConnections.stream().map(TemplateConnection::toString).collect(Collectors.joining("\n")));
-System.out.println("templateConnections: " + templateConnections.stream().map(TemplateConnection::toString).collect(Collectors.joining("\n")));
-        new TemplatesToDot(templateConnections, style, baseTypes, ioMap, templateDispatcher, successors, pf, this, principal).convert(null, out, "template_connections");
+        logger.debug("templateConnections: " + templateConnections.stream().map(TemplateConnection::toString).collect(Collectors.joining("\n")));
+        new TemplatesToDot(templateConnections, style, baseTypes, ioMap, templateDispatcher, successors, pf, this, principal, provAPI).convert(null, out, "template_connections");
     }
 
     final DigestUtils sha512 = new DigestUtils(DigestUtils.getSha3_512Digest());

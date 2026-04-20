@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.compiler.CompilerSQL;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
@@ -1424,6 +1425,12 @@ public class CompilerCommon {
                     Collection<SpecializationOf> namedSpecializationOf = indexed.getNamedSpecializationOf().values().stream().flatMap(Collection::stream).collect(Collectors.toList());
                     processSpecializationOf(anonSpecializationOf, varCount, relations, count, true);
                     processSpecializationOf(namedSpecializationOf, varCount, relations, count, false);
+
+                    Collection<QualifiedSpecializationOf> anonSpecializationOf2 = indexed.getQualifiedSpecializationOf();
+                    Collection<QualifiedSpecializationOf> namedSpecializationOf2 = indexed.getNamedQualifiedSpecialization().values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+                    processSpecializationOf2(anonSpecializationOf2, varCount, relations, count, true);
+                    processSpecializationOf2(namedSpecializationOf2, varCount, relations, count, false);
+
                     break;
 
                 case PROV_MEMBERSHIP:
@@ -1437,6 +1444,8 @@ public class CompilerCommon {
         }
         return relations;
     }
+
+
     public Method generateGetRelations(Set<QualifiedName> allVars, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed) {
 
         Map<String, Map<String, int[]>> relations= getRelations(allVars, bindingsSchema, indexed);
@@ -1566,6 +1575,20 @@ public class CompilerCommon {
             count.getAndIncrement();
         }
     }
+
+    private void processSpecializationOf2(Collection<QualifiedSpecializationOf> soCollection, HashMap<QualifiedName, Integer> varCount, Map<String, Map<String,int[]>> relations, AtomicInteger count, boolean anon) {
+        for (SpecializationOf rel : soCollection) {
+            Integer spec = countIsNull(varCount.get(rel.getSpecificEntity()));
+            Integer gen = countIsNull(varCount.get(rel.getGeneralEntity()));
+            if (spec >= 0 && gen >= 0) {
+                String label = getLabel(count.get(), anon, null);
+                relations.computeIfAbsent(rel.getKind().name(), k -> new HashMap<>());
+                relations.get(rel.getKind().name()).put(label, new int[] { spec, gen });
+            }
+            count.getAndIncrement();
+        }
+    }
+
 
     private void processHadMember(Collection<HadMember> hmCollection, HashMap<QualifiedName, Integer> varCount, Map<String, Map<String, int[]>> relations, AtomicInteger count, boolean anon) {
         for (HadMember rel : hmCollection) {

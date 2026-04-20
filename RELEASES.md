@@ -22,6 +22,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-explanations: json schema for xplans (in archetype)
 * service-templates-core: TemplateService, query to find registered entities/agents to avoid re-registration
 * prov-template-compiler: fixed search on base relations
+* prov-template-compiler: making getTypedSuccessor the defaul, used in service
 
 `2.2.3`
 * prov-template: update to instantiation

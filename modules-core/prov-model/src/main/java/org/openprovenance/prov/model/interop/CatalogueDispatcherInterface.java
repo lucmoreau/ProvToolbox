@@ -22,6 +22,8 @@ public interface CatalogueDispatcherInterface<T> {
 
     Map<String, Map<String, List<String>>> getSuccessors();
 
+    Map<String, Map<String, List<String>>> getTypedSuccessors();
+
     Map<String, Function<Object[], String>> getCsvConverter();
 
     Map<String, Function<Object, String>> getCsvConverter4Beans();

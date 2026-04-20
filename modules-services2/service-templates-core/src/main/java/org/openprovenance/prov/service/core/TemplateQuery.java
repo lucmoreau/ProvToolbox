@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
+import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
 import org.openprovenance.prov.model.interop.PrincipalManager;
 import org.openprovenance.prov.service.core.readers.TableKey;
@@ -26,6 +27,7 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.openprovenance.prov.service.core.TemplateService.provAPI;
 import static org.openprovenance.prov.template.compiler.CompilerSQL.sqlify;
@@ -66,6 +68,7 @@ public class TemplateQuery {
     private final Map<String, String[]> simplePropertyOrder;
     private final Map<String, String> shortNames;
     private final Map<String, String> longNames;
+    private final Map<String, Map<String, List<String>>> typedSuccessors;
 
     public TemplateQuery(Querier querier, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om) {
         this.querier = querier;
@@ -78,22 +81,22 @@ public class TemplateQuery {
         this.longNames=shortNames.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
         this.ioMap = shortenNames(getIoMap(templateDispatcher.getIoMap()), shortNames);
         this.successors = templateDispatcher.getSuccessors();
+        this.typedSuccessors = templateDispatcher.getTypedSuccessors();
         this.relationMapping = new RelationMapping(this,templateDispatcher,querier);
 
         System.out.println("**** shortNames " + shortNames);
-
         logger.info("ioMap = " + ioMap);
         propertyOrder = templateDispatcher.getPropertyOrder();
         simplePropertyOrder = propertyOrder.entrySet().stream().collect(Collectors.toMap(x -> shortNames.get(x.getKey()), Map.Entry::getValue));
 
 
         generateTraversalMethods(querier, this.ioMap);
-
-        initializePredecessorTable();
+        //initializePredecessorTable();
+        initializeTypedPredecessorTable();
     }
 
 
-
+/*
     private void initializePredecessorTable() {
 
         querier.do_statements(null,
@@ -105,8 +108,23 @@ public class TemplateQuery {
                         throw new RuntimeException(e);
                     }
                 });
+        ;
 
+    }
 
+ */
+
+    private void initializeTypedPredecessorTable() {
+
+        querier.do_statements(null,
+                null,
+                (sb, data) -> {
+                    try {
+                        regenerateTypedPredecessorTable(sb);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
         ;
 
     }
@@ -1025,7 +1043,7 @@ public class TemplateQuery {
     }
 
 
-
+/*
 
     private StringBuilder regeneratePredecessorTable(StringBuilder sb) throws JsonProcessingException {
         Map<String, Map<String, List<String>>> successors0 = this.templateDispatcher.getSuccessors();
@@ -1059,6 +1077,60 @@ public class TemplateQuery {
             sb.append("'").append(s.get(0)).append("', ");
             sb.append("'").append(s.get(2)).append("', ");
             sb.append("'").append(s.get(1)).append("'");
+            sb.append(")");
+        });
+        sb.append("\n;\n");
+
+        System.out.println("Regenerating predecessor table with \n" + sb.toString());
+
+        return sb;
+
+    }
+
+ */
+
+    private StringBuilder regenerateTypedPredecessorTable(StringBuilder sb) throws JsonProcessingException {
+        Map<String, Map<String, List<String>>> successors0 = this.templateDispatcher.getTypedSuccessors();
+        Map<Integer,String> provTypes=Stream.of(StatementOrBundle.Kind.values())
+                .collect(Collectors.toMap(Enum::ordinal, StatementOrBundle.Kind::name));
+        Map<String,String> shortNames= new ObjectMapper().readValue(templateDispatcher.getShortNames(), typeRef2);
+        List<List<String>> successorsList=new ArrayList<>();
+        for (String key : successors0.keySet()) {
+            Map<String, List<String>> value = successors0.get(key);
+            if (value==null) continue;
+            for (String subKey : value.keySet()) {
+                List<String> strings = value.get(subKey);
+                // strings alternate: string and type
+                int count=0;
+                for (String s : strings) {
+                    if ((count&1)==0) {
+                        successorsList.add(List.of(shortNames.get(key), subKey, s, strings.get(count + 1)));
+                    }
+                    count++;
+                }
+            }
+        }
+
+
+        sb.append("CREATE TABLE if not exists predecessor_table  (template text, output text, input text, rel integer, relname text);\n" +
+                "\n" +
+                "truncate predecessor_table;\n" +
+                "\n" +
+                "insert into predecessor_table (template, output, input, rel, relname)\n" +
+                "values\n");
+        final boolean[] first = {true};
+        successorsList.forEach(s->{
+            if (first[0]) {
+                first[0] =false;
+            } else {
+                sb.append(",\n");
+            }
+            sb.append("(");
+            sb.append("'").append(s.get(0)).append("', ");
+            sb.append("'").append(s.get(2)).append("', ");
+            sb.append("'").append(s.get(1)).append("', ");
+            sb.append(s.get(3)).append(", ");
+            sb.append("'").append(provTypes.get(Integer.valueOf(s.get(3)))).append("'");
             sb.append(")");
         });
         sb.append("\n;\n");

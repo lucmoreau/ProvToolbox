@@ -247,4 +247,6 @@ public interface Constants {
     String TABLE_VAR = "table";
     String CONVERT_FROM_JSON_OBJECT = "convertFromJsonObject";
     String BUILD_DATE_VAR = "buildDate";
+    String GET_SUCCESSORS = "getSuccessors";
+    String GET_TYPED_SUCCESSORS = "getTypedSuccessors";
 }

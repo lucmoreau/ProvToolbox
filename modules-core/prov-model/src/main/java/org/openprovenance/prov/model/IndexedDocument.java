@@ -388,8 +388,13 @@ public class IndexedDocument implements StatementAction {
 
     }
 
+    public Map<QualifiedName, Collection<QualifiedSpecializationOf>> getNamedQualifiedSpecialization() {
+        return namedQualifiedSpecializationOfMap;
+    }
 
-
+    public Collection<QualifiedSpecializationOf> getQualifiedSpecializationOf() {
+        return anonQualifiedSpecializationOf;
+    }
 
     public Entity add(Entity entity) {
         return add(entity.getId(),entity);

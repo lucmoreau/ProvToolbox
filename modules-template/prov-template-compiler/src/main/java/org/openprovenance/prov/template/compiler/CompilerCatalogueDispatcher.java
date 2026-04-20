@@ -23,6 +23,7 @@ import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY_ACCESSOR;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.IfExpression.IF_;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
 import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
@@ -60,6 +61,7 @@ public class CompilerCatalogueDispatcher {
         put("relation0", RELATION0_CONFIGURATOR);
         put("foreignTables", BUILDER_PROCESSOR_CONFIGURATOR);
         put("successors", BUILDER_PROCESSOR_CONFIGURATOR);
+        put("typedSuccessors", BUILDER_PROCESSOR_CONFIGURATOR);
         put("enactorConverter", SQL_ENACTOR_CONFIGURATOR4);
         put("compositeEnactorConverter", SQL_ENACTOR_COMPOSITE_CONFIGURATOR_4);
         put("documentBuilderDispatcher", TABLE_CONFIGURATOR + WITH_MAP);
@@ -81,6 +83,7 @@ public class CompilerCatalogueDispatcher {
         put("relation0",                 ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_MAP_STRING_INTARRAY));
         put("foreignTables",             ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING_ARRAY));
         put("successors",                ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_LIST_STRING));
+        put("typedSuccessors",           ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_LIST_STRING));
         put("enactorConverter",          ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_ANY));
         put("compositeEnactorConverter", ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_LIST_OBJARRAY_TO_ANY));
         put("documentBuilderDispatcher", ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.PROV_FILE_BUILDER));
@@ -227,7 +230,17 @@ public class CompilerCatalogueDispatcher {
                     ClassName catalogueDispatcherClass =
                             ClassName.get(CATALOGUE_DISPATCHER, configs.root_package);
                     LambdaExpression lambda = LAMBDA(PARAMETER("b", ClassName.BUILDER_INTERFACE))
-                            .BODY(RETURN(METHOD_CALL(catalogueDispatcherClass, "process", List.of(VARIABLE("b")))));
+                            .BODY(RETURN(METHOD_CALL(catalogueDispatcherClass, GET_SUCCESSORS, List.of(VARIABLE("b")))));
+                    cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
+                            METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
+                                    List.of(CONSTRUCTOR_CALL(diamondConfiguratorType, List.of(lambda))))));
+                } else if ("typedSuccessors".equals(data)) {
+                    // new BuilderProcessorConfigurator<>(b -> CatalogueDispatcher.process(b))
+                    ParameterizedType diamondConfiguratorType = ParameterizedType.get(configuratorClass);
+                    ClassName catalogueDispatcherClass =
+                            ClassName.get(CATALOGUE_DISPATCHER, configs.root_package);
+                    LambdaExpression lambda = LAMBDA(PARAMETER("b", ClassName.BUILDER_INTERFACE))
+                            .BODY(RETURN(METHOD_CALL(catalogueDispatcherClass, GET_TYPED_SUCCESSORS, List.of(VARIABLE("b")))));
                     cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
                             METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
                                     List.of(CONSTRUCTOR_CALL(diamondConfiguratorType, List.of(lambda))))));
@@ -310,7 +323,8 @@ public class CompilerCatalogueDispatcher {
         }
 
         // Add the process method
-        pastClass.METHOD(processMethodGenerator());
+        pastClass.METHOD(getSuccessorMethodGenerator());
+        pastClass.METHOD(getTypedSuccessorMethodGenerator());
 
 
         Supplier<Boolean> pythonGenerator=() -> true;
@@ -359,7 +373,7 @@ public class CompilerCatalogueDispatcher {
     }
 
 
-    private Method processMethodGenerator() {
+    private Method getSuccessorMethodGenerator() {
         // Map<Integer, int[]> successors = builder.getSuccessors();
         // String[] order = builder.getPropertyOrder();
         // Map<String, List<String>> map = new HashMap<>();
@@ -377,7 +391,7 @@ public class CompilerCatalogueDispatcher {
         // }
         // return map;
 
-        return METHOD("process")
+        return METHOD(GET_SUCCESSORS)
                 .MODIFIERS(Modifier.STATIC, Modifier.PUBLIC)
                 .commentFileLocation()
                 .RETURNS(MAP_STRING_LIST_STRING)
@@ -439,6 +453,80 @@ public class CompilerCatalogueDispatcher {
                         RETURN(VARIABLE("map"))
                 );
     }
+
+
+    private Method getTypedSuccessorMethodGenerator() {
+
+        return METHOD(GET_TYPED_SUCCESSORS)
+                .MODIFIERS(Modifier.STATIC, Modifier.PUBLIC)
+                .commentFileLocation()
+                .RETURNS(MAP_STRING_LIST_STRING)
+                .PARAMETER(ClassName.BUILDER_INTERFACE, "builder")
+                .BODY(
+                        // Map<Integer, int[]> successors = builder.getSuccessors();
+                        DEFINITION(MAP_INTEGER_INTARRAY, VARIABLE("successors"),
+                                METHOD_CALL(VARIABLE("builder"), "getTypedSuccessors", List.of())),
+
+                        // String[] order = builder.getPropertyOrder();
+                        DEFINITION(STRING_ARRAY, VARIABLE("order"),
+                                METHOD_CALL(VARIABLE("builder"), "getPropertyOrder", List.of())),
+
+                        // Map<String, List<String>> map = new HashMap<>();
+                        DEFINITION(MAP_STRING_LIST_STRING, VARIABLE("map"),
+                                CONSTRUCTOR_CALL(HASH_MAP_GENERICS, List.of())),
+
+
+                        // for (Integer k : successors.keySet()) { ... }
+                        ITERATOR(PARAMETER("k", INTEGER),
+                                METHOD_CALL(VARIABLE("successors"), "keySet", List.of()))
+                                .BODY(
+                                        // if (successors.get(k).length != 0) { ... }
+                                        IF(BINARY_OP(
+                                                METHOD_CALL(METHOD_CALL(VARIABLE("successors"), "get", List.of(VARIABLE("k"))), "length"),
+                                                "!=",
+                                                CONSTANT(0)))
+                                                .THEN(
+                                                        // List<String> list = new ArrayList<>();
+                                                        DEFINITION(LIST_OF_STRING, VARIABLE("list"),
+                                                                CONSTRUCTOR_CALL(ARRAY_LIST_GENERICS, List.of())),
+                                                        DEFINITION(_int, VARIABLE("count"), CONSTANT(0)),
+
+                                                        // for (int v : successors.get(k)) { ... }
+                                                        ITERATOR(PARAMETER("v", _int),
+                                                                METHOD_CALL(VARIABLE("successors"), "get", List.of(VARIABLE("k"))))
+                                                                .BODY(
+                                                                        // String s = order[v];
+                                                                        DEFINITION(STRING, VARIABLE("s"),
+                                                                                IF_(BINARY_OP(BINARY_OP(VARIABLE("count"), "&", CONSTANT(1)),"==", CONSTANT(0)))
+                                                                                        .THEN(
+                                                                                ARRAY_ACCESSOR(VARIABLE("order"), VARIABLE("v")))
+                                                                                        .ELSE(BINARY_OP(CONSTANT(""), "+", VARIABLE("v")))),
+                                                                        // list.add(s);
+                                                                        METHOD_CALL(VARIABLE("list"), "add", VARIABLE("s")),
+                                                                        // count = count +1
+                                                                        ASSIGNMENT(VARIABLE("count"), BINARY_OP(VARIABLE("count"), "+", CONSTANT(1)))
+                                                                ),
+
+                                                        // if (map.put(order[k], list) != null) { throw ... }
+                                                        IF(BINARY_OP(
+                                                                METHOD_CALL(VARIABLE("map"), "put", List.of(
+                                                                        ARRAY_ACCESSOR(VARIABLE("order"), VARIABLE("k")),
+                                                                        VARIABLE("list"))),
+                                                                "!=",
+                                                                Constant.getNull()))
+                                                                .THEN(
+                                                                        THROW(
+                                                                                CONSTRUCTOR_CALL(ILLEGAL_STATE_EXCEPTION,
+                                                                                        List.of(CONSTANT("Duplicate key"))))
+                                                                )
+                                                )
+                                ),
+
+                        // return map;
+                        RETURN(VARIABLE("map"))
+                );
+    }
+
 
 
     public String capitalizeFirstLetter(String s) {

@@ -341,6 +341,15 @@
 						</dependency>
 					</dependencies>
 				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.5.0</version>
+					<configuration>
+						<propertiesEncoding>${project.build.sourceEncoding}</propertiesEncoding>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 

@@ -161,20 +161,7 @@ public class TemplateService {
             throw new RuntimeException("Failed to read linker table from catalogue", e);
         }
 
-        /*
-        this.compositeLinker=new HashMap<>() {{
-            put("plead_transforming_composite", new Linker("plead_transforming_composite_linker", "plead_transforming"));
-            put("packing_composite", new Linker("packing_composite_linker", "packing"));
-            put("org.openprovenance.templates.physical.PackingComposite", new Linker("packing_composite_linker", "packing"));
-            put("unpacking_composite", new Linker("unpacking_composite_linker", "unpacking"));
-            put("org.openprovenance.templates.physical.UnpackingComposite", new Linker("unpacking_composite_linker", "unpacking"));
-        }};
-
-
-         */
-
         storageInitialize(conn, sqlInitializer);
-
 
         this.documentBuilderDispatcher=catalogueDispatcher.getDocumentBuilderDispatcher();
         this.recordMaker=catalogueDispatcher.getRecordMaker();
@@ -832,7 +819,7 @@ public class TemplateService {
 
     public Map<String,Object> readTemplateConfiguration(String configFileName) {
         try {
-            System.out.println("---> readTemplateConfiguration" +  configFileName);
+            logger.info("readTemplateConfiguration: " +  configFileName);
             return (Map<String, Object>) om.readValue(new File(configFileName), Map.class);
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -49,6 +49,8 @@
     <properties>
         <archetype-packaging.version>3.4.1</archetype-packaging.version>
         <archetype.test.skip>true</archetype.test.skip>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
     </properties>
 
 </project>

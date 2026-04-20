@@ -635,7 +635,7 @@
         document.getElementById('navigator_property').value = outputs[0];
     }
 
-    function populateNavigatorIdDropdown(relation) {
+    function populateNavigatorIdDropdown(relation, onFirst) {
         const url = '${symbol_dollar}{service.context}/provapi/template/' + encodeURIComponent(relation) + '/last/' + NAVIGATOR_LAST_COUNT + '.json';
         const menu = document.getElementById('dd-navigator-id-menu');
         menu.innerHTML = '';
@@ -657,6 +657,7 @@
                     li.appendChild(a);
                     menu.appendChild(li);
                 });
+                if (onFirst && ids.length > 0) onFirst(ids[0]);
             }
         };
         xhr.send();
@@ -674,7 +675,9 @@
         a.addEventListener('click', function(e) {
             e.preventDefault();
             document.getElementById('navigator_template').value = name;
-            populateNavigatorIdDropdown(name);
+            populateNavigatorIdDropdown(name, function(firstId) {
+                document.getElementById('navigator_id').value = firstId;
+            });
             populateNavigatorPropertyDropdown(name);
         });
         li.appendChild(a);

@@ -89,10 +89,10 @@ public class TemplateQuery {
         propertyOrder = templateDispatcher.getPropertyOrder();
         simplePropertyOrder = propertyOrder.entrySet().stream().collect(Collectors.toMap(x -> shortNames.get(x.getKey()), Map.Entry::getValue));
 
+        initializeTypedPredecessorTable();
 
         generateTraversalMethods(querier, this.ioMap);
         //initializePredecessorTable();
-        initializeTypedPredecessorTable();
     }
 
 

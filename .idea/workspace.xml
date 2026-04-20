@@ -22,22 +22,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="44a1f447-c308-479f-be3a-95e05d37ae08" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ProvToolbox.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/interop/CatalogueDispatcherInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/interop/CatalogueDispatcherInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/Querier.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/Querier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/Storage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/Storage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateQuery.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/sql/utils.sql" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/sql/utils.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates/src/main/sql/utils.sql" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates/src/main/sql/utils.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerCatalogueDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerCatalogueDispatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/CompilerCommon.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/CompilerCommon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -356,7 +342,7 @@
       <workItem from="1774896782614" duration="68208000" />
       <workItem from="1775678928305" duration="2409000" />
       <workItem from="1775682541217" duration="8227000" />
-      <workItem from="1775722756273" duration="236947000" />
+      <workItem from="1775722756273" duration="237576000" />
     </task>
     <servers />
   </component>

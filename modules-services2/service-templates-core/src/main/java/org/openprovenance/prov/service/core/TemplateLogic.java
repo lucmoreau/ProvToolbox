@@ -192,7 +192,7 @@ public class TemplateLogic {
                                                                         .get(var))))));
 
         //logger.info("baseTypes " + baseTypes);
-        templateQuery.generateViz(config.id, config.template, config.property, config.style, baseTypes, principal, out);
+        templateQuery.generateViz(config.id, config.template, config.property, config.style, config.parameters, baseTypes, principal, out);
     }
 
 

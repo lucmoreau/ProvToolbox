@@ -23,6 +23,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates-core: TemplateService, query to find registered entities/agents to avoid re-registration
 * prov-template-compiler: fixed search on base relations
 * prov-template-compiler: making getTypedSuccessor the defaul, used in service
+* service-templates-core: update to recursive traversal to visualise template instantiation, to support derivation, responsibility, specialization, membership 
 
 `2.2.3`
 * prov-template: update to instantiation

@@ -96,23 +96,7 @@ public class TemplateQuery {
     }
 
 
-/*
-    private void initializePredecessorTable() {
 
-        querier.do_statements(null,
-                null,
-                (sb, data) -> {
-                    try {
-                        regeneratePredecessorTable(sb);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-        ;
-
-    }
-
- */
 
     private void initializeTypedPredecessorTable() {
 
@@ -249,28 +233,139 @@ public class TemplateQuery {
             "FROM recurse_traverse\n" +
             "$$ LANGUAGE SQL;";
 
+    String recursiveQuery3= """
+                        CREATE OR REPLACE FUNCTION public.backwardtraversal_star(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            AS $function$
+            WITH RECURSIVE recurse_traverse AS (
+            
+                -- ── Base step ─────────────────────────────────────────────────────────────
+                -- Find the immediate predecessors of the starting node.
+                -- The relation-type filter is applied here so that only edges of the
+                -- requested types are followed from the very first hop.
+                SELECT
+                    bt.in_id,
+                    bt.in_template,
+                    bt.in_property,
+                    bt.out_id,
+                    bt.out_template,
+                    bt.out_property,
+                    1 AS depth
+                FROM
+                    predecessor_table AS pt
+                    CROSS JOIN LATERAL backwardTraversal(
+                        __param_id,
+                        __param_template,
+                        pt.input
+                    ) AS bt
+                WHERE
+                    pt.template = __param_template
+                    AND pt.output = __param_property
+                    AND (
+                        __param_selected_relations IS NULL
+                        OR pt.rel = ANY(__param_selected_relations)
+                    )
+            
+                UNION   -- UNION (not UNION ALL) provides cycle-safety via row deduplication
+            
+                -- ── Recursive step ────────────────────────────────────────────────────────
+                -- Extend the frontier one hop at a time.  The relation-type filter is
+                -- re-applied at every hop so the constraint is honoured throughout the
+                -- entire traversal, not just at the starting node.
+                SELECT
+                    bt.in_id,
+                    bt.in_template,
+                    bt.in_property,
+                    bt.out_id,
+                    bt.out_template,
+                    bt.out_property,
+                    rt.depth + 1 AS depth
+                FROM
+                    recurse_traverse rt
+                    JOIN predecessor_table pt
+                        ON  rt.out_template = pt.template
+                        AND rt.out_property = pt.output
+                        AND (
+                            __param_selected_relations IS NULL
+                            OR pt.rel = ANY(__param_selected_relations)
+                        )
+                    CROSS JOIN LATERAL backwardTraversal(
+                        rt.out_id,
+                        rt.out_template,
+                        pt.input
+                    ) AS bt
+                WHERE
+                    pt.input IS NOT NULL
+                    AND rt.depth < 100   -- guard against runaway cycles in malformed graphs
+            
+            )
+            SELECT in_id, in_template, in_property, out_id, out_template, out_property
+            FROM   recurse_traverse
+            $function$;
+
+            """;
+
     private void generateTraversalMethods(Querier querier,  Map<String,Map<String, Map<String, String>>> ioMap) {
 
         querier.do_statements(null,
                 null,
                 (sb, data) -> {
                     sb.append(generateBackwardTemplateTraversal(ioMap));
-                    sb.append(recursiveQuery2);
+                    sb.append(recursiveQuery3);
                 });
 
 
     }
 
-    public void generateViz(Integer id, String template, String property, String style, Map<String, Map<String, String>> baseTypes, String principal, OutputStream out) {
+    public void generateViz(Integer id, String template, String property, String style, Map<String, String> parameters, Map<String, Map<String, String>> baseTypes, String principal, OutputStream out) {
 
         //logger.info("generateViz " + id + " " + template + " " + property);
+        Set<StatementOrBundle.Kind> selectedVizKinds=processParameters(parameters);
 
-        List<TemplateConnection> templateConnections = recursiveTraversal(id, template, property, principal);
+        Map<String, Map<String, List<String>>> successors = selectSuccessors(typedSuccessors,selectedVizKinds) ;
+
+        logger.info("typedSuccessors: "+typedSuccessors);
+        logger.info("selectedVizKinds: "+selectedVizKinds);
+        logger.info("selected successors: "+successors);
+
+        List<TemplateConnection> templateConnections = recursiveTraversal(id, template, property, selectedVizKinds, principal);
         // reverse list
         Collections.reverse(templateConnections);
 
         logger.debug("templateConnections: " + templateConnections.stream().map(TemplateConnection::toString).collect(Collectors.joining("\n")));
-        new TemplatesToDot(templateConnections, style, baseTypes, ioMap, templateDispatcher, successors, pf, this, principal, provAPI).convert(null, out, "template_connections");
+        new TemplatesToDot(templateConnections, style, parameters, baseTypes, ioMap, templateDispatcher, successors, pf, this, principal, provAPI).convert(null, out, "template_connections");
+    }
+
+
+    private Set<StatementOrBundle.Kind> processParameters(Map<String, String> parameters) {
+        Set<StatementOrBundle.Kind> selectedVizKinds;
+        if (parameters==null) {
+            selectedVizKinds=new HashSet<>();
+            selectedVizKinds.add(StatementOrBundle.Kind.PROV_DERIVATION); // always include derivations by default
+        } else {
+            String visKinds=parameters.get("successor-relations");
+            if (visKinds==null) {
+                selectedVizKinds=new HashSet<>();
+                selectedVizKinds.add(StatementOrBundle.Kind.PROV_DERIVATION);
+            } else {
+                selectedVizKinds=Arrays.stream(visKinds.trim().split(",")).map(StatementOrBundle.Kind::valueOf).collect(Collectors.toSet());
+            }
+        }
+        logger.info("Selected Viz Kinds: " + selectedVizKinds);
+        return selectedVizKinds;
     }
 
     final DigestUtils sha512 = new DigestUtils(DigestUtils.getSha3_512Digest());
@@ -406,8 +501,10 @@ public class TemplateQuery {
         }
     }
 
-    public List<TemplateConnection> recursiveTraversal(Integer id, String template, String property, String principal) {
+    public List<TemplateConnection> recursiveTraversal(Integer id, String template, String property, Set<StatementOrBundle.Kind> selectedVizKinds, String principal) {
         List<TemplateConnection> the_records = new LinkedList<>();
+
+        String selectedAsASql=selectedVizKinds.stream().map(x -> ("" + x.ordinal())).collect(Collectors.joining(",","ARRAY[",  "]"));
         querier.do_query(the_records,
                 null,
                 (sb, data) -> {
@@ -418,7 +515,9 @@ public class TemplateQuery {
                     sb.append(template);
                     sb.append("','");
                     sb.append(property);
-                    sb.append("') as template_connection\n");
+                    sb.append("', ");
+                    sb.append(selectedAsASql);
+                    sb.append(") as template_connection\n");
                     joinAccessControl("template_connection.in_template", principal, sb, "template_connection", "in_id");
                     andAccessControl(principal, sb);
                 },
@@ -1168,6 +1267,41 @@ public class TemplateQuery {
                 }).stream().map(o -> (Object[]) o).collect(Collectors.toList());
 
 
+    }
+
+    /*
+    Receives the typed successor returned by getTypedSuccessors in Builder classes, where the type of relation is encoded explicitly
+    Selects the successors amon the set kinds
+
+     */
+
+    static public Map<String, Map<String, List<String>>> selectSuccessors(Map<String, Map<String, List<String>>> typedSuccessors,  Set<StatementOrBundle.Kind> kinds) {
+
+        Set<Integer> kindsAsNums=kinds.stream().map(Enum::ordinal).collect(Collectors.toSet());
+        Map<String, Map<String, List<String>>> result=new HashMap<>();
+        for (String key : typedSuccessors.keySet()) {
+            Map<String, List<String>> value = typedSuccessors.get(key);
+            if (value == null) continue;
+            for (String subKey : value.keySet()) {
+                List<String> strings = value.get(subKey);
+                // strings alternate: string and type
+                int count = 0;
+                List<String> alist = new ArrayList<>();
+                for (String s : strings) {
+                    if ((count & 1) == 0) {
+                        // this is a potential successor
+                        if (kindsAsNums.contains(Integer.valueOf(strings.get(count + 1)))) {
+                            alist.add(s);
+                        }
+                    }
+                    count++;
+                }
+                if (!alist.isEmpty()) {
+                    result.computeIfAbsent(key, k -> new HashMap<>()).put(subKey, alist);
+                }
+            }
+        }
+        return result;
     }
 
 

@@ -23,25 +23,38 @@ public class TemplatesToDot extends ProvToDot {
     private final Map<String, Map<String, Map<String, String>>> ioMap;
     private final Map<String, Map<String, String>> baseTypes;
     private final ProvFactory pf;
-    private final Map<String, Map<String, List<String>>> successors;
     private final String style;
     private final TemplateQuery templateQuery;
     private final String principal;
     private final String provAPI;
+    private final Map<String, String> parameters;
+    private final Map<String, Map<String, List<String>>> selectedSuccessors;
 
-    public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections, String style, Map<String, Map<String, String>> baseTypes, Map<String, Map<String, Map<String, String>>> ioMap, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, Map<String, Map<String, List<String>>> successors, ProvFactory pf, TemplateQuery templateQuery, String principal, String provAPI) {
+    public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections,
+                          String style,
+                          Map<String, String> parameters,
+                          Map<String, Map<String, String>> baseTypes,
+                          Map<String, Map<String, Map<String, String>>> ioMap,
+                          CatalogueDispatcherInterface<FileBuilder> templateDispatcher,
+                          Map<String, Map<String, List<String>>> selectedSuccessors,
+                          ProvFactory pf,
+                          TemplateQuery templateQuery,
+                          String principal,
+                          String provAPI) {
         super(pf);
         this.pf=pf;
         this.templateConnections = templateConnections;
         this.templateDispatcher = templateDispatcher;
         this.ioMap = ioMap;
         this.baseTypes = baseTypes;
-        this.successors = successors;
         this.style=style;
         this.templateQuery=templateQuery;
         this.principal=principal;
         this.provAPI=provAPI;
+        this.parameters=parameters;
+        this.selectedSuccessors=selectedSuccessors;
     }
+
 
     public static String createHtmlTable(TemplateInfo templateInfo,
                                          List<String> inputsNames,
@@ -166,7 +179,7 @@ public class TemplatesToDot extends ProvToDot {
             String template = templateConnection.in_template;
             String templateId = String.valueOf(templateConnection.in_id);
             String property = templateConnection.in_property;
-            List<String> next=successors.get(template).get(property);
+            List<String> next=selectedSuccessors.get(template).get(property);
             if (next!=null) {
                 for (String n: next) {
                     QualifiedName older = map.get(qualifiedPortNameAsQn(template, templateId, property));

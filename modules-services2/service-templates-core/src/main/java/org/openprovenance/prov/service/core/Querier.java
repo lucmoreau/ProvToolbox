@@ -31,7 +31,6 @@ public class Querier  {
         composeQuery.accept(sb,data);
         String statement=sb.toString();
         logger.info("Executing query: " + statement);
-        System.out.println("Executing query: " + statement);
         ResultSet rs;
         try {
             rs=storage.executeQuery(conn,statement);

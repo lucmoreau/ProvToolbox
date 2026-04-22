@@ -283,7 +283,10 @@
                         </div>
                         <label for="navigator_style" class="visually-hidden">Navigator Style</label>
                         <select name="navigator_style" id="navigator_style" class="form-select">
-                            <option value="template">Template Viz</option>
+                            <option value="template.D">Template Viz (D)</option>
+                            <option value="template.D.R">Template Viz (D, R)</option>
+                            <option value="template.D.R.S">Template Viz (D, R, S)</option>
+                            <option value="template.D.R.S.M">Template Viz (D, R, S, M)</option>
                             <option value="prov">PROV Viz</option>
                             <option value="entities">Entities Viz</option>
                         </select>
@@ -1108,11 +1111,40 @@
 
         console.log("submitNavigate " + template + " " + property + " " + id + " " + style);
 
+        let final_style=style;
+        let parameters={}
+
+        let selectedKinds;
+        switch (style) {
+            case 'template.D':
+                selectedKinds = 'PROV_DERIVATION';
+                parameters['successor-relations']=selectedKinds;
+                final_style='template';
+                break;
+            case 'template.D.R':
+                selectedKinds = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION';
+                parameters['successor-relations']=selectedKinds;
+                final_style='template';
+                break;
+            case 'template.D.R.S':
+                selectedKinds = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION,PROV_SPECIALIZATION';
+                parameters['successor-relations']=selectedKinds;
+                final_style='template';
+                break;
+            case 'template.D.R.S.M':
+                selectedKinds = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION,PROV_SPECIALIZATION,PROV_MEMBERSHIP';
+                parameters['successor-relations']=selectedKinds;
+                final_style='template';
+                break;
+        }
+
+
         let config = {
             template: template,
             property: property,
             id: template_id,
-            style: style
+            style: final_style,
+            parameters: parameters
         }
 
         let json_data=JSON.stringify(config)

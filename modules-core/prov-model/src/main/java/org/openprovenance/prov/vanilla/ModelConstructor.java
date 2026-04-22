@@ -152,7 +152,7 @@ final public class ModelConstructor implements org.openprovenance.prov.model.Mod
 
     @Override
     public SpecializationOf newSpecializationOf(QualifiedName e2, QualifiedName e1) {
-        return new org.openprovenance.prov.vanilla.SpecializationOf(e2,e1);
+        return new org.openprovenance.prov.vanilla.QualifiedSpecializationOf(null,e2,e1, new LinkedList<>());
     }
 
     /**

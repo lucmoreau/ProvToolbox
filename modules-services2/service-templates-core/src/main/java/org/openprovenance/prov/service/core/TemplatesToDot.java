@@ -29,9 +29,13 @@ public class TemplatesToDot extends ProvToDot {
     private final String provAPI;
     private final Map<String, String> parameters;
     private final Map<String, Map<String, List<String>>> selectedSuccessors;
+    private final boolean withIcons;
+    private final String iconDirectory;
 
     public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections,
                           String style,
+                          boolean withIcons,
+                          String iconDirectory,
                           Map<String, String> parameters,
                           Map<String, Map<String, String>> baseTypes,
                           Map<String, Map<String, Map<String, String>>> ioMap,
@@ -53,10 +57,14 @@ public class TemplatesToDot extends ProvToDot {
         this.provAPI=provAPI;
         this.parameters=parameters;
         this.selectedSuccessors=selectedSuccessors;
+        this.withIcons=withIcons;
+        this.iconDirectory=iconDirectory;
     }
 
 
+
     public static String createHtmlTable(TemplateInfo templateInfo,
+                                         String iconDirectory,
                                          List<String> inputsNames,
                                          List<String> inputsPorts,
                                          List<String> inputsColors,
@@ -65,11 +73,21 @@ public class TemplatesToDot extends ProvToDot {
                                          List<String> outputColors) {
         StringBuilder html = new StringBuilder();
 
-        // Start building the HTML for the table
+
+        //String iconTest="<svg width=\"50\"  height=\"50\"><use href=\"#icon-org.openprovenance.book.fs.FileInit\"/></svg>";
+        //String iconTest0="<use href=\"#icon-org.openprovenance.book.fs.FileInit\"/>";
+        //String iconTest2="<IMG SRC=\"http://localhost:7075/book/webjars/template-intro1/0.1.0-SNAPSHOT/icons/org.openprovenance.book.fs.FileInit.svg\"/>";
+        //String iconTest3="<IMG SRC=\"file:///Users/luc/git-papers/papers/book-ptm/project/template-intro1/src/main/resources/icons/org.openprovenance.book.fs.FileApproving.svg\"/>";
+        String iconImage="<IMG SRC=\"" + iconDirectory + "/" + templateInfo.template + ".png\"/>";
+                // Start building the HTML for the table
+
         html.append("<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\">\n");
 
         // First row with rowspan and input cells
         html.append("  <TR>\n");
+        html.append(String.format("    <TD ROWSPAN=\"3\" HREF=\"%s\"  TARGET=\"_blank\">%s</TD>\n", templateInfo.url, iconImage));
+        //html.append(String.format("    <TD ROWSPAN=\"3\">%s</TD>\n",  iconImage));
+
         html.append(String.format("    <TD ROWSPAN=\"3\" HREF=\"%s\"  TARGET=\"_blank\">%s </TD>\n", templateInfo.url, templateInfo.templateId));
         for (int i = 0; i < inputsNames.size(); i++) {
             html.append(String.format("    <TD PORT=\"%s\" BGCOLOR=\"%s\" HREF=\"%s\" TARGET=\"_blank\">%s</TD>\n",
@@ -249,7 +267,7 @@ public class TemplatesToDot extends ProvToDot {
             List<String> outputsColors = outputsNames.stream().map(s -> provcolors.get(templateBaseTypes.get(s))).collect(Collectors.toList()); //outputsPorts.stream().map(s -> "orange").collect(Collectors.toList());
 
 
-            String html = createHtmlTable(templateInfo, inputsNames, inputPorts, inputsColors, outputsNames, outputsPorts, outputsColors);
+            String html = createHtmlTable(templateInfo, iconDirectory, inputsNames, inputPorts, inputsColors, outputsNames, outputsPorts, outputsColors);
 
             emitTemplate(template, templateId, html, out);
 

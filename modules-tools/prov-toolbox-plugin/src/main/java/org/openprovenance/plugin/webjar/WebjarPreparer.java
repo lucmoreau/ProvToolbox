@@ -51,6 +51,8 @@ public class WebjarPreparer extends AbstractMojo {
     private List<HtmlConfig> html = new ArrayList<>();
     @Parameter(property = "validate-catalogue.sql")
     private List<SqlConfig> sql = new ArrayList<>();
+    @Parameter(property = "validate-catalogue.icon")
+    private List<IconConfig> icon = new ArrayList<>();
 
     public void execute() throws MojoExecutionException {
         try {
@@ -80,6 +82,7 @@ public class WebjarPreparer extends AbstractMojo {
             css.forEach(t -> applyDefaults(t, projectProperties));
             html.forEach(t -> applyDefaults(t, projectProperties));
             sql.forEach(t -> applyDefaults(t, projectProperties));
+            icon.forEach(t -> applyDefaults(t, projectProperties));
 
 
             if (warning) System.out.println("Templates: " + templates);
@@ -133,6 +136,12 @@ public class WebjarPreparer extends AbstractMojo {
                 String source = t.directory;
                 String target = t.targetPath;
                 List<String> includes=t.includes;
+                copyFromSourceToDestination(source, target, includes);
+            }
+            for (IconConfig t: icon) {
+                String source = t.directory;
+                String target = t.targetPath;
+                List<String> includes = t.includes;
                 copyFromSourceToDestination(source, target, includes);
             }
 

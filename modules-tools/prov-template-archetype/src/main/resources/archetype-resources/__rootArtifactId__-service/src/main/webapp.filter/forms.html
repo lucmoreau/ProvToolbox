@@ -206,6 +206,15 @@
                         <div id="template-dropdown-documentation" class="dropdown">
                             <a href="${symbol_pound}" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" id="template-dropdown-documentation-lnk">${symbol_dollar}{pom.templates.button.label}</a>
                         </div>
+
+                        <p style="margin-bottom:3cm;"></p>
+
+
+                        <div id="icon-placeholder" style="text-align:center;">
+                            <svg width="170" height="170">
+                                <use id="icon-placeholder-use" href=""/>
+                            </svg>
+                        </div>
                     </div>
                     <div class="col-lg-7 first-column">
                         <div id="documentation" class="shrink_h2">
@@ -294,6 +303,13 @@
                         <p></p>
 
                         <button id="navigator_refresh" type="button" class="btn btn-info" onclick="submitNavigate('${symbol_pound}navigator_div')">Refresh</button>
+
+                        <div>
+                            <span class="me-2 small">Icons:</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="toggle-icons" onchange="icons_enabled = this.checked ? true : false">
+                            </div>
+                        </div>
                     </div>
                     <div class="col-lg-10 first-column" id="navigator_div">
                     </div>
@@ -518,6 +534,22 @@
 <script>
     let templateMapping = {}
     let cbindingsMapping = {}
+    let ICON_DEFS_URL = '${symbol_dollar}{service.context}/webjars/template-intro1/0.1.0-SNAPSHOT/icons/file-icons.svg'
+
+    function rewriteImageHrefs(svgElement) {
+        if (!ICON_DEFS_URL) return;
+        const iconBaseUrl = ICON_DEFS_URL.substring(0, ICON_DEFS_URL.lastIndexOf('/') + 1);
+        const xlinkNS = 'http://www.w3.org/1999/xlink';
+        svgElement.querySelectorAll('image').forEach(function(img) {
+            const href = img.getAttributeNS(xlinkNS, 'href') || img.getAttribute('href');
+            if (href) {
+                const filename = href.substring(href.lastIndexOf('/') + 1);
+                const newHref = iconBaseUrl + filename.replace('png','svg');
+                img.setAttributeNS(xlinkNS, 'xlink:href', newHref);
+                img.setAttribute('href', newHref);
+            }
+        });
+    }
 
     function diff (arr1, arr2) {
         return arr1.filter(x => !arr2.includes(x));
@@ -525,6 +557,13 @@
 
     let shortNames = {}
     let longNames = {}
+
+    function updateTemplateIcon(templateName) {
+        const useEl = document.getElementById('icon-placeholder-use');
+        if (useEl) {
+            useEl.setAttribute('href', '#icon-' + templateName);
+        }
+    }
 
     function getOutputs(shortName) {
         for (var indx in builders) {
@@ -590,7 +629,7 @@
     const HTML_ANCHOR_EXPLANATION_PROV_LINK = '${symbol_pound}prov_xplain';
     const HTML_ANCHOR_DOCUMENTATION_IMAGE = '${symbol_pound}documentation_image';
     const HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER = "${symbol_pound}template-dropdown-composer";
-    const HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN = "${symbol_pound}template-dropdown-documentation";
+    const HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATION = "${symbol_pound}template-dropdown-documentation";
 
     const SUBMISSION_URL =     '${symbol_dollar}{service.context}/provapi/statements/';
     const SCHEMA_URL =         "${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/schema/schema${symbol_dollar}{the.template.sublibrary}.json";
@@ -689,9 +728,21 @@
 
     populateBrowserRelationDropdown();
 
+    if (typeof ICON_DEFS_URL !== 'undefined' && ICON_DEFS_URL) {
+        fetch(ICON_DEFS_URL)
+            .then(function(response) { return response.text(); })
+            .then(function(svgText) {
+                const container = document.createElement('div');
+                container.style.display = 'none';
+                container.innerHTML = svgText;
+                document.body.insertBefore(container, document.body.firstChild);
+            })
+            .catch(function(err) { console.warn('Could not load icon defs from ' + ICON_DEFS_URL + ':', err); });
+    }
 
     var preferred_accept_format = 'application/json';
     var explanation_enabled=false;
+    var icons_enabled=false;
 
     /* Functions to show/hide the Explanation title */
     function showExplanationTitle() {
@@ -1112,7 +1163,8 @@
         console.log("submitNavigate " + template + " " + property + " " + id + " " + style);
 
         let final_style=style;
-        let parameters={}
+        let parameters={};
+        parameters.icons='"' + icons_enabled + '"'; // note that strings
 
         let selectedKinds;
         switch (style) {
@@ -1161,6 +1213,7 @@
             const response = xhr.responseText;
             console.log("loaded " + xhr.status);
             ${symbol_dollar}(id).html(response);
+            rewriteImageHrefs(document.querySelector('#navigator_div svg')); //id hardcoded
         }
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.setRequestHeader("Accept", "image/svg+xml");
@@ -1227,7 +1280,7 @@
     tm.setImageLocation(HTML_ANCHOR_DOCUMENTATION_IMAGE);
     //tm.setFilenameConverter(imageNameMapper)
     tm.createDropdownForPlayground(HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER, "tm");
-    tm.createDropdownForDocumentation(HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN, "tm");
+    tm.createDropdownForDocumentation(HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATION, "tm");
 
     tm.setJsonResult(HTML_ANCHOR_JSON_RESULT);
     tm.setImageUrlPrefix('${symbol_dollar}{templates.url.prefix}');

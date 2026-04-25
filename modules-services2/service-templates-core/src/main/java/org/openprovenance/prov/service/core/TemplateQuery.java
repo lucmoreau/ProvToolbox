@@ -69,7 +69,6 @@ public class TemplateQuery {
     private final Map<String, String> shortNames;
     private final Map<String, String> longNames;
     private final Map<String, Map<String, List<String>>> typedSuccessors;
-    private String iconDirectory="/Users/luc/git-papers/papers/book-ptm/project/template-intro1/src/main/resources/icons";
 
     public TemplateQuery(Querier querier, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om) {
         this.querier = querier;
@@ -331,7 +330,7 @@ public class TemplateQuery {
 
     }
 
-    public void generateViz(Integer id, String template, String property, String style, Map<String, String> parameters, Map<String, Map<String, String>> baseTypes, String principal, OutputStream out) {
+    public void generateViz(Integer id, String template, String property, String style, Map<String, String> parameters, Map<String, Map<String, String>> baseTypes, String iconsFolderForGraphviz, String principal, OutputStream out) {
 
         //logger.info("generateViz " + id + " " + template + " " + property);
         Set<StatementOrBundle.Kind> selectedVizKinds=processParameters(parameters);
@@ -346,13 +345,13 @@ public class TemplateQuery {
         // reverse list
         Collections.reverse(templateConnections);
 
-        boolean withIcons= parameters != null
-                && ((parameters.get("icons")) != null
-                && parameters.get("icons").equals("true"));
+        boolean withIcons= (parameters != null) && Objects.equals(parameters.get("icons"),"true");
+
+        logger.info("withIcons: "+withIcons + " " + parameters + " " + parameters.get("icons"));
 
 
         logger.debug("templateConnections: " + templateConnections.stream().map(TemplateConnection::toString).collect(Collectors.joining("\n")));
-        new TemplatesToDot(templateConnections, style, withIcons, iconDirectory, parameters, baseTypes, ioMap, templateDispatcher, successors, pf, this, principal, provAPI).convert(null, out, "template_connections");
+        new TemplatesToDot(templateConnections, style, withIcons, iconsFolderForGraphviz, parameters, baseTypes, ioMap, templateDispatcher, successors, pf, this, principal, provAPI).convert(null, out, "template_connections");
     }
 
 

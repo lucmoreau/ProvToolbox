@@ -45,6 +45,8 @@
         <security.config.location>target/test-classes/security/openprovenance-auth2-security-config.json</security.config.location>
         <pom.nlg.xplan.library>${nlgXplanLibrary}</pom.nlg.xplan.library>
         <pom.nlg.xplan.selection>${nlgXplanSelection}</pom.nlg.xplan.selection>
+        <pom.icons.folder.for.graphviz>${project.build.directory}/extracted-icons</pom.icons.folder.for.graphviz>
+        <pom.the.icon.svg.library>${theIconSvgLibrary}</pom.the.icon.svg.library>
     </properties>
 
     <build>

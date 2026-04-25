@@ -3,7 +3,6 @@ package org.openprovenance.prov.service.core;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.StreamingOutput;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -168,7 +167,7 @@ public class TemplateLogic {
     }
 
 
-    public void generateViz(TemplatesVizConfig config, String principal, OutputStream out) {
+    public void generateViz(TemplatesVizConfig config, String principal, String iconsFolderForGraphviz, OutputStream out) {
 
         typeAssignment.entrySet().removeIf(entry -> entry.getValue() ==null || entry.getValue().isEmpty());
 
@@ -192,7 +191,7 @@ public class TemplateLogic {
                                                                         .get(var))))));
 
         //logger.info("baseTypes " + baseTypes);
-        templateQuery.generateViz(config.id, config.template, config.property, config.style, config.parameters, baseTypes, principal, out);
+        templateQuery.generateViz(config.id, config.template, config.property, config.style, config.parameters, baseTypes, iconsFolderForGraphviz, principal, out);
     }
 
 

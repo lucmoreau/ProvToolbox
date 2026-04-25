@@ -25,6 +25,7 @@
         <requiredProperty key="nlgXplanLibrary">
           <!--  <defaultValue></defaultValue> -->
         </requiredProperty>
+        <requiredProperty key="theIconSvgLibrary"/>
         <requiredProperty key="nlgXplanSelection">
            <!--  <defaultValue>[]</defaultValue> -->
         </requiredProperty>

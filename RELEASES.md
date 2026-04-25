@@ -24,7 +24,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: fixed search on base relations
 * prov-template-compiler: making getTypedSuccessor the defaul, used in service
 * service-templates-core: update to recursive traversal to visualise template instantiation, to support derivation, responsibility, specialization, membership 
-* service-template-core/archetype: form.html, visualisation of icons in navigation and documentation (wip)
+* service-template-core/archetype: form.html, visualisation of icons in navigation and documentation
 
 `2.2.3`
 * prov-template: update to instantiation

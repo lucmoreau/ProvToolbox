@@ -534,7 +534,7 @@
 <script>
     let templateMapping = {}
     let cbindingsMapping = {}
-    let ICON_DEFS_URL = '${symbol_dollar}{service.context}/webjars/template-intro1/0.1.0-SNAPSHOT/icons/file-icons.svg'
+    let ICON_DEFS_URL = '${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/icons/${symbol_dollar}{pom.the.icon.svg.library}'
 
     function rewriteImageHrefs(svgElement) {
         if (!ICON_DEFS_URL) return;
@@ -1164,7 +1164,7 @@
 
         let final_style=style;
         let parameters={};
-        parameters.icons='"' + icons_enabled + '"'; // note that strings
+        parameters.icons=icons_enabled //'"' + icons_enabled + '"'; // note that strings
 
         let selectedKinds;
         switch (style) {

@@ -54,6 +54,7 @@ archetype.generate.book:
 		-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-DnlgXplanLibrary=$(NLG_BASIC_XPLAN_LIBRARY) \
 		-DnlgXplanSelection=$(NLG_BASIC_XPLAN_SELECTION) \
+		-DtheIconSvgLibrary=file-icons.svg \
 		-DserviceContext=/book \
 		-DservicePort=7075 \
 		-DdashboardTitle="Book PTM Dashboard"
@@ -83,6 +84,7 @@ archetype.generate.book.fs:
 		-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-DnlgXplanLibrary=$(NLG_FS_XPLAN_LIBRARY) \
 		-DnlgXplanSelection=$(NLG_FS_XPLAN_SELECTION) \
+		-DtheIconSvgLibrary=file-icons.svg \
 		-DserviceContext=/book \
 		-DservicePort=7075
 
@@ -110,6 +112,7 @@ archetype.generate.ptl:
 		-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-DnlgXplanLibrary=$(NLG_BASIC_XPLAN_LIBRARY) \
 		-DnlgXplanSelection=$(NLG_BASIC_XPLAN_SELECTION) \
+		-DtheIconSvgLibrary=file-icons.svg \
 		-DserviceContext=/ptl \
 		-DservicePort=7076 \
 		-DdashboardTitle="PTL Dashboard"

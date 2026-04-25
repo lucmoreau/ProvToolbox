@@ -91,7 +91,7 @@ public class TemplateService {
     protected final String postgresUsername=getSystemOrEnvironmentVariableOrDefault(DB_USER, "user");
     protected final String postgresPassword=getSystemOrEnvironmentVariableOrDefault(DB_PASS,"password");
     protected final String provHost =getSystemOrEnvironmentVariableOrDefault(TPL_HOST, "http://localhost:8080/ems");
-
+    private final String iconsFolderForGraphviz;
 
 
     public static class Linker {
@@ -128,15 +128,16 @@ public class TemplateService {
         this.storage=new Storage();
         this.principalManager =new PrincipalManager();
 
+        // configuration
+
         ps.addToConfiguration("security.config", securityConfiguration);
-
         this.templateConfiguration=(NO_TEMPLATE_CONFIG.equals(templateConfig))?new HashMap<>():readTemplateConfiguration(templateConfig);
-
         String fullClassName=templateConfiguration.get("catalogue.package")+".CatalogueDispatcher";
         String sqlInitializer= (String) templateConfiguration.get("sql.initializer");
         String jdbcURL= (String) templateConfiguration.get("jdbc.url");
         String nlgXplanLibary= (String) templateConfiguration.get("nlg.xplan.library");
         List<String> nlgPlanSelection= (List<String>) templateConfiguration.get("nlg.xplan.selection");
+        this.iconsFolderForGraphviz=(String) templateConfiguration.get("icons.folder.for.graphviz");
 
 
         Connection conn=storageSetup(jdbcURL);
@@ -166,7 +167,7 @@ public class TemplateService {
         this.documentBuilderDispatcher=catalogueDispatcher.getDocumentBuilderDispatcher();
         this.recordMaker=catalogueDispatcher.getRecordMaker();
         this.queryTemplate=new TemplateQuery(querier, this.catalogueDispatcher, principalManager, compositeLinker, om);
-        this.templateLogic=new TemplateLogicWithConfig(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om,nlgXplanLibary,nlgPlanSelection);
+        this.templateLogic=new TemplateLogicWithConfig(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om, nlgXplanLibary, nlgPlanSelection);
 
 
     }
@@ -579,7 +580,7 @@ public class TemplateService {
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
-        StreamingOutput promise= out -> templateLogic.generateViz(config, principalAsPreferredUsername, out);
+        StreamingOutput promise= out -> templateLogic.generateViz(config, principalAsPreferredUsername, iconsFolderForGraphviz,  out);
 
         return ServiceUtils.composeResponseOK(promise).type(MEDIA_IMAGE_SVG_XML).build();
 

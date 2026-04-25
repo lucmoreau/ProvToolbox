@@ -337,9 +337,9 @@ public class TemplateQuery {
 
         Map<String, Map<String, List<String>>> successors = selectSuccessors(typedSuccessors,selectedVizKinds) ;
 
-        logger.info("typedSuccessors: "+typedSuccessors);
-        logger.info("selectedVizKinds: "+selectedVizKinds);
-        logger.info("selected successors: "+successors);
+        logger.debug("typedSuccessors: "+typedSuccessors);
+        logger.debug("selectedVizKinds: "+selectedVizKinds);
+        logger.debug("selected successors: "+successors);
 
         List<TemplateConnection> templateConnections = recursiveTraversal(id, template, property, selectedVizKinds, principal);
         // reverse list
@@ -347,7 +347,6 @@ public class TemplateQuery {
 
         boolean withIcons= (parameters != null) && Objects.equals(parameters.get("icons"),"true");
 
-        logger.info("withIcons: "+withIcons + " " + parameters + " " + parameters.get("icons"));
 
 
         logger.debug("templateConnections: " + templateConnections.stream().map(TemplateConnection::toString).collect(Collectors.joining("\n")));

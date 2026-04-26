@@ -47,6 +47,16 @@ public class DescriptorUtils {
         return theVars.keySet().stream().filter((v) -> theVars.containsKey(v) && theVars.get(v)!=null).collect(Collectors.toList());
     }
 
+    public boolean isSemanticType(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var=templateBindingsSchema.getVar().get(key);
+        if (var == null) return false;
+        // if (var==null) throw new NullPointerException("isOutput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        Descriptor descriptor=var.get(0);
+        Function<AttributeDescriptor, Boolean> af=(ad)->false;
+        Function<NameDescriptor, Boolean> nf=(nd)->Objects.equals(nd.getSemantic(),"true");
+        return getFromDescriptor(descriptor, af, nf);
+    }
+
     public boolean isOutput(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var=templateBindingsSchema.getVar().get(key);
         if (var == null) return false;

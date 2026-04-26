@@ -1,5 +1,7 @@
 package org.openprovenance.prov.template.compiler.common;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.commons.lang3.stream.Streams;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
 import org.openprovenance.prov.model.*;
@@ -7,7 +9,9 @@ import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.compiler.CompilerSQL;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
+import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
+import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.compiler.past.*;
@@ -108,6 +112,7 @@ public class CompilerCommon {
 
         pastClass.METHOD(generateBaseRelationsAccessor(configs.sqlTables));
         pastClass.METHOD(generateNameAccessor(templateName));
+        pastClass.METHOD(generateGetSemanticTypeField(templateName, bindingsSchema, locations));
         pastClass.METHOD(generateFullyQualifiedNameAccessor(templateFullyQualifiedName));
         pastClass.METHOD(generateTemplateNameAccessor(templateFullyQualifiedName,locations));
         pastClass.METHOD(generateCBindingsAccessor(templateFullyQualifiedName,locations));
@@ -371,6 +376,29 @@ public class CompilerCommon {
                 .RETURNS(STRING);
         compilerUtil.debugFileLocation(method);
         method.BODY(RETURN(CONSTANT(templateName)));
+        return method;
+    }
+
+    DescriptorUtils descriptorUtils = new DescriptorUtils();
+    public Method generateGetSemanticTypeField(String templateName, TemplateBindingsSchema bindingsSchema, Locations locations) {
+
+        String result=null;
+        Map<String, List<Descriptor>> vars=bindingsSchema.getVar();
+        for (String varName:vars.keySet()) {
+            if (descriptorUtils.isSemanticType(varName, bindingsSchema)) {
+                result=varName;
+            }
+        }
+        Method method = METHOD(GET_SEMANTIC_TYPE)
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(STRING);
+        compilerUtil.debugFileLocation(method);
+        if (result==null) {
+            method.BODY(RETURN(Constant.getNull()));
+
+        } else {
+            method.BODY(RETURN(CONSTANT(result)));
+        }
         return method;
     }
 

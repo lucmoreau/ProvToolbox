@@ -56,6 +56,8 @@ public interface CatalogueDispatcherInterface<T> {
 
     Map<String, Function<Object[], Object[]>> getRecordMaker() ;
 
+    Map<String, String> getSemanticType();
+
     String getIoMap();
 
     String getShortNames();

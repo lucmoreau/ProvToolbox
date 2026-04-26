@@ -96,6 +96,7 @@ public interface Constants {
     String BEAN_CHECKER = "BeanChecker";
     String BEAN_CHECKER2 = "BeanChecker2";
     String DELEGATOR = "Delegator";
+    String SEMANTIC_TYPE_CONFIGURATOR = "SemanticTypeConfigurator";
     String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
     String RELATION0_CONFIGURATOR = "Relation0Configurator";
     String RELATION_CONFIGURATOR = "RelationConfigurator";
@@ -249,4 +250,5 @@ public interface Constants {
     String BUILD_DATE_VAR = "buildDate";
     String GET_SUCCESSORS = "getSuccessors";
     String GET_TYPED_SUCCESSORS = "getTypedSuccessors";
+    String GET_SEMANTIC_TYPE = "getSemanticType";
 }

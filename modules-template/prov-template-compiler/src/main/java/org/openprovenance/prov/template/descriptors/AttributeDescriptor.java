@@ -47,8 +47,6 @@ public class AttributeDescriptor implements Descriptor {
     @JsonProperty("@sql.foreign")
     private SqlForeign sqlForeign;
 
-
-
     @JsonProperty("@value")
     public String getValue() {
         return value;

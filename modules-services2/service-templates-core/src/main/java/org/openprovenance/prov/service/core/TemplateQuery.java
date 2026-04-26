@@ -335,7 +335,7 @@ public class TemplateQuery {
 
     }
 
-    public void generateViz(Integer id, String template, String property, String style, Map<String, String> parameters, Map<String, Map<String, String>> baseTypes, String iconsFolderForGraphviz, String principal, OutputStream out) {
+    public void generateViz(Integer id, String template, String property, String style, Map<String, String> parameters, Map<String, Map<String, String>> baseTypes, String iconsFolderForGraphviz, Map<String, String> semanticType, String principal, OutputStream out) {
 
         //logger.info("generateViz " + id + " " + template + " " + property);
         Set<StatementOrBundle.Kind> selectedVizKinds=processParameters(parameters);
@@ -345,6 +345,8 @@ public class TemplateQuery {
         logger.debug("typedSuccessors: "+typedSuccessors);
         logger.debug("selectedVizKinds: "+selectedVizKinds);
         logger.debug("selected successors: "+successors);
+
+        logger.info("semanticType: "+semanticType);
 
         List<TemplateConnection> templateConnections = recursiveTraversal(id, template, property, selectedVizKinds, principal);
         // reverse list

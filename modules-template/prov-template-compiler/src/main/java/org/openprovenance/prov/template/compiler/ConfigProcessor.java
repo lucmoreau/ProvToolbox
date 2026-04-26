@@ -627,6 +627,11 @@ public class ConfigProcessor implements Constants {
         SpecificationFile configurationPropertyOrder= compilerConfigurations.generatePropertyOrderConfigurator(configs,PROPERTY_ORDER_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,PROPERTY_ORDER_CONFIGURATOR)), PROPERTY_ORDER_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationPropertyOrder.save();
 
+
+        SpecificationFile configurationSemanticType= compilerConfigurations.generateSemanticTypeConfigurator(configs,SEMANTIC_TYPE_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,SEMANTIC_TYPE_CONFIGURATOR)), SEMANTIC_TYPE_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        configurationSemanticType.save();
+
+
         SpecificationFile configurationRelation0= compilerConfigurations.generateRelation0Configurator(configs,RELATION0_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(configs.name,RELATION0_CONFIGURATOR)), RELATION0_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationRelation0.save();
 

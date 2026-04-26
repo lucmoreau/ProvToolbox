@@ -145,6 +145,7 @@ public class Locations {
             case ENACTOR_CONFIGURATOR_COMPOSITE:
             case RECORD_2_RECORD_CONFIGURATOR:
             case TABLE_CONFIGURATOR_COMPOSITE:
+            case SEMANTIC_TYPE_CONFIGURATOR:
                 return getConfiguratorPackage(name);
 
             case ENACTOR_CONFIGURATOR_COMPOSITE_2:

@@ -45,6 +45,10 @@ public class NameDescriptor implements Descriptor {
     private String escape;
 
 
+    @JsonProperty("@semantic.type")
+    private String semantic;
+
+
     @JsonProperty("@sql.table")
     private String table;
     @JsonProperty("@sql.new.inputs")
@@ -156,6 +160,17 @@ public class NameDescriptor implements Descriptor {
         this.escape = escape;
     }
 
+
+    @JsonProperty("@semantic.type")
+    public String getSemantic() {
+        return semantic;
+    }
+
+    @JsonProperty("@semantic.type")
+    public void setSemantic(String semantic) {
+        this.semantic = semantic;
+    }
+
     @Override
     public String toString() {
         return "NameDescriptor{" +
@@ -170,6 +185,7 @@ public class NameDescriptor implements Descriptor {
                 ", table='" + table + '\'' +
                 ", newInputs=" + newInputs +
                 ", alsoOutputs=" + alsoOutputs +
+                ", semantic=" + semantic +
                 '}';
     }
 

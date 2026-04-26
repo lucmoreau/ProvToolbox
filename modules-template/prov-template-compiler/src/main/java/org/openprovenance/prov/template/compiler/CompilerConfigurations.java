@@ -154,6 +154,9 @@ public class CompilerConfigurations {
     public SpecificationFile generateSqlConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_OBJARRAY_TO_STRING, this::generateMethodRecord2SqlConverter, "generateSqlConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
+    public SpecificationFile generateSemanticTypeConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName, STRING, this::generateSemanticType, "generateSemanticType", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
+    }
     public SpecificationFile generatePropertyOrderConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, STRING_ARRAY, this::generatePropertyOrder, "generatePropertyOrder", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
     }
@@ -232,6 +235,13 @@ public class CompilerConfigurations {
     public void generatePropertyOrder(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
         mspec.addStatement(RETURN(METHOD_CALL(VARIABLE(builderParameter), "getPropertyOrder", List.of()))); //"return $N.getPropertyOrder()", builderParameter);
     }
+
+    public void generateSemanticType(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
+        mspec.addStatement(RETURN(METHOD_CALL(VARIABLE(builderParameter), GET_SEMANTIC_TYPE, List.of()))); //"return $N.getPropertyOrder()", builderParameter);
+    }
+
+
+
 
     public void generateRelation0(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
         mspec.BODY((RETURN(METHOD_CALL(className,"__relations"))));

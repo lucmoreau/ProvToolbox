@@ -53,6 +53,7 @@ public class CompilerCatalogueDispatcher {
         put("outputs", OUTPUTS_CONFIGURATOR);
         put("sqlConverter", SQL_CONFIGURATOR);
         put("csvConverter", CSV_CONFIGURATOR);
+        put("semanticType", SEMANTIC_TYPE_CONFIGURATOR);
         put("csvConverter4Beans", CSV_CONFIGURATOR_4_BEANS);
         put("csvConverter4Outputs", CSV_CONFIGURATOR_4_OUTPUTS);
         put("csvConverter4OutputsComposite", CSV_CONFIGURATOR_4_OUTPUTS_COMPOSITE);
@@ -82,6 +83,8 @@ public class CompilerCatalogueDispatcher {
         put("beanConverter",             ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_ANY));
         put("relation0",                 ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_MAP_STRING_INTARRAY));
         put("foreignTables",             ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING_ARRAY));
+        put("semanticType",              ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING));
+
         put("successors",                ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_LIST_STRING));
         put("typedSuccessors",           ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_LIST_STRING));
         put("enactorConverter",          ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_ANY));

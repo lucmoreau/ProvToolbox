@@ -51,6 +51,7 @@ public class TemplateLogic {
     private final Map<String, Map<String, List<String>>> successors;
     private final PrincipalManager principalManager;
     private final Map<String, String> shortNames;
+    private final Map<String, String> semanticType;
 
 
     public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om) {
@@ -65,6 +66,7 @@ public class TemplateLogic {
         this.successors = templateDispatcher.getSuccessors();
         this.principalManager = principalManager;
         this.shortNames=shortNames;
+        this.semanticType=templateDispatcher.getSemanticType();
     }
 
     public List<Object> processIncomingJson(List<Map<String, Object>> entries, String acceptHeader) {
@@ -191,7 +193,7 @@ public class TemplateLogic {
                                                                         .get(var))))));
 
         //logger.info("baseTypes " + baseTypes);
-        templateQuery.generateViz(config.id, config.template, config.property, config.style, config.parameters, baseTypes, iconsFolderForGraphviz, principal, out);
+        templateQuery.generateViz(config.id, config.template, config.property, config.style, config.parameters, baseTypes, iconsFolderForGraphviz, semanticType, principal, out);
     }
 
 

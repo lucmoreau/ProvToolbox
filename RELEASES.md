@@ -27,6 +27,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-template-core/archetype: form.html, visualisation of icons in navigation and documentation
 * service-template-core: backward_traversal in TemplateQuery and Template2Dot updated to support "overlay templates" without outputs.
 * prov-template: MergeTask create directory for output if it does not exist
+* prov-template-compiler: @semantic.type annotation, allowing semantic type of template to be found easily
 
 `2.2.3`
 * prov-template: update to instantiation

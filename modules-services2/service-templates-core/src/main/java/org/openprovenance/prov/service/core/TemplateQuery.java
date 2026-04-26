@@ -154,7 +154,7 @@ public class TemplateQuery {
         return relationMapping;
     }
 
-
+/*
     String recursiveQuery="CREATE OR REPLACE FUNCTION backwardtraversal_star(\n" +
             "    __param_id integer, \n" +
             "    __param_template text, \n" +
@@ -187,7 +187,10 @@ public class TemplateQuery {
             "FROM recurse_traverse\n" +
             "$$ LANGUAGE SQL;";
 
+ */
+
     /* now provides an output for the template, rather than input. */
+    /*
     String recursiveQuery2="CREATE OR REPLACE FUNCTION backwardtraversal_star(\n" +
             "    __param_id integer, \n" +
             "    __param_template text, \n" +
@@ -232,6 +235,8 @@ public class TemplateQuery {
             "SELECT in_id, in_template, in_property, out_id, out_template, out_property\n" +
             "FROM recurse_traverse\n" +
             "$$ LANGUAGE SQL;";
+
+     */
 
     String recursiveQuery3= """
                         CREATE OR REPLACE FUNCTION public.backwardtraversal_star(
@@ -1078,6 +1083,22 @@ public class TemplateQuery {
                     filterMapAccordingToTable(table, input);
             Map<String, Map<String, String>> output_table=
                     filterMapAccordingToTable(table, output);
+
+            // ── Virtual outputs for all-input (decorator/overlay) templates ──
+            // Templates where ALL properties are inputs are stripped from the
+            // output map by removeIf() in getIoMap(), so they never appear in
+            // output_table and the loop below can never "arrive at" them.
+            // Fix: for any template present in input_table (it references an
+            // entity from this table) but absent from output_table (no declared
+            // outputs), inject it into output_table using its input properties
+            // as virtual output keys.  The traversal can then hop through the
+            // template to follow predecessor_table derivation edges onward.
+            for (String template : input_table.keySet()) {
+                if (!output_table.containsKey(template)) {
+                    output_table.put(template, input_table.get(template));
+                }
+            }
+            // ─────────────────────────────────────────────────────────────────
 
 
             for (String in_template: input_table.keySet()) {

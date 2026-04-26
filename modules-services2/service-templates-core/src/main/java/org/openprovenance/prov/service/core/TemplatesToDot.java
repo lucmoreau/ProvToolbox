@@ -250,6 +250,23 @@ public class TemplatesToDot extends ProvToDot {
 
         Map<String, Map<String, String>> inputs=ioMap.get("input"); //templateDispatcher.getInputs();
         Map<String, Map<String, String>> outputs=ioMap.get("output"); //templateDispatcher.getOutputs();
+        Set<String> overlayTemplates=new HashSet<>();
+        // ── Virtual outputs for all-input (decorator/overlay) templates ──
+        // Templates where ALL properties are inputs are stripped from the
+        // output map by removeIf() in getIoMap(), so they never appear in
+        // output_table and the loop below can never "arrive at" them.
+        // Fix: for any template present in input_table (it references an
+        // entity from this table) but absent from output_table (no declared
+        // outputs), inject it into output_table using its input properties
+        // as virtual output keys.  The traversal can then hop through the
+        // template to follow predecessor_table derivation edges onward.
+        for (String template : inputs.keySet()) {
+            if (!outputs.containsKey(template)) {
+                outputs.put(template, inputs.get(template));
+                overlayTemplates.add(template);
+            }
+        }
+        // ─────────────────────────────────────────────────────────────────
 
 
         for (TemplateInfo templateInfo: allTemplates) {
@@ -279,7 +296,9 @@ public class TemplatesToDot extends ProvToDot {
 
 
             String html = createHtmlTable(templateInfo, withIcons, iconDirectory, inputsNames, inputPorts, inputsColors, outputsNames, outputsPorts, outputsColors);
-
+            if (overlayTemplates.contains(template)) {
+                System.out.println(html);
+            }
             emitTemplate(template, templateId, html, out);
 
         }

@@ -3,25 +3,13 @@
 
 # TODO
 
-
-
+- T20
+- T19
+- T18
+- T17 Update the viz so that overlay template is near the template it overlays
+- T16 Have a place for template explanations to be displayed when hovering over a template
+- T15 backward_traversal*: to return the type of template, and to add it in the viz, and select icon accordingly
 - T10 explanation for book templates
-
-- T9 rust code generation:
-    ```angular2html
-       --> src/org/openprovenance/templates/catalogue/transport/integrator/bean_completer2.rs:510:42
-        |
-    510 |             bean.count = Some(bean.count + 1);
-        |                               ---------- ^ - {integer}
-        |                               |
-        |                               std::option::Option<i32>
-        |
-    note: the foreign item type `std::option::Option<i32>` doesn't implement `Add<{integer}>`
-       --> /Users/luc/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/option.rs:599:1
-        |
-    
-    ```
-  
 - T11 clean up Makefile in archetype
 - T12 archetype to start a template library
 - T13 Docker container for provenance service
@@ -115,3 +103,19 @@ __PROV_DELEGATION (delegate, delegate_rel, responsible, responsible_rel, activit
 updated CompilerCommon to use the new code generation pattern for the Common Bean, and removed the old code.  
 
 * T14 template expansion with association without agent but with plan, does not include association.
+
+- T9 rust code generation:
+    ```angular2html
+       --> src/org/openprovenance/templates/catalogue/transport/integrator/bean_completer2.rs:510:42
+        |
+    510 |             bean.count = Some(bean.count + 1);
+        |                               ---------- ^ - {integer}
+        |                               |
+        |                               std::option::Option<i32>
+        |
+    note: the foreign item type `std::option::Option<i32>` doesn't implement `Add<{integer}>`
+       --> /Users/luc/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/option.rs:599:1
+        |
+    
+    ```
+  

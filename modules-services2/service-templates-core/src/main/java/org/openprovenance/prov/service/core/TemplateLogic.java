@@ -228,7 +228,7 @@ public class TemplateLogic {
         List<Object[]> records = templateQuery.query(templateFullyQualifiedName, id, false, principal);
 
         logger.debug("PROV_API " + provAPI);
-        logger.info("records " + records.size() + " " + records.stream().map(Arrays::toString).collect(Collectors.joining(",")));
+        logger.debug("records " + records.size() + " " + records.stream().map(Arrays::toString).collect(Collectors.joining(",")));
         if (!records.isEmpty()) {
             if (records.size()>1) {
                 Map<String, String> hash = templateQuery.computeHash(templateFullyQualifiedName, id, records);

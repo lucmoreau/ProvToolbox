@@ -170,7 +170,7 @@ public class InstantiateTask implements ConfigTask {
     private Document retrieveTemplate(BatchExecutor executor, String template, File templateFile, String informat) throws FileNotFoundException {
         Document doc=executor.getCachedTemplate(template);
         if (doc!=null) {
-            System.out.println("Using cached template for " + template);
+            //System.out.println("Using cached template for " + template);
             return doc;
         }
         Document doc2 = executor.deserialise(new FileInputStream(templateFile), informat);

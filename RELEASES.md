@@ -26,6 +26,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates-core: update to recursive traversal to visualise template instantiation, to support derivation, responsibility, specialization, membership 
 * service-template-core/archetype: form.html, visualisation of icons in navigation and documentation
 * service-template-core: backward_traversal in TemplateQuery and Template2Dot updated to support "overlay templates" without outputs.
+* prov-template: MergeTask create directory for output if it does not exist
 
 `2.2.3`
 * prov-template: update to instantiation

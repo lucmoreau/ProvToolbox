@@ -94,7 +94,15 @@ public class TemplatesToDot extends ProvToDot {
             html.append(String.format("    <TD ROWSPAN=\"3\" HREF=\"%s\"  TARGET=\"_blank\">%s</TD>\n", templateInfo.url, iconImage));
         }
 
-        html.append(String.format("    <TD ROWSPAN=\"3\" HREF=\"%s\"  TARGET=\"_blank\">%s </TD>\n", templateInfo.url, templateInfo.templateId));
+        String typeInfo="";
+        if (templateInfo.semanticType!=null) {
+            typeInfo+="<BR/>(";
+            typeInfo+=templateInfo.semanticType;
+            typeInfo+=")";
+        }
+
+        html.append(String.format("    <TD ROWSPAN=\"3\" HREF=\"%s\"  TARGET=\"_blank\">%s %s</TD>\n", templateInfo.url, templateInfo.templateId, typeInfo));
+
         if (inputsNames.isEmpty()) {
             html.append("    <TD></TD>\n");
         }
@@ -106,6 +114,7 @@ public class TemplatesToDot extends ProvToDot {
 
         // Second row for outputs
         html.append("  <TR>\n");
+
         for (int i = 0; i < outputsNames.size(); i++) {
             html.append(String.format("    <TD PORT=\"%s\" BGCOLOR=\"%s\"  HREF=\"%s\"  TARGET=\"_blank\">%s</TD>\n",
                     outputsPorts.get(i), outputColors.get(i), templateInfo.url.replace(".svg", "/"+outputsNames.get(i)), outputsNames.get(i)));
@@ -244,8 +253,8 @@ public class TemplatesToDot extends ProvToDot {
         Set<TemplateInfo> allTemplates = new HashSet<>();
         Map<String, String> shortNames = templateQuery.getShortNames();
         for (TemplateQuery.TemplateConnection templateConnection : templateConnections) {
-            allTemplates.add(TemplateInfo.of(templateConnection.in_template, templateName(shortNames.get(templateConnection.in_template), templateConnection.in_id),  url(templateConnection.in_template,  templateConnection.in_id)));
-            allTemplates.add(TemplateInfo.of(templateConnection.out_template,templateName(shortNames.get(templateConnection.out_template),templateConnection.out_id), url(templateConnection.out_template, templateConnection.out_id)));
+            allTemplates.add(TemplateInfo.of(templateConnection.in_template, templateName(shortNames.get(templateConnection.in_template), templateConnection.in_id),  url(templateConnection.in_template,  templateConnection.in_id), templateConnection.in_type));
+            allTemplates.add(TemplateInfo.of(templateConnection.out_template,templateName(shortNames.get(templateConnection.out_template),templateConnection.out_id), url(templateConnection.out_template, templateConnection.out_id), templateConnection.out_type));
         }
 
         Map<String, Map<String, String>> inputs=ioMap.get("input"); //templateDispatcher.getInputs();
@@ -373,27 +382,28 @@ public class TemplatesToDot extends ProvToDot {
         private final String template;
         private final String templateId;
         private final String url;
+        private final String semanticType;
 
-        private TemplateInfo (String template, String templateId, String url) {
+        private TemplateInfo (String template, String templateId, String url, String semanticType) {
             this.template=template;
             this.templateId=templateId;
             this.url=url;
+            this.semanticType = semanticType;
         }
-        static public TemplateInfo of(String template, String templateId, String url) {
-            return new TemplateInfo(template, templateId, url);
+        static public TemplateInfo of(String template, String templateId, String url, String semanticType) {
+            return new TemplateInfo(template, templateId, url, semanticType );
         }
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             TemplateInfo that = (TemplateInfo) o;
-            return Objects.equals(template, that.template) && Objects.equals(templateId, that.templateId) && Objects.equals(url, that.url);
+            return Objects.equals(template, that.template) && Objects.equals(templateId, that.templateId) && Objects.equals(url, that.url) && Objects.equals(semanticType, that.semanticType);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(template, templateId, url);
+            return Objects.hash(template, templateId, url, semanticType);
         }
 
         @Override
@@ -402,6 +412,7 @@ public class TemplatesToDot extends ProvToDot {
                     "template='" + template + '\'' +
                     ", templateId='" + templateId + '\'' +
                     ", url='" + url + '\'' +
+                    ", semanticType='" + semanticType + '\'' +
                     '}';
         }
     }

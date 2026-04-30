@@ -69,6 +69,7 @@ public class TemplateQuery {
     private final Map<String, String> shortNames;
     private final Map<String, String> longNames;
     private final Map<String, Map<String, List<String>>> typedSuccessors;
+    private final Map<String, String> semanticType;
 
     public TemplateQuery(Querier querier, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om) {
         this.querier = querier;
@@ -90,11 +91,13 @@ public class TemplateQuery {
         simplePropertyOrder = propertyOrder.entrySet().stream().collect(Collectors.toMap(x -> shortNames.get(x.getKey()), Map.Entry::getValue));
 
         initializeTypedPredecessorTable();
+        this.semanticType=templateDispatcher.getSemanticType();
+
 
         generateTraversalMethods(querier, this.ioMap);
+        generateTraversalMethodsWithType(querier, this.ioMap, semanticType);
         //initializePredecessorTable();
     }
-
 
 
 
@@ -330,10 +333,263 @@ public class TemplateQuery {
                 (sb, data) -> {
                     sb.append(generateBackwardTemplateTraversal(ioMap));
                     sb.append(recursiveQuery3);
+
                 });
-
-
     }
+
+    /**
+     * Generates and installs both typed traversal SQL functions into the database.
+     *
+     * <p>Calls {@link #generateBackwardTemplateTraversalWithType} and
+     * {@link #generateBackwardTemplateTraversalStarWithType} in sequence, executing the
+     * resulting {@code CREATE OR REPLACE FUNCTION} statements via the supplied
+     * {@link Querier}.
+     *
+     * @param querier      database access helper used to execute the generated DDL
+     * @param ioMap        input/output map (short SQL names) — passed through to the
+     *                     single-hop generator
+     * @param semanticType fully-qualified template name → semantic-type column name;
+     *                     entries with {@code null} values denote templates that have
+     *                     no semantic-type column
+     */
+    private void generateTraversalMethodsWithType(Querier querier, Map<String, Map<String, Map<String, String>>> ioMap, Map<String, String> semanticType) {
+        querier.do_statements(null,
+                null,
+                (sb, data) -> {
+                    sb.append(generateBackwardTemplateTraversalWithType(ioMap, semanticType));
+                    sb.append(generateBackwardTemplateTraversalStarWithType(semanticType));
+                    System.out.println(sb.toString());
+                });
+    }
+
+    /**
+     * Generates the SQL {@code CREATE OR REPLACE FUNCTION} statement for
+     * {@code public.backwardtraversal_typed}.
+     *
+     * <p>{@code backwardtraversal_typed} is the single-hop variant of the typed
+     * traversal: it wraps one call to {@code backwardtraversal} and annotates each
+     * returned edge with {@code in_type} and {@code out_type} columns by looking up
+     * the semantic-type value from the appropriate template table (as identified by
+     * the {@code semanticType} map).
+     *
+     * @param ioMap        input/output property map (short SQL table names) — not used
+     *                     directly in this generator but kept for API symmetry with
+     *                     {@link #generateBackwardTemplateTraversal}
+     * @param semanticType fully-qualified template name → semantic-type column name;
+     *                     entries with {@code null} values are filtered out before SQL
+     *                     generation
+     * @return a {@code CREATE OR REPLACE FUNCTION} SQL string ready to execute
+     */
+    private String generateBackwardTemplateTraversalWithType(
+            Map<String, Map<String, Map<String, String>>> ioMap,
+            Map<String, String> semanticType) {
+        System.out.println("generateBackwardTemplateTraversalWithType: " + semanticType + " " + shortNames);
+        return generateTypedWrapperFunction(
+                "backwardtraversal_typed",
+                null,
+                "backwardtraversal(" + PARAM_ID + ", " + PARAM_TEMPLATE + ", " + PARAM_PROPERTY + ")",
+                shortenAndFilterSemanticType(semanticType));
+    }
+
+    /**
+     * Generates the SQL {@code CREATE OR REPLACE FUNCTION} statement for
+     * {@code public.backwardtraversal_star_typed}.
+     *
+     * <p>{@code backwardtraversal_star_typed} is the full-graph (star) variant of the
+     * typed traversal.  Rather than running type-lookup subqueries at every recursive
+     * hop (which would multiply cost with traversal depth), it wraps the lean
+     * {@code backwardtraversal_star} function and annotates the <em>final</em> result
+     * set once with {@code in_type} and {@code out_type}.
+     *
+     * <p>The optional {@code __param_selected_relations integer[] DEFAULT NULL}
+     * parameter is forwarded unchanged to the inner {@code backwardtraversal_star}
+     * call, allowing callers to restrict traversal to a subset of PROV relation kinds.
+     *
+     * @param semanticType fully-qualified template name → semantic-type column name;
+     *                     entries with {@code null} values are filtered out before SQL
+     *                     generation
+     * @return a {@code CREATE OR REPLACE FUNCTION} SQL string ready to execute
+     */
+    private String generateBackwardTemplateTraversalStarWithType(Map<String, String> semanticType) {
+        return generateTypedWrapperFunction(
+                "backwardtraversal_star_typed",
+                "    __param_selected_relations  integer[]  DEFAULT NULL",
+                "backwardtraversal_star(" + PARAM_ID + ", " + PARAM_TEMPLATE + ", " + PARAM_PROPERTY + ", __param_selected_relations)",
+                shortenAndFilterSemanticType(semanticType));
+    }
+
+    /**
+     * Converts a fully-qualified semantic-type map to its SQL-table-name form,
+     * filtering out entries whose value is {@code null}.
+     *
+     * <p>The {@code semanticType} map supplied by the template dispatcher uses
+     * fully-qualified template names as keys (e.g.
+     * {@code "com.silubi.odoo.goods-transforming"}).  The generated SQL functions
+     * use short SQL table names (e.g. {@code "goods_transforming"}).  This helper
+     * performs that translation via {@link #shortNames} and drops any entry whose
+     * value is {@code null} (i.e. templates that carry no semantic-type column).
+     *
+     * <p>Dropping null values is important because
+     * {@link java.util.stream.Collectors#toMap toMap} internally calls
+     * {@link java.util.HashMap#merge merge}, which rejects {@code null} values and
+     * would throw a {@link NullPointerException}.
+     *
+     * @param semanticType raw map from the template dispatcher (may contain nulls)
+     * @return a new map with short keys and no null values, safe to pass to
+     *         {@link #appendAtypeCase}
+     */
+    private Map<String, String> shortenAndFilterSemanticType(Map<String, String> semanticType) {
+        return semanticType.entrySet().stream()
+                .filter(e -> e.getValue() != null)
+                .collect(Collectors.toMap(
+                        e -> shortNames.getOrDefault(e.getKey(), e.getKey()),
+                        Map.Entry::getValue,
+                        (v1, v2) -> v1));
+    }
+
+    /**
+     * Shared SQL builder for the two typed traversal wrappers.
+     *
+     * <p>Generates a complete {@code CREATE OR REPLACE FUNCTION public.<typedFunctionName>}
+     * statement.  The function signature always includes the standard three traversal
+     * parameters ({@value #PARAM_ID}, {@value #PARAM_TEMPLATE}, {@value #PARAM_PROPERTY})
+     * plus an optional fourth parameter line supplied by the caller.  The return type is
+     * the six standard traversal columns augmented with {@code in_type} and {@code out_type}.
+     *
+     * <p>Type lookup is done with a pure-SQL
+     * {@code COALESCE(CASE bt.<templateCol> WHEN '<table>' THEN (SELECT <atypeCol> FROM <table>
+     * WHERE id = bt.<idCol>) … ELSE 'None1' END, 'None2')} expression, avoiding any
+     * PL/pgSQL dynamic SQL.  PostgreSQL short-circuits {@code CASE} branches, so only the
+     * matching table's index is hit.
+     *
+     * <p>This method is the shared implementation for both
+     * {@link #generateBackwardTemplateTraversalWithType} (single-hop) and
+     * {@link #generateBackwardTemplateTraversalStarWithType} (full-graph star), which
+     * differ only in {@code typedFunctionName}, {@code extraParam}, and {@code innerCall}.
+     *
+     * @param typedFunctionName name of the PostgreSQL function to create
+     * @param extraParam        optional extra parameter declaration line to append after the
+     *                          three standard parameters (e.g.
+     *                          {@code "    __param_selected_relations  integer[]  DEFAULT NULL"}),
+     *                          or {@code null} for none
+     * @param innerCall         SQL expression used as the {@code FROM} source — typically a
+     *                          call to the untyped base function with its argument list
+     * @param shortSemanticType map of short SQL table name → semantic-type column name,
+     *                          pre-filtered so no values are {@code null}
+     *                          (see {@link #shortenAndFilterSemanticType})
+     * @return a complete {@code CREATE OR REPLACE FUNCTION} SQL string
+     */
+    private String generateTypedWrapperFunction(
+            String typedFunctionName,
+            String extraParam,
+            String innerCall,
+            Map<String, String> shortSemanticType) {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("CREATE OR REPLACE FUNCTION public.").append(typedFunctionName).append("(\n");
+        sb.append("    ").append(PARAM_ID)       .append("       integer,\n");
+        sb.append("    ").append(PARAM_TEMPLATE) .append(" text,\n");
+        sb.append("    ").append(PARAM_PROPERTY) .append(" text");
+        if (extraParam != null) {
+            sb.append(",\n").append(extraParam).append("\n");
+        } else {
+            sb.append("\n");
+        }
+        sb.append(")\n");
+        sb.append("RETURNS TABLE(\n");
+        sb.append("    ").append(IN_ID)       .append("        integer,\n");
+        sb.append("    ").append(IN_TEMPLATE) .append("  text,\n");
+        sb.append("    ").append(IN_PROPERTY) .append("  text,\n");
+        sb.append("    in_type      text,\n");
+        sb.append("    ").append(OUT_ID)      .append("       integer,\n");
+        sb.append("    ").append(OUT_TEMPLATE).append(" text,\n");
+        sb.append("    ").append(OUT_PROPERTY).append(" text,\n");
+        sb.append("    out_type     text\n");
+        sb.append(")\n");
+        sb.append("LANGUAGE sql\n");
+        sb.append("AS $$\n");
+        sb.append("    SELECT\n");
+        sb.append("        bt.").append(IN_ID)       .append(",\n");
+        sb.append("        bt.").append(IN_TEMPLATE) .append(",\n");
+        sb.append("        bt.").append(IN_PROPERTY) .append(",\n");
+        appendAtypeCase(sb, IN_TEMPLATE,  IN_ID,  "in_type",  shortSemanticType);
+        sb.append(",\n");
+        sb.append("        bt.").append(OUT_ID)      .append(",\n");
+        sb.append("        bt.").append(OUT_TEMPLATE).append(",\n");
+        sb.append("        bt.").append(OUT_PROPERTY).append(",\n");
+        appendAtypeCase(sb, OUT_TEMPLATE, OUT_ID, "out_type", shortSemanticType);
+        sb.append("\n");
+        sb.append("    FROM ").append(innerCall).append(" bt\n");
+        sb.append("$$;\n");
+
+        return sb.toString();
+    }
+
+    /**
+     * Appends a type-lookup SQL expression to {@code sb}.
+     *
+     * <p>The generated fragment has the form:
+     * <pre>{@code
+     * COALESCE(
+     *     CASE bt.<templateCol>
+     *         WHEN '<table1>' THEN (SELECT <atypeCol> FROM <table1> WHERE id = bt.<idCol>)
+     *         WHEN '<table2>' THEN (SELECT <atypeCol> FROM <table2> WHERE id = bt.<idCol>)
+     *         …
+     *         ELSE 'None1'
+     *     END,
+     *     'None2'
+     * ) AS <alias>
+     * }</pre>
+     *
+     * <p>Sentinel meanings:
+     * <ul>
+     *   <li>{@code 'None1'} — the template table has no semantic-type column; no
+     *       entry for that table exists in {@code semanticType}.</li>
+     *   <li>{@code 'None2'} — the table has a semantic-type column but the stored
+     *       value for this specific row is {@code NULL}.</li>
+     * </ul>
+     *
+     * <p>When {@code semanticType} is empty (all entries were null and were filtered
+     * out by {@link #shortenAndFilterSemanticType}), a bare {@code CASE} with only
+     * an {@code ELSE} clause would be invalid SQL.  In that case this method emits
+     * the literal {@code 'None1' AS <alias>} directly.
+     *
+     * @param sb           builder to append into
+     * @param templateCol  traversal output column holding the template name
+     *                     ({@value #IN_TEMPLATE} or {@value #OUT_TEMPLATE})
+     * @param idCol        traversal output column holding the row id
+     *                     ({@value #IN_ID} or {@value #OUT_ID})
+     * @param alias        SQL column alias for the result ({@code in_type} or
+     *                     {@code out_type})
+     * @param semanticType pre-filtered map of SQL table name → semantic-type column
+     *                     name; must contain no {@code null} values
+     */
+    private void appendAtypeCase(StringBuilder sb,
+                                  String templateCol,
+                                  String idCol,
+                                  String alias,
+                                  Map<String, String> semanticType) {
+        if (semanticType.isEmpty()) {
+            // No WHEN branches available — a bare CASE with only ELSE is invalid SQL.
+            // Every table falls into the "no semantic-type column" category.
+            sb.append("        'None1' AS ").append(alias);
+            return;
+        }
+        sb.append("        COALESCE(\n");
+        sb.append("            CASE bt.").append(templateCol).append("\n");
+        for (Map.Entry<String, String> entry : semanticType.entrySet()) {
+            sb.append("                WHEN '").append(entry.getKey())
+              .append("' THEN (SELECT ").append(entry.getValue())
+              .append(" FROM ").append(entry.getKey())
+              .append(" WHERE id = bt.").append(idCol).append(")\n");
+        }
+        sb.append("                ELSE 'None1'\n");
+        sb.append("            END,\n");
+        sb.append("            'None2'\n");
+        sb.append("        ) AS ").append(alias);
+    }
+
 
     public void generateViz(Integer id, String template, String property, String style, Map<String, String> parameters, Map<String, Map<String, String>> baseTypes, String iconsFolderForGraphviz, Map<String, String> semanticType, String principal, OutputStream out) {
 
@@ -495,9 +751,11 @@ public class TemplateQuery {
         public Integer in_id;
         public String in_template;
         public String in_property;
+        public String in_type;
         public Integer out_id;
         public String out_template;
         public String out_property;
+        public String out_type;
 
         @Override
         public String toString() {
@@ -505,9 +763,11 @@ public class TemplateQuery {
                     "in_id=" + in_id +
                     ", in_template='" + in_template + '\'' +
                     ", in_property='" + in_property + '\'' +
+                    ", in_type='" + in_type + '\'' +
                     ", out_id=" + out_id +
                     ", out_template='" + out_template + '\'' +
                     ", out_property='" + out_property + '\'' +
+                    ", out_type='" + out_type + '\'' +
                     '}';
         }
     }
@@ -520,7 +780,7 @@ public class TemplateQuery {
                 null,
                 (sb, data) -> {
                     sb.append("SELECT * FROM ");
-                    sb.append("backwardtraversal_star(");
+                    sb.append("backwardtraversal_star_typed(");
                     sb.append(id);
                     sb.append(",'");
                     sb.append(template);
@@ -538,9 +798,11 @@ public class TemplateQuery {
                         record.in_id=rs.getObject("in_id", Integer.class);
                         record.in_template=longNames.get(rs.getObject("in_template", String.class));
                         record.in_property=rs.getObject("in_property", String.class);
+                        record.in_type=rs.getObject("in_type", String.class);
                         record.out_id=rs.getObject("out_id", Integer.class);
                         record.out_template=longNames.get(rs.getObject("out_template", String.class));
                         record.out_property=rs.getObject("out_property", String.class);
+                        record.out_type=rs.getObject("out_type", String.class);
                         data.add(record);
                     }
                 });

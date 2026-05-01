@@ -95,7 +95,7 @@ public class TemplatesToDot extends ProvToDot {
         }
 
         String typeInfo="";
-        if (templateInfo.semanticType!=null) {
+        if (templateInfo.semanticType!=null &&  !templateInfo.semanticType.equals("None1")) {
             typeInfo+="<BR/>(";
             typeInfo+=templateInfo.semanticType;
             typeInfo+=")";

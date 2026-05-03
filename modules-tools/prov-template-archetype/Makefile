@@ -10,10 +10,10 @@ NLG_FS_XPLAN_LIBRARY=/xplain/nlg/fs/fs-xplan-library.json
 NLG_FS_XPLAN_SELECTION='["fs-awk-column-selection","fs-file-transforming", "fs-file-init", "fs-file-splitting","fs-file-fitting", "fs-generic-responsibility"]'
 
 
-run.book:
-	@echo "run.book: Using provtoolbox version $(PROVTOOLBOX_VERSION)"
+run.book.tr:
+	@echo "run.book.tr: Using provtoolbox version $(PROVTOOLBOX_VERSION)"
 	@mkdir -p $(DEPLOY_DIR)
-	@$(MAKE) archetype.generate.book
+	@$(MAKE) archetype.generate.book.tr
 
 run.book.fs:
 	@echo "run.book.fs: Using provtoolbox version $(PROVTOOLBOX_VERSION)"
@@ -30,7 +30,7 @@ GROUP_ID=org.example
 ARTIFACT_ID=artif
 VERSION=0.1.0-SNAPSHOT
 
-archetype.generate.book:
+archetype.generate.book.tr:
 	@echo "Generating project $(GROUP_ID):$(ARTIFACT_ID):$(VERSION)"
 	@cd $(DEPLOY_DIR); mvn archetype:generate -B \
         -DgroupId=$(GROUP_ID) \
@@ -54,10 +54,10 @@ archetype.generate.book:
 		-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-DnlgXplanLibrary=$(NLG_BASIC_XPLAN_LIBRARY) \
 		-DnlgXplanSelection=$(NLG_BASIC_XPLAN_SELECTION) \
-		-DtheIconSvgLibrary=file-icons.svg \
+		-DtheIconSvgLibrary=transport-icons.svg \
 		-DserviceContext=/book \
 		-DservicePort=7075 \
-		-DdashboardTitle="Book PTM Dashboard"
+		-DdashboardTitle="PTM Book Transport Dashboard"
 
 archetype.generate.book.fs:
 	@echo "Generating project $(GROUP_ID):$(ARTIFACT_ID):$(VERSION)"
@@ -73,7 +73,7 @@ archetype.generate.book.fs:
 		-DtemplateLibraryArtifactId=template-intro1 \
 		-DtemplateLibraryVersion=0.1.0-SNAPSHOT \
 		-DtemplateLibraryServiceName=ServiceBookFS \
-		-DdashboardTitle="Book FS Dashboard" \
+		-DdashboardTitle="PTM Book FS Dashboard" \
 		-DtemplatesButtonLabel="Book Templates" \
 		-DcataloguePackage=org.openprovenance.templates.catalogue.fs \
 		-DtemplateSubLibrary=-fs \
@@ -127,7 +127,7 @@ book.install:
 
 go:
 	$(MAKE) book.install
-	$(MAKE) run.book
+	$(MAKE) run.book.tr
 	cd $(DEPLOY_DIR)/artif/artif-service; mvn clean install
 	cd $(DEPLOY_DIR)/artif/artif-service; make jetty
 

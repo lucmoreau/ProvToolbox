@@ -322,6 +322,11 @@ public class TemplateQuery {
             )
             SELECT in_id, in_template, in_property, out_id, out_template, out_property
             FROM   recurse_traverse
+            -- Self-loops arise from the virtual-output fix for activity-output-only templates
+            -- (e.g. document_obligating_coin): backwardTraversal joins the table with itself
+            -- on an input column used as a virtual output, matching the same row.
+            -- Self-loops are never valid in a provenance graph, so filter them here.
+            WHERE NOT (in_id = out_id AND in_template = out_template)
             $function$;
 
             """;
@@ -779,7 +784,7 @@ public class TemplateQuery {
         querier.do_query(the_records,
                 null,
                 (sb, data) -> {
-                    sb.append("SELECT * FROM ");
+                    sb.append("SELECT DISTINCT * FROM ");
                     sb.append("backwardtraversal_star_typed(");
                     sb.append(id);
                     sb.append(",'");
@@ -1348,17 +1353,27 @@ public class TemplateQuery {
             Map<String, Map<String, String>> output_table=
                     filterMapAccordingToTable(table, output);
 
-            // ── Virtual outputs for all-input (decorator/overlay) templates ──
-            // Templates where ALL properties are inputs are stripped from the
-            // output map by removeIf() in getIoMap(), so they never appear in
-            // output_table and the loop below can never "arrive at" them.
-            // Fix: for any template present in input_table (it references an
-            // entity from this table) but absent from output_table (no declared
-            // outputs), inject it into output_table using its input properties
-            // as virtual output keys.  The traversal can then hop through the
-            // template to follow predecessor_table derivation edges onward.
+            // ── Virtual outputs for overlay / activity-output-only templates ──
+            // Two cases where backwardTraversal would otherwise miss a template:
+            //
+            // Case 1 — all-input (decorator/overlay) templates:
+            //   Templates where ALL properties are inputs are stripped from the
+            //   output map entirely by removeIf() in getIoMap(), so they never
+            //   appear in output_table and the loop below can never "arrive at"
+            //   them.  Condition: !output_table.containsKey(template).
+            //
+            // Case 2 — activity-output-only templates (e.g. document_obligating_coin):
+            //   The template HAS a declared output, but it is typed as "activity"
+            //   (not as an entity table like "coin" or "document").
+            //   filterMapAccordingToTable() includes the template in output_table
+            //   as a key, but with an EMPTY inner map for the current entity table.
+            //   Condition: output_table.get(template).isEmpty().
+            //
+            // Fix for both: inject the template into output_table using its
+            // input properties as virtual output keys so the traversal can hop
+            // through it to follow predecessor_table derivation edges onward.
             for (String template : input_table.keySet()) {
-                if (!output_table.containsKey(template)) {
+                if (!output_table.containsKey(template) || output_table.get(template).isEmpty()) {
                     output_table.put(template, input_table.get(template));
                 }
             }

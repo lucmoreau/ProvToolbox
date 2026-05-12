@@ -226,7 +226,7 @@ public class TemplateService {
 
 
     public Object submitPostProcessing(Integer i, String templateFullyQualifiedName) {
-        logger.info("submitPostProcessing called with i=" + i + " templateFullyQualifiedName=" + templateFullyQualifiedName);
+        logger.debug("submitPostProcessing called with i=" + i + " templateFullyQualifiedName=" + templateFullyQualifiedName);
         if (i==null) i=-69;
         return templateLogic.submitPostProcessing(i,templateFullyQualifiedName);
     };
@@ -264,10 +264,10 @@ public class TemplateService {
 
         String headerAcceptProvHash=headers.getHeaderString(HTTP_HEADER_ACCEPT_PROV_HASH);
 
-        logger.info("post statements id: principal " + principal);
+        logger.debug("post statements id: principal " + principal);
 
         String acceptHeader = request.getHeader(HttpHeaders.ACCEPT).toLowerCase();
-        logger.info("post statements id: accept header " + acceptHeader);
+        logger.debug("post statements id: accept header " + acceptHeader);
         switch (acceptHeader) {
             case MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON:
                 break;
@@ -738,7 +738,7 @@ public class TemplateService {
                                               @Parameter(name = "relation", description = "relation name", required = true) @PathParam("relation") String relation,
                                               @Parameter(name = "count", description = "record count (if 0, means returns all", required = true) @PathParam("count") Integer count) {
 
-        logger.info("getLastNrecordsIds " + relation + " " + count);
+        logger.debug("getLastNrecordsIds " + relation + " " + count);
 
         Principal principal = request.getUserPrincipal();
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
@@ -747,7 +747,7 @@ public class TemplateService {
 
         List<Integer> ll=queryTemplate.queryIds4MostRecentTemplatesRecords(relation, count, principalAsPreferredUsername);
 
-        logger.info("getLastNrecords " + ll);
+        logger.debug("getLastNrecords " + ll);
 
         StreamingOutput promise= out -> om.writeValue(out,ll);
         return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
@@ -766,7 +766,7 @@ public class TemplateService {
                                     @Parameter(name = "relation", description = "relation name", required = true) @PathParam("relation") String relation,
                                     @Parameter(name = "count", description = "record count (if 0, means returns all", required = true) @PathParam("count") Integer count) {
 
-        logger.info("getLastNrecords " + relation + " " + count);
+        logger.debug("getLastNrecords " + relation + " " + count);
 
         Principal principal = request.getUserPrincipal();
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);

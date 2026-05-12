@@ -34,19 +34,19 @@ public class RoleAuthorizationGenerator implements AuthorizationGenerator {
         //logger.info("Checking roles claim " +  profile);
         Object roles = profile.getAttribute("roles");
         if (!(roles instanceof List)) {
-            logger.info("roles claim is null or not a list");
+            logger.debug("roles claim is null or not a list");
             throw new RuntimeException("roles claim is null or not a list");
         } else {
             List<String> rolesList=(List<String>)roles;
             if (!rolesList.contains(role)) {
-                logger.info("roles claim does not contain " + role + " " + rolesList);
+                logger.debug("roles claim does not contain " + role + " " + rolesList);
                 throw new RuntimeException("roles claim does not contain " + role + " " + rolesList);
             } else {
-                logger.info("roles claim is correct");
+                logger.debug("roles claim is correct");
             }
         }
         profiles.put(profile.getId(),profile);
-        logger.info("profiles " + profile.getId() + " " + profile.getAttribute("preferred_username"));
+        logger.debug("profiles " + profile.getId() + " " + profile.getAttribute("preferred_username"));
         return Optional.of(profile);
     }
 

@@ -1,11 +1,11 @@
 
 
 
-# TODO
+# ProvToolbox TODO
 
 - T20
-- T19
-- T18
+- T19 update navigation display to visualise atype icons, and fallback on template icons if atype icons not available
+- T18 add creation date to record_index table
 - T17 Update the viz so that overlay template is near the template it overlays
 - T16 Have a place for template explanations to be displayed when hovering over a template
 - T15 backward_traversal*: to return the semantic type of template, and to add it in the viz, and select icon accordingly: use semanticType map in TemplateQuery

@@ -24,21 +24,21 @@ class ClaimAndSignatureConfiguration extends RSASignatureConfiguration {
     @Override
     public boolean verify(SignedJWT signedJWT) {
         try {
-            logger.info("verifying " + signedJWT.getJWTClaimsSet());
+            logger.debug("verifying " + signedJWT.getJWTClaimsSet());
             JWTClaimsSet claims=signedJWT.getJWTClaimsSet();
             String azp = claims.getStringClaim("azp");
             if (!Objects.equals(azp, clientId)) {
                 logger.info("azp claim is not direct client: " + azp);
                 return false;
             } else {
-                logger.info("azp claim is correct ");
+                logger.debug("azp claim is correct ");
             }
             String issuer = claims.getIssuer();
             if (!Objects.equals(issuer, realmUri)) {
                 logger.info("issuer is not the same as expected baseUri: " + issuer);
                 return false;
             } else {
-                logger.info("issuer claim is correct ");
+                logger.debug("issuer claim is correct ");
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);

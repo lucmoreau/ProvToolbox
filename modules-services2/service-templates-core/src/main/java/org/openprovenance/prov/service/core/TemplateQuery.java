@@ -848,8 +848,8 @@ public class TemplateQuery {
     }
 
     public List<Object[]> querySimple(String fullyQualifiedName, Integer id, boolean withTitles, String principal) {
-        logger.info("querySimple fullyQualifiedName=" + fullyQualifiedName + " id=" + id + " principal=" + principal);
-        System.out.println("querySimple fullyQualifiedName=" + fullyQualifiedName + " id=" + id + " principal=" + principal);
+        logger.debug("querySimple fullyQualifiedName=" + fullyQualifiedName + " id=" + id + " principal=" + principal);
+        //System.out.println("querySimple fullyQualifiedName=" + fullyQualifiedName + " id=" + id + " principal=" + principal);
         List<Object[]> the_records = new LinkedList<>();
         if (!fullyQualifiedName.contains(".")) {
             throw new IllegalArgumentException("template table name must be a composite name including '.' " + fullyQualifiedName);
@@ -1128,6 +1128,9 @@ public class TemplateQuery {
         // convert list into a string (k1, k2, ...)
         String postgresKeys= keys.stream().map(String::valueOf).collect(Collectors.joining(", ", "(", ")"));
 
+        if (keys.isEmpty()) {        // ← add this guard
+            return rows;             //   empty table → empty result, no second query
+        }
 
         querier.do_query(rows,
                 null,

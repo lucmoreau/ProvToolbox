@@ -224,7 +224,7 @@ public class TemplateLogic {
     }
 
     public Object submitPostProcessing(int id, String templateFullyQualifiedName) {
-        logger.info("postProcessing " + id + " " + templateFullyQualifiedName);
+        logger.debug("postProcessing " + id + " " + templateFullyQualifiedName);
 
         String principal=principalManager.getPrincipal();
         List<Object[]> records = templateQuery.query(templateFullyQualifiedName, id, false, principal);
@@ -235,14 +235,14 @@ public class TemplateLogic {
             if (records.size()>1) {
                 Map<String, String> hash = templateQuery.computeHash(templateFullyQualifiedName, id, records);
                 templateQuery.updateHash(shortNames.get(templateFullyQualifiedName), id, hash, principal);
-                logger.info("update hash for " + id + " " + templateFullyQualifiedName + ": " + hash);
+                logger.debug("update hash for " + id + " " + templateFullyQualifiedName + ": " + hash);
                 headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH, getContentProvHash(hash));
             } else {
                 Object[] record = records.get(0);
                 Map<String, String> hash = templateQuery.computeHash(templateFullyQualifiedName, id, record);
                 templateQuery.getRelationMapping().mapGraphToRelations(templateFullyQualifiedName,id,record);
                 templateQuery.updateHash(shortNames.get(templateFullyQualifiedName), id, hash, principal);
-                logger.info("update hash for " + id + " " + templateFullyQualifiedName + ": " + hash);
+                logger.debug("update hash for " + id + " " + templateFullyQualifiedName + ": " + hash);
                 headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH,getContentProvHash(hash));
             }
             headerInfo.get().put(HTTP_HEADER_LOCATION,provAPI + "/template/" + templateFullyQualifiedName + "/" + id);

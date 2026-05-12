@@ -769,10 +769,13 @@ public class CompilerSqlIntegration {
                 .PARAMETER(INTEGER_ARRAY, "extra")
                 .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
                 .BODY(
+                        /*
                         METHOD_CALL(SYSTEM, "out.println", List.of(
                                 BINARY_OP(CONSTANT("LUC YYYY In beanCompleterFactory 4 with extra of length "), "+",
                                         IfExpression.IFEXPRESSION(BINARY_OP(VARIABLE("extra"), "==", getNull()), CONSTANT(0), METHOD_CALL(VARIABLE("extra"), "length")))
                         )),
+
+                         */
                         RETURN(CONSTRUCTOR_CALL(sqlCompositeBeanCompleter4Type, List.of(VARIABLE("rs"), VARIABLE("extra"), VARIABLE(Constants.POST_PROCESSING_VAR))))
                 );
 
@@ -784,7 +787,7 @@ public class CompilerSqlIntegration {
                 .PARAMETER(RESULT_SET, "rs")
                 .PARAMETER(BIFUNCTION_INTEGER_STRING_OBJECT, Constants.POST_PROCESSING_VAR)
                 .BODY(
-                        METHOD_CALL(SYSTEM, "out.println", List.of(CONSTANT("LUC YYYY In beanCompleterFactory No extra"))),
+                       // METHOD_CALL(SYSTEM, "out.println", List.of(CONSTANT("LUC YYYY In beanCompleterFactory No extra"))),
                         RETURN(CONSTRUCTOR_CALL(sqlCompositeBeanCompleter4Type, List.of(VARIABLE("rs"), VARIABLE(Constants.POST_PROCESSING_VAR))))
                 );
 
@@ -849,16 +852,22 @@ public class CompilerSqlIntegration {
                 .MODIFIERS(Modifier.PUBLIC)
                 .RETURNS(VOID)
                 .BODY(
+                        /*
                         METHOD_CALL(SYSTEM, "out.println", List.of(
                                 BINARY_OP(CONSTANT("LUC WWWW In setValueInLocation with extra of length "), "+",
                                         IfExpression.IFEXPRESSION(BINARY_OP(VARIABLE("extra"), "==", getNull()), CONSTANT(0), METHOD_CALL(VARIABLE("extra"), "length")))
                         )),
+
+                         */
                         IF(BINARY_OP(VARIABLE("extra"), "!=", getNull()))
                                 .THEN(
                                         DEFINITION(_int, VARIABLE("parent"), METHOD_CALL(VARIABLE("getter"), "get", List.of(METHOD_CALL(INTEGER, "class"), VARIABLE("PARENT_COLUMN")))),
+                                        /*
                                         METHOD_CALL(SYSTEM, "out.println", List.of(
                                                 BINARY_OP(CONSTANT("LUC LUC Setting parent to "), "+", VARIABLE("parent"))
                                         )),
+
+                                         */
                                         ASSIGNMENT(new ArrayAccessor(VARIABLE("extra"), CONSTANT(0)), VARIABLE("parent"))
                                 )
                 );

@@ -115,6 +115,13 @@
     .pretty .provkeyword { color: saddlebrown; }
     .pretty .feature { color: #8910ff; }
 
+    /* Navigator tab: fill the full available viewport height */
+    html, body { height: 100%; }
+    .row.header.small { display: flex; flex-direction: column; height: 100vh; }
+    #all-tab-contents { flex: 1 1 0; min-height: 0; overflow: hidden; }
+    #tab_navigator { height: 100%; }
+    #tab_navigator > .row { height: 100%; }
+
 </style>
 
     <div class="row header small">
@@ -264,8 +271,8 @@
             </div>
 
             <div id="tab_navigator" class="tab-pane" role="tabpanel">
-                <div class="row">
-                    <div class="col-lg-2">
+                <div class="row flex-nowrap">
+                    <div class="col-lg-2 flex-shrink-0" style="position: sticky; left: 0; z-index: 10; background: white;">
                         <label for="navigator_template" class="visually-hidden">Navigator Template</label>
                         <div class="input-group">
                             <input type="text" id="navigator_template" class="form-control" placeholder="Select a template…">
@@ -310,8 +317,31 @@
                                 <input class="form-check-input" type="checkbox" id="toggle-icons" onchange="icons_enabled = this.checked ? true : false">
                             </div>
                         </div>
+                        <p></p>
+                        <button id="navigator_save" type="button" class="btn btn-info" onclick="dumpNavigatorDiv()" disabled>
+                            <i class="fa fa-save"></i> Save
+                        </button>
                     </div>
-                    <div class="col-lg-10 first-column" id="navigator_div">
+                    <div class="col-lg-10 first-column" style="overflow: auto; height: 100%;">
+                        <div id="navigator_div">
+                        </div>
+                        <div id="navigator_explanation" style="
+                            position: fixed;
+                            bottom: 12px;
+                            left: 12px;
+                            width: 25vw;
+                            max-height: calc(6 * 1.5em + 1rem);
+                            overflow: hidden;
+                            background: rgba(255, 255, 255, 0.92);
+                            border: 1px solid #cbd5e1;
+                            border-radius: 6px;
+                            padding: 0.4rem 0.6rem;
+                            font-size: 0.75rem;
+                            line-height: 1.5em;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                            z-index: 1000;
+                            display: none;
+                        "><p>blah blah</p><p>bloh bloh</p></div>
                     </div>
                 </div>
             </div>
@@ -1201,19 +1231,29 @@
 
         let json_data=JSON.stringify(config)
 
+        ${symbol_dollar}(id).html('<div class="d-flex align-items-center gap-2 p-3 text-secondary">' +
+            '<div class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></div>' +
+            '<span>Loading…</span></div>');
+
         const xhr = new XMLHttpRequest();
         xhr.open('POST', url, true);
         xhr.onerror= function(xhr,event) {
             console.log("error with " + event);
+            ${symbol_dollar}(id).html('<span class="text-danger p-3">Error loading graph.</span>');
+            document.getElementById('navigator_save').disabled = true;
         };
         xhr.onabort= function(xhr,event) {
             console.log("abort with " + event);
+            ${symbol_dollar}(id).html('');
+            document.getElementById('navigator_save').disabled = true;
         };
         xhr.onload= function() {
             const response = xhr.responseText;
             console.log("loaded " + xhr.status);
             ${symbol_dollar}(id).html(response);
             rewriteImageHrefs(document.querySelector('#navigator_div svg')); //id hardcoded
+            wireNavigatorNodeEvents();
+            document.getElementById('navigator_save').disabled = false;
         }
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.setRequestHeader("Accept", "image/svg+xml");
@@ -1221,6 +1261,114 @@
 
 
     }
+
+    // subtypes appear in a <text></>text> element within brackets, e.g. (ReceivingGoods)
+    function extractNodeSubtype(node) {
+        const subtypePattern = /^\(([^)]+)\)$/;
+        const textEls = node.querySelectorAll('text');
+        for (var i = 0; i < textEls.length; i++) {
+            const content = textEls[i].textContent.trim();
+            const match = content.match(subtypePattern);
+            if (match) return match[1];
+        }
+        return null;
+    }
+
+    function parseNodeTitle(title) {
+        const lastUnderscore = title.lastIndexOf('_');
+        if (lastUnderscore === -1) return null;
+        return {
+            templateName: title.substring(0, lastUnderscore),
+            id:           title.substring(lastUnderscore + 1)
+        };
+    }
+
+    function wireNavigatorNodeEvents() {
+        const box = document.getElementById('navigator_explanation');
+        document.querySelectorAll('#navigator_div g.node').forEach(function(node) {
+            node.addEventListener('click', function(e) {
+                if (!e.altKey) return;
+                e.stopPropagation();
+                const titleEl = node.querySelector('title');
+                const title = titleEl ? titleEl.textContent.trim() : '';
+                const parsed = parseNodeTitle(title);
+                if (!parsed) return;
+                box.innerHTML = '';
+                box.style.display = 'block';
+                const fqn = (longNames[parsed.templateName] && longNames[parsed.templateName][0])
+                              ? longNames[parsed.templateName][0]
+                              : parsed.templateName;
+                const url = '${symbol_dollar}{service.context}/provapi/explanation/template/'
+                          + fqn + '/' + parsed.id;
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.setRequestHeader("Accept-PROV-explanation", 'default');
+                xhr.setRequestHeader("Accept", "text/plain");
+                xhr.onload = function() { box.innerHTML = xhr.responseText; };
+                xhr.onerror = function() { box.textContent = 'Error loading explanation.'; };
+                xhr.send();
+            });
+            node.addEventListener('mouseleave', function() {
+                box.innerHTML = '';
+                box.style.display = 'none';
+            });
+        });
+    }
+
+    async function dumpNavigatorDiv() {
+        const div = document.getElementById('navigator_div');
+        const clone = div.cloneNode(true);
+        const xlinkNS = 'http://www.w3.org/1999/xlink';
+
+        // Inline all <image> elements as base64 data URLs
+        const images = clone.querySelectorAll('image');
+        await Promise.all(Array.from(images).map(async function(img) {
+            const href = img.getAttributeNS(xlinkNS, 'href') || img.getAttribute('href');
+            if (!href || href.startsWith('data:')) return;
+            try {
+                const response = await fetch(href);
+                const blob = await response.blob();
+                const dataUrl = await new Promise(function(resolve) {
+                    const reader = new FileReader();
+                    reader.onload = function() { resolve(reader.result); };
+                    reader.readAsDataURL(blob);
+                });
+                img.setAttributeNS(xlinkNS, 'xlink:href', dataUrl);
+                img.setAttribute('href', dataUrl);
+            } catch(e) {
+                console.warn('Could not inline image: ' + href, e);
+            }
+        }));
+
+        // Wrap in a minimal HTML document
+        const html = '<!DOCTYPE html>\n<html>\n<body>\n' + clone.innerHTML + '\n</body>\n</html>';
+        const blob = new Blob([html], { type: 'text/html' });
+
+        // Use native save dialog if available (Chrome/Edge), fall back to download link (Firefox)
+        if (window.showSaveFilePicker) {
+            try {
+                const fileHandle = await window.showSaveFilePicker({
+                    suggestedName: 'navigator-dump.html',
+                    types: [{ description: 'HTML file', accept: { 'text/html': ['.html'] } }]
+                });
+                const writable = await fileHandle.createWritable();
+                await writable.write(blob);
+                await writable.close();
+            } catch(e) {
+                if (e.name !== 'AbortError') console.error('Save failed:', e);
+            }
+        } else {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'navigator-dump.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    }
+
     let templateNameMapper = {};
 
 

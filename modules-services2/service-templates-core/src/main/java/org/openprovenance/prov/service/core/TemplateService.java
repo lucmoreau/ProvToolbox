@@ -136,6 +136,7 @@ public class TemplateService {
         String sqlInitializer= (String) templateConfiguration.get("sql.initializer");
         String jdbcURL= (String) templateConfiguration.get("jdbc.url");
         String nlgXplanLibary= (String) templateConfiguration.get("nlg.xplan.library");
+        String nlgXplanStrategy= (String) templateConfiguration.get("nlg.xplan.strategy");
         List<String> nlgPlanSelection= (List<String>) templateConfiguration.get("nlg.xplan.selection");
         this.iconsFolderForGraphviz=(String) templateConfiguration.get("icons.folder.for.graphviz");
 
@@ -167,7 +168,7 @@ public class TemplateService {
         this.documentBuilderDispatcher=catalogueDispatcher.getDocumentBuilderDispatcher();
         this.recordMaker=catalogueDispatcher.getRecordMaker();
         this.queryTemplate=new TemplateQuery(querier, this.catalogueDispatcher, principalManager, compositeLinker, om);
-        this.templateLogic=new TemplateLogicWithConfig(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om, nlgXplanLibary, nlgPlanSelection);
+        this.templateLogic=new TemplateLogicWithConfig(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om, nlgXplanLibary, nlgPlanSelection, nlgXplanStrategy);
 
 
     }
@@ -175,20 +176,37 @@ public class TemplateService {
     static class TemplateLogicWithConfig extends TemplateLogic {
         private final String nlgXplanLibrary;
         private final List<String> nlgXplanSelection;
+        private final String nlgXplanStrategy;
 
 
-        public TemplateLogicWithConfig(ProvFactory pf, TemplateQuery queryTemplate, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om, String nlgXplanLibrary, List<String> nlgXplanSelection) {
-            super(pf, queryTemplate, shortNames, catalogueDispatcher, principalManager, utils, om);
+        public TemplateLogicWithConfig(ProvFactory pf, TemplateQuery queryTemplate, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om, String nlgXplanLibrary, List<String> nlgXplanSelection, String nlgXplanStrategy) {
+            super(pf, queryTemplate, shortNames, catalogueDispatcher, principalManager, utils, om, nlgXplanStrategy);
             this.nlgXplanLibrary = nlgXplanLibrary;
             this.nlgXplanSelection = nlgXplanSelection;
+            this.nlgXplanStrategy = nlgXplanStrategy;
         }
 
         @Override
         public @NonNull XplainerConfig makeXplainerConfig() {
-            System.out.println("calling new XplainerConfig " + nlgXplanLibrary);
-            System.out.println("calling new XplainerConfig " + nlgXplanSelection);
+            System.out.println("calling new XplainerConfig, library: " + nlgXplanLibrary);
+            System.out.println("calling new XplainerConfig, selection: " + nlgXplanSelection);
+            System.out.println("calling new XplainerConfig, strategy: " + nlgXplanStrategy);
 
-            return new XplainerConfig(nlgXplanLibrary, nlgXplanSelection);
+            return new XplainerConfig(nlgXplanLibrary, nlgXplanSelection, nlgXplanStrategy);
+        }
+
+        @Override
+        public @NonNull XplainerConfig makeXplainerConfig(String template) {
+            System.out.println("calling new XplainerConfig, library: " + nlgXplanLibrary);
+            System.out.println("calling new XplainerConfig, selection: " + nlgXplanSelection);
+            System.out.println("calling new XplainerConfig, strategy: " + nlgXplanStrategy);
+
+            if (Objects.equals(nlgXplanStrategy, "template-based")) {
+                System.out.println("using template " + template);
+                return new XplainerConfig(nlgXplanLibrary, List.of(template), nlgXplanStrategy);
+            } else {
+                return new XplainerConfig(nlgXplanLibrary, nlgXplanSelection, nlgXplanStrategy);
+            }
         }
     }
 

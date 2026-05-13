@@ -52,9 +52,10 @@ public class TemplateLogic {
     private final PrincipalManager principalManager;
     private final Map<String, String> shortNames;
     private final Map<String, String> semanticType;
+    private final String nlgXplanStrategy;
 
 
-    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om) {
+    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om, String nlgXplanStrategy) {
         this.pf = pf;
         this.templateDispatcher = templateDispatcher;
         this.documentBuilderDispatcher = templateDispatcher.getDocumentBuilderDispatcher();
@@ -67,6 +68,7 @@ public class TemplateLogic {
         this.principalManager = principalManager;
         this.shortNames=shortNames;
         this.semanticType=templateDispatcher.getSemanticType();
+        this.nlgXplanStrategy = nlgXplanStrategy;
     }
 
     public List<Object> processIncomingJson(List<Map<String, Object>> entries, String acceptHeader) {
@@ -261,13 +263,16 @@ public class TemplateLogic {
     final Explainer explainer=factory.makeExplainer();
     final org.openprovenance.prov.scala.iface.Narrator narrator=factory.makeNarrator();
 
-    public Map<String, String> generateExplanation(String template, Integer id, String headerAcceptExplanation, Document doc) {
+    public Map<String, String> generateExplanation(String templateFullyQualifiedName, Integer id, String headerAcceptExplanation, Document doc) {
+
+        String template=shortNames.get(templateFullyQualifiedName).replace("_","-");
 
         org.openprovenance.prov.scala.immutable.Document sdoc = (org.openprovenance.prov.scala.immutable.Document) new BeanTraversal(pFactoryS, pFactoryS).doAction(doc);
 
-        XplainerConfig config = makeXplainerConfig();
-        //scala.collection.immutable.Map<String, Narrative> foo=explainer.explain(sdoc, config);
-        //System.out.println("foo " + foo);
+        XplainerConfig config = (Objects.equals(nlgXplanStrategy, "template-based"))? makeXplainerConfig(template): makeXplainerConfig();
+
+        logger.info("generateExplanation " + id + " " + template + " " + config + " " +  headerAcceptExplanation + " " + nlgXplanStrategy);
+
         scala.collection.immutable.Map<String, scala.collection.immutable.List<String>> result = narrator.getTextOnly(explainer.explain(sdoc, config));
 
         // convert result to java map
@@ -281,7 +286,11 @@ public class TemplateLogic {
     }
 
     public @NonNull XplainerConfig makeXplainerConfig() {
-        System.out.println("calling default XplainerConfig");
+        System.out.println("calling default XplainerConfig (1)");
+        return new XplainerConfig();
+    }
+    public @NonNull XplainerConfig makeXplainerConfig(String template) {
+        System.out.println("calling default XplainerConfig (2)");
         return new XplainerConfig();
     }
 }

@@ -3,8 +3,12 @@
 
 # ProvToolbox TODO
 
+- T25
+- T24
+- T23
+- T22
+- T21
 - T20
-- T19 update navigation display to visualise atype icons, and fallback on template icons if atype icons not available
 - T18 add creation date to record_index table
 - T17 Update the viz so that overlay template is near the template it overlays
 - T16 Have a place for template explanations to be displayed when hovering over a template
@@ -118,4 +122,4 @@ updated CompilerCommon to use the new code generation pattern for the Common Bea
         |
     
     ```
-  
+  - T19 update navigation display to visualise atype icons, and fallback on template icons if atype icons not available

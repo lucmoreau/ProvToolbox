@@ -29,6 +29,9 @@
         <requiredProperty key="nlgXplanSelection">
            <!--  <defaultValue>[]</defaultValue> -->
         </requiredProperty>
+        <requiredProperty key="nlgXplanStrategy">
+            <defaultValue>default</defaultValue>
+        </requiredProperty>
     </requiredProperties>
 
     <modules>

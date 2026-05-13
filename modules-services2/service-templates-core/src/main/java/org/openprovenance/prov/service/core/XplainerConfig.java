@@ -13,15 +13,18 @@ public class XplainerConfig implements XConfig {
 
     private final String   libraryPath      ;
     private final List<String> templateList;
+    private final String nlgXplanStrategy;
 
     public XplainerConfig() {
         this.libraryPath  = "/xplain/plead/template-library.json";
         this.templateList = List.of("plead-generic-responsibility");
+        this.nlgXplanStrategy = "default";
     }
 
-    public XplainerConfig(String libraryPath, List<String> templateList) {
+    public XplainerConfig(String libraryPath, List<String> templateList, String nlgXplanStrategy) {
         this.libraryPath = libraryPath;
         this.templateList = templateList;
+        this.nlgXplanStrategy = nlgXplanStrategy;
     }
 
     @Override
@@ -75,4 +78,15 @@ public class XplainerConfig implements XConfig {
     public String infiles() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "XplainerConfig{" +
+                "libraryPath='" + libraryPath + '\'' +
+                ", templateList=" + templateList +
+                ", nlgXplanStrategy='" + nlgXplanStrategy + '\'' +
+                '}';
+    }
+
+
 }

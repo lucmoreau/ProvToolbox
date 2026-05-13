@@ -571,12 +571,35 @@
         const iconBaseUrl = ICON_DEFS_URL.substring(0, ICON_DEFS_URL.lastIndexOf('/') + 1);
         const xlinkNS = 'http://www.w3.org/1999/xlink';
         svgElement.querySelectorAll('image').forEach(function(img) {
+            // find closest ancestor of class node (excluding the element itself)
+            const nodeParent = img.parentElement ? img.parentElement.closest('.node') : null;
+            let subtype;
+            if (nodeParent) {
+                subtype=extractNodeSubtype(nodeParent);
+            }
+
             const href = img.getAttributeNS(xlinkNS, 'href') || img.getAttribute('href');
             if (href) {
                 const filename = href.substring(href.lastIndexOf('/') + 1);
-                const newHref = iconBaseUrl + filename.replace('png','svg');
-                img.setAttributeNS(xlinkNS, 'xlink:href', newHref);
-                img.setAttribute('href', newHref);
+                const newHref2 = iconBaseUrl + filename.replace('png', 'svg');
+                if (subtype) {
+                    //let's try to get the icon for the subtype
+                    let filenameNoExtension = filename.substring(0,filename.lastIndexOf('.png'));
+                    const qualifiedSubtype=filenameNoExtension.substring(0,filenameNoExtension.lastIndexOf('.')+1) + subtype;
+                    const newHref1 = iconBaseUrl + qualifiedSubtype + '.svg';
+                    img.setAttributeNS(xlinkNS, 'xlink:href', newHref1);
+                    img.setAttribute('href', newHref1);
+                    // if the subtype icon does not exist, fall back, use the icon for the template
+                    img.addEventListener('error', function() {
+                        console.log('failed with ' + newHref1 + ', now trying ' + newHref2 );
+                        img.setAttributeNS(xlinkNS, 'xlink:href', newHref2);
+                        img.setAttribute('href', newHref2);
+                    }, { once: true });
+                } else {
+                    // if there is no subtype, go for the template icon
+                    img.setAttributeNS(xlinkNS, 'xlink:href', newHref2);
+                    img.setAttribute('href', newHref2);
+                }
             }
         });
     }
@@ -889,7 +912,7 @@
                         let ID = parsed[0]["ID"];
                         let prov_link = createProvLink(name, ID);
                         ${symbol_dollar}(anchor_result_prov_link).html(prov_link).append("<p/>").append("<div id='xplain_id'></div>").append("<p/>");
-                        getExplanation('${symbol_dollar}{service.context}/provapi/explanation/template/' + name + '/' + ID, 'default', anchor_explanation);
+                        getExplanation('${symbol_dollar}{service.context}/provapi/explanation/template/' + name + '/' + ID, '${symbol_dollar}{pom.nlg.xplan.strategy}', anchor_explanation);
                     }
                 } else if (responseType.includes(MEDIA_TYPE_TEXT_CSV)) {
                     const response = xhr.responseText.trim();

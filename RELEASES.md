@@ -29,6 +29,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template: MergeTask create directory for output if it does not exist
 * prov-template-compiler: @semantic.type annotation, allowing semantic type of template to be found easily
 * service-template-core/archetype: backward traversal version returning semantic type of activity, and update of viz 
+* prov-template-archetype: T19 update navigation display to visualise activity type icons
 
 `2.2.3`
 * prov-template: update to instantiation

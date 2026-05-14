@@ -342,6 +342,14 @@ public class MarkupFormatter extends NLGModule {
 		if(character >= 'a' && character <= 'z') {
 			character = (char) ('A' + (character - 'a'));
 			realisation.setCharAt(0, character);
+		} else if (character=='<') {
+			int closeTag = realisation.indexOf(">");
+			if (closeTag != -1 && closeTag + 1 < realisation.length()) {
+				char firstAfterTag = realisation.charAt(closeTag + 1);
+				if (firstAfterTag >= 'a' && firstAfterTag <= 'z') {
+					realisation.setCharAt(closeTag + 1, (char) ('A' + (firstAfterTag - 'a')));
+				}
+			}
 		}
 	}
 

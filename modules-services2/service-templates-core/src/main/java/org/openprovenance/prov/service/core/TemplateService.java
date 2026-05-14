@@ -192,20 +192,20 @@ public class TemplateService {
             System.out.println("calling new XplainerConfig, selection: " + nlgXplanSelection);
             System.out.println("calling new XplainerConfig, strategy: " + nlgXplanStrategy);
 
-            return new XplainerConfig(nlgXplanLibrary, nlgXplanSelection, nlgXplanStrategy);
+            return new XplainerConfig(nlgXplanLibrary, nlgXplanSelection, nlgXplanStrategy,0);
         }
 
         @Override
-        public @NonNull XplainerConfig makeXplainerConfig(String template) {
+        public @NonNull XplainerConfig makeXplainerConfig(String template, int format_option) {
             System.out.println("calling new XplainerConfig, library: " + nlgXplanLibrary);
             System.out.println("calling new XplainerConfig, selection: " + nlgXplanSelection);
             System.out.println("calling new XplainerConfig, strategy: " + nlgXplanStrategy);
 
             if (Objects.equals(nlgXplanStrategy, "template-based")) {
                 System.out.println("using template " + template);
-                return new XplainerConfig(nlgXplanLibrary, List.of(template), nlgXplanStrategy);
+                return new XplainerConfig(nlgXplanLibrary, List.of(template), nlgXplanStrategy, format_option);
             } else {
-                return new XplainerConfig(nlgXplanLibrary, nlgXplanSelection, nlgXplanStrategy);
+                return new XplainerConfig(nlgXplanLibrary, nlgXplanSelection, nlgXplanStrategy, format_option);
             }
         }
     }
@@ -468,7 +468,7 @@ public class TemplateService {
     @GET
     @Path("/explanation/template/{template}/{id}")
     @Consumes({MEDIA_APPLICATION_JSON})
-    @Produces({MediaType.TEXT_PLAIN, MEDIA_APPLICATION_JSON})
+    @Produces({MediaType.TEXT_PLAIN, MEDIA_APPLICATION_JSON, MEDIA_TEXT_HTML})
     public Response getExplanation(@Context HttpServletResponse response,
                                    @Context HttpServletRequest request,
                                    @Context HttpHeaders headers,
@@ -491,18 +491,27 @@ public class TemplateService {
         Document doc=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 
 
-        Map<String,String> explanations=templateLogic.generateExplanation(template, id, headerAcceptExplanation, doc);
 
         switch (request.getHeader(HttpHeaders.ACCEPT).toLowerCase()) {
             case MediaType.TEXT_PLAIN:
                 StringBuilder sb= new StringBuilder();
+                Map<String,String> explanations=templateLogic.generateExplanation(template, id, headerAcceptExplanation, doc,0);
+
                 for (String key: explanations.keySet()) {
                     sb.append(explanations.get(key)).append("\n");
                 }
                 return ServiceUtils.composeResponseOK(sb.toString()).type(MediaType.TEXT_PLAIN_TYPE).build();
             case MEDIA_APPLICATION_JSON:
-                StreamingOutput promise= out -> om.writeValue(out,explanations);
+                Map<String,String> explanations2=templateLogic.generateExplanation(template, id, headerAcceptExplanation, doc,0);
+                StreamingOutput promise= out -> om.writeValue(out,explanations2);
                 return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
+            case MEDIA_TEXT_HTML:
+                Map<String,String> explanations3=templateLogic.generateExplanation(template, id, headerAcceptExplanation, doc,1);
+                StringBuilder sb1= new StringBuilder();
+                for (String key: explanations3.keySet()) {
+                    sb1.append(explanations3.get(key)).append("\n");
+                }
+                return ServiceUtils.composeResponseOK(sb1.toString()).type(MediaType.TEXT_HTML_TYPE).build();
         }
         return utils.composeResponseBadRequest("unknown accept header " + request.getHeader(HttpHeaders.ACCEPT), new UnsupportedOperationException(request.getHeader(HttpHeaders.ACCEPT)));
 

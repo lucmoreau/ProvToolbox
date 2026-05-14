@@ -263,13 +263,13 @@ public class TemplateLogic {
     final Explainer explainer=factory.makeExplainer();
     final org.openprovenance.prov.scala.iface.Narrator narrator=factory.makeNarrator();
 
-    public Map<String, String> generateExplanation(String templateFullyQualifiedName, Integer id, String headerAcceptExplanation, Document doc) {
+    public Map<String, String> generateExplanation(String templateFullyQualifiedName, Integer id, String headerAcceptExplanation, Document doc, int format_option) {
 
         String template=shortNames.get(templateFullyQualifiedName).replace("_","-");
 
         org.openprovenance.prov.scala.immutable.Document sdoc = (org.openprovenance.prov.scala.immutable.Document) new BeanTraversal(pFactoryS, pFactoryS).doAction(doc);
 
-        XplainerConfig config = (Objects.equals(nlgXplanStrategy, "template-based"))? makeXplainerConfig(template): makeXplainerConfig();
+        XplainerConfig config = (Objects.equals(nlgXplanStrategy, "template-based"))? makeXplainerConfig(template,format_option): makeXplainerConfig();
 
         logger.info("generateExplanation " + id + " " + template + " " + config + " " +  headerAcceptExplanation + " " + nlgXplanStrategy);
 
@@ -289,7 +289,7 @@ public class TemplateLogic {
         System.out.println("calling default XplainerConfig (1)");
         return new XplainerConfig();
     }
-    public @NonNull XplainerConfig makeXplainerConfig(String template) {
+    public @NonNull XplainerConfig makeXplainerConfig(String template,  int format_option) {
         System.out.println("calling default XplainerConfig (2)");
         return new XplainerConfig();
     }

@@ -850,7 +850,7 @@
             ${symbol_dollar}(id).html(response);
         }
         xhr.setRequestHeader("Accept-PROV-explanation", accept_explanation);
-        xhr.setRequestHeader("Accept", "text/plain");
+        xhr.setRequestHeader("Accept", "text/html");
         xhr.send();
     }
 
@@ -1308,32 +1308,61 @@
 
     function wireNavigatorNodeEvents() {
         const box = document.getElementById('navigator_explanation');
-        document.querySelectorAll('#navigator_div g.node').forEach(function(node) {
-            node.addEventListener('click', function(e) {
-                if (!e.altKey) return;
-                e.stopPropagation();
-                const titleEl = node.querySelector('title');
-                const title = titleEl ? titleEl.textContent.trim() : '';
-                const parsed = parseNodeTitle(title);
-                if (!parsed) return;
-                box.innerHTML = '';
-                box.style.display = 'block';
-                const fqn = (longNames[parsed.templateName] && longNames[parsed.templateName][0])
-                              ? longNames[parsed.templateName][0]
-                              : parsed.templateName;
-                const url = '${symbol_dollar}{service.context}/provapi/explanation/template/'
-                          + fqn + '/' + parsed.id;
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', url, true);
-                xhr.setRequestHeader("Accept-PROV-explanation", 'default');
-                xhr.setRequestHeader("Accept", "text/plain");
-                xhr.onload = function() { box.innerHTML = xhr.responseText; };
-                xhr.onerror = function() { box.textContent = 'Error loading explanation.'; };
-                xhr.send();
-            });
-            node.addEventListener('mouseleave', function() {
+        let hoverTimer = null;
+        let pinned = false;
+
+        function fetchExplanation(node) {
+            const titleEl = node.querySelector('title');
+            const title = titleEl ? titleEl.textContent.trim() : '';
+            const parsed = parseNodeTitle(title);
+            if (!parsed) return;
+            box.innerHTML = '';
+            box.style.display = 'block';
+            const fqn = (longNames[parsed.templateName] && longNames[parsed.templateName][0])
+                          ? longNames[parsed.templateName][0]
+                          : parsed.templateName;
+            const url = '${symbol_dollar}{service.context}/provapi/explanation/template/'
+                      + fqn + '/' + parsed.id;
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.setRequestHeader("Accept-PROV-explanation", 'default');
+            xhr.setRequestHeader("Accept", "text/html");
+            xhr.onload = function() { box.innerHTML = xhr.responseText; };
+            xhr.onerror = function() { box.textContent = 'Error loading explanation.'; };
+            xhr.send();
+        }
+
+        // Space pins the visible explanation; ESC unpins and hides it
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'Space' && box.style.display === 'block' && !pinned) {
+                e.preventDefault();
+                pinned = true;
+                box.style.outline = '2px solid #3b82f6'; // blue border signals pinned state
+            } else if (e.code === 'Escape' && pinned) {
+                pinned = false;
+                box.style.outline = '';
                 box.innerHTML = '';
                 box.style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('#navigator_div g.node').forEach(function(node) {
+            node.addEventListener('mouseenter', function() {
+                hoverTimer = setTimeout(function() {
+                    // Hovering a new node for 2 s always replaces the explanation,
+                    // and clears the pin so behaviour returns to normal afterwards.
+                    pinned = false;
+                    box.style.outline = '';
+                    fetchExplanation(node);
+                }, 2000);
+            });
+            node.addEventListener('mouseleave', function() {
+                clearTimeout(hoverTimer);
+                hoverTimer = null;
+                if (!pinned) {
+                    box.innerHTML = '';
+                    box.style.display = 'none';
+                }
             });
         });
     }

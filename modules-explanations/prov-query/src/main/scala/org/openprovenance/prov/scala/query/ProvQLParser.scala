@@ -55,7 +55,7 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
   def fieldIdList: Rule[HNil, Seq[String] :: HNil] = rule { oneOrMore(fieldIdent).separatedBy(WS ~ "," ~ WS)}
 
   def ref: Rule[HNil, Ref :: HNil] = rule {
-    (fieldIdent ~ WS ~ ( "[" ~ WS ~ identifier ~> makeProperty ~ WS ~ "]" ~ WS   |
+    (fieldIdent ~ WS ~ ( "[" ~ WS ~ identifier ~> makeProperty ~ WS ~ "]" ~ WS ~ optional("[" ~ WS ~ fieldIdent ~ WS ~ "]" ~ WS) ~> makeJsonKeyProp |
       "." ~ WS ~ fieldIdent ~> makeField ~ WS ) ) |
       '\'' ~ qualified_name ~ '\'' ~> makeValue ~ WS
     /*|
@@ -74,6 +74,7 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
   def makeSelect: (Seq[(String,Option[String])],Operator) => Operator
   def makeScan: (String, QualifiedName,Option[String] ) => Operator
   def makeProperty: (String, QualifiedName)  => Ref
+  def makeJsonKeyProp: (Ref, Option[String]) => Ref
   def makeField: (String ,String) => Ref
   def makeValue: QualifiedName  => Ref
   def makeWhere:  (Operator, Option[Seq[Predicate]]) => Operator
@@ -112,6 +113,11 @@ class ProvQLParser (override val input: ParserInput, val ns: Namespace) extends 
 
 
   override def makeProperty: (String, QualifiedName) => Ref = (s,q) => Property(s,q.toString())
+
+  override def makeJsonKeyProp: (Ref, Option[String]) => Ref = (ref, key) => (ref, key) match {
+    case (Property(name, property), Some(k)) => JsonProperty(name, property, k)
+    case _ => ref
+  }
 
   override def makeField: (String, String) => Ref = (s1,s2) => Field(s1,s2)
 

@@ -1,5 +1,6 @@
 package org.openprovenance.prov.scala.primitive
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import nlg.wrapper.Constants
 import org.openprovenance.prov.model
 import org.openprovenance.prov.scala.immutable.{ProvFactory, _}
@@ -39,6 +40,8 @@ case class Triple (subject: QualifiedName,
  */
 
 object Primitive {
+
+  private val jsonMapper = new ObjectMapper()
 
   def processFunction(getStatement: String=>Statement,
                       getSeqStatement: String=>Seq[Statement],
@@ -165,7 +168,10 @@ object Primitive {
     (values1.isEmpty,values2.isEmpty) match {
       case (true,_) => (None,Set())
       case (_,true) => (None,Set())
-      case (false,false) => (Some(doFun1(function, values1,  values2, environment)), triples1 ++ triples2)
+      case (false,false) =>
+        val r = doFun1(function, values1, values2, environment)
+        if (optionp && r.string.exists(_.isEmpty)) (None, Set())
+        else (Some(r), triples1 ++ triples2)
     }
   }
 
@@ -285,6 +291,7 @@ object Primitive {
       case "localname"   => if (values.isEmpty) "NULL" else values.head.asInstanceOf[QualifiedName].getLocalPart()
       case "identity"    => if (values.isEmpty) "NULL" else values.head.toString
       case "string"      => if (values.isEmpty) "NULL" else unwrap(values.head)
+      case "date"        => if (values.isEmpty) "NULL" else unwrap(values.head).take(10)
       case "ordinal"     => if (values.isEmpty) "NULL" else ordinal(values.head)
       case "cardinal"    => if (values.isEmpty) "NULL" else cardinal(values.head)
       case "cardinality" => if (values.isEmpty) "NULL" else cardinality(values.head)
@@ -337,6 +344,8 @@ object Primitive {
       case "lookup-type" =>
         lookup_type(value, arg1, Seq(), Map(), environment)
 
+      case "json-property" =>
+        get_json_value(value, arg1, Seq(), Map(), environment)
 
       case "markup-for-id" =>
         val uri=value.head.asInstanceOf[QualifiedName].getUri()
@@ -344,6 +353,30 @@ object Primitive {
         "data-id=\"" + uri + "\" class=\"" + clazz + "\""
 
       case _ => throw new UnsupportedOperationException ("doFun1: " + function + "[found: " + (if (value==null) "NULL" else value.toString) + ", expected: " + arg1.toString + "]")
+    }
+  }
+
+  def get_json_value(value: Seq[Object], arg1: Seq[Object], arg2: Seq[Object], features: Features, environment: Environment): Result = {
+    val key = arg1.head.toString
+    val jsonStr = unwrap(value.head).replace("\\\"", "\"")
+    if (jsonStr == null || jsonStr.isEmpty) new Result("")
+    else {
+      val node = jsonMapper.readTree(jsonStr)
+      val v = node.path(key)
+      if (v.isMissingNode || v.isNull) new Result("") else new Result(v.asText())
+    }
+  }
+
+  def getJsonProperty(values: Seq[Object], key: String): String = {
+    if (values.isEmpty) null
+    else {
+      val jsonStr = unwrap(values.head).replace("\\\"", "\"")
+      if (jsonStr == null || jsonStr.isEmpty) null
+      else {
+        val node = jsonMapper.readTree(jsonStr)
+        val v = node.path(key)
+        if (v.isMissingNode || v.isNull) null else v.asText()
+      }
     }
   }
 
@@ -523,6 +556,12 @@ object Primitive {
 
       case "lookup-ground-type-with-default" =>
         lookup_ground_type_with_default(value, arg1, arg2, Map(), environment)
+
+      case "regexp-replace" =>
+        val input       = unwrap(value.head)
+        val pattern     = arg1.head.toString
+        val replacement = arg2.head.toString
+        input.replaceAll(pattern, replacement)
 
       case _ => throw new UnsupportedOperationException("doFun2: " + function + "[found: " + (if (value == null) "NULL" else value.toString) + ", expected: " + arg1.toString + "]")
 

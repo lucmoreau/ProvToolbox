@@ -35,5 +35,6 @@ case class OrPred(pred1: Predicate, pred2: Predicate) extends Predicate
 sealed abstract class Ref
 case class Field(name: String, field: String) extends Ref
 case class Property(name: String, property: String) extends Ref
+case class JsonProperty(name: String, property: String, jsonKey: String) extends Ref
 case class Value(x: Object) extends Ref
 

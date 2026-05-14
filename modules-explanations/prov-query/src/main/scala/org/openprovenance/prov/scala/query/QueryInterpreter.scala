@@ -133,6 +133,10 @@ trait QueryInterpreter extends SummaryTypesNames {
   def evalRef(r: Ref)(rec: Record): Seq[Object] = r match {
     case Property(name, property) => Primitive.applyProperty(property, None, toStatement(rec(name)), environment)._1
     case Field(name, property) => Primitive.applyField(property, toStatement(rec(name)))._1
+    case JsonProperty(name, property, jsonKey) =>
+      val propValues = Primitive.applyProperty(property, None, toStatement(rec(name)), environment)._1
+      val v = Primitive.getJsonProperty(propValues, jsonKey)
+      if (v == null) Seq() else Seq[Object](v)
     case Value(x) => Seq(x)
   }
 

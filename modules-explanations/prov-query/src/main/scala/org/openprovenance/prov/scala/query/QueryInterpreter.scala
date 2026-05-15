@@ -128,6 +128,10 @@ trait QueryInterpreter extends SummaryTypesNames {
         evalPred(pred2)(rec)
       }
 
+    case InSetPred(ref, values) =>
+      val refValues = evalRef(ref)(rec).map(_.toString).toSet
+      values.exists(v => refValues.contains(v.toString))
+
   }
 
   def evalRef(r: Ref)(rec: Record): Seq[Object] = r match {

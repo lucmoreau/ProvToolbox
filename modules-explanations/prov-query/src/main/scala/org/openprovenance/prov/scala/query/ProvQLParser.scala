@@ -39,9 +39,11 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
   def pred: Rule[HNil, Predicate :: HNil] = rule {
     ref  ~ ( ">=" ~ WS ~ ref ~> makeIncludes ~ WS |
       "!>=" ~ WS ~ ref ~> makeIncludesNot ~ WS |
-      "!>=" ~ WS ~ ref ~> makeIncludesNot ~ WS |
       "="  ~ WS ~ ( ref  ~> makeEq | int_literal  ~> makeEqL)  ~ WS |
-      "exists" ~ WS ~> makeExists ~ WS ) ~ optional ( "or" ~ WS ~ pred ~> makeOr )}
+      "exists" ~ WS ~> makeExists ~ WS |
+      "intersects" ~ WS ~ "{" ~ WS ~ oneOrMore(qualifiedNameLiteral).separatedBy(WS ~ "," ~ WS) ~ WS ~ "}" ~ WS ~> makeInSet) ~ optional ( "or" ~ WS ~ pred ~> makeOr )}
+
+  def qualifiedNameLiteral: Rule[HNil, QualifiedName :: HNil] = rule { '\'' ~ qualified_name ~ '\'' ~ WS }
 
   def joinClause2: Rule[HNil, (Ref, Ref) :: HNil] = rule {
     ref  ~ WS ~ "=" ~ WS ~ ref ~> makeJoinPair ~ WS }
@@ -83,6 +85,7 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
   def makeIncludes: (Ref, Ref) => Predicate
   def makeIncludesNot: (Ref, Ref) => Predicate
   def makeExists: Ref  => Predicate
+  def makeInSet: (Ref, Seq[QualifiedName]) => Predicate
   def makeJoinPair: (Ref,Ref) => (Ref,Ref)
   def makeTableJoin: (Operator, Operator,(Ref,Ref)) => Operator
   def makeTableLJoin: (Operator, Operator,(Ref,Ref)) => Operator
@@ -131,6 +134,9 @@ class ProvQLParser (override val input: ParserInput, val ns: Namespace) extends 
   override def makeEqL: (Ref, String) => Predicate = (ref1,ref2) => EqL("equals",ref1,ref2)
 
   override def makeExists: Ref => Predicate = ref => Eq("exists",ref, null)
+
+  override def makeInSet: (Ref, Seq[QualifiedName]) => Predicate =
+    (ref, values) => InSetPred(ref, values.map(_.toString))
 
   override def makeWhere: (Operator, Option[Seq[Predicate]]) => Operator = (op, x) =>  x match {
     case None => op

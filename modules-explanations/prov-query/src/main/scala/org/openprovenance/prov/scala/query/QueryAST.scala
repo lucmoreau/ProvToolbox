@@ -31,6 +31,7 @@ sealed abstract class Predicate
 case class Eq(pred: String, a: Ref, b: Ref) extends Predicate
 case class EqL(pred: String, a: Ref, b: String) extends Predicate
 case class OrPred(pred1: Predicate, pred2: Predicate) extends Predicate
+case class InSetPred(ref: Ref, values: Seq[Object]) extends Predicate
 
 sealed abstract class Ref
 case class Field(name: String, field: String) extends Ref

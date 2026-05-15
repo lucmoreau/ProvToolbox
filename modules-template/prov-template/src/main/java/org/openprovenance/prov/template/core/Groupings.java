@@ -10,6 +10,7 @@ import org.openprovenance.prov.model.*;
 public class Groupings {
     final private static ProvUtilities u= new ProvUtilities();
     final private ArrayList<ArrayList<QualifiedName>> variables;
+    final private Map<QualifiedName, Integer> varToGroup= new HashMap<>();
     private QualifiedName[] freeVariables;
 
     public Groupings() {
@@ -29,6 +30,7 @@ public class Groupings {
         ll.add(name);
         int len=variables.size();
         variables.add(ll);
+        varToGroup.put(name, len);
         return len;
     }
 
@@ -36,6 +38,13 @@ public class Groupings {
     public void addVariable(int group, QualifiedName name) {
         List<QualifiedName> v=variables.get(group);
         v.add(name);
+        varToGroup.put(name, group);
+    }
+
+    /** Returns the group index containing {@code var}, or {@code null} if {@code var}
+     *  is not in any group. O(1) lookup. */
+    public Integer groupOf(QualifiedName var) {
+        return varToGroup.get(var);
     }
 
 
@@ -47,8 +56,8 @@ public class Groupings {
     }
 
     static public Groupings fromDocument(Document doc, Bindings bindings, ProvFactory pf) {
-        Map<QualifiedName,Set<QualifiedName>> linked= new Hashtable<>();
-        Map<QualifiedName,Integer> linkedGroups= new Hashtable<>();
+        Map<QualifiedName,Set<QualifiedName>> linked= new HashMap<>();
+        Map<QualifiedName,Integer> linkedGroups= new HashMap<>();
 
         Bundle bun=u.getBundle(doc).get(0);
         Groupings grps=new Groupings();

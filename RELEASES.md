@@ -32,6 +32,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-archetype: T19 update navigation display to visualise activity type icons
 * prov-explanations: extract json property
 * prov-query: new intersects operators on ref (in filter clause)
+* misc optimisations for template instantiations and qualified names
 
 
 `2.2.3`

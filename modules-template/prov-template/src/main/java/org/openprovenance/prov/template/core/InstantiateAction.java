@@ -18,8 +18,8 @@ public class InstantiateAction implements StatementAction {
     final private ProvFactory pf;
     final private Instantiater instantiater;
     final private ProvUtilities u;
-    final private List<StatementOrBundle> ll = new LinkedList<>();
-    final private List<Integer> index;
+    final private List<StatementOrBundle> ll = new ArrayList<>();
+    final private int[] index;
     final private Groupings grp1;
     final private boolean addOrderp;
     final private String qualifiedNameURI;
@@ -41,7 +41,7 @@ public class InstantiateAction implements StatementAction {
                              Instantiater instantiater,
                              Map<QualifiedName, QDescriptor> env,
                              Map<QualifiedName, SingleDescriptors> env2,
-                             List<Integer> index,
+                             int[] index,
                              Bindings bindings,
                              Groupings grp1,
                              boolean addOrderp,
@@ -334,7 +334,7 @@ public class InstantiateAction implements StatementAction {
         if (dstStatement instanceof HasOther) {
 
             //Collection<Attribute> srcAttributes = pf.getAttributes(srcStatement);
-            Collection<Attribute> dstAttributes = new LinkedList<>();
+            Collection<Attribute> dstAttributes = new ArrayList<>();
 
             for (Iterator<Attribute> it = pf.getAttributesIterator(srcStatement); it.hasNext(); ) {
                 Attribute srcAttribute = it.next();
@@ -520,9 +520,16 @@ public class InstantiateAction implements StatementAction {
             res.getOther().add(pf.newOther(TMPL_NS,
                                            "order",
                                            TMPL_PREFIX,
-                                           index,
+                                           indexAsList(index),
                                            pf.getName().XSD_STRING));
         }
+    }
+
+    private static List<Integer> indexAsList(int[] arr) {
+        if (arr == null) return null;
+        List<Integer> list = new ArrayList<>(arr.length);
+        for (int v : arr) list.add(v);
+        return list;
     }
 
     private boolean setExpand(Statement res, QualifiedName id, int position) {
@@ -756,7 +763,7 @@ public class InstantiateAction implements StatementAction {
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
         List<Statement> statements = bun.getStatement();
-        List<Statement> newStatements = new LinkedList<>();
+        List<Statement> newStatements = new ArrayList<>();
 
         for (Statement s : statements) {
             for (StatementOrBundle sb : instantiater.expand(s,  bindings, grp1,  InstantiateUtil.usedGroups(s, grp1, bindings))) {

@@ -11,6 +11,8 @@ public class QualifiedName implements org.openprovenance.prov.model.QualifiedNam
     private String namespace;
     private String local;
     private String prefix;
+    private int hash; // cached hashCode; 0 means not yet computed
+    private String uri; // cached getUri(); null means not yet computed
 
     public QualifiedName(String namespaceURI, String localPart, String prefix) {
         this.namespace = namespaceURI;
@@ -48,8 +50,12 @@ public class QualifiedName implements org.openprovenance.prov.model.QualifiedNam
 
     @Override
     public String getUri() {
-        return this.getNamespaceURI()
-                + this.getUnescapedLocalPart();
+        String u = uri;
+        if (u == null) {
+            u = this.getNamespaceURI() + this.getUnescapedLocalPart();
+            uri = u;
+        }
+        return u;
     }
 
 
@@ -112,9 +118,15 @@ public class QualifiedName implements org.openprovenance.prov.model.QualifiedNam
      */
     @Override
     public int hashCode() {
-        final HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        hashCode(hashCodeBuilder);
-        return hashCodeBuilder.toHashCode();
+        int h = hash;
+        if (h == 0) {
+            // Inlined equivalent of `new HashCodeBuilder().append(local).append(namespace).toHashCode()`
+            // (initial=17, multiplier=37). Preserves the exact value previously produced.
+            h = 17 * 37 + (local == null ? 0 : local.hashCode());
+            h = h * 37 + (namespace == null ? 0 : namespace.hashCode());
+            hash = h;
+        }
+        return h;
     }
 
 

@@ -211,11 +211,9 @@ public class InstantiateUtil {
         Set<QualifiedName> vars = freeVariables(statement);
         Set<Integer> groups = new HashSet<>();
         for (QualifiedName var : vars) {
-            for (int grp = 0; grp < groupings.size(); grp++) {
-                List<QualifiedName> names = groupings.get(grp);
-                if (names.contains(var)) {
-                    groups.add(grp);
-                }
+            Integer grp = groupings.groupOf(var);
+            if (grp != null) {
+                groups.add(grp);
             }
         }
 

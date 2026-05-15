@@ -31,6 +31,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-template-core/archetype: backward traversal version returning semantic type of activity, and update of viz 
 * prov-template-archetype: T19 update navigation display to visualise activity type icons
 * prov-explanations: extract json property
+* prov-query: new intersects operators on ref (in filter clause)
+
 
 `2.2.3`
 * prov-template: update to instantiation

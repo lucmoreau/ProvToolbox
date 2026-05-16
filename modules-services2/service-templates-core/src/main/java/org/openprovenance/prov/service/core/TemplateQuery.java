@@ -363,7 +363,7 @@ public class TemplateQuery {
                 (sb, data) -> {
                     sb.append(generateBackwardTemplateTraversalWithType(ioMap, semanticType));
                     sb.append(generateBackwardTemplateTraversalStarWithType(semanticType));
-                    System.out.println(sb.toString());
+                  //  System.out.println(sb.toString());
                 });
     }
 
@@ -388,7 +388,7 @@ public class TemplateQuery {
     private String generateBackwardTemplateTraversalWithType(
             Map<String, Map<String, Map<String, String>>> ioMap,
             Map<String, String> semanticType) {
-        System.out.println("generateBackwardTemplateTraversalWithType: " + semanticType + " " + shortNames);
+        //System.out.println("generateBackwardTemplateTraversalWithType: " + semanticType + " " + shortNames);
         return generateTypedWrapperFunction(
                 "backwardtraversal_typed",
                 null,

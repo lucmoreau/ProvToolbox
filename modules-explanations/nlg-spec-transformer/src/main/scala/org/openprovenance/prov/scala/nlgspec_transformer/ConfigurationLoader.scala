@@ -31,7 +31,7 @@ object ConfigurationLoader {
     profile
   }
   def readTemplate(resourcePath: String): Plan = {
-    println("Reading resource from " + resourcePath)
+    //println("Reading resource from " + resourcePath)
     val x: BufferedSource = Source.fromResource(resourcePath)
     val template = SpecLoader.mapper.readValue(x.bufferedReader(), classOf[Plan])
     template

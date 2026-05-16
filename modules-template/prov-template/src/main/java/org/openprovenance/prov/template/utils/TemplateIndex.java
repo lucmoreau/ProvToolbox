@@ -136,8 +136,8 @@ public final class TemplateIndex {
      */
     public static Map<String, TemplateLocator> readOrBuildIndex(Path templatesDir) throws IOException {
         Path json = templatesDir.resolve("index.json");
-        Path yaml = templatesDir.resolve("index.yaml");
-        Path yml  = templatesDir.resolve("index.yml");
+       // Path yaml = templatesDir.resolve("index.yaml");
+       // Path yml  = templatesDir.resolve("index.yml");
 
         Optional<Path> source = Stream.of(json) //yaml, yml
                 .filter(Files::exists)

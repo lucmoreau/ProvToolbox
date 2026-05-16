@@ -1390,6 +1390,15 @@ public class TemplateQuery {
                         for (String out_template : output_table.keySet()) {
                             if (!output_table.get(out_template).keySet().isEmpty()) {
                                 for (String out_property : output_table.get(out_template).keySet()) {
+                                    // Skip same-template same-property self-joins.
+                                    // These arise when the virtual-output fix injects an input
+                                    // column as a virtual output (e.g. document_triggering_goods.document0).
+                                    // The resulting JOIN matches all rows that SHARE the same value
+                                    // (siblings), never ancestors, so it only produces fan-out noise.
+                                    // Legitimate self-joins (e.g. goodsg0→goodsg1) have DIFFERENT
+                                    // in_property and out_property and are unaffected by this guard.
+                                    if (in_template.equals(out_template) && in_property.equals(out_property)) continue;
+
                                     String in_templatex=in_template;
                                     String out_templatex=out_template;
 

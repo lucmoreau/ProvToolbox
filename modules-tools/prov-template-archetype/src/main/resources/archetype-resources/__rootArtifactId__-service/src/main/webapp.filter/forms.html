@@ -321,8 +321,27 @@
                         <button id="navigator_save" type="button" class="btn btn-info" onclick="dumpNavigatorDiv()" disabled>
                             <i class="fa fa-save"></i> Save
                         </button>
+                        <div id="navigator_minimap_container" style="
+                                position: relative;
+                                margin-top: 1.5rem;
+                                width: 100%;
+                                overflow: hidden;
+                                border: 1px solid #cbd5e1;
+                                border-radius: 4px;
+                                display: none;
+                                background: #fff;">
+                            <div id="navigator_minimap_inner" style="transform-origin: top left;"></div>
+                            <div id="navigator_minimap_viewport" style="
+                                position: absolute;
+                                top: 0; left: 0;
+                                border: 2px solid #3b82f6;
+                                background: rgba(59,130,246,0.15);
+                                box-sizing: border-box;
+                                cursor: grab;
+                            "></div>
+                        </div>
                     </div>
-                    <div class="col-lg-10 first-column" style="overflow: auto; height: 100%;">
+                    <div id="navigator_scroll_area" class="col-lg-10 first-column" style="overflow: auto; height: 100%;">
                         <div id="navigator_div">
                         </div>
                         <div id="navigator_explanation" style="
@@ -1276,6 +1295,7 @@
             ${symbol_dollar}(id).html(response);
             rewriteImageHrefs(document.querySelector('#navigator_div svg')); //id hardcoded
             wireNavigatorNodeEvents();
+            updateMinimap();
             document.getElementById('navigator_save').disabled = false;
         }
         xhr.setRequestHeader("Content-Type", "application/json");
@@ -1304,6 +1324,109 @@
             templateName: title.substring(0, lastUnderscore),
             id:           title.substring(lastUnderscore + 1)
         };
+    }
+
+    function updateMinimapViewport() {
+        const scrollEl  = document.getElementById('navigator_scroll_area');
+        const svgEl     = document.querySelector('#navigator_div svg');
+        const viewport  = document.getElementById('navigator_minimap_viewport');
+        const inner     = document.getElementById('navigator_minimap_inner');
+        if (!scrollEl || !svgEl || !viewport || !inner || !inner._mmScale) return;
+
+        const scale = inner._mmScale;
+
+        // Use getBoundingClientRect so the calculation works regardless of
+        // which ancestor element owns the scroll position.
+        const scrollRect = scrollEl.getBoundingClientRect();
+        const svgRect    = svgEl.getBoundingClientRect();
+
+        // How far the SVG's top-left corner has moved relative to the scroll container
+        const offsetLeft = scrollRect.left - svgRect.left;
+        const offsetTop  = scrollRect.top  - svgRect.top;
+
+        viewport.style.left   = Math.max(0, Math.round(offsetLeft          * scale)) + 'px';
+        viewport.style.top    = Math.max(0, Math.round(offsetTop           * scale)) + 'px';
+        viewport.style.width  = Math.round(scrollEl.clientWidth            * scale)  + 'px';
+        viewport.style.height = Math.round(scrollEl.clientHeight           * scale)  + 'px';
+    }
+
+    function updateMinimap() {
+        const svgEl     = document.querySelector('#navigator_div svg');
+        const container = document.getElementById('navigator_minimap_container');
+        const inner     = document.getElementById('navigator_minimap_inner');
+        const scrollEl  = document.getElementById('navigator_scroll_area');
+        if (!svgEl || !container || !inner || !scrollEl) return;
+
+        // Show first so offsetWidth is valid
+        container.style.display = 'block';
+
+        const mmW    = container.offsetWidth;
+        const totalW = svgEl.scrollWidth  || svgEl.getBoundingClientRect().width;
+        const totalH = svgEl.scrollHeight || svgEl.getBoundingClientRect().height;
+        if (!mmW || !totalW) return;
+
+        const scale = mmW / totalW;
+
+        // Clone the SVG and insert it scaled into the minimap
+        const clone = svgEl.cloneNode(true);
+        clone.style.cssText = 'display:block; width:' + totalW + 'px; height:' + totalH + 'px;';
+        clone.removeAttribute('width');
+        clone.removeAttribute('height');
+        inner.innerHTML = '';
+        inner.appendChild(clone);
+        inner.style.width     = totalW + 'px';
+        inner.style.height    = totalH + 'px';
+        inner.style.transform = 'scale(' + scale + ')';
+        inner._mmScale        = scale;
+
+        // Size the container to the scaled height so it clips correctly
+        container.style.height = Math.round(totalH * scale) + 'px';
+
+        // Attach (or re-attach) the scroll listener on the correct element
+        if (!scrollEl._minimapListenerAttached) {
+            scrollEl.addEventListener('scroll', updateMinimapViewport, { passive: true });
+            scrollEl._minimapListenerAttached = true;
+        }
+        wireMinimapDrag();
+
+        updateMinimapViewport();
+    }
+
+    function wireMinimapDrag() {
+        const viewport = document.getElementById('navigator_minimap_viewport');
+        const scrollEl = document.getElementById('navigator_scroll_area');
+        const inner    = document.getElementById('navigator_minimap_inner');
+        if (!viewport || !scrollEl || viewport._minimapDragWired) return;
+        viewport._minimapDragWired = true;
+
+        let dragging = false;
+        let startMouseX, startMouseY, startScrollLeft, startScrollTop;
+
+        viewport.addEventListener('mousedown', function(e) {
+            if (!inner._mmScale) return;
+            dragging = true;
+            startMouseX    = e.clientX;
+            startMouseY    = e.clientY;
+            startScrollLeft = scrollEl.scrollLeft;
+            startScrollTop  = scrollEl.scrollTop;
+            viewport.style.cursor = 'grabbing';
+            e.preventDefault(); // prevent text selection while dragging
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!dragging || !inner._mmScale) return;
+            const scale = inner._mmScale;
+            scrollEl.scrollLeft = startScrollLeft + (e.clientX - startMouseX) / scale;
+            scrollEl.scrollTop  = startScrollTop  + (e.clientY - startMouseY) / scale;
+            // scroll event fires automatically and calls updateMinimapViewport
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (dragging) {
+                dragging = false;
+                viewport.style.cursor = 'grab';
+            }
+        });
     }
 
     function wireNavigatorNodeEvents() {

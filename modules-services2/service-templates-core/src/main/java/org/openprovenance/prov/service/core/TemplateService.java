@@ -214,7 +214,7 @@ public class TemplateService {
         if (conn !=null) {
             try {
                 boolean anyResult=storage.initializeDB(conn, sqlInitializer);
-                logger.info("DB initialized. Any results? " + anyResult);
+                logger.debug("DB initialized. Any results? " + anyResult);
 
                 sqlFilesToExecute.forEach(file -> executeStatementsFromFile(conn,file));
 
@@ -257,7 +257,7 @@ public class TemplateService {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        logger.info("DB processing file " + filename + ". Any results? " + anyResult);
+        logger.debug("DB processing file " + filename + ". Any results? " + anyResult);
     }
 
 

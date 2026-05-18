@@ -296,6 +296,7 @@ public class DerivationBuilder {
                 .id(defs.XID, "waw1").aka()
                 .activity("a7667")
                 .agent(AG_401_Alice)
+                .role(defs.packer)
                 .attr(defs.dotColour, edge1Colour)
                 .build();
 
@@ -1122,6 +1123,7 @@ public class DerivationBuilder {
         QualifiedName Brighton     = builder.qn(VOCAB, "Brighton");
         QualifiedName weight       = builder.qn(VOCAB, "weight");
         QualifiedName driver       = builder.qn(VOCAB, "Driver");
+        QualifiedName packer       = builder.qn(VOCAB, "Packer");
         QualifiedName unpacker     = builder.qn(VOCAB, "Unpacker");
         QualifiedName scientist    = builder.qn(VOCAB, "Scientist");
         QualifiedName scale        = builder.qn(VOCAB, "Scale");
@@ -1142,7 +1144,7 @@ public class DerivationBuilder {
 
 
         QualifiedName foaf_name    = builder.qn(FOAF, "name");
-        Definitions result = new Definitions(XID, Box, FPC, Ownership, Recycling, Transporting, Weighing, Packing, Unpacking, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, unpacker, scientist, scale, Instrument, specialization, derivation, entity, association, generation, activity, invalidation, usage, dotColour, InsertingElement, InsertingIntoCollection, RemovingElement, RemovingElementFromCollection);
+        Definitions result = new Definitions(XID, Box, FPC, Ownership, Recycling, Transporting, Weighing, Packing, Unpacking, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, packer, unpacker, scientist, scale, Instrument, specialization, derivation, entity, association, generation, activity, invalidation, usage, dotColour, InsertingElement, InsertingIntoCollection, RemovingElement, RemovingElementFromCollection);
         return result;
     }
 
@@ -1162,6 +1164,7 @@ public class DerivationBuilder {
         public final QualifiedName weight;
         public final QualifiedName foaf_name;
         public final QualifiedName driver;
+        public final QualifiedName packer;
         public final QualifiedName unpacker;
         public final QualifiedName scientist;
         public final QualifiedName scale;
@@ -1181,7 +1184,7 @@ public class DerivationBuilder {
         public final QualifiedName RemovingElementFromCollection;
         public final QualifiedName Unpacking;
 
-        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Recycling, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName unpacking, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName unpacker, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation, QualifiedName usage, QualifiedName dotColour, QualifiedName insertingElement, QualifiedName insertingIntoCollection, QualifiedName removingElement, QualifiedName removingElementFromCollection) {
+        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Recycling, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName unpacking, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName packer, QualifiedName unpacker, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation, QualifiedName usage, QualifiedName dotColour, QualifiedName insertingElement, QualifiedName insertingIntoCollection, QualifiedName removingElement, QualifiedName removingElementFromCollection) {
             this.XID = XID;
             this.Box = Box;
             this.FPC = fpc;
@@ -1198,6 +1201,7 @@ public class DerivationBuilder {
             this.weight = weight;
             this.foaf_name = foaf_name;
             this.driver = driver;
+            this.packer = packer;
             this.unpacker = unpacker;
             this.scientist = scientist;
             this.scale = scale;

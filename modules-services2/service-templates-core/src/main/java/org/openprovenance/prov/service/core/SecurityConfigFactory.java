@@ -36,7 +36,7 @@ public class SecurityConfigFactory implements ConfigFactory {
             logger.info("No SecurityConfiguration: " + tplSecurityConfig);
             return new Config();
         }
-        logger.info("SecurityConfiguration read " + securityConfiguration);
+        logger.debug("SecurityConfiguration read " + securityConfiguration);
         List<Client> clients=securityConfiguration.configurations.keySet().stream().map(key -> securityConfiguration.configurations.get(key).configureClient()).collect(Collectors.toList());
         Config config = new Config(securityConfiguration.getCallbackUrl(), clients);
 
@@ -57,7 +57,7 @@ public class SecurityConfigFactory implements ConfigFactory {
 
         config.addAuthorizer("defaultAuthorizer", new RequireAnyRoleAuthorizer("provwriter"));
         config.addAuthorizer("csrf", new CsrfAuthorizer());
-        logger.info("Config created " + config.getAuthorizers());
+        logger.debug("Config created " + config.getAuthorizers());
         //System.out.println("--- Config created " + config);
         return config;
     }

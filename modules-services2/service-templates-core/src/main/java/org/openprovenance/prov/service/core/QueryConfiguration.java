@@ -36,7 +36,7 @@ public class QueryConfiguration {
         queryConfiguration.enableExternalQueries=true;
         queryConfiguration.externalQueryPath=new ArrayList<>();
         queryConfiguration.externalQueryPath.addAll(Arrays.asList(path));
-        logger.info("QueryConfiguration: " + queryConfiguration);
+        logger.debug("QueryConfiguration: " + queryConfiguration);
         return queryConfiguration;
     }
 

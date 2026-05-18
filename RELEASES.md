@@ -34,6 +34,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-query: new intersects operators on ref (in filter clause)
 * misc optimisations for template instantiations and qualified names
 * prov-template-archetype: forms.html: minimap for navigator tab
+* TemplateQuery: recursive traversal optimisation
 
 
 `2.2.3`

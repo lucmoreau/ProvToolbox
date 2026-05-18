@@ -89,7 +89,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 	private final TemplateService templateService;
 
 	public ProvapiApplication() {
-		logger.info("ProvapiApplication (service-templates-core) constructor ... start");
+		logger.debug("ProvapiApplication (service-templates-core) constructor ... start");
 		InteropFramework intF=new InteropFramework();
 		final ProvFactory factory = InteropFramework.getDefaultFactory();
 
@@ -135,7 +135,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 
 
 
-		logger.info("ProvapiApplication (service-templates-core) constructor ... completion");
+		logger.debug("ProvapiApplication (service-templates-core) constructor ... completion");
 
 
 	}

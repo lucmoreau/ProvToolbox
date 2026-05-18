@@ -18,7 +18,7 @@ public class HasProvenanceHeaderFilter  implements Filter, Constants {
 
     //constructor
     public HasProvenanceHeaderFilter() {
-        logger.info("########### HasProvenanceHeaderFilter constructor ###########");
+        logger.debug("########### HasProvenanceHeaderFilter constructor ###########");
     }
 
 

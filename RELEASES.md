@@ -35,6 +35,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * misc optimisations for template instantiations and qualified names
 * prov-template-archetype: forms.html: minimap for navigator tab
 * TemplateQuery: recursive traversal optimisation
+* prov-template-archetype: forms.html: T20 Streaming progress for navigation viz
 
 
 `2.2.3`

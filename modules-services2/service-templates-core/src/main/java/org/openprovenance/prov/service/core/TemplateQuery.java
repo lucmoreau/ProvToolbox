@@ -11,6 +11,8 @@ import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
 import org.openprovenance.prov.model.interop.PrincipalManager;
+import org.openprovenance.prov.service.core.progress.ProgressListener;
+import org.openprovenance.prov.service.core.progress.VizStages;
 import org.openprovenance.prov.service.core.readers.TableKey;
 import org.openprovenance.prov.service.core.readers.TableKeyList;
 import org.openprovenance.prov.service.core.readers.SearchConfig;
@@ -610,7 +612,7 @@ public class TemplateQuery {
     }
 
 
-    public void generateViz(Integer id, String template, String property, String style, Map<String, String> parameters, Map<String, Map<String, String>> baseTypes, String iconsFolderForGraphviz, Map<String, String> semanticType, String principal, OutputStream out) {
+    public void generateViz(Integer id, String template, String property, String style, Map<String, String> parameters, Map<String, Map<String, String>> baseTypes, String iconsFolderForGraphviz, Map<String, String> semanticType, String principal, OutputStream out, ProgressListener listener) {
 
         //logger.info("generateViz " + id + " " + template + " " + property);
         Set<StatementOrBundle.Kind> selectedVizKinds=processParameters(parameters);
@@ -623,7 +625,17 @@ public class TemplateQuery {
 
         logger.info("semanticType: "+semanticType);
 
-        List<TemplateConnection> templateConnections = recursiveTraversal(id, template, property, selectedVizKinds, principal);
+        listener.started(VizStages.SQL);
+        long sqlStart = System.nanoTime();
+        List<TemplateConnection> templateConnections;
+        try {
+            templateConnections = recursiveTraversal(id, template, property, selectedVizKinds, principal);
+            listener.done(VizStages.SQL, (System.nanoTime() - sqlStart) / 1_000_000);
+        } catch (RuntimeException e) {
+            listener.failed(VizStages.SQL, e);
+            throw e;
+        }
+        listener.detail(VizStages.SQL, templateConnections.size() + " connections");
         // reverse list
         Collections.reverse(templateConnections);
 
@@ -632,7 +644,7 @@ public class TemplateQuery {
 
 
         logger.debug("templateConnections: " + templateConnections.stream().map(TemplateConnection::toString).collect(Collectors.joining("\n")));
-        new TemplatesToDot(templateConnections, style, withIcons, iconsFolderForGraphviz, parameters, baseTypes, ioMap, templateDispatcher, successors, pf, this, principal, provAPI).convert(null, out, "template_connections");
+        new TemplatesToDot(templateConnections, style, withIcons, iconsFolderForGraphviz, parameters, baseTypes, ioMap, templateDispatcher, successors, pf, this, principal, provAPI).convert(null, out, "template_connections", listener);
     }
 
 

@@ -3,6 +3,8 @@ package org.openprovenance.prov.service.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.dot.ProvToDot;
+import org.openprovenance.prov.service.core.progress.ProgressListener;
+import org.openprovenance.prov.service.core.progress.VizStages;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
@@ -138,22 +140,48 @@ public class TemplatesToDot extends ProvToDot {
 
 
 
-    public void convert(Document graph, OutputStream os, String title) {
+    public void convert(Document graph, OutputStream os, String title, ProgressListener listener) {
+        File dotFile;
+
+        listener.started(VizStages.PROV_BUILD);
+        long provStart = System.nanoTime();
         try {
-            File dotFile=File.createTempFile("temp", ".dot");
-            logger.info("dotFile: " + dotFile);
-            convert(graph, new PrintStream(new FileOutputStream(dotFile)) ,title);
-            Runtime runtime = Runtime.getRuntime();
-            java.lang.Process proc = runtime.exec("dot  -Tsvg " + dotFile);
-            InputStream is=proc.getInputStream();
-            org.apache.commons.io.IOUtils.copy(is, os);
-            logger.info("finished conversion to svg");
-            @SuppressWarnings("unused")
-            boolean resultCode=dotFile.delete();
+            dotFile = File.createTempFile("temp", ".dot");
+            logger.debug("dotFile: " + dotFile);
+            convert(graph, new PrintStream(new FileOutputStream(dotFile)), title);
+            listener.done(VizStages.PROV_BUILD, (System.nanoTime() - provStart) / 1_000_000);
         } catch (IOException e) {
+            listener.failed(VizStages.PROV_BUILD, e);
             logger.throwing(e);
             throw new UncheckedException(e);
+        } catch (RuntimeException e) {
+            listener.failed(VizStages.PROV_BUILD, e);
+            throw e;
         }
+        listener.detail(VizStages.PROV_BUILD, "DOT " + dotFile.length() + " bytes");
+
+        listener.started(VizStages.RENDER);
+        long renderStart = System.nanoTime();
+        long svgBytes;
+        try {
+            Runtime runtime = Runtime.getRuntime();
+            java.lang.Process proc = runtime.exec("dot  -Tsvg " + dotFile);
+            InputStream is = proc.getInputStream();
+            svgBytes = org.apache.commons.io.IOUtils.copyLarge(is, os);
+            listener.done(VizStages.RENDER, (System.nanoTime() - renderStart) / 1_000_000);
+        } catch (IOException e) {
+            listener.failed(VizStages.RENDER, e);
+            logger.throwing(e);
+            throw new UncheckedException(e);
+        } catch (RuntimeException e) {
+            listener.failed(VizStages.RENDER, e);
+            throw e;
+        }
+        listener.detail(VizStages.RENDER, "SVG " + svgBytes + " bytes");
+
+        logger.info("finished conversion to svg");
+        @SuppressWarnings("unused")
+        boolean resultCode = dotFile.delete();
     }
 
     public void convert(Document ignore, PrintStream out, String title) {

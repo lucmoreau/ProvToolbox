@@ -30,6 +30,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.vanilla.ProvUtilities;
 import org.pac4j.core.profile.UserProfile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -43,6 +44,12 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
+import org.openprovenance.prov.service.core.progress.LoggingProgressListener;
+import org.openprovenance.prov.service.core.progress.ProgressListener;
+import org.openprovenance.prov.service.core.progress.sse.SseProgressListener;
+import jakarta.ws.rs.sse.Sse;
+import jakarta.ws.rs.sse.SseEventSink;
 
 import static org.openprovenance.prov.model.interop.InteropMediaType.*;
 import static org.openprovenance.prov.service.core.Storage.getStringFromClasspath;
@@ -607,10 +614,50 @@ public class TemplateService {
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
-        StreamingOutput promise= out -> templateLogic.generateViz(config, principalAsPreferredUsername, iconsFolderForGraphviz,  out);
+        ProgressListener listener = new LoggingProgressListener();
+        StreamingOutput promise= out -> templateLogic.generateViz(config, principalAsPreferredUsername, iconsFolderForGraphviz,  out, listener);
 
         return ServiceUtils.composeResponseOK(promise).type(MEDIA_IMAGE_SVG_XML).build();
 
+    }
+
+    /**
+     * SSE-streamed variant of {@link #getTemplatesViz}.
+     *
+     * <p>Emits one {@code stage} event per {@code started}/{@code done}/
+     * {@code detail}/{@code failed} callback while the viz pipeline runs,
+     * then a final {@code result} event whose payload is the base64-encoded
+     * SVG.  On failure, sends an {@code error} event before closing the sink.
+     *
+     * <p>The work runs synchronously on the request thread.  Tried with an
+     * executor first; RESTEasy 6.2.14 (or the pac4j filter in front of it)
+     * closes the underlying Jetty response as soon as the resource method
+     * returns, so the first SSE event went out and every subsequent send
+     * failed with {@code EofException: Closed}.  Running synchronously keeps
+     * the response open for the full ~600 ms the pipeline takes today.
+     */
+    @POST
+    @Path("/templates/viz/stream")
+    @Tag(name = "template")
+    @Consumes({MEDIA_APPLICATION_JSON})
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    public void getTemplatesVizStream(@Context SseEventSink sink,
+                                      @Context Sse sse,
+                                      @Context HttpServletRequest request,
+                                      TemplatesVizConfig config) {
+
+        final String principalAsPreferredUsername = getPrincipalAsPreferredUsername(request.getUserPrincipal());
+
+        SseProgressListener listener = new SseProgressListener(sink, sse);
+        try {
+            ByteArrayOutputStream svgBuf = new ByteArrayOutputStream();
+            templateLogic.generateViz(config, principalAsPreferredUsername, iconsFolderForGraphviz, svgBuf, listener);
+            listener.result(MEDIA_IMAGE_SVG_XML, svgBuf.toByteArray());
+        } catch (Throwable t) {
+            listener.error(t);
+        } finally {
+            sink.close();
+        }
     }
 
     @GET

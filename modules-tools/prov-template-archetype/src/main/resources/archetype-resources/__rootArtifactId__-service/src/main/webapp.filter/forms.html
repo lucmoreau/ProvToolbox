@@ -1224,85 +1224,211 @@
         return "<a  target='_blank' href='${symbol_dollar}{service.context}/provapi/live/" + relation + "/" + id + ".svg'>" + data + "</a>";
     }
 
-    function submitNavigate(id) {
-        //let url = "http://localhost:7072/ptl/provapi/templates/viz"
-        let url = "${symbol_dollar}{service.context}/provapi/templates/viz"
-        let template=${symbol_dollar}('${symbol_pound}navigator_template').val();
-        let property=${symbol_dollar}('${symbol_pound}navigator_property').val();
-        let template_id=${symbol_dollar}('${symbol_pound}navigator_id').val();
-        let style=${symbol_dollar}('${symbol_pound}navigator_style').val();
+    // ── Streaming viz: stage panel + SSE consumption ─────────────────────
+    // submitNavigate uses fetch() + ReadableStream to consume the SSE
+    // events fired by POST /provapi/templates/viz/stream.  Each `stage`
+    // event updates one row of a three-row panel inside #navigator_div;
+    // the final `result` event base64-decodes the SVG and swaps it in.
+    // The post-processing previously done in xhr.onload runs unchanged
+    // when the `result` event arrives.
+
+    let _currentVizStream = null;
+
+    const VIZ_STAGES = ['viz.sql', 'viz.prov-build', 'viz.render'];
+    const VIZ_STAGE_LABELS = {
+        'viz.sql':        'SQL query',
+        'viz.prov-build': 'Provenance build',
+        'viz.render':     'Graphviz render'
+    };
+
+    function renderVizStagePanel(targetSelector) {
+        const rows = VIZ_STAGES.map(function(stage) {
+            return '<div class="d-flex align-items-center gap-2" data-stage="' + stage + '">' +
+                '<span class="stage-status" style="width:1.5rem; display:inline-block;">' +
+                    '<span class="spinner-grow spinner-grow-sm text-muted" role="status" aria-hidden="true"></span>' +
+                '</span>' +
+                '<span class="stage-name">' + VIZ_STAGE_LABELS[stage] + '</span>' +
+                '<span class="stage-duration text-muted small"></span>' +
+                '<span class="stage-detail text-muted small ms-3 flex-grow-1"></span>' +
+            '</div>';
+        }).join('');
+        ${symbol_dollar}(targetSelector).html(
+            '<div class="d-flex flex-column gap-2 p-3 text-secondary">' + rows + '</div>'
+        );
+    }
+
+    function updateVizStageRow(stage, status, payload) {
+        const row = document.querySelector('[data-stage="' + stage + '"]');
+        if (!row) return;
+        const statusEl   = row.querySelector('.stage-status');
+        const detailEl   = row.querySelector('.stage-detail');
+        const durationEl = row.querySelector('.stage-duration');
+        switch (status) {
+            case 'started':
+                statusEl.innerHTML = '<span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>';
+                break;
+            case 'done':
+                statusEl.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
+                if (payload.durationMs != null) durationEl.textContent = payload.durationMs + ' ms';
+                break;
+            case 'failed':
+                statusEl.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
+                if (payload.error) detailEl.textContent = payload.error;
+                break;
+            case 'detail':
+                detailEl.textContent = payload.message || '';
+                break;
+        }
+    }
+
+    function parseSseEvent(raw) {
+        let name = 'message';
+        let data = '';
+        const lines = raw.split('\n');
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.indexOf('event:') === 0)      name  = line.slice(6).trim();
+            else if (line.indexOf('data:') === 0)  data += line.slice(5).trim();
+        }
+        return { name: name, data: data };
+    }
+
+    function base64ToText(b64) {
+        const binary = atob(b64);
+        const bytes  = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return new TextDecoder('utf-8').decode(bytes);
+    }
+
+    function vizShowError(targetSelector, message) {
+        const div = document.querySelector(targetSelector);
+        if (!div) return;
+        const banner = document.createElement('div');
+        banner.className = 'text-danger p-3';
+        banner.textContent = message;
+        div.appendChild(banner);
+    }
+
+    async function submitNavigate(id) {
+        //let url = "http://localhost:7072/ptl/provapi/templates/viz/stream"
+        let url = "${symbol_dollar}{service.context}/provapi/templates/viz/stream"
+        let template    = ${symbol_dollar}('${symbol_pound}navigator_template').val();
+        let property    = ${symbol_dollar}('${symbol_pound}navigator_property').val();
+        let template_id = ${symbol_dollar}('${symbol_pound}navigator_id').val();
+        let style       = ${symbol_dollar}('${symbol_pound}navigator_style').val();
 
         console.log("submitNavigate " + template + " " + property + " " + id + " " + style);
 
-        let final_style=style;
-        let parameters={};
-        parameters.icons=icons_enabled //'"' + icons_enabled + '"'; // note that strings
+        let final_style = style;
+        let parameters  = {};
+        parameters.icons = icons_enabled;
 
         let selectedKinds;
         switch (style) {
             case 'template.D':
                 selectedKinds = 'PROV_DERIVATION';
-                parameters['successor-relations']=selectedKinds;
-                final_style='template';
+                parameters['successor-relations'] = selectedKinds;
+                final_style = 'template';
                 break;
             case 'template.D.R':
                 selectedKinds = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION';
-                parameters['successor-relations']=selectedKinds;
-                final_style='template';
+                parameters['successor-relations'] = selectedKinds;
+                final_style = 'template';
                 break;
             case 'template.D.R.S':
                 selectedKinds = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION,PROV_SPECIALIZATION';
-                parameters['successor-relations']=selectedKinds;
-                final_style='template';
+                parameters['successor-relations'] = selectedKinds;
+                final_style = 'template';
                 break;
             case 'template.D.R.S.M':
                 selectedKinds = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION,PROV_SPECIALIZATION,PROV_MEMBERSHIP';
-                parameters['successor-relations']=selectedKinds;
-                final_style='template';
+                parameters['successor-relations'] = selectedKinds;
+                final_style = 'template';
                 break;
         }
 
-
-        let config = {
+        const config = {
             template: template,
             property: property,
             id: template_id,
             style: final_style,
             parameters: parameters
-        }
-
-        let json_data=JSON.stringify(config)
-
-        ${symbol_dollar}(id).html('<div class="d-flex align-items-center gap-2 p-3 text-secondary">' +
-            '<div class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></div>' +
-            '<span>Loading…</span></div>');
-
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', url, true);
-        xhr.onerror= function(xhr,event) {
-            console.log("error with " + event);
-            ${symbol_dollar}(id).html('<span class="text-danger p-3">Error loading graph.</span>');
-            document.getElementById('navigator_save').disabled = true;
         };
-        xhr.onabort= function(xhr,event) {
-            console.log("abort with " + event);
-            ${symbol_dollar}(id).html('');
-            document.getElementById('navigator_save').disabled = true;
-        };
-        xhr.onload= function() {
-            const response = xhr.responseText;
-            console.log("loaded " + xhr.status);
-            ${symbol_dollar}(id).html(response);
-            rewriteImageHrefs(document.querySelector('#navigator_div svg')); //id hardcoded
-            wireNavigatorNodeEvents();
-            updateMinimap();
-            document.getElementById('navigator_save').disabled = false;
+
+        const json_data = JSON.stringify(config);
+
+        // A new submission supersedes any in-flight one so its stage
+        // events don't paint over the fresh panel.
+        if (_currentVizStream) _currentVizStream.abort();
+        const controller = new AbortController();
+        _currentVizStream = controller;
+
+        renderVizStagePanel(id);
+        document.getElementById('navigator_save').disabled = true;
+
+        try {
+            const response = await fetch(url, {
+                method:  'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept':       'text/event-stream'
+                },
+                body:    json_data,
+                signal:  controller.signal
+            });
+
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+            }
+
+            const reader  = response.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let buffer = '';
+
+            while (true) {
+                const chunk = await reader.read();
+                if (chunk.done) break;
+                buffer += decoder.decode(chunk.value, { stream: true });
+
+                let idx;
+                while ((idx = buffer.indexOf('\n\n')) !== -1) {
+                    const rawEvent = buffer.slice(0, idx);
+                    buffer = buffer.slice(idx + 2);
+                    const ev = parseSseEvent(rawEvent);
+                    if (!ev.data) continue;
+
+                    let payload;
+                    try {
+                        payload = JSON.parse(ev.data);
+                    } catch (parseErr) {
+                        console.warn('viz stream: bad JSON payload', ev.data);
+                        continue;
+                    }
+
+                    if (ev.name === 'stage') {
+                        updateVizStageRow(payload.stage, payload.status, payload);
+                    } else if (ev.name === 'result') {
+                        const svg = base64ToText(payload.base64);
+                        ${symbol_dollar}(id).html(svg);
+                        rewriteImageHrefs(document.querySelector('#navigator_div svg')); //id hardcoded
+                        wireNavigatorNodeEvents();
+                        updateMinimap();
+                        document.getElementById('navigator_save').disabled = false;
+                    } else if (ev.name === 'error') {
+                        vizShowError(id, payload.error || 'render failed');
+                    }
+                }
+            }
+        } catch (e) {
+            if (e.name === 'AbortError') {
+                // Superseded by a newer click — leave the new panel alone.
+                return;
+            }
+            console.log('viz stream error', e);
+            vizShowError(id, e.message || String(e));
+        } finally {
+            if (_currentVizStream === controller) _currentVizStream = null;
         }
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.setRequestHeader("Accept", "image/svg+xml");
-        xhr.send(json_data);
-
-
     }
 
     // subtypes appear in a <text></>text> element within brackets, e.g. (ReceivingGoods)

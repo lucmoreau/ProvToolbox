@@ -17,6 +17,7 @@ import org.openprovenance.prov.model.interop.PrincipalManager;
 import org.openprovenance.prov.scala.iface.Explainer;
 import org.openprovenance.prov.scala.iface.XFactory;
 import org.openprovenance.prov.service.core.dispatch.EnactCsvRecords;
+import org.openprovenance.prov.service.core.progress.ProgressListener;
 import org.openprovenance.prov.service.core.readers.TemplatesVizConfig;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 
@@ -171,7 +172,7 @@ public class TemplateLogic {
     }
 
 
-    public void generateViz(TemplatesVizConfig config, String principal, String iconsFolderForGraphviz, OutputStream out) {
+    public void generateViz(TemplatesVizConfig config, String principal, String iconsFolderForGraphviz, OutputStream out, ProgressListener listener) {
 
         typeAssignment.entrySet().removeIf(entry -> entry.getValue() ==null || entry.getValue().isEmpty());
 
@@ -195,7 +196,7 @@ public class TemplateLogic {
                                                                         .get(var))))));
 
         //logger.info("baseTypes " + baseTypes);
-        templateQuery.generateViz(config.id, config.template, config.property, config.style, config.parameters, baseTypes, iconsFolderForGraphviz, semanticType, principal, out);
+        templateQuery.generateViz(config.id, config.template, config.property, config.style, config.parameters, baseTypes, iconsFolderForGraphviz, semanticType, principal, out, listener);
     }
 
 

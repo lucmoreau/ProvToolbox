@@ -7,138 +7,7 @@
 - T24
 - T23
 - T22
-- T21
-- T20 Streaming progress for `/templates/viz` (and other long-running endpoints)
-
-  The viz request currently runs three stages sequentially behind a single
-  synchronous `POST /provapi/templates/viz` returning `image/svg+xml`:
-  1. **SQL traversal** — `recursiveTraversal(...)` in `TemplateQuery.generateViz`,
-     i.e. `backwardtraversal_star_typed`.
-  2. **PROV-document construction** — currently bundled inside
-     `TemplatesToDot.convert(...)`.
-  3. **Graphviz rendering** — also inside `TemplatesToDot.convert(...)`, writes
-     SVG to the response `OutputStream`.
-
-  The browser today (`forms.html:submitNavigate`) shows a single
-  "Loading…" spinner for the entire span, which is uninformative when graphs
-  push into multi-second renders.
-
-  **Server-side outline**:
-  - Introduce a `ProgressListener` interface in `service-templates-core` with a
-    minimal vocabulary: `started(stage)`, `done(stage, durationMs)`,
-    `failed(stage, throwable)`, `detail(stage, message)`. Default no-op
-    implementation so existing callers compile unchanged.
-  - Split `TemplatesToDot.convert(...)` so PROV-document construction and
-    Graphviz invocation are observable as separate stages (either two methods
-    or one method that takes the listener and brackets each phase).
-  - Thread the listener through `TemplateService.getTemplatesViz` →
-    `TemplateLogic.generateViz` → `TemplateQuery.generateViz` →
-    `TemplatesToDot`.
-  - Add a sibling endpoint at `POST /templates/viz/stream` returning
-    `text/event-stream`. Use JAX-RS `SseEventSink` + `Sse`, suspend the
-    response, run the work on a managed executor, and have the
-    `SseProgressListener` translate listener callbacks into events. Emit the
-    final SVG as a `result` event (string-escaped JSON, or base64). Keep the
-    existing synchronous endpoint as-is for backwards compatibility.
-  - Operational hygiene: `Cache-Control: no-store`, `X-Accel-Buffering: no`,
-    per-request timeout, cancel the in-flight task on client disconnect.
-
-  **Client-side outline** (in `forms.html`):
-  - Replace the `XMLHttpRequest` in `submitNavigate` with `fetch` +
-    `ReadableStream` (POST keeps the JSON config) — or `EventSource` if the
-    config is moved to a query string.
-  - Replace the single spinner with a three-row stage panel inside
-    `#navigator_div` that flips each row from spinner → tick + duration on
-    each `stage:done` event; show an error indicator on `stage:error`.
-  - On the `result` event, swap the panel for the SVG and call the existing
-    `rewriteImageHrefs`, `wireNavigatorNodeEvents`, `updateMinimap`, and
-    enable `navigator_save` — exactly as `xhr.onload` does today.
-  - Track and abort the active stream when a new `submitNavigate` click
-    arrives, so stale events don't paint over a fresh request.
-  - Fall back to the legacy endpoint when the streaming one is unavailable.
-
-  **Phased rollout**:
-  1. Add `ProgressListener` and the `TemplatesToDot` split, with a
-     `LoggingProgressListener` so per-stage timings appear in the server log.
-     No user-visible change.
-  2. Add the SSE endpoint; keep the synchronous one.
-  3. Client-side stage panel and stream consumption.
-  4. Once stable, retire (or document as fallback) the synchronous endpoint.
-
-  **Reuse**: the `ProgressListener` and the SSE transport are deliberately
-  generic. Every long-running endpoint (document conversion, template
-  expansion, bulk import, large search, export pipelines, anything currently
-  fronted by Quartz) can adopt the same pattern by accepting an optional
-  listener and exposing a `/stream` variant. Detail follows.
-
-  ### `ProgressListener` — proposed methods
-
-  Keep the interface small. Five callbacks cover the cases this codebase
-  needs; everything except `started`/`done` is defaulted to a no-op so
-  implementations pick only what they care about.
-
-  | Method | When | Payload |
-  |---|---|---|
-  | `started(stage)` | Stage begins | stage name (e.g. `viz.sql`, `viz.prov-build`, `viz.render`) |
-  | `done(stage, durationMs)` | Stage completes normally | total elapsed time |
-  | `failed(stage, throwable)` | Stage threw | error class + message; stream closes after |
-  | `detail(stage, message)` | Optional sub-event during a stage | free-form, e.g. `"SQL returned 1 079 rows"`, `"PROV doc has 314 statements"`, `"SVG: 184 KB"` |
-  | `progress(stage, fraction)` | Optional, only for stages that can self-report a percentage | 0.0 – 1.0 |
-
-  Consider adding `isCancelled()` so cooperative cancellation flows through
-  the same channel — natural fit, since the SSE transport already observes
-  client disconnect.
-
-  Stage names should be **hierarchical** strings (`viz.sql`, `viz.prov-build`,
-  `viz.render`, or `import.parse`, `import.validate`, `import.store`). That
-  gives clients a stable pattern to render against without baking
-  endpoint-specific logic into the UI.
-
-  ### Reusability across the server
-
-  The listener interface and the SSE transport live in the core service
-  module; the business logic in any module just accepts an optional listener.
-  Natural adopters:
-
-  - **`/templates/viz`** — this task (three stages).
-  - **Document conversion / serialization** (`/documents/...`) — accept-driven
-    format conversion can take seconds for large bundles.
-  - **Template expansion** (CSV → PROV) — parse, expand per row, serialize.
-  - **Bulk record import** — parse, validate, insert, index; per-row
-    sub-progress via `detail`.
-  - **Large search / `/templates/records`** — row-count reporting via `detail`.
-  - **Anything fronted by Quartz today** (`JobDeleteDocumentResource`, etc.)
-    — currently invisible to clients; the same listener can drive both
-    SSE-to-browser and metrics-to-Prometheus.
-  - **Export pipelines** — zip, JSON-LD bundling, CSV dump.
-
-  Three things make broad rollout practical:
-
-  1. **One interface, several adapters.** Provide a small zoo of standard
-     implementations and let the endpoint pick at request time:
-     - `NoOpProgressListener` — production default for non-streaming callers.
-     - `LoggingProgressListener` — drops into existing log4j config; useful
-       for diagnosing slow endpoints with zero client work.
-     - `SseProgressListener` — wraps `SseEventSink`, the focus of this task.
-     - `MetricsProgressListener` — feeds Micrometer/Prometheus
-       `stage.duration` histograms partitioned by stage name.
-     - `CompositeProgressListener` — fan-out: SSE *and* metrics *and* log
-       simultaneously.
-  2. **Conventions, not framework.** A `Stages` constants file or per-feature
-     enum (`VizStages.SQL`, `VizStages.PROV_BUILD`, `VizStages.RENDER`)
-     keeps stage names typo-free and discoverable without forcing every
-     consumer to depend on an enum.
-  3. **Endpoint pairing.** Keep the existing synchronous endpoint and add a
-     `/stream` sibling. The two share the same business method; only the
-     listener changes. Old clients keep working, new clients opt in.
-
-  Bottom line: the surface area the rest of the server has to absorb is one
-  interface and one extra method parameter. The transport layer (SSE today,
-  WebSocket or progress polling later if ever wanted) is fully isolated
-  behind the listener — adding a new transport doesn't touch business logic,
-  and adding a new endpoint to the system gets staged progress and metrics
-  for free.
-
+- T21 Accept bindings files in yaml format, update schema validation, and add -bindingsformat option to template instantiation, update service instantiation page, change chapter 5 book entry
 - T18 add creation date to record_index table
 - T17 Update the viz so that overlay template is near the template it overlays
 - T16 Have a place for template explanations to be displayed when hovering over a template
@@ -233,12 +102,12 @@ __PROV_DELEGATION (delegate, delegate_rel, responsible, responsible_rel, activit
         ```
 
 # Done
-* T1 template-compiler: 
+* T1 ✅  template-compiler: 
 updated CompilerCommon to use the new code generation pattern for the Common Bean, and removed the old code.  
 
-* T14 template expansion with association without agent but with plan, does not include association.
+* T14 ✅ template expansion with association without agent but with plan, does not include association.
 
-- T9 rust code generation:
+- T9 ✅ rust code generation:
     ```angular2html
        --> src/org/openprovenance/templates/catalogue/transport/integrator/bean_completer2.rs:510:42
         |
@@ -253,3 +122,81 @@ updated CompilerCommon to use the new code generation pattern for the Common Bea
     
     ```
   - T19 update navigation display to visualise atype icons, and fallback on template icons if atype icons not available
+
+- T20 ✅ Streaming progress for `/templates/viz` — **completed 2026-05-19**
+
+  The viz request used to run three stages sequentially behind a single
+  synchronous `POST /provapi/templates/viz` returning `image/svg+xml`,
+  with the browser showing a single "Loading…" spinner for the full span.
+  Now decomposed into observable stages and exposed via an SSE endpoint,
+  so the browser shows per-stage progress as work happens.
+
+  ### What landed
+
+  **Server-side** (`service-templates-core`):
+  - New package `org.openprovenance.prov.service.core.progress` with
+    transport-agnostic listener machinery:
+    - `ProgressListener` — interface with `started`, `done`, `failed`,
+      `detail`, `progress` methods (last three defaulted to no-op).
+    - `NoOpProgressListener.INSTANCE` — singleton default.
+    - `LoggingProgressListener` — emits one log4j line per callback.
+    - `VizStages.SQL` / `PROV_BUILD` / `RENDER` — hierarchical name constants.
+  - `TemplateService.getTemplatesViz` → `TemplateLogic.generateViz` →
+    `TemplateQuery.generateViz` → `TemplatesToDot.convert` now take a
+    `ProgressListener` parameter. Three bracket points (around
+    `recursiveTraversal`, around the DOT-file write, around `dot -Tsvg`)
+    emit `started`/`done`/`detail`, with `detail` carrying connection count,
+    DOT byte size, and SVG byte size respectively.
+  - New sub-package `progress.sse` with `SseProgressListener`, which turns
+    each callback into a JSON `stage` event written to a JAX-RS
+    `SseEventSink`. Adds two terminal methods: `result(mediaType, byte[])`
+    (base64 inline) and `error(Throwable)`.
+  - New endpoint `POST /templates/viz/stream` returning `text/event-stream`
+    with the same `TemplatesVizConfig` JSON body as the legacy endpoint.
+    Runs synchronously on the request thread — async-executor handoff was
+    tried first but RESTEasy 6.2.14 (or the pac4j filter in front of it)
+    closed the underlying Jetty response after the resource method returned
+    `void`, leading to `EofException: Closed` on every send after the
+    first. Sync execution keeps the response open for the full ~600 ms.
+    `SseProgressListener.send` blocks on the returned `CompletionStage` to
+    guarantee ordering and prevent close/flush races.
+  - The synchronous `/templates/viz` endpoint stays as-is for back-compat;
+    it now uses `LoggingProgressListener` so per-stage timings appear in
+    the server log even without a streaming client.
+
+  **Client-side** (`forms.html:submitNavigate`):
+  - `XMLHttpRequest` replaced with `fetch` + `ReadableStream` reader that
+    splits on `\n\n`, extracts `event:` / `data:` lines, JSON-parses each
+    payload, and dispatches on event name (`stage`, `result`, `error`).
+  - New three-row stage panel rendered into `#navigator_div` showing SQL /
+    Provenance build / Graphviz render. Each row flips spinner → tick +
+    duration on `stage:done`, or cross + error on `stage:failed`. Detail
+    messages (connection count, byte sizes) sit alongside the duration.
+  - On `result`: base64-decoded via `atob` + `Uint8Array` + `TextDecoder`,
+    injected into `#navigator_div`, then `rewriteImageHrefs`,
+    `wireNavigatorNodeEvents`, `updateMinimap`, and `navigator_save`
+    enabling fire — same wiring as the old `xhr.onload`.
+  - `AbortController` stashed in `_currentVizStream`; back-to-back clicks
+    abort the previous request so stale events don't paint the fresh panel.
+
+  ### Measured outcome (AP-60 dataset, `goods_transporting:4129`)
+
+  | Stage | Time | Detail |
+  |---|---:|---|
+  | `viz.sql` | ~270 ms | 1 079 connections |
+  | `viz.prov-build` | ~27 ms | DOT 2.2 MB |
+  | `viz.render` | ~345 ms | SVG 5.1 MB |
+  | **Total** | **~640 ms** | |
+
+  After the index work in odoodemo T-15, SQL is no longer dominant —
+  Graphviz is the heaviest single stage, which is precisely the kind of
+  graph for which staged progress changes how the wait feels.
+
+  ### Reusability beyond viz
+
+  The listener interface and SSE transport are deliberately generic. Other
+  long-running endpoints (document conversion, template expansion, bulk
+  import, large search, export pipelines, anything currently fronted by
+  Quartz) can adopt the same pattern by accepting an optional listener and
+  exposing a `/stream` sibling. Suggested future adapters: `MetricsProgressListener`
+  (Micrometer/Prometheus) and `CompositeProgressListener` (fan-out).

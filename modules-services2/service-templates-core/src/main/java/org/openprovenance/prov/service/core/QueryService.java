@@ -8,6 +8,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
+import org.openprovenance.prov.service.core.readers.QueryParameters;
 import jakarta.ws.rs.core.StreamingOutput;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.model.interop.InteropMediaType;
@@ -87,7 +88,7 @@ public class QueryService {
     public Response doQuery(@Context HttpServletRequest request,
                             @Context HttpHeaders headers,
                             @Parameter(name = "query", description = "query name", required = true) @PathParam("query") String query,
-                            Object parameters) {
+                            QueryParameters parameters) {
 
         logger.debug("doQuery " + query + " with parameters: " + parameters);
         if (!enabled  || !this.configuration.enableExternalQueries) {
@@ -113,8 +114,8 @@ public class QueryService {
             logger.info("No external query found for query: " + query);
             return ServiceUtils.composeResponseNotFOUND("Query not found: " + query + ".sql");
         } else {
-            String theQuery=sql.get();
-            logger.info("Query: " + theQuery);
+            String theQuery = substituteParams(sql.get(), parameters);
+            logger.info("Query (after substitution): " + theQuery);
             List<Object[]> resultRecords = templateQuery.queryFromSql(theQuery, true);
             StreamingOutput promise = (out) -> new ObjectMapper().writeValue(out, resultRecords);
 
@@ -169,6 +170,29 @@ public class QueryService {
         }
     }
 
+
+    /**
+     * Substitutes {@code :paramName} placeholders in {@code sql} with safely-quoted
+     * string literals from the supplied {@link QueryParameters}.
+     *
+     * <p>Each entry {@code "key": "value"} replaces every occurrence of {@code :key}
+     * in the SQL with {@code 'value'} (internal single-quotes doubled for safety).
+     * {@code null} values substitute as the SQL keyword {@code NULL}.</p>
+     *
+     * <p>If {@code parameters} is {@code null} or empty the SQL is returned
+     * unchanged.</p>
+     */
+    private static String substituteParams(String sql, QueryParameters parameters) {
+        if (parameters == null || parameters.isEmpty()) return sql;
+        for (java.util.Map.Entry<String, String> entry : parameters.entrySet()) {
+            String placeholder = ":" + entry.getKey();
+            String value = entry.getValue() == null
+                    ? "NULL"
+                    : "'" + entry.getValue().replace("'", "''") + "'";
+            sql = sql.replace(placeholder, value);
+        }
+        return sql;
+    }
 
     /* Functionality to support development of queries over the provenance store. */
 

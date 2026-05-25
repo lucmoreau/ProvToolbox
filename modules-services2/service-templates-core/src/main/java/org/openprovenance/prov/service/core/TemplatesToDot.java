@@ -334,7 +334,7 @@ public class TemplatesToDot extends ProvToDot {
 
             String html = createHtmlTable(templateInfo, withIcons, iconDirectory, inputsNames, inputPorts, inputsColors, outputsNames, outputsPorts, outputsColors);
             if (overlayTemplates.contains(template)) {
-                System.out.println(html);
+                logger.debug("Overlay template: " + html);
             }
             emitTemplate(template, templateId, html, out);
 

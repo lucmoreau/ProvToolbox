@@ -623,7 +623,7 @@ public class TemplateQuery {
         logger.debug("selectedVizKinds: "+selectedVizKinds);
         logger.debug("selected successors: "+successors);
 
-        logger.info("semanticType: "+semanticType);
+        logger.debug("semanticType: "+semanticType);
 
         listener.started(VizStages.SQL);
         long sqlStart = System.nanoTime();
@@ -636,6 +636,7 @@ public class TemplateQuery {
             throw e;
         }
         listener.detail(VizStages.SQL, templateConnections.size() + " connections");
+        logger.info("(id,template,property,selectedVizKinds,templateConnections): "+ id + ", " + template + ", " + selectedVizKinds + ", " + templateConnections.size());
         // reverse list
         Collections.reverse(templateConnections);
 
@@ -662,7 +663,7 @@ public class TemplateQuery {
                 selectedVizKinds=Arrays.stream(visKinds.trim().split(",")).map(StatementOrBundle.Kind::valueOf).collect(Collectors.toSet());
             }
         }
-        logger.info("Selected Viz Kinds: " + selectedVizKinds);
+        logger.debug("Selected Viz Kinds: " + selectedVizKinds);
         return selectedVizKinds;
     }
 

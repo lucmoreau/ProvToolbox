@@ -37,7 +37,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * TemplateQuery: recursive traversal optimisation
 * prov-template-archetype: forms.html: T20 Streaming progress for navigation viz
 * QueryService: updated query interface to allow query parameters to be passed
-
+* TemplateQuery: forward traversal star
 
 `2.2.3`
 * prov-template: update to instantiation

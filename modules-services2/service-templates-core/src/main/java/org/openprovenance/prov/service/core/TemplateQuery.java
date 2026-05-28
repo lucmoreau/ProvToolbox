@@ -333,6 +333,128 @@ public class TemplateQuery {
 
             """;
 
+    // forward_traversal_star — the exact transpose of backwardtraversal_star.
+    // Reuses the SAME backward_dispatch and predecessor_table (no new metadata):
+    //   * forwardTraversal (generateForwardTemplateTraversal) reads the dispatch
+    //     edge backwards — matches the TARGET (producer output) and returns the
+    //     SOURCE (consumer input) rows — to find the consumers of an entity.
+    //   * the recursion reads predecessor_table by `input` (not `output`) to obtain
+    //     each consumer's output column (the next frontier) and the rel for filtering.
+    // A forward edge B->A exists iff the backward edge A->B exists (identical three
+    // conditions: predecessor_table(A) edge + backward_dispatch(A.input->B.output) +
+    // matching entity value), so the filtered edge sets are exact transposes.
+    String recursiveForwardQuery = """
+                        CREATE OR REPLACE FUNCTION public.forward_traversal_star(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            AS $function$
+            WITH RECURSIVE recurse_traverse AS (
+
+                -- ── Base step ─────────────────────────────────────────────────────────────
+                -- Treat __param_property as an OUTPUT entity column of the start row (the same
+                -- contract as backwardtraversal_star).  forwardTraversal finds the consumer
+                -- rows whose INPUT column holds that entity; the predecessor_table join then
+                -- (a) applies the relation-type filter to the consumer's derivation edge and
+                -- (b) yields the consumer's OUTPUT column, which becomes the next frontier.
+                SELECT
+                    ft.in_id,
+                    ft.in_template,
+                    ft.in_property,
+                    ft.out_id,
+                    ft.out_template,
+                    ft.out_property,
+                    pt.output AS next_property,
+                    1 AS depth
+                FROM
+                    forwardTraversal(
+                        __param_id,
+                        __param_template,
+                        __param_property
+                    ) AS ft
+                    JOIN predecessor_table pt
+                        ON  pt.template = ft.out_template
+                        AND pt.input    = ft.out_property
+                        AND (
+                            __param_selected_relations IS NULL
+                            OR pt.rel = ANY(__param_selected_relations)
+                        )
+
+                UNION   -- UNION (not UNION ALL) provides cycle-safety via row deduplication
+
+                -- ── Recursive step ────────────────────────────────────────────────────────
+                -- From each reached consumer advance via its own OUTPUT column (rt.next_property)
+                -- to that output's consumers.  The relation-type filter is re-applied at each hop.
+                SELECT
+                    ft.in_id,
+                    ft.in_template,
+                    ft.in_property,
+                    ft.out_id,
+                    ft.out_template,
+                    ft.out_property,
+                    pt.output AS next_property,
+                    rt.depth + 1 AS depth
+                FROM
+                    recurse_traverse rt
+                    CROSS JOIN LATERAL forwardTraversal(
+                        rt.out_id,
+                        rt.out_template,
+                        rt.next_property
+                    ) AS ft
+                    JOIN predecessor_table pt
+                        ON  pt.template = ft.out_template
+                        AND pt.input    = ft.out_property
+                        AND (
+                            __param_selected_relations IS NULL
+                            OR pt.rel = ANY(__param_selected_relations)
+                        )
+                WHERE
+                    rt.next_property IS NOT NULL
+                    AND rt.depth < 100   -- guard against runaway cycles in malformed graphs
+
+            )
+            SELECT in_id, in_template, in_property, out_id, out_template, out_property
+            FROM   recurse_traverse
+            -- Self-loops mirror the backwardtraversal_star guard (virtual-output fix for
+            -- activity-output-only templates); never valid in a provenance graph.
+            WHERE NOT (in_id = out_id AND in_template = out_template)
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star_nodes(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL
+            )
+            RETURNS TABLE(
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            AS $function$
+            SELECT DISTINCT out_id, out_template, out_property
+            FROM   forward_traversal_star(
+                       __param_id,
+                       __param_template,
+                       __param_property,
+                       __param_selected_relations
+                   )
+            $function$;
+
+            """;
+
     private void generateTraversalMethods(Querier querier,  Map<String,Map<String, Map<String, String>>> ioMap) {
 
         // Step 1: create/truncate/repopulate backward_dispatch so the PL/pgSQL
@@ -355,6 +477,16 @@ public class TemplateQuery {
                 (sb, data) -> {
                     sb.append(generateBackwardTemplateTraversal(ioMap));
                     sb.append(recursiveQuery3);
+                });
+
+        // Step 4: install the forward (descendant) counterpart — forwardTraversal
+        // (reverse dispatch) and forward_traversal_star / _nodes.  Reuses the same
+        // backward_dispatch + predecessor_table populated in Steps 1-2.
+        querier.do_statements(null,
+                null,
+                (sb, data) -> {
+                    sb.append(generateForwardTemplateTraversal());
+                    sb.append(recursiveForwardQuery);
                 });
     }
 
@@ -1430,6 +1562,75 @@ public class TemplateQuery {
         sb.append("    AND   source_property  = ").append(PARAM_PROPERTY).append(";\n\n");
         sb.append("    IF union_sql IS NULL THEN RETURN; END IF;\n\n");
         sb.append("    -- 3. Execute the combined UNION ALL (EXECUTE #2).\n");
+        sb.append("    RETURN QUERY EXECUTE union_sql\n");
+        sb.append("        USING ").append(PARAM_ID).append(",\n");
+        sb.append("              ").append(PARAM_TEMPLATE).append(",\n");
+        sb.append("              ").append(PARAM_PROPERTY).append(",\n");
+        sb.append("              entity_val;\n");
+        sb.append("END;\n");
+        sb.append("$$;\n");
+        return sb.toString();
+    }
+
+    /**
+     * Generates the {@code CREATE OR REPLACE FUNCTION forwardTraversal} statement —
+     * the descendant (forward) counterpart of {@link #generateBackwardTemplateTraversal}.
+     *
+     * <p>Where {@code backwardTraversal} hops consumer&rarr;producer (it matches the
+     * {@code backward_dispatch} SOURCE side — a consumer input column — to find the
+     * producer rows), {@code forwardTraversal} does the reverse: from a producer's
+     * OUTPUT column it matches the dispatch TARGET side and returns the SOURCE
+     * (consumer input) rows, i.e. the rows that consume the entity.  No new metadata
+     * is required — it reuses the same {@code backward_dispatch} table read backwards.
+     *
+     * <p>Same two-{@code EXECUTE} / dynamic-SQL plan-cache design as
+     * {@link #generateBackwardTemplateTraversal}.
+     */
+    public String generateForwardTemplateTraversal() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("-- Generated by ").append(getClass().getName()).append(".generateForwardTemplateTraversal\n");
+        sb.append("-- Descendant counterpart of backwardTraversal: reads backward_dispatch in reverse.\n");
+        sb.append("-- Requires backward_dispatch to be populated first (generateClearAndPopulateBackwardDispatch).\n");
+        sb.append("CREATE OR REPLACE FUNCTION forwardTraversal(\n");
+        sb.append("    ").append(PARAM_ID)      .append("        integer,\n");
+        sb.append("    ").append(PARAM_TEMPLATE) .append("  text,\n");
+        sb.append("    ").append(PARAM_PROPERTY) .append("  text\n");
+        sb.append(") RETURNS TABLE (\n");
+        sb.append("    ").append(IN_ID)          .append("        integer,\n");
+        sb.append("    ").append(IN_TEMPLATE)    .append("  text,\n");
+        sb.append("    ").append(IN_PROPERTY)    .append("  text,\n");
+        sb.append("    ").append(OUT_ID)         .append("       integer,\n");
+        sb.append("    ").append(OUT_TEMPLATE)   .append(" text,\n");
+        sb.append("    ").append(OUT_PROPERTY)   .append(" text\n");
+        sb.append(") LANGUAGE plpgsql STABLE AS $$\n");
+        sb.append("DECLARE\n");
+        sb.append("    entity_val  bigint;\n");
+        sb.append("    union_sql   text;\n");
+        sb.append("BEGIN\n");
+        sb.append("    -- 1. Fetch the entity value from the (producer) source row.\n");
+        sb.append("    EXECUTE format('SELECT %I FROM %I WHERE id = $1',\n");
+        sb.append("                   ").append(PARAM_PROPERTY).append(", ")
+                                       .append(PARAM_TEMPLATE).append(")\n");
+        sb.append("        INTO entity_val\n");
+        sb.append("        USING ").append(PARAM_ID).append(";\n\n");
+        sb.append("    IF entity_val IS NULL THEN RETURN; END IF;\n\n");
+        sb.append("    -- 2. Build a UNION ALL over every CONSUMER column that references this\n");
+        sb.append("    --    entity.  Reverse of backwardTraversal: match the dispatch TARGET\n");
+        sb.append("    --    (producer output) and return the SOURCE (consumer input) rows.\n");
+        sb.append("    SELECT string_agg(\n");
+        sb.append("        format(\n");
+        sb.append("            'SELECT $1::integer, $2::text, $3::text, id, ''%s''::text, ''%s''::text\n");
+        sb.append("               FROM %I WHERE %I = $4',\n");
+        sb.append("            source_template, source_property,\n");
+        sb.append("            source_template, source_property\n");
+        sb.append("        ),\n");
+        sb.append("        ' UNION ALL '\n");
+        sb.append("    ) INTO union_sql\n");
+        sb.append("    FROM backward_dispatch\n");
+        sb.append("    WHERE target_template = ").append(PARAM_TEMPLATE).append("\n");
+        sb.append("    AND   target_property  = ").append(PARAM_PROPERTY).append(";\n\n");
+        sb.append("    IF union_sql IS NULL THEN RETURN; END IF;\n\n");
+        sb.append("    -- 3. Execute the combined UNION ALL.\n");
         sb.append("    RETURN QUERY EXECUTE union_sql\n");
         sb.append("        USING ").append(PARAM_ID).append(",\n");
         sb.append("              ").append(PARAM_TEMPLATE).append(",\n");

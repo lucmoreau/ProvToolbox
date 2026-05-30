@@ -73,6 +73,16 @@ public class TemplateQuery {
     private final Map<String, Map<String, List<String>>> typedSuccessors;
     private final Map<String, String> semanticType;
 
+    /**
+     * Lazily-populated cache of the dispatch rows derived from {@link #ioMap}.
+     * Populated on first call to {@link #getBackwardDispatchRows()} and reused
+     * by every subsequent caller — {@link #generateClearAndPopulateBackwardDispatch},
+     * {@link #generateCreateTraversalIndexes}, {@link #generateDropTraversalIndexes}
+     * — so the cross-product over the ioMap is computed exactly once per instance.
+     * Single-threaded init at service start: no synchronisation required.
+     */
+    private List<String[]> cachedBackwardDispatchRows;
+
     public TemplateQuery(Querier querier, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om) {
         this.querier = querier;
         this.templateDispatcher = templateDispatcher;
@@ -1833,7 +1843,12 @@ public class TemplateQuery {
      */
     public String generateClearAndPopulateBackwardDispatch(Map<String, Map<String, Map<String, String>>> ioMap) {
 
-        List<String[]> rows = collectBackwardDispatchRows(ioMap);
+        // Route through the instance cache when the caller passes our own ioMap (the
+        // only pattern observed inside ProvToolbox); fall back to a fresh derivation
+        // for any unusual external invocation with a different map.
+        List<String[]> rows = (ioMap == this.ioMap)
+                ? getBackwardDispatchRows()
+                : collectBackwardDispatchRows(ioMap);
 
         StringBuilder sb = new StringBuilder();
 
@@ -1864,19 +1879,50 @@ public class TemplateQuery {
         sb.append("CREATE INDEX IF NOT EXISTS backward_dispatch_src_idx\n");
         sb.append("    ON backward_dispatch (source_template, source_property);\n");
 
+        // Index used by the PL/pgSQL forwardTraversal to look up relevant hops
+        // (forward traversal queries backward_dispatch by target, not source).
+        sb.append("CREATE INDEX IF NOT EXISTS backward_dispatch_tgt_idx\n");
+        sb.append("    ON backward_dispatch (target_template, target_property);\n");
+
         return sb.toString();
     }
 
     /**
-     * Iterates the {@code ioMap} the same way {@link #generateClearAndPopulateBackwardDispatch}
-     * does and returns the resulting list of dispatch tuples
-     * {@code (in_template, in_property, out_template, out_property)}.
+     * Returns the cached {@code backward_dispatch} rows for this instance.  The
+     * derivation runs at most once per {@code TemplateQuery}: subsequent calls return
+     * the same list.  All three internal SQL generators
+     * ({@link #generateClearAndPopulateBackwardDispatch},
+     * {@link #generateCreateTraversalIndexes},
+     * {@link #generateDropTraversalIndexes}) go through this getter so they share
+     * one computation and stay in agreement about which edges exist.
      *
-     * <p>Shared by {@link #generateClearAndPopulateBackwardDispatch},
-     * {@link #generateCreateTraversalIndexes}, and {@link #generateDropTraversalIndexes}
-     * so the three stay in agreement about which edges exist.
+     * @return the dispatch rows {@code (in_template, in_property, out_template, out_property)}
+     *         derived from {@link #ioMap}; deterministic order (LinkedHashSet)
      */
-    private List<String[]> collectBackwardDispatchRows(Map<String, Map<String, Map<String, String>>> ioMap) {
+    public List<String[]> getBackwardDispatchRows() {
+        if (cachedBackwardDispatchRows == null) {
+            cachedBackwardDispatchRows = collectBackwardDispatchRows(ioMap);
+        }
+        return cachedBackwardDispatchRows;
+    }
+
+    /**
+     * Iterates the {@code ioMap} and returns the dispatch tuples
+     * {@code (in_template, in_property, out_template, out_property)} — the producer/consumer
+     * edge set used by {@code backwardTraversal} and {@code forwardTraversal} SQL functions
+     * (and, externally, by step-spec validators / IT assertion libraries / build-time
+     * materialisers that need the catalogue's dispatch without running SQL).
+     *
+     * <p>Public and {@code static} because the derivation is pure — it uses no instance
+     * state — and external build-time tools (e.g. the {@code backward-dispatch.json}
+     * generator in {@code odoo-templates}) need to call it without instantiating
+     * {@code TemplateQuery} (which would require a live {@link Querier} / DB connection).
+     * Internal callers should use {@link #getBackwardDispatchRows()} instead, which caches.
+     *
+     * @param ioMap input/output property map (short SQL names), as returned by {@link #getIoMap}
+     * @return the dispatch rows; deterministic order via {@link LinkedHashSet}
+     */
+    public static List<String[]> collectBackwardDispatchRows(Map<String, Map<String, Map<String, String>>> ioMap) {
 
         Set<String> allTables = ioMap.get(OUTPUT).values().stream()
                 .map(Map::values).flatMap(Collection::stream)
@@ -1949,20 +1995,24 @@ public class TemplateQuery {
     }
 
     /**
-     * Returns SQL that creates the secondary btree indexes required to make the
-     * dynamic UNION ALL inside {@code backwardTraversal} fast.
+     * Returns SQL that creates the secondary btree indexes required to make both
+     * the dynamic UNION ALL inside {@code backwardTraversal} and the one inside
+     * {@code forwardTraversal} fast.
      *
-     * <p>For every distinct target table referenced in {@code backward_dispatch}
+     * <p>For every distinct <em>target</em> table referenced in {@code backward_dispatch}
      * this emits a {@code CREATE INDEX IF NOT EXISTS} on {@code (id)} and one on
-     * each referenced {@code (target_property)}.  Without these, every
-     * {@code backwardTraversal} invocation seq-scans the source table once and
-     * each target table once per UNION ALL branch — measured at ~3.5M buffer
-     * hits and ~5 s per {@code backwardtraversal_star} call on a typical Odoo
-     * catalogue.  With them, ~50K hits and ~200 ms (≥25× speedup).
+     * each referenced {@code (target_property)} — these serve {@code backwardTraversal},
+     * which queries {@code FROM target_table WHERE target_property = $entity}.
      *
-     * <p>All statements use {@code IF NOT EXISTS}; this method is safe to run
-     * on every Chronicle startup and may be called independently of
-     * {@link #generateTraversalMethods} when re-indexing in a different context.
+     * <p>For every distinct <em>source</em> table referenced in {@code backward_dispatch}
+     * this additionally emits {@code (id)} and {@code (source_property)} indexes —
+     * these serve {@code forwardTraversal}, which queries
+     * {@code FROM source_table WHERE source_property = $entity}.  Without these,
+     * every {@code forward_traversal_star} call degrades to seq-scans at the same
+     * cost as an un-indexed backward traversal (~25× slower than the indexed path).
+     *
+     * <p>All statements use {@code IF NOT EXISTS}; this method is idempotent and
+     * safe to run on every Chronicle startup.
      *
      * <p>Index names follow {@link #traversalIndexName} and share the
      * {@link #TRAVERSAL_INDEX_PREFIX} so they can be enumerated and dropped
@@ -1972,22 +2022,27 @@ public class TemplateQuery {
      * @return a SQL string containing only {@code CREATE INDEX IF NOT EXISTS} statements
      */
     public String generateCreateTraversalIndexes(Map<String, Map<String, Map<String, String>>> ioMap) {
-        List<String[]> rows = collectBackwardDispatchRows(ioMap);
+        List<String[]> rows = (ioMap == this.ioMap)
+                ? getBackwardDispatchRows()
+                : collectBackwardDispatchRows(ioMap);
 
-        // Two ordered sets: tables (for PK index) and (table, column) pairs (for property indexes).
-        // LinkedHashSet preserves insertion order — deterministic SQL output.
-        Set<String>            tables          = new LinkedHashSet<>();
+        // Four ordered sets — LinkedHashSet preserves insertion order for deterministic SQL.
+        // Target side  (r[2], r[3]): consumed by backwardTraversal  (WHERE target_property = $v)
+        // Source side  (r[0], r[1]): consumed by forwardTraversal   (WHERE source_property = $v)
+        Set<String>                   tables    = new LinkedHashSet<>();
         Set<Map.Entry<String,String>> tableCols = new LinkedHashSet<>();
         for (String[] r : rows) {
-            String targetTemplate = r[2];
-            String targetProperty = r[3];
-            tables.add(targetTemplate);
-            tableCols.add(new AbstractMap.SimpleEntry<>(targetTemplate, targetProperty));
+            // backward traversal — target side
+            tables.add(r[2]);
+            tableCols.add(new AbstractMap.SimpleEntry<>(r[2], r[3]));
+            // forward traversal — source side (same naming scheme; IF NOT EXISTS is idempotent)
+            tables.add(r[0]);
+            tableCols.add(new AbstractMap.SimpleEntry<>(r[0], r[1]));
         }
 
         StringBuilder sb = new StringBuilder();
         sb.append("-- Generated by ").append(getClass().getName()).append(".generateCreateTraversalIndexes\n");
-        sb.append("-- Indexes consumed by backwardTraversal's dynamic UNION ALL.\n\n");
+        sb.append("-- Indexes consumed by backwardTraversal AND forwardTraversal dynamic UNION ALLs.\n\n");
         for (String t : tables) {
             sb.append("CREATE INDEX IF NOT EXISTS ").append(traversalIndexName(t, null))
               .append(" ON ").append(t).append(" (id);\n");
@@ -2011,7 +2066,9 @@ public class TemplateQuery {
      * @return a SQL string containing only {@code DROP INDEX IF EXISTS} statements
      */
     public String generateDropTraversalIndexes(Map<String, Map<String, Map<String, String>>> ioMap) {
-        List<String[]> rows = collectBackwardDispatchRows(ioMap);
+        List<String[]> rows = (ioMap == this.ioMap)
+                ? getBackwardDispatchRows()
+                : collectBackwardDispatchRows(ioMap);
 
         Set<String>            tables          = new LinkedHashSet<>();
         Set<Map.Entry<String,String>> tableCols = new LinkedHashSet<>();
@@ -2032,7 +2089,7 @@ public class TemplateQuery {
         return sb.toString();
     }
 
-    private Map<String, Map<String, String>> filterMapAccordingToTable(String table, Map<String, Map<String, String>> input) {
+    private static Map<String, Map<String, String>> filterMapAccordingToTable(String table, Map<String, Map<String, String>> input) {
         return input.keySet().stream().collect(Collectors.toMap(k -> k, k -> input.get(k).keySet().stream().filter(k2 -> input.get(k).get(k2).equals(table)).collect(Collectors.toMap(k2 -> k2, k2 -> input.get(k).get(k2)))));
     }
 

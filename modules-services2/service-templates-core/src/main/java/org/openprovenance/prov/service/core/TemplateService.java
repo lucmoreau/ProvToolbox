@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
@@ -99,6 +100,24 @@ public class TemplateService {
     protected final String postgresPassword=getSystemOrEnvironmentVariableOrDefault(DB_PASS,"password");
     protected final String provHost =getSystemOrEnvironmentVariableOrDefault(TPL_HOST, "http://localhost:8080/ems");
     private final String iconsFolderForGraphviz;
+
+    /**
+     * Lazily-built JSON-record list backing {@link #getBackwardDispatch}.
+     * The catalogue is immutable post-service-startup, so the rows derived
+     * from the underlying {@link TemplateQuery#getBackwardDispatchRows()}
+     * cache never change without a JVM restart.  We additionally cache the
+     * mapped record list (and the ETag below) so neither the row→record
+     * mapping nor the content-hash is recomputed on every request.
+     */
+    private volatile List<BackwardDispatchRow> cachedDispatchPayload;
+
+    /**
+     * Content-hash ETag for {@link #cachedDispatchPayload} — computed once
+     * alongside the payload and reused for every {@code GET} on
+     * {@code /catalogue/backward-dispatch}.  Stable across requests within a
+     * JVM; differs whenever a service restart brings up a different catalogue.
+     */
+    private volatile String cachedDispatchEtag;
 
 
     public static class Linker {
@@ -374,6 +393,122 @@ public class TemplateService {
         }
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
     }
+
+
+    /**
+     * Returns the catalogue's {@code backward_dispatch} table as a flat JSON array,
+     * mirroring the four-column SQL table populated at service startup by
+     * {@link TemplateQuery#generateClearAndPopulateBackwardDispatch}.  Each entry has
+     * shape {@code {"source_template": "...", "source_property": "...",
+     * "target_template": "...", "target_property": "..."}}.
+     *
+     * <p>Intended for off-machine consumers that need the producer/consumer edge set
+     * without a database connection — typically build-time tools and IT assertion
+     * libraries that validate or index step-spec {@code stream_3_entity_prerequisites}
+     * declarations against the live catalogue.  See the chronicle-side
+     * {@code STREAM3-CONSTRAINTS.md} for the consumer pattern.
+     *
+     * <p>The response is cacheable: the payload is invariant for the JVM lifetime
+     * of the service, so we emit an {@code ETag} (content-hash) and a
+     * {@code Cache-Control: max-age=3600, public} header.  Clients sending
+     * {@code If-None-Match} with the matching ETag receive {@code 304 Not Modified}.
+     *
+     * @return {@code 200 OK} with the flat JSON array, or {@code 304 Not Modified}
+     *         when the client's {@code If-None-Match} matches the current ETag.
+     */
+    @GET
+    @Path("/catalogue/backward-dispatch")
+    @Tag(name = "catalogue")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBackwardDispatch(@Context HttpHeaders headers) {
+
+        logger.info("getBackwardDispatch");
+
+        // Lazy double-checked initialisation.  TemplateQuery already caches the raw
+        // rows; here we additionally cache the JSON-record shape and the ETag so
+        // neither is recomputed on every request.  The catalogue is immutable
+        // post-startup, so cache eviction is not required.
+        if (cachedDispatchPayload == null) {
+            synchronized (this) {
+                if (cachedDispatchPayload == null) {
+                    List<String[]> rows = queryTemplate.getBackwardDispatchRows();
+                    List<BackwardDispatchRow> payload = new ArrayList<>(rows.size());
+                    StringBuilder fingerprint = new StringBuilder(rows.size() * 64);
+                    for (String[] r : rows) {
+                        payload.add(new BackwardDispatchRow(r[0], r[1], r[2], r[3]));
+                        fingerprint.append(r[0]).append('|').append(r[1]).append('|')
+                                   .append(r[2]).append('|').append(r[3]).append('\n');
+                    }
+                    // Bare hex — JAX-RS wraps the value in quotes per RFC 7232 when it
+                    // serialises the ETag header.  Embedding our own quotes here would
+                    // double-wrap and break If-None-Match negotiation with conforming clients.
+                    this.cachedDispatchEtag = DigestUtils.sha1Hex(fingerprint.toString());
+                    this.cachedDispatchPayload = List.copyOf(payload);
+                }
+            }
+        }
+
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(3600);    // catalogue is stable per service deploy
+        cc.setPrivate(false);  // intermediate caches may store
+
+        // Honour If-None-Match — clients with the current ETag get 304 with no body.
+        // The incoming header value is the quoted RFC 7232 form; strip the surrounding
+        // quotes before comparing against our bare-hex stored value.
+        String ifNoneMatch = headers.getHeaderString(HttpHeaders.IF_NONE_MATCH);
+        String inmBare = (ifNoneMatch == null) ? null
+                : ifNoneMatch.replaceFirst("^W/", "").replaceAll("^\"|\"$", "");
+        if (cachedDispatchEtag.equals(inmBare)) {
+            return Response.notModified()
+                    .tag(cachedDispatchEtag)
+                    .cacheControl(cc)
+                    .build();
+        }
+
+        // The chronicle stack does not register a default JAX-RS provider for arbitrary
+        // POJOs — a downstream filter expects entities to be Jackson JsonNodes and casts
+        // unconditionally.  Stream the payload through the project's ObjectMapper instead,
+        // matching the pattern used elsewhere in this file.
+        final List<BackwardDispatchRow> snapshot = cachedDispatchPayload;
+        jakarta.ws.rs.core.StreamingOutput promise = out -> om.writeValue(out, snapshot);
+
+        return Response.ok(promise, MediaType.APPLICATION_JSON_TYPE)
+                .tag(cachedDispatchEtag)
+                .cacheControl(cc)
+                .build();
+    }
+
+    /**
+     * One row of the catalogue {@code backward_dispatch} table, as returned by
+     * {@link #getBackwardDispatch}.  Field names use {@code snake_case} to match the
+     * SQL column names exactly so clients can deserialise by column name without
+     * any per-field configuration.
+     *
+     * <p>Plain class rather than a {@code record} because the parent pom pins the
+     * {@code maven-compiler-plugin} {@code release} to Java 15 and records are
+     * Java 16+.  Jackson serialises this to the same shape via the standard
+     * Java-bean getters below.</p>
+     */
+    public static class BackwardDispatchRow {
+        public final String source_template;
+        public final String source_property;
+        public final String target_template;
+        public final String target_property;
+
+        public BackwardDispatchRow(String source_template, String source_property,
+                                   String target_template, String target_property) {
+            this.source_template = source_template;
+            this.source_property = source_property;
+            this.target_template = target_template;
+            this.target_property = target_property;
+        }
+
+        public String getSource_template() { return source_template; }
+        public String getSource_property() { return source_property; }
+        public String getTarget_template() { return target_template; }
+        public String getTarget_property() { return target_property; }
+    }
+
 
     public String getPrincipalAsPreferredUsername(Principal principal) {
         if (principal==null) return "nil";

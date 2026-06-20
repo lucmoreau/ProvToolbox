@@ -24,7 +24,9 @@
     <list default="true" id="44a1f447-c308-479f-be3a-95e05d37ae08" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateQuery.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services2/service-templates-core/src/main/java/org/openprovenance/prov/service/core/TemplateService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/AttributeDescriptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/AttributeDescriptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/DescriptorUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/DescriptorUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/NameDescriptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/NameDescriptor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -366,6 +368,15 @@
       <workItem from="1778101131952" duration="67470000" />
       <workItem from="1778844997524" duration="62439000" />
       <workItem from="1779880417804" duration="14447000" />
+      <workItem from="1780557971330" duration="2415000" />
+      <workItem from="1780934108754" duration="1201000" />
+      <workItem from="1781024238012" duration="594000" />
+      <workItem from="1781109510711" duration="597000" />
+      <workItem from="1781353153560" duration="1942000" />
+      <workItem from="1781503238429" duration="597000" />
+      <workItem from="1781536637090" duration="3570000" />
+      <workItem from="1781624249318" duration="2360000" />
+      <workItem from="1781711565957" duration="7844000" />
     </task>
     <servers />
   </component>

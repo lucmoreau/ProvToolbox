@@ -47,6 +47,9 @@ public class AttributeDescriptor implements Descriptor {
     @JsonProperty("@sql.foreign")
     private SqlForeign sqlForeign;
 
+    @JsonProperty("@unique")
+    private boolean unique;
+
     @JsonProperty("@value")
     public String getValue() {
         return value;
@@ -135,6 +138,18 @@ public class AttributeDescriptor implements Descriptor {
     public void setSqlForeign(SqlForeign sqlForeign) {
         this.sqlForeign = sqlForeign;
     }
+
+
+    @JsonProperty("@unique")
+    public boolean isUnique() {
+        return unique;
+    }
+
+    @JsonProperty("@unique")
+    public void setUnique(boolean unique) {
+        this.unique = unique;
+    }
+
 
     @Override
     public String toString() {

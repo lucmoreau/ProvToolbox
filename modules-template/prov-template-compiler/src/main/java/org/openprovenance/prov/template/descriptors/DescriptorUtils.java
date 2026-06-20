@@ -130,6 +130,15 @@ public class DescriptorUtils {
         return getFromDescriptor(descriptor, af, nf);
     }
 
+    public Optional<Boolean> isUnique(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var = templateBindingsSchema.getVar().get(key);
+        if (var == null) return Optional.empty();
+        //throw new NullPointerException("getOutputSqlForeign could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        Descriptor descriptor = var.get(0);
+        Function<AttributeDescriptor, Optional<Boolean>> af = (ad) -> Optional.of(ad.isUnique());
+        Function<NameDescriptor, Optional<Boolean>> nf = (nd) -> Optional.of(nd.isUnique());
+        return getFromDescriptor(descriptor, af, nf);
+    }
 
     public boolean hasInput(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var=templateBindingsSchema.getVar().get(key);

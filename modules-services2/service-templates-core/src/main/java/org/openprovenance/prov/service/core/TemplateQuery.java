@@ -1317,26 +1317,24 @@ public class TemplateQuery {
 
                 },
                 (rs, data) -> {
+                    // Read column metadata once, up front — NOT inside the row loop.
+                    // (The previous nested `while (rs.next())` advanced past the first row to
+                    //  read metadata, then iterated from the second row, silently dropping the
+                    //  newest record.  Harmless for multi-row tables, but a single-row table
+                    //  such as currency_creating returned zero rows.)
+                    ResultSetMetaData meta = rs.getMetaData();
+                    int colCount = meta.getColumnCount();
+                    ArrayList<String> cols = new ArrayList<String>();
+                    for (int index=1; index<=colCount; index++)
+                        cols.add(meta.getColumnName(index));
+
                     while (rs.next()) {
-
-                        //get metadata
-                        ResultSetMetaData meta = rs.getMetaData();
-
-                        //get column names
-                        int colCount = meta.getColumnCount();
-                        ArrayList<String> cols = new ArrayList<String>();
-                        for (int index=1; index<=colCount; index++)
-                            cols.add(meta.getColumnName(index));
-
-
-                        while (rs.next()) {
-                            HashMap<String,Object> row = new HashMap<>();
-                            for (String colName:cols) {
-                                Object val = rs.getObject(colName);
-                                row.put(colName,val);
-                            }
-                            data.add(row);
+                        HashMap<String,Object> row = new HashMap<>();
+                        for (String colName:cols) {
+                            Object val = rs.getObject(colName);
+                            row.put(colName,val);
                         }
+                        data.add(row);
                     }
                 });
 

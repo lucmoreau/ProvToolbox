@@ -55,6 +55,8 @@ public class NameDescriptor implements Descriptor {
     private Map<String,String> newInputs;
     @JsonProperty("@sql.also.outputs")
     private Map<String,String> alsoOutputs;
+    @JsonProperty("@unique")
+    private boolean unique;
 
     @JsonProperty("@id")
     public String getId() {
@@ -169,6 +171,16 @@ public class NameDescriptor implements Descriptor {
     @JsonProperty("@semantic.type")
     public void setSemantic(String semantic) {
         this.semantic = semantic;
+    }
+
+    @JsonProperty("@unique")
+    public boolean isUnique() {
+        return unique;
+    }
+
+    @JsonProperty("@unique")
+    public void setUnique(boolean unique) {
+        this.unique = unique;
     }
 
     @Override

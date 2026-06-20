@@ -38,6 +38,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-archetype: forms.html: T20 Streaming progress for navigation viz
 * QueryService: updated query interface to allow query parameters to be passed
 * TemplateQuery: forward traversal star
+* prov-template-compiler: unique constraint on variables in cbindings and fixed bug in query
 
 `2.2.3`
 * prov-template: update to instantiation

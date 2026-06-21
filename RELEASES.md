@@ -39,6 +39,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * QueryService: updated query interface to allow query parameters to be passed
 * TemplateQuery: forward traversal star
 * prov-template-compiler: unique constraint on variables in cbindings and fixed bug in query
+* TemplateService/TemplateQuery: ensuring unique constraints
 
 `2.2.3`
 * prov-template: update to instantiation

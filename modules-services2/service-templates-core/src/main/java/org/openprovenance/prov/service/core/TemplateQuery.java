@@ -64,6 +64,7 @@ public class TemplateQuery {
 
     static TypeReference<Map<String,Map<String, Map<String, String>>>> typeRef = new TypeReference<>() {};
     static TypeReference<Map<String, String>> typeRef2 = new TypeReference<>() {};
+    static TypeReference<Map<String, Set<String>>> typeRef3 = new TypeReference<>() {};
     private final Map<String, Map<String, List<String>>> successors;
     private final RelationMapping relationMapping;
     private final Map<String, String[]> propertyOrder;
@@ -72,6 +73,7 @@ public class TemplateQuery {
     private final Map<String, String> longNames;
     private final Map<String, Map<String, List<String>>> typedSuccessors;
     private final Map<String, String> semanticType;
+    private final Map<String, Set<String>> uniqueMap;
 
     /**
      * Lazily-populated cache of the dispatch rows derived from {@link #ioMap}.
@@ -93,6 +95,7 @@ public class TemplateQuery {
         this.shortNames=shortNames;
         this.longNames=shortNames.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
         this.ioMap = shortenNames(getIoMap(templateDispatcher.getIoMap()), shortNames);
+        this.uniqueMap=shortenNames2(getUniqueMap(templateDispatcher.getUniqueMap()), shortNames);
         this.successors = templateDispatcher.getSuccessors();
         this.typedSuccessors = templateDispatcher.getTypedSuccessors();
         this.relationMapping = new RelationMapping(this,templateDispatcher,querier);
@@ -108,9 +111,39 @@ public class TemplateQuery {
 
         generateTraversalMethods(querier, this.ioMap);
         generateTraversalMethodsWithType(querier, this.ioMap, semanticType);
+        
+        generateUniqueIndexes(querier,this.uniqueMap);
         //initializePredecessorTable();
     }
 
+    /**
+     * Ensure a UNIQUE INDEX exists for every {@code @unique} variable declared in the cbindings,
+     * passed in as {@code table -> {unique columns}}.  Idempotent: uses
+     * {@code CREATE UNIQUE INDEX IF NOT EXISTS} keyed on a deterministic index name
+     * ({@code <table>_<col1>_<col2..>_unique}), so it is a no-op when the index already exists
+     * (including indexes created manually before this was generated).  A partial predicate
+     * ({@code WHERE <cols> IS NOT NULL}) lets NULL rows coexist while keeping non-null values unique.
+     */
+    private void generateUniqueIndexes(Querier querier, Map<String, Set<String>> uniqueMap) {
+        if (uniqueMap == null || uniqueMap.isEmpty()) return;
+        for (Map.Entry<String, Set<String>> entry : uniqueMap.entrySet()) {
+            String table = entry.getKey();
+            Set<String> cols = entry.getValue();
+            if (table == null || table.isBlank() || cols == null || cols.isEmpty()) continue;
+
+            String colList   = String.join(", ", cols);
+            String indexName = table + "_" + String.join("_", cols) + "_unique";
+            String notNull   = cols.stream()
+                                   .map(c -> c + " IS NOT NULL")
+                                   .collect(Collectors.joining(" AND "));
+
+            logger.info("Ensuring unique index " + indexName + " on " + table + "(" + colList + ")");
+            querier.do_statements(null, null, (sb, data) ->
+                    sb.append("CREATE UNIQUE INDEX IF NOT EXISTS ").append(indexName)
+                      .append(" ON ").append(table).append(" (").append(colList).append(")")
+                      .append(" WHERE ").append(notNull));
+        }
+    }
 
 
     private void initializeTypedPredecessorTable() {
@@ -163,6 +196,10 @@ public class TemplateQuery {
                         e -> shortNames.get(e.getKey()), Map.Entry::getValue)));
 
         return res;
+    }
+
+    private Map<String,Set<String>> shortenNames2(Map<String, Set<String>> map, Map<String, String> shortNames) {
+        return map.entrySet().stream().collect(Collectors.toMap(e -> shortNames.get(e.getKey()), Map.Entry::getValue));
     }
 
     RelationMapping getRelationMapping() {
@@ -1459,6 +1496,14 @@ public class TemplateQuery {
             ioMap.get(INPUT). entrySet().removeIf( entry -> toExclude.contains(entry.getKey()) || entry.getValue() == null || entry.getValue().isEmpty());
             ioMap.get(OUTPUT).entrySet().removeIf( entry -> toExclude.contains(entry.getKey()) || entry.getValue() == null || entry.getValue().isEmpty());
             return ioMap;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<String,Set<String>> getUniqueMap(String uniqueMapString) {
+        try {
+            return om.readValue(uniqueMapString, typeRef3);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

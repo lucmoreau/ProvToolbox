@@ -408,7 +408,7 @@ public class ConfigProcessor implements Constants {
         SpecificationFile init=compilerBuilderInit.generateInitializer(configs, locations, init_dir, INIT);
         init.save();
 
-        SpecificationFile catalogueDispatcher=compilerCatalogueDispatcher.generateCatalogueDispatcher(configs, getInputOutputMaps(), locations, init_dir, CATALOGUE_DISPATCHER);
+        SpecificationFile catalogueDispatcher=compilerCatalogueDispatcher.generateCatalogueDispatcher(configs, getInputOutputMaps(), getUniqueMap(), locations, init_dir, CATALOGUE_DISPATCHER);
         catalogueDispatcher.save();
 
 
@@ -816,6 +816,7 @@ public class ConfigProcessor implements Constants {
 
             // ignore the composite templates when building join table.
             if (consistsOf==null) buildJoinTable(templateFullyQualifiedName, bindingsSchema);
+            buildUniqueTable(templateFullyQualifiedName, bindingsSchema);
 
 
             //System.out.println("Generating for template: " + templateName + " fully qualified name: " + templateFullyQualifiedName + " package: " + packageName );
@@ -1002,6 +1003,10 @@ public class ConfigProcessor implements Constants {
         return map;
     }
 
+    public Map<String, Set<String>> getUniqueMap() {
+        return uniqueMap;
+    }
+
     public void buildJoinTable(String templateName, TemplateBindingsSchema bindingsSchema) {
             for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
                 Optional<String> sqlRelationName=descriptorUtils.getSqlTable(key, bindingsSchema);
@@ -1019,6 +1024,18 @@ public class ConfigProcessor implements Constants {
                 }
 
 
+        }
+    }
+    
+    private Map<String,Set<String>> uniqueMap=new HashMap<>();
+
+    public void buildUniqueTable(String templateName, TemplateBindingsSchema bindingsSchema) {
+        for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
+            Optional<Boolean> optUnique = descriptorUtils.isUnique(key, bindingsSchema);
+            if (optUnique.isPresent() && optUnique.get()) {
+                Set<String> set = uniqueMap.computeIfAbsent(templateName, any -> new HashSet<>());
+                set.add(key);
+            }
         }
     }
 

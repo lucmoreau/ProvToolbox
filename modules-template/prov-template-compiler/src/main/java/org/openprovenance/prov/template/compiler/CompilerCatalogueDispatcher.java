@@ -117,7 +117,7 @@ public class CompilerCatalogueDispatcher {
 
     SpecificationFile generateCatalogueDispatcher(TemplatesProjectConfiguration configs,
                                                   Map<String, Map<String, Map<String, String>>> inputOutputMaps,
-                                                  Locations locations,
+                                                  Map<String, Set<String>> uniqueMap, Locations locations,
                                                   String directory,
                                                   String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
@@ -169,6 +169,7 @@ public class CompilerCatalogueDispatcher {
         // Add static string fields with JSON initializers
         try {
             pastClass.FIELDS(FIELD("ioMap", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(inputOutputMaps))));
+            pastClass.FIELDS(FIELD("uniqueMap", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(uniqueMap))));
             pastClass.FIELDS(FIELD("shortNames", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(locations.getShortNames()))));
             pastClass.FIELDS(FIELD("linkers", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(locations.getLinkerTableDeclarations()))));
         } catch (JsonProcessingException e) {
@@ -182,6 +183,13 @@ public class CompilerCatalogueDispatcher {
                         .commentFileLocation()
                         .RETURNS(STRING)
                         .BODY(RETURN(VARIABLE("ioMap"))),
+
+                METHOD("getUniqueMap")
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .commentFileLocation()
+                        .RETURNS(STRING)
+                        .BODY(RETURN(VARIABLE("uniqueMap"))),
+
 
                 METHOD("getShortNames")
                         .MODIFIERS(Modifier.PUBLIC)

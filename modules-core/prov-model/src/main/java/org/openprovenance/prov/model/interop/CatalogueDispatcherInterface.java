@@ -63,4 +63,6 @@ public interface CatalogueDispatcherInterface<T> {
     String getShortNames();
 
     String getLinkers();
+
+    String getUniqueMap();
 }

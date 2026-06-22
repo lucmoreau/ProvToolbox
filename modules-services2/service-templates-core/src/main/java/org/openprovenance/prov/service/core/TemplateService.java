@@ -242,12 +242,16 @@ public class TemplateService {
                 boolean anyResult=storage.initializeDB(conn, sqlInitializer);
                 logger.debug("DB initialized. Any results? " + anyResult);
 
-                sqlFilesToExecute.forEach(file -> executeStatementsFromFile(conn,file));
+                getSqlFilesToExecute().forEach(file -> executeStatementsFromFile(conn,file));
 
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public @NonNull List<String> getSqlFilesToExecute() {
+        return sqlFilesToExecute;
     }
 
     public Connection storageSetup(String jdbcURL) {

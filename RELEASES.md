@@ -40,6 +40,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * TemplateQuery: forward traversal star
 * prov-template-compiler: unique constraint on variables in cbindings and fixed bug in query
 * TemplateService/TemplateQuery: ensuring unique constraints
+* prov-template-compiler: idempotent insert functions that have unicity constraints
 
 `2.2.3`
 * prov-template: update to instantiation

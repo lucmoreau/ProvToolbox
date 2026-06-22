@@ -31,6 +31,8 @@ module prov.template.compiler {
     exports org.openprovenance.prov.template.compiler.util;
     exports org.openprovenance.prov.template.descriptors;
     exports org.openprovenance.prov.template.log2prov;
+    // qualified export: the SQL composer is internal, opened only to its unit test (T-38)
+    exports org.openprovenance.prov.template.compiler.sql to prov.template.compiler.test;
 
     opens org.openprovenance.prov.template.compiler.util;
     opens org.openprovenance.prov.template.compiler;

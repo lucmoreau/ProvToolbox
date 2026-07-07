@@ -900,7 +900,16 @@ public class CompilerExpansionBuilder {
                 if ((successors1.get(key) != null) || (successors2.get(key) != null) || (successors3.get(key) != null) || (successors3b.get(key) != null) || (successors4.get(key) != null)) {
 
                     List<Integer> rowValues = successorTable.get(count);
-                    if (rowValues == null || rowValues.isEmpty()) throw new InvalidCaseException("successor table incorrect");
+                    if (rowValues == null || rowValues.isEmpty()) {
+                        System.err.println("successor table incorrect for count: " + count + " and key: " + key);
+                        System.err.println("successors1 ,for key: " + successors1.get(key));
+                        System.err.println("successors2 ,for key: " + successors2.get(key));
+                        System.err.println("successors3 ,for key: " + successors3.get(key));
+                        System.err.println("successors3b ,for key: " + successors3b.get(key));
+                        System.err.println("successors4 ,for key: " + successors4.get(key));
+                        System.err.println("successorTable: " + successorTable);
+                        throw new InvalidCaseException("successor table incorrect");
+                    }
 
                     for (int i = 0; i < rowValues.size() / 2; i++) {
                         int successor = rowValues.get(i * 2);

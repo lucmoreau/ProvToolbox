@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template.compiler.past.emitter;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.template.compiler.past.*;
@@ -108,6 +109,8 @@ public class Poet implements Emitter<TypeSpec> {
         method.annotation.forEach(annotation -> {
             if (annotation instanceof org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation) {
                 builder.addAnnotation(Override.class);
+            } else if (annotation instanceof org.openprovenance.prov.template.compiler.past.annotations.JsonIgnoreAnnotation) {
+                builder.addAnnotation(JsonIgnore.class);
             }
         });
 

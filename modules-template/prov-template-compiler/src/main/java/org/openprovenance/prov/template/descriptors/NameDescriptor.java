@@ -17,6 +17,7 @@ import java.util.Objects;
         "@id",
         "@type",
         "@escape",
+        "@role",
         "@documentation",
         "@examplar",
         "@input",
@@ -43,6 +44,16 @@ public class NameDescriptor implements Descriptor {
     private String sqlType;
     @JsonProperty("@escape")
     private String escape;
+
+    /**
+     * Role of this variable within its template statement. One of
+     * {@code cause}, {@code effect}, {@code general} (and the numbered
+     * variants {@code cause2}, {@code effect2}, {@code general2} for
+     * two-chain templates). Drives the generation of uniform
+     * {@code get&lt;Role&gt;()} / {@code set&lt;Role&gt;()} accessors on the bean.
+     */
+    @JsonProperty("@role")
+    private String role;
 
 
     @JsonProperty("@semantic.type")
@@ -162,6 +173,16 @@ public class NameDescriptor implements Descriptor {
         this.escape = escape;
     }
 
+    @JsonProperty("@role")
+    public String getRole() {
+        return role;
+    }
+
+    @JsonProperty("@role")
+    public void setRole(String role) {
+        this.role = role;
+    }
+
 
     @JsonProperty("@semantic.type")
     public String getSemantic() {
@@ -194,6 +215,7 @@ public class NameDescriptor implements Descriptor {
                 ", output=" + output +
                 ", sqlType='" + sqlType + '\'' +
                 ", escape='" + escape + '\'' +
+                ", role='" + role + '\'' +
                 ", table='" + table + '\'' +
                 ", newInputs=" + newInputs +
                 ", alsoOutputs=" + alsoOutputs +
@@ -211,12 +233,12 @@ public class NameDescriptor implements Descriptor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NameDescriptor that = (NameDescriptor) o;
-        return Objects.equals(id, that.id) && Objects.equals(type, that.type) && Objects.equals(documentation, that.documentation) && Objects.equals(examplar, that.examplar) && input == that.input && output == that.output && Objects.equals(sqlType, that.sqlType) && Objects.equals(table, that.table) && Objects.equals(newInputs, that.newInputs) && Objects.equals(alsoOutputs, that.alsoOutputs);
+        return Objects.equals(id, that.id) && Objects.equals(type, that.type) && Objects.equals(documentation, that.documentation) && Objects.equals(examplar, that.examplar) && input == that.input && output == that.output && Objects.equals(sqlType, that.sqlType) && Objects.equals(role, that.role) && Objects.equals(table, that.table) && Objects.equals(newInputs, that.newInputs) && Objects.equals(alsoOutputs, that.alsoOutputs);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, documentation, examplar, input, output, sqlType, table, newInputs, alsoOutputs);
+        return Objects.hash(id, type, documentation, examplar, input, output, sqlType, role, table, newInputs, alsoOutputs);
     }
 
     @JsonIgnore

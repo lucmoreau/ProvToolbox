@@ -41,6 +41,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: unique constraint on variables in cbindings and fixed bug in query
 * TemplateService/TemplateQuery: ensuring unique constraints
 * prov-template-compiler: idempotent insert functions that have unicity constraints
+* prov-template-compiler: generation of methods and interfaces for roles (cause, effect, general) in beans
 
 `2.2.3`
 * prov-template: update to instantiation

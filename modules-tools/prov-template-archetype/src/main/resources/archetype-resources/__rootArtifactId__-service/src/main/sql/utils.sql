@@ -1,5 +1,5 @@
 
-
+/*
 CREATE TABLE IF NOT EXISTS plead_transforming_composite_linker
 (
     ID        SERIAL,
@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS plead_transforming_composite_linker
     simple    INT
 --  The simple record
 );
+
+ */
 
 CREATE TABLE IF NOT EXISTS __PROV_DERIVATION
 (
@@ -101,7 +103,7 @@ CREATE TABLE IF NOT EXISTS __PROV_MEMBERSHIP
     rel TEXT
 );
 
-
+/*
 CREATE TABLE if not exists predecessor_table  (template text, output text, input text);
 
 truncate predecessor_table;
@@ -124,6 +126,8 @@ values
     ('handover', 'item1', 'item0')
 ;
 
+
+ */
 /*
 
 select * from backwardTraversal(8, 'plead_approving', 'pipeline')

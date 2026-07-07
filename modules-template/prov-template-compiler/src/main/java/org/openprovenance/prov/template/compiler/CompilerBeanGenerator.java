@@ -7,6 +7,8 @@ import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.annotations.JsonIgnoreAnnotation;
+import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
@@ -78,6 +80,7 @@ public class CompilerBeanGenerator {
             templateFullyQualifiedName=templateName;
         }
 
+        addDeclaredInterfaces(pastClass, configs, templateFullyQualifiedName, beanDirection);
 
         pastClass.FIELDS(FIELD(Constants.IS_A, STRING)
                 .COMMENT("The template name")
@@ -96,13 +99,16 @@ public class CompilerBeanGenerator {
 
 
 
+        Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> rolesInBean=new LinkedHashMap<>();
+
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
             if (beanDirection==BeanDirection.COMMON
                     || (beanKind==BeanKind.COMPOSITE)
                     || (beanDirection==BeanDirection.OUTPUTS && descriptorUtils.isOutput(key, bindingsSchema))
                     || (beanDirection==BeanDirection.INPUTS && (descriptorUtils.isInput(key, bindingsSchema) || sharing!=null && sharing.contains(key)))){
 
-                Field field=FIELD(key, compilerUtil.getPastTypeForDeclaredType(theVar, key))
+                org.openprovenance.prov.template.compiler.past.type.TypeName fieldType=compilerUtil.getPastTypeForDeclaredType(theVar, key);
+                Field field=FIELD(key, fieldType)
                         .MODIFIERS(Modifier.PUBLIC);
 
                 Descriptor descriptor=theVar.get(key).get(0);
@@ -130,7 +136,17 @@ public class CompilerBeanGenerator {
 
                 pastClass.FIELDS(field);
 
+                String role=descriptorUtils.getFromDescriptor(descriptor, (ad) -> null, NameDescriptor::getRole);
+                if (role!=null) {
+                    generateRoleAccessors(pastClass, key, role, fieldType);
+                    rolesInBean.put(role, fieldType);
+                }
+
             }
+        }
+
+        if (beanKind==SIMPLE && extension==null) {
+            generateRoleInterfaces(configs, locations, templateFullyQualifiedName, beanDirection, rolesInBean, stackTraceElement);
         }
 
 
@@ -194,6 +210,176 @@ public class CompilerBeanGenerator {
 
     private String stringForSharedVariables(List<String> sharing) {
         return sharing.stream().sorted().collect(Collectors.joining("_"));
+    }
+
+
+    /**
+     * Adds the interfaces declared in the template's {@link ImplementInterfaces} configuration
+     * to the generated bean, selected by bean direction: {@code plain} for the full bean
+     * (COMMON), {@code input} for {@code *Inputs}, {@code output} for {@code *Outputs}.
+     *
+     * <p>Interface names are fully qualified; the generator adds the {@code implements}
+     * clause only — javac verifies at build time that the generated accessors satisfy the
+     * interface's abstract methods.</p>
+     */
+    private void addDeclaredInterfaces(org.openprovenance.prov.template.compiler.past.Class pastClass,
+                                       TemplatesProjectConfiguration configs,
+                                       String templateFullyQualifiedName,
+                                       BeanDirection beanDirection) {
+        ImplementInterfaces interfaces=declaredInterfaces(configs, templateFullyQualifiedName);
+        if (interfaces==null) return;
+        List<String> names=interfacesForDirection(interfaces, beanDirection);
+        if (names==null) return;
+        for (String fqn: names) {
+            int dot=fqn.lastIndexOf('.');
+            if (dot<0) {
+                throw new IllegalStateException("Interface name '" + fqn + "' declared for template "
+                        + templateFullyQualifiedName + " must be fully qualified");
+            }
+            pastClass.INTERFACES(org.openprovenance.prov.template.compiler.past.type.ClassName
+                    .get(fqn.substring(dot+1), fqn.substring(0, dot)));
+        }
+        Method isaGetter=METHOD(Constants.IS_A)
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(STRING)
+                .COMMENT("Returns the template name for this bean.")
+                .BODY(RETURN(VARIABLE(Constants.IS_A, Variable.VariableKind.FIELD_VARIABLE)));
+        pastClass.METHOD(isaGetter);
+    }
+
+    /** Looks up the {@link ImplementInterfaces} declared for a template, or null. */
+    private ImplementInterfaces declaredInterfaces(TemplatesProjectConfiguration configs, String templateFullyQualifiedName) {
+        if (configs==null || configs.templates==null) return null;
+        return Arrays.stream(configs.templates)
+                .filter(c -> c instanceof SimpleTemplateCompilerConfig)
+                .map(c -> (SimpleTemplateCompilerConfig) c)
+                .filter(c -> Objects.equals(c.fullyQualifiedName, templateFullyQualifiedName))
+                .findFirst()
+                .map(c -> c.interfaces)
+                .orElse(null);
+    }
+
+    /** Selects the interface names for a bean direction: plain=COMMON, input=INPUTS, output=OUTPUTS. */
+    private List<String> interfacesForDirection(ImplementInterfaces interfaces, BeanDirection beanDirection) {
+        return switch (beanDirection) {
+            case COMMON  -> interfaces.plain;
+            case INPUTS  -> interfaces.input;
+            case OUTPUTS -> interfaces.output;
+        };
+    }
+
+    /** Registry of already-generated role interfaces: FQN → (role → accessor type). */
+    private final Map<String, Map<String,String>> generatedRoleInterfaces=new HashMap<>();
+
+    /**
+     * Generates the interfaces declared with {@code "generate": true} into the generated
+     * source tree, deriving one getter/setter pair per {@code @role} present in the bean
+     * direction. An interface declared by several templates is generated once; declaring
+     * the same interface with a different role signature is an error.
+     */
+    private void generateRoleInterfaces(TemplatesProjectConfiguration configs,
+                                        Locations locations,
+                                        String templateFullyQualifiedName,
+                                        BeanDirection beanDirection,
+                                        Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> rolesInBean,
+                                        StackTraceElement stackTraceElement) {
+        ImplementInterfaces interfaces=declaredInterfaces(configs, templateFullyQualifiedName);
+        if (interfaces==null || !interfaces.generate) return;
+        List<String> names=interfacesForDirection(interfaces, beanDirection);
+        if (names==null) return;
+        for (String fqn: names) {
+            Map<String,String> signature=new LinkedHashMap<>();
+            rolesInBean.forEach((role, type) -> signature.put(role, String.valueOf(type)));
+            Map<String,String> previous=generatedRoleInterfaces.putIfAbsent(fqn, signature);
+            if (previous!=null) {
+                if (!previous.equals(signature)) {
+                    throw new IllegalStateException("Interface " + fqn + " is declared with conflicting role signatures: "
+                            + previous + " vs " + signature + " (template " + templateFullyQualifiedName + ")");
+                }
+                continue; // identical declaration — already generated
+            }
+            int dot=fqn.lastIndexOf('.');
+            if (dot<0) {
+                throw new IllegalStateException("Interface name '" + fqn + "' declared for template "
+                        + templateFullyQualifiedName + " must be fully qualified");
+            }
+            String packge=fqn.substring(0, dot);
+            String simpleName=fqn.substring(dot+1);
+
+            org.openprovenance.prov.template.compiler.past.Class intface=compilerUtil.getPastFactory()
+                    .INTERFACE(simpleName)
+                    .MODIFIERS(Modifier.PUBLIC)
+                    .COMMENT("Role-accessor contract generated from the @role declarations of template $N.", templateFullyQualifiedName)
+                    .COMMENT((beanDirection==BeanDirection.INPUTS)?"\nImplemented by the inputs bean."
+                            :(beanDirection==BeanDirection.OUTPUTS)?"\nImplemented by the outputs bean."
+                            :"\nImplemented by the full bean.");
+
+            // Every bean declaring interfaces also gets an isA() accessor (template name);
+            // declaring it here lets generic engine code identify the template through the interface.
+            // (Deliberately not a JavaBean getter, so Jackson leaves the wire format untouched.)
+            intface.METHOD(METHOD(Constants.IS_A)
+                    .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                    .RETURNS(STRING)
+                    .COMMENT("Returns the template name for this bean."));
+
+            rolesInBean.forEach((role, type) -> {
+                String suffix=compilerUtil.capitalize(role);
+                intface.METHOD(METHOD("get" + suffix)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .RETURNS(type)
+                        .COMMENT("Role accessor ($N).", role));
+                intface.METHOD(METHOD("set" + suffix)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .RETURNS(VOID)
+                        .PARAMETER(type, "value")
+                        .COMMENT("Role mutator ($N).", role));
+            });
+
+            String directory=locations.convertToDirectory(packge);
+            Supplier<Boolean> javaGenerator=() -> generateJava(intface, packge, configs, directory, stackTraceElement, compilerUtil);
+            new SpecificationFile(javaGenerator, emptyGenerator, emptyGenerator, emptyGenerator).save();
+        }
+    }
+
+
+    /** The roles accepted in a variable's {@code @role} declaration. */
+    public static final Set<String> KNOWN_ROLES =
+            Set.of("cause", "effect", "general", "cause2", "effect2", "general2");
+
+    /**
+     * Generates uniform role-based accessors for a variable that declares a {@code @role}.
+     * For a variable {@code key} with role {@code cause} this emits {@code getCause()} /
+     * {@code setCause(value)} getting or setting the underlying field.
+     */
+    private void generateRoleAccessors(org.openprovenance.prov.template.compiler.past.Class pastClass,
+                                       String key,
+                                       String role,
+                                       org.openprovenance.prov.template.compiler.past.type.TypeName fieldType) {
+        if (!KNOWN_ROLES.contains(role)) {
+            throw new IllegalStateException("Unknown @role '" + role + "' for variable '" + key
+                    + "': expected one of " + KNOWN_ROLES);
+        }
+        String suffix=compilerUtil.capitalize(role);
+
+        Method getter=METHOD("get" + suffix)
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(JsonIgnoreAnnotation.NAME)
+                .RETURNS(fieldType)
+                .COMMENT("Role accessor ($N) for variable $N.", role, key)
+                .BODY(RETURN(VARIABLE(key, Variable.VariableKind.FIELD_VARIABLE)));
+        pastClass.METHOD(getter);
+
+        Method setter=METHOD("set" + suffix)
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(JsonIgnoreAnnotation.NAME)
+                .RETURNS(VOID)
+                .PARAMETER(fieldType, "value")
+                .COMMENT("Role mutator ($N) for variable $N.", role, key)
+                .BODY(ASSIGNMENT(VARIABLE(key, Variable.VariableKind.FIELD_VARIABLE), VARIABLE("value")));
+        pastClass.METHOD(setter);
     }
 
 

@@ -4,3 +4,4 @@ declare namespace org.openprovenance.apache.commons.lang {
         static escapeCsv(format: string): string;
     }
 }
+declare namespace com.fasterxml.jackson.annotation { }

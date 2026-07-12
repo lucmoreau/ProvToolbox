@@ -86,6 +86,14 @@
                 }
             ]
         },
+        "PropertiesDescriptor": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "string"
+                }
+            ]
+        },
         "TableDescriptor": {
             "type": "object",
             "properties": {
@@ -190,6 +198,14 @@
             "items": [
                 {
                     "$ref": "#/definitions/TemplateDescriptor"
+                }
+            ]
+        },
+        "interfaces": {
+            "type": "object",
+            "items": [
+                {
+                    "$ref": "#/definitions/PropertiesDescriptor"
                 }
             ]
         },

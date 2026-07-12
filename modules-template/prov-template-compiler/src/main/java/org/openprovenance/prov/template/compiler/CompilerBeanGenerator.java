@@ -101,6 +101,11 @@ public class CompilerBeanGenerator {
 
         Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> rolesInBean=new LinkedHashMap<>();
 
+        // Project-level member interfaces (configs.interfaces: FQN → variable names) declared
+        // by this template for this bean direction; their variables get name-based accessors.
+        Map<String, List<String>> memberInterfaces=memberInterfacesForBean(configs, templateFullyQualifiedName, beanDirection);
+        Set<String> memberVars=memberInterfaces.values().stream().flatMap(List::stream).collect(Collectors.toCollection(LinkedHashSet::new));
+
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
             if (beanDirection==BeanDirection.COMMON
                     || (beanKind==BeanKind.COMPOSITE)
@@ -142,11 +147,16 @@ public class CompilerBeanGenerator {
                     rolesInBean.put(role, fieldType);
                 }
 
+                if (memberVars.contains(key)) {
+                    generateNamedAccessors(pastClass, key, fieldType);
+                }
+
             }
         }
 
         if (beanKind==SIMPLE && extension==null) {
             generateRoleInterfaces(configs, locations, templateFullyQualifiedName, beanDirection, rolesInBean, stackTraceElement);
+            generateMemberInterfaces(configs, locations, templateFullyQualifiedName, beanDirection, memberInterfaces, theVar, stackTraceElement);
         }
 
 
@@ -269,6 +279,141 @@ public class CompilerBeanGenerator {
         };
     }
 
+    /**
+     * Selects, for this bean, the project-level member interfaces it declares:
+     * the intersection of the template's {@link ImplementInterfaces} slot for the
+     * direction with the project-wide {@code configs.interfaces} map
+     * (FQN → member variable names).
+     */
+    private Map<String, List<String>> memberInterfacesForBean(TemplatesProjectConfiguration configs,
+                                                              String templateFullyQualifiedName,
+                                                              BeanDirection beanDirection) {
+        if (configs==null || configs.interfaces==null) return Map.of();
+        ImplementInterfaces interfaces=declaredInterfaces(configs, templateFullyQualifiedName);
+        if (interfaces==null) return Map.of();
+        List<String> names=interfacesForDirection(interfaces, beanDirection);
+        if (names==null) return Map.of();
+        Map<String, List<String>> result=new LinkedHashMap<>();
+        for (String fqn: names) {
+            List<String> vars=configs.interfaces.get(fqn);
+            if (vars!=null) result.put(fqn, vars);
+        }
+        return result;
+    }
+
+    /**
+     * Generates a name-based accessor pair ({@code getTime()} / {@code setTime(v)}) for a
+     * member variable of a project-level interface (T-164 tranche 2, the metadata layer).
+     *
+     * <p>Deliberately NOT {@code @JsonIgnore}-annotated: unlike the role accessors (whose
+     * names differ from their backing fields), {@code getTime} maps to the SAME logical
+     * Jackson property as the public {@code time} field — annotating it would suppress the
+     * field from the wire format. Same-name accessors leave serialization untouched.</p>
+     */
+    private void generateNamedAccessors(org.openprovenance.prov.template.compiler.past.Class pastClass,
+                                        String key,
+                                        org.openprovenance.prov.template.compiler.past.type.TypeName fieldType) {
+        String suffix=compilerUtil.capitalize(key);
+
+        Method getter=METHOD("get" + suffix)
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(fieldType)
+                .COMMENT("Accessor for variable $N.", key)
+                .BODY(RETURN(VARIABLE(key, Variable.VariableKind.FIELD_VARIABLE)));
+        compilerUtil.debugFileLocation(getter);
+        pastClass.METHOD(getter);
+
+        Method setter=METHOD("set" + suffix)
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(VOID)
+                .PARAMETER(fieldType, "value")
+                .COMMENT("Mutator for variable $N.", key)
+                .BODY(ASSIGNMENT(VARIABLE(key, Variable.VariableKind.FIELD_VARIABLE), VARIABLE("value")));
+        compilerUtil.debugFileLocation(setter);
+        pastClass.METHOD(setter);
+    }
+
+    /** Registry of already-generated member interfaces: FQN → (variable → accessor type). */
+    private final Map<String, Map<String,String>> generatedMemberInterfaces=new HashMap<>();
+
+    /**
+     * Generates the project-level member interfaces ({@code configs.interfaces}) declared by
+     * this template: {@code isA()} plus one name-based getter/setter pair per listed variable,
+     * types resolved from the first declaring template's bindings schema. An interface declared
+     * by several templates is generated once; a declarer whose variable types disagree with the
+     * first is a build error.
+     */
+    private void generateMemberInterfaces(TemplatesProjectConfiguration configs,
+                                          Locations locations,
+                                          String templateFullyQualifiedName,
+                                          BeanDirection beanDirection,
+                                          Map<String, List<String>> memberInterfaces,
+                                          Map<String, List<Descriptor>> theVar,
+                                          StackTraceElement stackTraceElement) {
+        for (Map.Entry<String, List<String>> entry: memberInterfaces.entrySet()) {
+            String fqn=entry.getKey();
+            List<String> vars=entry.getValue();
+
+            Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> varTypes=new LinkedHashMap<>();
+            for (String var: vars) {
+                if (theVar.get(var)==null) {
+                    throw new IllegalStateException("Interface " + fqn + " lists variable '" + var
+                            + "' which template " + templateFullyQualifiedName + " does not declare");
+                }
+                varTypes.put(var, compilerUtil.getPastTypeForDeclaredType(theVar, var));
+            }
+
+            Map<String,String> signature=new LinkedHashMap<>();
+            varTypes.forEach((var, type) -> signature.put(var, String.valueOf(type)));
+            Map<String,String> previous=generatedMemberInterfaces.putIfAbsent(fqn, signature);
+            if (previous!=null) {
+                if (!previous.equals(signature)) {
+                    throw new IllegalStateException("Interface " + fqn + " is declared with conflicting member signatures: "
+                            + previous + " vs " + signature + " (template " + templateFullyQualifiedName + ")");
+                }
+                continue; // identical declaration — already generated
+            }
+
+            int dot=fqn.lastIndexOf('.');
+            if (dot<0) {
+                throw new IllegalStateException("Interface name '" + fqn + "' declared for template "
+                        + templateFullyQualifiedName + " must be fully qualified");
+            }
+            String packge=fqn.substring(0, dot);
+            String simpleName=fqn.substring(dot+1);
+
+            org.openprovenance.prov.template.compiler.past.Class intface=compilerUtil.getPastFactory()
+                    .INTERFACE(simpleName)
+                    .MODIFIERS(Modifier.PUBLIC)
+                    .COMMENT("Member-accessor contract generated from the project-level interface declaration.")
+                    .COMMENT("\nVariables: $N.", vars.toString());
+
+            // Every bean declaring interfaces also gets an isA() accessor (template name);
+            // declaring it here lets generic engine code identify the template through the interface.
+            intface.METHOD(METHOD(Constants.IS_A)
+                    .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                    .RETURNS(STRING)
+                    .COMMENT("Returns the template name for this bean."));
+
+            varTypes.forEach((var, type) -> {
+                String suffix=compilerUtil.capitalize(var);
+                intface.METHOD(METHOD("get" + suffix)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .RETURNS(type)
+                        .COMMENT("Accessor for variable $N.", var));
+                intface.METHOD(METHOD("set" + suffix)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .RETURNS(VOID)
+                        .PARAMETER(type, "value")
+                        .COMMENT("Mutator for variable $N.", var));
+            });
+
+            String directory=locations.convertToDirectory(packge);
+            Supplier<Boolean> javaGenerator=() -> generateJava(intface, packge, configs, directory, stackTraceElement, compilerUtil);
+            new SpecificationFile(javaGenerator, emptyGenerator, emptyGenerator, emptyGenerator).save();
+        }
+    }
+
     /** Registry of already-generated role interfaces: FQN → (role → accessor type). */
     private final Map<String, Map<String,String>> generatedRoleInterfaces=new HashMap<>();
 
@@ -289,6 +434,9 @@ public class CompilerBeanGenerator {
         List<String> names=interfacesForDirection(interfaces, beanDirection);
         if (names==null) return;
         for (String fqn: names) {
+            if (configs.interfaces!=null && configs.interfaces.containsKey(fqn)) {
+                continue; // project-level member interface — generateMemberInterfaces owns it
+            }
             Map<String,String> signature=new LinkedHashMap<>();
             rolesInBean.forEach((role, type) -> signature.put(role, String.valueOf(type)));
             Map<String,String> previous=generatedRoleInterfaces.putIfAbsent(fqn, signature);

@@ -34,6 +34,8 @@ public class TemplatesProjectConfiguration {
     public String sqlFile;
     public List<String> search;
 
+    public Map<String,List<String>> interfaces;
+
     @JsonProperty("past-generators")
     public Map<String, Generator> generators;
 
@@ -59,6 +61,7 @@ public class TemplatesProjectConfiguration {
                 ", jsonschema='" + jsonschema + '\'' +
                 ", sqlFile='" + sqlFile + '\'' +
                 ", search=" + search +
+                ", interfaces=" + interfaces +
                 ", generators=" + generators +
                 ", templates=" + Arrays.toString(templates) +
                 ", sqlTables=" + sqlTables +

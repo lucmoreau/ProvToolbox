@@ -34,7 +34,7 @@ public class TemplatesProjectConfiguration {
     public String sqlFile;
     public List<String> search;
 
-    public Map<String,List<String>> interfaces;
+    public Map<String,InterfaceDeclaration> interfaces;
 
     @JsonProperty("past-generators")
     public Map<String, Generator> generators;

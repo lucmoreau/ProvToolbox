@@ -103,8 +103,11 @@ public class CompilerBeanGenerator {
 
         // Project-level member interfaces (configs.interfaces: FQN → variable names) declared
         // by this template for this bean direction; their variables get name-based accessors.
-        Map<String, List<String>> memberInterfaces=memberInterfacesForBean(configs, templateFullyQualifiedName, beanDirection);
-        Set<String> memberVars=memberInterfaces.values().stream().flatMap(List::stream).collect(Collectors.toCollection(LinkedHashSet::new));
+        Map<String, InterfaceDeclaration> memberInterfaces=memberInterfacesForBean(configs, templateFullyQualifiedName, beanDirection);
+        Set<String> memberVars=memberInterfaces.values().stream()
+                .filter(d -> d.variables!=null)
+                .flatMap(d -> d.variables.stream())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
 
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
             if (beanDirection==BeanDirection.COMMON
@@ -156,7 +159,7 @@ public class CompilerBeanGenerator {
 
         if (beanKind==SIMPLE && extension==null) {
             generateRoleInterfaces(configs, locations, templateFullyQualifiedName, beanDirection, rolesInBean, stackTraceElement);
-            generateMemberInterfaces(configs, locations, templateFullyQualifiedName, beanDirection, memberInterfaces, theVar, stackTraceElement);
+            generateMemberInterfaces(configs, locations, templateFullyQualifiedName, beanDirection, memberInterfaces, theVar, rolesInBean, stackTraceElement);
         }
 
 
@@ -285,18 +288,18 @@ public class CompilerBeanGenerator {
      * direction with the project-wide {@code configs.interfaces} map
      * (FQN → member variable names).
      */
-    private Map<String, List<String>> memberInterfacesForBean(TemplatesProjectConfiguration configs,
-                                                              String templateFullyQualifiedName,
-                                                              BeanDirection beanDirection) {
+    private Map<String, InterfaceDeclaration> memberInterfacesForBean(TemplatesProjectConfiguration configs,
+                                                                      String templateFullyQualifiedName,
+                                                                      BeanDirection beanDirection) {
         if (configs==null || configs.interfaces==null) return Map.of();
         ImplementInterfaces interfaces=declaredInterfaces(configs, templateFullyQualifiedName);
         if (interfaces==null) return Map.of();
         List<String> names=interfacesForDirection(interfaces, beanDirection);
         if (names==null) return Map.of();
-        Map<String, List<String>> result=new LinkedHashMap<>();
+        Map<String, InterfaceDeclaration> result=new LinkedHashMap<>();
         for (String fqn: names) {
-            List<String> vars=configs.interfaces.get(fqn);
-            if (vars!=null) result.put(fqn, vars);
+            InterfaceDeclaration declaration=configs.interfaces.get(fqn);
+            if (declaration!=null) result.put(fqn, declaration);
         }
         return result;
     }
@@ -337,22 +340,26 @@ public class CompilerBeanGenerator {
     private final Map<String, Map<String,String>> generatedMemberInterfaces=new HashMap<>();
 
     /**
-     * Generates the project-level member interfaces ({@code configs.interfaces}) declared by
-     * this template: {@code isA()} plus one name-based getter/setter pair per listed variable,
-     * types resolved from the first declaring template's bindings schema. An interface declared
-     * by several templates is generated once; a declarer whose variable types disagree with the
-     * first is a build error.
+     * Generates the project-level interfaces ({@code configs.interfaces}) declared by this
+     * template: {@code isA()} plus one getter/setter pair per declared member — name-based
+     * for {@code variables}, role-based for {@code roles} — with types resolved from the
+     * first declaring template. The contract is DECLARATION-owned: templates conform to the
+     * declared member set (javac-verified), rather than the contract being inferred from a
+     * bean's whole role set. An interface declared by several templates is generated once;
+     * a declarer whose member types disagree with the first is a build error.
      */
     private void generateMemberInterfaces(TemplatesProjectConfiguration configs,
                                           Locations locations,
                                           String templateFullyQualifiedName,
                                           BeanDirection beanDirection,
-                                          Map<String, List<String>> memberInterfaces,
+                                          Map<String, InterfaceDeclaration> memberInterfaces,
                                           Map<String, List<Descriptor>> theVar,
+                                          Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> rolesInBean,
                                           StackTraceElement stackTraceElement) {
-        for (Map.Entry<String, List<String>> entry: memberInterfaces.entrySet()) {
+        for (Map.Entry<String, InterfaceDeclaration> entry: memberInterfaces.entrySet()) {
             String fqn=entry.getKey();
-            List<String> vars=entry.getValue();
+            List<String> vars=entry.getValue().variables!=null? entry.getValue().variables : List.of();
+            List<String> roles=entry.getValue().roles!=null? entry.getValue().roles : List.of();
 
             Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> varTypes=new LinkedHashMap<>();
             for (String var: vars) {
@@ -363,8 +370,23 @@ public class CompilerBeanGenerator {
                 varTypes.put(var, compilerUtil.getPastTypeForDeclaredType(theVar, var));
             }
 
+            // Role members resolve against the roles present in THIS bean direction; the
+            // role→variable binding stays per-template (@role in the cbindings).
+            Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> roleTypes=new LinkedHashMap<>();
+            for (String role: roles) {
+                org.openprovenance.prov.template.compiler.past.type.TypeName type=rolesInBean.get(role);
+                if (type==null) {
+                    throw new IllegalStateException("Interface " + fqn + " lists role '" + role
+                            + "' which the " + beanDirection + " bean of template "
+                            + templateFullyQualifiedName + " does not carry (roles present: "
+                            + rolesInBean.keySet() + ")");
+                }
+                roleTypes.put(role, type);
+            }
+
             Map<String,String> signature=new LinkedHashMap<>();
-            varTypes.forEach((var, type) -> signature.put(var, String.valueOf(type)));
+            varTypes.forEach((var, type) -> signature.put("var:" + var, String.valueOf(type)));
+            roleTypes.forEach((role, type) -> signature.put("role:" + role, String.valueOf(type)));
             Map<String,String> previous=generatedMemberInterfaces.putIfAbsent(fqn, signature);
             if (previous!=null) {
                 if (!previous.equals(signature)) {
@@ -386,7 +408,7 @@ public class CompilerBeanGenerator {
                     .INTERFACE(simpleName)
                     .MODIFIERS(Modifier.PUBLIC)
                     .COMMENT("Member-accessor contract generated from the project-level interface declaration.")
-                    .COMMENT("\nVariables: $N.", vars.toString());
+                    .COMMENT("\nVariables: $N; roles: $N.", vars.toString(), roles.toString());
 
             // Every bean declaring interfaces also gets an isA() accessor (template name);
             // declaring it here lets generic engine code identify the template through the interface.
@@ -406,6 +428,19 @@ public class CompilerBeanGenerator {
                         .RETURNS(VOID)
                         .PARAMETER(type, "value")
                         .COMMENT("Mutator for variable $N.", var));
+            });
+
+            roleTypes.forEach((role, type) -> {
+                String suffix=compilerUtil.capitalize(role);
+                intface.METHOD(METHOD("get" + suffix)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .RETURNS(type)
+                        .COMMENT("Role accessor ($N).", role));
+                intface.METHOD(METHOD("set" + suffix)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .RETURNS(VOID)
+                        .PARAMETER(type, "value")
+                        .COMMENT("Role mutator ($N).", role));
             });
 
             String directory=locations.convertToDirectory(packge);

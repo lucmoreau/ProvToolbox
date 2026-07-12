@@ -94,6 +94,25 @@
                 }
             ]
         },
+        "InterfaceDeclaration": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/PropertiesDescriptor"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "variables": {
+                            "$ref": "#/definitions/PropertiesDescriptor"
+                        },
+                        "roles": {
+                            "$ref": "#/definitions/PropertiesDescriptor"
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            ]
+        },
         "TableDescriptor": {
             "type": "object",
             "properties": {
@@ -203,11 +222,9 @@
         },
         "interfaces": {
             "type": "object",
-            "items": [
-                {
-                    "$ref": "#/definitions/PropertiesDescriptor"
-                }
-            ]
+            "additionalProperties": {
+                "$ref": "#/definitions/InterfaceDeclaration"
+            }
         },
         "search": {
             "type": "array",

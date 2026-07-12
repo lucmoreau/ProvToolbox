@@ -506,7 +506,8 @@ public class CompilerSQL {
                 "  key INT,\n" +
                 "  table_name TEXT,\n" +
                 "  principal TEXT,\n" +
-                "  hash jsonb\n" +
+                "  hash jsonb,\n" +
+                "  created_at timestamp with time zone NOT NULL DEFAULT NOW()\n" +
                 ");\n" +
                 "\n" +
                 "\n" +

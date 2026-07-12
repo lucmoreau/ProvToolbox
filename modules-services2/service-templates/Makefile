@@ -75,15 +75,18 @@ test.template:
 
 get.template:
 	@export VERBOSE=false;bin/keycloak-get-token.sh
-	@curl -s -X GET  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`"   http://localhost:7075/book/provapi/template/${TEMPLATE}/${ID}.${EXTENSION}
+	@curl -s -X GET  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" \
+		http://localhost:7075/book/provapi/template/${TEMPLATE}/${ID}.${EXTENSION}
 
 hash.template:
-	@$(MAKE) get.template TEMPLATE=org.openprovenance.book.fs.FileTransforming ID=$(ID) EXTENSION=csv | grep $(TEMPLATE) | sed 's/$(TEMPLATE)/$(ID),$(TEMPLATE)/g' > target/$(ID).csv
+	@$(MAKE) get.template TEMPLATE=org.openprovenance.book.fs.FileTransforming ID=$(ID) EXTENSION=csv \
+          | grep $(TEMPLATE) | sed 's/$(TEMPLATE)/$(ID),$(TEMPLATE)/g' > target/$(ID).csv
 	@perl -p -i -e 'chomp if eof' target/$(ID).csv
 	@openssl dgst -sha3-512 target/$(ID).csv
 
 ex.h.1:
-	@$(MAKE) hash.template ID=123456 TEMPLATE=org.openprovenance.book.fs.FileTransforming
+	@$(MAKE) hash.template ID=123456\
+		TEMPLATE=org.openprovenance.book.fs.FileTransforming
 
 ex.h.2:
 	@$(MAKE) get.template TEMPLATE=plead_transforming ID=977 EXTENSION=csv | grep "plead" | sed 's/plead/977,plead/g' > target/977.csv

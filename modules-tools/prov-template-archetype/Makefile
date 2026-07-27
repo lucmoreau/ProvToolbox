@@ -157,6 +157,14 @@ XPLAN_FILES = \
     $(NLG_XPLAIN)/fs/fs-file-init.json \
     $(NLG_XPLAIN)/fs/fs-file-splitting.json \
     $(NLG_XPLAIN)/fs/fs-generic-responsibility.json \
+    $(NLG_XPLAIN)/tr/tr-xplan-library.json \
+    $(NLG_XPLAIN)/tr/tr-transporting.json \
+    $(NLG_XPLAIN)/tr/tr-packing.json \
+    $(NLG_XPLAIN)/tr/tr-unpacking.json \
+    $(NLG_XPLAIN)/tr/tr-examining.json \
+    $(NLG_XPLAIN)/tr/tr-agent-init.json \
+    $(NLG_XPLAIN)/tr/tr-assigning.json \
+    $(NLG_XPLAIN)/tr/tr-handingover.json \
     $(NLG_XPLAIN)/provbasic/provbasic.json \
     $(NLG_XPLAIN)/provbasic/actedonbehalfof1.json \
     $(NLG_XPLAIN)/provbasic/activity1.json \
@@ -201,14 +209,19 @@ schema.validate:
 	fi
 DOCUMENTS=/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/test/prov/
 
-# PROPERTY_NAME renames the fs-file-derivation key in the generated json, so that
-# sentences produced by the shared x-plan can be labelled by scenario
-# (e.g. fs-file-fitting, fs-file-filtering). By default, the key is left unchanged.
-PROPERTY_NAME=fs-file-derivation
+# SOURCE_NAME/PROPERTY_NAME rename the key of a shared x-plan in the generated json,
+# so that its sentences can be labelled by scenario (e.g. fs-file-fitting,
+# fs-file-filtering, tr-weighing). By default, the key is left unchanged.
+SOURCE_NAME=fs-file-derivation
+PROPERTY_NAME=$(SOURCE_NAME)
+
+# x-plan library used by batch.explain; tr targets override it
+XPLAN_LIB=$(NLG_XPLAIN)/fs/fs-xplan-library.json
+TR_XPLAN_LIB=$(NLG_XPLAIN)/tr/tr-xplan-library.json
 
 batch.explain:
-	@$(PROVMAN) explain --infile $(DOCUMENTS)/$(FILE).provn --outfile target/narrative-loan.provn --text target/narrative-loan.json --language $(NLG_XPLAIN)/fs/fs-xplan-library.json -s target/simplenlg2.txt --profile=$(PROFILE)  --batch-templates=$(BATCH)
-	@jq 'with_entries(if .key == "fs-file-derivation" then .key = "$(PROPERTY_NAME)" else . end)' target/narrative-loan.json
+	@$(PROVMAN) explain --infile $(DOCUMENTS)/$(FILE).provn --outfile target/narrative-loan.provn --text target/narrative-loan.json --language $(XPLAN_LIB) -s target/simplenlg2.txt --profile=$(PROFILE)  --batch-templates=$(BATCH)
+	@jq 'with_entries(if .key == "$(SOURCE_NAME)" then .key = "$(PROPERTY_NAME)" else . end)' target/narrative-loan.json
 
 
 
@@ -274,6 +287,64 @@ xp.fitting.no.association:
 	@$(MAKE) batch.explain FILE=file_training_no_association BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-fitting
 xp.fitting.no.date:
 	@$(MAKE) batch.explain FILE=file_training_no_date BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-fitting
+
+# --- Transport book (tr): x-plans for the physical and responsibility template packages.
+# Test documents are based on recent records from the bookptm database (see each
+# document's header comment for its record of origin).
+
+tr.explain:
+	@$(MAKE) batch.explain XPLAN_LIB=$(TR_XPLAN_LIB) FILE=$(FILE) BATCH=$(BATCH) SOURCE_NAME=$(SOURCE_NAME) PROPERTY_NAME=$(PROPERTY_NAME)
+
+xp.tr.all: xp.tr.transporting.all xp.tr.packing.all xp.tr.unpacking xp.tr.weighing.all xp.tr.examining xp.tr.agent.init.all xp.tr.assigning.all xp.tr.handingover.all
+
+xp.tr.transporting.all: xp.tr.transporting xp.tr.transporting.full xp.tr.transporting.no.agent
+xp.tr.transporting:
+	@$(MAKE) tr.explain FILE=tr_transporting BATCH=[tr-transporting]
+xp.tr.transporting.full:
+	@$(MAKE) tr.explain FILE=tr_transporting_full BATCH=[tr-transporting]
+xp.tr.transporting.no.agent:
+	@$(MAKE) tr.explain FILE=tr_transporting_no_agent BATCH=[tr-transporting]
+
+xp.tr.packing.all: xp.tr.packing xp.tr.packing.no.agent
+xp.tr.packing:
+	@$(MAKE) tr.explain FILE=tr_packing BATCH=[tr-packing]
+xp.tr.packing.no.agent:
+	@$(MAKE) tr.explain FILE=tr_packing_no_agent BATCH=[tr-packing]
+
+xp.tr.unpacking:
+	@$(MAKE) tr.explain FILE=tr_unpacking BATCH=[tr-unpacking]
+
+# weighing shares the tr-examining x-plan: the verb (weigh/examine) comes from the
+# dictionary, keyed on the activity type; the weight phrase is optional
+xp.tr.weighing.all: xp.tr.weighing xp.tr.weighing.unit xp.tr.weighing.no.delegation
+xp.tr.weighing:
+	@$(MAKE) tr.explain FILE=tr_weighing BATCH=[tr-examining] SOURCE_NAME=tr-examining PROPERTY_NAME=tr-weighing
+xp.tr.weighing.unit:
+	@$(MAKE) tr.explain FILE=tr_weighing_unit BATCH=[tr-examining] SOURCE_NAME=tr-examining PROPERTY_NAME=tr-weighing
+xp.tr.weighing.no.delegation:
+	@$(MAKE) tr.explain FILE=tr_weighing_no_delegation BATCH=[tr-examining] SOURCE_NAME=tr-examining PROPERTY_NAME=tr-weighing
+xp.tr.examining:
+	@$(MAKE) tr.explain FILE=tr_examining BATCH=[tr-examining]
+
+xp.tr.agent.init.all: xp.tr.agent.init xp.tr.agent.init.scale xp.tr.agent.init.no.location
+xp.tr.agent.init:
+	@$(MAKE) tr.explain FILE=tr_agent_init BATCH=[tr-agent-init]
+xp.tr.agent.init.scale:
+	@$(MAKE) tr.explain FILE=tr_agent_init_scale BATCH=[tr-agent-init]
+xp.tr.agent.init.no.location:
+	@$(MAKE) tr.explain FILE=tr_agent_init_no_location BATCH=[tr-agent-init]
+
+xp.tr.assigning.all: xp.tr.assigning xp.tr.assigning.no.agent
+xp.tr.assigning:
+	@$(MAKE) tr.explain FILE=tr_assigning BATCH=[tr-assigning]
+xp.tr.assigning.no.agent:
+	@$(MAKE) tr.explain FILE=tr_assigning_no_agent BATCH=[tr-assigning]
+
+xp.tr.handingover.all: xp.tr.handingover xp.tr.handingover.no.giver
+xp.tr.handingover:
+	@$(MAKE) tr.explain FILE=tr_handingover BATCH=[tr-handingover]
+xp.tr.handingover.no.giver:
+	@$(MAKE) tr.explain FILE=tr_handingover_no_giver BATCH=[tr-handingover]
 
 #| xgroup_by(.)
 xp.all:

@@ -1,0 +1,21 @@
+// Record packing#501 without packer: The book (item:7946) was packed into box (item:7944).
+document
+prefix trs <https://openprovenance.org/transport/ns/#>
+prefix phys <http://openprovenance.org/ns/phys#>
+prefix resp <http://openprovenance.org/ns/responsibility#>
+prefix provext <http://openprovenance.org/prov/extension#>
+prefix item <http://localhost:7075/book/provapi/live/item/>
+prefix ag <http://localhost:7075/book/provapi/live/agent/>
+prefix act <http://localhost:7075/book/provapi/live/activity/>
+prefix sched <http://localhost:7075/book/provapi/live/schedule/>
+entity(item:7943)
+entity(item:7946,[prov:type = 'trs:Book'])
+entity(item:7939,[prov:type = 'prov:Collection'])
+entity(item:7944,[prov:type = 'trs:Box', prov:type = 'prov:Collection', phys:sealed = "true" %% xsd:boolean])
+activity(act:5944,-,-,[prov:type = 'provext:InsertingItemIntoCollection', prov:type = 'phys:AddingItemToContainer'])
+used(act:5944,item:7943,-,[prov:role = 'provext:asMember'])
+used(act:5944,item:7939,-,[prov:role = 'provext:asCollection'])
+wasGeneratedBy(item:7946,act:5944,-,[prov:role = 'provext:asMember'])
+wasGeneratedBy(item:7944,act:5944,-,[prov:role = 'provext:asCollection'])
+wasDerivedFrom(item:7946, item:7943, act:5944, -, -,[prov:type = 'provext:InsertingInto_Item'])
+endDocument

@@ -1,0 +1,17 @@
+// From db record agent_init#1747: A person agent (ag:7964) was registered alongside its first version (ag:7965) in Oxford on 1 September 2024 at 11:00.
+document
+prefix trs <https://openprovenance.org/transport/ns/#>
+prefix phys <http://openprovenance.org/ns/phys#>
+prefix resp <http://openprovenance.org/ns/responsibility#>
+prefix provext <http://openprovenance.org/prov/extension#>
+prefix item <http://localhost:7075/book/provapi/live/item/>
+prefix ag <http://localhost:7075/book/provapi/live/agent/>
+prefix act <http://localhost:7075/book/provapi/live/activity/>
+prefix sched <http://localhost:7075/book/provapi/live/schedule/>
+agent(ag:7964,[prov:type = 'trs:Person'])
+agent(ag:7965,[phys:lkl = "Oxford" %% xsd:string])
+activity(act:5957,-,-,[prov:type = 'phys:RegisteringAgent'])
+wasGeneratedBy(ag:7964,act:5957,-)
+wasGeneratedBy(ag:7965,act:5957,2024-09-01T11:00:00+01:00)
+specializationOf(ag:7965,ag:7964)
+endDocument

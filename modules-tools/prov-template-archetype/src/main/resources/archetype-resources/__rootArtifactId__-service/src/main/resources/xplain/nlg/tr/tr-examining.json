@@ -1,0 +1,149 @@
+{
+    "select": { "act": { "@type": "prov:Activity" } },
+
+    "query": [
+        "prefix phys <http://openprovenance.org/ns/phys#>",
+        "select * from der a prov:WasDerivedFrom",
+        "from item1 a prov:Entity",
+        " join der.generatedEntity = item1.id",
+        "from item0 a prov:Entity",
+        " join der.usedEntity = item0.id",
+        "from act a prov:Activity",
+        " join der.activity = act.id",
+        "from waw a prov:WasAssociatedWith",
+        " optional join act.id = waw.activity",
+        "from instrument a prov:Agent",
+        " optional join waw.agent = instrument.id",
+        "from aobo a prov:ActedOnBehalfOf",
+        " optional join instrument.id = aobo.delegate",
+        "from agent a prov:Agent",
+        " optional join aobo.responsible = agent.id",
+        "from wgb a prov:WasGeneratedBy",
+        " optional join item1.id = wgb.entity",
+        "where act[prov:type] >= 'phys:Weighing'",
+        "  or  act[prov:type] >= 'phys:Examining'"
+    ],
+
+    "sentence": {
+        "type": "clause",
+        "subject": {
+            "type": "noun_phrase",
+            "head": {
+                "type": "@funcall",
+                "@object": "instrument",
+                "@property": "prov:type",
+                "@function": "lookup-type-with-default",
+                "@arg1": "noun_phrase",
+                "@arg2": "instrument",
+                "@optional": "true"
+            },
+            "post-modifiers": [
+                {
+                    "type": "adjective_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "instrument",
+                        "@field": "id",
+                        "@function": "noun+identity",
+                        "@arg1": "",
+                        "@optional": "true"
+                    }
+                }
+            ]
+        },
+        "object": {
+            "type": "noun_phrase",
+            "determiner": "The",
+            "head": {
+                "type": "@funcall",
+                "@object": "item1",
+                "@property": "prov:type",
+                "@function": "lookup-type-with-default",
+                "@arg1": "noun_phrase",
+                "@arg2": "item"
+            },
+            "post-modifiers": [
+                {
+                    "type": "adjective_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "item1",
+                        "@field": "id",
+                        "@function": "noun+identity",
+                        "@arg1": ""
+                    }
+                }
+            ],
+            "features": { "number": "singular" }
+        },
+        "verb": {
+            "type": "@funcall",
+            "@object": "act",
+            "@property": "prov:type",
+            "@function": "lookup-type",
+            "@arg1": "verb_phrase"
+        },
+        "modifiers": [
+            {
+                "type": "preposition_phrase",
+                "preposition": "at",
+                "noun": {
+                    "type": "noun_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "item1",
+                        "@property": "phys:lkw",
+                        "@function": "string",
+                        "@optional": "true"
+                    },
+                    "post-modifiers": [
+                        {
+                            "type": "adjective_phrase",
+                            "head": {
+                                "type": "@funcall",
+                                "@object": "item1",
+                                "@property": "phys:massUnit",
+                                "@function": "string",
+                                "@optional": "true"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "preposition_phrase",
+                "preposition": "on behalf of",
+                "noun": {
+                    "type": "@funcall",
+                    "@object": "agent",
+                    "@field": "id",
+                    "@function": "noun+identity",
+                    "@arg1": "agent",
+                    "@optional": "true"
+                }
+            },
+            {
+                "type": "preposition_phrase",
+                "preposition": "on",
+                "noun": {
+                    "type": "@funcall",
+                    "@object": "wgb",
+                    "@field": "time",
+                    "@optional": "true",
+                    "@function": "friendly_timestring"
+                }
+            }
+        ],
+        "features": {
+            "tense": "past",
+            "passive": "true"
+        }
+    },
+
+    "context": {
+        "trs":     "https://openprovenance.org/transport/ns/#",
+        "phys":    "http://openprovenance.org/ns/phys#",
+        "resp":    "http://openprovenance.org/ns/responsibility#",
+        "provext": "http://openprovenance.org/prov/extension#"
+    }
+}

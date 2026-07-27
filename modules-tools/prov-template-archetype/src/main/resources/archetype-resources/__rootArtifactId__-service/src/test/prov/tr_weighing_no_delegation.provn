@@ -1,0 +1,22 @@
+// Record weighing#597 without delegation: The box (item:7969) was weighed at 15.03 on 1 October 2024 at 16:14 by scale (ag:7968).
+document
+prefix trs <https://openprovenance.org/transport/ns/#>
+prefix phys <http://openprovenance.org/ns/phys#>
+prefix resp <http://openprovenance.org/ns/responsibility#>
+prefix provext <http://openprovenance.org/prov/extension#>
+prefix item <http://localhost:7075/book/provapi/live/item/>
+prefix ag <http://localhost:7075/book/provapi/live/agent/>
+prefix act <http://localhost:7075/book/provapi/live/activity/>
+prefix sched <http://localhost:7075/book/provapi/live/schedule/>
+entity(item:7966)
+entity(item:7969,[prov:type = 'trs:Box', phys:lkw = "15.03" %% xsd:string])
+activity(act:5960,-,-,[prov:type = 'phys:Weighing'])
+agent(ag:7965)
+agent(ag:7968,[prov:type = 'trs:Scale'])
+used(act:5960,item:7966,-,[prov:role = 'provext:asEntity'])
+wasGeneratedBy(item:7969,act:5960,2024-10-01T16:14:00+01:00)
+wasDerivedFrom(item:7969, item:7966, act:5960, -, -,[prov:type = 'phys:Weighing'])
+wasAssociatedWith(act:5960,ag:7968,-,[prov:role = 'resp:asInstrument'])
+wasAttributedTo(item:7969, ag:7968,[provext:activity = 'act:5960'])
+wasAttributedTo(item:7969, ag:7965,[provext:activity = 'act:5960'])
+endDocument

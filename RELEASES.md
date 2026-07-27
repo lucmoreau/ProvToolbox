@@ -42,6 +42,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * TemplateService/TemplateQuery: ensuring unique constraints
 * prov-template-compiler: idempotent insert functions that have unicity constraints
 * prov-template-compiler: generation of methods and interfaces for roles (cause, effect, general) in beans
+* service-template-core: forward and backward traversal optimisations in TemplateQuery
 
 `2.2.3`
 * prov-template: update to instantiation

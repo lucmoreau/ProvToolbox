@@ -380,6 +380,417 @@ public class TemplateQuery {
 
             """;
 
+    // backwardtraversal_star, two-phase rewrite (odoodemo T-187).
+    // recursiveQuery3 carries `depth` inside the recursive CTE's row, so UNION
+    // dedupes on (edge, depth), not on the edge: an edge reachable via paths of
+    // different lengths survives once per distinct path length (up to the depth
+    // cap of 100) and every surviving row re-expands its producer's whole
+    // subtree — on diamond-rich closures the traversal re-enumerates the same
+    // region at each depth and times out.  Here the recursion carries a frontier
+    // of unique (id, template, property) nodes only, so UNION memoises each node
+    // once and it never re-expands; the edge 6-tuple is emitted by a second,
+    // non-recursive expansion pass over the reached node set (a recursive CTE
+    // cannot separate "rows in the result" from "rows fed to the next
+    // iteration", hence the two phases).  Each (node, property) is expanded
+    // exactly twice — once per phase — instead of once per path length.
+    // The frontier key MUST include the property (the OUTPUT column through
+    // which the node was reached): a dual-chain row reached through two
+    // different output columns must expand the input columns of each — a factor
+    // of at most the row's output-column count, not a path count.
+    // Contract is unchanged (same signature, same RETURNS TABLE, same self-loop
+    // filter); the DISTINCT edge set is identical (verified on the live
+    // chronicle store: 460,826 edges on an unfiltered dispatch closure and a
+    // rel-filtered deep closure, zero difference in either direction), but the
+    // duplicate edge rows the old form emitted (same edge at several depths)
+    // are gone, and there is no depth cap — memoisation over the finite node
+    // set guarantees termination, so closures deeper than 100 hops are traversed
+    // fully instead of being silently truncated.  When a maximal-depth bound is
+    // wanted (as the old cap provided), use recursiveQuery5 below instead.
+    String recursiveQuery4 = """
+                        CREATE OR REPLACE FUNCTION public.backwardtraversal_star(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            AS $function$
+            WITH RECURSIVE reached AS (
+
+                -- ── Phase 1: node recursion ──────────────────────────────────────────────
+                -- Frontier of unique (id, template, property) triples, where property is
+                -- the OUTPUT column through which the node was reached.  No depth, no edge
+                -- payload: UNION memoises each triple once, so a node reachable along many
+                -- paths (or at many path lengths) is expanded exactly once.  The
+                -- relation-type filter is applied on every hop, starting with the
+                -- expansion of the anchor itself.
+                SELECT
+                    __param_id       AS id,
+                    __param_template AS tpl,
+                    __param_property AS prop
+
+                UNION   -- memoises: a (node, property) triple never re-expands
+
+                SELECT
+                    bt.out_id,
+                    bt.out_template,
+                    bt.out_property
+                FROM
+                    reached r
+                    JOIN predecessor_table pt
+                        ON  pt.template = r.tpl
+                        AND pt.output   = r.prop
+                        AND (
+                            __param_selected_relations IS NULL
+                            OR pt.rel = ANY(__param_selected_relations)
+                        )
+                    CROSS JOIN LATERAL backwardTraversal(
+                        r.id,
+                        r.tpl,
+                        pt.input
+                    ) AS bt
+                WHERE
+                    pt.input IS NOT NULL
+
+            )
+            -- ── Phase 2: edge emission ───────────────────────────────────────────────────
+            -- One non-recursive expansion pass over the deduplicated node set, emitting
+            -- the same 6-tuple contract as before.  The anchor sits in `reached` and
+            -- contributes the base edges; nodes whose output column has no
+            -- predecessor_table entry are dead ends and contribute nothing.
+            SELECT DISTINCT
+                bt.in_id,
+                bt.in_template,
+                bt.in_property,
+                bt.out_id,
+                bt.out_template,
+                bt.out_property
+            FROM
+                reached r
+                JOIN predecessor_table pt
+                    ON  pt.template = r.tpl
+                    AND pt.output   = r.prop
+                    AND (
+                        __param_selected_relations IS NULL
+                        OR pt.rel = ANY(__param_selected_relations)
+                    )
+                CROSS JOIN LATERAL backwardTraversal(
+                    r.id,
+                    r.tpl,
+                    pt.input
+                ) AS bt
+            WHERE
+                pt.input IS NOT NULL
+                -- Self-loops arise from the virtual-output fix for activity-output-only
+                -- templates (e.g. document_obligating_coin): backwardTraversal joins the
+                -- table with itself on an input column used as a virtual output, matching
+                -- the same row.  Self-loops are never valid in a provenance graph.
+                AND NOT (bt.in_id = bt.out_id AND bt.in_template = bt.out_template)
+            $function$;
+
+            """;
+
+    // backwardtraversal_star, memoised BFS rewrite (odoodemo T-187).
+    // recursiveQuery3 carries `depth` inside the recursive CTE's row, so UNION
+    // dedupes on (edge, depth), not on the edge: an edge reachable via paths of
+    // different lengths survives once per distinct path length (up to the depth
+    // cap of 100) and every surviving row re-expands its producer's whole
+    // subtree — on diamond-rich closures the traversal re-enumerates the same
+    // region at each depth and times out.
+    // A pure recursive CTE cannot fix this while keeping a depth limit
+    // (recursiveQuery4 above is the uncapped pure-SQL form): dedup is on the
+    // whole row, so a depth column defeats memoisation (the defect), and the
+    // recursive term may not consult the result-so-far to test "node already
+    // visited at any depth".  Hence PL/pgSQL breadth-first search: a temp table
+    // memoises visited (id, template, property) triples — each expanded exactly
+    // once, at the layer BFS first reaches it — and the loop counter is the
+    // depth, so __param_max_depth bounds the work done, not just the rows
+    // returned.  The edge 6-tuple is emitted by one expansion pass over the
+    // visited set at the end; each visited triple is thus expanded exactly
+    // twice instead of once per path length.
+    // The frontier key MUST include the property (the OUTPUT column through
+    // which the node was reached): a dual-chain row reached through two
+    // different output columns must expand the input columns of each — a factor
+    // of at most the row's output-column count, not a path count.
+    // Contract: same RETURNS TABLE and self-loop filter; existing 3- and 4-arg
+    // call sites are unchanged (__param_max_depth defaults to 100, the old
+    // hard-coded cap; NULL means unbounded, mirroring __param_selected_relations).
+    // The leading DROPs remove the old-signature overloads — without them a
+    // CREATE OR REPLACE on a live store would leave the 4-arg function behind
+    // and make 3-/4-arg calls ambiguous.
+    // Verified on the live chronicle store: DISTINCT edge sets identical to
+    // recursiveQuery3 (460,826 edges on an unfiltered dispatch closure, and a
+    // rel-filtered deep closure, zero difference in either direction), and the
+    // unfiltered deep closure the old form cannot finish even truncated at
+    // depth 5 (~295k nodes) completes.  Duplicate edge rows the old form
+    // emitted (same edge at several depths) are gone.
+    String recursiveQuery5 = """
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text);
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text, integer[]);
+
+            CREATE OR REPLACE FUNCTION public.backwardtraversal_star(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE plpgsql
+            AS $function$
+            DECLARE
+                __layer    integer := 0;   -- last BFS layer inserted (anchor = 0)
+                __inserted bigint;
+            BEGIN
+                -- Visited set.  The primary key memoises each (node, output-property)
+                -- triple: it is inserted once, with the minimal hop count at which BFS
+                -- reaches it, and expanded exactly once.  Session-scoped; TRUNCATE (not
+                -- DROP/CREATE) so repeated calls in one transaction reuse the table.
+                -- Not reentrant — nothing in the traversal stack calls this function.
+                CREATE TEMP TABLE IF NOT EXISTS __bts_reached (
+                    id    integer,
+                    tpl   text,
+                    prop  text,
+                    depth integer,
+                    PRIMARY KEY (id, tpl, prop)
+                ) ON COMMIT DROP;
+                CREATE INDEX IF NOT EXISTS __bts_reached_depth ON __bts_reached (depth);
+                TRUNCATE __bts_reached;
+
+                INSERT INTO __bts_reached
+                VALUES (__param_id, __param_template, __param_property, 0);
+
+                -- ── Phase 1: breadth-first node search ───────────────────────────────
+                -- Each iteration expands only the nodes first reached at the previous
+                -- layer; ON CONFLICT DO NOTHING drops already-visited triples, so no
+                -- node re-expands however many paths (or path lengths) reach it.
+                -- Layers 1 .. __param_max_depth - 1 are filled: their nodes are the
+                -- consumers whose expansion in Phase 2 yields edges at depth
+                -- 1 .. __param_max_depth, matching the old `rt.depth < 100` cap.
+                -- The relation-type filter is applied on every hop, starting with the
+                -- expansion of the anchor itself.
+                WHILE __param_max_depth IS NULL OR __layer < __param_max_depth - 1 LOOP
+                    INSERT INTO __bts_reached (id, tpl, prop, depth)
+                    SELECT DISTINCT
+                        bt.out_id, bt.out_template, bt.out_property, __layer + 1
+                    FROM
+                        __bts_reached r
+                        JOIN predecessor_table pt
+                            ON  pt.template = r.tpl
+                            AND pt.output   = r.prop
+                            AND (
+                                __param_selected_relations IS NULL
+                                OR pt.rel = ANY(__param_selected_relations)
+                            )
+                        CROSS JOIN LATERAL backwardTraversal(r.id, r.tpl, pt.input) AS bt
+                    WHERE
+                        r.depth = __layer
+                        AND pt.input IS NOT NULL
+                    ON CONFLICT DO NOTHING;
+
+                    GET DIAGNOSTICS __inserted = ROW_COUNT;
+                    EXIT WHEN __inserted = 0;   -- frontier exhausted before the cap
+                    __layer := __layer + 1;
+                END LOOP;
+
+                -- ── Phase 2: edge emission ───────────────────────────────────────────
+                -- One expansion pass over the deduplicated visited set, emitting the
+                -- same 6-tuple contract as before.  The anchor contributes the base
+                -- edges; nodes whose output column has no predecessor_table entry are
+                -- dead ends and contribute nothing.  The depth filter only matters for
+                -- __param_max_depth = 0 (Phase 1 never fills a layer past the cap).
+                RETURN QUERY
+                SELECT DISTINCT
+                    bt.in_id,
+                    bt.in_template,
+                    bt.in_property,
+                    bt.out_id,
+                    bt.out_template,
+                    bt.out_property
+                FROM
+                    __bts_reached r
+                    JOIN predecessor_table pt
+                        ON  pt.template = r.tpl
+                        AND pt.output   = r.prop
+                        AND (
+                            __param_selected_relations IS NULL
+                            OR pt.rel = ANY(__param_selected_relations)
+                        )
+                    CROSS JOIN LATERAL backwardTraversal(r.id, r.tpl, pt.input) AS bt
+                WHERE
+                    pt.input IS NOT NULL
+                    AND (__param_max_depth IS NULL OR r.depth < __param_max_depth)
+                    -- Self-loops arise from the virtual-output fix for
+                    -- activity-output-only templates (e.g. document_obligating_coin):
+                    -- backwardTraversal joins the table with itself on an input column
+                    -- used as a virtual output, matching the same row.  Self-loops are
+                    -- never valid in a provenance graph.
+                    AND NOT (bt.in_id = bt.out_id AND bt.in_template = bt.out_template);
+            END;
+            $function$;
+
+            """;
+
+    // backwardtraversal_star, capped pure-SQL rewrite via (node, depth)
+    // accumulation (odoodemo T-187).
+    // Phase 1 recurses over (id, template, property, depth) rows — nodes, not
+    // edges.  Compared with recursiveQuery3's (edge, depth) rows this collapses
+    // the fan-in multiplicity (there, every incoming edge of a producer
+    // re-expands it once per depth; here all of them dedupe into one row), so
+    // the only duplication left is path-length multiplicity: a node reachable
+    // at several distinct depths appears, and expands, once per depth.  Worst
+    // case that factor is the depth cap; measured on the deep rel-filtered
+    // closure of the live chronicle store it is 1.41× (1,213 rows for 859
+    // distinct triples, deepest layer 50).  So: not the strict once-per-node
+    // of recursiveQuery5's PL/pgSQL BFS, but capped AND pure SQL — depth may
+    // legitimately sit in the row because the row is a node, and Phase 2
+    // collapses the per-depth copies with DISTINCT before the single edge-
+    // emission pass (same contract, same self-loop output filter).
+    // The Phase-1 self-loop exclusion is load-bearing, not cosmetic: the store
+    // contains self-loops (virtual-output fix), and a (node, depth) row on a
+    // self-loop would otherwise climb depths forever when __param_max_depth is
+    // NULL (unbounded).  With the exclusion, NULL terminates on acyclic stores;
+    // only longer malformed cycles still need the cap, which defaults to 100
+    // like the old guard.  Cap semantics match recursiveQuery5 layer for layer.
+    // Verified on the live chronicle store: DISTINCT edge sets identical to the
+    // deployed function (460,826 edges unfiltered from the dispatch anchor;
+    // 976 rel-filtered from the deep anchor; zero difference both ways),
+    // cap-5 parity with the old CTE truncated at rt.depth < 5 (6 edges), and
+    // the unfiltered deep closure at cap 5 — where the old form times out —
+    // completes with counts identical to recursiveQuery5 (11,540,529 edges,
+    // 196,288 nodes).
+    // Choice summary: recursiveQuery4 = pure SQL, uncapped, once per node;
+    // recursiveQuery5 = PL/pgSQL, capped, once per node;
+    // recursiveQuery6 = pure SQL, capped, once per (node, path length).
+    String recursiveQuery6 = """
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text);
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text, integer[]);
+
+            CREATE OR REPLACE FUNCTION public.backwardtraversal_star(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            AS $function$
+            WITH RECURSIVE reached AS (
+
+                -- ── Phase 1: (node, depth) recursion ─────────────────────────────────────
+                -- The row is a node plus the depth at which some path reaches it, NOT an
+                -- edge: all fan-in duplicates of a node at a given depth collapse into one
+                -- row.  A node reachable at several distinct depths still appears once per
+                -- depth (path-length multiplicity) — Phase 2 collapses those copies.
+                -- Depth in the row is what makes the cap expressible in pure SQL; layers
+                -- 0 .. __param_max_depth - 1 are the consumers whose expansion in Phase 2
+                -- yields edges at depth 1 .. __param_max_depth, matching the old
+                -- `rt.depth < 100` cap.  The relation-type filter is applied on every
+                -- hop, starting with the expansion of the anchor itself.
+                SELECT
+                    __param_id       AS id,
+                    __param_template AS tpl,
+                    __param_property AS prop,
+                    0                AS depth
+
+                UNION
+
+                SELECT
+                    bt.out_id,
+                    bt.out_template,
+                    bt.out_property,
+                    r.depth + 1
+                FROM
+                    reached r
+                    JOIN predecessor_table pt
+                        ON  pt.template = r.tpl
+                        AND pt.output   = r.prop
+                        AND (
+                            __param_selected_relations IS NULL
+                            OR pt.rel = ANY(__param_selected_relations)
+                        )
+                    CROSS JOIN LATERAL backwardTraversal(
+                        r.id,
+                        r.tpl,
+                        pt.input
+                    ) AS bt
+                WHERE
+                    pt.input IS NOT NULL
+                    -- Self-loop hops (virtual-output fix) would re-reach this very node at
+                    -- depth + 1, + 2, ... — with a NULL (unbounded) cap that never
+                    -- terminates, so they are excluded from the walk itself, not just
+                    -- from the output.  They add no reachable node.
+                    AND NOT (bt.out_id = r.id AND bt.out_template = r.tpl)
+                    AND (__param_max_depth IS NULL OR r.depth < __param_max_depth - 1)
+
+            ),
+            frontier AS (
+                -- Collapse the per-depth copies: each node expands once in Phase 2
+                -- however many distinct depths reached it.
+                SELECT DISTINCT id, tpl, prop
+                FROM   reached
+                WHERE  __param_max_depth IS NULL OR depth <= __param_max_depth - 1
+            )
+            -- ── Phase 2: edge emission ───────────────────────────────────────────────────
+            -- One non-recursive expansion pass over the deduplicated node set, emitting
+            -- the same 6-tuple contract as before.  The anchor sits in `frontier` and
+            -- contributes the base edges; nodes whose output column has no
+            -- predecessor_table entry are dead ends and contribute nothing.
+            SELECT DISTINCT
+                bt.in_id,
+                bt.in_template,
+                bt.in_property,
+                bt.out_id,
+                bt.out_template,
+                bt.out_property
+            FROM
+                frontier r
+                JOIN predecessor_table pt
+                    ON  pt.template = r.tpl
+                    AND pt.output   = r.prop
+                    AND (
+                        __param_selected_relations IS NULL
+                        OR pt.rel = ANY(__param_selected_relations)
+                    )
+                CROSS JOIN LATERAL backwardTraversal(
+                    r.id,
+                    r.tpl,
+                    pt.input
+                ) AS bt
+            WHERE
+                pt.input IS NOT NULL
+                -- Self-loops arise from the virtual-output fix for activity-output-only
+                -- templates (e.g. document_obligating_coin): backwardTraversal joins the
+                -- table with itself on an input column used as a virtual output, matching
+                -- the same row.  Self-loops are never valid in a provenance graph.
+                AND NOT (bt.in_id = bt.out_id AND bt.in_template = bt.out_template)
+            $function$;
+
+            """;
+
     // forward_traversal_star — the exact transpose of backwardtraversal_star.
     // Reuses the SAME backward_dispatch and predecessor_table (no new metadata):
     //   * forwardTraversal (generateForwardTemplateTraversal) reads the dispatch
@@ -502,6 +913,295 @@ public class TemplateQuery {
 
             """;
 
+    // forward_traversal_star, memoised BFS rewrite — the exact transpose of
+    // recursiveQuery5, kept for the record (unwired; Step 4 installs
+    // forward_traversal_star6).  PL/pgSQL breadth-first search: a temp table
+    // memoises visited (id, template, property) triples — prop is the OUTPUT
+    // column to advance through, the old form's next_property — each expanded
+    // exactly once, at the layer BFS first reaches it, and the loop counter is
+    // the depth, so __param_max_depth bounds the work done (NULL = unbounded;
+    // memoisation over the finite triple set still guarantees termination,
+    // self-loops included, so no walk guard is needed).  Phase 2's pt join and
+    // NULL-pt.output handling follow forward_traversal_star6.  Uses its own
+    // temp table name (__fts_reached) so it can never collide with the
+    // backward function's; like recursiveQuery5 it is not reentrant, which is
+    // safe as nothing in the traversal stack calls it.
+    // Verified on the live chronicle store: DISTINCT edge sets identical to
+    // the deployed forward_traversal_star on the deep 61-layer closure (354
+    // edges) and the dispatch anchor (7), zero difference each way; cap 5
+    // returns the established 5-edge truncation.
+    // If ever wired in place of forward_traversal_star6, append the
+    // forward_traversal_star_nodes wrapper from that block as well — this
+    // string deliberately contains only the star function.
+    String forward_traversal_star5 = """
+            DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text);
+            DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text, integer[]);
+
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE plpgsql
+            AS $function$
+            DECLARE
+                __layer    integer := 0;   -- last BFS layer inserted (anchor = 0)
+                __inserted bigint;
+            BEGIN
+                -- Visited set.  The primary key memoises each (node, output-property)
+                -- triple: it is inserted once, with the minimal hop count at which BFS
+                -- reaches it, and expanded exactly once.  Session-scoped; TRUNCATE (not
+                -- DROP/CREATE) so repeated calls in one transaction reuse the table.
+                CREATE TEMP TABLE IF NOT EXISTS __fts_reached (
+                    id    integer,
+                    tpl   text,
+                    prop  text,
+                    depth integer,
+                    PRIMARY KEY (id, tpl, prop)
+                ) ON COMMIT DROP;
+                CREATE INDEX IF NOT EXISTS __fts_reached_depth ON __fts_reached (depth);
+                TRUNCATE __fts_reached;
+
+                INSERT INTO __fts_reached
+                VALUES (__param_id, __param_template, __param_property, 0);
+
+                -- ── Phase 1: breadth-first node search ───────────────────────────────
+                -- Each iteration expands only the triples first reached at the previous
+                -- layer; ON CONFLICT DO NOTHING drops already-visited triples, so no
+                -- node re-expands however many paths (or path lengths) reach it.
+                -- Layers 1 .. __param_max_depth - 1 are filled: their nodes are the
+                -- producers whose expansion in Phase 2 yields edges at depth
+                -- 1 .. __param_max_depth, matching the old `rt.depth < 100` cap.
+                WHILE __param_max_depth IS NULL OR __layer < __param_max_depth - 1 LOOP
+                    INSERT INTO __fts_reached (id, tpl, prop, depth)
+                    SELECT DISTINCT
+                        ft.out_id, ft.out_template, pt.output, __layer + 1
+                    FROM
+                        __fts_reached r
+                        CROSS JOIN LATERAL forwardTraversal(r.id, r.tpl, r.prop) AS ft
+                        JOIN predecessor_table pt
+                            ON  pt.template = ft.out_template
+                            AND pt.input   = ft.out_property
+                            AND (
+                                __param_selected_relations IS NULL
+                                OR pt.rel = ANY(__param_selected_relations)
+                            )
+                    WHERE
+                        r.depth = __layer
+                        AND pt.output IS NOT NULL
+                    ON CONFLICT DO NOTHING;
+
+                    GET DIAGNOSTICS __inserted = ROW_COUNT;
+                    EXIT WHEN __inserted = 0;   -- frontier exhausted before the cap
+                    __layer := __layer + 1;
+                END LOOP;
+
+                -- ── Phase 2: edge emission ───────────────────────────────────────────
+                -- One expansion pass over the deduplicated visited set, emitting the
+                -- same 6-tuple contract as before.  The pt join is part of the contract
+                -- (only consumer edges carrying a matching, rel-passing
+                -- predecessor_table entry are returned); NULL pt.output edges ARE
+                -- emitted — they are dead ends, not non-edges.  The depth filter only
+                -- matters for __param_max_depth = 0.
+                RETURN QUERY
+                SELECT DISTINCT
+                    ft.in_id,
+                    ft.in_template,
+                    ft.in_property,
+                    ft.out_id,
+                    ft.out_template,
+                    ft.out_property
+                FROM
+                    __fts_reached r
+                    CROSS JOIN LATERAL forwardTraversal(r.id, r.tpl, r.prop) AS ft
+                    JOIN predecessor_table pt
+                        ON  pt.template = ft.out_template
+                        AND pt.input   = ft.out_property
+                        AND (
+                            __param_selected_relations IS NULL
+                            OR pt.rel = ANY(__param_selected_relations)
+                        )
+                WHERE
+                    (__param_max_depth IS NULL OR r.depth < __param_max_depth)
+                    -- Self-loops mirror the backwardtraversal_star guard (virtual-output
+                    -- fix for activity-output-only templates); never valid in a
+                    -- provenance graph.
+                    AND NOT (ft.in_id = ft.out_id AND ft.in_template = ft.out_template);
+            END;
+            $function$;
+
+            """;
+
+    // forward_traversal_star, capped pure-SQL rewrite via (node, depth)
+    // accumulation — the exact transpose of recursiveQuery6, replacing
+    // recursiveForwardQuery (which has the same (edge, depth) defect as
+    // recursiveQuery3: its rows carry depth AND next_property, so UNION
+    // dedupes per path length and every copy re-expands).
+    // Phase 1 recurses over (id, template, property, depth) where property is
+    // the OUTPUT column to expand forward through — exactly the role the old
+    // form's next_property column was smuggling into the row.  Each hop calls
+    // forwardTraversal(node, prop) to find the consumers of that output's
+    // entity, then predecessor_table (joined on the CONSUMER's template +
+    // input column, where the relation-type filter applies) yields the
+    // consumer's output columns, the next frontier.  A consumer edge whose
+    // input column has no predecessor_table entry is emitted (Phase 2) but is
+    // a dead end (old behaviour: next_property IS NULL rows never expanded);
+    // NULL pt.output rows are likewise kept out of the frontier.
+    // Cap semantics, self-loop handling (excluded from the walk, filtered from
+    // the output) and the NULL-parameter conventions mirror recursiveQuery6.
+    // Verified on the live chronicle store: DISTINCT edge sets identical to
+    // the deployed forward_traversal_star on a deep 61-layer closure (354
+    // edges, where the old form returns 804 duplicated rows), a dispatch
+    // anchor (7), and a rel-filtered run (354) — zero difference each way —
+    // and cap-5 parity with the old CTE truncated at rt.depth < 5 (5 edges).
+    // Measured phase-1 path-length duplication: 2.0× (659 rows for 330
+    // distinct triples).
+    // The block re-creates forward_traversal_star_nodes unchanged (it was
+    // previously installed by recursiveForwardQuery); its 4-arg call into the
+    // 5-arg star resolves through the max-depth default.
+    String forward_traversal_star6 = """
+            DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text);
+            DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text, integer[]);
+
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            AS $function$
+            WITH RECURSIVE reached AS (
+
+                -- ── Phase 1: (node, depth) recursion ─────────────────────────────────────
+                -- The row is a consumer node plus the OUTPUT column to advance through
+                -- (the old next_property), NOT an edge: fan-out duplicates collapse into
+                -- one row per depth; per-path-length copies remain and are collapsed by
+                -- Phase 2.  Layers 0 .. __param_max_depth - 1 are the producers whose
+                -- expansion in Phase 2 yields edges at depth 1 .. __param_max_depth,
+                -- matching the old `rt.depth < 100` cap.  The relation-type filter
+                -- applies to the reached consumer's own predecessor_table edge, as in
+                -- the old form.
+                SELECT
+                    __param_id       AS id,
+                    __param_template AS tpl,
+                    __param_property AS prop,
+                    0                AS depth
+
+                UNION
+
+                SELECT
+                    ft.out_id,
+                    ft.out_template,
+                    pt.output,
+                    r.depth + 1
+                FROM
+                    reached r
+                    CROSS JOIN LATERAL forwardTraversal(
+                        r.id,
+                        r.tpl,
+                        r.prop
+                    ) AS ft
+                    JOIN predecessor_table pt
+                        ON  pt.template = ft.out_template
+                        AND pt.input   = ft.out_property
+                        AND (
+                            __param_selected_relations IS NULL
+                            OR pt.rel = ANY(__param_selected_relations)
+                        )
+                WHERE
+                    pt.output IS NOT NULL
+                    -- Self-loop hops (virtual-output fix) would re-reach this very node
+                    -- at depth + 1, + 2, ... — with a NULL (unbounded) cap that never
+                    -- terminates, so they are excluded from the walk itself, not just
+                    -- from the output.  They add no reachable node.
+                    AND NOT (ft.out_id = r.id AND ft.out_template = r.tpl)
+                    AND (__param_max_depth IS NULL OR r.depth < __param_max_depth - 1)
+
+            ),
+            frontier AS (
+                -- Collapse the per-depth copies: each (node, output column) expands once
+                -- in Phase 2 however many distinct depths reached it.
+                SELECT DISTINCT id, tpl, prop
+                FROM   reached
+                WHERE  __param_max_depth IS NULL OR depth <= __param_max_depth - 1
+            )
+            -- ── Phase 2: edge emission ───────────────────────────────────────────────────
+            -- One non-recursive expansion pass over the deduplicated node set, emitting
+            -- the same 6-tuple contract as before.  The pt join is part of the contract
+            -- (the old form only emitted consumer edges carrying a matching, rel-passing
+            -- predecessor_table entry), but NULL pt.output edges ARE emitted — they are
+            -- dead ends, not non-edges.
+            SELECT DISTINCT
+                ft.in_id,
+                ft.in_template,
+                ft.in_property,
+                ft.out_id,
+                ft.out_template,
+                ft.out_property
+            FROM
+                frontier r
+                CROSS JOIN LATERAL forwardTraversal(
+                    r.id,
+                    r.tpl,
+                    r.prop
+                ) AS ft
+                JOIN predecessor_table pt
+                    ON  pt.template = ft.out_template
+                    AND pt.input   = ft.out_property
+                    AND (
+                        __param_selected_relations IS NULL
+                        OR pt.rel = ANY(__param_selected_relations)
+                    )
+            WHERE
+                -- Self-loops mirror the backwardtraversal_star guard (virtual-output fix
+                -- for activity-output-only templates); never valid in a provenance graph.
+                NOT (ft.in_id = ft.out_id AND ft.in_template = ft.out_template)
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star_nodes(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL
+            )
+            RETURNS TABLE(
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            AS $function$
+            SELECT DISTINCT out_id, out_template, out_property
+            FROM   forward_traversal_star(
+                       __param_id,
+                       __param_template,
+                       __param_property,
+                       __param_selected_relations
+                   )
+            $function$;
+
+            """;
+
     private void generateTraversalMethods(Querier querier,  Map<String,Map<String, Map<String, String>>> ioMap) {
 
         // Step 1: create/truncate/repopulate backward_dispatch so the PL/pgSQL
@@ -518,22 +1218,26 @@ public class TemplateQuery {
                 (sb, data) -> sb.append(generateCreateTraversalIndexes(ioMap)));
 
         // Step 3: install backwardTraversal (queries backward_dispatch) and
-        // backwardtraversal_star (calls backwardTraversal recursively).
+        // backwardtraversal_star (calls backwardTraversal recursively) — the
+        // T-187 capped two-phase form (recursiveQuery6): node-memoised
+        // traversal with a __param_max_depth parameter (default 100).
         querier.do_statements(null,
                 null,
                 (sb, data) -> {
                     sb.append(generateBackwardTemplateTraversal(ioMap));
-                    sb.append(recursiveQuery3);
+                    sb.append(recursiveQuery6);
                 });
 
         // Step 4: install the forward (descendant) counterpart — forwardTraversal
-        // (reverse dispatch) and forward_traversal_star / _nodes.  Reuses the same
-        // backward_dispatch + predecessor_table populated in Steps 1-2.
+        // (reverse dispatch) and forward_traversal_star / _nodes, in the T-187
+        // capped two-phase form (forward_traversal_star6, the transpose of
+        // recursiveQuery6).  Reuses the same backward_dispatch +
+        // predecessor_table populated in Steps 1-2.
         querier.do_statements(null,
                 null,
                 (sb, data) -> {
                     sb.append(generateForwardTemplateTraversal());
-                    sb.append(recursiveForwardQuery);
+                    sb.append(forward_traversal_star6);
                 });
     }
 

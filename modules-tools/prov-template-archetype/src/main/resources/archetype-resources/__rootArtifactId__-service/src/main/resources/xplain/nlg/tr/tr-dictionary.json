@@ -45,10 +45,6 @@
 		"trs:Scale": {
 			"type": "noun_phrase",
 			"head":  "scale"
-		},
-		"prov:Collection": {
-			"type": "noun_phrase",
-			"head":  "container"
 		}
 	},
 	"context": {

@@ -333,7 +333,7 @@ xp.fitting.no.date:
 tr.explain:
 	@$(MAKE) batch.explain XPLAN_LIB=$(TR_XPLAN_LIB) FILE=$(FILE) BATCH=$(BATCH) SOURCE_NAME=$(SOURCE_NAME) PROPERTY_NAME=$(PROPERTY_NAME)
 
-xp.tr.all: xp.tr.transporting.all xp.tr.packing.all xp.tr.unpacking xp.tr.weighing.all xp.tr.examining xp.tr.agent.init.all xp.tr.assigning.all xp.tr.handingover.all
+xp.tr.all: xp.tr.transporting.all xp.tr.packing.all xp.tr.unpacking.all xp.tr.weighing.all xp.tr.examining xp.tr.agent.init.all xp.tr.assigning.all xp.tr.handingover.all
 
 xp.tr.transporting.all: xp.tr.transporting xp.tr.transporting.full xp.tr.transporting.no.agent
 xp.tr.transporting:
@@ -349,8 +349,11 @@ xp.tr.packing:
 xp.tr.packing.no.agent:
 	@$(MAKE) tr.explain FILE=tr_packing_no_agent BATCH=[tr-packing]
 
+xp.tr.unpacking.all: xp.tr.unpacking xp.tr.unpacking.full
 xp.tr.unpacking:
 	@$(MAKE) tr.explain FILE=tr_unpacking BATCH=[tr-unpacking]
+xp.tr.unpacking.full:
+	@$(MAKE) tr.explain FILE=tr_unpacking_full BATCH=[tr-unpacking]
 
 # weighing shares the tr-examining x-plan: the verb (weigh/examine) comes from the
 # dictionary, keyed on the activity type; the weight phrase is optional

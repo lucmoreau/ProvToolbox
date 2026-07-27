@@ -494,7 +494,7 @@ The `@property` path returns the **value** of the attribute (a string literal, U
 | `noun+localname` | `@field` | string | Produces `"<arg1> (<localname>)"` — e.g. `"file (1549)"`. `@arg1` is the role label |
 | `noun+identity` | `@field` | string | Produces `"<arg1> (<prefixed-id>)"` — e.g. `"file (file:1549)"`, `"engineer (ag:41)"`. `@arg1` is the role label. Use `@arg1: ""` to emit only the parenthesised id as a post-modifier |
 | `lookup-type` | `@property` | noun_phrase \| verb_phrase \| adverb_phrase | Looks up the value of `@property` in the dictionary; `@arg1` is the expected output type, `@arg2` is an optional comma-separated namespace prefix filter. See §2.4 |
-| `lookup-type-with-default` | `@property` | phrase \| string | Like `lookup-type`, but `@arg2` is a default word instead of a prefix filter: used when the element carries no such property (e.g. an untyped entity) or when the type has no dictionary entry. Combine with `@optional: "true"` so the phrase is still omitted when the element itself is unbound. See §2.4 |
+| `lookup-type-with-default` | `@property` | phrase \| string | Like `lookup-type`, but `@arg2` is a default word instead of a prefix filter: used when the element carries no such property (e.g. an untyped entity) or when no type has a dictionary entry. On a multi-typed element, the first type with a dictionary entry wins. Combine with `@optional: "true"` so the phrase is still omitted when the element itself is unbound. See §2.4 |
 | `lookup-attribute` | `@property` | phrase | Looks up an attribute value in the dictionary |
 | `profile-features` | — | features object | Returns the grammatical features object for a named role from the active profile; `@arg1` is the role URI. Used via `@key: "features"` to inject features into a snippet noun phrase |
 | `markup-for-id` | `@field` | object | Returns HTML markup attributes (`data-id`, `class`) for in-browser navigation. Used with `head_markup_attributes` in features. `@arg1` is the CSS class (typically `"provelement"`) |
@@ -903,7 +903,7 @@ Dispatch is what allows the shared `fs-file-derivation.json` x-plan to serve fit
 
 Two `@funcall` functions perform the dispatch. Both read a type URI via `@property` (most commonly `prov:type`) on the variable named by `@object`:
 
-**`lookup-type`** — `@arg1` is the expected phrase kind (`noun_phrase`, `verb_phrase`, `string`); `@arg2` is an *optional comma-separated namespace prefix filter*, used when the element carries several types to select the one in a given namespace. If the dictionary has no entry for the type, a marker phrase `!<uri>` is realised, making the missing entry visible in the output.
+**`lookup-type`** — `@arg1` is the expected phrase kind (`noun_phrase`, `verb_phrase`, `string`); `@arg2` is an *optional comma-separated namespace prefix filter*, used when the element carries several types to select the one in a given namespace. If the dictionary has no entry for the type, a marker phrase `!<uri>` is realised, making the missing entry visible in the output. **Caution:** the prefix filter fails hard — if *no* type of the element falls in the filtered namespace, realisation aborts with an exception. Use it only when the filtered type is guaranteed to be present; otherwise prefer `lookup-type-with-default`.
 
 ```json
 "verb": {
@@ -915,13 +915,16 @@ Two `@funcall` functions perform the dispatch. Both read a type URI via `@proper
 }
 ```
 
-**`lookup-type-with-default`** — same dispatch, but `@arg2` is a *default word* rather than a prefix filter. Its behaviour distinguishes three situations:
+**`lookup-type-with-default`** — same dispatch, but `@arg2` is a *default word* rather than a prefix filter. Its behaviour distinguishes four situations:
 
 | Situation | Result |
 |---|---|
 | Variable unbound (e.g. `optional join` found no match) | Phrase omitted (with `@optional: "true"`) |
-| Variable bound, but no such property (e.g. untyped entity), or type not in dictionary | The default word `@arg2` |
-| Type found in dictionary | The dictionary phrase |
+| Variable bound, but no such property (e.g. untyped entity), or no type in dictionary | The default word `@arg2` |
+| One type found in dictionary | The dictionary phrase |
+| Several types, e.g. `[prov:type = 'trs:Box', prov:type = 'prov:Collection']` | The first type (in attribute order) that **has a dictionary entry** wins |
+
+The multi-type rule makes the function robust for elements that carry both a structural type and a domain type: keep only the domain types (`trs:Box`) in the dictionary, and the structural one (`prov:Collection`) is skipped regardless of attribute order — an element typed *only* `prov:Collection` then falls back to the default. `tr-unpacking.json` uses exactly this: a container typed `trs:Box` realises as *box*, one typed only `prov:Collection` as the default *container*, and the lookup never fails.
 
 ```json
 "head": {
@@ -1646,7 +1649,7 @@ The plan entity is a role of `prov:WasAssociatedWith`, not a field of the activi
 The `select` object at the top of the x-plan declares the primary variable(s) that drive sentence generation (typically the activity or entity that is the focus of the explanation). Variables listed here must also be bound by the query.
 
 **R-Q7 — Disambiguate multiple relations of the same kind by `prov:role`.**
-When an activity has several usages or associations, a plain join binds *all* of them, producing one (possibly wrong) sentence per binding. Constrain each to its role: for a *required* relation, a hard `where` condition (`usd1[prov:role] >= 'fs:asFile'`); for an *optional* one, a `when` guard on the `optional join` (`optional join act.id = waw.activity when waw[prov:role] >= 'resp:asInstrument'`).
+When an activity has several usages or associations, a plain join binds *all* of them, producing one (possibly wrong) sentence per binding. Constrain each to its role: for a *required* relation, a hard `where` condition (`usd1[prov:role] >= 'fs:asFile'`); for an *optional* one, a `when` guard on the `optional join` (`optional join act.id = waw.activity when waw[prov:role] >= 'resp:asInstrument'`). The same applies to multiple *derivations*: since `WasDerivedFrom` carries no role itself, discriminate through the roles of the derived entity's generation and the used entity's usage — `tr-unpacking.json` selects the member derivation (out of the template's three) by requiring both to carry `provext:asMember`. Full template instances contain all of these parallel relations even when simplified test documents do not, so write queries against the template, not against a minimal example.
 
 **R-Q8 — Never put a hard `>=` condition on an optionally-bound variable; use `?>=` or a `when` guard.**
 A `where` condition on an unbound variable is false and silently drops the row — the sentence for documents lacking the optional element disappears. Use `?>=` when the constraint should apply *only if the variable is bound*, and a `when` guard when the constraint should decide *which candidate gets bound*. The difference: with `?>=`, a variable bound to a non-matching candidate still kills the row; with `when`, non-matching candidates are skipped at join time and the variable is simply left unbound.

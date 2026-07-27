@@ -1,0 +1,31 @@
+// Full-instance unpacking (all three derivations, specializations, role-carrying usages/generations;
+// container typed prov:Collection only): The item (item:7973) was unpacked from container (item:7970) by unpacker (people:7965).
+document
+prefix phys <http://openprovenance.org/ns/phys#>
+prefix act <http://localhost:7075/book/provapi/live/activity/>
+prefix provext <http://openprovenance.org/prov/extension#>
+prefix people <http://localhost:7075/book/provapi/live/agent/>
+prefix item <http://localhost:7075/book/provapi/live/item/>
+entity(item:7970,[prov:type = 'prov:Collection'])
+entity(item:7973)
+entity(item:7938)
+entity(item:7942)
+entity(item:7974)
+entity(item:7969)
+activity(act:5961,-,-,[prov:type = 'provext:RemovingElementFromCollection', prov:type = 'phys:RemovingItemFromContainer'])
+agent(people:7965)
+used(act:5961,item:7969,-,[prov:role = 'provext:asCollection'])
+used(act:5961,item:7974,-,[prov:role = 'provext:asMember'])
+wasGeneratedBy(item:7973,act:5961,-,[prov:role = 'provext:asMember'])
+wasGeneratedBy(item:7970,act:5961,-,[prov:role = 'provext:asCollection'])
+wasDerivedFrom(item:7973, item:7974, act:5961, -, -,[prov:type = 'provext:RemovingElementFromCollection'])
+wasDerivedFrom(item:7970, item:7974, act:5961, -, -,[prov:type = 'provext:RemovingElement'])
+wasDerivedFrom(item:7970, item:7969, act:5961, -, -,[prov:type = 'provext:RemovingElementFromCollection'])
+wasAssociatedWith(act:5961,people:7965,-)
+wasAttributedTo(item:7973, people:7965,[provext:activity = 'act:5961'])
+wasAttributedTo(item:7970, people:7965,[provext:activity = 'act:5961'])
+provext:specializationOf(item:7970,item:7938,[provext:entity = 'item:7969'])
+provext:specializationOf(item:7973,item:7942,[provext:entity = 'item:7974'])
+specializationOf(item:7969,item:7938)
+specializationOf(item:7974,item:7942)
+endDocument

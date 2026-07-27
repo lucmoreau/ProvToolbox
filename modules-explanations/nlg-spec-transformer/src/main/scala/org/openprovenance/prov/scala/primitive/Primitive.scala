@@ -460,16 +460,17 @@ object Primitive {
     }
   }
 
-  // Like lookup-type, but @arg2 is a default word instead of a prefix filter: when the
-  // type has no dictionary entry, returns @arg2 as a plain string (realised as-is).
+  // Like lookup-type, but @arg2 is a default word instead of a prefix filter: when an
+  // element carries several types, the first one with a dictionary entry wins; when no
+  // type has an entry, returns @arg2 as a plain string (realised as-is).
   // The case of a bound statement carrying no type at all is handled in processFunction,
   // before values reach this function.
   def lookup_type_with_default(value: Seq[Object], arg1: Seq[Object], arg2: Seq[Object], features: Features, environment: Environment): Result = {
-    val myValue: QualifiedName = value.head match {
+    val myValues: Seq[QualifiedName] = value.map {
       case qn: QualifiedName => qn
       case qn: org.openprovenance.prov.model.QualifiedName => QualifiedName(qn)
     }
-    environment.dictionary.get(myValue) match {
+    myValues.flatMap(qn => environment.dictionary.get(qn)).headOption match {
       case Some(p: Phrase) => p
       case None => arg2.head.toString
     }

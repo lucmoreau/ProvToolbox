@@ -44,6 +44,42 @@
 		}
 	},
 	"dictionary": {
+		"fs:FittingData": {
+			"type": "verb_phrase",
+			"head":  "fit"
+		},
+		"fs:SelectingData": {
+			"type": "verb_phrase",
+			"head":  "filter"
+		},
+		"fs:TransformingData": {
+			"type": "verb_phrase",
+			"head":  "compress"
+		},
+		"fs:FittingMethod": {
+			"type": "noun_phrase",
+			"head":  "fitting method"
+		},
+		"fs:CompressionMethod": {
+			"type": "noun_phrase",
+			"head":  "compression method"
+		},
+		"fs:Dataset": {
+			"type": "noun_phrase",
+			"head":  "dataset"
+		},
+		"fs:FilteringMethod": {
+			"type": "noun_phrase",
+			"head":  "filtering method"
+		},
+		"fs:Pipeline": {
+			"type": "noun_phrase",
+			"head":  "model"
+		},
+		"fs:DataFile": {
+			"type": "noun_phrase",
+			"head":  "data file"
+		},
 		"plead:ApprovingPipeline": {
 			"type": "verb_phrase",
 			"head":  "approve"

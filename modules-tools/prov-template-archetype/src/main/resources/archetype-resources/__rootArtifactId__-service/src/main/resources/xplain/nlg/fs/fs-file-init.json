@@ -17,6 +17,8 @@
         " optional join act.id = waw.activity",
         "from agent a prov:Agent",
         " optional join waw.agent = agent.id",
+        "from wgbv a prov:WasGeneratedBy",
+        " optional join version.id = wgbv.entity",
         "where act[prov:type] >= 'phys:RegisteringEntity'"
     ],
 
@@ -35,7 +37,7 @@
         },
         "object": {
             "type": "noun_phrase",
-            "determiner": "A",
+            "determiner": "a",
             "pre-modifiers": [
                 {
                     "type": "adjective_phrase",
@@ -63,12 +65,13 @@
             "features": { "number": "singular" }
         },
         "verb": "register",
-        "post-modifiers": [
+        "modifiers": [
             {
                 "type": "preposition_phrase",
                 "preposition": "alongside",
                 "noun": {
                     "type": "noun_phrase",
+                    "determiner": "its",
                     "pre-modifiers": [
                         { "type": "adjective_phrase", "head": "first" }
                     ],
@@ -86,10 +89,21 @@
                         }
                     ]
                 }
+            },
+            {
+                "type": "preposition_phrase",
+                "preposition": "on",
+                "noun": {
+                    "type": "@funcall",
+                    "@object": "wgbv",
+                    "@field": "time",
+                    "@optional": "true",
+                    "@function": "friendly_timestring"
+                }
             }
         ],
         "features": {
-            "tense": "present",
+            "tense": "past",
             "passive": "true"
         }
     },

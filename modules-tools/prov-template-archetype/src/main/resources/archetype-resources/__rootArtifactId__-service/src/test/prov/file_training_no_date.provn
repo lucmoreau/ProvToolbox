@@ -1,4 +1,4 @@
-// The model pipeline.pip (file:1590) was fitted from dataset (file:3) with fitting method (method:100) on 5 June 2022 at 16:30 by agent (ag:22).
+// No generation date: The model pipeline.pip (file:1590) was fitted from dataset (file:3) with fitting method (method:100) by agent (ag:22).
 document
 prefix fs <http://openprovenance.org/ns/fs#>
 prefix act <http://localhost:7075/book/provapi/live/activity/>
@@ -12,7 +12,7 @@ entity(method:100,[prov:type = 'fs:FittingMethod'])
 activity(act:6120,-,-,[prov:type = 'fs:FittingData'])
 agent(ag:22)
 used(act:6120,file:3,-)
-wasGeneratedBy(file:1590,act:6120,2022-06-05T16:30:00Z)
+wasGeneratedBy(file:1590,act:6120,-)
 wasDerivedFrom(file:1590, file:3, act:6120, -, -)
 wasAssociatedWith(act:6120,ag:22,method:100)
 wasAttributedTo(file:1590, ag:22,[provext:activity = 'act:6120'])

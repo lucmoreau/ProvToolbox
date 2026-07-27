@@ -7,7 +7,7 @@ NLG_BASIC_XPLAN_LIBRARY=/xplain/nlg/provbasic/provbasic.json
 NLG_BASIC_XPLAN_SELECTION='["actedonbehalfof1","activity1","agent1","alternate1","association1","attribution1","derivation1","end1","entity1","generation1","invalidation1","specialization1","start1","usage1","member1"]'
 
 NLG_FS_XPLAN_LIBRARY=/xplain/nlg/fs/fs-xplan-library.json
-NLG_FS_XPLAN_SELECTION='["fs-awk-column-selection","fs-file-transforming", "fs-file-init", "fs-file-splitting","fs-file-fitting", "fs-generic-responsibility"]'
+NLG_FS_XPLAN_SELECTION='["fs-awk-column-selection", "fs-file-init", "fs-file-splitting","fs-file-derivation", "fs-generic-responsibility"]'
 
 
 run.book.tr:
@@ -153,10 +153,9 @@ AJV=ajv
 XPLAN_FILES = \
     $(NLG_XPLAIN)/fs/fs-xplan-library.json \
     $(NLG_XPLAIN)/fs/fs-awk-column-selection.json \
-    $(NLG_XPLAIN)/fs/fs-file-fitting.json \
+    $(NLG_XPLAIN)/fs/fs-file-derivation.json \
     $(NLG_XPLAIN)/fs/fs-file-init.json \
     $(NLG_XPLAIN)/fs/fs-file-splitting.json \
-    $(NLG_XPLAIN)/fs/fs-file-transforming.json \
     $(NLG_XPLAIN)/fs/fs-generic-responsibility.json \
     $(NLG_XPLAIN)/provbasic/provbasic.json \
     $(NLG_XPLAIN)/provbasic/actedonbehalfof1.json \
@@ -202,32 +201,80 @@ schema.validate:
 	fi
 DOCUMENTS=/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/test/prov/
 
+# PROPERTY_NAME renames the fs-file-derivation key in the generated json, so that
+# sentences produced by the shared x-plan can be labelled by scenario
+# (e.g. fs-file-fitting, fs-file-filtering). By default, the key is left unchanged.
+PROPERTY_NAME=fs-file-derivation
+
 batch.explain:
 	@$(PROVMAN) explain --infile $(DOCUMENTS)/$(FILE).provn --outfile target/narrative-loan.provn --text target/narrative-loan.json --language $(NLG_XPLAIN)/fs/fs-xplan-library.json -s target/simplenlg2.txt --profile=$(PROFILE)  --batch-templates=$(BATCH)
-	@jq . target/narrative-loan.json
+	@jq 'with_entries(if .key == "fs-file-derivation" then .key = "$(PROPERTY_NAME)" else . end)' target/narrative-loan.json
 
 
 
 xp.filtering:
 	@$(MAKE) batch.explain FILE=file_filtering BATCH=[fs-awk-column-selection]
 
+# the filtering variants share the fs-file-derivation x-plan (see xp.fitting.on.filtering):
+# verb and object qualifier come from the dictionary, keyed on prov:type
+xp.filtering.all: xp.filtering xp.fitting.on.filtering xp.filtering.no.method xp.filtering.no.agent xp.filtering.no.association xp.filtering.no.date
+
+xp.filtering.no.method:
+	@$(MAKE) batch.explain FILE=file_filtering_no_method BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-filtering
+xp.filtering.no.agent:
+	@$(MAKE) batch.explain FILE=file_filtering_no_agent BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-filtering
+xp.filtering.no.association:
+	@$(MAKE) batch.explain FILE=file_filtering_no_association BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-filtering
+xp.filtering.no.date:
+	@$(MAKE) batch.explain FILE=file_filtering_no_date BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-filtering
+
 xp.transforming.all: xp.transforming xp.transforming.no.method xp.transforming.no.agent xp.transforming.no.association
 
+xp.init.all: xp.init xp.init.no.agent xp.init.no.date
+
 xp.transforming:
-	@$(MAKE) batch.explain FILE=file_transforming1 BATCH=[fs-file-transforming]
+	@$(MAKE) batch.explain FILE=file_transforming1 BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-transforming
 xp.transforming.no.method:
-	@$(MAKE) batch.explain FILE=file_transforming1_no_method BATCH=[fs-file-transforming]
+	@$(MAKE) batch.explain FILE=file_transforming1_no_method BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-transforming
 xp.transforming.no.agent:
-	@$(MAKE) batch.explain FILE=file_transforming1_no_agent BATCH=[fs-file-transforming]
+	@$(MAKE) batch.explain FILE=file_transforming1_no_agent BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-transforming
 xp.transforming.no.association:
-	@$(MAKE) batch.explain FILE=file_transforming1_no_association BATCH=[fs-file-transforming]
+	@$(MAKE) batch.explain FILE=file_transforming1_no_association BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-transforming
 xp.init:
 	@$(MAKE) batch.explain FILE=file_init BATCH=[fs-file-init]
+xp.init.no.agent:
+	@$(MAKE) batch.explain FILE=file_init_no_agent BATCH=[fs-file-init]
+xp.init.no.date:
+	@$(MAKE) batch.explain FILE=file_init_no_date BATCH=[fs-file-init]
+
+xp.splitting.all: xp.splitting xp.splitting.four.way
+
 xp.splitting:
 	@$(MAKE) batch.explain FILE=file_splitting1 BATCH=[fs-file-splitting]
+xp.splitting.four.way:
+	@$(MAKE) batch.explain FILE=file_splitting_four_way BATCH=[fs-file-splitting]
+
+xp.fitting.all: xp.fitting xp.fitting.no.method xp.fitting.untyped.method xp.fitting.untyped.entities xp.fitting.no.agent xp.fitting.no.association xp.fitting.no.date
+
+# same x-plan as xp.fitting: verb and object qualifier come from the dictionary, keyed on prov:type
+xp.fitting.on.filtering:
+	@$(MAKE) batch.explain FILE=file_filtering BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-filtering
+
 xp.fitting:
-	@$(MAKE) batch.explain FILE=file_training BATCH=[fs-file-fitting]
+	@$(MAKE) batch.explain FILE=file_training BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-fitting
+xp.fitting.no.method:
+	@$(MAKE) batch.explain FILE=file_training_no_method BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-fitting
+xp.fitting.untyped.method:
+	@$(MAKE) batch.explain FILE=file_training_untyped_method BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-fitting
+xp.fitting.untyped.entities:
+	@$(MAKE) batch.explain FILE=file_training_untyped_entities BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-fitting
+xp.fitting.no.agent:
+	@$(MAKE) batch.explain FILE=file_training_no_agent BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-fitting
+xp.fitting.no.association:
+	@$(MAKE) batch.explain FILE=file_training_no_association BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-fitting
+xp.fitting.no.date:
+	@$(MAKE) batch.explain FILE=file_training_no_date BATCH=[fs-file-derivation] PROPERTY_NAME=fs-file-fitting
 
 #| xgroup_by(.)
 xp.all:
-	@$(MAKE) xp.transforming.all xp.filtering xp.init xp.splitting xp.fitting | jq -s '.  '
+	@$(MAKE) xp.transforming.all xp.filtering.all xp.init.all xp.splitting.all xp.fitting.all | jq -s '.  '

@@ -3,10 +3,9 @@
     "templates": [
         "fs-generic-responsibility.json",
         "fs-awk-column-selection.json",
-        "fs-file-transforming.json",
         "fs-file-init.json",
         "fs-file-splitting.json",
-        "fs-file-fitting.json"
+        "fs-file-derivation.json"
     ],
     "dictionaries": ["fs-dictionary.json"],
     "profiles": ["fs-profile.json"]

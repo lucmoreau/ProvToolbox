@@ -1,5 +1,4 @@
-// With fs-file-derivation x-plan: The data file file2.csv (file:1549) was filtered from dataset (file:14) with filtering method (method:11) on 5 June 2022 at 14:15 by agent (ag:41).
-// With fs-awk-column-selection x-plan: Engineer (ag:41) applied awk script (method:11) to select some columns of file (file:14) and generate file (file:1549).
+// No generation date: The data file file2.csv (file:1549) was filtered from dataset (file:14) with filtering method (method:11) by agent (ag:41).
 document
 prefix fs <http://openprovenance.org/ns/fs#>
 prefix act <http://localhost:7075/book/provapi/live/activity/>
@@ -13,7 +12,7 @@ entity(method:11,[prov:type = 'fs:FilteringMethod'])
 activity(act:6081,-,-,[prov:type = 'fs:SelectingData'])
 agent(ag:41)
 used(act:6081,file:14,-)
-wasGeneratedBy(file:1549,act:6081,2022-06-05T14:15:00Z)
+wasGeneratedBy(file:1549,act:6081,-)
 wasDerivedFrom(file:1549, file:14, act:6081, -, -)
 wasAssociatedWith(act:6081,ag:41,method:11)
 wasAttributedTo(file:1549, ag:41,[provext:activity = 'act:6081'])

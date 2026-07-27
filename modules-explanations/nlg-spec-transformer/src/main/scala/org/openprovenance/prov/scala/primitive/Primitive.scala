@@ -117,7 +117,12 @@ object Primitive {
 
                 arg3 match {
                   case None =>
-                    applyFun2(function, applyProperty(property, index, statement, environment), optionp, (Seq(a1), Set()), (Seq(a2), Set()), environment)
+                    val propertyValues = applyProperty(property, index, statement, environment)
+                    if (function == "lookup-type-with-default" && statement != null && propertyValues._1.isEmpty) {
+                      // statement is bound but carries no such property: fall back to the default word
+                      (Some(sToResult(a2.toString)), Set[Triple]())
+                    } else
+                      applyFun2(function, propertyValues, optionp, (Seq(a1), Set()), (Seq(a2), Set()), environment)
                   case Some(a3) =>
                     applyFun3(function, applyProperty(property, index, statement, environment), optionp, (Seq(a1), Set()), (Seq(a2), Set()), (Seq(a3), Set()), environment)
 
@@ -273,6 +278,18 @@ object Primitive {
       case _ => i.toString
     }
   }
+  def friendlyTimestring(o: Object): String = {
+    val s = o.toString
+    try {
+      val parsed = java.time.format.DateTimeFormatter.ISO_DATE_TIME.parse(s)
+      val dateTime = java.time.LocalDateTime.from(parsed)
+      val date = dateTime.format(java.time.format.DateTimeFormatter.ofPattern("d MMMM uuuu", java.util.Locale.ENGLISH))
+      val time = dateTime.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm", java.util.Locale.ENGLISH))
+      date + " at " + time
+    } catch {
+      case _: java.time.DateTimeException => s
+    }
+  }
   def cardinality(o: Object): String = {
     val i:Int=o match {
       case o:Integer => o
@@ -297,6 +314,7 @@ object Primitive {
       case "cardinality" => if (values.isEmpty) "NULL" else cardinality(values.head)
       case "pluralp"     => if (values.head.toString.endsWith("s")) "plural" else "singular"
       case "timestring"  => values.head.toString
+      case "friendly_timestring" => if (values.isEmpty) "NULL" else friendlyTimestring(values.head)
       case "count"       => values.size + ""
       case "count+cardinality" => cardinality(values.size+"")
 
@@ -442,6 +460,21 @@ object Primitive {
     }
   }
 
+  // Like lookup-type, but @arg2 is a default word instead of a prefix filter: when the
+  // type has no dictionary entry, returns @arg2 as a plain string (realised as-is).
+  // The case of a bound statement carrying no type at all is handled in processFunction,
+  // before values reach this function.
+  def lookup_type_with_default(value: Seq[Object], arg1: Seq[Object], arg2: Seq[Object], features: Features, environment: Environment): Result = {
+    val myValue: QualifiedName = value.head match {
+      case qn: QualifiedName => qn
+      case qn: org.openprovenance.prov.model.QualifiedName => QualifiedName(qn)
+    }
+    environment.dictionary.get(myValue) match {
+      case Some(p: Phrase) => p
+      case None => arg2.head.toString
+    }
+  }
+
   def lookup_ground_type_with_default(value: Seq[Object], arg1: Seq[Object], arg2: Seq[Object], features: Features, environment: Environment): Result = {
 
 
@@ -554,6 +587,9 @@ object Primitive {
       case "lookup-type" =>
         lookup_type(value, arg1, arg2, Map(), environment)
 
+      case "lookup-type-with-default" =>
+        lookup_type_with_default(value, arg1, arg2, Map(), environment)
+
       case "lookup-ground-type-with-default" =>
         lookup_ground_type_with_default(value, arg1, arg2, Map(), environment)
 
@@ -619,13 +655,15 @@ object Primitive {
   }
 
   def applyProperty1(property:String, value:Statement, environment: Environment): Seq[Object] = {
-    val strings=property.split(":")
-    val prefix=strings(0)
-    val local=strings(1)
-    val uri=getPrefixValue(environment, prefix) + local
-    val attributes: Seq[Attribute] =value.getAttributes.toSeq.sortWith{case (a1,a2) => a1.elementName.getUri() < a2.elementName.getUri()}
-    attributes.filter(attr => attr.elementName.getUri()==uri).map(attr => attr.value)
-
+    if (value==null) Seq()  // unbound variable (e.g. optional join with no match): no attributes
+    else {
+      val strings=property.split(":")
+      val prefix=strings(0)
+      val local=strings(1)
+      val uri=getPrefixValue(environment, prefix) + local
+      val attributes: Seq[Attribute] =value.getAttributes.toSeq.sortWith{case (a1,a2) => a1.elementName.getUri() < a2.elementName.getUri()}
+      attributes.filter(attr => attr.elementName.getUri()==uri).map(attr => attr.value)
+    }
   }
 
   private def getPrefixValue(environment: Environment, prefix: String): String = {

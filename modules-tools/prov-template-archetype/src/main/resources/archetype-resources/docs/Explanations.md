@@ -111,6 +111,8 @@ A dictionary file maps domain-specific ontology type URIs to NLG phrase structur
 
 Example — `xplain/nlg/fs/fs-dictionary.json`.
 
+How lookups dispatch on provenance types at runtime — and how this lets one x-plan serve several activity types — is described in §2.4.
+
 ### 1.5. Profile Files
 
 A profile file defines how named roles (e.g. a borrower, a company) should be realised grammatically across different contexts. Each key is a role URI, and its value is a map of named variants (e.g. first-person pronoun, second-person pronoun, noun, possessive), each specifying a set of SimpleNLG `features` (`pronominal`, `possessive`, `person`, `gender`). At runtime, the sentence generator selects a variant according to the grammatical context, enabling a reference to vary between, for example, *"the borrower"*, *"their"*, or *"you"* depending on who the explanation is addressed to.
@@ -487,10 +489,12 @@ The `@property` path returns the **value** of the attribute (a string literal, U
 | `identity` | `@field` or `@property` | string | Full string representation: prefixed URI for `@field` (e.g. `"file:1549"`), or the literal value for `@property` (e.g. `"myfile.txt.gz"`) |
 | `string` | `@property` | string | The unwrapped string value of a typed literal attribute (e.g. `"myfile.txt.gz"` from `fs:filename = "myfile.txt.gz" %% xsd:string`) |
 | `pluralp` | `@field` | `"plural"` \| `"singular"` | Heuristic plural test on the local name of `@field`. Used as the value of `features.number` |
-| `timestring` | `@field` | string | Formats an ISO timestamp as a readable time string. Typically paired with `@optional: "true"` |
+| `timestring` | `@field` | string | Returns an ISO timestamp as-is (e.g. `"2022-06-05T15:00:00.000Z"`). Typically paired with `@optional: "true"` |
+| `friendly_timestring` | `@field` | string | Formats an ISO timestamp as a readable date and time (e.g. `"5 June 2022 at 15:00"`). Falls back to the raw value if the timestamp cannot be parsed. Typically paired with `@optional: "true"` |
 | `noun+localname` | `@field` | string | Produces `"<arg1> (<localname>)"` — e.g. `"file (1549)"`. `@arg1` is the role label |
 | `noun+identity` | `@field` | string | Produces `"<arg1> (<prefixed-id>)"` — e.g. `"file (file:1549)"`, `"engineer (ag:41)"`. `@arg1` is the role label. Use `@arg1: ""` to emit only the parenthesised id as a post-modifier |
-| `lookup-type` | `@property` | noun_phrase \| verb_phrase \| adverb_phrase | Looks up the value of `@property` in the dictionary; `@arg1` is the expected output type, `@arg2` is an optional comma-separated namespace prefix filter |
+| `lookup-type` | `@property` | noun_phrase \| verb_phrase \| adverb_phrase | Looks up the value of `@property` in the dictionary; `@arg1` is the expected output type, `@arg2` is an optional comma-separated namespace prefix filter. See §2.4 |
+| `lookup-type-with-default` | `@property` | phrase \| string | Like `lookup-type`, but `@arg2` is a default word instead of a prefix filter: used when the element carries no such property (e.g. an untyped entity) or when the type has no dictionary entry. Combine with `@optional: "true"` so the phrase is still omitted when the element itself is unbound. See §2.4 |
 | `lookup-attribute` | `@property` | phrase | Looks up an attribute value in the dictionary |
 | `profile-features` | — | features object | Returns the grammatical features object for a named role from the active profile; `@arg1` is the role URI. Used via `@key: "features"` to inject features into a snippet noun phrase |
 | `markup-for-id` | `@field` | object | Returns HTML markup attributes (`data-id`, `class`) for in-browser navigation. Used with `head_markup_attributes` in features. `@arg1` is the CSS class (typically `"provelement"`) |
@@ -813,7 +817,91 @@ group by pipeline aggregate ancestor, act with Seq
 
 ## 2.3. Contexts and Namespaces
 
+### 2.3.1. Four independent prefix scopes
+
+Prefixed names such as `fs:FittingData` or `prov:type` appear in four kinds of file, and each file declares its **own** prefix-to-URI mapping. A prefix is purely a local abbreviation: nothing requires the same prefix to be used across files, and nothing propagates a declaration from one file to another.
+
+| Scope | Declared by | Governs |
+|---|---|---|
+| Provenance document (`.provn`) | `prefix fs <http://…#>` document header | Qualified names in the provenance statements themselves |
+| X-plan `query` | `prefix fs <http://…#>` lines before `select` | Type names in `where` conditions (e.g. `'fs:FittingData'`) and any other prefixed value inside the query |
+| X-plan `context` | `"context": { "fs": "http://…#" }` | `@property` references in the sentence tree (e.g. `"@property": "fs:filename"`) |
+| Dictionary `context` | `"context": { "fs": "http://…#" }` | The dictionary's own keys (e.g. `"fs:FittingData": { … }`) |
+
+An x-plan that reads `fs:`-prefixed data in both its query and its sentence tree must therefore declare the prefix **twice** — once as a `prefix` line in the query, once in `context` — as `fs-file-derivation.json` does.
+
+### 2.3.2. Matching is by URI, not by prefix
+
+Before any comparison, every prefixed name is expanded to its full URI using the mapping of the file it appears in. Matching between files — a `where` type constraint against a document's `prov:type` value, or a dictionary key against a type read by `lookup-type` — happens on **expanded URIs only**. A provenance document may abbreviate `http://openprovenance.org/ns/fs#` as `filesystem:` while the x-plan and dictionary call it `fs:`; the explanation is unaffected, because all three resolve to the same URI. Conversely, the *same prefix* bound to *different URIs* in two files refers to two different namespaces — a frequent source of silent non-matches when copying x-plans between domains.
+
+### 2.3.3. Built-in prefixes and failure modes
+
+- **`prov`** is always available: `@property: "prov:type"` works without declaring `prov` in the x-plan `context`, and dictionary contexts are pre-loaded with both `prov` and `xsd`. Declaring them explicitly (as the example files do) is harmless and self-documenting.
+- Using an **undeclared prefix in `@property`** is an error: realisation fails with `Prefix <p> does not exist in <context>`.
+- Using an **undeclared prefix in a query** `where` value, or a URI that simply matches nothing in the graph, does not raise an error — the query yields no rows and the explanation is silently absent. When a sentence unexpectedly fails to appear, checking prefix declarations (and that they expand to the URIs actually used in the provenance document) is the first diagnostic step.
+- A **dictionary key** whose prefix is missing from the dictionary's `context` will not resolve to the intended URI, so lookups fall through to the `!<uri>` marker (or the default word of `lookup-type-with-default`, §2.4).
+
 ## 2.4. Dictionary and Dictionary Lookups
+
+### 2.4.1. Dispatching on provenance types
+
+The dictionary is the mechanism by which a *single, generic x-plan* produces *domain-specific wording*. Instead of hard-coding words in the sentence tree, the x-plan reads a type URI from the provenance graph — typically the `prov:type` attribute of an activity or entity — and *dispatches* on it: the dictionary maps each type URI to the phrase that should realise it. The words live in the dictionary; the grammar lives in the x-plan.
+
+The convention is:
+
+| Provenance element | Dictionary entry kind | Example |
+|---|---|---|
+| Activity type | `verb_phrase` | `fs:FittingData` → *fit*, `fs:SelectingData` → *filter*, `fs:TransformingData` → *compress* |
+| Entity type | `noun_phrase` | `fs:Pipeline` → *model*, `fs:DataFile` → *data file*, `fs:FittingMethod` → *fitting method* |
+| Attribute value | `adverb_phrase` | `collabmap:yes` → *positively* |
+
+Dispatch is what allows the shared `fs-file-derivation.json` x-plan to serve fitting, filtering, and transforming provenance with one sentence tree: the clause's verb is a lookup on `act[prov:type]`, the object's head a lookup on `file2[prov:type]`, and the method and source nouns lookups on `plan[prov:type]` and `file1[prov:type]`. Adding support for a new activity type requires **no new x-plan** — only new dictionary entries (and, if the type should be filtered in, an extra `or` line in the query's `where` clause).
+
+### 2.4.2. Lookup functions
+
+Two `@funcall` functions perform the dispatch. Both read a type URI via `@property` (most commonly `prov:type`) on the variable named by `@object`:
+
+**`lookup-type`** — `@arg1` is the expected phrase kind (`noun_phrase`, `verb_phrase`, `string`); `@arg2` is an *optional comma-separated namespace prefix filter*, used when the element carries several types to select the one in a given namespace. If the dictionary has no entry for the type, a marker phrase `!<uri>` is realised, making the missing entry visible in the output.
+
+```json
+"verb": {
+    "type": "@funcall",
+    "@object": "act",
+    "@property": "prov:type",
+    "@function": "lookup-type",
+    "@arg1": "verb_phrase"
+}
+```
+
+**`lookup-type-with-default`** — same dispatch, but `@arg2` is a *default word* rather than a prefix filter. Its behaviour distinguishes three situations:
+
+| Situation | Result |
+|---|---|
+| Variable unbound (e.g. `optional join` found no match) | Phrase omitted (with `@optional: "true"`) |
+| Variable bound, but no such property (e.g. untyped entity), or type not in dictionary | The default word `@arg2` |
+| Type found in dictionary | The dictionary phrase |
+
+```json
+"head": {
+    "type": "@funcall",
+    "@object": "plan",
+    "@property": "prov:type",
+    "@function": "lookup-type-with-default",
+    "@arg1": "noun_phrase",
+    "@arg2": "method",
+    "@optional": "true"
+}
+```
+
+This realises *fitting method* when the plan is typed `fs:FittingMethod`, plain *method* when the plan is present but untyped, and nothing at all when there is no plan.
+
+### 2.4.3. Placement rules and limitations
+
+- A lookup `@funcall` is substituted in **`head`**, **`noun`**, and **`verb`** slots. It is **not** substituted inside a `pre-modifiers` array — placing it there fails at realisation. To qualify a noun with a looked-up word, make the lookup the `head` and demote the literal part (filename, identifier) to a `post-modifier`, as `fs-file-derivation.json` does.
+- Dictionary keys are prefixed URIs resolved against the dictionary's own `context`, not the x-plan's.
+- Each type URI maps to exactly **one** phrase. A type cannot supply both a verb and a noun; if both are needed (e.g. the verb *fit* and the qualifier *fitting method*), use two types on different elements (`fs:FittingData` on the activity, `fs:FittingMethod` on the method entity).
+- `features` attached to a lookup `@funcall` are currently **not** merged into the returned phrase (an open TODO in the implementation), so grammatical adjustments such as forcing a gerund on a looked-up verb are not possible; markup features (`head_markup_element`) must likewise be attached elsewhere.
+- Dictionary entries may reference **snippets** (`##name`) defined in the same file, and profile-driven features via `profile-features` — see §1.4 and §1.5.
 
 ## 3. Configuration
 
@@ -1154,7 +1242,7 @@ clause  [tense: past, passive: true]
 
 When `agent` is unbound the `subject` noun phrase resolves to nothing, so simpleNLG produces no "by …" phrase. When `plan` is unbound the `@optional` on its `@funcall` head causes the enclosing `preposition_phrase` to be dropped entirely.
 
-**File:** [`xplain/nlg/fs/fs-file-transforming.json`](../__rootArtifactId__-service/src/main/resources/xplain/nlg/fs/fs-file-transforming.json)
+**File:** the standalone `fs-file-transforming.json` x-plan shown below has since been folded into the shared, dictionary-driven [`xplain/nlg/fs/fs-file-derivation.json`](../__rootArtifactId__-service/src/main/resources/xplain/nlg/fs/fs-file-derivation.json) (see §4.5): the verb *compress* now comes from the `fs:TransformingData` dictionary entry, and *compression method* from the `fs:CompressionMethod` entry. The original x-plan is kept here as an illustration of the constructs above.
 
 ```json
 {
@@ -1418,37 +1506,51 @@ clause  [tense: past, passive: true]
 
 ---
 
-### 4.5. Model fitting
+### 4.5. File derivation — one x-plan, dictionary-driven wording
 
-**Target sentence**
+**Target sentences** — produced by a *single* x-plan:
 
-> The model pipeline (file:1590) was fitted from data (file:3) with fitting method (method:100) by agent (ag:22).
+> The model pipeline.pip (file:1590) was fitted from dataset (file:3) with method (method:100) on 5 June 2022 at 16:30 by agent (ag:22).
 
-This example shows how the same `WasDerivedFrom`-based template is reused for a machine-learning fitting step, producing a *model* (of type `fs:Pipeline`) from a *data* file.
+> The data file file2.csv (file:1549) was filtered from dataset (file:14) with method (method:11) on 5 June 2022 at 14:15 by agent (ag:41).
+
+This example shows how a `WasDerivedFrom`-based x-plan is generalised across activity types: none of the activity-specific words appear in the sentence tree. The verb (*fit*/*filter*) is looked up in the dictionary from the activity's `prov:type`, and the object's head noun (*model*/*data file*) is looked up from the generated file's `prov:type`:
+
+```json
+"fs:FittingData":   { "type": "verb_phrase", "head": "fit" },
+"fs:SelectingData": { "type": "verb_phrase", "head": "filter" },
+"fs:Pipeline":      { "type": "noun_phrase", "head": "model" },
+"fs:DataFile":      { "type": "noun_phrase", "head": "data file" }
+```
 
 **Provenance model**
 
 ```
-file:1590  prov:wasDerivedFrom  file:3  (via act:6120)   fs:filename = "pipeline", prov:type = fs:Pipeline
-act:6120   prov:type  fs:FittingData
-act:6120   prov:wasAssociatedWith  ag:22  plan method:100   (optional)
+file2  prov:wasDerivedFrom  file1  (via act)   fs:filename on file2, prov:type = fs:Pipeline | fs:DataFile
+act    prov:type  fs:FittingData | fs:SelectingData
+act    prov:wasAssociatedWith  agent  plan method   (optional)
+file2  prov:wasGeneratedBy  act  at time           (time optional)
 ```
 
 **Key constructs illustrated**
 
 | Construct | Where used |
 |---|---|
-| `where act[prov:type] >= 'fs:FittingData'` | Filters to fitting activities only |
-| `adjective_phrase` pre-modifier `"model"` on object NP | *model* pipeline (file:1590) |
-| `@arg1: "data"` on source file `noun+identity` | *data* (file:3) — labels an unnamed entity with a domain term |
-| `verb: "fit"` in past tense passive | simpleNLG realises as *was fitted* |
-| `adjective_phrase` pre-modifier `"fitting"` | *fitting* method |
+| `where act[prov:type] >= 'fs:FittingData' or ... 'fs:SelectingData' or ... 'fs:TransformingData'` | Accepts all three activity types |
+| `lookup-type` on `act[prov:type]` as clause `verb` | *was fitted* / *was filtered* |
+| `lookup-type-with-default` on `file2[prov:type]` as object NP `head` | *model* / *data file*; falls back to plain *file* for an untyped entity |
+| Filename as `adjective_phrase` post-modifier | *pipeline.pip* / *file2.csv* |
+| `lookup-type-with-default` on `file1[prov:type]` | *dataset (file:3)* via the `fs:Dataset` entry; falls back to plain *file* for untyped sources |
+| `lookup-type-with-default` on `plan[prov:type]` | *fitting method* / *filtering method* / *compression method*; falls back to plain *method* when the method entity is untyped, and omits the phrase entirely when there is no method at all |
+| `friendly_timestring` on `wgb.time`, `@optional` | *on 5 June 2022 at 16:30* — omitted when no timestamp |
 
-**`@arg1` as a domain label:** When the source file entity has no `fs:filename` property the `noun+identity` function renders only the qualified name. Providing `"@arg1": "data"` prepends the label *data*, yielding *data (file:3)* — a clean domain-meaningful phrase even for bare entity nodes.
+**`@arg1` as a domain label:** When the source file entity has no `fs:filename` property the `noun+identity` function renders only the qualified name. Providing `"@arg1": "dataset"` prepends the label *dataset*, yielding *dataset (file:3)* — a clean domain-meaningful phrase even for bare entity nodes.
 
-**Output:** `The model pipeline (file:1590) was fitted from data (file:3) with fitting method (method:100) by agent (ag:22).`
+**Placement caveat:** a `lookup-type` `@funcall` is substituted in `head`, `noun`, and `verb` slots, but **not** inside a `pre-modifiers` array — placing it there fails at realisation. This is why the dictionary noun phrase is the object's `head` and the filename a post-modifier, rather than the reverse.
 
-**File:** [`xplain/nlg/fs/fs-file-fitting.json`](../__rootArtifactId__-service/src/main/resources/xplain/nlg/fs/fs-file-fitting.json)
+**Output:** `The model pipeline.pip (file:1590) was fitted from dataset (file:3) with method (method:100) on 5 June 2022 at 16:30 by agent (ag:22).`
+
+**File:** [`xplain/nlg/fs/fs-file-derivation.json`](../__rootArtifactId__-service/src/main/resources/xplain/nlg/fs/fs-file-derivation.json)
 
 ---
 

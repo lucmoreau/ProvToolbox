@@ -559,12 +559,26 @@ A query consists of the following clauses, in order:
 [prefix <prefix> <uri>]*
 select *
 from <var> a <ProvType>
-[from <var> a <ProvType> [join | left join | optional join <lhs>.<field> = <rhs>.<field>]]*
+[from <var> a <ProvType> [join | left join | optional join <lhs>.<field> = <rhs>.<field> [when <condition>]]]*
 [where <condition> [and|or <condition>]*]
 [group by <var>[, <var>]* aggregate <var>[, <var>]* with <AggFunc>]
 ```
 
-All clauses after `select *` are optional except the first `from`.
+All clauses after `select *` are optional except the first `from`. The `when` guard is available on `optional join` only (see [§ optional join](#optional-join)).
+
+The condition forms, usable in `where` and in `when` guards (`<ref>` is `var.field` or `var[prefix:property]`):
+
+| Condition | Meaning | On an unbound variable |
+|---|---|---|
+| `<ref> >= '<qname>'` | The value is the given qualified name, or a subtype of it | false — the row is dropped |
+| `<ref> !>= '<qname>'` | Negation of `>=` | false — the row is dropped |
+| `<ref> ?>= '<qname>'` | Null-tolerant `>=`: satisfied when the variable is unbound or the attribute absent | **true** — the row is kept |
+| `<ref> = <ref>` \| `<ref> = <int>` | Equality with another reference or an integer literal | false |
+| `<ref> exists` | The reference has at least one value | false |
+| `<ref> absent` | The reference has no value (unbound variable, or missing field/attribute) | **true** |
+| `<ref> intersects { '<qname>', … }` | The reference's values intersect the given set | false |
+
+Conditions are combined with `and` and `or`; `or` binds more tightly (it attaches to the preceding condition), so `A or B and C` reads as `(A or B) and C`.
 
 ---
 
@@ -682,6 +696,15 @@ from plan a prov:Entity
 
 If `waw` is unbound (no `WasAssociatedWith` exists), then `agent` and `plan` are also unbound, and all three `@optional`-marked `@funcall` nodes in the sentence tree suppress their phrases. Use `optional join` whenever the relation itself may be absent or when null must propagate through a chain.
 
+An `optional join` may carry a **`when` guard** — a condition evaluated at *join* level, on the candidate rows being joined:
+
+```
+from wawI a prov:WasAssociatedWith
+ optional join act.id = wawI.activity when wawI[prov:role] >= 'resp:asInstrument'
+```
+
+A candidate that fails the guard is simply not joined; if *no* candidate passes, the variable is left unbound — the row survives. This differs from filtering in `where`: a `where` condition on a bound-but-non-matching variable drops the whole row, so when an activity has several associations with different roles, only a `when` guard can select "the association with this role, or none".
+
 ---
 
 ### where
@@ -690,13 +713,32 @@ If `waw` is unbound (no `WasAssociatedWith` exists), then `agent` and `plan` are
 where <condition> [and <condition>]* [or <condition>]*
 ```
 
-Filters the result set after all joins have been applied. Two condition forms are supported:
+Filters the result set after all joins have been applied. The condition forms are:
 
 **Type constraint** — tests whether a PROV node carries a specific type attribute. The `>=` operator means *is an instance of, or a subtype of*, supporting type hierarchy subsumption:
 
 ```
 where file2[prov:type] >= 'plead:DataFile'
   or  file2[prov:type] >= 'plead:AccuracyScore'
+```
+
+The same form applies to any qualified-name attribute, e.g. a role: `usd1[prov:role] >= 'fs:asFile'`.
+
+**Null-tolerant constraint** — the `?>=` operator behaves like `>=` for a bound variable, but is *satisfied* when the variable is unbound (e.g. an `optional join` found no match). By contrast, any `>=` condition on an unbound variable is false and drops the row. Use `?>=` to constrain a variable that is genuinely optional without losing the rows where it is absent:
+
+```
+where usd2[prov:role] ?>= 'fs:asScore'
+```
+
+*(`fs-file-approving.json` uses both: the pipeline's usage must carry role `fs:asFile` — a hard condition, as the usage is always present — while the score's usage, reached through a chain of optional joins, must carry role `fs:asScore` only when it exists.)*
+
+**Absence test** — `<ref> absent` is true when the referenced variable is unbound, or the referenced field or attribute has no value. Combined with a `when`-guarded `optional join`, it expresses *negative* conditions such as "the activity has no association with role X" — used to make x-plans mutually exclusive. `tr-examining.json` fires only when an instrument association exists (a required join with a hard role condition), while `tr-examining-no-instrument.json` requires an operator association *and* the absence of any instrument association:
+
+```
+from wawI a prov:WasAssociatedWith
+ optional join act.id = wawI.activity when wawI[prov:role] >= 'resp:asInstrument'
+where ...
+  and wawI.agent absent
 ```
 
 **Field equality** — tests whether a field equals a literal value:
@@ -937,6 +979,15 @@ File
 ```
 
 Folder [ProvToolbox: modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg](/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg) for example xplan libraries.
+
+### 3.1. Batch explanation from the command line
+
+Explanations can also be generated offline with the `provmanagement explain` command (see `batch.explain` in the archetype's Makefile). Its `--batch-templates` option selects which x-plans of the library to run, with grouping semantics on the bracketed lists:
+
+- `--batch-templates=[a][b]` — each bracket group is realised **separately**: the output JSON has one property per group, keyed by the group's content.
+- `--batch-templates=[a,b]` — the x-plans within one bracket group are realised **together** under a single key (`"a,b"`), their sentences concatenated.
+
+Separate groups are the right choice for *mutually exclusive* x-plans, such as `tr-examining` / `tr-examining-no-instrument` (§ 2.2, absence test): each document satisfies exactly one of the two queries, the non-firing plan produces an empty string, and one sentence emerges under a well-defined key. The archetype's Makefile then post-processes the JSON with `jq`, dropping empty entries and optionally renaming a key (variables `SOURCE_NAME`/`PROPERTY_NAME`) so that sentences produced by a shared or scenario-specific x-plan are labelled by scenario (e.g. the shared `fs-file-derivation` x-plan is relabelled `fs-file-fitting`, `fs-file-filtering`, or `fs-file-transforming` depending on the document; both weighing x-plans are relabelled `tr-weighing`).
 
 ## 4. Bank of Examples
 
@@ -1594,6 +1645,15 @@ The plan entity is a role of `prov:WasAssociatedWith`, not a field of the activi
 **R-Q6 — Declare focus variables in the `select` object.**
 The `select` object at the top of the x-plan declares the primary variable(s) that drive sentence generation (typically the activity or entity that is the focus of the explanation). Variables listed here must also be bound by the query.
 
+**R-Q7 — Disambiguate multiple relations of the same kind by `prov:role`.**
+When an activity has several usages or associations, a plain join binds *all* of them, producing one (possibly wrong) sentence per binding. Constrain each to its role: for a *required* relation, a hard `where` condition (`usd1[prov:role] >= 'fs:asFile'`); for an *optional* one, a `when` guard on the `optional join` (`optional join act.id = waw.activity when waw[prov:role] >= 'resp:asInstrument'`).
+
+**R-Q8 — Never put a hard `>=` condition on an optionally-bound variable; use `?>=` or a `when` guard.**
+A `where` condition on an unbound variable is false and silently drops the row — the sentence for documents lacking the optional element disappears. Use `?>=` when the constraint should apply *only if the variable is bound*, and a `when` guard when the constraint should decide *which candidate gets bound*. The difference: with `?>=`, a variable bound to a non-matching candidate still kills the row; with `when`, non-matching candidates are skipped at join time and the variable is simply left unbound.
+
+**R-Q9 — Make overlapping x-plans mutually exclusive with `absent`.**
+When two x-plans target the same activity type with different structures (e.g. with and without an instrument), give the richer plan a *required* join on the discriminating relation, and the other plan a `when`-guarded `optional join` on it plus `<var>.<field> absent` in the `where` clause. Each document then satisfies exactly one query. Example: `tr-examining.json` / `tr-examining-no-instrument.json`.
+
 ---
 
 ### 5.2. `@funcall` placement rules
@@ -1706,6 +1766,7 @@ ProvQL provides three join operators. Choosing the right one depends on whether 
 | `join a.x = b.y` | `Join` | Inner join — both sides required; no match drops the row |
 | `left join a.x = b.y` | `LeftJoin` | Left outer join — right variable becomes null if no match; does **not** propagate null safely through further joins |
 | `optional join a.x = b.y` | `LeftHashJoin` | Left outer join — right variable becomes null if no match; null **propagates safely** through any subsequent `optional join` that references it |
+| `optional join a.x = b.y when <condition>` | `LeftHashJoin` (guarded) | As above, but only candidates satisfying the condition are joined; if none does, the variable is left unbound (the row survives) |
 
 **When to use each:**
 

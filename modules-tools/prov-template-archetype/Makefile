@@ -7,7 +7,10 @@ NLG_BASIC_XPLAN_LIBRARY=/xplain/nlg/provbasic/provbasic.json
 NLG_BASIC_XPLAN_SELECTION='["actedonbehalfof1","activity1","agent1","alternate1","association1","attribution1","derivation1","end1","entity1","generation1","invalidation1","specialization1","start1","usage1","member1"]'
 
 NLG_FS_XPLAN_LIBRARY=/xplain/nlg/fs/fs-xplan-library.json
-NLG_FS_XPLAN_SELECTION='["fs-awk-column-selection", "fs-file-init", "fs-file-splitting","fs-file-derivation", "fs-generic-responsibility"]'
+NLG_FS_XPLAN_SELECTION='["fs-awk-column-selection", "fs-file-init", "fs-file-splitting","fs-file-derivation", "fs-generic-responsibility", "fs-file-validating", "fs-file-approving"]'
+
+NLG_TR_XPLAN_LIBRARY=/xplain/nlg/tr/tr-xplan-library.json
+NLG_TR_XPLAN_SELECTION='["tr-transporting", "tr-packing", "tr-unpacking", "tr-examining", "tr-examining-no-instrument", "tr-agent-init", "tr-assigning", "tr-handingover"]'
 
 
 run.book.tr:
@@ -52,8 +55,8 @@ archetype.generate.book.tr:
 		-Dimage.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-Dtemplate.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
 		-Dcbindings.url.prefix=webjars/$(ARTIFACT_ID)/$(VERSION)/ \
-		-DnlgXplanLibrary=$(NLG_BASIC_XPLAN_LIBRARY) \
-		-DnlgXplanSelection=$(NLG_BASIC_XPLAN_SELECTION) \
+		-DnlgXplanLibrary=$(NLG_TR_XPLAN_LIBRARY) \
+		-DnlgXplanSelection=$(NLG_TR_XPLAN_SELECTION) \
 		-DtheIconSvgLibrary=transport-icons.svg \
 		-DserviceContext=/book \
 		-DservicePort=7075 \
@@ -142,6 +145,20 @@ go2:
 PROVTOOLBOX_DIR=/Users/luc/IdeaProjects/ProvToolbox
 JAVA_OPTS="-Dlog4j.configurationFile=src/test/resources/ptm/config/log4j2.xml -Djava.util.logging.config.file=src/test/resources/ptm/config/logging.properties"
 
+# provman uses its own copy of the lexical database: the deployed service (make jetty
+# in the generated project) holds an exclusive hsqldb lock on the nlg-wrapper copy,
+# and hsqldb allows a single process per database.
+LEXICON_SOURCE=$(PROVTOOLBOX_DIR)/modules-explanations/nlg-wrapper/target/dictionary
+LEXICON_DIR=$(CURDIR)/target/dictionary
+JAVA_OPTS2=-DXPLAIN_LEXICON=$(LEXICON_DIR)/lexAccess2013.data
+
+$(LEXICON_DIR)/lexAccess2013.data:
+	@echo "Copying lexical database to $(LEXICON_DIR) ..."
+	@mkdir -p $(LEXICON_DIR)
+	@cp $(LEXICON_SOURCE)/lexAccess2013.data $(LEXICON_DIR)/
+	@cp $(LEXICON_SOURCE)/lexAccess2013.properties $(LEXICON_DIR)/
+	@cp $(LEXICON_SOURCE)/lexAccess2013.script $(LEXICON_DIR)/
+
 PROVMAN=export JAVA_OPTS=$(JAVA_OPTS2); $(PROVTOOLBOX_DIR)/modules-executable-provman/target/appassembler/bin/provmanagement
 NLG_XPLAIN=src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg
 
@@ -156,12 +173,15 @@ XPLAN_FILES = \
     $(NLG_XPLAIN)/fs/fs-file-derivation.json \
     $(NLG_XPLAIN)/fs/fs-file-init.json \
     $(NLG_XPLAIN)/fs/fs-file-splitting.json \
+    $(NLG_XPLAIN)/fs/fs-file-validating.json \
+    $(NLG_XPLAIN)/fs/fs-file-approving.json \
     $(NLG_XPLAIN)/fs/fs-generic-responsibility.json \
     $(NLG_XPLAIN)/tr/tr-xplan-library.json \
     $(NLG_XPLAIN)/tr/tr-transporting.json \
     $(NLG_XPLAIN)/tr/tr-packing.json \
     $(NLG_XPLAIN)/tr/tr-unpacking.json \
     $(NLG_XPLAIN)/tr/tr-examining.json \
+    $(NLG_XPLAIN)/tr/tr-examining-no-instrument.json \
     $(NLG_XPLAIN)/tr/tr-agent-init.json \
     $(NLG_XPLAIN)/tr/tr-assigning.json \
     $(NLG_XPLAIN)/tr/tr-handingover.json \
@@ -219,9 +239,9 @@ PROPERTY_NAME=$(SOURCE_NAME)
 XPLAN_LIB=$(NLG_XPLAIN)/fs/fs-xplan-library.json
 TR_XPLAN_LIB=$(NLG_XPLAIN)/tr/tr-xplan-library.json
 
-batch.explain:
+batch.explain: $(LEXICON_DIR)/lexAccess2013.data
 	@$(PROVMAN) explain --infile $(DOCUMENTS)/$(FILE).provn --outfile target/narrative-loan.provn --text target/narrative-loan.json --language $(XPLAN_LIB) -s target/simplenlg2.txt --profile=$(PROFILE)  --batch-templates=$(BATCH)
-	@jq 'with_entries(if .key == "$(SOURCE_NAME)" then .key = "$(PROPERTY_NAME)" else . end)' target/narrative-loan.json
+	@jq 'with_entries(if .key == "$(SOURCE_NAME)" then .key = "$(PROPERTY_NAME)" else . end) | with_entries(select(.value != ""))' target/narrative-loan.json
 
 
 
@@ -259,6 +279,24 @@ xp.init.no.agent:
 	@$(MAKE) batch.explain FILE=file_init_no_agent BATCH=[fs-file-init]
 xp.init.no.date:
 	@$(MAKE) batch.explain FILE=file_init_no_date BATCH=[fs-file-init]
+
+xp.validating.all: xp.validating xp.validating.method xp.validating.no.agent xp.validating.no.date
+xp.validating:
+	@$(MAKE) batch.explain FILE=file_validating BATCH=[fs-file-validating]
+xp.validating.method:
+	@$(MAKE) batch.explain FILE=file_validating_method BATCH=[fs-file-validating]
+xp.validating.no.agent:
+	@$(MAKE) batch.explain FILE=file_validating_no_agent BATCH=[fs-file-validating]
+xp.validating.no.date:
+	@$(MAKE) batch.explain FILE=file_validating_no_date BATCH=[fs-file-validating]
+
+xp.approving.all: xp.approving xp.approving.no.agent xp.approving.no.score
+xp.approving:
+	@$(MAKE) batch.explain FILE=file_approving BATCH=[fs-file-approving]
+xp.approving.no.agent:
+	@$(MAKE) batch.explain FILE=file_approving_no_agent BATCH=[fs-file-approving]
+xp.approving.no.score:
+	@$(MAKE) batch.explain FILE=file_approving_no_score BATCH=[fs-file-approving]
 
 xp.splitting.all: xp.splitting xp.splitting.four.way
 
@@ -316,15 +354,17 @@ xp.tr.unpacking:
 
 # weighing shares the tr-examining x-plan: the verb (weigh/examine) comes from the
 # dictionary, keyed on the activity type; the weight phrase is optional
-xp.tr.weighing.all: xp.tr.weighing xp.tr.weighing.unit xp.tr.weighing.no.delegation
+xp.tr.weighing.all: xp.tr.weighing xp.tr.weighing.unit xp.tr.weighing.no.delegation xp.tr.weighing.no.scale
 xp.tr.weighing:
-	@$(MAKE) tr.explain FILE=tr_weighing BATCH=[tr-examining] SOURCE_NAME=tr-examining PROPERTY_NAME=tr-weighing
+	@$(MAKE) tr.explain FILE=tr_weighing BATCH=[tr-examining][tr-examining-no-instrument] SOURCE_NAME=tr-examining PROPERTY_NAME=tr-weighing
 xp.tr.weighing.unit:
-	@$(MAKE) tr.explain FILE=tr_weighing_unit BATCH=[tr-examining] SOURCE_NAME=tr-examining PROPERTY_NAME=tr-weighing
+	@$(MAKE) tr.explain FILE=tr_weighing_unit BATCH=[tr-examining][tr-examining-no-instrument] SOURCE_NAME=tr-examining PROPERTY_NAME=tr-weighing
 xp.tr.weighing.no.delegation:
-	@$(MAKE) tr.explain FILE=tr_weighing_no_delegation BATCH=[tr-examining] SOURCE_NAME=tr-examining PROPERTY_NAME=tr-weighing
+	@$(MAKE) tr.explain FILE=tr_weighing_no_delegation BATCH=[tr-examining][tr-examining-no-instrument] SOURCE_NAME=tr-examining PROPERTY_NAME=tr-weighing
+xp.tr.weighing.no.scale:
+	@$(MAKE) tr.explain FILE=tr_weighing_no_scale BATCH=[tr-examining][tr-examining-no-instrument] SOURCE_NAME=tr-examining-no-instrument PROPERTY_NAME=tr-weighing
 xp.tr.examining:
-	@$(MAKE) tr.explain FILE=tr_examining BATCH=[tr-examining]
+	@$(MAKE) tr.explain FILE=tr_examining BATCH=[tr-examining][tr-examining-no-instrument]
 
 xp.tr.agent.init.all: xp.tr.agent.init xp.tr.agent.init.scale xp.tr.agent.init.no.location
 xp.tr.agent.init:
@@ -348,4 +388,4 @@ xp.tr.handingover.no.giver:
 
 #| xgroup_by(.)
 xp.all:
-	@$(MAKE) xp.transforming.all xp.filtering.all xp.init.all xp.splitting.all xp.fitting.all | jq -s '.  '
+	@$(MAKE) xp.transforming.all xp.filtering.all xp.init.all xp.splitting.all xp.fitting.all xp.validating.all xp.approving.all | jq -s '.  '

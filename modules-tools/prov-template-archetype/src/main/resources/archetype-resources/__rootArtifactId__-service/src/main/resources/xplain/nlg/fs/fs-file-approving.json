@@ -1,0 +1,191 @@
+{
+    "select": { "act": { "@type": "prov:Activity" } },
+
+    "query": [
+        "prefix fs <http://openprovenance.org/ns/fs#>",
+        "select * from der a prov:WasDerivedFrom",
+        "from ap a prov:Entity",
+        " join der.generatedEntity = ap.id",
+        "from pipeline a prov:Entity",
+        " join der.usedEntity = pipeline.id",
+        "from act a prov:Activity",
+        " join der.activity = act.id",
+        "from usd1 a prov:Used",
+        " join pipeline.id = usd1.entity",
+        "from wgbr a prov:WasGeneratedBy",
+        " optional join act.id = wgbr.activity",
+        "from arec a prov:Entity",
+        " optional join wgbr.entity = arec.id",
+        "from der2 a prov:WasDerivedFrom",
+        " optional join arec.id = der2.generatedEntity",
+        "from sc a prov:Entity",
+        " optional join der2.usedEntity = sc.id",
+        "from usd2 a prov:Used",
+        " optional join sc.id = usd2.entity",
+        "from waw a prov:WasAssociatedWith",
+        " optional join act.id = waw.activity",
+        "from manager a prov:Agent",
+        " optional join waw.agent = manager.id",
+        "from wgb a prov:WasGeneratedBy",
+        " optional join ap.id = wgb.entity",
+        "where act[prov:type] >= 'fs:ApprovingPipeline'",
+        "  and ap[prov:type] >= 'fs:ApprovedPipeline'",
+        "  and arec[prov:type] >= 'fs:ApprovalRecord'",
+        "  and usd1[prov:role] >= 'fs:asFile'",
+        "  and usd2[prov:role] ?>= 'fs:asScore'"
+
+    ],
+
+    "sentence": {
+        "type": "clause",
+        "subject": {
+            "type": "noun_phrase",
+            "head": {
+                "type": "@funcall",
+                "@object": "manager",
+                "@field": "id",
+                "@function": "noun+identity",
+                "@arg1": "manager",
+                "@optional": "true"
+            }
+        },
+        "object": {
+            "type": "noun_phrase",
+            "determiner": "The",
+            "head": {
+                "type": "@funcall",
+                "@object": "pipeline",
+                "@property": "prov:type",
+                "@function": "lookup-type-with-default",
+                "@arg1": "noun_phrase",
+                "@arg2": "pipeline"
+            },
+            "post-modifiers": [
+                {
+                    "type": "adjective_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "pipeline",
+                        "@field": "id",
+                        "@function": "noun+identity",
+                        "@arg1": ""
+                    }
+                }
+            ],
+            "features": { "number": "singular" }
+        },
+        "verb": {
+            "type": "@funcall",
+            "@object": "act",
+            "@property": "prov:type",
+            "@function": "lookup-type",
+            "@arg1": "verb_phrase"
+        },
+        "modifiers": [
+            {
+                "type": "preposition_phrase",
+                "preposition": "as",
+                "noun": {
+                    "type": "noun_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "ap",
+                        "@property": "fs:pipeline",
+                        "@function": "string",
+                        "@optional": "true"
+                    },
+                    "post-modifiers": [
+                        {
+                            "type": "adjective_phrase",
+                            "head": {
+                                "type": "@funcall",
+                                "@object": "ap",
+                                "@field": "id",
+                                "@function": "noun+identity",
+                                "@arg1": ""
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "preposition_phrase",
+                "preposition": "based on",
+                "noun": {
+                    "type": "noun_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "sc",
+                        "@property": "prov:type",
+                        "@function": "lookup-type-with-default",
+                        "@arg1": "noun_phrase",
+                        "@arg2": "score",
+                        "@optional": "true"
+                    },
+                    "post-modifiers": [
+                        {
+                            "type": "adjective_phrase",
+                            "head": {
+                                "type": "@funcall",
+                                "@object": "sc",
+                                "@field": "id",
+                                "@function": "noun+identity",
+                                "@arg1": "",
+                                "@optional": "true"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "preposition_phrase",
+                "preposition": "with",
+                "noun": {
+                    "type": "noun_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "arec",
+                        "@property": "prov:type",
+                        "@function": "lookup-type-with-default",
+                        "@arg1": "noun_phrase",
+                        "@arg2": "record",
+                        "@optional": "true"
+                    },
+                    "post-modifiers": [
+                        {
+                            "type": "adjective_phrase",
+                            "head": {
+                                "type": "@funcall",
+                                "@object": "arec",
+                                "@field": "id",
+                                "@function": "noun+identity",
+                                "@arg1": "",
+                                "@optional": "true"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "preposition_phrase",
+                "preposition": "on",
+                "noun": {
+                    "type": "@funcall",
+                    "@object": "wgb",
+                    "@field": "time",
+                    "@optional": "true",
+                    "@function": "friendly_timestring"
+                }
+            }
+        ],
+        "features": {
+            "tense": "past",
+            "passive": "true"
+        }
+    },
+
+    "context": {
+        "ex": "http://example.org/#",
+        "fs": "http://openprovenance.org/ns/fs#"
+    }
+}

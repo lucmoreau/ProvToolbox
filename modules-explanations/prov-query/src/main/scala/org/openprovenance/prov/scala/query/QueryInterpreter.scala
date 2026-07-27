@@ -107,6 +107,25 @@ trait QueryInterpreter extends SummaryTypesNames {
         case _ => false
       }
 
+    case Eq("absent", a1, _) =>
+      // true when the referenced variable is unbound (e.g. an optional join with no
+      // match, possibly nested) or the referenced attribute/field has no value
+      Try(evalRef(a1)(rec)).getOrElse(Seq()).isEmpty
+
+    case Eq("includesQualifiedNameOrAbsent", a1, a2) =>
+      // null-tolerant subtype test (?>= operator): an unbound variable (e.g. an
+      // optional join with no match, possibly nested) satisfies the condition;
+      // a bound one must match
+      val values1 = Try(evalRef(a1)(rec)).getOrElse(Seq())
+      if (values1.isEmpty) true
+      else {
+        val result = Primitive.applyFun1("includesQualifiedName", (values1, Set()), optionp = false, (evalRef(a2)(rec), Set()), environment)
+        result match {
+          case (Some(Result(Some(v), _, _, _)), _triples) => "true" == v
+          case _ => false
+        }
+      }
+
     case Eq(pred, a1, a2) =>
       val result = Primitive.applyFun1(pred, (evalRef(a1)(rec), Set()), optionp = false, (evalRef(a2)(rec), Set()), environment)
       result match {
@@ -154,7 +173,7 @@ trait QueryInterpreter extends SummaryTypesNames {
     case LeftJoin(left, _, _, right, _, _) => resultSchema(left) ++ resultSchema(right)
     case Group(keys, agg, _, _, _) => keys ++ agg
     case HashJoin(left, right) => resultSchema(left) ++ resultSchema(right)
-    case LeftHashJoin(left, _, _, right, _, _) => resultSchema(left) ++ resultSchema(right)
+    case LeftHashJoin(left, _, _, right, _, _, _) => resultSchema(left) ++ resultSchema(right)
     case Print(parent) => toSchema()
     //case Order(f,parent,_)        => Schema()
   }
@@ -225,13 +244,19 @@ trait QueryInterpreter extends SummaryTypesNames {
           }
         }
 
-      case LeftHashJoin(left, key1, property1, right, key2, property2) =>
+      case LeftHashJoin(left, key1, property1, right, key2, property2, guard) =>
         // Build phase: evaluate right sub-plan once and index by the join key value.
+        // A 'when' guard filters candidates here, at join level: a right-side row that
+        // fails the guard is not indexed, so a left row whose only candidates fail the
+        // guard still gets a null (unbound) row -- unlike a where-clause filter, which
+        // would drop the row entirely.
         val rightSchema = resultSchema(right)
         val hm = new mutable.HashMap[Seq[Object], mutable.ArrayBuffer[Record]]()
         execOp(right) { rec2 =>
-          val v2: (Seq[Object], Set[Triple]) = Primitive.applyField(property2, toStatement(rec2(key2)))
-          hm.getOrElseUpdate(v2._1, new mutable.ArrayBuffer[Record]) += rec2
+          if (guard.forall(g => evalPred(g)(rec2))) {
+            val v2: (Seq[Object], Set[Triple]) = Primitive.applyField(property2, toStatement(rec2(key2)))
+            hm.getOrElseUpdate(v2._1, new mutable.ArrayBuffer[Record]) += rec2
+          }
         }
         // Probe phase: for each left record look up its join key in the hash map.
         execOp(left) { rec1 =>

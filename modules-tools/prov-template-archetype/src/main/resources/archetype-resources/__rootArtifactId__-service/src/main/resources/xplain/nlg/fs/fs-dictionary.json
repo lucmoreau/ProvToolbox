@@ -48,13 +48,33 @@
 			"type": "verb_phrase",
 			"head":  "fit"
 		},
+		"fs:AssessingPerformance": {
+			"type": "verb_phrase",
+			"head":  "compute"
+		},
+		"fs:ApprovingPipeline": {
+			"type": "verb_phrase",
+			"head":  "approve"
+		},
+		"fs:AccuracyScore": {
+			"type": "noun_phrase",
+			"head":  "accuracy score"
+		},
+		"fs:ApprovedPipeline": {
+			"type": "noun_phrase",
+			"head":  "approved pipeline"
+		},
+		"fs:ApprovalRecord": {
+			"type": "noun_phrase",
+			"head":  "approval record"
+		},
 		"fs:SelectingData": {
 			"type": "verb_phrase",
 			"head":  "filter"
 		},
 		"fs:TransformingData": {
 			"type": "verb_phrase",
-			"head":  "compress"
+			"head":  "transform"
 		},
 		"fs:FittingMethod": {
 			"type": "noun_phrase",

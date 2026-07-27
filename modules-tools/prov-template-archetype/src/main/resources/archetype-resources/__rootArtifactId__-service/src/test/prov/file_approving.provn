@@ -1,0 +1,26 @@
+// From db record file_approving#139 (no approval method recorded): The pipeline (file:1913) was approved as inputfile.approved-pipeline (file:1914) based on accuracy score (score:152) with approval record (record:139) on 1 May 2026 at 13:24 by manager (ag:333).
+document
+prefix fs <http://openprovenance.org/ns/fs#>
+prefix act <http://localhost:7075/book/provapi/live/activity/>
+prefix ag <http://localhost:7075/book/provapi/live/agent/>
+prefix provext <http://openprovenance.org/prov/extension#>
+prefix file <http://localhost:7075/book/provapi/live/file/>
+prefix method <http://localhost:7075/book/provapi/live/method/>
+prefix score <http://localhost:7075/book/provapi/live/score/>
+prefix record <http://localhost:7075/book/provapi/live/approval_record/>
+entity(file:1913)
+entity(score:152,[prov:type = 'fs:AccuracyScore'])
+entity(file:1914,[prov:type = 'fs:ApprovedPipeline', fs:pipeline = "inputfile.approved-pipeline" %% xsd:string, fs:path = "/home/bob" %% xsd:string])
+entity(record:139,[prov:type = 'fs:ApprovalRecord', fs:signature = "signature" %% xsd:string])
+activity(act:6409,-,-,[prov:type = 'fs:ApprovingPipeline'])
+used(act:6409,file:1913,-,[prov:role = 'fs:asFile'])
+wasGeneratedBy(file:1914,act:6409,2026-05-01T13:24:44+01:00)
+wasGeneratedBy(record:139,act:6409,2026-05-01T13:24:44+01:00)
+wasDerivedFrom(file:1914, file:1913, act:6409, -, -)
+used(act:6409,score:152,-,[prov:role = 'fs:asScore'])
+wasDerivedFrom(record:139, score:152, act:6409, -, -)
+agent(ag:333)
+wasAssociatedWith(act:6409,ag:333,-)
+wasAttributedTo(file:1914, ag:333,[provext:activity = 'act:6409'])
+wasAttributedTo(record:139, ag:333,[provext:activity = 'act:6409'])
+endDocument

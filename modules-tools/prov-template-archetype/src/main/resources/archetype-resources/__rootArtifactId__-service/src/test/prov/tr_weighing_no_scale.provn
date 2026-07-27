@@ -1,4 +1,4 @@
-// From db record weighing#597 (no mass unit recorded): The box (item:7969) was weighed at 15.03 on 1 October 2024 at 16:14 by scale (ag:7968) on behalf of agent (ag:7965).
+// Record weighing#597 without scale (operator association only, no delegation): The box (item:7969) was weighed at 15.03 on 1 October 2024 at 16:14 by agent (ag:7965).
 document
 prefix trs <https://openprovenance.org/transport/ns/#>
 prefix phys <http://openprovenance.org/ns/phys#>
@@ -12,13 +12,9 @@ entity(item:7966)
 entity(item:7969,[prov:type = 'trs:Box', phys:lkw = "15.03" %% xsd:string])
 activity(act:5960,-,-,[prov:type = 'phys:Weighing'])
 agent(ag:7965)
-agent(ag:7968,[prov:type = 'trs:Scale'])
 used(act:5960,item:7966,-,[prov:role = 'provext:asEntity'])
 wasGeneratedBy(item:7969,act:5960,2024-10-01T16:14:00+01:00)
 wasDerivedFrom(item:7969, item:7966, act:5960, -, -,[prov:type = 'phys:Weighing'])
-wasAssociatedWith(act:5960,ag:7968,-,[prov:role = 'resp:asInstrument'])
 wasAssociatedWith(act:5960,ag:7965,-,[prov:role = 'resp:asOperator'])
-wasAttributedTo(item:7969, ag:7968,[provext:activity = 'act:5960'])
 wasAttributedTo(item:7969, ag:7965,[provext:activity = 'act:5960'])
-actedOnBehalfOf(ag:7968,ag:7965,act:5960)
 endDocument

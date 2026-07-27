@@ -23,10 +23,10 @@ install.sec:
 	export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=$(SERVICE_SECURITY_CONFIG);  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,security clean install
 
 jetty:
-	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT); export PROV_API=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${symbol_dollar}{PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=${symbol_dollar}(SERVICE_SECURITY_CONFIG); export XPLAIN_LEXICON=${symbol_dollar}{XPLAIN_LEXICON}; export TEMPLATE_CONFIG=${symbol_dollar}(TEMPLATE_CONFIG); mvn -Pjetty,security jetty:run-war
+	source ~/.bashrc; export PROV_HOST=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT); export PROV_API=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${symbol_dollar}{PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=${symbol_dollar}(SERVICE_SECURITY_CONFIG); export XPLAIN_LEXICON=${symbol_dollar}{XPLAIN_LEXICON}; export TEMPLATE_CONFIG=${symbol_dollar}(TEMPLATE_CONFIG); mvn -Pjetty,security jetty:run-war
 
 jetty.nosec:
-	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; unset TPL_SECURITY_CONFIG;  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,nosecurity jetty:run-war
+	 source ~/.bashrc; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; unset TPL_SECURITY_CONFIG;  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,nosecurity jetty:run-war
 
 
 jetty.post:

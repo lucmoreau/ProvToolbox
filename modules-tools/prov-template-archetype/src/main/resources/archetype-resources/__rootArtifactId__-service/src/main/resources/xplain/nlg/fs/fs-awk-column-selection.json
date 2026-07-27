@@ -18,7 +18,7 @@
         "from plan a prov:Entity",
         " join waw.plan = plan.id",
 
-        "where act[prov:type] >= 'fs:SelectingData'"
+        "where act[prov:type] >= 'fs:SelectingDataAwk'"
     ],
 
     "sentence": {

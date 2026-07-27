@@ -1,4 +1,4 @@
-// Crafted (no db table for examining; instrument type trs:Scanner is not in the dictionary, defaults to instrument): The box (item:7985) was examined on behalf of agent (ag:7965) on 3 October 2024 at 10:00 by instrument (ag:7990).
+// Crafted (no db table for examining; instrument type trs:Scanner is not in the dictionary, defaults to instrument): The box (item:7985) was examined on 3 October 2024 at 10:00 by instrument (ag:7990) on behalf of agent (ag:7965).
 document
 prefix trs <https://openprovenance.org/transport/ns/#>
 prefix phys <http://openprovenance.org/ns/phys#>
@@ -17,6 +17,7 @@ used(act:6400,item:7984,-,[prov:role = 'provext:asEntity'])
 wasGeneratedBy(item:7985,act:6400,2024-10-03T10:00:00+01:00)
 wasDerivedFrom(item:7985, item:7984, act:6400, -, -,[prov:type = 'phys:Examining'])
 wasAssociatedWith(act:6400,ag:7990,-,[prov:role = 'resp:asInstrument'])
+wasAssociatedWith(act:6400,ag:7965,-,[prov:role = 'resp:asOperator'])
 wasAttributedTo(item:7985, ag:7990,[provext:activity = 'act:6400'])
 wasAttributedTo(item:7985, ag:7965,[provext:activity = 'act:6400'])
 actedOnBehalfOf(ag:7990,ag:7965,act:6400)

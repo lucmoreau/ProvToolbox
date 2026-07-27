@@ -11,19 +11,18 @@
         " join der.usedEntity = item0.id",
         "from act a prov:Activity",
         " join der.activity = act.id",
-        "from waw a prov:WasAssociatedWith",
-        " join act.id = waw.activity",
-        "from instrument a prov:Agent",
-        " join waw.agent = instrument.id",
-        "from aobo a prov:ActedOnBehalfOf",
-        " optional join instrument.id = aobo.delegate",
+        "from wawO a prov:WasAssociatedWith",
+        " join act.id = wawO.activity",
         "from agent a prov:Agent",
-        " optional join aobo.responsible = agent.id",
+        " join wawO.agent = agent.id",
+        "from wawI a prov:WasAssociatedWith",
+        " optional join act.id = wawI.activity when wawI[prov:role] >= 'resp:asInstrument'",
         "from wgb a prov:WasGeneratedBy",
         " optional join item1.id = wgb.entity",
         "where act[prov:type] >= 'phys:Weighing'",
         "  or  act[prov:type] >= 'phys:Examining'",
-        "  and waw[prov:role] >= 'resp:asInstrument'"
+        "  and wawO[prov:role] >= 'resp:asOperator'",
+        "  and wawI.agent absent"
     ],
 
     "sentence": {
@@ -32,38 +31,11 @@
             "type": "noun_phrase",
             "head": {
                 "type": "@funcall",
-                "@object": "instrument",
-                "@property": "prov:type",
-                "@function": "lookup-type-with-default",
-                "@arg1": "noun_phrase",
-                "@arg2": "instrument",
-                "@optional": "true"
-            },
-            "post-modifiers": [
-                {
-                    "type": "adjective_phrase",
-                    "head": {
-                        "type": "@funcall",
-                        "@object": "instrument",
-                        "@field": "id",
-                        "@function": "noun+identity",
-                        "@arg1": "",
-                        "@optional": "true"
-                    }
-                },
-                {
-                    "type": "preposition_phrase",
-                    "preposition": "on behalf of",
-                    "noun": {
-                        "type": "@funcall",
-                        "@object": "agent",
-                        "@field": "id",
-                        "@function": "noun+identity",
-                        "@arg1": "agent",
-                        "@optional": "true"
-                    }
-                }
-            ]
+                "@object": "agent",
+                "@field": "id",
+                "@function": "noun+identity",
+                "@arg1": "agent"
+            }
         },
         "object": {
             "type": "noun_phrase",

@@ -1,0 +1,159 @@
+{
+    "select": { "act": { "@type": "prov:Activity" } },
+
+    "query": [
+        "prefix fs <http://openprovenance.org/ns/fs#>",
+        "select * from der a prov:WasDerivedFrom",
+        "from score a prov:Entity",
+        " join der.generatedEntity = score.id",
+        "from dataset a prov:Entity",
+        " join der.usedEntity = dataset.id",
+        "from act a prov:Activity",
+        " join der.activity = act.id",
+        "from waw a prov:WasAssociatedWith",
+        " optional join act.id = waw.activity",
+        "from engineer a prov:Agent",
+        " optional join waw.agent = engineer.id",
+        "from plan a prov:Entity",
+        " optional join waw.plan = plan.id",
+        "from wgb a prov:WasGeneratedBy",
+        " optional join score.id = wgb.entity",
+        "where act[prov:type] >= 'fs:AssessingPerformance'"
+    ],
+
+    "sentence": {
+        "type": "clause",
+        "subject": {
+            "type": "noun_phrase",
+            "head": {
+                "type": "@funcall",
+                "@object": "engineer",
+                "@field": "id",
+                "@function": "noun+identity",
+                "@arg1": "engineer",
+                "@optional": "true"
+            }
+        },
+        "object": {
+            "type": "noun_phrase",
+            "determiner": "a",
+            "head": {
+                "type": "@funcall",
+                "@object": "score",
+                "@property": "prov:type",
+                "@function": "lookup-type-with-default",
+                "@arg1": "noun_phrase",
+                "@arg2": "score"
+            },
+            "post-modifiers": [
+                {
+                    "type": "adjective_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "score",
+                        "@field": "id",
+                        "@function": "noun+identity",
+                        "@arg1": ""
+                    }
+                },
+                {
+                    "type": "preposition_phrase",
+                    "preposition": "of",
+                    "noun": {
+                        "type": "@funcall",
+                        "@object": "score",
+                        "@property": "prov:value",
+                        "@function": "string",
+                        "@optional": "true"
+                    }
+                }
+            ],
+            "features": { "number": "singular" }
+        },
+        "verb": {
+            "type": "@funcall",
+            "@object": "act",
+            "@property": "prov:type",
+            "@function": "lookup-type",
+            "@arg1": "verb_phrase"
+        },
+        "modifiers": [
+            {
+                "type": "preposition_phrase",
+                "preposition": "from",
+                "noun": {
+                    "type": "noun_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "dataset",
+                        "@property": "prov:type",
+                        "@function": "lookup-type-with-default",
+                        "@arg1": "noun_phrase",
+                        "@arg2": "testing dataset"
+                    },
+                    "post-modifiers": [
+                        {
+                            "type": "adjective_phrase",
+                            "head": {
+                                "type": "@funcall",
+                                "@object": "dataset",
+                                "@field": "id",
+                                "@function": "noun+identity",
+                                "@arg1": ""
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "preposition_phrase",
+                "preposition": "with",
+                "noun": {
+                    "type": "noun_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "plan",
+                        "@property": "prov:type",
+                        "@function": "lookup-type-with-default",
+                        "@arg1": "noun_phrase",
+                        "@arg2": "method",
+                        "@optional": "true"
+                    },
+                    "post-modifiers": [
+                        {
+                            "type": "adjective_phrase",
+                            "head": {
+                                "type": "@funcall",
+                                "@object": "plan",
+                                "@field": "id",
+                                "@function": "noun+identity",
+                                "@arg1": "",
+                                "@optional": "true"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "preposition_phrase",
+                "preposition": "on",
+                "noun": {
+                    "type": "@funcall",
+                    "@object": "wgb",
+                    "@field": "time",
+                    "@optional": "true",
+                    "@function": "friendly_timestring"
+                }
+            }
+        ],
+        "features": {
+            "tense": "past",
+            "passive": "true"
+        }
+    },
+
+    "context": {
+        "ex": "http://example.org/#",
+        "fs": "http://openprovenance.org/ns/fs#"
+    }
+}

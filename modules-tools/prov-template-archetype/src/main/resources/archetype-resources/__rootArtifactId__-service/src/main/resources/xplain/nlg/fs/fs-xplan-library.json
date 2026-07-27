@@ -5,7 +5,9 @@
         "fs-awk-column-selection.json",
         "fs-file-init.json",
         "fs-file-splitting.json",
-        "fs-file-derivation.json"
+        "fs-file-derivation.json",
+        "fs-file-validating.json",
+        "fs-file-approving.json"
     ],
     "dictionaries": ["fs-dictionary.json"],
     "profiles": ["fs-profile.json"]

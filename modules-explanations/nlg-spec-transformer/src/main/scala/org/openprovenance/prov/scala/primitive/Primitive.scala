@@ -158,7 +158,11 @@ object Primitive {
         (Some(doFun(function, objects)),triples)
       }
     } else {
-      (Some(doFun(function, objects)),triples)
+      val r = doFun(function, objects)
+      // an optional value that realises as the empty string (e.g. an attribute
+      // recorded as "") suppresses its phrase, like an absent value would
+      if (optionp && r.string.exists(_.isEmpty)) (None, triples)
+      else (Some(r), triples)
     }
   }
 

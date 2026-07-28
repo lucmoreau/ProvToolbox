@@ -9,6 +9,12 @@
         </requiredProperty>
         <requiredProperty key="templateLibraryVersion">
         </requiredProperty>
+        <requiredProperty key="templateExplanationsGroupId">
+        </requiredProperty>
+        <requiredProperty key="templateExplanationsArtifactId">
+        </requiredProperty>
+        <requiredProperty key="templateExplanationsVersion">
+        </requiredProperty>
         <requiredProperty key="templateSubLibrary">
         </requiredProperty>
         <requiredProperty key="templateLibraryServiceName"/>

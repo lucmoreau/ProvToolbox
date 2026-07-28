@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.RECORD_2_RECORD;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
@@ -163,6 +164,22 @@ public class ConfigProcessor implements Constants {
 
         try {
             configs = objectMapper.readValue(new File(addBaseDirIfRelative(template_builder, inputBaseDir)), TemplatesProjectConfiguration.class);
+
+            // Output directories from the catalogue are relative to the project being
+            // generated, not to the current working directory: in a multi-module reactor
+            // build the two differ, and cwd-relative resolution would scatter generated
+            // code outside the module's target directory.
+            if (configs.python_dir != null)     configs.python_dir     = addBaseDirIfRelative(configs.python_dir, outputBaseDir);
+            if (configs.javascript_dir != null) configs.javascript_dir = addBaseDirIfRelative(configs.javascript_dir, outputBaseDir);
+            if (configs.rust_dir != null)       configs.rust_dir       = addBaseDirIfRelative(configs.rust_dir, outputBaseDir);
+            if (configs.script_dir != null)     configs.script_dir     = addBaseDirIfRelative(configs.script_dir, outputBaseDir);
+            if (configs.generators != null) {
+                for (Generator gen : configs.generators.values()) {
+                    if (gen.classpath != null) {
+                        gen.classpath = gen.classpath.stream().map(p -> addBaseDirIfRelative(p, outputBaseDir)).collect(Collectors.toList());
+                    }
+                }
+            }
 
             SpecificationFile.resetTypeCheckCoordinator();
             SpecificationFile.resetCodeGenCoordinator();

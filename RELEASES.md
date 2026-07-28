@@ -1,6 +1,10 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.2.4-SNAPSHOT`
+`2.2.5-SNAPSHOT`
+* 
+
+`2.2.4`
+
 * prov-template-compiler: StatementCompilerAction2: refined past code generator for Attribution and Association
 * prov-template-compiler: javascript emitter updates to run workflow in js
 * prov-template-compiler: rust emitter updates to run workflow in rust

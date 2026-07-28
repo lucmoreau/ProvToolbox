@@ -13,7 +13,7 @@ import java.util.List;
  * {@link RustMethodRegistry} by {@code (RustTypeCategory, javaName)} for category-specific
  * methods, or by {@code javaName} alone for global methods.</p>
  *
- * <h3>Arg treatment coverage</h3>
+ * <b>Arg treatment coverage</b>
  * <p>The {@link #argTreatments} list may be shorter than the actual argument count.
  * {@link #argTreatment(int)} repeats the last entry for any excess positions, giving
  * varargs-style coverage.</p>

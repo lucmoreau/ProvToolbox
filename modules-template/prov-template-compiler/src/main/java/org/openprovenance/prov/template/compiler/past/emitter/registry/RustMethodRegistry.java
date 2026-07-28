@@ -19,7 +19,7 @@ import java.util.Map;
  * Central registry mapping PAST/Java type names and method names to their Rust
  * emission metadata.
  *
- * <h3>Loading</h3>
+ * <b>Loading</b>
  * <ul>
  *   <li>{@link #loadFromClasspath()} — loads the bundled {@code rust-registry.json}
  *       resource from the same package directory.  Preferred for production use.</li>
@@ -27,7 +27,7 @@ import java.util.Map;
  *       unit tests that need a minimal or custom registry without file I/O.</li>
  * </ul>
  *
- * <h3>Primary query methods</h3>
+ * <b>Primary query methods</b>
  * <ul>
  *   <li>{@link #isCategory(TypeName, RustTypeCategory)} — replaces the scattered
  *       {@code isMap()}, {@code isList()}, {@code isPrimitiveType()} … helpers.</li>
@@ -39,7 +39,7 @@ import java.util.Map;
  *       name translation when the receiver type is unknown.</li>
  * </ul>
  *
- * <h3>Thread safety</h3>
+ * <b>Thread safety</b>
  * <p>Instances are immutable after construction — safe to share as a static field.</p>
  */
 public class RustMethodRegistry {

@@ -13,7 +13,7 @@ import java.util.Set;
  * {@link #javaNames}.  They can also be constructed programmatically via the
  * public all-args constructor — useful in unit tests.</p>
  *
- * <h3>Relationship to old Rust.java helpers</h3>
+ * <b>Relationship to old Rust.java helpers</b>
  * <ul>
  *   <li>{@code isMap(tn)}          → {@code registry.isCategory(tn, MAP)}</li>
  *   <li>{@code isList(tn)}         → {@code registry.isCategory(tn, LIST)}</li>

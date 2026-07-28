@@ -4,7 +4,7 @@ package org.openprovenance.prov.template.compiler.past.emitter.registry;
  * Describes what the emitter must do when this method's receiver is itself a
  * {@code .get(…)} call on an outer HashMap (the "chained get" pattern).
  *
- * <h3>Pattern</h3>
+ * <b>Pattern</b>
  * <pre>{@code
  * // PAST:  map.get(outerKey).insert(innerKey, value)
  * // Rust:  map.get_mut("outer").unwrap().insert(inner, value)

@@ -518,7 +518,13 @@ public class CompilerUtil {
         builder.COMMENT("\n\n");
         for (String key : theVars.keySet()) {
             final List<Descriptor> descriptors = theVars.get(key);
-            if (descriptors != null && (!descriptors.isEmpty())) {
+            if (descriptors == null) {
+                // no parameter is generated for this variable (see
+                // generateSpecializedParameters): a @param tag would not match any
+                // method parameter and javadoc reports it as an error
+                continue;
+            }
+            if (!descriptors.isEmpty()) {
                 Descriptor descriptor=descriptors.get(0);
                 String documentation0=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
                 String documentation = documentation0==null ? "-- no @documentation" : documentation0;

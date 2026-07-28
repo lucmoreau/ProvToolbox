@@ -271,7 +271,9 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${javadoc.plugin.version}</version>
 				<configuration>
-					<source>1.8</source>
+					<!-- aligned with maven-compiler-plugin release and the release
+					     profile's javadoc configuration -->
+					<source>15</source>
 				</configuration>
 			</plugin>
 

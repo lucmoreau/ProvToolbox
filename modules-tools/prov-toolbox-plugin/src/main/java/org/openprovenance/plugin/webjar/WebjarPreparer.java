@@ -51,22 +51,38 @@ public class WebjarPreparer extends AbstractMojo {
     private List<HtmlConfig> html = new ArrayList<>();
     @Parameter(property = "validate-catalogue.sql")
     private List<SqlConfig> sql = new ArrayList<>();
+    @Parameter(property = "validate-catalogue.icon")
+    private List<IconConfig> icon = new ArrayList<>();
 
     public void execute() throws MojoExecutionException {
         try {
-            //String projectVersion = project.getVersion(); // get the project version
+            String baseDir = project.getBasedir().getAbsolutePath();
+            String project_build_dir=project.getBuild().getDirectory();
+            String artifactId=project.getArtifactId();
 
-            //System.out.println("variable value: " + project.getProperties().getProperty("project.build.directory"));
 
-            templates.forEach(t -> applyDefaults(t,project.getProperties()));
-            bindings.forEach(t -> applyDefaults(t,project.getProperties()));
-            cbindings.forEach(t -> applyDefaults(t,project.getProperties()));
-            js.forEach(t -> applyDefaults(t,project.getProperties()));
-            ts.forEach(t -> applyDefaults(t,project.getProperties()));
-            schema.forEach(t -> applyDefaults(t,project.getProperties()));
-            css.forEach(t -> applyDefaults(t,project.getProperties()));
-            html.forEach(t -> applyDefaults(t,project.getProperties()));
-            sql.forEach(t -> applyDefaults(t,project.getProperties()));
+            Properties properties = project.getProperties();
+            Properties projectProperties = new Properties();
+            projectProperties.putAll(properties);
+
+            // add a few of the maven variables
+            projectProperties.put("project.version", project.getVersion());
+            projectProperties.put("project.basedir", baseDir);
+            projectProperties.put("project.build.directory", project_build_dir);
+            projectProperties.put("project.artifactId", artifactId);
+            // other maven variables can be added as needed
+
+
+            templates.forEach(t -> applyDefaults(t, projectProperties));
+            bindings.forEach(t -> applyDefaults(t, projectProperties));
+            cbindings.forEach(t -> applyDefaults(t, projectProperties));
+            js.forEach(t -> applyDefaults(t, projectProperties));
+            ts.forEach(t -> applyDefaults(t, projectProperties));
+            schema.forEach(t -> applyDefaults(t, projectProperties));
+            css.forEach(t -> applyDefaults(t, projectProperties));
+            html.forEach(t -> applyDefaults(t, projectProperties));
+            sql.forEach(t -> applyDefaults(t, projectProperties));
+            icon.forEach(t -> applyDefaults(t, projectProperties));
 
 
             if (warning) System.out.println("Templates: " + templates);
@@ -120,6 +136,12 @@ public class WebjarPreparer extends AbstractMojo {
                 String source = t.directory;
                 String target = t.targetPath;
                 List<String> includes=t.includes;
+                copyFromSourceToDestination(source, target, includes);
+            }
+            for (IconConfig t: icon) {
+                String source = t.directory;
+                String target = t.targetPath;
+                List<String> includes = t.includes;
                 copyFromSourceToDestination(source, target, includes);
             }
 

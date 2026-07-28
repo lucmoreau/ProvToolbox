@@ -3,10 +3,12 @@ package org.openprovenance.prov.template.compiler.past.emitter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -57,18 +59,30 @@ public class RustProjectGenerator {
      */
     private void generateCargoToml(String projectName, String version) throws IOException {
         StringBuilder cargo = new StringBuilder();
-        cargo.append("[package]\n");
-        cargo.append("name = \"").append(toSnakeCase(projectName)).append("\"\n");
-        cargo.append("version = \"").append(version).append("\"\n");
-        cargo.append("edition = \"2021\"\n");
-        cargo.append("\n");
-        cargo.append("[dependencies]\n");
-        cargo.append("serde = { version = \"1.0\", features = [\"derive\"] }\n");
-        cargo.append("serde_json = \"1.0\"\n");
-        cargo.append("\n");
-        cargo.append("[[bin]]\n");
-        cargo.append("name = \"").append(toSnakeCase(projectName)).append("\"\n");
-        cargo.append("path = \"src/main.rs\"\n");
+        cargo.append(
+                """
+        [package]
+        name = "transport_template_library"
+        version = "0.1.0"
+        edition = "2021"
+        
+        [dependencies]
+        # Serialisation — all generated beans derive Serialize/Deserialize
+        serde      = { version = "1.0", features = ["derive"] }
+        serde_json = "1.0"
+        
+        # Synchronous HTTP client used by ServiceInvoker / WebTemplateInvoker
+        ureq = { version = "2", features = ["json"] }
+        
+        [[bin]]
+        name = "transport_template_library"
+        path = "src/main.rs"
+        
+        [registries.crates-io]
+        protocol = "sparse"
+                        
+                        """
+        );
 
         Path cargoToml = projectRoot.resolve("Cargo.toml");
         Files.writeString(cargoToml, cargo.toString());
@@ -140,8 +154,34 @@ public class RustProjectGenerator {
         }
 
         Path libRs = srcDir.resolve("lib.rs");
-        Files.writeString(libRs, lib.toString());
-        System.out.println("Generated: " + libRs);
+        if (Files.exists(libRs)) {
+            // Read the existing file and collect every non-blank, non-comment line as a set
+            // so we can skip lines that are already present (idempotent re-generation).
+            Set<String> existingLines = new HashSet<>();
+            for (String line : Files.readAllLines(libRs)) {
+                String trimmed = line.trim();
+                if (!trimmed.isEmpty() && !trimmed.startsWith("//")) {
+                    existingLines.add(trimmed);
+                }
+            }
+            StringBuilder toAppend = new StringBuilder();
+            for (String line : lib.toString().split("\n", -1)) {
+                String trimmed = line.trim();
+                // Always keep blank lines and comments as-is; only deduplicate declarations.
+                if (trimmed.isEmpty() || trimmed.startsWith("//")) {
+                    continue; // skip header/comment/blank lines when appending
+                }
+                if (!existingLines.contains(trimmed)) {
+                    toAppend.append(line).append("\n");
+                }
+            }
+            if (!toAppend.isEmpty()) {
+                Files.writeString(libRs, toAppend.toString(), StandardOpenOption.APPEND);
+            }
+        } else {
+            Files.writeString(libRs, lib.toString());
+        }
+        //System.out.println("Generated: " + libRs);
     }
 
     /**
@@ -153,7 +193,7 @@ public class RustProjectGenerator {
                 generateMainRsForTemplates();
                 return;
             case "transport_template_library":
-                generateMainRsForTransport();
+            //    generateMainRsForTransport();
                 return; 
             default:
                 System.out.println("No custom main.rs generation logic for project: " + projectName + ", generating default main.rs");
@@ -161,7 +201,7 @@ public class RustProjectGenerator {
         }
     }
 
-    private void generateMainRsForTransport() throws IOException {
+    private void generateMainRsForTransportOLD() throws IOException {
 
         StringBuilder main = new StringBuilder();
         main.append("// Generated main file to test compiled PAST modules\n\n");
@@ -183,20 +223,19 @@ public class RustProjectGenerator {
             main.append("    println!();\n\n");
 
             main.append("    // Create an instance of ").append(typeName).append("\n");
-            main.append("    let instance = ").append(typeName).append("::new(\n");
-            main.append("        // Add default constructor arguments here\n");
-            main.append("        // TODO: Customize based on actual constructor signature\n");
-            main.append("""
-                            Some(1),
-                            Some(2),
-                            Some(3),
-                            Some(4),
-                            Some(5),
-                            Some(6),
-                            Some("some date".to_string())
-                    """);
+            main.append("    let mut instance = ").append(typeName).append("::new();\n");
 
-            main.append("    );\n\n");
+            main.append("""
+                instance.item1=Some(1);
+                instance.item0=Some(2);
+                instance.item= Some(3);
+                instance.receiver=     Some(4);
+                instance.giver=     Some(5);
+                instance.handingover=     Some(6);
+                instance.time=     Some("some date".to_string());
+                """);
+
+            main.append("\n\n");
 
             main.append("    println!(\"Created instance of ").append(typeName).append("\");\n");
             main.append("    println!(\"{:?}\", instance);\n");
@@ -221,9 +260,33 @@ public class RustProjectGenerator {
 
         Path mainRs = srcDir.resolve("main.rs");
         Files.writeString(mainRs, main.toString());
-        System.out.println("Generated: " + mainRs);
+        //System.out.println("Generated: " + mainRs);
     }
 
+    private void generateMainRsForTransport() throws IOException {
+        Path mainRs = srcDir.resolve("main.rs");
+
+        // Read the resource /rs/main.rs from the classpath and write it to src/main.rs
+        try (InputStream in = RustProjectGenerator.class.getResourceAsStream("/rs/main.rs")) {
+            if (in == null) {
+                String msg = "// Resource /rs/main.rs not found on classpath\n";
+                Files.writeString(mainRs, msg);
+                System.err.println("Resource /rs/main.rs not found in classpath; wrote placeholder main.rs");
+                return;
+            }
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append(System.lineSeparator());
+                }
+                Files.writeString(mainRs, sb.toString());
+            }
+        }
+
+        System.out.println("Generated: " + mainRs);
+    }
 
     private void generateMainRsForTemplates() throws IOException {
 
@@ -247,7 +310,7 @@ public class RustProjectGenerator {
             main.append("    println!();\n\n");
 
             main.append("    // Create an instance of ").append(typeName).append("\n");
-            main.append("    let instance = ").append(typeName).append("::new(\n");
+            main.append("    let instance = ").append(typeName).append("::new()\n");
             main.append("        // Add default constructor arguments here\n");
             main.append("        // TODO: Customize based on actual constructor signature\n");
             main.append("""
@@ -261,9 +324,9 @@ public class RustProjectGenerator {
                             Some("output".to_string()),
                             None,
                             Some(118)\
-                    """);
+                            """);
 
-            main.append("    );\n\n");
+            main.append("   \n\n");
 
             main.append("    println!(\"Created instance of ").append(typeName).append("\");\n");
             main.append("    println!(\"{:?}\", instance);\n");
@@ -288,7 +351,7 @@ public class RustProjectGenerator {
 
         Path mainRs = srcDir.resolve("main.rs");
         Files.writeString(mainRs, main.toString());
-        System.out.println("Generated: " + mainRs);
+       // System.out.println("Generated: " + mainRs);
     }
 
     /**
@@ -345,7 +408,7 @@ public class RustProjectGenerator {
 
         Path modFile = dir.resolve("mod.rs");
         Files.writeString(modFile, modRs.toString());
-        System.out.println("Generated: " + modFile);
+        //System.out.println("Generated: " + modFile);
     }
 
     /**

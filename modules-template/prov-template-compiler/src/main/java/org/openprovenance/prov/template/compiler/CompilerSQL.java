@@ -2,9 +2,6 @@ package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
@@ -13,7 +10,6 @@ import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.compiler.past.*;
-import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer;
 import org.openprovenance.prov.template.compiler.util.CompilerException;
 import org.openprovenance.prov.template.descriptors.*;
@@ -40,7 +36,6 @@ import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.FIELD_VARIABLE;
-import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.LOCAL_VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.STRING;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.STRING_BUILDER;
 import static org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer.getTheSqlType;
@@ -250,8 +245,8 @@ public class CompilerSQL {
         String myPackage=locations.getFilePackage(configs.name,fileName);
         String directory=locations.convertToDirectory(myPackage);
 
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName+ DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator,pythonGenerator);
     }
@@ -511,7 +506,8 @@ public class CompilerSQL {
                 "  key INT,\n" +
                 "  table_name TEXT,\n" +
                 "  principal TEXT,\n" +
-                "  hash jsonb\n" +
+                "  hash jsonb,\n" +
+                "  created_at timestamp with time zone NOT NULL DEFAULT NOW()\n" +
                 ");\n" +
                 "\n" +
                 "\n" +

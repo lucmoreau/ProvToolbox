@@ -9,6 +9,12 @@
         </requiredProperty>
         <requiredProperty key="templateLibraryVersion">
         </requiredProperty>
+        <requiredProperty key="templateExplanationsGroupId">
+        </requiredProperty>
+        <requiredProperty key="templateExplanationsArtifactId">
+        </requiredProperty>
+        <requiredProperty key="templateExplanationsVersion">
+        </requiredProperty>
         <requiredProperty key="templateSubLibrary">
         </requiredProperty>
         <requiredProperty key="templateLibraryServiceName"/>
@@ -17,8 +23,20 @@
         <requiredProperty key="jdbcURL"/>
         <requiredProperty key="serviceContext"/>
         <requiredProperty key="servicePort"/>
+        <requiredProperty key="dashboardTitle"/>
+        <requiredProperty key="templatesButtonLabel"/>
         <requiredProperty key="provtoolboxVersion">
             <defaultValue>${project.version}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="nlgXplanLibrary">
+          <!--  <defaultValue></defaultValue> -->
+        </requiredProperty>
+        <requiredProperty key="theIconSvgLibrary"/>
+        <requiredProperty key="nlgXplanSelection">
+           <!--  <defaultValue>[]</defaultValue> -->
+        </requiredProperty>
+        <requiredProperty key="nlgXplanStrategy">
+            <defaultValue>default</defaultValue>
         </requiredProperty>
     </requiredProperties>
 
@@ -90,6 +108,7 @@
                         <include>**/*.json</include>
                         <include>**/*.provn</include>
                         <include>**/*.jsonld</include>
+                        <include>**/*.csv</include>
                     </includes>
                 </fileSet>
                 <fileSet encoding="UTF-8">

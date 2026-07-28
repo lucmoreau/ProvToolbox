@@ -13,6 +13,8 @@ public interface ProvSerialiser {
      * @param document a {@link Document}
      * @param formatted  a boolean indicating whether the output should be pretty-printed
      */
-    void serialiseDocument (OutputStream out, Document document, boolean formatted);
+    void serialiseDocument (OutputStream out,
+                            Document document,
+                            boolean formatted);
 
 }

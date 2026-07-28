@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
@@ -132,10 +131,11 @@ public class CompilerBeanEnactor2CompositeWithPrincipal {
         }
 
         String myPackage = locations.getFilePackage(configs.name, fileName);
-        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION,
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs,
                 locations.convertToBackendDirectory(myPackage), stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, locations, stackTraceElement);
 
-        return new SpecificationFile(javaGenerator, pythonGenerator);
+        return new SpecificationFile(javaGenerator, pythonGenerator,  jsGenerator, emptyGenerator);
     }
 }

@@ -25,6 +25,8 @@ import java.util.*;
 public class RustCodeGenerator {
     private final Set<String> knownTraits = new HashSet<>();
     private final Set<String> statefulTraits = new HashSet<>();
+    /** Method names (from any trait) carrying the MutableFirstParam annotation — shared across all Rust emitter instances. */
+    private final Set<String> mutableFirstParamMethodNames = new HashSet<>();
     private final List<GenerationTask> tasks = new ArrayList<>();
 
     /**
@@ -55,7 +57,7 @@ public class RustCodeGenerator {
     public void registerClass(Class pastClass, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
         // Discover traits from this class
        // System.out.println("Registering class for Rust generation: " + pastClass.name + " known traits so far: " + knownTraits);
-        Rust rust = new Rust(knownTraits, statefulTraits);
+        Rust rust = new Rust(knownTraits, statefulTraits, mutableFirstParamMethodNames, null);
         rust.discoverTraits(pastClass);
       //  System.out.println("Found traits before processing: " + knownTraits);
        // System.out.println("Found stateful traits: " + statefulTraits);
@@ -78,7 +80,13 @@ public class RustCodeGenerator {
      */
     public boolean generateClass(Class pastClass, String packageName, String destinationDir,
                                  StackTraceElement stackTraceElement, TypeRegistry typeRegistry) throws IOException {
-        Rust rust = new Rust(knownTraits, statefulTraits, typeRegistry);
+        Rust rust = new Rust(knownTraits, statefulTraits, mutableFirstParamMethodNames, typeRegistry);
+        // Populate the class registry so emitTraitImplementations can look up cross-class
+        // superclass definitions (e.g. to emit impl InputOutputProcessor for BeanLocalEnactor3
+        // using method bodies from the abstract superclass BeanLocalEnactor2).
+        for (GenerationTask task : tasks) {
+            rust.discoverClass(task.pastClass);
+        }
         rust.toWritableObject(pastClass, pastClass.name, packageName, stackTraceElement)
                 .writeTo(new File(destinationDir));
         return true;
@@ -93,8 +101,14 @@ public class RustCodeGenerator {
      * @throws IOException if file writing fails
      */
     public boolean generateAll(TypeRegistry typeRegistry) throws IOException {
-        Rust rust = new Rust(knownTraits, statefulTraits, typeRegistry);
+        Rust rust = new Rust(knownTraits, statefulTraits, mutableFirstParamMethodNames, typeRegistry);
 
+        // First pass: register all classes so cross-class superclass lookups work.
+        for (GenerationTask task : tasks) {
+            rust.discoverClass(task.pastClass);
+        }
+
+        // Second pass: emit code for each class.
         for (GenerationTask task : tasks) {
             rust.toWritableObject(
                 task.pastClass,

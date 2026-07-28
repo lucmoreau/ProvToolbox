@@ -1,0 +1,24 @@
+// Crafted (no db table for examining; instrument type trs:Scanner is not in the dictionary, defaults to instrument): The box (item:7985) was examined on 3 October 2024 at 10:00 by instrument (ag:7990) on behalf of agent (ag:7965).
+document
+prefix trs <https://openprovenance.org/transport/ns/#>
+prefix phys <http://openprovenance.org/ns/phys#>
+prefix resp <http://openprovenance.org/ns/responsibility#>
+prefix provext <http://openprovenance.org/prov/extension#>
+prefix item <http://localhost:7075/book/provapi/live/item/>
+prefix ag <http://localhost:7075/book/provapi/live/agent/>
+prefix act <http://localhost:7075/book/provapi/live/activity/>
+prefix sched <http://localhost:7075/book/provapi/live/schedule/>
+entity(item:7984)
+entity(item:7985,[prov:type = 'trs:Box'])
+activity(act:6400,-,-,[prov:type = 'phys:Examining'])
+agent(ag:7965)
+agent(ag:7990,[prov:type = 'trs:Scanner'])
+used(act:6400,item:7984,-,[prov:role = 'provext:asEntity'])
+wasGeneratedBy(item:7985,act:6400,2024-10-03T10:00:00+01:00)
+wasDerivedFrom(item:7985, item:7984, act:6400, -, -,[prov:type = 'phys:Examining'])
+wasAssociatedWith(act:6400,ag:7990,-,[prov:role = 'resp:asInstrument'])
+wasAssociatedWith(act:6400,ag:7965,-,[prov:role = 'resp:asOperator'])
+wasAttributedTo(item:7985, ag:7990,[provext:activity = 'act:6400'])
+wasAttributedTo(item:7985, ag:7965,[provext:activity = 'act:6400'])
+actedOnBehalfOf(ag:7990,ag:7965,act:6400)
+endDocument

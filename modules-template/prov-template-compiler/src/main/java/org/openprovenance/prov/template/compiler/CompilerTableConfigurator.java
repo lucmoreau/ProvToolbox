@@ -12,7 +12,6 @@ import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import javax.lang.model.element.Modifier;
 import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
@@ -42,7 +41,7 @@ public class CompilerTableConfigurator {
     SpecificationFile generateTableConfigurator(TemplatesProjectConfiguration configs, boolean compositeOnly, Locations locations) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        String tableClassName = (compositeOnly) ? Constants.COMPOSITE_TABLE_CONFIGURATOR : Constants.TABLE_CONFIGURATOR;
+        String tableClassName = (compositeOnly) ? Constants.TABLE_CONFIGURATOR_COMPOSITE : Constants.TABLE_CONFIGURATOR;
 
         Class iface = pastFactory.INTERFACE(tableClassName)
                 .MODIFIERS(Modifier.PUBLIC)
@@ -64,8 +63,8 @@ public class CompilerTableConfigurator {
         }
 
         String myPackage = locations.getFilePackage(configs.name, tableClassName);
-        Supplier<Boolean> pythonGenerator = () -> generatePython(iface, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(iface, myPackage, configs, tableClassName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(iface, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(iface, myPackage, configs, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }

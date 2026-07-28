@@ -119,13 +119,13 @@ public class CompilerQueryInvoker {
         addSpecialTypesMethods(foundSpecialTypes, pastClass);
 
         String myPackage = locations.getFilePackage(configs.name, fileName);
-        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
 
-    private void addSpecialTypesMethods(Set<String> foundSpecialTypes, Class pastClass) {
+    public static void addSpecialTypesMethods(Set<String> foundSpecialTypes, Class pastClass) {
         // add special type converters as methods
         if (foundSpecialTypes.contains(TIMESTAMPTZ)) {
             Method ms = METHOD("convertToTimestamptz")
@@ -222,14 +222,29 @@ public class CompilerQueryInvoker {
                     .PARAMETER(STRING, "str")
                     .RETURNS(STRING)
                     .BODY(
-                            IF(BINARY_OP(VARIABLE("str"),"==",Constant.getNull())).THEN(METHOD_CALL("return", List.of(CONSTANT("''::json"))))
+                            IF(BINARY_OP(VARIABLE("str"),"==",Constant.getNull()))
+                                    .THEN(METHOD_CALL("return", List.of(CONSTANT("''::json"))))
+                                    .ELSE(RETURN(BINARY_OP(BINARY_OP(CONSTANT("'"), "+", VARIABLE("str")), "+", CONSTANT("'::json"))))
                     );
             pastClass.METHOD(ms5);
+        }
+
+        if (foundSpecialTypes.contains(FROM_JSON_TEXT)) {
+            Method ms6 = METHOD(CONVERT_FROM_JSON_OBJECT)
+                    .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                    .PARAMETER(OBJECT, "jsonObj")
+                    .RETURNS(STRING)
+                    .BODY(
+                            IF(BINARY_OP(VARIABLE("jsonObj"),"==",Constant.getNull()))
+                                    .THEN(METHOD_CALL("return", List.of(Constant.getNull())))
+                                    .ELSE(RETURN(METHOD_CALL(CastExpression.CAST(POSTGRES_PGOBJECT,VARIABLE("jsonObj")),"getValue", List.of())))
+                    );
+            pastClass.METHOD(ms6);
         }
     }
 
 
-    public String converterForSpecialType(String specialType) {
+    static public String converterForSpecialType(String specialType) {
         return switch (specialType) {
             case Constants.SQL_DATE -> "convertToDate";
             case Constants.TIMESTAMPTZ -> "convertToTimestamptz";

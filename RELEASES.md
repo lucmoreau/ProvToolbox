@@ -1,5 +1,56 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
+`2.2.5-SNAPSHOT`
+* 
+
+`2.2.4`
+
+* prov-template-compiler: StatementCompilerAction2: refined past code generator for Attribution and Association
+* prov-template-compiler: javascript emitter updates to run workflow in js
+* prov-template-compiler: rust emitter updates to run workflow in rust
+* prov-template-compiler: CompilerBeanMerger, and PAST translation to Rust
+* prov-template-compiler: util for workflows, CompilerBeanHistory and LocalEnactor
+* prov-template-compiler: remote js workflow
+* service-templates-core, prov-template-archetype: support for sql testing sql queries and plots for developers
+* service-templates-core: return of csv format (for csv and json inputs)
+* prov-template-compiler: csv for composite, common, input, output
+* prov-template-archetype: updated navigation form to select templates
+* prov-template-archetype, service-templates-core: support for selection of latest record of templates
+* prov-template-archetype: form: support for reception of csv, change the glyphicons
+* prov-template-archetype: form: drop down menu for base relations in Browser tab.
+* prov-template-commpiler: updated CompilerCommon (with neater generated code for composite beans)
+* prov-explanations: generating some explanations and doc for book templates
+* prov-explanations: optional join, to deal with missing relations
+* prov-template-compiler: compilation of Association without agent but with plan (T14)
+* prov-template-archetype: explanation toggle for explanations
+* prov-explanations: json schema for xplans (in archetype)
+* service-templates-core: TemplateService, query to find registered entities/agents to avoid re-registration
+* prov-template-compiler: fixed search on base relations
+* prov-template-compiler: making getTypedSuccessor the defaul, used in service
+* service-templates-core: update to recursive traversal to visualise template instantiation, to support derivation, responsibility, specialization, membership 
+* service-template-core/archetype: form.html, visualisation of icons in navigation and documentation
+* service-template-core: backward_traversal in TemplateQuery and Template2Dot updated to support "overlay templates" without outputs.
+* prov-template: MergeTask create directory for output if it does not exist
+* prov-template-compiler: @semantic.type annotation, allowing semantic type of template to be found easily
+* service-template-core/archetype: backward traversal version returning semantic type of activity, and update of viz 
+* prov-template-archetype: T19 update navigation display to visualise activity type icons
+* prov-explanations: extract json property
+* prov-query: new intersects operators on ref (in filter clause)
+* misc optimisations for template instantiations and qualified names
+* prov-template-archetype: forms.html: minimap for navigator tab
+* TemplateQuery: recursive traversal optimisation
+* prov-template-archetype: forms.html: T20 Streaming progress for navigation viz
+* QueryService: updated query interface to allow query parameters to be passed
+* TemplateQuery: forward traversal star
+* prov-template-compiler: unique constraint on variables in cbindings and fixed bug in query
+* TemplateService/TemplateQuery: ensuring unique constraints
+* prov-template-compiler: idempotent insert functions that have unicity constraints
+* prov-template-compiler: generation of methods and interfaces for roles (cause, effect, general) in beans
+* service-template-core: forward and backward traversal optimisations in TemplateQuery
+* prov-toolbox-plugin, prov-query: completing explanations for template library
+* prov-template-archetype: moved explanations out to the template library package.
+
+
 `2.2.3`
 * prov-template: update to instantiation
 * prov-template: variable-checker: pretty printing name

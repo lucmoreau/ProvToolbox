@@ -107,7 +107,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
 
     val result=defs.realise(spec)
 
-    println(spec)
+   // println(spec)
     println(result)
 
     result should be ("By you.")
@@ -118,13 +118,13 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
   "data.sources template" should "be redadable" in {
     val template= IO.phraseImport("src/test/resources/examples/data.sources1.json")
 
-    println(template)
+   // println(template)
 
     val spec =template.expand().asInstanceOf[PhraseElement]
 
     val result=defs.realise(spec)
 
-    println(spec)
+    //println(spec)
     println(result)
 
     result should be ("The data sources were the loan application provided by you, a credit reference provided by the creditAgency at 16:00 and a fico score provided by the credit agency at 18:00.")
@@ -134,7 +134,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
   "attribution sentence" should "be redadable" in {
     val template= IO.phraseImport("src/test/resources/examples/attribution.json")
 
-    println(template)
+   // println(template)
 
     val spec =template.expand().asInstanceOf[PhraseElement]
 
@@ -156,7 +156,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
 
     val result=defs.realise(spec)
 
-    println(spec)
+   // println(spec)
     println(result)
 
     result should be ("The loan application was automatically approved based on a combination of the borrower's loan application and third party data: the borrower's FICO score and the borrower's credit reference.")
@@ -172,7 +172,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
 
     val result=defs.realise(spec)
 
-    println(spec)
+   // println(spec)
     println(result)
 
     result should be ("The automated recommendation was reviewed by a credit officer (staff/112) whose decision was based on it application (applications/128350251), the automated recommendation (recommendation/128350251) itself, a credit reference (credit_history/128350251) and a fico score (fico_score/128350251).")
@@ -188,7 +188,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
 
     val result=defs.realise(spec)
 
-    println(spec)
+   // println(spec)
     println(result)
 
     result should be ("The loan application provided by the credit agency.")
@@ -204,7 +204,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
 
     val result=defs.realise(spec)
 
-    println(spec)
+   // println(spec)
     println(result)
 
     result should be ("The loan application which were provided by you.")
@@ -245,6 +245,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
 
 
     //phrase should be (phrase2)
+    System.out.println("result is: " + result)
 
 
     result should be ("Luc eats cabbage and lettuce.")
@@ -269,6 +270,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
     println("|"+result+"|")
 
     //phrase should be (phrase2)
+    System.out.println("result is: " + result)
 
 
     "|"+result+"|" should be ("|"+"Luc eats cabbage and lettuce. Alice eats apple and pear.\n\n"+"|")
@@ -286,6 +288,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
 
 
     //phrase should be (phrase2)
+    System.out.println("result is: " + result)
 
 
     result should be ("1 - cabbage\n2 - lettuce\n")
@@ -303,6 +306,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
 
 
     //phrase should be (phrase2)
+    System.out.println("result is: " + result)
 
 
     result should be ("<ol><li>cabbage</li><li>lettuce</li></ol>")
@@ -341,6 +345,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
 
     //phrase should be (phrase2)
 
+    System.out.println("result is: " + result)
 
     result should be ("Luc eats cabbage and lettuce.")
   }
@@ -363,8 +368,9 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
     val (phrase2, spec, result)=Tester.roundtrip(phrase, "target/coordination3.json", Formatter.markup)
 
 
-    println(spec.printTree("  "))
+    //println(spec.printTree("  "))
     //phrase should be (phrase2)
+    System.out.println("result is: " + result)
 
 
     result should be ("<span>Luc eats <ol><li>cabbage and</li> <li>lettuce</li> with appetite</ol></span>.")
@@ -387,7 +393,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
     val (phrase2, spec, result)=Tester.roundtrip(phrase, "target/coordination4.json", Formatter.markup)
 
 
-    println(spec.printTree("  "))
+    //println(spec.printTree("  "))
     //phrase should be (phrase2)
 
 
@@ -410,7 +416,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
     val phrase=IO.phraseImport("src/test/resources/examples/cra.json")
     val spec=phrase.expand().asInstanceOf[NLGElement]
 
-    println(spec.printTree(" "))
+    //println(spec.printTree(" "))
 
   }
 
@@ -438,9 +444,10 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
     val (phrase2, spec2, result)=Tester.roundtrip(phrase, "target/this.json", Formatter.markup)
 
 
+    System.out.println("result is: " + result)
     //phrase should be (phrase2)
 
-    println(spec.printTree(" "))
+   // println(spec.printTree(" "))
 
     result should be ("That is because of negative credit history information on your file.")
 
@@ -450,7 +457,7 @@ class BPhraseSpec extends AnyFlatSpec with Matchers {
     val phrase=IO.phraseImport("src/test/resources/examples/example-with-markup.json")
     val spec=phrase.expand().asInstanceOf[NLGElement]
 
-    println(spec.printTree(" "))
+  //  println(spec.printTree(" "))
 
     val real1=defs.theRealiser
     val real2=defs.withMarkupFormatter()

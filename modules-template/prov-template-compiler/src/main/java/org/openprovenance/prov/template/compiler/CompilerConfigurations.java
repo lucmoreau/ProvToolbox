@@ -119,8 +119,8 @@ public class CompilerConfigurations {
                         config.fullyQualifiedName,
                         method,
                         className,
-                        get(inBeanNameClass,(direction==BeanDirection.COMMON)? locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) : beanPackage),
-                        get(outBeanNameClass,(direction==BeanDirection.COMMON)? locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) : beanPackage)
+                        get(inBeanNameClass,(direction==BeanDirection.COMMON)? locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) : locations.getBeansPackage(config.fullyQualifiedName, direction)),
+                        get(outBeanNameClass,(direction==BeanDirection.COMMON)? locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) : locations.getBeansPackage(config.fullyQualifiedName, direction))
                 );
             } else {
                 method.BODY(RETURN(Constant.getNull()));
@@ -131,8 +131,8 @@ public class CompilerConfigurations {
 
 
         String thePackage=locations.getFilePackage(configs.name, theConfiguratorName);
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, thePackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, thePackage, configs, fileName, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, thePackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, thePackage, configs, directory, stackTraceElement, compilerUtil);
         return new SpecificationFile(javaGenerator,pythonGenerator);
     }
 
@@ -154,6 +154,9 @@ public class CompilerConfigurations {
     public SpecificationFile generateSqlConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_OBJARRAY_TO_STRING, this::generateMethodRecord2SqlConverter, "generateSqlConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
+    public SpecificationFile generateSemanticTypeConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName, STRING, this::generateSemanticType, "generateSemanticType", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
+    }
     public SpecificationFile generatePropertyOrderConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, STRING_ARRAY, this::generatePropertyOrder, "generatePropertyOrder", BeanDirection.COMMON, null, null, null, true, null, BeanDirection.COMMON, directory, fileName);
     }
@@ -166,6 +169,15 @@ public class CompilerConfigurations {
     public SpecificationFile generateCsvConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_OBJARRAY_TO_STRING, this::generateMethodRecord2CsvConverter, "generateCsvConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
+
+    public SpecificationFile generateCsvConfigurator2(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_BEAN_TO_STRING, this::generateMethodRecord2CsvConverter2, "generateCsvConfigurator", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
+    }
+
+    public SpecificationFile generateCsvConfiguratorOutput(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateConfigurator(configs, locations, theConfiguratorName, FUNCTION_BEAN_TO_STRING, this::generateMethodRecord2CsvConverterOutputs, "generateCsvConfigurator", BeanDirection.OUTPUTS, null, null, null, false, null, BeanDirection.OUTPUTS, directory, fileName);
+    }
+
 
     public SpecificationFile generateBuilderConfigurator(TemplatesProjectConfiguration configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName,  get(BUILDER_INTERFACE,CLIENT_PACKAGE), this::generateReturnSelf, "generateReturnSelf", BeanDirection.COMMON, null, null, null, false, null, BeanDirection.COMMON, directory, fileName);
@@ -200,9 +212,36 @@ public class CompilerConfigurations {
         mspec.BODY(RETURN(METHOD_CALL(VARIABLE(builderParameter), "processorConverter", List.of(METHOD_CALL(VARIABLE(builderParameter), "aArgs2CsVConverter")))));
     }
 
+
+    public void generateMethodRecord2CsvConverter2(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
+        mspec.BODY(RETURN(LAMBDA(PARAMETER("o", OBJECT))
+                .returns(STRING)
+                .BODY(RETURN(METHOD_CALL(CAST(beanType,VARIABLE("o")), PROCESS_METHOD_NAME, List.of(METHOD_CALL(VARIABLE(builderParameter), "aArgs2CsVConverter")))))));
+    }
+
+
+    public void generateMethodRecord2CsvConverterOutputs(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
+        mspec.BODY(RETURN(LAMBDA(PARAMETER("o", OBJECT))
+                .returns(STRING)
+                .BODY(RETURN(METHOD_CALL(CAST(_out,VARIABLE("o")),
+                        PROCESS_METHOD_NAME,
+                        List.of(METHOD_CALL(METHOD_CALL(VARIABLE(builderParameter), "getIntegrator", List.of()),
+                                PROCESSOR_OUTPUT_CONVERTER,
+                                List.of(METHOD_CALL(VARIABLE(builderParameter), A_RECORD_CSV_CONVERTER)))))))));
+    }
+
+
+
     public void generatePropertyOrder(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
         mspec.addStatement(RETURN(METHOD_CALL(VARIABLE(builderParameter), "getPropertyOrder", List.of()))); //"return $N.getPropertyOrder()", builderParameter);
     }
+
+    public void generateSemanticType(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
+        mspec.addStatement(RETURN(METHOD_CALL(VARIABLE(builderParameter), GET_SEMANTIC_TYPE, List.of()))); //"return $N.getPropertyOrder()", builderParameter);
+    }
+
+
+
 
     public void generateRelation0(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
         mspec.BODY((RETURN(METHOD_CALL(className,"__relations"))));

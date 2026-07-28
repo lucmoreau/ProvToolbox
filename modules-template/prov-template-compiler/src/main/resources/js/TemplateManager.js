@@ -340,6 +340,12 @@ class TemplateManager {
                 $(this.image_location).append($('<p/>')).append(cbindingsLnk);
             }
         }
+
+        // updateTemplateIcon should be defined in html form
+        if (typeof updateTemplateIcon === 'function') {
+            updateTemplateIcon(template);
+        }
+
     }
 
 

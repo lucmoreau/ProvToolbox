@@ -43,12 +43,12 @@ public class CompilerProcessor {
     PastFactory pastFactory=new PastFactory();
 
 
-    public SpecificationFile generateProcessor(TemplatesProjectConfiguration configs, Locations locations, String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator, String fileName, String consistsOf) {
+    public SpecificationFile generateProcessor(TemplatesProjectConfiguration configs, Locations locations, String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator, BeanDirection direction, String fileName, String consistsOf) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        String interfaceName = inIntegrator ? compilerUtil.integratorNameClass(templateName) : compilerUtil.processorNameClass(templateName);
 
-
+        String interfaceName = inIntegrator ? compilerUtil.processorNameClass(templateName, direction) : compilerUtil.processorNameClass(templateName);
+        
         Class pastClass = pastFactory.INTERFACE(interfaceName)
                 .MODIFIERS(Modifier.PUBLIC)
                 .TYPE_VARIABLES(T());
@@ -72,7 +72,11 @@ public class CompilerProcessor {
                     (!(descriptorUtils.hasInput(key,bindingsSchema) ||
                             descriptorUtils.hasOutput(key,bindingsSchema) )) ) {
                 throw new UnsupportedOperationException("In integrator, but no input or output value for " + key);
-            } else if (!inIntegrator || descriptorUtils.isInput(key,bindingsSchema)) {
+            }
+
+            if (direction==BeanDirection.COMMON
+                    || (direction==BeanDirection.INPUTS && descriptorUtils.isInput(key,bindingsSchema))
+                    || (direction==BeanDirection.OUTPUTS && descriptorUtils.isOutput(key,bindingsSchema))) {
 
                 mbuilder.PARAMETER(compilerUtil.getPastTypeForDeclaredType(theVar, key), key);
 
@@ -99,7 +103,11 @@ public class CompilerProcessor {
 
         if (consistsOf!=null) {
             String shortConsistsOf=locations.getShortNames().get(consistsOf);
-            final ParameterizedType listType= ParameterizedType.get(LIST, ClassName.get(compilerUtil.beanNameClass(shortConsistsOf, BeanDirection.COMMON),packge));
+
+            final ParameterizedType listType= (direction==BeanDirection.INPUTS)?
+                    ParameterizedType.get(LIST, ClassName.get(compilerUtil.beanNameClass(shortConsistsOf, direction, "_1"),packge)):  // Luc: Hard Coded
+                    ParameterizedType.get(LIST, ClassName.get(compilerUtil.beanNameClass(shortConsistsOf, direction),packge));
+
             mbuilder.PARAMETER(listType, Constants.ELEMENTS);
             mbuilder.COMMENT("@param $N: to do \n", Constants.ELEMENTS);
         }
@@ -110,10 +118,10 @@ public class CompilerProcessor {
 
         String directory=locations.convertToDirectory(packge);
 
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packge, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, fileName, directory, stackTraceElement, compilerUtil);
-        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packge, "target/generated-js", stackTraceElement);
-        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, packge, "target/generated-rust/src", stackTraceElement);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packge, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packge, locations, stackTraceElement);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, packge, locations, stackTraceElement);
         return new SpecificationFile(javaGenerator,pythonGenerator,jsGenerator,rustGenerator);
 
 
@@ -142,10 +150,10 @@ public class CompilerProcessor {
 
         String directory=locations.convertToDirectory(packge);
 
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packge, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, fileName, directory, stackTraceElement, compilerUtil);
-        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packge, "target/generated-js", stackTraceElement);
-        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, packge, "target/generated-rust/src", stackTraceElement);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, packge, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packge, locations, stackTraceElement);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, packge, locations, stackTraceElement);
         return new SpecificationFile(javaGenerator,pythonGenerator,jsGenerator,rustGenerator);
 
 

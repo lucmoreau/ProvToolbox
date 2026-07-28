@@ -17,6 +17,7 @@ import org.openprovenance.prov.model.interop.PrincipalManager;
 import org.openprovenance.prov.scala.iface.Explainer;
 import org.openprovenance.prov.scala.iface.XFactory;
 import org.openprovenance.prov.service.core.dispatch.EnactCsvRecords;
+import org.openprovenance.prov.service.core.progress.ProgressListener;
 import org.openprovenance.prov.service.core.readers.TemplatesVizConfig;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 
@@ -27,6 +28,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.model.interop.InteropMediaType.MEDIA_TEXT_CSV;
 import static org.openprovenance.prov.service.core.TemplateService.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
@@ -50,9 +52,11 @@ public class TemplateLogic {
     private final Map<String, Map<String, List<String>>> successors;
     private final PrincipalManager principalManager;
     private final Map<String, String> shortNames;
+    private final Map<String, String> semanticType;
+    private final String nlgXplanStrategy;
 
 
-    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om) {
+    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om, String nlgXplanStrategy) {
         this.pf = pf;
         this.templateDispatcher = templateDispatcher;
         this.documentBuilderDispatcher = templateDispatcher.getDocumentBuilderDispatcher();
@@ -64,56 +68,55 @@ public class TemplateLogic {
         this.successors = templateDispatcher.getSuccessors();
         this.principalManager = principalManager;
         this.shortNames=shortNames;
+        this.semanticType=templateDispatcher.getSemanticType();
+        this.nlgXplanStrategy = nlgXplanStrategy;
     }
 
-    public List<Object> processIncomingJson(List<Map<String, Object>> entries) {
+    public List<Object> processIncomingJson(List<Map<String, Object>> entries, String acceptHeader) {
         //logger.info("Processing incoming JSON " + entries);
-
-        // assumption: all entries use the same template
         final String isA=(String) entries.get(0).get(IS_A);
         List<Object> recordsResult=new LinkedList<>();
         Map<String, String[]> properties= templateDispatcher.getPropertyOrder();
         Map<String, Function<Object[],?>> enactorConverters= templateDispatcher.getEnactorConverter();
         Map<String, Function<List<Object[]>,?>> compositeEnactorConverters= templateDispatcher.getCompositeEnactorConverter();
-
-
+        Map<String, Function<Object,String>> csvConverter4Outputs= templateDispatcher.getCsvConverter4Outputs();
+        Map<String, Function<Object,String>> csvConverter4OutputsComposite= templateDispatcher.getCsvConverter4OutputsComposite();
 
         String[] props=properties.get(isA);
         Function<Object[],?> enactor=enactorConverters.get(isA);
-
+        Function<Object,String> csv_processor_1=csvConverter4Outputs.get(isA);
+        Function<Object,String> csv_processor_Composite=csvConverter4OutputsComposite.get(isA);
 
         if (enactor!=null) {
-            //debugDisplay("entries ", entries) ;
             for (Map<String, Object> entry : entries) {
                 Object[] array = convertToArray(entry, props);
-                //debugDisplay("array ", array) ;
-                recordsResult.add(enactor.apply(array));
+                if (acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
+                    recordsResult.add(enactor.apply(array));
+                } else {
+                    // csv here
+                    recordsResult.add(csv_processor_1.apply(enactor.apply(array)));
+                }
             }
         } else {
             for (Map<String, Object> composite : entries) {
                 List<Object[]> objects = new LinkedList<>();
                 Object[] array = convertToArray(composite, props);
                 objects.add(array);
-
                 for (Map<String, Object> composee: (List<Map<String, Object>>) composite.get(ELEMENTS)) {
-
                     String is2A=(String) composee.get(IS_A);
                     String[] props2=properties.get(is2A);
                     Object[] array2 = convertToArray(composee, props2);
                     objects.add(array2);
                 }
-
-
-                //debugDisplay("founds objects " , objects);
-
-
-                //System.out.println("need composite converter for " + isA);
-                //System.out.println("need composite converter for " + compositeEnactorConverters);
                 Function<List<Object[]>,?> compositeEnactor = compositeEnactorConverters.get(isA);
-                //System.out.println("found composite converter for " + compositeEnactor);
-                Object res=compositeEnactor.apply(objects);
-                //debugDisplay("found result " , res);
-                recordsResult.add(res);
+                if (acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
+                    recordsResult.add(compositeEnactor.apply(objects));
+                } else {
+                    // csv here
+                    String csvLines = csv_processor_Composite.apply(compositeEnactor.apply(objects));
+                    logger.info(csvLines);
+                    Collections.addAll(recordsResult, csvLines.split("\\\\n"));
+                }
             }
         }
         return recordsResult;
@@ -137,16 +140,23 @@ public class TemplateLogic {
         }
     }
 
-    public List<Object> processIncomingCsv(CSVParser csv) {
+    public List<Object> processIncomingCsv(CSVParser csv, String acceptHeader) {
         Collection<CSVRecord> collection=csv.getRecords();
         Map<String, Function<Object[],?>> enactors = templateDispatcher.getEnactorConverter();
         Map<String, Function<Object[],Object>> enactors2= enactors.entrySet().stream().filter(e->e.getValue()!=null).collect(Collectors.toMap(Map.Entry::getKey, e -> (Function<Object[],Object>) e.getValue()));
 
         Map<String, Function<List<Object[]>,?>> compositeEnactors= templateDispatcher.getCompositeEnactorConverter();
-        Map<String, Function<List<Object[]>,Object>> compositeEnactors2= compositeEnactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (Function<List<Object[]>,Object>) e.getValue()));
-        List<Object> newRecords=enactCsvRecords.process(collection, enactors2, compositeEnactors2);
+        Map<String, Function<Object,String>> csvConverter4Outputs= templateDispatcher.getCsvConverter4Outputs();
+        Map<String, Function<Object,String>> csvConverter4OutputsComposite= templateDispatcher.getCsvConverter4OutputsComposite();
 
-        return newRecords;
+        Map<String, Function<List<Object[]>,Object>> compositeEnactors2= compositeEnactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (Function<List<Object[]>,Object>) e.getValue()));
+        return switch (acceptHeader) {
+            case MEDIA_TEXT_CSV ->
+                    enactCsvRecords.process(collection, enactors2, compositeEnactors2, csvConverter4Outputs, csvConverter4OutputsComposite);
+            case APPLICATION_VND_KCL_PROV_TEMPLATE_JSON ->
+                    enactCsvRecords.process(collection, enactors2, compositeEnactors2);
+            default -> throw new IllegalStateException("Unsupported accept header " + acceptHeader);
+        };
     }
 
     @NotNull
@@ -162,7 +172,7 @@ public class TemplateLogic {
     }
 
 
-    public void generateViz(TemplatesVizConfig config, String principal, OutputStream out) {
+    public void generateViz(TemplatesVizConfig config, String principal, String iconsFolderForGraphviz, OutputStream out, ProgressListener listener) {
 
         typeAssignment.entrySet().removeIf(entry -> entry.getValue() ==null || entry.getValue().isEmpty());
 
@@ -186,7 +196,7 @@ public class TemplateLogic {
                                                                         .get(var))))));
 
         //logger.info("baseTypes " + baseTypes);
-        templateQuery.generateViz(config.id, config.template, config.property, config.style, baseTypes, principal, out);
+        templateQuery.generateViz(config.id, config.template, config.property, config.style, config.parameters, baseTypes, iconsFolderForGraphviz, semanticType, principal, out, listener);
     }
 
 
@@ -217,25 +227,25 @@ public class TemplateLogic {
     }
 
     public Object submitPostProcessing(int id, String templateFullyQualifiedName) {
-        logger.info("postProcessing " + id + " " + templateFullyQualifiedName);
+        logger.debug("postProcessing " + id + " " + templateFullyQualifiedName);
 
         String principal=principalManager.getPrincipal();
         List<Object[]> records = templateQuery.query(templateFullyQualifiedName, id, false, principal);
 
         logger.debug("PROV_API " + provAPI);
-        logger.info("records " + records.size() + " " + records.stream().map(Arrays::toString).collect(Collectors.joining(",")));
+        logger.debug("records " + records.size() + " " + records.stream().map(Arrays::toString).collect(Collectors.joining(",")));
         if (!records.isEmpty()) {
             if (records.size()>1) {
                 Map<String, String> hash = templateQuery.computeHash(templateFullyQualifiedName, id, records);
                 templateQuery.updateHash(shortNames.get(templateFullyQualifiedName), id, hash, principal);
-                logger.info("update hash for " + id + " " + templateFullyQualifiedName + ": " + hash);
+                logger.debug("update hash for " + id + " " + templateFullyQualifiedName + ": " + hash);
                 headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH, getContentProvHash(hash));
             } else {
                 Object[] record = records.get(0);
                 Map<String, String> hash = templateQuery.computeHash(templateFullyQualifiedName, id, record);
                 templateQuery.getRelationMapping().mapGraphToRelations(templateFullyQualifiedName,id,record);
                 templateQuery.updateHash(shortNames.get(templateFullyQualifiedName), id, hash, principal);
-                logger.info("update hash for " + id + " " + templateFullyQualifiedName + ": " + hash);
+                logger.debug("update hash for " + id + " " + templateFullyQualifiedName + ": " + hash);
                 headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH,getContentProvHash(hash));
             }
             headerInfo.get().put(HTTP_HEADER_LOCATION,provAPI + "/template/" + templateFullyQualifiedName + "/" + id);
@@ -254,13 +264,16 @@ public class TemplateLogic {
     final Explainer explainer=factory.makeExplainer();
     final org.openprovenance.prov.scala.iface.Narrator narrator=factory.makeNarrator();
 
-    public Map<String, String> generateExplanation(String template, Integer id, String headerAcceptExplanation, Document doc) {
+    public Map<String, String> generateExplanation(String templateFullyQualifiedName, Integer id, String headerAcceptExplanation, Document doc, int format_option) {
+
+        String template=shortNames.get(templateFullyQualifiedName).replace("_","-");
 
         org.openprovenance.prov.scala.immutable.Document sdoc = (org.openprovenance.prov.scala.immutable.Document) new BeanTraversal(pFactoryS, pFactoryS).doAction(doc);
 
-        XplainerConfig config = makeXplainerConfig();
-        //scala.collection.immutable.Map<String, Narrative> foo=explainer.explain(sdoc, config);
-        //System.out.println("foo " + foo);
+        XplainerConfig config = (Objects.equals(nlgXplanStrategy, "template-based"))? makeXplainerConfig(template,format_option): makeXplainerConfig();
+
+        logger.info("generateExplanation " + id + " " + template + " " + config + " " +  headerAcceptExplanation + " " + nlgXplanStrategy);
+
         scala.collection.immutable.Map<String, scala.collection.immutable.List<String>> result = narrator.getTextOnly(explainer.explain(sdoc, config));
 
         // convert result to java map
@@ -274,7 +287,11 @@ public class TemplateLogic {
     }
 
     public @NonNull XplainerConfig makeXplainerConfig() {
-        System.out.println("calling default XplainerConfig");
+        System.out.println("calling default XplainerConfig (1)");
+        return new XplainerConfig();
+    }
+    public @NonNull XplainerConfig makeXplainerConfig(String template,  int format_option) {
+        System.out.println("calling default XplainerConfig (2)");
         return new XplainerConfig();
     }
 }

@@ -20,13 +20,13 @@ display.config:
 
 install.sec:
 	@${symbol_dollar}(MAKE) display.config
-	export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=$(SERVICE_SECURITY_CONFIG);  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,security clean install
+	export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=$(SERVICE_SECURITY_CONFIG);  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,security clean install
 
 jetty:
-	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)/${symbol_dollar}(SERVICE_CONTEXT); export PROV_API=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)/${symbol_dollar}(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${symbol_dollar}{PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=${symbol_dollar}(SERVICE_SECURITY_CONFIG); export XPLAIN_LEXICON=${symbol_dollar}{XPLAIN_LEXICON}; export TEMPLATE_CONFIG=${symbol_dollar}(TEMPLATE_CONFIG); mvn -Pjetty,security jetty:run-war
+	source ~/.bashrc; export PROV_HOST=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT); export PROV_API=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${symbol_dollar}{PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=${symbol_dollar}(SERVICE_SECURITY_CONFIG); export XPLAIN_LEXICON=${symbol_dollar}{XPLAIN_LEXICON}; export TEMPLATE_CONFIG=${symbol_dollar}(TEMPLATE_CONFIG); mvn -Pjetty,security jetty:run-war
 
 jetty.nosec:
-	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; unset TPL_SECURITY_CONFIG;  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,nosecurity jetty:run-war
+	 source ~/.bashrc; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; unset TPL_SECURITY_CONFIG;  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,nosecurity jetty:run-war
 
 
 jetty.post:
@@ -49,9 +49,9 @@ test.luc:
 	sh target/shell1.sh
 
 test2:
-	bin/get-with-keycloak-standard-flow.sh $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/forms.html -o target/payload.html -D target/header.txt
+	bin/get-with-keycloak-standard-flow.sh $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/forms.html -o target/payload.html -D target/header.txt
 	@echo "Now, using cookie only, to access resources"
-	curl -s -o target/payload.html -D - --cookie-jar target/cookie.jar.txt --cookie target/cookie.jar.txt $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/forms.html
+	curl -s -o target/payload.html -D - --cookie-jar target/cookie.jar.txt --cookie target/cookie.jar.txt $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/forms.html
 
 
 test.bob:
@@ -76,12 +76,12 @@ test.ptl1:
 
 test.template:
 	bin/keycloak-get-token.sh
-	curl -i -X GET  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`"   $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/provapi/template/plead_transforming/480.jsonld
+	curl -i -X GET  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`"   $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/template/plead_transforming/480.jsonld
 
 
 get.template:
 	@export VERBOSE=false;bin/keycloak-get-token.sh
-	@curl -s -X GET  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`"   $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/provapi/template/${TEMPLATE}/${ID}.${EXTENSION}
+	@curl -s -X GET  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`"   $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/template/${TEMPLATE}/${ID}.${EXTENSION}
 
 hash.template:
 	@$(MAKE) get.template TEMPLATE=plead_transforming ID=$(ID) EXTENSION=csv | grep $(TEMPLATE) | sed 's/$(TEMPLATE)/$(ID),$(TEMPLATE)/g' > target/977.csv
@@ -104,12 +104,47 @@ post.template:
 					-d @src/test/resources/json/bindings.json \
 					-H "Content-type: application/vnd.kcl.prov-template+json" \
 					-H "Accept: application/vnd.kcl.prov-template+json" \
-					$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/$(SERVICE_CONTEXT)/provapi/statements
+					$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/statements
 
 post.template2:
 	bin/keycloak-get-token.sh
 	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" -H "Accept-PROV-Hash: SHA3-512" -d @src/test/resources/json/bindings2.json -H "Content-type: application/vnd.kcl.prov-template+json" -H "Accept: application/vnd.kcl.prov-template+json" $(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)/ptl/provapi/statements
 
+
+
+JSON_BEAN='[{"isA": "org.openprovenance.book.fs.FileInit",  "type": "xxx" }]'
+CSV_LINE="org.openprovenance.book.fs.FileInit,,,,,xxx,"
+
+## note that curl ignores the newlines in the CSV, so we have to use --data-binary because -d does not split on newlines
+post.template.csv:
+	sh bin/keycloak-get-token.sh
+	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" \
+					--data-binary $(CSV_LINE) \
+					-H "Accept: text/csv" \
+					-H "Content-type: text/csv" \
+					$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/statements
+
+post.template.json:
+	sh bin/keycloak-get-token.sh
+	curl -i -X POST -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" \
+					--data-binary $(JSON_BEAN) \
+					-H "Content-type: application/vnd.kcl.prov-template+json" \
+					-H "Accept: text/csv" \
+					$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi/statements
+
+JSON_COMPOSITE_BEAN='[{  "isA": "org.openprovenance.book.fs.FileTransformingComposite",  "count": 1,  "type": "org.openprovenance.book.fs.FileTransforming",  "__elements": [    {      "isA": "org.openprovenance.book.fs.FileTransforming",      "transformed_file": -2,      "filename": "ddd",      "file": 2,      "transforming": -4    }  ]}]'
+
+CSV_COMPOSITE_BEAN='org.openprovenance.book.fs.FileTransformingComposite,,1,org.openprovenance.book.fs.FileTransforming \n  org.openprovenance.book.fs.FileTransforming,-2,ddd,2,,,-4,,,,'
+
+post.template.csv1:
+	$(MAKE) post.template.csv CSV_LINE=@src/test/resources/enact/payloadComposite1.csv
+post.template.csv2:
+	$(MAKE) post.template.csv CSV_LINE=@src/test/resources/enact/payloadComposite2.csv
+
+post.template.json1:
+	$(MAKE) post.template.json JSON_BEAN=@src/test/resources/enact/payloadComposite1.json
+post.template.json2:
+	$(MAKE) post.template.json JSON_BEAN=@src/test/resources/enact/payloadComposite2.json
 
 
 create.archetype:

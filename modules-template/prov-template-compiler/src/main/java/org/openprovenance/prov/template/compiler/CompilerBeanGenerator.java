@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Triple;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
@@ -8,6 +7,8 @@ import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.annotations.JsonIgnoreAnnotation;
+import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
@@ -18,7 +19,6 @@ import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
 
-import java.lang.Class;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -80,6 +80,7 @@ public class CompilerBeanGenerator {
             templateFullyQualifiedName=templateName;
         }
 
+        addDeclaredInterfaces(pastClass, configs, templateFullyQualifiedName, beanDirection);
 
         pastClass.FIELDS(FIELD(Constants.IS_A, STRING)
                 .COMMENT("The template name")
@@ -98,13 +99,24 @@ public class CompilerBeanGenerator {
 
 
 
+        Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> rolesInBean=new LinkedHashMap<>();
+
+        // Project-level member interfaces (configs.interfaces: FQN → variable names) declared
+        // by this template for this bean direction; their variables get name-based accessors.
+        Map<String, InterfaceDeclaration> memberInterfaces=memberInterfacesForBean(configs, templateFullyQualifiedName, beanDirection);
+        Set<String> memberVars=memberInterfaces.values().stream()
+                .filter(d -> d.variables!=null)
+                .flatMap(d -> d.variables.stream())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
             if (beanDirection==BeanDirection.COMMON
                     || (beanKind==BeanKind.COMPOSITE)
                     || (beanDirection==BeanDirection.OUTPUTS && descriptorUtils.isOutput(key, bindingsSchema))
                     || (beanDirection==BeanDirection.INPUTS && (descriptorUtils.isInput(key, bindingsSchema) || sharing!=null && sharing.contains(key)))){
 
-                Field field=FIELD(key, compilerUtil.getPastTypeForDeclaredType(theVar, key))
+                org.openprovenance.prov.template.compiler.past.type.TypeName fieldType=compilerUtil.getPastTypeForDeclaredType(theVar, key);
+                Field field=FIELD(key, fieldType)
                         .MODIFIERS(Modifier.PUBLIC);
 
                 Descriptor descriptor=theVar.get(key).get(0);
@@ -132,16 +144,31 @@ public class CompilerBeanGenerator {
 
                 pastClass.FIELDS(field);
 
+                String role=descriptorUtils.getFromDescriptor(descriptor, (ad) -> null, NameDescriptor::getRole);
+                if (role!=null) {
+                    generateRoleAccessors(pastClass, key, role, fieldType);
+                    rolesInBean.put(role, fieldType);
+                }
+
+                if (memberVars.contains(key)) {
+                    generateNamedAccessors(pastClass, key, fieldType);
+                }
+
             }
+        }
+
+        if (beanKind==SIMPLE && extension==null) {
+            generateRoleInterfaces(configs, locations, templateFullyQualifiedName, beanDirection, rolesInBean, stackTraceElement);
+            generateMemberInterfaces(configs, locations, templateFullyQualifiedName, beanDirection, memberInterfaces, theVar, rolesInBean, stackTraceElement);
         }
 
 
 
-        String beanPackge=locations.getBeansPackage(templateFullyQualifiedName, beanDirection);
-        String beanProcessorPackage=locations.getBeansPackage(templateFullyQualifiedName, BeanDirection.COMMON);
+        String beanPackge=          locations.getBeansPackage(templateFullyQualifiedName, beanDirection);
+        String beanProcessorPackage=locations.getBeansPackage(templateFullyQualifiedName, beanDirection);
 
         if (beanKind== SIMPLE ) {
-            Method method = generateInvokeProcessor(templateName, beanProcessorPackage, bindingsSchema, null, beanDirection);
+            Method method = generateInvokeProcessor(templateName, beanProcessorPackage, bindingsSchema, null, beanDirection, beanKind);
             pastClass.METHOD(method);
 
         } else if (beanKind==BeanKind.COMPOSITE) {
@@ -151,63 +178,24 @@ public class CompilerBeanGenerator {
             if (sharing!=null) {
                 variant = newVariant(consistOf, sharing, configs);
             }
-            if (beanDirection==BeanDirection.COMMON) {
-                Method method = generateInvokeProcessor(templateName, beanProcessorPackage, bindingsSchema, ELEMENTS, beanDirection);
-                pastClass.METHOD(method);
-            }
+
+            Method method = generateInvokeProcessor(templateName, beanProcessorPackage, bindingsSchema, ELEMENTS, beanDirection, beanKind);
+            pastClass.METHOD(method);
+
             generateCompositeList(consistOf, beanPackge, locations, pastClass, beanDirection, variant, sharing);
             generateCompositeListExtender(consistOf, beanPackge, locations, pastClass, beanDirection, variant, sharing);
         }
 
 
         String directory = locations.convertToDirectory(beanPackge);
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, beanPackge, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, beanPackge, configs, fileName, directory, stackTraceElement, compilerUtil);
-        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, beanPackge, "target/generated-js", stackTraceElement);
-        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, beanPackge, "target/generated-rust/src", stackTraceElement);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, beanPackge, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, beanPackge, configs, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, beanPackge, locations, stackTraceElement);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, beanPackge, locations, stackTraceElement);
         return new SpecificationFile(javaGenerator,pythonGenerator,jsGenerator,rustGenerator);
     }
 
-    /*
-    static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, String templateName, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
-        return newSpecificationFiles(locations, spec, myfile, directory, fileName, packge, selectedExports, compilerUtil.pySpecWithComment(templateName, stackTraceElement));
-    }
 
-
-    static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, TemplatesProjectConfiguration configs, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
-        return newSpecificationFiles(locations, spec, myfile, directory, fileName, packge, selectedExports, compilerUtil.pySpecWithComment(configs, stackTraceElement));
-    }
-
-     */
-
-    /*
-    private static SpecificationFile newSpecificationFiles(Locations locations, TypeSpec spec, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports, String prelude) {
-        final PoetParser poetParser = new PoetParser();
-        poetParser.emitPrelude(prelude);
-        int importPoint=poetParser.getSb().length();
-        org.openprovenance.prov.template.compiler.past0.Class clazz = poetParser.parse(spec, selectedExports);
-        Python emitter = new Python(poetParser.getSb(), 0);
-        clazz.emit(emitter);
-        // a bit of a trick: defined delayed fields outside the class, after the class definition, this allows the initialiser to refer to class methods.
-        clazz.emitClassInitialiser(emitter,0);
-
-        poetParser.getSb().insert(importPoint,"#end imports\n\n");
-        for (String imprt: new HashSet<>(emitter.getImports()).stream().sorted().collect(Collectors.toList())) {
-            poetParser.getSb().insert(importPoint,"\n");
-            poetParser.getSb().insert(importPoint,imprt);
-        }
-        poetParser.getSb().insert(importPoint,"\n\n#start imports\n");
-
-
-
-        String pyDirectory = locations.python_dir + "/" + packge.replace('.', '/') + "/";
-        String pyFilename = myfile.typeSpec.name + ".py";
-        return new SpecificationFile(myfile, directory, fileName, packge,
-                pyDirectory, pyFilename, () -> poetParser.getSb().toString());
-    }
-
-
-     */
     public Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable=new HashMap<>();
 
     String newVariant(String templateFullyQualifiedName, List<String> sharing, TemplatesProjectConfiguration configs) {
@@ -237,11 +225,346 @@ public class CompilerBeanGenerator {
         return sharing.stream().sorted().collect(Collectors.joining("_"));
     }
 
-    /*
-    static final ParameterizedTypeName classOfUnknown = ParameterizedTypeName.get(ClassName.get(Class.class), TypeVariableName.get("?"));
 
-
+    /**
+     * Adds the interfaces declared in the template's {@link ImplementInterfaces} configuration
+     * to the generated bean, selected by bean direction: {@code plain} for the full bean
+     * (COMMON), {@code input} for {@code *Inputs}, {@code output} for {@code *Outputs}.
+     *
+     * <p>Interface names are fully qualified; the generator adds the {@code implements}
+     * clause only — javac verifies at build time that the generated accessors satisfy the
+     * interface's abstract methods.</p>
      */
+    private void addDeclaredInterfaces(org.openprovenance.prov.template.compiler.past.Class pastClass,
+                                       TemplatesProjectConfiguration configs,
+                                       String templateFullyQualifiedName,
+                                       BeanDirection beanDirection) {
+        ImplementInterfaces interfaces=declaredInterfaces(configs, templateFullyQualifiedName);
+        if (interfaces==null) return;
+        List<String> names=interfacesForDirection(interfaces, beanDirection);
+        if (names==null) return;
+        for (String fqn: names) {
+            int dot=fqn.lastIndexOf('.');
+            if (dot<0) {
+                throw new IllegalStateException("Interface name '" + fqn + "' declared for template "
+                        + templateFullyQualifiedName + " must be fully qualified");
+            }
+            pastClass.INTERFACES(org.openprovenance.prov.template.compiler.past.type.ClassName
+                    .get(fqn.substring(dot+1), fqn.substring(0, dot)));
+        }
+        Method isaGetter=METHOD(Constants.IS_A)
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(STRING)
+                .COMMENT("Returns the template name for this bean.")
+                .BODY(RETURN(VARIABLE(Constants.IS_A, Variable.VariableKind.FIELD_VARIABLE)));
+        pastClass.METHOD(isaGetter);
+    }
+
+    /** Looks up the {@link ImplementInterfaces} declared for a template, or null. */
+    private ImplementInterfaces declaredInterfaces(TemplatesProjectConfiguration configs, String templateFullyQualifiedName) {
+        if (configs==null || configs.templates==null) return null;
+        return Arrays.stream(configs.templates)
+                .filter(c -> c instanceof SimpleTemplateCompilerConfig)
+                .map(c -> (SimpleTemplateCompilerConfig) c)
+                .filter(c -> Objects.equals(c.fullyQualifiedName, templateFullyQualifiedName))
+                .findFirst()
+                .map(c -> c.interfaces)
+                .orElse(null);
+    }
+
+    /** Selects the interface names for a bean direction: plain=COMMON, input=INPUTS, output=OUTPUTS. */
+    private List<String> interfacesForDirection(ImplementInterfaces interfaces, BeanDirection beanDirection) {
+        return switch (beanDirection) {
+            case COMMON  -> interfaces.plain;
+            case INPUTS  -> interfaces.input;
+            case OUTPUTS -> interfaces.output;
+        };
+    }
+
+    /**
+     * Selects, for this bean, the project-level member interfaces it declares:
+     * the intersection of the template's {@link ImplementInterfaces} slot for the
+     * direction with the project-wide {@code configs.interfaces} map
+     * (FQN → member variable names).
+     */
+    private Map<String, InterfaceDeclaration> memberInterfacesForBean(TemplatesProjectConfiguration configs,
+                                                                      String templateFullyQualifiedName,
+                                                                      BeanDirection beanDirection) {
+        if (configs==null || configs.interfaces==null) return Map.of();
+        ImplementInterfaces interfaces=declaredInterfaces(configs, templateFullyQualifiedName);
+        if (interfaces==null) return Map.of();
+        List<String> names=interfacesForDirection(interfaces, beanDirection);
+        if (names==null) return Map.of();
+        Map<String, InterfaceDeclaration> result=new LinkedHashMap<>();
+        for (String fqn: names) {
+            InterfaceDeclaration declaration=configs.interfaces.get(fqn);
+            if (declaration!=null) result.put(fqn, declaration);
+        }
+        return result;
+    }
+
+    /**
+     * Generates a name-based accessor pair ({@code getTime()} / {@code setTime(v)}) for a
+     * member variable of a project-level interface (T-164 tranche 2, the metadata layer).
+     *
+     * <p>Deliberately NOT {@code @JsonIgnore}-annotated: unlike the role accessors (whose
+     * names differ from their backing fields), {@code getTime} maps to the SAME logical
+     * Jackson property as the public {@code time} field — annotating it would suppress the
+     * field from the wire format. Same-name accessors leave serialization untouched.</p>
+     */
+    private void generateNamedAccessors(org.openprovenance.prov.template.compiler.past.Class pastClass,
+                                        String key,
+                                        org.openprovenance.prov.template.compiler.past.type.TypeName fieldType) {
+        String suffix=compilerUtil.capitalize(key);
+
+        Method getter=METHOD("get" + suffix)
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(fieldType)
+                .COMMENT("Accessor for variable $N.", key)
+                .BODY(RETURN(VARIABLE(key, Variable.VariableKind.FIELD_VARIABLE)));
+        compilerUtil.debugFileLocation(getter);
+        pastClass.METHOD(getter);
+
+        Method setter=METHOD("set" + suffix)
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(VOID)
+                .PARAMETER(fieldType, "value")
+                .COMMENT("Mutator for variable $N.", key)
+                .BODY(ASSIGNMENT(VARIABLE(key, Variable.VariableKind.FIELD_VARIABLE), VARIABLE("value")));
+        compilerUtil.debugFileLocation(setter);
+        pastClass.METHOD(setter);
+    }
+
+    /** Registry of already-generated member interfaces: FQN → (variable → accessor type). */
+    private final Map<String, Map<String,String>> generatedMemberInterfaces=new HashMap<>();
+
+    /**
+     * Generates the project-level interfaces ({@code configs.interfaces}) declared by this
+     * template: {@code isA()} plus one getter/setter pair per declared member — name-based
+     * for {@code variables}, role-based for {@code roles} — with types resolved from the
+     * first declaring template. The contract is DECLARATION-owned: templates conform to the
+     * declared member set (javac-verified), rather than the contract being inferred from a
+     * bean's whole role set. An interface declared by several templates is generated once;
+     * a declarer whose member types disagree with the first is a build error.
+     */
+    private void generateMemberInterfaces(TemplatesProjectConfiguration configs,
+                                          Locations locations,
+                                          String templateFullyQualifiedName,
+                                          BeanDirection beanDirection,
+                                          Map<String, InterfaceDeclaration> memberInterfaces,
+                                          Map<String, List<Descriptor>> theVar,
+                                          Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> rolesInBean,
+                                          StackTraceElement stackTraceElement) {
+        for (Map.Entry<String, InterfaceDeclaration> entry: memberInterfaces.entrySet()) {
+            String fqn=entry.getKey();
+            List<String> vars=entry.getValue().variables!=null? entry.getValue().variables : List.of();
+            List<String> roles=entry.getValue().roles!=null? entry.getValue().roles : List.of();
+
+            Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> varTypes=new LinkedHashMap<>();
+            for (String var: vars) {
+                if (theVar.get(var)==null) {
+                    throw new IllegalStateException("Interface " + fqn + " lists variable '" + var
+                            + "' which template " + templateFullyQualifiedName + " does not declare");
+                }
+                varTypes.put(var, compilerUtil.getPastTypeForDeclaredType(theVar, var));
+            }
+
+            // Role members resolve against the roles present in THIS bean direction; the
+            // role→variable binding stays per-template (@role in the cbindings).
+            Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> roleTypes=new LinkedHashMap<>();
+            for (String role: roles) {
+                org.openprovenance.prov.template.compiler.past.type.TypeName type=rolesInBean.get(role);
+                if (type==null) {
+                    throw new IllegalStateException("Interface " + fqn + " lists role '" + role
+                            + "' which the " + beanDirection + " bean of template "
+                            + templateFullyQualifiedName + " does not carry (roles present: "
+                            + rolesInBean.keySet() + ")");
+                }
+                roleTypes.put(role, type);
+            }
+
+            Map<String,String> signature=new LinkedHashMap<>();
+            varTypes.forEach((var, type) -> signature.put("var:" + var, String.valueOf(type)));
+            roleTypes.forEach((role, type) -> signature.put("role:" + role, String.valueOf(type)));
+            Map<String,String> previous=generatedMemberInterfaces.putIfAbsent(fqn, signature);
+            if (previous!=null) {
+                if (!previous.equals(signature)) {
+                    throw new IllegalStateException("Interface " + fqn + " is declared with conflicting member signatures: "
+                            + previous + " vs " + signature + " (template " + templateFullyQualifiedName + ")");
+                }
+                continue; // identical declaration — already generated
+            }
+
+            int dot=fqn.lastIndexOf('.');
+            if (dot<0) {
+                throw new IllegalStateException("Interface name '" + fqn + "' declared for template "
+                        + templateFullyQualifiedName + " must be fully qualified");
+            }
+            String packge=fqn.substring(0, dot);
+            String simpleName=fqn.substring(dot+1);
+
+            org.openprovenance.prov.template.compiler.past.Class intface=compilerUtil.getPastFactory()
+                    .INTERFACE(simpleName)
+                    .MODIFIERS(Modifier.PUBLIC)
+                    .COMMENT("Member-accessor contract generated from the project-level interface declaration.")
+                    .COMMENT("\nVariables: $N; roles: $N.", vars.toString(), roles.toString());
+
+            // Every bean declaring interfaces also gets an isA() accessor (template name);
+            // declaring it here lets generic engine code identify the template through the interface.
+            intface.METHOD(METHOD(Constants.IS_A)
+                    .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                    .RETURNS(STRING)
+                    .COMMENT("Returns the template name for this bean."));
+
+            varTypes.forEach((var, type) -> {
+                String suffix=compilerUtil.capitalize(var);
+                intface.METHOD(METHOD("get" + suffix)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .RETURNS(type)
+                        .COMMENT("Accessor for variable $N.", var));
+                intface.METHOD(METHOD("set" + suffix)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .RETURNS(VOID)
+                        .PARAMETER(type, "value")
+                        .COMMENT("Mutator for variable $N.", var));
+            });
+
+            roleTypes.forEach((role, type) -> {
+                String suffix=compilerUtil.capitalize(role);
+                intface.METHOD(METHOD("get" + suffix)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .RETURNS(type)
+                        .COMMENT("Role accessor ($N).", role));
+                intface.METHOD(METHOD("set" + suffix)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .RETURNS(VOID)
+                        .PARAMETER(type, "value")
+                        .COMMENT("Role mutator ($N).", role));
+            });
+
+            String directory=locations.convertToDirectory(packge);
+            Supplier<Boolean> javaGenerator=() -> generateJava(intface, packge, configs, directory, stackTraceElement, compilerUtil);
+            new SpecificationFile(javaGenerator, emptyGenerator, emptyGenerator, emptyGenerator).save();
+        }
+    }
+
+    /** Registry of already-generated role interfaces: FQN → (role → accessor type). */
+    private final Map<String, Map<String,String>> generatedRoleInterfaces=new HashMap<>();
+
+    /**
+     * Generates the interfaces declared with {@code "generate": true} into the generated
+     * source tree, deriving one getter/setter pair per {@code @role} present in the bean
+     * direction. An interface declared by several templates is generated once; declaring
+     * the same interface with a different role signature is an error.
+     */
+    private void generateRoleInterfaces(TemplatesProjectConfiguration configs,
+                                        Locations locations,
+                                        String templateFullyQualifiedName,
+                                        BeanDirection beanDirection,
+                                        Map<String, org.openprovenance.prov.template.compiler.past.type.TypeName> rolesInBean,
+                                        StackTraceElement stackTraceElement) {
+        ImplementInterfaces interfaces=declaredInterfaces(configs, templateFullyQualifiedName);
+        if (interfaces==null || !interfaces.generate) return;
+        List<String> names=interfacesForDirection(interfaces, beanDirection);
+        if (names==null) return;
+        for (String fqn: names) {
+            if (configs.interfaces!=null && configs.interfaces.containsKey(fqn)) {
+                continue; // project-level member interface — generateMemberInterfaces owns it
+            }
+            Map<String,String> signature=new LinkedHashMap<>();
+            rolesInBean.forEach((role, type) -> signature.put(role, String.valueOf(type)));
+            Map<String,String> previous=generatedRoleInterfaces.putIfAbsent(fqn, signature);
+            if (previous!=null) {
+                if (!previous.equals(signature)) {
+                    throw new IllegalStateException("Interface " + fqn + " is declared with conflicting role signatures: "
+                            + previous + " vs " + signature + " (template " + templateFullyQualifiedName + ")");
+                }
+                continue; // identical declaration — already generated
+            }
+            int dot=fqn.lastIndexOf('.');
+            if (dot<0) {
+                throw new IllegalStateException("Interface name '" + fqn + "' declared for template "
+                        + templateFullyQualifiedName + " must be fully qualified");
+            }
+            String packge=fqn.substring(0, dot);
+            String simpleName=fqn.substring(dot+1);
+
+            org.openprovenance.prov.template.compiler.past.Class intface=compilerUtil.getPastFactory()
+                    .INTERFACE(simpleName)
+                    .MODIFIERS(Modifier.PUBLIC)
+                    .COMMENT("Role-accessor contract generated from the @role declarations of template $N.", templateFullyQualifiedName)
+                    .COMMENT((beanDirection==BeanDirection.INPUTS)?"\nImplemented by the inputs bean."
+                            :(beanDirection==BeanDirection.OUTPUTS)?"\nImplemented by the outputs bean."
+                            :"\nImplemented by the full bean.");
+
+            // Every bean declaring interfaces also gets an isA() accessor (template name);
+            // declaring it here lets generic engine code identify the template through the interface.
+            // (Deliberately not a JavaBean getter, so Jackson leaves the wire format untouched.)
+            intface.METHOD(METHOD(Constants.IS_A)
+                    .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                    .RETURNS(STRING)
+                    .COMMENT("Returns the template name for this bean."));
+
+            rolesInBean.forEach((role, type) -> {
+                String suffix=compilerUtil.capitalize(role);
+                intface.METHOD(METHOD("get" + suffix)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .RETURNS(type)
+                        .COMMENT("Role accessor ($N).", role));
+                intface.METHOD(METHOD("set" + suffix)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .RETURNS(VOID)
+                        .PARAMETER(type, "value")
+                        .COMMENT("Role mutator ($N).", role));
+            });
+
+            String directory=locations.convertToDirectory(packge);
+            Supplier<Boolean> javaGenerator=() -> generateJava(intface, packge, configs, directory, stackTraceElement, compilerUtil);
+            new SpecificationFile(javaGenerator, emptyGenerator, emptyGenerator, emptyGenerator).save();
+        }
+    }
+
+
+    /** The roles accepted in a variable's {@code @role} declaration. */
+    public static final Set<String> KNOWN_ROLES =
+            Set.of("cause", "effect", "general", "cause2", "effect2", "general2");
+
+    /**
+     * Generates uniform role-based accessors for a variable that declares a {@code @role}.
+     * For a variable {@code key} with role {@code cause} this emits {@code getCause()} /
+     * {@code setCause(value)} getting or setting the underlying field.
+     */
+    private void generateRoleAccessors(org.openprovenance.prov.template.compiler.past.Class pastClass,
+                                       String key,
+                                       String role,
+                                       org.openprovenance.prov.template.compiler.past.type.TypeName fieldType) {
+        if (!KNOWN_ROLES.contains(role)) {
+            throw new IllegalStateException("Unknown @role '" + role + "' for variable '" + key
+                    + "': expected one of " + KNOWN_ROLES);
+        }
+        String suffix=compilerUtil.capitalize(role);
+
+        Method getter=METHOD("get" + suffix)
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(JsonIgnoreAnnotation.NAME)
+                .RETURNS(fieldType)
+                .COMMENT("Role accessor ($N) for variable $N.", role, key)
+                .BODY(RETURN(VARIABLE(key, Variable.VariableKind.FIELD_VARIABLE)));
+        pastClass.METHOD(getter);
+
+        Method setter=METHOD("set" + suffix)
+                .commentFileLocation()
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(JsonIgnoreAnnotation.NAME)
+                .RETURNS(VOID)
+                .PARAMETER(fieldType, "value")
+                .COMMENT("Role mutator ($N) for variable $N.", role, key)
+                .BODY(ASSIGNMENT(VARIABLE(key, Variable.VariableKind.FIELD_VARIABLE), VARIABLE("value")));
+        pastClass.METHOD(setter);
+    }
+
 
     private void generateCompositeList(String templateName, String packge, Locations locations, org.openprovenance.prov.template.compiler.past.Class builder, BeanDirection beanDirection, String variant, List<String> sharing) {
 
@@ -355,10 +678,10 @@ public class CompilerBeanGenerator {
 
 
 
-    private org.openprovenance.prov.template.compiler.past.type.TypeName processorClassType(String template, String packge) {
-        return ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get(compilerUtil.processorNameClass(template),packge), T());
+    private org.openprovenance.prov.template.compiler.past.type.TypeName processorClassType(String template, String packge, BeanDirection beanDirection) {
+        return ParameterizedType.get(org.openprovenance.prov.template.compiler.past.type.ClassName.get(compilerUtil.processorNameClass(template,beanDirection),packge), T());
     }
-    public Method generateInvokeProcessor(String template, String processorPackage, TemplateBindingsSchema bindingsSchema, String elements, BeanDirection beanDirection) {
+    public Method generateInvokeProcessor(String template, String processorPackage, TemplateBindingsSchema bindingsSchema, String elements, BeanDirection beanDirection, BeanKind beanKind) {
 
         List<String> fieldNames = (List<String>) descriptorUtils.fieldNames(bindingsSchema);
         if (fieldNames.contains(PROCESSOR_PARAMETER_NAME)) {
@@ -367,9 +690,10 @@ public class CompilerBeanGenerator {
 
         Method method=METHOD(PROCESSOR_PROCESS_METHOD_NAME)
                 .MODIFIERS(Modifier.PUBLIC)
+                .commentFileLocation()
                 .RETURNS(T())
                 .addTypeVariables(T())
-                .PARAMETER(processorClassType(template,processorPackage), PROCESSOR_PARAMETER_NAME);
+                .PARAMETER(processorClassType(template,processorPackage,beanDirection), PROCESSOR_PARAMETER_NAME);
 
         List<String> actualFieldNames;
         if (elements!=null) {
@@ -395,7 +719,8 @@ public class CompilerBeanGenerator {
                             PROCESSOR_PROCESS_METHOD_NAME,
                             actualFieldNames
                                     .stream()
-                                    .map(field -> descriptorUtils.isInput(field,bindingsSchema)?VARIABLE(field, Variable.VariableKind.FIELD_VARIABLE):Constant.getNull())
+                                    .filter(field -> (descriptorUtils.isInput(field,bindingsSchema) || beanKind==BeanKind.COMPOSITE) )
+                                    . map(field -> VARIABLE(field, Variable.VariableKind.FIELD_VARIABLE))
                                     .collect(Collectors.toList()))));
         } else if (beanDirection==BeanDirection.OUTPUTS) {
             method.addStatement(RETURN(
@@ -404,7 +729,8 @@ public class CompilerBeanGenerator {
                             PROCESSOR_PROCESS_METHOD_NAME,
                             actualFieldNames
                                     .stream()
-                                    .map(field -> descriptorUtils.isOutput(field,bindingsSchema)?VARIABLE(field, Variable.VariableKind.FIELD_VARIABLE):Constant.getNull())
+                                    .filter(field -> (descriptorUtils.isOutput(field,bindingsSchema) || beanKind==BeanKind.COMPOSITE))
+                                    .map (field ->VARIABLE(field, Variable.VariableKind.FIELD_VARIABLE))
                                     .collect(Collectors.toList()))));
         } else {
             throw new IllegalStateException("Unexpected value: " + beanDirection);

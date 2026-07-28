@@ -1,10 +1,13 @@
 package org.openprovenance.prov.template.compiler.past;
 
 
+import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
 
 import java.util.List;
+
+import static org.openprovenance.prov.template.compiler.past.annotations.AnnotationConverter.toAnnotation;
 
 public class MethodCall extends Expression {
     public final Expression object;
@@ -13,6 +16,7 @@ public class MethodCall extends Expression {
     public final MethodCallKind operatorKind;
     public final TypeName className;
     public final Class clazz;
+    public List<PastAnnotation> annotation=new java.util.ArrayList<>();
 
     public enum MethodCallKind { NO_OPERATOR, CONSTRUCTOR_CALL, OPERATOR_VARIABLE, OBJECT_METHOD_CALL, STATIC_METHOD_CALL, FUNCTIONAL_INTERFACE_CALL, OBJECT_ACCESSOR, SUPER_METHOD_CALL };
 
@@ -227,6 +231,27 @@ public class MethodCall extends Expression {
     public static MethodCall METHOD_CALL(Expression object, String methodName) {
         return new MethodCall(object, methodName);
     }
+
+    public MethodCall ANNOTATION(PastAnnotation... annot) {
+        for (PastAnnotation a: annot) {
+            if (a==null) {
+                throw new IllegalArgumentException("Annotation cannot be null");
+            }
+            this.annotation.add(a);
+        }
+        return this;
+    }
+
+    public MethodCall ANNOTATION(String... annot) {
+        for (String a: annot) {
+            if (a==null) {
+                throw new IllegalArgumentException("Annotation cannot be null");
+            }
+            this.annotation.add(toAnnotation(a));
+        }
+        return this;
+    }
+
 
 
 }

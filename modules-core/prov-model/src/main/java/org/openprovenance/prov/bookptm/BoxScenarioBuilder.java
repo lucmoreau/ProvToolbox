@@ -140,6 +140,7 @@ public class BoxScenarioBuilder {
         builder.wasAssociatedWith()
                 .id(defs.XID, "waw1").aka()
                 .activity("a7667")
+                .role(defs.packer)
                 .agent(AG_401_Alice)
                // .attr(defs.dotColour, edge1Colour)
                 .build();
@@ -891,6 +892,7 @@ public class BoxScenarioBuilder {
         QualifiedName Brighton     = builder.qn(VOCAB, "Brighton");
         QualifiedName weight       = builder.qn(VOCAB, "weight");
         QualifiedName driver       = builder.qn(VOCAB, "Driver");
+        QualifiedName packer       = builder.qn(VOCAB, "packer");
         QualifiedName unpacker     = builder.qn(VOCAB, "unpacker");
         QualifiedName scientist    = builder.qn(VOCAB, "scientist");
         QualifiedName scale        = builder.qn(VOCAB, "scale");
@@ -911,7 +913,7 @@ public class BoxScenarioBuilder {
 
 
         QualifiedName foaf_name    = builder.qn(FOAF, "name");
-        Definitions result = new Definitions(XID, Box, FPC, Ownership, Recycling, Transporting, Weighing, Packing, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, unpacker, scientist, scale, Instrument, specialization, derivation, entity, association, generation, activity, invalidation, usage, dotColour, InsertingElement, InsertingIntoCollection, RemovingElement, RemovingElementFromCollection);
+        Definitions result = new Definitions(XID, Box, FPC, Ownership, Recycling, Transporting, Weighing, Packing, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, packer, unpacker, scientist, scale, Instrument, specialization, derivation, entity, association, generation, activity, invalidation, usage, dotColour, InsertingElement, InsertingIntoCollection, RemovingElement, RemovingElementFromCollection);
         return result;
     }
 
@@ -948,8 +950,9 @@ public class BoxScenarioBuilder {
         public final QualifiedName InsertingIntoCollection;
         public final QualifiedName RemovingElement;
         public final QualifiedName RemovingElementFromCollection;
+        private final QualifiedName packer;
 
-        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Recycling, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName unpacker, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation, QualifiedName usage, QualifiedName dotColour, QualifiedName insertingElement, QualifiedName insertingIntoCollection, QualifiedName removingElement, QualifiedName removingElementFromCollection) {
+        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Recycling, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName packer, QualifiedName unpacker, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation, QualifiedName usage, QualifiedName dotColour, QualifiedName insertingElement, QualifiedName insertingIntoCollection, QualifiedName removingElement, QualifiedName removingElementFromCollection) {
             this.XID = XID;
             this.Box = Box;
             this.FPC = fpc;
@@ -965,6 +968,7 @@ public class BoxScenarioBuilder {
             this.weight = weight;
             this.foaf_name = foaf_name;
             this.driver = driver;
+            this.packer = packer;
             this.unpacker = unpacker;
             this.scientist = scientist;
             this.scale = scale;

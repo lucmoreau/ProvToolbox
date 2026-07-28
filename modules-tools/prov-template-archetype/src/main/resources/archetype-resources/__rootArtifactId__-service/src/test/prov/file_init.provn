@@ -1,0 +1,17 @@
+// A CSV file (file:1588) was registered alongside its first version (file:1589) on 5 June 2022 at 15:00 by agent (ag:9).
+document
+prefix trs <https://openprovenance.org/transport/ns/#>
+prefix act <http://localhost:7075/book/provapi/live/activity/>
+prefix phys <http://openprovenance.org/ns/phys#>
+prefix file <http://localhost:7075/book/provapi/live/file/>
+prefix ag <http://localhost:7075/book/provapi/live/agent/>
+
+entity(file:1588,[prov:type = 'trs:CSV'])
+entity(file:1589,[phys:lkl = "" %% xsd:string])
+activity(act:6119,-,-,[prov:type = 'phys:RegisteringEntity'])
+wasGeneratedBy(file:1588,act:6119,-)
+wasGeneratedBy(file:1589,act:6119,2022-06-05T15:00:00Z)
+agent(ag:9)
+wasAssociatedWith(act:6119,ag:9,-)
+specializationOf(file:1589,file:1588)
+endDocument

@@ -28,9 +28,10 @@ import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_C
 import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+import static org.openprovenance.prov.template.core.InstantiateUtil.attributesAllowForStatementsIdentification;
 
 /**
- * Variant of {@link StatementCompilerAction} that generates PAST statements
+ * Variant of {@link StatementCompilerAction2} that generates PAST statements
  * (provenance abstract syntax tree) instead of JavaPoet code.
  *
  * <p>Each {@code doAction} method appends PAST {@link Statement} objects to
@@ -112,10 +113,23 @@ public class StatementCompilerAction2 implements StatementAction {
     private Expression notNull(String varName) {
         return BINARY_OP(VARIABLE(varName), "!=", getNull());
     }
+    private Expression notNull(Expression expr) {
+        return BINARY_OP(expr, "!=", getNull());
+    }
 
     // --- helper: ($N!=null) && ($N!=null) ---
     private Expression andNotNull(String var1, String var2) {
         return BINARY_OP(notNull(var1), "&&", notNull(var2));
+    }
+    private Expression andNotNull(String var1, Expression notNullExp) {
+        return BINARY_OP(notNull(var1), "&&", notNullExp);
+    }
+
+    private Expression orNotNull(String var1, String var2) {
+        return BINARY_OP(notNull(var1), "||", notNull(var2));
+    }
+    private Expression orNotNull(String var1, Expression expr2) {
+        return BINARY_OP(notNull(var1), "||", expr2);
     }
 
     // --- helper to convert a list of variable name strings to VARIABLE expressions ---
@@ -181,9 +195,13 @@ public class StatementCompilerAction2 implements StatementAction {
         args.add(getNull()); // time
         if (hasAttrs) args.add(VARIABLE("attrs"));
 
-        statements.add(ifThenTargetAdd(
-                andNotNull(activity, entity),
-                pfCall("newUsed", args)));
+        if (hasAttrs && attributesAllowForStatementsIdentification(s)) {
+            statements.add(targetAdd(pfCall("newUsed", args)));
+        } else {
+            statements.add(ifThenTargetAdd(
+                    andNotNull(activity, entity),
+                    pfCall("newUsed", args)));
+        }
     }
 
     @Override
@@ -200,9 +218,13 @@ public class StatementCompilerAction2 implements StatementAction {
         args.add(getNull()); // time
         if (hasAttrs) args.add(VARIABLE("attrs"));
 
-        statements.add(ifThenTargetAdd(
-                notNull(entity),
-                pfCall("newWasGeneratedBy", args)));
+        if (hasAttrs && attributesAllowForStatementsIdentification(s)) {
+            statements.add(targetAdd(pfCall("newWasGeneratedBy", args)));
+        } else {
+            statements.add(ifThenTargetAdd(
+                    notNull(entity),
+                    pfCall("newWasGeneratedBy", args)));
+        }
     }
 
     @Override
@@ -229,6 +251,7 @@ public class StatementCompilerAction2 implements StatementAction {
                     "&&",
                     notNull(entity));
         }
+
 
         statements.add(ifThenTargetAdd(condition, pfCall("newWasInvalidatedBy", args)));
     }
@@ -265,23 +288,48 @@ public class StatementCompilerAction2 implements StatementAction {
         Expression attrs = doAttributesActionPast(s);
         boolean hasAttrs = (attrs != null);
 
+        String activity = local(s.getActivity());
+        String agent = local(s.getAgent());
+        String plan = local(s.getPlan());
+        String id = local(s.getId());
+
         List<Expression> args = new ArrayList<>();
-        args.add(VARIABLE(local(s.getId())));
-        args.add(VARIABLE(local(s.getActivity())));
-        args.add(VARIABLE(local(s.getAgent())));
-        args.add(VARIABLE(local(s.getPlan())));
+        args.add(VARIABLE(id));
+        args.add(VARIABLE(activity));
+        args.add(VARIABLE(agent));
+        args.add(VARIABLE(plan));
         if (hasAttrs) args.add(VARIABLE("attrs"));
 
-        statements.add(targetAdd(pfCall("newWasAssociatedWith", args)));
+        if (hasAttrs && attributesAllowForStatementsIdentification(s)) {
+            statements.add(targetAdd(pfCall("newWasAssociatedWith", args)));
+        } else {
+            Expression condition = orNotNull(id,andNotNull(activity, orNotNull(agent,plan)));
+            statements.add(ifThenTargetAdd(condition,pfCall("newWasAssociatedWith", args)));
+        }
     }
+
 
     @Override
     public void doAction(WasAttributedTo s) {
+        Expression attrs = doAttributesActionPast(s);
+        boolean hasAttrs = (attrs != null);
+
+        String id = local(s.getId());
+        String entity = local(s.getEntity());
+        String agent = local(s.getAgent());
+
         List<Expression> args = new ArrayList<>();
-        args.add(VARIABLE(local(s.getId())));
-        args.add(VARIABLE(local(s.getEntity())));
-        args.add(VARIABLE(local(s.getAgent())));
-        statements.add(targetAdd(pfCall("newWasAttributedTo", args)));
+        args.add(VARIABLE(id));
+        args.add(VARIABLE(entity));
+        args.add(VARIABLE(agent));
+        if (hasAttrs) args.add(VARIABLE("attrs"));
+
+        if (hasAttrs && attributesAllowForStatementsIdentification(s)) {
+            statements.add(targetAdd(pfCall("newWasAttributedTo", args)));
+        } else {
+            Expression condition = orNotNull(id,andNotNull(entity, agent));
+            statements.add(ifThenTargetAdd(condition,pfCall("newWasAttributedTo", args)));
+        }
     }
 
     @Override
@@ -312,9 +360,14 @@ public class StatementCompilerAction2 implements StatementAction {
         }
         if (hasAttrs) args.add(VARIABLE("attrs"));
 
-        statements.add(ifThenTargetAdd(
-                andNotNull(delegate, responsible),
-                pfCall("newActedOnBehalfOf", args)));
+        if (hasAttrs && attributesAllowForStatementsIdentification(s)) {
+            statements.add(targetAdd(pfCall("newActedOnBehalfOf", args)));
+        } else {
+            statements.add(ifThenTargetAdd(
+                    andNotNull(delegate, responsible),
+                    pfCall("newActedOnBehalfOf", args)));
+        }
+
     }
 
     public String localNotBlank(QualifiedName id) {
@@ -565,7 +618,7 @@ public class StatementCompilerAction2 implements StatementAction {
 
     /**
      * Generates PAST statements for attribute construction, equivalent to
-     * {@link StatementCompilerAction#doAttributesAction}.
+     * {@link StatementCompilerAction2#doAttributesActionPast}.
      * Returns the collection of attributes (for isEmpty check), or null if empty.
      * Adds assignment and attribute-add statements to the statements list.
      */

@@ -42,8 +42,8 @@ object defs {
       val prop = new java.util.Properties()
       prop.load(getClass.getResourceAsStream("/lexicon.properties"))
       val property = prop.get("lexicon.location").asInstanceOf[String]
-      println("lexicon.location=" + property)
-      if (property==null) {
+      //println("lexicon.location=" + property)
+      if (property==null || property.isEmpty || !property.contains("lexAccess2013")) {
         println("sysProperty (" + sysProperty + ") not defined, nor 'lexicon.location' in file /lexicon.properties" + prop)
       }
       property
@@ -205,9 +205,19 @@ object defs {
         case "cue_phrase"     => setFeature(Feature.CUE_PHRASE,     value )
         case "modal"          => setFeature(Feature.MODAL,          value )
         case "complementiser" => setFeature(Feature.COMPLEMENTISER, value )
-        case "form"           => setFeature(Feature.FORM,           value match { case "pastParticiple" => Form.PAST_PARTICIPLE case "presentParticiple" => Form.PRESENT_PARTICIPLE})
+        case "form"           => setFeature(Feature.FORM,           value match {
+                                   case "bareInfinitive"    => Form.BARE_INFINITIVE
+                                   case "gerund"            => Form.GERUND
+                                   case "imperative"        => Form.IMPERATIVE
+                                   case "infinitive"        => Form.INFINITIVE
+                                   case "normal"            => Form.NORMAL
+                                   case "pastParticiple"    => Form.PAST_PARTICIPLE
+                                   case "presentParticiple" => Form.PRESENT_PARTICIPLE
+                                 })
         case "pronominal"     => setFeature(Feature.PRONOMINAL,     value.toBoolean )
         case "possessive"     => setFeature(Feature.POSSESSIVE,     value.toBoolean )
+        case "negated"        => setFeature(Feature.NEGATED,        value.toBoolean )
+        //case "interrogative_type"  => setFeature(Feature.INTERROGATIVE_TYPE, value.toBoolean )
         case "gender"         => setFeature(LexicalFeature.GENDER,  value match { case "masculine" => Gender.MASCULINE case "feminine" => Gender.FEMININE case "neutral" => Gender.NEUTER} )
         case "person"         => setFeature(Feature.PERSON,         value match { case "first" => Person.FIRST case "second" => Person.SECOND case "third" => Person.THIRD} )
 

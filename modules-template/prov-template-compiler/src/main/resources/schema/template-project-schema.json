@@ -86,6 +86,33 @@
                 }
             ]
         },
+        "PropertiesDescriptor": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "InterfaceDeclaration": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/PropertiesDescriptor"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "variables": {
+                            "$ref": "#/definitions/PropertiesDescriptor"
+                        },
+                        "roles": {
+                            "$ref": "#/definitions/PropertiesDescriptor"
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            ]
+        },
         "TableDescriptor": {
             "type": "object",
             "properties": {
@@ -161,6 +188,12 @@
         "python_dir": {
             "type": "string"
         },
+        "javascript_dir": {
+            "type": "string"
+        },
+        "rust_dir": {
+            "type": "string"
+        },
         "integrator": {
             "type": "boolean"
         },
@@ -186,6 +219,12 @@
                     "$ref": "#/definitions/TemplateDescriptor"
                 }
             ]
+        },
+        "interfaces": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/InterfaceDeclaration"
+            }
         },
         "search": {
             "type": "array",
@@ -221,7 +260,6 @@
         "root_package",
         "script",
         "script_dir",
-        "python_dir",
         "jsweet",
         "jsonschema",
         "documentation",

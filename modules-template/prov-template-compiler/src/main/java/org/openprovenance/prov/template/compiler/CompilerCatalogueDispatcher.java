@@ -23,6 +23,7 @@ import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY_ACCESSOR;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.IfExpression.IF_;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
 import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
@@ -52,13 +53,18 @@ public class CompilerCatalogueDispatcher {
         put("outputs", OUTPUTS_CONFIGURATOR);
         put("sqlConverter", SQL_CONFIGURATOR);
         put("csvConverter", CSV_CONFIGURATOR);
+        put("semanticType", SEMANTIC_TYPE_CONFIGURATOR);
+        put("csvConverter4Beans", CSV_CONFIGURATOR_4_BEANS);
+        put("csvConverter4Outputs", CSV_CONFIGURATOR_4_OUTPUTS);
+        put("csvConverter4OutputsComposite", CSV_CONFIGURATOR_4_OUTPUTS_COMPOSITE);
         put("sqlInsert", SQL_INSERT_CONFIGURATOR);
         put("beanConverter", CONVERTER_CONFIGURATOR);
         put("relation0", RELATION0_CONFIGURATOR);
         put("foreignTables", BUILDER_PROCESSOR_CONFIGURATOR);
         put("successors", BUILDER_PROCESSOR_CONFIGURATOR);
+        put("typedSuccessors", BUILDER_PROCESSOR_CONFIGURATOR);
         put("enactorConverter", SQL_ENACTOR_CONFIGURATOR4);
-        put("compositeEnactorConverter", SQL_COMPOSITE_ENACTOR_CONFIGURATOR4);
+        put("compositeEnactorConverter", SQL_ENACTOR_COMPOSITE_CONFIGURATOR_4);
         put("documentBuilderDispatcher", TABLE_CONFIGURATOR + WITH_MAP);
         put("typeAssignment", TABLE_CONFIGURATOR + "ForTypes" + WITH_MAP);
         put("recordMaker", OBJECT_RECORD_MAKER_CONFIGURATOR);
@@ -70,11 +76,17 @@ public class CompilerCatalogueDispatcher {
         put("outputs",                   ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING_ARRAY));
         put("sqlConverter",              ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_STRING));
         put("csvConverter",              ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_STRING));
+        put("csvConverter4Beans",        ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_BEAN_TO_STRING));
+        put("csvConverter4Outputs",      ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_BEAN_TO_STRING));
+        put("csvConverter4OutputsComposite", ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_BEAN_TO_STRING));
         put("sqlInsert",                 ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING));
         put("beanConverter",             ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_ANY));
         put("relation0",                 ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_MAP_STRING_INTARRAY));
         put("foreignTables",             ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING_ARRAY));
+        put("semanticType",              ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.STRING));
+
         put("successors",                ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_LIST_STRING));
+        put("typedSuccessors",           ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.MAP_STRING_LIST_STRING));
         put("enactorConverter",          ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_ANY));
         put("compositeEnactorConverter", ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_LIST_OBJARRAY_TO_ANY));
         put("documentBuilderDispatcher", ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.PROV_FILE_BUILDER));
@@ -82,9 +94,12 @@ public class CompilerCatalogueDispatcher {
         put("recordMaker",               ParameterizedType.get(ClassName.MAP, ClassName.STRING, ClassName.FUNCTION_OBJARRAY_TO_OBJ_ARRAY));
     }};
 
+    public static List<String> compositeTables =List.of("compositeEnactorConverter", "csvConverter4OutputsComposite");
 
 
-    public static Set<String> integratorRequired= new HashSet<>(List.of("inputs", "outputs"));
+
+    public static Set<String> integratorRequired= new HashSet<>(List.of("inputs", "outputs",
+            "csvConverter4Outputs", "csvConverter4OutputsComposite"));
     public static Set<String> storageRequired= new HashSet<>(List.of("enactorConverter", "compositeEnactorConverter"));
     public static Set<String> sqlRelated= new HashSet<>(List.of("sqlConverter", "sqlInsert"));
 
@@ -100,7 +115,11 @@ public class CompilerCatalogueDispatcher {
 
 
 
-    SpecificationFile generateCatalogueDispatcher(TemplatesProjectConfiguration configs, Map<String, Map<String, Map<String, String>>> inputOutputMaps, Locations locations, String directory, String fileName) {
+    SpecificationFile generateCatalogueDispatcher(TemplatesProjectConfiguration configs,
+                                                  Map<String, Map<String, Map<String, String>>> inputOutputMaps,
+                                                  Map<String, Set<String>> uniqueMap, Locations locations,
+                                                  String directory,
+                                                  String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         final ParameterizedType catalogueDispatcherInterfaceType = ParameterizedType.get(CATALOGUE_DISPATCHER_INTERFACE, PROV_FILE_BUILDER);
@@ -150,6 +169,7 @@ public class CompilerCatalogueDispatcher {
         // Add static string fields with JSON initializers
         try {
             pastClass.FIELDS(FIELD("ioMap", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(inputOutputMaps))));
+            pastClass.FIELDS(FIELD("uniqueMap", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(uniqueMap))));
             pastClass.FIELDS(FIELD("shortNames", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(locations.getShortNames()))));
             pastClass.FIELDS(FIELD("linkers", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(locations.getLinkerTableDeclarations()))));
         } catch (JsonProcessingException e) {
@@ -163,6 +183,13 @@ public class CompilerCatalogueDispatcher {
                         .commentFileLocation()
                         .RETURNS(STRING)
                         .BODY(RETURN(VARIABLE("ioMap"))),
+
+                METHOD("getUniqueMap")
+                        .MODIFIERS(Modifier.PUBLIC)
+                        .commentFileLocation()
+                        .RETURNS(STRING)
+                        .BODY(RETURN(VARIABLE("uniqueMap"))),
+
 
                 METHOD("getShortNames")
                         .MODIFIERS(Modifier.PUBLIC)
@@ -214,7 +241,17 @@ public class CompilerCatalogueDispatcher {
                     ClassName catalogueDispatcherClass =
                             ClassName.get(CATALOGUE_DISPATCHER, configs.root_package);
                     LambdaExpression lambda = LAMBDA(PARAMETER("b", ClassName.BUILDER_INTERFACE))
-                            .BODY(RETURN(METHOD_CALL(catalogueDispatcherClass, "process", List.of(VARIABLE("b")))));
+                            .BODY(RETURN(METHOD_CALL(catalogueDispatcherClass, GET_SUCCESSORS, List.of(VARIABLE("b")))));
+                    cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
+                            METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
+                                    List.of(CONSTRUCTOR_CALL(diamondConfiguratorType, List.of(lambda))))));
+                } else if ("typedSuccessors".equals(data)) {
+                    // new BuilderProcessorConfigurator<>(b -> CatalogueDispatcher.process(b))
+                    ParameterizedType diamondConfiguratorType = ParameterizedType.get(configuratorClass);
+                    ClassName catalogueDispatcherClass =
+                            ClassName.get(CATALOGUE_DISPATCHER, configs.root_package);
+                    LambdaExpression lambda = LAMBDA(PARAMETER("b", ClassName.BUILDER_INTERFACE))
+                            .BODY(RETURN(METHOD_CALL(catalogueDispatcherClass, GET_TYPED_SUCCESSORS, List.of(VARIABLE("b")))));
                     cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
                             METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
                                     List.of(CONSTRUCTOR_CALL(diamondConfiguratorType, List.of(lambda))))));
@@ -238,8 +275,9 @@ public class CompilerCatalogueDispatcher {
                         cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data), Constant.getNull()));
                     } else {
                         // new ConfiguratorClass()
+                        String initialiser=(compositeTables.contains(data))? INITIALIZE_COMPOSITE_BEAN_TABLE : INITIALIZE_BEAN_TABLE;
                         cspec.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE("this"), data),
-                                METHOD_CALL(loggerClass, INITIALIZE_BEAN_TABLE,
+                                METHOD_CALL(loggerClass, initialiser,
                                         List.of(CONSTRUCTOR_CALL(configuratorClass, List.of())))));
                     }
                 }
@@ -275,7 +313,7 @@ public class CompilerCatalogueDispatcher {
                         ClassName.get(Constants.LOGGER, locations.getFilePackage(configs.name, Constants.LOGGER));
                 ClassName configuratorClass =
                         ClassName.get(configurator, locations.getFilePackage(configs.name, configurator));
-                String initMethodName = ("compositeEnactorConverter".equals(data)) ? "initializeCompositeBeanTable" : INITIALIZE_BEAN_TABLE;
+                String initMethodName = compositeTables.contains(data) ? INITIALIZE_COMPOSITE_BEAN_TABLE : INITIALIZE_BEAN_TABLE;
 
                 pastClass.METHODS(
 
@@ -296,25 +334,14 @@ public class CompilerCatalogueDispatcher {
         }
 
         // Add the process method
-        pastClass.METHOD(processMethodGenerator());
+        pastClass.METHOD(getSuccessorMethodGenerator());
+        pastClass.METHOD(getTypedSuccessorMethodGenerator());
 
 
         Supplier<Boolean> pythonGenerator=() -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, configs.root_package, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, configs.root_package, configs, directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator,pythonGenerator);
-
-        /*
-        // Emit PAST class to TypeSpec.Builder
-        TypeSpec.Builder builder = new Poet().emitBuilder(pastClass);
-
-        TypeSpec theCatalogueDispatcher=builder.build();
-
-        JavaFile myfile = compilerUtil.specWithComment(theCatalogueDispatcher, configs, configs.root_package, stackTraceElement);
-
-        return new SpecificationFile(myfile, directory, fileName, configs.root_package);
-        */
-
     }
 
     private Method createGetter(TemplatesProjectConfiguration configs, String data, org.openprovenance.prov.template.compiler.past.type.TypeName typeName) {
@@ -357,7 +384,7 @@ public class CompilerCatalogueDispatcher {
     }
 
 
-    private Method processMethodGenerator() {
+    private Method getSuccessorMethodGenerator() {
         // Map<Integer, int[]> successors = builder.getSuccessors();
         // String[] order = builder.getPropertyOrder();
         // Map<String, List<String>> map = new HashMap<>();
@@ -375,7 +402,7 @@ public class CompilerCatalogueDispatcher {
         // }
         // return map;
 
-        return METHOD("process")
+        return METHOD(GET_SUCCESSORS)
                 .MODIFIERS(Modifier.STATIC, Modifier.PUBLIC)
                 .commentFileLocation()
                 .RETURNS(MAP_STRING_LIST_STRING)
@@ -437,6 +464,80 @@ public class CompilerCatalogueDispatcher {
                         RETURN(VARIABLE("map"))
                 );
     }
+
+
+    private Method getTypedSuccessorMethodGenerator() {
+
+        return METHOD(GET_TYPED_SUCCESSORS)
+                .MODIFIERS(Modifier.STATIC, Modifier.PUBLIC)
+                .commentFileLocation()
+                .RETURNS(MAP_STRING_LIST_STRING)
+                .PARAMETER(ClassName.BUILDER_INTERFACE, "builder")
+                .BODY(
+                        // Map<Integer, int[]> successors = builder.getSuccessors();
+                        DEFINITION(MAP_INTEGER_INTARRAY, VARIABLE("successors"),
+                                METHOD_CALL(VARIABLE("builder"), "getTypedSuccessors", List.of())),
+
+                        // String[] order = builder.getPropertyOrder();
+                        DEFINITION(STRING_ARRAY, VARIABLE("order"),
+                                METHOD_CALL(VARIABLE("builder"), "getPropertyOrder", List.of())),
+
+                        // Map<String, List<String>> map = new HashMap<>();
+                        DEFINITION(MAP_STRING_LIST_STRING, VARIABLE("map"),
+                                CONSTRUCTOR_CALL(HASH_MAP_GENERICS, List.of())),
+
+
+                        // for (Integer k : successors.keySet()) { ... }
+                        ITERATOR(PARAMETER("k", INTEGER),
+                                METHOD_CALL(VARIABLE("successors"), "keySet", List.of()))
+                                .BODY(
+                                        // if (successors.get(k).length != 0) { ... }
+                                        IF(BINARY_OP(
+                                                METHOD_CALL(METHOD_CALL(VARIABLE("successors"), "get", List.of(VARIABLE("k"))), "length"),
+                                                "!=",
+                                                CONSTANT(0)))
+                                                .THEN(
+                                                        // List<String> list = new ArrayList<>();
+                                                        DEFINITION(LIST_OF_STRING, VARIABLE("list"),
+                                                                CONSTRUCTOR_CALL(ARRAY_LIST_GENERICS, List.of())),
+                                                        DEFINITION(_int, VARIABLE("count"), CONSTANT(0)),
+
+                                                        // for (int v : successors.get(k)) { ... }
+                                                        ITERATOR(PARAMETER("v", _int),
+                                                                METHOD_CALL(VARIABLE("successors"), "get", List.of(VARIABLE("k"))))
+                                                                .BODY(
+                                                                        // String s = order[v];
+                                                                        DEFINITION(STRING, VARIABLE("s"),
+                                                                                IF_(BINARY_OP(BINARY_OP(VARIABLE("count"), "&", CONSTANT(1)),"==", CONSTANT(0)))
+                                                                                        .THEN(
+                                                                                ARRAY_ACCESSOR(VARIABLE("order"), VARIABLE("v")))
+                                                                                        .ELSE(BINARY_OP(CONSTANT(""), "+", VARIABLE("v")))),
+                                                                        // list.add(s);
+                                                                        METHOD_CALL(VARIABLE("list"), "add", VARIABLE("s")),
+                                                                        // count = count +1
+                                                                        ASSIGNMENT(VARIABLE("count"), BINARY_OP(VARIABLE("count"), "+", CONSTANT(1)))
+                                                                ),
+
+                                                        // if (map.put(order[k], list) != null) { throw ... }
+                                                        IF(BINARY_OP(
+                                                                METHOD_CALL(VARIABLE("map"), "put", List.of(
+                                                                        ARRAY_ACCESSOR(VARIABLE("order"), VARIABLE("k")),
+                                                                        VARIABLE("list"))),
+                                                                "!=",
+                                                                Constant.getNull()))
+                                                                .THEN(
+                                                                        THROW(
+                                                                                CONSTRUCTOR_CALL(ILLEGAL_STATE_EXCEPTION,
+                                                                                        List.of(CONSTANT("Duplicate key"))))
+                                                                )
+                                                )
+                                ),
+
+                        // return map;
+                        RETURN(VARIABLE("map"))
+                );
+    }
+
 
 
     public String capitalizeFirstLetter(String s) {

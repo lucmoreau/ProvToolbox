@@ -393,6 +393,112 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
 
 
+  // -----------------------------------------------------------------------
+  // LeftHashJoin tests
+  // -----------------------------------------------------------------------
+
+  /** Build a fresh interpreter bound to the given document. */
+  def makeInterp(doc1: Document, si: StatementIndexer): QueryInterpreter =
+    new QueryInterpreter {
+      override val statementFinder: Option[String] => StatementAccessor[Statement] = _ => si
+      override val environment: Environment = Environment(
+        Map("ex" -> "http://example.org/", "prov" -> "http://www.w3.org/ns/prov#"),
+        null, null, new Array[String](0), List())
+    }
+
+  /** Helper: run a query and collect the number of result records. */
+  def countResults(doc: Document, op: Operator): Int = {
+    val doc1  = Document(doc, QuerySetup.gensym, QuerySetup.NLG_PREFIX, QuerySetup.NLG_URI)
+    val si    = new StatementIndexer(doc1)
+    val interp = makeInterp(doc1, si)
+    var count  = 0
+    Namespace.withThreadNamespace(doc1.getNamespace)
+    interp.execOp(op)(_ => count += 1)
+    count
+  }
+
+  /** Helper: run a query and check whether a named field is null in every row. */
+  def allFieldsNull(doc: Document, op: Operator, field: String): Boolean = {
+    val doc1  = Document(doc, QuerySetup.gensym, QuerySetup.NLG_PREFIX, QuerySetup.NLG_URI)
+    val si    = new StatementIndexer(doc1)
+    val interp = makeInterp(doc1, si)
+    var allNull = true
+    Namespace.withThreadNamespace(doc1.getNamespace)
+    interp.execOp(op) { rec =>
+      allNull = allNull && QueryInterpreter.getStatementOrNull(rec(field)).contains(None)
+    }
+    allNull
+  }
+
+  "A LeftHashJoin" should "find a matching WasAssociatedWith when one exists" in {
+    // Document has one activity and one WasAssociatedWith linking to it.
+    val doc = parse("""
+      document
+       prefix ex <http://example.org/>
+       activity(ex:a, [ prov:type='ex:Baking'])
+       agent(ex:ag, [ prov:type='prov:Person'])
+       wasAssociatedWith(ex:a, ex:ag, -)
+      endDocument
+    """)
+
+    val actScan = Scan("prov:Activity",         toSchema("act"), None)
+    val wawScan = Scan("prov:WasAssociatedWith", toSchema("waw"), None)
+    val op      = LeftHashJoin(actScan, "act", "id", wawScan, "waw", "activity")
+
+    // One activity matches one waw → exactly one combined row.
+    countResults(doc, op) should be (1)
+    // The waw field must be non-null.
+    allFieldsNull(doc, op, "waw") should be (false)
+  }
+
+  it should "emit the activity row with a null waw when no WasAssociatedWith exists" in {
+    // Document has an activity but NO WasAssociatedWith at all.
+    val doc = parse("""
+      document
+       prefix ex <http://example.org/>
+       activity(ex:a, [ prov:type='ex:Baking'])
+       entity(ex:e, [ prov:type='ex:Cake'])
+       wasGeneratedBy(ex:e, ex:a, -)
+      endDocument
+    """)
+
+    val actScan = Scan("prov:Activity",         toSchema("act"), None)
+    val wawScan = Scan("prov:WasAssociatedWith", toSchema("waw"), None)
+    val op      = LeftHashJoin(actScan, "act", "id", wawScan, "waw", "activity")
+
+    // The activity row must survive even though no waw exists.
+    countResults(doc, op) should be (1)
+    // The waw field must be null.
+    allFieldsNull(doc, op, "waw") should be (true)
+  }
+
+  it should "propagate nulls through chained LeftHashJoins when no WasAssociatedWith exists" in {
+    // Activity with no WasAssociatedWith → chained left joins for agent and plan
+    // should also yield null without crashing.
+    val doc = parse("""
+      document
+       prefix ex <http://example.org/>
+       activity(ex:a, [ prov:type='ex:Baking'])
+       agent(ex:ag, [ prov:type='prov:Person'])
+      endDocument
+    """)
+
+    val actScan   = Scan("prov:Activity",         toSchema("act"),   None)
+    val wawScan   = Scan("prov:WasAssociatedWith", toSchema("waw"),   None)
+    val agentScan = Scan("prov:Agent",             toSchema("agent"), None)
+
+    // Step 1: left-hash-join act → waw (waw will be null)
+    val step1 = LeftHashJoin(actScan, "act", "id", wawScan,   "waw",   "activity")
+    // Step 2: left-hash-join (act+waw) → agent (waw is null → null propagates)
+    val step2 = LeftHashJoin(step1,   "waw", "agent", agentScan, "agent", "id")
+
+    // Must not throw; must yield exactly one row.
+    countResults(doc, step2) should be (1)
+    // Both waw and agent must be null.
+    allFieldsNull(doc, step2, "waw")   should be (true)
+    allFieldsNull(doc, step2, "agent") should be (true)
+  }
+
   "A neat query for responsibility explanation" should "work on a ML pipeline " in {
 
 

@@ -24,15 +24,19 @@ module prov.template.compiler {
     exports org.openprovenance.prov.template.compiler.past.annotations;
     exports org.openprovenance.prov.template.compiler.past.checker;
     exports org.openprovenance.prov.template.compiler.past.emitter;
+    exports org.openprovenance.prov.template.compiler.past.emitter.registry;
     exports org.openprovenance.prov.template.compiler.past.type;
     exports org.openprovenance.prov.template.compiler.configuration;
     exports org.openprovenance.prov.template.compiler.common;
     exports org.openprovenance.prov.template.compiler.util;
     exports org.openprovenance.prov.template.descriptors;
     exports org.openprovenance.prov.template.log2prov;
+    // qualified export: the SQL composer is internal, opened only to its unit test (T-38)
+    exports org.openprovenance.prov.template.compiler.sql to prov.template.compiler.test;
 
     opens org.openprovenance.prov.template.compiler.util;
     opens org.openprovenance.prov.template.compiler;
+    opens org.openprovenance.prov.template.compiler.past.emitter.registry;
     opens schema;
 
 }

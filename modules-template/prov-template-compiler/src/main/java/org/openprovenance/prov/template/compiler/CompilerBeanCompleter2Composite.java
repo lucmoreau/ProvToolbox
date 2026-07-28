@@ -10,20 +10,20 @@ import java.util.function.Supplier;
 
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
+import org.openprovenance.prov.template.compiler.past.annotations.NoSerialization;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.ForLoop.FOR;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.CONSTRUCTOR_CALL;
-import static org.openprovenance.prov.template.compiler.past.Parameter.PARAMETER;
-import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
@@ -44,8 +44,10 @@ public class CompilerBeanCompleter2Composite {
     SpecificationFile generateBeanCompleter2Composite(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        Class pastClass = pastFactory.CLASS(COMPOSITE_BEAN_COMPLETER2)
-                .MODIFIERS(Modifier.PUBLIC);
+        Class pastClass = pastFactory.CLASS(BEAN_COMPLETER2_COMPOSITE)
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATION(NoSerialization.NAME);
+
 
         // fields
         pastClass.FIELDS(
@@ -87,10 +89,13 @@ public class CompilerBeanCompleter2Composite {
                                     CAST(INTEGER,
                                             METHOD_CALL(METHOD_CALL(VARIABLE("this"),M_VAR), "get", List.of(CONSTANT("ID")))  )   ),
 
-                            ITERATOR(
-                                    PARAMETER(ELEM_VAR, MAP_STRING_OBJECT),
-                                    METHOD_CALL(VARIABLE("this"),LL_VAR))
+                            FOR(DEFINITION(_int,VARIABLE("i"), CONSTANT(0)),
+                                    BINARY_OP(VARIABLE("i"), "<", METHOD_CALL(METHOD_CALL(VARIABLE("this"),LL_VAR), "size", List.of())),
+                                     ASSIGNMENT(VARIABLE("i"), BINARY_OP(VARIABLE("i"), "+", CONSTANT(1)))
+                                    )
+
                                     .BODY(
+                                            DEFINITION(MAP_STRING_OBJECT, VARIABLE(ELEM_VAR), METHOD_CALL(METHOD_CALL(VARIABLE("this"),LL_VAR), "get", List.of(VARIABLE("i")))),
                                             DEFINITION(composeeClass, VARIABLE(OUT_VAR), CONSTRUCTOR_CALL(composeeClass, List.of())),
                                             METHOD_CALL(
                                                     VARIABLE(BEAN_VAR),
@@ -112,10 +117,12 @@ public class CompilerBeanCompleter2Composite {
         }
 
         String myPackage=locations.getFilePackage(configs.name, fileName);
-        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, myPackage, locations, stackTraceElement);
 
-        return new SpecificationFile(javaGenerator, pythonGenerator);
+        return new SpecificationFile(javaGenerator, pythonGenerator,  jsGenerator, rustGenerator);
     }
 
 

@@ -23,6 +23,8 @@ public class Locations {
     final private String l2p_src_dir;
     private final Map<String, String> packages;
     public final String python_dir;
+    public final String javascript_dir;
+    public final String rust_dir;
 
 
     static final String CONFIG2_EXTENSION = "2";
@@ -38,6 +40,8 @@ public class Locations {
         this.cli_src_dir=cli_src_dir;
         this.l2p_src_dir=l2p_src_dir;
         this.python_dir=configs.python_dir;
+        this.javascript_dir=configs.javascript_dir;
+        this.rust_dir=configs.rust_dir;
         this.packages=packages;
         this.shortNames=shortNames;
         this.templateLibraryPath =new TemplateIndexPath(templateLibraryPath.stream().map(loc-> new TemplateIndex(loc,true)).collect(Collectors.toList()));
@@ -61,19 +65,19 @@ public class Locations {
             case SQL_BEAN_COMPLETER:
             case SQL_BEAN_ENACTOR:
             case SQL_ENACTOR_IMPLEMENTATION:
-            case SQL_COMPOSITE_BEAN_COMPLETER:
-            case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION:
-            case SQL_COMPOSITE_BEAN_ENACTOR:
+            case SQL_BEAN_COMPLETER_COMPOSITE:
+            case SQL_ENACTOR_COMPOSITE_IMPLEMENTATION:
+            case SQL_BEAN_COMPOSITE_ENACTOR:
                 return getSqlCommonBackendPackage(name);
 
             case SQL_BEAN_COMPLETER3:
             case SQL_ENACTOR_IMPLEMENTATION3:
-            case SQL_COMPOSITE_BEAN_ENACTOR3:
-            case SQL_COMPOSITE_BEAN_COMPLETER3:
-            case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION3:
+            case SQL_BEAN_COMPOSITE_ENACTOR_3:
+            case SQL_BEAN_COMPOSITE_COMPLETER_3:
+            case SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_3:
             case SQL_BEAN_ENACTOR3:
             case SQL_ENACTOR_CONFIGURATOR3:
-            case SQL_COMPOSITE_ENACTOR_CONFIGURATOR3:
+            case SQL_ENACTOR_COMPOSITE_CONFIGURATOR_3:
                 return getSqlIntegrationBackendPackage(name);
 
             case SQL_BEAN_COMPLETER4:
@@ -83,10 +87,10 @@ public class Locations {
             case SQL_ENACTOR_IMPLEMENTATION4:
             case SQL_BEAN_ENACTOR4:
             case SQL_ENACTOR_CONFIGURATOR4:
-            case SQL_COMPOSITE_BEAN_ENACTOR4:
-            case SQL_COMPOSITE_ENACTOR_CONFIGURATOR4:
-            case SQL_COMPOSITE_ENACTOR_IMPLEMENTATION4:
-            case SQL_COMPOSITE_BEAN_COMPLETER4:
+            case SQL_BEAN_COMPOSITE_ENACTOR_4:
+            case SQL_ENACTOR_COMPOSITE_CONFIGURATOR_4:
+            case SQL_ENACTOR_COMPOSITE_IMPLEMENTATION_4:
+            case SQL_BEAN_COMPOSITE_COMPLETER_4:
             case ENACTOR_IMPLEMENTATION4:
                 return getSqlAccessControlBackendPackage(name);
 
@@ -97,15 +101,25 @@ public class Locations {
             case BEAN_ENACTOR2:
             case ENACTOR_IMPLEMENTATION:
             case BEAN_LOCAL_ENACTOR2:
+            case BEAN_LOCAL_ENACTOR3:
             case BEAN_ENACTOR2_COMPOSITE:
             case TEMPLATE_INVOKER:
             case INPUT_OUTPUT_PROCESSOR:
             case QUERY_INVOKER2:
             case INPUT_PROCESSOR:
-            case COMPOSITE_BEAN_COMPLETER2:
+            case OUTPUT_PROCESSOR:
+            case BEAN_COMPLETER2_COMPOSITE:
             case BEAN_CHECKER2:
             case BEAN_COMPLETER2:
             case BEAN_COMPLETER3:
+            case BEAN_MERGER:
+            case BEAN_MERGER_INTERFACE:
+            case BEAN_HISTORY_INTERFACE:
+            case BEAN_HISTORY:
+            case IDENTIFIER_REGISTRY: // should it be elsewhere?
+            case LOCAL_ENACTOR:
+            case CSV_CONFIGURATOR_4_OUTPUTS:
+            case CSV_CONFIGURATOR_4_OUTPUTS_COMPOSITE:
                 return getIntegratorPackage(name);
 
             case TABLE_CONFIGURATOR+WITH_MAP:
@@ -126,13 +140,15 @@ public class Locations {
             case INPUTS_CONFIGURATOR:
             case SQL_CONFIGURATOR:
             case CSV_CONFIGURATOR:
+            case CSV_CONFIGURATOR_4_BEANS:
             case ENACTOR_CONFIGURATOR:
-            case COMPOSITE_ENACTOR_CONFIGURATOR:
+            case ENACTOR_CONFIGURATOR_COMPOSITE:
             case RECORD_2_RECORD_CONFIGURATOR:
-            case COMPOSITE_TABLE_CONFIGURATOR:
+            case TABLE_CONFIGURATOR_COMPOSITE:
+            case SEMANTIC_TYPE_CONFIGURATOR:
                 return getConfiguratorPackage(name);
 
-            case COMPOSITE_ENACTOR_CONFIGURATOR2:
+            case ENACTOR_CONFIGURATOR_COMPOSITE_2:
             case ENACTOR_CONFIGURATOR2:
 
                 return getConfiguratorPackage2(name);

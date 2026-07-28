@@ -28,10 +28,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.template.compiler.CompilerQueryInvoker.addSpecialTypesMethods;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
-import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
-import static org.openprovenance.prov.template.compiler.common.Constants.PROCESSOR;
+import static org.openprovenance.prov.template.compiler.common.Constants.*;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.past.ArrayAccessor.ARRAY_ACCESSOR;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
@@ -58,6 +58,7 @@ import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_C
 import static org.openprovenance.prov.template.compiler.past.Return.RETURN;
 import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
+import static org.openprovenance.prov.template.compiler.past.type.ClassName.BUILDER_INTERFACE;
 import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 import static org.openprovenance.prov.template.core.InstantiateUtil.*;
 
@@ -112,6 +113,8 @@ public class CompilerExpansionBuilder {
                                 FIELD("vc", PROV_VALUE_CONVERTER).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL)
                         );
 
+        Set<String> foundSpecialTypes=new HashSet<>();
+
         pastClass.METHOD(compilerCommon.generateNameAccessor(templateName));
         pastClass.METHOD(compilerCommon.generateFullyQualifiedNameAccessor(templateFullyQualifiedName));
         Hashtable<QualifiedName, String> vmap = generateQualifiedNames(doc, pastClass);
@@ -122,7 +125,7 @@ public class CompilerExpansionBuilder {
         if (withMain) pastClass.METHOD(generateMain(allVars, allAtts, name, packge, bindingsSchema));
         pastClass.METHOD(generateFactoryMethod(allVars, allAtts, name, bindingsSchema));
         pastClass.METHOD(generateFactoryMethodWithContinuation(allVars, allAtts, name, templateName, packge, bindingsSchema));
-        pastClass.METHOD(generateFactoryMethodWithArray(allVars, allAtts, name, bindingsSchema));
+        pastClass.METHOD(generateFactoryMethodWithArray(allVars, allAtts, name, bindingsSchema, foundSpecialTypes));
         pastClass.METHOD(generateFactoryMethodWithArrayAndContinuation(name, templateName, packge, bindingsSchema));
         pastClass.METHOD(generateUniqueRecordFactoryMethodWithArrayAndContinuation(name, templateName, packge, bindingsSchema));
         pastClass.METHOD(typedRecordGenerator(templateName, packge));
@@ -130,11 +133,12 @@ public class CompilerExpansionBuilder {
         pastClass.METHOD(generateTypePropagatorN());
         pastClass.METHOD(generateTypePropagator(packge + ".client", bindingsSchema, successorTable));
 
+        addSpecialTypesMethods(foundSpecialTypes,pastClass);
         //builder.addMethod(generateTemplateGenerator_old(allVars, allAtts, doc, vmap, bindingsSchema));
         // builder.addMethod(generateTypePropagator_old(packge+".client", bindingsSchema, successorTable));
 
         Supplier<Boolean> pythonGenerator = () -> true;
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, fileName + DOT_JAVA_EXTENSION, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }
@@ -896,7 +900,16 @@ public class CompilerExpansionBuilder {
                 if ((successors1.get(key) != null) || (successors2.get(key) != null) || (successors3.get(key) != null) || (successors3b.get(key) != null) || (successors4.get(key) != null)) {
 
                     List<Integer> rowValues = successorTable.get(count);
-                    if (rowValues == null || rowValues.isEmpty()) throw new InvalidCaseException("successor table incorrect");
+                    if (rowValues == null || rowValues.isEmpty()) {
+                        System.err.println("successor table incorrect for count: " + count + " and key: " + key);
+                        System.err.println("successors1 ,for key: " + successors1.get(key));
+                        System.err.println("successors2 ,for key: " + successors2.get(key));
+                        System.err.println("successors3 ,for key: " + successors3.get(key));
+                        System.err.println("successors3b ,for key: " + successors3b.get(key));
+                        System.err.println("successors4 ,for key: " + successors4.get(key));
+                        System.err.println("successorTable: " + successorTable);
+                        throw new InvalidCaseException("successor table incorrect");
+                    }
 
                     for (int i = 0; i < rowValues.size() / 2; i++) {
                         int successor = rowValues.get(i * 2);
@@ -1217,7 +1230,7 @@ public class CompilerExpansionBuilder {
 
 
 
-    public Method generateFactoryMethodWithArray(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema) {
+    public Method generateFactoryMethodWithArray(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, TemplateBindingsSchema bindingsSchema, Set<String> foundSpecialTypes) {
         Method method = METHOD("make")
                 .commentFileLocation()
                 .MODIFIERS(Modifier.PUBLIC)
@@ -1233,9 +1246,13 @@ public class CompilerExpansionBuilder {
             if (theVar.get(key) == null) {
                 continue;
             }
-            final ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, key);
+                final ClassName pastType = compilerUtil.getPastTypeForDeclaredType(theVar, key);
             final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
-            final String converter = compilerUtil.getConverterForDeclaredType(atype);
+
+
+            String jsonSqlConverter = converterForJsonType(key, bindingsSchema, foundSpecialTypes);
+            // special converter for sql json type takes precedence
+            final String converter = (jsonSqlConverter!=null)? jsonSqlConverter: compilerUtil.getConverterForDeclaredType(atype);
             Expression arrayAccess =
                     ARRAY_ACCESSOR(VARIABLE("__record"), CONSTANT(count));
             if (converter == null) {
@@ -1252,6 +1269,16 @@ public class CompilerExpansionBuilder {
         method.addStatement(RETURN(METHOD_CALL("make", args)));
 
         return method;
+    }
+
+    public static String converterForJsonType(String key, TemplateBindingsSchema bindingsSchema, Set<String> foundSpecialTypes) {
+        final String sqlType = descriptorUtils.getSqlType(key, bindingsSchema);
+        String sqlFun=null;
+        if (sqlType != null && sqlType.equals(JSON_TEXT)) {
+            sqlFun = Constants.CONVERT_FROM_JSON_OBJECT;
+            foundSpecialTypes.add(FROM_JSON_TEXT);
+        }
+        return sqlFun;
     }
 
     public Method generateFactoryMethodWithArrayAndContinuation(String name, String template, String packge, TemplateBindingsSchema bindingsSchema) {

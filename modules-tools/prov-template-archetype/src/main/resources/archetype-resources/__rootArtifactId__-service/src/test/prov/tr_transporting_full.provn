@@ -1,0 +1,21 @@
+// Record transporting#552 enriched with destination and schedule: The box (item:7963) was transported to Brighton according to schedule (sched:801) on 1 October 2024 at 16:14 by transporter (ag:7961).
+document
+prefix trs <https://openprovenance.org/transport/ns/#>
+prefix phys <http://openprovenance.org/ns/phys#>
+prefix resp <http://openprovenance.org/ns/responsibility#>
+prefix provext <http://openprovenance.org/prov/extension#>
+prefix item <http://localhost:7075/book/provapi/live/item/>
+prefix ag <http://localhost:7075/book/provapi/live/agent/>
+prefix act <http://localhost:7075/book/provapi/live/activity/>
+prefix sched <http://localhost:7075/book/provapi/live/schedule/>
+entity(item:7962)
+entity(item:7963,[prov:type = 'trs:Box', prov:location = "Brighton" %% xsd:string])
+entity(sched:801)
+activity(act:5956,-,-,[prov:type = 'phys:Transporting'])
+agent(ag:7961)
+used(act:5956,item:7962,-)
+wasGeneratedBy(item:7963,act:5956,2024-10-01T16:14:00+01:00)
+wasDerivedFrom(item:7963, item:7962, act:5956, -, -,[prov:type = 'phys:Transporting'])
+wasAssociatedWith(act:5956,ag:7961,sched:801)
+wasAttributedTo(item:7963, ag:7961,[provext:activity = 'act:5956'])
+endDocument

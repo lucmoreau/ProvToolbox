@@ -1,0 +1,183 @@
+{
+    "select": { "act": { "@type": "prov:Activity" }, "plan": { "@type": "prov:Entity" } },
+
+    "query": [
+        "prefix fs <http://openprovenance.org/ns/fs#>",
+
+        "select * from der a prov:WasDerivedFrom",
+        "from file2 a prov:Entity",
+        " join der.generatedEntity = file2.id",
+        "from file1 a prov:Entity",
+        " join der.usedEntity = file1.id",
+        "from act a prov:Activity",
+        " join der.activity = act.id",
+        "from waw a prov:WasAssociatedWith",
+        " optional join act.id = waw.activity",
+        "from agent a prov:Agent",
+        " optional join waw.agent = agent.id",
+        "from plan a prov:Entity",
+        " optional join waw.plan = plan.id",
+        "from wgb a prov:WasGeneratedBy",
+        " optional join file2.id = wgb.entity",
+
+        "where act[prov:type] >= 'fs:FittingData'",
+        "  or  act[prov:type] >= 'fs:SelectingData'",
+        "  or  act[prov:type] >= 'fs:TransformingData'"
+    ],
+
+    "sentence": {
+        "type": "clause",
+        "subject": {
+            "type": "noun_phrase",
+            "head": {
+                "type": "@funcall",
+                "@object": "agent",
+                "@field": "id",
+                "@function": "noun+identity",
+                "@arg1": "agent",
+                "@optional": "true"
+            }
+        },
+        "object": {
+            "type": "noun_phrase",
+            "determiner": "The",
+            "head": {
+                "type": "@funcall",
+                "@object": "file2",
+                "@property": "prov:type",
+                "@function": "lookup-type-with-default",
+                "@arg1": "noun_phrase",
+                "@arg2": "file"
+            },
+            "post-modifiers": [
+                {
+                    "type": "adjective_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "file2",
+                        "@property": "fs:filename",
+                        "@function": "string",
+                        "features": {
+                            "head_markup_element": "span",
+                            "head_markup_attributes": {
+                                "type": "@funcall",
+                                "@object": "file2",
+                                "@function": "markup-for-id",
+                                "@field": "id",
+                                "@arg1": "provelement"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "adjective_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "file2",
+                        "@field": "id",
+                        "@function": "noun+identity",
+                        "@arg1": ""
+                    }
+                }
+            ],
+            "features": { "number": "singular" }
+        },
+        "verb": {
+            "type": "@funcall",
+            "@object": "act",
+            "@property": "prov:type",
+            "@function": "lookup-type",
+            "@arg1": "verb_phrase"
+        },
+        "post-modifiers": [
+            {
+                "type": "preposition_phrase",
+                "preposition": "from",
+                "noun": {
+                    "type": "noun_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "file1",
+                        "@property": "prov:type",
+                        "@function": "lookup-type-with-default",
+                        "@arg1": "noun_phrase",
+                        "@arg2": "file",
+                        "@optional": "true"
+                    },
+                    "post-modifiers": [
+                        {
+                            "type": "adjective_phrase",
+                            "head": {
+                                "type": "@funcall",
+                                "@object": "file1",
+                                "@field": "id",
+                                "@function": "noun+identity",
+                                "@arg1": "",
+                                "@optional": "true",
+                                "features": {
+                                    "head_markup_element": "span",
+                                    "head_markup_attributes": {
+                                        "type": "@funcall",
+                                        "@object": "file1",
+                                        "@function": "markup-for-id",
+                                        "@field": "id",
+                                        "@arg1": "provelement"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "preposition_phrase",
+                "preposition": "with",
+                "noun": {
+                    "type": "noun_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "plan",
+                        "@property": "prov:type",
+                        "@function": "lookup-type-with-default",
+                        "@arg1": "noun_phrase",
+                        "@arg2": "method",
+                        "@optional": "true"
+                    },
+                    "post-modifiers": [
+                        {
+                            "type": "adjective_phrase",
+                            "head": {
+                                "type": "@funcall",
+                                "@object": "plan",
+                                "@field": "id",
+                                "@function": "noun+identity",
+                                "@arg1": "",
+                                "@optional": "true"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "preposition_phrase",
+                "preposition": "on",
+                "noun": {
+                    "type": "@funcall",
+                    "@object": "wgb",
+                    "@field": "time",
+                    "@optional": "true",
+                    "@function": "friendly_timestring"
+                }
+            }
+        ],
+        "features": {
+            "tense": "past",
+            "passive": "true"
+        }
+    },
+
+    "context": {
+        "ex": "http://example.org/#",
+        "fs": "http://openprovenance.org/ns/fs#"
+    }
+}

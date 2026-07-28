@@ -19,7 +19,6 @@ import java.util.function.Supplier;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
-import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
 import static org.openprovenance.prov.template.compiler.past.ArrayInitialiser.ARRAY_INITIALISER;
@@ -96,8 +95,8 @@ public class CompilerTypedRecord {
 
         String myPackage = packge;
 
-        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, templateName, fileName, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, templateName, directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }

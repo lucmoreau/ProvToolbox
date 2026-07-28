@@ -24,6 +24,8 @@ public class TemplatesProjectConfiguration {
     public String script;
     public String script_dir;
     public String python_dir;
+    public String javascript_dir;
+    public String rust_dir;
 
     public boolean integrator;
     public boolean jsweet;
@@ -31,6 +33,8 @@ public class TemplatesProjectConfiguration {
     public String jsonschema;
     public String sqlFile;
     public List<String> search;
+
+    public Map<String,InterfaceDeclaration> interfaces;
 
     @JsonProperty("past-generators")
     public Map<String, Generator> generators;
@@ -50,11 +54,15 @@ public class TemplatesProjectConfiguration {
                 ", script='" + script + '\'' +
                 ", script_dir='" + script_dir + '\'' +
                 ", python_dir='" + python_dir + '\'' +
+                ", javascript_dir='" + javascript_dir + '\'' +
+                ", rust_dir='" + rust_dir + '\'' +
                 ", integrator=" + integrator +
                 ", jsweet=" + jsweet +
                 ", jsonschema='" + jsonschema + '\'' +
                 ", sqlFile='" + sqlFile + '\'' +
                 ", search=" + search +
+                ", interfaces=" + interfaces +
+                ", generators=" + generators +
                 ", templates=" + Arrays.toString(templates) +
                 ", sqlTables=" + sqlTables +
                 '}';

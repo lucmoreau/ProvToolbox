@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +21,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
-import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.model.interop.PrincipalManager;
 import org.openprovenance.prov.service.core.readers.*;
 import org.openprovenance.prov.service.security.pac.RoleAuthorizationGenerator;
@@ -31,6 +31,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.vanilla.ProvUtilities;
 import org.pac4j.core.profile.UserProfile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -44,6 +45,12 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
+import org.openprovenance.prov.service.core.progress.LoggingProgressListener;
+import org.openprovenance.prov.service.core.progress.ProgressListener;
+import org.openprovenance.prov.service.core.progress.sse.SseProgressListener;
+import jakarta.ws.rs.sse.Sse;
+import jakarta.ws.rs.sse.SseEventSink;
 
 import static org.openprovenance.prov.model.interop.InteropMediaType.*;
 import static org.openprovenance.prov.service.core.Storage.getStringFromClasspath;
@@ -92,7 +99,25 @@ public class TemplateService {
     protected final String postgresUsername=getSystemOrEnvironmentVariableOrDefault(DB_USER, "user");
     protected final String postgresPassword=getSystemOrEnvironmentVariableOrDefault(DB_PASS,"password");
     protected final String provHost =getSystemOrEnvironmentVariableOrDefault(TPL_HOST, "http://localhost:8080/ems");
+    private final String iconsFolderForGraphviz;
 
+    /**
+     * Lazily-built JSON-record list backing {@link #getBackwardDispatch}.
+     * The catalogue is immutable post-service-startup, so the rows derived
+     * from the underlying {@link TemplateQuery#getBackwardDispatchRows()}
+     * cache never change without a JVM restart.  We additionally cache the
+     * mapped record list (and the ETag below) so neither the row→record
+     * mapping nor the content-hash is recomputed on every request.
+     */
+    private volatile List<BackwardDispatchRow> cachedDispatchPayload;
+
+    /**
+     * Content-hash ETag for {@link #cachedDispatchPayload} — computed once
+     * alongside the payload and reused for every {@code GET} on
+     * {@code /catalogue/backward-dispatch}.  Stable across requests within a
+     * JVM; differs whenever a service restart brings up a different catalogue.
+     */
+    private volatile String cachedDispatchEtag;
 
 
     public static class Linker {
@@ -129,15 +154,17 @@ public class TemplateService {
         this.storage=new Storage();
         this.principalManager =new PrincipalManager();
 
+        // configuration
+
         ps.addToConfiguration("security.config", securityConfiguration);
-
         this.templateConfiguration=(NO_TEMPLATE_CONFIG.equals(templateConfig))?new HashMap<>():readTemplateConfiguration(templateConfig);
-
         String fullClassName=templateConfiguration.get("catalogue.package")+".CatalogueDispatcher";
         String sqlInitializer= (String) templateConfiguration.get("sql.initializer");
         String jdbcURL= (String) templateConfiguration.get("jdbc.url");
         String nlgXplanLibary= (String) templateConfiguration.get("nlg.xplan.library");
-        List<String> nlgPlanList= (List<String>) templateConfiguration.get("nlg.xplan.list");
+        String nlgXplanStrategy= (String) templateConfiguration.get("nlg.xplan.strategy");
+        List<String> nlgPlanSelection= (List<String>) templateConfiguration.get("nlg.xplan.selection");
+        this.iconsFolderForGraphviz=(String) templateConfiguration.get("icons.folder.for.graphviz");
 
 
         Connection conn=storageSetup(jdbcURL);
@@ -147,7 +174,7 @@ public class TemplateService {
 
 
         // dynamically load class org.openprovenance.bk.physical.CatalogueDispatcher with map and pf as arguments;
-        BiFunction<Object, org.openprovenance.prov.model.ProvFactory, CatalogueDispatcherInterface> factory=dynamicallyLoadClass(fullClassName, CatalogueDispatcherInterface.class);
+        BiFunction<Object, ProvFactory, CatalogueDispatcherInterface> factory=dynamicallyLoadClass(fullClassName, CatalogueDispatcherInterface.class);
 
         this.catalogueDispatcher = getCatalogueDispatcher(factory, this.map, queryExecutor);
         this.querier = new Querier(storage, conn);
@@ -162,45 +189,50 @@ public class TemplateService {
             throw new RuntimeException("Failed to read linker table from catalogue", e);
         }
 
-        /*
-        this.compositeLinker=new HashMap<>() {{
-            put("plead_transforming_composite", new Linker("plead_transforming_composite_linker", "plead_transforming"));
-            put("packing_composite", new Linker("packing_composite_linker", "packing"));
-            put("org.openprovenance.templates.physical.PackingComposite", new Linker("packing_composite_linker", "packing"));
-            put("unpacking_composite", new Linker("unpacking_composite_linker", "unpacking"));
-            put("org.openprovenance.templates.physical.UnpackingComposite", new Linker("unpacking_composite_linker", "unpacking"));
-        }};
-
-
-         */
-
         storageInitialize(conn, sqlInitializer);
-
 
         this.documentBuilderDispatcher=catalogueDispatcher.getDocumentBuilderDispatcher();
         this.recordMaker=catalogueDispatcher.getRecordMaker();
         this.queryTemplate=new TemplateQuery(querier, this.catalogueDispatcher, principalManager, compositeLinker, om);
-        this.templateLogic=new TemplateLogicWithConfig(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om,nlgXplanLibary,nlgPlanList);
+        this.templateLogic=new TemplateLogicWithConfig(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om, nlgXplanLibary, nlgPlanSelection, nlgXplanStrategy);
 
 
     }
 
     static class TemplateLogicWithConfig extends TemplateLogic {
         private final String nlgXplanLibrary;
-        private final List<String> nlgXplanList;
+        private final List<String> nlgXplanSelection;
+        private final String nlgXplanStrategy;
 
 
-        public TemplateLogicWithConfig(ProvFactory pf, TemplateQuery queryTemplate, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om, String nlgXplanLibrary, List<String> nlgXplanList) {
-            super(pf, queryTemplate, shortNames, catalogueDispatcher, principalManager, utils, om);
+        public TemplateLogicWithConfig(ProvFactory pf, TemplateQuery queryTemplate, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> catalogueDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om, String nlgXplanLibrary, List<String> nlgXplanSelection, String nlgXplanStrategy) {
+            super(pf, queryTemplate, shortNames, catalogueDispatcher, principalManager, utils, om, nlgXplanStrategy);
             this.nlgXplanLibrary = nlgXplanLibrary;
-            this.nlgXplanList = nlgXplanList;
+            this.nlgXplanSelection = nlgXplanSelection;
+            this.nlgXplanStrategy = nlgXplanStrategy;
         }
 
         @Override
         public @NonNull XplainerConfig makeXplainerConfig() {
-            System.out.println("calling new XplainerConfig " + nlgXplanLibrary);
+            System.out.println("calling new XplainerConfig, library: " + nlgXplanLibrary);
+            System.out.println("calling new XplainerConfig, selection: " + nlgXplanSelection);
+            System.out.println("calling new XplainerConfig, strategy: " + nlgXplanStrategy);
 
-            return new XplainerConfig(nlgXplanLibrary, nlgXplanList);
+            return new XplainerConfig(nlgXplanLibrary, nlgXplanSelection, nlgXplanStrategy,0);
+        }
+
+        @Override
+        public @NonNull XplainerConfig makeXplainerConfig(String template, int format_option) {
+            System.out.println("calling new XplainerConfig, library: " + nlgXplanLibrary);
+            System.out.println("calling new XplainerConfig, selection: " + nlgXplanSelection);
+            System.out.println("calling new XplainerConfig, strategy: " + nlgXplanStrategy);
+
+            if (Objects.equals(nlgXplanStrategy, "template-based")) {
+                System.out.println("using template " + template);
+                return new XplainerConfig(nlgXplanLibrary, List.of(template), nlgXplanStrategy, format_option);
+            } else {
+                return new XplainerConfig(nlgXplanLibrary, nlgXplanSelection, nlgXplanStrategy, format_option);
+            }
         }
     }
 
@@ -208,14 +240,18 @@ public class TemplateService {
         if (conn !=null) {
             try {
                 boolean anyResult=storage.initializeDB(conn, sqlInitializer);
-                logger.info("DB initialized. Any results? " + anyResult);
+                logger.debug("DB initialized. Any results? " + anyResult);
 
-                sqlFilesToExecute.forEach(file -> executeStatementsFromFile(conn,file));
+                getSqlFilesToExecute().forEach(file -> executeStatementsFromFile(conn,file));
 
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public @NonNull List<String> getSqlFilesToExecute() {
+        return sqlFilesToExecute;
     }
 
     public Connection storageSetup(String jdbcURL) {
@@ -238,7 +274,7 @@ public class TemplateService {
 
 
     public Object submitPostProcessing(Integer i, String templateFullyQualifiedName) {
-        logger.info("submitPostProcessing called with i=" + i + " templateFullyQualifiedName=" + templateFullyQualifiedName);
+        logger.debug("submitPostProcessing called with i=" + i + " templateFullyQualifiedName=" + templateFullyQualifiedName);
         if (i==null) i=-69;
         return templateLogic.submitPostProcessing(i,templateFullyQualifiedName);
     };
@@ -251,15 +287,15 @@ public class TemplateService {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        logger.info("DB processing file " + filename + ". Any results? " + anyResult);
+        logger.debug("DB processing file " + filename + ". Any results? " + anyResult);
     }
 
 
     @POST
     @Path("/statements")
     @Tag(name = "template")
-    @Consumes({InteropMediaType.MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON})
-    @Produces({InteropMediaType.MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON}) //InteropMediaType.MEDIA_TEXT_CSV,
+    @Consumes({MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON})
+    @Produces({MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON})
     public Response submitStatements(@Context HttpServletRequest request,
                                       @Context HttpHeaders headers,
                                       @Context UriInfo uriInfo,
@@ -276,24 +312,32 @@ public class TemplateService {
 
         String headerAcceptProvHash=headers.getHeaderString(HTTP_HEADER_ACCEPT_PROV_HASH);
 
-        logger.info("post statements id: principal " + principal);
+        logger.debug("post statements id: principal " + principal);
 
+        String acceptHeader = request.getHeader(HttpHeaders.ACCEPT).toLowerCase();
+        logger.debug("post statements id: accept header " + acceptHeader);
+        switch (acceptHeader) {
+            case MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON:
+                break;
+            default: return utils.composeResponseBadRequest("unknown accept header " + acceptHeader, new UnsupportedOperationException(acceptHeader));
+        }
 
         List<Object> result;
         if (documentOrCsv.csv!=null) {
-            result=templateLogic.processIncomingCsv(documentOrCsv.csv);
+            result=templateLogic.processIncomingCsv(documentOrCsv.csv,acceptHeader);
         } else if (documentOrCsv.json!=null) {
-            result=templateLogic.processIncomingJson(documentOrCsv.json);
+            // not accepting yet csv return
+            result=templateLogic.processIncomingJson(documentOrCsv.json,acceptHeader);
         } else {
             return utils.composeResponseInternalServerError("unknown input document", new UnsupportedOperationException());
         }
         String hash= (headerAcceptProvHash==null)?null:headerInfo.get().get(HTTP_HEADER_CONTENT_PROV_HASH);
         String location= headerInfo.get().get(HTTP_HEADER_LOCATION);
-        switch (request.getHeader(HttpHeaders.ACCEPT).toLowerCase()) {
-            case InteropMediaType.MEDIA_TEXT_CSV:
+        switch (acceptHeader) {
+            case MEDIA_TEXT_CSV:
                 return ServiceUtils
                         .composeResponseOK(templateLogic.streamOutRecordsToCSV(result))
-                        .type(InteropMediaType.MEDIA_TEXT_CSV)
+                        .type(MEDIA_TEXT_CSV)
                         .header(HTTP_HEADER_CONTENT_PROV_HASH, hash)
                         .location((location==null)?null:URI.create(location))
                         .build();
@@ -312,7 +356,7 @@ public class TemplateService {
     @GET
     @Path("/template/{template}/{id}.{extension}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML, InteropMediaType.MEDIA_TEXT_CSV  })
+    @Produces({ MEDIA_APPLICATION_JSONLD, MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML, MEDIA_TEXT_CSV  })
     public Response getTemplateInstanceWithId(@Context HttpServletResponse response,
                                                  @Context HttpServletRequest request,
                                                  @Context HttpHeaders headers,
@@ -338,21 +382,137 @@ public class TemplateService {
                 ll.add(csv);
                 ll.add("\n");
             }
-            return ServiceUtils.composeResponseOK(templateLogic.streamOutRecordsToCSV(ll)).type(InteropMediaType.MEDIA_TEXT_CSV).build();
+            return ServiceUtils.composeResponseOK(templateLogic.streamOutRecordsToCSV(ll)).type(MEDIA_TEXT_CSV).build();
         }
         Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 
         switch (extension) {
             case "jsonld":
-                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_APPLICATION_JSONLD).build();
+                return ServiceUtils.composeResponseOK(result).type(MEDIA_APPLICATION_JSONLD).build();
             case "provn":
-                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
+                return ServiceUtils.composeResponseOK(result).type(MEDIA_TEXT_PROVENANCE_NOTATION).build();
             case "svg":
                 return ServiceUtils.composeResponseOK(result).type(MEDIA_IMAGE_SVG_XML).build();
 
         }
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
     }
+
+
+    /**
+     * Returns the catalogue's {@code backward_dispatch} table as a flat JSON array,
+     * mirroring the four-column SQL table populated at service startup by
+     * {@link TemplateQuery#generateClearAndPopulateBackwardDispatch}.  Each entry has
+     * shape {@code {"source_template": "...", "source_property": "...",
+     * "target_template": "...", "target_property": "..."}}.
+     *
+     * <p>Intended for off-machine consumers that need the producer/consumer edge set
+     * without a database connection — typically build-time tools and IT assertion
+     * libraries that validate or index step-spec {@code stream_3_entity_prerequisites}
+     * declarations against the live catalogue.  See the chronicle-side
+     * {@code STREAM3-CONSTRAINTS.md} for the consumer pattern.
+     *
+     * <p>The response is cacheable: the payload is invariant for the JVM lifetime
+     * of the service, so we emit an {@code ETag} (content-hash) and a
+     * {@code Cache-Control: max-age=3600, public} header.  Clients sending
+     * {@code If-None-Match} with the matching ETag receive {@code 304 Not Modified}.
+     *
+     * @return {@code 200 OK} with the flat JSON array, or {@code 304 Not Modified}
+     *         when the client's {@code If-None-Match} matches the current ETag.
+     */
+    @GET
+    @Path("/catalogue/backward-dispatch")
+    @Tag(name = "catalogue")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBackwardDispatch(@Context HttpHeaders headers) {
+
+        logger.info("getBackwardDispatch");
+
+        // Lazy double-checked initialisation.  TemplateQuery already caches the raw
+        // rows; here we additionally cache the JSON-record shape and the ETag so
+        // neither is recomputed on every request.  The catalogue is immutable
+        // post-startup, so cache eviction is not required.
+        if (cachedDispatchPayload == null) {
+            synchronized (this) {
+                if (cachedDispatchPayload == null) {
+                    List<String[]> rows = queryTemplate.getBackwardDispatchRows();
+                    List<BackwardDispatchRow> payload = new ArrayList<>(rows.size());
+                    StringBuilder fingerprint = new StringBuilder(rows.size() * 64);
+                    for (String[] r : rows) {
+                        payload.add(new BackwardDispatchRow(r[0], r[1], r[2], r[3]));
+                        fingerprint.append(r[0]).append('|').append(r[1]).append('|')
+                                   .append(r[2]).append('|').append(r[3]).append('\n');
+                    }
+                    // Bare hex — JAX-RS wraps the value in quotes per RFC 7232 when it
+                    // serialises the ETag header.  Embedding our own quotes here would
+                    // double-wrap and break If-None-Match negotiation with conforming clients.
+                    this.cachedDispatchEtag = DigestUtils.sha1Hex(fingerprint.toString());
+                    this.cachedDispatchPayload = List.copyOf(payload);
+                }
+            }
+        }
+
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(3600);    // catalogue is stable per service deploy
+        cc.setPrivate(false);  // intermediate caches may store
+
+        // Honour If-None-Match — clients with the current ETag get 304 with no body.
+        // The incoming header value is the quoted RFC 7232 form; strip the surrounding
+        // quotes before comparing against our bare-hex stored value.
+        String ifNoneMatch = headers.getHeaderString(HttpHeaders.IF_NONE_MATCH);
+        String inmBare = (ifNoneMatch == null) ? null
+                : ifNoneMatch.replaceFirst("^W/", "").replaceAll("^\"|\"$", "");
+        if (cachedDispatchEtag.equals(inmBare)) {
+            return Response.notModified()
+                    .tag(cachedDispatchEtag)
+                    .cacheControl(cc)
+                    .build();
+        }
+
+        // The chronicle stack does not register a default JAX-RS provider for arbitrary
+        // POJOs — a downstream filter expects entities to be Jackson JsonNodes and casts
+        // unconditionally.  Stream the payload through the project's ObjectMapper instead,
+        // matching the pattern used elsewhere in this file.
+        final List<BackwardDispatchRow> snapshot = cachedDispatchPayload;
+        jakarta.ws.rs.core.StreamingOutput promise = out -> om.writeValue(out, snapshot);
+
+        return Response.ok(promise, MediaType.APPLICATION_JSON_TYPE)
+                .tag(cachedDispatchEtag)
+                .cacheControl(cc)
+                .build();
+    }
+
+    /**
+     * One row of the catalogue {@code backward_dispatch} table, as returned by
+     * {@link #getBackwardDispatch}.  Field names use {@code snake_case} to match the
+     * SQL column names exactly so clients can deserialise by column name without
+     * any per-field configuration.
+     *
+     * <p>Plain class rather than a {@code record} because the parent pom pins the
+     * {@code maven-compiler-plugin} {@code release} to Java 15 and records are
+     * Java 16+.  Jackson serialises this to the same shape via the standard
+     * Java-bean getters below.</p>
+     */
+    public static class BackwardDispatchRow {
+        public final String source_template;
+        public final String source_property;
+        public final String target_template;
+        public final String target_property;
+
+        public BackwardDispatchRow(String source_template, String source_property,
+                                   String target_template, String target_property) {
+            this.source_template = source_template;
+            this.source_property = source_property;
+            this.target_template = target_template;
+            this.target_property = target_property;
+        }
+
+        public String getSource_template() { return source_template; }
+        public String getSource_property() { return source_property; }
+        public String getTarget_template() { return target_template; }
+        public String getTarget_property() { return target_property; }
+    }
+
 
     public String getPrincipalAsPreferredUsername(Principal principal) {
         if (principal==null) return "nil";
@@ -369,7 +529,7 @@ public class TemplateService {
     @GET
     @Path("/template/{template}/{id}/{variable:\\w+}{extension:(\\.\\w+)?}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML})
+    @Produces({ MEDIA_APPLICATION_JSONLD, MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML})
     public Response getTemplatePropertyInstanceWithId(@Context HttpServletResponse response,
                                                       @Context HttpServletRequest request,
                                                       @Context HttpHeaders headers,
@@ -394,7 +554,7 @@ public class TemplateService {
 
         List<Object> selections=new LinkedList<>();
         for (Object[] record: records) {
-            int index=java.util.Arrays.asList(catalogueDispatcher.getPropertyOrder().get(template)).indexOf(variable);
+            int index= Arrays.asList(catalogueDispatcher.getPropertyOrder().get(template)).indexOf(variable);
             Object[] objectRecord=recordMaker.get(template).apply(record);
             selections.add(objectRecord[index]);
         }
@@ -416,9 +576,9 @@ public class TemplateService {
 
         switch (extension) {
             case "jsonld":
-                return ServiceUtils.composeResponseOK(newDoc).type(InteropMediaType.MEDIA_APPLICATION_JSONLD).build();
+                return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_APPLICATION_JSONLD).build();
             case "provn":
-                return ServiceUtils.composeResponseOK(newDoc).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
+                return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_TEXT_PROVENANCE_NOTATION).build();
             case "svg":
                 return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_IMAGE_SVG_XML).build();
 
@@ -438,7 +598,7 @@ public class TemplateService {
 
     @POST
     @Path("/explanation/templates")
-    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Consumes({MEDIA_APPLICATION_JSON})
     public Response getExplanation(@Context HttpServletResponse response,
                                    @Context HttpServletRequest request,
                                    @Context HttpHeaders headers,
@@ -453,8 +613,8 @@ public class TemplateService {
 
     @GET
     @Path("/explanation/template/{template}/{id}")
-    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
-    @Produces({MediaType.TEXT_PLAIN, MEDIA_APPLICATION_JSON})
+    @Consumes({MEDIA_APPLICATION_JSON})
+    @Produces({MediaType.TEXT_PLAIN, MEDIA_APPLICATION_JSON, MEDIA_TEXT_HTML})
     public Response getExplanation(@Context HttpServletResponse response,
                                    @Context HttpServletRequest request,
                                    @Context HttpHeaders headers,
@@ -477,18 +637,27 @@ public class TemplateService {
         Document doc=queryTemplate.constructDocument(documentBuilderDispatcher,records);
 
 
-        Map<String,String> explanations=templateLogic.generateExplanation(template, id, headerAcceptExplanation, doc);
 
         switch (request.getHeader(HttpHeaders.ACCEPT).toLowerCase()) {
             case MediaType.TEXT_PLAIN:
                 StringBuilder sb= new StringBuilder();
+                Map<String,String> explanations=templateLogic.generateExplanation(template, id, headerAcceptExplanation, doc,0);
+
                 for (String key: explanations.keySet()) {
                     sb.append(explanations.get(key)).append("\n");
                 }
                 return ServiceUtils.composeResponseOK(sb.toString()).type(MediaType.TEXT_PLAIN_TYPE).build();
-            case InteropMediaType.MEDIA_APPLICATION_JSON:
-                StreamingOutput promise= out -> om.writeValue(out,explanations);
-                return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_APPLICATION_JSON).build();
+            case MEDIA_APPLICATION_JSON:
+                Map<String,String> explanations2=templateLogic.generateExplanation(template, id, headerAcceptExplanation, doc,0);
+                StreamingOutput promise= out -> om.writeValue(out,explanations2);
+                return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
+            case MEDIA_TEXT_HTML:
+                Map<String,String> explanations3=templateLogic.generateExplanation(template, id, headerAcceptExplanation, doc,1);
+                StringBuilder sb1= new StringBuilder();
+                for (String key: explanations3.keySet()) {
+                    sb1.append(explanations3.get(key)).append("\n");
+                }
+                return ServiceUtils.composeResponseOK(sb1.toString()).type(MediaType.TEXT_HTML_TYPE).build();
         }
         return utils.composeResponseBadRequest("unknown accept header " + request.getHeader(HttpHeaders.ACCEPT), new UnsupportedOperationException(request.getHeader(HttpHeaders.ACCEPT)));
 
@@ -498,8 +667,8 @@ public class TemplateService {
     @POST
     @Path("/templates.{extension}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
-    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Produces({ MEDIA_APPLICATION_JSONLD, MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
+    @Consumes({MEDIA_APPLICATION_JSON})
     public Response getTemplates(@Context HttpServletResponse response,
                                  @Context HttpServletRequest request,
                                  @Context HttpHeaders headers,
@@ -516,9 +685,9 @@ public class TemplateService {
 
         switch (extension) {
             case "jsonld":
-                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_APPLICATION_JSONLD).build();
+                return ServiceUtils.composeResponseOK(result).type(MEDIA_APPLICATION_JSONLD).build();
             case "provn":
-                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
+                return ServiceUtils.composeResponseOK(result).type(MEDIA_TEXT_PROVENANCE_NOTATION).build();
             case "svg":
                 return ServiceUtils.composeResponseOK(result).type(MEDIA_IMAGE_SVG_XML).build();
         }
@@ -530,8 +699,8 @@ public class TemplateService {
     @POST
     @Path("/templates/records")
     @Tag(name = "template")
-    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
-    @Produces({InteropMediaType.MEDIA_TEXT_CSV})
+    @Consumes({MEDIA_APPLICATION_JSON})
+    @Produces({MEDIA_TEXT_CSV})
     public Response getTemplatesRecords(@Context HttpServletResponse response,
                                         @Context HttpServletRequest request,
                                         @Context HttpHeaders headers,
@@ -564,7 +733,7 @@ public class TemplateService {
             }
         };
 
-        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_TEXT_CSV).build();
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_TEXT_CSV).build();
 
     }
 
@@ -572,7 +741,7 @@ public class TemplateService {
     @POST
     @Path("/templates/viz")
     @Tag(name = "template")
-    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Consumes({MEDIA_APPLICATION_JSON})
     @Produces({MEDIA_IMAGE_SVG_XML})
     public Response getTemplatesViz(@Context HttpServletResponse response,
                                     @Context HttpServletRequest request,
@@ -584,17 +753,57 @@ public class TemplateService {
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
-        StreamingOutput promise= out -> templateLogic.generateViz(config, principalAsPreferredUsername, out);
+        ProgressListener listener = new LoggingProgressListener();
+        StreamingOutput promise= out -> templateLogic.generateViz(config, principalAsPreferredUsername, iconsFolderForGraphviz,  out, listener);
 
-        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_IMAGE_SVG_XML).build();
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_IMAGE_SVG_XML).build();
 
+    }
+
+    /**
+     * SSE-streamed variant of {@link #getTemplatesViz}.
+     *
+     * <p>Emits one {@code stage} event per {@code started}/{@code done}/
+     * {@code detail}/{@code failed} callback while the viz pipeline runs,
+     * then a final {@code result} event whose payload is the base64-encoded
+     * SVG.  On failure, sends an {@code error} event before closing the sink.
+     *
+     * <p>The work runs synchronously on the request thread.  Tried with an
+     * executor first; RESTEasy 6.2.14 (or the pac4j filter in front of it)
+     * closes the underlying Jetty response as soon as the resource method
+     * returns, so the first SSE event went out and every subsequent send
+     * failed with {@code EofException: Closed}.  Running synchronously keeps
+     * the response open for the full ~600 ms the pipeline takes today.
+     */
+    @POST
+    @Path("/templates/viz/stream")
+    @Tag(name = "template")
+    @Consumes({MEDIA_APPLICATION_JSON})
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    public void getTemplatesVizStream(@Context SseEventSink sink,
+                                      @Context Sse sse,
+                                      @Context HttpServletRequest request,
+                                      TemplatesVizConfig config) {
+
+        final String principalAsPreferredUsername = getPrincipalAsPreferredUsername(request.getUserPrincipal());
+
+        SseProgressListener listener = new SseProgressListener(sink, sse);
+        try {
+            ByteArrayOutputStream svgBuf = new ByteArrayOutputStream();
+            templateLogic.generateViz(config, principalAsPreferredUsername, iconsFolderForGraphviz, svgBuf, listener);
+            listener.result(MEDIA_IMAGE_SVG_XML, svgBuf.toByteArray());
+        } catch (Throwable t) {
+            listener.error(t);
+        } finally {
+            sink.close();
+        }
     }
 
     @GET
     @Path("/live/{relation}/{id:\\d+}{extension:(\\.\\w+)?}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
-    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Produces({ MEDIA_APPLICATION_JSONLD, MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
+    @Consumes({MEDIA_APPLICATION_JSON})
     public Response getLiveNode(@Context HttpServletResponse response,
                                 @Context HttpServletRequest request,
                                 @Context HttpHeaders headers,
@@ -628,12 +837,12 @@ public class TemplateService {
             Object[] record=records.get(i);
             String property=ll.get(i).property;
             String template=(String)record[0];
-            System.out.println("template " + template + " property " + property + " record " + java.util.Arrays.asList(record));
+            System.out.println("template " + template + " property " + property + " record " + Arrays.asList(record));
             //logger.info("template " + template);
             //logger.info("property " + property);
             //logger.info("record " + java.util.Arrays.asList(record));
 
-            int index=java.util.Arrays.asList(catalogueDispatcher.getPropertyOrder().get(template)).indexOf(property);
+            int index= Arrays.asList(catalogueDispatcher.getPropertyOrder().get(template)).indexOf(property);
             Object[] objectRecord=recordMaker.get(template).apply(record);
             selections.add(objectRecord[index]);
         }
@@ -654,9 +863,9 @@ public class TemplateService {
 
         switch (extension) {
             case "jsonld":
-                return ServiceUtils.composeResponseOK(newDoc).type(InteropMediaType.MEDIA_APPLICATION_JSONLD).build();
+                return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_APPLICATION_JSONLD).build();
             case "provn":
-                return ServiceUtils.composeResponseOK(newDoc).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
+                return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_TEXT_PROVENANCE_NOTATION).build();
             case "svg":
                 return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_IMAGE_SVG_XML).build();
         }
@@ -668,7 +877,7 @@ public class TemplateService {
     @GET
     @Path("/hash/template/{template}/{id}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Produces({ MEDIA_APPLICATION_JSON})
     public Response getHash(@Context HttpServletResponse response,
                                               @Context HttpServletRequest request,
                                               @Context HttpHeaders headers,
@@ -687,14 +896,14 @@ public class TemplateService {
 
         StreamingOutput promise= out -> om.writeValue(out,hash);
 
-        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_APPLICATION_JSON).build();
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
 
     }
 
     @GET
     @Path("/rehash/template/{template}/{id}")
     @Tag(name = "template")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Produces({ MEDIA_APPLICATION_JSON})
     public Response reHash(@Context HttpServletResponse response,
                             @Context HttpServletRequest request,
                             @Context HttpHeaders headers,
@@ -726,15 +935,67 @@ public class TemplateService {
 
         StreamingOutput promise= out -> om.writeValue(out,hash);
 
-        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_APPLICATION_JSON).build();
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
 
     }
 
+    @GET
+    @Path("/template/{relation}/last/{count}.json")
+    @Tag(name = "template")
+    @Produces({ MEDIA_APPLICATION_JSON })
+    public Response getLastNrecordsIds(@Context HttpServletResponse response,
+                                              @Context HttpServletRequest request,
+                                              @Context HttpHeaders headers,
+                                              @Context UriInfo uriInfo,
+
+                                              @Parameter(name = "relation", description = "relation name", required = true) @PathParam("relation") String relation,
+                                              @Parameter(name = "count", description = "record count (if 0, means returns all", required = true) @PathParam("count") Integer count) {
+
+        logger.debug("getLastNrecordsIds " + relation + " " + count);
+
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+
+
+        List<Integer> ll=queryTemplate.queryIds4MostRecentTemplatesRecords(relation, count, principalAsPreferredUsername);
+
+        logger.debug("getLastNrecords " + ll);
+
+        StreamingOutput promise= out -> om.writeValue(out,ll);
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
+
+    }
+
+    @GET
+    @Path("/template/{relation}/records/{count}.json")
+    @Tag(name = "template")
+    @Produces({ MEDIA_APPLICATION_JSON, MEDIA_TEXT_PLAIN })
+    public Response getLastNrecords(@Context HttpServletResponse response,
+                                    @Context HttpServletRequest request,
+                                    @Context HttpHeaders headers,
+                                    @Context UriInfo uriInfo,
+
+                                    @Parameter(name = "relation", description = "relation name", required = true) @PathParam("relation") String relation,
+                                    @Parameter(name = "count", description = "record count (if 0, means returns all", required = true) @PathParam("count") Integer count) {
+
+        logger.debug("getLastNrecords " + relation + " " + count);
+
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+        List<HashMap<String, Object>> ll=queryTemplate.queryMostRecentTemplatesRecords(relation, count, principalAsPreferredUsername);
+        StreamingOutput promise= out -> om.writeValue(out,ll);
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
+
+    }
+
+
     private String determineOptionalExtension(HttpHeaders headers, String extension) {
         if (extension ==null || extension.isEmpty()) {
-            if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION))) {
+            if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(MEDIA_TEXT_PROVENANCE_NOTATION))) {
                 extension ="provn";
-            } else if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(InteropMediaType.MEDIA_APPLICATION_JSONLD))) {
+            } else if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(MEDIA_APPLICATION_JSONLD))) {
                 extension ="jsonld";
             } else if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(MEDIA_IMAGE_SVG_XML))) {
                 extension ="svg";
@@ -751,7 +1012,7 @@ public class TemplateService {
 
 
     @SuppressWarnings("unchecked")
-    static <T> BiFunction<Object,org.openprovenance.prov.model.ProvFactory,T> dynamicallyLoadClass(String factory, Class<T> iface) {
+    static <T> BiFunction<Object, ProvFactory,T> dynamicallyLoadClass(String factory, Class<T> iface) {
         Class<?> clazz;
         try {
             clazz = Class.forName(factory);
@@ -772,13 +1033,14 @@ public class TemplateService {
 
     public Map<String,Object> readTemplateConfiguration(String configFileName) {
         try {
+            logger.info("readTemplateConfiguration: " +  configFileName);
             return (Map<String, Object>) om.readValue(new File(configFileName), Map.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-
-
-
+    public TemplateQuery getQueryTemplate() {
+        return queryTemplate;
+    }
 }

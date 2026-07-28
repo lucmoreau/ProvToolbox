@@ -53,7 +53,7 @@ public class CompilerTableConfiguratorForTypes {
     SpecificationFile generateTableConfigurator(TemplatesProjectConfiguration configs, boolean compositeOnly, Locations locations, String l2p_src_dir) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
-        String originalTableClassName = (compositeOnly) ? COMPOSITE_TABLE_CONFIGURATOR : TABLE_CONFIGURATOR;
+        String originalTableClassName = (compositeOnly) ? TABLE_CONFIGURATOR_COMPOSITE : TABLE_CONFIGURATOR;
         String tableClassName = originalTableClassName + "ForTypes" + WITH_MAP;
 
         ClassName originalInterface = get(originalTableClassName, locations.getFilePackage(configs.name, originalTableClassName));
@@ -187,8 +187,8 @@ public class CompilerTableConfiguratorForTypes {
         String myPackage = locations.getConfiguratorBackendPackage(configs.name);
         String directory=locations.convertToDirectory(l2p_src_dir,"");
 
-        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, tableClassName + DOT_JAVA_EXTENSION,
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs,
                 directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator, pythonGenerator);

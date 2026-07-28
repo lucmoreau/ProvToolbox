@@ -1,5 +1,5 @@
 
-
+/*
 CREATE TABLE IF NOT EXISTS plead_transforming_composite_linker
 (
     ID        SERIAL,
@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS plead_transforming_composite_linker
     simple    INT
 --  The simple record
 );
+
+ */
 
 CREATE TABLE IF NOT EXISTS __PROV_DERIVATION
 (
@@ -101,7 +103,7 @@ CREATE TABLE IF NOT EXISTS __PROV_MEMBERSHIP
     rel TEXT
 );
 
-
+/*
 CREATE TABLE if not exists predecessor_table  (template text, output text, input text);
 
 truncate predecessor_table;
@@ -124,6 +126,8 @@ values
     ('handover', 'item1', 'item0')
 ;
 
+
+ */
 /*
 
 select * from backwardTraversal(8, 'plead_approving', 'pipeline')
@@ -141,38 +145,18 @@ and edges.out_property=predecessor_table.output
 
  */
 
-/*
-
-CREATE OR REPLACE FUNCTION insert_plead_transforming_composite_inserters(_records plead_transforming_type [])
-    RETURNS table(ID INT,
-                  transformed_file INT,
-                  transforming INT,
-                  parent INT)
-AS $$
-WITH
-    inserted_consistsOf  AS (SELECT * from insert_plead_transforming_composite_array (_records)),
-
-    the_record AS (INSERT INTO plead_transforming_composite (bean, count, type)
-        VALUES (null, (SELECT count(ID) FROM inserted_consistsOf), 'plead_transforming')
-        RETURNING id),
-
-    the_product AS (SELECT (SELECT id AS composite FROM the_record), ID as simple
-                    FROM inserted_consistsOf),
-
-    tablexxx AS (INSERT INTO plead_transforming_composite_linker(composite,simple)
-        SELECT * FROM the_product)
-
-SELECT ID,transformed_file, transforming, (select id as parent from the_record)
-FROM inserted_consistsOf
-
-$$ LANGUAGE sql;
-
-
-
-select * from insert_plead_transforming_composite_inserters (ARRAY[
-    ( -1,'ff'::TEXT,0,null,null,null,1,null,null,''::TEXT,NULL,NULL,NULL) :: plead_transforming_type,
-    ( -1,'gggg'::TEXT,-1,null,null,null,1,null,null,''::TEXT,NULL,NULL,NULL) :: plead_transforming_type]);
-
- */
-
-
+CREATE OR REPLACE FUNCTION count_rows_in_tables(table_names text[])
+RETURNS TABLE(table_name text, row_count bigint) AS
+$$
+DECLARE
+tbl text;
+BEGIN
+    FOREACH tbl IN ARRAY table_names
+    LOOP
+        RETURN QUERY EXECUTE format(
+            'SELECT %L, COUNT(*) FROM %I',
+            tbl, tbl
+        );
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;

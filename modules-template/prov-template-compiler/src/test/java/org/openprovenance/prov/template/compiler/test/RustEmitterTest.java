@@ -1,0 +1,1545 @@
+package org.openprovenance.prov.template.compiler.test;
+
+import org.junit.Test;
+import org.openprovenance.prov.template.compiler.past.*;
+import org.openprovenance.prov.template.compiler.past.Class;  // explicit: shadows java.lang.Class
+import org.openprovenance.prov.template.compiler.past.annotations.MutableFirstParam;
+import org.openprovenance.prov.template.compiler.past.annotations.MutableReceiver;
+import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
+import org.openprovenance.prov.template.compiler.past.type.ClassName;
+import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
+import org.openprovenance.prov.template.compiler.past.type.TypeName;
+import org.openprovenance.prov.template.compiler.past.emitter.Rust;
+
+import javax.lang.model.element.Modifier;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.openprovenance.prov.template.compiler.past.Variable.VariableKind.*;
+
+/**
+ * Unit tests for Rust code generation from PAST trees.
+ *
+ * <p>Each test constructs a minimal PAST {@link Class} tree, feeds it to the {@link Rust}
+ * emitter, and asserts that key fragments appear (or do not appear) in the generated source.
+ *
+ * <p>Test groups:
+ * <ol>
+ *   <li>Struct layout — field optionality, primitive types, field visibility.</li>
+ *   <li>Method name translation — add→push, size→len, isEmpty→is_empty, etc.</li>
+ *   <li>HashMap argument treatment — key borrows, owned strings, value unwrap.</li>
+ *   <li>Chained-get dispatch — unwrap + SWITCH_TO_GET_MUT / UNWRAP_AND_CHAIN.</li>
+ *   <li>Mutation detection — methods containing mutating calls emit {@code &mut self}.</li>
+ *   <li>Control flow — if/else, return (implicit last-expression vs. explicit).</li>
+ *   <li>Static method calls and constructor calls.</li>
+ *   <li>Variable conversion — self prefix, snake_case.</li>
+ *   <li>Iterator (for-each).</li>
+ *   <li>OBJECT_METHOD_CALL camelCase snake_casing.</li>
+ *   <li>Vec index access.</li>
+ *   <li>Self Option field passed as by-value argument.</li>
+ *   <li>MutableReceiver annotation.</li>
+ *   <li>MutableFirstParam annotation.</li>
+ *   <li>currentMethodReturnType: string constant coercion.</li>
+ *   <li>Non-MutableReceiver Option-field getter returns.</li>
+ *   <li>Stateful trait propagation.</li>
+ *   <li>MutableFirstParam through a trait field (OBJECT_METHOD_CALL).</li>
+ *   <li>FUNCTIONAL_INTERFACE_CALL: {@code null} arg for {@code &str} param emits {@code ""}.</li>
+ *   <li>HashMap key borrowing: string-typed local variable is not double-borrowed.</li>
+ *   <li>Self-method call with struct argument borrows the argument.</li>
+ *   <li>Super-delegation chain returning a cloneable collection appends {@code .clone()}.</li>
+ *   <li>Super-delegation chain returning a non-cloneable collection uses {@code &} return type.</li>
+ *   <li>Trait default body: primitive parameter is not double-wrapped in {@code Some()}.</li>
+ * </ol>
+ */
+public class RustEmitterTest {
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    /** Emit a class and return the generated Rust source string. */
+    private String emit(Class clazz) {
+        Rust rust = new Rust();
+        rust.discoverClass(clazz);
+        return rust.emit(clazz).toString();
+    }
+
+    /** Build a public method with the given name, void return, and body statements. */
+    private Method publicMethod(String name, Statement... body) {
+        Method m = new Method(name).MODIFIERS(Modifier.PUBLIC).RETURNS(ClassName.VOID);
+        for (Statement s : body) m.addStatement(s);
+        return m;
+    }
+
+    /** Build a public method with a return type and body. */
+    private Method publicMethod(String name, TypeName returnType, Statement... body) {
+        Method m = new Method(name).MODIFIERS(Modifier.PUBLIC).RETURNS(returnType);
+        for (Statement s : body) m.addStatement(s);
+        return m;
+    }
+
+    /** Convenience: local Variable. */
+    private Variable local(String name) {
+        return new Variable(name, LOCAL_VARIABLE);
+    }
+
+    /** Convenience: local Variable with an inferred type. */
+    private Variable local(String name, TypeName type) {
+        Variable v = new Variable(name, LOCAL_VARIABLE);
+        v.inferredType = type;
+        return v;
+    }
+
+    /** Convenience: field Variable (emits as self.<name>). */
+    private Variable field(String name) {
+        return new Variable(name, FIELD_VARIABLE);
+    }
+
+    // =========================================================================
+    // Group 1 — Struct layout
+    // =========================================================================
+
+    @Test
+    public void simpleClass_emitsStructKeyword() {
+        Class clazz = new Class("MyStruct").MODIFIERS(Modifier.PUBLIC);
+        String out = emit(clazz);
+        assertTrue("Expected 'pub struct MyStruct'", out.contains("pub struct MyStruct"));
+    }
+
+    @Test
+    public void fieldWithoutInitializer_emittedAsOptionString() {
+        // A field with no initialiser must be Option<String> in Rust
+        Field f = new Field("myName", ClassName.STRING);   // no initialiser
+        Class clazz = new Class("MyStruct").MODIFIERS(Modifier.PUBLIC).FIELDS(f);
+        String out = emit(clazz);
+        assertTrue("Expected Option<String> for uninitialised field", out.contains("Option<String>"));
+        assertFalse("Should not emit bare 'String' when field is Option", out.contains(": String,"));
+    }
+
+    @Test
+    public void fieldWithInitializer_emittedAsPlainString() {
+        // A field with an initialiser is plain String, not Option<String>
+        Field f = new Field("myName", ClassName.STRING);
+        f.initialiser = new Constant("default");
+        Class clazz = new Class("MyStruct").MODIFIERS(Modifier.PUBLIC).FIELDS(f);
+        String out = emit(clazz);
+        assertTrue("Expected bare String type for initialised field", out.contains(": String,"));
+        assertFalse("Should not wrap initialised field in Option", out.contains("Option<String>"));
+    }
+
+    @Test
+    public void intField_emittedAsI32() {
+        Field f = new Field("count", ClassName._int);
+        f.initialiser = new Constant(0);   // initialised → no Option wrapping
+        Class clazz = new Class("Counter").MODIFIERS(Modifier.PUBLIC).FIELDS(f);
+        String out = emit(clazz);
+        assertTrue("int should map to i32", out.contains(": i32,"));
+    }
+
+    @Test
+    public void uninitializedIntField_emittedAsOptionI32() {
+        Field f = new Field("count", ClassName._int);  // no initialiser
+        Class clazz = new Class("Counter").MODIFIERS(Modifier.PUBLIC).FIELDS(f);
+        String out = emit(clazz);
+        assertTrue("Uninitialised int field should be Option<i32>", out.contains("Option<i32>"));
+    }
+
+    @Test
+    public void fieldNameIsSnakedCased() {
+        Field f = new Field("myFieldName", ClassName.STRING);
+        f.initialiser = new Constant("x");
+        Class clazz = new Class("MyStruct").MODIFIERS(Modifier.PUBLIC).FIELDS(f);
+        String out = emit(clazz);
+        assertTrue("Field name should be snake_cased", out.contains("my_field_name:"));
+    }
+
+    @Test
+    public void classNameIsPascalCased() {
+        Class clazz = new Class("myStruct").MODIFIERS(Modifier.PUBLIC);
+        String out = emit(clazz);
+        assertTrue("struct name should be PascalCase", out.contains("struct MyStruct"));
+    }
+
+    // =========================================================================
+    // Group 2 — Method name translation (via OPERATOR_VARIABLE)
+    // =========================================================================
+
+    @Test
+    public void methodCall_add_translatedToPush() {
+        // list.add(item) on a local variable → list.push(item.clone())
+        Variable listVar = local("myList");
+        Variable itemVar = local("item");
+        MethodCall addCall = new MethodCall(listVar, "add", List.of(itemVar));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doAdd", addCall));
+        String out = emit(clazz);
+        assertTrue("add should translate to push", out.contains("my_list.push("));
+    }
+
+    @Test
+    public void methodCall_add_appendsClone() {
+        // When the arg has no inferred type → .clone() is appended
+        Variable listVar = local("myList");
+        Variable itemVar = local("item");  // no inferredType → CLONE will add .clone()
+        MethodCall addCall = new MethodCall(listVar, "add", List.of(itemVar));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doAdd", addCall));
+        String out = emit(clazz);
+        assertTrue("Non-Copy arg to push should have .clone()", out.contains("item.clone()"));
+    }
+
+    @Test
+    public void methodCall_add_copyType_noClone() {
+        // When the arg is a Copy type (e.g. i32) → no .clone()
+        Variable listVar = local("myList");
+        Variable intVar  = local("n", ClassName._int);  // i32 is Copy
+        MethodCall addCall = new MethodCall(listVar, "add", List.of(intVar));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doAdd", addCall));
+        String out = emit(clazz);
+        assertTrue("push should be emitted", out.contains("my_list.push("));
+        assertFalse("Copy-type arg to push should NOT have .clone()", out.contains("n.clone()"));
+    }
+
+    @Test
+    public void methodCall_size_translatedToLen() {
+        Variable listVar = local("myList");
+        MethodCall sizeCall = new MethodCall(listVar, "size", List.of());
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("getSize", ClassName._int,
+                        new Return(sizeCall)));
+        String out = emit(clazz);
+        assertTrue("size should translate to len", out.contains("my_list.len()"));
+    }
+
+    @Test
+    public void methodCall_isEmpty_translatedToIsEmpty() {
+        Variable listVar = local("myList");
+        MethodCall isEmptyCall = new MethodCall(listVar, "isEmpty", List.of());
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("check", ClassName._bool,
+                        new Return(isEmptyCall)));
+        String out = emit(clazz);
+        assertTrue("isEmpty should translate to is_empty", out.contains("my_list.is_empty()"));
+    }
+
+    @Test
+    public void methodCall_toString_translatedToToString() {
+        Variable objVar = local("myObj");
+        MethodCall tsCall = new MethodCall(objVar, "toString", List.of());
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("getStr", ClassName.STRING,
+                        new Return(tsCall)));
+        String out = emit(clazz);
+        assertTrue("toString should translate to to_string", out.contains("my_obj.to_string()"));
+    }
+
+    // =========================================================================
+    // Group 3 — HashMap argument treatment (OPERATOR_VARIABLE)
+    // =========================================================================
+
+    @Test
+    public void hashMap_containsKey_keyIsBorrowed() {
+        // map.containsKey(key) → my_map.contains_key(&key)
+        Variable mapVar = local("myMap");
+        Variable keyVar = local("key");
+        MethodCall call = new MethodCall(mapVar, "containsKey", List.of(keyVar));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("check", ClassName.BOOLEAN,
+                        new Return(call)));
+        String out = emit(clazz);
+        assertTrue("containsKey should be contains_key", out.contains("contains_key("));
+        assertTrue("key arg should be borrowed", out.contains("contains_key(&key)"));
+    }
+
+    @Test
+    public void hashMap_put_firstArgOwnedString() {
+        // map.put("myKey", val) → my_map.insert("myKey".to_string(), val)
+        Variable mapVar = local("myMap");
+        Variable valVar = local("val");
+        MethodCall call = new MethodCall(mapVar, "put", List.of(new Constant("myKey"), valVar));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doInsert", call));
+        String out = emit(clazz);
+        assertTrue("put should become insert", out.contains("insert("));
+        assertTrue("string key should become owned String", out.contains("\"myKey\".to_string()"));
+    }
+
+    @Test
+    public void hashMap_put_secondArgPassedThrough() {
+        // map.put("k", localVar) — local var (not a field access) passed through as-is
+        Variable mapVar = local("myMap");
+        Variable valVar = local("val");
+        MethodCall call = new MethodCall(mapVar, "put", List.of(new Constant("k"), valVar));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doInsert", call));
+        String out = emit(clazz);
+        // val is not a field access → no .unwrap()
+        assertTrue("value arg should appear as-is", out.contains(", val)"));
+    }
+
+    // =========================================================================
+    // Group 4 — Chained-get dispatch (OBJECT_METHOD_CALL)
+    // =========================================================================
+
+    @Test
+    public void chainedGet_get_unwrapsAndAddsCopied() {
+        // map.get(k1).get(k2) → my_map.get(&k1).unwrap().get(&k2).copied()
+        Variable mapVar = local("myMap");
+        Variable k1Var  = local("k1");
+        Variable k2Var  = local("k2");
+        // Inner: OPERATOR_VARIABLE  map.get(k1)
+        MethodCall innerGet = new MethodCall(mapVar, "get", List.of(k1Var));
+        // Outer: OBJECT_METHOD_CALL  <innerGet>.get(k2)
+        MethodCall outerGet = new MethodCall(innerGet, "get", List.of(k2Var));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("lookup", ClassName.INTEGER,
+                        new Return(outerGet)));
+        String out = emit(clazz);
+        assertTrue("inner .get() should have .unwrap()", out.contains(".unwrap()"));
+        assertTrue("outer .get() should add .copied()", out.contains(".copied()"));
+        assertTrue("outer key should be borrowed", out.contains("get(&k2)"));
+    }
+
+    @Test
+    public void chainedGet_put_switchesToGetMut() {
+        // map.get(k1).put("k2", val) → my_map.get_mut(&k1).unwrap().insert(…)
+        Variable mapVar = local("myMap");
+        Variable k1Var  = local("k1");
+        Variable valVar = local("val");
+        MethodCall innerGet = new MethodCall(mapVar, "get", List.of(k1Var));
+        MethodCall chainedPut = new MethodCall(innerGet, "put",
+                List.of(new Constant("k2"), valVar));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doChainedPut", chainedPut));
+        String out = emit(clazz);
+        assertTrue("get should be rewritten to get_mut", out.contains("get_mut("));
+        assertFalse("plain .get( should not remain", out.contains(".get(&k1)"));
+        assertTrue("unwrap after get_mut", out.contains(".unwrap()"));
+        assertTrue("put should become insert", out.contains("insert("));
+    }
+
+    // =========================================================================
+    // Group 5 — Mutation detection → &mut self
+    // =========================================================================
+
+    @Test
+    public void methodWithFieldListAdd_emitsMutSelf() {
+        // self.items.add(x) as OPERATOR_VARIABLE on a FIELD_VARIABLE → &mut self
+        Variable fieldVar = field("items");
+        Variable argVar   = local("x");
+        MethodCall addCall = new MethodCall(fieldVar, "add", List.of(argVar));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("appendItem", addCall));
+        String out = emit(clazz);
+        assertTrue("mutating method should emit &mut self", out.contains("&mut self"));
+    }
+
+    @Test
+    public void methodWithoutMutation_emitsSharedSelf() {
+        // self.items.size() — read-only call → &self (not &mut)
+        Variable fieldVar = field("items");
+        MethodCall sizeCall = new MethodCall(fieldVar, "size", List.of());
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("getSize", ClassName._int,
+                        new Return(sizeCall)));
+        String out = emit(clazz);
+        assertFalse("non-mutating method should not have &mut self", out.contains("&mut self"));
+        assertTrue("non-mutating method should have &self", out.contains("&self"));
+    }
+
+    @Test
+    public void methodWithLocalListAdd_doesNotEmitMutSelf() {
+        // local (not field) variable.add(x) — not a mutation of self's fields → &self
+        Variable localList = local("items");  // LOCAL_VARIABLE, not FIELD_VARIABLE
+        Variable argVar    = local("x");
+        MethodCall addCall = new MethodCall(localList, "add", List.of(argVar));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("appendItem", addCall));
+        String out = emit(clazz);
+        assertFalse("add on local var should not mark method as &mut self",
+                out.contains("&mut self"));
+    }
+
+    // =========================================================================
+    // Group 6 — Control flow
+    // =========================================================================
+
+    @Test
+    public void ifStatement_emitsIfBlock() {
+        Variable condVar = local("flag");
+        Variable xVar    = local("x");
+        MethodCall addCall = new MethodCall(field("items"), "add", List.of(xVar));
+        IfStatement ifStmt = IfStatement.IF(condVar).THEN(addCall);
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("maybeAdd", ifStmt));
+        String out = emit(clazz);
+        assertTrue("Should emit 'if flag {'", out.contains("if flag {"));
+        assertTrue("Should emit push inside if body", out.contains("push("));
+    }
+
+    @Test
+    public void ifStatement_withElse_emitsElseBlock() {
+        Variable condVar = local("flag");
+        IfStatement ifStmt = IfStatement.IF(condVar)
+                .THEN(new Return(new Constant(1)))
+                .ELSE(new Return(new Constant(0)));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("choose", ClassName._int, ifStmt));
+        String out = emit(clazz);
+        assertTrue("Should emit 'if flag {'", out.contains("if flag {"));
+        assertTrue("Should emit '} else {'", out.contains("} else {"));
+    }
+
+    @Test
+    public void lastReturnStatement_emittedAsImplicitReturn() {
+        // In Rust, the last expression has no semicolon → no 'return' keyword
+        Variable v = local("result");
+        Method m = new Method("compute")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(ClassName._int)
+                .BODY(new Return(v));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        // Last statement → no 'return' keyword, no semicolon for the expression itself
+        assertFalse("Last return should not emit 'return' keyword", out.contains("return result"));
+        assertTrue("Should contain the expression", out.contains("result"));
+    }
+
+    @Test
+    public void nonLastReturnStatement_emittedWithReturnKeyword() {
+        // When return is NOT the last statement, emit explicit 'return'
+        Variable flag = local("flag");
+        Variable result = local("result");
+        IfStatement earlyReturn = IfStatement.IF(flag).THEN(new Return(new Constant(0)));
+        Method m = new Method("compute")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(ClassName._int)
+                .BODY(earlyReturn, new Return(result));   // 2 statements; early return is non-last
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        // The return inside the if body is non-last → explicit 'return'
+        assertTrue("Early return should emit 'return' keyword", out.contains("return 0"));
+    }
+
+    // =========================================================================
+    // Group 7 — Static calls and constructors
+    // =========================================================================
+
+    @Test
+    public void staticMethodCall_emitsDoubleColon() {
+        // HashMap::new() from a STATIC_METHOD_CALL node
+        MethodCall staticNew = new MethodCall(ClassName.HASHMAP, "new", List.of());
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("makeMap", ParameterizedType.get(ClassName.HASHMAP, ClassName.STRING, ClassName.STRING),
+                        new Return(staticNew)));
+        String out = emit(clazz);
+        assertTrue("Static call should use :: syntax", out.contains("HashMap::new()"));
+    }
+
+    @Test
+    public void constructorCall_emitsColonColonNew() {
+        // new MyClass(arg) → MyClass::new(arg)
+        TypeName myType = ClassName.get("Payload", "com.example");
+        Variable argVar = local("data");
+        MethodCall ctor = MethodCall.CONSTRUCTOR_CALL(myType, List.of(argVar));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("build", myType,
+                        new Return(ctor)));
+        String out = emit(clazz);
+        assertTrue("Constructor call should emit ::new()", out.contains("Payload::new("));
+    }
+
+    // =========================================================================
+    // Group 8 — Variable conversion
+    // =========================================================================
+
+    @Test
+    public void fieldVariable_emitsWithSelfPrefix() {
+        // A FIELD_VARIABLE named "myField" should appear as self.my_field
+        Variable fieldVar = field("myField");
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("get", ClassName.STRING,
+                        new Return(fieldVar)));
+        String out = emit(clazz);
+        assertTrue("Field variable should emit as self.my_field", out.contains("self.my_field"));
+    }
+
+    @Test
+    public void localVariable_emitsWithoutSelfPrefix() {
+        Variable localVar = local("myLocal");
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("get", ClassName.STRING,
+                        new Return(localVar)));
+        String out = emit(clazz);
+        assertTrue("Local variable should appear as my_local", out.contains("my_local"));
+        assertFalse("Local variable should not have self. prefix", out.contains("self.my_local"));
+    }
+
+    // =========================================================================
+    // Group 9 — Iterator (for-each)
+    // =========================================================================
+
+    @Test
+    public void iterator_emitsForLoop() {
+        // for (Item item : items) { ... } → for item in items { ... }
+        Parameter param = new Parameter("item", ClassName.get("Item", "com.example"));
+        Variable collection = local("items");
+        Iterator iter = new Iterator(param, collection)
+                .BODY(new Comment("// body"));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("process", iter));
+        String out = emit(clazz);
+        assertTrue("Should emit 'for item in '", out.contains("for item in "));
+    }
+
+    @Test
+    public void iterator_overLocalFieldAccess_addsIterCloned() {
+        // for-each over bean.myItems where bean is a local variable → .iter().cloned()
+        // This pattern arises when iterating over a field of a borrowed local struct.
+        Parameter param = new Parameter("item", ClassName.STRING);
+        // OBJECT_ACCESSOR: new MethodCall(Variable, accessorName) → local.field form
+        Variable localBean = local("bean");
+        MethodCall fieldAccess = new MethodCall(localBean, "myItems");  // OBJECT_ACCESSOR
+        Iterator iter = new Iterator(param, fieldAccess)
+                .BODY(new Comment("// body"));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("process", iter));
+        String out = emit(clazz);
+        assertTrue("Local field access iterator should use .iter().cloned()",
+                out.contains(".iter().cloned()"));
+    }
+
+    @Test
+    public void iterator_overSelfField_doesNotAddIterCloned() {
+        // for-each over self.myItems (FIELD_VARIABLE) — the emitter does NOT add .iter().cloned()
+        // because it uses the FIELD_VARIABLE convert path, not the OBJECT_ACCESSOR path.
+        Parameter param = new Parameter("item", ClassName.STRING);
+        Variable fieldCollection = field("myItems");  // FIELD_VARIABLE → self.my_items
+        Iterator iter = new Iterator(param, fieldCollection)
+                .BODY(new Comment("// body"));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("process", iter));
+        String out = emit(clazz);
+        assertTrue("for self-field iterator should iterate over self.my_items",
+                out.contains("for item in self.my_items"));
+    }
+
+    // =========================================================================
+    // Group 10 — OBJECT_METHOD_CALL: camelCase method names are snake_cased
+    // =========================================================================
+
+    @Test
+    public void objectMethodCall_camelCaseName_snakeCased() {
+        // someExpr.addElements(arg) via OBJECT_METHOD_CALL → .add_elements(arg)
+        // Regression for: addElements was emitted verbatim (E0599) because toSnakeCase
+        // was applied only in the OPERATOR_VARIABLE path, not OBJECT_METHOD_CALL.
+        Variable receiver = local("myObj");
+        MethodCall innerCall = new MethodCall(receiver, "getItems", List.of());  // OPERATOR_VARIABLE
+        MethodCall outerCall = new MethodCall(innerCall, "addElements", List.of(local("item")));  // OBJECT_METHOD_CALL
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doAdd", outerCall));
+        String out = emit(clazz);
+        assertTrue("camelCase OBJECT_METHOD_CALL name should be snake_cased",
+                out.contains("add_elements("));
+        assertFalse("camelCase should not remain in output", out.contains("addElements("));
+    }
+
+    @Test
+    public void objectMethodCall_chainedGetEarlyReturn_methodNameSnakeCased() {
+        // map.get(k).addItem(v) via chained-get early-return path → .add_item(v)
+        Variable mapVar = local("myMap");
+        Variable keyVar = local("k");
+        Variable valVar = local("v");
+        MethodCall innerGet = new MethodCall(mapVar, "get", List.of(keyVar));    // OPERATOR_VARIABLE
+        MethodCall chainedCall = new MethodCall(innerGet, "addItem", List.of(valVar));  // OBJECT_METHOD_CALL chained-get path
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doChain", chainedCall));
+        String out = emit(clazz);
+        assertTrue("chained-get method name should be snake_cased", out.contains("add_item("));
+        assertFalse("camelCase should not remain", out.contains("addItem("));
+    }
+
+    // =========================================================================
+    // Group 11 — Vec index access: __elements.get(i) → [i as usize].clone()
+    // =========================================================================
+
+    @Test
+    public void vecGet_onElements_emitsIndexAccess() {
+        // self.__elements.get(count) → self.elements[count as usize].clone()
+        // Regression for: generated Vec::get() which returns Option<&T>, causing type mismatch (E0308).
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall elementsAccess = new MethodCall(thisVar, "__elements");  // OBJECT_ACCESSOR, name = "__elements"
+        MethodCall getCall = new MethodCall(elementsAccess, "get", List.of(local("count")));  // OBJECT_METHOD_CALL
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("fetch", new Return(getCall)));
+        String out = emit(clazz);
+        assertTrue("Vec::get should become index access",
+                out.contains("elements[count as usize].clone()"));
+        assertFalse("Vec::get should not remain as .get(count)",
+                out.contains(".get(count)"));
+    }
+
+    @Test
+    public void vecGet_onElements_noSpuriousUnwrap_onFieldAccess() {
+        // Accessing a field on the Vec index result must NOT add .unwrap():
+        // self.__elements.get(idx).myField → elements[idx as usize].clone().my_field
+        // Regression for: OBJECT_ACCESSOR case added .unwrap() for any mc2.methodName == "get",
+        // but Vec index returns T (not Option<T>) so no .unwrap() is needed.
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall elementsAccess = new MethodCall(thisVar, "__elements");
+        MethodCall getCall = new MethodCall(elementsAccess, "get", List.of(local("idx")));
+        // Field access on the Vec index result
+        MethodCall fieldOnGet = new MethodCall((Expression) getCall, "myField");  // OBJECT_ACCESSOR
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("getField", new Return(fieldOnGet)));
+        String out = emit(clazz);
+        assertTrue("Field access on Vec index should use .clone().my_field",
+                out.contains("elements[idx as usize].clone().my_field"));
+        assertFalse("No .unwrap() should appear for Vec index result",
+                out.contains(".clone().unwrap()"));
+    }
+
+    // =========================================================================
+    // Group 12 — Self Option field passed as by-value argument
+    // =========================================================================
+
+    @Test
+    public void selfOptionField_passedByValue_cloneUnwrap() {
+        // this.myBean (Option<MyBean>) as a PASS_BY_VALUE argument → self.my_bean.clone().unwrap()
+        // Regression for: add_elements(self.bean__x) failed with E0308 because
+        // Option<T> was passed where T was expected.
+        Field optField = new Field("myBean", ClassName.get("MyBean", "com.example"));  // no initialiser → Option<T>
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall fieldAccess = new MethodCall(thisVar, "myBean");  // OBJECT_ACCESSOR for Option field
+        Variable receiver = local("someList");
+        MethodCall call = new MethodCall(receiver, "addItem", List.of(fieldAccess));  // OPERATOR_VARIABLE
+        Class clazz = new Class("Merger").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(optField)
+                .METHODS(publicMethod("doAdd", call));
+        String out = emit(clazz);
+        assertTrue("Self Option field passed by value should be .clone().unwrap()",
+                out.contains("my_bean.clone().unwrap()"));
+    }
+
+    @Test
+    public void selfInitialisedField_passedByValue_noUnwrap() {
+        // A field WITH an initialiser is plain T (not Option<T>) — no .clone().unwrap() needed.
+        Field initField = new Field("myBean", ClassName.get("MyBean", "com.example"));
+        initField.initialiser = new Constant("default");  // has initialiser → plain T
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall fieldAccess = new MethodCall(thisVar, "myBean");
+        Variable receiver = local("someList");
+        MethodCall call = new MethodCall(receiver, "addItem", List.of(fieldAccess));
+        Class clazz = new Class("Merger").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(initField)
+                .METHODS(publicMethod("doAdd", call));
+        String out = emit(clazz);
+        assertFalse("Initialised field passed by value should not get .clone().unwrap()",
+                out.contains("my_bean.clone().unwrap()"));
+    }
+
+    // =========================================================================
+    // Group 13 — MutableReceiver annotation
+    // =========================================================================
+
+    @Test
+    public void mutableReceiver_emitsMutSelf() {
+        // A method annotated with MutableReceiver should emit &mut self.
+        TypeName beanType = ClassName.get("MyBean", "com.example");
+        Method m = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(MutableReceiver.NAME)
+                .RETURNS(beanType);
+        Class clazz = new Class("Merger").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        assertTrue("MutableReceiver annotation should emit &mut self", out.contains("&mut self"));
+    }
+
+    @Test
+    public void mutableReceiver_returnSelf_appendsClone() {
+        // return this/self in a MutableReceiver method → self.clone() (not just self)
+        // Regression for: &mut self methods return Self by value — returning a reference
+        // would give &BeanMerger instead of BeanMerger (E0308).
+        TypeName mergerType = ClassName.get("Merger", "com.example");
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        Method m = new Method("merge")
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(MutableReceiver.NAME)
+                .RETURNS(mergerType)
+                .BODY(new Return(thisVar));
+        Class clazz = new Class("Merger").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        assertTrue("Returning self in MutableReceiver method should emit self.clone()",
+                out.contains("self.clone()"));
+    }
+
+    @Test
+    public void mutableReceiver_returnOptionField_appendsCloneUnwrap() {
+        // return this.myBean (Option<T>) in a MutableReceiver method → self.my_bean.clone().unwrap()
+        // Regression for: returning a raw Option field gave Option<T> when T was expected.
+        TypeName beanType = ClassName.get("MyBean", "com.example");
+        Field optField = new Field("myBean", beanType);  // no initialiser → Option<MyBean>
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall fieldReturn = new MethodCall(thisVar, "myBean");  // OBJECT_ACCESSOR
+        Method m = new Method("getBean")
+                .MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATIONS(MutableReceiver.NAME)
+                .RETURNS(beanType)
+                .BODY(new Return(fieldReturn));
+        Class clazz = new Class("Merger").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(optField)
+                .METHODS(m);
+        String out = emit(clazz);
+        assertTrue("MutableReceiver return of Option field should emit .clone().unwrap()",
+                out.contains("my_bean.clone().unwrap()"));
+    }
+
+    @Test
+    public void mutableReceiver_assignToOptionSubField_asMutUnwrap() {
+        // LHS: this.myBean.time = value  →  self.my_bean.as_mut().unwrap().time = ...
+        // Regression for: self.bean__x.time = ... failed (E0609) because intermediate
+        // field is Option<T> and field access on Option<T> is not allowed directly.
+        TypeName beanType = ClassName.get("MyBean", "com.example");
+        Field optField = new Field("myBean", beanType);  // no initialiser → Option<MyBean>
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall fieldAccess = new MethodCall(thisVar, "myBean");   // OBJECT_ACCESSOR: this.myBean
+        MethodCall subField    = new MethodCall(fieldAccess, "time"); // OBJECT_ACCESSOR: .time
+        Variable inputTime = local("inputTime");
+        Assignment assignment = new Assignment(subField, inputTime);
+        Class clazz = new Class("Merger").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(optField)
+                .METHODS(publicMethod("setTime", assignment));
+        String out = emit(clazz);
+        assertTrue("LHS 2-level Option chain should insert .as_mut().unwrap()",
+                out.contains("my_bean.as_mut().unwrap().time"));
+    }
+
+    // =========================================================================
+    // Group 14 — MutableFirstParam annotation
+    // =========================================================================
+    //
+    // These tests cover the &'a mut T pattern introduced for the BeanMerger:
+    //   - trait definition signatures get <'a>, &'a mut T for the first param and return
+    //   - trait impl signatures agree with the trait (same lifetime / mutability)
+    //   - field reads from &T parameters (params 1..n) get .clone() appended
+    //   - call sites on self add &mut to arg 0 and & to args 1+
+    //
+    // The "two code-path" structure (emitTraitMethod for trait defs, emitMethod(m, true)
+    // for trait impls) means both paths must be exercised independently.
+    //
+    // Setup shared between most tests in this group:
+    //   beanType  = FileInitBean   (first param / return type)
+    //   inputType = FileInitInputs (second param — a read-only borrow)
+    //   method    = processBean(bean, inputBean) annotated with MutableFirstParam
+    // -------------------------------------------------------------------------
+
+    /** Helper: build a minimal interface (trait) class with one MutableFirstParam method. */
+    private Class buildMfpTrait() {
+        TypeName beanType  = ClassName.get("FileInitBean",   "com.example");
+        TypeName inputType = ClassName.get("FileInitInputs", "com.example");
+        Method m = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .ANNOTATIONS(MutableFirstParam.NAME)
+                .PARAMETER(beanType,  "bean")
+                .PARAMETER(inputType, "inputBean")
+                .RETURNS(beanType);
+        Class traitClass = new Class("BeanMergerInterface", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(m);
+        return traitClass;
+    }
+
+    /** Helper: build a minimal impl class with one MutableFirstParam method (inTrait path). */
+    private Class buildMfpImpl() {
+        TypeName beanType  = ClassName.get("FileInitBean",   "com.example");
+        TypeName inputType = ClassName.get("FileInitInputs", "com.example");
+        Method m = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                .ANNOTATIONS(OverrideAnnotation.NAME, MutableFirstParam.NAME)
+                .PARAMETER(beanType,  "bean")
+                .PARAMETER(inputType, "inputBean")
+                .RETURNS(beanType);
+        return new Class("BeanMerger").MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(ClassName.get("BeanMergerInterface", "com.example"))
+                .METHODS(m);
+    }
+
+    // ---- trait definition (emitTraitMethod path) ----------------------------
+
+    @Test
+    public void mutableFirstParam_traitDef_hasLifetimeParam() {
+        // MutableFirstParam on a trait method → <'a> lifetime must appear on the signature.
+        // Without the lifetime, &'a mut T in the param and -> &'a mut T in the return
+        // would be an undeclared lifetime (E0261).
+        String out = emit(buildMfpTrait());
+        assertTrue("Trait method with MutableFirstParam should declare <'a>",
+                out.contains("<'a>"));
+    }
+
+    @Test
+    public void mutableFirstParam_traitDef_firstParamIsMutableBorrow() {
+        // The first non-self parameter must be &'a mut T.
+        // Without this, writing bean.field = ... fails with E0594.
+        String out = emit(buildMfpTrait());
+        assertTrue("First param in trait def should be &'a mut FileInitBean",
+                out.contains("bean: &'a mut FileInitBean"));
+    }
+
+    @Test
+    public void mutableFirstParam_traitDef_subsequentParamIsSharedBorrow() {
+        // Params 1..n must remain &T (read-only borrow) — only the first param is mutable.
+        String out = emit(buildMfpTrait());
+        assertTrue("Subsequent param in trait def should be &FileInitInputs",
+                out.contains("input_bean: &FileInitInputs"));
+        assertFalse("Subsequent param must NOT be &'a mut",
+                out.contains("input_bean: &'a mut"));
+    }
+
+    @Test
+    public void mutableFirstParam_traitDef_returnTypeIsMutableBorrow() {
+        // Return type must be &'a mut T to tie the returned reference to the input
+        // bean's lifetime (no clone needed, E0308 is avoided).
+        String out = emit(buildMfpTrait());
+        assertTrue("Return type in trait def should be &'a mut FileInitBean",
+                out.contains("-> &'a mut FileInitBean"));
+    }
+
+    // ---- trait implementation (emitMethod(m, inTrait=true) path) ------------
+
+    @Test
+    public void mutableFirstParam_impl_hasLifetimeParam() {
+        // The impl-side signature must also carry <'a> so it matches the trait declaration
+        // (E0053 if the two signatures differ).
+        String out = emit(buildMfpImpl());
+        assertTrue("Impl method with MutableFirstParam should declare <'a>",
+                out.contains("<'a>"));
+    }
+
+    @Test
+    public void mutableFirstParam_impl_firstParamIsMutableBorrow() {
+        // The impl-side first param must be &'a mut T to match the trait signature.
+        String out = emit(buildMfpImpl());
+        assertTrue("First param in impl should be &'a mut FileInitBean",
+                out.contains("bean: &'a mut FileInitBean"));
+    }
+
+    @Test
+    public void mutableFirstParam_impl_subsequentParamIsSharedBorrow() {
+        // Params 1..n are emitted via convertTypeToRustTraitParam → &T in impl too.
+        String out = emit(buildMfpImpl());
+        assertTrue("Subsequent param in impl should be &FileInitInputs",
+                out.contains("input_bean: &FileInitInputs"));
+        assertFalse("Subsequent param in impl must NOT be &'a mut",
+                out.contains("input_bean: &'a mut"));
+    }
+
+    @Test
+    public void mutableFirstParam_impl_returnTypeIsMutableBorrow() {
+        // Impl-side return type must agree with the trait: &'a mut T.
+        String out = emit(buildMfpImpl());
+        assertTrue("Return type in impl should be &'a mut FileInitBean",
+                out.contains("-> &'a mut FileInitBean"));
+    }
+
+    // ---- field reads from &T reference params get .clone() ------------------
+
+    @Test
+    public void mutableFirstParam_fieldReadFromRefParam_appendsClone() {
+        // Within a MutableFirstParam impl method, params 1..n are &T references.
+        // Reading a field through a &T reference for a non-Copy type requires .clone()
+        // to avoid E0507 ("cannot move out of a shared reference").
+        //
+        // body:  myBean.time = inputRef.time   →   my_bean.time = input_ref.time.clone()
+        //
+        // Note: variable names are chosen so "my_bean.time.clone()" is NOT a substring
+        // of "input_ref.time.clone()" (avoids false assertion failure from prefix overlap).
+        TypeName beanType  = ClassName.get("FileInitBean",   "com.example");
+        TypeName inputType = ClassName.get("FileInitInputs", "com.example");
+
+        // First param (mutable, &'a mut T): "myBean"  → snake_case: "my_bean"
+        // Second param (read-only, &T):    "inputRef" → snake_case: "input_ref"
+        Variable myBeanVar   = local("myBean");
+        Variable inputRefVar = local("inputRef");
+        MethodCall myBeanTime  = new MethodCall(myBeanVar,   "time");  // OBJECT_ACCESSOR (LHS — &mut T field write)
+        MethodCall inputRefTime = new MethodCall(inputRefVar, "time"); // OBJECT_ACCESSOR (RHS — &T field read)
+        Assignment assign = new Assignment(myBeanTime, inputRefTime);
+        Return ret = new Return(myBeanVar);
+
+        Method m = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                .ANNOTATIONS(OverrideAnnotation.NAME, MutableFirstParam.NAME)
+                .PARAMETER(beanType,  "myBean")
+                .PARAMETER(inputType, "inputRef")
+                .RETURNS(beanType)
+                .BODY(assign, ret);
+
+        Class implClass = new Class("BeanMerger").MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(ClassName.get("BeanMergerInterface", "com.example"))
+                .METHODS(m);
+
+        String out = emit(implClass);
+        assertTrue("Field read from &T ref param should have .clone()",
+                out.contains("input_ref.time.clone()"));
+        assertFalse("First param field (my_bean.time) must NOT get .clone() when read via &mut T",
+                out.contains("my_bean.time.clone()"));
+    }
+
+    // ---- call-site &mut / & argument injection ------------------------------
+
+    @Test
+    public void mutableFirstParam_callSite_firstArgGetsMutRef_secondArgGetsRef() {
+        // When calling a MutableFirstParam method on self, the emitter must add:
+        //   &mut  to argument 0  (the bean being updated)
+        //   &     to arguments 1+ (the read-only input/output)
+        //
+        // Regression for: E0308 "expected FileTransformingInputs1, found &FileTransformingInputs1"
+        // when the composite-loop body called self.process_*(bean, composee) without the
+        // correct reference decorators.
+        TypeName beanType  = ClassName.get("FileInitBean",   "com.example");
+        TypeName inputType = ClassName.get("FileInitInputs", "com.example");
+
+        // The MutableFirstParam method that will be called.
+        Method processMethod = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                .ANNOTATIONS(OverrideAnnotation.NAME, MutableFirstParam.NAME)
+                .PARAMETER(beanType,  "bean")
+                .PARAMETER(inputType, "inputBean")
+                .RETURNS(beanType)
+                .BODY(new Return(local("bean")));
+
+        // A regular outer method that calls this.processBean(beanArg, inputArg).
+        Variable thisVar   = new Variable("this",     LOCAL_VARIABLE);
+        Variable beanArg   = local("beanArg");
+        Variable inputArg  = local("inputArg");
+        MethodCall callSite = new MethodCall(thisVar, "processBean", List.of(beanArg, inputArg));
+        Method outerMethod = publicMethod("callProcess", callSite);
+
+        Class implClass = new Class("BeanMerger").MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(ClassName.get("BeanMergerInterface", "com.example"))
+                .METHODS(processMethod, outerMethod);
+
+        String out = emit(implClass);
+        assertTrue("First arg to MutableFirstParam method should be &mut",
+                out.contains("&mut bean_arg"));
+        assertTrue("Second arg to MutableFirstParam method should be &",
+                out.contains("&input_arg"));
+    }
+
+    // =========================================================================
+    // Group 15 — currentMethodReturnType: string constant coercion
+    // =========================================================================
+    //
+    // When a method declares a String return type and the body returns a string
+    // literal (Constant), the emitter must append .to_string() so the &str
+    // literal is coerced to an owned String (E0308 fix).
+    //
+    // Fix: emitMethod records currentMethodReturnType; the RETURN handler calls
+    // convertWithType(expr, currentMethodReturnType) which appends .to_string()
+    // when the declared return type is String.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void stringConstant_returnFromStringMethod_appendsToString() {
+        // A method returning a string literal where the return type is String must
+        // emit "xyz".to_string(), not bare "xyz" (&str).
+        // Regression for: E0308 on bean_history.rs line 56.
+        Method m = new Method("getSuffix")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(ClassName.STRING)
+                .BODY(new Return(new Constant("xyz")));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        assertTrue("String constant return should have .to_string() appended",
+                out.contains("\"xyz\".to_string()"));
+    }
+
+    @Test
+    public void intConstant_returnFromIntMethod_noToString() {
+        // Integer literals must NOT get .to_string() — only String returns are coerced.
+        Method m = new Method("getCount")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(ClassName._int)
+                .BODY(new Return(new Constant(42)));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        assertFalse("Integer constant return must not get .to_string()",
+                out.contains("to_string()"));
+        assertTrue("Integer constant should appear as-is", out.contains("42"));
+    }
+
+    // =========================================================================
+    // Group 16 — Non-MutableReceiver Option-field getter returns
+    // =========================================================================
+    //
+    // A plain getter (&self, no MutableReceiver) that returns this.field where
+    // the field is Option<T> (no initialiser) must:
+    //   (a) emit &T  or  &dyn T  as the return type (not T)
+    //   (b) append .as_ref().unwrap()  or  .as_ref().unwrap().as_ref()  to the body
+    //
+    // Two sub-cases:
+    //   - Field type is a plain class → &T  + .as_ref().unwrap()
+    //   - Field type is a known trait → &dyn T  + .as_ref().unwrap().as_ref()
+    //
+    // Fix: emitMethod scans the last RETURN before emitting "-> …" to detect the
+    // self-Option-field pattern; sets returnsOptionFieldRef / returnsTraitFieldRef.
+    // -------------------------------------------------------------------------
+
+    /**
+     * Helper: emit {@code target} after pre-discovering {@code traitPrelude} as a trait.
+     * This is needed when {@code target} has a field whose type is the trait, so that
+     * {@code isKnownTrait} / {@code statefulTraits} checks in the emitter succeed.
+     */
+    private String emitWithTraitPrelude(Class traitPrelude, Class target) {
+        Rust rust = new Rust();
+        rust.discoverTraits(traitPrelude);
+        rust.discoverClass(target);
+        return rust.emit(target).toString();
+    }
+
+    @Test
+    public void optionFieldGetter_valueType_returnsRef() {
+        // A getter returning this.items (Option<MyList>, no initialiser) from a &self
+        // method must emit "-> &MyList" and append .as_ref().unwrap() in the body.
+        // Regression for: E0308 on bean_history.rs line 60 (get_history returning
+        // Option<Vec<…>> where &Vec<…> was expected).
+        TypeName myListType = ClassName.get("MyList", "com.example");
+        Field optField = new Field("items", myListType);   // no initialiser → Option<MyList>
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall fieldReturn = new MethodCall(thisVar, "items");  // OBJECT_ACCESSOR
+        Method getter = new Method("getItems")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(myListType)
+                .BODY(new Return(fieldReturn));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(optField)
+                .METHODS(getter);
+        String out = emit(clazz);
+        assertTrue("Return type of Option-field getter should be &MyList",
+                out.contains("-> &MyList"));
+        assertTrue("Body of Option-field getter should use .as_ref().unwrap()",
+                out.contains("as_ref().unwrap()"));
+        assertFalse("Plain Option-field getter should not emit &mut self",
+                out.contains("&mut self"));
+        assertFalse("Return type must not be bare T (would give Option<T> where &T expected)",
+                out.contains("-> MyList"));
+    }
+
+    @Test
+    public void optionFieldGetter_traitType_returnsRefDyn() {
+        // A getter returning this.processor (Option<Box<dyn MyProcessor>>, no init)
+        // from a &self method must emit "-> &dyn MyProcessor" and append
+        // .as_ref().unwrap().as_ref() (extra .as_ref() to go from &Box<dyn T> to &dyn T).
+        // Regression for: E0782 on bean_history.rs line 63 (missing 'dyn' keyword).
+        TypeName traitType = ClassName.get("MyProcessor", "com.example");
+
+        // An empty interface so the emitter adds "MyProcessor" to knownTraits
+        Class traitClass = new Class("MyProcessor", true).MODIFIERS(Modifier.PUBLIC);
+
+        Field optField = new Field("processor", traitType);  // no initialiser
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        MethodCall fieldReturn = new MethodCall(thisVar, "processor");  // OBJECT_ACCESSOR
+        Method getter = new Method("getProcessor")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(traitType)
+                .BODY(new Return(fieldReturn));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(optField)
+                .METHODS(getter);
+
+        String out = emitWithTraitPrelude(traitClass, clazz);
+        assertTrue("Return type of trait-type Option-field getter should be &dyn MyProcessor",
+                out.contains("-> &dyn MyProcessor"));
+        assertTrue("Body of trait-type getter should use .as_ref().unwrap().as_ref()",
+                out.contains("as_ref().unwrap().as_ref()"));
+        assertFalse("Must not emit bare T (missing dyn keyword, E0782)",
+                out.contains("-> MyProcessor"));
+    }
+
+    // =========================================================================
+    // Group 17 — Stateful trait propagation
+    // =========================================================================
+    //
+    // When a trait (interface) carries MutableReceiver on at least one method it
+    // is "stateful" — added to statefulTraits during discoverTraits().  This has
+    // two downstream effects:
+    //
+    //   (a) emitTraitMethod emits &mut self for methods with MutableReceiver
+    //   (b) implementsStatefulTrait() forces &mut self on ALL @Override methods
+    //       in any class that implements the stateful trait — even when the impl
+    //       method itself carries no explicit MutableReceiver annotation.
+    //
+    // Fix for E0053 on bean_history.rs line 70.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void statefulTrait_traitDef_hasMutSelf() {
+        // A trait method annotated with MutableReceiver must emit &mut self in the
+        // trait definition (emitTraitMethod path).
+        TypeName inputType  = ClassName.get("InputBean",  "com.example");
+        TypeName outputType = ClassName.get("OutputBean", "com.example");
+        Method m = new Method("process")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .ANNOTATIONS(MutableReceiver.NAME)
+                .PARAMETER(inputType, "bean")
+                .RETURNS(outputType);
+        Class traitClass = new Class("MyProcessor", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(m);
+        String out = emit(traitClass);
+        assertTrue("Stateful trait method should emit &mut self in trait definition",
+                out.contains("fn process(&mut self"));
+    }
+
+    @Test
+    public void statefulTrait_implementingClass_implMethodGetsMutSelf() {
+        // An impl method annotated only with @Override (no explicit MutableReceiver)
+        // must still emit &mut self when the implemented trait is stateful.
+        // This is the implementsStatefulTrait() path — the mutation requirement
+        // propagates from the trait into the implementing class automatically.
+        // Regression for: E0053 on bean_history.rs line 70.
+        TypeName inputType  = ClassName.get("InputBean",  "com.example");
+        TypeName outputType = ClassName.get("OutputBean", "com.example");
+
+        // Trait with a MutableReceiver method → makes the trait "stateful"
+        Method traitMethod = new Method("process")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .ANNOTATIONS(MutableReceiver.NAME)
+                .PARAMETER(inputType, "bean")
+                .RETURNS(outputType);
+        Class traitClass = new Class("MyProcessor", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(traitMethod);
+
+        // Impl method carries only @Override — no explicit MutableReceiver
+        Method implMethod = new Method("process")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                .ANNOTATIONS(OverrideAnnotation.NAME)   // intentionally no MutableReceiver
+                .PARAMETER(inputType, "bean")
+                .RETURNS(outputType)
+                .BODY(new Return(local("bean")));
+        Class implClass = new Class("ConcreteProcessor").MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(ClassName.get("MyProcessor", "com.example"))
+                .METHODS(implMethod);
+
+        String out = emitWithTraitPrelude(traitClass, implClass);
+        assertTrue("Impl of stateful trait must emit &mut self even without explicit MutableReceiver",
+                out.contains("fn process(&mut self"));
+    }
+
+    @Test
+    public void nonStatefulTrait_implementingClass_implMethodGetsSharedSelf() {
+        // Sanity check: when the trait is NOT stateful (no MutableReceiver methods),
+        // the impl method must emit &self, not &mut self.
+        TypeName inputType  = ClassName.get("InputBean",  "com.example");
+        TypeName outputType = ClassName.get("OutputBean", "com.example");
+
+        // Trait with NO MutableReceiver methods → not stateful
+        Method traitMethod = new Method("process")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                // No MutableReceiver annotation
+                .PARAMETER(inputType, "bean")
+                .RETURNS(outputType);
+        Class traitClass = new Class("ReadOnlyProcessor", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(traitMethod);
+
+        Method implMethod = new Method("process")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                .ANNOTATIONS(OverrideAnnotation.NAME)
+                .PARAMETER(inputType, "bean")
+                .RETURNS(outputType)
+                .BODY(new Return(local("bean")));
+        Class implClass = new Class("ConcreteReader").MODIFIERS(Modifier.PUBLIC)
+                .INTERFACES(ClassName.get("ReadOnlyProcessor", "com.example"))
+                .METHODS(implMethod);
+
+        String out = emitWithTraitPrelude(traitClass, implClass);
+        assertFalse("Impl of non-stateful trait must NOT emit &mut self",
+                out.contains("fn process(&mut self"));
+        assertTrue("Impl of non-stateful trait should emit &self",
+                out.contains("fn process(&self"));
+    }
+
+    // =========================================================================
+    // Group 18 — MutableFirstParam through a trait field (OBJECT_METHOD_CALL)
+    // =========================================================================
+    //
+    // §10e covers MutableFirstParam call-site injection for direct this.method()
+    // calls (OPERATOR_VARIABLE path, calledMethodHasMutableFirstParam).  A
+    // different path applies when the call is routed through a trait-typed field:
+    //
+    //   this.merger.processBean(bean, input)
+    //   →  self.merger.as_ref().unwrap().process_bean(&mut bean, &input)
+    //
+    // The set mutableFirstParamMethodNames contains scoped "TraitName.methodName"
+    // pairs (discovered via discoverTraits).  In OBJECT_METHOD_CALL, the emitter
+    // looks up "TraitName.methodName" to inject &mut for arg 0 and & for arg 1+.
+    //
+    // Using scoped names avoids false positives when two traits share a generic
+    // method name (e.g. BeanMergerInterface and InputOutputProcessor both have
+    // a method named "process").
+    //
+    // Regression for: E0308 on bean_history.rs line 75.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void mutableFirstParam_throughTraitField_firstArgGetsMutRef() {
+        // Calling a MutableFirstParam method through a trait-typed Option field must
+        // inject &mut for argument 0 and & for argument 1 in the OBJECT_METHOD_CALL path.
+        // Regression for: E0308 on bean_history.rs line 75 (merger calls).
+        TypeName beanType   = ClassName.get("FileInitBean",   "com.example");
+        TypeName inputType  = ClassName.get("FileInitInputs", "com.example");
+        TypeName ifaceType  = ClassName.get("BeanMergerIface","com.example");
+
+        // Trait with a MutableFirstParam method
+        Method traitMethod = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .ANNOTATIONS(MutableFirstParam.NAME)
+                .PARAMETER(beanType,  "bean")
+                .PARAMETER(inputType, "inputBean")
+                .RETURNS(beanType);
+        Class traitClass = new Class("BeanMergerIface", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(traitMethod);
+
+        // Host class with a field of the trait type and a method that calls through it
+        Field mergerField = new Field("merger", ifaceType);   // no initialiser → Option<Box<dyn …>>
+        Variable thisVar   = new Variable("this", LOCAL_VARIABLE);
+        MethodCall mergerAccess = new MethodCall(thisVar, "merger");        // OBJECT_ACCESSOR
+        Variable beanArg   = local("beanArg");
+        Variable inputArg  = local("inputArg");
+        MethodCall callThrough = new MethodCall(
+                mergerAccess, "processBean", List.of(beanArg, inputArg));   // OBJECT_METHOD_CALL
+        Method outerMethod = publicMethod("doProcess", callThrough);
+
+        Class hostClass = new Class("BeanHistory").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(mergerField)
+                .METHODS(outerMethod);
+
+        String out = emitWithTraitPrelude(traitClass, hostClass);
+        assertTrue("First arg of MFP call through trait field should be &mut",
+                out.contains("&mut bean_arg"));
+        assertTrue("Second arg of MFP call through trait field should be &",
+                out.contains("&input_arg"));
+    }
+
+    @Test
+    public void mutableFirstParam_throughTraitField_noFalsePositiveOnOtherTrait() {
+        // When two traits share a method name (e.g. "processBean"), only the one
+        // annotated with MutableFirstParam should inject &mut.  The other trait's
+        // method must not get spurious &mut on its first argument.
+        // This validates the scoped "TraitName.methodName" key in mutableFirstParamMethodNames.
+        TypeName beanType  = ClassName.get("FileInitBean",   "com.example");
+        TypeName inputType = ClassName.get("FileInitInputs", "com.example");
+
+        // Trait WITHOUT MutableFirstParam — plain method sharing the same name
+        Method plainMethod = new Method("processBean")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                // intentionally no MutableFirstParam
+                .PARAMETER(beanType,  "bean")
+                .PARAMETER(inputType, "inputBean")
+                .RETURNS(beanType);
+        Class plainTrait = new Class("PlainProcessor", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(plainMethod);
+
+        TypeName plainIfaceType = ClassName.get("PlainProcessor", "com.example");
+        Field processorField = new Field("processor", plainIfaceType);  // no initialiser
+        Variable thisVar    = new Variable("this", LOCAL_VARIABLE);
+        MethodCall procAccess = new MethodCall(thisVar, "processor");          // OBJECT_ACCESSOR
+        Variable beanArg    = local("beanArg");
+        Variable inputArg   = local("inputArg");
+        MethodCall callThrough = new MethodCall(
+                procAccess, "processBean", List.of(beanArg, inputArg));         // OBJECT_METHOD_CALL
+        Method outerMethod = publicMethod("doProcess", callThrough);
+
+        Class hostClass = new Class("Host").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(processorField)
+                .METHODS(outerMethod);
+
+        String out = emitWithTraitPrelude(plainTrait, hostClass);
+        assertFalse("Call through non-MFP trait must NOT inject &mut for first arg",
+                out.contains("&mut bean_arg"));
+    }
+
+    // =========================================================================
+    // Helpers for groups 19+
+    // =========================================================================
+
+    /**
+     * Emit {@code target} after registering each {@code helper} class both as a trait
+     * (so {@code isKnownTrait} returns true) and as a registry entry (so
+     * {@code findMethodParameters} can look up parameter types).
+     */
+    private String emitWithPrelude(Class target, Class... helpers) {
+        Rust rust = new Rust();
+        for (Class h : helpers) {
+            rust.discoverTraits(h);
+            rust.discoverClass(h);
+        }
+        rust.discoverClass(target);
+        return rust.emit(target).toString();
+    }
+
+    // =========================================================================
+    // Group 19 — FUNCTIONAL_INTERFACE_CALL: null arg for &str param → ""
+    // =========================================================================
+    //
+    // When a FUNCTIONAL_INTERFACE_CALL passes Constant.NULL for a parameter whose
+    // declared type is String, the emitter must emit "" (empty &str slice) rather
+    // than None.  Trait method signatures use &str for String parameters, so None
+    // would produce E0308.
+    //
+    // Fix: findMethodParameters() looks up the callee parameter types from classRegistry.
+    // The FUNCTIONAL_INTERFACE_CALL handler emits "" for null String params and delegates
+    // to convertTraitCallArg for all other args (which produces None for null non-String).
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void functionalInterfaceCall_nullArgForStringParam_emitsEmptyString() {
+        // Processor trait: handle(String key)
+        TypeName processorType = ClassName.get("Processor", "com.example");
+        Method handleMethod = new Method("handle")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .PARAMETER(ClassName.STRING, "key")
+                .RETURNS(ClassName.VOID);
+        Class processorClass = new Class("Processor", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(handleMethod);
+
+        // Host class: field 'proc' of type Processor, calling proc.handle(null)
+        Variable procField = new Variable("proc", FIELD_VARIABLE);
+        procField.inferredType = processorType;
+        MethodCall call = MethodCall.FUNCTIONAL_METHOD_CALL(procField, "handle", Constant.getNull());
+
+        Class hostClass = new Class("Host").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doHandle", call));
+
+        String out = emitWithPrelude(hostClass, processorClass);
+        assertTrue("Null String arg in FUNCTIONAL_INTERFACE_CALL should emit \"\"",
+                out.contains("handle(\"\")"));
+        assertFalse("Null String arg must not emit None for &str param",
+                out.contains("handle(None)"));
+    }
+
+    @Test
+    public void functionalInterfaceCall_nullArgForNonStringParam_emitsNone() {
+        // Processor trait: handle(int n) — int param → null should produce None (Option<i32>)
+        TypeName processorType = ClassName.get("Processor", "com.example");
+        Method handleMethod = new Method("handle")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .PARAMETER(ClassName._int, "n")
+                .RETURNS(ClassName.VOID);
+        Class processorClass = new Class("Processor", true)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHODS(handleMethod);
+
+        Variable procField = new Variable("proc", FIELD_VARIABLE);
+        procField.inferredType = processorType;
+        MethodCall call = MethodCall.FUNCTIONAL_METHOD_CALL(procField, "handle", Constant.getNull());
+
+        Class hostClass = new Class("Host").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("doHandle", call));
+
+        String out = emitWithPrelude(hostClass, processorClass);
+        assertTrue("Null non-String arg in FUNCTIONAL_INTERFACE_CALL should emit None",
+                out.contains("handle(None)"));
+        assertFalse("Non-String null arg must not emit \"\"",
+                out.contains("handle(\"\")"));
+    }
+
+    // =========================================================================
+    // Group 20 — HashMap key borrowing: string-typed local variable
+    // =========================================================================
+    //
+    // convertHashMapKeyArg skips the & prefix for String-typed local variables
+    // because they are already &str in Rust.  Adding & would produce &&str, which
+    // does not satisfy Borrow<str> for HashMap<String, V> lookups.
+    //
+    // Non-string and untyped local variables still receive &.
+    // The existing test hashMap_containsKey_keyIsBorrowed (Group 3) covers the
+    // non-typed case (no inferredType → gets &).  This group covers the string case.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void hashMap_containsKey_stringTypedLocalVar_notDoubleBorrowed() {
+        // myMap.containsKey(strKey) where strKey has inferredType = String
+        // String-typed local variables are &str — adding & would give &&str.
+        Variable mapVar = local("myMap");
+        Variable strKey = local("strKey", ClassName.STRING);   // already &str in Rust
+        MethodCall call = new MethodCall(mapVar, "containsKey", List.of(strKey));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(publicMethod("check", ClassName.BOOLEAN, new Return(call)));
+        String out = emit(clazz);
+        assertTrue("containsKey should be contains_key", out.contains("contains_key("));
+        assertTrue("String-typed local var should pass without & borrow",
+                out.contains("contains_key(str_key)"));
+        assertFalse("String-typed local var must not be double-borrowed",
+                out.contains("contains_key(&str_key)"));
+    }
+
+    // =========================================================================
+    // Group 21 — Self-method call with struct argument borrows the argument
+    // =========================================================================
+    //
+    // When a method on self (OPERATOR_VARIABLE with receiver="self") takes a
+    // struct-type parameter, the emitter looks up the parameter type via
+    // findSelfMethodParameters() and prepends & to match the &T trait declaration.
+    //
+    // Primitive and string params are Copy / &str respectively and must NOT be
+    // prefixed with & by this path.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void selfMethodCall_structArg_addsBorrowPrefix() {
+        // processItem(MyStruct item) declared; this.processItem(localItem) called.
+        // Struct arg should become &local_item to match &T trait param.
+        // Regression for: E0308 when composite-loop body called self.process_*(bean, …)
+        // without the correct & decorator.
+        TypeName structType = ClassName.get("MyStruct", "com.example");
+
+        Method processMethod = new Method("processItem")
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(structType, "item")
+                .RETURNS(ClassName.VOID);
+
+        Variable thisVar  = new Variable("this", LOCAL_VARIABLE);
+        Variable localItem = local("localItem");
+        localItem.inferredType = structType;
+        MethodCall call = new MethodCall(thisVar, "processItem", List.of(localItem));
+        Method callerMethod = publicMethod("doProcess", call);
+
+        Class clazz = new Class("MyProcessor").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(processMethod, callerMethod);
+        String out = emit(clazz);
+        assertTrue("Struct arg to self method should have & prefix",
+                out.contains("process_item(local_item)"));
+    }
+
+    @Test
+    public void selfMethodCall_primitiveArg_noBorrowPrefix() {
+        // setCount(int n) declared; this.setCount(n) called.
+        // Primitive args are Copy (i32) — must NOT be prefixed with &.
+        Method setCount = new Method("setCount")
+                .MODIFIERS(Modifier.PUBLIC)
+                .PARAMETER(ClassName._int, "n")
+                .RETURNS(ClassName.VOID);
+
+        Variable thisVar = new Variable("this", LOCAL_VARIABLE);
+        Variable nVar    = local("n", ClassName._int);
+        MethodCall call  = new MethodCall(thisVar, "setCount", List.of(nVar));
+        Method callerMethod = publicMethod("doSet", call);
+
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC)
+                .METHODS(setCount, callerMethod);
+        String out = emit(clazz);
+        assertTrue("Primitive arg to self method should not have & prefix",
+                out.contains("set_count(n)"));
+        assertFalse("Primitive arg must not be borrowed",
+                out.contains("set_count(&n)"));
+    }
+
+    // =========================================================================
+    // Group 22 — Super-delegation chain: cloneable collection return → .clone()
+    // =========================================================================
+    //
+    // When a method body returns via a SUPER_METHOD_CALL chain and the declared
+    // return type is a cloneable collection (e.g. HashMap<String, Vec<Integer>>),
+    // the chain passes through as_ref() and the final value is &T, not T.
+    // .clone() must be appended to produce the owned T expected by the caller.
+    //
+    // Fix: RETURN handler detects containsSuperMethodCall() + isMap/isList and
+    // appends .clone() unless containsNonCloneableElement() is true.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void superDelegation_cloneableMapReturn_appendsClone() {
+        // Method returns HashMap<String, List<Integer>> via SUPER_METHOD_CALL chain.
+        // The chain yields &HashMap — .clone() is needed to produce an owned value.
+        TypeName returnType = ClassName.HASH_STRING_LIST_INTEGER;  // HashMap<String, List<Integer>>
+        MethodCall superCall = MethodCall.SUPER_METHOD_CALL("getRecords", List.of());
+        Method m = new Method("getRecords")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(returnType)
+                .BODY(new Return(superCall));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        assertTrue("Super delegation returning cloneable map should append .clone()",
+                out.contains(".clone()"));
+    }
+
+    // =========================================================================
+    // Group 23 — Super-delegation chain: non-cloneable collection → & return type
+    // =========================================================================
+    //
+    // When the return type contains AtomicInteger (AtomicI32 in Rust), which does
+    // not implement Clone, .clone() cannot be used.  Instead the emitter must
+    // emit &HashMap<...> as the return type and return the reference as-is.
+    //
+    // Fix: emitMethod detects containsSuperMethodCall() + containsNonCloneableElement()
+    // and sets returnsOptionFieldRef = true → "-> &HashMap<...>" return type.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void superDelegation_atomicIntegerMapReturn_emitsRefReturnType() {
+        // Method returns HashMap<String, AtomicInteger> via SUPER_METHOD_CALL chain.
+        // AtomicInteger does not implement Clone → return &HashMap instead.
+        TypeName returnType = ClassName.HASHMAP_STRING_ATOMIC_INTEGER;  // HashMap<String, AtomicInteger>
+        MethodCall superCall = MethodCall.SUPER_METHOD_CALL("getCounterMap", List.of());
+        Method m = new Method("getCounterMap")
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(returnType)
+                .BODY(new Return(superCall));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC).METHODS(m);
+        String out = emit(clazz);
+        assertTrue("Super delegation with AtomicInteger should emit &HashMap return type",
+                out.contains("-> &HashMap<"));
+        assertFalse("Non-cloneable AtomicInteger map must not have .clone() appended",
+                out.contains(".clone()"));
+    }
+
+    // =========================================================================
+    // Group 24 — Trait default body: primitive parameter is not double-wrapped
+    // =========================================================================
+    //
+    // In a trait (abstract class) default method body, primitive-type parameters
+    // are emitted as Option<T> by convertTypeToRustTraitParam.  At the call site
+    // the parameter variable therefore already holds Option<T>.  Assigning it to
+    // an Option<T> struct field must NOT add an extra Some() wrapper, which would
+    // produce Option<Option<T>> (E0308).
+    //
+    // Fix: expressionProducesOption() returns true when currentEmittingTraitDefaultBody
+    // is true and the expression is a LOCAL_VARIABLE with primitive inferredType.
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void traitDefaultBody_primitiveParamAssigned_noSomeWrapping() {
+        // Abstract class with a non-abstract (default) method:
+        //   processData(int transforming) { out.transforming = transforming; }
+        //
+        // Because the method is emitted as a trait default body, `transforming` is
+        // declared as Option<i32> in Rust.  The assignment must produce:
+        //   out.transforming = transforming;   ← not Some(transforming)
+        Variable outVar           = local("out");
+        Variable transformingParam = local("transforming", ClassName._int);
+        MethodCall outField       = new MethodCall(outVar, "transforming");  // OBJECT_ACCESSOR
+        Assignment assign         = new Assignment(outField, transformingParam);
+
+        Method m = new Method("processData")
+                .MODIFIERS(Modifier.PUBLIC)   // non-abstract: has a body
+                .PARAMETER(ClassName._int, "transforming")
+                .RETURNS(ClassName.VOID)
+                .BODY(assign);
+
+        Class abstractClass = new Class("BaseProcessor")
+                .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .METHODS(m);
+
+        String out = emit(abstractClass);
+        assertFalse("Primitive param in trait default body must not be wrapped in Some()",
+                out.contains("Some(transforming)"));
+        assertTrue("Assignment should emit the parameter directly without Some() wrapping",
+                out.contains("out.transforming = transforming"));
+    }
+}

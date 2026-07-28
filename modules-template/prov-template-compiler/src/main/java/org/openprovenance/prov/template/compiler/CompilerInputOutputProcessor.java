@@ -12,6 +12,7 @@ import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.Method;
 import org.openprovenance.prov.template.compiler.past.PastFactory;
+import org.openprovenance.prov.template.compiler.past.annotations.MutableReceiver;
 
 import javax.lang.model.element.Modifier;
 
@@ -21,7 +22,6 @@ import static org.openprovenance.prov.template.compiler.common.Constants.*;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateRust;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
-import static org.openprovenance.prov.template.compiler.past.type.TypeVariable.T;
 
 public class CompilerInputOutputProcessor {
     public enum ProcessorType {
@@ -70,15 +70,16 @@ public class CompilerInputOutputProcessor {
             Method mspec =METHOD(Constants.PROCESS_METHOD_NAME)
                     .MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT)
                     .PARAMETER(receivedClassName,"bean")
+                    .ANNOTATIONS(MutableReceiver.NAME)
                     .RETURNS(returnedClassName);
 
             pastClass.METHOD(mspec);
         }
 
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, package_, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, package_, configs, fileName, directory, stackTraceElement, compilerUtil);
-        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, package_, "target/generated-js", stackTraceElement);
-        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, package_, "target/generated-rust/src", stackTraceElement);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, package_, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, package_, configs, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, package_, locations, stackTraceElement);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, package_, locations, stackTraceElement);
         return new SpecificationFile(javaGenerator,pythonGenerator,jsGenerator,rustGenerator);
 
     }

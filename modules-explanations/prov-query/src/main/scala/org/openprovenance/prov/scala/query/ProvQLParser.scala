@@ -34,14 +34,18 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
   }
 
   def tableJoinClause: Rule[Operator :: HNil, Operator :: HNil] =
-    rule { tableClause ~ WS ~ ("join" ~ WS ~ joinClause2 ~> makeTableJoin | "left" ~ WS ~ "join" ~ WS ~ joinClause2 ~> makeTableLJoin)}
+    rule { tableClause ~ WS ~ ("join" ~ WS ~ joinClause2 ~> makeTableJoin | "left" ~ WS ~ "join" ~ WS ~ joinClause2 ~> makeTableLJoin | "optional" ~ WS ~ "join" ~ WS ~ joinClause2 ~ optional("when" ~ WS ~ pred) ~> makeTableOptJoin)}
 
   def pred: Rule[HNil, Predicate :: HNil] = rule {
     ref  ~ ( ">=" ~ WS ~ ref ~> makeIncludes ~ WS |
       "!>=" ~ WS ~ ref ~> makeIncludesNot ~ WS |
-      "!>=" ~ WS ~ ref ~> makeIncludesNot ~ WS |
+      "?>=" ~ WS ~ ref ~> makeIncludesOpt ~ WS |
       "="  ~ WS ~ ( ref  ~> makeEq | int_literal  ~> makeEqL)  ~ WS |
-      "exists" ~ WS ~> makeExists ~ WS ) ~ optional ( "or" ~ WS ~ pred ~> makeOr )}
+      "exists" ~ WS ~> makeExists ~ WS |
+      "absent" ~ WS ~> makeAbsent ~ WS |
+      "intersects" ~ WS ~ "{" ~ WS ~ oneOrMore(qualifiedNameLiteral).separatedBy(WS ~ "," ~ WS) ~ WS ~ "}" ~ WS ~> makeInSet) ~ optional ( "or" ~ WS ~ pred ~> makeOr )}
+
+  def qualifiedNameLiteral: Rule[HNil, QualifiedName :: HNil] = rule { '\'' ~ qualified_name ~ '\'' ~ WS }
 
   def joinClause2: Rule[HNil, (Ref, Ref) :: HNil] = rule {
     ref  ~ WS ~ "=" ~ WS ~ ref ~> makeJoinPair ~ WS }
@@ -55,7 +59,7 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
   def fieldIdList: Rule[HNil, Seq[String] :: HNil] = rule { oneOrMore(fieldIdent).separatedBy(WS ~ "," ~ WS)}
 
   def ref: Rule[HNil, Ref :: HNil] = rule {
-    (fieldIdent ~ WS ~ ( "[" ~ WS ~ identifier ~> makeProperty ~ WS ~ "]" ~ WS   |
+    (fieldIdent ~ WS ~ ( "[" ~ WS ~ identifier ~> makeProperty ~ WS ~ "]" ~ WS ~ optional("[" ~ WS ~ fieldIdent ~ WS ~ "]" ~ WS) ~> makeJsonKeyProp |
       "." ~ WS ~ fieldIdent ~> makeField ~ WS ) ) |
       '\'' ~ qualified_name ~ '\'' ~> makeValue ~ WS
     /*|
@@ -74,6 +78,7 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
   def makeSelect: (Seq[(String,Option[String])],Operator) => Operator
   def makeScan: (String, QualifiedName,Option[String] ) => Operator
   def makeProperty: (String, QualifiedName)  => Ref
+  def makeJsonKeyProp: (Ref, Option[String]) => Ref
   def makeField: (String ,String) => Ref
   def makeValue: QualifiedName  => Ref
   def makeWhere:  (Operator, Option[Seq[Predicate]]) => Operator
@@ -81,10 +86,14 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
   def makeEqL: (Ref, String) => Predicate
   def makeIncludes: (Ref, Ref) => Predicate
   def makeIncludesNot: (Ref, Ref) => Predicate
+  def makeIncludesOpt: (Ref, Ref) => Predicate
   def makeExists: Ref  => Predicate
+  def makeAbsent: Ref  => Predicate
+  def makeInSet: (Ref, Seq[QualifiedName]) => Predicate
   def makeJoinPair: (Ref,Ref) => (Ref,Ref)
   def makeTableJoin: (Operator, Operator,(Ref,Ref)) => Operator
   def makeTableLJoin: (Operator, Operator,(Ref,Ref)) => Operator
+  def makeTableOptJoin: (Operator, Operator,(Ref,Ref),Option[Predicate]) => Operator
   def makeJoin1:(Operator, Seq[Operator]) => Operator
   def makeGroup:(Operator, Seq[String], Seq[String], String, Option[Ref]) => Operator
   def makeOr: (Predicate,Predicate) => Predicate = (p,q) => OrPred(p,q)
@@ -112,6 +121,11 @@ class ProvQLParser (override val input: ParserInput, val ns: Namespace) extends 
 
   override def makeProperty: (String, QualifiedName) => Ref = (s,q) => Property(s,q.toString())
 
+  override def makeJsonKeyProp: (Ref, Option[String]) => Ref = (ref, key) => (ref, key) match {
+    case (Property(name, property), Some(k)) => JsonProperty(name, property, k)
+    case _ => ref
+  }
+
   override def makeField: (String, String) => Ref = (s1,s2) => Field(s1,s2)
 
   override def makeValue: QualifiedName => Ref = q => Value(q.toString())
@@ -120,10 +134,17 @@ class ProvQLParser (override val input: ParserInput, val ns: Namespace) extends 
 
   override def makeIncludesNot: (Ref, Ref) => Predicate = (ref1,ref2) => Eq("includesQualifiedNameNot",ref1,ref2)
 
+  override def makeIncludesOpt: (Ref, Ref) => Predicate = (ref1,ref2) => Eq("includesQualifiedNameOrAbsent",ref1,ref2)
+
   override def makeEq: (Ref, Ref) => Predicate = (ref1,ref2) => Eq("equals",ref1,ref2)
   override def makeEqL: (Ref, String) => Predicate = (ref1,ref2) => EqL("equals",ref1,ref2)
 
   override def makeExists: Ref => Predicate = ref => Eq("exists",ref, null)
+
+  override def makeAbsent: Ref => Predicate = ref => Eq("absent",ref, null)
+
+  override def makeInSet: (Ref, Seq[QualifiedName]) => Predicate =
+    (ref, values) => InSetPred(ref, values.map(_.toString))
 
   override def makeWhere: (Operator, Option[Seq[Predicate]]) => Operator = (op, x) =>  x match {
     case None => op
@@ -144,6 +165,12 @@ class ProvQLParser (override val input: ParserInput, val ns: Namespace) extends 
   override def makeTableLJoin: (Operator, Operator,(Ref,Ref)) => Operator =
     (op1,op2,pair) => pair match {
       case (field1:Field, field2:Field) => LeftJoin(op1,field1.name,field1.field, op2,  field2.name,field2.field)
+      case _ => throw new IllegalStateException("illegal case")
+    }
+
+  override def makeTableOptJoin: (Operator, Operator,(Ref,Ref),Option[Predicate]) => Operator =
+    (op1,op2,pair,guard) => pair match {
+      case (field1:Field, field2:Field) => LeftHashJoin(op1,field1.name,field1.field, op2,  field2.name,field2.field, guard)
       case _ => throw new IllegalStateException("illegal case")
     }
 

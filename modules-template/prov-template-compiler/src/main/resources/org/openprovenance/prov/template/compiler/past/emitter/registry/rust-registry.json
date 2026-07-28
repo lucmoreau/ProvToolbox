@@ -1,0 +1,183 @@
+{
+  "types": [
+    {
+      "javaNames": ["past.util.Map", "past.util.HashMap", "HashMap"],
+      "category": "MAP",
+      "rustName": "HashMap",
+      "copy": false
+    },
+    {
+      "javaNames": ["past.util.List", "past.util.LinkedList", "past.util.ArrayList",
+                    "List", "LinkedList", "ArrayList"],
+      "category": "LIST",
+      "rustName": "Vec",
+      "copy": false
+    },
+    {
+      "javaNames": ["String"],
+      "category": "STRING",
+      "rustName": "String",
+      "copy": false
+    },
+    {
+      "javaNames": ["int", "Integer"],
+      "category": "PRIMITIVE",
+      "rustName": "i32",
+      "copy": true
+    },
+    {
+      "javaNames": ["long", "Long"],
+      "category": "PRIMITIVE",
+      "rustName": "i64",
+      "copy": true
+    },
+    {
+      "javaNames": ["float", "Float"],
+      "category": "PRIMITIVE",
+      "rustName": "f32",
+      "copy": true
+    },
+    {
+      "javaNames": ["double", "Double"],
+      "category": "PRIMITIVE",
+      "rustName": "f64",
+      "copy": true
+    },
+    {
+      "javaNames": ["boolean", "Boolean", "bool", "past.lang.bool"],
+      "category": "PRIMITIVE",
+      "rustName": "bool",
+      "copy": true
+    },
+    {
+      "javaNames": ["byte", "Byte"],
+      "category": "PRIMITIVE",
+      "rustName": "i8",
+      "copy": true
+    },
+    {
+      "javaNames": ["short", "Short"],
+      "category": "PRIMITIVE",
+      "rustName": "i16",
+      "copy": true
+    },
+    {
+      "javaNames": ["char", "Character"],
+      "category": "PRIMITIVE",
+      "rustName": "char",
+      "copy": true
+    },
+    {
+      "javaNames": ["void", "Void", "past.lang.Void"],
+      "category": "VOID",
+      "rustName": "()",
+      "copy": false
+    },
+    {
+      "javaNames": ["past.lang.Function", "java.util.function.Function", "Function"],
+      "category": "FUNCTION",
+      "rustName": "fn",
+      "copy": false
+    },
+    {
+      "javaNames": ["past.lang.BiFunction", "java.util.function.BiFunction", "BiFunction"],
+      "category": "FUNCTION",
+      "rustName": "fn",
+      "copy": false
+    },
+    {
+      "javaNames": ["past.lang.Class", "Class"],
+      "category": "CLASS_REF",
+      "rustName": "&'static str",
+      "copy": false
+    },
+    {
+      "javaNames": ["Object", "java.lang.Object"],
+      "category": "OBJECT",
+      "rustName": "Box<dyn std::any::Any>",
+      "copy": false
+    }
+  ],
+
+  "methodsByCategory": {
+    "MAP": [
+      {
+        "javaName": "get",
+        "rustName": "get",
+        "mutatesReceiver": false,
+        "receiverTransform": "NONE",
+        "chainedGetBehavior": "UNWRAP_AND_CHAIN",
+        "argTreatments": ["KEY_BORROW"],
+        "resultTransform": "COPIED"
+      },
+      {
+        "javaName": "containsKey",
+        "rustName": "contains_key",
+        "mutatesReceiver": false,
+        "receiverTransform": "NONE",
+        "chainedGetBehavior": "NONE",
+        "argTreatments": ["KEY_BORROW"],
+        "resultTransform": "NONE"
+      },
+      {
+        "javaName": "put",
+        "rustName": "insert",
+        "mutatesReceiver": true,
+        "receiverTransform": "NONE",
+        "chainedGetBehavior": "SWITCH_TO_GET_MUT",
+        "argTreatments": ["OWNED_STRING", "VALUE_UNWRAP"],
+        "resultTransform": "NONE"
+      }
+    ],
+    "LIST": [
+      {
+        "javaName": "add",
+        "rustName": "push",
+        "mutatesReceiver": true,
+        "receiverTransform": "AS_MUT_UNWRAP",
+        "chainedGetBehavior": "SWITCH_TO_GET_MUT",
+        "argTreatments": ["CLONE"],
+        "resultTransform": "NONE"
+      },
+      {
+        "javaName": "size",
+        "rustName": "len",
+        "mutatesReceiver": false,
+        "receiverTransform": "NONE",
+        "chainedGetBehavior": "NONE",
+        "argTreatments": [],
+        "resultTransform": "NONE"
+      },
+      {
+        "javaName": "isEmpty",
+        "rustName": "is_empty",
+        "mutatesReceiver": false,
+        "receiverTransform": "NONE",
+        "chainedGetBehavior": "NONE",
+        "argTreatments": [],
+        "resultTransform": "NONE"
+      }
+    ]
+  },
+
+  "globalMethods": [
+    {
+      "javaName": "toString",
+      "rustName": "to_string",
+      "mutatesReceiver": false,
+      "receiverTransform": "NONE",
+      "chainedGetBehavior": "NONE",
+      "argTreatments": [],
+      "resultTransform": "NONE"
+    },
+    {
+      "javaName": "forEach",
+      "rustName": "forEach",
+      "mutatesReceiver": true,
+      "receiverTransform": "NONE",
+      "chainedGetBehavior": "NONE",
+      "argTreatments": ["PASS_BY_VALUE"],
+      "resultTransform": "NONE"
+    }
+  ]
+}

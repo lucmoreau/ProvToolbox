@@ -46,10 +46,15 @@ public class ClassName extends TypeName {
     public static final ClassName ILLEGAL_STATE_EXCEPTION=ClassName.get("IllegalStateException", "past.exception");
     public static final ClassName ILLEGAL_ARGUMENT_EXCEPTION=ClassName.get("IllegalArgumentException", "past.exception");
     public static final ClassName PAST_EXCEPTION=ClassName.get("Exception", "past.exception");
-    public static final ClassName SQL_EXCEPTION=ClassName.get("SQLException", "java.sql");
     public static final ClassName RUNTIME_EXCEPTION=ClassName.get("RuntimeException", "past.exception");
     public static final ClassName UNCHECKED_EXCEPTION=ClassName.get("UncheckedException", "org.openprovenance.prov.model.exception");
+
+
+    // sql related
+    public static final ClassName SQL_EXCEPTION=ClassName.get("SQLException", "java.sql");
+    public static final ClassName RESULT_SET = ClassName.get("ResultSet", "java.sql");
     public static final ClassName RESULT_SET_META_DATA = ClassName.get("ResultSetMetaData", "java.sql");
+    public static final ClassName POSTGRES_PGOBJECT=ClassName.get("PGobject", "org.postgresql.util");
 
     public static final ClassName PROV_FILE_BUILDER = ClassName.get("FileBuilder", "org.openprovenance.prov.template.log2prov");
     public static final ClassName PROV_FACTORY = ClassName.get("ProvFactory", "org.openprovenance.prov.model");
@@ -78,6 +83,9 @@ public class ClassName extends TypeName {
     public static final ClassName APACHE_STRING_SUBSTITUTOR= ClassName.get("StringSubstitutor", "org.apache.commons.text");
 
 
+    public static final ClassName ATOMIC_INTEGER = ClassName.get("AtomicInteger", "past.lang");
+    public static final ParameterizedType MAP_STRING_ATOMIC_INTEGER = ParameterizedType.get(MAP,STRING, ATOMIC_INTEGER);
+    public static final ParameterizedType HASHMAP_STRING_ATOMIC_INTEGER = ParameterizedType.get(HASHMAP,STRING, ATOMIC_INTEGER);
     public static final ParameterizedType SET_STRING = ParameterizedType.get(SET, STRING);
     public static final ParameterizedType MAP_STRING_T= ParameterizedType.get(MAP, STRING, T());
     public static final ParameterizedType MAP_STRING_STRING= ParameterizedType.get(MAP, STRING, STRING);
@@ -87,12 +95,18 @@ public class ClassName extends TypeName {
     public static final ParameterizedType HASH_MAP_STRING_INTARRAY = ParameterizedType.get(HASHMAP, STRING, intArray);
     public static final ParameterizedType MAP_STRING_MAP_STRING_INTARRAY = ParameterizedType.get(MAP, STRING, MAP_STRING_INTARRAY);
     public static final ParameterizedType HASH_MAP_STRING_MAP_STRING_INTARRAY = ParameterizedType.get(HASHMAP, STRING, MAP_STRING_INTARRAY);
+    public static final TypeName LIST_OF_INTEGER = ParameterizedType.get(LIST,INTEGER);
+    public static final TypeName LIST_OF_OBJECTS = ParameterizedType.get(LIST,OBJECT);
+    public static final TypeName LINKED_LIST_OF_INTEGER = ParameterizedType.get(LINKED_LIST,INTEGER);
+    public static final TypeName LINKED_LIST_OF_OBJECTS = ParameterizedType.get(LINKED_LIST,OBJECT);
     public static final TypeName LIST_OF_OBJECT_ARRAYS = ParameterizedType.get(LIST,OBJECT_ARRAY);
     public static final TypeName LIST_OF_OBJECT_ARRAYS_ARRAYS = ParameterizedType.get(LIST,OBJECT_ARRAY_ARRAY);
     public static final ParameterizedType HASH_MAP_STRING_T= ParameterizedType.get(HASHMAP, STRING, T());
     public static final ClassName BUILDER_INTERFACE=ClassName.get("Builder", CLIENT_PACKAGE);
     public static final ParameterizedType MAP_STRING_BUILDER=ParameterizedType.get(MAP, STRING, BUILDER_INTERFACE);
     public static final ParameterizedType MAP_STRING_FILEBUILDER= ParameterizedType.get(MAP, STRING, PROV_FILE_BUILDER);
+    public static final ParameterizedType MAP_STRING_LIST_INTEGER = ParameterizedType.get(MAP,STRING, LIST_OF_INTEGER);
+    public static final ParameterizedType HASH_STRING_LIST_INTEGER = ParameterizedType.get(HASHMAP,STRING, LIST_OF_INTEGER);
 
     public static final TypeVariable TYPE_RESULT = TypeVariable.get("RESULT");
     public static final TypeVariable TYPE_OUTPUT = TypeVariable.get("OUTPUT");
@@ -110,6 +124,7 @@ public class ClassName extends TypeName {
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_ANY=FUNCTION_OBJARRAY_TO_TYPE(TypeVariable.get("?"));
     public static final ParameterizedType FUNCTION_LIST_OBJARRAY_TO_ANY=FUNCTION_LIST_OBJARRAY_TO_TYPE(TypeVariable.get("?"));
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_STRING=FUNCTION_OBJARRAY_TO_TYPE(STRING);
+    public static final ParameterizedType FUNCTION_BEAN_TO_STRING=FUNCTION_BEAN_TO_TYPE(STRING);
     public static final ParameterizedType FUNCTION_OBJARRAY_TO_OBJ_ARRAY = FUNCTION_OBJARRAY_TO_TYPE(OBJECT_ARRAY);
     public static final ParameterizedType BIFUNCTION_MAP_STRING_MAP_STRING_INTARRAY_STRINGARRAY_TO_T= ParameterizedType.get(BIFUNCTION, MAP_STRING_MAP_STRING_INTARRAY, STRING_ARRAY, T());
     public static final ParameterizedType LIST_MAP_STRING_OBJECT=ParameterizedType.get(LIST, MAP_STRING_OBJECT);
@@ -143,7 +158,6 @@ public class ClassName extends TypeName {
     public static final ParameterizedType MAP_STRING_STRING_ARRAY = ParameterizedType.get(MAP, STRING, STRING_ARRAY);
     public static final ParameterizedType LIST_OF_STRING = ParameterizedType.get(LIST, STRING);
     public static final ParameterizedType MAP_STRING_LIST_STRING = ParameterizedType.get(MAP, STRING, LIST_OF_STRING);
-    public static final ClassName RESULT_SET = ClassName.get("ResultSet", "java.sql");
     public static final ParameterizedType FUNCTION_STRING_RESULTSET = ParameterizedType.get(FUNCTION, STRING, RESULT_SET);
     public static final ClassName CATALOGUE_DISPATCHER_INTERFACE = ClassName.get("CatalogueDispatcherInterface", "org.openprovenance.prov.model.interop");
     public static final ClassName COLLECTORS = ClassName.get("Collectors", "past.util.stream");
@@ -155,6 +169,9 @@ public class ClassName extends TypeName {
     public static final ParameterizedType HASH_SET_GENERICS= ParameterizedType.get(HASH_SET);
     public static final ParameterizedType BIFUNCTION_MAP_OUT_OUT = ParameterizedType.get(BIFUNCTION, MAP_STRING_OBJECT, TYPE_OUT, TYPE_OUT);
 
+    public static ParameterizedType FUNCTION_BEAN_TO_TYPE(TypeName returnType) {
+        return ParameterizedType.get(FUNCTION, OBJECT, returnType);
+    }
     public static ParameterizedType FUNCTION_OBJARRAY_TO_TYPE(TypeName returnType) {
         return ParameterizedType.get(FUNCTION, OBJECT_ARRAY, returnType);
     }

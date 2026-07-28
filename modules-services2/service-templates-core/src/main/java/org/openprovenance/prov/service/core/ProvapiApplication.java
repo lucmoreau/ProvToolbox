@@ -86,9 +86,10 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 	protected final Set<Object> singletons = new HashSet<>();
 
 	public final StorageSetup storageSetup = new StorageSetup();
+	private final TemplateService templateService;
 
 	public ProvapiApplication() {
-		logger.info("ProvapiApplication (service-templates-core) constructor ... start");
+		logger.debug("ProvapiApplication (service-templates-core) constructor ... start");
 		InteropFramework intF=new InteropFramework();
 		final ProvFactory factory = InteropFramework.getDefaultFactory();
 
@@ -110,8 +111,11 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 		singletons.add(ps);
 		singletons.add(new TranslationService(ps));
 		singletons.add(new org.openprovenance.prov.service.translation.TemplateService(ps));
-		singletons.add(newTemplateService(ps));
+		this.templateService = newTemplateService(ps);
+		singletons.add(templateService);
+		singletons.add(newQueryService(ps));
 		singletons.add(new ResourcesService());
+
 
 
 		singletons.add(new OpenApiResource());
@@ -120,6 +124,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 		singletons.add(new TableKeyListMessageBodyReader());
 		singletons.add(new TemplatesVizConfigMessageBodyReader());
 		singletons.add(new SearchConfigMessageBodyReader());
+		singletons.add(new QueryParametersMessageBodyReader());
 
 		singletons.add(new VanillaDocumentMessageBodyWriter(new InteropFramework()));
 		singletons.add(new NodeMessageBodyWriter());
@@ -131,7 +136,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 
 
 
-		logger.info("ProvapiApplication (service-templates-core) constructor ... completion");
+		logger.debug("ProvapiApplication (service-templates-core) constructor ... completion");
 
 
 	}
@@ -139,6 +144,10 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
     public TemplateService newTemplateService(PostService ps) {
         return new TemplateService(ps);
     }
+
+	public QueryService newQueryService(PostService ps) {
+		return new QueryService(ps, templateService.getQueryTemplate());
+	}
 
 
     @Override

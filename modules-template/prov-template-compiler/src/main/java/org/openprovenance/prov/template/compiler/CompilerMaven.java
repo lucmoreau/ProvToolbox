@@ -7,6 +7,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
@@ -20,7 +21,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
 import static org.openprovenance.prov.template.compiler.common.Constants.TESTER_FILE;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
@@ -548,7 +548,7 @@ mvn -f jsweet/jsweet-pom.xml jsweet:jsweet
 
 
 
-    public SpecificationFile generateTestFile_l2p(TemplatesProjectConfiguration configs, String directory, String fileName) {
+    public SpecificationFile generateTestFile_l2p(TemplatesProjectConfiguration configs, Locations locations, String directory, String fileName) {
         StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
 
         Class pastClass = pastFactory.CLASS(TESTER_FILE)
@@ -588,8 +588,8 @@ mvn -f jsweet/jsweet-pom.xml jsweet:jsweet
 
         String myPackage = configs.root_package;
 
-        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, null, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator, pythonGenerator);
     }

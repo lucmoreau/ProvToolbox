@@ -1,0 +1,14 @@
+{
+    "name": "tr",
+    "templates": [
+        "tr-transporting.json",
+        "tr-packing.json",
+        "tr-unpacking.json",
+        "tr-examining.json",
+        "tr-examining-no-instrument.json",
+        "tr-agent-init.json",
+        "tr-assigning.json",
+        "tr-handingover.json"
+    ],
+    "dictionaries": ["tr-dictionary.json"]
+}

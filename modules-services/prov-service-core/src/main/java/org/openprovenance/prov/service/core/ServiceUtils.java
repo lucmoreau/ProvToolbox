@@ -330,7 +330,7 @@ public class ServiceUtils {
         return null;
     }
 
-    public Response composeResponseNotFOUND(String result) {
+    static public Response composeResponseNotFOUND(String result) {
         return Response.status(Response.Status.NOT_FOUND).entity(result)
                 .type("text/plain")
                 .header(ACCESS_CONTROL_ALLOW_ORIGIN, WILDCARD).build();

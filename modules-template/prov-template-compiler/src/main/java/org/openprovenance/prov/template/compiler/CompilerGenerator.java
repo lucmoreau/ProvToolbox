@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
 
 public class CompilerGenerator {
     private final ProvFactory provFactory;
@@ -44,10 +43,12 @@ public class CompilerGenerator {
 
             String javaOutputDirectory= javaRootDirectory + packageName.replace(".", "/") + "/";
 
-            Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, packageName, configs.python_dir, stackTraceElement);
-            Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packageName, configs, filename + ".java", javaOutputDirectory, stackTraceElement, compilerUtil);
+            Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, packageName, locations, stackTraceElement);
+            Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packageName, configs, javaOutputDirectory, stackTraceElement, compilerUtil);
+            Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packageName, locations, stackTraceElement);
+            Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, packageName, locations, stackTraceElement);
 
-            SpecificationFile specFile = new SpecificationFile(javaGenerator, pythonGenerator);
+            SpecificationFile specFile = new SpecificationFile(javaGenerator, pythonGenerator, jsGenerator, rustGenerator);
             return specFile;
 
 

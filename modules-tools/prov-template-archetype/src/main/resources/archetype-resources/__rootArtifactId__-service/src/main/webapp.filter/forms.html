@@ -9,25 +9,35 @@
     <title>${symbol_dollar}{pom.form.dashboard.title}</title>
     <link rel="stylesheet" href="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/css/bootstrap.min.css" />
     <link rel="stylesheet" href="${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/css/provtemplate.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">-->
+    <link href="https://cdn.datatables.net/v/dt/dt-2.3.7/datatables.min.css" rel="stylesheet" integrity="sha384-wCnlGUpaekN+Mtc+qIoipdqIqe2dvC7hWyzVg8wajZ1sxKnVTbnyBd7pyx7JT0Su" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="${symbol_dollar}{service.context}/webjars/font-awesome/${symbol_dollar}{webjars.fontawesome.version}/css/font-awesome.min.css"/>
     <link rel="stylesheet" type="text/css"  href="${symbol_dollar}{service.context}/webjars/swagger-ui/${symbol_dollar}{webjars.swagger-ui.version}/swagger-ui.css" >
     <link rel="icon"       type="image/png" href="${symbol_dollar}{service.context}/webjars/swagger-ui/${symbol_dollar}{webjars.swagger-ui.version}/favicon-32x32.png" sizes="32x32" />
     <link rel="icon"       type="image/png" href="${symbol_dollar}{service.context}/webjars/swagger-ui/${symbol_dollar}{webjars.swagger-ui.version}/favicon-16x16.png" sizes="16x16" />
 
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        /* Map jsonform's hardcoded glyphicon classes to Font Awesome equivalents */
+        .glyphicon { font-family: FontAwesome; font-style: normal; font-weight: normal; }
+        .glyphicon-remove:before    { content: "\f00d"; } /* fa-times        */
+        .glyphicon-plus-sign:before { content: "\f055"; } /* fa-plus-circle  */
+        .glyphicon-minus-sign:before{ content: "\f056"; } /* fa-minus-circle */
+        .glyphicon-list:before      { content: "\f03a"; } /* fa-list         */
+    </style>
 </head>
 
 
 <body>
 <script src="${symbol_dollar}{service.context}/webjars/jquery/${symbol_dollar}{webjars.jquery.version}/jquery.min.js"></script>
-<script src="${symbol_dollar}{service.context}/webjars/datatables.net/${symbol_dollar}{webjars.datatables.version}/js/jquery.dataTables.min.js" type="text/javascript" charset="utf8" ></script>
+<!--<script src="${symbol_dollar}{service.context}/webjars/datatables.net/${symbol_dollar}{webjars.datatables.version}/js/jquery.dataTables.min.js" type="text/javascript" charset="utf8" ></script> -->
+<script src="https://cdn.datatables.net/v/dt/dt-2.3.7/datatables.min.js" integrity="sha384-aQ8I1X2x8U0AR8D7C4Ah0OvZlwMslQdN5YDAQBA56jXrrhcECijs/i7H+5DDrlV1" crossorigin="anonymous"></script>
 <script src="${symbol_dollar}{service.context}/webjars/JSV/lib/jsv.js"></script>
 <script src="${symbol_dollar}{service.context}/webjars/underscore/${symbol_dollar}{webjars.underscore.version}/underscore.js"></script>
 <script src="${symbol_dollar}{service.context}/webjars/jsonform/lib/jsonform.js"></script>
 <script src="${symbol_dollar}{service.context}/webjars/jsonform/deps/opt/jquery-ui.js"></script>
 <script src="${symbol_dollar}{service.context}/webjars/jquery-csv/${symbol_dollar}{webjars.jquery.csv.version}/src/jquery.csv.js"></script>
-
+<script src="${symbol_dollar}{service.context}/webjars/plotly.js/${symbol_dollar}{webjars.plotlyjs.version}/dist/plotly.min.js"></script>
 
 <script src="${symbol_dollar}{service.context}/webjars/j4ts/${symbol_dollar}{webjars.j4ts.version}/bundle.js"></script>
 
@@ -92,6 +102,26 @@
         font-size: 1rem;
         font-weight: bold;
     }
+
+    pre .pretty {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+    .pretty .string { color: green; }
+    .pretty .uri { color: green; }
+    .pretty .number { color: darkorange; }
+    .pretty .boolean { color: blue; }
+    .pretty .symbol { color: blue; }
+    .pretty .null { color: magenta; }
+    .pretty .key { color: red; }
+    .pretty .date { color: red; }
+    .pretty .provkeyword { color: saddlebrown; }
+    .pretty .feature { color: #8910ff; }
+
+    /* Navigator tab: fill the full available viewport height */
+    html, body { height: 100%; }
+    .row.header.small { display: flex; flex-direction: column; height: 100vh; }
+    #all-tab-contents { flex: 1 1 0; min-height: 0; overflow: hidden; }
+    #tab_navigator { height: 100%; }
+    #tab_navigator > .row { height: 100%; }
+
 </style>
 
     <div class="row header small">
@@ -115,8 +145,13 @@
             <li class="nav-item">
                 <a href="#tab_navigator" data-bs-toggle="tab" class="nav-link" role="tab">Navigator</a>
             </li>
+
             <li class="nav-item">
-                <a href="#tab_instantiate" data-bs-toggle="tab" class="nav-link" role="tab">Instantiate</a>
+                <a href="#tab_query" data-bs-toggle="tab" class="nav-link" role="tab">Querier</a>
+            </li>
+
+            <li class="nav-item">
+                <a href="#tab_instantiate" data-bs-toggle="tab" class="nav-link" role="tab">Instantiater</a>
             </li>
             <li class="nav-item">
                 <a href="#tab_api" data-bs-toggle="tab" class="nav-link" role="tab">API</a>
@@ -137,20 +172,36 @@
                         </div>
                     </div>
                     <div class="col-sm-3">
-                        <h6>CSV encoding</h6>
+                        <h6>Input CSV encoding</h6>
                         <pre id="csv_result" class="grey"><p> </p></pre>
                         <p> </p>
-                        <h6>JSON encoding</h6>
+                        <h6>Input JSON encoding</h6>
                         <pre id="json_result" class="pretty grey"><p> </p></pre>
                     </div>
                     <div class="col-sm-3">
                         <button id="button-submit-json" type="button" class="btn btn-warning" onclick="submitEnactor(true)">Submit (json)</button>
                         <button id="button-submit-csv"  type="button" class="btn btn-warning" onclick="submitEnactor(false)">Submit (csv)</button>
                         <button id="button-clear"       type="button" class="btn btn-info"    onclick="enactClear()">Clear</button>
-                        <h6>Submission Result</h6>
+                        <div class="d-flex align-items-center mt-2 mb-2">
+                            Receive: <span class="me-2 small"> JSON</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="toggle-accept-format" onchange="preferred_accept_format = this.checked ? 'text/csv' : 'application/json'">
+                            </div>
+                            <span class="ms-2 small">CSV</span>
+                        </div>
+                            <div class="d-flex align-items-center mt-2 mb-2">
+                            Explanations:
+                            <span class="me-2 small"> No</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="toggle-explanations" onchange="explanation_enabled = this.checked ? true : false; if(this.checked) { showExplanationTitle(); } else { hideExplanationTitle(); }">
+                            </div>
+                            <span class="ms-2 small">Yes</span>
+                        </div>
+                        <h6 id="submission_result_section">Submission Result</h6>
                         <pre id="enact_result" class="pretty grey"> </pre>
                         <p id="prov_link"></p>
-                        <h6>Explanation</h6>
+                        <!-- make the next title invisible by default -->
+                        <h6 id="explanation_title" class="d-none">Explanation</h6>
                         <p id="prov_xplain"></p>
                     </div>
                 </div>
@@ -161,6 +212,15 @@
                     <div class="col-lg-2">
                         <div id="template-dropdown-documentation" class="dropdown">
                             <a href="${symbol_pound}" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" id="template-dropdown-documentation-lnk">${symbol_dollar}{pom.templates.button.label}</a>
+                        </div>
+
+                        <p style="margin-bottom:3cm;"></p>
+
+
+                        <div id="icon-placeholder" style="text-align:center;">
+                            <svg width="170" height="170">
+                                <use id="icon-placeholder-use" href=""/>
+                            </svg>
                         </div>
                     </div>
                     <div class="col-lg-7 first-column">
@@ -182,10 +242,20 @@
             <div id="tab_browser" class="tab-pane" role="tabpanel">
                 <div class="row">
                     <div class="col-lg-2">
-                        <label for="browser_base_relation">Base relation:</label><input type="text" id="browser_base_relation" class="form-control" value="activity">
-                        <label for="browser_from_date">From date:</label><input type="datetime-local" id="browser_from_date" class="form-control" value="2024-07-19T15:13">
-                        <label for="browser_to_date">To date:</label><input type="datetime-local" id="browser_to_date" class="form-control" >
-                        <label for="browser_limit"></label><input type="number" id="browser_limit" class="form-control" value="100">
+                        <label for="browser_base_relation">Base relation:</label>
+                        <div class="input-group">
+                            <input type="text" id="browser_base_relation" class="form-control" value="activity">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-browser-relation" data-bs-toggle="dropdown" aria-expanded="false" onclick="populateBrowserRelationDropdown()"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-browser-relation-menu" aria-labelledby="dd-browser-relation"></ul>
+                            </div>
+                        </div>
+                        <label for="browser_from_date">From date:</label>
+                        <input type="datetime-local" id="browser_from_date" class="form-control" value="2024-07-19T15:13">
+                        <label for="browser_to_date">To date:</label>
+                        <input type="datetime-local" id="browser_to_date" class="form-control" >
+                        <label for="browser_limit"></label>
+                        <input type="number" id="browser_limit" class="form-control" value="100">
 
                         <p></p>
                         <button id="browser_refresh" type="button" class="btn btn-info"    onclick="submitBrowse()">Refresh</button>
@@ -201,17 +271,38 @@
             </div>
 
             <div id="tab_navigator" class="tab-pane" role="tabpanel">
-                <div class="row">
-                    <div class="col-lg-2">
-                        <label for="navigator_id" class="visually-hidden">Navigator ID</label>
-                        <input type="number" id="navigator_id" class="form-control" value="96">
+                <div class="row flex-nowrap">
+                    <div class="col-lg-2 flex-shrink-0" style="position: sticky; left: 0; z-index: 10; background: white;">
                         <label for="navigator_template" class="visually-hidden">Navigator Template</label>
-                        <input type="text" id="navigator_template" class="form-control" value="weighing">
+                        <div class="input-group">
+                            <input type="text" id="navigator_template" class="form-control" placeholder="Select a template…">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-navigator-template" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-navigator-template-menu" aria-labelledby="dd-navigator-template"></ul>
+                            </div>
+                        </div>
+                        <label for="navigator_id" class="visually-hidden">Navigator ID</label>
+                        <div class="input-group">
+                            <input type="number" id="navigator_id" class="form-control" value="96">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-navigator-id" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-navigator-id-menu" aria-labelledby="dd-navigator-id"></ul>
+                            </div>
+                        </div>
                         <label for="navigator_property" class="visually-hidden">Navigator Property</label>
-                        <input type="text" id="navigator_property" class="form-control" value="item1">
+                        <div class="input-group">
+                            <input type="text" id="navigator_property" class="form-control" value="item1">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-navigator-property" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-navigator-property-menu" aria-labelledby="dd-navigator-property"></ul>
+                            </div>
+                        </div>
                         <label for="navigator_style" class="visually-hidden">Navigator Style</label>
                         <select name="navigator_style" id="navigator_style" class="form-select">
-                            <option value="template">Template Viz</option>
+                            <option value="template.D">Template Viz (D)</option>
+                            <option value="template.D.R">Template Viz (D, R)</option>
+                            <option value="template.D.R.S">Template Viz (D, R, S)</option>
+                            <option value="template.D.R.S.M">Template Viz (D, R, S, M)</option>
                             <option value="prov">PROV Viz</option>
                             <option value="entities">Entities Viz</option>
                         </select>
@@ -219,8 +310,111 @@
                         <p></p>
 
                         <button id="navigator_refresh" type="button" class="btn btn-info" onclick="submitNavigate('${symbol_pound}navigator_div')">Refresh</button>
+
+                        <div>
+                            <span class="me-2 small">Icons:</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="toggle-icons" onchange="icons_enabled = this.checked ? true : false">
+                            </div>
+                        </div>
+                        <p></p>
+                        <button id="navigator_save" type="button" class="btn btn-info" onclick="dumpNavigatorDiv()" disabled>
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <div id="navigator_minimap_container" style="
+                                position: relative;
+                                margin-top: 1.5rem;
+                                width: 100%;
+                                overflow: hidden;
+                                border: 1px solid #cbd5e1;
+                                border-radius: 4px;
+                                display: none;
+                                background: #fff;">
+                            <div id="navigator_minimap_inner" style="transform-origin: top left;"></div>
+                            <div id="navigator_minimap_viewport" style="
+                                position: absolute;
+                                top: 0; left: 0;
+                                border: 2px solid #3b82f6;
+                                background: rgba(59,130,246,0.15);
+                                box-sizing: border-box;
+                                cursor: grab;
+                            "></div>
+                        </div>
                     </div>
-                    <div class="col-lg-10 first-column" id="navigator_div">
+                    <div id="navigator_scroll_area" class="col-lg-10 first-column" style="overflow: auto; height: 100%;">
+                        <div id="navigator_div">
+                        </div>
+                        <div id="navigator_explanation" style="
+                            position: fixed;
+                            bottom: 12px;
+                            left: 12px;
+                            width: 25vw;
+                            max-height: calc(6 * 1.5em + 1rem);
+                            overflow: hidden;
+                            background: rgba(255, 255, 255, 0.92);
+                            border: 1px solid #cbd5e1;
+                            border-radius: 6px;
+                            padding: 0.4rem 0.6rem;
+                            font-size: 0.75rem;
+                            line-height: 1.5em;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                            z-index: 1000;
+                            display: none;
+                        "><p>blah blah</p><p>bloh bloh</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab_query" class="tab-pane" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label for="query_select">Available queries</label>
+                        <div class="d-flex">
+                            <select id="query_select" class="form-select me-2" aria-label="List of queries">
+                                <option value="">(loading...)</option>
+                            </select>
+                            <!--<button id="query_exec_selected" type="button" class="btn btn-secondary btn-sm" onclick="execSelectedQuery()">Execute Selected</button>-->
+                        </div>
+
+                        <div><p/></div>
+                        <div><p/></div>
+                        <label for="query_name" class="visually-hidden">Query name</label>
+                        <input type="text" id="query_name" class="form-control" placeholder="Query name">
+                        <label for="query_params">Parameters (JSON)</label>
+                        <textarea id="query_params" class="form-control" rows="6" placeholder='{"key":"value"}'></textarea>
+                        <p></p>
+                        <button id="query_run" type="button" class="btn btn-primary" onclick="runQuery()">Run Query</button>
+                    </div>
+                    <div class="col-lg-10 first-column" id="query_result">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a href="#tab_query_result" data-bs-toggle="tab" class="nav-link show active" role="tab" >Query Result</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#tab_query_table" data-bs-toggle="tab" class="nav-link" role="tab">Table</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#tab_query_plot" data-bs-toggle="tab" class="nav-link" role="tab">Plot</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="all-subtab-contents">
+                            <div id="tab_query_result" class="tab-pane show active" role="tabpanel">
+                                <pre id="query_result_pre" class="pretty grey"></pre>
+                            </div>
+                            <div id="tab_query_table" class="tab-pane" role="tabpanel">
+                                <div id="query_table_comment"></div>
+                                <table id="query_result_table"
+                                       class="display"
+                                       style="width:100%">
+                                </table>
+                            </div>
+                            <div id="tab_query_plot" class="tab-pane" role="tabpanel">
+                                <div id="query_plot_comment"></div>
+                                <div id="query_plot_div"></div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -389,6 +583,45 @@
 <script>
     let templateMapping = {}
     let cbindingsMapping = {}
+    let ICON_DEFS_URL = '${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/icons/${symbol_dollar}{pom.the.icon.svg.library}'
+
+    function rewriteImageHrefs(svgElement) {
+        if (!ICON_DEFS_URL) return;
+        const iconBaseUrl = ICON_DEFS_URL.substring(0, ICON_DEFS_URL.lastIndexOf('/') + 1);
+        const xlinkNS = 'http://www.w3.org/1999/xlink';
+        svgElement.querySelectorAll('image').forEach(function(img) {
+            // find closest ancestor of class node (excluding the element itself)
+            const nodeParent = img.parentElement ? img.parentElement.closest('.node') : null;
+            let subtype;
+            if (nodeParent) {
+                subtype=extractNodeSubtype(nodeParent);
+            }
+
+            const href = img.getAttributeNS(xlinkNS, 'href') || img.getAttribute('href');
+            if (href) {
+                const filename = href.substring(href.lastIndexOf('/') + 1);
+                const newHref2 = iconBaseUrl + filename.replace('png', 'svg');
+                if (subtype) {
+                    //let's try to get the icon for the subtype
+                    let filenameNoExtension = filename.substring(0,filename.lastIndexOf('.png'));
+                    const qualifiedSubtype=filenameNoExtension.substring(0,filenameNoExtension.lastIndexOf('.')+1) + subtype;
+                    const newHref1 = iconBaseUrl + qualifiedSubtype + '.svg';
+                    img.setAttributeNS(xlinkNS, 'xlink:href', newHref1);
+                    img.setAttribute('href', newHref1);
+                    // if the subtype icon does not exist, fall back, use the icon for the template
+                    img.addEventListener('error', function() {
+                        console.log('failed with ' + newHref1 + ', now trying ' + newHref2 );
+                        img.setAttributeNS(xlinkNS, 'xlink:href', newHref2);
+                        img.setAttribute('href', newHref2);
+                    }, { once: true });
+                } else {
+                    // if there is no subtype, go for the template icon
+                    img.setAttributeNS(xlinkNS, 'xlink:href', newHref2);
+                    img.setAttribute('href', newHref2);
+                }
+            }
+        });
+    }
 
     function diff (arr1, arr2) {
         return arr1.filter(x => !arr2.includes(x));
@@ -396,6 +629,25 @@
 
     let shortNames = {}
     let longNames = {}
+
+    function updateTemplateIcon(templateName) {
+        const useEl = document.getElementById('icon-placeholder-use');
+        if (useEl) {
+            useEl.setAttribute('href', '#icon-' + templateName);
+        }
+    }
+
+    function getOutputs(shortName) {
+        for (var indx in builders) {
+            if (builders[indx].getName() == shortName) return builders[indx].getOutputs();
+        }
+    }
+    function getBuilder(fullyQualifiedName) {
+        for (var indx in builders) {
+            if (builders[indx].getFullyQualifiedName() == fullyQualifiedName) return builders[indx];
+        }
+    }
+
 
     function constructMenusConfiguration() {
         let profile = {}
@@ -449,7 +701,7 @@
     const HTML_ANCHOR_EXPLANATION_PROV_LINK = '${symbol_pound}prov_xplain';
     const HTML_ANCHOR_DOCUMENTATION_IMAGE = '${symbol_pound}documentation_image';
     const HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER = "${symbol_pound}template-dropdown-composer";
-    const HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN = "${symbol_pound}template-dropdown-documentation";
+    const HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATION = "${symbol_pound}template-dropdown-documentation";
 
     const SUBMISSION_URL =     '${symbol_dollar}{service.context}/provapi/statements/';
     const SCHEMA_URL =         "${symbol_dollar}{service.context}/webjars/${symbol_dollar}{the.template.library}/${symbol_dollar}{pom.the.template.library.version}/schema/schema${symbol_dollar}{the.template.sublibrary}.json";
@@ -462,6 +714,122 @@
 
     console.log(profile)
 
+    function getBaseRelations() {
+        const seen = new Set();
+        for (var i in builders) {
+            const relations = JSON.parse(builders[i].getBaseRelations());
+            if (relations) {
+                relations.forEach(function(r) { seen.add(r); });
+            }
+        }
+        return Array.from(seen).sort();
+    }
+
+    const NAVIGATOR_LAST_COUNT = 5;
+
+    function populateNavigatorPropertyDropdown(shortName) {
+        const outputs = getOutputs(shortName);
+        const menu = document.getElementById('dd-navigator-property-menu');
+        menu.innerHTML = '';
+        if (!outputs || outputs.length === 0) return;
+        outputs.forEach(function(output, index) {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.className = 'dropdown-item';
+            a.href = '#';
+            a.textContent = output;
+            a.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('navigator_property').value = output;
+            });
+            li.appendChild(a);
+            menu.appendChild(li);
+        });
+        // Select the first output by default
+        document.getElementById('navigator_property').value = outputs[0];
+    }
+
+    function populateNavigatorIdDropdown(relation, onFirst) {
+        const url = '${symbol_dollar}{service.context}/provapi/template/' + encodeURIComponent(relation) + '/last/' + NAVIGATOR_LAST_COUNT + '.json';
+        const menu = document.getElementById('dd-navigator-id-menu');
+        menu.innerHTML = '';
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const ids = JSON.parse(xhr.responseText);
+                ids.forEach(function(id) {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.className = 'dropdown-item';
+                    a.href = '#';
+                    a.textContent = id;
+                    a.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.getElementById('navigator_id').value = id;
+                    });
+                    li.appendChild(a);
+                    menu.appendChild(li);
+                });
+                if (onFirst && ids.length > 0) onFirst(ids[0]);
+            }
+        };
+        xhr.send();
+    }
+
+    // Populate navigator_template dropdown with short names
+    const ddTemplateMenu = document.getElementById('dd-navigator-template-menu');
+    for (const fqn in shortNames) {
+        const name = shortNames[fqn][0];
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.className = 'dropdown-item';
+        a.href = '#';
+        a.textContent = name;
+        a.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('navigator_template').value = name;
+            populateNavigatorIdDropdown(name, function(firstId) {
+                document.getElementById('navigator_id').value = firstId;
+            });
+            populateNavigatorPropertyDropdown(name);
+        });
+        li.appendChild(a);
+        ddTemplateMenu.appendChild(li);
+    }
+
+    populateBrowserRelationDropdown();
+
+    if (typeof ICON_DEFS_URL !== 'undefined' && ICON_DEFS_URL) {
+        fetch(ICON_DEFS_URL)
+            .then(function(response) { return response.text(); })
+            .then(function(svgText) {
+                const container = document.createElement('div');
+                container.style.display = 'none';
+                container.innerHTML = svgText;
+                document.body.insertBefore(container, document.body.firstChild);
+            })
+            .catch(function(err) { console.warn('Could not load icon defs from ' + ICON_DEFS_URL + ':', err); });
+    }
+
+    var preferred_accept_format = 'application/json';
+    var explanation_enabled=false;
+    var icons_enabled=false;
+
+    /* Functions to show/hide the Explanation title */
+    function showExplanationTitle() {
+        const el = document.getElementById('explanation_title');
+        if (el) el.classList.remove('d-none');
+        const el2 = document.getElementById('prov_xplain');
+        if (el2) el2.classList.remove('d-none');
+    }
+
+    function hideExplanationTitle() {
+        const el = document.getElementById('explanation_title');
+        if (el) el.classList.add('d-none');
+        const el2 = document.getElementById('prov_xplain');
+        if (el2) el2.classList.add('d-none');
+    }
 
     function submitEnactor(jsonSubmit) {
         ${symbol_dollar}(HTML_ANCHOR_ENACT_RESULT_BOX).html(${symbol_dollar}('<p>'));
@@ -486,6 +854,7 @@
 
     // function getExplanation(url,accept,id) sends get request to url with http header Accept-Explanation set to parameter accept, and results added to html element with id
     function getExplanation(url, accept_explanation, id) {
+        if (!explanation_enabled) return;
         const xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
         xhr.onerror= function(xhr,event) {
@@ -500,15 +869,18 @@
             ${symbol_dollar}(id).html(response);
         }
         xhr.setRequestHeader("Accept-PROV-explanation", accept_explanation);
-        xhr.setRequestHeader("Accept", "text/plain");
+        xhr.setRequestHeader("Accept", "text/html");
         xhr.send();
     }
+
 
 
     function submitService(jsonSubmit, url, anchor_result_box, anchor_csv, anchor_result_prov_link, anchor_explanation, enactorp, allRecordsp) {
         console.log("submitService")
 
-        let csv_data=${symbol_dollar}(HTML_ANCHOR_CSV_RESULT).text()
+        let $csv_clone = ${symbol_dollar}(HTML_ANCHOR_CSV_RESULT).clone();
+        $csv_clone.find('br').replaceWith('\n');
+        let csv_data = $csv_clone.text();
         const input_bean = tm.getBean();
         const __elements=input_bean.__elements;
         let json_data=JSON.stringify(alreadySeen.concat([input_bean]))
@@ -533,30 +905,113 @@
             } else if (!enactorp && (xhr.status === 200)) {
                 ${symbol_dollar}(anchor_result_box).html('<i class="fa fa-check"></i>' + "Passed Validator!");
             } else {
-                const parsed = JSON.parse(xhr.responseText);
-                let name=parsed[0]["isA"];
-                if (__elements) {
-                    // this is a compositive bean, get the type from the input bean
-                    parsed[0].type=input_bean.type;
-                }
-                let highlighted=tm.syntaxHighlight_json(JSON.stringify(parsed, null, 2), name)
-                ${symbol_dollar}(anchor_result_box).html(highlighted);
-                if (anchor_csv) {
-                    let merged= {...input_bean, ...parsed[0]}
-                    let csv_bean=tm.populateBean(name, merged)
-                    // if we want json log
-                    //      ${symbol_dollar}(id2).append(JSON.stringify(merged, null, 2));
-                    // if we want csv log
-                    console.log("csv_bean " + csv_bean);
-                    let csv_with_brk=csv_bean[0].replace(/(?:\r\n|\r|\n)/g, '<br>').replaceAll('\\n','<br>');
-                    console.log("csv_with_brk " + csv_with_brk);
-                    ${symbol_dollar}(anchor_csv).append("<p>").append(csv_with_brk).append("</p>");
-                }
-                if (anchor_result_prov_link) {
-                    let ID=parsed[0]["ID"];
-                    let prov_link = createProvLink(name, ID);
-                    ${symbol_dollar}(anchor_result_prov_link).html(prov_link).append("<p/>").append("<div id='xplain_id'></div>").append("<p/>");
-                    getExplanation('${symbol_dollar}{service.context}/provapi/explanation/template/' + name + '/' + ID, 'default', anchor_explanation);
+                let responseType=xhr.getResponseHeader('Content-Type');
+                console.log(responseType);
+                if (responseType.includes(MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON)) {
+                    const parsed = JSON.parse(xhr.responseText);
+                    let name = parsed[0]["isA"];
+                    if (__elements) {
+                        // this is a compositive bean, get the type from the input bean
+                        parsed[0].type = input_bean.type;
+                    }
+                    let highlighted = tm.syntaxHighlight_json(JSON.stringify(parsed, null, 2), name)
+                    ${symbol_dollar}(anchor_result_box).html(highlighted);
+                    if (anchor_csv) {
+                        let merged = {...input_bean, ...parsed[0]}
+                        let csv_bean = tm.populateBean(name, merged)
+                        // if we want json log
+                        //      ${symbol_dollar}(id2).append(JSON.stringify(merged, null, 2));
+                        // if we want csv log
+                        console.log("csv_bean " + csv_bean);
+                        let csv_with_brk = csv_bean[0].replace(/(?:\r\n|\r|\n)/g, '<br>').replaceAll('\\n', '<br>');
+                        console.log("csv_with_brk " + csv_with_brk);
+                        ${symbol_dollar}(anchor_csv).append("<p>").append(csv_with_brk).append("</p>");
+                    }
+                    if (anchor_result_prov_link) {
+                        let ID = parsed[0]["ID"];
+                        let prov_link = createProvLink(name, ID);
+                        ${symbol_dollar}(anchor_result_prov_link).html(prov_link).append("<p/>").append("<div id='xplain_id'></div>").append("<p/>");
+                        getExplanation('${symbol_dollar}{service.context}/provapi/explanation/template/' + name + '/' + ID, '${symbol_dollar}{pom.nlg.xplan.strategy}', anchor_explanation);
+                    }
+                } else if (responseType.includes(MEDIA_TYPE_TEXT_CSV)) {
+                    const response = xhr.responseText.trim();
+                    console.log(response);
+
+                    // display table in result_box
+                    ${symbol_dollar}(anchor_result_box).html(response);
+
+                    try {
+                        const records = ${symbol_dollar}.csv.toArrays(response)
+                            .map(function(row) {
+                                return row.map(function(cell) {
+                                    return cell === '' ? undefined : cell; }); });
+                        console.log(records);
+
+
+                        // if records contains a single element
+                        if (!records || records.length <= 0) {
+                            ${symbol_dollar}(anchor_result_box).html("Error processing response as record: " + response);
+                        } else if (records.length == 1) {
+                            // simple bean, get the type from the first column of the record
+                            let record0 = records[0]
+                            let record_type = records[0][0]
+                            console.log("Found " + record_type)
+                            var builder = getBuilder(record_type);
+                            console.log(builder)
+
+                            let bean = builder.record2bean(record0);
+                            console.log(bean)
+
+                            ${symbol_dollar}(anchor_result_box).append("<p/><p><b>Reconstructed bean:</b></p>")
+
+                            let highlighted = tm.syntaxHighlight_json(JSON.stringify(bean, null, 2), record_type)
+
+                            ${symbol_dollar}(anchor_result_box).append(highlighted);
+
+
+                        } else {
+                            // composite bean
+                            let record0 = records[0]
+                            let record_type = records[0][0]
+                            console.log("Found " + record_type)
+                            var builder = getBuilder(record_type);
+                            console.log(builder)
+
+                            // need to convert array into java list (since it's a conversion of code from java, via jsweet)
+                            let recordList=new java.util.ArrayList();
+                            for (let record of records) {
+                                recordList.add(record);
+                            }
+                            let bean = builder.aRecord2BeanConverter(recordList);
+                            console.log(bean)
+
+                            ${symbol_dollar}(anchor_result_box).append("<p/><p><b>Reconstructed bean:</b></p>")
+
+                            // encoding of java list have a circularity, which means the objects cannot be stringified.
+                            let elements=bean["__elements"]
+                            let size=elements.size()
+                            let newElements=[]
+                            for (let i=0; i<size; i++) {
+                                newElements.push(elements.get(i));
+                            }
+                            let newCompositeBean={}
+                            newCompositeBean.isA=bean.isA
+                            newCompositeBean.count=bean.count;
+                            newCompositeBean.type=bean.type;
+                            newCompositeBean["__elements"]=newElements;
+
+                            let highlighted = tm.syntaxHighlight_json(JSON.stringify(newCompositeBean, null, 2), record_type)
+                            ${symbol_dollar}(anchor_result_box).append(highlighted);
+
+                        }
+                    } catch (e) {
+                        console.log("Failed in the reconstruction of bean from csv");
+                        console.log(e)
+
+                        ${symbol_dollar}(anchor_result_box).append("Failed in the reconstruction of bean from csv");
+                    }
+                } else {
+                    ${symbol_dollar}(anchor_result_box).html("unknown response type " + responseType + "\n" + xhr.responseText);
                 }
 
             }
@@ -564,7 +1019,7 @@
         }
 
         // Currently, the server does not support the csv format in the result
-        if (true) {
+        if (preferred_accept_format === 'application/json') {
             xhr.setRequestHeader("Accept", MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON);
         } else {
             xhr.setRequestHeader("Accept", MEDIA_TYPE_TEXT_CSV);
@@ -588,6 +1043,7 @@
     function enactClear() {
         ${symbol_dollar}(HTML_ANCHOR_ENACT_RESULT_BOX).html("");
         ${symbol_dollar}(HTML_ANCHOR_ENACT_RESULT_PROV_LINK).html("");
+        ${symbol_dollar}(HTML_ANCHOR_EXPLANATION_PROV_LINK).html("");
     }
 
     function clearBrowse() {
@@ -596,6 +1052,25 @@
         ${symbol_dollar}('${symbol_pound}browser_to_date').val("");
         ${symbol_dollar}('${symbol_pound}browser_base_relation').val("activity");
         ${symbol_dollar}('${symbol_pound}browser_limit').val("10");
+    }
+
+    function populateBrowserRelationDropdown() {
+        const menu = document.getElementById('dd-browser-relation-menu');
+        if (menu.childElementCount > 0) return; // already populated
+        const relations = getBaseRelations();
+        relations.forEach(function(name) {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.className = 'dropdown-item';
+            a.href = '#';
+            a.textContent = name;
+            a.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('browser_base_relation').value = name;
+            });
+            li.appendChild(a);
+            menu.appendChild(li);
+        });
     }
 
     function submitBrowse() {
@@ -749,44 +1224,452 @@
         return "<a  target='_blank' href='${symbol_dollar}{service.context}/provapi/live/" + relation + "/" + id + ".svg'>" + data + "</a>";
     }
 
-    function submitNavigate(id) {
-        //let url = "http://localhost:7072/ptl/provapi/templates/viz"
-        let url = "${symbol_dollar}{service.context}/provapi/templates/viz"
-        let template=${symbol_dollar}('${symbol_pound}navigator_template').val();
-        let property=${symbol_dollar}('${symbol_pound}navigator_property').val();
-        let template_id=${symbol_dollar}('${symbol_pound}navigator_id').val();
-        let style=${symbol_dollar}('${symbol_pound}navigator_style').val();
+    // ── Streaming viz: stage panel + SSE consumption ─────────────────────
+    // submitNavigate uses fetch() + ReadableStream to consume the SSE
+    // events fired by POST /provapi/templates/viz/stream.  Each `stage`
+    // event updates one row of a three-row panel inside #navigator_div;
+    // the final `result` event base64-decodes the SVG and swaps it in.
+    // The post-processing previously done in xhr.onload runs unchanged
+    // when the `result` event arrives.
+
+    let _currentVizStream = null;
+
+    const VIZ_STAGES = ['viz.sql', 'viz.prov-build', 'viz.render'];
+    const VIZ_STAGE_LABELS = {
+        'viz.sql':        'SQL query',
+        'viz.prov-build': 'Provenance build',
+        'viz.render':     'Graphviz render'
+    };
+
+    function renderVizStagePanel(targetSelector) {
+        const rows = VIZ_STAGES.map(function(stage) {
+            return '<div class="d-flex align-items-center gap-2" data-stage="' + stage + '">' +
+                '<span class="stage-status" style="width:1.5rem; display:inline-block;">' +
+                    '<span class="spinner-grow spinner-grow-sm text-muted" role="status" aria-hidden="true"></span>' +
+                '</span>' +
+                '<span class="stage-name">' + VIZ_STAGE_LABELS[stage] + '</span>' +
+                '<span class="stage-duration text-muted small"></span>' +
+                '<span class="stage-detail text-muted small ms-3 flex-grow-1"></span>' +
+            '</div>';
+        }).join('');
+        ${symbol_dollar}(targetSelector).html(
+            '<div class="d-flex flex-column gap-2 p-3 text-secondary">' + rows + '</div>'
+        );
+    }
+
+    function updateVizStageRow(stage, status, payload) {
+        const row = document.querySelector('[data-stage="' + stage + '"]');
+        if (!row) return;
+        const statusEl   = row.querySelector('.stage-status');
+        const detailEl   = row.querySelector('.stage-detail');
+        const durationEl = row.querySelector('.stage-duration');
+        switch (status) {
+            case 'started':
+                statusEl.innerHTML = '<span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>';
+                break;
+            case 'done':
+                statusEl.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
+                if (payload.durationMs != null) durationEl.textContent = payload.durationMs + ' ms';
+                break;
+            case 'failed':
+                statusEl.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
+                if (payload.error) detailEl.textContent = payload.error;
+                break;
+            case 'detail':
+                detailEl.textContent = payload.message || '';
+                break;
+        }
+    }
+
+    function parseSseEvent(raw) {
+        let name = 'message';
+        let data = '';
+        const lines = raw.split('\n');
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.indexOf('event:') === 0)      name  = line.slice(6).trim();
+            else if (line.indexOf('data:') === 0)  data += line.slice(5).trim();
+        }
+        return { name: name, data: data };
+    }
+
+    function base64ToText(b64) {
+        const binary = atob(b64);
+        const bytes  = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return new TextDecoder('utf-8').decode(bytes);
+    }
+
+    function vizShowError(targetSelector, message) {
+        const div = document.querySelector(targetSelector);
+        if (!div) return;
+        const banner = document.createElement('div');
+        banner.className = 'text-danger p-3';
+        banner.textContent = message;
+        div.appendChild(banner);
+    }
+
+    async function submitNavigate(id) {
+        //let url = "http://localhost:7072/ptl/provapi/templates/viz/stream"
+        let url = "${symbol_dollar}{service.context}/provapi/templates/viz/stream"
+        let template    = ${symbol_dollar}('${symbol_pound}navigator_template').val();
+        let property    = ${symbol_dollar}('${symbol_pound}navigator_property').val();
+        let template_id = ${symbol_dollar}('${symbol_pound}navigator_id').val();
+        let style       = ${symbol_dollar}('${symbol_pound}navigator_style').val();
 
         console.log("submitNavigate " + template + " " + property + " " + id + " " + style);
 
-        let config = {
+        let final_style = style;
+        let parameters  = {};
+        parameters.icons = icons_enabled;
+
+        let selectedKinds;
+        switch (style) {
+            case 'template.D':
+                selectedKinds = 'PROV_DERIVATION';
+                parameters['successor-relations'] = selectedKinds;
+                final_style = 'template';
+                break;
+            case 'template.D.R':
+                selectedKinds = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION';
+                parameters['successor-relations'] = selectedKinds;
+                final_style = 'template';
+                break;
+            case 'template.D.R.S':
+                selectedKinds = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION,PROV_SPECIALIZATION';
+                parameters['successor-relations'] = selectedKinds;
+                final_style = 'template';
+                break;
+            case 'template.D.R.S.M':
+                selectedKinds = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION,PROV_SPECIALIZATION,PROV_MEMBERSHIP';
+                parameters['successor-relations'] = selectedKinds;
+                final_style = 'template';
+                break;
+        }
+
+        const config = {
             template: template,
             property: property,
             id: template_id,
-            style: style
-        }
-
-        let json_data=JSON.stringify(config)
-
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', url, true);
-        xhr.onerror= function(xhr,event) {
-            console.log("error with " + event);
+            style: final_style,
+            parameters: parameters
         };
-        xhr.onabort= function(xhr,event) {
-            console.log("abort with " + event);
-        };
-        xhr.onload= function() {
-            const response = xhr.responseText;
-            console.log("loaded " + xhr.status);
-            ${symbol_dollar}(id).html(response);
+
+        const json_data = JSON.stringify(config);
+
+        // A new submission supersedes any in-flight one so its stage
+        // events don't paint over the fresh panel.
+        if (_currentVizStream) _currentVizStream.abort();
+        const controller = new AbortController();
+        _currentVizStream = controller;
+
+        renderVizStagePanel(id);
+        document.getElementById('navigator_save').disabled = true;
+
+        try {
+            const response = await fetch(url, {
+                method:  'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept':       'text/event-stream'
+                },
+                body:    json_data,
+                signal:  controller.signal
+            });
+
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+            }
+
+            const reader  = response.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let buffer = '';
+
+            while (true) {
+                const chunk = await reader.read();
+                if (chunk.done) break;
+                buffer += decoder.decode(chunk.value, { stream: true });
+
+                let idx;
+                while ((idx = buffer.indexOf('\n\n')) !== -1) {
+                    const rawEvent = buffer.slice(0, idx);
+                    buffer = buffer.slice(idx + 2);
+                    const ev = parseSseEvent(rawEvent);
+                    if (!ev.data) continue;
+
+                    let payload;
+                    try {
+                        payload = JSON.parse(ev.data);
+                    } catch (parseErr) {
+                        console.warn('viz stream: bad JSON payload', ev.data);
+                        continue;
+                    }
+
+                    if (ev.name === 'stage') {
+                        updateVizStageRow(payload.stage, payload.status, payload);
+                    } else if (ev.name === 'result') {
+                        const svg = base64ToText(payload.base64);
+                        ${symbol_dollar}(id).html(svg);
+                        rewriteImageHrefs(document.querySelector('#navigator_div svg')); //id hardcoded
+                        wireNavigatorNodeEvents();
+                        updateMinimap();
+                        document.getElementById('navigator_save').disabled = false;
+                    } else if (ev.name === 'error') {
+                        vizShowError(id, payload.error || 'render failed');
+                    }
+                }
+            }
+        } catch (e) {
+            if (e.name === 'AbortError') {
+                // Superseded by a newer click — leave the new panel alone.
+                return;
+            }
+            console.log('viz stream error', e);
+            vizShowError(id, e.message || String(e));
+        } finally {
+            if (_currentVizStream === controller) _currentVizStream = null;
         }
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.setRequestHeader("Accept", "image/svg+xml");
-        xhr.send(json_data);
-
-
     }
+
+    // subtypes appear in a <text></>text> element within brackets, e.g. (ReceivingGoods)
+    function extractNodeSubtype(node) {
+        const subtypePattern = /^\(([^)]+)\)$/;
+        const textEls = node.querySelectorAll('text');
+        for (var i = 0; i < textEls.length; i++) {
+            const content = textEls[i].textContent.trim();
+            const match = content.match(subtypePattern);
+            if (match) return match[1];
+        }
+        return null;
+    }
+
+    function parseNodeTitle(title) {
+        const lastUnderscore = title.lastIndexOf('_');
+        if (lastUnderscore === -1) return null;
+        return {
+            templateName: title.substring(0, lastUnderscore),
+            id:           title.substring(lastUnderscore + 1)
+        };
+    }
+
+    function updateMinimapViewport() {
+        const scrollEl  = document.getElementById('navigator_scroll_area');
+        const svgEl     = document.querySelector('#navigator_div svg');
+        const viewport  = document.getElementById('navigator_minimap_viewport');
+        const inner     = document.getElementById('navigator_minimap_inner');
+        if (!scrollEl || !svgEl || !viewport || !inner || !inner._mmScale) return;
+
+        const scale = inner._mmScale;
+
+        // Use getBoundingClientRect so the calculation works regardless of
+        // which ancestor element owns the scroll position.
+        const scrollRect = scrollEl.getBoundingClientRect();
+        const svgRect    = svgEl.getBoundingClientRect();
+
+        // How far the SVG's top-left corner has moved relative to the scroll container
+        const offsetLeft = scrollRect.left - svgRect.left;
+        const offsetTop  = scrollRect.top  - svgRect.top;
+
+        viewport.style.left   = Math.max(0, Math.round(offsetLeft          * scale)) + 'px';
+        viewport.style.top    = Math.max(0, Math.round(offsetTop           * scale)) + 'px';
+        viewport.style.width  = Math.round(scrollEl.clientWidth            * scale)  + 'px';
+        viewport.style.height = Math.round(scrollEl.clientHeight           * scale)  + 'px';
+    }
+
+    function updateMinimap() {
+        const svgEl     = document.querySelector('#navigator_div svg');
+        const container = document.getElementById('navigator_minimap_container');
+        const inner     = document.getElementById('navigator_minimap_inner');
+        const scrollEl  = document.getElementById('navigator_scroll_area');
+        if (!svgEl || !container || !inner || !scrollEl) return;
+
+        // Show first so offsetWidth is valid
+        container.style.display = 'block';
+
+        const mmW    = container.offsetWidth;
+        const totalW = svgEl.scrollWidth  || svgEl.getBoundingClientRect().width;
+        const totalH = svgEl.scrollHeight || svgEl.getBoundingClientRect().height;
+        if (!mmW || !totalW) return;
+
+        const scale = mmW / totalW;
+
+        // Clone the SVG and insert it scaled into the minimap
+        const clone = svgEl.cloneNode(true);
+        clone.style.cssText = 'display:block; width:' + totalW + 'px; height:' + totalH + 'px;';
+        clone.removeAttribute('width');
+        clone.removeAttribute('height');
+        inner.innerHTML = '';
+        inner.appendChild(clone);
+        inner.style.width     = totalW + 'px';
+        inner.style.height    = totalH + 'px';
+        inner.style.transform = 'scale(' + scale + ')';
+        inner._mmScale        = scale;
+
+        // Size the container to the scaled height so it clips correctly
+        container.style.height = Math.round(totalH * scale) + 'px';
+
+        // Attach (or re-attach) the scroll listener on the correct element
+        if (!scrollEl._minimapListenerAttached) {
+            scrollEl.addEventListener('scroll', updateMinimapViewport, { passive: true });
+            scrollEl._minimapListenerAttached = true;
+        }
+        wireMinimapDrag();
+
+        updateMinimapViewport();
+    }
+
+    function wireMinimapDrag() {
+        const viewport = document.getElementById('navigator_minimap_viewport');
+        const scrollEl = document.getElementById('navigator_scroll_area');
+        const inner    = document.getElementById('navigator_minimap_inner');
+        if (!viewport || !scrollEl || viewport._minimapDragWired) return;
+        viewport._minimapDragWired = true;
+
+        let dragging = false;
+        let startMouseX, startMouseY, startScrollLeft, startScrollTop;
+
+        viewport.addEventListener('mousedown', function(e) {
+            if (!inner._mmScale) return;
+            dragging = true;
+            startMouseX    = e.clientX;
+            startMouseY    = e.clientY;
+            startScrollLeft = scrollEl.scrollLeft;
+            startScrollTop  = scrollEl.scrollTop;
+            viewport.style.cursor = 'grabbing';
+            e.preventDefault(); // prevent text selection while dragging
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!dragging || !inner._mmScale) return;
+            const scale = inner._mmScale;
+            scrollEl.scrollLeft = startScrollLeft + (e.clientX - startMouseX) / scale;
+            scrollEl.scrollTop  = startScrollTop  + (e.clientY - startMouseY) / scale;
+            // scroll event fires automatically and calls updateMinimapViewport
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (dragging) {
+                dragging = false;
+                viewport.style.cursor = 'grab';
+            }
+        });
+    }
+
+    function wireNavigatorNodeEvents() {
+        const box = document.getElementById('navigator_explanation');
+        let hoverTimer = null;
+        let pinned = false;
+
+        function fetchExplanation(node) {
+            const titleEl = node.querySelector('title');
+            const title = titleEl ? titleEl.textContent.trim() : '';
+            const parsed = parseNodeTitle(title);
+            if (!parsed) return;
+            box.innerHTML = '';
+            box.style.display = 'block';
+            const fqn = (longNames[parsed.templateName] && longNames[parsed.templateName][0])
+                          ? longNames[parsed.templateName][0]
+                          : parsed.templateName;
+            const url = '${symbol_dollar}{service.context}/provapi/explanation/template/'
+                      + fqn + '/' + parsed.id;
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.setRequestHeader("Accept-PROV-explanation", 'default');
+            xhr.setRequestHeader("Accept", "text/html");
+            xhr.onload = function() { box.innerHTML = xhr.responseText; };
+            xhr.onerror = function() { box.textContent = 'Error loading explanation.'; };
+            xhr.send();
+        }
+
+        // Space pins the visible explanation; ESC unpins and hides it
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'Space' && box.style.display === 'block' && !pinned) {
+                e.preventDefault();
+                pinned = true;
+                box.style.outline = '2px solid #3b82f6'; // blue border signals pinned state
+            } else if (e.code === 'Escape' && pinned) {
+                pinned = false;
+                box.style.outline = '';
+                box.innerHTML = '';
+                box.style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('#navigator_div g.node').forEach(function(node) {
+            node.addEventListener('mouseenter', function() {
+                hoverTimer = setTimeout(function() {
+                    // Hovering a new node for 2 s always replaces the explanation,
+                    // and clears the pin so behaviour returns to normal afterwards.
+                    pinned = false;
+                    box.style.outline = '';
+                    fetchExplanation(node);
+                }, 2000);
+            });
+            node.addEventListener('mouseleave', function() {
+                clearTimeout(hoverTimer);
+                hoverTimer = null;
+                if (!pinned) {
+                    box.innerHTML = '';
+                    box.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    async function dumpNavigatorDiv() {
+        const div = document.getElementById('navigator_div');
+        const clone = div.cloneNode(true);
+        const xlinkNS = 'http://www.w3.org/1999/xlink';
+
+        // Inline all <image> elements as base64 data URLs
+        const images = clone.querySelectorAll('image');
+        await Promise.all(Array.from(images).map(async function(img) {
+            const href = img.getAttributeNS(xlinkNS, 'href') || img.getAttribute('href');
+            if (!href || href.startsWith('data:')) return;
+            try {
+                const response = await fetch(href);
+                const blob = await response.blob();
+                const dataUrl = await new Promise(function(resolve) {
+                    const reader = new FileReader();
+                    reader.onload = function() { resolve(reader.result); };
+                    reader.readAsDataURL(blob);
+                });
+                img.setAttributeNS(xlinkNS, 'xlink:href', dataUrl);
+                img.setAttribute('href', dataUrl);
+            } catch(e) {
+                console.warn('Could not inline image: ' + href, e);
+            }
+        }));
+
+        // Wrap in a minimal HTML document
+        const html = '<!DOCTYPE html>\n<html>\n<body>\n' + clone.innerHTML + '\n</body>\n</html>';
+        const blob = new Blob([html], { type: 'text/html' });
+
+        // Use native save dialog if available (Chrome/Edge), fall back to download link (Firefox)
+        if (window.showSaveFilePicker) {
+            try {
+                const fileHandle = await window.showSaveFilePicker({
+                    suggestedName: 'navigator-dump.html',
+                    types: [{ description: 'HTML file', accept: { 'text/html': ['.html'] } }]
+                });
+                const writable = await fileHandle.createWritable();
+                await writable.write(blob);
+                await writable.close();
+            } catch(e) {
+                if (e.name !== 'AbortError') console.error('Save failed:', e);
+            }
+        } else {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'navigator-dump.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    }
+
     let templateNameMapper = {};
 
 
@@ -820,6 +1703,24 @@
         xhr.send();
     }
 
+    function updateDataTable (id, data) {
+        //console.log("updateDataTable " + id)
+        //console.log(data);
+
+        var columns = data[0];
+        var titles = $.map(columns, function (column) {
+            return {"title": column}
+        })
+        // console.log(titles)
+        data.shift()
+
+        $(id).DataTable({
+            destroy: true,
+            "data": data,
+            "columns": titles
+        });
+    }
+
 
     const tm=new TemplateManager(logger,SCHEMA_URL,DOC_URL,profile);
     tm.setCsvResult(HTML_ANCHOR_CSV_RESULT);
@@ -828,7 +1729,7 @@
     tm.setImageLocation(HTML_ANCHOR_DOCUMENTATION_IMAGE);
     //tm.setFilenameConverter(imageNameMapper)
     tm.createDropdownForPlayground(HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER, "tm");
-    tm.createDropdownForDocumentation(HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN, "tm");
+    tm.createDropdownForDocumentation(HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATION, "tm");
 
     tm.setJsonResult(HTML_ANCHOR_JSON_RESULT);
     tm.setImageUrlPrefix('${symbol_dollar}{templates.url.prefix}');
@@ -841,9 +1742,338 @@
 
 
 </script>
+<script>
+    // Populate the Available queries select box by calling the QueryService
+    function populateQueryList() {
+        const url = '${symbol_dollar}{service.context}/provapi/query/list-of-queries';
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onerror = function () { console.log('Failed to load query list'); };
+        xhr.onabort = function () { console.log('Query list request aborted'); };
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                try {
+                    const list = JSON.parse(xhr.responseText);
+                    const sel = document.getElementById('query_select');
+                    if (!sel) return;
+                    sel.innerHTML = '';
+                    const emptyOpt = document.createElement('option');
+                    emptyOpt.value = '';
+                    emptyOpt.text = '(select...)';
+                    sel.appendChild(emptyOpt);
+                    if (Array.isArray(list)) {
+                        list.forEach(function(q) {
+                            const opt = document.createElement('option');
+                            opt.value = q;
+                            opt.text = q;
+                            sel.appendChild(opt);
+                        });
+                    }
+                    sel.addEventListener('change', function() {
+                        const nameInput = document.getElementById('query_name');
+                        if (nameInput) nameInput.value = this.value;
+                    });
+                    // mark as populated to avoid re-fetching
+                    //sel.dataset.populated = 'true';
+                } catch (e) {
+                    console.log('Error parsing query list: ' + e);
+                }
+            } else {
+                console.log('Failed to obtain query list: ' + xhr.status);
+            }
+        };
+        xhr.setRequestHeader('Accept', 'application/json');
+        xhr.send();
+    }
+
+    (function() {
+        function attachTriggers(sel) {
+            if (!sel) return;
+            const menuHandler = function menuHandler(evt) {
+                populateQueryList();
+            };
+            sel.addEventListener('focus', menuHandler);
+            sel.addEventListener('mousedown', menuHandler);
+            sel.addEventListener('touchstart', menuHandler);
+        }
+
+        const selNow = document.getElementById('query_select');
+        if (selNow) {
+            attachTriggers(selNow);
+        } else {
+            document.addEventListener('DOMContentLoaded', function() {
+                const selLater = document.getElementById('query_select');
+                attachTriggers(selLater);
+            });
+        }
+    })();
+</script>
+<script>
+
+    function createBarChart(parsed, queryResult) {
+        let xInstruction = parsed.trace.x
+        let yInstruction = parsed.trace.y
+        let headers = queryResult[0]
+        queryResult.shift();
+        let xValue = extract(headers, queryResult, xInstruction);
+        let yValue = extract(headers, queryResult, yInstruction);
+
+
+        let trace = parsed.trace;
+        trace.x = xValue;
+        trace.y = yValue;
+        let data = [trace]
+        let layout = parsed.layout;
+
+        console.log(trace);
+        console.log(layout);
+        return {data, layout};
+    }
+
+    function createPieChart(parsed, queryResult) {
+        let labelsInstruction = parsed.trace.labels
+        let valuesInstruction = parsed.trace.values
+        let headers = queryResult[0]
+        queryResult.shift();
+        let labelsValue = extract(headers, queryResult, labelsInstruction);
+        let valuesValue = extract(headers, queryResult, valuesInstruction);
+
+
+        let trace = parsed.trace;
+        trace.labels = labelsValue;
+        trace.values = valuesValue;
+        let data = [trace]
+        let layout = parsed.layout;
+
+        console.log(trace);
+        console.log(layout);
+        return {data, layout};
+    }
+
+    function doPlot(id, data, layout) {
+        try {
+            Plotly.newPlot(id, data, layout);
+        } catch (e) {
+            console.log('Error creating plot ' + e);
+            showPlotResult('<div class="alert alert-warning">Problem creating plotN</div>');
+            return;
+        }
+    }
+
+    function createPlotlyPlot(query, plot_url, id, queryResult) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', plot_url, true);
+        xhr.onerror = function () {
+            showPlotResult('<div class="alert alert-danger">Failed to load plot: ' + query + '</div>');
+        };
+        xhr.onabort = function () {
+            ('<div class="alert alert-danger">Plot load aborted: ' + query + '</div>');
+            console.log('Query list request aborted');
+        };
+        xhr.onload = function () {
+            // check status
+            if (xhr.status < 200 || xhr.status >= 300) {
+                let msg = 'HTTP status ' + xhr.status + ': ' + (xhr.responseText || xhr.statusText);
+                showPlotResult('<div class="alert alert-warning">URL: ' + plot_url + '<br>' + escapeHtml(msg) + '</div>');
+                return;
+            }
+            // check content type
+            const ct = xhr.getResponseHeader('Content-Type') || '';
+            if (ct.indexOf('application/json') === -1) {
+                let msg = 'Error ' + xhr.status + ': ' + (xhr.responseText || xhr.statusText) || '';
+                showPlotResult('<div class="alert alert-danger">content type (' + ct + '):' + escapeHtml(msg) + '</div>');
+                return;
+            }
+
+            // update plot  tab
+            let parsed;
+            try {
+                parsed = JSON.parse(xhr.responseText);
+            } catch (e) {
+                console.log('Error parsing query list: ' + e);
+                showPlotResult('<div class="alert alert-warning">Response is not valid JSON</div><pre class="grey">' + escapeHtml(xhr.responseText) + '</pre>');
+                return;
+            }
+
+            if (parsed.trace.type==="bar") {
+                let {data, layout} = createBarChart(parsed, queryResult);
+                doPlot(id, data, layout);
+
+            } else if (parsed.trace.type==="pie") {
+                let {data, layout} = createPieChart(parsed, queryResult);
+                doPlot(id, data, layout);
+            }
+
+
+
+        }
+        xhr.setRequestHeader('Accept', 'application/json');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send("{}"); // giving an opportunity to pass some arguments
+
+        /*
+        var trace1 = {
+            x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            y: [20, 14, 25, 16, 18, 22, 19, 15, 12, 16, 14, 17],
+            type: 'bar',
+            name: 'Primary Product',
+            marker: {
+                color: 'rgb(49,130,189)',
+                opacity: 0.7,
+            }
+        };
+
+        var trace2 = {
+            x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            y: [19, 14, 22, 14, 16, 19, 15, 14, 10, 12, 12, 16],
+            type: 'bar',
+            name: 'Secondary Product',
+            marker: {
+                color: 'rgb(204,204,204)',
+                opacity: 0.5
+            }
+        };
+
+        var data = [trace1, trace2];
+
+        var layout = {
+            title: {
+                text: '2013 Sales Report'
+            },
+            xaxis: {
+                tickangle: -45
+            },
+            barmode: 'group'
+        };
+
+        Plotly.newPlot(id, data, layout);
+
+         */
+
+    }
+
+    function extract(headers, queryResult, xInstruction) {
+        console.log(JSON.stringify(queryResult));
+        let parts=xInstruction.split('::');
+        let column=parts[1]
+        // find position of colum in headers (an array of strings)
+        let position = headers.indexOf(column)
+        if (position >= 0) {
+            // select element in position, for each row in queryResult
+            let slice = queryResult.map(function(value,index) { return value[position]; });
+            return slice;
+        } else {
+            return [];
+        }
+    }
+
+    function showQueryResult(html) {
+        const box = document.getElementById('query_result_pre');
+        if (box) box.innerHTML = html;
+    }
+    function showPlotResult(html) {
+        console.log(html);
+        const box = document.getElementById('query_plot_comment');
+        if (box) box.innerHTML = html;
+    }
+
+    function execSelectedQuery() {
+        const sel = document.getElementById('query_select');
+        if (!sel) return;
+        const q = sel.value;
+        if (!q || q.trim() === '') {
+            showQueryResult('<div class="alert alert-warning">No query selected</div>');
+            return;
+        }
+        document.getElementById('query_name').value = q;
+    }
+
+    function runQuery() {
+        document.getElementById('query_result_pre').innerHTML = '';
+        document.getElementById('query_plot_comment').innerHTML = '';
+        document.getElementById('query_table_comment').innerHTML = '';
+
+        const q = (document.getElementById('query_name') || {}).value;
+        if (!q || q.trim() === '') {
+            showQueryResult('<div class="alert alert-warning">No query name specified</div>');
+            return;
+        }
+
+        const paramsText = (document.getElementById('query_params') || {}).value || '';
+        let paramsObj = {};
+        if (paramsText.trim() !== '') {
+            try {
+                paramsObj = JSON.parse(paramsText);
+            } catch (e) {
+                showQueryResult('<div class="alert alert-danger">Invalid JSON in parameters: ' + e.message + '</div>');
+                return;
+            }
+        }
+
+        const url = '${symbol_dollar}{service.context}/provapi/query/' + encodeURIComponent(q) + '/post';
+        const plot_url = '${symbol_dollar}{service.context}/provapi/query.plot/' + encodeURIComponent(q) + '/post';
+
+        showQueryResult('<div class="text-muted">Running query...</div>');
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Accept', 'application/json, text/plain');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onerror = function() { showQueryResult('<div class="alert alert-danger">Network error while executing query</div>'); };
+        xhr.onload = function() {
+            // check status
+            if (xhr.status < 200 || xhr.status >= 300) {
+                let msg = 'Error ' + xhr.status + ': ' + (xhr.responseText || xhr.statusText);
+                showQueryResult('<div class="alert alert-danger">' + escapeHtml(msg) + '</div>');
+                return;
+            }
+            // check content type
+            const ct = xhr.getResponseHeader('Content-Type') || '';
+            if (ct.indexOf('application/json') === -1) {
+                showQueryResult('<pre class="grey">' + escapeHtml(xhr.responseText) + '</pre>');
+                return;
+            }
+            // update query result tab
+            let parsed;
+            let pretty;
+            try {
+                parsed = JSON.parse(xhr.responseText);
+                pretty = JSON.stringify(parsed, null, 2);
+                showQueryResult(tm.syntaxHighlight_json(pretty)) ;
+            } catch (e) {
+                console.log('Error parsing query list: ' + e);
+                showQueryResult('<div class="alert alert-warning">Response is not valid JSON</div><pre class="grey">' + escapeHtml(xhr.responseText) + '</pre>');
+                return;
+            }
+            // update data table
+            try {
+                // make a copy of parsed, since updateDataTable mutates the structure
+                let copy=JSON.parse(xhr.responseText)
+                updateDataTable('#query_result_table', copy);
+            } catch (e) {
+                console.log('Error creating table: ' + e);
+                document.getElementById('query_table_comment').innerHTML = '<div class="alert alert-warning">Issue creating table</div><pre class="grey">' + escapeHtml(xhr.responseText) + '</pre>';
+                return;
+            }
+            // update plot tab
+            try {
+                createPlotlyPlot(q, plot_url,'query_plot_div', parsed);
+            } catch (e) {
+                console.log('Error creating plot: ' + e);
+                showPlotResult('<div class="alert alert-danger">Error creating plot: ' + e + '</div>');
+                return;
+            }
+        }
+        xhr.send(JSON.stringify(paramsObj));
+    }
+
+    function escapeHtml(s) {
+        if (!s) return '';
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+</script>
 <script src="provservice.js"></script>
 <script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
-<!--<script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/tab.js"></script>-->
 
 </body>
 </html>

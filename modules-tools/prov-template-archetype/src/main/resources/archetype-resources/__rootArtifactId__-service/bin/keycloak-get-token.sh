@@ -1,8 +1,8 @@
 #!/bin/bash                                                                                                                                                                           
 
-PROV_CREDENTIALS="$HOME/.kclprov"
+PROV_CREDENTIALS="$HOME/.openprovenance.credentials.sh"
 TOKEN_DESTINATION="$HOME/.keycloak_token"
-VERBOSE=true
+VERBOSE=false
 
 if [ $# -ne 0 ]; then
   echo 1>&2 "Usage: . $0  "

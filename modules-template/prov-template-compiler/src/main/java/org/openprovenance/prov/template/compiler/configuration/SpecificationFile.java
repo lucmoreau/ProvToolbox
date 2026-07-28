@@ -6,19 +6,20 @@ import com.squareup.javapoet.TypeSpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
+import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.checker.ExternalTypeRegistry;
+import org.openprovenance.prov.template.compiler.past.checker.TypeDiagnostic;
 import org.openprovenance.prov.template.compiler.past.checker.TypeRegistry;
 import org.openprovenance.prov.template.compiler.past.emitter.Poet;
 import org.openprovenance.prov.template.compiler.past.emitter.RustCodeGenerator;
 import org.openprovenance.prov.template.compiler.past.emitter.RustProjectGenerator;
-
-import org.openprovenance.prov.template.compiler.past.checker.TypeDiagnostic;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
 import static org.openprovenance.prov.template.compiler.past.checker.ExternalTypeRegistry.initializeExternalRegistry;
 
 public class SpecificationFile {
@@ -36,7 +37,6 @@ public class SpecificationFile {
     private final Supplier<String> pyContent;
     private final Supplier<Boolean> javaGenerator;
     private final Supplier<Boolean> pythonGenerator;
-    private final SpecificationFile javaSpec;
     private final Supplier<Boolean> jsGenerator;
     private final Supplier<Boolean> rustGenerator;
 
@@ -51,7 +51,6 @@ public class SpecificationFile {
         this.pyContent=null;
         this.javaGenerator=javaGenerator;
         this.pythonGenerator=pythonGenerator;
-        this.javaSpec=null;
         this.jsGenerator=null;
         this.rustGenerator=null;
 
@@ -68,10 +67,11 @@ public class SpecificationFile {
         this.javaGenerator=javaGenerator;
         this.pythonGenerator=pythonGenerator;
         this.jsGenerator=jsGenerator;
-        this.javaSpec=null;
         this.rustGenerator=rustGenerator;
-
     }
+
+    static public Supplier<Boolean> emptyGenerator= () -> true;
+
 
     class JavaInUse {
         public java.util.function.BiFunction<String, String, Integer> f() {
@@ -147,35 +147,30 @@ public class SpecificationFile {
     }
 
     public boolean save() {
-        if (javaGenerator!=null && pythonGenerator!=null) {
-            boolean javaGen=javaGenerator.get();
-            boolean pyGen=pythonGenerator.get();
-            if (jsGenerator!=null) {
-                boolean jsGen=jsGenerator.get();
-                if (rustGenerator!=null) {
-                    boolean rustGen=rustGenerator.get();
-                    //compileRustProject();
-                    return javaGen && pyGen && jsGen && rustGen;
-                }
-                return javaGen && pyGen && jsGen;
-            }
-            return javaGen && pyGen;
+        boolean javaGen=true;
+        boolean pyGen=true;
+        boolean jsGen=true;
+        boolean rustGen=true;
+        if (javaGenerator!=null) {
+            javaGen = javaGenerator.get();
         }
-
-
-
-        // old method
-
-        boolean pySaved=true;
-        if (pyDirectory!=null && pyFilename!=null && pyContent!=null)
-            pySaved=compilerUtil.saveToFile(pyDirectory, pyDirectory+pyFilename, pyContent);
-
-        boolean javaSaved=compilerUtil.saveToFile(directory, directory + fileName, javaFile);
-
-        return javaSaved && pySaved;
+        if ( pythonGenerator!=null) {
+            pyGen = pythonGenerator.get();
+        }
+        if (jsGenerator!=null) {
+            jsGen = jsGenerator.get();
+        }
+        if (rustGenerator!=null) {
+            rustGen = rustGenerator.get();
+        }
+        return javaGen && pyGen && jsGen && rustGen;
     }
 
-    public static void compileRustProject(String projectName, String version) {
+
+    public static void compileRustProject(String rust_dir, String projectName, String version) {
+        if (rust_dir==null) return;
+        System.out.println("##################Rust compilation started...");
+
         if (!rustProjectCreated) {
             // create a Cargo.toml file
             rustProjectCreated=true;
@@ -209,7 +204,8 @@ public class SpecificationFile {
         return class_package;
     }
 
-    public static boolean generateJava(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, TemplatesProjectConfiguration configs, String fileName, String directory, StackTraceElement stackTraceElement, CompilerUtil compilerUtil) {
+    public static boolean generateJava(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, TemplatesProjectConfiguration configs, String directory, StackTraceElement stackTraceElement, CompilerUtil compilerUtil) {
+        String fileName=pastClass.name+DOT_JAVA_EXTENSION;
         typeCheckCoordinator.register(pastClass, packageName);
         codeGenCoordinator.addTask(registry -> {
             TypeSpec spec;
@@ -225,7 +221,8 @@ public class SpecificationFile {
         return true;
     }
 
-    public static boolean generateJava(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String templateName, String fileName, String directory, StackTraceElement stackTraceElement, CompilerUtil compilerUtil) {
+    public static boolean generateJava(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String templateName, String directory, StackTraceElement stackTraceElement, CompilerUtil compilerUtil) {
+        String fileName=pastClass.name+DOT_JAVA_EXTENSION;
         typeCheckCoordinator.register(pastClass, packageName);
         codeGenCoordinator.addTask(registry -> {
             TypeSpec spec;
@@ -241,7 +238,8 @@ public class SpecificationFile {
         return true;
     }
 
-    public static boolean generatePython(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
+    public static boolean generatePython(Class pastClass, String packageName, Locations locations, StackTraceElement stackTraceElement) {
+        String destinationDir=locations.python_dir;
         if (destinationDir == null) return false;
         codeGenCoordinator.addTask(registry -> {
             try {
@@ -261,7 +259,8 @@ public class SpecificationFile {
         return true;
     }
 
-    public static boolean generateJavaScript(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
+    public static boolean generateJavaScript(Class pastClass, String packageName, Locations locations, StackTraceElement stackTraceElement) {
+        String destinationDir=locations.javascript_dir;
         if (destinationDir == null) return false;
         codeGenCoordinator.addTask(registry -> {
             try {
@@ -271,6 +270,7 @@ public class SpecificationFile {
                 return true;
             } catch (RuntimeException | IOException e) {
                 try {
+                    e.printStackTrace();
                     new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -281,8 +281,11 @@ public class SpecificationFile {
         return true;
     }
 
-    public static boolean generateRust(org.openprovenance.prov.template.compiler.past.Class pastClass, String packageName, String destinationDir, StackTraceElement stackTraceElement) {
+    public static boolean generateRust(Class pastClass, String packageName, Locations locations, StackTraceElement stackTraceElement) {
+        String destinationDir=locations.rust_dir;
         if (destinationDir == null) return false;
+        // create destinationDir
+        new File(destinationDir).mkdirs();
         // Pass 1: Defer trait discovery to the type checking phase (same phase as typeCheckCoordinator.register)
         typeCheckCoordinator.registerPreCheckTask(() ->
                 rustCodeGenerator.registerClass(pastClass, packageName, destinationDir, stackTraceElement));

@@ -1,0 +1,22 @@
+{
+    "trace": {
+        "x": "column::table_name",
+        "y": "column::row_count",
+        "type": "bar",
+        "name": "Row Count",
+        "marker": {
+            "color": "rgb(255,127,14)",
+            "opacity": 0.7
+        }
+    },
+    "layout": {
+        "title": {
+            "text": "Row Count of Database Tables"
+        },
+        "xaxis": {
+            "tickangle": -45
+        },
+        "barmode": "group"
+    }
+}
+

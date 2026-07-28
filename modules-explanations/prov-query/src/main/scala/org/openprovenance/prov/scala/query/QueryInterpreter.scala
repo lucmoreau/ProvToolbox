@@ -107,6 +107,25 @@ trait QueryInterpreter extends SummaryTypesNames {
         case _ => false
       }
 
+    case Eq("absent", a1, _) =>
+      // true when the referenced variable is unbound (e.g. an optional join with no
+      // match, possibly nested) or the referenced attribute/field has no value
+      Try(evalRef(a1)(rec)).getOrElse(Seq()).isEmpty
+
+    case Eq("includesQualifiedNameOrAbsent", a1, a2) =>
+      // null-tolerant subtype test (?>= operator): an unbound variable (e.g. an
+      // optional join with no match, possibly nested) satisfies the condition;
+      // a bound one must match
+      val values1 = Try(evalRef(a1)(rec)).getOrElse(Seq())
+      if (values1.isEmpty) true
+      else {
+        val result = Primitive.applyFun1("includesQualifiedName", (values1, Set()), optionp = false, (evalRef(a2)(rec), Set()), environment)
+        result match {
+          case (Some(Result(Some(v), _, _, _)), _triples) => "true" == v
+          case _ => false
+        }
+      }
+
     case Eq(pred, a1, a2) =>
       val result = Primitive.applyFun1(pred, (evalRef(a1)(rec), Set()), optionp = false, (evalRef(a2)(rec), Set()), environment)
       result match {
@@ -128,11 +147,19 @@ trait QueryInterpreter extends SummaryTypesNames {
         evalPred(pred2)(rec)
       }
 
+    case InSetPred(ref, values) =>
+      val refValues = evalRef(ref)(rec).map(_.toString).toSet
+      values.exists(v => refValues.contains(v.toString))
+
   }
 
   def evalRef(r: Ref)(rec: Record): Seq[Object] = r match {
     case Property(name, property) => Primitive.applyProperty(property, None, toStatement(rec(name)), environment)._1
     case Field(name, property) => Primitive.applyField(property, toStatement(rec(name)))._1
+    case JsonProperty(name, property, jsonKey) =>
+      val propValues = Primitive.applyProperty(property, None, toStatement(rec(name)), environment)._1
+      val v = Primitive.getJsonProperty(propValues, jsonKey)
+      if (v == null) Seq() else Seq[Object](v)
     case Value(x) => Seq(x)
   }
 
@@ -146,6 +173,7 @@ trait QueryInterpreter extends SummaryTypesNames {
     case LeftJoin(left, _, _, right, _, _) => resultSchema(left) ++ resultSchema(right)
     case Group(keys, agg, _, _, _) => keys ++ agg
     case HashJoin(left, right) => resultSchema(left) ++ resultSchema(right)
+    case LeftHashJoin(left, _, _, right, _, _, _) => resultSchema(left) ++ resultSchema(right)
     case Print(parent) => toSchema()
     //case Order(f,parent,_)        => Schema()
   }
@@ -212,6 +240,42 @@ trait QueryInterpreter extends SummaryTypesNames {
                 //println("Supplying record (2) " + record)
                 yld(record)
               }
+            }
+          }
+        }
+
+      case LeftHashJoin(left, key1, property1, right, key2, property2, guard) =>
+        // Build phase: evaluate right sub-plan once and index by the join key value.
+        // A 'when' guard filters candidates here, at join level: a right-side row that
+        // fails the guard is not indexed, so a left row whose only candidates fail the
+        // guard still gets a null (unbound) row -- unlike a where-clause filter, which
+        // would drop the row entirely.
+        val rightSchema = resultSchema(right)
+        val hm = new mutable.HashMap[Seq[Object], mutable.ArrayBuffer[Record]]()
+        execOp(right) { rec2 =>
+          if (guard.forall(g => evalPred(g)(rec2))) {
+            val v2: (Seq[Object], Set[Triple]) = Primitive.applyField(property2, toStatement(rec2(key2)))
+            hm.getOrElseUpdate(v2._1, new mutable.ArrayBuffer[Record]) += rec2
+          }
+        }
+        // Probe phase: for each left record look up its join key in the hash map.
+        execOp(left) { rec1 =>
+          val noStatement: StatementOrNull = None
+          // If the left key is itself null (from an earlier outer join), propagate nulls
+          // for all right-side fields without attempting a field access on the null statement.
+          if (QueryInterpreter.getStatementOrNull(rec1(key1)).contains(None)) {
+            val nullRightFields: RFields = rightSchema.map[RField](_ => noStatement)
+            yld(Record(rec1.fields ++ nullRightFields, rec1.schema ++ rightSchema))
+          } else {
+            val v1: (Seq[Object], Set[Triple]) = Primitive.applyField(property1, toStatement(rec1(key1)))
+            hm.get(v1._1) match {
+              case Some(buf) =>
+                buf.foreach { rec2 =>
+                  yld(Record(rec1.fields ++ rec2.fields, rec1.schema ++ rec2.schema))
+                }
+              case None =>
+                val nullRightFields: RFields = rightSchema.map[RField](_ => noStatement)
+                yld(Record(rec1.fields ++ nullRightFields, rec1.schema ++ rightSchema))
             }
           }
         }
@@ -304,7 +368,6 @@ trait QueryInterpreter extends SummaryTypesNames {
     }
     table foreach { case (k: RFields, a: Seq[AGGREGATE]) =>
       val record = Record(k ++ a.map(x => OrType.bToOr2(Seq(new Other(qother, ProvFactory.pf.getName.XSD_INT.asInstanceOf[QualifiedName], x.asInstanceOf[Seq[AnyRef]].size.toString)))), keys ++ agg)
-      println(record)
       yld(record)
     }
   }

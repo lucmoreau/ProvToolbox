@@ -1,5 +1,6 @@
 package org.openprovenance.prov.scala.primitive
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import nlg.wrapper.Constants
 import org.openprovenance.prov.model
 import org.openprovenance.prov.scala.immutable.{ProvFactory, _}
@@ -39,6 +40,8 @@ case class Triple (subject: QualifiedName,
  */
 
 object Primitive {
+
+  private val jsonMapper = new ObjectMapper()
 
   def processFunction(getStatement: String=>Statement,
                       getSeqStatement: String=>Seq[Statement],
@@ -114,7 +117,12 @@ object Primitive {
 
                 arg3 match {
                   case None =>
-                    applyFun2(function, applyProperty(property, index, statement, environment), optionp, (Seq(a1), Set()), (Seq(a2), Set()), environment)
+                    val propertyValues = applyProperty(property, index, statement, environment)
+                    if (function == "lookup-type-with-default" && statement != null && propertyValues._1.isEmpty) {
+                      // statement is bound but carries no such property: fall back to the default word
+                      (Some(sToResult(a2.toString)), Set[Triple]())
+                    } else
+                      applyFun2(function, propertyValues, optionp, (Seq(a1), Set()), (Seq(a2), Set()), environment)
                   case Some(a3) =>
                     applyFun3(function, applyProperty(property, index, statement, environment), optionp, (Seq(a1), Set()), (Seq(a2), Set()), (Seq(a3), Set()), environment)
 
@@ -150,7 +158,11 @@ object Primitive {
         (Some(doFun(function, objects)),triples)
       }
     } else {
-      (Some(doFun(function, objects)),triples)
+      val r = doFun(function, objects)
+      // an optional value that realises as the empty string (e.g. an attribute
+      // recorded as "") suppresses its phrase, like an absent value would
+      if (optionp && r.string.exists(_.isEmpty)) (None, triples)
+      else (Some(r), triples)
     }
   }
 
@@ -165,7 +177,10 @@ object Primitive {
     (values1.isEmpty,values2.isEmpty) match {
       case (true,_) => (None,Set())
       case (_,true) => (None,Set())
-      case (false,false) => (Some(doFun1(function, values1,  values2, environment)), triples1 ++ triples2)
+      case (false,false) =>
+        val r = doFun1(function, values1, values2, environment)
+        if (optionp && r.string.exists(_.isEmpty)) (None, Set())
+        else (Some(r), triples1 ++ triples2)
     }
   }
 
@@ -267,6 +282,18 @@ object Primitive {
       case _ => i.toString
     }
   }
+  def friendlyTimestring(o: Object): String = {
+    val s = o.toString
+    try {
+      val parsed = java.time.format.DateTimeFormatter.ISO_DATE_TIME.parse(s)
+      val dateTime = java.time.LocalDateTime.from(parsed)
+      val date = dateTime.format(java.time.format.DateTimeFormatter.ofPattern("d MMMM uuuu", java.util.Locale.ENGLISH))
+      val time = dateTime.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm", java.util.Locale.ENGLISH))
+      date + " at " + time
+    } catch {
+      case _: java.time.DateTimeException => s
+    }
+  }
   def cardinality(o: Object): String = {
     val i:Int=o match {
       case o:Integer => o
@@ -285,11 +312,13 @@ object Primitive {
       case "localname"   => if (values.isEmpty) "NULL" else values.head.asInstanceOf[QualifiedName].getLocalPart()
       case "identity"    => if (values.isEmpty) "NULL" else values.head.toString
       case "string"      => if (values.isEmpty) "NULL" else unwrap(values.head)
+      case "date"        => if (values.isEmpty) "NULL" else unwrap(values.head).take(10)
       case "ordinal"     => if (values.isEmpty) "NULL" else ordinal(values.head)
       case "cardinal"    => if (values.isEmpty) "NULL" else cardinal(values.head)
       case "cardinality" => if (values.isEmpty) "NULL" else cardinality(values.head)
       case "pluralp"     => if (values.head.toString.endsWith("s")) "plural" else "singular"
       case "timestring"  => values.head.toString
+      case "friendly_timestring" => if (values.isEmpty) "NULL" else friendlyTimestring(values.head)
       case "count"       => values.size + ""
       case "count+cardinality" => cardinality(values.size+"")
 
@@ -337,6 +366,8 @@ object Primitive {
       case "lookup-type" =>
         lookup_type(value, arg1, Seq(), Map(), environment)
 
+      case "json-property" =>
+        get_json_value(value, arg1, Seq(), Map(), environment)
 
       case "markup-for-id" =>
         val uri=value.head.asInstanceOf[QualifiedName].getUri()
@@ -344,6 +375,30 @@ object Primitive {
         "data-id=\"" + uri + "\" class=\"" + clazz + "\""
 
       case _ => throw new UnsupportedOperationException ("doFun1: " + function + "[found: " + (if (value==null) "NULL" else value.toString) + ", expected: " + arg1.toString + "]")
+    }
+  }
+
+  def get_json_value(value: Seq[Object], arg1: Seq[Object], arg2: Seq[Object], features: Features, environment: Environment): Result = {
+    val key = arg1.head.toString
+    val jsonStr = unwrap(value.head).replace("\\\"", "\"")
+    if (jsonStr == null || jsonStr.isEmpty) new Result("")
+    else {
+      val node = jsonMapper.readTree(jsonStr)
+      val v = node.path(key)
+      if (v.isMissingNode || v.isNull) new Result("") else new Result(v.asText())
+    }
+  }
+
+  def getJsonProperty(values: Seq[Object], key: String): String = {
+    if (values.isEmpty) null
+    else {
+      val jsonStr = unwrap(values.head).replace("\\\"", "\"")
+      if (jsonStr == null || jsonStr.isEmpty) null
+      else {
+        val node = jsonMapper.readTree(jsonStr)
+        val v = node.path(key)
+        if (v.isMissingNode || v.isNull) null else v.asText()
+      }
     }
   }
 
@@ -406,6 +461,22 @@ object Primitive {
         lookupTypedPhrase( "string", myValue, features, environment )
       case _ => throw new UnsupportedOperationException("environment lookup-type accessor " + accessor)
 
+    }
+  }
+
+  // Like lookup-type, but @arg2 is a default word instead of a prefix filter: when an
+  // element carries several types, the first one with a dictionary entry wins; when no
+  // type has an entry, returns @arg2 as a plain string (realised as-is).
+  // The case of a bound statement carrying no type at all is handled in processFunction,
+  // before values reach this function.
+  def lookup_type_with_default(value: Seq[Object], arg1: Seq[Object], arg2: Seq[Object], features: Features, environment: Environment): Result = {
+    val myValues: Seq[QualifiedName] = value.map {
+      case qn: QualifiedName => qn
+      case qn: org.openprovenance.prov.model.QualifiedName => QualifiedName(qn)
+    }
+    myValues.flatMap(qn => environment.dictionary.get(qn)).headOption match {
+      case Some(p: Phrase) => p
+      case None => arg2.head.toString
     }
   }
 
@@ -521,8 +592,17 @@ object Primitive {
       case "lookup-type" =>
         lookup_type(value, arg1, arg2, Map(), environment)
 
+      case "lookup-type-with-default" =>
+        lookup_type_with_default(value, arg1, arg2, Map(), environment)
+
       case "lookup-ground-type-with-default" =>
         lookup_ground_type_with_default(value, arg1, arg2, Map(), environment)
+
+      case "regexp-replace" =>
+        val input       = unwrap(value.head)
+        val pattern     = arg1.head.toString
+        val replacement = arg2.head.toString
+        input.replaceAll(pattern, replacement)
 
       case _ => throw new UnsupportedOperationException("doFun2: " + function + "[found: " + (if (value == null) "NULL" else value.toString) + ", expected: " + arg1.toString + "]")
 
@@ -580,13 +660,15 @@ object Primitive {
   }
 
   def applyProperty1(property:String, value:Statement, environment: Environment): Seq[Object] = {
-    val strings=property.split(":")
-    val prefix=strings(0)
-    val local=strings(1)
-    val uri=getPrefixValue(environment, prefix) + local
-    val attributes: Seq[Attribute] =value.getAttributes.toSeq.sortWith{case (a1,a2) => a1.elementName.getUri() < a2.elementName.getUri()}
-    attributes.filter(attr => attr.elementName.getUri()==uri).map(attr => attr.value)
-
+    if (value==null) Seq()  // unbound variable (e.g. optional join with no match): no attributes
+    else {
+      val strings=property.split(":")
+      val prefix=strings(0)
+      val local=strings(1)
+      val uri=getPrefixValue(environment, prefix) + local
+      val attributes: Seq[Attribute] =value.getAttributes.toSeq.sortWith{case (a1,a2) => a1.elementName.getUri() < a2.elementName.getUri()}
+      attributes.filter(attr => attr.elementName.getUri()==uri).map(attr => attr.value)
+    }
   }
 
   private def getPrefixValue(environment: Environment, prefix: String): String = {

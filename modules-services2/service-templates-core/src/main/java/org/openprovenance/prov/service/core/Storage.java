@@ -48,14 +48,14 @@ public class Storage {
 
     public boolean initializeDB(Connection conn, String sqlInitializer) throws SQLException {
         String statements=getStringFromClasspath(this.getClass(), sqlInitializer);
-        logger.info("*** Initializing DB with script: " + sqlInitializer);
+        logger.debug("*** Initializing DB with script: " + sqlInitializer);
        // System.out.println(statements);
         return executeStatements(conn, statements);
     }
 
     public boolean executeStatements(Connection conn, String statements) throws SQLException {
         try (Statement st = conn.createStatement()) {
-            logger.info("Executing statements: " + statements);
+            logger.debug("Executing statements: " + statements);
             return st.execute(statements);
         }
     }
@@ -63,7 +63,7 @@ public class Storage {
 
     public ResultSet executeQuery(Connection conn, String statements) throws SQLException {
         Statement st = conn.createStatement();
-        logger.info("Executing query: " + statements);
+        logger.debug("Executing query: " + statements);
         ResultSet rs = st.executeQuery(statements);
         //displayResultSet(rs);
         return rs;

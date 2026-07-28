@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.openprovenance.prov</groupId>
         <artifactId>modules-explanations</artifactId>
-        <version>2.2.3</version>
+        <version>2.2.4</version>
     </parent>
     <name>|---- SERVICE: XPLAIN</name>
     <artifactId>service-xplain</artifactId>
@@ -17,37 +17,37 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-index-redis</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-xplain</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-core</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-mongodb</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-translation</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.4</version>
             <scope>compile</scope>
         </dependency>
 
@@ -169,7 +169,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.3</version>
+            <version>4.5.14</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient-cache -->
@@ -447,82 +447,6 @@
 
         </profile>
 
-        <!--
-        <profile>
-            <id>local</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <isdocker />
-                <upload.directory>target/</upload.directory>
-                <validation.log.location>target/</validation.log.location>
-                <validation.prov.log.location>target/</validation.prov.log.location>
-                <hsqldb.location>target/test-database/database</hsqldb.location>
-            </properties>
-
-        </profile>
-
-
-        <profile>
-            <id>docker</id>
-            <properties>
-                <isdocker>docker</isdocker>
-                <upload.directory>target/</upload.directory>
-                <validation.log.location>target/</validation.log.location>
-                <validation.prov.log.location>target/</validation.prov.log.location>
-                <hsqldb.location>target/test-database/database</hsqldb.location>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${surefire.plugin.version}</version>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>${war.plugin.version}</version>
-                        <configuration>
-                            <failOnMissingWebXml>false</failOnMissingWebXml>
-                            <classifier>docker</classifier>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>mac</id>
-            <properties>
-                <isdocker>mac</isdocker>
-                <upload.directory>/Users/luc/docker/log-dir/</upload.directory>
-                <validation.log.location>/Users/luc/docker/log-dir/log/</validation.log.location>
-                <validation.prov.log.location>/Users/luc/docker/log-dir/log/</validation.prov.log.location>
-                <hsqldb.location>target/test-database/database</hsqldb.location>
-            </properties>
-            <build>
-
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <configuration>
-                            <failOnMissingWebXml>false</failOnMissingWebXml>
-                            <classifier>mac</classifier>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        -->
 
         <profile>
             <id>jetty</id>

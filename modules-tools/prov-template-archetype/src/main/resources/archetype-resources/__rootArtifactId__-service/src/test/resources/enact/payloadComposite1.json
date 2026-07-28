@@ -1,0 +1,16 @@
+[
+    {
+        "isA": "org.openprovenance.book.fs.FileTransformingComposite",
+        "count": 1,
+        "type": "org.openprovenance.book.fs.FileTransforming",
+        "__elements": [
+            {
+                "isA": "org.openprovenance.book.fs.FileTransforming",
+                "transformed_file": -2,
+                "filename": "ddd",
+                "file": 2,
+                "transforming": -4
+            }
+        ]
+    }
+]

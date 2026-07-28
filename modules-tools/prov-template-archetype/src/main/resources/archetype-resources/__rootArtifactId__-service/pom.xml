@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>org.openprovenance.prov</groupId>
-        <artifactId>modules-tools</artifactId>
-        <version>${provtoolboxVersion}</version>
+        <groupId>${groupId}</groupId>
+        <artifactId>${rootArtifactId}-root</artifactId>
+        <version>${version}</version>
     </parent>
 
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>${rootArtifactId}-service</artifactId>
-    <groupId>${groupId}</groupId>
     <name>|---- ${rootArtifactId}-service</name>
     <packaging>war</packaging>
     <description>A REST service for Provenance Template Management</description>
@@ -37,6 +36,12 @@
             <groupId>${templateLibraryGroupId}</groupId>
             <artifactId>${templateLibraryArtifactId}</artifactId>
             <version>${templateLibraryVersion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${templateExplanationsGroupId}</groupId>
+            <artifactId>${templateExplanationsArtifactId}</artifactId>
+            <version>${templateExplanationsVersion}</version>
         </dependency>
 
         <dependency>
@@ -142,6 +147,14 @@
                     <artifactId>jsweet-transpiler</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <!-- Source: https://mvnrepository.com/artifact/org.webjars.bower/plotly.js -->
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>plotly.js</artifactId>
+            <version>${webjars.plotlyjs.version}</version>
+            <scope>compile</scope>
         </dependency>
 
 
@@ -260,6 +273,57 @@
                     <target>16</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>extract-template-icons</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${templateLibraryGroupId}</groupId>
+                                    <artifactId>${templateLibraryArtifactId}</artifactId>
+                                    <version>${templateLibraryVersion}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/extracted-icons-temp</outputDirectory>
+                                    <includes>META-INF/resources/webjars/${templateLibraryArtifactId}/${templateLibraryVersion}/icons/**</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-template-icons</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/extracted-icons</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/extracted-icons-temp/META-INF/resources/webjars/${templateLibraryArtifactId}/${templateLibraryVersion}/icons</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
         <resources>
@@ -301,6 +365,11 @@
             </testResource>
         </testResources>
     </build>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+<!--
 
     <properties>
         <pom.service.port>${servicePort}</pom.service.port>
@@ -310,21 +379,21 @@
         <pom.the.template.library>${templateLibraryArtifactId}</pom.the.template.library>
         <pom.the.template.library.version>${templateLibraryVersion}</pom.the.template.library.version>
         <pom.the.template.sublibrary>${templateSubLibrary}</pom.the.template.sublibrary>
-        <pom.templates.button.label>Book Templates</pom.templates.button.label>
+        <pom.templates.button.label>${templatesButtonLabel}</pom.templates.button.label>
         <pom.project.version>${project.version}</pom.project.version>
         <pom.catalogue.package>${cataloguePackage}</pom.catalogue.package>
         <pom.jdbc.url>${jdbcURL}</pom.jdbc.url>
-        <pom.form.dashboard.title>Book Templates Dashboard</pom.form.dashboard.title> <!--  removing ${project.version} from page title -->
+        <pom.form.dashboard.title>${dashboardTitle}</pom.form.dashboard.title>
         <pom.logger.constructor>${loggerConstructor}</pom.logger.constructor>
-        <pom.nlg.xplan.library>/xplain/nlg/provbasic/provbasic.json</pom.nlg.xplan.library> <!-- /xplain/nlg/xplans-config.json -->
-        <pom.nlg.xplan.list>["actedonbehalfof1", "activity1", "agent1", "alternate1", "association1", "attribution1", "derivation1", "end1", "entity1", "generation1", "invalidation1", "specialization1", "start1", "usage1", "member1"]</pom.nlg.xplan.list>
         <unsecure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-no-security.xml</unsecure.webxml.location>
         <secure.webxml.location>${project.basedir}/src/main/webapp.filter/WEB-INF/web-with-security.xml</secure.webxml.location>
         <lexicon.location>/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/nlg-wrapper/target/dictionary/lexAccess2013.data</lexicon.location>
         <template.config.location>${project.build.directory}/test-classes/template-config.json</template.config.location>
         <security.config.location>${project.build.directory}/test-classes/security/openprovenance-auth2-security-config.json</security.config.location>
+        <pom.nlg.xplan.library>/xplain/nlg/provbasic/provbasic.json</pom.nlg.xplan.library> 
+        <pom.nlg.xplan.selection>["actedonbehalfof1", "activity1", "agent1", "alternate1", "association1", "attribution1", "derivation1", "end1", "entity1", "generation1", "invalidation1", "specialization1", "start1", "usage1", "member1"]</pom.nlg.xplan.selection>
     </properties>
-
+-->
 
     <profiles>
         <profile>

@@ -22,7 +22,13 @@ public interface CatalogueDispatcherInterface<T> {
 
     Map<String, Map<String, List<String>>> getSuccessors();
 
+    Map<String, Map<String, List<String>>> getTypedSuccessors();
+
     Map<String, Function<Object[], String>> getCsvConverter();
+
+    Map<String, Function<Object, String>> getCsvConverter4Beans();
+    Map<String, Function<Object, String>> getCsvConverter4Outputs();
+    Map<String, Function<Object, String>> getCsvConverter4OutputsComposite();
 
     Map<String, String[]> getForeignTables();
 
@@ -50,9 +56,13 @@ public interface CatalogueDispatcherInterface<T> {
 
     Map<String, Function<Object[], Object[]>> getRecordMaker() ;
 
+    Map<String, String> getSemanticType();
+
     String getIoMap();
 
     String getShortNames();
 
     String getLinkers();
+
+    String getUniqueMap();
 }

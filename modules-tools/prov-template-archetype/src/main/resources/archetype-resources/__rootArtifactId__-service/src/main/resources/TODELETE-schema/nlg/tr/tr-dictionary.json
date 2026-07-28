@@ -1,0 +1,55 @@
+{
+	"snippets": {
+	},
+	"dictionary": {
+		"phys:Transporting": {
+			"type": "verb_phrase",
+			"head":  "transport"
+		},
+		"phys:AddingItemToContainer": {
+			"type": "verb_phrase",
+			"head":  "pack"
+		},
+		"phys:RemovingItemFromContainer": {
+			"type": "verb_phrase",
+			"head":  "unpack"
+		},
+		"phys:Weighing": {
+			"type": "verb_phrase",
+			"head":  "weigh"
+		},
+		"phys:Examining": {
+			"type": "verb_phrase",
+			"head":  "examine"
+		},
+		"resp:Assigning": {
+			"type": "verb_phrase",
+			"head":  "assign"
+		},
+		"resp:HandingOver": {
+			"type": "verb_phrase",
+			"head":  "hand over"
+		},
+		"trs:Box": {
+			"type": "noun_phrase",
+			"head":  "box"
+		},
+		"trs:Book": {
+			"type": "noun_phrase",
+			"head":  "book"
+		},
+		"trs:Person": {
+			"type": "noun_phrase",
+			"head":  "person"
+		},
+		"trs:Scale": {
+			"type": "noun_phrase",
+			"head":  "scale"
+		}
+	},
+	"context": {
+		"trs":  "https://openprovenance.org/transport/ns/#",
+		"phys": "http://openprovenance.org/ns/phys#",
+		"resp": "http://openprovenance.org/ns/responsibility#"
+	}
+}

@@ -9,8 +9,10 @@ import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.past.Constant;
 import org.openprovenance.prov.template.compiler.past.Method;
 import org.openprovenance.prov.template.compiler.past.Parameter;
+import org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation;
 import org.openprovenance.prov.template.compiler.past.annotations.RegisterMethod;
 import org.openprovenance.prov.template.compiler.past.annotations.SingleDispatchMethod;
+import org.openprovenance.prov.template.compiler.past.annotations.StatefulProcessor;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
@@ -30,6 +32,7 @@ import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNME
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
+import static org.openprovenance.prov.template.compiler.past.ForLoop.FOR;
 import static org.openprovenance.prov.template.compiler.past.IfStatement.IF;
 import static org.openprovenance.prov.template.compiler.past.Iterator.ITERATOR;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
@@ -63,12 +66,14 @@ public class CompilerBeanLocalEnactor2 {
                 .MODIFIERS(Modifier.PUBLIC,Modifier.ABSTRACT)
                 .PARAMETER(STRING,"field")
                 .PARAMETER(STRING,"counter")
+                .ANNOTATIONS(StatefulProcessor.NAME)
                 .RETURNS(INTEGER);
 
         Method method2=METHOD("newSIdentifier")
                 .MODIFIERS(Modifier.PUBLIC,Modifier.ABSTRACT)
                 .PARAMETER(STRING,"field")
                 .PARAMETER(STRING,"counter")
+                .ANNOTATIONS(StatefulProcessor.NAME)
                 .RETURNS(STRING);
 
 
@@ -88,7 +93,7 @@ public class CompilerBeanLocalEnactor2 {
                     .MODIFIERS(Modifier.PUBLIC)
                     .PARAMETER(inputClassName,"bean")
                     .RETURNS(outputClassName)
-                    .ANNOTATIONS(RegisterMethod.NAME);
+                    .ANNOTATIONS(RegisterMethod.NAME, OverrideAnnotation.NAME);
 
             if (isFirst) {
                 mspec.ANNOTATIONS(SingleDispatchMethod.NAME);
@@ -148,6 +153,9 @@ public class CompilerBeanLocalEnactor2 {
 
                 mspec.BODY(
 
+
+                        /*
+                        // issue with js code, since it iterates over methods as well!
                         ITERATOR(
                                 Parameter.PARAMETER("in1", inputClassName2),
                                 METHOD_CALL(VARIABLE("bean"), ELEMENTS))
@@ -162,6 +170,22 @@ public class CompilerBeanLocalEnactor2 {
                                                         List.of(VARIABLE("in1"), VARIABLE(MAP_VAR)))
                                                 ))),
 
+*/
+
+
+                        FOR(DEFINITION(_int,VARIABLE("i"), CONSTANT(0)),
+                                BINARY_OP(VARIABLE("i"), "<", METHOD_CALL(METHOD_CALL(VARIABLE("bean"),ELEMENTS), "size", List.of())),
+                                ASSIGNMENT(VARIABLE("i"), BINARY_OP(VARIABLE("i"), "+", CONSTANT(1)))
+                        ).BODY(
+                                DEFINITION(inputClassName2, VARIABLE("in1"),METHOD_CALL(METHOD_CALL(VARIABLE("bean"), ELEMENTS), "get", List.of(VARIABLE("i")))),
+                                METHOD_CALL(VARIABLE(OUT_BEAN), ADD_ELEMENTS, List.of(METHOD_CALL(
+                                        VARIABLE("this"),
+                                        Constants.PROCESS_METHOD_NAME,
+                                        List.of(VARIABLE("in1"), VARIABLE(MAP_VAR)))
+                                ))
+                        ),
+
+
 
                         ASSIGNMENT(
                                 METHOD_CALL(VARIABLE(OUT_BEAN),"ID"),
@@ -174,14 +198,14 @@ public class CompilerBeanLocalEnactor2 {
 
 
                 Method mspec2 = METHOD(Constants.PROCESS_METHOD_NAME)
+                        .commentFileLocation()
                         .MODIFIERS(Modifier.PUBLIC)
                         .PARAMETER(inputClassName2, "bean")
                         .PARAMETER(MAP_STRING_MAP_INTEGER_INTEGER, MAP_VAR)
                         .RETURNS(outputClassName2)
-                        .ANNOTATIONS(RegisterMethod.NAME);
+                        .ANNOTATIONS(RegisterMethod.NAME, StatefulProcessor.NAME);
 
 
-                compilerUtil.debugFileLocation(mspec2);
 
                 mspec2.BODY(DEFINITION(outputClassName2, VARIABLE(OUT_BEAN), CONSTRUCTOR_CALL(outputClassName2, List.of())));
 
@@ -259,11 +283,11 @@ public class CompilerBeanLocalEnactor2 {
         String myPackage= locations.getFilePackage(configs.name, fileName);
 
         String directory = locations.convertToDirectory(myPackage);
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + ".java", directory, stackTraceElement, compilerUtil);
-        //Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, "target/generated-js", stackTraceElement);
-        //Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, myPackage, "target/generated-rust/src", stackTraceElement);
-        return new SpecificationFile(javaGenerator,pythonGenerator);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, myPackage, locations, stackTraceElement);
+        return new SpecificationFile(javaGenerator,pythonGenerator, jsGenerator, rustGenerator);
     }
 
 

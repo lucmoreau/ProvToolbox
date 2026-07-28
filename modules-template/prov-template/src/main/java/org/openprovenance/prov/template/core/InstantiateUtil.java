@@ -211,11 +211,9 @@ public class InstantiateUtil {
         Set<QualifiedName> vars = freeVariables(statement);
         Set<Integer> groups = new HashSet<>();
         for (QualifiedName var : vars) {
-            for (int grp = 0; grp < groupings.size(); grp++) {
-                List<QualifiedName> names = groupings.get(grp);
-                if (names.contains(var)) {
-                    groups.add(grp);
-                }
+            Integer grp = groupings.groupOf(var);
+            if (grp != null) {
+                groups.add(grp);
             }
         }
 
@@ -265,6 +263,29 @@ public class InstantiateUtil {
 
     static public QualifiedName newVariable(String name, ProvFactory pf) {
         return pf.newQualifiedName(VAR_NS,name,VAR_PREFIX);
+    }
+
+    public static boolean attributesAllowForStatementsIdentification(HasOther statement) {
+        List<Other> others=statement.getOther();
+        if (others==null) return false;
+        for (Other other:others) {
+            QualifiedName elementName = other.getElementName();
+            if (isVariable(elementName)) {
+                Object value= other.getValue();
+                if (value instanceof QualifiedName) {
+                    QualifiedName qname=(QualifiedName)value;
+                    if (isVariable(qname)) {
+                        return true;
+                    }
+                }
+            } else {
+                String uri=elementName.getNamespaceURI();
+                if (IDVAR_URI.equals(uri)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

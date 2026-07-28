@@ -1,0 +1,5 @@
+flowchart LR
+    A["Template\n+ Bindings"] -->|"Template\nInstantiation"| B["Provenance\nGraph"]
+    B -->|"Query\n(X-Plan query)"| C["Query\nResults"]
+    C -->|"Abstract Syntax\nConstruction\n(X-Plan sentence\n+ dictionary)"| D["Abstract\nSyntax Tree"]
+    D -->|"Realisation\n(simpleNLG)"| E["Natural Language\nExplanation"]

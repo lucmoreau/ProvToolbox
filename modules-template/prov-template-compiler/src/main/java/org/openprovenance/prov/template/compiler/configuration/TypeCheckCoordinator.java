@@ -79,21 +79,19 @@ public class TypeCheckCoordinator {
         List<TypeDiagnostic> diagnostics = typeChecker.checkAll();
 
         if (!diagnostics.isEmpty()) {
-            System.err.println("=== PAST Type Checker: " + diagnostics.size() + " diagnostic(s) ===");
+            System.err.println("################## PAST Type Checker: " + diagnostics.size() + " diagnostic(s) ===");
             for (TypeDiagnostic d : diagnostics) {
                 System.err.println("  " + d);
             }
-            System.err.println("=== End of type checking diagnostics ===");
-            System.out.println("=== Type Checker Registry Summary:\n ");
+            System.err.println("################## End of type checking diagnostics ===");
+            System.out.println("################## Type Checker Registry Summary:\n ");
             try {
                 new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File("target/registry.json"),typeChecker.getRegistry().getAllSignatures());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            System.out.println("===  ");
-            System.out.println("===  PAST Type Checker: No issues found.");
-            System.out.println("===  ");
+            System.out.println("##################  PAST Type Checker: No issues found.");
         }
 
 

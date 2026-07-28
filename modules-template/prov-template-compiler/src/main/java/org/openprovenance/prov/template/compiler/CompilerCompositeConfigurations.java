@@ -21,6 +21,7 @@ import static org.openprovenance.prov.template.compiler.common.Constants.*;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
 import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
 import static org.openprovenance.prov.template.compiler.past.Constructor.CONSTRUCTOR;
 import static org.openprovenance.prov.template.compiler.past.Definition.DEFINITION;
 import static org.openprovenance.prov.template.compiler.past.Field.FIELD;
@@ -53,7 +54,7 @@ public class CompilerCompositeConfigurations {
                                                            String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        final ParameterizedType tableConfiguratorType = ParameterizedType.get(ClassName.get(COMPOSITE_TABLE_CONFIGURATOR, locations.getFilePackage(configs.name, COMPOSITE_TABLE_CONFIGURATOR)), typeName);
+        final ParameterizedType tableConfiguratorType = ParameterizedType.get(ClassName.get(TABLE_CONFIGURATOR_COMPOSITE, locations.getFilePackage(configs.name, TABLE_CONFIGURATOR_COMPOSITE)), typeName);
 
         PastFactory pastFactory=new PastFactory();
         Class pastClass = pastFactory.CLASS(fileName)
@@ -93,8 +94,8 @@ public class CompilerCompositeConfigurations {
 
         String myPackage=locations.getFilePackage(configs.name, fileName);
 
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator,pythonGenerator);
 
@@ -135,7 +136,7 @@ public class CompilerCompositeConfigurations {
                                                             String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        final ParameterizedType tableConfiguratorType = ParameterizedType.get(ClassName.get(COMPOSITE_TABLE_CONFIGURATOR, locations.getFilePackage(configs.name, COMPOSITE_TABLE_CONFIGURATOR)), typeName);
+        final ParameterizedType tableConfiguratorType = ParameterizedType.get(ClassName.get(TABLE_CONFIGURATOR_COMPOSITE, locations.getFilePackage(configs.name, TABLE_CONFIGURATOR_COMPOSITE)), typeName);
 
         PastFactory pastFactory=new PastFactory();
         Class pastClass = pastFactory.CLASS(fileName)
@@ -178,18 +179,103 @@ public class CompilerCompositeConfigurations {
 
         String myPackage=locations.getFilePackage(configs.name, fileName);
 
-        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
 
         return new SpecificationFile(javaGenerator,pythonGenerator);
 
     }
 
+
+    public SpecificationFile generateCsvConfigurator4OutputsComposite(TemplatesProjectConfiguration configs,
+                                                                      Locations locations,
+                                                                      TypeName typeName,
+                                                                      QuintetConsumer<String, Method, ClassName, TypeName, TypeName> generator,
+                                                                      String generatorMethod,
+                                                                      TypeName beanProcessor,
+                                                                      String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
+        final ParameterizedType tableConfiguratorType = ParameterizedType.get(ClassName.get(TABLE_CONFIGURATOR_COMPOSITE, locations.getFilePackage(configs.name, TABLE_CONFIGURATOR_COMPOSITE)), typeName);
+
+        PastFactory pastFactory=new PastFactory();
+        Class pastClass = pastFactory.CLASS(fileName)
+                .MODIFIERS(Modifier.PUBLIC);
+
+
+
+        pastClass.INTERFACES(tableConfiguratorType);
+
+
+        for (TemplateCompilerConfig config : configs.templates) {
+
+            if (!(config instanceof SimpleTemplateCompilerConfig )) {
+                final String templateNameClass = compilerUtil.templateNameClass(config.name);
+                final String beanNameClass = compilerUtil.commonNameClass(config.name);
+                final String inputNameClass = compilerUtil.inputsNameClass(config.name);
+                final String outputNameClass = compilerUtil.outputsNameClass(config.name);
+                final ClassName commonClassName = ClassName.get(templateNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
+                final ClassName outputClassName = ClassName.get(outputNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
+                String builderParameter = "builder";
+                Method mspec = METHOD(config.name)
+                        .MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
+                        .PARAMETER(commonClassName, builderParameter)
+                        .RETURNS(typeName);
+                compilerUtil.debugFileLocation(mspec);
+                mspec.BODY(RETURN(LAMBDA(PARAMETER("o", OBJECT))
+                        .returns(STRING)
+                        .BODY(RETURN(METHOD_CALL(CAST(outputClassName,VARIABLE("o")), PROCESS_METHOD_NAME, List.of(METHOD_CALL(METHOD_CALL(VARIABLE(builderParameter), "getIntegrator", List.of()), "args2csv", List.of())))))));
+                pastClass.METHOD(mspec);
+
+
+
+
+            }
+
+        }
+
+        String myPackage=locations.getFilePackage(configs.name, fileName);
+
+        Supplier<Boolean> pythonGenerator=() -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+
+        return new SpecificationFile(javaGenerator,pythonGenerator);
+
+    }
+
+
+
     public SpecificationFile generateCompositeEnactorConfigurator2(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
         return  generateCompositeConfigurator2(configs, locations, FUNCTION_LIST_OBJARRAY_TO_ANY, this::generateMethodEnactor2, "generateCompositeConfigurator", ClassName.get(INPUT_OUTPUT_PROCESSOR, locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR)), fileName);
     }
 
+    public SpecificationFile generateCsvConfigurator4OutputsComposite(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
+        return  generateCsvConfigurator4OutputsComposite(configs, locations, FUNCTION_BEAN_TO_STRING, this::generateMethodCsv, "generateCsvConfigurator4OutputsComposite", ClassName.get(INPUT_OUTPUT_PROCESSOR, locations.getFilePackage(configs.name, INPUT_OUTPUT_PROCESSOR)), fileName);
+    }
+
+
     public void generateMethodEnactor2(String builderParameter, Method mspec, ClassName className, TypeName inBeanType, TypeName outBeanType) {
+        mspec.BODY(
+                DEFINITION(FUNCTION_LIST_OBJARRAY_TO_TYPE(inBeanType), VARIABLE("beanConverter"),
+                        METHOD_CALL(METHOD_CALL(VARIABLE(builderParameter), "getIntegrator", List.of()),
+                                "aRecord2InputsConverter")),
+
+                DEFINITION(FUNCTION_LIST_OBJARRAY_TO_TYPE(outBeanType), VARIABLE("enactor"),
+                        LAMBDA(PARAMETER("array", LIST_OF_OBJECT_ARRAYS))
+                                .returns(outBeanType)
+                                .BODY(DEFINITION(inBeanType, VARIABLE("bean"),
+                                                FUNCTIONAL_METHOD_CALL(VARIABLE("beanConverter"), "apply", List.of(VARIABLE("array")))),
+                                        RETURN(
+                                                FUNCTIONAL_METHOD_CALL(
+                                                        VARIABLE(ENACTOR_VAR, FIELD_VARIABLE),
+                                                        "process",
+                                                        List.of(VARIABLE("bean"))
+                                                )
+                                        ))),
+                RETURN(VARIABLE("enactor"))
+        );
+    }
+    public void generateMethodCsv(String builderParameter, Method mspec, ClassName className, TypeName inBeanType, TypeName outBeanType) {
         mspec.BODY(
                 DEFINITION(FUNCTION_LIST_OBJARRAY_TO_TYPE(inBeanType), VARIABLE("beanConverter"),
                         METHOD_CALL(METHOD_CALL(VARIABLE(builderParameter), "getIntegrator", List.of()),

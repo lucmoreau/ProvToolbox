@@ -4,7 +4,10 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
-import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
+import org.openprovenance.prov.template.compiler.past.annotations.NoSerialization;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethodPython;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethodJavascript;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethodRust;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
@@ -16,9 +19,9 @@ import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generateJava;
-import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.generatePython;
+import static org.openprovenance.prov.template.compiler.configuration.SpecificationFile.*;
 import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
+import static org.openprovenance.prov.template.compiler.past.BinaryOp.BINARY_OP;
 import static org.openprovenance.prov.template.compiler.past.CastExpression.CAST;
 import static org.openprovenance.prov.template.compiler.past.Class.ClassKind.ANONYMOUS;
 import static org.openprovenance.prov.template.compiler.past.Constant.CONSTANT;
@@ -58,7 +61,8 @@ public class CompilerBeanCompleter2 {
                 .FIELDS(
                         FIELD("m", MAP_STRING_OBJECT).MODIFIERS(Modifier.FINAL),
                         FIELD(GETTER_VAR, GETTER_TYPE).MODIFIERS(Modifier.FINAL, Modifier.PROTECTED)
-                );
+                )
+                .ANNOTATION(NoSerialization.NAME);
 
         Method callMe2 = METHOD("getMap")
                 .commentFileLocation()
@@ -95,7 +99,8 @@ public class CompilerBeanCompleter2 {
                                                                 .BODY(
                                                                         RETURN(
                                                                                 METHOD_CALL(
-                                                                                        //VARIABLE("this"), /// note this, would refer to the anonymous class itself, not the object
+                                                                                        //VARIABLE("this"), /// note this, would refer to the anonymous class itself, not the object.
+                                                                                        // See hack in rust and python emitters, inserting self.outer
                                                                                         "getMap",
                                                                                         List.of(VARIABLE("cl"), VARIABLE("col"))
                                                                                 )
@@ -114,7 +119,9 @@ public class CompilerBeanCompleter2 {
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), "m"), Constant.getNull()),
                         ASSIGNMENT( METHOD_CALL(VARIABLE("this"), GETTER_VAR), VARIABLE(GETTER_VAR)));
 
-        constructor2.annotation.add(new OverloadedMethod("____init2__"));
+        constructor2.annotation.add(new OverloadedMethodPython("____init2__"));
+        constructor2.annotation.add(new OverloadedMethodRust("make" + BEAN_COMPLETER2));
+        constructor2.annotation.add(new OverloadedMethodJavascript("make" + BEAN_COMPLETER2));
 
         pastClass.CONSTRUCTOR(constructor2);
 
@@ -142,8 +149,10 @@ public class CompilerBeanCompleter2 {
                                 ),
 
                                 // call postEnactmentProcessing(bean.ID, fullyQualifiedName)
+                                // CAST(INTEGER, ...) triggers unwrap_or_default() in the Rust emitter,
+                                // since struct fields are Option<i32> in Rust.
 
-                                METHOD_CALL(VARIABLE("this"),POST_PROCESS_METHOD_NAME, List.of(METHOD_CALL(VARIABLE(BEAN_VAR), "ID"), CONSTANT(config.fullyQualifiedName)))
+                                METHOD_CALL(VARIABLE("this"),POST_PROCESS_METHOD_NAME, List.of(CAST(INTEGER, METHOD_CALL(VARIABLE(BEAN_VAR), "ID")), CONSTANT(config.fullyQualifiedName)))
                         );
 
                 for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
@@ -213,22 +222,26 @@ public class CompilerBeanCompleter2 {
                         .PARAMETER(outputClassName, BEAN_VAR)
                         .RETURNS(outputClassName)
                         .BODY(
+                                ASSIGNMENT(METHOD_CALL(VARIABLE(BEAN_VAR),"count"),  CONSTANT(0)),
                                 DO()
                                         .BODY(
                                                 DEFINITION(composeeClass, VARIABLE("composee"), CONSTRUCTOR_CALL(composeeClass, List.of())),
+                                                ASSIGNMENT(VARIABLE("composee"), METHOD_CALL(
+                                                        VARIABLE("this"),
+                                                        PROCESS_METHOD_NAME,
+                                                        List.of(VARIABLE("composee")))),
                                                 METHOD_CALL(
                                                         VARIABLE(BEAN_VAR),
                                                         ADD_ELEMENTS,
-                                                        List.of(VARIABLE("composee"))
-                                                ),
-                                                METHOD_CALL(
-                                                        VARIABLE("this"),
-                                                        PROCESS_METHOD_NAME,
-                                                        List.of(VARIABLE("composee"))))
-                                        .WHILE(METHOD_CALL("next", List.of())),
+                                                        List.of(VARIABLE("composee"))),
+                                                ASSIGNMENT(METHOD_CALL(VARIABLE(BEAN_VAR),"count"), BINARY_OP(METHOD_CALL(VARIABLE(BEAN_VAR),"count"), "+", CONSTANT(1))),
+                                                ASSIGNMENT(METHOD_CALL(VARIABLE(BEAN_VAR),"type"), METHOD_CALL(VARIABLE("composee"),"isA"))
+                                        )
+                                        .WHILE(METHOD_CALL(VARIABLE("this"), "next", List.of())),
                                 RETURN(VARIABLE(BEAN_VAR)));
                 pastClass.METHOD(mspec0);
 
+                /*
                 Method mspec_incorrect = METHOD(Constants.PROCESS_METHOD_NAME+"Incorrect")
                         .commentFileLocation()
                         .MODIFIERS(Modifier.PUBLIC)
@@ -262,6 +275,8 @@ public class CompilerBeanCompleter2 {
 
                 pastClass.METHOD(mspec_incorrect);
 
+                 */
+
             }
         }
 
@@ -281,11 +296,47 @@ public class CompilerBeanCompleter2 {
                 .BODY(); // empty body
         pastClass.METHOD(pMethod);
 
-        String myPackage=locations.getFilePackage(configs.name, fileName);
-        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations.python_dir, stackTraceElement);
-        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, fileName + DOT_JAVA_EXTENSION, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        // only for Rust
+        generateGetterInterface(configs, locations, GETTER).save();
 
-        return new SpecificationFile(javaGenerator, pythonGenerator);
+        String myPackage=locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, myPackage, configs, locations.convertToDirectory(myPackage), stackTraceElement, compilerUtil);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, myPackage, locations, stackTraceElement);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, myPackage, locations, stackTraceElement);
+
+
+        return new SpecificationFile(javaGenerator, pythonGenerator, jsGenerator, rustGenerator);
+
+    }
+
+    public  SpecificationFile  generateGetterInterface(TemplatesProjectConfiguration configs, Locations locations, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
+        /*
+
+        public abstract interface Getter {
+          <T> T get(Class<T> cl, String col);
+        }
+
+         */
+
+        Class pastClass = pastFactory.INTERFACE(fileName)
+                .MODIFIERS(Modifier.PUBLIC)
+                .METHOD(
+                        METHOD("get")
+                                .MODIFIERS(Modifier.PUBLIC)
+                                .PARAMETER(CLASS_T, "cl")
+                                .PARAMETER(STRING, "col")
+                                .RETURNS(T())
+                                .addTypeVariables(T())
+                );
+
+        String myPackage=locations.getFilePackage(configs.name, fileName);
+        Supplier<Boolean> rustGenerator = () -> generateRust(pastClass, myPackage, locations, stackTraceElement);
+
+        return new SpecificationFile(emptyGenerator, emptyGenerator, emptyGenerator, rustGenerator);
+
 
     }
 

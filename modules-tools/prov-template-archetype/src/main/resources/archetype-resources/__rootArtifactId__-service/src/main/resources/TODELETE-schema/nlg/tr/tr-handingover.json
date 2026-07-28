@@ -1,0 +1,108 @@
+{
+    "select": { "act": { "@type": "prov:Activity" } },
+
+    "query": [
+        "prefix resp <http://openprovenance.org/ns/responsibility#>",
+        "select * from der a prov:WasDerivedFrom",
+        "from item1 a prov:Entity",
+        " join der.generatedEntity = item1.id",
+        "from item0 a prov:Entity",
+        " join der.usedEntity = item0.id",
+        "from act a prov:Activity",
+        " join der.activity = act.id",
+        "from wat1 a prov:WasAttributedTo",
+        " optional join item1.id = wat1.entity",
+        "from receiver a prov:Agent",
+        " optional join wat1.agent = receiver.id",
+        "from wat0 a prov:WasAttributedTo",
+        " optional join item0.id = wat0.entity",
+        "from giver a prov:Agent",
+        " optional join wat0.agent = giver.id",
+        "from wgb a prov:WasGeneratedBy",
+        " optional join item1.id = wgb.entity",
+        "where act[prov:type] >= 'resp:HandingOver'"
+    ],
+
+    "sentence": {
+        "type": "clause",
+        "subject": {
+            "type": "noun_phrase",
+            "head": {
+                "type": "@funcall",
+                "@object": "giver",
+                "@field": "id",
+                "@function": "noun+identity",
+                "@arg1": "giver",
+                "@optional": "true"
+            }
+        },
+        "object": {
+            "type": "noun_phrase",
+            "determiner": "The",
+            "head": {
+                "type": "@funcall",
+                "@object": "item1",
+                "@property": "prov:type",
+                "@function": "lookup-type-with-default",
+                "@arg1": "noun_phrase",
+                "@arg2": "item"
+            },
+            "post-modifiers": [
+                {
+                    "type": "adjective_phrase",
+                    "head": {
+                        "type": "@funcall",
+                        "@object": "item1",
+                        "@field": "id",
+                        "@function": "noun+identity",
+                        "@arg1": ""
+                    }
+                }
+            ],
+            "features": { "number": "singular" }
+        },
+        "verb": {
+            "type": "@funcall",
+            "@object": "act",
+            "@property": "prov:type",
+            "@function": "lookup-type",
+            "@arg1": "verb_phrase"
+        },
+        "modifiers": [
+            {
+                "type": "preposition_phrase",
+                "preposition": "to",
+                "noun": {
+                    "type": "@funcall",
+                    "@object": "receiver",
+                    "@field": "id",
+                    "@function": "noun+identity",
+                    "@arg1": "receiver",
+                    "@optional": "true"
+                }
+            },
+            {
+                "type": "preposition_phrase",
+                "preposition": "on",
+                "noun": {
+                    "type": "@funcall",
+                    "@object": "wgb",
+                    "@field": "time",
+                    "@optional": "true",
+                    "@function": "friendly_timestring"
+                }
+            }
+        ],
+        "features": {
+            "tense": "past",
+            "passive": "true"
+        }
+    },
+
+    "context": {
+        "trs":     "https://openprovenance.org/transport/ns/#",
+        "phys":    "http://openprovenance.org/ns/phys#",
+        "resp":    "http://openprovenance.org/ns/responsibility#",
+        "provext": "http://openprovenance.org/prov/extension#"
+    }
+}

@@ -3,11 +3,7 @@ package org.openprovenance.prov.template.compiler.past.emitter;
 import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.Iterator;
-import org.openprovenance.prov.template.compiler.past.annotations.ClassInitialiser;
-import org.openprovenance.prov.template.compiler.past.annotations.ClassMethod;
-import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
-import org.openprovenance.prov.template.compiler.past.annotations.PastAnnotation;
-import org.openprovenance.prov.template.compiler.past.annotations.PythonAnnotation;
+import org.openprovenance.prov.template.compiler.past.annotations.*;
 import org.openprovenance.prov.template.compiler.past.checker.ClassSignature;
 import org.openprovenance.prov.template.compiler.past.checker.MethodSignature;
 import org.openprovenance.prov.template.compiler.past.checker.TypeRegistry;
@@ -25,11 +21,13 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.GENERATED_VAR_PREFIX;
 import static org.openprovenance.prov.template.compiler.common.Constants.LOGGER;
+import static org.openprovenance.prov.template.compiler.past.Assignment.ASSIGNMENT;
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
 import static org.openprovenance.prov.template.compiler.past.Method.METHOD;
+import static org.openprovenance.prov.template.compiler.past.MethodCall.METHOD_CALL;
 import static org.openprovenance.prov.template.compiler.past.MethodCall.MethodCallKind.FUNCTIONAL_INTERFACE_CALL;
+import static org.openprovenance.prov.template.compiler.past.Variable.VARIABLE;
 
 /**
  * Emitter that generates JavaScript class definitions from PAST abstract syntax tree.
@@ -39,10 +37,11 @@ public class JavaScript implements Emitter<StringBuilder> {
     private final TypeRegistry typeRegistry;
     private String currentPackageName;
     private ClassSignature currentClassSignature;
-    private StringBuilder sb;
+    private String currentClassName;
     private static final String INDENT = "  ";
     private int lambdaCount = 0;
     private Set<String> imports;
+    private Set<String> exports;
     private List<Method> lateMethods = new ArrayList<>();
     private Class currentClass;
     private String postDecrement = null;
@@ -64,6 +63,7 @@ public class JavaScript implements Emitter<StringBuilder> {
 
     public WritableObject toWritableObject(Class clazz, String className, String packge, StackTraceElement stackTraceElement) {
         this.currentPackageName = packge;
+        this.currentClassName = className;
         StringBuilder theBuffer = emit(clazz);
 
         addHeader(theBuffer, className, packge, stackTraceElement);
@@ -80,13 +80,58 @@ public class JavaScript implements Emitter<StringBuilder> {
 
     @Override
     public StringBuilder emit(Class clazz) {
-        this.sb = new StringBuilder();
         this.imports = new HashSet<>();
+        this.exports = new HashSet<>();
         this.lateMethods = new ArrayList<>();
         this.lambdaCount = 0;
         this.currentClass = clazz;
         this.currentClassSignature = (typeRegistry != null && currentPackageName != null)
                 ? typeRegistry.lookup(clazz.name, currentPackageName) : null;
+
+        StringBuilder sb = emit(clazz, new StringBuilder());
+
+
+
+        // Add requires at the beginning
+        if (!imports.isEmpty()) {
+            StringBuilder importSection = new StringBuilder();
+            for (String imprt : imports) {
+                if (!imprt.contains(".")) continue;
+                String localName = getLocalName(imprt);
+                if (LOGGER.equals(localName)) continue;
+                if (imprt.startsWith("past.util")) {
+                    importSection.append("const ").append(localName).append(" = ").append(imprt).append(";\n");
+                } else if (imprt.startsWith("past.exception")) {
+                    importSection.append("const ").append(localName).append(" = ").append(imprt).append(";\n");
+                } else if (imprt.startsWith("past.lang")) {
+                    // ignore
+                }
+                else {
+
+                    // Convert package path to  require path (was relative to ./ ; now not specified)
+                    String importPath = imprt.replace('.', '/');
+                    importSection.append("const { ").append(localName).append(" } = require('").append(importPath).append(".js');\n");
+                }
+            }
+            if (importSection.length() > 0) {
+                importSection.append("\n");
+                sb.insert(0, importSection.toString());
+            }
+        }
+
+        if (!exports.isEmpty()) {
+            if (clazz.name!=null) {
+                // Export the class
+                sb.append("module.exports = { ");
+                exports.stream().forEach(exported -> sb.append(exported).append(", "));
+                       sb.append(" };\n");
+            }
+        }
+
+        return sb;
+    }
+
+    public StringBuilder emit(Class clazz, StringBuilder sb) {
 
         // Class JSDoc comment
         if (!clazz.comments.isEmpty()) {
@@ -101,7 +146,20 @@ public class JavaScript implements Emitter<StringBuilder> {
         }
 
         // Class declaration
-        sb.append("class ").append(clazz.name);
+        sb.append("class ");
+        if (clazz.name!=null) { // don't do it for anonymous classes
+            sb.append(clazz.name);
+        }
+
+        if (clazz.superclass!=null) {
+            sb.append(" extends ");
+            if (clazz.superclass instanceof ParameterizedType) {
+                ParameterizedType pt = (ParameterizedType) clazz.superclass;
+                sb.append(importAndGetLocalName(convert(pt.rawType)));
+            } else {
+                sb.append(importAndGetLocalName(sanitizeName(convert(clazz.superclass))));
+            }
+        }
 
         // Base classes - JavaScript only supports single inheritance
         // For now, we'll skip interfaces as they're not directly supported in JS
@@ -110,55 +168,80 @@ public class JavaScript implements Emitter<StringBuilder> {
 
         // Constructor
         if (clazz.constructors.isEmpty()) {
-            emitDefaultConstructor(clazz.fields);
+            emitDefaultConstructor(clazz.fields, sb);
         } else {
             for (Constructor constructor : clazz.constructors) {
-                emitConstructor(constructor);
+                Optional<String> overloaded=isOverloadedConstructor(constructor);
+
+                if (overloaded.isPresent()) {
+                    String constructorName = overloaded.get();
+
+                    Method jsMethodAsConstructor = METHOD(constructorName)
+                            .PARAMETERS(constructor.parameters)
+                            .MODIFIERS(constructor.modifiers.toArray(new Modifier[0]))
+                            .BODY(constructor.body.toArray(new Statement[0]))
+                            //.ANNOTATIONS(constructor.annotation.toArray(new String[0]))
+                            .COMMENTS(constructor.comments.toArray(new Comment[0]));
+
+                    for (Field field : clazz.fields) {
+                        String fieldName = sanitizeName(field.name);
+                        if (!field.modifiers.contains(Modifier.STATIC)) {
+                            if (field.initialiser != null) {
+                                jsMethodAsConstructor.BODY(
+                                        ASSIGNMENT(METHOD_CALL(VARIABLE("this"), fieldName), field.initialiser));
+
+                            }
+                        }
+                    }
+
+                    jsMethodAsConstructor.COMMENT("//Note: this method was originally a PAST constructor, but was renamed to avoid name clashes due to overloading. \n It will not be recognized as a constructor by js code, so it should be called explicitly by its name.");
+
+                    emitMethod(jsMethodAsConstructor, sb);
+                } else {
+                    emitConstructor(constructor,  clazz.fields, sb);
+                }
             }
         }
 
         // Methods
         if (!clazz.methods.isEmpty()) {
             for (Method method : clazz.methods) {
-                emitMethod(method);
+                emitMethod(method, sb);
             }
         }
 
         // Late methods (from lambda conversions)
         for (Method method : lateMethods) {
-            emitMethod(method);
+            emitMethod(method, sb);
         }
 
         // Static fields
-        emitStaticFields(clazz.fields);
+        emitStaticFields(clazz.fields, sb);
 
         sb.append("}\n\n");
 
-        // Export the class
-        sb.append("export { ").append(clazz.name).append(" };\n");
+        if (clazz.name!=null) {
+            // Export the class
+            exports.add(clazz.name);
+        }
 
-        // Add imports at the beginning
-        if (!imports.isEmpty()) {
-            StringBuilder importSection = new StringBuilder();
-            for (String imprt : imports) {
-                if (!imprt.contains(".")) continue;
-                String localName = getLocalName(imprt);
-                if (LOGGER.equals(localName)) continue;
 
-                // Convert package path to relative import path
-                String importPath = "./" + imprt.replace('.', '/');
-                importSection.append("import { ").append(localName).append(" } from '").append(importPath).append(".js';\n");
-            }
-            if (importSection.length() > 0) {
-                importSection.append("\n");
-                sb.insert(0, importSection.toString());
+        if (!lateEmittedClasses.isEmpty()) {
+            List<LateEmittedClass> tmp=lateEmittedClasses.stream().map(c -> c).collect(Collectors.toList());
+            lateEmittedClasses.clear();
+            sb.append("\n\n");
+
+            for (Class lateClazz : tmp) {
+                sb.append("// Late emitted class due to anonymous class\n");
+                emit(lateClazz,sb);
+                sb.append("\n\n");
             }
         }
 
         return sb;
     }
 
-    private void emitDefaultConstructor(List<Field> fields) {
+    private void emitDefaultConstructor(List<Field> fields, StringBuilder sb) {
         sb.append(INDENT).append("constructor(");
 
         // Parameters from non-static fields
@@ -200,8 +283,10 @@ public class JavaScript implements Emitter<StringBuilder> {
         //sb.append(INDENT).append("}\n\n");
     }
 
-    private void emitConstructor(Constructor constructor) {
+    private void emitConstructor(Constructor constructor, List<Field> fields, StringBuilder sb) {
         sb.append(INDENT).append("constructor(");
+
+
 
         // Parameters
         if (constructor.parameters != null) {
@@ -212,19 +297,65 @@ public class JavaScript implements Emitter<StringBuilder> {
         }
         sb.append(") {\n");
 
+        // emit call to super() if superclass exists
+        if (this.currentClass != null
+                && this.currentClass.superclass != null) {
+            if (constructor.body.isEmpty()) {
+                sb.append(INDENT).append("super();\n");
+            } else {
+
+                if (firstNonCommentStatementIsSuper(constructor.body)) {
+                    // super call, no need to insert 1
+
+                } else {
+                    // No explicit super() call, emit default
+
+                    sb.append(INDENT).append(INDENT).append("super();\n");
+                }
+
+            }
+        }
+
         // Constructor body
         for (Statement statement : constructor.body) {
-            emitStatement(statement, INDENT + INDENT);
+            emitStatement(statement, INDENT + INDENT, sb);
         }
+        // Field assignments
+        for (Field field : fields) {
+            if (!field.modifiers.contains(Modifier.STATIC) && field.initialiser != null) {
+                String fieldName = sanitizeName(field.name);
+                sb.append(INDENT).append(INDENT)
+                        .append("this.").append(fieldName).append(" = ");
+                if (field.initialiser != null) {
+                    sb.append(convert(field.initialiser));
+                }
+                sb.append(";\n");
+            }
+        }
+
+
 
         sb.append(INDENT).append("}\n\n");
     }
 
-    private void emitStaticFields(List<Field> fields) {
+    private boolean firstNonCommentStatementIsSuper(List<Statement> statements) {
+        for (Statement statement : statements) {
+            if (!(statement instanceof Comment)) {
+                if (statement instanceof MethodCall) {
+                    return ((MethodCall) statement).operatorKind == MethodCall.MethodCallKind.SUPER_METHOD_CALL;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void emitStaticFields(List<Field> fields, StringBuilder sb) {
         for (Field field : fields) {
             if (field.modifiers.contains(Modifier.STATIC)) {
                 String fieldName = sanitizeName(field.name);
-                sb.append("\n").append(currentClass.name).append(".").append(fieldName)
+                sb.append("\nstatic ").append(fieldName)
                         .append(" = ");
                 if (field.initialiser != null) {
                     sb.append(convert(field.initialiser));
@@ -236,7 +367,7 @@ public class JavaScript implements Emitter<StringBuilder> {
         }
     }
 
-    private void emitMethod(Method method) {
+    private void emitMethod(Method method, StringBuilder sb) {
         // JSDoc comment
         if (method.comments != null && !method.comments.isEmpty()) {
             sb.append(INDENT).append("/**\n");
@@ -273,20 +404,22 @@ public class JavaScript implements Emitter<StringBuilder> {
         // Method body
         if (method.body != null && !method.body.isEmpty()) {
             for (Statement statement : method.body) {
-                emitStatement(statement, INDENT + INDENT);
+                emitStatement(statement, INDENT + INDENT, sb);
             }
         }
 
         sb.append(INDENT).append("}\n\n");
     }
 
-    private void emitStatement(Statement statement, String indent) {
+
+    private void emitStatement(Statement statement, String indent, StringBuilder sb) {
+
         switch (statement.statementKind) {
             case ASSIGNMENT -> {
                 Assignment assignment = (Assignment) statement;
 
                 // Handle import annotations
-                if (!assignment.annotation.isEmpty()) {
+                if (false && !assignment.annotation.isEmpty()) {
                     for (String annot : assignment.annotation) {
                         if (annot.startsWith("@import")) {
                             String importString = annot.substring(7).trim();
@@ -319,7 +452,7 @@ public class JavaScript implements Emitter<StringBuilder> {
                 Definition definition = (Definition) statement;
 
                 // Handle import annotations
-                if (!definition.annotation.isEmpty()) {
+                if (false && !definition.annotation.isEmpty()) {
                     for (String annot : definition.annotation) {
                         if (annot.startsWith("@import")) {
                             String importString = annot.substring(7).trim();
@@ -393,14 +526,14 @@ public class JavaScript implements Emitter<StringBuilder> {
                     sb.append(indent).append(INDENT).append("// empty\n");
                 } else {
                     for (Statement thenStmt : ifs.thenBlock) {
-                        emitStatement(thenStmt, indent + INDENT);
+                        emitStatement(thenStmt, indent + INDENT, sb);
                     }
                 }
                 if (!ifs.elseBlock.isEmpty()) {
                     sb.append(indent)
                             .append("} else {\n");
                     for (Statement elseStmt : ifs.elseBlock) {
-                        emitStatement(elseStmt, indent + INDENT);
+                        emitStatement(elseStmt, indent + INDENT, sb);
                     }
                 }
                 sb.append(indent).append("}\n");
@@ -424,7 +557,7 @@ public class JavaScript implements Emitter<StringBuilder> {
 
                 sb.append(") {\n");
                 for (Statement bodyStmt : forLoop.body) {
-                    emitStatement(bodyStmt, indent + INDENT);
+                    emitStatement(bodyStmt, indent + INDENT, sb);
                 }
                 sb.append(indent).append("}\n");
             }
@@ -434,16 +567,45 @@ public class JavaScript implements Emitter<StringBuilder> {
                 sb.append(indent)
                         .append("for (const ")
                         .append(sanitizeName(iterator.parameter.name))
-                        .append(" of ")
+                        .append(" in ")
                         .append(convert(iterator.collection))
                         .append(") {\n");
                 for (Statement bodyStmt : iterator.body) {
-                    emitStatement(bodyStmt, indent + INDENT);
+                    emitStatement(bodyStmt, indent + INDENT, sb);
                 }
                 sb.append(indent).append("}\n");
             }
 
+            case THROW -> {
+                ThrowStatement throwStmt = (ThrowStatement) statement;
+                sb.append(indent)
+                        .append("throw ")
+                        .append(convert(throwStmt.expression))
+                        .append(";\n");
+
+
+            }
+
+            case DO_LOOP -> {
+                DoLoop doLoop = (DoLoop) statement;
+                sb.append(indent)
+                        .append("do {\n");
+
+                for (Statement bodyStmt : doLoop.body) {
+                    emitStatement(bodyStmt, indent + INDENT, sb);
+                }
+                sb.append(indent).append("}\n");
+                sb.append(indent).append(" while (\n");
+                        sb.append(convert(doLoop.condition))
+                        .append(");\n");
+
+
+            }
+
+
+
             default -> {
+                System.out.println("Unsupported statement type: " + statement);
                 throw new IllegalArgumentException("Unsupported statement type " + statement);
             }
         }
@@ -475,6 +637,7 @@ public class JavaScript implements Emitter<StringBuilder> {
                 return convert(es);
             }
             default -> {
+                System.out.println("Cannot inline statement type: " + statement);
                 throw new IllegalArgumentException("Cannot inline statement type " + statement.statementKind);
             }
         }
@@ -511,6 +674,7 @@ public class JavaScript implements Emitter<StringBuilder> {
                 sb.append(indent).append(convert(ret.expression));
             }
             default -> {
+                System.out.println("Unsupported statement type in lambda: " + statement);
                 throw new IllegalArgumentException("Unsupported statement type in lambda " + statement);
             }
         }
@@ -629,7 +793,13 @@ public class JavaScript implements Emitter<StringBuilder> {
                 return "new Array(" + convert(aa.size) + ")";
             }
 
+            case INSTANCEOF: {
+                InstanceOf ioe = (InstanceOf) expression;
+                return convert(ioe.expression) + " instanceof " + convert(ioe.type);
+            }
+
             default:
+                System.out.println("Unsupported expression type: " + expression);
                 throw new IllegalArgumentException("Unsupported expression type " + expression);
         }
     }
@@ -662,6 +832,9 @@ public class JavaScript implements Emitter<StringBuilder> {
         StringBuilder result = new StringBuilder();
         switch (mc.operatorKind) {
             case CONSTRUCTOR_CALL -> {
+                if (mc.clazz!=null) {
+                    return emitAnonymous(mc.clazz,result) ;
+                }
                 assert mc.className != null;
                 if (isMap(mc.className)) {
                     return "new Map()";
@@ -682,20 +855,7 @@ public class JavaScript implements Emitter<StringBuilder> {
             case OBJECT_METHOD_CALL -> {
                 assert mc.object != null;
                 String convertedObject = convert(mc.object);
-                String callMethodName = sanitizeName(mc.methodName);
-                // For this-calls to overloaded methods, resolve the alt name from the registry
-                if ("this".equals(convertedObject)) {
-                    int argCount = mc.arguments == null ? 0 : mc.arguments.size();
-                    if (argCount != 0) {
-                        List<TypeName> argumentTypes = mc.arguments.stream()
-                                .map(a -> a.inferredType)
-                                .collect(Collectors.toList());
-                        String resolvedAlt = findAltNameForCall(mc.methodName, argumentTypes);
-                        if (resolvedAlt != null) {
-                            callMethodName = sanitizeName(resolvedAlt);
-                        }
-                    }
-                }
+                String callMethodName = updateMethodNameIfOverloaded(mc, convertedObject, sanitizeName(mc.methodName));
                 result.append(convertedObject).append(".").append(callMethodName).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
@@ -712,6 +872,9 @@ public class JavaScript implements Emitter<StringBuilder> {
                             .append(".").append(sanitizeName(mc.methodName));
                 } else if (mc.object instanceof Variable) {
                     result.append(convert(mc.object)).append(".").append(sanitizeName(mc.methodName));
+                } else if (mc.object instanceof MethodCall) {
+                    MethodCall mc2 = (MethodCall) mc.object;
+                    result.append(convert(mc2)).append(".").append(mc.methodName);
                 } else {
                     throw new IllegalArgumentException("Unsupported object type in accessor: " + mc.object);
                 }
@@ -730,19 +893,8 @@ public class JavaScript implements Emitter<StringBuilder> {
                     result.append(convert(mc.object)).append("(");
                 } else {
                     String convertedObject2 = convert(mc.object);
-                    String callMethodName2 = sanitizeName(mc.methodName);
-                    if ("this".equals(convertedObject2)) {
-                        int argCount = mc.arguments == null ? 0 : mc.arguments.size();
-                        if (argCount != 0) {
-                            List<TypeName> argumentTypes = mc.arguments.stream()
-                                    .map(a -> a.inferredType)
-                                    .collect(Collectors.toList());
-                            String resolvedAlt = findAltNameForCall(mc.methodName, argumentTypes);
-                            if (resolvedAlt != null) {
-                                callMethodName2 = sanitizeName(resolvedAlt);
-                            }
-                        }
-                    }
+
+                    String callMethodName2 = updateMethodNameIfOverloaded(mc, convertedObject2, sanitizeName(mc.methodName));
                     result.append(convertedObject2).append(".").append(callMethodName2).append("(");
                 }
                 if (mc.arguments != null) {
@@ -768,7 +920,35 @@ public class JavaScript implements Emitter<StringBuilder> {
             }
 
             case NO_OPERATOR -> {
-                result.append(sanitizeName(mc.methodName)).append("(");
+                for (PastAnnotation ann : mc.annotation) {
+                    if (ann instanceof StaticMethod) {
+                        result.append(this.currentClass.name).append(".");
+                    }
+                }
+
+                String str = sanitizeName(mc.methodName);
+                if (str.equals("getMap")) {
+                    str="this.outer.getMap"; // this a hack to deal with anonymous class;
+                    // Ideally, we should add an annotation to drive the behaviour of the emitter instead of hardcoding this logic here
+                }
+
+                result.append(str).append("(");
+                if (mc.arguments != null) {
+                    result.append(mc.arguments.stream()
+                            .map(this::convert)
+                            .collect(Collectors.joining(", ")));
+                }
+                result.append(")");
+                return result.toString();
+            }
+            case SUPER_METHOD_CALL -> {
+                if (mc.methodName == null) {
+                    result.append("super");
+                } else {
+                    result.append("super.")
+                            .append(sanitizeName(mc.methodName));
+                }
+                result.append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
                             .map(this::convert)
@@ -781,18 +961,132 @@ public class JavaScript implements Emitter<StringBuilder> {
         throw new IllegalArgumentException("Unsupported method call type " + mc);
     }
 
+    int anonymousClassCount=0;
+
+    private String emitAnonymous(Class clazz, StringBuilder result) {
+
+       // result.append("new ");
+       // emit(clazz, result);
+       // return result.toString();
+
+        String intf=clazz.interfaces.isEmpty() ? "Nointerface" : ((ClassName)clazz.interfaces.get(0)).simpleName;
+        String className="Anonymous" + intf + (anonymousClassCount++);
+        ClassName outer=new ClassName(currentClassName, currentPackageName);
+        lateEmittedClasses.add(new LateEmittedClass(className, clazz, outer));
+        return "new " + className + "(this)";
+
+    }
+
+
+    List<LateEmittedClass> lateEmittedClasses=new ArrayList<>();
+
+    static class LateEmittedClass extends Class {
+        Class clazz;
+
+        public LateEmittedClass(String className, Class clazz, TypeName outer) {
+            super(className);
+            this.clazz = clazz;
+            this.comments.addAll(clazz.comments);
+            constructors.add(
+                    new Constructor()
+                            .MODIFIERS(Modifier.PUBLIC)
+                            .PARAMETER(outer, "outer")
+                            .BODY(ASSIGNMENT( METHOD_CALL(VARIABLE("this"),"outer"), VARIABLE( "outer"))));
+
+            methods.addAll(clazz.methods);
+            interfaces.addAll(clazz.interfaces);
+            typeVariables.addAll(clazz.typeVariables);
+            modifiers.addAll(clazz.modifiers);
+        }
+    }
+
+
+    private String updateMethodNameIfOverloaded(MethodCall mc, String convertedObject, String callMethodName) {
+        if ("this".equals(convertedObject) || (mc.object.inferredType instanceof ClassName) || isTypeVariableWithBound(mc.object.inferredType)) {
+            int argCount = mc.arguments == null ? 0 : mc.arguments.size();
+            if (argCount!=0) {
+                List<TypeName> argumentTypes= mc.arguments.stream().map(a -> a.inferredType).collect(Collectors.toList());
+                String resolvedAlt;
+                if ("self".equals(convertedObject)) {
+                    resolvedAlt=findAltNameForCall(mc.methodName, argumentTypes);
+                } else {
+                    ClassName cl=classForPurposeOfLookup(mc.object.inferredType);
+                    resolvedAlt=findAltNameForCall(cl, callMethodName, argumentTypes);
+                }
+                if (resolvedAlt != null) {
+                    callMethodName = sanitizeName(resolvedAlt);
+                }
+            }
+        }
+        return callMethodName;
+    }
+
+    public static ClassName classForPurposeOfLookup(TypeName inferredType) {
+        if (inferredType instanceof ClassName) {
+            return (ClassName) inferredType;
+        } else if (inferredType instanceof TypeVariable) {
+            TypeVariable var = (TypeVariable) inferredType;
+            return (ClassName) var.bounds.get(0);
+        } else {
+            throw new IllegalArgumentException("Unsupported type: " + inferredType);
+        }
+    }
+
+    private boolean isTypeVariableWithBound(TypeName tn) {
+        return tn instanceof TypeVariable &&
+                !((TypeVariable) tn).bounds.isEmpty() &&
+                ((TypeVariable) tn).bounds.get(0) instanceof ClassName;
+    }
+
+    private Optional<String> isOverloadedConstructor(Constructor constructor) {
+        Optional<String> overloaded=Optional.empty();
+        if (constructor.annotation != null) {
+            Optional<OverloadedMethodJavascript> annotation=constructor.annotation.stream()
+                    .filter(annot -> annot instanceof OverloadedMethodJavascript)
+                    .map(annot -> (OverloadedMethodJavascript) annot)
+                    .filter(annot -> OverloadedMethodJavascript.NAME.equals(annot.getName()))
+                    .findFirst()
+                    ;
+            if (annotation.isPresent()) {
+                overloaded= Optional.of(annotation.get().getAltName());
+                //System.out.println("Constructor with @OverloadedMethod annotation, using alt name: " + constructorName);
+            }
+        }
+        return overloaded;
+    }
+
+    private String findAltNameForCall(ClassName className,String methodName, List<TypeName> argTypes) {
+        if (typeRegistry==null) return null;
+        ClassSignature sig=typeRegistry.lookup(className.simpleName, className.packge);
+        if (sig == null) return null;
+        for (MethodSignature ms : sig.methods) {
+            if (!ms.name.equals(methodName)) continue;
+            if (!paramTypesMatch(argTypes, ms)) continue;
+            for (PastAnnotation ann : ms.getAnnotations()) {
+                if (ann instanceof OverloadedMethodJavascript) {
+                    return ((OverloadedMethodJavascript) ann).getAltName();
+                }
+            }
+        }
+        return null;
+    }
+
+
+
+
     // ---- OverloadedMethod alt-name resolution (mirrors Python.java) ----
 
     private String findAltNameForDeclaration(Method method) {
         if (currentClassSignature == null || typeRegistry == null) return null;
+
         int paramCount = method.parameters == null ? 0 : method.parameters.size();
         for (MethodSignature ms : currentClassSignature.methods) {
             if (!ms.name.equals(method.name)) continue;
             if (ms.parameterTypes.size() != paramCount) continue;
             for (PastAnnotation ann : ms.getAnnotations()) {
-                if (ann instanceof OverloadedMethod) {
+                if (ann instanceof OverloadedMethodJavascript) {
                     if (paramCount == 0 || paramTypesMatch(method, ms)) {
-                        return ((OverloadedMethod) ann).getAltName();
+                        return ((OverloadedMethodJavascript) ann).getAltName();
                     }
                 }
             }
@@ -806,7 +1100,7 @@ public class JavaScript implements Emitter<StringBuilder> {
             if (!ms.name.equals(methodName)) continue;
             if (!paramTypesMatch(argTypes, ms)) continue;
             for (PastAnnotation ann : ms.getAnnotations()) {
-                if (ann instanceof OverloadedMethod) return ((OverloadedMethod) ann).getAltName();
+                if (ann instanceof OverloadedMethodJavascript) return ((OverloadedMethodJavascript) ann).getAltName();
             }
         }
         return null;
@@ -887,6 +1181,16 @@ public class JavaScript implements Emitter<StringBuilder> {
             case CLASS: {
                 ClassName cn = (ClassName) tn;
                 if (cn.packge != null && !cn.packge.isEmpty()) {
+                    if (cn.packge.equals("past.lang")) {
+                        return switch (cn.simpleName) {
+                            case "String" -> "String";
+                            case "Integer", "int" -> "Number";
+                            case "Float" -> "Number";
+                            case "Boolean" -> "Boolean";
+                            case "Object" -> "Object";
+                            default -> (cn.packge + "." + cn.simpleName);
+                        };
+                    }
                     return cn.packge + "." + cn.simpleName;
                 } else {
                     return cn.simpleName;
@@ -967,7 +1271,14 @@ public class JavaScript implements Emitter<StringBuilder> {
     }
 
     private String getLocalName(String imprt) {
-        return imprt.substring(imprt.lastIndexOf('.') + 1);
+        return switch (imprt) {
+            case "past.lang.String" -> "String";
+            case "past.lang.Integer" -> "int";
+            case "past.lang.Float" -> "float";
+            case "past.lang.Boolean" -> "bool";
+            case "past.lang.Double" -> "float";
+            default -> imprt.substring(imprt.lastIndexOf('.') + 1);
+        };
     }
 
     private String importAndGetLocalName(String imprt) {
@@ -994,9 +1305,9 @@ public class JavaScript implements Emitter<StringBuilder> {
         if (functionNameConversion.containsKey(name)) {
             return functionNameConversion.get(name);
         }
-        if (name.startsWith(GENERATED_VAR_PREFIX)) {
-            return name.substring(2);
-        }
+        //if (name.startsWith(GENERATED_VAR_PREFIX)) {
+         //   return name.substring(2);
+        //}
 
         // Handle reserved JavaScript keywords
         if (isJavaScriptKeyword(name)) {
@@ -1013,7 +1324,8 @@ public class JavaScript implements Emitter<StringBuilder> {
                         "implements", "import", "in", "instanceof", "int", "interface", "let",
                         "long", "native", "new", "null", "package", "private", "protected",
                         "public", "return", "short", "static", "super", "switch", "synchronized",
-                        "this", "throw", "throws", "transient", "true", "try", "typeof", "var",
+                        //"this",
+                        "throw", "throws", "transient", "true", "try", "typeof", "var",
                         "void", "volatile", "while", "with", "yield")
                 .contains(name);
     }

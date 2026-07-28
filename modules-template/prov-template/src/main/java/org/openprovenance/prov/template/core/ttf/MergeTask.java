@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
@@ -149,6 +150,7 @@ public class MergeTask implements ConfigTask {
 
                 outputIndex.addEntry(outputId,format, outputIndex.relativize(documentPath).toString());
 
+                Files.createDirectories(documentPath.getParent());
                 executor.serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + output + "." + format), format, doc3, false);
                 String csvRecord = createMergeCsvRecord(format, file1, file2, time, secondsSince2023_01_01);
                 loggedRecords.add(csvRecord);

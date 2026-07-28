@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template.compiler.past.emitter;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.template.compiler.past.*;
@@ -14,6 +15,7 @@ import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeVariable;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.past.BinaryOp.INSTANCEOF;
@@ -41,7 +43,7 @@ public class Poet implements Emitter<TypeSpec> {
 
         TypeSpec.Builder builder=(clazz.isInterface)?TypeSpec.interfaceBuilder(clazz.name):TypeSpec.classBuilder(clazz.name);
         for (TypeVariable tv : clazz.typeVariables) {
-            builder.addTypeVariable(TypeVariableName.get(tv.name));
+            builder.addTypeVariable(convertTypeVariable(tv));
         }
         clazz.modifiers.forEach(builder::addModifiers);
         // emit superclass if present
@@ -75,7 +77,7 @@ public class Poet implements Emitter<TypeSpec> {
               ;
 
         for (TypeVariable tv : clazz.typeVariables) {
-            builder.addTypeVariable(TypeVariableName.get(tv.name));
+            builder.addTypeVariable(convertTypeVariable(tv));
         }
         clazz.modifiers.forEach(builder::addModifiers);
         clazz.fields.forEach(field -> builder.addField(convert(field)));
@@ -107,6 +109,8 @@ public class Poet implements Emitter<TypeSpec> {
         method.annotation.forEach(annotation -> {
             if (annotation instanceof org.openprovenance.prov.template.compiler.past.annotations.OverrideAnnotation) {
                 builder.addAnnotation(Override.class);
+            } else if (annotation instanceof org.openprovenance.prov.template.compiler.past.annotations.JsonIgnoreAnnotation) {
+                builder.addAnnotation(JsonIgnore.class);
             }
         });
 
@@ -675,7 +679,12 @@ public class Poet implements Emitter<TypeSpec> {
                 CodeBlock argsCode = CodeBlock.join(
                         methodCall.arguments.stream().map(this::convert).collect(Collectors.toList()),
                         ",");
-                return CodeBlock.of("super.$L($L)", methodCall.methodName, argsCode);
+
+                if (methodCall.methodName==null) {
+                    return CodeBlock.of("super($L)", argsCode);
+                } else {
+                    return CodeBlock.of("super.$L($L)", methodCall.methodName, argsCode);
+                }
             }
             case OBJECT_ACCESSOR -> {
                 if (methodCall.className != null) {
@@ -722,7 +731,7 @@ public class Poet implements Emitter<TypeSpec> {
             }
             case VARIABLE -> {
                 TypeVariable tn = (TypeVariable) typeName;
-                return TypeVariableName.get(tn.name);
+                return convertTypeVariable(tn);
             }
             case ARRAY -> {
                 ArrayType at = (ArrayType) typeName;
@@ -735,6 +744,14 @@ public class Poet implements Emitter<TypeSpec> {
                         Arrays.stream(pt.typeArguments).map(this::convert).toArray(TypeName[]::new));
             }
             default -> throw new IllegalArgumentException("conversion not supported yet");
+        }
+    }
+
+    private TypeVariableName convertTypeVariable(TypeVariable tn) {
+        if (tn.bounds.isEmpty()) {
+            return TypeVariableName.get(tn.name);
+        } else {
+            return TypeVariableName.get(tn.name).withBounds(tn.bounds.stream().map(this::convert).toArray(TypeName[]::new));
         }
     }
 
@@ -761,6 +778,7 @@ public class Poet implements Emitter<TypeSpec> {
                     case "int" ->  { return TypeName.get(int.class); }
                     case "int[]" ->  { return ArrayTypeName.of(TypeName.get(int.class)); }
                     case "System" ->  { return ClassName.get(System.class); }
+                    case "AtomicInteger" ->  { return TypeName.get(AtomicInteger.class); }
                     default ->  { /* continue */ }
                 }
             }

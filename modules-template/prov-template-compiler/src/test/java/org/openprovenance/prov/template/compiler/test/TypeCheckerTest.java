@@ -3,7 +3,7 @@ package org.openprovenance.prov.template.compiler.test;
 import junit.framework.TestCase;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.*;
-import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethod;
+import org.openprovenance.prov.template.compiler.past.annotations.OverloadedMethodPython;
 import org.openprovenance.prov.template.compiler.past.checker.*;
 import org.openprovenance.prov.template.compiler.past.type.ArrayType;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
@@ -889,13 +889,13 @@ public class TypeCheckerTest extends TestCase {
         iSig.methods.forEach(m -> {
            // System.out.println("Parent method: " + m);
             if (m.name.equals("method1")) {
-                assertEquals(1, m.getAnnotations().size());
-                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
-                OverloadedMethod overloadedMethod = (OverloadedMethod) m.getAnnotations().get(0);
+                assertEquals(2, m.getAnnotations().size());
+                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethodPython);
+                OverloadedMethodPython overloadedMethodPython = (OverloadedMethodPython) m.getAnnotations().get(0);
                 if (m.parameterTypes.get(0).equals(ClassName.STRING)) {
-                    assertEquals("method1_string", overloadedMethod.getAltName());
+                    assertEquals("method1_string", overloadedMethodPython.getAltName());
                 } else if (m.parameterTypes.get(0).equals(ClassName.INTEGER)) {
-                    assertEquals("method1_integer", overloadedMethod.getAltName());
+                    assertEquals("method1_integer", overloadedMethodPython.getAltName());
                 } else {
                     fail("Unexpected parameter type for method1: " + m.parameterTypes.get(0));
                 }
@@ -915,13 +915,13 @@ public class TypeCheckerTest extends TestCase {
         childSig.methods.forEach(m -> {
           //  System.out.println("Child method: " + m);
             if (m.name.equals("method1")) {
-                assertEquals(1, m.getAnnotations().size());
-                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
-                OverloadedMethod overloadedMethod = (OverloadedMethod) m.getAnnotations().get(0);
+                assertEquals(2, m.getAnnotations().size());
+                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethodPython);
+                OverloadedMethodPython overloadedMethodPython = (OverloadedMethodPython) m.getAnnotations().get(0);
                 if (m.parameterTypes.get(0).equals(ClassName.STRING)) {
-                    assertEquals("method1_string", overloadedMethod.getAltName());
+                    assertEquals("method1_string", overloadedMethodPython.getAltName());
                 } else if (m.parameterTypes.get(0).equals(ClassName.INTEGER)) {
-                    assertEquals("method1_integer", overloadedMethod.getAltName());
+                    assertEquals("method1_integer", overloadedMethodPython.getAltName());
                 } else {
                     fail("Unexpected parameter type for method1: " + m.parameterTypes.get(0));
                 }
@@ -971,9 +971,9 @@ public class TypeCheckerTest extends TestCase {
         sig.methods.forEach(m -> {
             //System.out.println("ParameterizedType method: " + m);
             if (m.name.equals("process")) {
-                assertEquals(1, m.getAnnotations().size());
-                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
-                OverloadedMethod ann = (OverloadedMethod) m.getAnnotations().get(0);
+                assertEquals(2, m.getAnnotations().size());
+                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethodPython);
+                OverloadedMethodPython ann = (OverloadedMethodPython) m.getAnnotations().get(0);
                 String rawName = ((ParameterizedType) m.parameterTypes.get(0)).getRawType().simpleName;
                 if (rawName.equals("List")) {
                     assertEquals("process_list", ann.getAltName());
@@ -1018,9 +1018,9 @@ public class TypeCheckerTest extends TestCase {
         sig.methods.forEach(m -> {
             //System.out.println("ArrayType method: " + m);
             if (m.name.equals("convert")) {
-                assertEquals(1, m.getAnnotations().size());
-                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
-                OverloadedMethod ann = (OverloadedMethod) m.getAnnotations().get(0);
+                assertEquals(2, m.getAnnotations().size());
+                assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethodPython);
+                OverloadedMethodPython ann = (OverloadedMethodPython) m.getAnnotations().get(0);
                 TypeName elementType = ((ArrayType) m.parameterTypes.get(0)).elementType;
                 if (elementType.equals(ClassName.STRING)) {
                     assertEquals("convert_string_array", ann.getAltName());
@@ -1068,9 +1068,9 @@ public class TypeCheckerTest extends TestCase {
         ClassSignature sig = checker.getRegistry().lookup("TwoArgInterface", "com.example");
         sig.methods.forEach(m -> {
             //System.out.println("TwoArgs method: " + m);
-            assertEquals(1, m.getAnnotations().size());
-            assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
-            OverloadedMethod ann = (OverloadedMethod) m.getAnnotations().get(0);
+            assertEquals(2, m.getAnnotations().size());
+            assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethodPython);
+            OverloadedMethodPython ann = (OverloadedMethodPython) m.getAnnotations().get(0);
             if (m.name.equals("combine")) {
                 if (m.parameterTypes.get(0).equals(ClassName.STRING)) {
                     assertEquals("combine_string_integer", ann.getAltName());
@@ -1112,9 +1112,9 @@ public class TypeCheckerTest extends TestCase {
         ClassSignature sig = checker.getRegistry().lookup("TVInterface", "com.example");
         sig.methods.forEach(m -> {
            // System.out.println("TypeVariable method: " + m);
-            assertEquals(1, m.getAnnotations().size());
-            assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethod);
-            OverloadedMethod ann = (OverloadedMethod) m.getAnnotations().get(0);
+            assertEquals(2, m.getAnnotations().size());
+            assertTrue(m.getAnnotations().get(0) instanceof OverloadedMethodPython);
+            OverloadedMethodPython ann = (OverloadedMethodPython) m.getAnnotations().get(0);
             if (m.parameterTypes.get(0) instanceof TypeVariable) {
                 assertEquals("wrap_t", ann.getAltName());
             } else {
@@ -1125,5 +1125,148 @@ public class TypeCheckerTest extends TestCase {
         System.out.println("*********************** testAnnotateOverloadedMethods_TypeVariable(): Diagnostics successful");
     }
 
+    // ===== TypeVariable receiver method call tests =====
+    // These tests cover the fix for: method calls on a TypeVariable receiver were returning
+    // ClassName.OBJECT instead of resolving via the bound, causing false "Incompatible types" errors.
 
+    /**
+     * Models the BeanHistory pattern:
+     *   class Wrapper&lt;T extends Processor&gt; { private T delegate; ... }
+     * where the Processor interface IS registered in the type checker.
+     * The call this.delegate.process(input) should resolve process() via Processor's
+     * method signature and infer the correct return type (Output), producing no error.
+     */
+    public void testMethodCallOnTypeVariableWithBoundInRegistry() {
+        TypeChecker checker = new TypeChecker();
+
+        ClassName inputClass    = ClassName.get("Input",     "com.example");
+        ClassName outputClass   = ClassName.get("Output",    "com.example");
+        ClassName processorClass = ClassName.get("Processor", "com.example");
+
+        // Register Input and Output as plain classes
+        checker.registerClass(new Class("Input"),  "com.example");
+        checker.registerClass(new Class("Output"), "com.example");
+
+        // Register Processor interface: Output process(Input)
+        Class processorIface = new Class("Processor", true);
+        processorIface.methods.add(
+                METHOD("process").RETURNS(outputClass).PARAMETERS(PARAMETER("in", inputClass)));
+        checker.registerClass(processorIface, "com.example");
+
+        // Build Wrapper<T extends Processor>
+        TypeVariable typeVar = TypeVariable.get("T").withBounds(processorClass);
+
+        Class wrapperClass = new Class("Wrapper");
+        wrapperClass.TYPE_VARIABLES(typeVar);
+        wrapperClass.fields.add(FIELD("delegate", typeVar).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL));
+        wrapperClass.methods.add(
+                METHOD("process").RETURNS(outputClass)
+                        .PARAMETERS(PARAMETER("input", inputClass))
+                        .BODY(
+                                // Output result = this.delegate.process(input);
+                                DEFINITION(outputClass, VARIABLE("result"),
+                                        METHOD_CALL(METHOD_CALL(VARIABLE("this"), "delegate"),
+                                                "process", List.of(VARIABLE("input")))),
+                                RETURN(VARIABLE("result"))
+                        )
+        );
+
+        checker.registerClass(wrapperClass, "com.example");
+        List<TypeDiagnostic> diagnostics = checker.checkAll();
+
+        long errors = 0;
+        for (TypeDiagnostic d : diagnostics) {
+            if (d.severity == TypeDiagnostic.Severity.ERROR) {
+                errors++;
+                System.out.println("Error: " + d);
+            }
+        }
+        assertEquals("Method call through TypeVariable with bound in registry should type-check cleanly", 0, errors);
+    }
+
+    /**
+     * Same pattern as above but Processor is NOT registered in the type checker.
+     * resolveClassName() resolves to Processor but lookupMethod() returns null.
+     * The fix falls back to returning the TypeVariable itself, which isAssignable()
+     * accepts for any target type, so no false-positive error should be emitted.
+     */
+    public void testMethodCallOnTypeVariableWithBoundNotInRegistry() {
+        TypeChecker checker = new TypeChecker();
+
+        ClassName inputClass    = ClassName.get("Input",     "com.example");
+        ClassName outputClass   = ClassName.get("Output",    "com.example");
+        ClassName processorClass = ClassName.get("Processor", "com.example");
+
+        // Input and Output registered; Processor intentionally NOT registered
+        checker.registerClass(new Class("Input"),  "com.example");
+        checker.registerClass(new Class("Output"), "com.example");
+
+        TypeVariable typeVar = TypeVariable.get("T").withBounds(processorClass);
+
+        Class wrapperClass = new Class("Wrapper");
+        wrapperClass.TYPE_VARIABLES(typeVar);
+        wrapperClass.fields.add(FIELD("delegate", typeVar).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL));
+        wrapperClass.methods.add(
+                METHOD("process").RETURNS(outputClass)
+                        .PARAMETERS(PARAMETER("input", inputClass))
+                        .BODY(
+                                DEFINITION(outputClass, VARIABLE("result"),
+                                        METHOD_CALL(METHOD_CALL(VARIABLE("this"), "delegate"),
+                                                "process", List.of(VARIABLE("input")))),
+                                RETURN(VARIABLE("result"))
+                        )
+        );
+
+        checker.registerClass(wrapperClass, "com.example");
+        List<TypeDiagnostic> diagnostics = checker.checkAll();
+
+        long errors = 0;
+        for (TypeDiagnostic d : diagnostics) {
+            if (d.severity == TypeDiagnostic.Severity.ERROR) {
+                errors++;
+                System.out.println("Error: " + d);
+            }
+        }
+        assertEquals("Method call through TypeVariable with bound not in registry should not produce false-positive errors", 0, errors);
+    }
+
+    /**
+     * Confirms that a TypeVariable field with no bound still does not produce a
+     * false-positive type error when called as a receiver (bare T, no bounds).
+     * The method call returns a TypeVariable, which is assignable to anything.
+     */
+    public void testMethodCallOnUnboundedTypeVariableReceiver() {
+        TypeChecker checker = new TypeChecker();
+
+        ClassName outputClass = ClassName.get("Output", "com.example");
+        checker.registerClass(new Class("Output"), "com.example");
+
+        // T with no bounds
+        TypeVariable typeVar = TypeVariable.get("T");
+
+        Class wrapperClass = new Class("Wrapper");
+        wrapperClass.TYPE_VARIABLES(typeVar);
+        wrapperClass.fields.add(FIELD("delegate", typeVar).MODIFIERS(Modifier.PRIVATE, Modifier.FINAL));
+        wrapperClass.methods.add(
+                METHOD("run").RETURNS(outputClass)
+                        .BODY(
+                                DEFINITION(outputClass, VARIABLE("result"),
+                                        METHOD_CALL(METHOD_CALL(VARIABLE("this"), "delegate"),
+                                                "compute", List.of())),
+                                RETURN(VARIABLE("result"))
+                        )
+        );
+
+        checker.registerClass(wrapperClass, "com.example");
+        List<TypeDiagnostic> diagnostics = checker.checkAll();
+
+        long errors = 0;
+        for (TypeDiagnostic d : diagnostics) {
+            if (d.severity == TypeDiagnostic.Severity.ERROR) {
+                errors++;
+                System.out.println("Error: " + d);
+            }
+        }
+        assertEquals("Method call through unbounded TypeVariable receiver should not produce false-positive errors", 0, errors);
+    }
 }

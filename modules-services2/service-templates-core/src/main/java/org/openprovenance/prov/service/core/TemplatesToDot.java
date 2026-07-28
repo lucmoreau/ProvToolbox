@@ -3,6 +3,8 @@ package org.openprovenance.prov.service.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.dot.ProvToDot;
+import org.openprovenance.prov.service.core.progress.ProgressListener;
+import org.openprovenance.prov.service.core.progress.VizStages;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.model.interop.CatalogueDispatcherInterface;
@@ -23,25 +25,49 @@ public class TemplatesToDot extends ProvToDot {
     private final Map<String, Map<String, Map<String, String>>> ioMap;
     private final Map<String, Map<String, String>> baseTypes;
     private final ProvFactory pf;
-    private final Map<String, Map<String, List<String>>> successors;
     private final String style;
     private final TemplateQuery templateQuery;
     private final String principal;
+    private final String provAPI;
+    private final Map<String, String> parameters;
+    private final Map<String, Map<String, List<String>>> selectedSuccessors;
+    private final boolean withIcons;
+    private final String iconDirectory;
 
-    public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections, String style, Map<String, Map<String, String>> baseTypes, Map<String, Map<String, Map<String, String>>> ioMap, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, Map<String, Map<String, List<String>>> successors, ProvFactory pf, TemplateQuery templateQuery, String principal) {
+    public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections,
+                          String style,
+                          boolean withIcons,
+                          String iconDirectory,
+                          Map<String, String> parameters,
+                          Map<String, Map<String, String>> baseTypes,
+                          Map<String, Map<String, Map<String, String>>> ioMap,
+                          CatalogueDispatcherInterface<FileBuilder> templateDispatcher,
+                          Map<String, Map<String, List<String>>> selectedSuccessors,
+                          ProvFactory pf,
+                          TemplateQuery templateQuery,
+                          String principal,
+                          String provAPI) {
         super(pf);
         this.pf=pf;
         this.templateConnections = templateConnections;
         this.templateDispatcher = templateDispatcher;
         this.ioMap = ioMap;
         this.baseTypes = baseTypes;
-        this.successors = successors;
         this.style=style;
         this.templateQuery=templateQuery;
         this.principal=principal;
+        this.provAPI=provAPI;
+        this.parameters=parameters;
+        this.selectedSuccessors=selectedSuccessors;
+        this.withIcons=withIcons;
+        this.iconDirectory=iconDirectory;
     }
 
+
+
     public static String createHtmlTable(TemplateInfo templateInfo,
+                                         boolean withIcons,
+                                         String iconDirectory,
                                          List<String> inputsNames,
                                          List<String> inputsPorts,
                                          List<String> inputsColors,
@@ -50,12 +76,38 @@ public class TemplatesToDot extends ProvToDot {
                                          List<String> outputColors) {
         StringBuilder html = new StringBuilder();
 
+
         // Start building the HTML for the table
         html.append("<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\">\n");
 
         // First row with rowspan and input cells
         html.append("  <TR>\n");
-        html.append(String.format("    <TD ROWSPAN=\"3\" HREF=\"%s\"  TARGET=\"_blank\">%s </TD>\n", templateInfo.url, templateInfo.templateId));
+
+        if (withIcons) {
+            // IMPORTANT NOTE
+            // While graphviz documentation indicates that svg images <IMG> are permitted, in practice it does not seem to be the case.
+            // Thus, we refer to png file.
+            // Such image files MUST be on the file system.
+            // When generating an SVG, graphviz does not embed the images, but instead links to them.
+            // This is problematic, when the visualisation is served by a service to a browser, because the browser will not be able to dereference a file image.
+            // For this to work, the client needs to rewrite the url.
+            // This is implemented by function rewriteImageHrefs(svgElement) in form.html
+            String iconImage="<IMG SRC=\"" + iconDirectory + "/" + templateInfo.template + ".png\"/>";
+            html.append(String.format("    <TD ROWSPAN=\"3\" HREF=\"%s\"  TARGET=\"_blank\">%s</TD>\n", templateInfo.url, iconImage));
+        }
+
+        String typeInfo="";
+        if (templateInfo.semanticType!=null &&  !templateInfo.semanticType.equals("None1")) {
+            typeInfo+="<BR/>(";
+            typeInfo+=templateInfo.semanticType;
+            typeInfo+=")";
+        }
+
+        html.append(String.format("    <TD ROWSPAN=\"3\" HREF=\"%s\"  TARGET=\"_blank\">%s %s</TD>\n", templateInfo.url, templateInfo.templateId, typeInfo));
+
+        if (inputsNames.isEmpty()) {
+            html.append("    <TD></TD>\n");
+        }
         for (int i = 0; i < inputsNames.size(); i++) {
             html.append(String.format("    <TD PORT=\"%s\" BGCOLOR=\"%s\" HREF=\"%s\" TARGET=\"_blank\">%s</TD>\n",
                     inputsPorts.get(i), inputsColors.get(i), templateInfo.url.replace(".svg", "/"+inputsNames.get(i)), inputsNames.get(i)));
@@ -64,6 +116,7 @@ public class TemplatesToDot extends ProvToDot {
 
         // Second row for outputs
         html.append("  <TR>\n");
+
         for (int i = 0; i < outputsNames.size(); i++) {
             html.append(String.format("    <TD PORT=\"%s\" BGCOLOR=\"%s\"  HREF=\"%s\"  TARGET=\"_blank\">%s</TD>\n",
                     outputsPorts.get(i), outputColors.get(i), templateInfo.url.replace(".svg", "/"+outputsNames.get(i)), outputsNames.get(i)));
@@ -73,10 +126,12 @@ public class TemplatesToDot extends ProvToDot {
         // Close the table
         html.append("</TABLE>");
 
+       // System.out.println(html.toString());
+
         return html.toString();
     }
 
-   final Map<String, String> provcolors = new HashMap<>() {{
+    final Map<String, String> provcolors = new HashMap<>() {{
         put("http://www.w3.org/ns/prov#Entity", ENTITY_FILLCOLOUR);
         put("http://www.w3.org/ns/prov#Activity", ACTIVITY_FILL_COLOUR);
         put("http://www.w3.org/ns/prov#Agent", AGENT_FILLCOLOUR);
@@ -85,22 +140,48 @@ public class TemplatesToDot extends ProvToDot {
 
 
 
-    public void convert(Document graph, OutputStream os, String title) {
+    public void convert(Document graph, OutputStream os, String title, ProgressListener listener) {
+        File dotFile;
+
+        listener.started(VizStages.PROV_BUILD);
+        long provStart = System.nanoTime();
         try {
-            File dotFile=File.createTempFile("temp", ".dot");
-            logger.info("dotFile: " + dotFile);
-            convert(graph, new PrintStream(new FileOutputStream(dotFile)) ,title);
-            Runtime runtime = Runtime.getRuntime();
-            java.lang.Process proc = runtime.exec("dot  -Tsvg " + dotFile);
-            InputStream is=proc.getInputStream();
-            org.apache.commons.io.IOUtils.copy(is, os);
-            logger.info("finished conversion to svg");
-            @SuppressWarnings("unused")
-            boolean resultCode=dotFile.delete();
+            dotFile = File.createTempFile("temp", ".dot");
+            logger.debug("dotFile: " + dotFile);
+            convert(graph, new PrintStream(new FileOutputStream(dotFile)), title);
+            listener.done(VizStages.PROV_BUILD, (System.nanoTime() - provStart) / 1_000_000);
         } catch (IOException e) {
+            listener.failed(VizStages.PROV_BUILD, e);
             logger.throwing(e);
             throw new UncheckedException(e);
+        } catch (RuntimeException e) {
+            listener.failed(VizStages.PROV_BUILD, e);
+            throw e;
         }
+        listener.detail(VizStages.PROV_BUILD, "DOT " + dotFile.length() + " bytes");
+
+        listener.started(VizStages.RENDER);
+        long renderStart = System.nanoTime();
+        long svgBytes;
+        try {
+            Runtime runtime = Runtime.getRuntime();
+            java.lang.Process proc = runtime.exec("dot  -Tsvg " + dotFile);
+            InputStream is = proc.getInputStream();
+            svgBytes = org.apache.commons.io.IOUtils.copyLarge(is, os);
+            listener.done(VizStages.RENDER, (System.nanoTime() - renderStart) / 1_000_000);
+        } catch (IOException e) {
+            listener.failed(VizStages.RENDER, e);
+            logger.throwing(e);
+            throw new UncheckedException(e);
+        } catch (RuntimeException e) {
+            listener.failed(VizStages.RENDER, e);
+            throw e;
+        }
+        listener.detail(VizStages.RENDER, "SVG " + svgBytes + " bytes");
+
+        logger.info("finished conversion to svg");
+        @SuppressWarnings("unused")
+        boolean resultCode = dotFile.delete();
     }
 
     public void convert(Document ignore, PrintStream out, String title) {
@@ -164,7 +245,7 @@ public class TemplatesToDot extends ProvToDot {
             String template = templateConnection.in_template;
             String templateId = String.valueOf(templateConnection.in_id);
             String property = templateConnection.in_property;
-            List<String> next=successors.get(template).get(property);
+            List<String> next=selectedSuccessors.get(template).get(property);
             if (next!=null) {
                 for (String n: next) {
                     QualifiedName older = map.get(qualifiedPortNameAsQn(template, templateId, property));
@@ -200,16 +281,33 @@ public class TemplatesToDot extends ProvToDot {
         Set<TemplateInfo> allTemplates = new HashSet<>();
         Map<String, String> shortNames = templateQuery.getShortNames();
         for (TemplateQuery.TemplateConnection templateConnection : templateConnections) {
-            allTemplates.add(TemplateInfo.of(templateConnection.in_template, templateName(shortNames.get(templateConnection.in_template), templateConnection.in_id),  url(templateConnection.in_template,  templateConnection.in_id)));
-            allTemplates.add(TemplateInfo.of(templateConnection.out_template,templateName(shortNames.get(templateConnection.out_template),templateConnection.out_id), url(templateConnection.out_template, templateConnection.out_id)));
+            allTemplates.add(TemplateInfo.of(templateConnection.in_template, templateName(shortNames.get(templateConnection.in_template), templateConnection.in_id),  url(templateConnection.in_template,  templateConnection.in_id), templateConnection.in_type));
+            allTemplates.add(TemplateInfo.of(templateConnection.out_template,templateName(shortNames.get(templateConnection.out_template),templateConnection.out_id), url(templateConnection.out_template, templateConnection.out_id), templateConnection.out_type));
         }
 
         Map<String, Map<String, String>> inputs=ioMap.get("input"); //templateDispatcher.getInputs();
         Map<String, Map<String, String>> outputs=ioMap.get("output"); //templateDispatcher.getOutputs();
+        Set<String> overlayTemplates=new HashSet<>();
+        // ── Virtual outputs for all-input (decorator/overlay) templates ──
+        // Templates where ALL properties are inputs are stripped from the
+        // output map by removeIf() in getIoMap(), so they never appear in
+        // output_table and the loop below can never "arrive at" them.
+        // Fix: for any template present in input_table (it references an
+        // entity from this table) but absent from output_table (no declared
+        // outputs), inject it into output_table using its input properties
+        // as virtual output keys.  The traversal can then hop through the
+        // template to follow predecessor_table derivation edges onward.
+        for (String template : inputs.keySet()) {
+            if (!outputs.containsKey(template)) {
+                outputs.put(template, inputs.get(template));
+                overlayTemplates.add(template);
+            }
+        }
+        // ─────────────────────────────────────────────────────────────────
 
 
         for (TemplateInfo templateInfo: allTemplates) {
-           System.out.println("- templateInfo: " + templateInfo);
+            //System.out.println("- templateInfo: " + templateInfo);
 
             String templateFullyQualifiedName = templateInfo.template;
             String templateId = templateInfo.templateId;
@@ -218,10 +316,10 @@ public class TemplatesToDot extends ProvToDot {
 
             String template = shortNames.get(templateFullyQualifiedName);
 
-            System.out.println("- template: " + template + " id: " + templateId);
-            System.out.println("  baseTypes: " + templateBaseTypes);
-            System.out.println("  inputs: " + inputs);
-            System.out.println("  outputs: " + outputs);
+            //System.out.println("- template: " + template + " id: " + templateId);
+            //System.out.println("  baseTypes: " + templateBaseTypes);
+            //System.out.println("  inputs: " + inputs);
+            //System.out.println("  outputs: " + outputs);
 
             Map<String, String> templateInputs = inputs.get(template);
             List<String> inputsNames  = (templateInputs==null)? List.of() : new ArrayList<>(templateInputs.keySet());
@@ -234,16 +332,18 @@ public class TemplatesToDot extends ProvToDot {
             List<String> outputsColors = outputsNames.stream().map(s -> provcolors.get(templateBaseTypes.get(s))).collect(Collectors.toList()); //outputsPorts.stream().map(s -> "orange").collect(Collectors.toList());
 
 
-            String html = createHtmlTable(templateInfo, inputsNames, inputPorts, inputsColors, outputsNames, outputsPorts, outputsColors);
-
+            String html = createHtmlTable(templateInfo, withIcons, iconDirectory, inputsNames, inputPorts, inputsColors, outputsNames, outputsPorts, outputsColors);
+            if (overlayTemplates.contains(template)) {
+                logger.debug("Overlay template: " + html);
+            }
             emitTemplate(template, templateId, html, out);
 
         }
 
         for (TemplateQuery.TemplateConnection templateConnection : templateConnections) {
             emitEdge(qualifiedPortName(shortNames.get(templateConnection.in_template),  templateName(shortNames.get(templateConnection.in_template), templateConnection.in_id),  templateConnection.in_property),
-                     qualifiedPortName(shortNames.get(templateConnection.out_template), templateName(shortNames.get(templateConnection.out_template),templateConnection.out_id), templateConnection.out_property),
-                     out);
+                    qualifiedPortName(shortNames.get(templateConnection.out_template), templateName(shortNames.get(templateConnection.out_template),templateConnection.out_id), templateConnection.out_property),
+                    out);
         }
 
         postlude(doc,out);
@@ -274,7 +374,7 @@ public class TemplatesToDot extends ProvToDot {
         return templateId + ":" + portName(template, templateId, property);
     }
     private QualifiedName qualifiedPortNameAsQn(String template, String templateId, String property) {
-        return pf.newQualifiedName( "/book/provapi/template/", template + "/"+ templateId + "/" + property, "ex");
+        return pf.newQualifiedName( provAPI + "/template/", template + "/"+ templateId + "/" + property, "ex");
     }
 
     public void emitTemplate(String template, String templateId, String htmlTable, PrintStream out) {
@@ -292,6 +392,7 @@ public class TemplatesToDot extends ProvToDot {
         return template+"_"+id;
     }
 
+    /*
     private String livePrefix(String relation) {
         return "/book/provapi/live/" + relation+"/" ;
     }
@@ -299,35 +400,38 @@ public class TemplatesToDot extends ProvToDot {
     private String urlPrefix(String template) {
         return "/book/provapi/template/" + template+"/";
     }
+
+     */
     private String url(String template, Integer id) {
-        return "/book/provapi/template/" + template+"/"+id + ".svg";
+        return provAPI + "/template/" + template+"/"+id + ".svg";
     }
 
     public static class TemplateInfo {
         private final String template;
         private final String templateId;
         private final String url;
+        private final String semanticType;
 
-        private TemplateInfo (String template, String templateId, String url) {
+        private TemplateInfo (String template, String templateId, String url, String semanticType) {
             this.template=template;
             this.templateId=templateId;
             this.url=url;
+            this.semanticType = semanticType;
         }
-        static public TemplateInfo of(String template, String templateId, String url) {
-            return new TemplateInfo(template, templateId, url);
+        static public TemplateInfo of(String template, String templateId, String url, String semanticType) {
+            return new TemplateInfo(template, templateId, url, semanticType );
         }
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             TemplateInfo that = (TemplateInfo) o;
-            return Objects.equals(template, that.template) && Objects.equals(templateId, that.templateId) && Objects.equals(url, that.url);
+            return Objects.equals(template, that.template) && Objects.equals(templateId, that.templateId) && Objects.equals(url, that.url) && Objects.equals(semanticType, that.semanticType);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(template, templateId, url);
+            return Objects.hash(template, templateId, url, semanticType);
         }
 
         @Override
@@ -336,6 +440,7 @@ public class TemplatesToDot extends ProvToDot {
                     "template='" + template + '\'' +
                     ", templateId='" + templateId + '\'' +
                     ", url='" + url + '\'' +
+                    ", semanticType='" + semanticType + '\'' +
                     '}';
         }
     }

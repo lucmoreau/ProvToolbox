@@ -852,6 +852,35 @@ public class QueryBuilder {
     }
 
     /**
+     * Appends a "union all" clause to a query.
+     *
+     * <p>Unlike {@link #union}, this emits {@code UNION ALL} which preserves
+     * duplicate rows and avoids the implicit deduplication sort that {@code UNION}
+     * performs.  Prefer {@code UNION ALL} whenever the caller knows duplicates
+     * cannot arise (e.g. each sub-query targets a different table) and wants
+     * better performance.</p>
+     *
+     * @param queryBuilderFun
+     * The query builder to append.
+     *
+     * @return
+     * The {@link QueryBuilder} instance.
+     */
+    public QueryBuilder unionAll(Function<PrettyPrinter,QueryBuilder> queryBuilderFun) {
+        if (queryBuilderFun == null) {
+            throw new IllegalArgumentException();
+        }
+
+        prettyPrinter.write(" UNION ALL ");
+        prettyPrinter.allowBreak(0);
+        QueryBuilder queryBuilder=queryBuilderFun.apply(prettyPrinter);
+
+        parameters.addAll(queryBuilder.parameters);
+
+        return queryBuilder;
+    }
+
+    /**
      * Creates an "insert into" query.
      *
      * @param table

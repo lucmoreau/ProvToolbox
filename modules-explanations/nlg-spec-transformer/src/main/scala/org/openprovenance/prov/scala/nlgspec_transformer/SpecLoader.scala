@@ -521,16 +521,21 @@ object defs  {
 
 
     def transform[F <: Phrase](e: TransformEnvironment)(implicit c: ClassTag[F]): Option[F] = {
-      Some(NounPhrase(  determiner,
-                        head.flatMap(s => s.transform[StringPhrase](e)),
-                        nullSeq(modifiers).flatMap(s => s.transform(e)),
-                        nullSeq(pre_modifiers).flatMap(s => s.transform[Phrase](e)),
-                        nullSeq(post_modifiers).flatMap(s => s.transform[Phrase](e)),
-                        nullOpt(specifier).flatMap(s => s.transform[NounForm](e)),
-                        nullSeq(complements).flatMap(s => s.transform[Phrase](e)),
-                        comments,
-                        getComputedFeatures(nullFeatures(features), e)).asInstanceOf[F])
-          }
+      val maybePhrase: Option[HeadForm] = head.flatMap(s => s.transform[StringPhrase](e))
+      maybePhrase match {
+        case None => None
+        case _ =>
+          Some(NounPhrase(determiner,
+                          maybePhrase,
+                          nullSeq(modifiers).flatMap(s => s.transform(e)),
+                          nullSeq(pre_modifiers).flatMap(s => s.transform[Phrase](e)),
+                          nullSeq(post_modifiers).flatMap(s => s.transform[Phrase](e)),
+                          nullOpt(specifier).flatMap(s => s.transform[NounForm](e)),
+                          nullSeq(complements).flatMap(s => s.transform[Phrase](e)),
+                          comments,
+                          getComputedFeatures(nullFeatures(features), e)).asInstanceOf[F])
+      }
+    }
 
 
     override def toBlockly(): Block = {
@@ -716,6 +721,7 @@ object defs  {
       val res = nlgFactory.createPrepositionPhrase()
 
       res.setPreposition(preposition)
+
       noun.get.asInstanceOf[Phrase].expand() match {
         case s:String =>  res.addComplement(s)
         case o: NLGElement =>  res.addComplement(o)
@@ -731,12 +737,24 @@ object defs  {
 
     override def transform[F <: Phrase](e: TransformEnvironment)(implicit c: ClassTag[F]): Option[F] = {
       val noun2: Option[NounForm] =nullOpt(noun).flatMap(s => s.transform[NounForm](e))
-      noun2.map(n =>
-          PrepositionPhrase(  preposition,
-                              noun2, // make sure noun2 is defined
-                              nullSeq(complements).flatMap(s => s.transform[Phrase](e)),
-                              nullOpt(specifier).flatMap(s => s.transform[NounPhrase](e)),
-                              getComputedFeatures(nullFeatures(features), e)).asInstanceOf[F])
+
+      noun2.map(transformed_noun => {
+        if (isNounFormAPhraseWithoutHead(transformed_noun)) {
+          return None
+        }
+        PrepositionPhrase(  preposition,
+          noun2, // make sure noun2 is defined
+          nullSeq(complements).flatMap(s => s.transform[Phrase](e)),
+          nullOpt(specifier).flatMap(s => s.transform[NounPhrase](e)),
+          getComputedFeatures(nullFeatures(features), e)).asInstanceOf[F]
+      })
+    }
+
+    def isNounFormAPhraseWithoutHead(np: NounForm): Boolean = {
+      np match {
+        case NounPhrase(_, None, _, _, _, _, _, _,_) => true
+        case _ => false
+      }
     }
 
     override def toBlockly(): Block = {

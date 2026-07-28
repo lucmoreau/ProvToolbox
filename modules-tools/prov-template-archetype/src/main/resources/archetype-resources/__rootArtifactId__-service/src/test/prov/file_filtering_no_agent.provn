@@ -1,0 +1,18 @@
+// No agent: The data file file2.csv (file:1549) was filtered from dataset (file:14) with filtering method (method:11) on 5 June 2022 at 14:15.
+document
+prefix fs <http://openprovenance.org/ns/fs#>
+prefix act <http://localhost:7075/book/provapi/live/activity/>
+prefix provext <http://openprovenance.org/prov/extension#>
+prefix file <http://localhost:7075/book/provapi/live/file/>
+prefix method <http://localhost:7075/book/provapi/live/method/>
+entity(file:1549,[prov:type = 'fs:DataFile', fs:path = "/home/bob/" %% xsd:string, fs:filename = "file2.csv" %% xsd:string])
+entity(file:14,[prov:type = 'fs:Dataset'])
+entity(method:11,[prov:type = 'fs:FilteringMethod'])
+activity(act:6081,-,-,[prov:type = 'fs:SelectingData'])
+//agent(ag:41)
+used(act:6081,file:14,-)
+wasGeneratedBy(file:1549,act:6081,2022-06-05T14:15:00Z)
+wasDerivedFrom(file:1549, file:14, act:6081, -, -)
+wasAssociatedWith(act:6081,-,method:11)
+//wasAttributedTo(file:1549, ag:41,[provext:activity = 'act:6081'])
+endDocument

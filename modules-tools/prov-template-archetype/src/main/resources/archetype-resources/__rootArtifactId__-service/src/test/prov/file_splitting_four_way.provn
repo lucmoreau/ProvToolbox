@@ -1,0 +1,31 @@
+// Four-way split: The file (file:2) was split into training_set.csv (file:1586), validation_set.csv (file:1587), test_set.csv (file:1591) and calibration_set.csv (file:1592) with splitting method (method:3) by agent (ag:5).
+document
+prefix fs <http://openprovenance.org/ns/fs#>
+prefix act <http://localhost:7075/book/provapi/live/activity/>
+prefix ag <http://localhost:7075/book/provapi/live/agent/>
+prefix provext <http://openprovenance.org/prov/extension#>
+prefix file <http://localhost:7075/book/provapi/live/file/>
+prefix method <http://localhost:7075/book/provapi/live/method/>
+entity(file:1586,[prov:type = 'fs:DataFile', fs:path = "/home/bob" %% xsd:string, fs:filename = "training_set.csv" %% xsd:string])
+entity(file:1587,[prov:type = 'fs:DataFile', fs:path = "/home/bob" %% xsd:string, fs:filename = "validation_set.csv" %% xsd:string])
+entity(file:1591,[prov:type = 'fs:DataFile', fs:path = "/home/bob" %% xsd:string, fs:filename = "test_set.csv" %% xsd:string])
+entity(file:1592,[prov:type = 'fs:DataFile', fs:path = "/home/bob" %% xsd:string, fs:filename = "calibration_set.csv" %% xsd:string])
+entity(file:2)
+entity(method:3)
+activity(act:6118,-,-,[prov:type = 'fs:SplittingData'])
+agent(ag:5)
+used(act:6118,file:2,-)
+wasGeneratedBy(file:1586,act:6118,-)
+wasGeneratedBy(file:1587,act:6118,-)
+wasGeneratedBy(file:1591,act:6118,-)
+wasGeneratedBy(file:1592,act:6118,-)
+wasDerivedFrom(file:1586, file:2, act:6118, -, -)
+wasDerivedFrom(file:1587, file:2, act:6118, -, -)
+wasDerivedFrom(file:1591, file:2, act:6118, -, -)
+wasDerivedFrom(file:1592, file:2, act:6118, -, -)
+wasAssociatedWith(act:6118,ag:5,method:3)
+wasAttributedTo(file:1586, ag:5,[provext:activity = 'act:6118'])
+wasAttributedTo(file:1587, ag:5,[provext:activity = 'act:6118'])
+wasAttributedTo(file:1591, ag:5,[provext:activity = 'act:6118'])
+wasAttributedTo(file:1592, ag:5,[provext:activity = 'act:6118'])
+endDocument

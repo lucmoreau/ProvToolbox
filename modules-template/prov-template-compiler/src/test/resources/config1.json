@@ -19,8 +19,12 @@
             "name": "template_block",
             "package": "org.example.templates.block",
             "template": "src/test/resources/templates3/generic_binaryop.provn",
-            "cbindings": "src/test/resources/templates3/generic_binaryop_b1.json"
-
+            "cbindings": "src/test/resources/templates3/generic_binaryop_b1.json",
+            "interfaces": {
+                "plain":  ["java.io.Serializable"],
+                "input":  ["java.io.Serializable"],
+                "output": ["java.io.Serializable"]
+            }
         }
     ]
 }

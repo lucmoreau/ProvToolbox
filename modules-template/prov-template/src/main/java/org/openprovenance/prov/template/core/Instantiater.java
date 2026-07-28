@@ -107,7 +107,11 @@ public class Instantiater {
                                                preserveUnboundVariables);
         u.doAction(bun, action);
         allExpanded=allExpanded && action.getAllExpanded();
-        Set<String> freeVars=Arrays.stream(grp1.getFreeVariables()).map(QualifiedName::getLocalPart).collect(java.util.stream.Collectors.toSet());
+        QualifiedName[] freeVarsArr = grp1.getFreeVariables();
+        Set<String> freeVars = new HashSet<>(freeVarsArr.length * 2);
+        for (QualifiedName qn : freeVarsArr) {
+            freeVars.add(qn.getLocalPart());
+        }
         warnAboutUnboundTemplateVariables(bindings, templateFilename, bindingsFilename, freeVars);
         warnAboutUnusedBindingsVariables(bindings, templateFilename, bindingsFilename, freeVars);
         return action.getList();
@@ -151,13 +155,13 @@ public class Instantiater {
                                           Bindings bindings,
                                           Groupings grp1,
                                           Using us1) {
-        List<StatementOrBundle> results = new LinkedList<>();
-        Iterator<List<Integer>> iter = us1.iterator();
+        List<StatementOrBundle> results = new ArrayList<>();
+        Iterator<int[]> iter = us1.iterator();
 
         Set<QualifiedName> freeAttributeVariables = InstantiateUtil.freeAttributeVariables(statement, pf);
 
         while (iter.hasNext()) {
-            List<Integer> index = iter.next();
+            int[] index = iter.next();
             Map<QualifiedName, QDescriptor> env=us1.get(bindings, grp1, index);
 
             Map<QualifiedName, SingleDescriptors> env2=us1.getAttr(freeAttributeVariables,

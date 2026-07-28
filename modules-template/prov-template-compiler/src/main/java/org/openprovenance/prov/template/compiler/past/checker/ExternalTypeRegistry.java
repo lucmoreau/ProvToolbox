@@ -230,10 +230,13 @@ public class ExternalTypeRegistry {
         externalRegistry.forClass(ClassName.LIST, TypeVariable.get("alpha"))
                 .method("size", INTEGER)
                 .method("get", TypeVariable.get("alpha"), INTEGER)
+                .method("add", _bool, TypeVariable.get("alpha"))
                 .register();
+
         externalRegistry.forClass(ClassName.LINKED_LIST, TypeVariable.get("alpha"))
                 .method("size", INTEGER)
                 .method("get", TypeVariable.get("alpha"), INTEGER)
+                .method("add", _bool, TypeVariable.get("alpha"))
                 .constructor()
                 .register();
 
@@ -274,6 +277,7 @@ public class ExternalTypeRegistry {
                 .method("replace", STRING, STRING, STRING)
                 .staticMethod("concat", STRING, STRING, STRING)
                 .staticMethod("concat", STRING, STRING, STRING, STRING)
+                .staticMethod("valueOf", STRING, OBJECT)
                 .register();
 
         externalRegistry.forClass(STRING_BUILDER)
@@ -338,6 +342,13 @@ public class ExternalTypeRegistry {
                 .method("getColumnCount", INTEGER)
                 .method("getColumnName", STRING, _int)
                 .register();
+
+        externalRegistry.forClass(ATOMIC_INTEGER)
+                .method("get", INTEGER)
+                .method("getAndIncrement", INTEGER)
+                .method("getAndDecrement", INTEGER)
+                .register();
+
 
 
         return externalRegistry;

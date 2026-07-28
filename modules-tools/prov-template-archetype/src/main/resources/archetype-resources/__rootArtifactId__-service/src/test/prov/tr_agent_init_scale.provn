@@ -1,0 +1,17 @@
+// From db record agent_init#1748: A scale agent (ag:7967) was registered alongside its first version (ag:7968) in Brighton on 1 January 2024 at 10:00.
+document
+prefix trs <https://openprovenance.org/transport/ns/#>
+prefix phys <http://openprovenance.org/ns/phys#>
+prefix resp <http://openprovenance.org/ns/responsibility#>
+prefix provext <http://openprovenance.org/prov/extension#>
+prefix item <http://localhost:7075/book/provapi/live/item/>
+prefix ag <http://localhost:7075/book/provapi/live/agent/>
+prefix act <http://localhost:7075/book/provapi/live/activity/>
+prefix sched <http://localhost:7075/book/provapi/live/schedule/>
+agent(ag:7967,[prov:type = 'trs:Scale'])
+agent(ag:7968,[phys:lkl = "Brighton" %% xsd:string])
+activity(act:5959,-,-,[prov:type = 'phys:RegisteringAgent'])
+wasGeneratedBy(ag:7967,act:5959,-)
+wasGeneratedBy(ag:7968,act:5959,2024-01-01T10:00:00Z)
+specializationOf(ag:7968,ag:7967)
+endDocument

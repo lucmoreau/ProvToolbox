@@ -388,8 +388,13 @@ public class IndexedDocument implements StatementAction {
 
     }
 
+    public Map<QualifiedName, Collection<QualifiedSpecializationOf>> getNamedQualifiedSpecialization() {
+        return namedQualifiedSpecializationOfMap;
+    }
 
-
+    public Collection<QualifiedSpecializationOf> getQualifiedSpecializationOf() {
+        return anonQualifiedSpecializationOf;
+    }
 
     public Entity add(Entity entity) {
         return add(entity.getId(),entity);
@@ -1151,6 +1156,18 @@ public class IndexedDocument implements StatementAction {
                         // This makes not sense to have this: todo.push(qn);
                     }
                 }
+                Collection<QualifiedSpecializationOf> successors2=genericEntityQualifiedSpecializationOfMap.get(current);
+                if (successors2==null || successors2.isEmpty()) {
+                    //move on next
+                } else {
+                    for (SpecializationOf spe: successors2) {
+                        QualifiedName qn=spe.getSpecificEntity();
+                        last.add(Pair.of(qn,spe));
+                        // This makes not sense to have this: todo.push(qn);
+                    }
+                }
+
+
             }
 
         }

@@ -32,10 +32,10 @@ public class StorageSetup {
     public ServiceUtilsConfig makeConfig(ProvFactory factory, StorageConfiguration configuration) {
         ServiceUtilsConfig utilsConfig = new ServiceUtilsConfig(configuration);
         utilsConfig.pFactory=factory;
-        logger.info("Configuration --- " + configuration);
+        logger.debug("Configuration --- " + configuration);
         switch (configuration.index) {
             case "redis":
-                logger.info("Using Redis " + configuration.index);
+                logger.debug("Using Redis " + configuration.index);
                 initRedis(utilsConfig, configuration);
                 break;
             case "memory":

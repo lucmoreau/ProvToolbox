@@ -23,6 +23,10 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
         this.type_ = type_;
     }
 
+
+    public ImplementInterfaces interfaces;
+
+
     @Override
     public String toString() {
         return "SimpleTemplateCompilerConfig{" +
@@ -32,6 +36,7 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
                 ", template='" + template + '\'' +
                 ", package_='" + package_ + '\'' +
                 ", cbindings='" + cbindings + '\'' +
+                ", interfaces='" + interfaces + '\'' +
                 '}';
     }
 
@@ -44,6 +49,7 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
     public SimpleTemplateCompilerConfig cloneAsInstanceInComposition(String newName, String newFullQualifiedName, List<String> sharing) {
         SimpleTemplateCompilerConfig clone= new SimpleTemplateCompilerConfig();
         clone.template=template;
+        clone.interfaces=interfaces;
         clone.type_=type_;
         clone.name= newName; //this.name +"_shared";
         clone.fullyQualifiedName=newFullQualifiedName; //this.fullyQualifiedName+"._shared";

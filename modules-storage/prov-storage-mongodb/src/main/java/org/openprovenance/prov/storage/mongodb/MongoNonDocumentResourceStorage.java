@@ -18,6 +18,17 @@ https://howtodoinjava.com/mongodb/java-mongodb-getsave-image-using-gridfs-apis/
 
 
 public class MongoNonDocumentResourceStorage implements NonDocumentResourceStorage, Constants {
+    // kept so that the client (connection pool, server monitor threads) can be
+    // closed when the application shuts down
+    private final com.mongodb.client.MongoClient mongoClient;
+
+    /** Closes the underlying MongoDB client (connection pool and monitor threads), if owned by this storage. */
+    public void close() {
+        if (mongoClient != null) {
+            mongoClient.close();
+        }
+    }
+
     private static final Logger logger = LogManager.getLogger(MongoNonDocumentResourceStorage.class);
 
     private final MongoDatabase db;
@@ -30,7 +41,7 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
     public MongoNonDocumentResourceStorage(String host, String dbname) {
 
 
-        MongoClient mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
+        this.mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
         MongoDatabase db = mongoClient.getDatabase(dbname);
 
         this.db=db;
@@ -40,6 +51,7 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
     }
 
     public MongoNonDocumentResourceStorage(MongoDatabase db) {
+        this.mongoClient=null;  // injected database: the client is the caller's to close
         this.db=db;
         MongoCollection<BasicDBObject> collection=db.getCollection(COLLECTION_FILES,BasicDBObject.class);
         this.collection=collection;

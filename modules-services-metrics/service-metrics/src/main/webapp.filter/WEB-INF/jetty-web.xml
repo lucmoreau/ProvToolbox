@@ -15,4 +15,12 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+  <!-- closes storage clients, connection pools and the scheduler when the web
+       application stops (declared explicitly rather than relying on
+       annotation scanning) -->
+  <listener>
+    <listener-class>org.openprovenance.prov.service.core.ServiceShutdownListener</listener-class>
+  </listener>
+
+
 </web-app>

@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.mongojack.internal.MongoJackModule;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.ServiceUtilsConfig;
+import org.openprovenance.prov.service.core.ServiceShutdownListener;
 import org.openprovenance.prov.service.core.config.StorageConfiguration;
 import org.openprovenance.prov.service.core.memory.DocumentResourceIndexInMemory;
 import org.openprovenance.prov.service.validation.ActionValidate;
@@ -46,10 +47,12 @@ public class StorageSetup extends org.openprovenance.prov.service.translation.st
                 mapper,
                 ValidationReport.class,
                 ValidationReportWrapper::new);
+        ServiceShutdownListener.registerForShutdown(reportStorage::close);
 
         utilsConfig.genericResourceStorageMap.put(ActionValidate.REPORT_KEY, reportStorage);
 
         MongoAsciiBlobStorage matrixStorage= new MongoAsciiBlobStorage(mongoHost, mongoDbName, ActionValidate.MATRIX_KEY);
+        ServiceShutdownListener.registerForShutdown(matrixStorage::close);
         utilsConfig.genericResourceStorageMap.put(ActionValidate.MATRIX_KEY, matrixStorage);
 
         return utilsConfig;

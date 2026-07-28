@@ -21,6 +21,17 @@ import java.io.OutputStream;
 
 
 public class MongoAsciiBlobStorage implements NonDocumentGenericResourceStorage<String>, Constants {
+    // kept so that the client (connection pool, server monitor threads) can be
+    // closed when the application shuts down
+    private final com.mongodb.client.MongoClient mongoClient;
+
+    /** Closes the underlying MongoDB client (connection pool and monitor threads), if owned by this storage. */
+    public void close() {
+        if (mongoClient != null) {
+            mongoClient.close();
+        }
+    }
+
 
     private static final Logger logger = LogManager.getLogger(MongoAsciiBlobStorage.class);
 
@@ -36,7 +47,7 @@ public class MongoAsciiBlobStorage implements NonDocumentGenericResourceStorage<
 
     public MongoAsciiBlobStorage(String host, String dbname, String collectionName) {
 
-        MongoClient mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
+        this.mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
         MongoDatabase db = mongoClient.getDatabase(dbname);
         this.db=db;
         this.collectionName=collectionName;

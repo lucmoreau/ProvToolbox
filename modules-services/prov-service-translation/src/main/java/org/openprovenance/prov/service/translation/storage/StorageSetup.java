@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.core.xml.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.ServiceUtilsConfig;
+import org.openprovenance.prov.service.core.ServiceShutdownListener;
 import org.openprovenance.prov.service.core.config.StorageConfiguration;
 import org.openprovenance.prov.service.core.memory.DocumentResourceIndexInMemory;
 import org.openprovenance.prov.service.translation.actions.ActionExpand;
@@ -68,9 +69,17 @@ public class StorageSetup {
 
         final String mongoHost = configuration.mongo_host;
         final String mongoDbName = configuration.dbname;
-        utilsConfig.storageManager=new MongoDocumentResourceStorage(mongoHost, mongoDbName);
-        utilsConfig.nonDocumentResourceStorage=new MongoNonDocumentResourceStorage(mongoHost, mongoDbName);
-        utilsConfig.genericResourceStorageMap.put(ActionExpand.BINDINGS_KEY,new MongoBindingsResourceStorage(mongoHost, mongoDbName, new ObjectMapper()));
+        // each storage owns a MongoClient: close them (connection pools and server
+        // monitor threads) when the web application stops
+        MongoDocumentResourceStorage documentStorage = new MongoDocumentResourceStorage(mongoHost, mongoDbName);
+        ServiceShutdownListener.registerForShutdown(documentStorage::close);
+        MongoNonDocumentResourceStorage nonDocumentStorage = new MongoNonDocumentResourceStorage(mongoHost, mongoDbName);
+        ServiceShutdownListener.registerForShutdown(nonDocumentStorage::close);
+        MongoBindingsResourceStorage bindingsStorage = new MongoBindingsResourceStorage(mongoHost, mongoDbName, new ObjectMapper());
+        ServiceShutdownListener.registerForShutdown(bindingsStorage::close);
+        utilsConfig.storageManager=documentStorage;
+        utilsConfig.nonDocumentResourceStorage=nonDocumentStorage;
+        utilsConfig.genericResourceStorageMap.put(ActionExpand.BINDINGS_KEY,bindingsStorage);
         ProvSerialiser serial=new ProvSerialiser();
         utilsConfig.serialiser=(OutputStream out, Object document, String mediaType, boolean formatted) -> serial.serialiseOtherObject(out, document,false, false);
         return utilsConfig;
@@ -99,6 +108,9 @@ public class StorageSetup {
     protected Map<String, ResourceIndex<?>> initRedis(ServiceUtilsConfig config, StorageConfiguration configuration) {
         Map<String, ResourceIndex<?>> extensionMap = config.extensionMap;
         RedisDocumentResourceIndex di=new RedisDocumentResourceIndex(configuration.redis_host, configuration.redis_port);
+        // the root index owns the Redis connection pool: close it (and its eviction
+        // timer thread) when the web application stops
+        ServiceShutdownListener.registerForShutdown(di::close);
         extensionMap.put(DocumentResource.getResourceKind(), di);
         extensionMap.put(TemplateResource.getResourceKind(), new RedisTemplateResourceIndex(di,RedisTemplateResourceIndex.factory));
         return extensionMap;

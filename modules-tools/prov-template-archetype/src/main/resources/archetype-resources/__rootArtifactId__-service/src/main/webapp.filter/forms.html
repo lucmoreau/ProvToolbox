@@ -2075,5 +2075,61 @@
 <script src="provservice.js"></script>
 <script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
 
+<!-- ===== BEGIN manual JS overrides (navigator deep link) ===== -->
+<script>
+/* Deep link into the Navigator: an external page links
+   forms.html?template=<name>&id=<n>[&property=<p>]#tab_navigator and this
+   fronts the Navigator tab, fills its form, switches the icons slider on,
+   and presses Refresh — the per-node URLs show a single artifact only,
+   while the navigator is the walkable view. */
+document.addEventListener('DOMContentLoaded', function () {
+  var q = new URLSearchParams(window.location.search);
+  var template = q.get('template'), id = q.get('id');
+  if (!template || !id) return;
+
+  // front the Navigator tab — Tab API first, the delegated click handler
+  // as fallback (either way the pane is visible before the walk renders)
+  var link = document.querySelector('a[href="#tab_navigator"]');
+  if (link) {
+    if (window.bootstrap && bootstrap.Tab) { bootstrap.Tab.getOrCreateInstance(link).show(); }
+    else { link.click(); }
+  }
+
+  var t = document.getElementById('navigator_template');
+  var n = document.getElementById('navigator_id');
+  if (!t || !n) return;
+  t.value = template;
+  n.value = id;
+
+  // the icons slider on — the inline onchange sets the icons_enabled global
+  // submitNavigate reads, so the dispatched event is load-bearing
+  var ic = document.getElementById('toggle-icons');
+  if (ic && !ic.checked) { ic.checked = true; ic.dispatchEvent(new Event('change')); }
+
+  // press Refresh: submitNavigate's argument is the TARGET DIV selector
+  // (the Refresh button passes '#navigator_div'), never the record id
+  function render() {
+    if (typeof submitNavigate === 'function') { submitNavigate('#navigator_div'); }
+  }
+
+  var prop = document.getElementById('navigator_property');
+  var p = q.get('property');
+  if (p) {
+    if (prop) { prop.value = p; }
+    render();
+  } else if (prop && typeof populateNavigatorPropertyDropdown === 'function') {
+    // the property fill is an async fetch — poll until it lands (or 3s),
+    // then render with whatever is in the form
+    var before = prop.value, tries = 0;
+    populateNavigatorPropertyDropdown(template);
+    var timer = setInterval(function () {
+      if (prop.value !== before || ++tries > 15) { clearInterval(timer); render(); }
+    }, 200);
+  } else {
+    render();
+  }
+});
+</script>
+<!-- ===== END manual JS overrides ===== -->
 </body>
 </html>

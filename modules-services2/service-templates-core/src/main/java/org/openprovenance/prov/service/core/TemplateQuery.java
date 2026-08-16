@@ -1352,6 +1352,43 @@ public class TemplateQuery {
     }
 
     /**
+     * The semantic type of ONE record, read directly from its table.
+     *
+     * <p>The traversal reports a record's type in the connection rows it takes
+     * part in; a record connected to nothing takes part in none, so a caller
+     * that must describe it anyway (the visualisation's starting point) asks
+     * here instead.  Returns {@code null} when the table declares no
+     * semantic-type column, when the row is gone, or when the read fails —
+     * the type is decoration, and never worth failing a visualisation for.
+     *
+     * @param shortName SQL table name of the template (e.g. {@code goods_creating})
+     * @param id        record id in that table
+     * @return the semantic type, or {@code null} if there is none to report
+     */
+    public String semanticTypeOf(String shortName, Integer id, String principal) {
+        if (shortName == null || id == null) return null;
+        String column = shortenAndFilterSemanticType(semanticType).get(shortName);
+        if (column == null) return null;
+        List<String> result = new LinkedList<>();
+        try {
+            querier.do_query(result,
+                    null,
+                    (sb, data) -> sb.append("SELECT ").append(column).append(" AS atype FROM ")
+                                    .append(shortName).append(" WHERE id = ").append(id),
+                    (rs, data) -> {
+                        if (rs.next()) {
+                            String value = rs.getObject("atype", String.class);
+                            if (value != null) data.add(value);
+                        }
+                    });
+        } catch (RuntimeException e) {
+            logger.debug("semanticTypeOf failed for " + shortName + " " + id + ": " + e.getMessage());
+            return null;
+        }
+        return result.isEmpty() ? null : result.get(0);
+    }
+
+    /**
      * Shared SQL builder for the two typed traversal wrappers.
      *
      * <p>Generates a complete {@code CREATE OR REPLACE FUNCTION public.<typedFunctionName>}
@@ -1528,7 +1565,10 @@ public class TemplateQuery {
 
 
         logger.debug("templateConnections: " + templateConnections.stream().map(TemplateConnection::toString).collect(Collectors.joining("\n")));
-        new TemplatesToDot(templateConnections, style, withIcons, iconsFolderForGraphviz, parameters, baseTypes, ioMap, templateDispatcher, successors, pf, this, principal, provAPI).convert(null, out, "template_connections", listener);
+        // the record asked for, so a template connected to nothing still draws
+        // itself (the traversal returns no row for it — see TemplatesToDot)
+        new TemplatesToDot(templateConnections, style, withIcons, iconsFolderForGraphviz, parameters, baseTypes, ioMap, templateDispatcher, successors, pf, this, principal, provAPI,
+                           longNames.getOrDefault(template, template), id).convert(null, out, "template_connections", listener);
     }
 
 

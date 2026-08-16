@@ -33,6 +33,12 @@ public class TemplatesToDot extends ProvToDot {
     private final Map<String, Map<String, List<String>>> selectedSuccessors;
     private final boolean withIcons;
     private final String iconDirectory;
+    /** The record the visualisation was ASKED for (fully qualified name and id),
+     *  or null when the caller did not say. A record with no connection to any
+     *  other appears in no connection row, so without this the graph would be
+     *  empty — the walk shows the starting point even when it stands alone. */
+    private final String startTemplate;
+    private final Integer startTemplateId;
 
     public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections,
                           String style,
@@ -47,8 +53,29 @@ public class TemplatesToDot extends ProvToDot {
                           TemplateQuery templateQuery,
                           String principal,
                           String provAPI) {
+        this(templateConnections, style, withIcons, iconDirectory, parameters, baseTypes, ioMap,
+             templateDispatcher, selectedSuccessors, pf, templateQuery, principal, provAPI, null, null);
+    }
+
+    public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections,
+                          String style,
+                          boolean withIcons,
+                          String iconDirectory,
+                          Map<String, String> parameters,
+                          Map<String, Map<String, String>> baseTypes,
+                          Map<String, Map<String, Map<String, String>>> ioMap,
+                          CatalogueDispatcherInterface<FileBuilder> templateDispatcher,
+                          Map<String, Map<String, List<String>>> selectedSuccessors,
+                          ProvFactory pf,
+                          TemplateQuery templateQuery,
+                          String principal,
+                          String provAPI,
+                          String startTemplate,
+                          Integer startTemplateId) {
         super(pf);
         this.pf=pf;
+        this.startTemplate=startTemplate;
+        this.startTemplateId=startTemplateId;
         this.templateConnections = templateConnections;
         this.templateDispatcher = templateDispatcher;
         this.ioMap = ioMap;
@@ -284,6 +311,21 @@ public class TemplatesToDot extends ProvToDot {
             allTemplates.add(TemplateInfo.of(templateConnection.in_template, templateName(shortNames.get(templateConnection.in_template), templateConnection.in_id),  url(templateConnection.in_template,  templateConnection.in_id), templateConnection.in_type));
             allTemplates.add(TemplateInfo.of(templateConnection.out_template,templateName(shortNames.get(templateConnection.out_template),templateConnection.out_id), url(templateConnection.out_template, templateConnection.out_id), templateConnection.out_type));
         }
+        // The record the walk STARTS from appears in a connection row only if
+        // it is connected to another; a template preceded by nothing (and
+        // followed by nothing along the selected relations) is in none, and
+        // the graph would come out empty. Add it explicitly — but only when
+        // the connections did not already bring it, so a connected start is
+        // still described by its own row's semantic type, and graphviz never
+        // receives the same node twice.
+        if (startTemplate != null && startTemplateId != null
+            && allTemplates.stream().noneMatch(t -> startTemplate.equals(t.template)
+                       && templateName(shortNames.get(startTemplate), startTemplateId).equals(t.templateId))) {
+            allTemplates.add(TemplateInfo.of(startTemplate,
+                    templateName(shortNames.get(startTemplate), startTemplateId),
+                    url(startTemplate, startTemplateId),
+                    templateQuery.semanticTypeOf(shortNames.get(startTemplate), startTemplateId, principal)));
+        }
 
         Map<String, Map<String, String>> inputs=ioMap.get("input"); //templateDispatcher.getInputs();
         Map<String, Map<String, String>> outputs=ioMap.get("output"); //templateDispatcher.getOutputs();
@@ -321,15 +363,20 @@ public class TemplatesToDot extends ProvToDot {
             //System.out.println("  inputs: " + inputs);
             //System.out.println("  outputs: " + outputs);
 
+            // a start template with neither declared inputs nor outputs (and
+            // no base types) is still a node worth drawing — an absent map
+            // means "no ports", never a failure
+            Map<String, String> portTypes = (templateBaseTypes==null)? Map.of() : templateBaseTypes;
+
             Map<String, String> templateInputs = inputs.get(template);
             List<String> inputsNames  = (templateInputs==null)? List.of() : new ArrayList<>(templateInputs.keySet());
             List<String> inputPorts   = inputsNames.stream().map(s -> portName(template,templateId,s)).collect(Collectors.toList());
-            List<String> inputsColors = inputsNames.stream().map(s -> provcolors.get(templateBaseTypes.get(s))).collect(Collectors.toList()); //inputPorts.stream().map(s -> "lightgreen").collect(Collectors.toList());
+            List<String> inputsColors = inputsNames.stream().map(s -> provcolors.get(portTypes.get(s))).collect(Collectors.toList()); //inputPorts.stream().map(s -> "lightgreen").collect(Collectors.toList());
 
             Map<String, String> templateOutputs = outputs.get(template);
-            List<String> outputsNames  = new ArrayList<>(templateOutputs.keySet());
+            List<String> outputsNames  = (templateOutputs==null)? List.of() : new ArrayList<>(templateOutputs.keySet());
             List<String> outputsPorts  = outputsNames.stream().map(s -> portName(template, templateId,s)).collect(Collectors.toList());
-            List<String> outputsColors = outputsNames.stream().map(s -> provcolors.get(templateBaseTypes.get(s))).collect(Collectors.toList()); //outputsPorts.stream().map(s -> "orange").collect(Collectors.toList());
+            List<String> outputsColors = outputsNames.stream().map(s -> provcolors.get(portTypes.get(s))).collect(Collectors.toList()); //outputsPorts.stream().map(s -> "orange").collect(Collectors.toList());
 
 
             String html = createHtmlTable(templateInfo, withIcons, iconDirectory, inputsNames, inputPorts, inputsColors, outputsNames, outputsPorts, outputsColors);

@@ -1,7 +1,7 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.2.5-SNAPSHOT`
-* 
+* prov-template-archetype: navigator tab supports backward and forward traversals
 
 `2.2.4`
 

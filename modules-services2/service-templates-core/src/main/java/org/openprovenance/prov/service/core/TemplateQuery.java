@@ -1202,6 +1202,60 @@ public class TemplateQuery {
 
             """;
 
+    // forward_traversal_star_from_input — seed adapter for forward traversal.
+    //
+    // forward_traversal_star expects its seed property to be an OUTPUT column of
+    // the anchor record (the node state its recursion maintains).  The navigator's
+    // forward mode, however, seeds on an INPUT variable of the anchor template.
+    // This wrapper is the exact mirror of backwardtraversal_star's own anchor
+    // handling (which converts its output-column seed to input columns via
+    // predecessor_table before the first backward hop): it maps the input variable
+    // to the anchor template's output column(s) via predecessor_table — with the
+    // same rel filter every other hop applies — and forward-traverses from each.
+    String forward_traversal_star_from_input = """
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star_from_input(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            AS $function$
+            SELECT DISTINCT
+                f.in_id,
+                f.in_template,
+                f.in_property,
+                f.out_id,
+                f.out_template,
+                f.out_property
+            FROM
+                predecessor_table pt
+                CROSS JOIN LATERAL forward_traversal_star(
+                    __param_id,
+                    __param_template,
+                    pt.output,
+                    __param_selected_relations
+                ) AS f
+            WHERE
+                pt.template = __param_template
+                AND pt.input = __param_property
+                AND pt.output IS NOT NULL
+                AND (
+                    __param_selected_relations IS NULL
+                    OR pt.rel = ANY(__param_selected_relations)
+                )
+            $function$;
+
+            """;
+
     private void generateTraversalMethods(Querier querier,  Map<String,Map<String, Map<String, String>>> ioMap) {
 
         // Step 1: create/truncate/repopulate backward_dispatch so the PL/pgSQL
@@ -1238,6 +1292,7 @@ public class TemplateQuery {
                 (sb, data) -> {
                     sb.append(generateForwardTemplateTraversal());
                     sb.append(forward_traversal_star6);
+                    sb.append(forward_traversal_star_from_input);
                 });
     }
 
@@ -1262,6 +1317,7 @@ public class TemplateQuery {
                 (sb, data) -> {
                     sb.append(generateBackwardTemplateTraversalWithType(ioMap, semanticType));
                     sb.append(generateBackwardTemplateTraversalStarWithType(semanticType));
+                    sb.append(generateForwardTemplateTraversalStarWithType(semanticType));
                   //  System.out.println(sb.toString());
                 });
     }
@@ -1319,6 +1375,29 @@ public class TemplateQuery {
                 "backwardtraversal_star_typed",
                 "    __param_selected_relations  integer[]  DEFAULT NULL",
                 "backwardtraversal_star(" + PARAM_ID + ", " + PARAM_TEMPLATE + ", " + PARAM_PROPERTY + ", __param_selected_relations)",
+                shortenAndFilterSemanticType(semanticType));
+    }
+
+    /**
+     * Generates the SQL {@code CREATE OR REPLACE FUNCTION} statement for
+     * {@code public.forward_traversal_star_typed} — the forward (descendant)
+     * counterpart of {@link #generateBackwardTemplateTraversalStarWithType}.
+     *
+     * <p>Wraps {@code forward_traversal_star_from_input}, so the seed property is
+     * an INPUT variable of the anchor template (where the backward star seeds on
+     * an output variable), and annotates the final result set with
+     * {@code in_type} / {@code out_type} exactly like the backward typed star.
+     *
+     * @param semanticType fully-qualified template name → semantic-type column name;
+     *                     entries with {@code null} values are filtered out before SQL
+     *                     generation
+     * @return a {@code CREATE OR REPLACE FUNCTION} SQL string ready to execute
+     */
+    private String generateForwardTemplateTraversalStarWithType(Map<String, String> semanticType) {
+        return generateTypedWrapperFunction(
+                "forward_traversal_star_typed",
+                "    __param_selected_relations  integer[]  DEFAULT NULL",
+                "forward_traversal_star_from_input(" + PARAM_ID + ", " + PARAM_TEMPLATE + ", " + PARAM_PROPERTY + ", __param_selected_relations)",
                 shortenAndFilterSemanticType(semanticType));
     }
 
@@ -1545,11 +1624,15 @@ public class TemplateQuery {
 
         logger.debug("semanticType: "+semanticType);
 
+        // Forward traversal must be asked for explicitly; no direction parameter
+        // or an explicit "backward" both mean backward traversal.
+        boolean forward = (parameters != null) && "forward".equals(parameters.get("direction"));
+
         listener.started(VizStages.SQL);
         long sqlStart = System.nanoTime();
         List<TemplateConnection> templateConnections;
         try {
-            templateConnections = recursiveTraversal(id, template, property, selectedVizKinds, principal);
+            templateConnections = recursiveTraversal(id, template, property, selectedVizKinds, forward, principal);
             listener.done(VizStages.SQL, (System.nanoTime() - sqlStart) / 1_000_000);
         } catch (RuntimeException e) {
             listener.failed(VizStages.SQL, e);
@@ -1728,6 +1811,10 @@ public class TemplateQuery {
     }
 
     public List<TemplateConnection> recursiveTraversal(Integer id, String template, String property, Set<StatementOrBundle.Kind> selectedVizKinds, String principal) {
+        return recursiveTraversal(id, template, property, selectedVizKinds, false, principal);
+    }
+
+    public List<TemplateConnection> recursiveTraversal(Integer id, String template, String property, Set<StatementOrBundle.Kind> selectedVizKinds, boolean forward, String principal) {
         List<TemplateConnection> the_records = new LinkedList<>();
 
         String selectedAsASql=selectedVizKinds.stream().map(x -> ("" + x.ordinal())).collect(Collectors.joining(",","ARRAY[",  "]"));
@@ -1735,7 +1822,7 @@ public class TemplateQuery {
                 null,
                 (sb, data) -> {
                     sb.append("SELECT DISTINCT * FROM ");
-                    sb.append("backwardtraversal_star_typed(");
+                    sb.append(forward ? "forward_traversal_star_typed(" : "backwardtraversal_star_typed(");
                     sb.append(id);
                     sb.append(",'");
                     sb.append(template);
@@ -1750,14 +1837,21 @@ public class TemplateQuery {
                 (rs, data) -> {
                     while (rs.next()) {
                         TemplateConnection record = new TemplateConnection();
-                        record.in_id=rs.getObject("in_id", Integer.class);
-                        record.in_template=longNames.get(rs.getObject("in_template", String.class));
-                        record.in_property=rs.getObject("in_property", String.class);
-                        record.in_type=rs.getObject("in_type", String.class);
-                        record.out_id=rs.getObject("out_id", Integer.class);
-                        record.out_template=longNames.get(rs.getObject("out_template", String.class));
-                        record.out_property=rs.getObject("out_property", String.class);
-                        record.out_type=rs.getObject("out_type", String.class);
+                        // Forward rows come back transposed: the SQL's in_* side is the
+                        // producer being expanded and out_* the consumer it reaches.
+                        // Swap them so a TemplateConnection always means in_=consumer
+                        // input, out_=producer output, whichever way the graph was
+                        // walked — TemplatesToDot then renders both directions alike.
+                        String inPrefix  = forward ? "out_" : "in_";
+                        String outPrefix = forward ? "in_"  : "out_";
+                        record.in_id=rs.getObject(inPrefix + "id", Integer.class);
+                        record.in_template=longNames.get(rs.getObject(inPrefix + "template", String.class));
+                        record.in_property=rs.getObject(inPrefix + "property", String.class);
+                        record.in_type=rs.getObject(inPrefix + "type", String.class);
+                        record.out_id=rs.getObject(outPrefix + "id", Integer.class);
+                        record.out_template=longNames.get(rs.getObject(outPrefix + "template", String.class));
+                        record.out_property=rs.getObject(outPrefix + "property", String.class);
+                        record.out_type=rs.getObject(outPrefix + "type", String.class);
                         data.add(record);
                     }
                 });

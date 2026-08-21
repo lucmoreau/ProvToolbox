@@ -64,6 +64,9 @@
     }
     .dropdown-menu {
         font-size: 0.75rem;
+        /* Long template lists: cap to viewport height and scroll instead of overflowing */
+        max-height: 70vh;
+        overflow-y: auto;
     }
     .form-control {
         font-size: 0.75rem;
@@ -316,6 +319,13 @@
                             <div class="form-check form-switch mb-0">
                                 <input class="form-check-input" type="checkbox" id="toggle-icons" onchange="icons_enabled = this.checked ? true : false">
                             </div>
+                        </div>
+                        <div class="d-flex align-items-center mt-2 mb-0">
+                            <span class="me-2 small">Backward</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="toggle-direction" onchange="navigate_forward = this.checked ? true : false; refreshNavigatorPropertyChoices()">
+                            </div>
+                            <span class="ms-2 small">Forward</span>
                         </div>
                         <p></p>
                         <button id="navigator_save" type="button" class="btn btn-info" onclick="dumpNavigatorDiv()" disabled>
@@ -642,6 +652,11 @@
             if (builders[indx].getName() == shortName) return builders[indx].getOutputs();
         }
     }
+    function getInputs(shortName) {
+        for (var indx in builders) {
+            if (builders[indx].getName() == shortName) return builders[indx].getInputs();
+        }
+    }
     function getBuilder(fullyQualifiedName) {
         for (var indx in builders) {
             if (builders[indx].getFullyQualifiedName() == fullyQualifiedName) return builders[indx];
@@ -728,25 +743,32 @@
     const NAVIGATOR_LAST_COUNT = 5;
 
     function populateNavigatorPropertyDropdown(shortName) {
-        const outputs = getOutputs(shortName);
+        // Backward traversal seeds on an output variable of the selected template,
+        // forward traversal on an input variable.
+        const variables = navigate_forward ? getInputs(shortName) : getOutputs(shortName);
         const menu = document.getElementById('dd-navigator-property-menu');
         menu.innerHTML = '';
-        if (!outputs || outputs.length === 0) return;
-        outputs.forEach(function(output, index) {
+        if (!variables || variables.length === 0) return;
+        variables.forEach(function(variable, index) {
             const li = document.createElement('li');
             const a = document.createElement('a');
             a.className = 'dropdown-item';
             a.href = '#';
-            a.textContent = output;
+            a.textContent = variable;
             a.addEventListener('click', function(e) {
                 e.preventDefault();
-                document.getElementById('navigator_property').value = output;
+                document.getElementById('navigator_property').value = variable;
             });
             li.appendChild(a);
             menu.appendChild(li);
         });
-        // Select the first output by default
-        document.getElementById('navigator_property').value = outputs[0];
+        // Select the first variable by default
+        document.getElementById('navigator_property').value = variables[0];
+    }
+
+    function refreshNavigatorPropertyChoices() {
+        const shortName = document.getElementById('navigator_template').value;
+        if (shortName) populateNavigatorPropertyDropdown(shortName);
     }
 
     function populateNavigatorIdDropdown(relation, onFirst) {
@@ -815,6 +837,7 @@
     var preferred_accept_format = 'application/json';
     var explanation_enabled=false;
     var icons_enabled=false;
+    var navigate_forward=false;
 
     /* Functions to show/hide the Explanation title */
     function showExplanationTitle() {
@@ -1322,6 +1345,7 @@
         let final_style = style;
         let parameters  = {};
         parameters.icons = icons_enabled;
+        parameters.direction = navigate_forward ? 'forward' : 'backward';
 
         let selectedKinds;
         switch (style) {

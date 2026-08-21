@@ -118,10 +118,13 @@
     .pretty .provkeyword { color: saddlebrown; }
     .pretty .feature { color: #8910ff; }
 
-    /* Navigator tab: fill the full available viewport height */
+    /* Navigator tab: fill the full available viewport height.  Scoped with :has()
+       to when the Navigator tab is the active pane — capping the page wrapper at
+       100vh with overflow:hidden must not clip the other tabs (Composer,
+       Documentation, ...), which rely on normal page scrolling. */
     html, body { height: 100%; }
-    .row.header.small { display: flex; flex-direction: column; height: 100vh; }
-    #all-tab-contents { flex: 1 1 0; min-height: 0; overflow: hidden; }
+    .row.header.small:has(#tab_navigator.active) { display: flex; flex-direction: column; height: 100vh; }
+    .row.header.small:has(#tab_navigator.active) #all-tab-contents { flex: 1 1 0; min-height: 0; overflow: hidden; }
     #tab_navigator { height: 100%; }
     #tab_navigator > .row { height: 100%; }
 

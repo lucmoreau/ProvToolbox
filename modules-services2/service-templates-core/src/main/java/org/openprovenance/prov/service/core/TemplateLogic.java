@@ -18,6 +18,7 @@ import org.openprovenance.prov.scala.iface.Explainer;
 import org.openprovenance.prov.scala.iface.XFactory;
 import org.openprovenance.prov.service.core.dispatch.EnactCsvRecords;
 import org.openprovenance.prov.service.core.progress.ProgressListener;
+import org.openprovenance.prov.service.core.readers.TemplatesSliceConfig;
 import org.openprovenance.prov.service.core.readers.TemplatesVizConfig;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 
@@ -174,12 +175,38 @@ public class TemplateLogic {
 
     public void generateViz(TemplatesVizConfig config, String principal, String iconsFolderForGraphviz, OutputStream out, ProgressListener listener) {
 
+        Map<String,Map<String,String>> baseTypes = computeBaseTypes();
+
+        //logger.info("baseTypes " + baseTypes);
+        templateQuery.generateViz(config.id, config.template, config.property, config.style, config.parameters, baseTypes, iconsFolderForGraphviz, semanticType, principal, out, listener);
+    }
+
+    /**
+     * Renders the slice between the config's upstream anchor ({@code id}/{@code template}/
+     * {@code property}, an input variable) and its downstream anchor
+     * ({@code downstreamId}/{@code downstreamTemplate}/{@code downstreamProperty}, an
+     * output variable).
+     *
+     * @see TemplateQuery#generateSlice
+     */
+    public void generateSlice(TemplatesSliceConfig config, String principal, String iconsFolderForGraphviz, OutputStream out, ProgressListener listener) {
+
+        Map<String,Map<String,String>> baseTypes = computeBaseTypes();
+
+        templateQuery.generateSlice(config.id, config.template, config.property,
+                                    config.downstreamId, config.downstreamTemplate, config.downstreamProperty,
+                                    config.style, config.parameters, baseTypes, iconsFolderForGraphviz,
+                                    semanticType, principal, out, listener);
+    }
+
+    /** Template → variable → preferred base type, as the dot renderer colours nodes by. */
+    private Map<String,Map<String,String>> computeBaseTypes() {
+
         typeAssignment.entrySet().removeIf(entry -> entry.getValue() ==null || entry.getValue().isEmpty());
 
         //logger.info("typeAssignment " + typeAssignment);
 
-        Map<String,Map<String,String>> baseTypes
-                = typeAssignment
+        return typeAssignment
                 .keySet()
                 .stream()
                 .collect(Collectors
@@ -194,9 +221,6 @@ public class TemplateLogic {
                                                                 var -> preferredType(typeAssignment
                                                                         .get(tpl)
                                                                         .get(var))))));
-
-        //logger.info("baseTypes " + baseTypes);
-        templateQuery.generateViz(config.id, config.template, config.property, config.style, config.parameters, baseTypes, iconsFolderForGraphviz, semanticType, principal, out, listener);
     }
 
 

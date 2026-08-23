@@ -799,6 +799,65 @@ public class TemplateService {
         }
     }
 
+    /**
+     * Renders the slice between two anchors: the sub-graph of template connections
+     * lying on a path from the downstream anchor's output back to the upstream
+     * anchor's input.  An empty SVG means the two anchors are not connected.
+     *
+     * <p>Setting the {@code paths} parameter to {@code "one"} narrows the result to a
+     * single shortest path; the default keeps every path.
+     *
+     * @see #getTemplatesSliceStream
+     */
+    @POST
+    @Path("/templates/slice")
+    @Tag(name = "template")
+    @Consumes({MEDIA_APPLICATION_JSON})
+    @Produces({MEDIA_IMAGE_SVG_XML})
+    public Response getTemplatesSlice(@Context HttpServletResponse response,
+                                      @Context HttpServletRequest request,
+                                      @Context HttpHeaders headers,
+                                      @Context UriInfo uriInfo,
+                                      TemplatesSliceConfig config) {
+
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+        ProgressListener listener = new LoggingProgressListener();
+        StreamingOutput promise= out -> templateLogic.generateSlice(config, principalAsPreferredUsername, iconsFolderForGraphviz, out, listener);
+
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_IMAGE_SVG_XML).build();
+    }
+
+    /**
+     * SSE-streamed variant of {@link #getTemplatesSlice}, with the same event
+     * protocol and the same synchronous-execution rationale as
+     * {@link #getTemplatesVizStream}.
+     */
+    @POST
+    @Path("/templates/slice/stream")
+    @Tag(name = "template")
+    @Consumes({MEDIA_APPLICATION_JSON})
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    public void getTemplatesSliceStream(@Context SseEventSink sink,
+                                        @Context Sse sse,
+                                        @Context HttpServletRequest request,
+                                        TemplatesSliceConfig config) {
+
+        final String principalAsPreferredUsername = getPrincipalAsPreferredUsername(request.getUserPrincipal());
+
+        SseProgressListener listener = new SseProgressListener(sink, sse);
+        try {
+            ByteArrayOutputStream svgBuf = new ByteArrayOutputStream();
+            templateLogic.generateSlice(config, principalAsPreferredUsername, iconsFolderForGraphviz, svgBuf, listener);
+            listener.result(MEDIA_IMAGE_SVG_XML, svgBuf.toByteArray());
+        } catch (Throwable t) {
+            listener.error(t);
+        } finally {
+            sink.close();
+        }
+    }
+
     @GET
     @Path("/live/{relation}/{id:\\d+}{extension:(\\.\\w+)?}")
     @Tag(name = "template")

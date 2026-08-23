@@ -123,6 +123,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 		singletons.add(new JsonOrCsvMessageBodyReader());
 		singletons.add(new TableKeyListMessageBodyReader());
 		singletons.add(new TemplatesVizConfigMessageBodyReader());
+		singletons.add(new TemplatesSliceConfigMessageBodyReader());
 		singletons.add(new SearchConfigMessageBodyReader());
 		singletons.add(new QueryParametersMessageBodyReader());
 

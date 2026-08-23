@@ -28,6 +28,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -1212,6 +1213,12 @@ public class TemplateQuery {
     // predecessor_table before the first backward hop): it maps the input variable
     // to the anchor template's output column(s) via predecessor_table — with the
     // same rel filter every other hop applies — and forward-traverses from each.
+    //
+    // The input variable is OPTIONAL.  A source template creates entities with no
+    // predecessor, so it has no input to name and no predecessor_table row to map
+    // through; a NULL property then seeds from every output column the template
+    // produces, read off backward_dispatch (which, unlike predecessor_table, also
+    // covers templates that consume nothing).
     String forward_traversal_star_from_input = """
             CREATE OR REPLACE FUNCTION public.forward_traversal_star_from_input(
                 __param_id                  integer,
@@ -1229,6 +1236,27 @@ public class TemplateQuery {
             )
             LANGUAGE sql
             AS $function$
+            WITH seeds AS (
+                -- An input variable was named: the anchor's outputs derived from it.
+                SELECT DISTINCT pt.output AS prop
+                FROM   predecessor_table pt
+                WHERE  __param_property IS NOT NULL
+                AND    pt.template = __param_template
+                AND    pt.input    = __param_property
+                AND    pt.output   IS NOT NULL
+                AND    (
+                           __param_selected_relations IS NULL
+                           OR pt.rel = ANY(__param_selected_relations)
+                       )
+
+                UNION
+
+                -- No input named: every output column of the anchor's template.
+                SELECT DISTINCT bd.target_property AS prop
+                FROM   backward_dispatch bd
+                WHERE  __param_property IS NULL
+                AND    bd.target_template = __param_template
+            )
             SELECT DISTINCT
                 f.in_id,
                 f.in_template,
@@ -1237,21 +1265,135 @@ public class TemplateQuery {
                 f.out_template,
                 f.out_property
             FROM
-                predecessor_table pt
+                seeds s
                 CROSS JOIN LATERAL forward_traversal_star(
                     __param_id,
                     __param_template,
-                    pt.output,
+                    s.prop,
                     __param_selected_relations
                 ) AS f
-            WHERE
-                pt.template = __param_template
-                AND pt.input = __param_property
-                AND pt.output IS NOT NULL
-                AND (
-                    __param_selected_relations IS NULL
-                    OR pt.rel = ANY(__param_selected_relations)
-                )
+            $function$;
+
+            """;
+
+    // backward_traversal_star_from_output — the mirror-image seed adapter, making the
+    // backward star's output variable optional in the same way: a NULL property seeds
+    // from every output column of the anchor's template rather than one named column.
+    // (A named property is passed straight through, so this is a pure widening of
+    // backwardtraversal_star's contract.)
+    String backward_traversal_star_from_output = """
+            CREATE OR REPLACE FUNCTION public.backward_traversal_star_from_output(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            AS $function$
+            WITH seeds AS (
+                SELECT __param_property AS prop
+                WHERE  __param_property IS NOT NULL
+
+                UNION
+
+                SELECT DISTINCT bd.target_property AS prop
+                FROM   backward_dispatch bd
+                WHERE  __param_property IS NULL
+                AND    bd.target_template = __param_template
+            )
+            SELECT DISTINCT
+                b.in_id,
+                b.in_template,
+                b.in_property,
+                b.out_id,
+                b.out_template,
+                b.out_property
+            FROM
+                seeds s
+                CROSS JOIN LATERAL backwardtraversal_star(
+                    __param_id,
+                    __param_template,
+                    s.prop,
+                    __param_selected_relations
+                ) AS b
+            $function$;
+
+            """;
+
+    // slice_traversal_star — the chop between two anchors.
+    //
+    // An edge lies on a path from the upstream anchor to the downstream anchor iff it
+    // is reachable going downstream from the upstream anchor AND reachable going
+    // upstream from the downstream anchor.  So the slice is simply the intersection of
+    // the two closures the navigator already computes: forward from an INPUT variable
+    // of the upstream record, backward from an OUTPUT variable of the downstream one.
+    //
+    // The two functions disagree on row orientation — backwardtraversal_star emits
+    // (in_ = consumer input, out_ = producer output), forward_traversal_star emits the
+    // transpose — so the forward side is flipped into the backward side's canonical
+    // orientation before the INTERSECT.  Both read the same backward_dispatch, so a
+    // shared edge yields a byte-identical 6-tuple on both sides and INTERSECT matches
+    // it exactly.  The result is canonical, like the backward star's.
+    String slice_traversal_star = """
+            DROP FUNCTION IF EXISTS public.slice_traversal_star(integer, text, text, integer, text, text);
+            DROP FUNCTION IF EXISTS public.slice_traversal_star(integer, text, text, integer, text, text, integer[]);
+
+            CREATE OR REPLACE FUNCTION public.slice_traversal_star(
+                __param_id                   integer,
+                __param_template             text,
+                __param_property             text,
+                __param_downstream_id        integer,
+                __param_downstream_template  text,
+                __param_downstream_property  text,
+                __param_selected_relations   integer[]  DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            AS $function$
+                SELECT
+                    f.out_id        AS in_id,
+                    f.out_template  AS in_template,
+                    f.out_property  AS in_property,
+                    f.in_id         AS out_id,
+                    f.in_template   AS out_template,
+                    f.in_property   AS out_property
+                FROM forward_traversal_star_from_input(
+                         __param_id,
+                         __param_template,
+                         __param_property,
+                         __param_selected_relations
+                     ) AS f
+
+                INTERSECT
+
+                SELECT
+                    b.in_id,
+                    b.in_template,
+                    b.in_property,
+                    b.out_id,
+                    b.out_template,
+                    b.out_property
+                FROM backward_traversal_star_from_output(
+                         __param_downstream_id,
+                         __param_downstream_template,
+                         __param_downstream_property,
+                         __param_selected_relations
+                     ) AS b
             $function$;
 
             """;
@@ -1293,7 +1435,14 @@ public class TemplateQuery {
                     sb.append(generateForwardTemplateTraversal());
                     sb.append(forward_traversal_star6);
                     sb.append(forward_traversal_star_from_input);
+                    sb.append(backward_traversal_star_from_output);
                 });
+
+        // Step 5: install the slicer — the intersection of a forward and a backward
+        // closure.  Depends on both stars being installed above.
+        querier.do_statements(null,
+                null,
+                (sb, data) -> sb.append(slice_traversal_star));
     }
 
     /**
@@ -1318,6 +1467,7 @@ public class TemplateQuery {
                     sb.append(generateBackwardTemplateTraversalWithType(ioMap, semanticType));
                     sb.append(generateBackwardTemplateTraversalStarWithType(semanticType));
                     sb.append(generateForwardTemplateTraversalStarWithType(semanticType));
+                    sb.append(generateSliceTraversalStarWithType(semanticType));
                   //  System.out.println(sb.toString());
                 });
     }
@@ -1398,6 +1548,35 @@ public class TemplateQuery {
                 "forward_traversal_star_typed",
                 "    __param_selected_relations  integer[]  DEFAULT NULL",
                 "forward_traversal_star_from_input(" + PARAM_ID + ", " + PARAM_TEMPLATE + ", " + PARAM_PROPERTY + ", __param_selected_relations)",
+                shortenAndFilterSemanticType(semanticType));
+    }
+
+    /**
+     * Generates the SQL {@code CREATE OR REPLACE FUNCTION} statement for
+     * {@code public.slice_traversal_star_typed} — the two-anchor (chop) counterpart of
+     * {@link #generateBackwardTemplateTraversalStarWithType}.
+     *
+     * <p>The three standard parameters carry the <em>upstream</em> anchor; three extra
+     * parameters carry the <em>downstream</em> anchor, followed by the usual optional
+     * relation filter.  The wrapped {@code slice_traversal_star} already emits the
+     * canonical orientation, so the type annotation is applied exactly as for the
+     * backward star.
+     *
+     * @param semanticType fully-qualified template name → semantic-type column name;
+     *                     entries with {@code null} values are filtered out before SQL
+     *                     generation
+     * @return a {@code CREATE OR REPLACE FUNCTION} SQL string ready to execute
+     */
+    private String generateSliceTraversalStarWithType(Map<String, String> semanticType) {
+        return generateTypedWrapperFunction(
+                "slice_traversal_star_typed",
+                "    __param_downstream_id        integer,\n" +
+                "    __param_downstream_template  text,\n" +
+                "    __param_downstream_property  text,\n" +
+                "    __param_selected_relations   integer[]  DEFAULT NULL",
+                "slice_traversal_star(" + PARAM_ID + ", " + PARAM_TEMPLATE + ", " + PARAM_PROPERTY
+                        + ", __param_downstream_id, __param_downstream_template, __param_downstream_property"
+                        + ", __param_selected_relations)",
                 shortenAndFilterSemanticType(semanticType));
     }
 
@@ -1628,30 +1807,197 @@ public class TemplateQuery {
         // or an explicit "backward" both mean backward traversal.
         boolean forward = (parameters != null) && "forward".equals(parameters.get("direction"));
 
+        List<TemplateConnection> templateConnections =
+                timedTraversal(listener, () -> recursiveTraversal(id, template, property, selectedVizKinds, forward, principal));
+
+        logger.info("(id,template,property,selectedVizKinds,templateConnections): "+ id + ", " + template + ", " + selectedVizKinds + ", " + templateConnections.size());
+
+        // the record asked for, so a template connected to nothing still draws
+        // itself (the traversal returns no row for it — see TemplatesToDot)
+        renderConnections(templateConnections, style, parameters, baseTypes, successors, iconsFolderForGraphviz,
+                          principal, longNames.getOrDefault(template, template), id, out, listener);
+    }
+
+    /**
+     * Renders the slice (the <em>chop</em>) between an upstream and a downstream anchor:
+     * the sub-graph of every template connection that lies on some path leading from the
+     * downstream anchor back to the upstream anchor.
+     *
+     * <p>The two anchors are seeded exactly as the navigator's two search directions are:
+     * the upstream anchor is a record plus one of its <em>input</em> variables (the seed
+     * shape of a forward search), the downstream anchor a record plus one of its
+     * <em>output</em> variables (the seed shape of a backward search).  The slice is then
+     * the intersection of the two closures — see {@link #sliceTraversal}.
+     *
+     * <p>Everything downstream of the rendering (style, icons, relation filter) behaves as
+     * for {@link #generateViz}; the two share {@link #renderConnections}.
+     *
+     * @param id                   upstream anchor record id
+     * @param template             upstream anchor template (SQL short name)
+     * @param property             upstream anchor <em>input</em> variable
+     * @param downstreamId         downstream anchor record id
+     * @param downstreamTemplate   downstream anchor template (SQL short name)
+     * @param downstreamProperty   downstream anchor <em>output</em> variable
+     */
+    public void generateSlice(Integer id, String template, String property,
+                              Integer downstreamId, String downstreamTemplate, String downstreamProperty,
+                              String style, Map<String, String> parameters, Map<String, Map<String, String>> baseTypes,
+                              String iconsFolderForGraphviz, Map<String, String> semanticType, String principal,
+                              OutputStream out, ProgressListener listener) {
+
+        Set<StatementOrBundle.Kind> selectedVizKinds=processParameters(parameters);
+
+        Map<String, Map<String, List<String>>> successors = selectSuccessors(typedSuccessors,selectedVizKinds) ;
+
+        // "one" narrows the slice to a single path; anything else (including no
+        // parameter) keeps every path, which is what a slice means by default.
+        boolean singlePath = (parameters != null) && "one".equals(parameters.get("paths"));
+
+        List<TemplateConnection> templateConnections =
+                timedTraversal(listener, () -> {
+                    List<TemplateConnection> slice = sliceTraversal(id, template, property,
+                                                                    downstreamId, downstreamTemplate, downstreamProperty,
+                                                                    selectedVizKinds, principal);
+                    return singlePath
+                            ? shortestPath(slice,
+                                           longNames.getOrDefault(template, template), id,
+                                           longNames.getOrDefault(downstreamTemplate, downstreamTemplate), downstreamId)
+                            : slice;
+                });
+
+        logger.info("slice (" + template + "." + property + "#" + id + " -> "
+                    + downstreamTemplate + "." + downstreamProperty + "#" + downstreamId + "): "
+                    + templateConnections.size() + " connections");
+
+        // No start template is forced here: an empty slice means "no path between these
+        // two anchors", and drawing a lone anchor node would read as a one-template path.
+        renderConnections(templateConnections, style, parameters, baseTypes, successors, iconsFolderForGraphviz,
+                          principal, null, null, out, listener);
+    }
+
+    /** Identifies a record in a connection list: its template and row id. */
+    private static String nodeKey(String template, Integer id) {
+        return template + "#" + id;
+    }
+
+    /**
+     * Reduces a slice to a single path: the shortest chain of connections leading from
+     * the upstream record to the downstream one.
+     *
+     * <p>Every connection in a slice lies on <em>some</em> path between the two anchors
+     * (that is what {@link #sliceTraversal} computes), but a slice with any fan-out holds
+     * several interleaved paths.  This walks the slice breadth-first from the upstream
+     * record, following connections from their producer end to their consumer end, and
+     * keeps only the connections on the first — hence shortest — route that reaches the
+     * downstream record.  Ties are broken on the connection ordering, so the same slice
+     * always yields the same path.
+     *
+     * <p>Template names here are the fully-qualified ones the connections carry, not the
+     * SQL short names.
+     *
+     * @return the path's connections, upstream end first, or an empty list when the two
+     *         records are the same or no route joins them
+     */
+    static List<TemplateConnection> shortestPath(List<TemplateConnection> connections,
+                                                 String fromTemplate, Integer fromId,
+                                                 String toTemplate, Integer toId) {
+        LinkedList<TemplateConnection> path = new LinkedList<>();
+        if (connections == null || connections.isEmpty()
+                || fromTemplate == null || fromId == null || toTemplate == null || toId == null) {
+            return path;
+        }
+
+        String start = nodeKey(fromTemplate, fromId);
+        String goal  = nodeKey(toTemplate,   toId);
+
+        Comparator<String> byName = Comparator.nullsFirst(Comparator.naturalOrder());
+        List<TemplateConnection> ordered = new ArrayList<>(connections);
+        ordered.sort(Comparator.comparing((TemplateConnection c) -> c.out_template, byName)
+                               .thenComparing(c -> c.out_id, Comparator.nullsFirst(Comparator.naturalOrder()))
+                               .thenComparing(c -> c.out_property, byName)
+                               .thenComparing(c -> c.in_template, byName)
+                               .thenComparing(c -> c.in_id, Comparator.nullsFirst(Comparator.naturalOrder()))
+                               .thenComparing(c -> c.in_property, byName));
+
+        // Connections leave a record by its producer (out_) end and arrive at a
+        // consumer (in_) end, so that is the direction the walk follows.
+        Map<String, List<TemplateConnection>> leaving = new HashMap<>();
+        for (TemplateConnection c : ordered) {
+            leaving.computeIfAbsent(nodeKey(c.out_template, c.out_id), k -> new ArrayList<>()).add(c);
+        }
+
+        Map<String, TemplateConnection> arrivedBy = new HashMap<>();
+        Map<String, String> arrivedFrom = new HashMap<>();
+        Set<String> visited = new HashSet<>();
+        Deque<String> queue = new ArrayDeque<>();
+        visited.add(start);
+        queue.add(start);
+
+        while (!queue.isEmpty()) {
+            String node = queue.poll();
+            if (node.equals(goal)) break;
+            for (TemplateConnection c : leaving.getOrDefault(node, Collections.emptyList())) {
+                String next = nodeKey(c.in_template, c.in_id);
+                if (visited.add(next)) {
+                    arrivedBy.put(next, c);
+                    arrivedFrom.put(next, node);
+                    queue.add(next);
+                }
+            }
+        }
+
+        if (!visited.contains(goal)) return path;
+
+        for (String node = goal; !node.equals(start); ) {
+            TemplateConnection c = arrivedBy.get(node);
+            String previous = arrivedFrom.get(node);
+            if (c == null || previous == null) return new LinkedList<>(); // unreachable in practice
+            path.addFirst(c);
+            node = previous;
+        }
+        return path;
+    }
+
+    /**
+     * Runs a traversal as the {@link VizStages#SQL} stage, reporting timing, the
+     * connection count, and any failure to {@code listener}.
+     */
+    private List<TemplateConnection> timedTraversal(ProgressListener listener, Supplier<List<TemplateConnection>> traversal) {
         listener.started(VizStages.SQL);
         long sqlStart = System.nanoTime();
         List<TemplateConnection> templateConnections;
         try {
-            templateConnections = recursiveTraversal(id, template, property, selectedVizKinds, forward, principal);
+            templateConnections = traversal.get();
             listener.done(VizStages.SQL, (System.nanoTime() - sqlStart) / 1_000_000);
         } catch (RuntimeException e) {
             listener.failed(VizStages.SQL, e);
             throw e;
         }
         listener.detail(VizStages.SQL, templateConnections.size() + " connections");
-        logger.info("(id,template,property,selectedVizKinds,templateConnections): "+ id + ", " + template + ", " + selectedVizKinds + ", " + templateConnections.size());
+        return templateConnections;
+    }
+
+    /** Shared rendering tail of {@link #generateViz} and {@link #generateSlice}. */
+    private void renderConnections(List<TemplateConnection> templateConnections,
+                                   String style,
+                                   Map<String, String> parameters,
+                                   Map<String, Map<String, String>> baseTypes,
+                                   Map<String, Map<String, List<String>>> successors,
+                                   String iconsFolderForGraphviz,
+                                   String principal,
+                                   String startTemplate,
+                                   Integer startTemplateId,
+                                   OutputStream out,
+                                   ProgressListener listener) {
         // reverse list
         Collections.reverse(templateConnections);
 
         boolean withIcons= (parameters != null) && Objects.equals(parameters.get("icons"),"true");
 
-
-
         logger.debug("templateConnections: " + templateConnections.stream().map(TemplateConnection::toString).collect(Collectors.joining("\n")));
-        // the record asked for, so a template connected to nothing still draws
-        // itself (the traversal returns no row for it — see TemplatesToDot)
+
         new TemplatesToDot(templateConnections, style, withIcons, iconsFolderForGraphviz, parameters, baseTypes, ioMap, templateDispatcher, successors, pf, this, principal, provAPI,
-                           longNames.getOrDefault(template, template), id).convert(null, out, "template_connections", listener);
+                           startTemplate, startTemplateId).convert(null, out, "template_connections", listener);
     }
 
 
@@ -1810,6 +2156,20 @@ public class TemplateQuery {
         }
     }
 
+    /**
+     * Appends {@code value} as a SQL text literal, or the keyword {@code NULL} when it is
+     * null or blank — the traversal functions read a NULL property as "every variable of
+     * this template" rather than as a variable named "".  Embedded single quotes are
+     * doubled.
+     */
+    private static void appendSqlText(StringBuilder sb, String value) {
+        if (value == null || value.isBlank()) {
+            sb.append("NULL");
+        } else {
+            sb.append('\'').append(value.replace("'", "''")).append('\'');
+        }
+    }
+
     public List<TemplateConnection> recursiveTraversal(Integer id, String template, String property, Set<StatementOrBundle.Kind> selectedVizKinds, String principal) {
         return recursiveTraversal(id, template, property, selectedVizKinds, false, principal);
     }
@@ -1824,11 +2184,11 @@ public class TemplateQuery {
                     sb.append("SELECT DISTINCT * FROM ");
                     sb.append(forward ? "forward_traversal_star_typed(" : "backwardtraversal_star_typed(");
                     sb.append(id);
-                    sb.append(",'");
-                    sb.append(template);
-                    sb.append("','");
-                    sb.append(property);
-                    sb.append("', ");
+                    sb.append(", ");
+                    appendSqlText(sb, template);
+                    sb.append(", ");
+                    appendSqlText(sb, property);
+                    sb.append(", ");
                     sb.append(selectedAsASql);
                     sb.append(") as template_connection\n");
                     joinAccessControl("template_connection.in_template", principal, sb, "template_connection", "in_id");
@@ -1852,6 +2212,76 @@ public class TemplateQuery {
                         record.out_template=longNames.get(rs.getObject(outPrefix + "template", String.class));
                         record.out_property=rs.getObject(outPrefix + "property", String.class);
                         record.out_type=rs.getObject(outPrefix + "type", String.class);
+                        data.add(record);
+                    }
+                });
+
+        return the_records;
+    }
+
+    /**
+     * Returns the slice (<em>chop</em>) between an upstream and a downstream anchor: every
+     * template connection that lies on some path from the upstream anchor down to the
+     * downstream anchor.
+     *
+     * <p>Computed by {@code slice_traversal_star_typed} as the intersection of the forward
+     * closure of the upstream anchor and the backward closure of the downstream anchor —
+     * the two searches the navigator already offers, run against each other.  An edge
+     * belongs to the intersection exactly when it is reachable going downstream from the
+     * upstream anchor <em>and</em> reachable going upstream from the downstream anchor,
+     * which is precisely the condition for lying on a path between them.
+     *
+     * <p>An empty result means the two anchors are not connected.
+     *
+     * @param id                 upstream anchor record id
+     * @param template           upstream anchor template (SQL short name)
+     * @param property           upstream anchor <em>input</em> variable (forward seed)
+     * @param downstreamId       downstream anchor record id
+     * @param downstreamTemplate downstream anchor template (SQL short name)
+     * @param downstreamProperty downstream anchor <em>output</em> variable (backward seed)
+     */
+    public List<TemplateConnection> sliceTraversal(Integer id, String template, String property,
+                                                   Integer downstreamId, String downstreamTemplate, String downstreamProperty,
+                                                   Set<StatementOrBundle.Kind> selectedVizKinds, String principal) {
+        List<TemplateConnection> the_records = new LinkedList<>();
+
+        String selectedAsASql=selectedVizKinds.stream().map(x -> ("" + x.ordinal())).collect(Collectors.joining(",","ARRAY[",  "]"));
+        querier.do_query(the_records,
+                null,
+                (sb, data) -> {
+                    sb.append("SELECT DISTINCT * FROM ");
+                    sb.append("slice_traversal_star_typed(");
+                    sb.append(id);
+                    sb.append(", ");
+                    appendSqlText(sb, template);
+                    sb.append(", ");
+                    appendSqlText(sb, property);
+                    sb.append(", ");
+                    sb.append(downstreamId);
+                    sb.append(", ");
+                    appendSqlText(sb, downstreamTemplate);
+                    sb.append(", ");
+                    appendSqlText(sb, downstreamProperty);
+                    sb.append(", ");
+                    sb.append(selectedAsASql);
+                    sb.append(") as template_connection\n");
+                    joinAccessControl("template_connection.in_template", principal, sb, "template_connection", "in_id");
+                    andAccessControl(principal, sb);
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        // slice_traversal_star already emits the canonical orientation
+                        // (in_ = consumer input, out_ = producer output), as the backward
+                        // star does — no transposition needed here.
+                        TemplateConnection record = new TemplateConnection();
+                        record.in_id=rs.getObject("in_id", Integer.class);
+                        record.in_template=longNames.get(rs.getObject("in_template", String.class));
+                        record.in_property=rs.getObject("in_property", String.class);
+                        record.in_type=rs.getObject("in_type", String.class);
+                        record.out_id=rs.getObject("out_id", Integer.class);
+                        record.out_template=longNames.get(rs.getObject("out_template", String.class));
+                        record.out_property=rs.getObject("out_property", String.class);
+                        record.out_type=rs.getObject("out_type", String.class);
                         data.add(record);
                     }
                 });

@@ -179,12 +179,18 @@ public class QueryService {
      * in the SQL with {@code 'value'} (internal single-quotes doubled for safety).
      * {@code null} values substitute as the SQL keyword {@code NULL}.</p>
      *
-     * <p>If {@code parameters} is {@code null} or empty the SQL is returned
-     * unchanged.</p>
+     * <p>A query may declare per-parameter DEFAULTS in its header comments,
+     * one per line: {@code -- :sinceDays default 30}. A parameter the caller
+     * did not supply is filled from its declaration before substitution, so a
+     * caller that says nothing gets the query's own default while an explicit
+     * value still wins (T-205: the agent-family window parameters rely on
+     * this — an undeclared, unsupplied placeholder would otherwise reach
+     * PostgreSQL as literal {@code :name} and fail).</p>
      */
     private static String substituteParams(String sql, QueryParameters parameters) {
-        if (parameters == null || parameters.isEmpty()) return sql;
-        for (java.util.Map.Entry<String, String> entry : parameters.entrySet()) {
+        QueryParameters effective = withDeclaredDefaults(sql, parameters);
+        if (effective.isEmpty()) return sql;
+        for (java.util.Map.Entry<String, String> entry : effective.entrySet()) {
             String placeholder = ":" + entry.getKey();
             String value = entry.getValue() == null
                     ? "NULL"
@@ -192,6 +198,24 @@ public class QueryService {
             sql = sql.replace(placeholder, value);
         }
         return sql;
+    }
+
+    /** {@code -- :param default value} header declarations. */
+    private static final java.util.regex.Pattern DEFAULT_DECL =
+            java.util.regex.Pattern.compile("^--\\s*:(\\w+)\\s+default\\s+(\\S+)\\s*$",
+                    java.util.regex.Pattern.MULTILINE);
+
+    /** The supplied parameters, with every header-declared default filled in
+     *  for the keys the caller omitted. Never null. */
+    private static QueryParameters withDeclaredDefaults(String sql, QueryParameters parameters) {
+        QueryParameters effective = parameters == null ? new QueryParameters() : parameters;
+        java.util.regex.Matcher m = DEFAULT_DECL.matcher(sql);
+        while (m.find()) {
+            if (effective.get(m.group(1)) == null) {
+                effective.put(m.group(1), m.group(2));
+            }
+        }
+        return effective;
     }
 
     /* Functionality to support development of queries over the provenance store. */

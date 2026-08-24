@@ -507,8 +507,20 @@ public class CompilerSQL {
                 "  table_name TEXT,\n" +
                 "  principal TEXT,\n" +
                 "  hash jsonb,\n" +
-                "  created_at timestamp with time zone NOT NULL DEFAULT NOW()\n" +
+                "  created_at timestamp with time zone NOT NULL DEFAULT NOW(),\n" +
+                "  submission_key TEXT\n" +
                 ");\n" +
+                "\n" +
+                // Idempotency for statement POSTs: pre-existing databases gain the
+                // column idempotently; the partial unique index turns a duplicate
+                // keyed submission into a unique violation that aborts the whole
+                // composed statement (the template insert rides the same statement).
+                // Keyless submissions render NULL, which the index ignores.
+                "ALTER TABLE record_index \n" +
+                "ADD COLUMN IF NOT EXISTS submission_key TEXT;\n" +
+                "\n" +
+                "CREATE UNIQUE INDEX IF NOT EXISTS record_index_submission_key\n" +
+                "ON record_index (submission_key) WHERE submission_key IS NOT NULL;\n" +
                 "\n" +
                 "\n" +
                 "CREATE TABLE IF NOT EXISTS access_control\n" +

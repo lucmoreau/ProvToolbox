@@ -93,6 +93,7 @@ public class TemplateService {
     protected final Map<String, Linker> compositeLinker;
     protected final Map<String, Function<Object[], Object[]>> recordMaker;
     protected final PrincipalManager principalManager;
+    protected final org.openprovenance.prov.model.interop.SubmissionKeyManager submissionKeyManager;
     protected final Map<String, Object> templateConfiguration;
     protected final Querier querier;
     protected final HashMap<String, String> map;
@@ -153,6 +154,7 @@ public class TemplateService {
 
         this.storage=new Storage();
         this.principalManager =new PrincipalManager();
+        this.submissionKeyManager =new org.openprovenance.prov.model.interop.SubmissionKeyManager();
 
         // configuration
 
@@ -322,14 +324,44 @@ public class TemplateService {
             default: return utils.composeResponseBadRequest("unknown accept header " + acceptHeader, new UnsupportedOperationException(acceptHeader));
         }
 
+        // Statement-POST idempotency: an Idempotency-Key header scopes exactly one
+        // JSON entry (our wire format posts singleton lists); the key rides a
+        // thread-local into the generated record_index insert composition. Keyless
+        // requests take the pre-existing path untouched.
+        String submissionKey = headers.getHeaderString(TemplateLogic.HTTP_HEADER_IDEMPOTENCY_KEY);
+        if (submissionKey != null && submissionKey.isBlank()) submissionKey = null;
+        if (submissionKey != null) {
+            if (documentOrCsv.csv != null) {
+                return utils.composeResponseBadRequest(
+                        "Idempotency-Key is not supported for CSV submissions",
+                        new UnsupportedOperationException(TemplateLogic.HTTP_HEADER_IDEMPOTENCY_KEY));
+            }
+            if (!acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
+                return utils.composeResponseBadRequest(
+                        "Idempotency-Key requires Accept " + APPLICATION_VND_KCL_PROV_TEMPLATE_JSON,
+                        new UnsupportedOperationException(acceptHeader));
+            }
+            if (documentOrCsv.json != null && documentOrCsv.json.size() != 1) {
+                return utils.composeResponseBadRequest(
+                        "Idempotency-Key names one submission but the request carries "
+                                + documentOrCsv.json.size() + " entries",
+                        new UnsupportedOperationException(TemplateLogic.HTTP_HEADER_IDEMPOTENCY_KEY));
+            }
+            submissionKeyManager.setSubmissionKey(submissionKey);
+        }
+
         List<Object> result;
-        if (documentOrCsv.csv!=null) {
-            result=templateLogic.processIncomingCsv(documentOrCsv.csv,acceptHeader);
-        } else if (documentOrCsv.json!=null) {
-            // not accepting yet csv return
-            result=templateLogic.processIncomingJson(documentOrCsv.json,acceptHeader);
-        } else {
-            return utils.composeResponseInternalServerError("unknown input document", new UnsupportedOperationException());
+        try {
+            if (documentOrCsv.csv!=null) {
+                result=templateLogic.processIncomingCsv(documentOrCsv.csv,acceptHeader);
+            } else if (documentOrCsv.json!=null) {
+                // not accepting yet csv return
+                result=templateLogic.processIncomingJson(documentOrCsv.json,acceptHeader);
+            } else {
+                return utils.composeResponseInternalServerError("unknown input document", new UnsupportedOperationException());
+            }
+        } finally {
+            submissionKeyManager.clearSubmissionKey();
         }
         String hash= (headerAcceptProvHash==null)?null:headerInfo.get().get(HTTP_HEADER_CONTENT_PROV_HASH);
         String location= headerInfo.get().get(HTTP_HEADER_LOCATION);

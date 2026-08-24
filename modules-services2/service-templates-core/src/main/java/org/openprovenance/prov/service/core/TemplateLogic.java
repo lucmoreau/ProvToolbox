@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.model.interop.InteropMediaType.MEDIA_TEXT_CSV;
@@ -40,6 +41,7 @@ public class TemplateLogic {
     public static final String HTTP_HEADER_LOCATION = "Location";
     public static final String HTTP_HEADER_ACCEPT_PROV_HASH = "Accept-PROV-hash";
     public static final String HTTP_HEADER_ACCEPT_PROV_EXPLANATION = "Accept-PROV-explanation";
+    public static final String HTTP_HEADER_IDEMPOTENCY_KEY = "Idempotency-Key";
     static Logger logger = LogManager.getLogger(TemplateLogic.class);
     private final ProvFactory pf;
     private final CatalogueDispatcherInterface<FileBuilder> templateDispatcher;
@@ -55,6 +57,12 @@ public class TemplateLogic {
     private final Map<String, String> shortNames;
     private final Map<String, String> semanticType;
     private final String nlgXplanStrategy;
+
+    /** Thread-scoped Idempotency-Key set by the service per request; the
+     *  duplicate-recovery path below consults it. State is a static
+     *  thread-local, so this instance mirrors the one in TemplateService. */
+    private final org.openprovenance.prov.model.interop.SubmissionKeyManager submissionKeyManager =
+            new org.openprovenance.prov.model.interop.SubmissionKeyManager();
 
 
     public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om, String nlgXplanStrategy) {
@@ -92,7 +100,7 @@ public class TemplateLogic {
             for (Map<String, Object> entry : entries) {
                 Object[] array = convertToArray(entry, props);
                 if (acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
-                    recordsResult.add(enactor.apply(array));
+                    recordsResult.add(enactWithDuplicateRecovery(() -> enactor.apply(array)));
                 } else {
                     // csv here
                     recordsResult.add(csv_processor_1.apply(enactor.apply(array)));
@@ -111,7 +119,7 @@ public class TemplateLogic {
                 }
                 Function<List<Object[]>,?> compositeEnactor = compositeEnactorConverters.get(isA);
                 if (acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
-                    recordsResult.add(compositeEnactor.apply(objects));
+                    recordsResult.add(enactWithDuplicateRecovery(() -> compositeEnactor.apply(objects)));
                 } else {
                     // csv here
                     String csvLines = csv_processor_Composite.apply(compositeEnactor.apply(objects));
@@ -121,6 +129,46 @@ public class TemplateLogic {
             }
         }
         return recordsResult;
+    }
+
+    /**
+     * Statement-POST idempotency (the {@code Idempotency-Key} header): a keyed
+     * duplicate raises a unique violation on {@code record_index_submission_key},
+     * which aborts the whole composed statement — template insert included — so
+     * nothing was duplicated and the original submission's rows are intact.
+     * This catches exactly that violation and replays the original response
+     * from the store ({@link TemplateQuery#recoverBySubmissionKey}); every
+     * other failure propagates unchanged, as does every failure of a keyless
+     * enactment.
+     */
+    private Object enactWithDuplicateRecovery(Supplier<Object> enactment) {
+        String submissionKey = submissionKeyManager.getSubmissionKey();
+        if (submissionKey == null) {
+            return enactment.get();
+        }
+        try {
+            return enactment.get();
+        } catch (RuntimeException e) {
+            if (!isSubmissionKeyConflict(e)) {
+                throw e;
+            }
+            logger.info("duplicate submission for key '" + submissionKey
+                    + "' — replaying the original response");
+            return templateQuery.recoverBySubmissionKey(submissionKey);
+        }
+    }
+
+    private static boolean isSubmissionKeyConflict(Throwable e) {
+        for (Throwable t = e; t != null; t = t.getCause()) {
+            if (t instanceof java.sql.SQLException) {
+                java.sql.SQLException sql = (java.sql.SQLException) t;
+                if ("23505".equals(sql.getSQLState())
+                        && String.valueOf(sql.getMessage()).contains("record_index_submission_key")) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public Object[] convertToArray(Map<String, Object> entry, String[] props) {

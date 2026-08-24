@@ -2107,6 +2107,140 @@ public class TemplateQuery {
 
 
 
+    /**
+     * Duplicate-submission recovery (statement-POST idempotency): rebuilds the
+     * response of an already-committed keyed submission from its stored rows.
+     *
+     * <p>When a keyed {@code POST /statements} raises a unique violation on
+     * {@code record_index_submission_key}, the original submission committed but
+     * its response was lost in flight. The composed statement rolled back
+     * atomically (the template insert rides the same statement as the
+     * {@code record_index} insert), so nothing was duplicated — this method
+     * re-derives what the original response said: locate the record via
+     * {@code record_index (submission_key → key, table_name)}, re-select the
+     * template row, and — for a composite — reassemble the {@code __elements}
+     * list through the catalogue's linker table (insertion order preserved by
+     * the linker's serial id).</p>
+     *
+     * <p>The replayed body reproduces the ORIGINAL response's shape — the
+     * serialized output bean: {@code isA}, {@code ID}, then exactly the
+     * template's declared output variables (from the catalogue's io
+     * declarations), nothing else. A composite replays {@code isA}, {@code ID}
+     * and {@code __elements}, each element again in output-bean shape. Output
+     * variables are matched to their columns case-insensitively (SQL lowercases
+     * unquoted identifiers; JSON maps do not). The single divergence from the
+     * original is the generated composite beans' constant {@code consistsOf}
+     * field (a client-language class name the store cannot know) — generated
+     * completers never read it.</p>
+     */
+    public Map<String, Object> recoverBySubmissionKey(String submissionKey) {
+        String escaped = submissionKey.replace("'", "''");
+        Object[] located = new Object[2];
+        querier.do_query(located, null,
+                (sb, data) -> sb.append("SELECT key, table_name FROM record_index WHERE submission_key='")
+                        .append(escaped).append("'"),
+                (rs, data) -> {
+                    if (rs.next()) {
+                        data[0] = rs.getInt(1);
+                        data[1] = rs.getString(2);
+                    }
+                });
+        if (located[1] == null) {
+            throw new IllegalStateException(
+                    "submission key conflict but no record_index row for key " + submissionKey);
+        }
+        int recordId = (Integer) located[0];
+        String tableName = (String) located[1];
+        if (!tableName.matches("[A-Za-z0-9_]+")) {
+            throw new IllegalStateException("unexpected table name in record_index: " + tableName);
+        }
+
+        String fqn = longNames.get(tableName);
+        Map<String, Object> row = selectRowAsColumnMap(tableName, recordId);
+        Map<String, Object> response = shapeAsOutputBean(fqn, tableName, recordId, row);
+
+        // A composite's response carries its elements; the catalogue's linker
+        // declarations (composite fqn -> {linker table, element table}) locate them.
+        TemplateService.Linker linker = (fqn == null) ? null : compositeLinker.get(fqn);
+        if (linker != null) {
+            String elementFqn = longNames.get(linker.linked);
+            List<Map<String, Object>> elements = new LinkedList<>();
+            querier.do_query(elements, null,
+                    (sb, data) -> sb.append("SELECT t.* FROM ").append(linker.linked)
+                            .append(" t JOIN ").append(linker.table)
+                            .append(" l ON l.simple = t.id WHERE l.composite = ").append(recordId)
+                            .append(" ORDER BY l.id"),
+                    (rs, data) -> {
+                        while (rs.next()) {
+                            Map<String, Object> elementRow = rowToColumnMap(rs);
+                            data.add(shapeAsOutputBean(elementFqn, linker.linked,
+                                    ((Number) elementRow.get("id")).intValue(), elementRow));
+                        }
+                    });
+            response.put(ELEMENTS, elements);
+        }
+        return response;
+    }
+
+    /**
+     * Reassembles the serialized-output-bean shape the original enactment
+     * responded with: {@code isA}, {@code ID}, then the template's declared
+     * output variables in catalogue order, read case-insensitively from the
+     * stored row.
+     */
+    private Map<String, Object> shapeAsOutputBean(String fqn, String tableName, int recordId,
+                                                  Map<String, Object> row) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        if (fqn != null) {
+            response.put(IS_A, fqn);
+        }
+        response.put("ID", recordId);
+        Map<String, String> outputs = ioMap.get(OUTPUT).get(tableName);
+        if (outputs != null) {
+            for (String variable : outputs.keySet()) {
+                Object value = row.get(variable);
+                if (value == null) {
+                    value = row.get(variable.toLowerCase());
+                }
+                if (value != null) {
+                    response.put(variable, value);
+                }
+            }
+        }
+        return response;
+    }
+
+    private Map<String, Object> selectRowAsColumnMap(String tableName, int recordId) {
+        Map<String, Object> row = new LinkedHashMap<>();
+        querier.do_query(row, null,
+                (sb, data) -> sb.append("SELECT * FROM ").append(tableName)
+                        .append(" WHERE id=").append(recordId),
+                (rs, data) -> {
+                    if (rs.next()) {
+                        data.putAll(rowToColumnMap(rs));
+                    }
+                });
+        if (row.isEmpty()) {
+            throw new IllegalStateException("record_index points at " + tableName + "/" + recordId
+                    + " but the row is gone — cannot recover the duplicate submission's response");
+        }
+        return row;
+    }
+
+    private static Map<String, Object> rowToColumnMap(java.sql.ResultSet rs) throws java.sql.SQLException {
+        ResultSetMetaData md = rs.getMetaData();
+        Map<String, Object> map = new LinkedHashMap<>();
+        for (int i = 1; i <= md.getColumnCount(); i++) {
+            Object value = rs.getObject(i);
+            if (value != null && !(value instanceof Number) && !(value instanceof String)
+                    && !(value instanceof Boolean)) {
+                value = String.valueOf(value);
+            }
+            map.put(md.getColumnLabel(i), value);
+        }
+        return map;
+    }
+
      String makeHashRecord(Map<String,String> persistedMap) {
         Map<String, String> map = new HashMap<>();
         map.putAll(persistedMap);

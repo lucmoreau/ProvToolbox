@@ -28,9 +28,11 @@ public class CustomBundleDeserializer extends JsonDeserializer<Bundle> {
         // restore document namespace
         getAttributes().get().put(JSON_CONTEXT_KEY_NAMESPACE,docNs);
 
-        // patch the bundle namespace, so that it points to the document namespace
+        // patch the bundle namespace, so that it points to the document namespace,
+        // before the deferred bundle identifier is resolved against it
+        sbun.setNamespaceParent(docNs);
+
         org.openprovenance.prov.model.Bundle theBun = sbun.toBundle(pf);
-        theBun.getNamespace().setParent(docNs);
 
         return (Bundle) theBun;
     }

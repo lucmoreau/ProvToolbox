@@ -154,6 +154,10 @@ public class SortedBundle {
         this.id=id;
     }
 
+    public void setNamespaceParent(Namespace parent) {
+        namespace.setParent(parent);
+    }
+
     public Map<String, String> getPrefix() {
         return namespace.getPrefixes();
     }
@@ -295,9 +299,7 @@ public class SortedBundle {
 
 
         if (deferredId) {
-            Map<String, String> prefixes = namespace.getPrefixes();
-            String prefix = id.getPrefix();
-            QualifiedName newId = provFactory.newQualifiedName(prefixes.get(prefix), id.getLocalPart(), prefix);
+            QualifiedName newId = namespace.qualifiedName(id.getPrefix(), id.getLocalPart(), provFactory);
 
             Bundle bundle = provFactory.newNamedBundle(newId, namespace, ss);
             //System.out.println("SortedBundle.toBundle --> " + bundle);

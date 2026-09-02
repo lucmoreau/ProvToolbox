@@ -13,6 +13,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import static org.openprovenance.prov.core.json.serialization.deserial.CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY;
@@ -33,7 +34,8 @@ public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
 
         QualifiedName context=(QualifiedName)deserializationContext.getAttribute(PROV_ATTRIBUTE_CONTEXT_KEY);
 
-        Iterator<JsonNode> elements=node.elements();
+        // a single attribute value need not be wrapped in an array
+        Iterator<JsonNode> elements=node.isArray() ? node.elements() : List.of(node).iterator();
         Set<Attribute> set=new HashSet<>();
         while (elements.hasNext()) {
             JsonNode next=elements.next();

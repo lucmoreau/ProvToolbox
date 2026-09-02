@@ -22,6 +22,9 @@ public class CustomBundleDeserializer extends JsonDeserializer<Bundle> {
         // get the document namespace from the context
         Namespace docNs = getAttributes().get().get(JSON_CONTEXT_KEY_NAMESPACE);
 
+        // in PROV-JSON the bundle identifier is the key of the enclosing map
+        String bundleKey = jsonParser.currentName();
+
         // read the bundle (which has its own namespace)
         SortedBundle sbun= jsonParser.readValueAs(SortedBundle.class);
 
@@ -31,6 +34,7 @@ public class CustomBundleDeserializer extends JsonDeserializer<Bundle> {
         // patch the bundle namespace, so that it points to the document namespace,
         // before the deferred bundle identifier is resolved against it
         sbun.setNamespaceParent(docNs);
+        sbun.setId(new CustomDeferredQualifiedNameDeserializer().deserialize(bundleKey, deserializationContext));
 
         org.openprovenance.prov.model.Bundle theBun = sbun.toBundle(pf);
 

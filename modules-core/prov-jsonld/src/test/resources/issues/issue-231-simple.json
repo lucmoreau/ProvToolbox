@@ -1,0 +1,12 @@
+{
+    "prefix": {
+        "default": "http://example.org/",
+        "ex": "http://example.org/"
+    },
+    "entity": {
+        "e1": {
+            "ex:prop1": {"$": "82.5e-2", "type": "xsd:double"},
+            "ex:prop2": 1
+        }
+    }
+}

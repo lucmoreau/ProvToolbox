@@ -37,3 +37,6 @@ check.context.spec:
 	curl -s -o target/public-context.jsonld $(PUBLIC_JSONLD_CONTEXT)
 	diff -q target/public-context.jsonld $(JSONLD_CONTEXT)
 	rm target/public-context.jsonld
+
+issue.test:
+	mvn test -Dtest='RoundTripFromProvJsonTest#testIssue1'

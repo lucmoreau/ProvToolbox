@@ -1,0 +1,17 @@
+{
+    "prefix": {
+        "default": "http://example.org/",
+        "ex": "http://example.org/"
+    },
+    "entity": {
+        "e1": {
+            "ex:byteSize": {"$": "1034", "type": "xsd:positiveInteger"},
+            "ex:compression": {"$": "82.5e-2", "type": "xsd:double"},
+            "ex:content": {"$": "Y29udGVudCBoZXJl", "type": "xsd:base64Binary"},
+            "ex:prop1": {
+                "type" : "xsd:dateTime",
+                "$" : "2026-09-03T17:36:39.415+01:00"
+            }
+        }
+    }
+}

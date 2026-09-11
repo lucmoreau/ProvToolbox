@@ -3,6 +3,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 `2.2.5-SNAPSHOT`
 * prov-template-archetype: navigator tab supports backward and forward traversals
 * service-templates-core: idempotency of statement posting, and support for idempotency-key in template service
+* prov-template, prov-toolbox-plugin: qualified.svg output format, the qualified rendering as vector beside qualified.png
 
 `2.2.4`
 

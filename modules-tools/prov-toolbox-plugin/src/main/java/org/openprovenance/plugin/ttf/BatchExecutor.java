@@ -46,6 +46,8 @@ public class BatchExecutor extends AbstractMojo {
 
         org.openprovenance.prov.dot.ProvSerialiser dotSerial=new org.openprovenance.prov.dot.ProvSerialiser(org.openprovenance.prov.vanilla.ProvFactory.getFactory(), "png", 20, true);
         serializerMap2.put("qualified.png", dotSerial);
+        org.openprovenance.prov.dot.ProvSerialiser dotSerialSvg=new org.openprovenance.prov.dot.ProvSerialiser(org.openprovenance.prov.vanilla.ProvFactory.getFactory(), "svg", 20, true);
+        serializerMap2.put("qualified.svg", dotSerialSvg);
 
         if (debug) {
             getLog().info(getClass().getName());

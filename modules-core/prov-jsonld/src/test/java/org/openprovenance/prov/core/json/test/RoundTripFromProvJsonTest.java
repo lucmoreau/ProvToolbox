@@ -131,6 +131,26 @@ public class RoundTripFromProvJsonTest extends TestCase {
         assertEquals("{\"$\":\"bonjour\",\"lang\":\"fr\"}", tag.get(4).toString());
     }
 
+    /** Issue 234: a bundle crashed the old reader, which wanted a JSON-LD @id; the bundle's identifier is its key, and it inherits the document's prefixes. */
+    public void testIssue234() throws IOException {
+        Document doc = roundTrips("issue-234");
+        assertEquals(1, doc.getStatementOrBundle().size());
+        Bundle bundle = (Bundle) doc.getStatementOrBundle().get(0);
+        assertEquals("http://example.org/", bundle.getId().getNamespaceURI());
+        assertEquals("bundle1", bundle.getId().getLocalPart());
+        assertSame(doc.getNamespace(), bundle.getNamespace().getParent());
+        assertEquals(1, bundle.getStatement().size());
+        Entity e1 = (Entity) bundle.getStatement().get(0);
+        assertEquals("e1", e1.getId().getLocalPart());
+        assertEquals("http://example.org/", e1.getId().getNamespaceURI());
+        assertTrue(e1.getOther().isEmpty());
+        // written back under its identifier, without any @id, its entity inside
+        com.fasterxml.jackson.databind.JsonNode b1 = Schemas.read("target/issue-234.json").get("bundle").get("ex:bundle1");
+        assertNotNull(b1);
+        assertNull(b1.get("@id"));
+        assertEquals("{}", b1.get("entity").get("ex:e1").toString());
+    }
+
     public void testIssue231() throws IOException {
         Document doc = roundTrips("issue-231");
         Map<String, Other> others = others(onlyEntity(doc));

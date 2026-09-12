@@ -1,0 +1,10 @@
+{
+    "prefix": { "ex": "http://example.org/" },
+    "bundle": {
+        "ex:bundle1": {
+            "entity": {
+                "ex:e1": {}
+            }
+        }
+    }
+}

@@ -33,6 +33,23 @@ public class ProvToMermaid extends ProvViz {
         return this;
     }
 
+    /** Whether a house is drawn as an inline svg image — mermaid has no house shape — or as the trapezoid {@link #house()} names. */
+    private boolean houseAsImage = true;
+
+    public ProvToMermaid setHouseAsImage(boolean houseAsImage) {
+        this.houseAsImage = houseAsImage;
+        return this;
+    }
+
+    /** Whether an attribute box is linked from its statement (the box then lies on the cause side of the statement, where
+     *  dagre leaves it clear of the statement's other edges) or, as dot has it, links to it. */
+    private boolean statementLinksToBox = true;
+
+    public ProvToMermaid setStatementLinksToBox(boolean statementLinksToBox) {
+        this.statementLinksToBox = statementLinksToBox;
+        return this;
+    }
+
     /** Space between a node's text and its border, for every node: mermaid has no per-node padding, and its default 15 leaves an attribute box mostly white. */
     private int nodePadding = 8;
 
@@ -391,17 +408,60 @@ public class ProvToMermaid extends ProvViz {
     public void emitNode(VizNode n, Identifiers ids, Output o, String indent) {
         String id = ids.declare(n);
         NodeShape shape = (n.shape == null) ? defaultShape(n.kind) : n.shape;
-        o.out.println(indent + id + "@{ shape: " + shapeToken(shape) + ", label: \"" + nodeLabel(n) + "\" }");
-        o.classMembers.computeIfAbsent(n.kind, k -> new ArrayList<>()).add(id);
-        String css = css(n.style, true);
-        if (!css.isEmpty() && !css.equals(css(classStyle(n.kind), true))) {
-            o.trailer.append("    style ").append(id).append(" ").append(css).append("\n");
+        if (shape == NodeShape.HOUSE && houseAsImage) {
+            emitHouse(n, id, o, indent);
+        } else {
+            o.out.println(indent + id + "@{ shape: " + shapeToken(shape) + ", label: \"" + nodeLabel(n) + "\" }");
+            o.classMembers.computeIfAbsent(n.kind, k -> new ArrayList<>()).add(id);
+            String css = css(n.style, true);
+            if (!css.isEmpty() && !css.equals(css(classStyle(n.kind), true))) {
+                o.trailer.append("    style ").append(id).append(" ").append(css).append("\n");
+            }
         }
         if (n.url != null && n.kind != NodeKind.BLANK) {
             o.trailer.append("    click ").append(id).append(" href \"").append(n.url).append("\"");
             if (n.tooltip != null) o.trailer.append(" \"").append(escapeText(n.tooltip)).append("\"");
             o.trailer.append("\n");
         }
+    }
+
+    //////////////////////////////////////////////////////////////////////
+    ///
+    ///                              HOUSES
+    ///
+    //////////////////////////////////////////////////////////////////////
+
+    /** Height of a house image, and of its roof, in pixels; the label's font is the flowchart's, 16px. */
+    public int houseHeight = 44;
+    public int roofHeight = 14;
+    public int houseFontSize = 16;
+    /** Width per character of the label, an estimate of the flowchart font's average advance. */
+    public double houseCharWidth = 8.5;
+
+    /** An agent as an image node showing a house with its label inside, mermaid's own frame around the image made invisible. */
+    public void emitHouse(VizNode n, String id, Output o, String indent) {
+        String label = n.label == null ? "" : truncate(n.label);
+        int width = (int) Math.max(60, Math.ceil(houseCharWidth * label.length()) + 24);
+        String fill = n.style.fill != null ? cssColour(n.style.fill) : AGENT_FILLCOLOUR;
+        String stroke = n.style.stroke != null ? cssColour(n.style.stroke) : "#000000";
+        String svg = houseSvg(label, width, houseHeight, fill, stroke, n.style.fontColour != null ? cssColour(n.style.fontColour) : "#000000");
+        String uri = "data:image/svg+xml;base64," + Base64.getEncoder().encodeToString(svg.getBytes(StandardCharsets.UTF_8));
+        o.out.println(indent + id + "@{ img: \"" + uri + "\", w: " + width + ", h: " + houseHeight + ", constraint: \"on\", label: \"\", pos: \"b\" }");
+        o.trailer.append("    style ").append(id).append(" fill:none,stroke:none\n");
+    }
+
+    public String houseSvg(String label, int width, int height, String fill, String stroke, String fontColour) {
+        double mid = width / 2.0;
+        String points = "1," + (height - 1) + " 1," + roofHeight + " " + mid + ",1 " + (width - 1) + "," + roofHeight + " " + (width - 1) + "," + (height - 1);
+        double baseline = (height + roofHeight) / 2.0 + houseFontSize * 0.35;
+        return "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" + width + "\" height=\"" + height + "\" viewBox=\"0 0 " + width + " " + height + "\">"
+                + "<polygon points=\"" + points + "\" fill=\"" + fill + "\" stroke=\"" + stroke + "\" stroke-width=\"1\"/>"
+                + "<text x=\"" + mid + "\" y=\"" + baseline + "\" text-anchor=\"middle\" fill=\"" + fontColour + "\""
+                + " font-family=\"trebuchet ms,verdana,arial,sans-serif\" font-size=\"" + houseFontSize + "\">" + xmlEscape(label) + "</text></svg>";
+    }
+
+    static String xmlEscape(String s) {
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;");
     }
 
     /** Mermaid has no arrow tails and few heads: an edge is an arrow or a line, solid or dashed. */
@@ -413,10 +473,11 @@ public class ProvToMermaid extends ProvViz {
     }
 
     public void emitEdge(VizEdge e, Identifiers ids, Output o, String indent) {
+        boolean flip = statementLinksToBox && e.role == EdgeRole.ANNOTATION;
         StringBuilder sb = new StringBuilder(indent);
-        sb.append(ids.of(e.source)).append(" ").append(connector(e));
+        sb.append(ids.of(flip ? e.target : e.source)).append(" ").append(connector(e));
         if (e.label != null && !e.label.isEmpty()) sb.append("|").append(escapeEdgeLabel(e.label)).append("|");
-        sb.append(" ").append(ids.of(e.target));
+        sb.append(" ").append(ids.of(flip ? e.source : e.target));
         o.out.println(sb);
         String css = css(e.style, false);
         if (!css.isEmpty()) {

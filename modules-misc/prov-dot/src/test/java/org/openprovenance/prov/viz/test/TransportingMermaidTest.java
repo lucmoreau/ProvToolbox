@@ -68,7 +68,10 @@ public class TransportingMermaidTest extends TestCase {
     public void testTransportingPlain() throws IOException {
         String text = mermaid("transporting.provn", "transporting.mermaid", false);
         assertTrue(text.contains("transporting@{ shape: rect"));
-        assertTrue(text.contains("transporter@{ shape: trap-b"));
+        assertTrue("an agent is a house drawn as an inline svg", text.contains("transporter@{ img: \"data:image/svg+xml;base64,"));
+        assertTrue(text.contains("style transporter fill:none,stroke:none"));
+        // the attribute box is linked from its statement: on the cause side, clear of the statement's other edges
+        assertTrue(text.contains("transporting -.- attrs0"));
         assertTrue(text.contains("item1@{ shape: stadium"));
         // short names are padded so a stadium does not collapse into a circle; long ones are left alone
         assertTrue(text.contains("label: \"#nbsp;item#nbsp;\""));

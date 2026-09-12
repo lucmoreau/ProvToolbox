@@ -151,6 +151,29 @@ public class RoundTripFromProvJsonTest extends TestCase {
         assertEquals("{}", b1.get("entity").get("ex:e1").toString());
     }
 
+    /** Issue 222: the bundle's identifier is its key; the @id earlier releases wrote inside is read when it agrees, never written. */
+    public void testIssue222() throws IOException {
+        Document doc = roundTrips("issue-222");
+        Bundle bundle = (Bundle) doc.getStatementOrBundle().get(0);
+        assertEquals("https://example.org/", bundle.getId().getNamespaceURI());
+        assertEquals("bundleId", bundle.getId().getLocalPart());
+        assertEquals("entityId", ((Entity) bundle.getStatement().get(0)).getId().getLocalPart());
+        com.fasterxml.jackson.databind.JsonNode b = Schemas.read("target/issue-222.json").get("bundle").get("ex:bundleId");
+        assertNull(b.get("@id"));
+        assertEquals("{}", b.get("entity").get("ex:entityId").toString());
+    }
+
+    /** The legacy @id inside a bundle is only ever the key again: any other identifier is an error, not a second name. */
+    public void testLegacyBundleIdMustAgreeWithKey() throws IOException {
+        String json = "{\"prefix\": {\"ex\": \"http://example.org/\"}, \"bundle\": {\"ex:b1\": {\"@id\": \"ex:b2\", \"entity\": {\"ex:e\": {}}}}}";
+        try {
+            new ProvDeserialiser().deserialiseDocument(new java.io.ByteArrayInputStream(json.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+            fail("a bundle named twice, differently");
+        } catch (org.openprovenance.prov.core.json.serialization.ProvJsonException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("ex:b2"));
+        }
+    }
+
     public void testIssue231() throws IOException {
         Document doc = roundTrips("issue-231");
         Map<String, Other> others = others(onlyEntity(doc));

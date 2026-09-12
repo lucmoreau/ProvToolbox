@@ -24,6 +24,14 @@ public class ProvToMermaid extends ProvViz {
     /** The mermaid-cli executable; the {@code MMDC} environment variable overrides the default {@code mmdc}. */
     private String mmdc = System.getenv().getOrDefault("MMDC", "mmdc");
 
+    /** Side, in pixels, of the viewport a pdf is laid out in; the page is trimmed to the chart within it. */
+    private int pdfViewport = 20000;
+
+    public ProvToMermaid setPdfViewport(int pdfViewport) {
+        this.pdfViewport = pdfViewport;
+        return this;
+    }
+
     /** Background mmdc paints behind the drawing (its own default is transparent for svg). */
     private String backgroundColour = "white";
 
@@ -130,7 +138,13 @@ public class ProvToMermaid extends ProvViz {
 
     /** Runs {@code mmdc -i in -o out}; the output type follows the extension of {@code out}. */
     public void renderWithMmdc(Path in, Path out) throws IOException {
-        ProcessBuilder pb = new ProcessBuilder(mmdc, "-q", "-b", backgroundColour, "-i", in.toString(), "-o", out.toString());
+        List<String> command = new ArrayList<>(List.of(mmdc, "-q", "-b", backgroundColour, "-i", in.toString(), "-o", out.toString()));
+        // without --pdfFit a pdf is a full page with the chart in a corner; the page then follows the
+        // viewport, so a viewport larger than any chart leaves the fitted page at the chart's natural size
+        if (out.toString().endsWith(".pdf")) {
+            command.addAll(List.of("--pdfFit", "-w", String.valueOf(pdfViewport), "-H", String.valueOf(pdfViewport)));
+        }
+        ProcessBuilder pb = new ProcessBuilder(command);
         pb.redirectErrorStream(true);
         Process proc = pb.start();
         String output = new String(proc.getInputStream().readAllBytes(), StandardCharsets.UTF_8);

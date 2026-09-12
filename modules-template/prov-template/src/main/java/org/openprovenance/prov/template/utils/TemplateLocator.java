@@ -14,6 +14,8 @@ public class TemplateLocator {
     private String qualifiedPng;
     private String qualifiedSvg;
     private String qualifiedPdf;
+    private String mmd;
+    private String qualifiedMmd;
     private String provCsv;
     private TemplateProvenanceLocator hasProvenance;
 
@@ -92,6 +94,22 @@ public class TemplateLocator {
         this.qualifiedPdf = qualifiedPdf;
     }
 
+    public String getMmd() {
+        return mmd;
+    }
+
+    public void setMmd(String mmd) {
+        this.mmd = mmd;
+    }
+
+    public String getQualifiedMmd() {
+        return qualifiedMmd;
+    }
+
+    public void setQualifiedMmd(String qualifiedMmd) {
+        this.qualifiedMmd = qualifiedMmd;
+    }
+
     public TemplateProvenanceLocator getHasProvenance() {
         return hasProvenance;
     }
@@ -114,6 +132,8 @@ public class TemplateLocator {
             case QUALIFIED_PNG -> getQualifiedPng();
             case QUALIFIED_SVG -> getQualifiedSvg();
             case QUALIFIED_PDF -> getQualifiedPdf();
+            case MMD -> getMmd();
+            case QUALIFIED_MMD -> getQualifiedMmd();
             case HAS_PROVENANCE -> throw new TemplateLocatorException("get(): Cannot get HAS_PROVENANCE path from TemplateLocator");
         };
     }
@@ -132,6 +152,8 @@ public class TemplateLocator {
             case QUALIFIED_PNG -> getHasProvenance().getQualifiedPng();
             case QUALIFIED_SVG -> getHasProvenance().getQualifiedSvg();
             case QUALIFIED_PDF -> getHasProvenance().getQualifiedPdf();
+            case MMD -> getHasProvenance().getMmd();
+            case QUALIFIED_MMD -> getHasProvenance().getQualifiedMmd();
             case HAS_PROVENANCE -> throw new TemplateLocatorException("getProvenance(): Cannot get HAS_PROVENANCE path from TemplateLocator");
         };
     }
@@ -155,6 +177,8 @@ public class TemplateLocator {
             case QUALIFIED_PNG -> setQualifiedPng(path);
             case QUALIFIED_SVG -> setQualifiedSvg(path);
             case QUALIFIED_PDF -> setQualifiedPdf(path);
+            case MMD -> setMmd(path);
+            case QUALIFIED_MMD -> setQualifiedMmd(path);
             case HAS_PROVENANCE -> throw new TemplateLocatorException("Cannot set HAS_PROVENANCE path in TemplateLocator");
         }
     }
@@ -177,6 +201,8 @@ public class TemplateLocator {
             case QUALIFIED_PNG -> getHasProvenance().setQualifiedPng(path);
             case QUALIFIED_SVG -> getHasProvenance().setQualifiedSvg(path);
             case QUALIFIED_PDF -> getHasProvenance().setQualifiedPdf(path);
+            case MMD -> getHasProvenance().setMmd(path);
+            case QUALIFIED_MMD -> getHasProvenance().setQualifiedMmd(path);
             case HAS_PROVENANCE -> throw new TemplateLocatorException("Cannot set HAS_PROVENANCE path in TemplateLocator");
         }
     }
@@ -201,6 +227,8 @@ public class TemplateLocator {
                 ", qualifiedPng='" + qualifiedPng + '\'' +
                 ", qualifiedSvg='" + qualifiedSvg + '\'' +
                 ", qualifiedPdf='" + qualifiedPdf + '\'' +
+                ", mmd='" + mmd + '\'' +
+                ", qualifiedMmd='" + qualifiedMmd + '\'' +
                 ", provCsv='" + provCsv + '\'' +
                 ", hasProvenance=" + hasProvenance +
                 '}';

@@ -10,9 +10,11 @@ public enum TemplateExtension {
     JSON("json"),
     PNG("png"),
     SVG("svg"),
+    MMD("mmd"),
     QUALIFIED_PNG("qualified.png"),
     QUALIFIED_SVG("qualified.svg"),
     QUALIFIED_PDF("qualified.pdf"),
+    QUALIFIED_MMD("qualified.mmd"),
     PROVCSV("prov-csv"),
     HAS_PROVENANCE("hasProvenance");
 

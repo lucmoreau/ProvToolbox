@@ -330,6 +330,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     mimeTypeRevMap.put(MEDIA_TEXT_VND_GRAPHVIZ, ProvFormat.DOT);
                     provTypeMap.put(ProvFormat.DOT, ProvFormatType.OUTPUT);
                     break;
+                case MERMAID:
+                    extensionMap.put(ProvFormat.MERMAID, EXTENSION_MERMAID);
+                    extensionRevMap.put(EXTENSION_MERMAID, ProvFormat.MERMAID);
+                    mimeTypeMap.put(ProvFormat.MERMAID, MEDIA_TEXT_VND_MERMAID);
+                    mimeTypeRevMap.put(MEDIA_TEXT_VND_MERMAID, ProvFormat.MERMAID);
+                    provTypeMap.put(ProvFormat.MERMAID, ProvFormatType.OUTPUT);
+                    break;
                 case JPEG:
                     extensionMap.put(ProvFormat.JPEG, EXTENSION_JPG);
                     extensionRevMap.put(EXTENSION_JPEG, ProvFormat.JPEG);

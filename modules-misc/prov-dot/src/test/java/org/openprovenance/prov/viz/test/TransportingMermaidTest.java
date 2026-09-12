@@ -42,7 +42,8 @@ public class TransportingMermaidTest extends TestCase {
             toMermaid.convert(doc, out, ProvToMermaid.NOTATION_EXTENSION, stem);
         }
         String text = Files.readString(mmd, StandardCharsets.UTF_8);
-        assertTrue(text.startsWith("---\ntitle: \"" + stem + "\"\n---\nflowchart BT\n"));
+        assertTrue(text.startsWith("%% " + stem + "\nflowchart BT\n"));
+        assertFalse("no title front matter, it is drawn above the graph", text.contains("---\ntitle:"));
 
         if (toMermaid.mmdcAvailable()) {
             for (String type : List.of("svg", "png")) {
@@ -64,6 +65,11 @@ public class TransportingMermaidTest extends TestCase {
         assertTrue(text.contains("transporting@{ shape: rect"));
         assertTrue(text.contains("transporter@{ shape: trap-b"));
         assertTrue(text.contains("item1@{ shape: stadium"));
+        // short names are padded so a stadium does not collapse into a circle; long ones are left alone
+        assertTrue(text.contains("label: \"#nbsp;item#nbsp;\""));
+        assertTrue(text.contains("label: \"item1#nbsp;\""));
+        assertTrue(text.contains("label: \"transporting\""));
+        assertTrue(text.contains("style cluster_b fill:#FFFFFF,stroke:#000000"));
     }
 
     public void testTransportingQualified() throws IOException {

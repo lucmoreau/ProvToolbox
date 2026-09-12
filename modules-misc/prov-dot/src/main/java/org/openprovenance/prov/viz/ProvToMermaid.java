@@ -24,6 +24,30 @@ public class ProvToMermaid extends ProvViz {
     /** The mermaid-cli executable; the {@code MMDC} environment variable overrides the default {@code mmdc}. */
     private String mmdc = System.getenv().getOrDefault("MMDC", "mmdc");
 
+    /** Background mmdc paints behind the drawing (its own default is transparent for svg). */
+    private String backgroundColour = "white";
+
+    /** Bundles are drawn as subgraphs; without this mermaid fills them with its theme's pale yellow. */
+    private String clusterCss = "fill:#FFFFFF,stroke:#000000";
+
+    /** Labels shorter than this are padded with non-breaking spaces on both sides: a two-letter stadium is otherwise a circle. */
+    private int minLabelLength = 6;
+
+    public ProvToMermaid setBackgroundColour(String backgroundColour) {
+        this.backgroundColour = backgroundColour;
+        return this;
+    }
+
+    public ProvToMermaid setClusterCss(String clusterCss) {
+        this.clusterCss = clusterCss;
+        return this;
+    }
+
+    public ProvToMermaid setMinLabelLength(int minLabelLength) {
+        this.minLabelLength = minLabelLength;
+        return this;
+    }
+
     /** From a node, the name its mermaid identifier is derived from; made unique by suffixing. */
     private Function<VizNode, String> identifierBase = ProvToMermaid::localNameBase;
 
@@ -106,7 +130,7 @@ public class ProvToMermaid extends ProvViz {
 
     /** Runs {@code mmdc -i in -o out}; the output type follows the extension of {@code out}. */
     public void renderWithMmdc(Path in, Path out) throws IOException {
-        ProcessBuilder pb = new ProcessBuilder(mmdc, "-q", "-i", in.toString(), "-o", out.toString());
+        ProcessBuilder pb = new ProcessBuilder(mmdc, "-q", "-b", backgroundColour, "-i", in.toString(), "-o", out.toString());
         pb.redirectErrorStream(true);
         Process proc = pb.start();
         String output = new String(proc.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
@@ -281,9 +305,7 @@ public class ProvToMermaid extends ProvViz {
         graph.allNodes().forEach(ids::declare);
         Output o = new Output(out, graph.direction);
 
-        out.println("---");
-        out.println("title: " + quoteYaml(graph.title));
-        out.println("---");
+        if (graph.title != null) out.println("%% " + graph.title.replace("\n", " "));
         out.println("flowchart " + graph.direction);
         renderScope(graph, ids, o, "    ");
 
@@ -296,11 +318,6 @@ public class ProvToMermaid extends ProvViz {
         }
         out.print(o.trailer);
         out.flush();
-    }
-
-    static String quoteYaml(String s) {
-        if (s == null) return "\"\"";
-        return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
     }
 
     protected void renderScope(VizScope scope, Identifiers ids, Output o, String indent) {
@@ -317,6 +334,7 @@ public class ProvToMermaid extends ProvViz {
                 o.out.println(indent + "    direction " + o.direction);
                 renderScope(c, ids, o, indent + "    ");
                 o.out.println(indent + "end");
+                if (clusterCss != null && !clusterCss.isEmpty()) o.trailer.append("    style ").append(cid).append(" ").append(clusterCss).append("\n");
                 if (c.url != null) o.trailer.append("    click ").append(cid).append(" href \"").append(c.url).append("\"\n");
             }
         }
@@ -331,7 +349,16 @@ public class ProvToMermaid extends ProvViz {
             return String.join("<br/>", lines);
         }
         if (n.kind == NodeKind.BLANK) return " ";
-        return escapeLabel(n.label == null ? "" : n.label);
+        return padLabel(escapeLabel(n.label == null ? "" : n.label), n.label == null ? 0 : n.label.length());
+    }
+
+    /** Non-breaking spaces either side of a short label, up to {@link #minLabelLength}; plain spaces mermaid would collapse. */
+    public String padLabel(String escaped, int length) {
+        int missing = minLabelLength - length;
+        if (missing <= 0) return escaped;
+        int left = missing / 2;
+        int right = missing - left;
+        return "#nbsp;".repeat(left) + escaped + "#nbsp;".repeat(right);
     }
 
     public void emitNode(VizNode n, Identifiers ids, Output o, String indent) {

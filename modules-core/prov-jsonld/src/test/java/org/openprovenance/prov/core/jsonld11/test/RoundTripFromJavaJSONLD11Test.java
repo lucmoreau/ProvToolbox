@@ -7,8 +7,11 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.test.RoundTripFromJavaTest;
 
 import java.io.*;
+import java.util.List;
+import com.apicatalog.jsonld.JsonLdError;
+import org.openprovenance.prov.core.test.JsonLdExpansion;
+import org.openprovenance.prov.core.test.Schemas;
 
-import static org.openprovenance.prov.core.jsonld11.serialization.Constants.JSONLDSCHEMA_2024_08_25;
 
 public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
 
@@ -38,52 +41,27 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
     }
 
 
-    public void executeAndWait (String command) throws IOException {
-        Runtime runtime = Runtime.getRuntime();
-        java.lang.Process proc = runtime.exec(command);
-        try {
-            final int exitValue = proc.waitFor();
-            if (exitValue == 0) {
-                return ;
-            } else {
-                try (final BufferedReader b = new BufferedReader(new InputStreamReader(proc.getErrorStream()))) {
-                    String line;
-                    if ((line = b.readLine()) != null)
-                        System.out.println(escapeRed(line));
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                }
-                throw new IOException("exit value " + exitValue);
-            }
-            //System.err.println("exit value " + proc.exitValue());
-        } catch (InterruptedException e) {
-            throw new IOException(e);
-        }
-    }
-
     public String extension() {
         return ".jsonld";
     }
 
 
 
+    /** Every file written: valid against the module's PROV-JSONLD schema, and JSON-LD that expands to PROV terms. */
     public boolean checkTest(String name) {
         if (name.contains("DictionaryMembership")) {
             System.out.println(escapeRed("########## Skipping testing for " + name + " in " + extension()));
             return false;
         }
-        // call ajv executable on the command line to validate the JSON-LD file
         try {
-            executeAndWait("ajv -s " + jsonSchemaLocation() + " -d " + name);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            List<String> violations = Schemas.violations(Schemas.PROV_JSONLD, new File(name));
+            assertTrue(name + " violates the PROV-JSONLD schema: " + violations, violations.isEmpty());
+            List<String> problems = JsonLdExpansion.problems(JsonLdExpansion.expand(new File(name)));
+            assertTrue(name + " does not expand to PROV: " + problems, problems.isEmpty());
+        } catch (IOException | JsonLdError e) {
+            throw new RuntimeException(name, e);
         }
-    }
-
-    public String jsonSchemaLocation() {
-        return "src/main/resources/" + JSONLDSCHEMA_2024_08_25;
+        return true;
     }
 
     @Override

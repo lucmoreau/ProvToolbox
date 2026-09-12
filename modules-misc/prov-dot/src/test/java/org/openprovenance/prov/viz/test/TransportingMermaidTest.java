@@ -60,6 +60,11 @@ public class TransportingMermaidTest extends TestCase {
         return text;
     }
 
+    /** An attribute-box row: the name, a colon, non-breaking spaces that align the column, the value. */
+    static boolean hasRow(String text, String name, String value) {
+        return text.matches("(?s).*" + java.util.regex.Pattern.quote(name + ":") + "(#nbsp;)+" + java.util.regex.Pattern.quote(value) + ".*");
+    }
+
     public void testTransportingPlain() throws IOException {
         String text = mermaid("transporting.provn", "transporting.mermaid", false);
         assertTrue(text.contains("transporting@{ shape: rect"));
@@ -75,15 +80,15 @@ public class TransportingMermaidTest extends TestCase {
     public void testTransportingQualified() throws IOException {
         String text = mermaid("transporting.provn", "transporting.qualified.mermaid", true);
         // the identified relations have an id box, the unidentified attribution and specialisation have none
-        assertTrue(text.contains("id: asc1"));
+        assertTrue(hasRow(text, "id", "asc1"));
         assertFalse(text.contains("label: \"\" }"));
     }
 
     public void testTransportingWithIdsQualified() throws IOException {
         String text = mermaid("transporting-with-ids.provn", "transporting-with-ids.qualified.mermaid", true);
-        assertTrue(text.contains("id: att1"));
-        assertTrue(text.contains("id: spe1"));
-        assertTrue(text.contains("id: spe2"));
+        assertTrue(hasRow(text, "id", "att1"));
+        assertTrue(hasRow(text, "id", "spe1"));
+        assertTrue(hasRow(text, "id", "spe2"));
     }
 
     public void testQualifiedMmdSerialiser() throws IOException {

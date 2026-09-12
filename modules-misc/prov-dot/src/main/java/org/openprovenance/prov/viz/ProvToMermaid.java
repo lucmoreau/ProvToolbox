@@ -325,6 +325,8 @@ public class ProvToMermaid extends ProvViz {
 
         for (NodeKind kind : NodeKind.values()) {
             String css = css(classStyle(kind), true);
+            // an attribute box reads as dot's table did: rows flush left, not centred
+            if (kind == NodeKind.ANNOTATION) css += (css.isEmpty() ? "" : ",") + "text-align:left";
             if (!css.isEmpty()) out.println("    classDef " + className(kind) + " " + css);
         }
         for (Map.Entry<NodeKind, List<String>> entry : o.classMembers.entrySet()) {
@@ -356,9 +358,12 @@ public class ProvToMermaid extends ProvViz {
 
     public String nodeLabel(VizNode n) {
         if (n.kind == NodeKind.ANNOTATION) {
+            // names padded to one width so the values line up in a second column, as in dot's table
+            int width = n.rows.stream().mapToInt(r -> r.name.length()).max().orElse(0) + 1;
             List<String> lines = new ArrayList<>();
             for (VizNode.Row row : n.rows) {
-                lines.add(escapeLabel(row.name) + ": " + escapeLabel(truncate(row.value)));
+                String name = row.name + ":";
+                lines.add(escapeLabel(name) + "#nbsp;".repeat(Math.max(1, width - name.length() + 1)) + escapeLabel(truncate(row.value)));
             }
             return String.join("<br/>", lines);
         }

@@ -50,6 +50,22 @@ public class ProvToMermaid extends ProvViz {
         return this;
     }
 
+    /** Font of the attribute boxes: fixed-width, so that padding with spaces aligns the values. */
+    private String annotationFont = "monospace";
+
+    public ProvToMermaid setAnnotationFont(String annotationFont) {
+        this.annotationFont = annotationFont;
+        return this;
+    }
+
+    /** Width, in characters, of the name column of an attribute box, colon included: {@code label: } and {@code url:   } align. */
+    private int minNameWidth = 7;
+
+    public ProvToMermaid setMinNameWidth(int minNameWidth) {
+        this.minNameWidth = minNameWidth;
+        return this;
+    }
+
     /** Space between a node's text and its border, for every node: mermaid has no per-node padding, and its default 15 leaves an attribute box mostly white. */
     private int nodePadding = 8;
 
@@ -350,8 +366,8 @@ public class ProvToMermaid extends ProvViz {
 
         for (NodeKind kind : NodeKind.values()) {
             String css = css(classStyle(kind), true);
-            // an attribute box reads as dot's table did: rows flush left, not centred
-            if (kind == NodeKind.ANNOTATION) css += (css.isEmpty() ? "" : ",") + "text-align:left";
+            // an attribute box reads as dot's table did: rows flush left in a fixed-width font, so the padded names make a column
+            if (kind == NodeKind.ANNOTATION) css += (css.isEmpty() ? "" : ",") + "text-align:left,font-family:" + annotationFont;
             if (!css.isEmpty()) out.println("    classDef " + className(kind) + " " + css);
         }
         for (Map.Entry<NodeKind, List<String>> entry : o.classMembers.entrySet()) {
@@ -383,8 +399,9 @@ public class ProvToMermaid extends ProvViz {
 
     public String nodeLabel(VizNode n) {
         if (n.kind == NodeKind.ANNOTATION) {
-            // names padded to one width so the values line up in a second column, as in dot's table
-            int width = n.rows.stream().mapToInt(r -> r.name.length()).max().orElse(0) + 1;
+            // names padded to one width so the values line up in a second column, as in dot's table; boxes of short
+            // names share the minimum width, so their columns line up across boxes too
+            int width = Math.max(minNameWidth, n.rows.stream().mapToInt(r -> r.name.length()).max().orElse(0) + 1);
             List<String> lines = new ArrayList<>();
             for (VizNode.Row row : n.rows) {
                 String name = row.name + ":";

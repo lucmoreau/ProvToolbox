@@ -18,7 +18,8 @@ import java.util.*;
  * <li>{@code prov} and {@code xsd} without declaration;</li>
  * <li>a blank identifier {@code _:x} on a relation, which is a relation without identifier;</li>
  * <li>a specialization, alternate or membership with an identifier or attributes, which becomes the qualified
- *     extension of that relation.</li>
+ *     extension of that relation;</li>
+ * <li>the {@code @id} earlier ProvToolbox releases wrote inside a bundle, when it agrees with the bundle's key.</li>
  * </ul>
  * A section or property the submission does not define is an error, not silently dropped.
  */
@@ -41,18 +42,25 @@ public class ProvJsonReader implements ProvJsonVocabulary {
         Namespace ns = namespace(root.get(PREFIX), null);
         List<Statement> statements = new ArrayList<>();
         List<Bundle> bundles = new ArrayList<>();
-        readScope(root, ns, statements, bundles, true);
+        readScope(root, ns, statements, bundles, null);
         Document doc = pf.newDocument(ns, statements, bundles);
         for (Bundle b : bundles) b.getNamespace().setParent(ns);
         return doc;
     }
 
-    private void readScope(JsonNode scope, Namespace ns, List<Statement> statements, List<Bundle> bundles, boolean bundlesAllowed) {
+    private void readScope(JsonNode scope, Namespace ns, List<Statement> statements, List<Bundle> bundles, QualifiedName bundleId) {
+        boolean bundlesAllowed = bundleId == null;
         Iterator<Map.Entry<String, JsonNode>> sections = scope.fields();
         while (sections.hasNext()) {
             Map.Entry<String, JsonNode> section = sections.next();
             String key = section.getKey();
             if (PREFIX.equals(key)) continue;
+            if (LEGACY_ID.equals(key) && bundleId != null) {
+                // ProvToolbox up to 2.2.4 repeated the bundle's identifier inside it, a JSON-LD habit; it must be the key's
+                QualifiedName declared = id(section.getValue().asText(), ns);
+                if (!declared.equals(bundleId)) throw new ProvJsonException("bundle " + section.getValue().asText() + " under key " + bundleId);
+                continue;
+            }
             if (BUNDLE.equals(key)) {
                 if (!bundlesAllowed) throw new ProvJsonException("a bundle must not contain a bundle");
                 Iterator<Map.Entry<String, JsonNode>> entries = object(section.getValue(), key).fields();
@@ -74,7 +82,7 @@ public class ProvJsonReader implements ProvJsonVocabulary {
     private Bundle readBundle(QualifiedName id, JsonNode content, Namespace docNs) {
         Namespace ns = namespace(content.get(PREFIX), docNs);
         List<Statement> statements = new ArrayList<>();
-        readScope(content, ns, statements, null, false);
+        readScope(content, ns, statements, null, id);
         return pf.newNamedBundle(id, ns, statements);
     }
 

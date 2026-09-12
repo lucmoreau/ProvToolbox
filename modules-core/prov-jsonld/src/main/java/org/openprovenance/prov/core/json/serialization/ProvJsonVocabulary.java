@@ -83,6 +83,9 @@ public interface ProvJsonVocabulary {
     String XSD_QNAME = "xsd:QName";
     String PROV_QUALIFIED_NAME = "prov:QUALIFIED_NAME";
 
+    /** What ProvToolbox up to 2.2.4 wrote inside a bundle to repeat its identifier; read, never written. */
+    String LEGACY_ID = "@id";
+
     /** Blank identifiers, {@code _:local}, carry no meaning: a relation so identified has no identifier. */
     String BLANK_PREFIX = "_";
     String BLANK_NS = "https://openprovenance.org/blank#";

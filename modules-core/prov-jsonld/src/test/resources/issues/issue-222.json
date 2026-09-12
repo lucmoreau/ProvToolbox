@@ -1,0 +1,20 @@
+{
+  "prefix": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "ex": "https://example.org/",
+    "prov": "http://www.w3.org/ns/prov#"
+  },
+  "bundle": {
+    "ex:bundleId": {
+      "prefix": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "prov": "http://www.w3.org/ns/prov#",
+        "ex": "https://example.org/"
+      },
+      "entity": {
+        "ex:entityId": {}
+      },
+      "@id": "ex:bundleId"
+    }
+  }
+}

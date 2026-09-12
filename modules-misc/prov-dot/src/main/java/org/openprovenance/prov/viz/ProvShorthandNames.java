@@ -1,4 +1,4 @@
-package org.openprovenance.prov.dot;
+package org.openprovenance.prov.viz;
 
 public interface ProvShorthandNames {
     String PROV_SHORTHAND_USAGE = "use";

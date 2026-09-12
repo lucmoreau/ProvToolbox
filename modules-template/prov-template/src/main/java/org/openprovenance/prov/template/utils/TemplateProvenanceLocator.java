@@ -16,6 +16,8 @@ public class TemplateProvenanceLocator {
     private String qualifiedPng;
     private String qualifiedSvg;
     private String qualifiedPdf;
+    private String mmd;
+    private String qualifiedMmd;
 
 
     public TemplateProvenanceLocator() { }
@@ -92,6 +94,22 @@ public class TemplateProvenanceLocator {
         this.qualifiedPdf = qualifiedPdf;
     }
 
+    public String getMmd() {
+        return mmd;
+    }
+
+    public void setMmd(String mmd) {
+        this.mmd = mmd;
+    }
+
+    public String getQualifiedMmd() {
+        return qualifiedMmd;
+    }
+
+    public void setQualifiedMmd(String qualifiedMmd) {
+        this.qualifiedMmd = qualifiedMmd;
+    }
+
     public String get(TemplateExtension extension) {
         if (extension == null) {
             throw new TemplateLocatorException("Extension cannot be null");
@@ -106,6 +124,8 @@ public class TemplateProvenanceLocator {
             case QUALIFIED_PNG -> getQualifiedPng();
             case QUALIFIED_SVG -> getQualifiedSvg();
             case QUALIFIED_PDF -> getQualifiedPdf();
+            case MMD -> getMmd();
+            case QUALIFIED_MMD -> getQualifiedMmd();
             case HAS_PROVENANCE -> throw new TemplateLocatorException("get: cannot get HAS_PROVENANCE from TemplateProvenanceLocator");
         };
     }
@@ -128,6 +148,8 @@ public class TemplateProvenanceLocator {
             case QUALIFIED_PNG -> setQualifiedPng(path);
             case QUALIFIED_SVG -> setQualifiedSvg(path);
             case QUALIFIED_PDF -> setQualifiedPdf(path);
+            case MMD -> setMmd(path);
+            case QUALIFIED_MMD -> setQualifiedMmd(path);
             case PROVCSV -> setProvCsv(path);
         }
     }

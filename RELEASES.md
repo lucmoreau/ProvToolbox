@@ -5,6 +5,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates-core: idempotency of statement posting, and support for idempotency-key in template service
 * prov-template, prov-toolbox-plugin: qualified.svg output format, the qualified rendering as vector beside qualified.png
 * qualified.svg: the qualified rendering as SVG, beside qualified.png
+* prov-dot: ProvViz, the visualisation model (VizGraph) that ProvToDot and the new ProvToMermaid render; mermaid output (mmd, qualified.mmd; svg/png/pdf via mmdc) in prov-interop and prov-template; the template-connection drawings move from service-templates-core to org.openprovenance.prov.viz.templates
 * prov-dot: the qualified.png/qualified.svg/qualified.pdf serialisers registered from ProvToDot (moved out of the BatchExecutors), qualified.pdf added; no more empty attribute box for an unidentified relation whose attributes are all provext links
 
 

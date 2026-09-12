@@ -1,0 +1,16 @@
+{
+    "prefix": {
+        "default": "http://example.org/",
+        "ex": "http://example.org/"
+    },
+    "entity": {
+        "e1": {
+            "ex:name": "hello",
+            "ex:count": 42,
+            "ex:flag": true,
+            "ex:offset": -100,
+            "ex:ratio": 0.75,
+            "ex:big": 12345678901234567890
+        }
+    }
+}

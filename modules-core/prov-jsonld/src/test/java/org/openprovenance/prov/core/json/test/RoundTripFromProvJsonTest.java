@@ -88,6 +88,26 @@ public class RoundTripFromProvJsonTest extends TestCase {
         assertTyped(others.get("prop2"), "1", name.XSD_INT);
     }
 
+    /** Issue 232: native JSON strings, numbers and booleans were dropped on reading; they are literals of the types the submission gives them. */
+    public void testIssue232() throws IOException {
+        Document doc = roundTrips("issue-232");
+        Map<String, Other> others = others(onlyEntity(doc));
+        assertEquals(others.keySet().toString(), 6, others.size());
+        assertEquals("hello", ((LangString) others.get("name").getValue()).getValue());
+        assertEquals(name.XSD_STRING, others.get("name").getType());
+        assertTyped(others.get("count"), "42", name.XSD_INT);
+        assertTyped(others.get("flag"), "true", name.XSD_BOOLEAN);
+        assertTyped(others.get("offset"), "-100", name.XSD_INT);
+        assertTyped(others.get("ratio"), "0.75", name.XSD_DECIMAL);
+        assertTyped(others.get("big"), "12345678901234567890", name.XSD_INTEGER);
+        // written back typed, a string as a string
+        com.fasterxml.jackson.databind.JsonNode e1 = Schemas.read("target/issue-232.json").get("entity").get("e1");
+        assertEquals("\"hello\"", e1.get("name").toString());
+        assertEquals("{\"$\":\"42\",\"type\":\"xsd:int\"}", e1.get("count").toString());
+        assertEquals("{\"$\":\"true\",\"type\":\"xsd:boolean\"}", e1.get("flag").toString());
+        assertEquals("{\"$\":\"-100\",\"type\":\"xsd:int\"}", e1.get("offset").toString());
+    }
+
     public void testIssue231() throws IOException {
         Document doc = roundTrips("issue-231");
         Map<String, Other> others = others(onlyEntity(doc));

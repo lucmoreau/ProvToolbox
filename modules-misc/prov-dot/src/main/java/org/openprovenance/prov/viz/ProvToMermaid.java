@@ -102,7 +102,7 @@ public class ProvToMermaid extends ProvViz {
     @Override public String ellipse() { return "stadium"; }
     @Override public String rectangle() { return "rect"; }
     @Override public String house() { return "trap-b"; }
-    @Override public String note() { return "doc"; }
+    @Override public String note() { return "tag-rect"; }
     @Override public String point() { return "f-circ"; }
     @Override public String folder() { return "docs"; }
     @Override public String plaintext() { return "text"; }

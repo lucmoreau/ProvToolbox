@@ -108,6 +108,29 @@ public class RoundTripFromProvJsonTest extends TestCase {
         assertEquals("{\"$\":\"-100\",\"type\":\"xsd:int\"}", e1.get("offset").toString());
     }
 
+    /** Issue 233: an array mixing typed objects and native values crashed the reader; each element is one value of the attribute. */
+    public void testIssue233() throws IOException {
+        Document doc = roundTrips("issue-233");
+        Entity e1 = onlyEntity(doc);
+        List<Other> tags = e1.getOther().stream().filter(o -> o.getElementName().getLocalPart().equals("tag")).collect(Collectors.toList());
+        assertEquals(5, tags.size());
+        assertEquals(name.XSD_STRING, tags.get(0).getType());
+        assertEquals("hello", ((LangString) tags.get(0).getValue()).getValue());
+        assertTyped(tags.get(1), "2", name.XSD_INT);
+        assertTyped(tags.get(2), "Qk0=", name.XSD_BASE64_BINARY);
+        assertTyped(tags.get(3), "true", name.XSD_BOOLEAN);
+        assertEquals(name.PROV_LANG_STRING, tags.get(4).getType());
+        assertEquals("fr", ((LangString) tags.get(4).getValue()).getLang());
+        // written back as one array of five, in order; a typed xsd:string is a plain string
+        com.fasterxml.jackson.databind.JsonNode tag = Schemas.read("target/issue-233.json").get("entity").get("e1").get("tag");
+        assertTrue(tag.isArray());
+        assertEquals(5, tag.size());
+        assertEquals("\"hello\"", tag.get(0).toString());
+        assertEquals("{\"$\":\"2\",\"type\":\"xsd:int\"}", tag.get(1).toString());
+        assertEquals("{\"$\":\"Qk0=\",\"type\":\"xsd:base64Binary\"}", tag.get(2).toString());
+        assertEquals("{\"$\":\"bonjour\",\"lang\":\"fr\"}", tag.get(4).toString());
+    }
+
     public void testIssue231() throws IOException {
         Document doc = roundTrips("issue-231");
         Map<String, Other> others = others(onlyEntity(doc));

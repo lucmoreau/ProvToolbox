@@ -264,12 +264,14 @@ public class ProvToMermaid extends ProvViz {
 
     protected static class Output {
         final PrintStream out;
+        final String direction;
         final StringBuilder trailer = new StringBuilder();
         final Map<NodeKind, List<String>> classMembers = new EnumMap<>(NodeKind.class);
         int edgeIndex = 0;
 
-        Output(PrintStream out) {
+        Output(PrintStream out, String direction) {
             this.out = out;
+            this.direction = direction;
         }
     }
 
@@ -277,7 +279,7 @@ public class ProvToMermaid extends ProvViz {
     public void render(VizGraph graph, PrintStream out) {
         Identifiers ids = new Identifiers();
         graph.allNodes().forEach(ids::declare);
-        Output o = new Output(out);
+        Output o = new Output(out, graph.direction);
 
         out.println("---");
         out.println("title: " + quoteYaml(graph.title));
@@ -311,6 +313,8 @@ public class ProvToMermaid extends ProvViz {
                 VizCluster c = (VizCluster) item;
                 String cid = ids.declareCluster(c);
                 o.out.println(indent + "subgraph " + cid + " [\"" + escapeText(c.label == null ? "" : c.label) + "\"]");
+                // a subgraph without its own direction is laid out top-down whatever the flowchart says
+                o.out.println(indent + "    direction " + o.direction);
                 renderScope(c, ids, o, indent + "    ");
                 o.out.println(indent + "end");
                 if (c.url != null) o.trailer.append("    click ").append(cid).append(" href \"").append(c.url).append("\"\n");

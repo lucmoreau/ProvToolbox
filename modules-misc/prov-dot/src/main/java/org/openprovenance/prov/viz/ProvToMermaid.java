@@ -33,6 +33,14 @@ public class ProvToMermaid extends ProvViz {
         return this;
     }
 
+    /** Space between a node's text and its border, for every node: mermaid has no per-node padding, and its default 15 leaves an attribute box mostly white. */
+    private int nodePadding = 8;
+
+    public ProvToMermaid setNodePadding(int nodePadding) {
+        this.nodePadding = nodePadding;
+        return this;
+    }
+
     /** Background mmdc paints behind the drawing (its own default is transparent for svg). */
     private String backgroundColour = "white";
 
@@ -319,6 +327,7 @@ public class ProvToMermaid extends ProvViz {
         Output o = new Output(out, graph.direction);
 
         if (graph.title != null) out.println("%% " + graph.title.replace("\n", " "));
+        out.println("%%{init: {\"flowchart\": {\"padding\": " + nodePadding + "}}}%%");
         out.println("flowchart " + graph.direction);
         renderScope(graph, ids, o, "    ");
 

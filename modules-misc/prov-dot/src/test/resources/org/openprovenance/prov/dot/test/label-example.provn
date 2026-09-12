@@ -1,0 +1,20 @@
+document
+prefix file <http://example.org/prov-api//live/file/>
+prefix phys <http://openprovenance.org/ns/phys#>
+prefix provext <http://openprovenance.org/prov/extension#>
+prefix fs <http://openprovenance.org/ns/fs#>
+prefix trs <https://openprovenance.org/transport/ns/#>
+prefix act <http://example.org/prov-api//live/activity/>
+entity(file:50003)
+entity(file:50001)
+entity(file:50004,[prov:type = 'fs:DataFile'])
+entity(file:50002)
+entity(file:50005,[prov:type = 'fs:DataFile'])
+activity(act:30003,-,-,[prov:type = 'fs:TransformingData'])
+used(act:30003,file:50001,-)
+used(act:30003,file:50003,-)
+wasGeneratedBy(file:50004,act:30003,-)
+wasGeneratedBy(file:50005,act:30003,-)
+wasDerivedFrom(file:50004, file:50001, act:30003, -, -)
+wasDerivedFrom(file:50005, file:50003, act:30003, -, -)
+endDocument

@@ -6,6 +6,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.openprovenance.prov.dot.ProvToDot;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvDeserialiser;
 import org.openprovenance.prov.model.ProvSerialiser;
@@ -44,10 +45,7 @@ public class BatchExecutor extends AbstractMojo {
 
         interop.populateSerializerDeserializerMaps(deserializerMap2, serializerMap2);
 
-        org.openprovenance.prov.dot.ProvSerialiser dotSerial=new org.openprovenance.prov.dot.ProvSerialiser(org.openprovenance.prov.vanilla.ProvFactory.getFactory(), "png", 20, true);
-        serializerMap2.put("qualified.png", dotSerial);
-        org.openprovenance.prov.dot.ProvSerialiser dotSerialSvg=new org.openprovenance.prov.dot.ProvSerialiser(org.openprovenance.prov.vanilla.ProvFactory.getFactory(), "svg", 20, true);
-        serializerMap2.put("qualified.svg", dotSerialSvg);
+        ProvToDot.registerQualifiedSerialisers(org.openprovenance.prov.vanilla.ProvFactory.getFactory(), serializerMap2);
 
         if (debug) {
             getLog().info(getClass().getName());

@@ -4,6 +4,9 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-archetype: navigator tab supports backward and forward traversals
 * service-templates-core: idempotency of statement posting, and support for idempotency-key in template service
 * prov-template, prov-toolbox-plugin: qualified.svg output format, the qualified rendering as vector beside qualified.png
+* qualified.svg: the qualified rendering as SVG, beside qualified.png
+* prov-dot: the qualified.png/qualified.svg/qualified.pdf serialisers registered from ProvToDot (moved out of the BatchExecutors), qualified.pdf added; no more empty attribute box for an unidentified relation whose attributes are all provext links
+
 
 `2.2.4`
 

@@ -59,6 +59,32 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         this.displayQualifiedRelation = true;
     }
 
+    /** Output formats rendering qualified relations as nodes, each with its attribute box. */
+    public static final String QUALIFIED_PNG = "qualified.png";
+    public static final String QUALIFIED_SVG = "qualified.svg";
+    public static final String QUALIFIED_PDF = "qualified.pdf";
+    public static final List<String> QUALIFIED_FORMATS = List.of(QUALIFIED_PNG, QUALIFIED_SVG, QUALIFIED_PDF);
+
+    /** Attribute values longer than this are truncated with an ellipsis in the qualified renderings. */
+    public static final int QUALIFIED_MAX_STRING_LENGTH = 20;
+
+    /** Serialiser for one of the {@link #QUALIFIED_FORMATS}, e.g. {@code qualified.svg} renders via {@code dot -Tsvg}. */
+    public static org.openprovenance.prov.dot.ProvSerialiser newQualifiedSerialiser(ProvFactory pf, String qualifiedFormat) {
+        if (!QUALIFIED_FORMATS.contains(qualifiedFormat)) {
+            throw new IllegalArgumentException("not a qualified format: " + qualifiedFormat + ", expected one of " + QUALIFIED_FORMATS);
+        }
+        String type = qualifiedFormat.substring(qualifiedFormat.lastIndexOf('.') + 1);
+        return new org.openprovenance.prov.dot.ProvSerialiser(pf, type, QUALIFIED_MAX_STRING_LENGTH, true);
+    }
+
+    /** Registers a serialiser for each of the {@link #QUALIFIED_FORMATS} under its format name. */
+    public static Map<String, org.openprovenance.prov.model.ProvSerialiser> registerQualifiedSerialisers(ProvFactory pf, Map<String, org.openprovenance.prov.model.ProvSerialiser> serializerMap) {
+        for (String format : QUALIFIED_FORMATS) {
+            serializerMap.put(format, newQualifiedSerialiser(pf, format));
+        }
+        return serializerMap;
+    }
+
 
 
     public ProvToDot(ProvFactory pf) {
@@ -539,13 +565,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             }
         }
         for (Other prop: ann.getOther()) {
-
-            if (prop.getElementName().getNamespaceURI().startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX) ||
-                    prop.getElementName().getNamespaceURI().equals(PROV_EXT_NS) ) {
-                // no need to display this attribute
-                continue;
-            }
-
+            if (!isDisplayedAttribute(prop)) continue;
 
             label.append("	<TR>\n");
             label.append("	    <TD align=\"left\">").append(convertProperty(prop)).append(":</TD>\n");
@@ -560,10 +580,16 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         return properties;
     }
 
+    /** Toolbox-internal attributes (dot, summary, ...) and provext links to other statements are drawn otherwise, never listed in an attribute box. */
+    public boolean isDisplayedAttribute(Other prop) {
+        String ns=prop.getElementName().getNamespaceURI();
+        return !(ns.startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX) || ns.equals(PROV_EXT_NS));
+    }
+
     public int countOthers(HasOther ann) {
         int count=0;
         for (Other obj: ann.getOther()) {
-            if (!(obj.getElementName().getNamespaceURI().startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX))) {
+            if (isDisplayedAttribute(obj)) {
                 count++;
             }
         }
@@ -785,14 +811,22 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         }
     }
 
+
+    boolean tailLabel=false;  /* set to true to have relation labels at the tail */
+
     void relationName(Relation e, Map<String,String> properties) {
         String l=getShortLabelForRelation(e);
         if (l!=null) {
-            properties.put(DOT_TAILLABEL,l);
-            properties.put(DOT_LABELANGLE, "60.0");
-            properties.put(DOT_LABELDISTANCE, "1.5");
-            properties.put(DOT_ROTATION, "20");
-            properties.put(DOT_LABELFONTSIZE, "8");
+            if (tailLabel) {
+                properties.put(DOT_TAILLABEL, l);
+                properties.put(DOT_LABELANGLE, "60.0");
+                properties.put(DOT_LABELDISTANCE, "1.0");
+                properties.put(DOT_ROTATION, "20");
+                properties.put(DOT_LABELFONTSIZE, "8");
+            } else {
+                properties.put(DOT_LABEL, l);
+                properties.put(DOT_LABELFONTSIZE, "8");
+            }
         }
     }
 
@@ -805,49 +839,28 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
 
     String getShortLabelForRelation(Relation e) {
-        switch (e.getKind()) {
-            case PROV_ENTITY:
-            case PROV_ACTIVITY:
-            case PROV_AGENT:
-                throw new IllegalStateException("should not happen: a relation is not an element");
-            case PROV_USAGE:
-                return PROV_SHORTHAND_USAGE;
-            case PROV_GENERATION:
-                return PROV_SHORTHAND_GENERATION;
-            case PROV_INVALIDATION:
-                return PROV_SHORTHAND_INVALIDATION;
-            case PROV_START:
-                return PROV_SHORTHAND_START;
-            case PROV_END:
-                return PROV_SHORTHAND_END;
-            case PROV_COMMUNICATION:
-                return PROV_SHORTHAND_COMMUNICATION;
-            case PROV_DERIVATION:
-                return PROV_SHORTHAND_DERIVATION;
-            case PROV_ASSOCIATION:
-                return PROV_SHORTHAND_ASSOCIATION;
-            case PROV_ATTRIBUTION:
-                return PROV_SHORTHAND_ATTRIBUTION;
-            case PROV_DELEGATION:
-                return PROV_SHORTHAND_DELEGATION;
-            case PROV_INFLUENCE:
-                return PROV_SHORTHAND_INFLUENCE;
-            case PROV_ALTERNATE:
-                return PROV_SHORTHAND_ALTERNATE;
-            case PROV_SPECIALIZATION:
-                return PROV_SHORTHAND_SPECIALIZATION;
-            case PROV_MENTION:
-                return PROV_SHORTHAND_MENTION;
-            case PROV_MEMBERSHIP:
-                return PROV_SHORTHAND_MEMBERSHIP;
-            case PROV_BUNDLE:
-                return null;
-            case PROV_DICTIONARY_INSERTION:
-            case PROV_DICTIONARY_REMOVAL:
-            case PROV_DICTIONARY_MEMBERSHIP:
-                throw new DocumentedUnsupportedCaseException("dictionaries not supported");
-        }
-        return null;
+        return switch (e.getKind()) {
+            case PROV_ENTITY, PROV_ACTIVITY, PROV_AGENT ->
+                    throw new IllegalStateException("should not happen: a relation is not an element");
+            case PROV_USAGE -> PROV_SHORTHAND_USAGE;
+            case PROV_GENERATION -> PROV_SHORTHAND_GENERATION;
+            case PROV_INVALIDATION -> PROV_SHORTHAND_INVALIDATION;
+            case PROV_START -> PROV_SHORTHAND_START;
+            case PROV_END -> PROV_SHORTHAND_END;
+            case PROV_COMMUNICATION -> PROV_SHORTHAND_COMMUNICATION;
+            case PROV_DERIVATION -> PROV_SHORTHAND_DERIVATION;
+            case PROV_ASSOCIATION -> PROV_SHORTHAND_ASSOCIATION;
+            case PROV_ATTRIBUTION -> PROV_SHORTHAND_ATTRIBUTION;
+            case PROV_DELEGATION -> PROV_SHORTHAND_DELEGATION;
+            case PROV_INFLUENCE -> PROV_SHORTHAND_INFLUENCE;
+            case PROV_ALTERNATE -> PROV_SHORTHAND_ALTERNATE;
+            case PROV_SPECIALIZATION -> PROV_SHORTHAND_SPECIALIZATION;
+            case PROV_MENTION -> PROV_SHORTHAND_MENTION;
+            case PROV_MEMBERSHIP -> PROV_SHORTHAND_MEMBERSHIP;
+            case PROV_BUNDLE -> null;
+            case PROV_DICTIONARY_INSERTION, PROV_DICTIONARY_REMOVAL, PROV_DICTIONARY_MEMBERSHIP ->
+                    throw new DocumentedUnsupportedCaseException("dictionaries not supported");
+        };
     }
 
 

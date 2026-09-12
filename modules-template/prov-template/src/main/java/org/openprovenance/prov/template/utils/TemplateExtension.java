@@ -12,6 +12,7 @@ public enum TemplateExtension {
     SVG("svg"),
     QUALIFIED_PNG("qualified.png"),
     QUALIFIED_SVG("qualified.svg"),
+    QUALIFIED_PDF("qualified.pdf"),
     PROVCSV("prov-csv"),
     HAS_PROVENANCE("hasProvenance");
 

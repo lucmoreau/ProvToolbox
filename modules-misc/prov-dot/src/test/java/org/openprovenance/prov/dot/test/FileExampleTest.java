@@ -32,11 +32,34 @@ public class FileExampleTest extends TestCase {
         toDot.convert(o,dotFile,pdfFile,title);
     }
 
+    public void fileToDotType(String asnFile, String dotFile, String pdfFile, String type, String title) throws IOException {
+        Utility u=new Utility(DateTimeOption.PRESERVE,null);
+        ProvFactory pFactory=new org.openprovenance.prov.vanilla.ProvFactory();
+
+        Document o= (Document) u.convertSyntaxTreeToJavaBean(asnFile,pFactory);
+
+        Namespace.withThreadNamespace(o.getNamespace());
+        System.out.println("ns is " + o.getNamespace());
+        ProvSerialiser serial=new  ProvSerialiser(pFactory);
+
+
+        ProvToDot toDot=new ProvToDot(pFactory);
+
+        toDot.convert(o,dotFile,pdfFile, type, title);
+    }
+
     public void testFileExampleToDot1() throws IOException {
         fileToDot("src/test/resources/org/openprovenance/prov/dot/test/prov-dm-example1.provn",
                   "target/file.prov-xml",
                   "target/file.dot",
                   "target/file.pdf",
                   "prov-dm-example1");
+    }
+    public void testFileExampleToDot2() throws IOException {
+        fileToDotType("src/test/resources/org/openprovenance/prov/dot/test/label-example.provn",
+                "target/label-example.dot",
+                "target/label-example.svg",
+                "svg",
+                "label-example");
     }
 }

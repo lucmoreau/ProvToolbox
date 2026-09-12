@@ -62,13 +62,8 @@ public class BatchExecutor {
             ProvSerialiser serialiser3 = (ProvSerialiser) cons.newInstance(pf, "svg");
             serializerMap.put("svg", serialiser3);
 
-            c = Class.forName("org.openprovenance.prov.dot.ProvSerialiser");
-            cons = c.getConstructor(ProvFactory.class, String.class, Integer.class, boolean.class);
-            ProvSerialiser serialiser4 = (ProvSerialiser) cons.newInstance(pf, "png", 20, true);
-            serializerMap.put("qualified.png", serialiser4);
-
-            ProvSerialiser serialiser5 = (ProvSerialiser) cons.newInstance(pf, "svg", 20, true);
-            serializerMap.put("qualified.svg", serialiser5);
+            c = Class.forName("org.openprovenance.prov.dot.ProvToDot");
+            c.getMethod("registerQualifiedSerialisers", ProvFactory.class, Map.class).invoke(null, pf, serializerMap);
 
             c = Class.forName("org.openprovenance.prov.notation.ProvDeserialiser");
             cons = c.getConstructor(ProvFactory.class);

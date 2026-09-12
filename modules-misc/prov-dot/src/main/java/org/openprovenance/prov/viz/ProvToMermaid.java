@@ -66,6 +66,27 @@ public class ProvToMermaid extends ProvViz {
         return this;
     }
 
+    /** Mermaid's defaults are roomier than dot's (font 16px, nodes 50px apart, ranks 50px apart, against dot's
+     *  14pt, 18px and 36px); these sit between the two. */
+    private int fontSize = 14;
+    private int nodeSpacing = 25;
+    private int rankSpacing = 35;
+
+    public ProvToMermaid setFontSize(int fontSize) {
+        this.fontSize = fontSize;
+        return this;
+    }
+
+    public ProvToMermaid setNodeSpacing(int nodeSpacing) {
+        this.nodeSpacing = nodeSpacing;
+        return this;
+    }
+
+    public ProvToMermaid setRankSpacing(int rankSpacing) {
+        this.rankSpacing = rankSpacing;
+        return this;
+    }
+
     /** Space between a node's text and its border, for every node: mermaid has no per-node padding, and its default 15 leaves an attribute box mostly white. */
     private int nodePadding = 8;
 
@@ -360,7 +381,8 @@ public class ProvToMermaid extends ProvViz {
         Output o = new Output(out, graph.direction);
 
         if (graph.title != null) out.println("%% " + graph.title.replace("\n", " "));
-        out.println("%%{init: {\"flowchart\": {\"padding\": " + nodePadding + "}}}%%");
+        out.println("%%{init: {\"themeVariables\": {\"fontSize\": \"" + fontSize + "px\"}, \"flowchart\": {\"padding\": " + nodePadding
+                + ", \"nodeSpacing\": " + nodeSpacing + ", \"rankSpacing\": " + rankSpacing + "}}}%%");
         out.println("flowchart " + graph.direction);
         renderScope(graph, ids, o, "    ");
 
@@ -448,17 +470,16 @@ public class ProvToMermaid extends ProvViz {
     ///
     //////////////////////////////////////////////////////////////////////
 
-    /** Height of a house image, and of its roof, in pixels; the label's font is the flowchart's, 16px. */
-    public int houseHeight = 44;
-    public int roofHeight = 14;
-    public int houseFontSize = 16;
-    /** Width per character of the label, an estimate of the flowchart font's average advance. */
-    public double houseCharWidth = 8.5;
+    /** Height of a house image, and of its roof, in pixels; the label is in the flowchart's font size. */
+    public int houseHeight = 40;
+    public int roofHeight = 13;
+    /** Width per character of the label as a fraction of the font size: the flowchart font's average advance. */
+    public double houseCharWidth = 0.53;
 
     /** An agent as an image node showing a house with its label inside, mermaid's own frame around the image made invisible. */
     public void emitHouse(VizNode n, String id, Output o, String indent) {
         String label = n.label == null ? "" : truncate(n.label);
-        int width = (int) Math.max(60, Math.ceil(houseCharWidth * label.length()) + 24);
+        int width = (int) Math.max(56, Math.ceil(houseCharWidth * fontSize * label.length()) + 24);
         String fill = n.style.fill != null ? cssColour(n.style.fill) : AGENT_FILLCOLOUR;
         String stroke = n.style.stroke != null ? cssColour(n.style.stroke) : "#000000";
         String svg = houseSvg(label, width, houseHeight, fill, stroke, n.style.fontColour != null ? cssColour(n.style.fontColour) : "#000000");
@@ -470,11 +491,11 @@ public class ProvToMermaid extends ProvViz {
     public String houseSvg(String label, int width, int height, String fill, String stroke, String fontColour) {
         double mid = width / 2.0;
         String points = "1," + (height - 1) + " 1," + roofHeight + " " + mid + ",1 " + (width - 1) + "," + roofHeight + " " + (width - 1) + "," + (height - 1);
-        double baseline = (height + roofHeight) / 2.0 + houseFontSize * 0.35;
+        double baseline = (height + roofHeight) / 2.0 + fontSize * 0.35;
         return "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" + width + "\" height=\"" + height + "\" viewBox=\"0 0 " + width + " " + height + "\">"
                 + "<polygon points=\"" + points + "\" fill=\"" + fill + "\" stroke=\"" + stroke + "\" stroke-width=\"1\"/>"
                 + "<text x=\"" + mid + "\" y=\"" + baseline + "\" text-anchor=\"middle\" fill=\"" + fontColour + "\""
-                + " font-family=\"trebuchet ms,verdana,arial,sans-serif\" font-size=\"" + houseFontSize + "\">" + xmlEscape(label) + "</text></svg>";
+                + " font-family=\"trebuchet ms,verdana,arial,sans-serif\" font-size=\"" + fontSize + "\">" + xmlEscape(label) + "</text></svg>";
     }
 
     static String xmlEscape(String s) {

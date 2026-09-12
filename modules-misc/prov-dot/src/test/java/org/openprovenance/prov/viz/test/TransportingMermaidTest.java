@@ -42,7 +42,7 @@ public class TransportingMermaidTest extends TestCase {
             toMermaid.convert(doc, out, ProvToMermaid.NOTATION_EXTENSION, stem);
         }
         String text = Files.readString(mmd, StandardCharsets.UTF_8);
-        assertTrue(text.startsWith("%% " + stem + "\n%%{init: {\"flowchart\": {\"padding\": 8}}}%%\nflowchart BT\n"));
+        assertTrue(text.startsWith("%% " + stem + "\n%%{init: {\"themeVariables\": {\"fontSize\": \"14px\"}, \"flowchart\": {\"padding\": 8, \"nodeSpacing\": 25, \"rankSpacing\": 35}}}%%\nflowchart BT\n"));
         assertFalse("no title front matter, it is drawn above the graph", text.contains("---\ntitle:"));
 
         if (toMermaid.mmdcAvailable()) {

@@ -24,11 +24,12 @@ public class ProvToMermaid extends ProvViz {
     /** The mermaid-cli executable; the {@code MMDC} environment variable overrides the default {@code mmdc}. */
     private String mmdc = System.getenv().getOrDefault("MMDC", "mmdc");
 
-    /** Side, in pixels, of the viewport a pdf is laid out in; the page is trimmed to the chart within it. */
-    private int pdfViewport = 20000;
+    /** Side, in pixels, of the viewport mmdc lays the chart out in: a png or a fitted pdf is trimmed to the chart,
+     *  but a chart wider than the viewport (800px by default) is shrunk to fit it. */
+    private int viewport = 20000;
 
-    public ProvToMermaid setPdfViewport(int pdfViewport) {
-        this.pdfViewport = pdfViewport;
+    public ProvToMermaid setViewport(int viewport) {
+        this.viewport = viewport;
         return this;
     }
 
@@ -138,12 +139,10 @@ public class ProvToMermaid extends ProvViz {
 
     /** Runs {@code mmdc -i in -o out}; the output type follows the extension of {@code out}. */
     public void renderWithMmdc(Path in, Path out) throws IOException {
-        List<String> command = new ArrayList<>(List.of(mmdc, "-q", "-b", backgroundColour, "-i", in.toString(), "-o", out.toString()));
-        // without --pdfFit a pdf is a full page with the chart in a corner; the page then follows the
-        // viewport, so a viewport larger than any chart leaves the fitted page at the chart's natural size
-        if (out.toString().endsWith(".pdf")) {
-            command.addAll(List.of("--pdfFit", "-w", String.valueOf(pdfViewport), "-H", String.valueOf(pdfViewport)));
-        }
+        List<String> command = new ArrayList<>(List.of(mmdc, "-q", "-b", backgroundColour,
+                "-w", String.valueOf(viewport), "-H", String.valueOf(viewport), "-i", in.toString(), "-o", out.toString()));
+        // without it a pdf is a full page with the chart in a corner
+        if (out.toString().endsWith(".pdf")) command.add("--pdfFit");
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.redirectErrorStream(true);
         Process proc = pb.start();

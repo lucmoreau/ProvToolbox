@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.openprovenance.prov.core.jsonld11.serialization.Constants.JSONLDCONTEXT_2024_08_25;
-import static org.openprovenance.prov.core.jsonld11.serialization.Constants.JSONLD_CONTEXT_URL;
+import static org.openprovenance.prov.core.jsonld11.serialization.Constants.*;
 
 /**
  * Expands a PROV-JSONLD document with a JSON-LD 1.1 processor, the published context served from the module's copy:
@@ -31,10 +31,13 @@ public class JsonLdExpansion {
 
     static final String PROV_NS = "http://www.w3.org/ns/prov#";
 
-    /** The published context resolved from the module's own copy, so the check needs no network. */
+    /** The published contexts, the specification's and openprov's, resolved from the module's own copies, so the check needs no network. */
     static final DocumentLoader LOCAL_CONTEXT = (URI url, DocumentLoaderOptions options) -> {
-        if (!JSONLD_CONTEXT_URL.equals(url.toString())) throw new JsonLdError(com.apicatalog.jsonld.JsonLdErrorCode.LOADING_REMOTE_CONTEXT_FAILED, "not served here: " + url);
-        try (InputStream in = Schemas.open(JSONLDCONTEXT_2024_08_25, "src/main/resources/" + JSONLDCONTEXT_2024_08_25)) {
+        String resource;
+        if (JSONLD_CONTEXT_URL.equals(url.toString())) resource = JSONLDCONTEXT_2024_08_25;
+        else if (OPENPROV_CONTEXT_URL.equals(url.toString())) resource = OPENPROV_CONTEXT_RESOURCE;
+        else throw new JsonLdError(com.apicatalog.jsonld.JsonLdErrorCode.LOADING_REMOTE_CONTEXT_FAILED, "not served here: " + url);
+        try (InputStream in = Schemas.open(resource, "src/main/resources/" + resource)) {
             return JsonDocument.of(in);
         } catch (IOException e) {
             throw new JsonLdError(com.apicatalog.jsonld.JsonLdErrorCode.LOADING_REMOTE_CONTEXT_FAILED, e);

@@ -47,15 +47,15 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
 
 
 
-    /** Every file written: valid against the module's PROV-JSONLD schema, and JSON-LD that expands to PROV terms. */
+    /** Every file written: valid against the schema its context calls for (PROV-JSONLD's, or openprov's), and JSON-LD that expands to PROV terms. */
     public boolean checkTest(String name) {
         if (name.contains("DictionaryMembership")) {
             System.out.println(escapeRed("########## Skipping testing for " + name + " in " + extension()));
             return false;
         }
         try {
-            List<String> violations = Schemas.violations(Schemas.PROV_JSONLD, new File(name));
-            assertTrue(name + " violates the PROV-JSONLD schema: " + violations, violations.isEmpty());
+            List<String> violations = Schemas.violations(new File(name));
+            assertTrue(name + " violates its schema: " + violations, violations.isEmpty());
             List<String> problems = JsonLdExpansion.problems(JsonLdExpansion.expand(new File(name)));
             assertTrue(name + " does not expand to PROV: " + problems, problems.isEmpty());
         } catch (IOException | JsonLdError e) {

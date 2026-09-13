@@ -35,6 +35,11 @@ public interface Constants {
     /** The openprov context, which extends the PROV-JSONLD one: cited by a document that uses openprov terms. */
     String OPENPROV_CONTEXT_URL = "https://openprovenance.org/ns/openprov.jsonld";
     String OPENPROV_CONTEXT_RESOURCE = "openprov-context/openprov.jsonld";
+    /** The PROV-JSONLD schema extended, by reference, with the openprov context's terms; a document citing the openprov context validates against it. */
+    String OPENPROV_SCHEMA_URL = "https://openprovenance.org/ns/openprov-schema.json";
+    /** What the extension references; the module's copy at JSONLDSCHEMA_2024_08_25 stands in for it. */
+    String JSONLD_SCHEMA_URL = "https://openprovenance.org/prov-jsonld/schema.json";
+    String OPENPROV_SCHEMA_RESOURCE = "openprov-context/openprov-schema.json";
     String JSONLDSCHEMA_2024_08_25 = "2024-08-25/jsonldschema.json";
     String JSONLDCONTEXT_2024_08_25 = "2024-08-25/jsonldcontext.jsonld";
 

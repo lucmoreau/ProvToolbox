@@ -154,6 +154,7 @@ public class OpenprovAttributesJsonTest extends TestCase {
         assertEquals(fromProvn.getStatementOrBundle(), fromJsonld.getStatementOrBundle());
         JsonNode ld = new com.fasterxml.jackson.databind.ObjectMapper().readTree(jsonld.toByteArray());
         assertEquals("https://openprovenance.org/ns/openprov.jsonld", ld.get("@context").get(1).asText());
+        assertEquals(List.of(), org.openprovenance.prov.core.test.Schemas.violations(org.openprovenance.prov.core.test.Schemas.schemaFor(ld), ld));
         for (JsonNode n : ld.get("@graph")) {
             if ("Attribution".equals(n.get("@type").asText())) assertEquals("ex:asc1", n.get("association").get(0).asText());
             if ("Communication".equals(n.get("@type").asText())) assertEquals("ex:e1", n.get("entity").get(0).asText());

@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
+import org.openprovenance.prov.core.test.Schemas;
 import org.openprovenance.prov.model.OpenprovTerms;
+
+import static org.openprovenance.prov.core.jsonld11.serialization.Constants.*;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.StatementOrBundle.Kind;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
@@ -176,5 +179,29 @@ public class OpenprovTermsTest extends TestCase {
             assertEquals(e.getKey(), inContext, new TreeMap<>(OpenprovTerms.scope(e.getValue())));
         }
         assertTrue(OpenprovTerms.scope(Kind.PROV_USAGE).isEmpty());
+    }
+
+    /**
+     * The bundled openprov schema is the specification's schema extended with the context's scopes: each scoped
+     * relation's definition carries exactly the specification's properties plus its scope's terms; a document
+     * written with the terms validates against it and not against the specification's.
+     */
+    public void testSchemaIsTheContextsScopes() throws IOException {
+        JsonNode spec = mapper.readTree(Schemas.open(JSONLDSCHEMA_2024_08_25, "src/main/resources/" + JSONLDSCHEMA_2024_08_25)).get("definitions");
+        JsonNode openprov = mapper.readTree(Schemas.open(OPENPROV_SCHEMA_RESOURCE, "src/main/resources/" + OPENPROV_SCHEMA_RESOURCE)).get("definitions");
+        Map<String, Kind> types = Map.of("Attribution", Kind.PROV_ATTRIBUTION, "Membership", Kind.PROV_MEMBERSHIP, "Specialization", Kind.PROV_SPECIALIZATION, "Communication", Kind.PROV_COMMUNICATION);
+        for (Map.Entry<String, Kind> e : types.entrySet()) {
+            Set<String> expected = new TreeSet<>();
+            spec.get("prov:" + e.getKey()).get("properties").fieldNames().forEachRemaining(expected::add);
+            expected.addAll(OpenprovTerms.scope(e.getValue()).keySet());
+            Set<String> actual = new TreeSet<>();
+            openprov.get("prov:" + e.getKey()).get("properties").fieldNames().forEachRemaining(actual::add);
+            assertEquals(e.getKey(), expected, actual);
+        }
+        for (String file : List.of("attribution.jsonld", "membership.jsonld", "specialization.jsonld", "communication.jsonld")) {
+            File f = new File("src/test/resources/openprov/" + file);
+            assertEquals(file, List.of(), Schemas.violations(Schemas.OPENPROV_JSONLD, f));
+            assertFalse(file + " would validate against the specification's schema", Schemas.violations(Schemas.PROV_JSONLD, f).isEmpty());
+        }
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.core.jsonld11.serialization.Constants.JSONLDSCHEMA_2024_08_25;
+import static org.openprovenance.prov.core.jsonld11.serialization.Constants.*;
 
 /**
  * The schemas the serialisations are held to: the PROV-JSON schema (draft 4, as the W3C submission's, with the
@@ -31,10 +31,19 @@ public class Schemas {
     /** The PROV-JSON schema, in this module's test resources; the PROV-JSONLD schema, in its main resources. */
     public static final JsonSchema PROV_JSON = load(SpecVersion.VersionFlag.V4, "prov-json-schema-v4.json", "src/test/resources/prov-json-schema-v4.json");
     public static final JsonSchema PROV_JSONLD = load(SpecVersion.VersionFlag.V7, JSONLDSCHEMA_2024_08_25, "src/main/resources/" + JSONLDSCHEMA_2024_08_25);
+    /** The PROV-JSONLD schema with the openprov terms admitted, for a document that cites the openprov context. */
+    public static final JsonSchema OPENPROV_JSONLD = load(SpecVersion.VersionFlag.V7, OPENPROV_SCHEMA_RESOURCE, "src/main/resources/" + OPENPROV_SCHEMA_RESOURCE);
+
+    /** A factory resolving the published PROV-JSONLD schema, which the openprov schema references, from the module's own copy. */
+    static JsonSchemaFactory factory(SpecVersion.VersionFlag version) {
+        return JsonSchemaFactory.builder(JsonSchemaFactory.getInstance(version))
+                .schemaMappers(mappers -> mappers.mapPrefix(JSONLD_SCHEMA_URL, "classpath:" + JSONLDSCHEMA_2024_08_25))
+                .build();
+    }
 
     static JsonSchema load(SpecVersion.VersionFlag version, String resource, String file) {
         try (InputStream in = open(resource, file)) {
-            return JsonSchemaFactory.getInstance(version).getSchema(in, NO_FORMAT_ASSERTIONS);
+            return factory(version).getSchema(in, NO_FORMAT_ASSERTIONS);
         } catch (IOException e) {
             throw new IllegalStateException("schema not readable: " + resource, e);
         }
@@ -57,6 +66,19 @@ public class Schemas {
 
     public static List<String> violations(JsonSchema schema, File file) throws IOException {
         return violations(schema, mapper.readTree(file));
+    }
+
+    /** The schema a PROV-JSONLD document is held to: the openprov one when its context cites the openprov context. */
+    public static JsonSchema schemaFor(JsonNode document) {
+        JsonNode context = document.path("@context");
+        for (JsonNode c : context) if (c.isTextual() && OPENPROV_CONTEXT_URL.equals(c.asText())) return OPENPROV_JSONLD;
+        return PROV_JSONLD;
+    }
+
+    /** The violations of a PROV-JSONLD document against the schema its context calls for. */
+    public static List<String> violations(File file) throws IOException {
+        JsonNode tree = mapper.readTree(file);
+        return violations(schemaFor(tree), tree);
     }
 
     public static JsonNode read(String file) throws IOException {

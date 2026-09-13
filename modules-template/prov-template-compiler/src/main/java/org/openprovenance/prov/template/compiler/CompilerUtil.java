@@ -220,11 +220,11 @@ public class CompilerUtil {
             Object interop=getInteropFramework();
             Method method = interop.getClass().getMethod("readDocumentFromFile", String.class);
             Document doc=(Document)method.invoke(interop,file);
-            return doc;
+            return org.openprovenance.prov.template.core.InstantiateUtil.withCurrentTemplateNamespace(doc, pFactory);
         } catch (java.lang.ClassNotFoundException e) {
             e.printStackTrace();
             //System.out.println("could not find Interop Framework, falling back on provn");
-            return new ProvDeserialiser(pFactory).deserialiseDocument(new FileInputStream(file));
+            return org.openprovenance.prov.template.core.InstantiateUtil.withCurrentTemplateNamespace(new ProvDeserialiser(pFactory).deserialiseDocument(new FileInputStream(file)), pFactory);
         }
 
 

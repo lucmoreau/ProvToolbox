@@ -65,7 +65,7 @@
   },
   "prefix": {
     "xsd": "http://www.w3.org/2001/XMLSchema",
-    "tmpl": "http://openprovenance.org/tmpl#",
+    "tmpl": "http://openprovenance.org/ns/tmpl#",
     "var": "http://openprovenance.org/var#",
     "prov": "http://www.w3.org/ns/prov#",
     "ex": "http://example.org/"

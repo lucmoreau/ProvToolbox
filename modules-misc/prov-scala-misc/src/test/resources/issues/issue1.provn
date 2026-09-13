@@ -12,7 +12,7 @@ prefix avrreq <http://client.ss1.u-hopper.com/viewing_rideRequests/>
 prefix osrch <http://client.ss1.u-hopper.com/oldSearches/>
 prefix avprof <http://client.ss1.u-hopper.com/viewing_profile/>
 prefix xsd_1 <http://www.w3.org/2001/XMLSchema>
-prefix tmpl <http://openprovenance.org/tmpl#>
+prefix tmpl <http://openprovenance.org/ns/tmpl#>
 prefix asreq <http://client.ss1.u-hopper.com/viewing_submitting_request/>
 prefix ooff <http://client.ss1.u-hopper.com/oldOffers/>
 prefix alo <http://client.ss1.u-hopper.com/logging_out/>

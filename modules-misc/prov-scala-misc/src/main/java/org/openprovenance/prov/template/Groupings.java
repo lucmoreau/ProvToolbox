@@ -75,7 +75,7 @@ public class Groupings {
 	    if (statement instanceof HasOther) {
 		HasOther stmt2=(HasOther)statement;
 		for (Other other: stmt2.getOther()) {
-		    if (LINKED_URI.equals(other.getElementName().getUri())) {
+		    if (ExpandUtil.isTmplUri(LINKED_URI, other.getElementName().getUri())) {
 			QualifiedName id=((Identifiable)statement).getId();
 			QualifiedName otherId=(QualifiedName) other.getValue();
 			addEntry(linked, otherId, id);

@@ -216,7 +216,7 @@ analyse, check or validate them.
     <td><b>Namespace IRI</b></td>
     <td><b>Definition</b></td></tr>
 <tr><td><tt>tmpl</tt></td>
-    <td><tt>http://openprovenance.org/tmpl#</tt></td>
+    <td><tt>http://openprovenance.org/ns/tmpl#</tt></td>
     <td>The prov-template namespace</td></tr>
 <tr><td><tt>var</tt></td>
     <td><tt>http://openprovenance.org/var#</tt></td>
@@ -291,7 +291,7 @@ With the following values, <tt>ex:ag</tt> and <tt>ex:en</tt>, for <tt>var:a</tt>
 <pre class="highlight">
 document
  prefix ex &lt;http://example.org/&gt;
- prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
+ prefix tmpl &lt;http://openprovenance.org/ns/tmpl#&gt;
  bundle ex:b 
   agent(ex:ag,[tmpl:order = "[0]"])
   entity(ex:en,[tmpl:order = "[0]"])
@@ -309,7 +309,7 @@ endDocument
 <pre class="highlight">
 document
  prefix ex &lt;http://example.org/&gt;
- prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
+ prefix tmpl &lt;http://openprovenance.org/ns/tmpl#&gt;
  bundle ex:b 
   agent(ex:ag1,[tmpl:order = "[0]"])
   agent(ex:ag2,[tmpl:order = "[1]"])
@@ -351,7 +351,7 @@ The expansion now looks like the following. We see that the value <tt>ex:en1</tt
 <pre class="highlight">
 document
  prefix ex &lt;http://example.org/&gt;
- prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
+ prefix tmpl &lt;http://openprovenance.org/ns/tmpl#&gt;
  bundle ex:b 
   agent(ex:ag1,[tmpl:order = "[0]"])
   agent(ex:ag2,[tmpl:order = "[1]"])
@@ -420,7 +420,7 @@ For instance, for the following groups of values
 <pre class="highlight">
 document
  prefix ex &lt;http://example.org/&gt;
- prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
+ prefix tmpl &lt;http://openprovenance.org/ns/tmpl#&gt;
  bundle ex:b 
   agent(ex:ag1,[tmpl:order = "[0]"])
   agent(ex:ag2,[tmpl:order = "[1]"])
@@ -704,7 +704,7 @@ Should we rename <tt>tmpl:order</tt> to <tt>tmpl:index</tt>? Dong: +1
 document
  prefix var &lt;http://openprovenance.org/var#&gt;
  prefix ex &lt;http://example.org/&gt;
- prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
+ prefix tmpl &lt;http://openprovenance.org/ns/tmpl#&gt;
 
  entity(var:a,[tmpl:value_0 = 'ex:ag1', tmpl:value_1 = 'ex:ag2'])
  entity(var:b,[tmpl:value_0 = 'ex:en1', tmpl:value_1 = 'ex:en2', tmpl:value_2 = 'ex:en3'])
@@ -742,7 +742,7 @@ the <tt>tmpl</tt> namespace.</p>
 <pre class="highlight">
 @prefix prov: &lt;http://www.w3.org/ns/prov#&gt; .
 @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
-@prefix tmpl: &lt;http://openprovenance.org/tmpl#&gt; .
+@prefix tmpl: &lt;http://openprovenance.org/ns/tmpl#&gt; .
 @prefix var: &lt;http://openprovenance.org/var#&gt; .
 @prefix ex: &lt;http://example.org/&gt; .
 @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
@@ -837,7 +837,7 @@ Alternatively, users of the template expander may user the [[prov-json]] represe
   },
   "prefix": {
     "xsd": "http://www.w3.org/2001/XMLSchema",
-    "tmpl": "http://openprovenance.org/tmpl#",
+    "tmpl": "http://openprovenance.org/ns/tmpl#",
     "var": "http://openprovenance.org/var#",
     "prov": "http://www.w3.org/ns/prov#",
     "ex": "http://example.org/"

@@ -2,7 +2,7 @@ document
 prefix xsd <http://www.w3.org/2001/XMLSchema>
 prefix var <http://openprovenance.org/var#>
 prefix ex <http://example.org/>
-prefix tmpl <http://openprovenance.org/tmpl#>
+prefix tmpl <http://openprovenance.org/ns/tmpl#>
 
 entity(var:e,[tmpl:value_0 = 'ex:e1'])
 entity(var:e2,[tmpl:value_0 = 'ex:e2'])

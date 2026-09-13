@@ -7,7 +7,7 @@ prefix ex0 <https://www.youtube.com/>
 prefix vargen <http://openprovenance.org/vargen#>
 prefix pic <http://www.ipaw.info/ns/picaso#>
 prefix ui <http://openprovenance.org/ui#>
-prefix tmpl <http://openprovenance.org/tmpl#>
+prefix tmpl <http://openprovenance.org/ns/tmpl#>
 prefix var <http://openprovenance.org/var#>
 prefix ex3 <http://www.ipaw.info/ipaw14/>
 entity(var:paperType,[tmpl:2dvalue_0_0 = 'pic:Article'])

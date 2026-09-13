@@ -19,7 +19,9 @@ public class InstantiateUtil {
 
     public static final String VAR_NS = "http://openprovenance.org/var#";
     public static final String VARGEN_NS = "http://openprovenance.org/vargen#";
-    public static final String TMPL_NS = "http://openprovenance.org/tmpl#";
+    public static final String TMPL_NS = "http://openprovenance.org/ns/tmpl#";
+    /** What templates declared before the vocabulary moved under /ns/; accepted on input (see {@link #withCurrentTemplateNamespace}), never written. */
+    public static final String LEGACY_TMPL_NS = "http://openprovenance.org/tmpl#";
     public static final String TMPL_PREFIX = "tmpl";
     public static final String VAR_PREFIX = "var";
 
@@ -48,6 +50,48 @@ public class InstantiateUtil {
     public static final String URN_UUID_NS = "urn:uuid:";
     static ProvUtilities u = new ProvUtilities();
 
+
+    /**
+     * The template with its tmpl attributes under the current namespace: an attribute declared in the legacy
+     * namespace is renamed, and a prefix bound to the legacy namespace rebound, in the document and its bundles,
+     * in place. Called where a template enters, so that the expander and the compiler see one namespace.
+     */
+    public static Document withCurrentTemplateNamespace(Document doc, ProvFactory pf) {
+        if (doc == null) return null;
+        rebind(doc.getNamespace());
+        for (StatementOrBundle sb : doc.getStatementOrBundle()) {
+            if (sb instanceof Bundle) {
+                rebind(((Bundle) sb).getNamespace());
+                for (Statement s : ((Bundle) sb).getStatement()) rename(s, pf);
+            } else if (sb instanceof Statement) {
+                rename((Statement) sb, pf);
+            }
+        }
+        return doc;
+    }
+
+    private static void rebind(Namespace ns) {
+        if (ns == null) return;
+        for (java.util.Map.Entry<String, String> e : ns.getPrefixes().entrySet()) {
+            if (LEGACY_TMPL_NS.equals(e.getValue())) {
+                e.setValue(TMPL_NS);
+                ns.getNamespaces().remove(LEGACY_TMPL_NS);
+                ns.getNamespaces().put(TMPL_NS, e.getKey());
+            }
+        }
+    }
+
+    private static void rename(Statement s, ProvFactory pf) {
+        if (!(s instanceof HasOther)) return;
+        java.util.ListIterator<Other> it = ((HasOther) s).getOther().listIterator();
+        while (it.hasNext()) {
+            Other o = it.next();
+            QualifiedName name = o.getElementName();
+            if (LEGACY_TMPL_NS.equals(name.getNamespaceURI())) {
+                it.set(pf.newOther(TMPL_NS, name.getLocalPart(), TMPL_PREFIX, o.getValue(), o.getType()));
+            }
+        }
+    }
 
     static   public int getFirstTimeIndex(Statement s)  {
         final Kind kind = s.getKind();

@@ -2,7 +2,7 @@ document
 prefix xsd <http://www.w3.org/2001/XMLSchema>
 prefix var <http://openprovenance.org/var#>
 prefix vargen <http://openprovenance.org/vargen#>
-prefix tmpl <http://openprovenance.org/tmpl#>
+prefix tmpl <http://openprovenance.org/ns/tmpl#>
 
 
 prefix bi <http://localhost:8080/provapi/bindings/>

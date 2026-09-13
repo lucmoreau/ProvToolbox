@@ -90,7 +90,7 @@ class ProvNInputer extends Inputer {
         ns.register("t", "http://openprovenance.org/summary/types#")
         ns.register("sum",  "http://openprovenance.org/summary/ns#")  // TODO: QUICK HACK
       }
-      ns.register("provext", "http://openprovenance.org/prov/extension#")
+      ns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS)
 
 
       val actions=new MyActions()

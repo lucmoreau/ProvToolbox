@@ -394,7 +394,7 @@ trait ProvStream {
 
 class MyParser2(override val input: ParserInput) extends MyParser(input,new Namespace,None, new DocBuilder)  {
   docns.addKnownNamespaces()
-  docns.register("provext", "http://openprovenance.org/prov/extension#")
+  docns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS)
 
 
 }
@@ -573,7 +573,7 @@ final class MyActions2 {
     val ns=pf.newNamespace()
     bun_ns=Some(ns)
     ns.addKnownNamespaces()
-    ns.register("provext", "http://openprovenance.org/prov/extension#");
+    ns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS);
     ns.setParent(docns)
   }
 
@@ -776,7 +776,7 @@ class ProvDeserialiser(val dateTimeOption: DateTimeOption, val timeZone: TimeZon
     val docBuilder: DocBuilder =new DocBuilder(funs)
     val ns=new Namespace
     ns.addKnownNamespaces()
-    ns.register("provext", "http://openprovenance.org/prov/extension#")
+    ns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS)
 
     val bufferedSource: BufferedSource =io.Source.fromInputStream(in)
 
@@ -803,7 +803,7 @@ object Parser {
     val docBuilder=new DocBuilder(funs)
     val ns=new Namespace
     ns.addKnownNamespaces()
-    ns.register("provext", "http://openprovenance.org/prov/extension#")
+    ns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS)
 
     actions2.docns=ns
     actions2.bun_ns=None
@@ -833,7 +833,7 @@ object AParser  {
     val stream=new Tee(docBuilder,new SimpleStreamStats)
     val ns=new Namespace
     ns.addKnownNamespaces()
-    ns.register("provext", "http://openprovenance.org/prov/extension#")
+    ns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS)
     actions2.docns=ns
     actions2.bun_ns=None
     actions2.next=docBuilder

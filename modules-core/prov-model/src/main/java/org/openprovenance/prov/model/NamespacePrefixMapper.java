@@ -7,7 +7,10 @@ package org.openprovenance.prov.model;
  * @see <a href="http://grepcode.com/file/repo1.maven.org/maven2/com.sun.xml.bind/jaxb-impl/2.1.11/com/sun/xml/bind/marshaller/NamespacePrefixMapper.java">JAXB NamespacePrefixMapper</a>
  */
 public interface NamespacePrefixMapper {
-    String PROV_EXT_NS = "http://openprovenance.org/prov/extension#";
+    /** The PROV-JSONLD extension, https://openprovenance.org/ns/provext: the qualified specialization, alternate and membership the specification defines. */
+    String PROV_EXT_NS = "https://openprovenance.org/ns/provext#";
+    /** What ProvToolbox called provext before 2.2.5: accepted wherever provext is read, never written. */
+    String LEGACY_PROV_EXT_NS = "http://openprovenance.org/prov/extension#";
     /** The OpenProvenance vocabulary, https://openprovenance.org/ns/openprov: what templates write beyond PROV-DM and provext. */
     String OPENPROV_NS = "https://openprovenance.org/ns/openprov#";
     String OPENPROV_PREFIX = "openprov";
@@ -16,6 +19,11 @@ public interface NamespacePrefixMapper {
     String XSD_NS = "http://www.w3.org/2001/XMLSchema#";
     String PRINTER_NS = "http://openprovenance.org/model/opmPrinterConfig";
     String XML_NS = "http://www.w3.org/XML/1998/namespace";
+    /** Whether a namespace is provext, as declared today or as ProvToolbox declared it before 2.2.5. */
+    static boolean isProvExt(String namespace) {
+        return PROV_EXT_NS.equals(namespace) || LEGACY_PROV_EXT_NS.equals(namespace);
+    }
+
     String PROV_PREFIX = "prov";
     String PROV_EXT_PREFIX = "provext";
     String XSD_PREFIX = "xsd";

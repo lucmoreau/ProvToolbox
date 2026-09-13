@@ -637,7 +637,7 @@ public class TreeTraversal {
          */
 
         QualifiedName ext=(QualifiedName) extName;
-        if (NamespacePrefixMapper.PROV_EXT_NS.equals(ext.getNamespaceURI())) {
+        if (NamespacePrefixMapper.isProvExt(ext.getNamespaceURI())) {
             ModelConstructorExtension mce=(ModelConstructorExtension)c;
             switch (ext.getLocalPart()) {
                 case "hadMember":

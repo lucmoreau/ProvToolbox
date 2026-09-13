@@ -367,7 +367,7 @@ public abstract class ProvViz implements RecommendedProvVisualProperties, ProvSh
     /** Toolbox-internal attributes (dot, summary, ...) and provext links to other statements are drawn otherwise, never listed in an attribute box. */
     public boolean isDisplayedAttribute(Other prop) {
         String ns = prop.getElementName().getNamespaceURI();
-        return !(ns.startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX) || ns.equals(PROV_EXT_NS));
+        return !(ns.startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX) || NamespacePrefixMapper.isProvExt(ns) || ns.equals(NamespacePrefixMapper.OPENPROV_NS));
     }
 
     public int countOthers(HasOther ann) {

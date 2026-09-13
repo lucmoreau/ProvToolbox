@@ -7,6 +7,7 @@ import org.openprovenance.prov.vanilla.QualifiedSpecializationOf;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.openprovenance.prov.model.NamespacePrefixMapper;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS;
 
 /**
@@ -28,10 +29,14 @@ public class ProvUtilitiesForTriangle extends ProvUtilities {
         this.exceptions = exceptions;
     }
 
+    /** The statements a relation points at: its openprov attributes, or its provext ones under either IRI provext has had. */
     private List<QualifiedName> provextReferences(HasOther statement) {
-        Hashtable<String, List<Other>> attributes = attributesWithNamespace(statement, PROV_EXT_NS);
-        List<Other> result = attributes.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
-        return result.stream().map(x -> (QualifiedName) x.getValue()).collect(Collectors.toList());
+        List<QualifiedName> result = new LinkedList<>();
+        for (String ns : List.of(NamespacePrefixMapper.OPENPROV_NS, PROV_EXT_NS, NamespacePrefixMapper.LEGACY_PROV_EXT_NS)) {
+            Hashtable<String, List<Other>> attributes = attributesWithNamespace(statement, ns);
+            attributes.values().stream().flatMap(Collection::stream).forEach(x -> result.add((QualifiedName) x.getValue()));
+        }
+        return result;
     }
 
     @Override

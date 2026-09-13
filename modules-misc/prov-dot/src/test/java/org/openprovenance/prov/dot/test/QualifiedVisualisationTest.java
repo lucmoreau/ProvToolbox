@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 /**
  * The qualified rendering draws every qualified relation with an attribute box beside it.
- * A relation whose attributes are all links to other statements (provext:*) and which has no
+ * A relation whose attributes are all links to other statements (openprov:*) and which has no
  * identifier has nothing to show, so no box must be drawn: an empty box is a defect.
  */
 public class QualifiedVisualisationTest extends TestCase {

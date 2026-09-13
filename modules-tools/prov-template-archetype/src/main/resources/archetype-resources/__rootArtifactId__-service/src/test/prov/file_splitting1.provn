@@ -3,7 +3,8 @@ document
 prefix fs <http://openprovenance.org/ns/fs#>
 prefix act <http://localhost:7075/book/provapi/live/activity/>
 prefix ag <http://localhost:7075/book/provapi/live/agent/>
-prefix provext <http://openprovenance.org/prov/extension#>
+prefix provext <https://openprovenance.org/ns/provext#>
+prefix openprov <https://openprovenance.org/ns/openprov#>
 prefix file <http://localhost:7075/book/provapi/live/file/>
 prefix method <http://localhost:7075/book/provapi/live/method/>
 entity(file:1586,[prov:type = 'fs:DataFile', fs:path = "/home/bob" %% xsd:string, fs:filename = "training_set.csv" %% xsd:string])
@@ -18,6 +19,6 @@ wasGeneratedBy(file:1587,act:6118,-)
 wasDerivedFrom(file:1586, file:2, act:6118, -, -)
 wasDerivedFrom(file:1587, file:2, act:6118, -, -)
 wasAssociatedWith(act:6118,ag:5,method:3)
-wasAttributedTo(file:1586, ag:5,[provext:activity = 'act:6118'])
-wasAttributedTo(file:1587, ag:5,[provext:activity = 'act:6118'])
+wasAttributedTo(file:1586, ag:5,[openprov:activity = 'act:6118'])
+wasAttributedTo(file:1587, ag:5,[openprov:activity = 'act:6118'])
 endDocument

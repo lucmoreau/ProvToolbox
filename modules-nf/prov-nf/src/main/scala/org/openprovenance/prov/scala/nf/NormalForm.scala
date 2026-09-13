@@ -3234,7 +3234,7 @@ object CommandLine{
       // ns.register("t", "http://openprovenance.og/summary/types#")
       ns.register("sum",  "http://openprovenance.org/summary/ns#")  // TODO: QUICK HACK
     }
-    ns.register("provext", "http://openprovenance.org/prov/extension#")
+    ns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS)
 
     val actions=new MyActions()
     val actions2=new MyActions2()

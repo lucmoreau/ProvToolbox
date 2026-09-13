@@ -32,7 +32,7 @@ public class ExtensionRoundTripFromJavaTest extends ProvFrameworkTest {
 
     public void updateNamespaces(Document doc) {
         Namespace ns = Namespace.gatherNamespaces(doc);
-        ns.register("provext", "http://openprovenance.org/prov/extension#");
+        ns.register("provext", NamespacePrefixMapper.PROV_EXT_NS);
         doc.setNamespace(ns);
     }
 

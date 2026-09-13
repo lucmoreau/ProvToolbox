@@ -1,5 +1,5 @@
 
-FILES    := $(shell ls target/*.jsonld)
+FILES    := $(filter-out target/public-%, $(shell ls target/*.jsonld))
 
 FILES_TO_CHECK    := $(patsubst %, %.check, $(FILES))
 

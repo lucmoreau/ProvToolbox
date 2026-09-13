@@ -10,6 +10,7 @@ import ProvFactory.pf
 
 import javax.xml.datatype.XMLGregorianCalendar
 import org.openprovenance.prov.model
+import org.openprovenance.prov.model.StatementOrBundle.Kind
 
 import scala.annotation.tailrec
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions, SimpleStreamStats, Tee}
@@ -394,7 +395,7 @@ trait ProvStream {
 
 class MyParser2(override val input: ParserInput) extends MyParser(input,new Namespace,None, new DocBuilder)  {
   docns.addKnownNamespaces()
-  docns.register("provext", "http://openprovenance.org/prov/extension#")
+  docns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS)
 
 
 }
@@ -460,17 +461,17 @@ final class MyActions(val dateTimeOption: DateTimeOption = DateTimeOption.PRESER
 
   val makeWasDerivedFromNoId2: (QualifiedName, QualifiedName, Seq[Attribute]) => WasDerivedFrom = (e2: QualifiedName, e1: QualifiedName, attr: Seq[Attribute]) =>   makeWasDerivedFromNoId(e2,e1,None,None,None,attr)
 
-  val makeWasAttributedToWithId: (QualifiedName, QualifiedName, QualifiedName, Seq[Attribute]) => WasAttributedTo = (id: QualifiedName, e: QualifiedName, ag: QualifiedName, attr: Seq[Attribute]) => pf.newWasAttributedTo(id,e,ag,attr)
+  val makeWasAttributedToWithId: (QualifiedName, QualifiedName, QualifiedName, Seq[Attribute]) => WasAttributedTo = (id: QualifiedName, e: QualifiedName, ag: QualifiedName, attr: Seq[Attribute]) => pf.newWasAttributedTo(id,e,ag,OpenprovAttributes.canonical(Kind.PROV_ATTRIBUTION, attr))
 
-  val makeWasAttributedToNoId: (QualifiedName, QualifiedName, Seq[Attribute]) => WasAttributedTo = (e: QualifiedName, ag: QualifiedName, attr: Seq[Attribute]) => pf.newWasAttributedTo(null,e,ag,attr)
+  val makeWasAttributedToNoId: (QualifiedName, QualifiedName, Seq[Attribute]) => WasAttributedTo = (e: QualifiedName, ag: QualifiedName, attr: Seq[Attribute]) => pf.newWasAttributedTo(null,e,ag,OpenprovAttributes.canonical(Kind.PROV_ATTRIBUTION, attr))
 
   val makeWasInfluencedByWithId: (QualifiedName, QualifiedName, QualifiedName, Seq[Attribute]) => WasInfluencedBy = (id: QualifiedName, r2: QualifiedName, r1: QualifiedName, attr: Seq[Attribute]) => pf.newWasInfluencedBy(id,r2,r1,attr)
 
   val makeWasInfluencedByNoId: (QualifiedName, QualifiedName, Seq[Attribute]) => WasInfluencedBy = (r2: QualifiedName, r1: QualifiedName, attr: Seq[Attribute]) => pf.newWasInfluencedBy(null,r2,r1,attr)
 
-  val makeWasInformedByWithId: (QualifiedName, QualifiedName, QualifiedName, Seq[Attribute]) => WasInformedBy = (id: QualifiedName, r2: QualifiedName, r1: QualifiedName, attr: Seq[Attribute]) => pf.newWasInformedBy(id,r2,r1,attr)
+  val makeWasInformedByWithId: (QualifiedName, QualifiedName, QualifiedName, Seq[Attribute]) => WasInformedBy = (id: QualifiedName, r2: QualifiedName, r1: QualifiedName, attr: Seq[Attribute]) => pf.newWasInformedBy(id,r2,r1,OpenprovAttributes.canonical(Kind.PROV_COMMUNICATION, attr))
 
-  val makeWasInformedByNoId: (QualifiedName, QualifiedName, Seq[Attribute]) => WasInformedBy = (r2: QualifiedName, r1: QualifiedName, attr: Seq[Attribute]) => pf.newWasInformedBy(null,r2,r1,attr)
+  val makeWasInformedByNoId: (QualifiedName, QualifiedName, Seq[Attribute]) => WasInformedBy = (r2: QualifiedName, r1: QualifiedName, attr: Seq[Attribute]) => pf.newWasInformedBy(null,r2,r1,OpenprovAttributes.canonical(Kind.PROV_COMMUNICATION, attr))
 
   val makeUsedWithId: (QualifiedName, QualifiedName, Option[QualifiedName], Option[XMLGregorianCalendar], Seq[Attribute]) => Used = (id: QualifiedName, e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Seq[Attribute]) =>  pf.newUsed(id,e,nullable(a),t,attr)
 
@@ -501,9 +502,9 @@ final class MyActions(val dateTimeOption: DateTimeOption = DateTimeOption.PRESER
   val makeMentionOf: (QualifiedName, QualifiedName, QualifiedName) => MentionOf = (e2: QualifiedName, e1:QualifiedName, b: QualifiedName) => pf.newMentionOf(e2,e1,b)
 
 
-  val makeQualifiedSpecializationOfWithId: (QualifiedName, QualifiedName, QualifiedName, Seq[Attribute]) => SpecializationOf = (id:QualifiedName, e2:QualifiedName, e1:QualifiedName, attr:Seq[Attribute]) => pf.newSpecializationOf(id,e2,e1,attr)
+  val makeQualifiedSpecializationOfWithId: (QualifiedName, QualifiedName, QualifiedName, Seq[Attribute]) => SpecializationOf = (id:QualifiedName, e2:QualifiedName, e1:QualifiedName, attr:Seq[Attribute]) => pf.newSpecializationOf(id,e2,e1,OpenprovAttributes.canonical(Kind.PROV_SPECIALIZATION, attr))
 
-  val makeQualifiedSpecializationOfNoId: (QualifiedName, QualifiedName, Seq[Attribute]) => SpecializationOf = (e2:QualifiedName, e1:QualifiedName, attr:Seq[Attribute]) => pf.newSpecializationOf(null,e2,e1,attr)
+  val makeQualifiedSpecializationOfNoId: (QualifiedName, QualifiedName, Seq[Attribute]) => SpecializationOf = (e2:QualifiedName, e1:QualifiedName, attr:Seq[Attribute]) => pf.newSpecializationOf(null,e2,e1,OpenprovAttributes.canonical(Kind.PROV_SPECIALIZATION, attr))
 
   val makeAlternateOf: (QualifiedName, QualifiedName) => AlternateOf = (e2: QualifiedName, e1: QualifiedName) =>  pf.newAlternateOf(e2,e1)
 
@@ -513,9 +514,9 @@ final class MyActions(val dateTimeOption: DateTimeOption = DateTimeOption.PRESER
 
   val makeHadMember: (QualifiedName, QualifiedName) => HadMember = (e2:QualifiedName, e1:QualifiedName) => pf.newHadMember(e2,Set(e1))
 
-  val makeQualifiedHadMemberOfWithId: (QualifiedName, QualifiedName, QualifiedName, Seq[Attribute]) => HadMember = (id:QualifiedName, e2:QualifiedName, e1:QualifiedName, attr:Seq[Attribute]) => pf.newHadMember(id,e2,Set(e1),attr)
+  val makeQualifiedHadMemberOfWithId: (QualifiedName, QualifiedName, QualifiedName, Seq[Attribute]) => HadMember = (id:QualifiedName, e2:QualifiedName, e1:QualifiedName, attr:Seq[Attribute]) => pf.newHadMember(id,e2,Set(e1),OpenprovAttributes.canonical(Kind.PROV_MEMBERSHIP, attr))
 
-  val makeQualifiedHadMemberOfNoId: (QualifiedName, QualifiedName, Seq[Attribute]) => HadMember = (e2:QualifiedName, e1:QualifiedName, attr:Seq[Attribute]) => pf.newHadMember(null,e2,Set(e1),attr)
+  val makeQualifiedHadMemberOfNoId: (QualifiedName, QualifiedName, Seq[Attribute]) => HadMember = (e2:QualifiedName, e1:QualifiedName, attr:Seq[Attribute]) => pf.newHadMember(null,e2,Set(e1),OpenprovAttributes.canonical(Kind.PROV_MEMBERSHIP, attr))
 
 
   val makeAttribute: (QualifiedName, String, QualifiedName) => Attribute = (attr: QualifiedName, literal: String, datatype: QualifiedName) => Attribute {
@@ -573,7 +574,7 @@ final class MyActions2 {
     val ns=pf.newNamespace()
     bun_ns=Some(ns)
     ns.addKnownNamespaces()
-    ns.register("provext", "http://openprovenance.org/prov/extension#");
+    ns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS);
     ns.setParent(docns)
   }
 
@@ -776,7 +777,7 @@ class ProvDeserialiser(val dateTimeOption: DateTimeOption, val timeZone: TimeZon
     val docBuilder: DocBuilder =new DocBuilder(funs)
     val ns=new Namespace
     ns.addKnownNamespaces()
-    ns.register("provext", "http://openprovenance.org/prov/extension#")
+    ns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS)
 
     val bufferedSource: BufferedSource =io.Source.fromInputStream(in)
 
@@ -803,7 +804,7 @@ object Parser {
     val docBuilder=new DocBuilder(funs)
     val ns=new Namespace
     ns.addKnownNamespaces()
-    ns.register("provext", "http://openprovenance.org/prov/extension#")
+    ns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS)
 
     actions2.docns=ns
     actions2.bun_ns=None
@@ -833,7 +834,7 @@ object AParser  {
     val stream=new Tee(docBuilder,new SimpleStreamStats)
     val ns=new Namespace
     ns.addKnownNamespaces()
-    ns.register("provext", "http://openprovenance.org/prov/extension#")
+    ns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS)
     actions2.docns=ns
     actions2.bun_ns=None
     actions2.next=docBuilder

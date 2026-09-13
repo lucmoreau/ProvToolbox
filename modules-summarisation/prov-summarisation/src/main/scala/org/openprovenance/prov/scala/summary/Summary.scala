@@ -588,7 +588,7 @@ class SummaryIndex(val provTypeIndex: Map[Set[ProvType],Int],
     ns.addKnownNamespaces()
     ns.register("t", nsBase)
     ns.register("sum", TypePropagator.SUM_NS)
-    ns.register("provext", "http://openprovenance.org/prov/extension#")
+    ns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS)
 
 
     val set: Iterable[Relation] =rels.values.flatMap(x=>x.values.flatMap(y=>y) )

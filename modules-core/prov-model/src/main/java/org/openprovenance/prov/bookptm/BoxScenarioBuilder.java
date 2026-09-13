@@ -2,6 +2,7 @@ package org.openprovenance.prov.bookptm;
 
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Name;
+import org.openprovenance.prov.model.OpenprovTerms;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.builder.Builder;
@@ -15,7 +16,7 @@ public class BoxScenarioBuilder {
     static final String EX_IDS_URI = "http://example.org/id/";
     static final String FOAF_URI="http://xmlns.com/foaf/0.1/";
     public static final String VOCAB = "vocab";
-    public static final String PROVEXT = "provext";
+    public static final String OPENPROV = OPENPROV_PREFIX;
     public static final String AG_401_Alice = "ag401";
     public static ProvFactory pFactory=new org.openprovenance.prov.vanilla.ProvFactory();
     public static Name name=pFactory.getName();
@@ -476,7 +477,7 @@ public class BoxScenarioBuilder {
                 .specificEntity("b34/6")
                 .attrQn(defs.specialization,"spe1")
                 .attrQn(defs.derivation,"deriv1")
-                .attrQn(defs.entity, "b34/5")
+                .attrQn(defs.previousEntity, "b34/5")
                // .attr(defs.dotColour, edge3Colour)
                 .build();
     }
@@ -636,21 +637,21 @@ public class BoxScenarioBuilder {
         builder.wasGeneratedBy()
                 .entity("coll1")
                 .activity("insert0")
-                .role(PROVEXT, "outCollection")
+                .role(OPENPROV, OpenprovTerms.AS_COLLECTION)
                 .attr(defs.dotColour, edge2Colour)
                 .build();
 
         builder.used()
                 .activity("insert0")
                 .entity("coll0")
-                .role(PROVEXT, "inCollection")
+                .role(OPENPROV, OpenprovTerms.AS_COLLECTION)
                 .attr(defs.dotColour, edge1Colour)
                 .build();
 
         builder.used()
                 .activity("insert0")
                 .entity("item")
-                .role(PROVEXT, "inEntity")
+                .role(OPENPROV, OpenprovTerms.AS_MEMBER)
                 .attr(defs.dotColour, edge1Colour)
                 .build();
 
@@ -714,21 +715,21 @@ public class BoxScenarioBuilder {
         builder.wasGeneratedBy()
                 .entity("coll1")
                 .activity("remove0")
-                .role(PROVEXT, "outCollection")
+                .role(OPENPROV, OpenprovTerms.AS_COLLECTION)
                 .attr(defs.dotColour, edge2Colour)
                 .build();
 
         builder.used()
                 .activity("remove0")
                 .entity("coll0")
-                .role(PROVEXT, "inCollection")
+                .role(OPENPROV, OpenprovTerms.AS_COLLECTION)
                 .attr(defs.dotColour, edge1Colour)
                 .build();
 
         builder.used()
                 .activity("remove0")
                 .entity("item")
-                .role(PROVEXT, "inEntity")
+                .role(OPENPROV, OpenprovTerms.AS_MEMBER)
                 .attr(defs.dotColour, edge1Colour)
                 .build();
 
@@ -871,12 +872,12 @@ public class BoxScenarioBuilder {
         Prefix VOCAB  = builder.prefix(BoxScenarioBuilder.VOCAB);
         Prefix XID    = builder.prefix("xid");
         Prefix FOAF    = builder.prefix("foaf");
-        Prefix PROVEXT = builder.prefix(BoxScenarioBuilder.PROVEXT);
+        Prefix OPENPROV = builder.prefix(BoxScenarioBuilder.OPENPROV);
         Prefix DOT    = builder.prefix(DOT_PREFIX);
         builder.prefix(VOCAB, VOCAB_NS_URI);
         builder.prefix(XID, EX_IDS_URI);
         builder.prefix(FOAF, FOAF_URI);
-        builder.prefix(PROVEXT, PROV_EXT_NS);
+        builder.prefix(OPENPROV, OPENPROV_NS);
         builder.prefix(DOT, DOT_NS);
 
         QualifiedName Box          = builder.qn(VOCAB, "Box");
@@ -897,23 +898,24 @@ public class BoxScenarioBuilder {
         QualifiedName scientist    = builder.qn(VOCAB, "scientist");
         QualifiedName scale        = builder.qn(VOCAB, "scale");
         QualifiedName Instrument   = builder.qn(VOCAB, "Instrument");
-        QualifiedName specialization=builder.qn(PROVEXT, "specialization");
-        QualifiedName derivation    =builder.qn(PROVEXT, "derivation");
-        QualifiedName entity        =builder.qn(PROVEXT, "entity");
-        QualifiedName association   =builder.qn(PROVEXT, "association");
-        QualifiedName generation    =builder.qn(PROVEXT, "generation");
-        QualifiedName activity      =builder.qn(PROVEXT, "activity");
-        QualifiedName invalidation  =builder.qn(PROVEXT, "invalidation");
-        QualifiedName usage         =builder.qn(PROVEXT, "usage");
+        QualifiedName specialization=builder.qn(OPENPROV, "hadSpecialization");
+        QualifiedName derivation    =builder.qn(OPENPROV, "hadDerivation");
+        QualifiedName entity        =builder.qn(OPENPROV, "hadEntity");
+        QualifiedName previousEntity=builder.qn(OPENPROV, "hadPreviousEntity");
+        QualifiedName association   =builder.qn(OPENPROV, "hadAssociation");
+        QualifiedName generation    =builder.qn(OPENPROV, "hadGeneration");
+        QualifiedName activity      =builder.qn(OPENPROV, "hadActivity");
+        QualifiedName invalidation  =builder.qn(OPENPROV, "hadInvalidation");
+        QualifiedName usage         =builder.qn(OPENPROV, "hadUsage");
         QualifiedName dotColour     =builder.qn(DOT, "color");
-        QualifiedName InsertingElement =builder.qn(PROVEXT, "InsertingElement");
-        QualifiedName InsertingIntoCollection =builder.qn(PROVEXT, "InsertingIntoCollection");
-        QualifiedName RemovingElement =builder.qn(PROVEXT, "RemovingElement");
-        QualifiedName RemovingElementFromCollection =builder.qn(PROVEXT, "RemovingElementFromCollection");
+        QualifiedName InsertingElement =builder.qn(OPENPROV, OpenprovTerms.INSERTING_ELEMENT);
+        QualifiedName InsertingIntoCollection =builder.qn(OPENPROV, "InsertingIntoCollection");
+        QualifiedName RemovingElement =builder.qn(OPENPROV, OpenprovTerms.REMOVING_ELEMENT);
+        QualifiedName RemovingElementFromCollection =builder.qn(OPENPROV, OpenprovTerms.REMOVING_ELEMENT_FROM_COLLECTION);
 
 
         QualifiedName foaf_name    = builder.qn(FOAF, "name");
-        Definitions result = new Definitions(XID, Box, FPC, Ownership, Recycling, Transporting, Weighing, Packing, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, packer, unpacker, scientist, scale, Instrument, specialization, derivation, entity, association, generation, activity, invalidation, usage, dotColour, InsertingElement, InsertingIntoCollection, RemovingElement, RemovingElementFromCollection);
+        Definitions result = new Definitions(XID, Box, FPC, Ownership, Recycling, Transporting, Weighing, Packing, PickUp, DropOff, London, Brighton, weight, foaf_name, driver, packer, unpacker, scientist, scale, Instrument, specialization, derivation, entity, previousEntity, association, generation, activity, invalidation, usage, dotColour, InsertingElement, InsertingIntoCollection, RemovingElement, RemovingElementFromCollection);
         return result;
     }
 
@@ -940,6 +942,8 @@ public class BoxScenarioBuilder {
         public final QualifiedName specialization;
         public final QualifiedName derivation;
         public final QualifiedName entity;
+        /** openprov:hadPreviousEntity, the previous entity of a specialization. */
+        public final QualifiedName previousEntity;
         public final QualifiedName association;
         public final QualifiedName generation;
         public final QualifiedName activity;
@@ -952,7 +956,7 @@ public class BoxScenarioBuilder {
         public final QualifiedName RemovingElementFromCollection;
         private final QualifiedName packer;
 
-        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Recycling, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName packer, QualifiedName unpacker, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation, QualifiedName usage, QualifiedName dotColour, QualifiedName insertingElement, QualifiedName insertingIntoCollection, QualifiedName removingElement, QualifiedName removingElementFromCollection) {
+        public Definitions(Prefix XID, QualifiedName Box, QualifiedName fpc, QualifiedName Ownership, QualifiedName Recycling, QualifiedName Transporting, QualifiedName Weighing, QualifiedName packing, QualifiedName PickUp, QualifiedName DropOff, QualifiedName London, QualifiedName Brighton, QualifiedName weight, QualifiedName foaf_name, QualifiedName driver, QualifiedName packer, QualifiedName unpacker, QualifiedName scientist, QualifiedName scale, QualifiedName instrument, QualifiedName specialization, QualifiedName derivation, QualifiedName entity, QualifiedName previousEntity, QualifiedName association, QualifiedName generation, QualifiedName activity, QualifiedName invalidation, QualifiedName usage, QualifiedName dotColour, QualifiedName insertingElement, QualifiedName insertingIntoCollection, QualifiedName removingElement, QualifiedName removingElementFromCollection) {
             this.XID = XID;
             this.Box = Box;
             this.FPC = fpc;
@@ -976,6 +980,7 @@ public class BoxScenarioBuilder {
             this.specialization = specialization;
             this.derivation = derivation;
             this.entity = entity;
+            this.previousEntity = previousEntity;
             this.association = association;
             this.generation = generation;
             this.activity = activity;

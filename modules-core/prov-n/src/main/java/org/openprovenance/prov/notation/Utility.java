@@ -23,10 +23,10 @@ import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.antlr.runtime.tree.TreeAdaptor;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.openprovenance.prov.model.BeanTraversal;
-import org.openprovenance.prov.model.DateTimeOption;
-import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
 
@@ -134,7 +134,7 @@ public class Utility {
         StringWriter writer=new StringWriter();
         NotationConstructor nc=new HTMLConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
-        bt.doAction(doc);
+        bt.doAction(withImpliedNamespaces(doc, pFactory));
         nc.flush();
         String s=writer.toString();
         nc.close();
@@ -162,7 +162,7 @@ public class Utility {
         StringWriter writer=new StringWriter();
         NotationConstructor nc=new NotationConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
-        bt.doAction(doc);
+        bt.doAction(withImpliedNamespaces(doc, pFactory));
         nc.flush();
         String s=writer.toString();
         nc.close();
@@ -175,7 +175,7 @@ public class Utility {
     public void convertBeanToSyntaxTree(final Document doc, Writer writer, ProvFactory pFactory) {
         NotationConstructor nc=new NotationConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
-        bt.doAction(doc);
+        bt.doAction(withImpliedNamespaces(doc, pFactory));
         nc.flush();
         // nc.close();
     }
@@ -219,6 +219,48 @@ public class Utility {
             }
             catch (IOException e) {}
         }
+    }
+
+    static final String PROVEXT_PREFIX = "provext";
+
+    /**
+     * The document as PROV-N writes it: with provext declared when a qualified specialization, membership or
+     * alternate is written as a provext statement, and openprov when its attributes are written, unless the
+     * document declares them itself. A document built in memory, by a template for instance, need not declare
+     * either; undeclared, what is written could not be read back. The document given is left as it is.
+     */
+    public Document withImpliedNamespaces(Document doc, ProvFactory pFactory) {
+        ProvUtilities u = new ProvUtilities();
+        boolean provext = false, openprov = false;
+        List<Statement> statements = new LinkedList<>(u.getStatement(doc));
+        List<Bundle> bundles = u.getNamedBundle(doc);
+        for (Bundle b : bundles) statements.addAll(u.getStatement(b));
+        for (Statement s : statements) {
+            provext |= isWrittenAsProvextStatement(s, pFactory);
+            openprov |= hasOpenprovAttribute(s);
+        }
+        Namespace ns = doc.getNamespace();
+        boolean declaresProvext = ns != null && ns.getPrefixes().containsKey(PROVEXT_PREFIX);
+        boolean declaresOpenprov = ns != null && ns.getPrefixes().containsKey(NamespacePrefixMapper.OPENPROV_PREFIX);
+        if ((!provext || declaresProvext) && (!openprov || declaresOpenprov)) return doc;
+        Namespace declared = ns == null ? new Namespace() : new Namespace(ns);
+        if (provext && !declaresProvext) declared.register(PROVEXT_PREFIX, NamespacePrefixMapper.PROV_EXT_NS);
+        if (openprov && !declaresOpenprov) declared.register(NamespacePrefixMapper.OPENPROV_PREFIX, NamespacePrefixMapper.OPENPROV_NS);
+        return pFactory.newDocument(declared, u.getStatement(doc), bundles);
+    }
+
+    /** As {@link NotationConstructor} decides: a qualified specialization, membership or alternate with an identifier or attributes. */
+    static boolean isWrittenAsProvextStatement(Statement s, ProvFactory pFactory) {
+        if (!(s instanceof QualifiedSpecializationOf || s instanceof QualifiedHadMember || s instanceof QualifiedAlternateOf)) return false;
+        return ((Identifiable) s).getId() != null || !pFactory.getAttributes(s).isEmpty();
+    }
+
+    static boolean hasOpenprovAttribute(Statement s) {
+        if (!(s instanceof HasOther)) return false;
+        for (Other o : ((HasOther) s).getOther()) {
+            if (NamespacePrefixMapper.OPENPROV_NS.equals(o.getElementName().getNamespaceURI())) return true;
+        }
+        return false;
     }
 
     public void writeDocument(Document doc, String filename, ProvFactory pFactory){

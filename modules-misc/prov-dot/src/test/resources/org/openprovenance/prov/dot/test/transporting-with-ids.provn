@@ -2,12 +2,14 @@ document
 prefix phys <http://openprovenance.org/ns/phys#>
 prefix vargen <http://openprovenance.org/vargen#>
 prefix var <http://openprovenance.org/var#>
-prefix provext <http://openprovenance.org/prov/extension#>
+prefix provext <https://openprovenance.org/ns/provext#>
+prefix openprov <https://openprovenance.org/ns/openprov#>
 bundle vargen:b
 prefix vargen <http://openprovenance.org/vargen#>
 prefix phys <http://openprovenance.org/ns/phys#>
 prefix var <http://openprovenance.org/var#>
-prefix provext <http://openprovenance.org/prov/extension#>
+prefix provext <https://openprovenance.org/ns/provext#>
+prefix openprov <https://openprovenance.org/ns/openprov#>
 
 entity(var:item0)
 entity(var:item1,[prov:location = 'var:ilocation1', var:iprops1 = 'var:ivalues1'])
@@ -19,8 +21,8 @@ used(var:usd1;var:transporting,var:item0,-,[prov:role = 'var:role', var:uprops1 
 wasGeneratedBy(var:gen1;var:item1,var:transporting,-,[prov:role = 'var:role', var:gprops1 = 'var:gvalues1'])
 wasDerivedFrom(var:der1;var:item1, var:item0, var:transporting, var:gen1, var:usd1,[prov:type = 'phys:Transporting', var:dprops = 'var:dvalues'])
 wasAssociatedWith(var:asc1;var:transporting,var:transporter,var:schedule)
-wasAttributedTo(var:att1;var:item1, var:transporter,[provext:association = 'var:asc1', provext:generation = 'var:gen1', provext:activity = 'var:transporting'])
-provext:specializationOf(var:spe1;var:item1,var:item,[provext:entity = 'var:item0', provext:derivation = 'var:der1'])
+wasAttributedTo(var:att1;var:item1, var:transporter,[openprov:association = 'var:asc1', openprov:generation = 'var:gen1', openprov:activity = 'var:transporting'])
+provext:specializationOf(var:spe1;var:item1,var:item,[openprov:previousEntity = 'var:item0', openprov:derivation = 'var:der1'])
 provext:specializationOf(var:spe2;var:item0,var:item)
 endBundle
 endDocument

@@ -49,6 +49,14 @@
 	    }
 	},
 
+	"Document": {
+	    "@id": "provext:Document"
+	},
+
+	"Bundle": {
+	    "@id": "prov:Bundle"
+	},
+
 	"Entity": {
 	    "@id": "prov:Entity",
 	    "@context" : {

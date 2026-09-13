@@ -6,7 +6,7 @@ document
   prefix var <http://openprovenance.org/var#>
   prefix vargen <http://openprovenance.org/vargen#>
   prefix dot <http://openprovenance.org/provtoolbox/dot/ns#>
-  prefix provext <http://openprovenance.org/prov/extension#>
+  prefix provext <https://openprovenance.org/ns/provext#>
 
 
 

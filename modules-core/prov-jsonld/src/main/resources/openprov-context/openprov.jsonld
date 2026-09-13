@@ -1,0 +1,57 @@
+{
+  "@context": [
+    "https://openprovenance.org/prov-jsonld/context.jsonld",
+    {
+      "@version": 1.1,
+      "openprov": "https://openprovenance.org/ns/openprov#",
+
+      "Attribution": {
+        "@id": "prov:Attribution",
+        "@context": {
+          "entity":           { "@reverse": "prov:qualifiedAttribution", "@type": "@id" },
+          "activity":         { "@id": "openprov:hadActivity",         "@type": "@id" },
+          "association":      { "@id": "openprov:hadAssociation",      "@type": "@id" },
+          "generation":       { "@id": "openprov:hadGeneration",       "@type": "@id" },
+          "invalidation":     { "@id": "openprov:hadInvalidation",     "@type": "@id" },
+          "entityDerivation": { "@id": "openprov:hadEntityDerivation", "@type": "@id" },
+          "agentDerivation":  { "@id": "openprov:hadAgentDerivation",  "@type": "@id" }
+        }
+      },
+
+      "Membership": {
+        "@id": "provext:Membership",
+        "@context": {
+          "collection":           { "@reverse": "provext:qualifiedMembership", "@type": "@id" },
+          "entity":               { "@id": "provext:member",                   "@type": "@id" },
+          "activity":             { "@id": "openprov:hadActivity",             "@type": "@id" },
+          "generation":           { "@id": "openprov:hadGeneration",           "@type": "@id" },
+          "usage":                { "@id": "openprov:hadUsage",                "@type": "@id" },
+          "collectionGeneration": { "@id": "openprov:hadCollectionGeneration", "@type": "@id" },
+          "itemGeneration":       { "@id": "openprov:hadItemGeneration",       "@type": "@id" }
+        }
+      },
+
+      "Specialization": {
+        "@id": "provext:Specialization",
+        "@context": {
+          "specificEntity": { "@reverse": "provext:qualifiedSpecialization", "@type": "@id" },
+          "generalEntity":  { "@id": "provext:generalEntity",                "@type": "@id" },
+          "previousEntity": { "@id": "openprov:hadPreviousEntity",           "@type": "@id" },
+          "derivation":     { "@id": "openprov:hadDerivation",               "@type": "@id" },
+          "specialization": { "@id": "openprov:hadSpecialization",           "@type": "@id" }
+        }
+      },
+
+      "Communication": {
+        "@id": "prov:Communication",
+        "@context": {
+          "informed":   { "@reverse": "prov:qualifiedCommunication", "@type": "@id" },
+          "informant":  { "@id": "prov:activity",                    "@type": "@id" },
+          "entity":     { "@id": "openprov:hadEntity",               "@type": "@id" },
+          "generation": { "@id": "openprov:hadGeneration",           "@type": "@id" },
+          "usage":      { "@id": "openprov:hadUsage",                "@type": "@id" }
+        }
+      }
+    }
+  ]
+}

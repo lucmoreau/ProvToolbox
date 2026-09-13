@@ -32,9 +32,11 @@ public interface Constants {
     String PROPERTY_PROV_BUNDLE = "Bundle";
 
     String JSONLD_CONTEXT_URL = "https://openprovenance.org/prov-jsonld/context.jsonld";
+    /** The openprov context, which extends the PROV-JSONLD one: cited by a document that uses openprov terms. */
+    String OPENPROV_CONTEXT_URL = "https://openprovenance.org/ns/openprov.jsonld";
+    String OPENPROV_CONTEXT_RESOURCE = "openprov-context/openprov.jsonld";
     String JSONLDSCHEMA_2024_08_25 = "2024-08-25/jsonldschema.json";
     String JSONLDCONTEXT_2024_08_25 = "2024-08-25/jsonldcontext.jsonld";
-
 
     String OLD_JSONLD_CONTEXT_URL = "http://openprovenance.org/prov.jsonld";
 

@@ -114,7 +114,7 @@ public class ProvJsonReader implements ProvJsonVocabulary {
 
     private Statement readStatement(String section, String key, JsonNode r, Namespace ns) {
         QualifiedName id = isBlank(key) ? null : id(key, ns);
-        Collection<Attribute> attrs = attributes(r, ns);
+        Collection<Attribute> attrs = OpenprovTerms.canonical(kindOf(section), attributes(r, ns), pf);
         switch (section) {
             case ENTITY:
                 return pf.newEntity(id(key, ns), attrs);
@@ -171,6 +171,17 @@ public class ProvJsonReader implements ProvJsonVocabulary {
                 }
             default:
                 throw new ProvJsonException("unknown PROV-JSON section: " + section);
+        }
+    }
+
+    /** The kind a section holds, for the openprov attributes scoped to attributions, memberships, specializations and communications. */
+    static StatementOrBundle.Kind kindOf(String section) {
+        switch (section) {
+            case WAS_ATTRIBUTED_TO: return StatementOrBundle.Kind.PROV_ATTRIBUTION;
+            case HAD_MEMBER: return StatementOrBundle.Kind.PROV_MEMBERSHIP;
+            case SPECIALIZATION_OF: return StatementOrBundle.Kind.PROV_SPECIALIZATION;
+            case WAS_INFORMED_BY: return StatementOrBundle.Kind.PROV_COMMUNICATION;
+            default: return StatementOrBundle.Kind.PROV_ENTITY;
         }
     }
 

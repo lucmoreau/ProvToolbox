@@ -3,7 +3,8 @@ document
 prefix trs <https://openprovenance.org/transport/ns/#>
 prefix phys <http://openprovenance.org/ns/phys#>
 prefix resp <http://openprovenance.org/ns/responsibility#>
-prefix provext <http://openprovenance.org/prov/extension#>
+prefix provext <https://openprovenance.org/ns/provext#>
+prefix openprov <https://openprovenance.org/ns/openprov#>
 prefix item <http://localhost:7075/book/provapi/live/item/>
 prefix ag <http://localhost:7075/book/provapi/live/agent/>
 prefix act <http://localhost:7075/book/provapi/live/activity/>
@@ -11,9 +12,9 @@ prefix sched <http://localhost:7075/book/provapi/live/schedule/>
 entity(item:7980)
 entity(item:7981,[prov:type = 'trs:Book'])
 activity(act:6410,-,-,[prov:type = 'resp:Assigning'])
-used(act:6410,item:7980,-,[prov:role = 'provext:asItem'])
+used(act:6410,item:7980,-,[prov:role = 'openprov:asItem'])
 wasGeneratedBy(item:7981,act:6410,2024-10-02T09:30:00+01:00)
 wasDerivedFrom(item:7981, item:7980, act:6410, -, -,[prov:type = 'resp:Assigning'])
 agent(ag:7955,[prov:type = 'trs:Person'])
-wasAttributedTo(item:7981, ag:7955,[prov:type = 'resp:Assigning', provext:activity = 'act:6410'])
+wasAttributedTo(item:7981, ag:7955,[prov:type = 'resp:Assigning', openprov:activity = 'act:6410'])
 endDocument

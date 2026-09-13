@@ -3,7 +3,8 @@ document
 prefix trs <https://openprovenance.org/transport/ns/#>
 prefix phys <http://openprovenance.org/ns/phys#>
 prefix resp <http://openprovenance.org/ns/responsibility#>
-prefix provext <http://openprovenance.org/prov/extension#>
+prefix provext <https://openprovenance.org/ns/provext#>
+prefix openprov <https://openprovenance.org/ns/openprov#>
 prefix item <http://localhost:7075/book/provapi/live/item/>
 prefix ag <http://localhost:7075/book/provapi/live/agent/>
 prefix act <http://localhost:7075/book/provapi/live/activity/>
@@ -12,13 +13,13 @@ entity(item:7972)
 entity(item:7971,[prov:type = 'trs:Book'])
 entity(item:7969,[prov:type = 'prov:Collection'])
 entity(item:7970,[prov:type = 'trs:Box', prov:type = 'prov:Collection'])
-activity(act:5961,-,-,[prov:type = 'provext:RemovingElementFromCollection', prov:type = 'phys:RemovingItemFromContainer'])
+activity(act:5961,-,-,[prov:type = 'openprov:RemovingElementFromCollection', prov:type = 'phys:RemovingItemFromContainer'])
 agent(ag:7965)
-used(act:5961,item:7972,-,[prov:role = 'provext:asMember'])
-used(act:5961,item:7969,-,[prov:role = 'provext:asCollection'])
-wasGeneratedBy(item:7971,act:5961,-,[prov:role = 'provext:asMember'])
-wasGeneratedBy(item:7970,act:5961,-,[prov:role = 'provext:asCollection'])
-wasDerivedFrom(item:7971, item:7972, act:5961, -, -,[prov:type = 'provext:RemovingElementFromCollection'])
+used(act:5961,item:7972,-,[prov:role = 'openprov:asMember'])
+used(act:5961,item:7969,-,[prov:role = 'openprov:asCollection'])
+wasGeneratedBy(item:7971,act:5961,-,[prov:role = 'openprov:asMember'])
+wasGeneratedBy(item:7970,act:5961,-,[prov:role = 'openprov:asCollection'])
+wasDerivedFrom(item:7971, item:7972, act:5961, -, -,[prov:type = 'openprov:RemovingElementFromCollection'])
 wasAssociatedWith(act:5961,ag:7965,-)
-wasAttributedTo(item:7971, ag:7965,[provext:activity = 'act:5961'])
+wasAttributedTo(item:7971, ag:7965,[openprov:activity = 'act:5961'])
 endDocument

@@ -54,9 +54,4 @@ public class RoundTripFromJavaMongoTest extends RoundTripFromJavaJSONLD11Test {
         }
         return true;
     }
-
-    @Override
-    public String jsonSchemaLocation() {
-        return "../../modules-core/prov-jsonld/" + super.jsonSchemaLocation();
-    }
 }

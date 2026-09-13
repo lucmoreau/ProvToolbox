@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.model.StatementOrBundle.Kind;
 import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
@@ -25,6 +26,9 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
 
 
     public boolean standaloneExpression = false;
+
+    /** Builds the attribute a document shows for one the model holds: see {@link OpenprovTerms}. */
+    static final ProvFactory pFactory = org.openprovenance.prov.vanilla.ProvFactory.getFactory();
 
     public NotationConstructor(Writer writer) {
         this.buffer = new BufferedWriter(writer);
@@ -338,7 +342,7 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
         final String s = keyword("wasAttributedTo") + "(" + optionalId(id)
                 + idOrMarker(e) + ", " + idOrMarker(ag);
         write(s);
-        writeOptionalAttributes(attributes);
+        writeOptionalAttributes(OpenprovTerms.surface(Kind.PROV_ATTRIBUTION, attributes, pFactory));
         writeln("");
         return null;
     }
@@ -410,7 +414,7 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
                                           QualifiedName a1,
                                           Collection<Attribute> attributes) {
         String s = "wasInformedBy(" + optionalId(id) + idOrMarker(a2) + ","
-                + idOrMarker(a1) + optionalAttributes(attributes) + ")";
+                + idOrMarker(a1) + optionalAttributes(OpenprovTerms.surface(Kind.PROV_COMMUNICATION, attributes, pFactory)) + ")";
         writeln(s);
         return null;
     }
@@ -605,7 +609,7 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
         }
        
         String s = keyword("provext:specializationOf") + "(" + optionalId(id)
-                + idOrMarker(e2) + "," + idOrMarker(e1) +  optionalAttributes(attributes) + ")";
+                + idOrMarker(e2) + "," + idOrMarker(e1) +  optionalAttributes(OpenprovTerms.surface(Kind.PROV_SPECIALIZATION, attributes, pFactory)) + ")";
         writeln(s);
         return null;
     }
@@ -623,12 +627,12 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
             // strictly speaking it is not a syntactically correct expression,
             // but we print something to support scruffiness
             String s = keyword("provext:hadMember") + "(" + optionalId(id) + idOrMarker(c) + ","
-                    + idOrMarker((QualifiedName) null)+  optionalAttributes(attributes) + ")";
+                    + idOrMarker((QualifiedName) null)+  optionalAttributes(OpenprovTerms.surface(Kind.PROV_MEMBERSHIP, attributes, pFactory)) + ")";
             writeln(s);
         } else {
             for (QualifiedName e : ll) {
                 String s = keyword("provext:hadMember") + "(" + optionalId(id) + idOrMarker(c) + ","
-                        + idOrMarker(e) +  optionalAttributes(attributes) + ")";
+                        + idOrMarker(e) +  optionalAttributes(OpenprovTerms.surface(Kind.PROV_MEMBERSHIP, attributes, pFactory)) + ")";
                 writeln(s);
             }
         }

@@ -909,7 +909,7 @@ public class BoxScenarioBuilder {
         QualifiedName usage         =builder.qn(OPENPROV, "hadUsage");
         QualifiedName dotColour     =builder.qn(DOT, "color");
         QualifiedName InsertingElement =builder.qn(OPENPROV, OpenprovTerms.INSERTING_ELEMENT);
-        QualifiedName InsertingIntoCollection =builder.qn(OPENPROV, "InsertingIntoCollection");
+        QualifiedName InsertingIntoCollection =builder.qn(OPENPROV, OpenprovTerms.INSERTING_ITEM_INTO_COLLECTION);
         QualifiedName RemovingElement =builder.qn(OPENPROV, OpenprovTerms.REMOVING_ELEMENT);
         QualifiedName RemovingElementFromCollection =builder.qn(OPENPROV, OpenprovTerms.REMOVING_ELEMENT_FROM_COLLECTION);
 

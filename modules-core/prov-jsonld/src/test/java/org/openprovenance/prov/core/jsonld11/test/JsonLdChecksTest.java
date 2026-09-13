@@ -65,14 +65,10 @@ public class JsonLdChecksTest extends TestCase {
         assertTrue(text.contains("http://www.w3.org/ns/prov#qualifiedUsage"));
     }
 
-    /**
-     * The published context defines no {@code Bundle} term, so a bundle's type expands to nothing: the one known
-     * gap. When the context gains {@code "Bundle": {"@id": "prov:Bundle"}}, this fails, and the allowance in
-     * {@link JsonLdExpansion#KNOWN_CONTEXT_GAPS} goes.
-     */
-    public void testBundleTypeIsTheContextsKnownGap() throws Exception {
+    /** The context, since 2026-09-12, defines {@code Bundle} as {@code prov:Bundle}: a bundle's type expands to it. */
+    public void testBundleTypeExpandsToProvBundle() throws Exception {
         JsonArray expanded = JsonLdExpansion.expand(bundle());
         assertEquals(List.of(), JsonLdExpansion.problems(expanded));
-        assertEquals(List.of("type is not an IRI: Bundle"), JsonLdExpansion.allProblems(expanded));
+        assertTrue(expanded.toString().contains("http://www.w3.org/ns/prov#Bundle"));
     }
 }

@@ -34,7 +34,7 @@ public class JsonLdExpansion {
     /** The published context resolved from the module's own copy, so the check needs no network. */
     static final DocumentLoader LOCAL_CONTEXT = (URI url, DocumentLoaderOptions options) -> {
         if (!JSONLD_CONTEXT_URL.equals(url.toString())) throw new JsonLdError(com.apicatalog.jsonld.JsonLdErrorCode.LOADING_REMOTE_CONTEXT_FAILED, "not served here: " + url);
-        try (InputStream in = new FileInputStream("src/main/resources/" + JSONLDCONTEXT_2024_08_25)) {
+        try (InputStream in = Schemas.open(JSONLDCONTEXT_2024_08_25, "src/main/resources/" + JSONLDCONTEXT_2024_08_25)) {
             return JsonDocument.of(in);
         } catch (IOException e) {
             throw new JsonLdError(com.apicatalog.jsonld.JsonLdErrorCode.LOADING_REMOTE_CONTEXT_FAILED, e);
@@ -50,22 +50,8 @@ public class JsonLdExpansion {
         }
     }
 
-    /**
-     * Types the published context leaves undefined, so they expand to no IRI: {@code Bundle}, which the serialiser
-     * writes on a bundle node. The context needs {@code "Bundle": {"@id": "prov:Bundle"}}; until it has it, the
-     * gap is allowed here and pinned by {@code JsonLdChecksTest#testBundleTypeIsTheContextsKnownGap}.
-     */
-    public static final java.util.Set<String> KNOWN_CONTEXT_GAPS = java.util.Set.of("Bundle");
-
     /** Every node of the expansion whose {@code @type} is not a PROV term, or whose property is in no namespace. */
     public static List<String> problems(JsonArray expanded) {
-        List<String> problems = allProblems(expanded);
-        problems.removeIf(p -> KNOWN_CONTEXT_GAPS.stream().anyMatch(gap -> p.equals("type is not an IRI: " + gap)));
-        return problems;
-    }
-
-    /** The problems with the known gaps of the context included. */
-    public static List<String> allProblems(JsonArray expanded) {
         List<String> problems = new ArrayList<>();
         for (JsonValue v : expanded) check(v.asJsonObject(), problems);
         return problems;

@@ -1,7 +1,7 @@
 PROVCONVERT=provconvert
 
 do.all:
-	mkdir target
+	mkdir -p target
 	$(MAKE) expand1
 	$(MAKE) expand2
 	$(MAKE) expand3

@@ -94,6 +94,7 @@
                             <executable>unzip</executable>
                             <workingDirectory>${project.build.directory}/tmp</workingDirectory>
                             <arguments>
+                                <argument>-o</argument> <!-- overwrite a previous extraction rather than ask -->
                                 <argument>${project.build.directory}/${project.build.finalName}-src.zip</argument>
                             </arguments>
                         </configuration>

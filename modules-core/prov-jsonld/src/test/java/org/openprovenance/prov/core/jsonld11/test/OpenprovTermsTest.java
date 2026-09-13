@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
-import org.openprovenance.prov.core.jsonld11.serialization.OpenprovTerms;
+import org.openprovenance.prov.model.OpenprovTerms;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.StatementOrBundle.Kind;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
@@ -157,9 +157,7 @@ public class OpenprovTermsTest extends TestCase {
                 String id = t.getValue().path("@id").asText();
                 if (id.startsWith("openprov:")) inContext.put(t.getKey(), id.substring("openprov:".length()));
             });
-            Map<String, String> inTable = new TreeMap<>();
-            OpenprovTerms.scope(e.getValue()).forEach((term, property) -> inTable.put(term, property.getLocalPart()));
-            assertEquals(e.getKey(), inContext, inTable);
+            assertEquals(e.getKey(), inContext, new TreeMap<>(OpenprovTerms.scope(e.getValue())));
         }
         assertTrue(OpenprovTerms.scope(Kind.PROV_USAGE).isEmpty());
     }

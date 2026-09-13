@@ -1,7 +1,8 @@
 package org.openprovenance.prov.core.jsonld11.serialization.deserial;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
-import org.openprovenance.prov.core.jsonld11.serialization.OpenprovTerms;
+import org.openprovenance.prov.model.OpenprovTerms;
+import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle.Kind;
 
@@ -18,7 +19,7 @@ public abstract class ScopedKeyDeserializer extends CustomKeyDeserializer {
 
     @Override
     public Object deserializeKey(String s, DeserializationContext deserializationContext) throws IOException {
-        QualifiedName scoped = OpenprovTerms.property(kind, s);
+        QualifiedName scoped = OpenprovTerms.property(kind, s, ProvFactory.getFactory());
         if (scoped == null) return super.deserializeKey(s, deserializationContext);
         deserializationContext.setAttribute(PROV_ATTRIBUTE_CONTEXT_KEY, scoped);
         return scoped;

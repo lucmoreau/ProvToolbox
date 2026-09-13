@@ -2,7 +2,7 @@ package org.openprovenance.prov.core.jsonld11.serialization.serial;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.openprovenance.prov.core.jsonld11.serialization.OpenprovTerms;
+import org.openprovenance.prov.model.OpenprovTerms;
 import org.openprovenance.prov.vanilla.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle.Kind;
 
@@ -19,7 +19,7 @@ public abstract class ScopedKeySerializer extends CustomKeySerializer {
 
     @Override
     public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        String term = OpenprovTerms.term(kind, q);
+        String term = OpenprovTerms.isOpenprov(q) ? OpenprovTerms.term(kind, q.getLocalPart()) : null;
         if (term == null) {
             super.serialize(q, jsonGenerator, serializerProvider);
         } else {

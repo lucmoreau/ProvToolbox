@@ -994,7 +994,7 @@ trait ImmutableWasAttributedTo extends Relation with org.openprovenance.prov.mod
       idOrMarker(entity, sb)
       sb+=','
       idOrMarker(agent, sb)
-      Attribute.toNotation(sb, label, typex, Set(), Set(), Set(), other)
+      Attribute.toNotation(sb, label, typex, Set(), Set(), Set(), OpenprovAttributes.surface(org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_ATTRIBUTION, other))
       sb+=')'      
     }
 }
@@ -1056,7 +1056,7 @@ trait ImmutableSpecializationOf extends Relation with org.openprovenance.prov.mo
       idOrMarker(specificEntity, sb)
       sb+=','
       idOrMarker(generalEntity, sb)
-      Attribute.toNotation(sb, label, typex, Set(), Set(), Set(), other)
+      Attribute.toNotation(sb, label, typex, Set(), Set(), Set(), OpenprovAttributes.surface(org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_SPECIALIZATION, other))
       sb+=')'      
     }
  
@@ -1374,7 +1374,7 @@ trait ImmutableHadMember extends Relation with org.openprovenance.prov.model.Had
       idOrMarker(collection, sb)
       sb+=','
       idOrMarker(entity.head, sb)
-      Attribute.toNotation(sb, label, typex, Set(), Set(), Set(), other)
+      Attribute.toNotation(sb, label, typex, Set(), Set(), Set(), OpenprovAttributes.surface(org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_MEMBERSHIP, other))
       sb+=')'      
     }
 

@@ -28,10 +28,12 @@ import java.util.*;
 public class ProvJsonWriter implements ProvJsonVocabulary {
 
     private final ObjectMapper mapper = new ObjectMapper();
+    private final ProvFactory factory;
     private final Name name;
     private int blankCounter = 0;
 
     public ProvJsonWriter(ProvFactory pf) {
+        this.factory = pf;
         this.name = pf.getName();
     }
 
@@ -276,7 +278,11 @@ public class ProvJsonWriter implements ProvJsonVocabulary {
             if (value != null) addValue(values, PROV_VALUE, value, ns);
         }
         if (s instanceof HasOther) {
-            for (Other other : ((HasOther) s).getOther()) addValue(values, qn(other.getElementName(), ns), other, ns);
+            for (Other other : ((HasOther) s).getOther()) {
+                // an openprov property of an attribution, membership or specialization is written under its term, without had
+                Attribute shown = OpenprovTerms.surface(s.getKind(), other, factory);
+                addValue(values, qn(shown.getElementName(), ns), (TypedValue) shown, ns);
+            }
         }
         for (Map.Entry<String, List<JsonNode>> e : values.entrySet()) {
             if (e.getValue().size() == 1) {

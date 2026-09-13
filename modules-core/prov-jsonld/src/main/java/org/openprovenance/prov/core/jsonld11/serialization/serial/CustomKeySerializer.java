@@ -11,7 +11,7 @@ import java.io.IOException;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 
 
-final public class CustomKeySerializer extends StdSerializer<QualifiedName> {
+public class CustomKeySerializer extends StdSerializer<QualifiedName> {
 
 
     protected CustomKeySerializer() {

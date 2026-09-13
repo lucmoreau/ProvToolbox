@@ -9,10 +9,6 @@ import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
-import static org.openprovenance.prov.model.NamespacePrefixMapper.JSONLD_PROVEXT_NS;
-import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_PREFIX;
-
-
 /**
  * Utility class to traverse a document, register all namespaces occurring in {@link QualifiedName}s 
  * and attributes as well as associated prefixes, and create a {@link Namespace} datastructure.

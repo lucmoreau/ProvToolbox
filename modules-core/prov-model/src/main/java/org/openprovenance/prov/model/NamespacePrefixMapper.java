@@ -8,7 +8,9 @@ package org.openprovenance.prov.model;
  */
 public interface NamespacePrefixMapper {
     String PROV_EXT_NS = "http://openprovenance.org/prov/extension#";
-    String JSONLD_PROVEXT_NS = "https://openprovenance.org/ns/provext#";
+    /** The OpenProvenance vocabulary, https://openprovenance.org/ns/openprov: what templates write beyond PROV-DM and provext. */
+    String OPENPROV_NS = "https://openprovenance.org/ns/openprov#";
+    String OPENPROV_PREFIX = "openprov";
     String PROV_NS = "http://www.w3.org/ns/prov#";
     String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
     String XSD_NS = "http://www.w3.org/2001/XMLSchema#";

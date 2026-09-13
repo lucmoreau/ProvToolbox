@@ -48,6 +48,8 @@ public class OpenprovAttributesJsonTest extends TestCase {
                 List.of(openprovAttribute("hadPreviousEntity", "e0"), openprovAttribute("hadDerivation", "der1"), openprovAttribute("hadSpecialization", "spe0"))));
         statements.add(pf.newWasInformedBy(ex("com"), ex("a1"), ex("a0"),
                 List.of(openprovAttribute("hadEntity", "e1"), openprovAttribute("hadGeneration", "gen1"), openprovAttribute("hadUsage", "usd1"))));
+        statements.add(pf.newWasStartedBy(ex("start"), ex("a1"), ex("e1"), ex("a0"), null, List.of(openprovAttribute("hadGeneration", "gen1"))));
+        statements.add(pf.newWasEndedBy(ex("end"), ex("a1"), ex("e2"), ex("a0"), null, List.of(openprovAttribute("hadGeneration", "gen2"))));
         return pf.newDocument(ns, statements, List.of());
     }
 
@@ -92,6 +94,8 @@ public class OpenprovAttributesJsonTest extends TestCase {
         assertEquals(Map.of("hadActivity", "adding", "hadCollectionGeneration", "gen0", "hadItemGeneration", "gen1"), openprov(one(doc, QualifiedHadMember.class)));
         assertEquals(Map.of("hadPreviousEntity", "e0", "hadDerivation", "der1", "hadSpecialization", "spe0"), openprov(one(doc, QualifiedSpecializationOf.class)));
         assertEquals(Map.of("hadEntity", "e1", "hadGeneration", "gen1", "hadUsage", "usd1"), openprov(one(doc, WasInformedBy.class)));
+        assertEquals(Map.of("hadGeneration", "gen1"), openprov(one(doc, WasStartedBy.class)));
+        assertEquals(Map.of("hadGeneration", "gen2"), openprov(one(doc, WasEndedBy.class)));
         assertEquals(fromProvn().getStatementOrBundle(), doc.getStatementOrBundle());
     }
 
@@ -117,6 +121,8 @@ public class OpenprovAttributesJsonTest extends TestCase {
                 List.of(openprovAttribute("previousEntity", "e0"), openprovAttribute("derivation", "der1"), openprovAttribute("specialization", "spe0"))));
         statements.add(pf.newWasInformedBy(ex("com"), ex("a1"), ex("a0"),
                 List.of(openprovAttribute("entity", "e1"), openprovAttribute("generation", "gen1"), openprovAttribute("usage", "usd1"))));
+        statements.add(pf.newWasStartedBy(ex("start"), ex("a1"), ex("e1"), ex("a0"), null, List.of(openprovAttribute("generation", "gen1"))));
+        statements.add(pf.newWasEndedBy(ex("end"), ex("a1"), ex("e2"), ex("a0"), null, List.of(openprovAttribute("generation", "gen2"))));
         return pf.newDocument(ns, statements, List.of());
     }
 
@@ -158,6 +164,8 @@ public class OpenprovAttributesJsonTest extends TestCase {
         for (JsonNode n : ld.get("@graph")) {
             if ("Attribution".equals(n.get("@type").asText())) assertEquals("ex:asc1", n.get("association").get(0).asText());
             if ("Communication".equals(n.get("@type").asText())) assertEquals("ex:e1", n.get("entity").get(0).asText());
+            if ("Start".equals(n.get("@type").asText())) assertEquals("ex:gen1", n.get("generation").get(0).asText());
+            if ("End".equals(n.get("@type").asText())) assertEquals("ex:gen2", n.get("generation").get(0).asText());
         }
     }
 }

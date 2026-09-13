@@ -117,7 +117,7 @@ public class TreeTraversal {
                 id1=(QualifiedName)convert(ast.getChild(2));
                 QualifiedName id3=(QualifiedName)convert(ast.getChild(3));
                 time=(XMLGregorianCalendar) convert(ast.getChild(4));
-                rAttrs=(List<Attribute>) convert(ast.getChild(5));
+                rAttrs=OpenprovTerms.canonical(Kind.PROV_START, (List<Attribute>) convert(ast.getChild(5)), pFactory);
                 return c.newWasStartedBy(uid,id2,id1,id3,time,rAttrs);
 
 
@@ -131,7 +131,7 @@ public class TreeTraversal {
                 id1=(QualifiedName)convert(ast.getChild(2));
                 id3=(QualifiedName) convert(ast.getChild(3));
                 time=(XMLGregorianCalendar) convert(ast.getChild(4));
-                rAttrs=(List<Attribute>) convert(ast.getChild(5));
+                rAttrs=OpenprovTerms.canonical(Kind.PROV_END, (List<Attribute>) convert(ast.getChild(5)), pFactory);
                 return c.newWasEndedBy(uid,id2,id1,id3,time,rAttrs);
 
             case PROV_NParser.TIME:

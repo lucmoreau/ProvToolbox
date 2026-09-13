@@ -174,13 +174,15 @@ public class ProvJsonReader implements ProvJsonVocabulary {
         }
     }
 
-    /** The kind a section holds, for the openprov attributes scoped to attributions, memberships, specializations and communications. */
+    /** The kind a section holds, for the openprov attributes scoped to attributions, memberships, specializations, communications, starts and ends. */
     static StatementOrBundle.Kind kindOf(String section) {
         switch (section) {
             case WAS_ATTRIBUTED_TO: return StatementOrBundle.Kind.PROV_ATTRIBUTION;
             case HAD_MEMBER: return StatementOrBundle.Kind.PROV_MEMBERSHIP;
             case SPECIALIZATION_OF: return StatementOrBundle.Kind.PROV_SPECIALIZATION;
             case WAS_INFORMED_BY: return StatementOrBundle.Kind.PROV_COMMUNICATION;
+            case WAS_STARTED_BY: return StatementOrBundle.Kind.PROV_START;
+            case WAS_ENDED_BY: return StatementOrBundle.Kind.PROV_END;
             default: return StatementOrBundle.Kind.PROV_ENTITY;
         }
     }

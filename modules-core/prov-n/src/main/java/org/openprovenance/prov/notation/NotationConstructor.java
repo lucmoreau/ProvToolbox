@@ -380,7 +380,7 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
                                     Collection<Attribute> attributes) {
         String s = "wasEndedBy(" + optionalId(id) + idOrMarker(activity) + ","
                 + idOrMarker(trigger) + "," + idOrMarker(ender) + ","
-                + timeOrMarker(time) + optionalAttributes(attributes) + ")";
+                + timeOrMarker(time) + optionalAttributes(OpenprovTerms.surface(Kind.PROV_END, attributes, pFactory)) + ")";
         writeln(s);
         return null;
     }
@@ -441,7 +441,7 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
                                         Collection<Attribute> attributes) {
         String s = "wasStartedBy(" + optionalId(id) + idOrMarker(activity)
                 + "," + idOrMarker(trigger) + "," + idOrMarker(starter) + ","
-                + timeOrMarker(time) + optionalAttributes(attributes) + ")";
+                + timeOrMarker(time) + optionalAttributes(OpenprovTerms.surface(Kind.PROV_START, attributes, pFactory)) + ")";
         writeln(s);
         return null;
     }

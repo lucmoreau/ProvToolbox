@@ -51,6 +51,28 @@
           "generation": { "@id": "openprov:hadGeneration",           "@type": "@id" },
           "usage":      { "@id": "openprov:hadUsage",                "@type": "@id" }
         }
+      },
+
+      "Start": {
+        "@id": "prov:Start",
+        "@context": {
+          "activity":   { "@reverse": "prov:qualifiedStart", "@type": "@id" },
+          "trigger":    { "@id": "prov:entity",              "@type": "@id" },
+          "starter":    { "@id": "prov:hadActivity",         "@type": "@id" },
+          "time":       { "@id": "prov:atTime",              "@type": "xsd:dateTime" },
+          "generation": { "@id": "openprov:hadGeneration",   "@type": "@id" }
+        }
+      },
+
+      "End": {
+        "@id": "prov:End",
+        "@context": {
+          "activity":   { "@reverse": "prov:qualifiedEnd", "@type": "@id" },
+          "trigger":    { "@id": "prov:entity",            "@type": "@id" },
+          "ender":      { "@id": "prov:hadActivity",       "@type": "@id" },
+          "time":       { "@id": "prov:atTime",            "@type": "xsd:dateTime" },
+          "generation": { "@id": "openprov:hadGeneration", "@type": "@id" }
+        }
       }
     }
   ]

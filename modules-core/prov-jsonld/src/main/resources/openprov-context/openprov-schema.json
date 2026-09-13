@@ -94,10 +94,10 @@
           "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/prov:Invalidation"
         },
         {
-          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/prov:Start"
+          "$ref": "#/definitions/prov:Start"
         },
         {
-          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/prov:End"
+          "$ref": "#/definitions/prov:End"
         },
         {
           "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/prov:Derivation"
@@ -288,6 +288,100 @@
           "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/QualifiedName+"
         },
         "usage": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/QualifiedName+"
+        }
+      },
+      "patternProperties": {
+        "^[A-Za-z0-9_]+:(.*)$": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+        }
+      },
+      "additionalProperties": false
+    },
+    "prov:Start": {
+      "type": "object",
+      "required": [
+        "@type"
+      ],
+      "properties": {
+        "@type": {
+          "pattern": "Start"
+        },
+        "@id": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/QualifiedName"
+        },
+        "activity": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/QualifiedName"
+        },
+        "starter": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/QualifiedName"
+        },
+        "trigger": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/QualifiedName"
+        },
+        "time": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/DateTime"
+        },
+        "type": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+        },
+        "role": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+        },
+        "location": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+        },
+        "label": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfLabelValues"
+        },
+        "generation": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/QualifiedName+"
+        }
+      },
+      "patternProperties": {
+        "^[A-Za-z0-9_]+:(.*)$": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+        }
+      },
+      "additionalProperties": false
+    },
+    "prov:End": {
+      "type": "object",
+      "required": [
+        "@type"
+      ],
+      "properties": {
+        "@type": {
+          "pattern": "End"
+        },
+        "@id": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/QualifiedName"
+        },
+        "activity": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/QualifiedName"
+        },
+        "ender": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/QualifiedName"
+        },
+        "trigger": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/QualifiedName"
+        },
+        "time": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/DateTime"
+        },
+        "type": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+        },
+        "role": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+        },
+        "location": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+        },
+        "label": {
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfLabelValues"
+        },
+        "generation": {
           "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/QualifiedName+"
         }
       },

@@ -162,6 +162,24 @@ public class OpenprovTermsTest extends TestCase {
         assertEquals(doc.getStatementOrBundle(), reread(doc).getStatementOrBundle());
     }
 
+    public void testStartAndEnd() throws IOException {
+        Document start = read("start.jsonld");
+        WasStartedBy wsb = only(start, WasStartedBy.class);
+        assertEquals(ex("a0"), wsb.getStarter());
+        assertEquals(Map.of("hadGeneration", ex("gen")), openprov(wsb));
+        assertEquals("ex:gen", written(start, "Start").get("generation").get(0).asText());
+        assertEquals(start.getStatementOrBundle(), reread(start).getStatementOrBundle());
+
+        Document end = read("end.jsonld");
+        WasEndedBy web = only(end, WasEndedBy.class);
+        assertEquals(ex("a0"), web.getEnder());
+        assertEquals(Map.of("hadGeneration", ex("gen")), openprov(web));
+        JsonNode json = written(end, "End");
+        assertEquals("ex:gen", json.get("generation").get(0).asText());
+        assertNull(json.get("openprov:hadGeneration"));
+        assertEquals(end.getStatementOrBundle(), reread(end).getStatementOrBundle());
+    }
+
     /**
      * The table the (de)serialisers carry is the openprov context, https://openprovenance.org/ns/openprov.jsonld:
      * for each scoped type, the same bare terms mapping to the same openprov:had... properties, and no other.
@@ -169,7 +187,7 @@ public class OpenprovTermsTest extends TestCase {
      */
     public void testTableIsTheOpenprovContext() throws IOException {
         JsonNode context = mapper.readTree(new File("src/main/resources/openprov-context/openprov.jsonld")).get("@context").get(1);
-        Map<String, Kind> types = Map.of("Attribution", Kind.PROV_ATTRIBUTION, "Membership", Kind.PROV_MEMBERSHIP, "Specialization", Kind.PROV_SPECIALIZATION, "Communication", Kind.PROV_COMMUNICATION);
+        Map<String, Kind> types = Map.of("Attribution", Kind.PROV_ATTRIBUTION, "Membership", Kind.PROV_MEMBERSHIP, "Specialization", Kind.PROV_SPECIALIZATION, "Communication", Kind.PROV_COMMUNICATION, "Start", Kind.PROV_START, "End", Kind.PROV_END);
         for (Map.Entry<String, Kind> e : types.entrySet()) {
             Map<String, String> inContext = new TreeMap<>();
             context.get(e.getKey()).get("@context").fields().forEachRemaining(t -> {
@@ -189,7 +207,7 @@ public class OpenprovTermsTest extends TestCase {
     public void testSchemaIsTheContextsScopes() throws IOException {
         JsonNode spec = mapper.readTree(Schemas.open(JSONLDSCHEMA_2024_08_25, "src/main/resources/" + JSONLDSCHEMA_2024_08_25)).get("definitions");
         JsonNode openprov = mapper.readTree(Schemas.open(OPENPROV_SCHEMA_RESOURCE, "src/main/resources/" + OPENPROV_SCHEMA_RESOURCE)).get("definitions");
-        Map<String, Kind> types = Map.of("Attribution", Kind.PROV_ATTRIBUTION, "Membership", Kind.PROV_MEMBERSHIP, "Specialization", Kind.PROV_SPECIALIZATION, "Communication", Kind.PROV_COMMUNICATION);
+        Map<String, Kind> types = Map.of("Attribution", Kind.PROV_ATTRIBUTION, "Membership", Kind.PROV_MEMBERSHIP, "Specialization", Kind.PROV_SPECIALIZATION, "Communication", Kind.PROV_COMMUNICATION, "Start", Kind.PROV_START, "End", Kind.PROV_END);
         for (Map.Entry<String, Kind> e : types.entrySet()) {
             Set<String> expected = new TreeSet<>();
             spec.get("prov:" + e.getKey()).get("properties").fieldNames().forEachRemaining(expected::add);
@@ -198,7 +216,7 @@ public class OpenprovTermsTest extends TestCase {
             openprov.get("prov:" + e.getKey()).get("properties").fieldNames().forEachRemaining(actual::add);
             assertEquals(e.getKey(), expected, actual);
         }
-        for (String file : List.of("attribution.jsonld", "membership.jsonld", "specialization.jsonld", "communication.jsonld")) {
+        for (String file : List.of("attribution.jsonld", "membership.jsonld", "specialization.jsonld", "communication.jsonld", "start.jsonld", "end.jsonld")) {
             File f = new File("src/test/resources/openprov/" + file);
             assertEquals(file, List.of(), Schemas.violations(Schemas.OPENPROV_JSONLD, f));
             assertFalse(file + " would validate against the specification's schema", Schemas.violations(Schemas.PROV_JSONLD, f).isEmpty());

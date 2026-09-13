@@ -481,19 +481,19 @@ final class MyActions(val dateTimeOption: DateTimeOption = DateTimeOption.PRESER
 
   val makeUsedNoId2: (QualifiedName, Seq[Attribute]) => Used = (e: QualifiedName, attr: Seq[Attribute]) =>   makeUsedNoId(e,None,None,attr)
 
-  val makeWasStartedByWithId: (QualifiedName, QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[XMLGregorianCalendar], Seq[Attribute]) => WasStartedBy = (id: QualifiedName, a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Seq[Attribute]) =>  pf.newWasStartedBy(id,a,nullable(trigger),nullable(starter),t,attr)
+  val makeWasStartedByWithId: (QualifiedName, QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[XMLGregorianCalendar], Seq[Attribute]) => WasStartedBy = (id: QualifiedName, a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Seq[Attribute]) =>  pf.newWasStartedBy(id,a,nullable(trigger),nullable(starter),t,OpenprovAttributes.canonical(Kind.PROV_START, attr))
 
   val makeWasStartedByWithId2: (QualifiedName, QualifiedName, Seq[Attribute]) => WasStartedBy = (id: QualifiedName, a: QualifiedName, attr: Seq[Attribute]) =>  makeWasStartedByWithId(id,a,None,None,None,attr)
 
-  val makeWasStartedByNoId: (QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[XMLGregorianCalendar], Seq[Attribute]) => WasStartedBy = (a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Seq[Attribute]) =>  pf.newWasStartedBy(null,a,nullable(trigger),nullable(starter),t,attr)
+  val makeWasStartedByNoId: (QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[XMLGregorianCalendar], Seq[Attribute]) => WasStartedBy = (a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Seq[Attribute]) =>  pf.newWasStartedBy(null,a,nullable(trigger),nullable(starter),t,OpenprovAttributes.canonical(Kind.PROV_START, attr))
 
   val makeWasStartedByNoId2: (QualifiedName, Seq[Attribute]) => WasStartedBy = (a: QualifiedName, attr: Seq[Attribute]) =>   makeWasStartedByNoId(a,None,None,None,attr)
 
-  val makeWasEndedByWithId: (QualifiedName, QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[XMLGregorianCalendar], Seq[Attribute]) => WasEndedBy = (id: QualifiedName, a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Seq[Attribute]) =>  pf.newWasEndedBy(id,a,nullable(trigger),nullable(starter),t,attr)
+  val makeWasEndedByWithId: (QualifiedName, QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[XMLGregorianCalendar], Seq[Attribute]) => WasEndedBy = (id: QualifiedName, a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Seq[Attribute]) =>  pf.newWasEndedBy(id,a,nullable(trigger),nullable(starter),t,OpenprovAttributes.canonical(Kind.PROV_END, attr))
 
   val makeWasEndedByWithId2: (QualifiedName, QualifiedName, Seq[Attribute]) => WasEndedBy = (id: QualifiedName, a: QualifiedName, attr: Seq[Attribute]) =>  makeWasEndedByWithId(id,a,None,None,None,attr)
 
-  val makeWasEndedByNoId: (QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[XMLGregorianCalendar], Seq[Attribute]) => WasEndedBy = (a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Seq[Attribute]) =>  pf.newWasEndedBy(null,a,nullable(trigger),nullable(starter),t,attr)
+  val makeWasEndedByNoId: (QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[XMLGregorianCalendar], Seq[Attribute]) => WasEndedBy = (a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Seq[Attribute]) =>  pf.newWasEndedBy(null,a,nullable(trigger),nullable(starter),t,OpenprovAttributes.canonical(Kind.PROV_END, attr))
 
   val makeWasEndedByNoId2: (QualifiedName, Seq[Attribute]) => WasEndedBy = (a: QualifiedName, attr: Seq[Attribute]) =>   makeWasEndedByNoId(a,None,None,None,attr)
 

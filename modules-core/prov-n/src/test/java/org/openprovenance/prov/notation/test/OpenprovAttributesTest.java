@@ -36,6 +36,8 @@ public class OpenprovAttributesTest extends TestCase {
             + "provext:specializationOf(ex:spe; ex:e1, ex:e2, [openprov:previousEntity = 'ex:e0', openprov:derivation = 'ex:der1', openprov:specialization = 'ex:spe0'])\n"
             + "activity(ex:a0)\n"
             + "wasInformedBy(ex:com; ex:a1, ex:a0, [openprov:entity = 'ex:e1', openprov:generation = 'ex:gen1', openprov:usage = 'ex:usd1'])\n"
+            + "wasStartedBy(ex:start; ex:a1, ex:e1, ex:a0, -, [openprov:generation = 'ex:gen1'])\n"
+            + "wasEndedBy(ex:end; ex:a1, ex:e2, ex:a0, -, [openprov:generation = 'ex:gen2'])\n"
             + "endDocument\n";
 
     Document parse(String provn) {
@@ -71,6 +73,8 @@ public class OpenprovAttributesTest extends TestCase {
         assertEquals(Map.of("hadActivity", "adding", "hadCollectionGeneration", "gen0", "hadItemGeneration", "gen1"), openprov(one(doc, QualifiedHadMember.class)));
         assertEquals(Map.of("hadPreviousEntity", "e0", "hadDerivation", "der1", "hadSpecialization", "spe0"), openprov(one(doc, QualifiedSpecializationOf.class)));
         assertEquals(Map.of("hadEntity", "e1", "hadGeneration", "gen1", "hadUsage", "usd1"), openprov(one(doc, WasInformedBy.class)));
+        assertEquals(Map.of("hadGeneration", "gen1"), openprov(one(doc, WasStartedBy.class)));
+        assertEquals(Map.of("hadGeneration", "gen2"), openprov(one(doc, WasEndedBy.class)));
         // an ordinary attribute beside them is untouched
         WasAttributedTo att = one(doc, WasAttributedTo.class);
         assertEquals(1, att.getOther().stream().filter(o -> "note".equals(o.getElementName().getLocalPart())).count());

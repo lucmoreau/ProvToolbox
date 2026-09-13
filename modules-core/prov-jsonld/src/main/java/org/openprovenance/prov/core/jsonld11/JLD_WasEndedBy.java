@@ -1,6 +1,14 @@
 package org.openprovenance.prov.core.jsonld11;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.openprovenance.prov.core.jsonld11.serialization.deserial.ScopedKeyDeserializer;
+import org.openprovenance.prov.core.jsonld11.serialization.serial.ScopedKeySerializer;
+import org.openprovenance.prov.model.Attribute;
+import java.util.Map;
+import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomQualifiedNameDeserializer;
@@ -24,5 +32,13 @@ public interface JLD_WasEndedBy extends JLD_Generic, HasRole {
 
     XMLGregorianCalendar getTime();
 
+    /** The attribute keys, with the terms the openprov context scopes to this relation. */
+    @JsonAnySetter
+    @JsonDeserialize(keyUsing = ScopedKeyDeserializer.End.class)
+    void setIndexedAttributes(Object qn, Set<Attribute> attributes);
 
+    @JsonAnyGetter
+    @JsonSerialize(keyUsing = ScopedKeySerializer.End.class)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    Map<QualifiedName, Set<Attribute>> getIndexedAttributes();
 }

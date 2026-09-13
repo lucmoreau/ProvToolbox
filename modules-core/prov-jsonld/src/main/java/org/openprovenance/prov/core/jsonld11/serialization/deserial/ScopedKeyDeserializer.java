@@ -40,4 +40,12 @@ public abstract class ScopedKeyDeserializer extends CustomKeyDeserializer {
     public static class Communication extends ScopedKeyDeserializer {
         public Communication() { super(Kind.PROV_COMMUNICATION); }
     }
+
+    public static class Start extends ScopedKeyDeserializer {
+        public Start() { super(Kind.PROV_START); }
+    }
+
+    public static class End extends ScopedKeyDeserializer {
+        public End() { super(Kind.PROV_END); }
+    }
 }

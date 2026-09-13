@@ -12,7 +12,7 @@ import java.util.*;
  * {@code hadAssociation}, ... In a document they are written without {@code had}, as PROV-N writes its reserved
  * attributes ({@code prov:type}, {@code prov:role}, ...) and as the openprov JSON-LD context scopes them: inside
  * an attribution, {@code openprov:association} is the property {@code openprov:hadAssociation}; inside a
- * specialization, {@code openprov:previousEntity} is {@code openprov:hadPreviousEntity}; on a communication, {@code openprov:entity} is {@code openprov:hadEntity}. Elsewhere, an openprov attribute is an
+ * specialization, {@code openprov:previousEntity} is {@code openprov:hadPreviousEntity}; on a communication, {@code openprov:entity} is {@code openprov:hadEntity}; on a start or an end, {@code openprov:generation} is {@code openprov:hadGeneration}. Elsewhere, an openprov attribute is an
  * attribute like any other. Every reader turns the written name into the property when it builds one of the three
  * relations, and every writer turns it back; the model holds the property.
  */
@@ -45,6 +45,10 @@ public final class OpenprovTerms {
                 "entity", "hadEntity",
                 "generation", "hadGeneration",
                 "usage", "hadUsage");
+        scope(Kind.PROV_START,
+                "generation", "hadGeneration");
+        scope(Kind.PROV_END,
+                "generation", "hadGeneration");
     }
 
     /** The roles of the vocabulary: the parties to a change of collection, and the item an activity handles. */

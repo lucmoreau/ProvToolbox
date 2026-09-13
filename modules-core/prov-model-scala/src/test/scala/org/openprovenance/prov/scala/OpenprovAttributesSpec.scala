@@ -29,6 +29,8 @@ class OpenprovAttributesSpec extends AnyFlatSpec with Matchers {
        |provext:specializationOf(ex:spe; ex:e1, ex:e2, [openprov:previousEntity = 'ex:e0', openprov:derivation = 'ex:der1', openprov:specialization = 'ex:spe0'])
        |activity(ex:a0)
        |wasInformedBy(ex:com; ex:a1, ex:a0, [openprov:entity = 'ex:e1', openprov:generation = 'ex:gen1', openprov:usage = 'ex:usd1'])
+       |wasStartedBy(ex:start; ex:a1, ex:e1, ex:a0, -, [openprov:generation = 'ex:gen1'])
+       |wasEndedBy(ex:end; ex:a1, ex:e2, ex:a0, -, [openprov:generation = 'ex:gen2'])
        |endDocument
        |""".stripMargin
 
@@ -67,6 +69,8 @@ class OpenprovAttributesSpec extends AnyFlatSpec with Matchers {
     openprovOf(spe.other) should be(Map("hadPreviousEntity" -> "e0", "hadDerivation" -> "der1", "hadSpecialization" -> "spe0"))
     val com = doc.statements().collectFirst { case c: WasInformedBy => c }.get
     openprovOf(com.other) should be(Map("hadEntity" -> "e1", "hadGeneration" -> "gen1", "hadUsage" -> "usd1"))
+    openprovOf(doc.statements().collectFirst { case x: WasStartedBy => x }.get.other) should be(Map("hadGeneration" -> "gen1"))
+    openprovOf(doc.statements().collectFirst { case x: WasEndedBy => x }.get.other) should be(Map("hadGeneration" -> "gen2"))
   }
 
   it should "leave the same name on an entity as it is" in {

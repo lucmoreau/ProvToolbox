@@ -715,7 +715,7 @@ trait ImmutableWasStartedBy extends Relation with org.openprovenance.prov.model.
       idOrMarker(starter, sb)
       sb+=','
       timeOrMarker(time, sb)
-      Attribute.toNotation(sb, label, typex, Set(), location, role, other)
+      Attribute.toNotation(sb, label, typex, Set(), location, role, OpenprovAttributes.surface(org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_START, other))
       sb+=')'      
     }
 
@@ -795,7 +795,7 @@ trait ImmutableWasEndedBy extends Relation with org.openprovenance.prov.model.Wa
       idOrMarker(ender, sb)
       sb+=','
       timeOrMarker(time, sb)
-      Attribute.toNotation(sb, label, typex, Set(), location, role, other)
+      Attribute.toNotation(sb, label, typex, Set(), location, role, OpenprovAttributes.surface(org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_END, other))
       sb+=')'      
     }
 

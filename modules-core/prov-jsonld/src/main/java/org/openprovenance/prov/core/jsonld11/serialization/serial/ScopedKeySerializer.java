@@ -42,4 +42,12 @@ public abstract class ScopedKeySerializer extends CustomKeySerializer {
     public static class Communication extends ScopedKeySerializer {
         public Communication() { super(Kind.PROV_COMMUNICATION); }
     }
+
+    public static class Start extends ScopedKeySerializer {
+        public Start() { super(Kind.PROV_START); }
+    }
+
+    public static class End extends ScopedKeySerializer {
+        public End() { super(Kind.PROV_END); }
+    }
 }

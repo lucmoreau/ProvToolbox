@@ -414,7 +414,7 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
                                           QualifiedName a1,
                                           Collection<Attribute> attributes) {
         String s = "wasInformedBy(" + optionalId(id) + idOrMarker(a2) + ","
-                + idOrMarker(a1) + optionalAttributes(attributes) + ")";
+                + idOrMarker(a1) + optionalAttributes(OpenprovTerms.surface(Kind.PROV_COMMUNICATION, attributes, pFactory)) + ")";
         writeln(s);
         return null;
     }

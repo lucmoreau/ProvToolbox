@@ -469,9 +469,9 @@ final class MyActions(val dateTimeOption: DateTimeOption = DateTimeOption.PRESER
 
   val makeWasInfluencedByNoId: (QualifiedName, QualifiedName, Seq[Attribute]) => WasInfluencedBy = (r2: QualifiedName, r1: QualifiedName, attr: Seq[Attribute]) => pf.newWasInfluencedBy(null,r2,r1,attr)
 
-  val makeWasInformedByWithId: (QualifiedName, QualifiedName, QualifiedName, Seq[Attribute]) => WasInformedBy = (id: QualifiedName, r2: QualifiedName, r1: QualifiedName, attr: Seq[Attribute]) => pf.newWasInformedBy(id,r2,r1,attr)
+  val makeWasInformedByWithId: (QualifiedName, QualifiedName, QualifiedName, Seq[Attribute]) => WasInformedBy = (id: QualifiedName, r2: QualifiedName, r1: QualifiedName, attr: Seq[Attribute]) => pf.newWasInformedBy(id,r2,r1,OpenprovAttributes.canonical(Kind.PROV_COMMUNICATION, attr))
 
-  val makeWasInformedByNoId: (QualifiedName, QualifiedName, Seq[Attribute]) => WasInformedBy = (r2: QualifiedName, r1: QualifiedName, attr: Seq[Attribute]) => pf.newWasInformedBy(null,r2,r1,attr)
+  val makeWasInformedByNoId: (QualifiedName, QualifiedName, Seq[Attribute]) => WasInformedBy = (r2: QualifiedName, r1: QualifiedName, attr: Seq[Attribute]) => pf.newWasInformedBy(null,r2,r1,OpenprovAttributes.canonical(Kind.PROV_COMMUNICATION, attr))
 
   val makeUsedWithId: (QualifiedName, QualifiedName, Option[QualifiedName], Option[XMLGregorianCalendar], Seq[Attribute]) => Used = (id: QualifiedName, e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Seq[Attribute]) =>  pf.newUsed(id,e,nullable(a),t,attr)
 

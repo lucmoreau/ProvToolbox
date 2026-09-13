@@ -1,6 +1,6 @@
 package org.openprovenance.prov.scala
 
-import org.openprovenance.prov.model.NamespacePrefixMapper
+import org.openprovenance.prov.model.{NamespacePrefixMapper, OpenprovTerms}
 import org.openprovenance.prov.scala.immutable._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -26,7 +26,9 @@ class OpenprovAttributesSpec extends AnyFlatSpec with Matchers {
        |activity(ex:a1)
        |wasAttributedTo(ex:att; ex:e1, ex:ag1, [openprov:activity = 'ex:a1', openprov:association = 'ex:asc1', openprov:generation = 'ex:gen1', ex:note = "kept"])
        |provext:hadMember(ex:mem; ex:c, ex:e1, [openprov:activity = 'ex:adding', openprov:collectionGeneration = 'ex:gen0', openprov:itemGeneration = 'ex:gen1'])
-       |provext:specializationOf(ex:spe; ex:e1, ex:e2, [openprov:entity = 'ex:e0', openprov:derivation = 'ex:der1', openprov:specialization = 'ex:spe0'])
+       |provext:specializationOf(ex:spe; ex:e1, ex:e2, [openprov:previousEntity = 'ex:e0', openprov:derivation = 'ex:der1', openprov:specialization = 'ex:spe0'])
+       |activity(ex:a0)
+       |wasInformedBy(ex:com; ex:a1, ex:a0, [openprov:entity = 'ex:e1', openprov:generation = 'ex:gen1', openprov:usage = 'ex:usd1'])
        |endDocument
        |""".stripMargin
 
@@ -62,7 +64,9 @@ class OpenprovAttributesSpec extends AnyFlatSpec with Matchers {
     val mem = doc.statements().collectFirst { case m: HadMember => m }.get
     openprovOf(mem.other) should be(Map("hadActivity" -> "adding", "hadCollectionGeneration" -> "gen0", "hadItemGeneration" -> "gen1"))
     val spe = doc.statements().collectFirst { case s: SpecializationOf => s }.get
-    openprovOf(spe.other) should be(Map("hadEntity" -> "e0", "hadDerivation" -> "der1", "hadSpecialization" -> "spe0"))
+    openprovOf(spe.other) should be(Map("hadPreviousEntity" -> "e0", "hadDerivation" -> "der1", "hadSpecialization" -> "spe0"))
+    val com = doc.statements().collectFirst { case c: WasInformedBy => c }.get
+    openprovOf(com.other) should be(Map("hadEntity" -> "e1", "hadGeneration" -> "gen1", "hadUsage" -> "usd1"))
   }
 
   it should "leave the same name on an entity as it is" in {
@@ -82,8 +86,26 @@ class OpenprovAttributesSpec extends AnyFlatSpec with Matchers {
     val written = doc.statements().map(_.toString).mkString("document\n" + s"prefix ex <http://example.org/>\nprefix openprov <$openprov>\nprefix provext <${NamespacePrefixMapper.PROV_EXT_NS}>\n", "\n", "\nendDocument\n")
     written should include("openprov:association = 'ex:asc1'")
     written should include("openprov:collectionGeneration = 'ex:gen0'")
-    written should include("openprov:entity = 'ex:e0'")
+    written should include("openprov:previousEntity = 'ex:e0'")
+    written should include("openprov:entity = 'ex:e1'")
     written should not include "openprov:had"
     parse(written).statements() should be(doc.statements())
+  }
+
+  it should "show a property held in its term form, as an expansion leaves it, the same way" in {
+    val doc = parse(provn)
+    val spe = doc.statements().collectFirst { case s: SpecializationOf => s }.get
+    val inTermForm = spe.other.map { case (name, values) =>
+      val term = QualifiedName(ProvFactory.pf.newQualifiedName(name.namespaceURI, OpenprovTerms.term(org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_SPECIALIZATION, name.localPart), name.prefix))
+      (term, values.map(o => ProvFactory.pf.newOther(term, o.value, o.`type`).asInstanceOf[Other]))
+    }
+    val ns = new org.openprovenance.prov.model.Namespace
+    ns.addKnownNamespaces()
+    ns.register("ex", "http://example.org/")
+    ns.register("openprov", openprov)
+    org.openprovenance.prov.model.Namespace.withThreadNamespace(ns)
+    val shown = OpenprovAttributes.surface(org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_SPECIALIZATION, inTermForm)
+    shown should be(OpenprovAttributes.surface(org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_SPECIALIZATION, spe.other))
+    new SpecializationOf(spe.id, spe.specificEntity, spe.generalEntity, spe.label, spe.typex, inTermForm).toString should be(spe.toString)
   }
 }

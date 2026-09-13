@@ -5,6 +5,6 @@
     { "@type": "Entity", "@id": "ex:e1" },
     { "@type": "Entity", "@id": "ex:e" },
     { "@type": "Specialization", "@id": "ex:spec1", "specificEntity": "ex:e1", "generalEntity": "ex:e",
-      "entity": [ "ex:e0" ], "derivation": [ "ex:der1" ], "specialization": [ "ex:spec0" ] }
+      "previousEntity": [ "ex:e0" ], "derivation": [ "ex:der1" ], "specialization": [ "ex:spec0" ] }
   ]
 }

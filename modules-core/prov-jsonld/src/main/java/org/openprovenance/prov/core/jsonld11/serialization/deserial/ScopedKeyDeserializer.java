@@ -36,4 +36,8 @@ public abstract class ScopedKeyDeserializer extends CustomKeyDeserializer {
     public static class Specialization extends ScopedKeyDeserializer {
         public Specialization() { super(Kind.PROV_SPECIALIZATION); }
     }
+
+    public static class Communication extends ScopedKeyDeserializer {
+        public Communication() { super(Kind.PROV_COMMUNICATION); }
+    }
 }

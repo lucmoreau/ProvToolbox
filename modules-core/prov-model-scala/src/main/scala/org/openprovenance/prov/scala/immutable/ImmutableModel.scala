@@ -1248,7 +1248,7 @@ trait ImmutableWasInformedBy extends Relation with org.openprovenance.prov.model
       idOrMarker(informed, sb)
       sb+=','
       idOrMarker(informant, sb)
-      Attribute.toNotation(sb, label, typex, Set(), Set(), Set(), other)
+      Attribute.toNotation(sb, label, typex, Set(), Set(), Set(), OpenprovAttributes.surface(org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_COMMUNICATION, other))
       sb+=')'      
     }
 
@@ -2512,7 +2512,7 @@ class Bundle(val id: QualifiedName,
       printNamespace(sb)
       //statement.addString(sb, "    ", "\n    ", "\n")
       val currentNS=new Namespace(Namespace.getThreadNamespace)
-      Namespace.withThreadNamespace(namespace)
+      Namespace.withThreadNamespace(ImpliedNamespaces(namespace, statement))
       addString(sb,statement, "    ", "\n    ", "\n")
       Namespace.withThreadNamespace(currentNS)
 
@@ -2529,7 +2529,9 @@ class Bundle(val id: QualifiedName,
 
 trait HasNamespace {
   val namespace: Namespace
-  def printNamespace(sb:StringBuilder): Unit = {
+  def printNamespace(sb:StringBuilder): Unit = printNamespace(sb, namespace)
+
+  def printNamespace(sb:StringBuilder, namespace: Namespace): Unit = {
     if (namespace.getDefaultNamespace!=null) {
         sb++="  default <" ++ namespace.getDefaultNamespace ++ ">\n"   //
     }
@@ -2602,9 +2604,10 @@ class Document(val statementOrBundle: Iterable[StatementOrBundle],
 
 
     def toNotation (sb:StringBuilder): Unit = {
-        Namespace.withThreadNamespace(namespace)
+        val declared=ImpliedNamespaces(namespace, statements() ++ bundles().flatMap(_.statement))
+        Namespace.withThreadNamespace(declared)
         sb++="document\n"
-        printNamespace(sb)
+        printNamespace(sb, declared)
         //statementOrBundle.addString(sb, "  ", "\n  ", "\n")
         addString(sb,statementOrBundle, "  ", "\n  ", "\n")
         sb++="endDocument\n"

@@ -122,13 +122,13 @@ public class OpenprovTermsTest extends TestCase {
         assertEquals(ex("e1"), spe.getSpecificEntity());
         assertEquals(ex("e"), spe.getGeneralEntity());
         Map<String, Object> o = openprov(spe);
-        assertEquals(Set.of("hadEntity", "hadDerivation", "hadSpecialization"), o.keySet());
-        assertEquals(ex("e0"), o.get("hadEntity"));
+        assertEquals(Set.of("hadPreviousEntity", "hadDerivation", "hadSpecialization"), o.keySet());
+        assertEquals(ex("e0"), o.get("hadPreviousEntity"));
         assertEquals(ex("der1"), o.get("hadDerivation"));
         assertEquals(ex("spec0"), o.get("hadSpecialization"));
 
         JsonNode json = written(doc, "Specialization");
-        assertEquals("ex:e0", json.get("entity").get(0).asText());
+        assertEquals("ex:e0", json.get("previousEntity").get(0).asText());
         assertEquals("ex:spec0", json.get("specialization").get(0).asText());
         assertEquals(doc.getStatementOrBundle(), reread(doc).getStatementOrBundle());
     }
@@ -143,6 +143,22 @@ public class OpenprovTermsTest extends TestCase {
         assertTrue(u.getOther().isEmpty());
     }
 
+    public void testCommunication() throws IOException {
+        Document doc = read("communication.jsonld");
+        WasInformedBy com = only(doc, WasInformedBy.class);
+        assertEquals(ex("a1"), com.getInformed());
+        assertEquals(ex("a0"), com.getInformant());
+        Map<String, Object> o = openprov(com);
+        assertEquals(Set.of("hadEntity", "hadGeneration", "hadUsage"), o.keySet());
+        assertEquals(ex("e"), o.get("hadEntity"));
+
+        JsonNode json = written(doc, "Communication");
+        assertEquals("ex:e", json.get("entity").get(0).asText());
+        assertEquals("ex:usd", json.get("usage").get(0).asText());
+        assertNull(json.get("openprov:hadEntity"));
+        assertEquals(doc.getStatementOrBundle(), reread(doc).getStatementOrBundle());
+    }
+
     /**
      * The table the (de)serialisers carry is the openprov context, https://openprovenance.org/ns/openprov.jsonld:
      * for each scoped type, the same bare terms mapping to the same openprov:had... properties, and no other.
@@ -150,7 +166,7 @@ public class OpenprovTermsTest extends TestCase {
      */
     public void testTableIsTheOpenprovContext() throws IOException {
         JsonNode context = mapper.readTree(new File("src/main/resources/openprov-context/openprov.jsonld")).get("@context").get(1);
-        Map<String, Kind> types = Map.of("Attribution", Kind.PROV_ATTRIBUTION, "Membership", Kind.PROV_MEMBERSHIP, "Specialization", Kind.PROV_SPECIALIZATION);
+        Map<String, Kind> types = Map.of("Attribution", Kind.PROV_ATTRIBUTION, "Membership", Kind.PROV_MEMBERSHIP, "Specialization", Kind.PROV_SPECIALIZATION, "Communication", Kind.PROV_COMMUNICATION);
         for (Map.Entry<String, Kind> e : types.entrySet()) {
             Map<String, String> inContext = new TreeMap<>();
             context.get(e.getKey()).get("@context").fields().forEachRemaining(t -> {

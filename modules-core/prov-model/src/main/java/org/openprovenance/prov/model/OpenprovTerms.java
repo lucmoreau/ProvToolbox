@@ -12,7 +12,7 @@ import java.util.*;
  * {@code hadAssociation}, ... In a document they are written without {@code had}, as PROV-N writes its reserved
  * attributes ({@code prov:type}, {@code prov:role}, ...) and as the openprov JSON-LD context scopes them: inside
  * an attribution, {@code openprov:association} is the property {@code openprov:hadAssociation}; inside a
- * specialization, {@code openprov:entity} is {@code openprov:hadEntity}. Elsewhere, an openprov attribute is an
+ * specialization, {@code openprov:previousEntity} is {@code openprov:hadPreviousEntity}; on a communication, {@code openprov:entity} is {@code openprov:hadEntity}. Elsewhere, an openprov attribute is an
  * attribute like any other. Every reader turns the written name into the property when it builds one of the three
  * relations, and every writer turns it back; the model holds the property.
  */
@@ -38,10 +38,28 @@ public final class OpenprovTerms {
                 "collectionGeneration", "hadCollectionGeneration",
                 "itemGeneration", "hadItemGeneration");
         scope(Kind.PROV_SPECIALIZATION,
-                "entity", "hadEntity",
+                "previousEntity", "hadPreviousEntity",
                 "derivation", "hadDerivation",
                 "specialization", "hadSpecialization");
+        scope(Kind.PROV_COMMUNICATION,
+                "entity", "hadEntity",
+                "generation", "hadGeneration",
+                "usage", "hadUsage");
     }
+
+    /** The roles of the vocabulary: the parties to a change of collection, and the item an activity handles. */
+    public static final String AS_COLLECTION = "asCollection";
+    public static final String AS_MEMBER = "asMember";
+    public static final String AS_ITEM = "asItem";
+    public static final String AS_ENTITY = "asEntity";
+
+    /** The types of the vocabulary: changes of collection, on the activity and the derivations it accounts for. */
+    public static final String INSERTING_ITEM_INTO_COLLECTION = "InsertingItemIntoCollection";
+    public static final String INSERTING_INTO_COLLECTION = "InsertingInto_Collection";
+    public static final String INSERTING_INTO_ITEM = "InsertingInto_Item";
+    public static final String INSERTING_ELEMENT = "InsertingElement";
+    public static final String REMOVING_ELEMENT_FROM_COLLECTION = "RemovingElementFromCollection";
+    public static final String REMOVING_ELEMENT = "RemovingElement";
 
     private static void scope(Kind kind, String... termAndLocal) {
         Map<String, String> forward = new LinkedHashMap<>();
@@ -74,6 +92,18 @@ public final class OpenprovTerms {
         return LOCAL_TO_TERM.getOrDefault(kind, Collections.emptyMap()).get(propertyLocalName);
     }
 
+    /**
+     * Writing: the term under which an openprov local name is shown inside a relation of this kind, or null when
+     * the kind scopes no such name. The property is shown under its term; a name that already is a term, as code
+     * that names attributes the way a document does leaves it (a template expansion, say), is shown as it is: the
+     * serialisers are the counterpart of the deserialisers, which read the term into the property.
+     */
+    public static String shownAs(Kind kind, String localName) {
+        String term = term(kind, localName);
+        if (term != null) return term;
+        return scope(kind).containsKey(localName) ? localName : null;
+    }
+
     public static boolean isOpenprov(QualifiedName name) {
         return name != null && NamespacePrefixMapper.OPENPROV_NS.equals(name.getNamespaceURI());
     }
@@ -96,8 +126,8 @@ public final class OpenprovTerms {
     public static Attribute surface(Kind kind, Attribute attribute, ProvFactory pf) {
         QualifiedName name = attribute.getElementName();
         if (!isOpenprov(name)) return attribute;
-        String term = term(kind, name.getLocalPart());
-        return term == null ? attribute : pf.newAttribute(pf.newQualifiedName(NamespacePrefixMapper.OPENPROV_NS, term, NamespacePrefixMapper.OPENPROV_PREFIX), attribute.getValue(), attribute.getType());
+        String term = shownAs(kind, name.getLocalPart());
+        return term == null || term.equals(name.getLocalPart()) ? attribute : pf.newAttribute(pf.newQualifiedName(NamespacePrefixMapper.OPENPROV_NS, term, NamespacePrefixMapper.OPENPROV_PREFIX), attribute.getValue(), attribute.getType());
     }
 
     public static List<Attribute> canonical(Kind kind, Collection<Attribute> attributes, ProvFactory pf) {

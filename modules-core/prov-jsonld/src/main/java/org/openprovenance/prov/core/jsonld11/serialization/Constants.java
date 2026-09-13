@@ -38,8 +38,6 @@ public interface Constants {
     String JSONLDSCHEMA_2024_08_25 = "2024-08-25/jsonldschema.json";
     String JSONLDCONTEXT_2024_08_25 = "2024-08-25/jsonldcontext.jsonld";
 
-    String JSONLD_PROVEXT_NS = "https://openprovenance.org/ns/provext#";
-
     String OLD_JSONLD_CONTEXT_URL = "http://openprovenance.org/prov.jsonld";
 
     String JSONLDSCHEMA_JSON_2024_06_11 = "src/main/resources/2024-06-11/jsonldschema.json";

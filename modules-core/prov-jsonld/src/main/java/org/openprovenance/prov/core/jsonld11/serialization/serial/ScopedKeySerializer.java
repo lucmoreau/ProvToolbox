@@ -19,7 +19,7 @@ public abstract class ScopedKeySerializer extends CustomKeySerializer {
 
     @Override
     public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        String term = OpenprovTerms.isOpenprov(q) ? OpenprovTerms.term(kind, q.getLocalPart()) : null;
+        String term = OpenprovTerms.isOpenprov(q) ? OpenprovTerms.shownAs(kind, q.getLocalPart()) : null;
         if (term == null) {
             super.serialize(q, jsonGenerator, serializerProvider);
         } else {
@@ -37,5 +37,9 @@ public abstract class ScopedKeySerializer extends CustomKeySerializer {
 
     public static class Specialization extends ScopedKeySerializer {
         public Specialization() { super(Kind.PROV_SPECIALIZATION); }
+    }
+
+    public static class Communication extends ScopedKeySerializer {
+        public Communication() { super(Kind.PROV_COMMUNICATION); }
     }
 }

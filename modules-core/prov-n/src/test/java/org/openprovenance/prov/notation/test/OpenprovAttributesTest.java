@@ -33,7 +33,9 @@ public class OpenprovAttributesTest extends TestCase {
             + "entity(ex:e2)\nentity(ex:c)\nagent(ex:ag1)\nactivity(ex:a1)\n"
             + "wasAttributedTo(ex:att; ex:e1, ex:ag1, [openprov:activity = 'ex:a1', openprov:association = 'ex:asc1', openprov:generation = 'ex:gen1', ex:note = \"kept\"])\n"
             + "provext:hadMember(ex:mem; ex:c, ex:e1, [openprov:activity = 'ex:adding', openprov:collectionGeneration = 'ex:gen0', openprov:itemGeneration = 'ex:gen1'])\n"
-            + "provext:specializationOf(ex:spe; ex:e1, ex:e2, [openprov:entity = 'ex:e0', openprov:derivation = 'ex:der1', openprov:specialization = 'ex:spe0'])\n"
+            + "provext:specializationOf(ex:spe; ex:e1, ex:e2, [openprov:previousEntity = 'ex:e0', openprov:derivation = 'ex:der1', openprov:specialization = 'ex:spe0'])\n"
+            + "activity(ex:a0)\n"
+            + "wasInformedBy(ex:com; ex:a1, ex:a0, [openprov:entity = 'ex:e1', openprov:generation = 'ex:gen1', openprov:usage = 'ex:usd1'])\n"
             + "endDocument\n";
 
     Document parse(String provn) {
@@ -67,7 +69,8 @@ public class OpenprovAttributesTest extends TestCase {
         Document doc = parse(PROVN);
         assertEquals(Map.of("hadActivity", "a1", "hadAssociation", "asc1", "hadGeneration", "gen1"), openprov(one(doc, WasAttributedTo.class)));
         assertEquals(Map.of("hadActivity", "adding", "hadCollectionGeneration", "gen0", "hadItemGeneration", "gen1"), openprov(one(doc, QualifiedHadMember.class)));
-        assertEquals(Map.of("hadEntity", "e0", "hadDerivation", "der1", "hadSpecialization", "spe0"), openprov(one(doc, QualifiedSpecializationOf.class)));
+        assertEquals(Map.of("hadPreviousEntity", "e0", "hadDerivation", "der1", "hadSpecialization", "spe0"), openprov(one(doc, QualifiedSpecializationOf.class)));
+        assertEquals(Map.of("hadEntity", "e1", "hadGeneration", "gen1", "hadUsage", "usd1"), openprov(one(doc, WasInformedBy.class)));
         // an ordinary attribute beside them is untouched
         WasAttributedTo att = one(doc, WasAttributedTo.class);
         assertEquals(1, att.getOther().stream().filter(o -> "note".equals(o.getElementName().getLocalPart())).count());
@@ -84,7 +87,8 @@ public class OpenprovAttributesTest extends TestCase {
         String written = write(doc);
         assertTrue(written, written.contains("openprov:association = 'ex:asc1'"));
         assertTrue(written, written.contains("openprov:collectionGeneration = 'ex:gen0'"));
-        assertTrue(written, written.contains("openprov:entity = 'ex:e0'"));
+        assertTrue(written, written.contains("openprov:previousEntity = 'ex:e0'"));
+        assertTrue(written, written.contains("openprov:entity = 'ex:e1'"));
         assertFalse(written, written.contains("openprov:had"));
         Document again = parse(written);
         assertEquals(doc.getStatementOrBundle(), again.getStatementOrBundle());

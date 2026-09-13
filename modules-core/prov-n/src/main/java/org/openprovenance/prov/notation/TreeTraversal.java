@@ -160,7 +160,7 @@ public class TreeTraversal {
                 uid=(QualifiedName)convert(uidTree);
                 id2=(QualifiedName)convert(ast.getChild(1));
                 id1=(QualifiedName)convert(ast.getChild(2));
-                rAttrs=(List<Attribute>) convert(ast.getChild(3));
+                rAttrs=OpenprovTerms.canonical(Kind.PROV_COMMUNICATION, (List<Attribute>) convert(ast.getChild(3)), pFactory);
                 return c.newWasInformedBy(uid,id2,id1,rAttrs);
 
 

@@ -3,7 +3,8 @@
 
     "query": [
         "prefix phys <http://openprovenance.org/ns/phys#>",
-        "prefix provext <http://openprovenance.org/prov/extension#>",
+        "prefix provext <https://openprovenance.org/ns/provext#>
+prefix openprov <https://openprovenance.org/ns/openprov#>",
         "select * from der a prov:WasDerivedFrom",
         "from item1 a prov:Entity",
         " join der.generatedEntity = item1.id",
@@ -27,8 +28,8 @@
         " optional join item1.id = wgb.entity",
         "where act[prov:type] >= 'phys:AddingItemToContainer'",
         "  and cont[prov:type] >= 'prov:Collection'",
-        "  and wgbm[prov:role] >= 'provext:asMember'",
-        "  and usdm[prov:role] >= 'provext:asMember'"
+        "  and wgbm[prov:role] >= 'openprov:asMember'",
+        "  and usdm[prov:role] >= 'openprov:asMember'"
     ],
 
     "sentence": {
@@ -127,6 +128,6 @@
         "trs":     "https://openprovenance.org/transport/ns/#",
         "phys":    "http://openprovenance.org/ns/phys#",
         "resp":    "http://openprovenance.org/ns/responsibility#",
-        "provext": "http://openprovenance.org/prov/extension#"
+        "provext": "https://openprovenance.org/ns/provext#", "openprov": "https://openprovenance.org/ns/openprov#"
     }
 }

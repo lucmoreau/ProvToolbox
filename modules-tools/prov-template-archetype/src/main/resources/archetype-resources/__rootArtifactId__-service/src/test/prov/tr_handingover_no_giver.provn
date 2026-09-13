@@ -3,7 +3,8 @@ document
 prefix trs <https://openprovenance.org/transport/ns/#>
 prefix phys <http://openprovenance.org/ns/phys#>
 prefix resp <http://openprovenance.org/ns/responsibility#>
-prefix provext <http://openprovenance.org/prov/extension#>
+prefix provext <https://openprovenance.org/ns/provext#>
+prefix openprov <https://openprovenance.org/ns/openprov#>
 prefix item <http://localhost:7075/book/provapi/live/item/>
 prefix ag <http://localhost:7075/book/provapi/live/agent/>
 prefix act <http://localhost:7075/book/provapi/live/activity/>
@@ -12,10 +13,10 @@ entity(item:7963)
 entity(item:7966,[prov:type = 'trs:Box'])
 activity(act:5958,-,-,[prov:type = 'resp:HandingOver'])
 agent(ag:7965)
-used(act:5958,item:7963,-,[prov:role = 'provext:asItem'])
+used(act:5958,item:7963,-,[prov:role = 'openprov:asItem'])
 wasGeneratedBy(item:7966,act:5958,2024-10-01T16:14:00+01:00)
 wasDerivedFrom(item:7966, item:7963, act:5958, -, -,[prov:type = 'resp:HandingOver'])
 wasAssociatedWith(act:5958,ag:7965,-)
-wasAttributedTo(item:7966, ag:7965,[provext:activity = 'act:5958'])
+wasAttributedTo(item:7966, ag:7965,[openprov:activity = 'act:5958'])
 wasInvalidatedBy(item:7963,act:5958,-)
 endDocument

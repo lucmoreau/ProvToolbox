@@ -1,6 +1,6 @@
 document
   prefix pic <http://www.ipaw.info/ns/picaso#>
-  prefix tmpl <http://openprovenance.org/tmpl#>
+  prefix tmpl <http://openprovenance.org/ns/tmpl#>
   prefix var <http://openprovenance.org/var#>
   prefix vargen <http://openprovenance.org/vargen#>
   prefix ui <http://openprovenance.org/ui#>

@@ -1,0 +1,145 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:web="https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0" metadata-complete="true">
+
+  <display-name>Provenance Template Service</display-name>
+
+    <!--
+    <listener>
+        <listener-class>
+            org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap
+        </listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>ProvapiApplication</servlet-name>
+        <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>org.openprovenance.prov.service.core.ProvapiApplication</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProvapiApplication</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+    -->
+
+  <filter>
+    <filter-name>HasProvenanceHeaderFilter</filter-name>
+    <filter-class>org.openprovenance.prov.service.core.HasProvenanceHeaderFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>HasProvenanceHeaderFilter</filter-name>
+    <url-pattern>/webjars/*</url-pattern>
+  </filter-mapping>
+
+
+
+  <!--
+    GitHub-based access control, an alternative to web-with-security.xml (Keycloak).
+
+    The clients are defined in the security configuration JSON named by TPL_SECURITY_CONFIG
+    (see src/test/config/security/github-security-config.json):
+     - GitHubClient: browser login through a GitHub OAuth App, whose authorization callback
+       URL must be the callbackUrl of the configuration; the client secret is read from the
+       system property or environment variable named by clientSecretEnv.
+     - GitHubBearerAuthClient: scripts send a GitHub token as "Authorization: Bearer <token>";
+       it is checked against GitHub's /user API, and the result cached for cacheTtlSeconds.
+
+    The githubAllowlist authorizer admits a user whose GitHub login, or github:<numeric id>,
+    is in the client's allowlist; "*" admits any GitHub user. Users are recorded as
+    github:<numeric id>.
+  -->
+
+  <filter>
+    <filter-name>callbackFilter</filter-name>
+    <filter-class>org.pac4j.jee.filter.CallbackFilter</filter-class>
+    <init-param>
+      <param-name>defaultUrl</param-name>
+      <param-value>/</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>callbackFilter</filter-name>
+    <url-pattern>/callback</url-pattern>
+  </filter-mapping>
+
+
+  <filter>
+    <filter-name>GitHubFilter</filter-name>
+    <filter-class>org.pac4j.jee.filter.SecurityFilter</filter-class>
+    <init-param>
+      <param-name>configFactory</param-name>
+      <param-value>org.openprovenance.prov.service.core.SecurityConfigFactory</param-value>
+    </init-param>
+
+    <init-param>
+      <param-name>clients</param-name>
+      <param-value>GitHubClient,GitHubBearerAuthClient</param-value>
+    </init-param>
+    <init-param>
+      <param-name>authorizers</param-name>
+      <param-value>isAuthenticated,githubAllowlist</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>GitHubFilter</filter-name>
+    <url-pattern>/provapi/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>GitHubFilter</filter-name>
+    <url-pattern>/forms.html</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>GitHubFilter</filter-name>
+    <url-pattern>/expander.html</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>GitHubFilter</filter-name>
+    <url-pattern>/api.html</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+
+  <!-- explicit declaration: this servlet 2.3 descriptor disables annotation
+       scanning, so the @WebListener annotation on this class is not seen;
+       the listener closes storage clients, connection pools and the scheduler
+       when the web application stops -->
+  <listener>
+    <listener-class>org.openprovenance.prov.service.core.ServiceShutdownListener</listener-class>
+  </listener>
+
+
+
+  <!--
+
+  <servlet>
+    <servlet-name>ExceptionHandler</servlet-name>
+    <servlet-class>org.openprovenance.prov.service.ExceptionHandler</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExceptionHandler</servlet-name>
+    <url-pattern>/ExceptionHandler</url-pattern>
+  </servlet-mapping>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/ExceptionHandler</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/ExceptionHandler</location>
+  </error-page>
+  -->
+
+</web-app>

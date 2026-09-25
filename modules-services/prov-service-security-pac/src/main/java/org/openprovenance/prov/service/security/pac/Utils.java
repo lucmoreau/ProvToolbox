@@ -16,6 +16,7 @@ import org.pac4j.core.credentials.extractor.BearerAuthExtractor;
 import org.pac4j.http.client.direct.DirectBearerAuthClient;
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
+import org.pac4j.oauth.client.GitHubClient;
 import org.pac4j.oidc.client.KeycloakOidcClient;
 import org.pac4j.oidc.config.KeycloakOidcConfiguration;
 
@@ -99,6 +100,41 @@ public class Utils {
 
         logger.info("KeycloakOidcClient created " + keycloakOidcConfiguration);
 
+        return client;
+    }
+
+
+    static public GitHubClient configureGitHubClient(GitHubClientConfiguration config) {
+        String variable = config.getClientSecretEnv();
+        if (variable == null || variable.isBlank()) {
+            throw new IllegalStateException("GitHubClient: clientSecretEnv must name the system property or environment variable holding the client secret");
+        }
+        String secret = System.getProperty(variable);
+        if (secret == null || secret.isBlank()) {
+            secret = System.getenv(variable);
+        }
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException("GitHubClient: no client secret in system property or environment variable " + variable);
+        }
+        GitHubClient client = new GitHubClient(config.getClientId(), secret);
+        client.setScope(config.getScope());
+        if (config.getCallbackUrl() != null) {
+            client.setCallbackUrl(config.getCallbackUrl());
+        }
+        client.addAuthorizationGenerator(new GitHubProfiles.PrincipalGenerator());
+
+        logger.info("GitHubClient created " + config);
+        return client;
+    }
+
+    static public DirectBearerAuthClient configureGitHubBearerAuthClient(GitHubBearerAuthClientConfiguration config) {
+        DirectBearerAuthClient client = new DirectBearerAuthClient();
+        client.setName(ClientConfiguration.GITHUB_BEARER_AUTH_CLIENT);
+        client.setRealmName(config.getRealm());
+        client.setCredentialsExtractor(new BearerAuthExtractor());
+        client.setAuthenticator(new GitHubTokenAuthenticator(ClientConfiguration.GITHUB_BEARER_AUTH_CLIENT, config.getCacheTtlSeconds()));
+
+        logger.info("GitHubBearerAuthClient created " + config);
         return client;
     }
 

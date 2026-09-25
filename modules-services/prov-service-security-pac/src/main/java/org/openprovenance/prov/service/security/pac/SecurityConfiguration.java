@@ -20,7 +20,9 @@ public class SecurityConfiguration {
     @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = "@type")
     @JsonSubTypes({
             @JsonSubTypes.Type(value = DirectBearerAuthClientConfiguration.class, name = ClientConfiguration.DIRECT_BEARER_AUTH_CLIENT),
-            @JsonSubTypes.Type(value = KeycloakOidcClientConfiguration.class, name = ClientConfiguration.KEYCLOAK_OIDC_CLIENT)
+            @JsonSubTypes.Type(value = KeycloakOidcClientConfiguration.class, name = ClientConfiguration.KEYCLOAK_OIDC_CLIENT),
+            @JsonSubTypes.Type(value = GitHubClientConfiguration.class, name = ClientConfiguration.GITHUB_CLIENT),
+            @JsonSubTypes.Type(value = GitHubBearerAuthClientConfiguration.class, name = ClientConfiguration.GITHUB_BEARER_AUTH_CLIENT)
     })
     public Map<String,ClientConfiguration> configurations;
 

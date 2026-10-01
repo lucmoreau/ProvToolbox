@@ -678,9 +678,9 @@ public class TemplateQuery {
     // Choice summary: recursiveQuery4 = pure SQL, uncapped, once per node;
     // recursiveQuery5 = PL/pgSQL, capped, once per node;
     // recursiveQuery6 = pure SQL, capped, once per (node, path length).
-    // Installed from 2026-07-27 until capability 10, which wires
-    // backwardtraversal_star_roots (recursiveQuery4's Phase 1 over a set of
-    // root rows) in its place; kept for the record, unwired.
+    // Installed from 2026-07-27 until capability 10 (2026-10-01), which wires
+    // backwardtraversal_star_bfs in its place — the same cap, layer for layer,
+    // without the path-length multiplicity; kept for the record, unwired.
     String recursiveQuery6 = """
             DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text);
             DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text, integer[]);
@@ -919,7 +919,7 @@ public class TemplateQuery {
 
     // forward_traversal_star, memoised BFS rewrite — the exact transpose of
     // recursiveQuery5, kept for the record (unwired; Step 4 installs
-    // forward_traversal_star_roots).  PL/pgSQL breadth-first search: a temp table
+    // forward_traversal_star_bfs).  PL/pgSQL breadth-first search: a temp table
     // memoises visited (id, template, property) triples — prop is the OUTPUT
     // column to advance through, the old form's next_property — each expanded
     // exactly once, at the layer BFS first reaches it, and the loop counter is
@@ -1070,7 +1070,7 @@ public class TemplateQuery {
     // and cap-5 parity with the old CTE truncated at rt.depth < 5 (5 edges).
     // Measured phase-1 path-length duplication: 2.0× (659 rows for 330
     // distinct triples).
-    // Unwired since capability 10 (forward_traversal_star_roots).
+    // Unwired since capability 10 (forward_traversal_star_bfs).
     // The block re-creates forward_traversal_star_nodes unchanged (it was
     // previously installed by recursiveForwardQuery); its 4-arg call into the
     // 5-arg star resolves through the max-depth default.
@@ -1208,7 +1208,10 @@ public class TemplateQuery {
             """;
 
     // backwardtraversal_star over a node frontier, with multi-row roots
-    // (nextgen capability 10, T-187 / H-11).  Supersedes recursiveQuery6.
+    // (nextgen capability 10, T-187 / H-11), UNCAPPED — installed 2026-10-01
+    // for one day, then unwired in favour of backwardtraversal_star_bfs below
+    // (Luc: a real deployment may run very deep workflows, so the depth must
+    // be cappable).  Kept for the record, like recursiveQuery3..6.
     // recursiveQuery6 keeps depth in its Phase-1 row so that the cap is
     // expressible in SQL; the price is path-length multiplicity — a node
     // expands once per distinct depth at which some path reaches it.  On the
@@ -1238,7 +1241,7 @@ public class TemplateQuery {
     // The leading DROPs remove every older signature (recursiveQuery6's 5-arg
     // one included): CREATE OR REPLACE with a different argument list adds an
     // overload, and a 4-arg call would then be ambiguous.
-    String backwardtraversal_star_roots = """
+    String backwardtraversal_star_roots_uncapped = """
             DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text);
             DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text, integer[]);
             DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text, integer[], integer);
@@ -1368,8 +1371,10 @@ public class TemplateQuery {
 
             """;
 
-    // forward_traversal_star over a node frontier, with multi-row roots — the
-    // exact transpose of backwardtraversal_star_roots, superseding
+    // forward_traversal_star over a node frontier, with multi-row roots,
+    // UNCAPPED (unwired after one day, like backwardtraversal_star_roots_uncapped;
+    // forward_traversal_star_bfs is installed) — the exact transpose of
+    // backwardtraversal_star_roots_uncapped, superseding
     // forward_traversal_star6 for the same reason (its Phase-1 row carries
     // depth, so a node expands once per path length).  Phase 1 recurses over
     // (id, template, property) where property is the OUTPUT column to advance
@@ -1380,7 +1385,7 @@ public class TemplateQuery {
     // entry is a dead end, and edges with a NULL pt.output are emitted but
     // never expanded — both as in forward_traversal_star6.  The block
     // re-creates forward_traversal_star_nodes unchanged.
-    String forward_traversal_star_roots = """
+    String forward_traversal_star_roots_uncapped = """
             DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text);
             DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text, integer[]);
             DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text, integer[], integer);
@@ -1522,7 +1527,8 @@ public class TemplateQuery {
 
             """;
 
-    // backwardtraversal_star_entity / forward_traversal_star_entity — an ENTITY
+    // backwardtraversal_star_entity / forward_traversal_star_entity, UNCAPPED
+    // (unwired; traversal_star_entity_capped is installed) — an ENTITY
     // as the root.  An entity is not a row: it is the value of an output column,
     // and the rows that hold it there are its generations — a finished good's N
     // element rows of goods_consuming_and_creating all hold it in goods1.  Entity
@@ -1532,7 +1538,7 @@ public class TemplateQuery {
     // lookup on the column backwardTraversal already indexes as a dispatch
     // target) and handed to the *_roots function as one root.  An entity no row
     // holds yields no edge.
-    String traversal_star_entity = """
+    String traversal_star_entity_uncapped = """
             CREATE OR REPLACE FUNCTION public.backwardtraversal_star_entity(
                 __param_entity              integer,
                 __param_template            text,
@@ -1592,6 +1598,409 @@ public class TemplateQuery {
                 RETURN QUERY
                 SELECT * FROM forward_traversal_star_roots(
                     __roots, __param_template, __param_property, __param_selected_relations);
+            END;
+            $function$;
+
+            """;
+
+    // backwardtraversal_star — breadth-first over a node frontier, depth-capped,
+    // with multi-row roots (nextgen capability 10, T-187 / H-11).  Supersedes
+    // recursiveQuery6 and backwardtraversal_star_roots_uncapped.
+    // Why a loop.  A depth cap needs each node's BFS depth; a recursive CTE can
+    // only express it by carrying depth in its row (recursiveQuery6), and then
+    // UNION cannot tell a node reached again at a greater depth from a new one,
+    // so the node expands once per path length (4.4x the nodes on nextgen's
+    // installed-base closure by 2026-10, 6.8x with specialisation, growing with
+    // the store).  The uncapped CTE expands each node once but cannot stop at a
+    // depth.  recursiveQuery5 has both but keeps its visited set in a TEMP TABLE,
+    // which a read-only transaction (a reporting replica) refuses, and which no
+    // two calls may share.  Here the visited set and the frontier are PL/pgSQL
+    // array variables: each layer expands only the triples first reached at the
+    // previous one, anti-joined against everything reached so far, so every
+    // (id, template, property) triple calls backwardTraversal exactly twice
+    // (once per phase) whatever the number of paths — helper calls linear in
+    // nodes; the array work is O(nodes x layers) in memory-speed operations.
+    // No temp table: read-only safe, reentrant.
+    // Cap semantics are recursiveQuery6's / recursiveQuery5's, layer for layer:
+    // layers 0 .. __param_max_depth - 1 are filled, so Phase 2 emits edges at
+    // depth 1 .. __param_max_depth; default 100 (the old guard), NULL unbounded
+    // (the finite triple set terminates the loop, cycles included).  Self-loop
+    // hops are not walked, as in recursiveQuery6.
+    // Roots.  backwardtraversal_star_roots takes a SET of rows of one template
+    // as ONE root (a composite's element rows: a production event is the N
+    // goods_consuming_and_creating rows its linker groups); an ancestor shared
+    // by several roots expands once.  The single-row function is that function
+    // on a one-element array.
+    // Verified on the nextgen dev store (2026-10-01, 7.5 M record_index rows):
+    // at the default cap the DISTINCT edge sets are byte-identical to
+    // recursiveQuery6's (installed base [9] and [9,15], one and four dispatches,
+    // the 45.9 M-edge unfiltered dispatch closure: same count, same md5); at caps
+    // 5, 20 and 50 identical to recursiveQuery6 capped alike; installed base
+    // 2.91 -> 1.07 s, [9,15] 5.23 -> 1.53 s, unfiltered 138.6 -> 92.5 s; runs
+    // inside BEGIN READ ONLY.
+    // The leading DROPs remove every older signature, the uncapped 4-arg
+    // forms included: a 4-arg call would otherwise be ambiguous.
+    String backwardtraversal_star_bfs = """
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text);
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text, integer[]);
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text, integer[], integer);
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star_roots(integer[], text, text, integer[]);
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star_roots(integer[], text, text, integer[], integer);
+
+            CREATE OR REPLACE FUNCTION public.backwardtraversal_star_roots(
+                __param_ids                 integer[],
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE plpgsql
+            STABLE
+            AS $function$
+            DECLARE
+                f_id   integer[];  f_tpl text[];  f_prop text[];   -- the layer last reached
+                v_id   integer[];  v_tpl text[];  v_prop text[];   -- every triple reached so far
+                n_id   integer[];  n_tpl text[];  n_prop text[];   -- the next layer
+                __layer integer := 0;                              -- last layer filled (roots = 0)
+            BEGIN
+                SELECT array_agg(root), array_agg(__param_template), array_agg(__param_property)
+                  INTO f_id, f_tpl, f_prop
+                  FROM (SELECT DISTINCT root FROM unnest(__param_ids) AS root WHERE root IS NOT NULL) s;
+                IF f_id IS NULL THEN RETURN; END IF;
+                v_id := f_id;  v_tpl := f_tpl;  v_prop := f_prop;
+
+                -- ── Phase 1: breadth-first node search ───────────────────────────────
+                -- A triple is (id, template, property): property is the OUTPUT column
+                -- through which the row was reached.  Each layer expands only the
+                -- triples first reached at the previous one; the anti-join against
+                -- everything reached so far keeps a triple from ever re-expanding.
+                -- The relation-type filter applies on every hop, the roots' own included.
+                WHILE __param_max_depth IS NULL OR __layer < __param_max_depth - 1 LOOP
+                    SELECT array_agg(c.id), array_agg(c.tpl), array_agg(c.prop)
+                      INTO n_id, n_tpl, n_prop
+                      FROM (SELECT DISTINCT bt.out_id AS id, bt.out_template AS tpl, bt.out_property AS prop
+                              FROM unnest(f_id, f_tpl, f_prop) AS r(id, tpl, prop)
+                              JOIN predecessor_table pt
+                                ON  pt.template = r.tpl
+                                AND pt.output   = r.prop
+                                AND (
+                                    __param_selected_relations IS NULL
+                                    OR pt.rel = ANY(__param_selected_relations)
+                                )
+                              CROSS JOIN LATERAL backwardTraversal(r.id, r.tpl, pt.input) AS bt
+                             WHERE pt.input IS NOT NULL
+                               -- a self-loop hop (virtual-output fix, or a template
+                               -- dispatching to itself) re-reaches this very row: not walked
+                               AND NOT (bt.out_id = r.id AND bt.out_template = r.tpl)) c
+                     WHERE NOT EXISTS (
+                               SELECT 1
+                                 FROM unnest(v_id, v_tpl, v_prop) AS v(id, tpl, prop)
+                                WHERE v.id = c.id AND v.tpl = c.tpl AND v.prop = c.prop);
+                    EXIT WHEN n_id IS NULL;   -- frontier exhausted before the cap
+                    v_id := v_id || n_id;  v_tpl := v_tpl || n_tpl;  v_prop := v_prop || n_prop;
+                    f_id := n_id;          f_tpl := n_tpl;          f_prop := n_prop;
+                    __layer := __layer + 1;
+                END LOOP;
+
+                -- ── Phase 2: edge emission ───────────────────────────────────────────
+                -- One expansion pass over the reached set, emitting the 6-tuple
+                -- contract.  Every reached triple sits at a layer below the cap, so
+                -- its edges lie at depth <= __param_max_depth.
+                RETURN QUERY
+                SELECT DISTINCT
+                    bt.in_id,
+                    bt.in_template,
+                    bt.in_property,
+                    bt.out_id,
+                    bt.out_template,
+                    bt.out_property
+                FROM
+                    unnest(v_id, v_tpl, v_prop) AS r(id, tpl, prop)
+                    JOIN predecessor_table pt
+                        ON  pt.template = r.tpl
+                        AND pt.output   = r.prop
+                        AND (
+                            __param_selected_relations IS NULL
+                            OR pt.rel = ANY(__param_selected_relations)
+                        )
+                    CROSS JOIN LATERAL backwardTraversal(r.id, r.tpl, pt.input) AS bt
+                WHERE
+                    pt.input IS NOT NULL
+                    -- Self-loops arise from the virtual-output fix for activity-output-only
+                    -- templates (e.g. document_obligating_coin): backwardTraversal joins the
+                    -- table with itself on an input column used as a virtual output, matching
+                    -- the same row.  Self-loops are never valid in a provenance graph.
+                    AND NOT (bt.in_id = bt.out_id AND bt.in_template = bt.out_template);
+            END;
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.backwardtraversal_star(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            STABLE
+            AS $function$
+            SELECT *
+            FROM   backwardtraversal_star_roots(
+                       ARRAY[__param_id],
+                       __param_template,
+                       __param_property,
+                       __param_selected_relations,
+                       __param_max_depth
+                   )
+            $function$;
+
+            """;
+
+    // forward_traversal_star — breadth-first, depth-capped, with multi-row
+    // roots: the exact transpose of backwardtraversal_star_bfs, superseding
+    // forward_traversal_star6 and forward_traversal_star_roots_uncapped.  A
+    // triple's property is the OUTPUT column to advance through (the old
+    // next_property); each hop calls forwardTraversal(node, prop) for the
+    // consumers of that output's entity, then predecessor_table (joined on the
+    // consumer's template + input column, where the relation-type filter
+    // applies) yields the consumer's output columns, the next layer.  A
+    // consumer edge whose pt.output is NULL is emitted (Phase 2) but is a dead
+    // end, as in forward_traversal_star6.  Cap semantics, defaults and the
+    // self-loop rule mirror the backward function.  Re-creates
+    // forward_traversal_star_nodes unchanged.
+    String forward_traversal_star_bfs = """
+            DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text);
+            DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text, integer[]);
+            DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text, integer[], integer);
+            DROP FUNCTION IF EXISTS public.forward_traversal_star_roots(integer[], text, text, integer[]);
+            DROP FUNCTION IF EXISTS public.forward_traversal_star_roots(integer[], text, text, integer[], integer);
+
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star_roots(
+                __param_ids                 integer[],
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE plpgsql
+            STABLE
+            AS $function$
+            DECLARE
+                f_id   integer[];  f_tpl text[];  f_prop text[];   -- the layer last reached
+                v_id   integer[];  v_tpl text[];  v_prop text[];   -- every triple reached so far
+                n_id   integer[];  n_tpl text[];  n_prop text[];   -- the next layer
+                __layer integer := 0;                              -- last layer filled (roots = 0)
+            BEGIN
+                SELECT array_agg(root), array_agg(__param_template), array_agg(__param_property)
+                  INTO f_id, f_tpl, f_prop
+                  FROM (SELECT DISTINCT root FROM unnest(__param_ids) AS root WHERE root IS NOT NULL) s;
+                IF f_id IS NULL THEN RETURN; END IF;
+                v_id := f_id;  v_tpl := f_tpl;  v_prop := f_prop;
+
+                -- ── Phase 1: breadth-first node search (see backwardtraversal_star_roots)
+                WHILE __param_max_depth IS NULL OR __layer < __param_max_depth - 1 LOOP
+                    SELECT array_agg(c.id), array_agg(c.tpl), array_agg(c.prop)
+                      INTO n_id, n_tpl, n_prop
+                      FROM (SELECT DISTINCT ft.out_id AS id, ft.out_template AS tpl, pt.output AS prop
+                              FROM unnest(f_id, f_tpl, f_prop) AS r(id, tpl, prop)
+                              CROSS JOIN LATERAL forwardTraversal(r.id, r.tpl, r.prop) AS ft
+                              JOIN predecessor_table pt
+                                ON  pt.template = ft.out_template
+                                AND pt.input    = ft.out_property
+                                AND (
+                                    __param_selected_relations IS NULL
+                                    OR pt.rel = ANY(__param_selected_relations)
+                                )
+                             WHERE pt.output IS NOT NULL
+                               AND NOT (ft.out_id = r.id AND ft.out_template = r.tpl)) c
+                     WHERE NOT EXISTS (
+                               SELECT 1
+                                 FROM unnest(v_id, v_tpl, v_prop) AS v(id, tpl, prop)
+                                WHERE v.id = c.id AND v.tpl = c.tpl AND v.prop = c.prop);
+                    EXIT WHEN n_id IS NULL;
+                    v_id := v_id || n_id;  v_tpl := v_tpl || n_tpl;  v_prop := v_prop || n_prop;
+                    f_id := n_id;          f_tpl := n_tpl;          f_prop := n_prop;
+                    __layer := __layer + 1;
+                END LOOP;
+
+                -- ── Phase 2: edge emission.  The pt join is part of the contract (only
+                -- consumer edges carrying a matching, rel-passing predecessor_table entry),
+                -- but NULL pt.output edges ARE emitted — dead ends, not non-edges.
+                RETURN QUERY
+                SELECT DISTINCT
+                    ft.in_id,
+                    ft.in_template,
+                    ft.in_property,
+                    ft.out_id,
+                    ft.out_template,
+                    ft.out_property
+                FROM
+                    unnest(v_id, v_tpl, v_prop) AS r(id, tpl, prop)
+                    CROSS JOIN LATERAL forwardTraversal(r.id, r.tpl, r.prop) AS ft
+                    JOIN predecessor_table pt
+                        ON  pt.template = ft.out_template
+                        AND pt.input    = ft.out_property
+                        AND (
+                            __param_selected_relations IS NULL
+                            OR pt.rel = ANY(__param_selected_relations)
+                        )
+                WHERE
+                    -- Self-loops mirror the backwardtraversal_star guard; never valid.
+                    NOT (ft.in_id = ft.out_id AND ft.in_template = ft.out_template);
+            END;
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            STABLE
+            AS $function$
+            SELECT *
+            FROM   forward_traversal_star_roots(
+                       ARRAY[__param_id],
+                       __param_template,
+                       __param_property,
+                       __param_selected_relations,
+                       __param_max_depth
+                   )
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star_nodes(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL
+            )
+            RETURNS TABLE(
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            AS $function$
+            SELECT DISTINCT out_id, out_template, out_property
+            FROM   forward_traversal_star(
+                       __param_id,
+                       __param_template,
+                       __param_property,
+                       __param_selected_relations
+                   )
+            $function$;
+
+            """;
+
+    // backwardtraversal_star_entity / forward_traversal_star_entity — an ENTITY
+    // as the root, depth-capped like the stars they call.  An entity is not a
+    // row: it is the value of an output column, and the rows holding it there
+    // are its generations (a finished good's N element rows all hold it in
+    // goods1).  Entity ids are per kind, so the column is named, not inferred:
+    // (template, property) says which rows, and therefore which id space.  The
+    // rows are collected once and handed to *_roots as one root; an entity no
+    // row holds yields no edge.
+    String traversal_star_entity_capped = """
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star_entity(integer, text, text, integer[]);
+            DROP FUNCTION IF EXISTS public.forward_traversal_star_entity(integer, text, text, integer[]);
+
+            CREATE OR REPLACE FUNCTION public.backwardtraversal_star_entity(
+                __param_entity              integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE plpgsql
+            STABLE
+            AS $function$
+            DECLARE
+                __roots integer[];
+            BEGIN
+                EXECUTE format('SELECT array_agg(id) FROM %I WHERE %I = $1',
+                               __param_template, __param_property)
+                    INTO __roots
+                    USING __param_entity;
+                IF __roots IS NULL THEN RETURN; END IF;
+                RETURN QUERY
+                SELECT * FROM backwardtraversal_star_roots(
+                    __roots, __param_template, __param_property,
+                    __param_selected_relations, __param_max_depth);
+            END;
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star_entity(
+                __param_entity              integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE plpgsql
+            STABLE
+            AS $function$
+            DECLARE
+                __roots integer[];
+            BEGIN
+                EXECUTE format('SELECT array_agg(id) FROM %I WHERE %I = $1',
+                               __param_template, __param_property)
+                    INTO __roots
+                    USING __param_entity;
+                IF __roots IS NULL THEN RETURN; END IF;
+                RETURN QUERY
+                SELECT * FROM forward_traversal_star_roots(
+                    __roots, __param_template, __param_property,
+                    __param_selected_relations, __param_max_depth);
             END;
             $function$;
 
@@ -1808,28 +2217,30 @@ public class TemplateQuery {
                 (sb, data) -> sb.append(generateCreateTraversalIndexes(ioMap)));
 
         // Step 3: install backwardTraversal (queries backward_dispatch) and
-        // backwardtraversal_star (calls backwardTraversal recursively) — the
-        // node-frontier form with multi-row roots (backwardtraversal_star_roots,
-        // capability 10): each (node, property) triple expanded twice, no
-        // depth cap; the single-row star is the roots function on one row.
+        // backwardtraversal_star (calls backwardTraversal layer by layer) — the
+        // breadth-first, depth-capped form with multi-row roots
+        // (backwardtraversal_star_bfs, capability 10): each (node, property)
+        // triple expanded twice, __param_max_depth default 100 (NULL unbounded);
+        // the single-row star is the roots function on one row.
         querier.do_statements(null,
                 null,
                 (sb, data) -> {
                     sb.append(generateBackwardTemplateTraversal(ioMap));
-                    sb.append(backwardtraversal_star_roots);
+                    sb.append(backwardtraversal_star_bfs);
                 });
 
         // Step 4: install the forward (descendant) counterpart — forwardTraversal
         // (reverse dispatch) and forward_traversal_star / _roots / _nodes in the
-        // node-frontier form (forward_traversal_star_roots, the transpose of
-        // Step 3's), then the entity roots over both directions.  Reuses the
-        // same backward_dispatch + predecessor_table populated in Steps 1-2.
+        // breadth-first, depth-capped form (forward_traversal_star_bfs, the
+        // transpose of Step 3's), then the entity roots over both directions.
+        // Reuses the same backward_dispatch + predecessor_table populated in
+        // Steps 1-2.
         querier.do_statements(null,
                 null,
                 (sb, data) -> {
                     sb.append(generateForwardTemplateTraversal());
-                    sb.append(forward_traversal_star_roots);
-                    sb.append(traversal_star_entity);
+                    sb.append(forward_traversal_star_bfs);
+                    sb.append(traversal_star_entity_capped);
                     sb.append(forward_traversal_star_from_input);
                     sb.append(backward_traversal_star_from_output);
                 });

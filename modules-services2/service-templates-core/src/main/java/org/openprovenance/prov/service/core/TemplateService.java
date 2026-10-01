@@ -785,6 +785,13 @@ public class TemplateService {
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
+        // Capability 10: malformed traversal bounds are the client's error, answered before the SVG streams.
+        try {
+            TraversalBounds.fromParameters(config.parameters);
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
+        }
+
         ProgressListener listener = new LoggingProgressListener();
         StreamingOutput promise= out -> templateLogic.generateViz(config, principalAsPreferredUsername, iconsFolderForGraphviz,  out, listener);
 
@@ -854,6 +861,13 @@ public class TemplateService {
 
         Principal principal = request.getUserPrincipal();
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+        // Capability 10: malformed traversal bounds are the client's error, answered before the SVG streams.
+        try {
+            TraversalBounds.fromParameters(config.parameters);
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
+        }
 
         ProgressListener listener = new LoggingProgressListener();
         StreamingOutput promise= out -> templateLogic.generateSlice(config, principalAsPreferredUsername, iconsFolderForGraphviz, out, listener);

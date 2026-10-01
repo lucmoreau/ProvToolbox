@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.ResultSetMetaData;
 import java.sql.Timestamp;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -2034,6 +2035,675 @@ public class TemplateQuery {
 
             """;
 
+    // backwardtraversal_star_roots_flagged — the bounded breadth-first walk of
+    // backwardtraversal_star_bfs, reporting whether a bound CUT it (nextgen
+    // capability 10, 2026-10-01: Luc asked that the navigator say so).  Same
+    // walk, same edges, plus a `truncated` column carrying one value on every
+    // row: true iff a bound (max_depth or max_nodes) stopped the walk AND the
+    // closure it returns is not the whole closure — some node on its rim (an
+    // edge's producer the walk did not reach as a node, so did not expand) has
+    // an edge of its own beyond it.  Exact, not a guess: the walk stopping at a
+    // bound with nothing further to find is reported complete.  The probe runs
+    // only when a bound stopped the walk, and stops at the first edge found.
+    // The node budget is STRICT here (it was a layer boundary in
+    // backwardtraversal_star_bfs): at most max_nodes triples are reached, in
+    // breadth-first order, the layer that crosses the budget taken in
+    // (template, id, column) order; edges to a producer the walk did not reach
+    // are then dropped, so the budget bounds what is drawn — a layer of an
+    // agent-rich closure can hold hundreds of thousands of nodes (the
+    // unfiltered dispatch closure kept 541,427 edges under a layer-boundary
+    // budget of 2,000).  Deterministic; a dropped edge reports the cut.
+    // A truncated walk always returns at least one row (the rim is reached by
+    // an edge), so a caller reads the flag off any row; no rows = complete.
+    // backwardtraversal_star_roots — the 6-column contract — becomes this
+    // function minus the flag, so there is one walk; backwardtraversal_star
+    // and its _flagged twin are the roots functions on one row.  Supersedes
+    // backwardtraversal_star_bfs (kept above, unwired) and repeats its DROPs.
+    // A max_depth below 1 returns no edge (recursiveQuery6's own behaviour).
+    String backwardtraversal_star_flagged = """
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text);
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text, integer[]);
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text, integer[], integer);
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star_roots(integer[], text, text, integer[]);
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star_roots(integer[], text, text, integer[], integer);
+
+            CREATE OR REPLACE FUNCTION public.backwardtraversal_star_roots_flagged(
+                __param_ids                 integer[],
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text,
+                truncated    boolean
+            )
+            LANGUAGE plpgsql
+            STABLE
+            AS $function$
+            DECLARE
+                f_id   integer[];  f_tpl text[];  f_prop text[];   -- the layer last reached
+                v_id   integer[];  v_tpl text[];  v_prop text[];   -- every triple reached so far
+                n_id   integer[];  n_tpl text[];  n_prop text[];   -- the next layer
+                __layer     integer := 0;                          -- last layer filled (roots = 0)
+                __exhausted boolean := false;                      -- the frontier ran out, no bound did
+                __budget    boolean := false;                      -- max_nodes stopped the walk
+                __room      integer;
+            BEGIN
+                IF __param_max_depth IS NOT NULL AND __param_max_depth < 1 THEN RETURN; END IF;
+                SELECT array_agg(root), array_agg(__param_template), array_agg(__param_property)
+                  INTO f_id, f_tpl, f_prop
+                  FROM (SELECT DISTINCT root FROM unnest(__param_ids) AS root WHERE root IS NOT NULL) s;
+                IF f_id IS NULL THEN RETURN; END IF;
+                v_id := f_id;  v_tpl := f_tpl;  v_prop := f_prop;
+
+                -- ── Phase 1: breadth-first node search (backwardtraversal_star_bfs) ──
+                WHILE __param_max_depth IS NULL OR __layer < __param_max_depth - 1 LOOP
+                    IF __param_max_nodes IS NOT NULL AND cardinality(v_id) >= __param_max_nodes THEN
+                        __budget := true; EXIT;
+                    END IF;
+                    SELECT array_agg(c.id   ORDER BY c.tpl, c.id, c.prop),
+                           array_agg(c.tpl  ORDER BY c.tpl, c.id, c.prop),
+                           array_agg(c.prop ORDER BY c.tpl, c.id, c.prop)
+                      INTO n_id, n_tpl, n_prop
+                      FROM (SELECT DISTINCT bt.out_id AS id, bt.out_template AS tpl, bt.out_property AS prop
+                              FROM unnest(f_id, f_tpl, f_prop) AS r(id, tpl, prop)
+                              JOIN predecessor_table pt
+                                ON  pt.template = r.tpl
+                                AND pt.output   = r.prop
+                                AND (
+                                    __param_selected_relations IS NULL
+                                    OR pt.rel = ANY(__param_selected_relations)
+                                )
+                              CROSS JOIN LATERAL backwardTraversal(r.id, r.tpl, pt.input) AS bt
+                             WHERE pt.input IS NOT NULL
+                               AND NOT (bt.out_id = r.id AND bt.out_template = r.tpl)) c
+                     WHERE NOT EXISTS (
+                               SELECT 1
+                                 FROM unnest(v_id, v_tpl, v_prop) AS v(id, tpl, prop)
+                                WHERE v.id = c.id AND v.tpl = c.tpl AND v.prop = c.prop);
+                    IF n_id IS NULL THEN __exhausted := true; EXIT; END IF;
+                    IF __param_max_nodes IS NOT NULL
+                       AND cardinality(v_id) + cardinality(n_id) > __param_max_nodes THEN
+                        -- the layer crosses the budget: take its first triples, in
+                        -- (template, id, column) order, up to the budget, and stop
+                        __room := __param_max_nodes - cardinality(v_id);
+                        v_id := v_id || n_id[1:__room];  v_tpl := v_tpl || n_tpl[1:__room];
+                        v_prop := v_prop || n_prop[1:__room];
+                        __budget := true; EXIT;
+                    END IF;
+                    v_id := v_id || n_id;  v_tpl := v_tpl || n_tpl;  v_prop := v_prop || n_prop;
+                    f_id := n_id;          f_tpl := n_tpl;          f_prop := n_prop;
+                    __layer := __layer + 1;
+                END LOOP;
+
+                -- ── Phase 2: edge emission, and the cut ─────────────────────────────
+                -- Every edge of a reached triple — except, when the node budget stopped
+                -- the walk, edges to a producer triple it did not reach (so a budget
+                -- bounds the nodes DRAWN, not only those expanded).  The walk was cut iff
+                -- such an edge was dropped, or it stopped at a bound and a rim triple (a
+                -- kept edge's producer the walk did not reach) has an edge of its own.
+                RETURN QUERY
+                WITH e_all AS (
+                    SELECT DISTINCT
+                        bt.in_id, bt.in_template, bt.in_property,
+                        bt.out_id, bt.out_template, bt.out_property
+                    FROM
+                        unnest(v_id, v_tpl, v_prop) AS r(id, tpl, prop)
+                        JOIN predecessor_table pt
+                            ON  pt.template = r.tpl
+                            AND pt.output   = r.prop
+                            AND (
+                                __param_selected_relations IS NULL
+                                OR pt.rel = ANY(__param_selected_relations)
+                            )
+                        CROSS JOIN LATERAL backwardTraversal(r.id, r.tpl, pt.input) AS bt
+                    WHERE
+                        pt.input IS NOT NULL
+                        -- Self-loops (virtual-output fix) are never valid in a provenance graph.
+                        AND NOT (bt.in_id = bt.out_id AND bt.in_template = bt.out_template)
+                ),
+                e AS (
+                    SELECT * FROM e_all
+                    WHERE  NOT __budget
+                       OR  EXISTS (SELECT 1
+                                     FROM unnest(v_id, v_tpl, v_prop) AS v(id, tpl, prop)
+                                    WHERE v.id = e_all.out_id AND v.tpl = e_all.out_template
+                                      AND v.prop = e_all.out_property)
+                ),
+                cut AS (
+                    SELECT (SELECT count(*) FROM e_all) > (SELECT count(*) FROM e)
+                        OR ((NOT __exhausted) AND EXISTS (
+                        SELECT 1
+                          FROM (SELECT DISTINCT e.out_id, e.out_template, e.out_property FROM e) rim
+                          JOIN predecessor_table pt
+                            ON  pt.template = rim.out_template
+                            AND pt.output   = rim.out_property
+                            AND (
+                                __param_selected_relations IS NULL
+                                OR pt.rel = ANY(__param_selected_relations)
+                            )
+                          CROSS JOIN LATERAL backwardTraversal(rim.out_id, rim.out_template, pt.input) AS bt
+                         WHERE pt.input IS NOT NULL
+                           AND NOT (bt.out_id = rim.out_id AND bt.out_template = rim.out_template)
+                           AND NOT EXISTS (
+                                   SELECT 1
+                                     FROM unnest(v_id, v_tpl, v_prop) AS v(id, tpl, prop)
+                                    WHERE v.id = rim.out_id AND v.tpl = rim.out_template
+                                      AND v.prop = rim.out_property)
+                    )) AS t
+                )
+                SELECT e.in_id, e.in_template, e.in_property,
+                       e.out_id, e.out_template, e.out_property, cut.t
+                FROM   e, cut;
+            END;
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.backwardtraversal_star_roots(
+                __param_ids                 integer[],
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            STABLE
+            AS $function$
+            SELECT f.in_id, f.in_template, f.in_property, f.out_id, f.out_template, f.out_property
+            FROM   backwardtraversal_star_roots_flagged(
+                       __param_ids, __param_template, __param_property,
+                       __param_selected_relations, __param_max_depth, __param_max_nodes) AS f
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.backwardtraversal_star(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            STABLE
+            AS $function$
+            SELECT *
+            FROM   backwardtraversal_star_roots(
+                       ARRAY[__param_id], __param_template, __param_property,
+                       __param_selected_relations, __param_max_depth, __param_max_nodes)
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.backwardtraversal_star_flagged(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text,
+                truncated    boolean
+            )
+            LANGUAGE sql
+            STABLE
+            AS $function$
+            SELECT *
+            FROM   backwardtraversal_star_roots_flagged(
+                       ARRAY[__param_id], __param_template, __param_property,
+                       __param_selected_relations, __param_max_depth, __param_max_nodes)
+            $function$;
+
+            """;
+
+    // forward_traversal_star_roots_flagged — the exact transpose of
+    // backwardtraversal_star_roots_flagged.  The rim is every consumer triple
+    // (a reached consumer and an output column its predecessor_table entry
+    // names) the walk did not reach; the walk was cut iff it stopped at a bound
+    // and a rim triple has a consumer edge of its own (forwardTraversal plus the
+    // relation-filtered predecessor_table join — Phase 2's own edge criterion).
+    // forward_traversal_star_roots becomes this function minus the flag;
+    // forward_traversal_star, its _flagged twin and _nodes are the roots
+    // functions on one row.  Supersedes forward_traversal_star_bfs (kept above,
+    // unwired) and repeats its DROPs.
+    String forward_traversal_star_flagged = """
+            DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text);
+            DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text, integer[]);
+            DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text, integer[], integer);
+            DROP FUNCTION IF EXISTS public.forward_traversal_star_roots(integer[], text, text, integer[]);
+            DROP FUNCTION IF EXISTS public.forward_traversal_star_roots(integer[], text, text, integer[], integer);
+            DROP FUNCTION IF EXISTS public.forward_traversal_star_nodes(integer, text, text, integer[]);
+
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star_roots_flagged(
+                __param_ids                 integer[],
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text,
+                truncated    boolean
+            )
+            LANGUAGE plpgsql
+            STABLE
+            AS $function$
+            DECLARE
+                f_id   integer[];  f_tpl text[];  f_prop text[];   -- the layer last reached
+                v_id   integer[];  v_tpl text[];  v_prop text[];   -- every triple reached so far
+                n_id   integer[];  n_tpl text[];  n_prop text[];   -- the next layer
+                __layer     integer := 0;                          -- last layer filled (roots = 0)
+                __exhausted boolean := false;                      -- the frontier ran out, no bound did
+                __budget    boolean := false;                      -- max_nodes stopped the walk
+                __room      integer;
+            BEGIN
+                IF __param_max_depth IS NOT NULL AND __param_max_depth < 1 THEN RETURN; END IF;
+                SELECT array_agg(root), array_agg(__param_template), array_agg(__param_property)
+                  INTO f_id, f_tpl, f_prop
+                  FROM (SELECT DISTINCT root FROM unnest(__param_ids) AS root WHERE root IS NOT NULL) s;
+                IF f_id IS NULL THEN RETURN; END IF;
+                v_id := f_id;  v_tpl := f_tpl;  v_prop := f_prop;
+
+                -- ── Phase 1: breadth-first node search (forward_traversal_star_bfs) ──
+                WHILE __param_max_depth IS NULL OR __layer < __param_max_depth - 1 LOOP
+                    IF __param_max_nodes IS NOT NULL AND cardinality(v_id) >= __param_max_nodes THEN
+                        __budget := true; EXIT;
+                    END IF;
+                    SELECT array_agg(c.id   ORDER BY c.tpl, c.id, c.prop),
+                           array_agg(c.tpl  ORDER BY c.tpl, c.id, c.prop),
+                           array_agg(c.prop ORDER BY c.tpl, c.id, c.prop)
+                      INTO n_id, n_tpl, n_prop
+                      FROM (SELECT DISTINCT ft.out_id AS id, ft.out_template AS tpl, pt.output AS prop
+                              FROM unnest(f_id, f_tpl, f_prop) AS r(id, tpl, prop)
+                              CROSS JOIN LATERAL forwardTraversal(r.id, r.tpl, r.prop) AS ft
+                              JOIN predecessor_table pt
+                                ON  pt.template = ft.out_template
+                                AND pt.input    = ft.out_property
+                                AND (
+                                    __param_selected_relations IS NULL
+                                    OR pt.rel = ANY(__param_selected_relations)
+                                )
+                             WHERE pt.output IS NOT NULL
+                               AND NOT (ft.out_id = r.id AND ft.out_template = r.tpl)) c
+                     WHERE NOT EXISTS (
+                               SELECT 1
+                                 FROM unnest(v_id, v_tpl, v_prop) AS v(id, tpl, prop)
+                                WHERE v.id = c.id AND v.tpl = c.tpl AND v.prop = c.prop);
+                    IF n_id IS NULL THEN __exhausted := true; EXIT; END IF;
+                    IF __param_max_nodes IS NOT NULL
+                       AND cardinality(v_id) + cardinality(n_id) > __param_max_nodes THEN
+                        -- the layer crosses the budget: take its first triples, in
+                        -- (template, id, column) order, up to the budget, and stop
+                        __room := __param_max_nodes - cardinality(v_id);
+                        v_id := v_id || n_id[1:__room];  v_tpl := v_tpl || n_tpl[1:__room];
+                        v_prop := v_prop || n_prop[1:__room];
+                        __budget := true; EXIT;
+                    END IF;
+                    v_id := v_id || n_id;  v_tpl := v_tpl || n_tpl;  v_prop := v_prop || n_prop;
+                    f_id := n_id;          f_tpl := n_tpl;          f_prop := n_prop;
+                    __layer := __layer + 1;
+                END LOOP;
+
+                -- ── Phase 2: edge emission, and the cut (see the backward function) ──
+                -- Under the node budget an edge is kept iff its consumer was reached.
+                RETURN QUERY
+                WITH e_all AS (
+                    SELECT DISTINCT
+                        ft.in_id, ft.in_template, ft.in_property,
+                        ft.out_id, ft.out_template, ft.out_property
+                    FROM
+                        unnest(v_id, v_tpl, v_prop) AS r(id, tpl, prop)
+                        CROSS JOIN LATERAL forwardTraversal(r.id, r.tpl, r.prop) AS ft
+                        JOIN predecessor_table pt
+                            ON  pt.template = ft.out_template
+                            AND pt.input    = ft.out_property
+                            AND (
+                                __param_selected_relations IS NULL
+                                OR pt.rel = ANY(__param_selected_relations)
+                            )
+                    WHERE
+                        -- Self-loops mirror the backwardtraversal_star guard; never valid.
+                        NOT (ft.in_id = ft.out_id AND ft.in_template = ft.out_template)
+                ),
+                e AS (
+                    SELECT * FROM e_all
+                    WHERE  NOT __budget
+                       OR  EXISTS (SELECT 1
+                                     FROM unnest(v_id, v_tpl) AS v(id, tpl)
+                                    WHERE v.id = e_all.out_id AND v.tpl = e_all.out_template)
+                ),
+                rim AS (
+                    SELECT DISTINCT e.out_id AS id, e.out_template AS tpl, pt.output AS prop
+                      FROM e
+                      JOIN predecessor_table pt
+                        ON  pt.template = e.out_template
+                        AND pt.input    = e.out_property
+                        AND (
+                            __param_selected_relations IS NULL
+                            OR pt.rel = ANY(__param_selected_relations)
+                        )
+                     WHERE pt.output IS NOT NULL
+                       AND NOT EXISTS (
+                               SELECT 1
+                                 FROM unnest(v_id, v_tpl, v_prop) AS v(id, tpl, prop)
+                                WHERE v.id = e.out_id AND v.tpl = e.out_template AND v.prop = pt.output)
+                ),
+                cut AS (
+                    SELECT (SELECT count(*) FROM e_all) > (SELECT count(*) FROM e)
+                        OR ((NOT __exhausted) AND EXISTS (
+                        SELECT 1
+                          FROM rim
+                          CROSS JOIN LATERAL forwardTraversal(rim.id, rim.tpl, rim.prop) AS ft
+                          JOIN predecessor_table pt
+                            ON  pt.template = ft.out_template
+                            AND pt.input    = ft.out_property
+                            AND (
+                                __param_selected_relations IS NULL
+                                OR pt.rel = ANY(__param_selected_relations)
+                            )
+                         WHERE NOT (ft.out_id = rim.id AND ft.out_template = rim.tpl)
+                    )) AS t
+                )
+                SELECT e.in_id, e.in_template, e.in_property,
+                       e.out_id, e.out_template, e.out_property, cut.t
+                FROM   e, cut;
+            END;
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star_roots(
+                __param_ids                 integer[],
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            STABLE
+            AS $function$
+            SELECT f.in_id, f.in_template, f.in_property, f.out_id, f.out_template, f.out_property
+            FROM   forward_traversal_star_roots_flagged(
+                       __param_ids, __param_template, __param_property,
+                       __param_selected_relations, __param_max_depth, __param_max_nodes) AS f
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            STABLE
+            AS $function$
+            SELECT *
+            FROM   forward_traversal_star_roots(
+                       ARRAY[__param_id], __param_template, __param_property,
+                       __param_selected_relations, __param_max_depth, __param_max_nodes)
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star_flagged(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text,
+                truncated    boolean
+            )
+            LANGUAGE sql
+            STABLE
+            AS $function$
+            SELECT *
+            FROM   forward_traversal_star_roots_flagged(
+                       ARRAY[__param_id], __param_template, __param_property,
+                       __param_selected_relations, __param_max_depth, __param_max_nodes)
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star_nodes(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
+            )
+            RETURNS TABLE(
+                out_id       integer,
+                out_template text,
+                out_property text
+            )
+            LANGUAGE sql
+            AS $function$
+            SELECT DISTINCT out_id, out_template, out_property
+            FROM   forward_traversal_star(
+                       __param_id, __param_template, __param_property,
+                       __param_selected_relations, __param_max_depth, __param_max_nodes)
+            $function$;
+
+            """;
+
+    // The seed adapters and the slicer, flagged: the navigator's typed functions
+    // read the cut through these.  forward_traversal_star_from_input_flagged and
+    // backward_traversal_star_from_output_flagged walk one flagged star per seed
+    // and report the cut of ANY seed on every row; slice_traversal_star_flagged
+    // intersects the two flagged sides and reports a cut on either side — the
+    // slice MAY then miss paths (a slice whose sides were both complete is
+    // complete; one whose side was cut can only be said to be possibly so).  Same seeds, same edges as
+    // the *_bounded adapters and slicer, which stay installed for SQL callers.
+    String traversal_star_wrappers_flagged = """
+            CREATE OR REPLACE FUNCTION public.forward_traversal_star_from_input_flagged(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text,
+                truncated    boolean
+            )
+            LANGUAGE sql
+            STABLE
+            AS $function$
+            WITH seeds AS (
+                SELECT DISTINCT pt.output AS prop
+                FROM   predecessor_table pt
+                WHERE  __param_property IS NOT NULL
+                AND    pt.template = __param_template
+                AND    pt.input    = __param_property
+                AND    pt.output   IS NOT NULL
+                AND    (
+                           __param_selected_relations IS NULL
+                           OR pt.rel = ANY(__param_selected_relations)
+                       )
+
+                UNION
+
+                SELECT DISTINCT bd.target_property AS prop
+                FROM   backward_dispatch bd
+                WHERE  __param_property IS NULL
+                AND    bd.target_template = __param_template
+            ),
+            walked AS (
+                SELECT f.*
+                FROM   seeds s
+                CROSS JOIN LATERAL forward_traversal_star_flagged(
+                    __param_id, __param_template, s.prop,
+                    __param_selected_relations, __param_max_depth, __param_max_nodes) AS f
+            ),
+            cut AS (SELECT coalesce(bool_or(walked.truncated), false) AS t FROM walked)
+            SELECT DISTINCT w.in_id, w.in_template, w.in_property,
+                            w.out_id, w.out_template, w.out_property, cut.t
+            FROM   walked w, cut
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.backward_traversal_star_from_output_flagged(
+                __param_id                  integer,
+                __param_template            text,
+                __param_property            text,
+                __param_selected_relations  integer[]  DEFAULT NULL,
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text,
+                truncated    boolean
+            )
+            LANGUAGE sql
+            STABLE
+            AS $function$
+            WITH seeds AS (
+                SELECT __param_property AS prop
+                WHERE  __param_property IS NOT NULL
+
+                UNION
+
+                SELECT DISTINCT bd.target_property AS prop
+                FROM   backward_dispatch bd
+                WHERE  __param_property IS NULL
+                AND    bd.target_template = __param_template
+            ),
+            walked AS (
+                SELECT b.*
+                FROM   seeds s
+                CROSS JOIN LATERAL backwardtraversal_star_flagged(
+                    __param_id, __param_template, s.prop,
+                    __param_selected_relations, __param_max_depth, __param_max_nodes) AS b
+            ),
+            cut AS (SELECT coalesce(bool_or(walked.truncated), false) AS t FROM walked)
+            SELECT DISTINCT w.in_id, w.in_template, w.in_property,
+                            w.out_id, w.out_template, w.out_property, cut.t
+            FROM   walked w, cut
+            $function$;
+
+            CREATE OR REPLACE FUNCTION public.slice_traversal_star_flagged(
+                __param_id                   integer,
+                __param_template             text,
+                __param_property             text,
+                __param_downstream_id        integer,
+                __param_downstream_template  text,
+                __param_downstream_property  text,
+                __param_selected_relations   integer[]  DEFAULT NULL,
+                __param_max_depth            integer    DEFAULT 100,
+                __param_max_nodes            integer    DEFAULT NULL
+            )
+            RETURNS TABLE(
+                in_id        integer,
+                in_template  text,
+                in_property  text,
+                out_id       integer,
+                out_template text,
+                out_property text,
+                truncated    boolean
+            )
+            LANGUAGE sql
+            STABLE
+            AS $function$
+            WITH f AS (
+                SELECT * FROM forward_traversal_star_from_input_flagged(
+                    __param_id, __param_template, __param_property,
+                    __param_selected_relations, __param_max_depth, __param_max_nodes)
+            ),
+            b AS (
+                SELECT * FROM backward_traversal_star_from_output_flagged(
+                    __param_downstream_id, __param_downstream_template, __param_downstream_property,
+                    __param_selected_relations, __param_max_depth, __param_max_nodes)
+            ),
+            s AS (
+                SELECT f.out_id AS in_id, f.out_template AS in_template, f.out_property AS in_property,
+                       f.in_id  AS out_id, f.in_template  AS out_template, f.in_property  AS out_property
+                FROM   f
+                INTERSECT
+                SELECT b.in_id, b.in_template, b.in_property, b.out_id, b.out_template, b.out_property
+                FROM   b
+            ),
+            cut AS (
+                SELECT coalesce((SELECT bool_or(f.truncated) FROM f), false)
+                    OR coalesce((SELECT bool_or(b.truncated) FROM b), false) AS t
+            )
+            SELECT s.in_id, s.in_template, s.in_property, s.out_id, s.out_template, s.out_property, cut.t
+            FROM   s, cut
+            UNION ALL
+            -- A cut slice can intersect to nothing; one marker row (no edge, truncated) keeps
+            -- the cut readable — "no path within these bounds", not "no path".
+            SELECT NULL::integer, NULL::text, NULL::text, NULL::integer, NULL::text, NULL::text, true
+            FROM   cut
+            WHERE  cut.t AND NOT EXISTS (SELECT 1 FROM s)
+            $function$;
+
+            """;
+
     // forward_traversal_star_from_input — seed adapter for forward traversal.
     //
     // forward_traversal_star expects its seed property to be an OUTPUT column of
@@ -2434,38 +3104,42 @@ public class TemplateQuery {
 
         // Step 3: install backwardTraversal (queries backward_dispatch) and
         // backwardtraversal_star (calls backwardTraversal layer by layer) — the
-        // breadth-first, depth-capped form with multi-row roots
-        // (backwardtraversal_star_bfs, capability 10): each (node, property)
-        // triple expanded twice, __param_max_depth default 100 (NULL unbounded);
-        // the single-row star is the roots function on one row.
+        // bounded breadth-first form with multi-row roots that reports a cut
+        // (backwardtraversal_star_flagged, capability 10): each (node, property)
+        // triple expanded twice; max_depth DEFAULT 100, max_nodes DEFAULT NULL;
+        // *_roots / the single-row star are the flagged walk minus its flag.
         querier.do_statements(null,
                 null,
                 (sb, data) -> {
                     sb.append(generateBackwardTemplateTraversal(ioMap));
-                    sb.append(backwardtraversal_star_bfs);
+                    sb.append(backwardtraversal_star_flagged);
                 });
 
         // Step 4: install the forward (descendant) counterpart — forwardTraversal
-        // (reverse dispatch) and forward_traversal_star / _roots / _nodes in the
-        // breadth-first, depth-capped form (forward_traversal_star_bfs, the
-        // transpose of Step 3's), then the entity roots over both directions.
+        // (reverse dispatch) and forward_traversal_star / _roots / _flagged / _nodes
+        // (forward_traversal_star_flagged, the transpose of Step 3's), then the
+        // entity roots over both directions and the bounded seed adapters.
         // Reuses the same backward_dispatch + predecessor_table populated in
         // Steps 1-2.
         querier.do_statements(null,
                 null,
                 (sb, data) -> {
                     sb.append(generateForwardTemplateTraversal());
-                    sb.append(forward_traversal_star_bfs);
+                    sb.append(forward_traversal_star_flagged);
                     sb.append(traversal_star_entity_capped);
                     sb.append(forward_traversal_star_from_input_bounded);
                     sb.append(backward_traversal_star_from_output_bounded);
                 });
 
         // Step 5: install the slicer — the intersection of a forward and a backward
-        // closure.  Depends on both stars being installed above.
+        // closure — then the flagged adapters and slicer the navigator's typed
+        // functions read the cut through.  Depends on everything installed above.
         querier.do_statements(null,
                 null,
-                (sb, data) -> sb.append(slice_traversal_star_bounded));
+                (sb, data) -> {
+                    sb.append(slice_traversal_star_bounded);
+                    sb.append(traversal_star_wrappers_flagged);
+                });
     }
 
     /**
@@ -2488,9 +3162,9 @@ public class TemplateQuery {
                 null,
                 (sb, data) -> {
                     sb.append(generateBackwardTemplateTraversalWithType(ioMap, semanticType));
-                    sb.append(generateBackwardTemplateTraversalStarWithTypeBounded(semanticType));
-                    sb.append(generateForwardTemplateTraversalStarWithTypeBounded(semanticType));
-                    sb.append(generateSliceTraversalStarWithTypeBounded(semanticType));
+                    sb.append(generateBackwardTemplateTraversalStarWithTypeFlagged(semanticType));
+                    sb.append(generateForwardTemplateTraversalStarWithTypeFlagged(semanticType));
+                    sb.append(generateSliceTraversalStarWithTypeFlagged(semanticType));
                   //  System.out.println(sb.toString());
                 });
     }
@@ -2601,6 +3275,53 @@ public class TemplateQuery {
                         + ", __param_downstream_id, __param_downstream_template, __param_downstream_property"
                         + ", __param_selected_relations)",
                 shortenAndFilterSemanticType(semanticType));
+    }
+
+    /**
+     * {@code backwardtraversal_star_typed} reporting the cut (capability 10, option (b)): the
+     * bounded wrapper of {@link #generateBackwardTemplateTraversalStarWithTypeBounded}, reading
+     * {@code backwardtraversal_star_flagged} and returning its {@code truncated} column as a
+     * ninth column.  The return type changes, so every earlier signature is dropped first.  The
+     * navigator reads columns by name, so the extra one is harmless to any other caller.
+     */
+    private String generateBackwardTemplateTraversalStarWithTypeFlagged(Map<String, String> semanticType) {
+        return "DROP FUNCTION IF EXISTS public.backwardtraversal_star_typed(integer, text, text, integer[]);\n"
+                + "DROP FUNCTION IF EXISTS public.backwardtraversal_star_typed(integer, text, text, integer[], integer, integer);\n"
+                + generateTypedWrapperFunction(
+                "backwardtraversal_star_typed",
+                "    __param_selected_relations  integer[]  DEFAULT NULL,\n" + BOUND_PARAMS,
+                "backwardtraversal_star_flagged(" + PARAM_ID + ", " + PARAM_TEMPLATE + ", " + PARAM_PROPERTY
+                        + ", __param_selected_relations, __param_max_depth, __param_max_nodes)",
+                shortenAndFilterSemanticType(semanticType), true);
+    }
+
+    /** The forward twin of {@link #generateBackwardTemplateTraversalStarWithTypeFlagged}, reading
+     *  {@code forward_traversal_star_from_input_flagged} (a cut on any seed is reported). */
+    private String generateForwardTemplateTraversalStarWithTypeFlagged(Map<String, String> semanticType) {
+        return "DROP FUNCTION IF EXISTS public.forward_traversal_star_typed(integer, text, text, integer[]);\n"
+                + "DROP FUNCTION IF EXISTS public.forward_traversal_star_typed(integer, text, text, integer[], integer, integer);\n"
+                + generateTypedWrapperFunction(
+                "forward_traversal_star_typed",
+                "    __param_selected_relations  integer[]  DEFAULT NULL,\n" + BOUND_PARAMS,
+                "forward_traversal_star_from_input_flagged(" + PARAM_ID + ", " + PARAM_TEMPLATE + ", " + PARAM_PROPERTY
+                        + ", __param_selected_relations, __param_max_depth, __param_max_nodes)",
+                shortenAndFilterSemanticType(semanticType), true);
+    }
+
+    /** The slicer's twin, reading {@code slice_traversal_star_flagged} (a cut on either side). */
+    private String generateSliceTraversalStarWithTypeFlagged(Map<String, String> semanticType) {
+        return "DROP FUNCTION IF EXISTS public.slice_traversal_star_typed(integer, text, text, integer, text, text, integer[]);\n"
+                + "DROP FUNCTION IF EXISTS public.slice_traversal_star_typed(integer, text, text, integer, text, text, integer[], integer, integer);\n"
+                + generateTypedWrapperFunction(
+                "slice_traversal_star_typed",
+                "    __param_downstream_id        integer,\n" +
+                "    __param_downstream_template  text,\n" +
+                "    __param_downstream_property  text,\n" +
+                "    __param_selected_relations   integer[]  DEFAULT NULL,\n" + BOUND_PARAMS,
+                "slice_traversal_star_flagged(" + PARAM_ID + ", " + PARAM_TEMPLATE + ", " + PARAM_PROPERTY
+                        + ", __param_downstream_id, __param_downstream_template, __param_downstream_property"
+                        + ", __param_selected_relations, __param_max_depth, __param_max_nodes)",
+                shortenAndFilterSemanticType(semanticType), true);
     }
 
     /** The two traversal bounds as typed-wrapper parameters (capability 10), after the relation filter. */
@@ -2762,6 +3483,20 @@ public class TemplateQuery {
             String extraParam,
             String innerCall,
             Map<String, String> shortSemanticType) {
+        return generateTypedWrapperFunction(typedFunctionName, extraParam, innerCall, shortSemanticType, false);
+    }
+
+    /**
+     * As {@link #generateTypedWrapperFunction(String, String, String, Map)}; with {@code flagged},
+     * the inner call returns a {@code truncated} column (capability 10) and the wrapper passes it
+     * through as its last column.
+     */
+    private String generateTypedWrapperFunction(
+            String typedFunctionName,
+            String extraParam,
+            String innerCall,
+            Map<String, String> shortSemanticType,
+            boolean flagged) {
 
         StringBuilder sb = new StringBuilder();
 
@@ -2783,7 +3518,7 @@ public class TemplateQuery {
         sb.append("    ").append(OUT_ID)      .append("       integer,\n");
         sb.append("    ").append(OUT_TEMPLATE).append(" text,\n");
         sb.append("    ").append(OUT_PROPERTY).append(" text,\n");
-        sb.append("    out_type     text\n");
+        sb.append("    out_type     text").append(flagged ? ",\n    truncated    boolean\n" : "\n");
         sb.append(")\n");
         sb.append("LANGUAGE sql\n");
         sb.append("AS $$\n");
@@ -2797,7 +3532,7 @@ public class TemplateQuery {
         sb.append("        bt.").append(OUT_TEMPLATE).append(",\n");
         sb.append("        bt.").append(OUT_PROPERTY).append(",\n");
         appendAtypeCase(sb, OUT_TEMPLATE, OUT_ID, "out_type", shortSemanticType);
-        sb.append("\n");
+        sb.append(flagged ? ",\n        bt.truncated\n" : "\n");
         sb.append("    FROM ").append(innerCall).append(" bt\n");
         sb.append("$$;\n");
 
@@ -2886,8 +3621,16 @@ public class TemplateQuery {
         // or an explicit "backward" both mean backward traversal.
         boolean forward = (parameters != null) && "forward".equals(parameters.get("direction"));
 
+        // Capability 10: the walk is bounded (navigator defaults: depth 100, 2,000 nodes), and
+        // a cut is reported — as a detail on its own stage, which the page shows above the graph.
+        TraversalBounds bounds = TraversalBounds.fromParameters(parameters);
+        AtomicBoolean cut = new AtomicBoolean(false);
         List<TemplateConnection> templateConnections =
-                timedTraversal(listener, () -> recursiveTraversal(id, template, property, selectedVizKinds, forward, principal));
+                timedTraversal(listener, () -> recursiveTraversal(id, template, property, selectedVizKinds, forward, principal, bounds, cut));
+        if (cut.get()) {
+            logger.info("traversal cut by its bounds (" + bounds.describe() + "): " + template + " " + id + " " + property);
+            listener.detail(VizStages.BOUNDS, bounds.cutMessage(false));
+        }
 
         logger.info("(id,template,property,selectedVizKinds,templateConnections): "+ id + ", " + template + ", " + selectedVizKinds + ", " + templateConnections.size());
 
@@ -2932,11 +3675,13 @@ public class TemplateQuery {
         // parameter) keeps every path, which is what a slice means by default.
         boolean singlePath = (parameters != null) && "one".equals(parameters.get("paths"));
 
+        TraversalBounds bounds = TraversalBounds.fromParameters(parameters);
+        AtomicBoolean cut = new AtomicBoolean(false);
         List<TemplateConnection> templateConnections =
                 timedTraversal(listener, () -> {
                     List<TemplateConnection> slice = sliceTraversal(id, template, property,
                                                                     downstreamId, downstreamTemplate, downstreamProperty,
-                                                                    selectedVizKinds, principal);
+                                                                    selectedVizKinds, principal, bounds, cut);
                     return singlePath
                             ? shortestPath(slice,
                                            longNames.getOrDefault(template, template), id,
@@ -2947,6 +3692,10 @@ public class TemplateQuery {
         logger.info("slice (" + template + "." + property + "#" + id + " -> "
                     + downstreamTemplate + "." + downstreamProperty + "#" + downstreamId + "): "
                     + templateConnections.size() + " connections");
+        if (cut.get()) {
+            logger.info("slice cut by its bounds (" + bounds.describe() + ")");
+            listener.detail(VizStages.BOUNDS, bounds.cutMessage(true));
+        }
 
         // No start template is forced here: an empty slice means "no path between these
         // two anchors", and drawing a lone anchor node would read as a one-template path.
@@ -3388,6 +4137,16 @@ public class TemplateQuery {
     }
 
     public List<TemplateConnection> recursiveTraversal(Integer id, String template, String property, Set<StatementOrBundle.Kind> selectedVizKinds, boolean forward, String principal) {
+        return recursiveTraversal(id, template, property, selectedVizKinds, forward, principal, null, null);
+    }
+
+    /**
+     * The navigator's walk with both traversal bounds (capability 10).  {@code bounds} null
+     * leaves the typed function's own defaults; {@code cut}, when given, is set when a bound
+     * cut the walk (the typed functions' {@code truncated} column).
+     */
+    public List<TemplateConnection> recursiveTraversal(Integer id, String template, String property, Set<StatementOrBundle.Kind> selectedVizKinds, boolean forward, String principal,
+                                                       TraversalBounds bounds, AtomicBoolean cut) {
         List<TemplateConnection> the_records = new LinkedList<>();
 
         String selectedAsASql=selectedVizKinds.stream().map(x -> ("" + x.ordinal())).collect(Collectors.joining(",","ARRAY[",  "]"));
@@ -3403,6 +4162,9 @@ public class TemplateQuery {
                     appendSqlText(sb, property);
                     sb.append(", ");
                     sb.append(selectedAsASql);
+                    if (bounds != null) {
+                        sb.append(", ").append(bounds.sqlArguments());
+                    }
                     sb.append(") as template_connection\n");
                     joinAccessControl("template_connection.in_template", principal, sb, "template_connection", "in_id");
                     andAccessControl(principal, sb);
@@ -3425,7 +4187,13 @@ public class TemplateQuery {
                         record.out_template=longNames.get(rs.getObject(outPrefix + "template", String.class));
                         record.out_property=rs.getObject(outPrefix + "property", String.class);
                         record.out_type=rs.getObject(outPrefix + "type", String.class);
-                        data.add(record);
+                        if (cut != null && rs.getBoolean("truncated")) {
+                            cut.set(true);
+                        }
+                        // a cut slice that intersects to nothing returns one marker row with no edge
+                        if (record.in_id != null && record.out_id != null) {
+                            data.add(record);
+                        }
                     }
                 });
 
@@ -3456,6 +4224,16 @@ public class TemplateQuery {
     public List<TemplateConnection> sliceTraversal(Integer id, String template, String property,
                                                    Integer downstreamId, String downstreamTemplate, String downstreamProperty,
                                                    Set<StatementOrBundle.Kind> selectedVizKinds, String principal) {
+        return sliceTraversal(id, template, property, downstreamId, downstreamTemplate, downstreamProperty,
+                              selectedVizKinds, principal, null, null);
+    }
+
+    /** {@link #sliceTraversal} with both traversal bounds, applied to each side; {@code cut} as for
+     *  {@link #recursiveTraversal(Integer, String, String, Set, boolean, String, TraversalBounds, AtomicBoolean)}. */
+    public List<TemplateConnection> sliceTraversal(Integer id, String template, String property,
+                                                   Integer downstreamId, String downstreamTemplate, String downstreamProperty,
+                                                   Set<StatementOrBundle.Kind> selectedVizKinds, String principal,
+                                                   TraversalBounds bounds, AtomicBoolean cut) {
         List<TemplateConnection> the_records = new LinkedList<>();
 
         String selectedAsASql=selectedVizKinds.stream().map(x -> ("" + x.ordinal())).collect(Collectors.joining(",","ARRAY[",  "]"));
@@ -3477,6 +4255,9 @@ public class TemplateQuery {
                     appendSqlText(sb, downstreamProperty);
                     sb.append(", ");
                     sb.append(selectedAsASql);
+                    if (bounds != null) {
+                        sb.append(", ").append(bounds.sqlArguments());
+                    }
                     sb.append(") as template_connection\n");
                     joinAccessControl("template_connection.in_template", principal, sb, "template_connection", "in_id");
                     andAccessControl(principal, sb);
@@ -3495,7 +4276,13 @@ public class TemplateQuery {
                         record.out_template=longNames.get(rs.getObject("out_template", String.class));
                         record.out_property=rs.getObject("out_property", String.class);
                         record.out_type=rs.getObject("out_type", String.class);
-                        data.add(record);
+                        if (cut != null && rs.getBoolean("truncated")) {
+                            cut.set(true);
+                        }
+                        // a cut slice that intersects to nothing returns one marker row with no edge
+                        if (record.in_id != null && record.out_id != null) {
+                            data.add(record);
+                        }
                     }
                 });
 

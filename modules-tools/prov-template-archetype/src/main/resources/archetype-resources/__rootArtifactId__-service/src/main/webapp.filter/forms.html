@@ -336,7 +336,16 @@
                             </div>
                             <span class="ms-2 small">Forward</span>
                         </div>
-                        <p></p>
+                        <div class="d-flex align-items-center gap-2 mt-2 mb-0">
+                            <label class="small mb-0" for="navigator_max_depth">Max depth</label>
+                            <input type="number" min="1" step="1" class="form-control form-control-sm" style="width: 6rem;" id="navigator_max_depth" value="100" placeholder="none">
+                            <label class="small mb-0" for="navigator_max_nodes">Max nodes</label>
+                            <input type="number" min="1" step="1" class="form-control form-control-sm" style="width: 6rem;" id="navigator_max_nodes" value="2000" placeholder="none">
+                        </div>
+                        <p class="help-block mb-2">
+                            The walk stops at these bounds; leave one empty to lift it. A graph
+                            the bounds cut says so above it.
+                        </p>
                         <button id="navigator_save" type="button" class="btn btn-info" onclick="dumpNavigatorDiv()" disabled>
                             <i class="fa fa-save"></i> Save
                         </button>
@@ -470,6 +479,16 @@
                         <p class="help-block mb-2">
                             One path shows the shortest route between the two anchors; all
                             paths shows the whole slice.
+                        </p>
+                        <div class="d-flex align-items-center gap-2 mt-2 mb-0">
+                            <label class="small mb-0" for="slicer_max_depth">Max depth</label>
+                            <input type="number" min="1" step="1" class="form-control form-control-sm" style="width: 6rem;" id="slicer_max_depth" value="100" placeholder="none">
+                            <label class="small mb-0" for="slicer_max_nodes">Max nodes</label>
+                            <input type="number" min="1" step="1" class="form-control form-control-sm" style="width: 6rem;" id="slicer_max_nodes" value="2000" placeholder="none">
+                        </div>
+                        <p class="help-block mb-2">
+                            The walk stops at these bounds; leave one empty to lift it. A graph
+                            the bounds cut says so above it.
                         </p>
 
                         <button id="slicer_refresh" type="button" class="btn btn-info" onclick="submitSlice('${symbol_pound}slicer_div')">Slice</button>
@@ -1510,6 +1529,28 @@
     }
 
     /**
+     * Copies a tab's traversal bounds (capability 10) into the request parameters: the
+     * walk's depth cap and node budget, an empty field meaning no bound ('none').
+     */
+    function readTraversalBounds(prefix, parameters) {
+        const depth = document.getElementById(prefix + '_max_depth');
+        const nodes = document.getElementById(prefix + '_max_nodes');
+        parameters['max-depth'] = (depth && depth.value.trim()) ? depth.value.trim() : 'none';
+        parameters['max-nodes'] = (nodes && nodes.value.trim()) ? nodes.value.trim() : 'none';
+    }
+
+    /** Shows, above a rendered graph, that the traversal bounds cut it. */
+    function showVizNotice(id, message) {
+        const div = document.querySelector(id);
+        if (!div) return;
+        const banner = document.createElement('div');
+        banner.className = 'alert alert-warning py-2 px-3 mb-2 small';
+        banner.setAttribute('role', 'status');
+        banner.textContent = message;
+        div.insertBefore(banner, div.firstChild);
+    }
+
+    /**
      * Maps a style selection to the style and relation-kind filter the service expects.
      * Mutates parameters, returns the style to send.
      */
@@ -1544,6 +1585,7 @@
         let parameters  = {};
         parameters.icons = icons_enabled;
         parameters.direction = navigate_forward ? 'forward' : 'backward';
+        readTraversalBounds('navigator', parameters);
 
         const config = {
             template: template,
@@ -1555,12 +1597,13 @@
 
         document.getElementById('navigator_save').disabled = true;
 
-        await streamViz(url, config, id, function(svg) {
+        await streamViz(url, config, id, function(svg, boundsNotice) {
             ${symbol_dollar}(id).html(svg);
             rewriteImageHrefs(document.querySelector('${symbol_pound}navigator_div svg')); //id hardcoded
             wireVizNodeEvents('navigator_div', 'navigator_explanation');
             updateMinimap(NAVIGATOR_PANE);
             document.getElementById('navigator_save').disabled = false;
+            if (boundsNotice) showVizNotice(id, boundsNotice);
         });
     }
 
@@ -1576,6 +1619,7 @@
         let parameters = {};
         parameters.icons = slicer_icons_enabled;
         parameters.paths = slicer_all_paths ? 'all' : 'one';
+        readTraversalBounds('slicer', parameters);
 
         const config = {
             template:           ${symbol_dollar}('${symbol_pound}slicer_up_template').val(),
@@ -1597,7 +1641,7 @@
 
         document.getElementById('slicer_save').disabled = true;
 
-        await streamViz(url, config, id, function(svg) {
+        await streamViz(url, config, id, function(svg, boundsNotice) {
             ${symbol_dollar}(id).html(svg);
             rewriteImageHrefs(document.querySelector('${symbol_pound}slicer_div svg'));
             wireVizNodeEvents('slicer_div', 'slicer_explanation');
@@ -1606,18 +1650,23 @@
 
             // An empty slice is a real answer — the two anchors are not connected —
             // but an empty pane looks like a failed render, so say it.
+            // A slice the bounds cut to nothing is "no path within these bounds", not "no path".
             if (document.querySelectorAll('${symbol_pound}slicer_div svg g.node').length === 0) {
                 const note = document.createElement('p');
                 note.className = 'text-danger';
-                note.textContent = 'No path found between these two anchors.';
+                note.textContent = boundsNotice
+                    ? 'No path found within these bounds.'
+                    : 'No path found between these two anchors.';
                 document.getElementById('slicer_div').appendChild(note);
             }
+            if (boundsNotice) showVizNotice(id, boundsNotice);
         });
     }
 
     /**
      * POSTs config to an SSE viz endpoint, driving the stage panel at targetSelector
-     * from the stream and handing the finished SVG to onResult.
+     * from the stream and handing the finished SVG to onResult — with, as its second
+     * argument, the message of a 'viz.bounds' detail when the traversal bounds cut the walk.
      */
     async function streamViz(url, config, targetSelector, onResult) {
         const json_data = JSON.stringify(config);
@@ -1631,6 +1680,7 @@
         renderVizStagePanel(targetSelector);
 
         const id = targetSelector;
+        let boundsNotice = null;
         try {
             const response = await fetch(url, {
                 method:  'POST',
@@ -1671,9 +1721,12 @@
                     }
 
                     if (ev.name === 'stage') {
+                        if (payload.stage === 'viz.bounds' && payload.status === 'detail') {
+                            boundsNotice = payload.message || null;
+                        }
                         updateVizStageRow(payload.stage, payload.status, payload);
                     } else if (ev.name === 'result') {
-                        onResult(base64ToText(payload.base64));
+                        onResult(base64ToText(payload.base64), boundsNotice);
                     } else if (ev.name === 'error') {
                         vizShowError(id, payload.error || 'render failed');
                     }

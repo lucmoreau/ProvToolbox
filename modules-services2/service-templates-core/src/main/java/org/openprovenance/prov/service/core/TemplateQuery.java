@@ -1626,6 +1626,15 @@ public class TemplateQuery {
     // depth 1 .. __param_max_depth; default 100 (the old guard), NULL unbounded
     // (the finite triple set terminates the loop, cycles included).  Self-loop
     // hops are not walked, as in recursiveQuery6.
+    // A second, independent bound: __param_max_nodes (default NULL — none).
+    // No further layer is expanded once the reached set holds that many
+    // triples, so the walk stops at a LAYER BOUNDARY: the result is always the
+    // complete closure to some depth (deterministic, never an arbitrary cut
+    // through a layer), the work is at most max_nodes plus the one layer that
+    // crossed it, and the edges reach one ring further than the reached set.
+    // It bounds what the depth cap cannot — a shallow but wide closure (the
+    // unfiltered dispatch closure is 595 k nodes inside 100 layers).  Whichever
+    // bound is hit first stops the walk.
     // Roots.  backwardtraversal_star_roots takes a SET of rows of one template
     // as ONE root (a composite's element rows: a production event is the N
     // goods_consuming_and_creating rows its linker groups); an ancestor shared
@@ -1638,8 +1647,9 @@ public class TemplateQuery {
     // 5, 20 and 50 identical to recursiveQuery6 capped alike; installed base
     // 2.91 -> 1.07 s, [9,15] 5.23 -> 1.53 s, unfiltered 138.6 -> 92.5 s; runs
     // inside BEGIN READ ONLY.
-    // The leading DROPs remove every older signature, the uncapped 4-arg
-    // forms included: a 4-arg call would otherwise be ambiguous.
+    // The leading DROPs remove every older signature (the uncapped 4-arg and
+    // the max_depth-only 5-arg forms): a shorter call would otherwise be
+    // ambiguous between overloads.
     String backwardtraversal_star_bfs = """
             DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text);
             DROP FUNCTION IF EXISTS public.backwardtraversal_star(integer, text, text, integer[]);
@@ -1652,7 +1662,8 @@ public class TemplateQuery {
                 __param_template            text,
                 __param_property            text,
                 __param_selected_relations  integer[]  DEFAULT NULL,
-                __param_max_depth           integer    DEFAULT 100
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
             )
             RETURNS TABLE(
                 in_id        integer,
@@ -1683,7 +1694,8 @@ public class TemplateQuery {
                 -- triples first reached at the previous one; the anti-join against
                 -- everything reached so far keeps a triple from ever re-expanding.
                 -- The relation-type filter applies on every hop, the roots' own included.
-                WHILE __param_max_depth IS NULL OR __layer < __param_max_depth - 1 LOOP
+                WHILE (__param_max_depth IS NULL OR __layer < __param_max_depth - 1)
+                  AND (__param_max_nodes IS NULL OR cardinality(v_id) < __param_max_nodes) LOOP
                     SELECT array_agg(c.id), array_agg(c.tpl), array_agg(c.prop)
                       INTO n_id, n_tpl, n_prop
                       FROM (SELECT DISTINCT bt.out_id AS id, bt.out_template AS tpl, bt.out_property AS prop
@@ -1747,7 +1759,8 @@ public class TemplateQuery {
                 __param_template            text,
                 __param_property            text,
                 __param_selected_relations  integer[]  DEFAULT NULL,
-                __param_max_depth           integer    DEFAULT 100
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
             )
             RETURNS TABLE(
                 in_id        integer,
@@ -1766,7 +1779,8 @@ public class TemplateQuery {
                        __param_template,
                        __param_property,
                        __param_selected_relations,
-                       __param_max_depth
+                       __param_max_depth,
+                       __param_max_nodes
                    )
             $function$;
 
@@ -1781,8 +1795,8 @@ public class TemplateQuery {
     // consumer's template + input column, where the relation-type filter
     // applies) yields the consumer's output columns, the next layer.  A
     // consumer edge whose pt.output is NULL is emitted (Phase 2) but is a dead
-    // end, as in forward_traversal_star6.  Cap semantics, defaults and the
-    // self-loop rule mirror the backward function.  Re-creates
+    // end, as in forward_traversal_star6.  Both bounds (max_depth, max_nodes),
+    // their defaults and the self-loop rule mirror the backward function.  Re-creates
     // forward_traversal_star_nodes unchanged.
     String forward_traversal_star_bfs = """
             DROP FUNCTION IF EXISTS public.forward_traversal_star(integer, text, text);
@@ -1796,7 +1810,8 @@ public class TemplateQuery {
                 __param_template            text,
                 __param_property            text,
                 __param_selected_relations  integer[]  DEFAULT NULL,
-                __param_max_depth           integer    DEFAULT 100
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
             )
             RETURNS TABLE(
                 in_id        integer,
@@ -1822,7 +1837,8 @@ public class TemplateQuery {
                 v_id := f_id;  v_tpl := f_tpl;  v_prop := f_prop;
 
                 -- ── Phase 1: breadth-first node search (see backwardtraversal_star_roots)
-                WHILE __param_max_depth IS NULL OR __layer < __param_max_depth - 1 LOOP
+                WHILE (__param_max_depth IS NULL OR __layer < __param_max_depth - 1)
+                  AND (__param_max_nodes IS NULL OR cardinality(v_id) < __param_max_nodes) LOOP
                     SELECT array_agg(c.id), array_agg(c.tpl), array_agg(c.prop)
                       INTO n_id, n_tpl, n_prop
                       FROM (SELECT DISTINCT ft.out_id AS id, ft.out_template AS tpl, pt.output AS prop
@@ -1879,7 +1895,8 @@ public class TemplateQuery {
                 __param_template            text,
                 __param_property            text,
                 __param_selected_relations  integer[]  DEFAULT NULL,
-                __param_max_depth           integer    DEFAULT 100
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
             )
             RETURNS TABLE(
                 in_id        integer,
@@ -1898,7 +1915,8 @@ public class TemplateQuery {
                        __param_template,
                        __param_property,
                        __param_selected_relations,
-                       __param_max_depth
+                       __param_max_depth,
+                       __param_max_nodes
                    )
             $function$;
 
@@ -1927,7 +1945,7 @@ public class TemplateQuery {
             """;
 
     // backwardtraversal_star_entity / forward_traversal_star_entity — an ENTITY
-    // as the root, depth-capped like the stars they call.  An entity is not a
+    // as the root, bounded (max_depth, max_nodes) like the stars they call.  An entity is not a
     // row: it is the value of an output column, and the rows holding it there
     // are its generations (a finished good's N element rows all hold it in
     // goods1).  Entity ids are per kind, so the column is named, not inferred:
@@ -1937,13 +1955,16 @@ public class TemplateQuery {
     String traversal_star_entity_capped = """
             DROP FUNCTION IF EXISTS public.backwardtraversal_star_entity(integer, text, text, integer[]);
             DROP FUNCTION IF EXISTS public.forward_traversal_star_entity(integer, text, text, integer[]);
+            DROP FUNCTION IF EXISTS public.backwardtraversal_star_entity(integer, text, text, integer[], integer);
+            DROP FUNCTION IF EXISTS public.forward_traversal_star_entity(integer, text, text, integer[], integer);
 
             CREATE OR REPLACE FUNCTION public.backwardtraversal_star_entity(
                 __param_entity              integer,
                 __param_template            text,
                 __param_property            text,
                 __param_selected_relations  integer[]  DEFAULT NULL,
-                __param_max_depth           integer    DEFAULT 100
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
             )
             RETURNS TABLE(
                 in_id        integer,
@@ -1967,7 +1988,7 @@ public class TemplateQuery {
                 RETURN QUERY
                 SELECT * FROM backwardtraversal_star_roots(
                     __roots, __param_template, __param_property,
-                    __param_selected_relations, __param_max_depth);
+                    __param_selected_relations, __param_max_depth, __param_max_nodes);
             END;
             $function$;
 
@@ -1976,7 +1997,8 @@ public class TemplateQuery {
                 __param_template            text,
                 __param_property            text,
                 __param_selected_relations  integer[]  DEFAULT NULL,
-                __param_max_depth           integer    DEFAULT 100
+                __param_max_depth           integer    DEFAULT 100,
+                __param_max_nodes           integer    DEFAULT NULL
             )
             RETURNS TABLE(
                 in_id        integer,
@@ -2000,7 +2022,7 @@ public class TemplateQuery {
                 RETURN QUERY
                 SELECT * FROM forward_traversal_star_roots(
                     __roots, __param_template, __param_property,
-                    __param_selected_relations, __param_max_depth);
+                    __param_selected_relations, __param_max_depth, __param_max_nodes);
             END;
             $function$;
 

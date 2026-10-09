@@ -16,6 +16,9 @@
     Ruling owed: the document derives from every input (template and bindings; template1 and template2), and the
     record from what? (nothing, the document, or wasGeneratedBy only).
     DoD: library graph (target/prov-graph/library.json) has a derivation of each document from each of its inputs.
+    2026-10-09: ptm-merging DONE (Luc): built from generic/product2-2 instead of parallel2 (same variables, plus
+    output1<-input2, output2<-input1), so document and provenance each derive from template1 and template2; the
+    library's 22 merges now derive from all their inputs. ptm-expanding (document <- bindings) still open.
 - T26 log2prov cannot read composite template records (three defects, found 2026-10-09 from provenance-templates T-5)
     1. Generated `Init` (`CompilerBuilderInit.generateInitializer`) sizes `builders`/`typeManagers` for every
        catalogue entry but fills only the simple templates; composite slots stay `null`, and

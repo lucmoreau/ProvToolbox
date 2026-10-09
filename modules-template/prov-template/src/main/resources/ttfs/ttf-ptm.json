@@ -17,7 +17,7 @@
         },
         {
             "type": "instantiate",
-            "template": "org/openprovenance/prov/templates/generic/parallel2",
+            "template": "org/openprovenance/prov/templates/generic/product2-2",
             "output": "org/openprovenance/prov/templates/ptm/ptm-merging",
             "bindings": "ptm-merging.json",
             "formats": ["provn", "png"],

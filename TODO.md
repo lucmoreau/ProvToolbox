@@ -122,7 +122,8 @@ __PROV_DELEGATION (delegate, delegate_rel, responsible, responsible_rel, activit
     and ptm-merging from generic/product2-2 instead of parallel2 (same variables, plus the cross derivations), so
     the document and the provenance record each derive from both inputs: template and bindings (expanding),
     template1 and template2 (merging). provenance-templates' library: all 559 output documents derive from every
-    input their activity used (438 from bindings). ptm-mexpanding is still built from parallel2.
+    input their activity used (438 from bindings). ptm-mexpanding also from product2-2 (template and provenance
+    each derive from mtemplate and bindings).
 
 * T1 ✅  template-compiler: 
 updated CompilerCommon to use the new code generation pattern for the Common Bean, and removed the old code.  

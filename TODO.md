@@ -3,6 +3,22 @@
 
 # ProvToolbox TODO
 
+- T26 log2prov cannot read composite template records (three defects, found 2026-10-09 from provenance-templates T-5)
+    1. Generated `Init` (`CompilerBuilderInit.generateInitializer`) sizes `builders`/`typeManagers` for every
+       catalogue entry but fills only the simple templates; composite slots stay `null`, and
+       `FileBuilder.registerBuilders` calls `Class.forName(null)` → `NullPointerException` (`FileBuilder.java:178`).
+       Repro: `provconvert -infile x.csv -log2prov org.openprovenance.templates.catalogue.transport.Init -outfile x.provn`
+       with provenance-templates-library on the classpath (transport catalogue: 9 slots, 7 filled,
+       `packing_composite`/`unpacking_composite` null) dies before reading a line. Fix: skip null slots at least,
+       and emit a FileBuilder for composites.
+    2. A composite record's first field is the fully qualified name (`logPacking_composite` writes
+       `org.openprovenance.templates.transport.PackingComposite`), but `FileBuilder.registry` is keyed by
+       `getName()` (`packing_composite`); simple records use the name. Make them agree.
+    3. Composite `args2csv` (`CompilerCommon.generateCommonCSVConverterMethod`) joins header and element records
+       with a literal two-character `\n` (`sb.append("\\n")` in the generated source), so `FileBuilder.reader`'s
+       `CSVParser` sees one record with fields run together (`type\npacking`, ...). Emit real line breaks
+       (or one record per element tied to the header) and have the reader regroup them.
+    DoD: a log of `packing_composite` records round-trips through `-log2prov` to the same PROV as the composite's expansion.
 - T25
 - T24
 - T23

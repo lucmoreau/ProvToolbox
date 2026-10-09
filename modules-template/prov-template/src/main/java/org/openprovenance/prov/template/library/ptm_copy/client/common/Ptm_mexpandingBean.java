@@ -35,7 +35,7 @@ public class Ptm_mexpandingBean {
   public Integer agent;
 
   /**
-   * mexpanding: The activity of expanding the template (expected type: xsd:int)
+   * mexpanding: The activity of instantiating the template (expected type: xsd:int)
    */
   public Integer mexpanding;
 

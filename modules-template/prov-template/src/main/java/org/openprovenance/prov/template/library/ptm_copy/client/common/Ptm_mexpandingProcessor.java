@@ -12,7 +12,7 @@ public interface Ptm_mexpandingProcessor<T> {
    * @param mtemplate: The meta template to be expanded (expected type: xsd:string)
    * @param bindings: The bindings used in expansion (expected type: xsd:string)
    * @param agent: The agent controlling the expansion (expected type: xsd:int)
-   * @param mexpanding: The activity of expanding the template (expected type: xsd:int)
+   * @param mexpanding: The activity of instantiating the template (expected type: xsd:int)
    * @param email: The agent's email (expected type: xsd:string)
    * @param time: Time when the transformed file is created (expected type: xsd:dateTime)
    * @return not specified

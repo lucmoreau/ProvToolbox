@@ -18,11 +18,11 @@
 
 		{
 			"@type": "simple",
-			"name": "ptm_expanding",
-            "fullyQualifiedName": "org.openprovenance.prov.template.library.ptm.PtmExpanding",
-			"template": "org/openprovenance/prov/templates/ptm/ptm-expanding",
+			"name": "ptm_instantiating",
+            "fullyQualifiedName": "org.openprovenance.prov.template.library.ptm.PtmInstantiating",
+			"template": "org/openprovenance/prov/templates/ptm/ptm-instantiating",
 			"package": "org.openprovenance.prov.template.library.ptm",
-			"cbindings": "org/openprovenance/prov/templates/ptm/ptm-expanding.json"
+			"cbindings": "org/openprovenance/prov/templates/ptm/ptm-instantiating.json"
 		},
 
 		{

@@ -1,4 +1,4 @@
-// Generated automatically by ProvToolbox for template 'ptm_expanding'
+// Generated automatically by ProvToolbox for template 'ptm_instantiating'
 // by class org.openprovenance.prov.template.compiler.CompilerBeanGenerator, method generateBean,
 // in file CompilerBeanGenerator.java, at line 33
 package org.openprovenance.prov.template.library.ptm_copy.client.integrator;
@@ -6,8 +6,8 @@ package org.openprovenance.prov.template.library.ptm_copy.client.integrator;
 /**
  * A Simple Bean that only contains the input of this template.
  */
-public class Ptm_expandingInputs {
-  public final String isA = "ptm_expanding";
+public class Ptm_instantiatingInputs {
+  public final String isA = "ptm_instantiating";
 
   /**
    * template: The template to be expanded (expected type: xsd:string)

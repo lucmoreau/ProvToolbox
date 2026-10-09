@@ -8,7 +8,7 @@
         "agprop_values":            [[{"@id" : "var:email"}]],
         "plan":                     [{"@id" : null}],
         "responsible" :             [{"@id" : null}],
-        "activity" :                [{"@id" : "vargen:expanding"}],
+        "activity" :                [{"@id" : "vargen:instantiating"}],
         "oprops1" :                 [{"@id" : "ptm:createdAt"}],
         "oprop_values1" :           [[{"@id" : "var:time"}]],
         "oprops2" :                 [{"@id" : "ptm:createdAt"}],
@@ -19,7 +19,7 @@
         "otype2" :                  [[{"@id" : "ptm:CompactBindings"}]],
         "itype1" :                  [[{"@id" : "ptm:ProvTemplate"}]],
         "itype2" :                  [[{"@id" : "ptm:Bindings"}]],
-        "atype" :                   [[{"@id" : "ptm:ExpandingTemplate"}]]
+        "atype" :                   [[{"@id" : "ptm:InstantiatingTemplate"}]]
     },
     "vargen" : {
         "view" : [ {

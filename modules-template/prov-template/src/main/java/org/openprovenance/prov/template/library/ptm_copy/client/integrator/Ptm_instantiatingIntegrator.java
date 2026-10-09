@@ -1,9 +1,9 @@
-// Generated automatically by ProvToolbox for template 'ptm_expanding'
+// Generated automatically by ProvToolbox for template 'ptm_instantiating'
 // by class org.openprovenance.prov.template.compiler.CompilerProcessor, method generateProcessor,
 // in file CompilerProcessor.java, at line 38
 package org.openprovenance.prov.template.library.ptm_copy.client.integrator;
 
-public interface Ptm_expandingIntegrator<T> {
+public interface Ptm_instantiatingIntegrator<T> {
   /**
    * TODO doc.
    *

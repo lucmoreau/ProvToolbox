@@ -1,9 +1,9 @@
-// Generated automatically by ProvToolbox for template 'ptm_expanding'
+// Generated automatically by ProvToolbox for template 'ptm_instantiating'
 // by class org.openprovenance.prov.template.compiler.CompilerProcessor, method generateProcessor,
 // in file CompilerProcessor.java, at line 38
 package org.openprovenance.prov.template.library.ptm_copy.client.common;
 
-public interface Ptm_expandingProcessor<T> {
+public interface Ptm_instantiatingProcessor<T> {
   /**
    * TODO doc.
    *
@@ -12,11 +12,11 @@ public interface Ptm_expandingProcessor<T> {
    * @param template: The template to be expanded (expected type: xsd:string)
    * @param bindings: The bindings used in expansion (expected type: xsd:string)
    * @param agent: The agent controlling the expansion (expected type: xsd:int)
-   * @param expanding: The activity of expanding the template (expected type: xsd:int)
+   * @param instantiating: The activity of instantiating the template (expected type: xsd:int)
    * @param email: The agent's email (expected type: xsd:string)
    * @param time: Time when the transformed file is created (expected type: xsd:dateTime)
    * @return not specified
    */
   T process(String document, String provenance, String template, String bindings, Integer agent,
-      Integer expanding, String email, String time);
+      Integer instantiating, String email, String time);
 }

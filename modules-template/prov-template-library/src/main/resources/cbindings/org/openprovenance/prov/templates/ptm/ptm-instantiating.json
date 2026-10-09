@@ -52,11 +52,11 @@
                 "@input": "optional"
             }
         ],
-        "expanding": [
+        "instantiating": [
             {
                 "@id": "act:*",
                 "@type": "xsd:int",
-                "@documentation": "The activity of expanding the template",
+                "@documentation": "The activity of instantiating the template",
                 "@output": "true",
                 "@sql.table": "activity"
             }

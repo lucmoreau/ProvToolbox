@@ -29,10 +29,10 @@ test('plead-approving-template test', () => {
 });
 
 
-test('ptm-expanding-template test', () => {
-    let examplarCompactBean = ptm.client.common.Ptm_expandingBuilder.examplar();
+test('ptm-instantiating-template test', () => {
+    let examplarCompactBean = ptm.client.common.Ptm_instantiatingBuilder.examplar();
     console.log(examplarCompactBean);
-    let ptmExpandingBuilder1 = new ptm.client.common.Ptm_expandingBuilder();
+    let ptmExpandingBuilder1 = new ptm.client.common.Ptm_instantiatingBuilder();
     console.log(examplarCompactBean.process(ptmExpandingBuilder1.args2csv()));
 
     fs.writeFile('target/examplar2.json', JSON.stringify(examplarCompactBean,null, 2), err => {

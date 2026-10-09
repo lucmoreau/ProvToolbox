@@ -6,8 +6,8 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.template.core.Instantiater;
 import org.openprovenance.prov.template.core.Bindings;
-import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBean;
-import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBuilder;
+import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_instantiatingBean;
+import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_instantiatingBuilder;
 import org.openprovenance.prov.template.utils.*;
 
 import java.io.*;
@@ -40,7 +40,7 @@ public class InstantiateTask implements ConfigTask {
     public String variableCheck;
 
 
-    static private final Ptm_expandingBuilder expandBuilder =new Ptm_expandingBuilder();
+    static private final Ptm_instantiatingBuilder instantiateBuilder =new Ptm_instantiatingBuilder();
     private ObjectMapper mapper = new ObjectMapper();
 
     @Override
@@ -188,15 +188,15 @@ public class InstantiateTask implements ConfigTask {
 
 
     private String createExpansionCsvRecord(String format, String templateFile, String bindingsFile, String time, long secondsSince2023_01_01) {
-        Ptm_expandingBean bean=new Ptm_expandingBean();
+        Ptm_instantiatingBean bean=new Ptm_instantiatingBean();
         bean.bindings= bindingsFile;
         bean.provenance=hasProvenance;
         bean.time=time;
         bean.template= templateFile;
         bean.document= output + "." + format;
-        bean.expanding=abs(Long.valueOf(secondsSince2023_01_01).intValue());
+        bean.instantiating=abs(Long.valueOf(secondsSince2023_01_01).intValue());
 
-        return bean.process(expandBuilder.args2csv());
+        return bean.process(instantiateBuilder.args2csv());
     }
 
 }

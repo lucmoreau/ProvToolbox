@@ -9,10 +9,10 @@
         {
             "type": "instantiate",
             "template": "org/openprovenance/prov/templates/generic/product2-2",
-            "output": "org/openprovenance/prov/templates/ptm/ptm-expanding",
-            "bindings": "ptm-expanding.json",
+            "output": "org/openprovenance/prov/templates/ptm/ptm-instantiating",
+            "bindings": "ptm-instantiating.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "org/openprovenance/prov/templates/ptm/prov/prov-ptm-expanding.prov-csv"
+            "hasProvenance": "org/openprovenance/prov/templates/ptm/prov/prov-ptm-instantiating.prov-csv"
 
         },
         {

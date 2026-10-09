@@ -1,4 +1,4 @@
-// Generated automatically by ProvToolbox for template 'ptm_expanding'
+// Generated automatically by ProvToolbox for template 'ptm_instantiating'
 // by class org.openprovenance.prov.template.compiler.CompilerBeanGenerator, method generateBean,
 // in file CompilerBeanGenerator.java, at line 33
 package org.openprovenance.prov.template.library.ptm_copy.client.common;
@@ -6,8 +6,8 @@ package org.openprovenance.prov.template.library.ptm_copy.client.common;
 /**
  * A Simple Bean that captures all variables of this template.
  */
-public class Ptm_expandingBean {
-  public final String isA = "ptm_expanding";
+public class Ptm_instantiatingBean {
+  public final String isA = "ptm_instantiating";
 
   /**
    * document: The document resulting from template expansion (expected type: xsd:string)
@@ -35,9 +35,9 @@ public class Ptm_expandingBean {
   public Integer agent;
 
   /**
-   * expanding: The activity of expanding the template (expected type: xsd:int)
+   * instantiating: The activity of instantiating the template (expected type: xsd:int)
    */
-  public Integer expanding;
+  public Integer instantiating;
 
   /**
    * email: The agent's email (expected type: xsd:string)
@@ -49,7 +49,7 @@ public class Ptm_expandingBean {
    */
   public String time;
 
-  public <T> T process(Ptm_expandingProcessor<T> __processor) {
-    return __processor.process(document, provenance, template, bindings, agent, expanding, email, time);
+  public <T> T process(Ptm_instantiatingProcessor<T> __processor) {
+    return __processor.process(document, provenance, template, bindings, agent, instantiating, email, time);
   }
 }

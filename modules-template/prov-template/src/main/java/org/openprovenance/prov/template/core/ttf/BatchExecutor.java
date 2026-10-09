@@ -186,6 +186,15 @@ public class BatchExecutor {
         throw new FileNotFoundException(filename+ " in paths " + template_path);
     }
 
+    /**
+     * Identifier of a file read by a task, for its provenance record: the file's path relative to
+     * the given root, so that a record names a file the same way, whichever run read it.
+     */
+    static String relativeTo(String root, File file) {
+        Path rootPath=Path.of(root).toAbsolutePath().normalize();
+        return rootPath.relativize(file.toPath().toAbsolutePath().normalize()).toString();
+    }
+
     Pair<FileInputStream, File> findFileinDirs2(List<String> template_path, String filename) throws FileNotFoundException {
         for (String dir: template_path) {
             File f=new File(dir + "/" + filename);

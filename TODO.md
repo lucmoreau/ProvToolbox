@@ -3,6 +3,19 @@
 
 # ProvToolbox TODO
 
+- T27 ptm templates: the document derives from only one input (found 2026-10-09 from provenance-templates' library graph)
+    `ptm-expanding` and `ptm-merging` (prov-template-library, config/tp_ptm.json) follow the generic two-in/two-out
+    `parallel2` shape: output1 from input1, output2 from input2.
+      ptm-expanding: wasDerivedFrom(document, template), wasDerivedFrom(provenance, bindings)
+      ptm-merging:   wasDerivedFrom(document, template1), wasDerivedFrom(provenance, template2)
+    So an expanded document does not derive from its bindings, a merged document does not derive from its
+    second input, and the provenance record (prov-csv) derives from an input it is not made of. MergeTask writes
+    one ptm_merging record (input1, input_i) per extra input, so for a merge of n inputs the document derives
+    from input1 only (n-1 times), and the record from inputs 2..n. In provenance-templates' library graph:
+    136 derivations for 136 activities, though 21 merges have 3-8 inputs (`used` is complete: 331).
+    Ruling owed: the document derives from every input (template and bindings; template1 and template2), and the
+    record from what? (nothing, the document, or wasGeneratedBy only).
+    DoD: library graph (target/prov-graph/library.json) has a derivation of each document from each of its inputs.
 - T26 log2prov cannot read composite template records (three defects, found 2026-10-09 from provenance-templates T-5)
     1. Generated `Init` (`CompilerBuilderInit.generateInitializer`) sizes `builders`/`typeManagers` for every
        catalogue entry but fills only the simple templates; composite slots stay `null`, and

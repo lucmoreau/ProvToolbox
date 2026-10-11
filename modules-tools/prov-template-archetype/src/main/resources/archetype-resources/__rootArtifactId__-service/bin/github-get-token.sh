@@ -1,5 +1,33 @@
 #!/bin/bash
 
+# Creating a GitHub personal access token (for TPL_GITHUB_TOKEN)
+#
+# The service only uses the token to ask GitHub who it belongs to (GET https://api.github.com/user),
+# and admits that user if the allowlist of the GitHubBearerAuthClient configuration names their login
+# or github:<numeric id>. No permission or scope is needed: create a token that grants nothing, since
+# the token is sent to the service with every request.
+#
+# Fine-grained token (preferred):
+#   1. GitHub > Settings > Developer settings > Personal access tokens > Fine-grained tokens
+#      > Generate new token   (or go to https://github.com/settings/personal-access-tokens/new)
+#   2. Give it a name and an expiration; Resource owner: your own account.
+#   3. Repository access: "Public repositories"; leave every permission at "No access".
+#   4. Generate the token and copy it (it is only shown once).
+#
+# Classic token:
+#   1. GitHub > Settings > Developer settings > Personal access tokens > Tokens (classic)
+#      > Generate new token (classic)   (or go to https://github.com/settings/tokens/new)
+#   2. Give it a note and an expiration; tick no scope.
+#   3. Generate the token and copy it.
+#
+# Then add to ~/.openprovenance.credentials.sh (readable only by you: chmod 600):
+#   TPL_GITHUB_TOKEN=github_pat_...      (a classic token starts with ghp_)
+#
+# Avoid reusing a token with scopes, such as the one printed by "gh auth token": the service would
+# receive a token that can act on your repositories.
+# A token revoked on GitHub (Settings > Developer settings > Personal access tokens) may still be
+# accepted by the service for up to cacheTtlSeconds (300 by default), the life of its cache entry.
+
 PROV_CREDENTIALS="$HOME/.openprovenance.credentials.sh"
 TOKEN_DESTINATION="$HOME/.github_token"
 VERBOSE=false

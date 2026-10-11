@@ -415,6 +415,18 @@
             </properties>
         </profile>
         <profile>
+            <!-- GitHub-based access control (web-with-github-security.xml); the security
+                 configuration is passed to jetty as the TPL_SECURITY_CONFIG system property,
+                 which takes precedence over the environment variable -->
+            <id>github</id>
+            <activation>
+            </activation>
+            <properties>
+                <webxml.location>${github.webxml.location}</webxml.location>
+                <security.config.location>${project.build.directory}/test-classes/security/github-security-config.json</security.config.location>
+            </properties>
+        </profile>
+        <profile>
             <id>local</id>
             <activation>
                 <activeByDefault>true</activeByDefault>

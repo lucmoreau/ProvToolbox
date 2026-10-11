@@ -3,16 +3,16 @@
     "configurations": {
         "GitHubClient": {
             "@type": "GitHubClient",
-            "clientId": "REPLACE-WITH-GITHUB-OAUTH-APP-CLIENT-ID",
+            "clientId": "Ov23li7kMCKmclnlioem",
             "clientSecretEnv": "GITHUB_CLIENT_SECRET",
             "callbackUrl": "http://localhost:7075/book/callback",
             "scope": "read:user",
-            "allowlist": ["REPLACE-WITH-GITHUB-LOGIN", "github:REPLACE-WITH-GITHUB-NUMERIC-ID"]
+            "allowlist": ["lucmoreau"]
         },
         "GitHubBearerAuthClient": {
             "@type": "GitHubBearerAuthClient",
             "cacheTtlSeconds": 300,
-            "allowlist": ["REPLACE-WITH-GITHUB-LOGIN", "github:REPLACE-WITH-GITHUB-NUMERIC-ID"]
+            "allowlist": ["lucmoreau"]
         }
     }
 }

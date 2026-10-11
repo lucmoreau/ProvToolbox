@@ -13,6 +13,7 @@ import java.util.Base64;
 
 
 import org.pac4j.core.credentials.extractor.BearerAuthExtractor;
+import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.http.client.direct.DirectBearerAuthClient;
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
@@ -121,6 +122,10 @@ public class Utils {
         if (config.getCallbackUrl() != null) {
             client.setCallbackUrl(config.getCallbackUrl());
         }
+        // GitHub requires the redirect_uri to equal the App's registered callback URL (unless the App
+        // enables wildcard matching): no ?client_name= parameter is appended, and the CallbackFilter
+        // finds this client through its defaultClient init-param instead
+        client.setCallbackUrlResolver(new NoParameterCallbackUrlResolver());
         client.addAuthorizationGenerator(new GitHubProfiles.PrincipalGenerator());
 
         logger.info("GitHubClient created " + config);

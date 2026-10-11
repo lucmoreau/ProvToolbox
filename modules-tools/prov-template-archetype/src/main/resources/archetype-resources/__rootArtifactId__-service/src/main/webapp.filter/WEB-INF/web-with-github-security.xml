@@ -65,6 +65,12 @@
       <param-name>defaultUrl</param-name>
       <param-value>/</param-value>
     </init-param>
+    <!-- the GitHub callback carries no client_name parameter: GitHub requires the
+         redirect_uri to equal the OAuth App's callback URL -->
+    <init-param>
+      <param-name>defaultClient</param-name>
+      <param-value>GitHubClient</param-value>
+    </init-param>
   </filter>
 
   <filter-mapping>

@@ -29,9 +29,10 @@ jetty.nosec:
 	 source ~/.bashrc; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; unset TPL_SECURITY_CONFIG;  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,nosecurity jetty:run-war
 
 
-${symbol_pound} GitHub-based access control: the OAuth App client secret must be in GITHUB_CLIENT_SECRET (environment or ~/.bashrc)
+${symbol_pound} GitHub-based access control: the OAuth App client secret must be in GITHUB_CLIENT_SECRET, and the comma-separated
+${symbol_pound} allowlist of GitHub logins, github:<numeric id> or * in GITHUB_ALLOWLIST (environment or ~/.bashrc)
 jetty.github:
-	source ~/.bashrc; test -n "${symbol_dollar}${symbol_dollar}GITHUB_CLIENT_SECRET" || { echo "GITHUB_CLIENT_SECRET is not set"; exit 1; }; export PROV_HOST=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT); export PROV_API=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${symbol_dollar}{PROV_STORAGE_CONFIG_BOOKPTM}; export XPLAIN_LEXICON=${symbol_dollar}{XPLAIN_LEXICON}; export TEMPLATE_CONFIG=${symbol_dollar}(TEMPLATE_CONFIG); mvn -Pjetty,github jetty:run-war
+	source ~/.bashrc; test -n "${symbol_dollar}${symbol_dollar}GITHUB_CLIENT_SECRET" || { echo "GITHUB_CLIENT_SECRET is not set"; exit 1; }; test -n "${symbol_dollar}${symbol_dollar}{GITHUB_ALLOWLIST+set}" || { echo "GITHUB_ALLOWLIST is not set"; exit 1; }; export PROV_HOST=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT); export PROV_API=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${symbol_dollar}{PROV_STORAGE_CONFIG_BOOKPTM}; export XPLAIN_LEXICON=${symbol_dollar}{XPLAIN_LEXICON}; export TEMPLATE_CONFIG=${symbol_dollar}(TEMPLATE_CONFIG); mvn -Pjetty,github jetty:run-war
 
 
 jetty.post:

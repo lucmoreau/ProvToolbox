@@ -54,8 +54,9 @@
        it is checked against GitHub's /user API, and the result cached for cacheTtlSeconds.
 
     The githubAllowlist authorizer admits a user whose GitHub login, or github:<numeric id>,
-    is in the client's allowlist; "*" admits any GitHub user. Users are recorded as
-    github:<numeric id>.
+    is in the client's allowlist; "*" admits any GitHub user. The allowlist is read from the
+    system property or environment variable named by allowlistEnv, as a comma-separated list
+    (e.g. GITHUB_ALLOWLIST=lucmoreau,github:12345). Users are recorded as github:<numeric id>.
   -->
 
   <filter>

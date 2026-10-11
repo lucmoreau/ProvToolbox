@@ -13,8 +13,9 @@ import java.util.Map;
 
 /**
  * Admits a profile produced by a GitHub client when it matches that client's allowlist
- * (see {@link GitHubAllowlisted}). Profiles from any other client are refused, so this
- * authorizer is only meaningful behind GitHub clients.
+ * (see {@link GitHubAllowlisted}), read once, when the security configuration is built.
+ * Profiles from any other client are refused, so this authorizer is only meaningful behind
+ * GitHub clients.
  */
 public class GitHubAllowlistAuthorizer implements Authorizer {
     public static final String NAME = "githubAllowlist";
@@ -28,7 +29,7 @@ public class GitHubAllowlistAuthorizer implements Authorizer {
         for (ClientConfiguration configuration : securityConfiguration.configurations.values()) {
             if (configuration instanceof GitHubAllowlisted) {
                 GitHubAllowlisted allowlisted = (GitHubAllowlisted) configuration;
-                List<String> allowlist = allowlisted.getAllowlist() == null ? List.of() : allowlisted.getAllowlist();
+                List<String> allowlist = Utils.readAllowlist(allowlisted.clientName(), allowlisted.getAllowlistEnv());
                 if (allowlist.isEmpty()) {
                     logger.warn("Empty allowlist for " + allowlisted.clientName() + ": no GitHub user is admitted");
                 }

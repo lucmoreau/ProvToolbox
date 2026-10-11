@@ -2,8 +2,6 @@ package org.openprovenance.prov.service.security.pac;
 
 import org.pac4j.core.client.Client;
 
-import java.util.List;
-
 import static org.openprovenance.prov.service.security.pac.Utils.configureGitHubClient;
 
 /**
@@ -18,7 +16,7 @@ public class GitHubClientConfiguration implements ClientConfiguration, GitHubAll
     private String clientSecretEnv;
     private String callbackUrl;
     private String scope = DEFAULT_SCOPE;
-    private List<String> allowlist;
+    private String allowlistEnv;
 
     public String getType() {
         return GITHUB_CLIENT;
@@ -57,12 +55,12 @@ public class GitHubClientConfiguration implements ClientConfiguration, GitHubAll
     }
 
     @Override
-    public List<String> getAllowlist() {
-        return allowlist;
+    public String getAllowlistEnv() {
+        return allowlistEnv;
     }
 
-    public void setAllowlist(List<String> allowlist) {
-        this.allowlist = allowlist;
+    public void setAllowlistEnv(String allowlistEnv) {
+        this.allowlistEnv = allowlistEnv;
     }
 
     @Override
@@ -82,7 +80,7 @@ public class GitHubClientConfiguration implements ClientConfiguration, GitHubAll
                 ", clientSecretEnv='" + clientSecretEnv + '\'' +
                 ", callbackUrl='" + callbackUrl + '\'' +
                 ", scope='" + scope + '\'' +
-                ", allowlist=" + allowlist +
+                ", allowlistEnv='" + allowlistEnv + '\'' +
                 '}';
     }
 }

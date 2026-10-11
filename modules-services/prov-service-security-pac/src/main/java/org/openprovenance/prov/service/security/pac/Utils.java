@@ -9,7 +9,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 import org.pac4j.core.credentials.extractor.BearerAuthExtractor;
@@ -105,15 +108,33 @@ public class Utils {
     }
 
 
+    /** the system property of that name, or else the environment variable, or else null */
+    static public String systemOrEnvironment(String name) {
+        String value = System.getProperty(name);
+        if (value == null) {
+            value = System.getenv(name);
+        }
+        return value;
+    }
+
+    /** the comma-separated allowlist held by the system property or environment variable named by variable */
+    static public List<String> readAllowlist(String clientName, String variable) {
+        if (variable == null || variable.isBlank()) {
+            throw new IllegalStateException(clientName + ": allowlistEnv must name the system property or environment variable holding the allowlist");
+        }
+        String value = systemOrEnvironment(variable);
+        if (value == null) {
+            throw new IllegalStateException(clientName + ": no allowlist in system property or environment variable " + variable);
+        }
+        return Arrays.stream(value.split(",")).map(String::trim).filter(entry -> !entry.isEmpty()).collect(Collectors.toList());
+    }
+
     static public GitHubClient configureGitHubClient(GitHubClientConfiguration config) {
         String variable = config.getClientSecretEnv();
         if (variable == null || variable.isBlank()) {
             throw new IllegalStateException("GitHubClient: clientSecretEnv must name the system property or environment variable holding the client secret");
         }
-        String secret = System.getProperty(variable);
-        if (secret == null || secret.isBlank()) {
-            secret = System.getenv(variable);
-        }
+        String secret = systemOrEnvironment(variable);
         if (secret == null || secret.isBlank()) {
             throw new IllegalStateException("GitHubClient: no client secret in system property or environment variable " + variable);
         }

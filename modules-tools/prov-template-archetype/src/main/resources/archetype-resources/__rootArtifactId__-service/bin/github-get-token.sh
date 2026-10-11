@@ -3,8 +3,9 @@
 # Creating a GitHub personal access token (for TPL_GITHUB_TOKEN)
 #
 # The service only uses the token to ask GitHub who it belongs to (GET https://api.github.com/user),
-# and admits that user if the allowlist of the GitHubBearerAuthClient configuration names their login
-# or github:<numeric id>. No permission or scope is needed: create a token that grants nothing, since
+# and admits that user if the allowlist of the GitHubBearerAuthClient configuration (the variable named
+# by its allowlistEnv, e.g. GITHUB_ALLOWLIST) names their login or github:<numeric id>.
+# No permission or scope is needed: create a token that grants nothing, since
 # the token is sent to the service with every request.
 #
 # Fine-grained token (preferred):

@@ -7,12 +7,12 @@
             "clientSecretEnv": "GITHUB_CLIENT_SECRET",
             "callbackUrl": "http://localhost:7075/book/callback",
             "scope": "read:user",
-            "allowlist": ["lucmoreau"]
+            "allowlistEnv": "GITHUB_ALLOWLIST"
         },
         "GitHubBearerAuthClient": {
             "@type": "GitHubBearerAuthClient",
             "cacheTtlSeconds": 300,
-            "allowlist": ["lucmoreau"]
+            "allowlistEnv": "GITHUB_ALLOWLIST"
         }
     }
 }

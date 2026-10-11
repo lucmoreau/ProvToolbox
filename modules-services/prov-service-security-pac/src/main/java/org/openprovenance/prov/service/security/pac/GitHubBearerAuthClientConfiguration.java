@@ -2,8 +2,6 @@ package org.openprovenance.prov.service.security.pac;
 
 import org.pac4j.core.client.Client;
 
-import java.util.List;
-
 import static org.openprovenance.prov.service.security.pac.Utils.configureGitHubBearerAuthClient;
 
 /**
@@ -16,7 +14,7 @@ public class GitHubBearerAuthClientConfiguration implements ClientConfiguration,
 
     private String realm = "github";
     private long cacheTtlSeconds = DEFAULT_CACHE_TTL_SECONDS;
-    private List<String> allowlist;
+    private String allowlistEnv;
 
     public String getType() {
         return GITHUB_BEARER_AUTH_CLIENT;
@@ -39,12 +37,12 @@ public class GitHubBearerAuthClientConfiguration implements ClientConfiguration,
     }
 
     @Override
-    public List<String> getAllowlist() {
-        return allowlist;
+    public String getAllowlistEnv() {
+        return allowlistEnv;
     }
 
-    public void setAllowlist(List<String> allowlist) {
-        this.allowlist = allowlist;
+    public void setAllowlistEnv(String allowlistEnv) {
+        this.allowlistEnv = allowlistEnv;
     }
 
     @Override
@@ -62,7 +60,7 @@ public class GitHubBearerAuthClientConfiguration implements ClientConfiguration,
         return "GitHubBearerAuthClientConfiguration{" +
                 "realm='" + realm + '\'' +
                 ", cacheTtlSeconds=" + cacheTtlSeconds +
-                ", allowlist=" + allowlist +
+                ", allowlistEnv='" + allowlistEnv + '\'' +
                 '}';
     }
 }

@@ -187,17 +187,63 @@ public class QueryService {
      * this — an undeclared, unsupplied placeholder would otherwise reach
      * PostgreSQL as literal {@code :name} and fail).</p>
      */
-    private static String substituteParams(String sql, QueryParameters parameters) {
+    static String substituteParams(String sql, QueryParameters parameters) {   // package-private for QuerySubstitutionTest (T-438)
         QueryParameters effective = withDeclaredDefaults(sql, parameters);
         if (effective.isEmpty()) return sql;
-        for (java.util.Map.Entry<String, String> entry : effective.entrySet()) {
-            String placeholder = ":" + entry.getKey();
-            String value = entry.getValue() == null
-                    ? "NULL"
-                    : "'" + entry.getValue().replace("'", "''") + "'";
-            sql = sql.replace(placeholder, value);
+        // ONE pass over the SQL (nextgen T-438, 2026-10-11). The former loop of String.replace calls, one per
+        // parameter in supply order, rescanned the whole text each time — including the literals the earlier
+        // replacements had inserted. A value holding ":other" was then rewritten by the later replacement and its
+        // quotes broke out of the first literal (an injection the quote doubling could not prevent); ":tenant"
+        // also rewrote ":tenantFilter". Here every token is read once, a value is written once and never rescanned,
+        // single-quoted literals and comments are copied through, "::" is a cast, and a name matches whole.
+        StringBuilder out = new StringBuilder(sql.length() + 64);
+        int i = 0, n = sql.length();
+        while (i < n) {
+            char c = sql.charAt(i);
+            if (c == '\'') {                                   // a literal: through its closing quote ('' escapes)
+                int j = i + 1;
+                while (j < n) {
+                    if (sql.charAt(j) == '\'') {
+                        if (j + 1 < n && sql.charAt(j + 1) == '\'') { j += 2; continue; }
+                        break;
+                    }
+                    j++;
+                }
+                int stop = Math.min(j + 1, n);
+                out.append(sql, i, stop);
+                i = stop;
+            } else if (c == '-' && i + 1 < n && sql.charAt(i + 1) == '-') {   // a line comment
+                int j = sql.indexOf('\n', i);
+                if (j < 0) j = n;
+                out.append(sql, i, j);
+                i = j;
+            } else if (c == '/' && i + 1 < n && sql.charAt(i + 1) == '*') {   // a block comment
+                int j = sql.indexOf("*/", i + 2);
+                j = j < 0 ? n : j + 2;
+                out.append(sql, i, j);
+                i = j;
+            } else if (c == ':') {
+                if (i + 1 < n && sql.charAt(i + 1) == ':') {               // a cast
+                    out.append("::");
+                    i += 2;
+                    continue;
+                }
+                int j = i + 1;
+                while (j < n && (Character.isLetterOrDigit(sql.charAt(j)) || sql.charAt(j) == '_')) j++;
+                String name = sql.substring(i + 1, j);
+                if (!name.isEmpty() && effective.has(name)) {
+                    String value = effective.get(name);
+                    out.append(value == null ? "NULL" : "'" + value.replace("'", "''") + "'");
+                } else {
+                    out.append(sql, i, j);                                 // an unknown placeholder stays
+                }
+                i = j;
+            } else {
+                out.append(c);
+                i++;
+            }
         }
-        return sql;
+        return out.toString();
     }
 
     /** {@code -- :param default value} header declarations. */

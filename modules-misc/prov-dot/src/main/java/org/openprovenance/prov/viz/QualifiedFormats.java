@@ -10,6 +10,12 @@ import java.util.Map;
  * The qualified renderings: every relation drawn as a node with its attribute box, values cut short.
  * {@code qualified.png}, {@code qualified.svg} and {@code qualified.pdf} come from graphviz,
  * {@code qualified.mmd} is mermaid text.
+ *
+ * <p>The {@code qualified-inv.*} formats are the same drawing laid out so that an invalidation
+ * reads properly -- its point between the entity and the activity, its arrow entering the
+ * activity from below. They are a separate format, which a template transformation file selects
+ * by name, so that drawings already reviewed keep the layout they were reviewed with. See
+ * {@link org.openprovenance.prov.dot.ProvToDotForInvalidation}.
  */
 public final class QualifiedFormats {
     private QualifiedFormats() {}
@@ -19,9 +25,16 @@ public final class QualifiedFormats {
     public static final String QUALIFIED_PDF = "qualified.pdf";
     public static final String QUALIFIED_MMD = "qualified.mmd";
 
+    public static final String QUALIFIED_INV_PNG = "qualified-inv.png";
+    public static final String QUALIFIED_INV_SVG = "qualified-inv.svg";
+    public static final String QUALIFIED_INV_PDF = "qualified-inv.pdf";
+
     public static final List<String> DOT_FORMATS = List.of(QUALIFIED_PNG, QUALIFIED_SVG, QUALIFIED_PDF);
+    /** The dot formats whose invalidations are laid out by {@link org.openprovenance.prov.dot.ProvToDotForInvalidation}. */
+    public static final List<String> INVALIDATION_DOT_FORMATS = List.of(QUALIFIED_INV_PNG, QUALIFIED_INV_SVG, QUALIFIED_INV_PDF);
     public static final List<String> MERMAID_FORMATS = List.of(QUALIFIED_MMD);
-    public static final List<String> ALL_FORMATS = List.of(QUALIFIED_PNG, QUALIFIED_SVG, QUALIFIED_PDF, QUALIFIED_MMD);
+    public static final List<String> ALL_FORMATS = List.of(QUALIFIED_PNG, QUALIFIED_SVG, QUALIFIED_PDF, QUALIFIED_MMD,
+                                                           QUALIFIED_INV_PNG, QUALIFIED_INV_SVG, QUALIFIED_INV_PDF);
 
     /** Attribute values longer than this are truncated with an ellipsis in the qualified renderings. */
     public static final int QUALIFIED_MAX_STRING_LENGTH = 20;
@@ -34,6 +47,9 @@ public final class QualifiedFormats {
     public static ProvSerialiser newQualifiedSerialiser(ProvFactory pf, String qualifiedFormat) {
         if (DOT_FORMATS.contains(qualifiedFormat)) {
             return new org.openprovenance.prov.dot.ProvSerialiser(pf, typeOf(qualifiedFormat), QUALIFIED_MAX_STRING_LENGTH, true);
+        }
+        if (INVALIDATION_DOT_FORMATS.contains(qualifiedFormat)) {
+            return new org.openprovenance.prov.dot.ProvSerialiser(pf, typeOf(qualifiedFormat), QUALIFIED_MAX_STRING_LENGTH, true, true);
         }
         if (MERMAID_FORMATS.contains(qualifiedFormat)) {
             return new MermaidSerialiser(pf, typeOf(qualifiedFormat), QUALIFIED_MAX_STRING_LENGTH, true);

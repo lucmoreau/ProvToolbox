@@ -10,18 +10,25 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     private final String extension;
     private final Integer maxStringLength;
     private final boolean displayQualifiedRelation;
+    /** Lay invalidations out as {@link ProvToDotForInvalidation} does; the {@code qualified-inv.*} formats. */
+    private final boolean invalidationLayout;
 
     public ProvSerialiser(ProvFactory pFactory, String extension, Integer maxStringLength) {
         this.pFactory=pFactory;
         this.extension=extension;
         this.maxStringLength=maxStringLength;
         this.displayQualifiedRelation=false;
+        this.invalidationLayout=false;
     }
     public ProvSerialiser(ProvFactory pFactory, String extension, Integer maxStringLength, boolean displayQualifiedRelation) {
+        this(pFactory, extension, maxStringLength, displayQualifiedRelation, false);
+    }
+    public ProvSerialiser(ProvFactory pFactory, String extension, Integer maxStringLength, boolean displayQualifiedRelation, boolean invalidationLayout) {
         this.pFactory=pFactory;
         this.extension=extension;
         this.maxStringLength=maxStringLength;
         this.displayQualifiedRelation=displayQualifiedRelation;
+        this.invalidationLayout=invalidationLayout;
     }
 
     public ProvSerialiser(ProvFactory pFactory, String extension) {
@@ -29,12 +36,14 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         this.extension=extension;
         this.maxStringLength=null;
         this.displayQualifiedRelation=false;
+        this.invalidationLayout=false;
     }
     public ProvSerialiser(ProvFactory pFactory, String extension, boolean displayQualifiedRelation) {
         this.pFactory=pFactory;
         this.extension=extension;
         this.maxStringLength=null;
         this.displayQualifiedRelation=displayQualifiedRelation;
+        this.invalidationLayout=false;
     }
 
     /**
@@ -48,7 +57,9 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
 
 
-        ProvToDot provToDot = (displayQualifiedRelation)? ProvToDot.newProvToDot(pFactory,true): new ProvToDot(pFactory);
+        ProvToDot provToDot = invalidationLayout
+                ? ProvToDotForInvalidation.newProvToDotForInvalidation(pFactory, true)
+                : (displayQualifiedRelation) ? ProvToDot.newProvToDot(pFactory, true) : new ProvToDot(pFactory);
         provToDot.setMaxStringLength(maxStringLength);
         provToDot.convert(document, out, extension, "title");
 

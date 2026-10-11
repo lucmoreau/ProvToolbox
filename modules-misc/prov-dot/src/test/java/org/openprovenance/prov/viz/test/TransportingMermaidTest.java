@@ -100,6 +100,8 @@ public class TransportingMermaidTest extends TestCase {
         java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         s.serialiseDocument(out, doc, true);
         assertTrue(out.toString(StandardCharsets.UTF_8).contains("flowchart BT"));
-        assertEquals(List.of("qualified.png", "qualified.svg", "qualified.pdf", "qualified.mmd"), QualifiedFormats.ALL_FORMATS);
+        assertEquals(List.of("qualified.png", "qualified.svg", "qualified.pdf", "qualified.mmd",
+                             "qualified-inv.png", "qualified-inv.svg", "qualified-inv.pdf"),
+                     QualifiedFormats.ALL_FORMATS);
     }
 }

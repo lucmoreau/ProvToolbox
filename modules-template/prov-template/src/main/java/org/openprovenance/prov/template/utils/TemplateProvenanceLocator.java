@@ -16,6 +16,9 @@ public class TemplateProvenanceLocator {
     private String qualifiedPng;
     private String qualifiedSvg;
     private String qualifiedPdf;
+    private String qualifiedInvPng;
+    private String qualifiedInvSvg;
+    private String qualifiedInvPdf;
     private String mmd;
     private String qualifiedMmd;
 
@@ -94,6 +97,30 @@ public class TemplateProvenanceLocator {
         this.qualifiedPdf = qualifiedPdf;
     }
 
+    public String getQualifiedInvPng() {
+        return qualifiedInvPng;
+    }
+
+    public void setQualifiedInvPng(String qualifiedInvPng) {
+        this.qualifiedInvPng = qualifiedInvPng;
+    }
+
+    public String getQualifiedInvSvg() {
+        return qualifiedInvSvg;
+    }
+
+    public void setQualifiedInvSvg(String qualifiedInvSvg) {
+        this.qualifiedInvSvg = qualifiedInvSvg;
+    }
+
+    public String getQualifiedInvPdf() {
+        return qualifiedInvPdf;
+    }
+
+    public void setQualifiedInvPdf(String qualifiedInvPdf) {
+        this.qualifiedInvPdf = qualifiedInvPdf;
+    }
+
     public String getMmd() {
         return mmd;
     }
@@ -124,6 +151,9 @@ public class TemplateProvenanceLocator {
             case QUALIFIED_PNG -> getQualifiedPng();
             case QUALIFIED_SVG -> getQualifiedSvg();
             case QUALIFIED_PDF -> getQualifiedPdf();
+            case QUALIFIED_INV_PNG -> getQualifiedInvPng();
+            case QUALIFIED_INV_SVG -> getQualifiedInvSvg();
+            case QUALIFIED_INV_PDF -> getQualifiedInvPdf();
             case MMD -> getMmd();
             case QUALIFIED_MMD -> getQualifiedMmd();
             case HAS_PROVENANCE -> throw new TemplateLocatorException("get: cannot get HAS_PROVENANCE from TemplateProvenanceLocator");
@@ -148,6 +178,9 @@ public class TemplateProvenanceLocator {
             case QUALIFIED_PNG -> setQualifiedPng(path);
             case QUALIFIED_SVG -> setQualifiedSvg(path);
             case QUALIFIED_PDF -> setQualifiedPdf(path);
+            case QUALIFIED_INV_PNG -> setQualifiedInvPng(path);
+            case QUALIFIED_INV_SVG -> setQualifiedInvSvg(path);
+            case QUALIFIED_INV_PDF -> setQualifiedInvPdf(path);
             case MMD -> setMmd(path);
             case QUALIFIED_MMD -> setQualifiedMmd(path);
             case PROVCSV -> setProvCsv(path);

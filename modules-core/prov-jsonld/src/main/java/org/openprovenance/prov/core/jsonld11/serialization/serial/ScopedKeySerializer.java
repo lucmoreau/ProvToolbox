@@ -23,6 +23,7 @@ public abstract class ScopedKeySerializer extends CustomKeySerializer {
         if (term == null) {
             super.serialize(q, jsonGenerator, serializerProvider);
         } else {
+            serializerProvider.setAttribute(ID_COERCED_KEY, true);  // every scoped term is "@type": "@id"
             jsonGenerator.writeFieldName(term);
         }
     }

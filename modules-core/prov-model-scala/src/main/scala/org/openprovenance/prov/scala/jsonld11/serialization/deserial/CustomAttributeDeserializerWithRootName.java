@@ -14,6 +14,8 @@ import org.openprovenance.prov.model.QualifiedName;
 import java.io.IOException;
 import java.util.Map;
 
+import static org.openprovenance.prov.core.jsonld11.serialization.Constants.ID_COERCED_ATTRIBUTE_TERMS;
+
 public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Attribute> implements Constants {
 
 
@@ -48,13 +50,25 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
         Map.Entry<String, JsonNode> pair=node.fields().next();
 
         QualifiedName elementName=ns.stringToQualifiedName(pair.getKey(),pf);
+        deserializationContext.setAttribute(CustomKeyDeserializer.ID_COERCED_CONTEXT_KEY, ID_COERCED_ATTRIBUTE_TERMS.contains(pair.getKey()));
         JsonNode vObj=pair.getValue();
 
         return deserialize(elementName,vObj,deserializationContext);
 
     }
 
+    /**
+     * A bare string is what a JSON-LD processor makes of it: an IRI, so a qualified name, under a key the context
+     * coerces to {@code @id}; a string under any other key (https://github.com/openprov/prov-jsonld/issues/7).
+     */
     public Attribute deserialize(QualifiedName elementName,  String astring, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        if (Boolean.TRUE.equals(deserializationContext.getAttribute(CustomKeyDeserializer.ID_COERCED_CONTEXT_KEY))) {
+            return qualifiedName(elementName, astring, deserializationContext);
+        }
+        return pf.newAttribute(elementName, pf.newInternationalizedString(astring, null), XSD_STRING);
+    }
+
+    private Attribute qualifiedName(QualifiedName elementName, String astring, DeserializationContext deserializationContext) {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         return pf.newAttribute(elementName, ns.stringToQualifiedName(astring,pf), PROV_QUALIFIED_NAME);
     }
@@ -66,8 +80,18 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
     public Attribute deserialize(QualifiedName elementName, JsonNode vObj, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
-        if (!vObj.isObject()) {
+        if (vObj.isTextual()) {
+            return deserialize(elementName, vObj.textValue(), deserializationContext);
+
+        } else if (!vObj.isObject()) {
             throw new UnsupportedOperationException("vObj can only be object");
+
+        } else if (vObj.has(PROPERTY_AT_ID)) {
+            // a node reference {"@id": "ex:shed"}: the IRI, so a qualified name, under any key
+            if (vObj.size() != 1 || !vObj.get(PROPERTY_AT_ID).isTextual()) {
+                throw new IOException("a node reference takes no @value, @type or @language: " + elementName);
+            }
+            return qualifiedName(elementName, vObj.get(PROPERTY_AT_ID).textValue(), deserializationContext);
 
         } else {
 

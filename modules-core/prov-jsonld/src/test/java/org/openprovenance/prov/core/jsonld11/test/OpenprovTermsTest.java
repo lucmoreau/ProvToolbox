@@ -146,6 +146,30 @@ public class OpenprovTermsTest extends TestCase {
         assertTrue(u.getOther().isEmpty());
     }
 
+    /**
+     * Outside its scope an openprov property goes under its compact IRI, which no term coerces to {@code @id}
+     * (https://github.com/openprov/prov-jsonld/issues/7): a qualified name is a node reference there, and a bare
+     * string a string; within the scope the term is coerced, and the qualified name is a bare string.
+     */
+    public void testUnscopedPropertyIsANodeReference() throws IOException {
+        String json = "{\"@context\": [{\"ex\": \"http://example.org/\", \"openprov\": \"https://openprovenance.org/ns/openprov#\"},"
+                + " \"https://openprovenance.org/ns/openprov.jsonld\"],"
+                + " \"@graph\": [{\"@type\": \"Usage\", \"@id\": \"ex:u\", \"activity\": \"ex:a1\", \"entity\": \"ex:e1\","
+                + " \"openprov:hadActivity\": [{\"@id\": \"ex:a0\"}], \"openprov:hadUsage\": [\"ex:u0\"]}]}";
+        Document doc = new ProvDeserialiser().deserialiseDocument(new ByteArrayInputStream(json.getBytes()));
+        Used u = only(doc, Used.class);
+        Map<String, Object> o = openprov(u);
+        assertEquals(ex("a0"), o.get("hadActivity"));
+        assertEquals(new org.openprovenance.prov.vanilla.LangString("ex:u0"), o.get("hadUsage"));
+
+        JsonNode written = written(doc, "Usage");
+        assertEquals("[{\"@id\":\"ex:a0\"}]", written.get("openprov:hadActivity").toString());
+        assertEquals("[{\"@value\":\"ex:u0\"}]", written.get("openprov:hadUsage").toString());
+        assertEquals(doc.getStatementOrBundle(), reread(doc).getStatementOrBundle());
+
+        assertEquals("[\"ex:asc1\"]", written(read("attribution.jsonld"), "Attribution").get("association").toString());
+    }
+
     public void testCommunication() throws IOException {
         Document doc = read("communication.jsonld");
         WasInformedBy com = only(doc, WasInformedBy.class);
@@ -205,7 +229,7 @@ public class OpenprovTermsTest extends TestCase {
      * written with the terms validates against it and not against the specification's.
      */
     public void testSchemaIsTheContextsScopes() throws IOException {
-        JsonNode spec = mapper.readTree(Schemas.open(JSONLDSCHEMA_2024_08_25, "src/main/resources/" + JSONLDSCHEMA_2024_08_25)).get("definitions");
+        JsonNode spec = mapper.readTree(Schemas.open(JSONLDSCHEMA_2026_10_14, "src/main/resources/" + JSONLDSCHEMA_2026_10_14)).get("definitions");
         JsonNode openprov = mapper.readTree(Schemas.open(OPENPROV_SCHEMA_RESOURCE, "src/main/resources/" + OPENPROV_SCHEMA_RESOURCE)).get("definitions");
         Map<String, Kind> types = Map.of("Attribution", Kind.PROV_ATTRIBUTION, "Membership", Kind.PROV_MEMBERSHIP, "Specialization", Kind.PROV_SPECIALIZATION, "Communication", Kind.PROV_COMMUNICATION, "Start", Kind.PROV_START, "End", Kind.PROV_END);
         for (Map.Entry<String, Kind> e : types.entrySet()) {

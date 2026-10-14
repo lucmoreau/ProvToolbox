@@ -14,6 +14,8 @@ import org.openprovenance.prov.model.QualifiedName;
 import java.io.IOException;
 import java.util.*;
 
+import static org.openprovenance.prov.core.jsonld11.serialization.Constants.ID_COERCED_ATTRIBUTE_TERMS;
+
 public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
 
 
@@ -35,6 +37,7 @@ public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
         while (it.hasNext()) {
             Map.Entry<String, JsonNode> pair=it.next();
             QualifiedName elementName=ns.stringToQualifiedName(pair.getKey(),pf);
+            deserializationContext.setAttribute(CustomKeyDeserializer.ID_COERCED_CONTEXT_KEY, ID_COERCED_ATTRIBUTE_TERMS.contains(pair.getKey()));
             JsonNode vObj=pair.getValue();
             Iterator<JsonNode> elements=vObj.elements();
             Set<Attribute> set=new HashSet<>();

@@ -37,7 +37,14 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
                 ((LangString)attr.getValue()).getLang()!=null ) {
             jsonGenerator.writeObject(attr.getValue());
         } else if ((attr.getValue() instanceof QualifiedName)  ) {
-            jsonGenerator.writeObject(prnt((QualifiedName)attr.getValue()));
+            // a bare string under a key coerced to @id, a node reference under any other (https://github.com/openprov/prov-jsonld/issues/7)
+            if (Boolean.TRUE.equals(serializerProvider.getAttribute(CustomMapSerializer2.ID_COERCED_KEY))) {
+                jsonGenerator.writeString(prnt((QualifiedName)attr.getValue()));
+            } else {
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeStringField(PROPERTY_AT_ID, prnt((QualifiedName)attr.getValue()));
+                jsonGenerator.writeEndObject();
+            }
         } else {
             jsonGenerator.writeStartObject();
             jsonGenerator.writeStringField(PROPERTY_AT_TYPE, prnt(attr.getType()));

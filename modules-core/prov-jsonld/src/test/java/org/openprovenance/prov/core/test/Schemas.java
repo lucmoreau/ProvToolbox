@@ -19,7 +19,8 @@ import static org.openprovenance.prov.core.jsonld11.serialization.Constants.*;
 
 /**
  * The schemas the serialisations are held to: the PROV-JSON schema (draft 4, as the W3C submission's, with the
- * membership and mention definitions it lacks) and the PROV-JSONLD schema shipped with the module (draft 7).
+ * membership and mention definitions it lacks) and the PROV-JSONLD schema shipped with the module (draft 7), its
+ * 2026-10-14 version, the submission's 2024-08-25 one kept for comparison.
  */
 public class Schemas {
 
@@ -30,14 +31,16 @@ public class Schemas {
 
     /** The PROV-JSON schema, in this module's test resources; the PROV-JSONLD schema, in its main resources. */
     public static final JsonSchema PROV_JSON = load(SpecVersion.VersionFlag.V4, "prov-json-schema-v4.json", "src/test/resources/prov-json-schema-v4.json");
-    public static final JsonSchema PROV_JSONLD = load(SpecVersion.VersionFlag.V7, JSONLDSCHEMA_2024_08_25, "src/main/resources/" + JSONLDSCHEMA_2024_08_25);
+    public static final JsonSchema PROV_JSONLD = load(SpecVersion.VersionFlag.V7, JSONLDSCHEMA_2026_10_14, "src/main/resources/" + JSONLDSCHEMA_2026_10_14);
+    /** The schema of the W3C member submission, which admits no node reference as an attribute value. */
+    public static final JsonSchema PROV_JSONLD_2024_08_25 = load(SpecVersion.VersionFlag.V7, JSONLDSCHEMA_2024_08_25, "src/main/resources/" + JSONLDSCHEMA_2024_08_25);
     /** The PROV-JSONLD schema with the openprov terms admitted, for a document that cites the openprov context. */
     public static final JsonSchema OPENPROV_JSONLD = load(SpecVersion.VersionFlag.V7, OPENPROV_SCHEMA_RESOURCE, "src/main/resources/" + OPENPROV_SCHEMA_RESOURCE);
 
     /** A factory resolving the published PROV-JSONLD schema, which the openprov schema references, from the module's own copy. */
     static JsonSchemaFactory factory(SpecVersion.VersionFlag version) {
         return JsonSchemaFactory.builder(JsonSchemaFactory.getInstance(version))
-                .schemaMappers(mappers -> mappers.mapPrefix(JSONLD_SCHEMA_URL, "classpath:" + JSONLDSCHEMA_2024_08_25))
+                .schemaMappers(mappers -> mappers.mapPrefix(JSONLD_SCHEMA_URL, "classpath:" + JSONLDSCHEMA_2026_10_14))
                 .build();
     }
 

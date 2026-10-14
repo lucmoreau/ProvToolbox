@@ -65,6 +65,27 @@ public class JsonLdChecksTest extends TestCase {
         assertTrue(text.contains("http://www.w3.org/ns/prov#qualifiedUsage"));
     }
 
+    /** The violations of a document of one entity identified by the given qualified name. */
+    static List<String> entityIdViolations(String id) throws IOException {
+        String json = "{\"@context\": [{\"ex\": \"http://example.org/\"}, \"https://openprovenance.org/prov-jsonld/context.jsonld\"],"
+                + " \"@graph\": [{\"@type\": \"Entity\", \"@id\": " + new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(id) + "}]}";
+        return Schemas.violations(Schemas.PROV_JSONLD, Schemas.parse(json));
+    }
+
+    /**
+     * The 2026-10-14 schema's qualified name: an optional prefix, then a local name with no colon, except one escaped
+     * as PROV-N escapes it ({@code \:}); the 2024-08-25 schema took any string after the prefix.
+     */
+    public void testQualifiedNameLocalNameHasNoColon() throws IOException {
+        for (String ok : List.of("ex:shed", "shed", "ex:101-generalEntity", "ex2:\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.")) {
+            assertEquals(ok, List.of(), entityIdViolations(ok));
+        }
+        for (String bad : List.of("ex:a:b", "ex:a\\", "urn:uuid:1234")) {
+            List<String> violations = entityIdViolations(bad);
+            assertTrue(bad + ": " + violations, violations.stream().anyMatch(v -> v.startsWith("/@graph/0/@id: does not match the regex pattern")));
+        }
+    }
+
     /** The context, since 2026-09-12, defines {@code Bundle} as {@code prov:Bundle}: a bundle's type expands to it. */
     public void testBundleTypeExpandsToProvBundle() throws Exception {
         JsonArray expanded = JsonLdExpansion.expand(bundle());

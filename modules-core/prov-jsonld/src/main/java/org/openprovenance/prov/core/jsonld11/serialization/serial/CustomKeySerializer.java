@@ -8,10 +8,14 @@ import org.openprovenance.prov.vanilla.QualifiedName;
 
 import java.io.IOException;
 
+import static org.openprovenance.prov.core.jsonld11.serialization.Constants.ID_COERCED_ATTRIBUTE_TERMS;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 
 
 public class CustomKeySerializer extends StdSerializer<QualifiedName> {
+
+    /** Whether the key just written is coerced to {@code @id}, so whether a qualified name under it is written as a bare string. */
+    public static final String ID_COERCED_KEY = "prov:idCoerced";
 
 
     protected CustomKeySerializer() {
@@ -30,6 +34,7 @@ public class CustomKeySerializer extends StdSerializer<QualifiedName> {
         } else {
             s = q.getPrefix() + ":" + q.getLocalPart();
         }
+        serializerProvider.setAttribute(ID_COERCED_KEY, PROV_NS.equals(q.getNamespaceURI()) && ID_COERCED_ATTRIBUTE_TERMS.contains(s));
         jsonGenerator.writeFieldName(s);
     }
 }

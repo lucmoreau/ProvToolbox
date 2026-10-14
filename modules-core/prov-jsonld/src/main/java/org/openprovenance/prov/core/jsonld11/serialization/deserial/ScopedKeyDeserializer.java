@@ -22,6 +22,7 @@ public abstract class ScopedKeyDeserializer extends CustomKeyDeserializer {
         QualifiedName scoped = OpenprovTerms.property(kind, s, ProvFactory.getFactory());
         if (scoped == null) return super.deserializeKey(s, deserializationContext);
         deserializationContext.setAttribute(PROV_ATTRIBUTE_CONTEXT_KEY, scoped);
+        deserializationContext.setAttribute(ID_COERCED_CONTEXT_KEY, true);  // every scoped term is "@type": "@id"
         return scoped;
     }
 

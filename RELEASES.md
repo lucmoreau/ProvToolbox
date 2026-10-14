@@ -12,6 +12,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-dot: the qualified.png/qualified.svg/qualified.pdf serialisers registered from ProvToDot; no more empty attribute box for an unidentified relation whose attributes are all provext links
 * prov-dot, prov-template: qualified-inv.png/svg/pdf, the qualified rendering with an invalidation laid out between its entity and activity
 * prov-template-archetype: 
+* prov-jsonld: create test to check https://github.com/openprov/prov-jsonld/issues/7
 
 `2.2.4`
 

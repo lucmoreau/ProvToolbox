@@ -77,6 +77,20 @@ public class JsonLdChecksTest extends TestCase {
         assertTrue(after.get("$comment").asText().contains("https://www.w3.org/TR/prov-n/#prod-QUALIFIED_NAME"));
     }
 
+    /**
+     * The 2026-10-14 schema carries the 2026-09-12 one's anchored {@code @type} patterns
+     * (https://github.com/openprov/prov-jsonld/issues/5): "Entity" validates, a type merely containing it does not.
+     */
+    public void testTypePatternsAnchored() throws IOException {
+        String doc = "{\"@context\": [{\"ex\": \"http://example.org/\"}, \"https://openprovenance.org/prov-jsonld/context.jsonld\"],"
+                + " \"@graph\": [{\"@type\": \"%s\", \"@id\": \"ex:e\"}]}";
+        assertEquals(List.of(), Schemas.violations(Schemas.PROV_JSONLD, Schemas.parse(String.format(doc, "Entity"))));
+        for (String type : List.of("MyEntity", "EntityX", "prov:Entity")) {
+            assertFalse(type, Schemas.violations(Schemas.PROV_JSONLD, Schemas.parse(String.format(doc, type))).isEmpty());
+            assertTrue(type + " passes 2024-08-25", Schemas.violations(Schemas.PROV_JSONLD_2024_08_25, Schemas.parse(String.format(doc, type))).isEmpty());
+        }
+    }
+
     /** The context, since 2026-09-12, defines {@code Bundle} as {@code prov:Bundle}: a bundle's type expands to it. */
     public void testBundleTypeExpandsToProvBundle() throws Exception {
         JsonArray expanded = JsonLdExpansion.expand(bundle());

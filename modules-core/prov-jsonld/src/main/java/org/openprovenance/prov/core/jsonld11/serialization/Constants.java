@@ -54,8 +54,11 @@ public interface Constants {
     /** The schema of the W3C member submission, https://www.w3.org/submissions/2024/SUBM-prov-jsonld-20240825/schema.json. */
     String JSONLDSCHEMA_2024_08_25 = "2024-08-25/jsonldschema.json";
     /**
-     * The 2024-08-25 schema admitting a node reference {@code {"@id": ...}} as an attribute value, the form of a
-     * qualified name under a key the context does not coerce to {@code @id} (https://github.com/openprov/prov-jsonld/issues/7).
+     * The 2026-09-12 schema of openprov/prov-jsonld (statement, bundle and document {@code @type} patterns anchored,
+     * https://github.com/openprov/prov-jsonld/issues/5) admitting a node reference {@code {"@id": ...}} as an attribute
+     * value, the form of a qualified name under a key the context does not coerce to {@code @id}
+     * (https://github.com/openprov/prov-jsonld/issues/7): ArrayOfValues for type, location and role, ArrayOfStringValues
+     * for the other attributes.
      */
     String JSONLDSCHEMA_2026_10_14 = "2026-10-14/jsonldschema.json";
     String JSONLDCONTEXT_2024_08_25 = "2024-08-25/jsonldcontext.jsonld";

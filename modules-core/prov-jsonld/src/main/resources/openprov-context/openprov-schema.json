@@ -164,7 +164,7 @@
       },
       "patternProperties": {
         "^[A-Za-z0-9_]+:(.*)$": {
-          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfStringValues"
         }
       },
       "additionalProperties": false
@@ -211,7 +211,7 @@
       },
       "patternProperties": {
         "^[A-Za-z0-9_]+:(.*)$": {
-          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfStringValues"
         }
       },
       "additionalProperties": false
@@ -252,7 +252,7 @@
       },
       "patternProperties": {
         "^[A-Za-z0-9_]+:(.*)$": {
-          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfStringValues"
         }
       },
       "additionalProperties": false
@@ -293,7 +293,7 @@
       },
       "patternProperties": {
         "^[A-Za-z0-9_]+:(.*)$": {
-          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfStringValues"
         }
       },
       "additionalProperties": false
@@ -340,7 +340,7 @@
       },
       "patternProperties": {
         "^[A-Za-z0-9_]+:(.*)$": {
-          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfStringValues"
         }
       },
       "additionalProperties": false
@@ -387,7 +387,7 @@
       },
       "patternProperties": {
         "^[A-Za-z0-9_]+:(.*)$": {
-          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfValues"
+          "$ref": "https://openprovenance.org/prov-jsonld/schema.json#/definitions/ArrayOfStringValues"
         }
       },
       "additionalProperties": false

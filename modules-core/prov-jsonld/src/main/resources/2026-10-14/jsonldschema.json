@@ -64,10 +64,24 @@
 		},
 		"ArrayOfValues": {
 			"$id": "#/definitions/ArrayOfValues",
+			"description": "Values under a key the context coerces to @id (type, location, role): a bare string is a qualified name.",
 			"type": "array",
 			"items": {
 				"anyOf": [
 					{ "$ref": "#/definitions/QualifiedName" },
+					{ "$ref": "#/definitions/typed_value" },
+					{ "$ref": "#/definitions/lang_string" },
+					{ "$ref": "#/definitions/node_reference" }
+				]
+			}
+		},
+		"ArrayOfStringValues": {
+			"$id": "#/definitions/ArrayOfStringValues",
+			"description": "Values under a key the context does not coerce to @id (extension properties, value): a bare string is a string; a qualified name is written {\"@id\": ...}.",
+			"type": "array",
+			"items": {
+				"anyOf": [
+					{ "type": "string" },
 					{ "$ref": "#/definitions/typed_value" },
 					{ "$ref": "#/definitions/lang_string" },
 					{ "$ref": "#/definitions/node_reference" }
@@ -132,12 +146,12 @@
 				"@type":      { "pattern": "Entity" },
 				"@id":        { "$ref": "#/definitions/QualifiedName" },
 				"type":       { "$ref": "#/definitions/ArrayOfValues"},
-				"value":      { "$ref": "#/definitions/ArrayOfValues"},
+				"value":      { "$ref": "#/definitions/ArrayOfStringValues"},
 				"location":   { "$ref": "#/definitions/ArrayOfValues" },
 				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -152,7 +166,7 @@
 				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -169,7 +183,7 @@
 				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -188,7 +202,7 @@
 				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -207,7 +221,7 @@
 				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -226,7 +240,7 @@
 				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -248,7 +262,7 @@
 				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -270,7 +284,7 @@
 				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -288,7 +302,7 @@
 				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -308,7 +322,7 @@
 				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -327,7 +341,7 @@
 				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -348,7 +362,7 @@
 				"label":           { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -366,7 +380,7 @@
 				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -384,7 +398,7 @@
 				"label":           { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -402,7 +416,7 @@
 				"label":       { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -420,7 +434,7 @@
 				"label":       { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},
@@ -438,7 +452,7 @@
 				"label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 			},
 			"patternProperties": {
-				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
+				"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfStringValues" }
 			},
 			"additionalProperties": false
 		},

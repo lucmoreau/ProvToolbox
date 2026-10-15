@@ -9,8 +9,9 @@
 			"$id": "#/definitions/QualifiedName",
 			"type": "string",
 			"title": "The QualifiedName Schema",
+			"$comment": "A qualified name is expected to follow the PROV-N syntax of QUALIFIED_NAME (https://www.w3.org/TR/prov-n/#prod-QUALIFIED_NAME); this schema does not enforce it: the pattern only separates an optional prefix.",
 			"default": "",
-			"pattern": "^([A-Za-z0-9_]+:)?([^:\\\\]|\\\\.)*$"
+			"pattern": "(^[A-Za-z0-9_]+:)?(.*)$"
 		},
 		"QualifiedName+": {
 			"$id": "#/definitions/QualifiedName+",

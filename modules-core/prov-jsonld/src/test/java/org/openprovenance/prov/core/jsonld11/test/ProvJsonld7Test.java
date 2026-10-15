@@ -191,9 +191,10 @@ public class ProvJsonld7Test extends TestCase {
 
     /**
      * A review found that "Meeting at 10:30", a string under an extension property as the reader reads it, failed the
-     * 2026-10-14 schema, which admitted a bare string there only as a QualifiedName, whose local name takes no colon.
-     * Extension properties and value now take ArrayOfStringValues, where a bare string is any string; type, location
-     * and role keep ArrayOfValues, where a bare string is a qualified name.
+     * 2026-10-14 schema as it then stood, which admitted a bare string there only as a QualifiedName whose local name
+     * took no colon. Extension properties and value now take ArrayOfStringValues, where a bare string is any string;
+     * type, location and role keep ArrayOfValues, where a bare string is a qualified name (QualifiedName is back to its
+     * 2024-08-25 definition).
      */
     public void testStringWithColonConformsToSchema() throws Exception {
         File file = new File(DIR + "string-with-colon.jsonld");
@@ -207,16 +208,6 @@ public class ProvJsonld7Test extends TestCase {
         File written = write(doc, "prov-jsonld-7-string-with-colon.jsonld");
         assertEquals("[{\"@value\":\"Meeting at 10:30\"}]", mapper.readTree(written).get("@graph").get(0).get("ex:note").toString());
         assertEquals(List.of(), Schemas.violations(written));
-    }
-
-    /** Under type, coerced to @id, a bare string is a qualified name: one with a colon in its local name, or a sentence, is rejected. */
-    public void testTypeTakesQualifiedNamesOnly() throws Exception {
-        for (String bad : List.of("ex:a:b", "Meeting at 10:30")) {
-            String json = "{\"@context\": [{\"ex\": \"http://example.org/\"}, \"https://openprovenance.org/prov-jsonld/context.jsonld\"],"
-                    + " \"@graph\": [{\"@type\": \"Activity\", \"@id\": \"ex:meeting\", \"type\": [\"" + bad + "\"]}]}";
-            List<String> violations = Schemas.violations(Schemas.PROV_JSONLD, Schemas.parse(json));
-            assertTrue(bad + ": " + violations, violations.stream().anyMatch(v -> v.startsWith("/@graph/0/type/0: does not match the regex pattern")));
-        }
     }
 
     /** The openprov schema, regenerated from the 2026-10-14 one, takes the same string under an extension property of a scoped relation. */

@@ -11,8 +11,11 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-dot: ProvViz, the visualisation model (VizGraph) that ProvToDot and the new ProvToMermaid render; mermaid output (mmd, qualified.mmd; svg/png/pdf via mmdc) in prov-interop and prov-template
 * prov-dot: the qualified.png/qualified.svg/qualified.pdf serialisers registered from ProvToDot; no more empty attribute box for an unidentified relation whose attributes are all provext links
 * prov-dot, prov-template: qualified-inv.png/svg/pdf, the qualified rendering with an invalidation laid out between its entity and activity
-* prov-template-archetype: 
+* prov-service-security-pac: github authentication
+* prov-template-archetype: github authentication support
 * prov-jsonld: create test to check https://github.com/openprov/prov-jsonld/issues/7
+* prov-service-security-pac: update DirectBearerAuthClient, support for multiple direct clients
+* prov-template-compiler: jsonld schema check for output template
 
 `2.2.4`
 

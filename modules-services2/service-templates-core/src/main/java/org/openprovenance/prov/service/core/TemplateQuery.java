@@ -4384,15 +4384,23 @@ public class TemplateQuery {
         return the_records;
     }
 
-    public void whereAccessControl(String principal, StringBuilder sb) {
-        sb.append("\n WHERE (record_index.principal='");
-        sb.append(principal);
-        sb.append("' OR access_control.record IS NOT NULL)");
+    /** The record-level access control (RecordAccess): readers named by the security configuration see every record. */
+    private RecordAccess access = RecordAccess.NONE;
+
+    public void setReaders(java.util.Collection<String> readers) {
+        this.access = RecordAccess.readers(readers);
     }
+
+    public boolean isReader(String principal) {
+        return access.isReader(principal);
+    }
+
+    public void whereAccessControl(String principal, StringBuilder sb) {
+        access.where(principal, sb);
+    }
+
     public void andAccessControl(String principal, StringBuilder sb) {
-        sb.append("\n AND (record_index.principal='");
-        sb.append(principal);
-        sb.append("' OR access_control.record IS NOT NULL)");
+        access.and(principal, sb);
     }
 
     public void joinAccessControl(String template_table_name, String principal, StringBuilder sb) {

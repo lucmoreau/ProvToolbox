@@ -196,6 +196,9 @@ public class TemplateService {
         this.documentBuilderDispatcher=catalogueDispatcher.getDocumentBuilderDispatcher();
         this.recordMaker=catalogueDispatcher.getRecordMaker();
         this.queryTemplate=new TemplateQuery(querier, this.catalogueDispatcher, principalManager, compositeLinker, om);
+        if (securityConfiguration != null) {
+            this.queryTemplate.setReaders(securityConfiguration.getReaders());
+        }
         this.templateLogic=new TemplateLogicWithConfig(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om, nlgXplanLibary, nlgPlanSelection, nlgXplanStrategy);
 
 

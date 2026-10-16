@@ -1,5 +1,6 @@
 package org.openprovenance.prov.core.jsonld11.serialization;
 
+import java.util.List;
 import java.util.Set;
 
 public interface Constants {
@@ -61,7 +62,28 @@ public interface Constants {
      * for the other attributes.
      */
     String JSONLDSCHEMA_2026_10_14 = "2026-10-14/jsonldschema.json";
+    /** The 2026-09-12 schema of openprov/prov-jsonld: the 2024-08-25 one with the {@code @type} patterns anchored (#5). */
+    String JSONLDSCHEMA_2026_09_12 = "2026-09-12/jsonldschema.json";
     String JSONLDCONTEXT_2024_08_25 = "2024-08-25/jsonldcontext.jsonld";
+
+    /**
+     * The versions of the PROV-JSONLD schema the module bundles, oldest first: for each, the schema at
+     * {@link #jsonldSchemaResource(String)} and the openprov schema generated from it at
+     * {@link #openprovSchemaResource(String)} (the openprov schema refers to its own version's definitions).
+     */
+    List<String> JSONLD_SCHEMA_VERSIONS = List.of("2024-08-25", "2026-09-12", "2026-10-14");
+    /** The version this module writes, the one published at JSONLD_SCHEMA_URL: the newest bundled. */
+    String JSONLD_SCHEMA_DEFAULT_VERSION = "2026-10-14";
+
+    /** The resource of a bundled version of the PROV-JSONLD schema. */
+    static String jsonldSchemaResource(String version) {
+        return version + "/jsonldschema.json";
+    }
+
+    /** The resource of the openprov schema generated from a bundled version of the PROV-JSONLD schema. */
+    static String openprovSchemaResource(String version) {
+        return "openprov-context/" + version + "/openprov-schema.json";
+    }
 
     String OLD_JSONLD_CONTEXT_URL = "http://openprovenance.org/prov.jsonld";
 

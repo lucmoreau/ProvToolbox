@@ -37,6 +37,8 @@ public class MergeTask implements ConfigTask {
     public List<String> variableMaps;
     public boolean addOutputDirToInputPath=false;
     public String variableCheck;
+    /** This task's schemaCheck, overriding its batch's (see {@link TemplateTasksBatch#schemaCheck}). */
+    public String schemaCheck;
 
 
     static private final Ptm_mergingBuilder mergeBuilder =new Ptm_mergingBuilder();
@@ -59,6 +61,7 @@ public class MergeTask implements ConfigTask {
                 ", variableMaps=" + variableMaps +
                 ", addOutputDirToInputPath=" + addOutputDirToInputPath +
                 ", variableCheck='" + variableCheck + '\'' +
+                ", schemaCheck='" + schemaCheck + '\'' +
                 '}';
     }
 
@@ -159,6 +162,9 @@ public class MergeTask implements ConfigTask {
                 String csvRecord = createMergeCsvRecord(format, location1, location2, time, secondsSince2023_01_01);
                 loggedRecords.add(csvRecord);
             }
+        }
+        for (String format : formats) {
+            executor.checkSchema(templateTasksBatch, schemaCheck, format, Path.of(templateTasksBatch.output_dir, output + "." + format).toFile(), output);
         }
 
         Optional<StatementChecker> statementChecker;

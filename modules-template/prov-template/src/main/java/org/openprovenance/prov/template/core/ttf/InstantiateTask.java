@@ -38,6 +38,8 @@ public class InstantiateTask implements ConfigTask {
     public List<String> variableMaps;
     public boolean addOutputDirToInputPath=false;
     public String variableCheck;
+    /** This task's schemaCheck, overriding its batch's (see {@link TemplateTasksBatch#schemaCheck}). */
+    public String schemaCheck;
 
 
     static private final Ptm_instantiatingBuilder instantiateBuilder =new Ptm_instantiatingBuilder();
@@ -60,6 +62,7 @@ public class InstantiateTask implements ConfigTask {
                 ", variableMaps=" + variableMaps +
                 ", addOutputDirToInputPath=" + addOutputDirToInputPath +
                 ", variableCheck='" + variableCheck + '\'' +
+                ", schemaCheck='" + schemaCheck + '\'' +
                 '}';
     }
 
@@ -145,6 +148,7 @@ public class InstantiateTask implements ConfigTask {
             outputIndex.addEntry(outputId,format, outputIndex.relativize(documentPath).toString());
             Files.createDirectories(documentPath.getParent());
             executor.serialize(new FileOutputStream(documentPath.toFile()), format, doc, false);
+            executor.checkSchema(templateTasksBatch, schemaCheck, format, documentPath.toFile(), output);
             if (copyinput != null && copyinput) {
                 executor.serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + template.replace(".provn","."+format)), format, doc, false);
                 synchronized (outputIndex) {

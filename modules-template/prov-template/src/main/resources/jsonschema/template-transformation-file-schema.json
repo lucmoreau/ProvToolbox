@@ -2,6 +2,11 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "description": "Schema for a Template Transformation File",
     "definitions": {
+        "SchemaCheck": {
+            "description": "The version of the PROV-JSONLD schema a generated jsonld output is validated against: none (no check, the default when absent), default (the version ProvToolbox writes), or a date naming a version bundled with ProvToolbox (2024-08-25, 2026-09-12, 2026-10-14).",
+            "type": "string",
+            "pattern": "^(none|default|[0-9]{4}-[0-9]{2}-[0-9]{2})$"
+        },
         "ProvFormat": {
             "type": "string",
             "enum": ["provn", "prov-jsonld", "jsonld","svg", "png", "pdf", "qualified.png", "qualified.svg", "qualified.pdf",
@@ -44,6 +49,9 @@
                 },
                 "variableCheck": {
                     "type": "string"
+                },
+                "schemaCheck": {
+                    "$ref": "#/definitions/SchemaCheck"
                 }
             },
             "required": ["type", "template", "bindings", "output", "formats"],
@@ -89,6 +97,9 @@
                 },
                 "variableCheck": {
                     "type": "string"
+                },
+                "schemaCheck": {
+                    "$ref": "#/definitions/SchemaCheck"
                 }
             },
             "required": ["type", "inputs", "output", "formats"],
@@ -117,6 +128,9 @@
         },
         "output_dir": {
             "type": "string"
+        },
+        "schemaCheck": {
+            "$ref": "#/definitions/SchemaCheck"
         },
         "variableMaps": {
             "type": "array",

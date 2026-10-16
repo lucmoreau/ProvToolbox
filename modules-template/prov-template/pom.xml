@@ -68,6 +68,14 @@
             <version>2.2.5-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- a TTF's schemaCheck validates the generated PROV-JSONLD against a bundled schema version -->
+        <dependency>
+            <groupId>com.networknt</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>1.5.9</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

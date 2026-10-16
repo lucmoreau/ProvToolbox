@@ -8,6 +8,8 @@ module prov.template {
     requires org.apache.commons.text;
     requires org.apache.logging.log4j;
     requires prov.model;
+    requires prov.jsonld;
+    requires com.networknt.schema;
     requires java.xml;
 
 

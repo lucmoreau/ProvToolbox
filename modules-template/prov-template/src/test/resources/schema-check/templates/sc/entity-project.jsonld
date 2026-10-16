@@ -1,0 +1,13 @@
+{
+  "@context": [
+    { "var": "http://openprovenance.org/var#", "vargen": "http://openprovenance.org/vargen#", "tmpl": "http://openprovenance.org/tmpl#", "ex": "http://example.org/" },
+    "https://openprovenance.org/prov-jsonld/context.jsonld"
+  ],
+  "@graph": [
+    { "@type": "Bundle", "@id": "vargen:bundleId",
+      "@graph": [
+        { "@type": "Entity", "@id": "var:entity", "ex:project": [ { "@id": "var:project" } ] }
+      ]
+    }
+  ]
+}

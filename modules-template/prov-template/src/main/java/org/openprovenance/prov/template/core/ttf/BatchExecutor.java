@@ -6,6 +6,8 @@ import org.apache.commons.text.StringSubstitutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.model.interop.InteropMediaType;
+import org.openprovenance.prov.template.core.exception.SchemaCheckException;
 import org.openprovenance.prov.template.utils.TemplateExtension;
 import org.openprovenance.prov.template.utils.TemplateIndex;
 import org.openprovenance.prov.template.utils.TemplateIndexPath;
@@ -117,6 +119,8 @@ public class BatchExecutor {
             templateTasksBatch.template_path = templateTasksBatch.template_path.stream().map(s -> (s.startsWith("."))? localdir+s.substring(1):s).collect(Collectors.toList());
 
             return execute(templateTasksBatch, inputBasedir, outputBasedir, variableMap);
+        } catch (SchemaCheckException e) {
+            throw e;   // a failed schemaCheck fails the execution, where other task errors are logged
         } catch (Exception e) {
             logger.error("Error while executing", e);
             return 1;
@@ -229,6 +233,23 @@ public class BatchExecutor {
 
     public void serialize(OutputStream fileOutputStream, String format, Document doc, boolean b) {
         serializerMap.get(format).serialiseDocument(fileOutputStream, doc, b);
+    }
+
+    /**
+     * Validates a task's generated output against the version of the PROV-JSONLD schema its schemaCheck names (the
+     * task's own, else its batch's), if the output is jsonld and the check is not none.
+     * @throws SchemaCheckException listing the violations, when the output does not conform
+     */
+    public void checkSchema(TemplateTasksBatch batch, String taskSchemaCheck, String format, File file, String output) throws IOException {
+        if (!InteropMediaType.EXTENSION_JSONLD.equals(format)) return;
+        String version = SchemaCheck.version(SchemaCheck.effective(batch.schemaCheck, taskSchemaCheck));
+        if (version == null) return;
+        List<String> violations = SchemaCheck.violations(file, version);
+        if (!violations.isEmpty()) {
+            throw new SchemaCheckException("schemaCheck " + version + ": " + output + "." + format + " does not conform ("
+                    + violations.size() + " violations): " + String.join("; ", violations.subList(0, Math.min(10, violations.size())))
+                    + (violations.size() > 10 ? "; ..." : ""));
+        }
     }
 
 

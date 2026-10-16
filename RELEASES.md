@@ -16,6 +16,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-jsonld: create test to check https://github.com/openprov/prov-jsonld/issues/7
 * prov-service-security-pac: update DirectBearerAuthClient, support for multiple direct clients
 * prov-template-compiler: jsonld schema check for output template
+* prov-template-archetype: docker deployment
+
 
 `2.2.4`
 

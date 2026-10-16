@@ -1341,9 +1341,9 @@
             data.shift()
             console.log(data)
 
-            let seen=[]
+            let seen={}
 
-            ${symbol_dollar}(id).DataTable({
+            let table = ${symbol_dollar}(id).DataTable({
                 destroy: true,
                 "data": data,
                 "columns": titles,
@@ -1369,6 +1369,7 @@
                     ]
 
             });
+            table.on('draw', () => showSignatureVerdicts(table, seen));
         }
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(json_data);
@@ -1382,15 +1383,32 @@
 
         let sig=JSON.parse(data)["SHA3-512"]
 
-        if (!seen.includes(id)) {
-            seen.push(id)
-            getRecordAsCsv(sig, id, template)
+        // seen maps the signature to the check's verdict (undefined while it runs)
+        if (!(sig in seen)) {
+            seen[sig] = undefined
+            getRecordAsCsv(sig, id, template, seen)
         }
 
         return "<div id='" + sig + "'>" + sig.substring(0, 8) + "..." + "</div>"
     }
 
-    function getRecordAsCsv(sig, id, template) {
+    // rows off the current page are not in the document when their check comes back, so every
+    // draw (a page turned, a sort) gives the drawn signatures their tick or cross
+    function showSignatureVerdicts(table, seen) {
+        ${symbol_dollar}(table.rows({page: 'current'}).nodes()).find('div[id]').each(function () {
+            if (seen[this.id] !== undefined && ${symbol_dollar}(this).children('i').length === 0) {
+                ${symbol_dollar}(this).append(signatureIcon(seen[this.id]))
+            }
+        })
+    }
+
+    function signatureIcon(reproduced) {
+        if (reproduced === true) return '<i style="color: green" class="fa fa-check" title="hash reproduced"></i>'
+        if (reproduced === false) return '<i style="color: red" class="fa fa-times" title="hash not reproduced"></i>'
+        return ""
+    }
+
+    function getRecordAsCsv(sig, id, template, seen) {
         //let url = "http://localhost:7072/ptl/provapi/template/" + template + "/" + id + ".csv"
         let url = "${symbol_dollar}{service.context}/provapi/template/" + template + "/" + id + ".csv"
         // perform an XMLHttpRequest() to get the csv record, calculate its hash and compare it with the signature
@@ -1413,15 +1431,9 @@
             console.log("id: hash " + id )
             console.log("- csv_sig " + csv_sig)
             console.log("- sig " + sig)
-            let div_id = "${symbol_pound}" + sig
-            if (csv_sig !== sig) {
-                // append cross at the end of the div with id
-                ${symbol_dollar}(div_id).append('<i  style="color: red"class="fa fa-times"></i>')
-            } else {
-                // append a green tick at the end of the div with id
-                ${symbol_dollar}(div_id).append('<i style="color: green" class="fa fa-check"></i>')
-
-            }
+            seen[sig] = (csv_sig === sig)
+            // a tick or a cross at the end of the div with id, if its row is drawn now
+            ${symbol_dollar}("${symbol_pound}" + sig).append(signatureIcon(seen[sig]))
         }
         xhr.setRequestHeader("Accept", "text/csv");
         xhr.send();

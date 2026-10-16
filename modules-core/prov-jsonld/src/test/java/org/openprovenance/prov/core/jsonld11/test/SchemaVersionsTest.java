@@ -55,6 +55,29 @@ public class SchemaVersionsTest extends TestCase {
         assertEquals(resource(Constants.OPENPROV_SCHEMA_RESOURCE), resource(Constants.openprovSchemaResource(Constants.JSONLD_SCHEMA_DEFAULT_VERSION)));
     }
 
+    /**
+     * A strict variant is its version's schema with QualifiedName's pattern and $comment, and the $id, changed
+     * (openprov/prov-jsonld's script/schema-qn.py), and shares its version's openprov schema.
+     */
+    public void testStrictVariants() throws IOException {
+        for (String version : Constants.JSONLD_SCHEMA_QN_VERSIONS) {
+            assertTrue(version, Constants.JSONLD_SCHEMA_VERSIONS.contains(version));
+            String strict = version + Constants.JSONLD_SCHEMA_QN_SUFFIX;
+            JsonNode qn = resource(Constants.jsonldSchemaResource(strict)).deepCopy();
+            JsonNode spec = resource(Constants.jsonldSchemaResource(version));
+            assertEquals(strict, "https://openprovenance.org/prov-jsonld/schema-" + strict + ".json", qn.get("$id").asText());
+            String pattern = qn.get("definitions").get("QualifiedName").get("pattern").asText();
+            assertTrue(strict, "ex:shed".matches(pattern) && !"ex:a:b".matches(pattern) && !"ex:café".matches(pattern));
+            ((com.fasterxml.jackson.databind.node.ObjectNode) qn).put("$id", spec.get("$id").asText());
+            com.fasterxml.jackson.databind.node.ObjectNode qname = (com.fasterxml.jackson.databind.node.ObjectNode) qn.get("definitions").get("QualifiedName");
+            JsonNode specQname = spec.get("definitions").get("QualifiedName");
+            qname.put("pattern", specQname.get("pattern").asText());
+            if (specQname.has("$comment")) qname.put("$comment", specQname.get("$comment").asText()); else qname.remove("$comment");
+            assertEquals(strict + " differs from " + version + " elsewhere", spec, qn);
+            assertEquals(Constants.openprovSchemaResource(version), Constants.openprovSchemaResource(strict));
+        }
+    }
+
     /** What sets the versions apart: anchored @type patterns from 2026-09-12, node references from 2026-10-14. */
     public void testVersionsDiffer() throws IOException {
         JsonNode v0825 = resource(Constants.jsonldSchemaResource("2024-08-25")).get("definitions");

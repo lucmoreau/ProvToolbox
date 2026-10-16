@@ -48,8 +48,35 @@ public class SchemaCheckTest extends TestCase {
             SchemaCheck.version("2025-01-01");
             fail("an unbundled version was accepted");
         } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage(), e.getMessage().contains("none, default, 2024-08-25, 2026-09-12, 2026-10-14"));
+            assertTrue(e.getMessage(), e.getMessage().contains("none, default, default-qn, 2024-08-25, 2026-09-12, 2026-10-14, 2026-10-14-qn"));
         }
+    }
+
+    /** A -qn suffix selects the strict variant, for the versions bundled with one; default-qn is the default's. */
+    public void testStrictVersion() {
+        assertEquals(Constants.JSONLD_SCHEMA_DEFAULT_VERSION + "-qn", SchemaCheck.version("default-qn"));
+        assertEquals("2026-10-14-qn", SchemaCheck.version("2026-10-14-qn"));
+        try {
+            SchemaCheck.version("2024-08-25-qn");
+            fail("a version without a strict variant was accepted");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("2026-10-14-qn"));
+        }
+    }
+
+    /**
+     * The strict variant checks the syntax of a qualified name: ex:a:b (a colon in the local name) passes 2026-10-14
+     * and fails 2026-10-14-qn, as a PROV-JSONLD identifier and, through the openprov schema's references to the
+     * specification's QualifiedName, as an openprov scoped term.
+     */
+    public void testStrictQualifiedNames() throws IOException {
+        File spec = file(SPEC_DOC.replace("EntityX", "Entity").replace("ex:e", "ex:a:b"));
+        assertEquals(List.of(), SchemaCheck.violations(spec, "2026-10-14"));
+        assertFalse(SchemaCheck.violations(spec, "2026-10-14-qn").isEmpty());
+        File openprov = file(OPENPROV_DOC.replace("\"association\": \"ex:asc\"", "\"association\": \"ex:a:b\""));
+        assertEquals(List.of(), SchemaCheck.violations(openprov, "2026-10-14"));
+        assertFalse(SchemaCheck.violations(openprov, "2026-10-14-qn").isEmpty());
+        assertEquals(List.of(), SchemaCheck.violations(file(OPENPROV_DOC), "2026-10-14-qn"));
     }
 
     public void testTaskOverridesBatch() {
@@ -99,7 +126,7 @@ public class SchemaCheckTest extends TestCase {
 
     public void testInstantiateTask() throws IOException {
         String output = "out/sc/entity-project.jsonld";
-        for (String[] passing : new String[][] { {null, null}, {"none", null}, {"2026-10-14", null}, {"default", null}, {"2024-08-25", "default"} }) {
+        for (String[] passing : new String[][] { {null, null}, {"none", null}, {"2026-10-14", null}, {"default", null}, {"default-qn", null}, {"2024-08-25", "default-qn"} }) {
             Path dir = batch(passing[0], passing[1]);
             assertEquals(String.join("/", String.valueOf(passing[0]), String.valueOf(passing[1])), 0, run(dir));
             String written = Files.readString(dir.resolve(output), StandardCharsets.UTF_8);
@@ -112,6 +139,14 @@ public class SchemaCheckTest extends TestCase {
             fail("a non-conforming output passed schemaCheck 2024-08-25");
         } catch (SchemaCheckException e) {
             assertTrue(e.getMessage(), e.getMessage().startsWith("schemaCheck 2024-08-25: sc/entity-project.jsonld does not conform"));
+        }
+        // a value naming no bundled version fails the execution, where other task errors are logged
+        Path unbundled = batch("2025-01-01", null);
+        try {
+            run(unbundled);
+            fail("an unbundled schemaCheck was passed over");
+        } catch (SchemaCheckException e) {
+            assertTrue(e.getMessage(), e.getMessage().startsWith("schemaCheck '2025-01-01': not one of ") && e.getMessage().endsWith("(sc/entity-project.jsonld)"));
         }
     }
 }

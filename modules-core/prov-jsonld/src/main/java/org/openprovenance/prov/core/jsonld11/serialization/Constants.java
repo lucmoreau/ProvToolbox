@@ -75,13 +75,32 @@ public interface Constants {
     /** The version this module writes, the one published at JSONLD_SCHEMA_URL: the newest bundled. */
     String JSONLD_SCHEMA_DEFAULT_VERSION = "2026-10-14";
 
-    /** The resource of a bundled version of the PROV-JSONLD schema. */
+    /**
+     * The suffix of a strict variant: {@code 2026-10-14-qn} is the 2026-10-14 schema with the syntax of a qualified
+     * name enforced (PROV-N's QUALIFIED_NAME restricted to ASCII), openprov/prov-jsonld's schema-2026-10-14-qn.json,
+     * generated there from schema.json by script/schema-qn.py.
+     */
+    String JSONLD_SCHEMA_QN_SUFFIX = "-qn";
+    /** The versions bundled with a strict variant as well. */
+    List<String> JSONLD_SCHEMA_QN_VERSIONS = List.of("2026-10-14");
+
+    /** The resource of a bundled version of the PROV-JSONLD schema, or of its strict variant (a version ending in -qn). */
     static String jsonldSchemaResource(String version) {
+        if (version.endsWith(JSONLD_SCHEMA_QN_SUFFIX)) {
+            return version.substring(0, version.length() - JSONLD_SCHEMA_QN_SUFFIX.length()) + "/jsonldschema-qn.json";
+        }
         return version + "/jsonldschema.json";
     }
 
-    /** The resource of the openprov schema generated from a bundled version of the PROV-JSONLD schema. */
+    /**
+     * The resource of the openprov schema generated from a bundled version of the PROV-JSONLD schema. A strict
+     * variant shares its version's: the openprov schema refers to QualifiedName through JSONLD_SCHEMA_URL, so it is
+     * strict when that URL resolves to the strict schema.
+     */
     static String openprovSchemaResource(String version) {
+        if (version.endsWith(JSONLD_SCHEMA_QN_SUFFIX)) {
+            version = version.substring(0, version.length() - JSONLD_SCHEMA_QN_SUFFIX.length());
+        }
         return "openprov-context/" + version + "/openprov-schema.json";
     }
 

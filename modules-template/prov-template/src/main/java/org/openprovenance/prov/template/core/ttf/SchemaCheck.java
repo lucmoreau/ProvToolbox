@@ -23,13 +23,15 @@ import java.util.stream.Collectors;
  * A TTF's {@code schemaCheck}: the version of the PROV-JSONLD schema a generated {@code jsonld} output is validated
  * against, among the versions the prov-jsonld artifact bundles. {@code "none"} (or no value) checks nothing,
  * {@code "default"} is the version ProvToolbox writes, and a date such as {@code "2024-08-25"} names a bundled
- * version. A document citing the openprov context is validated against the openprov schema generated from that
- * version, any other against the version's schema.
+ * version. A {@code -qn} suffix ({@code "default-qn"}, {@code "2026-10-14-qn"}) selects a version's strict variant,
+ * which also enforces the syntax of a qualified name. A document citing the openprov context is validated against
+ * the openprov schema generated from that version, any other against the version's schema.
  */
 public final class SchemaCheck {
 
     public static final String NONE = "none";
     public static final String DEFAULT = "default";
+    public static final String QN = Constants.JSONLD_SCHEMA_QN_SUFFIX;
 
     static final ObjectMapper mapper = new ObjectMapper();
 
@@ -50,8 +52,20 @@ public final class SchemaCheck {
         if (value == null || NONE.equals(value)) return null;
         if (DEFAULT.equals(value)) return Constants.JSONLD_SCHEMA_DEFAULT_VERSION;
         if (Constants.JSONLD_SCHEMA_VERSIONS.contains(value)) return value;
-        throw new IllegalArgumentException("schemaCheck '" + value + "': not one of " + NONE + ", " + DEFAULT + ", "
-                + String.join(", ", Constants.JSONLD_SCHEMA_VERSIONS));
+        boolean strict = value.endsWith(QN);
+        String base = strict ? value.substring(0, value.length() - QN.length()) : value;
+        if (strict && DEFAULT.equals(base)) base = Constants.JSONLD_SCHEMA_DEFAULT_VERSION;
+        if (strict && Constants.JSONLD_SCHEMA_QN_VERSIONS.contains(base)) return base + QN;
+        throw new IllegalArgumentException("schemaCheck '" + value + "': not one of " + String.join(", ", values()));
+    }
+
+    /** The values a schemaCheck may take. */
+    public static List<String> values() {
+        List<String> values = new java.util.ArrayList<>(List.of(NONE, DEFAULT));
+        if (Constants.JSONLD_SCHEMA_QN_VERSIONS.contains(Constants.JSONLD_SCHEMA_DEFAULT_VERSION)) values.add(DEFAULT + QN);
+        values.addAll(Constants.JSONLD_SCHEMA_VERSIONS);
+        for (String v : Constants.JSONLD_SCHEMA_QN_VERSIONS) values.add(v + QN);
+        return values;
     }
 
     /** The schemaCheck that applies to a task: its own if it has one, else its batch's. */
@@ -75,13 +89,25 @@ public final class SchemaCheck {
 
     static JsonSchema schema(String version, boolean openprov) {
         return schemas.computeIfAbsent(version + (openprov ? "/openprov" : "/spec"), k -> {
-            // both schemas known by their published URLs, so the openprov schema's references resolve to this version
+            // the schemas known by their published URLs, so the openprov schema's references resolve to this version;
+            // a strict variant has its own $id, against which its internal references resolve: known by both
+            String spec = read(Constants.jsonldSchemaResource(version));
+            Map<String, String> known = new java.util.HashMap<>();
+            known.put(Constants.JSONLD_SCHEMA_URL, spec);
+            known.put(Constants.OPENPROV_SCHEMA_URL, read(Constants.openprovSchemaResource(version)));
+            known.put(id(spec), spec);
             JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7, builder ->
-                    builder.schemaLoaders(loaders -> loaders.schemas(Map.of(
-                            Constants.JSONLD_SCHEMA_URL, read(Constants.jsonldSchemaResource(version)),
-                            Constants.OPENPROV_SCHEMA_URL, read(Constants.openprovSchemaResource(version))))));
-            return factory.getSchema(SchemaLocation.of(openprov ? Constants.OPENPROV_SCHEMA_URL : Constants.JSONLD_SCHEMA_URL), CONFIG);
+                    builder.schemaLoaders(loaders -> loaders.schemas(known)));
+            return factory.getSchema(SchemaLocation.of(openprov ? Constants.OPENPROV_SCHEMA_URL : id(spec)), CONFIG);
         });
+    }
+
+    static String id(String schema) {
+        try {
+            return mapper.readTree(schema).path("$id").asText(Constants.JSONLD_SCHEMA_URL);
+        } catch (IOException e) {
+            throw new IllegalStateException("schema not parsable", e);
+        }
     }
 
     static String read(String resource) {

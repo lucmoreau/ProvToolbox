@@ -238,11 +238,17 @@ public class BatchExecutor {
     /**
      * Validates a task's generated output against the version of the PROV-JSONLD schema its schemaCheck names (the
      * task's own, else its batch's), if the output is jsonld and the check is not none.
-     * @throws SchemaCheckException listing the violations, when the output does not conform
+     * @throws SchemaCheckException listing the violations, when the output does not conform, or when the
+     *         schemaCheck names no bundled version
      */
     public void checkSchema(TemplateTasksBatch batch, String taskSchemaCheck, String format, File file, String output) throws IOException {
         if (!InteropMediaType.EXTENSION_JSONLD.equals(format)) return;
-        String version = SchemaCheck.version(SchemaCheck.effective(batch.schemaCheck, taskSchemaCheck));
+        String version;
+        try {
+            version = SchemaCheck.version(SchemaCheck.effective(batch.schemaCheck, taskSchemaCheck));
+        } catch (IllegalArgumentException e) {
+            throw new SchemaCheckException(e.getMessage() + " (" + output + "." + format + ")");   // a mistyped value fails too
+        }
         if (version == null) return;
         List<String> violations = SchemaCheck.violations(file, version);
         if (!violations.isEmpty()) {

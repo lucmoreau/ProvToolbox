@@ -21,6 +21,8 @@
         <upload.directory>/home/pservice/files</upload.directory>  <!-- same folder as in docker profile in service-translator -->
         <cached.dictionary.folder>${basedir}/dictionary</cached.dictionary.folder>
         <deployed.dictionary.folder>${project.build.directory}/dictionary</deployed.dictionary.folder>
+        <!-- build.all: the linux/amd64 and linux/arm64 images; build.native: only this machine's -->
+        <docker.make.target>build.all</docker.make.target>
     </properties>
 
     <build>
@@ -49,7 +51,7 @@
                             <arguments>
                                 <argument>-f</argument>
                                 <argument>classes/Makefile</argument>
-                                <argument>build.all</argument>
+                                <argument>${docker.make.target}</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -76,6 +78,24 @@
                             <artifactId>${rootArtifactId}-service</artifactId>
                             <version>${version}</version>
                             <classifier>secure</classifier>
+                            <type>war</type>
+                            <overWrite>true</overWrite>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </artifactItem>
+                        <artifactItem>
+                            <groupId>${groupId}</groupId>
+                            <artifactId>${rootArtifactId}-service</artifactId>
+                            <version>${version}</version>
+                            <classifier>github</classifier>
+                            <type>war</type>
+                            <overWrite>true</overWrite>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </artifactItem>
+                        <artifactItem>
+                            <groupId>${groupId}</groupId>
+                            <artifactId>${rootArtifactId}-service</artifactId>
+                            <version>${version}</version>
+                            <classifier>unsecure</classifier>
                             <type>war</type>
                             <overWrite>true</overWrite>
                             <outputDirectory>${project.build.directory}</outputDirectory>
@@ -114,13 +134,23 @@
                                 <copy file="${project.basedir}/docker.conf/gitignore"
                                       tofile="${project.basedir}/docker.conf/.gitignore"
                                       overwrite="false"/>
-                                <copy file="${project.build.directory}/classes/env_file.env"
-                                      tofile="${project.basedir}/docker.conf/env_file.env"
-                                      overwrite="true"/>
-                                <copy file="${project.build.directory}/classes/env_file.env"
-                                      tofile="${project.basedir}/docker.conf/.env"
-                                      overwrite="true"/>
                                 <chmod file="${project.basedir}/docker.conf/docker-entrypoint-initdb16.d/01-init.sh" perm="755"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <!-- the lexicon of the explanations (XPLAIN_LEXICON), from the cache into target/dictionary,
+                         from which the Makefile copies it into the image -->
+                    <execution>
+                        <id>deploy-dictionary</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <mkdir dir="${deployed.dictionary.folder}"/>
+                                <copy file="${cached.dictionary.folder}/lexAccess2013.script" todir="${deployed.dictionary.folder}"/>
+                                <unzip src="${cached.dictionary.folder}/lexAccess2013.data.zip" dest="${deployed.dictionary.folder}"/>
                             </target>
                         </configuration>
                     </execution>
@@ -130,5 +160,68 @@
 
 
     </build>
+
+    <profiles>
+        <!-- the lexicon is not cached yet (dictionary/, git-ignored): download LexAccess 2013 from the
+             National Library of Medicine, and cache its HSQLDB data (zipped) and script. Another cache
+             may be named with -Dcached.dictionary.folder=... -->
+        <profile>
+            <id>missing-lexicon</id>
+            <activation>
+                <!-- both: no -Dcached.dictionary.folder on the command line, and no zip in the default cache -->
+                <property>
+                    <name>!cached.dictionary.folder</name>
+                </property>
+                <file>
+                    <missing>${cached.dictionary.folder}/lexAccess2013.data.zip</missing>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.googlecode.maven-download-plugin</groupId>
+                        <artifactId>download-maven-plugin</artifactId>
+                        <version>1.7.1</version>
+                        <executions>
+                            <execution>
+                                <id>install-lexaccess</id>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>wget</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <url>https://data.lhncbc.nlm.nih.gov/public/lsg/lexAccess/release/lexAccess2013.tgz</url>
+                            <unpack>true</unpack>
+                            <outputDirectory>${project.build.directory}/lexAccess/</outputDirectory>
+                            <md5>283e11bcebe6dfac35f8b6d92e50788d</md5>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>cache-lexaccess</id>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <mkdir dir="${cached.dictionary.folder}"/>
+                                        <zip destfile="${cached.dictionary.folder}/lexAccess2013.data.zip" basedir="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/" includes="lexAccess2013.data"/>
+                                        <copy file="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/lexAccess2013.script" todir="${cached.dictionary.folder}"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

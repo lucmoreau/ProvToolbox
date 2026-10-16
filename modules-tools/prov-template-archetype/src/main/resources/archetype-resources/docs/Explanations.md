@@ -955,7 +955,7 @@ In this archetype, some explanation files are already included in the [ProvToolb
 `src/main/xplain/nlg` folder, 
 
 
-There is also a configuration file `template-config.json` (/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/test/config/template-config.json), acting as general configuration file, that needs to be found by the service.
+There is also a configuration file `template-config.json` (`__rootArtifactId__-service/src/test/config/template-config.json` of the archetype, `src/test/config/template-config.json` of the generated service), acting as general configuration file, that needs to be found by the service.
 The `template-config.json` file is read by the service when deployed. It has the following structure with the last two properties
 `nlg.xplan.library` and `nlg.xplan.selection` being used to configure the x-plan library and the selection of x-plans to use from that library.
 
@@ -974,14 +974,14 @@ Given this is an archetype, the values of these properties need to be instantiat
 
 File
 
-/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/pom.xml
+ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/pom.xml
 
 ```xml
 <pom.nlg.xplan.library>/xplain/nlg/provbasic/provbasic.json</pom.nlg.xplan.library> <!-- /xplain/nlg/xplans-config.json -->
 <pom.nlg.xplan.selection>["actedonbehalfof1", "activity1", "agent1", "alternate1", "association1", "attribution1", "derivation1", "end1", "entity1", "generation1", "invalidation1", "specialization1", "start1", "usage1", "member1"]</pom.nlg.xplan.selection>
 ```
 
-Folder [ProvToolbox: modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg](/Users/luc/IdeaProjects/ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg) for example xplan libraries.
+Folder [ProvToolbox: modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg](ProvToolbox/modules-tools/prov-template-archetype/src/main/resources/archetype-resources/__rootArtifactId__-service/src/main/resources/xplain/nlg) for example xplan libraries.
 
 ### 3.1. Batch explanation from the command line
 

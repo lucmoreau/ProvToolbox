@@ -24,7 +24,7 @@ public class Storage {
         props.setProperty("password", password);
         props.setProperty("ssl", "false");
         logger.info("DB url: " + url);
-        logger.info("DB props: " + props);
+        logger.info("DB user: " + username);  // never the props: they hold the password
         try {
             Class.forName("org.postgresql.Driver");  // added this, since https://stackoverflow.com/questions/1911253/the-infamous-java-sql-sqlexception-no-suitable-driver-found
             Connection conn = DriverManager.getConnection(url, props);

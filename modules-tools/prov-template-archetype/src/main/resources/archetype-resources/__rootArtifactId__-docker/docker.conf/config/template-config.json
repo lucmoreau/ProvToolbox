@@ -1,0 +1,8 @@
+{
+    "catalogue.package": "${cataloguePackage}",
+    "jdbc.url": "jdbc:postgresql://postgres16:5432/templates?sslmode=disable",
+    "sql.initializer": "/META-INF/resources/webjars/${templateLibraryArtifactId}/${templateLibraryVersion}/sql/prov-template-library${templateSubLibrary}.sql",
+    "nlg.xplan.library": "${nlgXplanLibrary}",
+    "nlg.xplan.selection": ${nlgXplanSelection},
+    "nlg.xplan.strategy": "${nlgXplanStrategy}"
+}

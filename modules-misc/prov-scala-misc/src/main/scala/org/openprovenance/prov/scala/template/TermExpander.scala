@@ -32,7 +32,11 @@ import org.openprovenance.prov.template.ExpandUtil
   val qn_endTime  =pf.newQualifiedName(ExpandUtil.TMPL_NS, ExpandUtil.ENDTIME,   ExpandUtil.TMPL_PREFIX).asInstanceOf[QualifiedName]
   val qn_label    =pf.newQualifiedName(ExpandUtil.TMPL_NS, ExpandUtil.LABEL,     ExpandUtil.TMPL_PREFIX).asInstanceOf[QualifiedName]
   
-  val reservedNames=Map(qn_time->0,qn_startTime->1,qn_endTime->2,qn_label->3)
+  val reservedNames: Map[QualifiedName, Int] = {
+    val current = Map(qn_time->0,qn_startTime->1,qn_endTime->2,qn_label->3)
+    // the same names under the namespace templates declared before the vocabulary moved under /ns/
+    current ++ current.map { case (qn, i) => pf.newQualifiedName(ExpandUtil.LEGACY_TMPL_NS, qn.getLocalPart, ExpandUtil.TMPL_PREFIX).asInstanceOf[QualifiedName] -> i }
+  }
 
 }
 

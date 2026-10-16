@@ -3,7 +3,7 @@ document
 
   prefix var <http://openprovenance.org/var#>
   prefix vargen <http://openprovenance.org/vargen#>
-  prefix tmpl <http://openprovenance.org/tmpl#>
+  prefix tmpl <http://openprovenance.org/ns/tmpl#>
 
   prefix foaf <http://xmlns.com/foaf/0.1/>
   

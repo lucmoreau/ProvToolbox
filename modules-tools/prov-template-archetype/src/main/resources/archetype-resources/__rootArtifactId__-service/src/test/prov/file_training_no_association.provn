@@ -3,7 +3,8 @@ document
 prefix fs <http://openprovenance.org/ns/fs#>
 prefix act <http://localhost:7075/book/provapi/live/activity/>
 prefix ag <http://localhost:7075/book/provapi/live/agent/>
-prefix provext <http://openprovenance.org/prov/extension#>
+prefix provext <https://openprovenance.org/ns/provext#>
+prefix openprov <https://openprovenance.org/ns/openprov#>
 prefix file <http://localhost:7075/book/provapi/live/file/>
 prefix method <http://localhost:7075/book/provapi/live/method/>
 entity(file:1590,[prov:type = 'fs:Pipeline', fs:path = "/home/bob" %% xsd:string, fs:filename = "pipeline.pip" %% xsd:string])
@@ -15,5 +16,5 @@ used(act:6120,file:3,-)
 wasGeneratedBy(file:1590,act:6120,2022-06-05T16:30:00Z)
 wasDerivedFrom(file:1590, file:3, act:6120, -, -)
 //wasAssociatedWith(act:6120,ag:22,method:100)
-wasAttributedTo(file:1590, ag:22,[provext:activity = 'act:6120'])
+wasAttributedTo(file:1590, ag:22,[openprov:activity = 'act:6120'])
 endDocument

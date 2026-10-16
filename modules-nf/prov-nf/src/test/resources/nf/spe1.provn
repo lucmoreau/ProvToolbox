@@ -3,7 +3,7 @@
 document
 
    prefix ex <http://example/>
-   prefix provext <http://openprovenance.org/prov/extension#>
+   prefix provext <https://openprovenance.org/ns/provext#>
 
 
    provext:specializationOf(ex:spe1; ex:e1, ex:ee1)

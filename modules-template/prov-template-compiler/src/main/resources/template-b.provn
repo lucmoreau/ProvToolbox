@@ -1,6 +1,6 @@
 document
   prefix ex <http://example.org/>
-  prefix tmpl <http://openprovenance.org/tmpl#>
+  prefix tmpl <http://openprovenance.org/ns/tmpl#>
   prefix var <http://openprovenance.org/var#>
 
   bundle ex:b 

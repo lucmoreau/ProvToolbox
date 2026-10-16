@@ -105,6 +105,6 @@
         "trs":     "https://openprovenance.org/transport/ns/#",
         "phys":    "http://openprovenance.org/ns/phys#",
         "resp":    "http://openprovenance.org/ns/responsibility#",
-        "provext": "http://openprovenance.org/prov/extension#"
+        "provext": "https://openprovenance.org/ns/provext#", "openprov": "https://openprovenance.org/ns/openprov#"
     }
 }

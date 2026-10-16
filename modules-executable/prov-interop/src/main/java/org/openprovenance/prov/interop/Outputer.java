@@ -109,6 +109,8 @@ public class Outputer implements InteropMediaType {
                         DOT, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(DOT),  maxStringLength, displayQualifiedRelation)
                 ));
 
+        serializer.put(MERMAID, () -> new org.openprovenance.prov.viz.MermaidSerialiser(pFactory, interopFramework.getExtensionMap().get(MERMAID), maxStringLength, displayQualifiedRelation));
+
         return serializer;
     }
 

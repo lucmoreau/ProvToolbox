@@ -88,7 +88,7 @@ abstract class ExpandSpec extends AnyFlatSpec with Matchers {
     
     val doc=expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -106,7 +106,7 @@ doc.statementOrBundle.head.asInstanceOf[Bundle].statement.head match {
 
 expand1("""
        document
-        prefix tmpl <http://openprovenance.org/tmpl#>
+        prefix tmpl <http://openprovenance.org/ns/tmpl#>
         prefix var <http://openprovenance.org/var#>
         prefix ex <http://example.org/>
         bundle ex:b123
@@ -118,7 +118,7 @@ expand1("""
 
 expand1("""
        document
-        prefix tmpl <http://openprovenance.org/tmpl#>
+        prefix tmpl <http://openprovenance.org/ns/tmpl#>
         prefix var <http://openprovenance.org/var#>
         prefix ex <http://example.org/>
         bundle ex:b123
@@ -132,7 +132,7 @@ expand1("""
 
 expand1("""
        document
-        prefix tmpl <http://openprovenance.org/tmpl#>
+        prefix tmpl <http://openprovenance.org/ns/tmpl#>
         prefix var <http://openprovenance.org/var#>
         prefix ex <http://example.org/>
         bundle ex:b5
@@ -142,7 +142,7 @@ expand1("""
        """",
        bind2,false,false) should be  (parse("""
          document
-        prefix tmpl <http://openprovenance.org/tmpl#>
+        prefix tmpl <http://openprovenance.org/ns/tmpl#>
         prefix var <http://openprovenance.org/var#>
         prefix ex <http://example.org/>
         bundle ex:b5
@@ -160,7 +160,7 @@ expand1("""
     
     val doc=expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -181,7 +181,7 @@ expand1("""
     
      expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -193,7 +193,7 @@ expand1("""
             
      expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -205,7 +205,7 @@ expand1("""
             
      expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -238,7 +238,7 @@ expand1("""
     
     expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -257,7 +257,7 @@ expand1("""
     
      expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -269,7 +269,7 @@ expand1("""
             
      expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -281,7 +281,7 @@ expand1("""
             
      expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b1234
@@ -300,7 +300,7 @@ expand1("""
      
       expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
            bundle ex:b1235
@@ -310,7 +310,7 @@ expand1("""
             """",
             bind2,false,false) should be (parse("""
               document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b1235
@@ -332,7 +332,7 @@ expand1("""
     
     expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -351,7 +351,7 @@ expand1("""
     
      expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -363,7 +363,7 @@ expand1("""
             
      expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -375,7 +375,7 @@ expand1("""
             
      expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b1234
@@ -394,7 +394,7 @@ expand1("""
      
       expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
            bundle ex:b1235
@@ -404,7 +404,7 @@ expand1("""
             """",
             bind2,false,false) should be (parse("""
               document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b1235
@@ -425,7 +425,7 @@ expand1("""
     
     expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -444,7 +444,7 @@ expand1("""
     
      expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -456,7 +456,7 @@ expand1("""
             
      expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b123
@@ -468,7 +468,7 @@ expand1("""
             
      expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b1234
@@ -487,7 +487,7 @@ expand1("""
      
       expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
            bundle ex:b1235
@@ -497,7 +497,7 @@ expand1("""
             """",
             bind2,false,false) should be (parse("""
               document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b1235
@@ -515,7 +515,7 @@ expand1("""
           
       expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
            bundle ex:b2001
@@ -528,7 +528,7 @@ expand1("""
             """",
             bind2,false,false) should be (parse("""
               document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b2001
@@ -551,7 +551,7 @@ expand1("""
           
       expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b3001
@@ -563,7 +563,7 @@ expand1("""
             """",
             bind2,false,false) should be (parse("""
               document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b3001
@@ -584,7 +584,7 @@ expand1("""
           
       expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b4001
@@ -594,7 +594,7 @@ expand1("""
             """",
             bind2,false,false) should be (parse("""
               document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b4001
@@ -614,7 +614,7 @@ expand1("""
           
       expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b5001
@@ -626,7 +626,7 @@ expand1("""
             """",
             bind2,false,false) should be (parse("""
               document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b5001
@@ -648,7 +648,7 @@ expand1("""
           
       expand1("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b5001
@@ -659,7 +659,7 @@ expand1("""
             """",
             bind2,false,false) should be (parse("""
               document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix var <http://openprovenance.org/var#>
              prefix ex <http://example.org/>
              bundle ex:b5001

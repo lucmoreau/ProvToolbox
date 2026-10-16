@@ -3,7 +3,8 @@ document
 prefix fs <http://openprovenance.org/ns/fs#>
 prefix act <http://localhost:7075/book/provapi/live/activity/>
 prefix ag <http://localhost:7075/book/provapi/live/agent/>
-prefix provext <http://openprovenance.org/prov/extension#>
+prefix provext <https://openprovenance.org/ns/provext#>
+prefix openprov <https://openprovenance.org/ns/openprov#>
 prefix file <http://localhost:7075/book/provapi/live/file/>
 prefix method <http://localhost:7075/book/provapi/live/method/>
 prefix score <http://localhost:7075/book/provapi/live/score/>
@@ -16,5 +17,5 @@ wasGeneratedBy(score:152,act:6408,-)
 wasDerivedFrom(score:152, file:1912, act:6408, -, -)
 agent(ag:111)
 wasAssociatedWith(act:6408,ag:111,-)
-wasAttributedTo(score:152, ag:111,[provext:activity = 'act:6408'])
+wasAttributedTo(score:152, ag:111,[openprov:activity = 'act:6408'])
 endDocument

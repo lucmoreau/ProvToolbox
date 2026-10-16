@@ -1,7 +1,6 @@
 #set( $symbol_pound = '#' )
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
-FILE=/home/lavm/workspace/validation-project/prov-validation/src/test/resources/pc1-full.xml
 URL=https://raw.github.com/lucmoreau/ProvToolbox/master/prov-n/src/test/resources/prov/primer.pn
 OUT=target/primer
 
@@ -12,7 +11,8 @@ SERVICE_CONTEXT=${serviceContext}
 SERVICE_HOST=localhost
 SERVICE_PROTOCOL=http
 
-SERVICE_SECURITY_CONFIG=/Users/luc/git-papers/papers/book-ptm/project/service-book/src/test/config/security/openprovenance-auth2-security-config.json
+${symbol_pound} jetty's TPL_SECURITY_CONFIG is set by the pom (security.config.location), which takes precedence
+SERVICE_SECURITY_CONFIG=target/test-classes/security/openprovenance-auth2-security-config.json
 TEMPLATE_CONFIG=target/test-classes/template-config.json
 
 display.config:
@@ -20,13 +20,19 @@ display.config:
 
 install.sec:
 	@${symbol_dollar}(MAKE) display.config
-	export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=$(SERVICE_SECURITY_CONFIG);  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,security clean install
+	export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=$(SERVICE_SECURITY_CONFIG);  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,security clean install
 
 jetty:
 	source ~/.bashrc; export PROV_HOST=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT); export PROV_API=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${symbol_dollar}{PROV_STORAGE_CONFIG_BOOKPTM}; export TPL_SECURITY_CONFIG=${symbol_dollar}(SERVICE_SECURITY_CONFIG); export XPLAIN_LEXICON=${symbol_dollar}{XPLAIN_LEXICON}; export TEMPLATE_CONFIG=${symbol_dollar}(TEMPLATE_CONFIG); mvn -Pjetty,security jetty:run-war
 
 jetty.nosec:
 	 source ~/.bashrc; export PROV_HOST=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT); export PROV_API=$(SERVICE_PROTOCOL)://$(SERVICE_HOST):$(SERVICE_PORT)$(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${PROV_STORAGE_CONFIG_BOOKPTM}; unset TPL_SECURITY_CONFIG;  export TEMPLATE_CONFIG=$(TEMPLATE_CONFIG); mvn -Pjetty,nosecurity jetty:run-war
+
+
+${symbol_pound} GitHub-based access control: the OAuth App client secret must be in GITHUB_CLIENT_SECRET, and the comma-separated
+${symbol_pound} allowlist of GitHub logins, github:<numeric id> or * in GITHUB_ALLOWLIST (environment or ~/.bashrc)
+jetty.github:
+	source ~/.bashrc; test -n "${symbol_dollar}${symbol_dollar}GITHUB_CLIENT_SECRET" || { echo "GITHUB_CLIENT_SECRET is not set"; exit 1; }; test -n "${symbol_dollar}${symbol_dollar}{GITHUB_ALLOWLIST+set}" || { echo "GITHUB_ALLOWLIST is not set"; exit 1; }; export PROV_HOST=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT); export PROV_API=${symbol_dollar}(SERVICE_PROTOCOL)://${symbol_dollar}(SERVICE_HOST):${symbol_dollar}(SERVICE_PORT)${symbol_dollar}(SERVICE_CONTEXT)/provapi; export PROV_STORAGE_CONFIG=${symbol_dollar}{PROV_STORAGE_CONFIG_BOOKPTM}; export XPLAIN_LEXICON=${symbol_dollar}{XPLAIN_LEXICON}; export TEMPLATE_CONFIG=${symbol_dollar}(TEMPLATE_CONFIG); mvn -Pjetty,github jetty:run-war
 
 
 jetty.post:
@@ -45,7 +51,7 @@ test.luc:
 	bin/keycloak-get-token.sh
 	curl -k -s --cookie-jar target/cookie-jar.txt -i -X POST  -H "Authorization: Bearer `cat $(HOME)/.keycloak_token`" -H "Content-Type: multipart/form-data" -Fstatements=@src/test/resources/bindings/b1.json -Furl=$(TEMPLATE_URL) -Fexpand=$(OUTPUT_FORMAT) -Ftype=$(OUTPUT_FORMAT) $(WEBSERVICE)| grep Location | awk '{ print $$2 }' > target/location1.txt
 	@echo "#!/bin/sh" > target/shell1.sh
-	@cat target/location1.txt | tr -d '\r' | awk '{printf("/usr/bin/curl -s -H \"Authorization: Bearer `cat /Users/luc/.keycloak_token`\" -D target/headers1.txt -o target/payload1.$(OUTPUT_FORMAT) --cookie-jar target/cookie-jar.txt -X GET \"%s\"\n", $$1) }' >> target/shell1.sh
+	@cat target/location1.txt | tr -d '\r' | awk '{printf("/usr/bin/curl -s -H \"Authorization: Bearer `cat ${symbol_dollar}${symbol_dollar}HOME/.keycloak_token`\" -D target/headers1.txt -o target/payload1.$(OUTPUT_FORMAT) --cookie-jar target/cookie-jar.txt -X GET \"%s\"\n", $$1) }' >> target/shell1.sh
 	sh target/shell1.sh
 
 test2:

@@ -2,49 +2,79 @@ package org.openprovenance.prov.core.json.test;
 
 import org.openprovenance.prov.core.json.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.json.serialization.ProvSerialiser;
+import org.openprovenance.prov.core.test.Schemas;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.test.RoundTripFromJavaTest;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
+/**
+ * Every construct of the model written as PROV-JSON, checked against the PROV-JSON schema, read back and
+ * compared with what was written.
+ */
 public class RoundTripFromJavaJSONTest extends RoundTripFromJavaTest {
 
     public Document readDocumentFromFile(String file) throws IOException {
-        System.out.println(" reading from " + file);
-
-        ProvDeserialiser deserial=new ProvDeserialiser();
+        ProvDeserialiser deserial = new ProvDeserialiser();
         return deserial.deserialiseDocument(new File(file));
     }
 
     public void writeDocumentToFile(Document doc, String file) throws IOException {
-        System.out.println("writing to " + file);
-
-        ProvSerialiser serial=new ProvSerialiser();
-        serial.serialiseDocument(new FileOutputStream(file), doc, true);
+        ProvSerialiser serial = new ProvSerialiser();
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            serial.serialiseDocument(out, doc, true);
+        }
     }
 
     public String extension() {
         return ".json";
     }
 
-    public boolean checkTest(String name) {
-        if (name.endsWith("entity101" + extension())) {
-            System.out.println(escapeRed("########## Skipping testing for entity101 in JSON"));
-            return false;
-        }
-        return true;
-    }
+    /**
+     * Constructs missing an argument PROV-DM requires (a usage without activity, a derivation without used
+     * entity, ...): they round-trip, but the schema rightly wants the property, so they are not held to it.
+     */
+    static final Set<String> INCOMPLETE = Set.of("usage1", "association2", "attribution1", "attribution2",
+            "delegation1", "delegation2", "derivation1", "derivation2", "derivation9", "end1", "end4",
+            "influence1", "influence2", "communication1", "communication2", "start1", "start4");
+
+    @Override
     public boolean checkSchema(String name) {
-        return false;
+        String stem = name.substring(name.lastIndexOf('/') + 1).replace(extension(), "");
+        return !INCOMPLETE.contains(stem);
     }
 
     @Override
-    public void testDefault1() {
-        System.out.println(escapeRed("########## Skipping testing for default1 in JSON"));
-        super.testDefault1();
+    public void doCheckSchema1(String file) {
+        try {
+            List<String> violations = Schemas.violations(Schemas.PROV_JSON, new File(file));
+            assertTrue(file + " violates the PROV-JSON schema: " + violations, violations.isEmpty());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    /**
+     * PROV-JSON has one alternateOf; a qualified alternate with neither identifier nor attributes is written as it
+     * and read back as the plain relation, which says the same thing.
+     */
+    @Override
+    public void testQualifiedAlternateOf2() {
+        QualifiedAlternateOf alt = pFactory.newQualifiedAlternateOf(null, q("e1"), q("e2"), null);
+        Document doc = makeDocument(new org.openprovenance.prov.model.Statement[]{alt}, null);
+        writeDocument(doc, "target/qualified-alternate2.json");
+        doCheckSchema1("target/qualified-alternate2.json");
+        Document back = readDocument("target/qualified-alternate2.json");
+        Document plain = makeDocument(new org.openprovenance.prov.model.Statement[]{pFactory.newAlternateOf(q("e1"), q("e2"))}, null);
+        assertEquals(plain.getStatementOrBundle(), back.getStatementOrBundle());
+    }
+
     @Override
     public void testDictionaryMembership1() {
         System.out.println(escapeRed("########## Skipping testDictionaryMembership1 (json)"));
@@ -59,6 +89,4 @@ public class RoundTripFromJavaJSONTest extends RoundTripFromJavaTest {
     @Override public void testDictionaryMembership4() {
         System.out.println(escapeRed("########## Skipping testDictionaryMembership4 (json)"));
     }
-
-
 }

@@ -1,0 +1,10 @@
+{
+    "var" : {
+        "entity" :  [ {"@id" : "ex:box"} ],
+        "project" : [ {"@id" : "ex:shed"} ]
+    },
+    "context" : {
+        "ex": "http://example.org/"
+    },
+    "template" : null
+}

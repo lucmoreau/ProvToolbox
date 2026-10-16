@@ -64,6 +64,9 @@
     }
     .dropdown-menu {
         font-size: 0.75rem;
+        /* Long template lists: cap to viewport height and scroll instead of overflowing */
+        max-height: 70vh;
+        overflow-y: auto;
     }
     .form-control {
         font-size: 0.75rem;
@@ -115,12 +118,18 @@
     .pretty .provkeyword { color: saddlebrown; }
     .pretty .feature { color: #8910ff; }
 
-    /* Navigator tab: fill the full available viewport height */
+    /* Navigator and Slicer tabs: fill the full available viewport height, so the
+       graph scrolls inside its own pane.  Scoped with :has() to when one of those
+       tabs is the active pane — capping the page wrapper at 100vh with
+       overflow:hidden must not clip the other tabs (Composer, Documentation, ...),
+       which rely on normal page scrolling. */
     html, body { height: 100%; }
-    .row.header.small { display: flex; flex-direction: column; height: 100vh; }
-    #all-tab-contents { flex: 1 1 0; min-height: 0; overflow: hidden; }
-    #tab_navigator { height: 100%; }
-    #tab_navigator > .row { height: 100%; }
+    .row.header.small:has(#tab_navigator.active),
+    .row.header.small:has(#tab_slicer.active) { display: flex; flex-direction: column; height: 100vh; }
+    .row.header.small:has(#tab_navigator.active) #all-tab-contents,
+    .row.header.small:has(#tab_slicer.active) #all-tab-contents { flex: 1 1 0; min-height: 0; overflow: hidden; }
+    #tab_navigator, #tab_slicer { height: 100%; }
+    #tab_navigator > .row, #tab_slicer > .row { height: 100%; }
 
 </style>
 
@@ -144,6 +153,9 @@
             </li>
             <li class="nav-item">
                 <a href="#tab_navigator" data-bs-toggle="tab" class="nav-link" role="tab">Navigator</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_slicer" data-bs-toggle="tab" class="nav-link" role="tab">Slicer</a>
             </li>
 
             <li class="nav-item">
@@ -317,7 +329,23 @@
                                 <input class="form-check-input" type="checkbox" id="toggle-icons" onchange="icons_enabled = this.checked ? true : false">
                             </div>
                         </div>
-                        <p></p>
+                        <div class="d-flex align-items-center mt-2 mb-0">
+                            <span class="me-2 small">Backward</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="toggle-direction" onchange="navigate_forward = this.checked ? true : false; refreshNavigatorPropertyChoices()">
+                            </div>
+                            <span class="ms-2 small">Forward</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mt-2 mb-0">
+                            <label class="small mb-0" for="navigator_max_depth">Max depth</label>
+                            <input type="number" min="1" step="1" class="form-control form-control-sm" style="width: 6rem;" id="navigator_max_depth" value="100" placeholder="none">
+                            <label class="small mb-0" for="navigator_max_nodes">Max nodes</label>
+                            <input type="number" min="1" step="1" class="form-control form-control-sm" style="width: 6rem;" id="navigator_max_nodes" value="2000" placeholder="none">
+                        </div>
+                        <p class="help-block mb-2">
+                            The walk stops at these bounds; leave one empty to lift it. A graph
+                            the bounds cut says so above it.
+                        </p>
                         <button id="navigator_save" type="button" class="btn btn-info" onclick="dumpNavigatorDiv()" disabled>
                             <i class="fa fa-save"></i> Save
                         </button>
@@ -361,6 +389,161 @@
                             z-index: 1000;
                             display: none;
                         "><p>blah blah</p><p>bloh bloh</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab_slicer" class="tab-pane" role="tabpanel">
+                <div class="row">
+                    <!-- Two anchors' worth of pickers plus the minimap overflow a short
+                         window, and the tab itself is capped at the viewport height, so
+                         this column scrolls on its own. -->
+                    <div class="col-lg-3" style="overflow-y: auto; height: 100%;">
+                        <p class="help-block mb-1">
+                            The slice is every path leading from the downstream output back to
+                            the upstream input.
+                        </p>
+
+                        <h6 class="mb-1">Upstream (path start)</h6>
+                        <label for="slicer_up_template" class="visually-hidden">Upstream template</label>
+                        <div class="input-group">
+                            <input type="text" id="slicer_up_template" class="form-control" placeholder="Select a template…">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-slicer-up-template" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-slicer-up-template-menu" aria-labelledby="dd-slicer-up-template"></ul>
+                            </div>
+                        </div>
+                        <label for="slicer_up_id" class="visually-hidden">Upstream record id</label>
+                        <div class="input-group">
+                            <input type="number" id="slicer_up_id" class="form-control" placeholder="record id">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-slicer-up-id" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-slicer-up-id-menu" aria-labelledby="dd-slicer-up-id"></ul>
+                            </div>
+                        </div>
+                        <label for="slicer_up_property" class="visually-hidden">Upstream input variable</label>
+                        <div class="input-group">
+                            <input type="text" id="slicer_up_property" class="form-control" placeholder="any input (optional)">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-slicer-up-property" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-slicer-up-property-menu" aria-labelledby="dd-slicer-up-property"></ul>
+                            </div>
+                        </div>
+                        <p class="help-block mb-2">
+                            Input variable, optional: leave empty for a template that creates
+                            its entities without a predecessor.
+                        </p>
+
+                        <h6 class="mb-1">Downstream (path end)</h6>
+                        <label for="slicer_down_template" class="visually-hidden">Downstream template</label>
+                        <div class="input-group">
+                            <input type="text" id="slicer_down_template" class="form-control" placeholder="Select a template…">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-slicer-down-template" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-slicer-down-template-menu" aria-labelledby="dd-slicer-down-template"></ul>
+                            </div>
+                        </div>
+                        <label for="slicer_down_id" class="visually-hidden">Downstream record id</label>
+                        <div class="input-group">
+                            <input type="number" id="slicer_down_id" class="form-control" placeholder="record id">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-slicer-down-id" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-slicer-down-id-menu" aria-labelledby="dd-slicer-down-id"></ul>
+                            </div>
+                        </div>
+                        <label for="slicer_down_property" class="visually-hidden">Downstream output variable</label>
+                        <div class="input-group">
+                            <input type="text" id="slicer_down_property" class="form-control" placeholder="any output (optional)">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dd-slicer-down-property" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dd-slicer-down-property-menu" aria-labelledby="dd-slicer-down-property"></ul>
+                            </div>
+                        </div>
+
+                        <label for="slicer_style" class="visually-hidden">Slicer Style</label>
+                        <select name="slicer_style" id="slicer_style" class="form-select mt-2">
+                            <option value="template.D">Template Viz (D)</option>
+                            <option value="template.D.R">Template Viz (D, R)</option>
+                            <option value="template.D.R.S">Template Viz (D, R, S)</option>
+                            <option value="template.D.R.S.M">Template Viz (D, R, S, M)</option>
+                            <option value="prov">PROV Viz</option>
+                            <option value="entities">Entities Viz</option>
+                        </select>
+                        <div class="d-flex align-items-center mt-2 mb-0">
+                            <span class="me-2 small">One path</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="toggle-slicer-paths" checked onchange="slicer_all_paths = this.checked ? true : false">
+                            </div>
+                            <span class="ms-2 small">All paths</span>
+                        </div>
+                        <p class="help-block mb-2">
+                            One path shows the shortest route between the two anchors; all
+                            paths shows the whole slice.
+                        </p>
+                        <div class="d-flex align-items-center gap-2 mt-2 mb-0">
+                            <label class="small mb-0" for="slicer_max_depth">Max depth</label>
+                            <input type="number" min="1" step="1" class="form-control form-control-sm" style="width: 6rem;" id="slicer_max_depth" value="100" placeholder="none">
+                            <label class="small mb-0" for="slicer_max_nodes">Max nodes</label>
+                            <input type="number" min="1" step="1" class="form-control form-control-sm" style="width: 6rem;" id="slicer_max_nodes" value="2000" placeholder="none">
+                        </div>
+                        <p class="help-block mb-2">
+                            The walk stops at these bounds; leave one empty to lift it. A graph
+                            the bounds cut says so above it.
+                        </p>
+
+                        <button id="slicer_refresh" type="button" class="btn btn-info" onclick="submitSlice('${symbol_pound}slicer_div')">Slice</button>
+
+                        <div>
+                            <span class="me-2 small">Icons:</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="toggle-slicer-icons" onchange="slicer_icons_enabled = this.checked ? true : false">
+                            </div>
+                        </div>
+                        <p></p>
+                        <button id="slicer_save" type="button" class="btn btn-info" onclick="dumpVizDiv('slicer_div', 'slice-dump.html')" disabled>
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <div id="slicer_minimap_container" style="
+                                position: relative;
+                                margin-top: 1.5rem;
+                                margin-bottom: 1rem;
+                                width: 100%;
+                                overflow: hidden;
+                                border: 1px solid ${symbol_pound}cbd5e1;
+                                border-radius: 4px;
+                                display: none;
+                                background: ${symbol_pound}fff;">
+                            <div id="slicer_minimap_inner" style="transform-origin: top left;"></div>
+                            <div id="slicer_minimap_viewport" style="
+                                position: absolute;
+                                top: 0; left: 0;
+                                border: 2px solid ${symbol_pound}3b82f6;
+                                background: rgba(59,130,246,0.15);
+                                box-sizing: border-box;
+                                cursor: grab;
+                            "></div>
+                        </div>
+                    </div>
+                    <div id="slicer_scroll_area" class="col-lg-9 first-column" style="overflow: auto; height: 100%;">
+                        <div id="slicer_div">
+                        </div>
+                        <div id="slicer_explanation" style="
+                            position: fixed;
+                            bottom: 12px;
+                            left: 12px;
+                            width: 25vw;
+                            max-height: calc(6 * 1.5em + 1rem);
+                            overflow: hidden;
+                            background: rgba(255, 255, 255, 0.92);
+                            border: 1px solid #cbd5e1;
+                            border-radius: 6px;
+                            padding: 0.4rem 0.6rem;
+                            font-size: 0.75rem;
+                            line-height: 1.5em;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                            z-index: 1000;
+                            display: none;
+                        "></div>
                     </div>
                 </div>
             </div>
@@ -642,6 +825,11 @@
             if (builders[indx].getName() == shortName) return builders[indx].getOutputs();
         }
     }
+    function getInputs(shortName) {
+        for (var indx in builders) {
+            if (builders[indx].getName() == shortName) return builders[indx].getInputs();
+        }
+    }
     function getBuilder(fullyQualifiedName) {
         for (var indx in builders) {
             if (builders[indx].getFullyQualifiedName() == fullyQualifiedName) return builders[indx];
@@ -727,76 +915,104 @@
 
     const NAVIGATOR_LAST_COUNT = 5;
 
-    function populateNavigatorPropertyDropdown(shortName) {
-        const outputs = getOutputs(shortName);
-        const menu = document.getElementById('dd-navigator-property-menu');
+    /* The Navigator and the Slicer are built from the same three pickers — template,
+       record id, variable — so the population logic below takes the menu and field
+       element ids rather than hardcoding one tab's. */
+
+    function fillDropdown(menuId, fieldId, values, onPick) {
+        const menu = document.getElementById(menuId);
         menu.innerHTML = '';
-        if (!outputs || outputs.length === 0) return;
-        outputs.forEach(function(output, index) {
+        values.forEach(function(value) {
             const li = document.createElement('li');
             const a = document.createElement('a');
             a.className = 'dropdown-item';
-            a.href = '#';
-            a.textContent = output;
+            a.href = '${symbol_pound}';
+            // An empty value is the "leave it unset" entry (see populateVariableDropdown)
+            a.textContent = (value === '') ? '(any)' : value;
             a.addEventListener('click', function(e) {
                 e.preventDefault();
-                document.getElementById('navigator_property').value = output;
+                document.getElementById(fieldId).value = value;
+                if (onPick) onPick(value);
             });
             li.appendChild(a);
             menu.appendChild(li);
         });
-        // Select the first output by default
-        document.getElementById('navigator_property').value = outputs[0];
     }
 
-    function populateNavigatorIdDropdown(relation, onFirst) {
+    /**
+     * Fills a variable picker for a template.  A backward search seeds on an output
+     * variable, a forward search on an input variable.  When optional is true an
+     * "(any)" entry is offered and selected by default — the server then seeds from
+     * every variable of that template, which is what a source template (one whose
+     * entities have no predecessor, hence no input to name) needs.
+     */
+    function populateVariableDropdown(menuId, fieldId, shortName, useInputs, optional) {
+        const variables = (useInputs ? getInputs(shortName) : getOutputs(shortName)) || [];
+        const choices = optional ? [''].concat(variables) : variables.slice();
+        fillDropdown(menuId, fieldId, choices);
+        if (choices.length > 0) document.getElementById(fieldId).value = choices[0];
+    }
+
+    function populateIdDropdown(menuId, fieldId, relation, onFirst) {
         const url = '${symbol_dollar}{service.context}/provapi/template/' + encodeURIComponent(relation) + '/last/' + NAVIGATOR_LAST_COUNT + '.json';
-        const menu = document.getElementById('dd-navigator-id-menu');
-        menu.innerHTML = '';
+        document.getElementById(menuId).innerHTML = '';
         const xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
         xhr.onload = function() {
             if (xhr.status === 200) {
                 const ids = JSON.parse(xhr.responseText);
-                ids.forEach(function(id) {
-                    const li = document.createElement('li');
-                    const a = document.createElement('a');
-                    a.className = 'dropdown-item';
-                    a.href = '#';
-                    a.textContent = id;
-                    a.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        document.getElementById('navigator_id').value = id;
-                    });
-                    li.appendChild(a);
-                    menu.appendChild(li);
-                });
+                fillDropdown(menuId, fieldId, ids);
                 if (onFirst && ids.length > 0) onFirst(ids[0]);
             }
         };
         xhr.send();
     }
 
-    // Populate navigator_template dropdown with short names
-    const ddTemplateMenu = document.getElementById('dd-navigator-template-menu');
-    for (const fqn in shortNames) {
-        const name = shortNames[fqn][0];
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.className = 'dropdown-item';
-        a.href = '#';
-        a.textContent = name;
-        a.addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('navigator_template').value = name;
-            populateNavigatorIdDropdown(name, function(firstId) {
-                document.getElementById('navigator_id').value = firstId;
-            });
-            populateNavigatorPropertyDropdown(name);
-        });
-        li.appendChild(a);
-        ddTemplateMenu.appendChild(li);
+    /** Fills a template picker with every short name; onPick receives the chosen name. */
+    function populateTemplateDropdown(menuId, fieldId, onPick) {
+        const names = [];
+        for (const fqn in shortNames) {
+            names.push(shortNames[fqn][0]);
+        }
+        fillDropdown(menuId, fieldId, names, onPick);
     }
+
+    function populateNavigatorPropertyDropdown(shortName) {
+        populateVariableDropdown('dd-navigator-property-menu', 'navigator_property',
+                                 shortName, navigate_forward, false);
+    }
+
+    function refreshNavigatorPropertyChoices() {
+        const shortName = document.getElementById('navigator_template').value;
+        if (shortName) populateNavigatorPropertyDropdown(shortName);
+    }
+
+    function populateNavigatorIdDropdown(relation, onFirst) {
+        populateIdDropdown('dd-navigator-id-menu', 'navigator_id', relation, onFirst);
+    }
+
+    populateTemplateDropdown('dd-navigator-template-menu', 'navigator_template', function(name) {
+        populateNavigatorIdDropdown(name, function(firstId) {
+            document.getElementById('navigator_id').value = firstId;
+        });
+        populateNavigatorPropertyDropdown(name);
+    });
+
+    // Slicer: the upstream anchor seeds a forward search (input variable, optional),
+    // the downstream anchor a backward search (output variable, optional).
+    populateTemplateDropdown('dd-slicer-up-template-menu', 'slicer_up_template', function(name) {
+        populateIdDropdown('dd-slicer-up-id-menu', 'slicer_up_id', name, function(firstId) {
+            document.getElementById('slicer_up_id').value = firstId;
+        });
+        populateVariableDropdown('dd-slicer-up-property-menu', 'slicer_up_property', name, true, true);
+    });
+
+    populateTemplateDropdown('dd-slicer-down-template-menu', 'slicer_down_template', function(name) {
+        populateIdDropdown('dd-slicer-down-id-menu', 'slicer_down_id', name, function(firstId) {
+            document.getElementById('slicer_down_id').value = firstId;
+        });
+        populateVariableDropdown('dd-slicer-down-property-menu', 'slicer_down_property', name, false, true);
+    });
 
     populateBrowserRelationDropdown();
 
@@ -815,6 +1031,9 @@
     var preferred_accept_format = 'application/json';
     var explanation_enabled=false;
     var icons_enabled=false;
+    var navigate_forward=false;
+    var slicer_icons_enabled=false;
+    var slicer_all_paths=true;
 
     /* Functions to show/hide the Explanation title */
     function showExplanationTitle() {
@@ -1122,9 +1341,9 @@
             data.shift()
             console.log(data)
 
-            let seen=[]
+            let seen={}
 
-            ${symbol_dollar}(id).DataTable({
+            let table = ${symbol_dollar}(id).DataTable({
                 destroy: true,
                 "data": data,
                 "columns": titles,
@@ -1150,6 +1369,7 @@
                     ]
 
             });
+            table.on('draw', () => showSignatureVerdicts(table, seen));
         }
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(json_data);
@@ -1163,15 +1383,32 @@
 
         let sig=JSON.parse(data)["SHA3-512"]
 
-        if (!seen.includes(id)) {
-            seen.push(id)
-            getRecordAsCsv(sig, id, template)
+        // seen maps the signature to the check's verdict (undefined while it runs)
+        if (!(sig in seen)) {
+            seen[sig] = undefined
+            getRecordAsCsv(sig, id, template, seen)
         }
 
         return "<div id='" + sig + "'>" + sig.substring(0, 8) + "..." + "</div>"
     }
 
-    function getRecordAsCsv(sig, id, template) {
+    // rows off the current page are not in the document when their check comes back, so every
+    // draw (a page turned, a sort) gives the drawn signatures their tick or cross
+    function showSignatureVerdicts(table, seen) {
+        ${symbol_dollar}(table.rows({page: 'current'}).nodes()).find('div[id]').each(function () {
+            if (seen[this.id] !== undefined && ${symbol_dollar}(this).children('i').length === 0) {
+                ${symbol_dollar}(this).append(signatureIcon(seen[this.id]))
+            }
+        })
+    }
+
+    function signatureIcon(reproduced) {
+        if (reproduced === true) return '<i style="color: green" class="fa fa-check" title="hash reproduced"></i>'
+        if (reproduced === false) return '<i style="color: red" class="fa fa-times" title="hash not reproduced"></i>'
+        return ""
+    }
+
+    function getRecordAsCsv(sig, id, template, seen) {
         //let url = "http://localhost:7072/ptl/provapi/template/" + template + "/" + id + ".csv"
         let url = "${symbol_dollar}{service.context}/provapi/template/" + template + "/" + id + ".csv"
         // perform an XMLHttpRequest() to get the csv record, calculate its hash and compare it with the signature
@@ -1194,15 +1431,9 @@
             console.log("id: hash " + id )
             console.log("- csv_sig " + csv_sig)
             console.log("- sig " + sig)
-            let div_id = "${symbol_pound}" + sig
-            if (csv_sig !== sig) {
-                // append cross at the end of the div with id
-                ${symbol_dollar}(div_id).append('<i  style="color: red"class="fa fa-times"></i>')
-            } else {
-                // append a green tick at the end of the div with id
-                ${symbol_dollar}(div_id).append('<i style="color: green" class="fa fa-check"></i>')
-
-            }
+            seen[sig] = (csv_sig === sig)
+            // a tick or a cross at the end of the div with id, if its row is drawn now
+            ${symbol_dollar}("${symbol_pound}" + sig).append(signatureIcon(seen[sig]))
         }
         xhr.setRequestHeader("Accept", "text/csv");
         xhr.send();
@@ -1309,6 +1540,50 @@
         div.appendChild(banner);
     }
 
+    /**
+     * Copies a tab's traversal bounds (capability 10) into the request parameters: the
+     * walk's depth cap and node budget, an empty field meaning no bound ('none').
+     */
+    function readTraversalBounds(prefix, parameters) {
+        const depth = document.getElementById(prefix + '_max_depth');
+        const nodes = document.getElementById(prefix + '_max_nodes');
+        parameters['max-depth'] = (depth && depth.value.trim()) ? depth.value.trim() : 'none';
+        parameters['max-nodes'] = (nodes && nodes.value.trim()) ? nodes.value.trim() : 'none';
+    }
+
+    /** Shows, above a rendered graph, that the traversal bounds cut it. */
+    function showVizNotice(id, message) {
+        const div = document.querySelector(id);
+        if (!div) return;
+        const banner = document.createElement('div');
+        banner.className = 'alert alert-warning py-2 px-3 mb-2 small';
+        banner.setAttribute('role', 'status');
+        banner.textContent = message;
+        div.insertBefore(banner, div.firstChild);
+    }
+
+    /**
+     * Maps a style selection to the style and relation-kind filter the service expects.
+     * Mutates parameters, returns the style to send.
+     */
+    function applyVizStyle(style, parameters) {
+        switch (style) {
+            case 'template.D':
+                parameters['successor-relations'] = 'PROV_DERIVATION';
+                return 'template';
+            case 'template.D.R':
+                parameters['successor-relations'] = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION';
+                return 'template';
+            case 'template.D.R.S':
+                parameters['successor-relations'] = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION,PROV_SPECIALIZATION';
+                return 'template';
+            case 'template.D.R.S.M':
+                parameters['successor-relations'] = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION,PROV_SPECIALIZATION,PROV_MEMBERSHIP';
+                return 'template';
+        }
+        return style;
+    }
+
     async function submitNavigate(id) {
         //let url = "http://localhost:7072/ptl/provapi/templates/viz/stream"
         let url = "${symbol_dollar}{service.context}/provapi/templates/viz/stream"
@@ -1319,42 +1594,93 @@
 
         console.log("submitNavigate " + template + " " + property + " " + id + " " + style);
 
-        let final_style = style;
         let parameters  = {};
         parameters.icons = icons_enabled;
-
-        let selectedKinds;
-        switch (style) {
-            case 'template.D':
-                selectedKinds = 'PROV_DERIVATION';
-                parameters['successor-relations'] = selectedKinds;
-                final_style = 'template';
-                break;
-            case 'template.D.R':
-                selectedKinds = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION';
-                parameters['successor-relations'] = selectedKinds;
-                final_style = 'template';
-                break;
-            case 'template.D.R.S':
-                selectedKinds = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION,PROV_SPECIALIZATION';
-                parameters['successor-relations'] = selectedKinds;
-                final_style = 'template';
-                break;
-            case 'template.D.R.S.M':
-                selectedKinds = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION,PROV_SPECIALIZATION,PROV_MEMBERSHIP';
-                parameters['successor-relations'] = selectedKinds;
-                final_style = 'template';
-                break;
-        }
+        parameters.direction = navigate_forward ? 'forward' : 'backward';
+        readTraversalBounds('navigator', parameters);
 
         const config = {
             template: template,
             property: property,
             id: template_id,
-            style: final_style,
+            style: applyVizStyle(style, parameters),
             parameters: parameters
         };
 
+        document.getElementById('navigator_save').disabled = true;
+
+        await streamViz(url, config, id, function(svg, boundsNotice) {
+            ${symbol_dollar}(id).html(svg);
+            rewriteImageHrefs(document.querySelector('${symbol_pound}navigator_div svg')); //id hardcoded
+            wireVizNodeEvents('navigator_div', 'navigator_explanation');
+            updateMinimap(NAVIGATOR_PANE);
+            document.getElementById('navigator_save').disabled = false;
+            if (boundsNotice) showVizNotice(id, boundsNotice);
+        });
+    }
+
+    /**
+     * Slices between the two anchors and renders the result in the Slicer tab.
+     * Both variables are optional: left empty, the service seeds from every variable
+     * of that anchor's template.
+     */
+    async function submitSlice(id) {
+        let url = "${symbol_dollar}{service.context}/provapi/templates/slice/stream"
+        let style = ${symbol_dollar}('${symbol_pound}slicer_style').val();
+
+        let parameters = {};
+        parameters.icons = slicer_icons_enabled;
+        parameters.paths = slicer_all_paths ? 'all' : 'one';
+        readTraversalBounds('slicer', parameters);
+
+        const config = {
+            template:           ${symbol_dollar}('${symbol_pound}slicer_up_template').val(),
+            property:           ${symbol_dollar}('${symbol_pound}slicer_up_property').val(),
+            id:                 ${symbol_dollar}('${symbol_pound}slicer_up_id').val(),
+            downstreamTemplate: ${symbol_dollar}('${symbol_pound}slicer_down_template').val(),
+            downstreamProperty: ${symbol_dollar}('${symbol_pound}slicer_down_property').val(),
+            downstreamId:       ${symbol_dollar}('${symbol_pound}slicer_down_id').val(),
+            style:              applyVizStyle(style, parameters),
+            parameters:         parameters
+        };
+
+        if (!config.template || !config.id || !config.downstreamTemplate || !config.downstreamId) {
+            vizShowError(id, 'Pick a template and a record id for both the upstream and the downstream anchor.');
+            return;
+        }
+
+        console.log("submitSlice", config);
+
+        document.getElementById('slicer_save').disabled = true;
+
+        await streamViz(url, config, id, function(svg, boundsNotice) {
+            ${symbol_dollar}(id).html(svg);
+            rewriteImageHrefs(document.querySelector('${symbol_pound}slicer_div svg'));
+            wireVizNodeEvents('slicer_div', 'slicer_explanation');
+            updateMinimap(SLICER_PANE);
+            document.getElementById('slicer_save').disabled = false;
+
+            // An empty slice is a real answer — the two anchors are not connected —
+            // but an empty pane looks like a failed render, so say it.
+            // A slice the bounds cut to nothing is "no path within these bounds", not "no path".
+            if (document.querySelectorAll('${symbol_pound}slicer_div svg g.node').length === 0) {
+                const note = document.createElement('p');
+                note.className = 'text-danger';
+                note.textContent = boundsNotice
+                    ? 'No path found within these bounds.'
+                    : 'No path found between these two anchors.';
+                document.getElementById('slicer_div').appendChild(note);
+            }
+            if (boundsNotice) showVizNotice(id, boundsNotice);
+        });
+    }
+
+    /**
+     * POSTs config to an SSE viz endpoint, driving the stage panel at targetSelector
+     * from the stream and handing the finished SVG to onResult — with, as its second
+     * argument, the message of a 'viz.bounds' detail when the traversal bounds cut the walk.
+     */
+    async function streamViz(url, config, targetSelector, onResult) {
         const json_data = JSON.stringify(config);
 
         // A new submission supersedes any in-flight one so its stage
@@ -1363,9 +1689,10 @@
         const controller = new AbortController();
         _currentVizStream = controller;
 
-        renderVizStagePanel(id);
-        document.getElementById('navigator_save').disabled = true;
+        renderVizStagePanel(targetSelector);
 
+        const id = targetSelector;
+        let boundsNotice = null;
         try {
             const response = await fetch(url, {
                 method:  'POST',
@@ -1406,14 +1733,12 @@
                     }
 
                     if (ev.name === 'stage') {
+                        if (payload.stage === 'viz.bounds' && payload.status === 'detail') {
+                            boundsNotice = payload.message || null;
+                        }
                         updateVizStageRow(payload.stage, payload.status, payload);
                     } else if (ev.name === 'result') {
-                        const svg = base64ToText(payload.base64);
-                        ${symbol_dollar}(id).html(svg);
-                        rewriteImageHrefs(document.querySelector('#navigator_div svg')); //id hardcoded
-                        wireNavigatorNodeEvents();
-                        updateMinimap();
-                        document.getElementById('navigator_save').disabled = false;
+                        onResult(base64ToText(payload.base64), boundsNotice);
                     } else if (ev.name === 'error') {
                         vizShowError(id, payload.error || 'render failed');
                     }
@@ -1452,11 +1777,29 @@
         };
     }
 
-    function updateMinimapViewport() {
-        const scrollEl  = document.getElementById('navigator_scroll_area');
-        const svgEl     = document.querySelector('#navigator_div svg');
-        const viewport  = document.getElementById('navigator_minimap_viewport');
-        const inner     = document.getElementById('navigator_minimap_inner');
+    /* The Navigator and the Slicer each show a graph in a scrollable pane with a
+       minimap beside it, so the minimap works off a pane descriptor naming that
+       tab's elements rather than one tab's hardcoded ids. */
+    const NAVIGATOR_PANE = {
+        div:       'navigator_div',
+        scroll:    'navigator_scroll_area',
+        container: 'navigator_minimap_container',
+        inner:     'navigator_minimap_inner',
+        viewport:  'navigator_minimap_viewport'
+    };
+    const SLICER_PANE = {
+        div:       'slicer_div',
+        scroll:    'slicer_scroll_area',
+        container: 'slicer_minimap_container',
+        inner:     'slicer_minimap_inner',
+        viewport:  'slicer_minimap_viewport'
+    };
+
+    function updateMinimapViewport(pane) {
+        const scrollEl  = document.getElementById(pane.scroll);
+        const svgEl     = document.querySelector('${symbol_pound}' + pane.div + ' svg');
+        const viewport  = document.getElementById(pane.viewport);
+        const inner     = document.getElementById(pane.inner);
         if (!scrollEl || !svgEl || !viewport || !inner || !inner._mmScale) return;
 
         const scale = inner._mmScale;
@@ -1476,12 +1819,17 @@
         viewport.style.height = Math.round(scrollEl.clientHeight           * scale)  + 'px';
     }
 
-    function updateMinimap() {
-        const svgEl     = document.querySelector('#navigator_div svg');
-        const container = document.getElementById('navigator_minimap_container');
-        const inner     = document.getElementById('navigator_minimap_inner');
-        const scrollEl  = document.getElementById('navigator_scroll_area');
-        if (!svgEl || !container || !inner || !scrollEl) return;
+    function updateMinimap(pane) {
+        const svgEl     = document.querySelector('${symbol_pound}' + pane.div + ' svg');
+        const container = document.getElementById(pane.container);
+        const inner     = document.getElementById(pane.inner);
+        const scrollEl  = document.getElementById(pane.scroll);
+        if (!container || !inner || !scrollEl) return;
+        if (!svgEl) {
+            // Nothing rendered: hide rather than leave the previous graph's preview up
+            container.style.display = 'none';
+            return;
+        }
 
         // Show first so offsetWidth is valid
         container.style.display = 'block';
@@ -1510,18 +1858,18 @@
 
         // Attach (or re-attach) the scroll listener on the correct element
         if (!scrollEl._minimapListenerAttached) {
-            scrollEl.addEventListener('scroll', updateMinimapViewport, { passive: true });
+            scrollEl.addEventListener('scroll', function() { updateMinimapViewport(pane); }, { passive: true });
             scrollEl._minimapListenerAttached = true;
         }
-        wireMinimapDrag();
+        wireMinimapDrag(pane);
 
-        updateMinimapViewport();
+        updateMinimapViewport(pane);
     }
 
-    function wireMinimapDrag() {
-        const viewport = document.getElementById('navigator_minimap_viewport');
-        const scrollEl = document.getElementById('navigator_scroll_area');
-        const inner    = document.getElementById('navigator_minimap_inner');
+    function wireMinimapDrag(pane) {
+        const viewport = document.getElementById(pane.viewport);
+        const scrollEl = document.getElementById(pane.scroll);
+        const inner    = document.getElementById(pane.inner);
         if (!viewport || !scrollEl || viewport._minimapDragWired) return;
         viewport._minimapDragWired = true;
 
@@ -1555,8 +1903,9 @@
         });
     }
 
-    function wireNavigatorNodeEvents() {
-        const box = document.getElementById('navigator_explanation');
+    /** Hover-for-explanation on the nodes of a rendered graph (Navigator or Slicer). */
+    function wireVizNodeEvents(divId, boxId) {
+        const box = document.getElementById(boxId);
         let hoverTimer = null;
         let pinned = false;
 
@@ -1581,21 +1930,26 @@
             xhr.send();
         }
 
-        // Space pins the visible explanation; ESC unpins and hides it
-        document.addEventListener('keydown', function(e) {
-            if (e.code === 'Space' && box.style.display === 'block' && !pinned) {
-                e.preventDefault();
-                pinned = true;
-                box.style.outline = '2px solid #3b82f6'; // blue border signals pinned state
-            } else if (e.code === 'Escape' && pinned) {
-                pinned = false;
-                box.style.outline = '';
-                box.innerHTML = '';
-                box.style.display = 'none';
-            }
-        });
+        // Space pins the visible explanation; ESC unpins and hides it.
+        // Wired once per box: this runs again on every render, and the listener is
+        // on the document, so re-adding it would stack a copy per rendered graph.
+        if (!box._vizKeysWired) {
+            box._vizKeysWired = true;
+            document.addEventListener('keydown', function(e) {
+                if (e.code === 'Space' && box.style.display === 'block' && !pinned) {
+                    e.preventDefault();
+                    pinned = true;
+                    box.style.outline = '2px solid #3b82f6'; // blue border signals pinned state
+                } else if (e.code === 'Escape' && pinned) {
+                    pinned = false;
+                    box.style.outline = '';
+                    box.innerHTML = '';
+                    box.style.display = 'none';
+                }
+            });
+        }
 
-        document.querySelectorAll('#navigator_div g.node').forEach(function(node) {
+        document.querySelectorAll('${symbol_pound}' + divId + ' g.node').forEach(function(node) {
             node.addEventListener('mouseenter', function() {
                 hoverTimer = setTimeout(function() {
                     // Hovering a new node for 2 s always replaces the explanation,
@@ -1617,7 +1971,12 @@
     }
 
     async function dumpNavigatorDiv() {
-        const div = document.getElementById('navigator_div');
+        return dumpVizDiv('navigator_div', 'navigator-dump.html');
+    }
+
+    /** Saves a rendered graph as a standalone HTML file, with images inlined. */
+    async function dumpVizDiv(divId, suggestedName) {
+        const div = document.getElementById(divId);
         const clone = div.cloneNode(true);
         const xlinkNS = 'http://www.w3.org/1999/xlink';
 
@@ -1649,7 +2008,7 @@
         if (window.showSaveFilePicker) {
             try {
                 const fileHandle = await window.showSaveFilePicker({
-                    suggestedName: 'navigator-dump.html',
+                    suggestedName: suggestedName,
                     types: [{ description: 'HTML file', accept: { 'text/html': ['.html'] } }]
                 });
                 const writable = await fileHandle.createWritable();
@@ -1662,7 +2021,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'navigator-dump.html';
+            a.download = suggestedName;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -2075,5 +2434,61 @@
 <script src="provservice.js"></script>
 <script src="${symbol_dollar}{service.context}/webjars/bootstrap/${symbol_dollar}{webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
 
+<!-- ===== BEGIN manual JS overrides (navigator deep link) ===== -->
+<script>
+/* Deep link into the Navigator: an external page links
+   forms.html?template=<name>&id=<n>[&property=<p>]#tab_navigator and this
+   fronts the Navigator tab, fills its form, switches the icons slider on,
+   and presses Refresh — the per-node URLs show a single artifact only,
+   while the navigator is the walkable view. */
+document.addEventListener('DOMContentLoaded', function () {
+  var q = new URLSearchParams(window.location.search);
+  var template = q.get('template'), id = q.get('id');
+  if (!template || !id) return;
+
+  // front the Navigator tab — Tab API first, the delegated click handler
+  // as fallback (either way the pane is visible before the walk renders)
+  var link = document.querySelector('a[href="#tab_navigator"]');
+  if (link) {
+    if (window.bootstrap && bootstrap.Tab) { bootstrap.Tab.getOrCreateInstance(link).show(); }
+    else { link.click(); }
+  }
+
+  var t = document.getElementById('navigator_template');
+  var n = document.getElementById('navigator_id');
+  if (!t || !n) return;
+  t.value = template;
+  n.value = id;
+
+  // the icons slider on — the inline onchange sets the icons_enabled global
+  // submitNavigate reads, so the dispatched event is load-bearing
+  var ic = document.getElementById('toggle-icons');
+  if (ic && !ic.checked) { ic.checked = true; ic.dispatchEvent(new Event('change')); }
+
+  // press Refresh: submitNavigate's argument is the TARGET DIV selector
+  // (the Refresh button passes '#navigator_div'), never the record id
+  function render() {
+    if (typeof submitNavigate === 'function') { submitNavigate('#navigator_div'); }
+  }
+
+  var prop = document.getElementById('navigator_property');
+  var p = q.get('property');
+  if (p) {
+    if (prop) { prop.value = p; }
+    render();
+  } else if (prop && typeof populateNavigatorPropertyDropdown === 'function') {
+    // the property fill is an async fetch — poll until it lands (or 3s),
+    // then render with whatever is in the form
+    var before = prop.value, tries = 0;
+    populateNavigatorPropertyDropdown(template);
+    var timer = setInterval(function () {
+      if (prop.value !== before || ++tries > 15) { clearInterval(timer); render(); }
+    }, 200);
+  } else {
+    render();
+  }
+});
+</script>
+<!-- ===== END manual JS overrides ===== -->
 </body>
 </html>

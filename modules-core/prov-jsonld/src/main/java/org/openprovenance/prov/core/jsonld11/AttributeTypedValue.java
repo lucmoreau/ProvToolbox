@@ -12,4 +12,6 @@ public class AttributeTypedValue implements Constants {
     public String value;
     @JsonProperty(PROPERTY_STRING_LANG)
     public String language;
+    @JsonProperty(PROPERTY_AT_ID)
+    public String id;
 }

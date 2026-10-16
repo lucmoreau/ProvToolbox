@@ -55,7 +55,7 @@ object SummaryQueryGenerator {
 
     if (top) {
       result += "\n\n"
-      result += "prefix provext <http://openprovenance.org/prov/extension#>\n"
+      result += "prefix provext <" + org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS + ">\n"
       result += "prefix t <http://openprovenance.org/summary/xyz/types#>\n"
       result += "prefix sum <http://openprovenance.org/summary/ns#>\n\n"
     }

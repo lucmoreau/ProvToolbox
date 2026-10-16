@@ -34,7 +34,10 @@ public class TemplatesVizConfigMessageBodyReader implements MessageBodyReader<Te
     ObjectMapper om=new ObjectMapper();
     @Override
     public boolean isReadable(Class<?> aClass, Type type, Annotation[] annotations, MediaType mediaType) {
-        return mediaType.toString().startsWith(InteropMediaType.MEDIA_APPLICATION_JSON);
+        // Exact class only: subclasses (e.g. TemplatesSliceConfig) carry extra fields
+        // that this reader would silently drop, and have their own reader.
+        return aClass == TemplatesVizConfig.class
+                && mediaType.toString().startsWith(InteropMediaType.MEDIA_APPLICATION_JSON);
     }
 
     @Override

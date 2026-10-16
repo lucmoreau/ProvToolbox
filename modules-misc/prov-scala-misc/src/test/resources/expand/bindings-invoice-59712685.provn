@@ -3,7 +3,7 @@ prefix ord <https://provenance.ecs.soton.ac.uk/food/order/>
 prefix jo <https://provenance.ecs.soton.ac.uk/food/journey/>
 prefix inv <https://provenance.ecs.soton.ac.uk/food/invoice/>
 prefix prod <https://provenance.ecs.soton.ac.uk/food/product#>
-prefix tmpl <http://openprovenance.org/tmpl#>
+prefix tmpl <http://openprovenance.org/ns/tmpl#>
 prefix cus <https://provenance.ecs.soton.ac.uk/food/customer/>
 prefix product <https://provenance.ecs.soton.ac.uk/food/invoice/line/>
 prefix var <http://openprovenance.org/var#>

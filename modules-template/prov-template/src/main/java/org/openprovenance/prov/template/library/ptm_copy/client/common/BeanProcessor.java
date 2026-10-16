@@ -4,7 +4,7 @@
 package org.openprovenance.prov.template.library.ptm_copy.client.common;
 
 public interface BeanProcessor {
-  Ptm_expandingBean process(Ptm_expandingBean bean);
+  Ptm_instantiatingBean process(Ptm_instantiatingBean bean);
 
   Ptm_mexpandingBean process(Ptm_mexpandingBean bean);
 }

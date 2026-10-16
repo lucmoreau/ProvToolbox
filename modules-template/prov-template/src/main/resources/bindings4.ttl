@@ -1,6 +1,6 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix tmpl: <http://openprovenance.org/tmpl#> .
+@prefix tmpl: <http://openprovenance.org/ns/tmpl#> .
 @prefix var: <http://openprovenance.org/var#> .
 @prefix ex: <http://example.org/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .

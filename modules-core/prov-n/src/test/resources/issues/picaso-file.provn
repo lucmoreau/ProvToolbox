@@ -1,7 +1,7 @@
 
 document
 bundle uuid:55348dff-4fcc-4ac2-ab56-641798c64400
-prefix tmpl <http://openprovenance.org/tmpl#>
+prefix tmpl <http://openprovenance.org/ns/tmpl#>
 prefix eprint <http://eprints.soton.ac.uk/id/eprint/>
 prefix pic <http://www.ipaw.info/ns/picaso#>
 prefix personid <http://eprints.soton.ac.uk/id/person/>

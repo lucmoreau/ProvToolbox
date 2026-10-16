@@ -6,6 +6,8 @@ import org.apache.commons.text.StringSubstitutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.model.interop.InteropMediaType;
+import org.openprovenance.prov.template.core.exception.SchemaCheckException;
 import org.openprovenance.prov.template.utils.TemplateExtension;
 import org.openprovenance.prov.template.utils.TemplateIndex;
 import org.openprovenance.prov.template.utils.TemplateIndexPath;
@@ -62,10 +64,12 @@ public class BatchExecutor {
             ProvSerialiser serialiser3 = (ProvSerialiser) cons.newInstance(pf, "svg");
             serializerMap.put("svg", serialiser3);
 
-            c = Class.forName("org.openprovenance.prov.dot.ProvSerialiser");
-            cons = c.getConstructor(ProvFactory.class, String.class, Integer.class, boolean.class);
-            ProvSerialiser serialiser4 = (ProvSerialiser) cons.newInstance(pf, "png", 20, true);
-            serializerMap.put("qualified.png", serialiser4);
+            c = Class.forName("org.openprovenance.prov.viz.MermaidSerialiser");
+            cons = c.getConstructor(ProvFactory.class, String.class);
+            serializerMap.put("mmd", (ProvSerialiser) cons.newInstance(pf, "mmd"));
+
+            c = Class.forName("org.openprovenance.prov.viz.QualifiedFormats");
+            c.getMethod("registerQualifiedSerialisers", ProvFactory.class, Map.class).invoke(null, pf, serializerMap);
 
             c = Class.forName("org.openprovenance.prov.notation.ProvDeserialiser");
             cons = c.getConstructor(ProvFactory.class);
@@ -115,6 +119,8 @@ public class BatchExecutor {
             templateTasksBatch.template_path = templateTasksBatch.template_path.stream().map(s -> (s.startsWith("."))? localdir+s.substring(1):s).collect(Collectors.toList());
 
             return execute(templateTasksBatch, inputBasedir, outputBasedir, variableMap);
+        } catch (SchemaCheckException e) {
+            throw e;   // a failed schemaCheck fails the execution, where other task errors are logged
         } catch (Exception e) {
             logger.error("Error while executing", e);
             return 1;
@@ -184,6 +190,15 @@ public class BatchExecutor {
         throw new FileNotFoundException(filename+ " in paths " + template_path);
     }
 
+    /**
+     * Identifier of a file read by a task, for its provenance record: the file's path relative to
+     * the given root, so that a record names a file the same way, whichever run read it.
+     */
+    static String relativeTo(String root, File file) {
+        Path rootPath=Path.of(root).toAbsolutePath().normalize();
+        return rootPath.relativize(file.toPath().toAbsolutePath().normalize()).toString();
+    }
+
     Pair<FileInputStream, File> findFileinDirs2(List<String> template_path, String filename) throws FileNotFoundException {
         for (String dir: template_path) {
             File f=new File(dir + "/" + filename);
@@ -218,6 +233,29 @@ public class BatchExecutor {
 
     public void serialize(OutputStream fileOutputStream, String format, Document doc, boolean b) {
         serializerMap.get(format).serialiseDocument(fileOutputStream, doc, b);
+    }
+
+    /**
+     * Validates a task's generated output against the version of the PROV-JSONLD schema its schemaCheck names (the
+     * task's own, else its batch's), if the output is jsonld and the check is not none.
+     * @throws SchemaCheckException listing the violations, when the output does not conform, or when the
+     *         schemaCheck names no bundled version
+     */
+    public void checkSchema(TemplateTasksBatch batch, String taskSchemaCheck, String format, File file, String output) throws IOException {
+        if (!InteropMediaType.EXTENSION_JSONLD.equals(format)) return;
+        String version;
+        try {
+            version = SchemaCheck.version(SchemaCheck.effective(batch.schemaCheck, taskSchemaCheck));
+        } catch (IllegalArgumentException e) {
+            throw new SchemaCheckException(e.getMessage() + " (" + output + "." + format + ")");   // a mistyped value fails too
+        }
+        if (version == null) return;
+        List<String> violations = SchemaCheck.violations(file, version);
+        if (!violations.isEmpty()) {
+            throw new SchemaCheckException("schemaCheck " + version + ": " + output + "." + format + " does not conform ("
+                    + violations.size() + " violations): " + String.join("; ", violations.subList(0, Math.min(10, violations.size())))
+                    + (violations.size() > 10 ? "; ..." : ""));
+        }
     }
 
 

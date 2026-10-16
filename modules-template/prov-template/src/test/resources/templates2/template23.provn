@@ -5,7 +5,7 @@ prefix var <http://openprovenance.org/var#>
 prefix vargen <http://openprovenance.org/vargen#>
 prefix bun <http://example.org/bun#>
 prefix ex <http://example.org/>
-prefix tmpl <http://openprovenance.org/tmpl#>
+prefix tmpl <http://openprovenance.org/ns/tmpl#>
 
 bundle vargen:123
 entity(vargen:123, [prov:type='prov:Bundle'])

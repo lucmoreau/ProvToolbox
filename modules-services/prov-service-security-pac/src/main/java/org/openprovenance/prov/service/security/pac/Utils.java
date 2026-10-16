@@ -9,13 +9,18 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 import org.pac4j.core.credentials.extractor.BearerAuthExtractor;
+import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.http.client.direct.DirectBearerAuthClient;
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
+import org.pac4j.oauth.client.GitHubClient;
 import org.pac4j.oidc.client.KeycloakOidcClient;
 import org.pac4j.oidc.config.KeycloakOidcConfiguration;
 
@@ -99,6 +104,63 @@ public class Utils {
 
         logger.info("KeycloakOidcClient created " + keycloakOidcConfiguration);
 
+        return client;
+    }
+
+
+    /** the system property of that name, or else the environment variable, or else null */
+    static public String systemOrEnvironment(String name) {
+        String value = System.getProperty(name);
+        if (value == null) {
+            value = System.getenv(name);
+        }
+        return value;
+    }
+
+    /** the comma-separated allowlist held by the system property or environment variable named by variable */
+    static public List<String> readAllowlist(String clientName, String variable) {
+        if (variable == null || variable.isBlank()) {
+            throw new IllegalStateException(clientName + ": allowlistEnv must name the system property or environment variable holding the allowlist");
+        }
+        String value = systemOrEnvironment(variable);
+        if (value == null) {
+            throw new IllegalStateException(clientName + ": no allowlist in system property or environment variable " + variable);
+        }
+        return Arrays.stream(value.split(",")).map(String::trim).filter(entry -> !entry.isEmpty()).collect(Collectors.toList());
+    }
+
+    static public GitHubClient configureGitHubClient(GitHubClientConfiguration config) {
+        String variable = config.getClientSecretEnv();
+        if (variable == null || variable.isBlank()) {
+            throw new IllegalStateException("GitHubClient: clientSecretEnv must name the system property or environment variable holding the client secret");
+        }
+        String secret = systemOrEnvironment(variable);
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException("GitHubClient: no client secret in system property or environment variable " + variable);
+        }
+        GitHubClient client = new GitHubClient(config.getClientId(), secret);
+        client.setScope(config.getScope());
+        if (config.getCallbackUrl() != null) {
+            client.setCallbackUrl(config.getCallbackUrl());
+        }
+        // GitHub requires the redirect_uri to equal the App's registered callback URL (unless the App
+        // enables wildcard matching): no ?client_name= parameter is appended, and the CallbackFilter
+        // finds this client through its defaultClient init-param instead
+        client.setCallbackUrlResolver(new NoParameterCallbackUrlResolver());
+        client.addAuthorizationGenerator(new GitHubProfiles.PrincipalGenerator());
+
+        logger.info("GitHubClient created " + config);
+        return client;
+    }
+
+    static public DirectBearerAuthClient configureGitHubBearerAuthClient(GitHubBearerAuthClientConfiguration config) {
+        DirectBearerAuthClient client = new DirectBearerAuthClient();
+        client.setName(ClientConfiguration.GITHUB_BEARER_AUTH_CLIENT);
+        client.setRealmName(config.getRealm());
+        client.setCredentialsExtractor(new BearerAuthExtractor());
+        client.setAuthenticator(new GitHubTokenAuthenticator(ClientConfiguration.GITHUB_BEARER_AUTH_CLIENT, config.getCacheTtlSeconds()));
+
+        logger.info("GitHubBearerAuthClient created " + config);
         return client;
     }
 

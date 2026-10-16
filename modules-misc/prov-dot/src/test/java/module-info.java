@@ -6,6 +6,7 @@ module prov.dot.test {
     requires prov.dot;
     requires prov.model.test;
     requires prov.notation.test;
-
+    requires jakarta.xml.bind;
     exports org.openprovenance.prov.dot.test;
+    exports org.openprovenance.prov.viz.test;
 }

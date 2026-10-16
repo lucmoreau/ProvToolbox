@@ -52,7 +52,7 @@ public class Instantiater {
 
     public Document instantiate(Document docIn, Bindings bindings, String bindingsFilename, String templateFilename) {
 
-        
+        org.openprovenance.prov.template.core.InstantiateUtil.withCurrentTemplateNamespace(docIn, pf);
         Bundle bun;
         try {
             bun = u.getBundle(docIn).get(0);

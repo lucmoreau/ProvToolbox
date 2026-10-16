@@ -48,6 +48,11 @@ public class QueryParameters {
         return params.get(key);
     }
 
+    /** Whether {@code key} was supplied at all — a key supplied as {@code null} substitutes {@code NULL}, an absent one stays a placeholder (T-438). */
+    public boolean has(String key) {
+        return params.containsKey(key);
+    }
+
     /** Returns all parameter entries. */
     public Set<Map.Entry<String, String>> entrySet() {
         return Collections.unmodifiableSet(params.entrySet());

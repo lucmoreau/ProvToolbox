@@ -1,7 +1,7 @@
 document
   prefix var <http://openprovenance.org/var#>
   prefix vargen <http://openprovenance.org/vargen#>
-  prefix tmpl <http://openprovenance.org/tmpl#>
+  prefix tmpl <http://openprovenance.org/ns/tmpl#>
   prefix ex <http://example.org/>
 
   bundle vargen:a_bundle

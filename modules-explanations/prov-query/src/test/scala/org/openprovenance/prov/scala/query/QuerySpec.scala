@@ -70,7 +70,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
     val doc=parse("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix ex <http://example.org/>
              prefix foaf <http://xmlns.com/foaf/0.1/>
              agent(ex:ag1, [ prov:type='prov:Person', foaf:givenName = "Derek1"])

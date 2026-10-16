@@ -1,5 +1,5 @@
 document
-    prefix tmpl <http://openprovenance.org/tmpl#>
+    prefix tmpl <http://openprovenance.org/ns/tmpl#>
     prefix ex <http://example.org/>
     entity(ex:ei)
     entity(ex:e1)

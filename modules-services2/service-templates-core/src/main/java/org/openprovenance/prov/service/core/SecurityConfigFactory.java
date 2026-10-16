@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.service.core.TemplateService.*;
 
+import org.openprovenance.prov.service.security.pac.GitHubAllowlistAuthorizer;
 import org.openprovenance.prov.service.security.pac.SecurityConfiguration;
 import org.openprovenance.prov.service.security.pac.Utils;
 import org.pac4j.core.authorization.authorizer.CsrfAuthorizer;
@@ -57,6 +58,7 @@ public class SecurityConfigFactory implements ConfigFactory {
 
         config.addAuthorizer("defaultAuthorizer", new RequireAnyRoleAuthorizer("provwriter"));
         config.addAuthorizer("csrf", new CsrfAuthorizer());
+        config.addAuthorizer(GitHubAllowlistAuthorizer.NAME, new GitHubAllowlistAuthorizer(securityConfiguration));
         logger.debug("Config created " + config.getAuthorizers());
         //System.out.println("--- Config created " + config);
         return config;

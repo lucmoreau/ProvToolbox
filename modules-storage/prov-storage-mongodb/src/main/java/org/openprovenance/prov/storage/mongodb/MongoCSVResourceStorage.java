@@ -29,6 +29,17 @@ import java.util.List;
 
 
 public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorage<Collection<CSVRecord>>, Constants {
+    // kept so that the client (connection pool, server monitor threads) can be
+    // closed when the application shuts down
+    private final com.mongodb.client.MongoClient mongoClient;
+
+    /** Closes the underlying MongoDB client (connection pool and monitor threads), if owned by this storage. */
+    public void close() {
+        if (mongoClient != null) {
+            mongoClient.close();
+        }
+    }
+
     private static final Logger logger = LogManager.getLogger(MongoCSVResourceStorage.class);
 
 
@@ -45,7 +56,7 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
     }
     public MongoCSVResourceStorage(String host, String dbname, ObjectMapper mapper) {
 
-        MongoClient mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
+        this.mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
         MongoDatabase db = mongoClient.getDatabase(dbname);
         mapper.registerModule(org.mongojack.internal.MongoJackModule.DEFAULT_MODULE_INSTANCE);
         MongoCollection<CSVWrapper> generic=db.getCollection(COLLECTION_CSV,CSVWrapper.class);

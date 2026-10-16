@@ -220,11 +220,11 @@ public class CompilerUtil {
             Object interop=getInteropFramework();
             Method method = interop.getClass().getMethod("readDocumentFromFile", String.class);
             Document doc=(Document)method.invoke(interop,file);
-            return doc;
+            return org.openprovenance.prov.template.core.InstantiateUtil.withCurrentTemplateNamespace(doc, pFactory);
         } catch (java.lang.ClassNotFoundException e) {
             e.printStackTrace();
             //System.out.println("could not find Interop Framework, falling back on provn");
-            return new ProvDeserialiser(pFactory).deserialiseDocument(new FileInputStream(file));
+            return org.openprovenance.prov.template.core.InstantiateUtil.withCurrentTemplateNamespace(new ProvDeserialiser(pFactory).deserialiseDocument(new FileInputStream(file)), pFactory);
         }
 
 
@@ -518,7 +518,13 @@ public class CompilerUtil {
         builder.COMMENT("\n\n");
         for (String key : theVars.keySet()) {
             final List<Descriptor> descriptors = theVars.get(key);
-            if (descriptors != null && (!descriptors.isEmpty())) {
+            if (descriptors == null) {
+                // no parameter is generated for this variable (see
+                // generateSpecializedParameters): a @param tag would not match any
+                // method parameter and javadoc reports it as an error
+                continue;
+            }
+            if (!descriptors.isEmpty()) {
                 Descriptor descriptor=descriptors.get(0);
                 String documentation0=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
                 String documentation = documentation0==null ? "-- no @documentation" : documentation0;

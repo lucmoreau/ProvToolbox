@@ -13,6 +13,8 @@ public class DirectBearerAuthClientConfiguration implements ClientConfiguration 
     private String realm;
     private String signaturePublicKey;
     private String role;
+    /** The direct client(s) whose bearer tokens are accepted (the token's {@code azp}): one client id, or a
+     *  comma-separated list when the service has several client identities. */
     private String clientId;
     private String baseUri;
     private String realmUri;

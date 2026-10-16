@@ -7,7 +7,7 @@ public class Formats {
 
     public enum ProvFormat {
         PROVN, PROVX, TURTLE, RDFXML, TRIG, // TURTLE, RDFXML, TRIG no longer supported by provtoolbox, lead to exceptions at invocation time
-        JSON, JSONLD, DOT, JPEG, PNG, SVG, PDF
+        JSON, JSONLD, DOT, JPEG, PNG, SVG, PDF, MERMAID
     }
 
     public enum ProvFormatType {

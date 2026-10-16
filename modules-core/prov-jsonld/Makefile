@@ -1,5 +1,5 @@
 
-FILES    := $(shell ls target/*.jsonld)
+FILES    := $(filter-out target/public-%, $(shell ls target/*.jsonld))
 
 FILES_TO_CHECK    := $(patsubst %, %.check, $(FILES))
 
@@ -7,7 +7,8 @@ echo:
 	echo $(FILES)
 	echo $(FILES_TO_CHECK)
 
-JSONLD_SCHEMA=src/main/resources/2024-08-25/jsonldschema.json
+JSONLD_SCHEMA=src/main/resources/2026-10-14/jsonldschema.json
+SPEC_JSONLD_SCHEMA=src/main/resources/2024-08-25/jsonldschema.json
 JSONLD_CONTEXT=src/main/resources/2024-08-25/jsonldcontext.jsonld
 
 PUBLIC_JSONLD_SCHEMA=https://openprovenance.org/prov-jsonld/schema.json
@@ -29,7 +30,7 @@ schema.test: check.schema.spec check.context.spec $(FILES_TO_CHECK)
 
 check.schema.spec:
 	curl -s -o target/public-schema.json $(PUBLIC_JSONLD_SCHEMA)
-	diff -q target/public-schema.json $(JSONLD_SCHEMA)
+	diff -q target/public-schema.json $(SPEC_JSONLD_SCHEMA)
 	rm target/public-schema.json
 
 
@@ -37,3 +38,6 @@ check.context.spec:
 	curl -s -o target/public-context.jsonld $(PUBLIC_JSONLD_CONTEXT)
 	diff -q target/public-context.jsonld $(JSONLD_CONTEXT)
 	rm target/public-context.jsonld
+
+issue.test:
+	mvn test -Dtest='RoundTripFromProvJsonTest#testIssue1'

@@ -12,6 +12,8 @@ import java.io.IOException;
 public class CustomMapSerializer2 extends StdSerializer<QualifiedName> {
 
     public static final String CONTEXT_KEY_FOR_MAP = "CONTEXT_KEY_FOR_MAP";
+    /** Whether the key about to be written is coerced to {@code @id}, so whether a qualified name under it is written as a bare string. */
+    public static final String ID_COERCED_KEY = "prov:idCoerced";
 
     protected CustomMapSerializer2() {
         super(QualifiedName.class);
@@ -28,6 +30,7 @@ public class CustomMapSerializer2 extends StdSerializer<QualifiedName> {
             s= Constants.PROPERTY_PROV_TYPE;
         }
         serializerProvider.setAttribute(CONTEXT_KEY_FOR_MAP,s);
+        serializerProvider.setAttribute(ID_COERCED_KEY, Constants.ID_COERCED_ATTRIBUTE_TERMS.contains(s));
 
     }
 }

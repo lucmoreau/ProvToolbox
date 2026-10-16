@@ -19,4 +19,8 @@ public final class VizStages {
 
     /** Invoke Graphviz ({@code dot -Tsvg}) and stream the SVG to the response. */
     public static final String RENDER     = "viz.render";
+
+    /** The traversal bounds (capability 10): a {@code detail} on this stage says a bound cut
+     *  the walk.  It has no row of its own in the stage panel; the page shows it above the graph. */
+    public static final String BOUNDS     = "viz.bounds";
 }

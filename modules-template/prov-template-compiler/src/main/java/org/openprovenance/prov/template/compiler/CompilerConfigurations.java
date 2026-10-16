@@ -323,25 +323,33 @@ public class CompilerConfigurations {
     }
 
     public void generateMethodRecord2RecordConverter(String builderParameter, String name, Method mspec, ClassName className, TypeName beanType, TypeName _out) {
+        // the bean is bound to a typed local variable before calling the generic
+        // process() method: jsweet emits an explicit type witness (process<any>) which
+        // TypeScript only accepts on a typed receiver, not on the untyped result of a
+        // chained functional-interface call
         mspec.BODY(RETURN(LAMBDA(PARAMETER("x", OBJECT_ARRAY))
-                .BODY(RETURN(
-                        FUNCTIONAL_METHOD_CALL(
+                .BODY(
+                        DEFINITION(beanType, VARIABLE("bean"),
                                 FUNCTIONAL_METHOD_CALL(METHOD_CALL(
                                                 VARIABLE(builderParameter),
                                                 "aRecord2BeanConverter"
                                         ),
                                         "apply",
-                                        List.of(VARIABLE("x"))),
-                                "process",
-                                List.of(
-                                        METHOD_CALL(
-                                                VARIABLE(builderParameter),
-                                                "aArgs2RecordConverter",
-                                                List.of()
+                                        List.of(VARIABLE("x")))),
+                        RETURN(
+                                FUNCTIONAL_METHOD_CALL(
+                                        VARIABLE("bean"),
+                                        "process",
+                                        List.of(
+                                                METHOD_CALL(
+                                                        VARIABLE(builderParameter),
+                                                        "aArgs2RecordConverter",
+                                                        List.of()
+                                                )
                                         )
                                 )
                         )
-                ))));
+                )));
     }
 
 

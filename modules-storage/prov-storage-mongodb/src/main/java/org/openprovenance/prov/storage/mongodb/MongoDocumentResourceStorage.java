@@ -31,6 +31,17 @@ import static org.openprovenance.prov.core.jsonld11.serialization.deserial.Custo
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.getAttributes;
 
 public class MongoDocumentResourceStorage implements ResourceStorage, Constants {
+    // kept so that the client (connection pool, server monitor threads) can be
+    // closed when the application shuts down
+    private final com.mongodb.client.MongoClient mongoClient;
+
+    /** Closes the underlying MongoDB client (connection pool and monitor threads), if owned by this storage. */
+    public void close() {
+        if (mongoClient != null) {
+            mongoClient.close();
+        }
+    }
+
     private static final Logger logger = LogManager.getLogger(MongoDocumentResourceStorage.class);
 
     private final MongoDatabase db;
@@ -52,7 +63,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     public MongoDocumentResourceStorage(String host, String dbname) {
         //System.out.println("Creating a client");
 
-        com.mongodb.client.MongoClient mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
+        this.mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
         MongoDatabase db = mongoClient.getDatabase(dbname);
         this.db=db;
 

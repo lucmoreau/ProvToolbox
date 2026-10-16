@@ -34,26 +34,36 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
 
     protected final Jedis client;
     private final JedisPool pool;
+    // whether this instance owns the pool: closing an owner also closes the pool,
+    // stopping the commons-pool eviction timer, so that no pool thread outlives the
+    // application (and its classloader)
+    private final boolean poolOwner;
 
     public RedisDocumentResourceIndex() {
-        this(new JedisPool(new JedisPoolConfig(), "localhost"));
+        this(new JedisPool(new JedisPoolConfig(), "localhost"), true);
     }
 
     public RedisDocumentResourceIndex(String host) {
-        this(new JedisPool(new JedisPoolConfig(), host));
+        this(new JedisPool(new JedisPoolConfig(), host), true);
     }
     public RedisDocumentResourceIndex(String host, int port) {
-        this(new JedisPool(new JedisPoolConfig(), host, port));
+        this(new JedisPool(new JedisPoolConfig(), host, port), true);
     }
 
     public RedisDocumentResourceIndex(JedisPool pool) {
+        this(pool, false);  // an injected pool remains the caller's to close
+    }
+
+    private RedisDocumentResourceIndex(JedisPool pool, boolean poolOwner) {
         this.pool=pool;
         this.client=pool.getResource();
+        this.poolOwner=poolOwner;
     }
 
     private RedisDocumentResourceIndex(JedisPool pool, Jedis client) {
         this.pool=pool;
         this.client=client;
+        this.poolOwner=false;
     }
 
     public RedisDocumentResourceIndex getIndex() {
@@ -63,6 +73,9 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
     @Override
     public void close() {
         client.close();
+        if (poolOwner) {
+            pool.close();
+        }
     }
 
     public String[] myKeys()  { return myKeyArray; }

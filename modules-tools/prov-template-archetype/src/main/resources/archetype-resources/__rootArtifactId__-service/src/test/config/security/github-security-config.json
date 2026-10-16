@@ -1,0 +1,18 @@
+{
+    "callbackUrl": "http://localhost:7075/book/callback",
+    "configurations": {
+        "GitHubClient": {
+            "@type": "GitHubClient",
+            "clientId": "Ov23li7kMCKmclnlioem",
+            "clientSecretEnv": "GITHUB_CLIENT_SECRET",
+            "callbackUrl": "http://localhost:7075/book/callback",
+            "scope": "read:user",
+            "allowlistEnv": "GITHUB_ALLOWLIST"
+        },
+        "GitHubBearerAuthClient": {
+            "@type": "GitHubBearerAuthClient",
+            "cacheTtlSeconds": 300,
+            "allowlistEnv": "GITHUB_ALLOWLIST"
+        }
+    }
+}

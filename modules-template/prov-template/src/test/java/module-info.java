@@ -8,6 +8,7 @@ module prov.template.test {
     requires zjsonpatch;
     requires org.apache.logging.log4j;
     requires prov.template;
+    requires prov.jsonld;
 
     exports org.openprovenance.prov.template.core.test;
 

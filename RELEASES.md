@@ -1,7 +1,26 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.2.5-SNAPSHOT`
+`2.3.0-SNAPSHOT`
 * 
+
+`2.2.5`
+* prov-template-archetype: navigator tab supports backward and forward traversals
+* service-templates-core: idempotency of statement posting, and support for idempotency-key in template service
+* prov-template, prov-toolbox-plugin: qualified.svg output format, the qualified rendering as vector beside qualified.png
+* qualified.svg: the qualified rendering as SVG, beside qualified.png
+* provext is the PROV-JSONLD extension's namespace, https://openprovenance.org/ns/provext#; the http://openprovenance.org/prov/extension# ProvToolbox used to declare is accepted on input, never written. The openprov vocabulary, https://openprovenance.org/ns/openprov#, names what templates write beyond PROV-DM and provext; every serialisation reads its terms (association, previousEntity, entity, ... on an attribution, membership, specialization, communication, start or end, without had, as PROV-N writes prov:type) into the properties (openprov:hadAssociation, ...) and writes the properties, or the terms as an expansion leaves them, back as the terms; prov-jsonld cites https://openprovenance.org/ns/openprov.jsonld, and its tests hold such a document to https://openprovenance.org/ns/openprov-schema.json, the PROV-JSONLD schema extended by reference with the terms. PROV-N declares provext, and openprov, when it writes a provext statement or an openprov attribute of a document that declares neither
+* prov-template: the template vocabulary is http://openprovenance.org/ns/tmpl# (defined at https://openprovenance.org/ns/tmpl); templates declaring http://openprovenance.org/tmpl# are accepted on input, their tmpl attributes and prefix renamed as they enter the expander or the compiler (InstantiateUtil.withCurrentTemplateNamespace)
+* prov-jsonld: PROV-JSON read and written as the W3C submission has it (ProvJsonReader/ProvJsonWriter replace the mixins ported from JSON-LD): native numbers and booleans, typed and language-tagged literals, xsd:QName, single values unwrapped, blank identifiers, the qualified extensions of specialization/alternate/membership as the standard relation; every construct schema-checked in both serialisations, JSON-LD expanded with a JSON-LD processor, cross-format round trips
+* prov-dot: ProvViz, the visualisation model (VizGraph) that ProvToDot and the new ProvToMermaid render; mermaid output (mmd, qualified.mmd; svg/png/pdf via mmdc) in prov-interop and prov-template
+* prov-dot: the qualified.png/qualified.svg/qualified.pdf serialisers registered from ProvToDot; no more empty attribute box for an unidentified relation whose attributes are all provext links
+* prov-dot, prov-template: qualified-inv.png/svg/pdf, the qualified rendering with an invalidation laid out between its entity and activity
+* prov-service-security-pac: github authentication
+* prov-template-archetype: github authentication support
+* prov-jsonld: create test to check https://github.com/openprov/prov-jsonld/issues/7
+* prov-service-security-pac: update DirectBearerAuthClient, support for multiple direct clients
+* prov-template-compiler: jsonld schema check for output template
+* prov-template-archetype: docker deployment
+
 
 `2.2.4`
 

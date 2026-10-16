@@ -52,6 +52,9 @@
     }
     .dropdown-menu {
         font-size: 0.75rem;
+        /* Long template lists: cap to viewport height and scroll instead of overflowing */
+        max-height: 70vh;
+        overflow-y: auto;
     }
     .form-control {
         font-size: 0.75rem;

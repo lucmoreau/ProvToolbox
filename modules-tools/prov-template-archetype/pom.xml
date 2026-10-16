@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.openprovenance.prov</groupId>
         <artifactId>modules-tools</artifactId>
-        <version>2.2.4</version>
+        <version>2.2.5</version>
     </parent>
 
     <artifactId>prov-template-archetype</artifactId>
@@ -32,6 +32,8 @@
                     <exclude>**/pom.xml</exclude>
                     <exclude>**/Makefile</exclude>
                     <exclude>**/Dockerfile</exclude>
+                    <!-- their ${project.build.directory} is the generated service's, resolved when it builds -->
+                    <exclude>**/storage-configuration-*.json</exclude>
                 </excludes>
             </resource>
             <resource>
@@ -41,6 +43,7 @@
                     <include>**/pom.xml</include>
                     <include>**/Makefile</include>
                     <include>**/Dockerfile</include>
+                    <include>**/storage-configuration-*.json</include>
                 </includes>
             </resource>
         </resources>

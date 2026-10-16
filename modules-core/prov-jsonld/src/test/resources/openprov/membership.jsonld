@@ -1,0 +1,11 @@
+{
+  "@context": [ { "ex": "http://example.org/", "openprov": "https://openprovenance.org/ns/openprov#" },
+                "https://openprovenance.org/ns/openprov.jsonld" ],
+  "@graph": [
+    { "@type": "Entity", "@id": "ex:coll1" },
+    { "@type": "Entity", "@id": "ex:item1" },
+    { "@type": "Membership", "@id": "ex:mem", "collection": "ex:coll1", "entity": [ "ex:item1" ],
+      "activity": [ "ex:inserting" ], "generation": [ "ex:gen" ], "usage": [ "ex:usd" ],
+      "collectionGeneration": [ "ex:gen0" ], "itemGeneration": [ "ex:gen1" ] }
+  ]
+}

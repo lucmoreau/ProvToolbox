@@ -19,6 +19,15 @@
     <url-pattern>/webjars/*</url-pattern>
   </filter-mapping>
 
+  <!-- explicit declaration: this servlet 2.3 descriptor disables annotation
+       scanning, so the @WebListener annotation on this class is not seen;
+       the listener closes storage clients, connection pools and the scheduler
+       when the web application stops -->
+  <listener>
+    <listener-class>org.openprovenance.prov.service.core.ServiceShutdownListener</listener-class>
+  </listener>
+
+
 
 
   <!--

@@ -75,7 +75,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     val doc = parse(
       """
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix ex <http://example.org/>
              entity(ex:e1)
             endDocument
@@ -109,7 +109,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix ex <http://example.org/>
              activity(ex:a1)
             endDocument
@@ -145,7 +145,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix ex <http://example.org/>
              agent(ex:ag1)
             endDocument
@@ -176,7 +176,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix ex <http://example.org/>
              wasAttributedTo(ex:e1,ex:ag1)
             endDocument
@@ -208,7 +208,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix ex <http://example.org/>
              wasDerivedFrom(ex:cups,ex:clay)
             endDocument
@@ -243,7 +243,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
              document
-              prefix tmpl <http://openprovenance.org/tmpl#>
+              prefix tmpl <http://openprovenance.org/ns/tmpl#>
               prefix ex <http://example.org/>
               wasGeneratedBy(ex:e1,ex:a1,-)
               wasGeneratedBy(ex:e2,ex:a2,2012-03-02T10:30:00.000Z)
@@ -298,7 +298,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix ex <http://example.org/>
              used(ex:a1,ex:e1,-)
              used(ex:a2,ex:e2,2012-03-02T10:30:00.000Z)
@@ -352,7 +352,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
              document
-              prefix tmpl <http://openprovenance.org/tmpl#>
+              prefix tmpl <http://openprovenance.org/ns/tmpl#>
               prefix ex <http://example.org/>
               wasInvalidatedBy(ex:e1,ex:a1,-)
               wasInvalidatedBy(ex:e2,ex:a2,2012-03-02T10:30:00.000Z)
@@ -410,7 +410,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
              document
-              prefix tmpl <http://openprovenance.org/tmpl#>
+              prefix tmpl <http://openprovenance.org/ns/tmpl#>
               prefix ex <http://example.org/>
               wasStartedBy(ex:a2,- ,ex:a1,-)
               wasStartedBy(ex:a4,- ,ex:a3,2012-03-02T10:30:00.000Z)
@@ -465,7 +465,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
              document
-              prefix tmpl <http://openprovenance.org/tmpl#>
+              prefix tmpl <http://openprovenance.org/ns/tmpl#>
               prefix ex <http://example.org/>
               wasStartedBy(ex:a2,ex:e1,-,-)
               wasStartedBy(ex:a4,ex:e2,-,2012-03-02T10:30:00.000Z)
@@ -520,7 +520,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
              document
-              prefix tmpl <http://openprovenance.org/tmpl#>
+              prefix tmpl <http://openprovenance.org/ns/tmpl#>
               prefix ex <http://example.org/>
               wasStartedBy(ex:a2,ex:e1,ex:a1,-)
               wasStartedBy(ex:a4,ex:e2,ex:a3,2012-03-02T10:30:00.000Z)
@@ -579,7 +579,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
              document
-              prefix tmpl <http://openprovenance.org/tmpl#>
+              prefix tmpl <http://openprovenance.org/ns/tmpl#>
               prefix ex <http://example.org/>
               wasEndedBy(ex:a2,ex:e1,ex:a1,-)
               wasEndedBy(ex:a4,ex:e2,ex:a3,2012-03-02T10:30:00.000Z)
@@ -634,7 +634,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
              document
-              prefix tmpl <http://openprovenance.org/tmpl#>
+              prefix tmpl <http://openprovenance.org/ns/tmpl#>
               prefix ex <http://example.org/>
               wasEndedBy(ex:a2,ex:e1,-,-)
               wasEndedBy(ex:a4,ex:e2,-,2012-03-02T10:30:00.000Z)
@@ -690,7 +690,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
              document
-              prefix tmpl <http://openprovenance.org/tmpl#>
+              prefix tmpl <http://openprovenance.org/ns/tmpl#>
               prefix ex <http://example.org/>
               wasEndedBy(ex:a2,ex:e1,ex:a1,-)
               wasEndedBy(ex:a4,ex:e2,ex:a3,2012-03-02T10:30:00.000Z)
@@ -747,7 +747,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc_OLD=parse("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix ex <http://example.org/>
              entity(ex:e1)
              entity(ex:e2)
@@ -764,7 +764,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     val docYY=readDoc("src/test/resources/prov/tester.provn")
     val doc=parse("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix ex <http://example.org/>
              entity(ex:ei)
              entity(ex:e1)
@@ -928,7 +928,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix ex <http://example.org/>
              used(ex:a1,ex:e1,-)
              used(ex:a2,ex:e2,2012-03-02T10:30:00.000Z)
@@ -952,7 +952,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix ex <http://example.org/>
              prefix foaf <http://xmlns.com/foaf/0.1/>
              agent(ex:ag1, [ prov:type='prov:Person', foaf:givenName = "Derek",
@@ -976,7 +976,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix ex <http://example.org/>
              prefix foaf <http://xmlns.com/foaf/0.1/>
              agent(ex:ag1, [ prov:type='prov:Person', foaf:givenName = "Derek"])
@@ -1003,7 +1003,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val doc=parse("""
             document
-             prefix tmpl <http://openprovenance.org/tmpl#>
+             prefix tmpl <http://openprovenance.org/ns/tmpl#>
              prefix ex <http://example.org/>
              prefix foaf <http://xmlns.com/foaf/0.1/>
              agent(ex:ag1, [ prov:type='prov:Person', foaf:givenName = "Derek"])

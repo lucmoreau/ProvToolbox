@@ -148,3 +148,15 @@ go2:
 	$(MAKE) run.book.fs
 	cd $(DEPLOY_DIR)/artif/artif-service; mvn clean install
 	cd $(DEPLOY_DIR)/artif/artif-service; make jetty
+
+go.tr.gh:
+	$(MAKE) book.install
+	$(MAKE) run.book.tr
+	cd $(DEPLOY_DIR)/artif/artif-service; mvn clean install
+	cd $(DEPLOY_DIR)/artif/artif-service; make jetty.github
+
+go.fs.gh:
+	$(MAKE) book.install
+	$(MAKE) run.book.fs
+	cd $(DEPLOY_DIR)/artif/artif-service; mvn clean install
+	cd $(DEPLOY_DIR)/artif/artif-service; make jetty.github

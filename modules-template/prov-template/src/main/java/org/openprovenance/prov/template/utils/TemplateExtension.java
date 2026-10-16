@@ -10,7 +10,15 @@ public enum TemplateExtension {
     JSON("json"),
     PNG("png"),
     SVG("svg"),
+    MMD("mmd"),
     QUALIFIED_PNG("qualified.png"),
+    QUALIFIED_SVG("qualified.svg"),
+    QUALIFIED_PDF("qualified.pdf"),
+    QUALIFIED_MMD("qualified.mmd"),
+    /** The qualified renderings whose invalidations are laid out between their entity and activity. */
+    QUALIFIED_INV_PNG("qualified-inv.png"),
+    QUALIFIED_INV_SVG("qualified-inv.svg"),
+    QUALIFIED_INV_PDF("qualified-inv.pdf"),
     PROVCSV("prov-csv"),
     HAS_PROVENANCE("hasProvenance");
 

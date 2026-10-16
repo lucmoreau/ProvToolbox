@@ -2,6 +2,7 @@ package org.openprovenance.prov.service.core.jobs;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.openprovenance.prov.service.core.ServiceShutdownListener;
 import org.quartz.*;
 import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.impl.StdSchedulerFactory;
@@ -35,6 +36,10 @@ public class JobManagement {
 			scheduler = sf.getScheduler();
 			scheduler.start();
 			the_scheduler=scheduler;
+			// stop the scheduler thread when the web application stops, so that it
+			// does not outlive the webapp classloader
+			final Scheduler toShutdown = scheduler;
+			ServiceShutdownListener.registerForShutdown(() -> toShutdown.shutdown(true));
 			return true;
 		} catch (SchedulerException e) {
 			e.printStackTrace();

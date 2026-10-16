@@ -12,6 +12,13 @@ public class TemplateTasksBatch {
 
     public List<String> variableMaps;
 
+    /**
+     * The version of the PROV-JSONLD schema each task's generated jsonld output is validated against, unless the task
+     * says otherwise: none (the default when absent), default (the version ProvToolbox writes), or a bundled date.
+     * See {@link SchemaCheck}.
+     */
+    public String schemaCheck;
+
     // jackson annotation to allow polymorphic deserialization for ExpandTask and MergeTask
     @JsonTypeInfo(
             use = JsonTypeInfo.Id.NAME,
@@ -52,6 +59,7 @@ public class TemplateTasksBatch {
                 ", bindings_path='" + bindings_path + '\'' +
                 ", output_dir='" + output_dir + '\'' +
                 ", variableMaps=" + variableMaps +
+                ", schemaCheck='" + schemaCheck + '\'' +
                 ", tasks=" + tasks +
                 '}';
     }

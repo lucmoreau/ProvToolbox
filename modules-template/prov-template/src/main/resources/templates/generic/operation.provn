@@ -1,5 +1,5 @@
 document
- prefix tmpl <http://openprovenance.org/tmpl#>
+ prefix tmpl <http://openprovenance.org/ns/tmpl#>
  prefix var <http://openprovenance.org/var#>
  prefix vargen <http://openprovenance.org/vargen#>
  

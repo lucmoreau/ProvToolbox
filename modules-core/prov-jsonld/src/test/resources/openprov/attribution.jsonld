@@ -1,0 +1,13 @@
+{
+  "@context": [ { "ex": "http://example.org/", "openprov": "https://openprovenance.org/ns/openprov#" },
+                "https://openprovenance.org/ns/openprov.jsonld" ],
+  "@graph": [
+    { "@type": "Entity",   "@id": "ex:e1" },
+    { "@type": "Agent",    "@id": "ex:ag1" },
+    { "@type": "Activity", "@id": "ex:a1" },
+    { "@type": "Attribution", "@id": "ex:att1", "entity": "ex:e1", "agent": "ex:ag1",
+      "activity": [ "ex:a1" ], "association": [ "ex:asc1" ], "generation": [ "ex:gen1" ],
+      "invalidation": [ "ex:inv1" ], "entityDerivation": [ "ex:der1" ], "agentDerivation": [ "ex:der2" ],
+      "ex:note": [ { "@value": "kept as it is" } ] }
+  ]
+}

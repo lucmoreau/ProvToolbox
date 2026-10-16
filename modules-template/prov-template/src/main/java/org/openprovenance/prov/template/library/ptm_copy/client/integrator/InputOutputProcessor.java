@@ -4,7 +4,7 @@
 package org.openprovenance.prov.template.library.ptm_copy.client.integrator;
 
 public interface InputOutputProcessor {
-  Ptm_expandingOutputs process(Ptm_expandingInputs bean);
+  Ptm_instantiatingOutputs process(Ptm_instantiatingInputs bean);
 
   Ptm_mexpandingOutputs process(Ptm_mexpandingInputs bean);
 }

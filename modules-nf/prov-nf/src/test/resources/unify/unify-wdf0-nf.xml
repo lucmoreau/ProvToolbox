@@ -3,7 +3,7 @@
     <prefixes>
         <xsd>http://www.w3.org/2001/XMLSchema#</xsd>
         <ex>http://example/</ex>
-        <provext>http://openprovenance.org/prov/extension#</provext>
+        <provext>https://openprovenance.org/ns/provext#</provext>
         <prov>http://www.w3.org/ns/prov#</prov>
     </prefixes>
     <statements>

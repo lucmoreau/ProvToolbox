@@ -93,6 +93,7 @@ public class TemplateService {
     protected final Map<String, Linker> compositeLinker;
     protected final Map<String, Function<Object[], Object[]>> recordMaker;
     protected final PrincipalManager principalManager;
+    protected final org.openprovenance.prov.model.interop.SubmissionKeyManager submissionKeyManager;
     protected final Map<String, Object> templateConfiguration;
     protected final Querier querier;
     protected final HashMap<String, String> map;
@@ -153,6 +154,7 @@ public class TemplateService {
 
         this.storage=new Storage();
         this.principalManager =new PrincipalManager();
+        this.submissionKeyManager =new org.openprovenance.prov.model.interop.SubmissionKeyManager();
 
         // configuration
 
@@ -322,14 +324,44 @@ public class TemplateService {
             default: return utils.composeResponseBadRequest("unknown accept header " + acceptHeader, new UnsupportedOperationException(acceptHeader));
         }
 
+        // Statement-POST idempotency: an Idempotency-Key header scopes exactly one
+        // JSON entry (our wire format posts singleton lists); the key rides a
+        // thread-local into the generated record_index insert composition. Keyless
+        // requests take the pre-existing path untouched.
+        String submissionKey = headers.getHeaderString(TemplateLogic.HTTP_HEADER_IDEMPOTENCY_KEY);
+        if (submissionKey != null && submissionKey.isBlank()) submissionKey = null;
+        if (submissionKey != null) {
+            if (documentOrCsv.csv != null) {
+                return utils.composeResponseBadRequest(
+                        "Idempotency-Key is not supported for CSV submissions",
+                        new UnsupportedOperationException(TemplateLogic.HTTP_HEADER_IDEMPOTENCY_KEY));
+            }
+            if (!acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
+                return utils.composeResponseBadRequest(
+                        "Idempotency-Key requires Accept " + APPLICATION_VND_KCL_PROV_TEMPLATE_JSON,
+                        new UnsupportedOperationException(acceptHeader));
+            }
+            if (documentOrCsv.json != null && documentOrCsv.json.size() != 1) {
+                return utils.composeResponseBadRequest(
+                        "Idempotency-Key names one submission but the request carries "
+                                + documentOrCsv.json.size() + " entries",
+                        new UnsupportedOperationException(TemplateLogic.HTTP_HEADER_IDEMPOTENCY_KEY));
+            }
+            submissionKeyManager.setSubmissionKey(submissionKey);
+        }
+
         List<Object> result;
-        if (documentOrCsv.csv!=null) {
-            result=templateLogic.processIncomingCsv(documentOrCsv.csv,acceptHeader);
-        } else if (documentOrCsv.json!=null) {
-            // not accepting yet csv return
-            result=templateLogic.processIncomingJson(documentOrCsv.json,acceptHeader);
-        } else {
-            return utils.composeResponseInternalServerError("unknown input document", new UnsupportedOperationException());
+        try {
+            if (documentOrCsv.csv!=null) {
+                result=templateLogic.processIncomingCsv(documentOrCsv.csv,acceptHeader);
+            } else if (documentOrCsv.json!=null) {
+                // not accepting yet csv return
+                result=templateLogic.processIncomingJson(documentOrCsv.json,acceptHeader);
+            } else {
+                return utils.composeResponseInternalServerError("unknown input document", new UnsupportedOperationException());
+            }
+        } finally {
+            submissionKeyManager.clearSubmissionKey();
         }
         String hash= (headerAcceptProvHash==null)?null:headerInfo.get().get(HTTP_HEADER_CONTENT_PROV_HASH);
         String location= headerInfo.get().get(HTTP_HEADER_LOCATION);
@@ -753,6 +785,13 @@ public class TemplateService {
         String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
 
 
+        // Capability 10: malformed traversal bounds are the client's error, answered before the SVG streams.
+        try {
+            TraversalBounds.fromParameters(config.parameters);
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
+        }
+
         ProgressListener listener = new LoggingProgressListener();
         StreamingOutput promise= out -> templateLogic.generateViz(config, principalAsPreferredUsername, iconsFolderForGraphviz,  out, listener);
 
@@ -791,6 +830,72 @@ public class TemplateService {
         try {
             ByteArrayOutputStream svgBuf = new ByteArrayOutputStream();
             templateLogic.generateViz(config, principalAsPreferredUsername, iconsFolderForGraphviz, svgBuf, listener);
+            listener.result(MEDIA_IMAGE_SVG_XML, svgBuf.toByteArray());
+        } catch (Throwable t) {
+            listener.error(t);
+        } finally {
+            sink.close();
+        }
+    }
+
+    /**
+     * Renders the slice between two anchors: the sub-graph of template connections
+     * lying on a path from the downstream anchor's output back to the upstream
+     * anchor's input.  An empty SVG means the two anchors are not connected.
+     *
+     * <p>Setting the {@code paths} parameter to {@code "one"} narrows the result to a
+     * single shortest path; the default keeps every path.
+     *
+     * @see #getTemplatesSliceStream
+     */
+    @POST
+    @Path("/templates/slice")
+    @Tag(name = "template")
+    @Consumes({MEDIA_APPLICATION_JSON})
+    @Produces({MEDIA_IMAGE_SVG_XML})
+    public Response getTemplatesSlice(@Context HttpServletResponse response,
+                                      @Context HttpServletRequest request,
+                                      @Context HttpHeaders headers,
+                                      @Context UriInfo uriInfo,
+                                      TemplatesSliceConfig config) {
+
+        Principal principal = request.getUserPrincipal();
+        String principalAsPreferredUsername = getPrincipalAsPreferredUsername(principal);
+
+        // Capability 10: malformed traversal bounds are the client's error, answered before the SVG streams.
+        try {
+            TraversalBounds.fromParameters(config.parameters);
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
+        }
+
+        ProgressListener listener = new LoggingProgressListener();
+        StreamingOutput promise= out -> templateLogic.generateSlice(config, principalAsPreferredUsername, iconsFolderForGraphviz, out, listener);
+
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_IMAGE_SVG_XML).build();
+    }
+
+    /**
+     * SSE-streamed variant of {@link #getTemplatesSlice}, with the same event
+     * protocol and the same synchronous-execution rationale as
+     * {@link #getTemplatesVizStream}.
+     */
+    @POST
+    @Path("/templates/slice/stream")
+    @Tag(name = "template")
+    @Consumes({MEDIA_APPLICATION_JSON})
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    public void getTemplatesSliceStream(@Context SseEventSink sink,
+                                        @Context Sse sse,
+                                        @Context HttpServletRequest request,
+                                        TemplatesSliceConfig config) {
+
+        final String principalAsPreferredUsername = getPrincipalAsPreferredUsername(request.getUserPrincipal());
+
+        SseProgressListener listener = new SseProgressListener(sink, sse);
+        try {
+            ByteArrayOutputStream svgBuf = new ByteArrayOutputStream();
+            templateLogic.generateSlice(config, principalAsPreferredUsername, iconsFolderForGraphviz, svgBuf, listener);
             listener.result(MEDIA_IMAGE_SVG_XML, svgBuf.toByteArray());
         } catch (Throwable t) {
             listener.error(t);

@@ -22,9 +22,18 @@ public interface DotProperties  {
     String DOT_ARROWSHAPE_ODIAMOND = "odiamond";
     String DOT_ARROWSHAPE_OINV = "oinv";
     String DOT_TOOLTIP = "tooltip";
-    String DOT_URL = "url";
+    String DOT_URL = "URL";
     String DOT_PENWIDTH = "penwidth";
     String DOT_WIDTH = "width";
+    String DOT_COMMENT = "comment";
     String DOT_DIRECTED_EDGE = " -> ";
     String DOT_UNDIRECTED_EDGE = " -- ";
+
+    String ACTIVITY_SHAPE = "polygon";
+    String ACTIVITY_SIDES = "4";
+    String AGENT_SHAPE = "house";
+    String ANNOTATION_SHAPE = "note";
+    String BLANK_SHAPE = "point";
+    String FOLDER_SHAPE = "folder";
+    String PLAINTEXT_SHAPE = "plaintext";
 }

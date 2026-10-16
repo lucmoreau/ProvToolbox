@@ -231,7 +231,7 @@ analyse, check or validate them.
     <td><b>Namespace IRI</b></td>
     <td><b>Definition</b></td></tr>
 <tr><td><tt>tmpl</tt></td>
-    <td><tt>http://openprovenance.org/tmpl#</tt></td>
+    <td><tt>http://openprovenance.org/ns/tmpl#</tt></td>
     <td>The prov-template namespace</td></tr>
 <tr><td><tt>var</tt></td>
     <td><tt>http://openprovenance.org/var#</tt></td>
@@ -306,7 +306,7 @@ With the following values, <tt>ex:ag</tt> and <tt>ex:en</tt>, for <tt>var:a</tt>
 <pre class="highlight">
 document
  prefix ex &lt;http://example.org/&gt;
- prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
+ prefix tmpl &lt;http://openprovenance.org/ns/tmpl#&gt;
  bundle ex:b 
   agent(ex:ag,[tmpl:order = "[0]"])
   entity(ex:en,[tmpl:order = "[0]"])
@@ -324,7 +324,7 @@ endDocument
 <pre class="highlight">
 document
  prefix ex &lt;http://example.org/&gt;
- prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
+ prefix tmpl &lt;http://openprovenance.org/ns/tmpl#&gt;
  bundle ex:b 
   agent(ex:ag1,[tmpl:order = "[0]"])
   agent(ex:ag2,[tmpl:order = "[1]"])
@@ -366,7 +366,7 @@ The expansion now looks like the following. We see that the value <tt>ex:en1</tt
 <pre class="highlight">
 document
  prefix ex &lt;http://example.org/&gt;
- prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
+ prefix tmpl &lt;http://openprovenance.org/ns/tmpl#&gt;
  bundle ex:b 
   agent(ex:ag1,[tmpl:order = "[0]"])
   agent(ex:ag2,[tmpl:order = "[1]"])
@@ -435,7 +435,7 @@ For instance, for the following groups of values
 <pre class="highlight">
 document
  prefix ex &lt;http://example.org/&gt;
- prefix tmpl &lt;http://openprovenance.org/tmpl#&gt;
+ prefix tmpl &lt;http://openprovenance.org/ns/tmpl#&gt;
  bundle ex:b 
   agent(ex:ag1,[tmpl:order = "[0]"])
   agent(ex:ag2,[tmpl:order = "[1]"])

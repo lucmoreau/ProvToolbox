@@ -1,0 +1,90 @@
+{
+    "prefix": {
+        "default": "http://example.org/",
+        "ex": "http://example.org/ex#",
+        "foaf": "http://xmlns.com/foaf/0.1/"
+    },
+    "entity": {
+        "e1": {
+            "prov:label": "an entity",
+            "prov:type": {"$": "prov:Collection", "type": "xsd:QName"},
+            "prov:value": {"$": "ex:v", "type": "prov:QUALIFIED_NAME"},
+            "prov:location": "London",
+            "ex:count": 3,
+            "ex:ratio": 0.5,
+            "ex:flag": true,
+            "ex:size": {"$": "1034", "type": "xsd:positiveInteger"},
+            "ex:desc": {"$": "une entité", "lang": "fr"},
+            "ex:values": [{"$": "1034", "type": "xsd:positiveInteger"}, 2, {"$": "82.5", "type": "xsd:decimal"}, "text"]
+        },
+        "e2": {},
+        "c": {"prov:type": {"$": "prov:Collection", "type": "xsd:QName"}},
+        "plan": {"prov:type": {"$": "prov:Plan", "type": "xsd:QName"}}
+    },
+    "activity": {
+        "a1": {
+            "prov:startTime": "2011-11-16T16:05:00",
+            "prov:endTime": "2011-11-16T16:06:00",
+            "ex:host": "server.example.org",
+            "prov:type": {"$": "ex:edit", "type": "xsd:QName"}
+        },
+        "a2": {}
+    },
+    "agent": {
+        "ag1": {"prov:type": {"$": "prov:Person", "type": "xsd:QName"}, "foaf:name": "Alice"},
+        "ag2": {}
+    },
+    "wasGeneratedBy": {
+        "ex:gen1": {"prov:entity": "e1", "prov:activity": "a1", "prov:time": "2011-11-16T16:06:00", "prov:role": "output"}
+    },
+    "used": {
+        "ex:use1": {"prov:activity": "a1", "prov:entity": "e2", "prov:time": "2011-11-16T16:05:00", "prov:role": "input"}
+    },
+    "wasInformedBy": {
+        "_:Infm2": {"prov:informant": "a1", "prov:informed": "a2"}
+    },
+    "wasStartedBy": {
+        "ex:start1": {"prov:activity": "a2", "prov:trigger": "e2", "prov:starter": "a1", "prov:time": "2011-11-16T16:05:00"}
+    },
+    "wasEndedBy": {
+        "ex:end1": {"prov:activity": "a2", "prov:trigger": "e1", "prov:ender": "a1", "prov:time": "2011-11-16T16:06:00"}
+    },
+    "wasInvalidatedBy": {
+        "_:inv1": {"prov:entity": "e2", "prov:activity": "a2", "prov:time": "2011-11-16T16:06:00"}
+    },
+    "wasDerivedFrom": {
+        "ex:der1": {"prov:generatedEntity": "e1", "prov:usedEntity": "e2", "prov:activity": "a1",
+                    "prov:generation": "ex:gen1", "prov:usage": "ex:use1",
+                    "prov:type": {"$": "prov:Revision", "type": "xsd:QName"}}
+    },
+    "wasAttributedTo": {
+        "_:att1": {"prov:entity": "e1", "prov:agent": "ag1", "prov:type": "authorship"}
+    },
+    "wasAssociatedWith": {
+        "_:assoc1": {"prov:activity": "a1", "prov:agent": "ag1", "prov:plan": "plan", "prov:role": "editor"}
+    },
+    "actedOnBehalfOf": {
+        "_:del1": {"prov:delegate": "ag1", "prov:responsible": "ag2", "prov:activity": "a1"}
+    },
+    "wasInfluencedBy": {
+        "_:infl1": {"prov:influencee": "e1", "prov:influencer": "ag2"}
+    },
+    "specializationOf": {
+        "_:spe1": {"prov:specificEntity": "e1", "prov:generalEntity": "e2"},
+        "ex:spe2": {"prov:specificEntity": "c", "prov:generalEntity": "e2"}
+    },
+    "alternateOf": {
+        "_:alt1": {"prov:alternate1": "e1", "prov:alternate2": "e2"}
+    },
+    "hadMember": {
+        "_:hM1": {"prov:collection": "c", "prov:entity": "e1"},
+        "_:hM2": {"prov:collection": "c", "prov:entity": ["e1", "e2"]}
+    },
+    "bundle": {
+        "ex:b1": {
+            "prefix": {"b": "http://example.org/bundle#"},
+            "entity": {"b:e3": {"prov:label": {"$": "dans le lot", "lang": "fr"}}},
+            "wasGeneratedBy": {"_:g3": {"prov:entity": "b:e3", "prov:activity": "a1"}}
+        }
+    }
+}

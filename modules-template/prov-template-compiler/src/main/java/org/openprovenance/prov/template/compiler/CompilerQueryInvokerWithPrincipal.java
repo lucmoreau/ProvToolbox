@@ -31,6 +31,18 @@ import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 public class CompilerQueryInvokerWithPrincipal {
 
+    /**
+     * Thread-scoped idempotency-key carrier (see {@code SubmissionKeyManager}):
+     * the generated composer appends {@code SubmissionKeyManager.asSqlLiteral()}
+     * — {@code NULL} when the request carried no {@code Idempotency-Key} header —
+     * as the {@code submission_key} value of the {@code record_index} insert.
+     * One key per submission: the simple path stamps its single row, the
+     * composite path stamps only the parent row (the {@code distinct(parent)}
+     * insert), never the per-element rows.
+     */
+    private static final ClassName SUBMISSION_KEY_MANAGER =
+            get("SubmissionKeyManager", "org.openprovenance.prov.model.interop");
+
     private final CompilerUtil compilerUtil;
     private final CompilerQueryInvoker delegateCompiler;
     private final PastFactory pastFactory;
@@ -159,7 +171,7 @@ public class CompilerQueryInvokerWithPrincipal {
     private void insertAccessControlSimple(TemplateCompilerConfig config, Method method, TemplateBindingsSchema bindingsSchema) {
 
         method.BODY(
-                METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\nINSERT INTO record_index(key,table_name,principal)\n"))),
+                METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\nINSERT INTO record_index(key,table_name,principal,submission_key)\n"))),
 
                 METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT( "VALUES ((SELECT id FROM insertion_result),\n"))),
 
@@ -168,6 +180,10 @@ public class CompilerQueryInvokerWithPrincipal {
                 METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(",\n"))),
 
                 METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(VARIABLE(QUERY_INVOKER_VAR), CONVERT_TO_NON_NULLABLE_TEXT, List.of(VARIABLE(PRINCIPAL_VAR))))),
+
+                METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(",\n"))),
+
+                METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(SUBMISSION_KEY_MANAGER, "asSqlLiteral", List.of()))),
 
                 METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(")\nRETURNING (SELECT ID FROM insertion_result) as id\n")))
 
@@ -204,7 +220,11 @@ public class CompilerQueryInvokerWithPrincipal {
 
                 METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("insertion_result3 AS ("))),
 
-                METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\n   INSERT INTO record_index(key,table_name,principal)\n"))),
+                // The parent row alone carries the submission key: one key per
+                // POST, and this is the row whose (key, table_name) addresses the
+                // composite record for duplicate-recovery. Element rows above
+                // (insertion_result2) stay keyless.
+                METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\n   INSERT INTO record_index(key,table_name,principal,submission_key)\n"))),
 
                 METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("   SELECT distinct(parent) as key,"))),
 
@@ -213,6 +233,10 @@ public class CompilerQueryInvokerWithPrincipal {
                 METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(","))),
 
                 METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(VARIABLE(QUERY_INVOKER_VAR), CONVERT_TO_NON_NULLABLE_TEXT, List.of(VARIABLE(PRINCIPAL_VAR))))),
+
+                METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(","))),
+
+                METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(SUBMISSION_KEY_MANAGER, "asSqlLiteral", List.of()))),
                 METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("\n   from insertion_result)\n"))),
 
                 METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("select * from insertion_result\n")))

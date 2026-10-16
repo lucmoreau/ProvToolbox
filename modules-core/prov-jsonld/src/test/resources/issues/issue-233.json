@@ -1,0 +1,17 @@
+{
+    "prefix": {
+        "default": "http://example.org/",
+        "ex": "http://example.org/"
+    },
+    "entity": {
+        "e1": {
+            "ex:tag": [
+                {"$": "hello", "type": "xsd:string"},
+                2,
+                {"$": "Qk0=", "type": "xsd:base64Binary"},
+                true,
+                {"$": "bonjour", "lang": "fr"}
+            ]
+        }
+    }
+}

@@ -111,7 +111,7 @@
     "context": {
         "ex":      "http://example.org/#",
         "prov":    "http://www.w3.org/ns/prov#",
-        "provext": "http://openprovenance.org/prov/extension#",
+        "provext": "https://openprovenance.org/ns/provext#", "openprov": "https://openprovenance.org/ns/openprov#",
         "trs":     "https://openprovenance.org/transport/ns/#",
         "phys":    "http://openprovenance.org/ns/phys#"
     }

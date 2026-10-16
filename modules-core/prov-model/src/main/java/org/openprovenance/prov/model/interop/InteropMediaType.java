@@ -8,6 +8,9 @@ public interface InteropMediaType {
     /** The recommended extension for DOT files (Graphviz).
      * @see <a href="http://www.iana.org/assignments/media-types/text/vnd.graphviz">Media Type for Graphviz</a> */
     public static final String EXTENSION_DOT = "dot";
+
+    /** The recommended extension for mermaid files. */
+    public static final String EXTENSION_MERMAID = "mmd";
     public static final String EXTENSION_JPEG = "jpeg";
     public static final String EXTENSION_JPG = "jpg";
     public static final String EXTENSION_PNG = "png";
@@ -64,6 +67,7 @@ public interface InteropMediaType {
     /** The Internet Media type for Graphviz.
      * @see <a href="http://www.iana.org/assignments/media-types/text/vnd.graphviz">Media Type for Graphviz</a> */
     public static final String MEDIA_TEXT_VND_GRAPHVIZ = "text/vnd.graphviz";
+    public static final String MEDIA_TEXT_VND_MERMAID = "text/vnd.mermaid";
     public static final String MEDIA_TEXT_XML = "text/xml";
     public static final String MEDIA_TEXT_CSV = "text/csv";
     /**

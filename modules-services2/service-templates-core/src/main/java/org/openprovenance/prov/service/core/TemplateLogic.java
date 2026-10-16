@@ -18,6 +18,7 @@ import org.openprovenance.prov.scala.iface.Explainer;
 import org.openprovenance.prov.scala.iface.XFactory;
 import org.openprovenance.prov.service.core.dispatch.EnactCsvRecords;
 import org.openprovenance.prov.service.core.progress.ProgressListener;
+import org.openprovenance.prov.service.core.readers.TemplatesSliceConfig;
 import org.openprovenance.prov.service.core.readers.TemplatesVizConfig;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 
@@ -26,6 +27,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.model.interop.InteropMediaType.MEDIA_TEXT_CSV;
@@ -39,6 +41,7 @@ public class TemplateLogic {
     public static final String HTTP_HEADER_LOCATION = "Location";
     public static final String HTTP_HEADER_ACCEPT_PROV_HASH = "Accept-PROV-hash";
     public static final String HTTP_HEADER_ACCEPT_PROV_EXPLANATION = "Accept-PROV-explanation";
+    public static final String HTTP_HEADER_IDEMPOTENCY_KEY = "Idempotency-Key";
     static Logger logger = LogManager.getLogger(TemplateLogic.class);
     private final ProvFactory pf;
     private final CatalogueDispatcherInterface<FileBuilder> templateDispatcher;
@@ -54,6 +57,12 @@ public class TemplateLogic {
     private final Map<String, String> shortNames;
     private final Map<String, String> semanticType;
     private final String nlgXplanStrategy;
+
+    /** Thread-scoped Idempotency-Key set by the service per request; the
+     *  duplicate-recovery path below consults it. State is a static
+     *  thread-local, so this instance mirrors the one in TemplateService. */
+    private final org.openprovenance.prov.model.interop.SubmissionKeyManager submissionKeyManager =
+            new org.openprovenance.prov.model.interop.SubmissionKeyManager();
 
 
     public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, Map<String, String> shortNames, CatalogueDispatcherInterface<FileBuilder> templateDispatcher, PrincipalManager principalManager, ServiceUtils utils, ObjectMapper om, String nlgXplanStrategy) {
@@ -91,7 +100,7 @@ public class TemplateLogic {
             for (Map<String, Object> entry : entries) {
                 Object[] array = convertToArray(entry, props);
                 if (acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
-                    recordsResult.add(enactor.apply(array));
+                    recordsResult.add(enactWithDuplicateRecovery(() -> enactor.apply(array)));
                 } else {
                     // csv here
                     recordsResult.add(csv_processor_1.apply(enactor.apply(array)));
@@ -110,7 +119,7 @@ public class TemplateLogic {
                 }
                 Function<List<Object[]>,?> compositeEnactor = compositeEnactorConverters.get(isA);
                 if (acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
-                    recordsResult.add(compositeEnactor.apply(objects));
+                    recordsResult.add(enactWithDuplicateRecovery(() -> compositeEnactor.apply(objects)));
                 } else {
                     // csv here
                     String csvLines = csv_processor_Composite.apply(compositeEnactor.apply(objects));
@@ -120,6 +129,46 @@ public class TemplateLogic {
             }
         }
         return recordsResult;
+    }
+
+    /**
+     * Statement-POST idempotency (the {@code Idempotency-Key} header): a keyed
+     * duplicate raises a unique violation on {@code record_index_submission_key},
+     * which aborts the whole composed statement — template insert included — so
+     * nothing was duplicated and the original submission's rows are intact.
+     * This catches exactly that violation and replays the original response
+     * from the store ({@link TemplateQuery#recoverBySubmissionKey}); every
+     * other failure propagates unchanged, as does every failure of a keyless
+     * enactment.
+     */
+    private Object enactWithDuplicateRecovery(Supplier<Object> enactment) {
+        String submissionKey = submissionKeyManager.getSubmissionKey();
+        if (submissionKey == null) {
+            return enactment.get();
+        }
+        try {
+            return enactment.get();
+        } catch (RuntimeException e) {
+            if (!isSubmissionKeyConflict(e)) {
+                throw e;
+            }
+            logger.info("duplicate submission for key '" + submissionKey
+                    + "' — replaying the original response");
+            return templateQuery.recoverBySubmissionKey(submissionKey);
+        }
+    }
+
+    private static boolean isSubmissionKeyConflict(Throwable e) {
+        for (Throwable t = e; t != null; t = t.getCause()) {
+            if (t instanceof java.sql.SQLException) {
+                java.sql.SQLException sql = (java.sql.SQLException) t;
+                if ("23505".equals(sql.getSQLState())
+                        && String.valueOf(sql.getMessage()).contains("record_index_submission_key")) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public Object[] convertToArray(Map<String, Object> entry, String[] props) {
@@ -174,12 +223,38 @@ public class TemplateLogic {
 
     public void generateViz(TemplatesVizConfig config, String principal, String iconsFolderForGraphviz, OutputStream out, ProgressListener listener) {
 
+        Map<String,Map<String,String>> baseTypes = computeBaseTypes();
+
+        //logger.info("baseTypes " + baseTypes);
+        templateQuery.generateViz(config.id, config.template, config.property, config.style, config.parameters, baseTypes, iconsFolderForGraphviz, semanticType, principal, out, listener);
+    }
+
+    /**
+     * Renders the slice between the config's upstream anchor ({@code id}/{@code template}/
+     * {@code property}, an input variable) and its downstream anchor
+     * ({@code downstreamId}/{@code downstreamTemplate}/{@code downstreamProperty}, an
+     * output variable).
+     *
+     * @see TemplateQuery#generateSlice
+     */
+    public void generateSlice(TemplatesSliceConfig config, String principal, String iconsFolderForGraphviz, OutputStream out, ProgressListener listener) {
+
+        Map<String,Map<String,String>> baseTypes = computeBaseTypes();
+
+        templateQuery.generateSlice(config.id, config.template, config.property,
+                                    config.downstreamId, config.downstreamTemplate, config.downstreamProperty,
+                                    config.style, config.parameters, baseTypes, iconsFolderForGraphviz,
+                                    semanticType, principal, out, listener);
+    }
+
+    /** Template → variable → preferred base type, as the dot renderer colours nodes by. */
+    private Map<String,Map<String,String>> computeBaseTypes() {
+
         typeAssignment.entrySet().removeIf(entry -> entry.getValue() ==null || entry.getValue().isEmpty());
 
         //logger.info("typeAssignment " + typeAssignment);
 
-        Map<String,Map<String,String>> baseTypes
-                = typeAssignment
+        return typeAssignment
                 .keySet()
                 .stream()
                 .collect(Collectors
@@ -194,9 +269,6 @@ public class TemplateLogic {
                                                                 var -> preferredType(typeAssignment
                                                                         .get(tpl)
                                                                         .get(var))))));
-
-        //logger.info("baseTypes " + baseTypes);
-        templateQuery.generateViz(config.id, config.template, config.property, config.style, config.parameters, baseTypes, iconsFolderForGraphviz, semanticType, principal, out, listener);
     }
 
 

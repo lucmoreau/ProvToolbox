@@ -57,8 +57,16 @@ public class XplainerConfig implements XConfig {
 
     @Override
     public Seq<String> language() {
-        //List<String> ll = List.of("/nlg/templates/plead.cs/plead-template-library.json");
-        List<String> ll = List.of(libraryPath);
+        // nlg.xplan.library may name SEVERAL libraries, comma-separated: the explainer's
+        // Language.read already flat-maps the plans and dictionaries of every library it
+        // is given, so a service with more than one vocabulary (chron + acct + sales in the
+        // chronicle store) renders every family's records. A single path is unchanged.
+        List<String> ll = new java.util.ArrayList<>();
+        for (String path : libraryPath.split(",")) {
+            if (!path.isBlank()) {
+                ll.add(path.trim());
+            }
+        }
         return scala.jdk.CollectionConverters.CollectionHasAsScala(ll).asScala().toSeq();
     }
 

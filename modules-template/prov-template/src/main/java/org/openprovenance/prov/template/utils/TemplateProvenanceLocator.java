@@ -14,6 +14,13 @@ public class TemplateProvenanceLocator {
     private String svg;
     private String provcsv;
     private String qualifiedPng;
+    private String qualifiedSvg;
+    private String qualifiedPdf;
+    private String qualifiedInvPng;
+    private String qualifiedInvSvg;
+    private String qualifiedInvPdf;
+    private String mmd;
+    private String qualifiedMmd;
 
 
     public TemplateProvenanceLocator() { }
@@ -74,6 +81,62 @@ public class TemplateProvenanceLocator {
         this.qualifiedPng = qualifiedPng;
     }
 
+    public String getQualifiedSvg() {
+        return qualifiedSvg;
+    }
+
+    public void setQualifiedSvg(String qualifiedSvg) {
+        this.qualifiedSvg = qualifiedSvg;
+    }
+
+    public String getQualifiedPdf() {
+        return qualifiedPdf;
+    }
+
+    public void setQualifiedPdf(String qualifiedPdf) {
+        this.qualifiedPdf = qualifiedPdf;
+    }
+
+    public String getQualifiedInvPng() {
+        return qualifiedInvPng;
+    }
+
+    public void setQualifiedInvPng(String qualifiedInvPng) {
+        this.qualifiedInvPng = qualifiedInvPng;
+    }
+
+    public String getQualifiedInvSvg() {
+        return qualifiedInvSvg;
+    }
+
+    public void setQualifiedInvSvg(String qualifiedInvSvg) {
+        this.qualifiedInvSvg = qualifiedInvSvg;
+    }
+
+    public String getQualifiedInvPdf() {
+        return qualifiedInvPdf;
+    }
+
+    public void setQualifiedInvPdf(String qualifiedInvPdf) {
+        this.qualifiedInvPdf = qualifiedInvPdf;
+    }
+
+    public String getMmd() {
+        return mmd;
+    }
+
+    public void setMmd(String mmd) {
+        this.mmd = mmd;
+    }
+
+    public String getQualifiedMmd() {
+        return qualifiedMmd;
+    }
+
+    public void setQualifiedMmd(String qualifiedMmd) {
+        this.qualifiedMmd = qualifiedMmd;
+    }
+
     public String get(TemplateExtension extension) {
         if (extension == null) {
             throw new TemplateLocatorException("Extension cannot be null");
@@ -86,6 +149,13 @@ public class TemplateProvenanceLocator {
             case SVG -> getSvg();
             case PROVCSV -> getProvCsv();
             case QUALIFIED_PNG -> getQualifiedPng();
+            case QUALIFIED_SVG -> getQualifiedSvg();
+            case QUALIFIED_PDF -> getQualifiedPdf();
+            case QUALIFIED_INV_PNG -> getQualifiedInvPng();
+            case QUALIFIED_INV_SVG -> getQualifiedInvSvg();
+            case QUALIFIED_INV_PDF -> getQualifiedInvPdf();
+            case MMD -> getMmd();
+            case QUALIFIED_MMD -> getQualifiedMmd();
             case HAS_PROVENANCE -> throw new TemplateLocatorException("get: cannot get HAS_PROVENANCE from TemplateProvenanceLocator");
         };
     }
@@ -106,6 +176,13 @@ public class TemplateProvenanceLocator {
             case SVG -> setSvg(path);
             case JSON -> setJson(path);
             case QUALIFIED_PNG -> setQualifiedPng(path);
+            case QUALIFIED_SVG -> setQualifiedSvg(path);
+            case QUALIFIED_PDF -> setQualifiedPdf(path);
+            case QUALIFIED_INV_PNG -> setQualifiedInvPng(path);
+            case QUALIFIED_INV_SVG -> setQualifiedInvSvg(path);
+            case QUALIFIED_INV_PDF -> setQualifiedInvPdf(path);
+            case MMD -> setMmd(path);
+            case QUALIFIED_MMD -> setQualifiedMmd(path);
             case PROVCSV -> setProvCsv(path);
         }
     }

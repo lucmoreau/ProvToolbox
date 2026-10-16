@@ -37,6 +37,8 @@ public class MergeTask implements ConfigTask {
     public List<String> variableMaps;
     public boolean addOutputDirToInputPath=false;
     public String variableCheck;
+    /** This task's schemaCheck, overriding its batch's (see {@link TemplateTasksBatch#schemaCheck}). */
+    public String schemaCheck;
 
 
     static private final Ptm_mergingBuilder mergeBuilder =new Ptm_mergingBuilder();
@@ -59,6 +61,7 @@ public class MergeTask implements ConfigTask {
                 ", variableMaps=" + variableMaps +
                 ", addOutputDirToInputPath=" + addOutputDirToInputPath +
                 ", variableCheck='" + variableCheck + '\'' +
+                ", schemaCheck='" + schemaCheck + '\'' +
                 '}';
     }
 
@@ -101,6 +104,10 @@ public class MergeTask implements ConfigTask {
 
          */
 
+        // for the provenance record: each input as the path of the file read, relative to its library root,
+        // the way the task that generated it named its output
+        List<String> inputLocations=inputs.stream().map(input -> templateLibraryPath.get(input, TemplateExtension.preferredExtensions())).collect(Collectors.toList());
+
         List<File> foundTemplates=inputs.stream().map(input -> {
             String foundTemplate=templateLibraryPath.getStrict(input, TemplateExtension.preferredExtensions());
             File templateFile=new File(foundTemplate);
@@ -135,14 +142,14 @@ public class MergeTask implements ConfigTask {
         }
 
         Document doc3=iDocument.toDocument();
-        File file1 = foundTemplates.get(0);
+        String location1 = inputLocations.get(0);
 
         TemplateIndex outputIndex=new TemplateIndex(templateTasksBatch.output_dir, true);
 
         String outputId=(outputFullyQualifiedName ==null)?output: outputFullyQualifiedName;
 
         for (int i=1; i<foundTemplates.size(); i++) {
-            File file2 = foundTemplates.get(i);
+            String location2 = inputLocations.get(i);
 
 
             for (String format : formats) {
@@ -152,9 +159,12 @@ public class MergeTask implements ConfigTask {
 
                 Files.createDirectories(documentPath.getParent());
                 executor.serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + output + "." + format), format, doc3, false);
-                String csvRecord = createMergeCsvRecord(format, file1, file2, time, secondsSince2023_01_01);
+                String csvRecord = createMergeCsvRecord(format, location1, location2, time, secondsSince2023_01_01);
                 loggedRecords.add(csvRecord);
             }
+        }
+        for (String format : formats) {
+            executor.checkSchema(templateTasksBatch, schemaCheck, format, Path.of(templateTasksBatch.output_dir, output + "." + format).toFile(), output);
         }
 
         Optional<StatementChecker> statementChecker;
@@ -198,12 +208,12 @@ public class MergeTask implements ConfigTask {
     }
 
 
-    private String createMergeCsvRecord(String format, File fileinDirs1, File fileinDirs2, String time, long secondsSince2023_01_01) {
+    private String createMergeCsvRecord(String format, String location1, String location2, String time, long secondsSince2023_01_01) {
         Ptm_mergingBean bean=new Ptm_mergingBean();
         bean.provenance=hasProvenance;
         bean.time=time;
-        bean.template1= fileinDirs1.getName();
-        bean.template2= fileinDirs2.getName();
+        bean.template1= location1;
+        bean.template2= location2;
         bean.document= output + "." + format;
         bean.merging=abs(Long.valueOf(secondsSince2023_01_01).intValue());
 

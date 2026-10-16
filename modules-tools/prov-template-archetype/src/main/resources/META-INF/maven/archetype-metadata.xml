@@ -156,7 +156,6 @@
                     <includes>
                         <include>Makefile</include>
                         <include>Dockerfile</include>
-                        <include>env_file.env</include>
                     </includes>
                 </fileSet>
                 <fileSet encoding="UTF-8">
@@ -193,6 +192,24 @@
                     <includes>
                         <include>Makefile</include>
                         <include>.gitignore</include>
+                    </includes>
+                </fileSet>
+                <!-- copied as they are: shell scripts and markdown, which Velocity would alter -->
+                <fileSet encoding="UTF-8">
+                    <includes>
+                        <include>README.md</include>
+                    </includes>
+                </fileSet>
+                <fileSet encoding="UTF-8">
+                    <directory>src/main/docker</directory>
+                    <includes>
+                        <include>**/*.sh</include>
+                    </includes>
+                </fileSet>
+                <fileSet encoding="UTF-8">
+                    <directory>src/test/sh</directory>
+                    <includes>
+                        <include>**/*.sh</include>
                     </includes>
                 </fileSet>
             </fileSets>

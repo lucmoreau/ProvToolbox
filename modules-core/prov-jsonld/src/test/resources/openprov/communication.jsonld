@@ -1,0 +1,10 @@
+{
+  "@context": [ { "ex": "http://example.org/", "openprov": "https://openprovenance.org/ns/openprov#" },
+                "https://openprovenance.org/ns/openprov.jsonld" ],
+  "@graph": [
+    { "@type": "Activity", "@id": "ex:a0" },
+    { "@type": "Activity", "@id": "ex:a1" },
+    { "@type": "Communication", "@id": "ex:com", "informed": "ex:a1", "informant": "ex:a0",
+      "entity": [ "ex:e" ], "generation": [ "ex:gen" ], "usage": [ "ex:usd" ] }
+  ]
+}

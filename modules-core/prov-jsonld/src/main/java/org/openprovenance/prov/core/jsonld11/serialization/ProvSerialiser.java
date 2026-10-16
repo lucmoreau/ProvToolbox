@@ -12,6 +12,12 @@ import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomOverridi
 import org.openprovenance.prov.model.interop.InteropMediaType;
 import org.openprovenance.prov.vanilla.QualifiedName;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Bundle;
+import org.openprovenance.prov.model.HasOther;
+import org.openprovenance.prov.model.NamespacePrefixMapper;
+import org.openprovenance.prov.model.Other;
+import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.vanilla.TypedValue;
@@ -58,16 +64,37 @@ public class  ProvSerialiser implements org.openprovenance.prov.model.ProvSerial
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
         try {
+            // a document with openprov attributes cites the openprov context, which extends the PROV-JSONLD one
+            boolean usesOpenprov = usesOpenprov(document);
             if (formatted) {
-                mapperWithFormat.writeValue(out,document);
+                mapperWithFormat.writer().withAttribute(CustomNamespaceSerializer.USES_OPENPROV, usesOpenprov).writeValue(out, document);
             } else {
-                writer.writeValue(out,document);
-                //mapper.writeValue(out,document);
+                writer.withAttribute(CustomNamespaceSerializer.USES_OPENPROV, usesOpenprov).writeValue(out, document);
             }
         } catch (IOException e) {
             e.printStackTrace();
             throw new UncheckedException(e);
         }
+    }
+
+    /** Whether any statement, in the document or its bundles, carries an attribute of the openprov vocabulary. */
+    public static boolean usesOpenprov(Document document) {
+        for (StatementOrBundle s : document.getStatementOrBundle()) {
+            if (s instanceof Bundle) {
+                for (Statement inner : ((Bundle) s).getStatement()) if (hasOpenprovAttribute(inner)) return true;
+            } else if (hasOpenprovAttribute(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean hasOpenprovAttribute(StatementOrBundle s) {
+        if (!(s instanceof HasOther)) return false;
+        for (Other o : ((HasOther) s).getOther()) {
+            if (NamespacePrefixMapper.OPENPROV_NS.equals(o.getElementName().getNamespaceURI())) return true;
+        }
+        return false;
     }
 
     public ObjectMapper customize(ObjectMapper mapper) {

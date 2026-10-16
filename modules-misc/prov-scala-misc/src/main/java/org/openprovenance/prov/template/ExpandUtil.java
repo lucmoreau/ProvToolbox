@@ -23,8 +23,20 @@ public class ExpandUtil {
 
     public static final String VAR_NS = "http://openprovenance.org/var#";
     public static final String VARGEN_NS = "http://openprovenance.org/vargen#";
-    public static final String TMPL_NS = "http://openprovenance.org/tmpl#";
+    public static final String TMPL_NS = "http://openprovenance.org/ns/tmpl#";
+    /** What templates declared before the vocabulary moved under /ns/; accepted on input, never written. */
+    public static final String LEGACY_TMPL_NS = "http://openprovenance.org/tmpl#";
     public static final String TMPL_PREFIX = "tmpl";
+
+    public static boolean isTmpl(String namespace) {
+        return TMPL_NS.equals(namespace) || LEGACY_TMPL_NS.equals(namespace);
+    }
+
+    /** Whether uri is the tmpl term whose current IRI is tmplUri, under the current or the legacy namespace. */
+    public static boolean isTmplUri(String tmplUri, String uri) {
+        return tmplUri.equals(uri) || (uri != null && uri.startsWith(LEGACY_TMPL_NS) && tmplUri.equals(TMPL_NS + uri.substring(LEGACY_TMPL_NS.length())));
+    }
+
     public static final String VAR_PREFIX = "var";
     public static final String VARGEN_PREFIX = "vargen";
 

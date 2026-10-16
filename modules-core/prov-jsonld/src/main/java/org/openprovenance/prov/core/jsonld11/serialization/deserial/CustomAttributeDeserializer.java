@@ -45,16 +45,34 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
         }
     }
 
+    /**
+     * A bare string is what a JSON-LD processor makes of it: an IRI, so a qualified name, under a key the context
+     * coerces to {@code @id}; a string under any other key (https://github.com/openprov/prov-jsonld/issues/7).
+     */
     private final Attribute deserialize(String astring, DeserializationContext deserializationContext) {
+        final QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
+        if (Boolean.TRUE.equals(deserializationContext.getAttribute(CustomKeyDeserializer.ID_COERCED_CONTEXT_KEY))) {
+            return qualifiedName(elementName, astring);
+        }
+        return pf.newAttribute(elementName, new LangString(astring), XSD_STRING);
+    }
+
+    private final Attribute qualifiedName(QualifiedName elementName, String astring) {
         //final Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         final Namespace ns = getAttributes().get().get(JSONLD_CONTEXT_KEY_NAMESPACE);
-
-        final QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
         return pf.newAttribute(elementName, ns.stringToQualifiedName(astring,pf), PROV_QUALIFIED_NAME);
     }
 
 
-    private final Attribute deserialize_TypedValue(QualifiedName elementName, AttributeTypedValue valueAndType, DeserializationContext deserializationContext) {
+    private final Attribute deserialize_TypedValue(QualifiedName elementName, AttributeTypedValue valueAndType, DeserializationContext deserializationContext) throws IOException {
+
+        if (valueAndType.id != null) {
+            // a node reference {"@id": "ex:shed"}: the IRI, so a qualified name, under any key
+            if (valueAndType.value != null || valueAndType.typex != null || valueAndType.language != null) {
+                throw new IOException("a node reference takes no @value, @type or @language: " + elementName);
+            }
+            return qualifiedName(elementName, valueAndType.id);
+        }
 
         final String type = valueAndType.typex;
 

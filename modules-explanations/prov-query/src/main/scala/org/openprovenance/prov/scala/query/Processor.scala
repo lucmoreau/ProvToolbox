@@ -79,7 +79,7 @@ class Processor (finder:Option[String]=>StatementAccessor[Statement], env: Envir
 
     val ns=new Namespace
     ns.addKnownNamespaces()
-    ns.register("provext", "http://openprovenance.org/prov/extension#");
+    ns.register("provext", org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS);
 
     val p=new ProvQLParser(queryString, ns)
     p.query.run() match {

@@ -312,6 +312,7 @@
                         <label for="navigator_style" class="visually-hidden">Navigator Style</label>
                         <select name="navigator_style" id="navigator_style" class="form-select">
                             <option value="template.D">Template Viz (D)</option>
+                            <option value="template.D.P">Template Viz (D, P)</option>
                             <option value="template.D.R">Template Viz (D, R)</option>
                             <option value="template.D.R.S">Template Viz (D, R, S)</option>
                             <option value="template.D.R.S.M">Template Viz (D, R, S, M)</option>
@@ -463,6 +464,7 @@
                         <label for="slicer_style" class="visually-hidden">Slicer Style</label>
                         <select name="slicer_style" id="slicer_style" class="form-select mt-2">
                             <option value="template.D">Template Viz (D)</option>
+                            <option value="template.D.P">Template Viz (D, P)</option>
                             <option value="template.D.R">Template Viz (D, R)</option>
                             <option value="template.D.R.S">Template Viz (D, R, S)</option>
                             <option value="template.D.R.S.M">Template Viz (D, R, S, M)</option>
@@ -1570,6 +1572,10 @@
         switch (style) {
             case 'template.D':
                 parameters['successor-relations'] = 'PROV_DERIVATION';
+                return 'template';
+            case 'template.D.P':
+                // derivations and plans: an act's outputs reached from the plan it was carried out under
+                parameters['successor-relations'] = 'PROV_DERIVATION,PROV_ASSOCIATION';
                 return 'template';
             case 'template.D.R':
                 parameters['successor-relations'] = 'PROV_DERIVATION,PROV_ATTRIBUTION,PROV_ASSOCIATION,PROV_DELEGATION';

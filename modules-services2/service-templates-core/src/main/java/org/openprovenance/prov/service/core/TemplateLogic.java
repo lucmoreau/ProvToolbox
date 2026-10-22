@@ -100,10 +100,10 @@ public class TemplateLogic {
             for (Map<String, Object> entry : entries) {
                 Object[] array = convertToArray(entry, props);
                 if (acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
-                    recordsResult.add(enactWithDuplicateRecovery(() -> enactor.apply(array)));
+                    recordsResult.add(enactWithDuplicateRecovery(() -> templateQuery.inTransaction(() -> enactor.apply(array))));
                 } else {
                     // csv here
-                    recordsResult.add(csv_processor_1.apply(enactor.apply(array)));
+                    recordsResult.add(csv_processor_1.apply(templateQuery.inTransaction(() -> enactor.apply(array))));
                 }
             }
         } else {
@@ -119,10 +119,10 @@ public class TemplateLogic {
                 }
                 Function<List<Object[]>,?> compositeEnactor = compositeEnactorConverters.get(isA);
                 if (acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
-                    recordsResult.add(enactWithDuplicateRecovery(() -> compositeEnactor.apply(objects)));
+                    recordsResult.add(enactWithDuplicateRecovery(() -> templateQuery.inTransaction(() -> compositeEnactor.apply(objects))));
                 } else {
                     // csv here
-                    String csvLines = csv_processor_Composite.apply(compositeEnactor.apply(objects));
+                    String csvLines = csv_processor_Composite.apply(templateQuery.inTransaction(() -> compositeEnactor.apply(objects)));
                     logger.info(csvLines);
                     Collections.addAll(recordsResult, csvLines.split("\\\\n"));
                 }

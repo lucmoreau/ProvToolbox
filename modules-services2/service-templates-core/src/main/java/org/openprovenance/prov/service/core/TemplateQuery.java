@@ -204,6 +204,11 @@ public class TemplateQuery {
         return map.entrySet().stream().collect(Collectors.toMap(e -> shortNames.get(e.getKey()), Map.Entry::getValue));
     }
 
+    /** A submission: its statements in one transaction when the service has a pool ({@link Querier#inTransaction}). */
+    public <T> T inTransaction(java.util.function.Supplier<T> work) {
+        return querier.inTransaction(work);
+    }
+
     RelationMapping getRelationMapping() {
         return relationMapping;
     }

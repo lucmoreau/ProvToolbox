@@ -14,15 +14,16 @@ import java.util.concurrent.Semaphore;
 import java.util.function.Supplier;
 
 /**
- * A small pool of database connections for READ-ONLY requests, beside the single connection the service writes on.
- * A long reading then no longer holds every write behind it (a JDBC connection runs one statement at a time).
+ * A small pool of database connections, so that requests run side by side instead of in turn on one connection (a JDBC
+ * connection runs one statement at a time): a read borrows one in autocommit ({@link #with}), a submission borrows one
+ * for a single transaction ({@link #inTransaction}) — all of its statements commit together or not at all.
  *
  * <p>Connections are opened lazily, up to {@code size}, validated when borrowed (an invalid one is replaced), and
  * returned with {@code DISCARD TEMP}: a reading that creates temporary tables leaves nothing behind for the next
  * borrower. A request waits for a free connection when all are in use.</p>
  */
-public class ReadConnections implements AutoCloseable {
-    private static final Logger logger = LogManager.getLogger(ReadConnections.class);
+public class PooledConnections implements AutoCloseable {
+    private static final Logger logger = LogManager.getLogger(PooledConnections.class);
 
     /** Work on a borrowed connection. */
     @FunctionalInterface
@@ -36,7 +37,7 @@ public class ReadConnections implements AutoCloseable {
     private final List<Connection> opened = new ArrayList<>();
     private final int size;
 
-    public ReadConnections(Supplier<Connection> opener, int size) {
+    public PooledConnections(Supplier<Connection> opener, int size) {
         if (size < 1) {
             throw new IllegalArgumentException("a read pool needs at least one connection: " + size);
         }
@@ -67,6 +68,32 @@ public class ReadConnections implements AutoCloseable {
             }
             permits.release();
         }
+    }
+
+    /**
+     * Work in ONE transaction on a borrowed connection: committed when it returns, rolled back when it throws (the
+     * original exception propagates, unwrapped, so its causes can still be inspected).
+     */
+    public <T> T inTransaction(Work<T> work) throws SQLException {
+        return with(conn -> {
+            conn.setAutoCommit(false);
+            boolean committed = false;
+            try {
+                T result = work.apply(conn);
+                conn.commit();
+                committed = true;
+                return result;
+            } finally {
+                if (!committed) {
+                    try {
+                        conn.rollback();
+                    } catch (SQLException e) {
+                        logger.warn("rollback failed: " + e.getMessage());
+                    }
+                }
+                conn.setAutoCommit(true);
+            }
+        });
     }
 
     private Connection borrow() throws SQLException {

@@ -170,7 +170,21 @@ public class TemplateService {
 
 
         Connection conn=storageSetup(jdbcURL);
-        Function<String, ResultSet> queryExecutor = storage.queryExecutor(conn);
+        // Requests on connections of their own when configured (jdbc.pool.size, or JDBC_POOL_SIZE): reads side by side,
+        // and each submission ONE transaction — its insert, record index, hash and relations committed together. Without
+        // a pool every request shares the connection above, as before.
+        int poolSize = poolSize(templateConfiguration.get("jdbc.pool.size"));
+        PooledConnections pool = poolSize > 0 ? new PooledConnections(() -> storageSetup(jdbcURL), poolSize) : null;
+        logger.info("connection pool: " + (pool == null ? "none (requests share one connection)" : poolSize + " connection(s)"));
+        this.querier = new Querier(storage, conn, pool);
+        Function<String, ResultSet> queryExecutor = statement -> {
+            try {
+                return storage.executeQuery(querier.currentConnection(), statement);   // a submission's own connection
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        };
 
         this.map= createMapForVariableSubstitution();
 
@@ -179,12 +193,6 @@ public class TemplateService {
         BiFunction<Object, ProvFactory, CatalogueDispatcherInterface> factory=dynamicallyLoadClass(fullClassName, CatalogueDispatcherInterface.class);
 
         this.catalogueDispatcher = getCatalogueDispatcher(factory, this.map, queryExecutor);
-        // Read-only requests on a pool of their own when configured (jdbc.read.pool.size, or JDBC_READ_POOL_SIZE): a
-        // long reading then no longer holds the writes, which stay on the single connection above, in their order.
-        int readPoolSize = readPoolSize(templateConfiguration.get("jdbc.read.pool.size"));
-        ReadConnections reads = readPoolSize > 0 ? new ReadConnections(() -> storageSetup(jdbcURL), readPoolSize) : null;
-        logger.info("read pool: " + (reads == null ? "none (reads share the write connection)" : readPoolSize + " connection(s)"));
-        this.querier = new Querier(storage, conn, reads);
 
 
         try {
@@ -264,14 +272,14 @@ public class TemplateService {
         return sqlFilesToExecute;
     }
 
-    /** The read pool's size: the configuration's value, else the environment's JDBC_READ_POOL_SIZE, else 0 (none). */
-    static int readPoolSize(Object configured) {
-        String value = configured == null ? getSystemOrEnvironmentVariableOrDefault("JDBC_READ_POOL_SIZE", "0")
+    /** The pool's size: the configuration's value, else the environment's JDBC_POOL_SIZE, else 0 (none). */
+    static int poolSize(Object configured) {
+        String value = configured == null ? getSystemOrEnvironmentVariableOrDefault("JDBC_POOL_SIZE", "0")
                 : configured.toString();
         try {
             return Math.max(0, Integer.parseInt(value.trim()));
         } catch (NumberFormatException e) {
-            logger.warn("jdbc.read.pool.size is not a number: " + value + " — no read pool");
+            logger.warn("jdbc.pool.size is not a number: " + value + " — no pool");
             return 0;
         }
     }

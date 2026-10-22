@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.core.ttf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.ProvUtilities;
@@ -14,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -89,8 +91,7 @@ public class MergeTask implements ConfigTask {
             updatedTemplatePath.addAll(templateTasksBatch.template_path);
         }
 
-        TemplateIndexPath templateLibraryPath =new TemplateIndexPath(updatedTemplatePath.stream().map(loc-> new TemplateIndex(loc,true)).collect(Collectors.toList()));
-        //System.out.println("MergeTask: templateLibraryPath=" + templateLibraryPath);
+        TemplateIndexPath templateLibraryPath = executor.indexPath(updatedTemplatePath);
 
 
         /*
@@ -144,27 +145,29 @@ public class MergeTask implements ConfigTask {
         Document doc3=iDocument.toDocument();
         String location1 = inputLocations.get(0);
 
-        TemplateIndex outputIndex=new TemplateIndex(templateTasksBatch.output_dir, true);
+        TemplateIndex outputIndex=executor.index(templateTasksBatch.output_dir);
 
         String outputId=(outputFullyQualifiedName ==null)?output: outputFullyQualifiedName;
 
+        // the merged document is written once per format, whatever the number of inputs
+        List<Pair<String, File>> files = new ArrayList<>();
+        for (String format : formats) {
+            files.add(Pair.of(format, Path.of(templateTasksBatch.output_dir, output + "." + format).toFile()));
+        }
+        executor.serializeAll(doc3, files);
+        for (String format : formats) {
+            Path documentPath = Path.of(templateTasksBatch.output_dir, output + "." + format);
+            outputIndex.putEntry(outputId,format, outputIndex.relativize(documentPath).toString());
+            executor.checkSchema(templateTasksBatch, schemaCheck, format, documentPath.toFile(), output);
+        }
+
+        // its provenance: a merging record per format for the first input and each other input
         for (int i=1; i<foundTemplates.size(); i++) {
             String location2 = inputLocations.get(i);
-
-
             for (String format : formats) {
-                Path documentPath = Path.of(templateTasksBatch.output_dir, output + "." + format);
-
-                outputIndex.addEntry(outputId,format, outputIndex.relativize(documentPath).toString());
-
-                Files.createDirectories(documentPath.getParent());
-                executor.serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + output + "." + format), format, doc3, false);
                 String csvRecord = createMergeCsvRecord(format, location1, location2, time, secondsSince2023_01_01);
                 loggedRecords.add(csvRecord);
             }
-        }
-        for (String format : formats) {
-            executor.checkSchema(templateTasksBatch, schemaCheck, format, Path.of(templateTasksBatch.output_dir, output + "." + format).toFile(), output);
         }
 
         Optional<StatementChecker> statementChecker;
@@ -180,6 +183,7 @@ public class MergeTask implements ConfigTask {
 
 
         executor.exportProvenanceAsCsv(templateTasksBatch, this, outputId, outputIndex, loggedRecords);
+        outputIndex.persist();   // once, for every entry of this task
 
 
         // option to clean up tmp file

@@ -4150,7 +4150,7 @@ public class TemplateQuery {
         List<TemplateConnection> the_records = new LinkedList<>();
 
         String selectedAsASql=selectedVizKinds.stream().map(x -> ("" + x.ordinal())).collect(Collectors.joining(",","ARRAY[",  "]"));
-        querier.do_query(the_records,
+        querier.do_read_query(the_records,
                 null,
                 (sb, data) -> {
                     sb.append("SELECT DISTINCT * FROM ");
@@ -4237,7 +4237,7 @@ public class TemplateQuery {
         List<TemplateConnection> the_records = new LinkedList<>();
 
         String selectedAsASql=selectedVizKinds.stream().map(x -> ("" + x.ordinal())).collect(Collectors.joining(",","ARRAY[",  "]"));
-        querier.do_query(the_records,
+        querier.do_read_query(the_records,
                 null,
                 (sb, data) -> {
                     sb.append("SELECT DISTINCT * FROM ");
@@ -4335,7 +4335,7 @@ public class TemplateQuery {
             throw new IllegalArgumentException("no short name for template qualified name " + fullyQualifiedName);
         }
         //System.out.println("propertyOrder = " + Arrays.toString(propertyOrder));
-        querier.do_query(the_records,
+        querier.do_read_query(the_records,
                 null,
                 (sb, data) -> {
             /* generate following query
@@ -4445,7 +4445,7 @@ public class TemplateQuery {
         List<RecordEntry2> linked_records = new LinkedList<>();
         Set<Integer> seen= new HashSet<>();
 
-        querier.do_query(linked_records,
+        querier.do_read_query(linked_records,
                 null,
                 (sb, data) -> {
                     StringBuffer aggregator= new StringBuffer();
@@ -4542,7 +4542,7 @@ public class TemplateQuery {
     public List<RecordEntry2> queryTemplatesRecordsById(String base_relation, Integer id, Integer limit, String principal) {
         List<RecordEntry2> linked_records = new LinkedList<>();
 
-        querier.do_query(linked_records,
+        querier.do_read_query(linked_records,
                 null,
                 (sb, data) -> {
                     sb.append("SELECT * FROM ");
@@ -4573,7 +4573,7 @@ public class TemplateQuery {
     public List<Integer> queryIds4MostRecentTemplatesRecords(String base_relation, Integer count, String principal) {
         List<Integer> linked_records = new LinkedList<>();
 
-        querier.do_query(linked_records,
+        querier.do_read_query(linked_records,
                 null,
 
                 (sb, data) -> {
@@ -4614,7 +4614,7 @@ public class TemplateQuery {
             return rows;             //   empty table → empty result, no second query
         }
 
-        querier.do_query(rows,
+        querier.do_read_query(rows,
                 null,
 
                 (sb, data) -> {
@@ -4713,7 +4713,7 @@ public class TemplateQuery {
 
         //System.out.println("linker = " + linker);
 
-        querier.do_query(linked_records,
+        querier.do_read_query(linked_records,
                 null,
                 (sb, data) -> {
                     sb.append("SELECT * FROM (");
@@ -5521,7 +5521,7 @@ public class TemplateQuery {
     public List<Object[]> queryFromSql(String sql, boolean withHeader) {
         List<Object> linked_records = new LinkedList<>();
 
-        return querier.do_query(linked_records,
+        return querier.do_read_query(linked_records,
                 null,
                 (sb, data) -> {
                     sb.append(sql);

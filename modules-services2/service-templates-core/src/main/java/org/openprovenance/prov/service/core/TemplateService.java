@@ -179,7 +179,12 @@ public class TemplateService {
         BiFunction<Object, ProvFactory, CatalogueDispatcherInterface> factory=dynamicallyLoadClass(fullClassName, CatalogueDispatcherInterface.class);
 
         this.catalogueDispatcher = getCatalogueDispatcher(factory, this.map, queryExecutor);
-        this.querier = new Querier(storage, conn);
+        // Read-only requests on a pool of their own when configured (jdbc.read.pool.size, or JDBC_READ_POOL_SIZE): a
+        // long reading then no longer holds the writes, which stay on the single connection above, in their order.
+        int readPoolSize = readPoolSize(templateConfiguration.get("jdbc.read.pool.size"));
+        ReadConnections reads = readPoolSize > 0 ? new ReadConnections(() -> storageSetup(jdbcURL), readPoolSize) : null;
+        logger.info("read pool: " + (reads == null ? "none (reads share the write connection)" : readPoolSize + " connection(s)"));
+        this.querier = new Querier(storage, conn, reads);
 
 
         try {
@@ -257,6 +262,18 @@ public class TemplateService {
 
     public @NonNull List<String> getSqlFilesToExecute() {
         return sqlFilesToExecute;
+    }
+
+    /** The read pool's size: the configuration's value, else the environment's JDBC_READ_POOL_SIZE, else 0 (none). */
+    static int readPoolSize(Object configured) {
+        String value = configured == null ? getSystemOrEnvironmentVariableOrDefault("JDBC_READ_POOL_SIZE", "0")
+                : configured.toString();
+        try {
+            return Math.max(0, Integer.parseInt(value.trim()));
+        } catch (NumberFormatException e) {
+            logger.warn("jdbc.read.pool.size is not a number: " + value + " — no read pool");
+            return 0;
+        }
     }
 
     public Connection storageSetup(String jdbcURL) {

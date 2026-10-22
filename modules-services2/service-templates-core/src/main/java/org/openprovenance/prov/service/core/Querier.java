@@ -16,10 +16,46 @@ public class Querier  {
 
     final private Storage storage;
     final private Connection conn;
+    /** Read-only requests run here when configured; null keeps every request on {@link #conn}. */
+    final private ReadConnections reads;
 
     public Querier(Storage storage, Connection conn) {
+        this(storage, conn, null);
+    }
+
+    public Querier(Storage storage, Connection conn, ReadConnections reads) {
         this.storage = storage;
         this.conn = conn;
+        this.reads = reads;
+    }
+
+    /**
+     * As {@link #do_query}, for a request that only READS: on a connection of the read pool when there is one, so a
+     * long reading does not hold the writes behind it; on the single connection otherwise.
+     */
+    public <T> T do_read_query(T data,
+                               Consumer<T> check,
+                               BiConsumer<StringBuilder,T> composeQuery,
+                               BiConsumerWithException<ResultSet,T> completeData) {
+        if (reads == null) {
+            return do_query(data, check, composeQuery, completeData);
+        }
+        if (check!=null) check.accept(data);
+        StringBuilder sb=new StringBuilder();
+        composeQuery.accept(sb,data);
+        String statement=sb.toString();
+        try {
+            return reads.with(readConn -> {
+                ResultSet rs = storage.executeQuery(readConn, statement);
+                try (java.sql.Statement st = rs.getStatement(); rs) {    // the statement too: the connection lives on
+                    completeData.accept(rs, data);
+                }
+                return data;
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new org.openprovenance.prov.model.exception.UncheckedException("Issue in enactment " + statement, e);
+        }
     }
 
     public <T> T do_query(T data,

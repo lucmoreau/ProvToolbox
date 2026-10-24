@@ -1,6 +1,7 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.3.0-SNAPSHOT`
+* service-templates-core, prov-template-archetype: activity of the store counted (messages posted to /statements, records written) in the activity_log table at next to no cost on the request path (in-memory counters, one batched upsert per flush), with a kind column naming what is counted so other services (chronicle) log to the same table; GET provapi/activity/summary.json and series.json; the dashboard's Activity tab (last minute, hour, day, week; refresh period a field or ?refresh=N); TPL_ACTIVITY_FLUSH_SECONDS, TPL_ACTIVITY_BUCKET_SECONDS, TPL_ACTIVITY_RETENTION_DAYS
 * 
 
 `2.2.5`

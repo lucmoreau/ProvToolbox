@@ -94,6 +94,9 @@
             <a href="#tab_navigator" data-bs-toggle="tab" class="nav-link" role="tab">Navigator</a>
         </li>
         <li class="nav-item">
+            <a href="#tab_activity" data-bs-toggle="tab" class="nav-link" role="tab" id="activity-lnk">Activity</a>
+        </li>
+        <li class="nav-item">
             <a href="#tab_instantiate" data-bs-toggle="tab" class="nav-link" role="tab">Instantiate</a>
         </li>
         <li class="nav-item">
@@ -258,6 +261,50 @@
                     window.ui = ui
                 }
             </script>
+        </div>
+
+        <div id="tab_activity" class="tab-pane" role="tabpanel">
+            <!-- Activity of the store: the counts every service writing to it keeps in
+                 the activity_log table (ActivityLogger), read from
+                 provapi/activity/summary.json and provapi/activity/series.json.
+                 Refreshed every N seconds while this tab is on screen; N comes from the
+                 field below, or from the page's ?refresh=N parameter. -->
+            <div class="row">
+                <div class="col-lg-2">
+                    <label for="activity_refresh">Refresh every (seconds)</label>
+                    <input type="number" id="activity_refresh" class="form-control" value="10" min="1" step="1" onchange="scheduleActivityRefresh()">
+                    <label for="activity_window">Chart window</label>
+                    <select id="activity_window" class="form-select" onchange="refreshActivity()">
+                        <option value="minute">last minute (10 s steps)</option>
+                        <option value="hour" selected>last hour (1 min steps)</option>
+                        <option value="day">last day (30 min steps)</option>
+                        <option value="week">last week (6 h steps)</option>
+                    </select>
+                    <p></p>
+                    <button id="activity_refresh_now" type="button" class="btn btn-info" onclick="refreshActivity()">Refresh</button>
+                    <button id="activity_pause" type="button" class="btn btn-warning" onclick="toggleActivityPause()">Pause</button>
+                    <p></p>
+                    <div id="activity_status" class="text-muted small"></div>
+                </div>
+                <div class="col-lg-10 first-column">
+                    <div id="activity_comment"></div>
+                    <table id="activity_summary" class="table table-sm table-striped" style="width:100%">
+                        <thead>
+                        <tr>
+                            <th scope="col">Kind</th>
+                            <th scope="col">What is counted</th>
+                            <th scope="col" class="text-end">Last minute</th>
+                            <th scope="col" class="text-end">Last hour</th>
+                            <th scope="col" class="text-end">Last day</th>
+                            <th scope="col" class="text-end">Last week</th>
+                            <th scope="col">Last seen</th>
+                        </tr>
+                        </thead>
+                        <tbody id="activity_summary_body"></tbody>
+                    </table>
+                    <div id="activity_plot_div" style="width:100%; min-height:320px"></div>
+                </div>
+            </div>
         </div>
 
         <div id="tab_instantiate" class="tab-pane" role="tabpanel">
@@ -805,6 +852,201 @@
 
 </script>
 <script src="provservice.js"></script>
+<!-- ===== BEGIN Activity tab ===== -->
+<script>
+    /* The Activity tab. Two GETs per refresh, both cheap (sums over an indexed table);
+       the service flushes its in-memory counters before answering, so its own figures
+       are exact as of the call. Refreshing runs only while the tab is on screen and the
+       page is visible, and never overlaps: a refresh still in flight skips the next tick. */
+    const ACTIVITY_SUMMARY_URL = '${service.context}/provapi/activity/summary.json';
+    const ACTIVITY_SERIES_URL  = '${service.context}/provapi/activity/series.json';
+    const ACTIVITY_WINDOW_SECONDS = { minute: 60, hour: 3600, day: 86400, week: 604800 };
+    /* A fixed categorical order (colour-blind safe, validated); a kind keeps its colour
+       for the life of the page, whatever kinds come and go. A ninth kind is grey. */
+    const ACTIVITY_COLOURS = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300', '#6250d6', '#e34948'];
+    const activityColourOf = {};
+    let activityTimer = null;
+    let activityPaused = false;
+    let activityInFlight = false;
+
+    function activityColour(kind) {
+        if (!(kind in activityColourOf)) {
+            const i = Object.keys(activityColourOf).length;
+            activityColourOf[kind] = (i < ACTIVITY_COLOURS.length) ? ACTIVITY_COLOURS[i] : '#8a8a86';
+        }
+        return activityColourOf[kind];
+    }
+
+    function activityEscape(s) {
+        if (s === null || s === undefined) return '';
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function activityAgo(iso, now) {
+        if (!iso) return 'never';
+        const s = Math.max(0, Math.round((now - new Date(iso).getTime()) / 1000));
+        if (s < 90) return s + ' s ago';
+        if (s < 5400) return Math.round(s / 60) + ' min ago';
+        if (s < 172800) return Math.round(s / 3600) + ' h ago';
+        return Math.round(s / 86400) + ' days ago';
+    }
+
+    function activityNumber(n) {
+        return Number(n).toLocaleString();
+    }
+
+    function activityTabIsShown() {
+        const pane = document.getElementById('tab_activity');
+        return pane !== null && pane.classList.contains('active');
+    }
+
+    function activityRefreshSeconds() {
+        const v = parseInt(document.getElementById('activity_refresh').value, 10);
+        return (isNaN(v) || v < 1) ? 10 : v;
+    }
+
+    function setActivityStatus(text, isError) {
+        const el = document.getElementById('activity_status');
+        el.textContent = text;
+        el.className = isError ? 'text-danger small' : 'text-muted small';
+    }
+
+    function activityGet(url) {
+        return fetch(url, { credentials: 'same-origin', headers: { 'Accept': 'application/json' } }).then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status + ' on ' + url);
+            return r.json();
+        });
+    }
+
+    function renderActivitySummary(summary) {
+        const body = document.getElementById('activity_summary_body');
+        const comment = document.getElementById('activity_comment');
+        if (!summary.enabled) {
+            comment.innerHTML = '<div class="alert alert-warning">Activity logging is not configured: the service has no store (jdbc.url) to keep the activity_log table in.</div>';
+            body.innerHTML = '';
+            return;
+        }
+        comment.innerHTML = '';
+        const now = new Date(summary.generated_at).getTime();
+        if (!summary.kinds || summary.kinds.length === 0) {
+            body.innerHTML = '<tr><td colspan="7" class="text-muted">No activity recorded yet.</td></tr>';
+            return;
+        }
+        let html = '';
+        summary.kinds.forEach(function (k) {
+            html += '<tr>'
+                + '<td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;background:' + activityColour(k.kind) + '"></span><code>' + activityEscape(k.kind) + '</code></td>'
+                + '<td>' + activityEscape(k.description || '') + '</td>'
+                + '<td class="text-end">' + activityNumber(k.minute) + '</td>'
+                + '<td class="text-end">' + activityNumber(k.hour) + '</td>'
+                + '<td class="text-end">' + activityNumber(k.day) + '</td>'
+                + '<td class="text-end">' + activityNumber(k.week) + '</td>'
+                + '<td title="' + activityEscape(k.last_seen || '') + '">' + activityAgo(k.last_seen, now) + '</td>'
+                + '</tr>';
+        });
+        body.innerHTML = html;
+    }
+
+    function renderActivitySeries(series) {
+        const div = document.getElementById('activity_plot_div');
+        if (typeof Plotly === 'undefined' || !series.enabled) {
+            div.innerHTML = '';
+            return;
+        }
+        const step = series.step_seconds * 1000;
+        const from = new Date(series.from).getTime();
+        const to = new Date(series.generated_at).getTime();
+        const steps = [];
+        for (let t = from; t <= to; t += step) steps.push(t);
+        /* one dense series per kind (a step without activity is a zero, not a gap) */
+        const byKind = {};
+        series.points.forEach(function (p) {
+            const t = new Date(p.step).getTime();
+            if (!(p.kind in byKind)) byKind[p.kind] = {};
+            byKind[p.kind][t] = (byKind[p.kind][t] || 0) + p.count;
+        });
+        const kinds = Object.keys(byKind).sort();
+        const traces = kinds.map(function (kind) {
+            return {
+                type: 'bar',
+                name: kind,
+                x: steps.map(function (t) { return new Date(t); }),
+                y: steps.map(function (t) { return byKind[kind][t] || 0; }),
+                marker: { color: activityColour(kind), line: { width: 0 } },
+                hovertemplate: '%{y:,} ' + activityEscape(kind) + '<extra></extra>'
+            };
+        });
+        const layout = {
+            barmode: 'stack',
+            bargap: 0.25,
+            margin: { l: 56, r: 16, t: 32, b: 48 },
+            title: { text: 'Activity over the last ' + activityEscape(series.window) + ' (' + (kinds.length === 0 ? 'nothing recorded' : 'per ' + series.step_seconds + ' s step') + ')', font: { size: 14 }, x: 0 },
+            xaxis: { type: 'date', range: [new Date(from - step / 2), new Date(to + step / 2)], showgrid: false, zeroline: false, linecolor: '#c9c8c3' },
+            yaxis: { title: { text: 'count' }, rangemode: 'tozero', gridcolor: '#e6e5e1', zeroline: false, tickformat: ',d' },
+            showlegend: kinds.length > 1,
+            legend: { orientation: 'h', y: 1.12, x: 0, traceorder: 'normal' },
+            hovermode: 'x unified',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)'
+        };
+        Plotly.react(div, traces, layout, { displayModeBar: false, responsive: true });
+    }
+
+    function refreshActivity() {
+        if (activityInFlight) return;
+        activityInFlight = true;
+        const windowKey = document.getElementById('activity_window').value;
+        Promise.all([
+            activityGet(ACTIVITY_SUMMARY_URL),
+            activityGet(ACTIVITY_SERIES_URL + '?window=' + encodeURIComponent(windowKey))
+        ]).then(function (results) {
+            renderActivitySummary(results[0]);
+            renderActivitySeries(results[1]);
+            setActivityStatus('Updated ' + new Date().toLocaleTimeString()
+                + (results[0].enabled ? ' (buckets of ' + results[0].bucket_seconds + ' s, flushed every ' + results[0].flush_seconds + ' s)' : '')
+                + (activityPaused ? ', paused' : ', every ' + activityRefreshSeconds() + ' s'), false);
+        }).catch(function (e) {
+            console.log('activity refresh failed: ' + e);
+            setActivityStatus('Refresh failed: ' + e.message, true);
+        }).finally(function () {
+            activityInFlight = false;
+        });
+    }
+
+    function scheduleActivityRefresh() {
+        if (activityTimer !== null) {
+            clearInterval(activityTimer);
+            activityTimer = null;
+        }
+        if (activityPaused || document.hidden || !activityTabIsShown()) return;
+        activityTimer = setInterval(refreshActivity, activityRefreshSeconds() * 1000);
+    }
+
+    function toggleActivityPause() {
+        activityPaused = !activityPaused;
+        document.getElementById('activity_pause').textContent = activityPaused ? 'Resume' : 'Pause';
+        scheduleActivityRefresh();
+        if (!activityPaused) refreshActivity();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const params = new URLSearchParams(window.location.search);
+        const refresh = parseInt(params.get('refresh'), 10);
+        if (!isNaN(refresh) && refresh >= 1) document.getElementById('activity_refresh').value = refresh;
+        const link = document.getElementById('activity-lnk');
+        link.addEventListener('shown.bs.tab', function () { refreshActivity(); scheduleActivityRefresh(); });
+        link.addEventListener('hidden.bs.tab', scheduleActivityRefresh);
+        document.addEventListener('visibilitychange', function () {
+            scheduleActivityRefresh();
+            if (!document.hidden && activityTabIsShown()) refreshActivity();
+        });
+        if (window.location.hash === '#tab_activity') {
+            if (window.bootstrap && bootstrap.Tab) { bootstrap.Tab.getOrCreateInstance(link).show(); }
+            else { link.click(); }
+        }
+    });
+</script>
+<!-- ===== END Activity tab ===== -->
 <!-- Use the bootstrap bundle (includes Popper) for BS5 -->
 <script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.bundle.min.js"></script>
 </body>

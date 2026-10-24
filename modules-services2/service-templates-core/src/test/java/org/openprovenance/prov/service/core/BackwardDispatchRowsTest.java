@@ -134,4 +134,19 @@ public class BackwardDispatchRowsTest {
         assertEquals(rows.size(), rows.stream().map(r -> String.join(" ", r)).distinct().count());
         assertTrue(rows.stream().noneMatch(r -> r[0].equals(r[2]) && r[1].equals(r[3])));
     }
+
+    @Test
+    public void subjectsComeFromEveryRelationAndNeverFromTheKinds() {
+        // as the typed successors hold them: per template (long name), input -> [successor, kind, successor, kind, ...]
+        Map<String, Map<String, List<String>>> typed = new HashMap<>();
+        Map<String, List<String>> annotating = new LinkedHashMap<>();
+        annotating.put("note0", List.of("thing1", "4"));               // a derivation of thing1 from note0
+        annotating.put("actor", List.of("thing1", "5", "thing2", "5"));  // thing2: attributed only
+        typed.put("ex.Annotating", annotating);
+        typed.put("ex.Unrelated", null);
+        Map<String, Set<String>> subjects = TemplateQuery.subjectsOf(typed, Map.of("ex.Annotating", "annotating"));
+        assertEquals(Set.of("thing1", "thing2"), subjects.get("annotating"));
+        assertFalse(subjects.containsKey("ex.Annotating"));
+        assertTrue(TemplateQuery.subjectsOf(null, Map.of()).isEmpty());
+    }
 }

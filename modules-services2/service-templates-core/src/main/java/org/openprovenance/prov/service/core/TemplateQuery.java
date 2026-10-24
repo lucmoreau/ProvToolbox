@@ -5233,19 +5233,32 @@ public class TemplateQuery {
     /**
      * The subjects of each template's own relations, by SQL short name: the variables
      * that stand on the derived, attributed or specialised side of a statement of the
-     * template (the {@code output} column of {@code predecessor_table}, which is
-     * generated from the same successors). An <em>input</em> variable among them is
-     * one the template makes an assertion about without producing it — the only kind
-     * of input a backward walk may arrive at (see
-     * {@link #collectBackwardDispatchRows(Map, Map)}).
+     * template — the {@code output} column of {@code predecessor_table}, which
+     * {@link #regenerateTypedPredecessorTable} builds from the same typed successors
+     * (the untyped successors hold only some of the relations: an input that is only
+     * attributed would be missed). An <em>input</em> variable among them is one the
+     * template makes an assertion about without producing it — the only kind of input a
+     * backward walk may arrive at (see {@link #collectBackwardDispatchRows(Map, Map)}).
      */
     Map<String, Set<String>> subjects() {
+        return subjectsOf(typedSuccessors, shortNames);
+    }
+
+    /**
+     * {@link #subjects()} from a typed successors map — per template, input variable to a
+     * list alternating successor variable and relation kind — and the templates' short names.
+     */
+    static Map<String, Set<String>> subjectsOf(Map<String, Map<String, List<String>>> typedSuccessors,
+                                               Map<String, String> shortNames) {
         Map<String, Set<String>> result = new HashMap<>();
-        if (successors == null) return result;
-        successors.forEach((template, byInput) -> {
+        if (typedSuccessors == null) return result;
+        typedSuccessors.forEach((template, byInput) -> {
             if (byInput == null) return;
             Set<String> s = result.computeIfAbsent(shortNames.getOrDefault(template, template), k -> new HashSet<>());
-            byInput.values().forEach(outputs -> { if (outputs != null) s.addAll(outputs); });
+            byInput.values().forEach(successorsAndKinds -> {
+                if (successorsAndKinds == null) return;
+                for (int i = 0; i < successorsAndKinds.size(); i += 2) s.add(successorsAndKinds.get(i));
+            });
         });
         return result;
     }

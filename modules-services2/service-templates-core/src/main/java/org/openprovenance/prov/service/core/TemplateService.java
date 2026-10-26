@@ -5,7 +5,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,6 +42,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.security.Principal;
 import java.sql.Connection;
+import java.time.Instant;
+import java.util.stream.Collectors;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -51,6 +55,10 @@ import org.openprovenance.prov.service.core.progress.ProgressListener;
 import org.openprovenance.prov.service.core.progress.sse.SseProgressListener;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseEventSink;
+
+import org.openprovenance.prov.service.core.activity.ActivityLogger;
+import org.openprovenance.prov.service.core.activity.ActivityQuery;
+import org.openprovenance.prov.service.core.activity.JdbcActivitySink;
 
 import static org.openprovenance.prov.model.interop.InteropMediaType.*;
 import static org.openprovenance.prov.service.core.Storage.getStringFromClasspath;
@@ -79,6 +87,13 @@ public class TemplateService {
     public static final String templateConfig=getSystemOrEnvironmentVariableOrDefault(TEMPLATE_CONFIG, NO_TEMPLATE_CONFIG);
     public static final List<String> sqlFilesToExecute = List.of("/utils.sql");
 
+    /** Activity kinds counted by this service (see {@link ActivityLogger}): one per message posted to {@code /statements} ... */
+    public static final String KIND_STATEMENTS = "ps.statements";
+    /** ... one per template record those messages wrote ... */
+    public static final String KIND_RECORDS = "ps.records";
+    /** ... and one per message whose processing failed. */
+    public static final String KIND_STATEMENTS_FAILED = "ps.statements.failed";
+
 
 
     protected final PostService ps;
@@ -101,6 +116,10 @@ public class TemplateService {
     protected final String postgresPassword=getSystemOrEnvironmentVariableOrDefault(DB_PASS,"password");
     protected final String provHost =getSystemOrEnvironmentVariableOrDefault(TPL_HOST, "http://localhost:8080/ems");
     private final String iconsFolderForGraphviz;
+    /** Counts this service's activity; {@link ActivityLogger#NOOP} without a store. */
+    protected final ActivityLogger activity;
+    /** Reads the activity table for the dashboard; null without a store. */
+    protected final ActivityQuery activityQuery;
 
     /**
      * Lazily-built JSON-record list backing {@link #getBackwardDispatch}.
@@ -206,6 +225,13 @@ public class TemplateService {
 
         storageInitialize(conn, sqlInitializer);
 
+        this.activity = newActivityLogger(jdbcURL);
+        ActivityLogger.setShared(this.activity);
+        this.activityQuery = (conn == null) ? null : new ActivityQuery(conn);
+        this.activity.register(KIND_STATEMENTS, "messages posted to /statements (one per request)");
+        this.activity.register(KIND_RECORDS, "template records written by the messages posted to /statements");
+        this.activity.register(KIND_STATEMENTS_FAILED, "messages posted to /statements whose processing failed");
+
         this.documentBuilderDispatcher=catalogueDispatcher.getDocumentBuilderDispatcher();
         this.recordMaker=catalogueDispatcher.getRecordMaker();
         this.queryTemplate=new TemplateQuery(querier, this.catalogueDispatcher, principalManager, compositeLinker, om);
@@ -286,6 +312,22 @@ public class TemplateService {
 
     public Connection storageSetup(String jdbcURL) {
         return storage.setup(jdbcURL, postgresUsername, postgresPassword);
+    }
+
+    /**
+     * The activity logger of this service: counts flushed to the {@code activity_log}
+     * table of the store at {@code jdbcURL} over a connection of their own, configured by
+     * {@link ActivityLogger#TPL_ACTIVITY_FLUSH_SECONDS} and friends. A subclass may
+     * override it (another store, a no-op logger in tests).
+     */
+    protected ActivityLogger newActivityLogger(String jdbcURL) {
+        if (jdbcURL == null) return ActivityLogger.NOOP;
+        return ActivityLogger.fromEnvironment(new JdbcActivitySink(() -> storageSetup(jdbcURL), jdbcURL));
+    }
+
+    /** The activity logger of this service, for subclasses counting kinds of their own. */
+    public ActivityLogger getActivityLogger() {
+        return activity;
     }
 
     public HashMap<String, String> createMapForVariableSubstitution() {
@@ -389,10 +431,16 @@ public class TemplateService {
                 return utils.composeResponseInternalServerError("unknown input document", new UnsupportedOperationException());
             }
         } catch (TemplateLogic.ReshapedResendException e) {
+            activity.count(KIND_STATEMENTS_FAILED);
             return utils.composeResponseError(Response.Status.CONFLICT, e.getMessage(), e);
+        } catch (RuntimeException e) {
+            activity.count(KIND_STATEMENTS_FAILED);
+            throw e;
         } finally {
             submissionKeyManager.clearSubmissionKey();
         }
+        activity.count(KIND_STATEMENTS);
+        activity.count(KIND_RECORDS, result.size());
         String hash= (headerAcceptProvHash==null)?null:headerInfo.get().get(HTTP_HEADER_CONTENT_PROV_HASH);
         String location= headerInfo.get().get(HTTP_HEADER_LOCATION);
         switch (acceptHeader) {
@@ -756,6 +804,73 @@ public class TemplateService {
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
 
 
+    }
+
+    @GET
+    @Path("/activity/summary.json")
+    @Tag(name = "template")
+    @Produces({MEDIA_APPLICATION_JSON})
+    @Operation(summary = "Activity of the store: counts per kind over the last minute, hour, day and week",
+            description = "Every service writing to the store counts its activity in the activity_log table (see ActivityLogger). "
+                    + "The figures are sums over whole buckets (bucket_seconds wide); this service's own counts are flushed first, "
+                    + "so they are exact as of the call, another service's are at most one of its flush periods behind.",
+            responses = { @ApiResponse(responseCode = "200", description = "the summary, with enabled=false when the store has no activity table") })
+    public Response getActivitySummary() {
+        Map<String, Object> out = new LinkedHashMap<>();
+        Instant now = Instant.now();
+        out.put("generated_at", now.toString());
+        out.put("enabled", activityQuery != null);
+        out.put("bucket_seconds", activity.getBucketSeconds());
+        out.put("flush_seconds", activity.getFlushSeconds());
+        out.put("windows", Arrays.stream(ActivityQuery.Window.values()).map(ActivityQuery.Window::key).collect(Collectors.toList()));
+        List<Map<String, Object>> kinds = new ArrayList<>();
+        if (activityQuery != null) {
+            activity.flush();
+            try {
+                for (ActivityQuery.KindSummary k : activityQuery.summary(now)) kinds.add(k.toMap());
+            } catch (SQLException e) {
+                return utils.composeResponseInternalServerError("cannot read the activity log", e);
+            }
+        }
+        out.put("kinds", kinds);
+        StreamingOutput promise = o -> om.writeValue(o, out);
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
+    }
+
+    @GET
+    @Path("/activity/series.json")
+    @Tag(name = "template")
+    @Produces({MEDIA_APPLICATION_JSON})
+    @Operation(summary = "Activity of the store as a time series over one window",
+            description = "window is minute (10 s steps), hour (1 min), day (30 min) or week (6 h). Steps with no activity are omitted.",
+            responses = { @ApiResponse(responseCode = "200", description = "the points, with enabled=false when the store has no activity table") })
+    public Response getActivitySeries(@Parameter(name = "window", description = "minute, hour, day or week") @QueryParam("window") @DefaultValue("hour") String window) {
+        ActivityQuery.Window w = ActivityQuery.Window.parse(window, ActivityQuery.Window.HOUR);
+        Map<String, Object> out = new LinkedHashMap<>();
+        Instant now = Instant.now();
+        out.put("generated_at", now.toString());
+        out.put("enabled", activityQuery != null);
+        out.put("window", w.key());
+        out.put("step_seconds", w.step.getSeconds());
+        out.put("from", ActivityQuery.alignDown(now.minus(w.range), w.step.getSeconds()).toString());
+        List<Map<String, Object>> points = new ArrayList<>();
+        if (activityQuery != null) {
+            activity.flush();
+            try {
+                for (ActivityQuery.Point p : activityQuery.series(w, now)) {
+                    Map<String, Object> m = new LinkedHashMap<>();
+                    m.put("kind", p.kind);
+                    m.put("step", p.step.toString());
+                    m.put("count", p.count);
+                    points.add(m);
+                }
+            } catch (SQLException e) {
+                return utils.composeResponseInternalServerError("cannot read the activity log", e);
+            }
+        }
+        out.put("points", points);
+        StreamingOutput promise = o -> om.writeValue(o, out);
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
     }
 
     @POST

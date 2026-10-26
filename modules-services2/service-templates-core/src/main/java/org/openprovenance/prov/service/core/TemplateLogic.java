@@ -100,7 +100,7 @@ public class TemplateLogic {
             for (Map<String, Object> entry : entries) {
                 Object[] array = convertToArray(entry, props);
                 if (acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
-                    recordsResult.add(enactWithDuplicateRecovery(() -> templateQuery.inTransaction(() -> enactor.apply(array))));
+                    recordsResult.add(enactWithDuplicateRecovery(() -> templateQuery.inTransaction(() -> enactor.apply(array)), -1));
                 } else {
                     // csv here
                     recordsResult.add(csv_processor_1.apply(templateQuery.inTransaction(() -> enactor.apply(array))));
@@ -119,7 +119,7 @@ public class TemplateLogic {
                 }
                 Function<List<Object[]>,?> compositeEnactor = compositeEnactorConverters.get(isA);
                 if (acceptHeader.equals(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON)) {
-                    recordsResult.add(enactWithDuplicateRecovery(() -> templateQuery.inTransaction(() -> compositeEnactor.apply(objects))));
+                    recordsResult.add(enactWithDuplicateRecovery(() -> templateQuery.inTransaction(() -> compositeEnactor.apply(objects)), objects.size() - 1));
                 } else {
                     // csv here
                     String csvLines = csv_processor_Composite.apply(templateQuery.inTransaction(() -> compositeEnactor.apply(objects)));
@@ -140,8 +140,18 @@ public class TemplateLogic {
      * from the store ({@link TemplateQuery#recoverBySubmissionKey}); every
      * other failure propagates unchanged, as does every failure of a keyless
      * enactment.
+     *
+     * <p>A re-shaped resend is refused, never answered with the first response:
+     * a composite resent under its key with another number of elements than the
+     * one the store holds raises {@link ReshapedResendException} (the service
+     * answers 409 Conflict). Replaying the stored response would hand the client
+     * fewer (or more) elements than it sent, and a client reading them by
+     * position reads past the end — nextgen T-518, where a ledger posting gained
+     * lines after it was first posted.</p>
+     *
+     * @param sentElements the composite's element count, or -1 for a simple template
      */
-    private Object enactWithDuplicateRecovery(Supplier<Object> enactment) {
+    private Object enactWithDuplicateRecovery(Supplier<Object> enactment, int sentElements) {
         String submissionKey = submissionKeyManager.getSubmissionKey();
         if (submissionKey == null) {
             return enactment.get();
@@ -152,9 +162,28 @@ public class TemplateLogic {
             if (!isSubmissionKeyConflict(e)) {
                 throw e;
             }
+            Map<String, Object> original = templateQuery.recoverBySubmissionKey(submissionKey);
+            if (sentElements >= 0) {
+                Object stored = original.get(ELEMENTS);
+                int held = stored instanceof List ? ((List<?>) stored).size() : 0;
+                if (held != sentElements) {
+                    logger.warn("re-shaped resend for key '" + submissionKey + "': " + sentElements
+                            + " element(s) sent, " + held + " held — refused");
+                    throw new ReshapedResendException("submission key '" + submissionKey + "' names a composite of " + held
+                            + " element(s); this resend carries " + sentElements
+                            + " — a re-shaped resend is refused, never answered with the first response");
+                }
+            }
             logger.info("duplicate submission for key '" + submissionKey
                     + "' — replaying the original response");
-            return templateQuery.recoverBySubmissionKey(submissionKey);
+            return original;
+        }
+    }
+
+    /** A keyed resend whose shape differs from the submission the store holds under that key (answered 409 Conflict). */
+    public static class ReshapedResendException extends RuntimeException {
+        public ReshapedResendException(String message) {
+            super(message);
         }
     }
 

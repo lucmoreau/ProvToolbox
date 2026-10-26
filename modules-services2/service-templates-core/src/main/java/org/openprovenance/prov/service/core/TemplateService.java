@@ -388,6 +388,8 @@ public class TemplateService {
             } else {
                 return utils.composeResponseInternalServerError("unknown input document", new UnsupportedOperationException());
             }
+        } catch (TemplateLogic.ReshapedResendException e) {
+            return utils.composeResponseError(Response.Status.CONFLICT, e.getMessage(), e);
         } finally {
             submissionKeyManager.clearSubmissionKey();
         }

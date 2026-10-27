@@ -195,7 +195,7 @@ public class TemplateService {
         int poolSize = poolSize(templateConfiguration.get("jdbc.pool.size"));
         PooledConnections pool = poolSize > 0 ? new PooledConnections(() -> storageSetup(jdbcURL), poolSize) : null;
         logger.info("connection pool: " + (pool == null ? "none (requests share one connection)" : poolSize + " connection(s)"));
-        this.querier = new Querier(storage, conn, pool);
+        this.querier = new Querier(storage, conn, pool, () -> storageSetup(jdbcURL));   // reopened when it breaks (T-531)
         Function<String, ResultSet> queryExecutor = statement -> {
             try {
                 return storage.executeQuery(querier.currentConnection(), statement);   // a submission's own connection
@@ -227,7 +227,7 @@ public class TemplateService {
 
         this.activity = newActivityLogger(jdbcURL);
         ActivityLogger.setShared(this.activity);
-        this.activityQuery = (conn == null) ? null : new ActivityQuery(conn);
+        this.activityQuery = (conn == null) ? null : new ActivityQuery(querier::serviceConnection);
         this.activity.register(KIND_STATEMENTS, "messages posted to /statements (one per request)");
         this.activity.register(KIND_RECORDS, "template records written by the messages posted to /statements");
         this.activity.register(KIND_STATEMENTS_FAILED, "messages posted to /statements whose processing failed");

@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Reads the {@code activity_log} table for the dashboard: the counts of every kind over
@@ -72,9 +73,14 @@ public class ActivityQuery {
             "GROUP BY kind, step\n" +
             "ORDER BY step, kind";
 
-    private final Connection conn;
+    /** The connection each query runs on, asked for every time: the service's own, which is reopened when it breaks. */
+    private final Supplier<Connection> conn;
 
     public ActivityQuery(Connection conn) {
+        this(() -> conn);
+    }
+
+    public ActivityQuery(Supplier<Connection> conn) {
         this.conn = conn;
     }
 
@@ -114,7 +120,7 @@ public class ActivityQuery {
     /** The counts of every kind over the last minute, hour, day and week, ending at {@code now}. */
     public List<KindSummary> summary(Instant now) throws SQLException {
         List<KindSummary> result = new ArrayList<>();
-        try (PreparedStatement ps = conn.prepareStatement(SUMMARY)) {
+        try (PreparedStatement ps = conn.get().prepareStatement(SUMMARY)) {
             ps.setTimestamp(1, Timestamp.from(now.minus(Window.MINUTE.range)));
             ps.setTimestamp(2, Timestamp.from(now.minus(Window.HOUR.range)));
             ps.setTimestamp(3, Timestamp.from(now.minus(Window.DAY.range)));
@@ -152,7 +158,7 @@ public class ActivityQuery {
         long stepSeconds = window.step.getSeconds();
         Instant from = alignDown(now.minus(window.range), stepSeconds);
         List<Point> points = new ArrayList<>();
-        try (PreparedStatement ps = conn.prepareStatement(SERIES)) {
+        try (PreparedStatement ps = conn.get().prepareStatement(SERIES)) {
             ps.setLong(1, stepSeconds);
             ps.setLong(2, stepSeconds);
             ps.setTimestamp(3, Timestamp.from(from));

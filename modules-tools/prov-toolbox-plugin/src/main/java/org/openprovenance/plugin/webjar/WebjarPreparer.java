@@ -1,5 +1,8 @@
 package org.openprovenance.plugin.webjar;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -88,11 +91,12 @@ public class WebjarPreparer extends AbstractMojo {
             if (warning) System.out.println("Templates: " + templates);
             if (warning) System.out.println("Bindings: " + bindings);
 
-            // for each template, copy the file structure under 'directory' into the target path
+            // for each template, copy the file structure under 'directory' into the target path; several template
+            // directories share one target, so their index.json files are merged rather than the last one kept
             for (TemplateConfig t: templates) {
                 String source = t.directory;
                 String target = t.targetPath;
-                copyFromSourceToDestination(source, target, null);
+                copyFromSourceToDestination(source, target, null, true);
             }
             for (BindingsConfig t: bindings) {
                 String source = t.directory;
@@ -151,6 +155,14 @@ public class WebjarPreparer extends AbstractMojo {
     }
 
     public void copyFromSourceToDestination(String source, String target, List<String> includes) throws IOException {
+        copyFromSourceToDestination(source, target, includes, false);
+    }
+
+    /**
+     * Copies the files under {@code source} into {@code target}, replacing existing ones; with {@code mergeIndex}, an
+     * {@code index.json} meeting one already in the target is merged into it instead (see {@link #mergeIndex}).
+     */
+    public void copyFromSourceToDestination(String source, String target, List<String> includes, boolean mergeIndex) throws IOException {
         Path sourceDir= Paths.get(source);
         Path targetDir=Paths.get(target);
         if (warning) System.out.println("Copying files from " + sourceDir + "\n  to " + targetDir);
@@ -179,12 +191,44 @@ public class WebjarPreparer extends AbstractMojo {
                     //if (warning) System.out.println(" * Copying to file: " + targetPath);
                     //if (warning) System.out.println(" *  from file: " + sourcePath);
                     targetPath.getParent().toFile().mkdirs();
-                    Files.copy(sourcePath, targetPath, REPLACE_EXISTING);
+                    if (mergeIndex && INDEX.equals(sourcePath.getFileName().toString()) && Files.exists(targetPath)) {
+                        mergeIndex(sourcePath, targetPath);
+                    } else {
+                        Files.copy(sourcePath, targetPath, REPLACE_EXISTING);
+                    }
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Error copying files: " + e.getMessage());
             }
         });
+    }
+
+    static final String INDEX = "index.json";
+
+    /**
+     * Merges the template index {@code source} into {@code target}: the union of their template ids. An id both name
+     * with the same entry is kept once; an id they name with different entries is an error, naming both, since one of
+     * the two directories would otherwise lose its template silently.
+     */
+    static void mergeIndex(Path source, Path target) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode into = mapper.readTree(target.toFile());
+        JsonNode from = mapper.readTree(source.toFile());
+        if (!(into instanceof ObjectNode) || !(from instanceof ObjectNode)) {
+            throw new IOException("template index is not a JSON object: " + (into instanceof ObjectNode ? source : target));
+        }
+        ObjectNode merged = (ObjectNode) into;
+        for (java.util.Iterator<java.util.Map.Entry<String, JsonNode>> it = from.fields(); it.hasNext(); ) {
+            java.util.Map.Entry<String, JsonNode> e = it.next();
+            JsonNode had = merged.get(e.getKey());
+            if (had == null) {
+                merged.set(e.getKey(), e.getValue());
+            } else if (!had.equals(e.getValue())) {
+                throw new IOException("template id " + e.getKey() + " has two entries: " + had + " in " + target
+                        + ", " + e.getValue() + " in " + source);
+            }
+        }
+        mapper.writerWithDefaultPrettyPrinter().writeValue(target.toFile(), merged);
     }
 
     // write a method that updates parameters if they are null, with the default value in @Parameter declaration if it exists

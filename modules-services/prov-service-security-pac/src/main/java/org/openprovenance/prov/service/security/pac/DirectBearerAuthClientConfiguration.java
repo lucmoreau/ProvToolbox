@@ -18,6 +18,17 @@ public class DirectBearerAuthClientConfiguration implements ClientConfiguration 
     private String clientId;
     private String baseUri;
     private String realmUri;
+    /** The audience a token must be addressed to (one of its {@code aud}), when set — Keycloak's audience mapper names
+     *  the service (D5, provmind: {@code provenance-store}); unset, the audience is not checked (as before). */
+    private String audience;
+
+    public String getAudience() {
+        return audience;
+    }
+
+    public void setAudience(String audience) {
+        this.audience = audience;
+    }
 
     public String getRealm() {
         return realm;
@@ -82,6 +93,7 @@ public class DirectBearerAuthClientConfiguration implements ClientConfiguration 
                 ", role='" + role + '\'' +
                 ", clientId='" + clientId + '\'' +
                 ", baseUri='" + baseUri + '\'' +
+                ", audience='" + audience + '\'' +
                 '}';
     }
 }

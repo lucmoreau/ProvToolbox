@@ -74,7 +74,7 @@ public class Utils {
         JwtAuthenticator tokenAuthenticator = new JwtAuthenticator();
         tokenAuthenticator.setRealmName(config.getRealm());
         RSASignatureConfiguration signatureConfiguration;
-        signatureConfiguration= new ClaimAndSignatureConfiguration(config.getClientId(), config.getRealmUri());
+        signatureConfiguration= new ClaimAndSignatureConfiguration(config.getClientId(), config.getRealmUri(), config.getAudience());
         signatureConfiguration.setPublicKey(Utils.getRsaPublicKey(config.getSignaturePublicKey()));
         signatureConfiguration.setPrivateKey(null);
         tokenAuthenticator.addSignatureConfiguration(signatureConfiguration);

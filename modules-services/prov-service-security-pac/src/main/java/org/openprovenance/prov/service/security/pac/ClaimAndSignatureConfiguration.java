@@ -45,12 +45,21 @@ public class ClaimAndSignatureConfiguration extends RSASignatureConfiguration {
      *  comma-separated list (a service with several client identities names each of them). */
     private final Set<String> clientIds;
     private final String realmUri;
+    /** The audience a token must name in its {@code aud}; null or blank: not checked. */
+    private final String audience;
     private final Map<String, RSAPublicKey> keysById = new ConcurrentHashMap<>();
     private volatile long lastRefresh = 0L;
 
     public ClaimAndSignatureConfiguration(String clientId, String realmUri)  {
+        this(clientId, realmUri, null);
+    }
+
+    /** As above, a token also required to be addressed to {@code audience} (its {@code aud}), when one is given — a token
+     *  the realm minted for another service, by a client this one accepts, is refused (D5). */
+    public ClaimAndSignatureConfiguration(String clientId, String realmUri, String audience)  {
         this.clientIds=parseClientIds(clientId);
         this.realmUri=realmUri;
+        this.audience=audience == null || audience.isBlank() ? null : audience.trim();
     }
 
     /** {@code "a"} → {a}; {@code "a, b"} → {a, b}; blanks and empty items ignored; null → empty (nothing accepted). */
@@ -85,6 +94,10 @@ public class ClaimAndSignatureConfiguration extends RSASignatureConfiguration {
                 return false;
             } else {
                 logger.debug("issuer claim is correct ");
+            }
+            if (audience != null && (claims.getAudience() == null || !claims.getAudience().contains(audience))) {
+                logger.info("token not addressed to " + audience + " (aud: " + claims.getAudience() + ", azp " + azp + ")");
+                return false;
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);

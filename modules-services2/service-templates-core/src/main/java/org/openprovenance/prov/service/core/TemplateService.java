@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.core;
 
 
+import org.openprovenance.prov.configuration.Fatal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -280,19 +281,30 @@ public class TemplateService {
         }
     }
 
+    /** The database's init SQL (sql.initializer, then the files of getSqlFilesToExecute()); a script that cannot be
+     *  loaded or run is fatal: the process reports it in one FATAL line and ends, rather than serve a database it could
+     *  not set up (T-548). Without a database (no connection) nothing is run, as before. */
     public void storageInitialize(Connection conn, String sqlInitializer) {
         if (conn !=null) {
+            String current = sqlInitializer;
             try {
+                if (sqlInitializer == null) throw new IllegalStateException("no sql.initializer in the template configuration");
                 boolean anyResult=storage.initializeDB(conn, sqlInitializer);
                 logger.debug("DB initialized. Any results? " + anyResult);
 
-                getSqlFilesToExecute().forEach(file -> executeStatementsFromFile(conn,file));
+                for (String file: getSqlFilesToExecute()) {
+                    current = file;
+                    executeStatementsFromFile(conn,file);
+                }
 
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException | RuntimeException e) {
+                Fatal.exit(FATAL_SERVICE, "the init SQL " + current + " could not be loaded or run", e, 1);
             }
         }
     }
+
+    /** The service's name in its FATAL line: PROV_SERVICE_NAME, else "store". */
+    static final String FATAL_SERVICE = getSystemOrEnvironmentVariableOrDefault("PROV_SERVICE_NAME", "store");
 
     public @NonNull List<String> getSqlFilesToExecute() {
         return sqlFilesToExecute;
@@ -354,6 +366,7 @@ public class TemplateService {
     public void executeStatementsFromFile(Connection conn, String filename) {
         boolean anyResult;
         String statements=getStringFromClasspath(this.getClass(), filename);
+        if (statements == null) throw new IllegalStateException("no resource " + filename + " on the classpath");
         try {
             anyResult=storage.executeStatements(conn,statements);
         } catch (SQLException e) {

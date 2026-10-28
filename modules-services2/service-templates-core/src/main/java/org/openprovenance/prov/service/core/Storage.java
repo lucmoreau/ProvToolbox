@@ -48,6 +48,7 @@ public class Storage {
 
     public boolean initializeDB(Connection conn, String sqlInitializer) throws SQLException {
         String statements=getStringFromClasspath(this.getClass(), sqlInitializer);
+        if (statements == null) throw new SQLException("no resource " + sqlInitializer + " on the classpath");
         logger.debug("*** Initializing DB with script: " + sqlInitializer);
        // System.out.println(statements);
         return executeStatements(conn, statements);

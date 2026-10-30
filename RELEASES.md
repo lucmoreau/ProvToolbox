@@ -2,7 +2,11 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.3.0-SNAPSHOT`
 * service-templates-core, prov-template-archetype: activity of the store counted (messages posted to /statements, records written) in the activity_log table at next to no cost on the request path (in-memory counters, one batched upsert per flush), with a kind column naming what is counted so other services (chronicle) log to the same table; GET provapi/activity/summary.json and series.json; the dashboard's Activity tab (last minute, hour, day, week; refresh period a field or ?refresh=N); TPL_ACTIVITY_FLUSH_SECONDS, TPL_ACTIVITY_BUCKET_SECONDS, TPL_ACTIVITY_RETENTION_DAYS
-* 
+* service-templates-core: switch submission.readback.access_control (TPL_READBACK_ACCESS_CONTROL) on|off, default on: off, the post-processing read-back of the record a submission has just written skips the record_index/access_control join; every other reading keeps it
+* service-templates-core: switch submission.hash (TPL_SUBMISSION_HASH) update|header|off, default update: header computes and sends PROV-Hash without the UPDATE of record_index; off neither computes nor sends it (record_index.hash NULL)
+* service-templates-core: switch relations.write (TPL_RELATIONS_WRITE) inline|async, default inline, with relations.async.writers/queue/batch (TPL_RELATIONS_ASYNC_*): async, the __PROV_* rows are queued after the submission's commit (never for one rolled back) and written in batches, one multi-row INSERT per relation table, by writer threads on connections of their own; back-pressure when the queue is full, drained on shutdown; switches logged in one line at start-up, an unknown value fatal; GET provapi/submission/status.json (switches, pool size, queue depth, commit-to-visible lag)
+* service-templates-core: the record hash computed with a digest per thread: with a pool, concurrent submissions shared one SHA3-512 MessageDigest (a 500, or a wrong hash)
+* modules-misc/benchmarks/service-throughput: throughput benchmark of the template service (plain HTTP + JDBC harness, its own Docker PostgreSQL on 55432 and service on 7099 behind an allow-list guard, variants per switch, make bench.matrix: records/s, rows and WAL per record, latency percentiles, service and PostgreSQL CPU, relation lag, cross-checked with activity_log); see its BENCHMARK.md
 
 `2.2.5`
 * prov-template-archetype: navigator tab supports backward and forward traversals

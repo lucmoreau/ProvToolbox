@@ -254,6 +254,7 @@ public class TemplateService {
             // the writers on connections of their own, one each, never the service's shared one nor the requests' pool
             this.relationWriter = new AsyncRelationWriter(new PooledConnections(() -> storageSetup(jdbcURL), switches.asyncWriters),
                     switches.asyncWriters, switches.asyncQueue, switches.asyncBatch).withShutdownHook();
+            ServiceShutdownListener.registerForShutdown(relationWriter);   // drained when the webapp stops, too
             this.queryTemplate.getRelationMapping().setAsyncWriter(relationWriter);
         } else {
             this.relationWriter = null;
@@ -862,7 +863,8 @@ public class TemplateService {
         out.put("switches", switches.asMap());
         out.put("jdbc.pool.size", poolSize);
         out.put("relations", relationWriter == null ? null : relationWriter.status());
-        return ServiceUtils.composeResponseOK(out).type(MEDIA_APPLICATION_JSON).build();
+        StreamingOutput promise = o -> om.writeValue(o, out);
+        return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
     }
 
     @GET

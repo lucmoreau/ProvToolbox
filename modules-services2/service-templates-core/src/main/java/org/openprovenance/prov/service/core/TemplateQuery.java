@@ -4326,7 +4326,29 @@ public class TemplateQuery {
         return compositeLinker.containsKey(template);
     }
 
+    /**
+     * The record a submission has just written, read back for its post-processing: as {@link #query} when
+     * {@code accessControl}, else without the {@code record_index}/{@code access_control} join — the request wrote the
+     * record itself, under its own principal, a moment ago (switch {@link SubmissionSwitches#READBACK_ACCESS_CONTROL}).
+     * Only {@link TemplateLogic#submitPostProcessing} reads this way; every other reading goes through {@link #query},
+     * {@link #querySimple} or {@link #queryComposite}, which always apply the access control.
+     */
+    public List<Object[]> queryJustWritten(String fullyQualifiedName, Integer id, String principal, boolean accessControl) {
+        if (accessControl) {
+            return query(fullyQualifiedName, id, false, principal);
+        }
+        if (isComposite(fullyQualifiedName)) {
+            return queryComposite(fullyQualifiedName, id, false, principal, false);
+        } else {
+            return querySimple(fullyQualifiedName, id, false, principal, false);
+        }
+    }
+
     public List<Object[]> querySimple(String fullyQualifiedName, Integer id, boolean withTitles, String principal) {
+        return querySimple(fullyQualifiedName, id, withTitles, principal, true);
+    }
+
+    private List<Object[]> querySimple(String fullyQualifiedName, Integer id, boolean withTitles, String principal, boolean accessControl) {
         logger.debug("querySimple fullyQualifiedName=" + fullyQualifiedName + " id=" + id + " principal=" + principal);
         //System.out.println("querySimple fullyQualifiedName=" + fullyQualifiedName + " id=" + id + " principal=" + principal);
         List<Object[]> the_records = new LinkedList<>();
@@ -4363,10 +4385,10 @@ public class TemplateQuery {
                     sb.append("SELECT template.*\n FROM ");
                     sb.append(shortName);
                     sb.append(" as template ");
-                    joinAccessControl(shortName, principal, sb);
+                    if (accessControl) joinAccessControl(shortName, principal, sb);
                     sb.append("\n WHERE template.id=");
                     sb.append(id);
-                    andAccessControl(principal, sb);
+                    if (accessControl) andAccessControl(principal, sb);
 
                 },
                 (rs, data) -> {
@@ -4713,6 +4735,10 @@ public class TemplateQuery {
 
     }
     public List<Object[]> queryComposite(String templateFullyQualifiedName, Integer id, boolean withTitles, String principal) {
+        return queryComposite(templateFullyQualifiedName, id, withTitles, principal, true);
+    }
+
+    private List<Object[]> queryComposite(String templateFullyQualifiedName, Integer id, boolean withTitles, String principal, boolean accessControl) {
         List<RecordEntry> linked_records = new LinkedList<>();
         TemplateService.Linker linker = compositeLinker.get(templateFullyQualifiedName);
 
@@ -4722,13 +4748,21 @@ public class TemplateQuery {
                 null,
                 (sb, data) -> {
                     sb.append("SELECT * FROM (");
-                    sb.append("SELECT * FROM ");
-                    sb.append(shortNames.get(templateFullyQualifiedName));
-                    sb.append(" AS template ");
-                    joinAccessControl(shortNames.get(templateFullyQualifiedName), principal, sb);
-                    sb.append("\n WHERE key=");
-                    sb.append(id);
-                    andAccessControl(principal, sb);
+                    if (accessControl) {
+                        sb.append("SELECT * FROM ");
+                        sb.append(shortNames.get(templateFullyQualifiedName));
+                        sb.append(" AS template ");
+                        joinAccessControl(shortNames.get(templateFullyQualifiedName), principal, sb);
+                        sb.append("\n WHERE key=");
+                        sb.append(id);
+                        andAccessControl(principal, sb);
+                    } else {
+                        sb.append("SELECT template.id AS key FROM ");    // key: record_index.key, which is template.id
+                        sb.append(shortNames.get(templateFullyQualifiedName));
+                        sb.append(" AS template ");
+                        sb.append("\n WHERE template.id=");
+                        sb.append(id);
+                    }
                     sb.append(") as combo ");
                     sb.append("\n LEFT JOIN ").append(linker.table).append(" AS linker ");
                     sb.append(" ON combo.key = linker.composite");
@@ -4752,7 +4786,7 @@ public class TemplateQuery {
         List<Object[]> the_records = new LinkedList<>();
         for (RecordEntry linked_record : linked_records) {
             Integer simple = linked_record.key;
-            List<Object[]> simple_records = querySimple(longNames.get(linked_record.table), simple, withTitles, principal);
+            List<Object[]> simple_records = querySimple(longNames.get(linked_record.table), simple, withTitles, principal, accessControl);
             the_records.addAll(simple_records);
         }
 

@@ -57,6 +57,7 @@ public class TemplateLogic {
     private final Map<String, String> shortNames;
     private final Map<String, String> semanticType;
     private final String nlgXplanStrategy;
+    private volatile SubmissionSwitches switches = SubmissionSwitches.DEFAULTS;
 
     /** Thread-scoped Idempotency-Key set by the service per request; the
      *  duplicate-recovery path below consults it. State is a static
@@ -327,32 +328,52 @@ public class TemplateLogic {
         return records;
     }
 
+    /** The switches of the write path (read-back access control, hash); the service's own behaviour by default. */
+    public void setSwitches(SubmissionSwitches switches) {
+        this.switches = switches;
+    }
+
+    public SubmissionSwitches getSwitches() {
+        return switches;
+    }
+
     public Object submitPostProcessing(int id, String templateFullyQualifiedName) {
         logger.debug("postProcessing " + id + " " + templateFullyQualifiedName);
 
         String principal=principalManager.getPrincipal();
-        List<Object[]> records = templateQuery.query(templateFullyQualifiedName, id, false, principal);
+        List<Object[]> records = templateQuery.queryJustWritten(templateFullyQualifiedName, id, principal, switches.readbackAccessControl);
 
         logger.debug("PROV_API " + provAPI);
         logger.debug("records " + records.size() + " " + records.stream().map(Arrays::toString).collect(Collectors.joining(",")));
         if (!records.isEmpty()) {
+            boolean hashed = switches.hash != SubmissionSwitches.Hash.OFF;
             if (records.size()>1) {
-                Map<String, String> hash = templateQuery.computeHash(templateFullyQualifiedName, id, records);
-                templateQuery.updateHash(shortNames.get(templateFullyQualifiedName), id, hash, principal);
-                logger.debug("update hash for " + id + " " + templateFullyQualifiedName + ": " + hash);
-                headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH, getContentProvHash(hash));
+                // a composite: its elements' relations were written by their own post-processing, as each was enacted
+                Map<String, String> hash = hashed ? templateQuery.computeHash(templateFullyQualifiedName, id, records) : null;
+                storeHash(templateFullyQualifiedName, id, hash, principal);
             } else {
                 Object[] record = records.get(0);
-                Map<String, String> hash = templateQuery.computeHash(templateFullyQualifiedName, id, record);
+                Map<String, String> hash = hashed ? templateQuery.computeHash(templateFullyQualifiedName, id, record) : null;
                 templateQuery.getRelationMapping().mapGraphToRelations(templateFullyQualifiedName,id,record);
-                templateQuery.updateHash(shortNames.get(templateFullyQualifiedName), id, hash, principal);
-                logger.debug("update hash for " + id + " " + templateFullyQualifiedName + ": " + hash);
-                headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH,getContentProvHash(hash));
+                storeHash(templateFullyQualifiedName, id, hash, principal);
             }
             headerInfo.get().put(HTTP_HEADER_LOCATION,provAPI + "/template/" + templateFullyQualifiedName + "/" + id);
 
         }
         return null;
+    }
+
+    /** The hash stored in record_index (submission.hash=update) and sent in the header (update, header); none when off. */
+    private void storeHash(String templateFullyQualifiedName, int id, Map<String, String> hash, String principal) {
+        if (hash == null) {
+            headerInfo.get().remove(HTTP_HEADER_CONTENT_PROV_HASH);   // the thread's previous request's must not be sent
+            return;
+        }
+        if (switches.hash == SubmissionSwitches.Hash.UPDATE) {
+            templateQuery.updateHash(shortNames.get(templateFullyQualifiedName), id, hash, principal);
+            logger.debug("update hash for " + id + " " + templateFullyQualifiedName + ": " + hash);
+        }
+        headerInfo.get().put(HTTP_HEADER_CONTENT_PROV_HASH, getContentProvHash(hash));
     }
     Base64.Encoder encoder = Base64.getEncoder();
 

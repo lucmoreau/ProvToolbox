@@ -121,6 +121,12 @@ public class TemplateService {
     protected final ActivityLogger activity;
     /** Reads the activity table for the dashboard; null without a store. */
     protected final ActivityQuery activityQuery;
+    /** The write path's switches, read at start-up. */
+    protected final SubmissionSwitches switches;
+    /** The requests' connection pool's size, 0 for none. */
+    protected final int poolSize;
+    /** Writes the relations after each submission's commit (relations.write=async); null when they are written inline. */
+    protected final AsyncRelationWriter relationWriter;
 
     /**
      * Lazily-built JSON-record list backing {@link #getBackwardDispatch}.
@@ -196,6 +202,9 @@ public class TemplateService {
         int poolSize = poolSize(templateConfiguration.get("jdbc.pool.size"));
         PooledConnections pool = poolSize > 0 ? new PooledConnections(() -> storageSetup(jdbcURL), poolSize) : null;
         logger.info("connection pool: " + (pool == null ? "none (requests share one connection)" : poolSize + " connection(s)"));
+        this.switches = switches(templateConfiguration);
+        this.poolSize = poolSize;
+        logger.info("write path: " + switches + " jdbc.pool.size=" + poolSize);
         this.querier = new Querier(storage, conn, pool, () -> storageSetup(jdbcURL));   // reopened when it breaks (T-531)
         Function<String, ResultSet> queryExecutor = statement -> {
             try {
@@ -240,6 +249,15 @@ public class TemplateService {
             this.queryTemplate.setReaders(securityConfiguration.getReaders());
         }
         this.templateLogic=new TemplateLogicWithConfig(pf,queryTemplate, this.queryTemplate.getShortNames(), this.catalogueDispatcher, principalManager, utils, om, nlgXplanLibary, nlgPlanSelection, nlgXplanStrategy);
+        this.templateLogic.setSwitches(switches);
+        if (switches.relations == SubmissionSwitches.Relations.ASYNC && conn != null) {
+            // the writers on connections of their own, one each, never the service's shared one nor the requests' pool
+            this.relationWriter = new AsyncRelationWriter(new PooledConnections(() -> storageSetup(jdbcURL), switches.asyncWriters),
+                    switches.asyncWriters, switches.asyncQueue, switches.asyncBatch).withShutdownHook();
+            this.queryTemplate.getRelationMapping().setAsyncWriter(relationWriter);
+        } else {
+            this.relationWriter = null;
+        }
 
 
     }
@@ -308,6 +326,16 @@ public class TemplateService {
 
     public @NonNull List<String> getSqlFilesToExecute() {
         return sqlFilesToExecute;
+    }
+
+    /** The write path's switches ({@link SubmissionSwitches}); an unknown value is fatal, as a failed init SQL is. */
+    static SubmissionSwitches switches(Map<String, Object> configuration) {
+        try {
+            return SubmissionSwitches.from(configuration);
+        } catch (IllegalArgumentException e) {
+            Fatal.exit(FATAL_SERVICE, e.getMessage(), e, 1);
+            throw e;   // not reached
+        }
     }
 
     /** The pool's size: the configuration's value, else the environment's JDBC_POOL_SIZE, else 0 (none). */
@@ -817,6 +845,24 @@ public class TemplateService {
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
 
 
+    }
+
+    @GET
+    @Path("/submission/status.json")
+    @Tag(name = "template")
+    @Produces({MEDIA_APPLICATION_JSON})
+    @Operation(summary = "The write path's switches, as read at start-up, and the relation queue's state when relations are written asynchronously",
+            description = "switches: the configuration keys of SubmissionSwitches with their effective values; jdbc.pool.size; "
+                    + "relations: null when written inline, else the queue's depth, capacity, records queued, written and failed, batches, "
+                    + "submissions that waited for room, and the commit-to-visible lag (mean, max, last, in ms).",
+            responses = { @ApiResponse(responseCode = "200", description = "the status") })
+    public Response getSubmissionStatus() {
+        Map<String, Object> out = new LinkedHashMap<>();
+        out.put("generated_at", Instant.now().toString());
+        out.put("switches", switches.asMap());
+        out.put("jdbc.pool.size", poolSize);
+        out.put("relations", relationWriter == null ? null : relationWriter.status());
+        return ServiceUtils.composeResponseOK(out).type(MEDIA_APPLICATION_JSON).build();
     }
 
     @GET

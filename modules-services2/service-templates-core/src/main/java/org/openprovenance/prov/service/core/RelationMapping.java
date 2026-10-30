@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class RelationMapping {
     private static final Logger logger = LogManager.getLogger(RelationMapping.class);
     private final Querier querier;
+    private volatile AsyncRelationWriter asyncWriter;
 
     ExecutorService executor = Executors.newFixedThreadPool(3);
 
@@ -27,7 +28,19 @@ public class RelationMapping {
         this.querier = querier;
     }
 
+    /**
+     * The relation rows of a record just written: inside a submission's transaction, written now on its connection;
+     * outside one, on the executor (fire-and-forget, as before); with an {@link AsyncRelationWriter}, queued once the
+     * submission has committed (never for one rolled back) and written in batches by its writers.
+     */
     public void mapGraphToRelations(String template, int id, Object[] record) {
+        if (asyncWriter != null) {
+            List<RelationRows> rows = relationRows(template, id, record);
+            if (!rows.isEmpty()) {
+                querier.afterCommit(() -> asyncWriter.enqueue(rows));
+            }
+            return;
+        }
         if (querier.inTransactionNow()) {
             // Inside a submission's transaction: the relations are written now, on its connection, and commit with it —
             // a reader never sees the record without them, and a failure rolls the whole submission back.
@@ -42,22 +55,50 @@ public class RelationMapping {
         });
     }
 
+    /** Writes the relations after each submission's commit, batched, instead of with it; null (the default) for inline. */
+    public void setAsyncWriter(AsyncRelationWriter asyncWriter) {
+        this.asyncWriter = asyncWriter;
+    }
+
     private Collection<BiConsumer<StringBuilder, Object>> relationQueries(String template, int id, Object[] record) {
-        logger.debug("Template: " + template + " " + id);
-        Map<String, Map<String, int[]>> templateRelations = templateDispatcher.getRelation0().get(template);
-        String[] foreignTables = templateDispatcher.getForeignTables().get(template);
         Collection<BiConsumer<StringBuilder, Object>> queries = new LinkedList<>();
-        if (templateRelations != null) {
-            for (String property : templateRelations.keySet()) {
-                Map<String, int[]> propertyRelations = templateRelations.get(property);
-                BiConsumer<StringBuilder, Object> insertForRelations = createInsertForRelations(template, id, record, property, propertyRelations, foreignTables);
-                if (insertForRelations != null) queries.add(insertForRelations);
-            }
+        for (RelationRows rows : relationRows(template, id, record)) {
+            queries.add((sb, data) -> rows.appendInsert(sb));
         }
         return queries;
     }
 
-    BiConsumer<StringBuilder, Object> createInsertForRelations(String template, int id, Object[] record, String relation, Map<String, int[]> propertyRelations, String[] foreignTables) {
+    /** The rows a record adds to the relation tables, one {@link RelationRows} per relation kind (one INSERT each). */
+    List<RelationRows> relationRows(String template, int id, Object[] record) {
+        logger.debug("Template: " + template + " " + id);
+        Map<String, Map<String, int[]>> templateRelations = templateDispatcher.getRelation0().get(template);
+        String[] foreignTables = templateDispatcher.getForeignTables().get(template);
+        List<RelationRows> result = new LinkedList<>();
+        if (templateRelations != null) {
+            for (String property : templateRelations.keySet()) {
+                Map<String, int[]> propertyRelations = templateRelations.get(property);
+                RelationRows rows = createRowsForRelations(template, id, record, property, propertyRelations, foreignTables);
+                if (rows != null) result.add(rows);
+            }
+        }
+        return result;
+    }
+
+    /** The columns of each relation table, after which come the template, template_id and rel columns. */
+    static String[] relationColumns(StatementOrBundle.Kind kind) {
+        switch (kind) {
+            case PROV_DERIVATION:     return new String[]{"generatedEntity", "usedEntity", "activity"};
+            case PROV_GENERATION:     return new String[]{"entity", "activity"};
+            case PROV_USAGE:          return new String[]{"activity", "entity"};
+            case PROV_ASSOCIATION:    return new String[]{"activity", "agent", "plan"};
+            case PROV_DELEGATION:     return new String[]{"delegate", "responsible", "activity"};
+            case PROV_SPECIALIZATION: return new String[]{"specificEntity", "generalEntity"};
+            case PROV_MEMBERSHIP:     return new String[]{"collection", "entity"};
+            default:                  return null;
+        }
+    }
+
+    RelationRows createRowsForRelations(String template, int id, Object[] record, String relation, Map<String, int[]> propertyRelations, String[] foreignTables) {
         Map<String, List<Integer>> rels = propertyRelations
                 .keySet()
                 .stream()
@@ -65,261 +106,65 @@ public class RelationMapping {
                         k -> k,
                         k -> Arrays.stream(propertyRelations.get(k)).boxed().collect(Collectors.toList())));
 
-        switch (StatementOrBundle.Kind.valueOf(relation)) {
-            case PROV_DERIVATION:
-                return composeQueryDerivation(template, id, record, relation, foreignTables, rels);
-            case PROV_GENERATION:
-                return composeQueryGeneration(template, id, record, relation, foreignTables, rels);
-            case PROV_USAGE:
-                return composeQueryUsage(template, id, record, relation, foreignTables, rels);
-            case PROV_ASSOCIATION:
-                return composeQueryAssociation(template, id, record, relation, foreignTables, rels);
-            case PROV_DELEGATION:
-                return composeQueryDelegation(template, id, record, relation, foreignTables, rels);
-            case PROV_SPECIALIZATION:
-                return composeQuerySpecialization(template, id, record, relation, foreignTables, rels);
-            case PROV_MEMBERSHIP:
-                return composeQueryMembership(template, id, record, relation, foreignTables, rels);
-
+        String[] columns = relationColumns(StatementOrBundle.Kind.valueOf(relation));
+        if (columns == null || rels.isEmpty()) {
+            return null;
         }
-        return null;
+        StringBuilder header = new StringBuilder();
+        for (String column : columns) {
+            header.append(column).append(", ").append(column).append("_rel, ");
+        }
+        header.append("template, template_id, rel");
+        List<String> tuples = new ArrayList<>(rels.size());
+        for (String relId : rels.keySet()) {
+            List<Integer> rels1 = rels.get(relId);
+            StringBuilder sb = new StringBuilder("(");
+            for (int i = 0; i < columns.length; i++) {
+                if (i > 0) sb.append(",");
+                sb.append(getEntryIfNotMinus1(record, rels1.get(i)));
+                sb.append(",");
+                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(i)));
+            }
+            sb.append(",'").append(template).append("',").append(id);
+            sb.append(",'");
+            sb.append(relId);
+            sb.append("')");
+            tuples.add(sb.toString());
+        }
+        return new RelationRows(TemplateQuery.PREFIX_REL + relation, header.toString(), tuples);
     }
 
-    private BiConsumer<StringBuilder, Object> composeQueryMembership(String template, int id, Object[] record, String relation, String[] foreignTables, Map<String, List<Integer>> rels) {
-        BiConsumer<StringBuilder, Object> composeQuery_mem = (sb, data) -> {
-            sb.append("\nINSERT INTO\n  " + TemplateQuery.PREFIX_REL);
-            sb.append(relation);
-            sb.append(" (collection, collection_rel, entity, entity_rel, template, template_id, rel) VALUES\n");
+    /** The rows one record adds to one relation table: a multi-row INSERT, or a part of a batch's ({@link #appendInsert(StringBuilder, String, String, List)}). */
+    public static final class RelationRows {
+        public final String table;
+        public final String columns;
+        public final List<String> tuples;
+
+        RelationRows(String table, String columns, List<String> tuples) {
+            this.table = table;
+            this.columns = columns;
+            this.tuples = tuples;
+        }
+
+        /** The INSERT of these rows, as the service always wrote it. */
+        public void appendInsert(StringBuilder sb) {
+            RelationRows.appendInsert(sb, table, columns, tuples);
+        }
+
+        static void appendInsert(StringBuilder sb, String table, String columns, List<String> tuples) {
+            sb.append("\nINSERT INTO\n  ").append(table);
+            sb.append(" (").append(columns).append(") VALUES\n");
             boolean first = true;
-            for (String relId : rels.keySet()) {
-                List<Integer> rels1 = rels.get(relId);
+            for (String tuple : tuples) {
                 if (first) {
                     first = false;
                 } else {
                     sb.append(",\n");
                 }
-                sb.append("  (");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(0)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(0)));
-                sb.append(",");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(1)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(1)));
-                sb.append(",'").append(template).append("',").append(id);
-                sb.append(",'");
-                sb.append(relId);
-                sb.append("')");
+                sb.append("  ").append(tuple);
             }
             sb.append(";\n");
-
-        };
-        return composeQuery_mem;
-    }
-
-    private BiConsumer<StringBuilder, Object> composeQuerySpecialization(String template, int id, Object[] record, String relation, String[] foreignTables, Map<String, List<Integer>> rels) {
-        BiConsumer<StringBuilder, Object> composeQuery_spe = (sb, data) -> {
-            sb.append("\nINSERT INTO\n  " + TemplateQuery.PREFIX_REL);
-            sb.append(relation);
-            sb.append(" (specificEntity, specificEntity_rel, generalEntity, generalEntity_rel, template, template_id, rel) VALUES\n");
-            boolean first = true;
-            for (String relId : rels.keySet()) {
-                List<Integer> rels1 = rels.get(relId);
-                if (first) {
-                    first = false;
-                } else {
-                    sb.append(",\n");
-                }
-                sb.append("  (");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(0)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(0)));
-                sb.append(",");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(1)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(1)));
-                sb.append(",'").append(template).append("',").append(id);
-                sb.append(",'");
-                sb.append(relId);
-                sb.append("')");
-            }
-            sb.append(";\n");
-
-        };
-        return composeQuery_spe;
-    }
-
-    private BiConsumer<StringBuilder, Object> composeQueryDelegation(String template, int id, Object[] record, String relation, String[] foreignTables, Map<String, List<Integer>> rels) {
-        BiConsumer<StringBuilder, Object> composeQuery_aobo = (sb, data) -> {
-            sb.append("\nINSERT INTO\n  " + TemplateQuery.PREFIX_REL);
-            sb.append(relation);
-            sb.append(" (delegate, delegate_rel, responsible, responsible_rel, activity, activity_rel, template, template_id, rel) VALUES\n");
-            boolean first = true;
-            for (String relId : rels.keySet()) {
-                List<Integer> rels1 = rels.get(relId);
-                if (first) {
-                    first = false;
-                } else {
-                    sb.append(",\n");
-                }
-                sb.append("  (");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(0)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(0)));
-                sb.append(",");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(1)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(1)));
-                sb.append(",");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(2)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(2)));
-                sb.append(",'").append(template).append("',").append(id);
-                sb.append(",'");
-                sb.append(relId);
-                sb.append("')");
-            }
-            sb.append(";\n");
-
-        };
-        return composeQuery_aobo;
-    }
-
-    private BiConsumer<StringBuilder, Object> composeQueryAssociation(String template, int id, Object[] record, String relation, String[] foreignTables, Map<String, List<Integer>> rels) {
-        BiConsumer<StringBuilder, Object> composeQuery_waw = (sb, data) -> {
-            sb.append("\nINSERT INTO\n  " + TemplateQuery.PREFIX_REL);
-            sb.append(relation);
-            sb.append(" (activity, activity_rel, agent, agent_rel, plan, plan_rel, template, template_id, rel) VALUES\n");
-            boolean first = true;
-            for (String relId : rels.keySet()) {
-                List<Integer> rels1 = rels.get(relId);
-                if (first) {
-                    first = false;
-                } else {
-                    sb.append(",\n");
-                }
-                sb.append("  (");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(0)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(0)));
-                sb.append(",");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(1)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(1)));
-                sb.append(",");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(2)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(2)));
-                sb.append(",'").append(template).append("',").append(id);
-                sb.append(",'");
-                sb.append(relId);
-                sb.append("')");
-            }
-            sb.append(";\n");
-
-        };
-        return composeQuery_waw;
-    }
-
-    private BiConsumer<StringBuilder, Object> composeQueryUsage(String template, int id, Object[] record, String relation, String[] foreignTables, Map<String, List<Integer>> rels) {
-        BiConsumer<StringBuilder, Object> composeQuery_use = (sb, data) -> {
-            sb.append("\nINSERT INTO\n  " + TemplateQuery.PREFIX_REL);
-            sb.append(relation);
-            sb.append(" (activity, activity_rel, entity, entity_rel, template, template_id, rel) VALUES\n");
-            boolean first = true;
-            for (String relId : rels.keySet()) {
-                List<Integer> rels1 = rels.get(relId);
-                if (first) {
-                    first = false;
-                } else {
-                    sb.append(",\n");
-                }
-                sb.append("  (");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(0)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(0)));
-                sb.append(",");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(1)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(1)));
-                sb.append(",'").append(template).append("',").append(id);
-                sb.append(",'");
-                sb.append(relId);
-                sb.append("')");
-            }
-            sb.append(";\n");
-
-        };
-        return composeQuery_use;
-    }
-
-    private BiConsumer<StringBuilder, Object> composeQueryGeneration(String template, int id, Object[] record, String relation, String[] foreignTables, Map<String, List<Integer>> rels) {
-        BiConsumer<StringBuilder, Object> composeQuery_gen = (sb, data) -> {
-            sb.append("\nINSERT INTO\n  " + TemplateQuery.PREFIX_REL);
-            sb.append(relation);
-            sb.append(" (entity, entity_rel, activity, activity_rel, template, template_id, rel) VALUES\n");
-            boolean first = true;
-            for (String relId : rels.keySet()) {
-                List<Integer> rels1 = rels.get(relId);
-                if (first) {
-                    first = false;
-                } else {
-                    sb.append(",\n");
-                }
-                sb.append("  (");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(0)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(0)));
-                sb.append(",");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(1)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(1)));
-                sb.append(",'").append(template).append("',").append(id);
-                sb.append(",'");
-                sb.append(relId);
-                sb.append("')");
-            }
-            sb.append(";\n");
-
-        };
-        return composeQuery_gen;
-    }
-
-    private BiConsumer<StringBuilder, Object> composeQueryDerivation(String template, int id, Object[] record, String relation, String[] foreignTables, Map<String, List<Integer>> rels) {
-        BiConsumer<StringBuilder, Object> composeQuery_wdf = (sb, data) -> {
-            sb.append("\nINSERT INTO\n  " + TemplateQuery.PREFIX_REL);
-            sb.append(relation);
-            sb.append(" (generatedEntity, generatedEntity_rel, usedEntity, usedEntity_rel, activity, activity_rel, template, template_id, rel) VALUES\n");
-            boolean first = true;
-            for (String relId : rels.keySet()) {
-                List<Integer> rels1 = rels.get(relId);
-                if (first) {
-                    first = false;
-                } else {
-                    sb.append(",\n");
-                }
-                sb.append("  (");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(0)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(0)));
-                sb.append(",");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(1)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(1)));
-                sb.append(",");
-                sb.append(getEntryIfNotMinus1(record, rels1.get(2)));
-                sb.append(",");
-                sb.append(getTableIfNotMinus1(foreignTables, rels1.get(2)));
-                sb.append(",'").append(template).append("',").append(id);
-                sb.append(",'");
-                sb.append(relId);
-                sb.append("')");
-            }
-            sb.append(";\n");
-
-        };
-
-        return composeQuery_wdf;
+        }
     }
 
     private String getEntryIfNotMinus1(Object[] record, Integer in) {

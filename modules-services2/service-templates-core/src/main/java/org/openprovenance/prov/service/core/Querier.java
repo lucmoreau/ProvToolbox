@@ -8,6 +8,8 @@ import org.openprovenance.prov.service.core.inface.BiConsumerWithException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -28,6 +30,8 @@ public class Querier  {
     final private PooledConnections pool;
     /** The connection of the submission this thread is inside ({@link #inTransaction}), if any. */
     final private ThreadLocal<Connection> bound = new ThreadLocal<>();
+    /** What runs once the submission this thread is inside has committed ({@link #afterCommit}). */
+    final private ThreadLocal<List<Runnable>> afterCommit = new ThreadLocal<>();
 
     public Querier(Storage storage, Connection conn) {
         this(storage, conn, null);
@@ -99,17 +103,37 @@ public class Querier  {
         if (pool == null || bound.get() != null) {
             return work.get();
         }
+        List<Runnable> committed = new ArrayList<>();
+        T result;
         try {
-            return pool.inTransaction(c -> {
+            result = pool.inTransaction(c -> {
                 bound.set(c);
+                afterCommit.set(committed);
                 try {
                     return work.get();
                 } finally {
                     bound.remove();
+                    afterCommit.remove();
                 }
             });
         } catch (SQLException e) {
             throw new org.openprovenance.prov.model.exception.UncheckedException("Issue committing a submission", e);
+        }
+        committed.forEach(Runnable::run);   // only once committed: never for a submission rolled back
+        return result;
+    }
+
+    /**
+     * Runs {@code action} once this thread's submission has committed, on this thread, after its connection has gone
+     * back to the pool — or now, outside a submission, where every statement has committed already (autocommit).
+     * Dropped when the submission rolls back.
+     */
+    public void afterCommit(Runnable action) {
+        List<Runnable> pending = afterCommit.get();
+        if (pending == null) {
+            action.run();
+        } else {
+            pending.add(action);
         }
     }
 

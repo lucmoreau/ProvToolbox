@@ -3852,7 +3852,8 @@ public class TemplateQuery {
         return selectedVizKinds;
     }
 
-    final DigestUtils sha512 = new DigestUtils(DigestUtils.getSha3_512Digest());
+    /** One digest per thread: a MessageDigest is not thread-safe, and submissions are hashed side by side (with a pool). */
+    final ThreadLocal<DigestUtils> sha512 = ThreadLocal.withInitial(() -> new DigestUtils(DigestUtils.getSha3_512Digest()));
 
     public Map<String, String> computeHash(String template, int id, Object[] record) {
 
@@ -3867,7 +3868,7 @@ public class TemplateQuery {
         }
 
         String csv = sb.toString();
-        String hash2=sha512.digestAsHex(csv);
+        String hash2=sha512.get().digestAsHex(csv);
         Map<String,String> map=new LinkedHashMap<>();
         map.put(SHA_3_512, hash2);
         map.put("csv", csv);
@@ -3883,7 +3884,7 @@ public class TemplateQuery {
         }
 
         String csv = sb.toString();
-        String hash2=sha512.digestAsHex(csv);
+        String hash2=sha512.get().digestAsHex(csv);
         Map<String,String> map=new LinkedHashMap<>();
         map.put(SHA_3_512, hash2);
         map.put("csv", csv);

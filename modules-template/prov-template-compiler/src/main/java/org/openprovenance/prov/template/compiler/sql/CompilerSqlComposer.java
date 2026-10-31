@@ -24,6 +24,11 @@ public class CompilerSqlComposer {
     public static final String[] ARRAY_OF_STRING = {};
     public static final String TOKEN_VAR_NAME = "_token";
     public static final String DUMMY = "__dummy_";
+    /** Settings of the composite insert functions (array, composite-and-linker). Their statements join set-returning
+     *  functions, whose default estimate of 1000 rows each puts the plan over jit_above_cost: with JIT on, PostgreSQL
+     *  compiled the plan at every call, ~20 ms of a ~23 ms insert of three elements (service-throughput benchmark,
+     *  2026-10-31). Off inside these functions only; the server's setting elsewhere is untouched. */
+    public static final List<String> COMPOSITE_FUNCTION_SETTINGS = List.of("jit = off");
     private final CompilerUtil compilerUtil;
     final Map<String,String> functionDeclarations;
     final Map<String,String> arrayFunctionDeclarations;
@@ -447,7 +452,7 @@ public class CompilerSqlComposer {
                                                     throw new UnsupportedOperationException();
                                                 }),
                                 "inserted_rows")
-                        .bodyEnd("");
+                        .bodyEnd("", COMPOSITE_FUNCTION_SETTINGS);
 
 
         String sql=fun.getSQL();
@@ -539,7 +544,7 @@ public class CompilerSqlComposer {
                         .cte(cteValues2)
                         .selectExp(insertColumns.toArray(ARRAY_OF_STRING))
                         .from(INSERTED_CONSISTS_OF)
-                        .bodyEnd("");
+                        .bodyEnd("", COMPOSITE_FUNCTION_SETTINGS);
 
         String sql=fun.getSQL();
 

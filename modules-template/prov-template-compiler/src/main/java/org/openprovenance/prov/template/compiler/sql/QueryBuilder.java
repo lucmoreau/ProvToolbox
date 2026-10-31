@@ -1113,6 +1113,12 @@ public class QueryBuilder {
      * The {@link QueryBuilder} instance.
      */
     public QueryBuilder bodyEnd (String key) {
+        return bodyEnd(key, List.of());
+    }
+
+    /** As {@link #bodyEnd(String)}, the function declared with configuration settings ({@code "jit = off"}): one
+     *  {@code SET} clause each, in force while the function runs, its nested calls included. */
+    public QueryBuilder bodyEnd (String key, List<String> settings) {
         if (key == null) {
             throw new IllegalArgumentException();
         }
@@ -1122,7 +1128,11 @@ public class QueryBuilder {
         prettyPrinter.newline(0);
         prettyPrinter.write("$");
         prettyPrinter.write(key);
-        prettyPrinter.write("$ language SQL;\n");
+        prettyPrinter.write("$ language SQL");
+        for (String setting: settings) {
+            prettyPrinter.write(" SET " + setting);
+        }
+        prettyPrinter.write(";\n");
         prettyPrinter.end();
 
         return this;

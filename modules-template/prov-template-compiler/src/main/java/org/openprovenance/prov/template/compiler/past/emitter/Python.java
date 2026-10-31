@@ -996,9 +996,33 @@ public class Python implements Emitter<StringBuilder> {
     }
 
 
+    /**
+     * Renders {@code s} as a double-quoted string literal, escaping backslashes, double quotes and control
+     * characters (newlines in particular), so that multi-line constants such as {@code "WITH \n ..."} remain a
+     * single, valid literal in the generated code.
+     */
+    static String quoteString(String s) {
+        StringBuilder sb = new StringBuilder(s.length() + 2).append('"');
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            switch (ch) {
+                case '\\' -> sb.append("\\\\");
+                case '"'  -> sb.append("\\\"");
+                case '\n' -> sb.append("\\n");
+                case '\r' -> sb.append("\\r");
+                case '\t' -> sb.append("\\t");
+                default -> {
+                    if (ch < 0x20 || ch == 0x7f || ch == 0x2028 || ch == 0x2029) sb.append(String.format("\\u%04x", (int) ch));
+                    else sb.append(ch);
+                }
+            }
+        }
+        return sb.append('"').toString();
+    }
+
     private String convertConstant(Constant c) {
         return switch (c.constantType) {
-            case STRING -> (c.value.toString().contains("\""))? "'" + c.value.toString() + "'" : "\"" + c.value.toString() + "\"";
+            case STRING -> quoteString(c.value.toString());
             case INTEGER -> c.value.toString();
             case LONG -> c.value.toString();
             case FLOAT -> c.value.toString();

@@ -17,6 +17,7 @@ behaviour as it was: nothing changes for an existing deployment.
 - [Results on the M4 Max](#results-on-the-m4-max)
 - [Direct JDBC mode](#direct-jdbc-mode)
 - [JSONL mode](#jsonl-mode)
+- [For developers: how to write provenance with the toolbox](#for-developers-how-to-write-provenance-with-the-toolbox)
 
 ## Running it
 
@@ -848,8 +849,8 @@ costs at all, beside what the database (direct mode) and the service (HTTP mode)
   `FSYNC=batch` (default), forces them to disk (`FileChannel.force(false)`) before the next: B records as one durable
   unit, as a transaction's commit. `FSYNC=off` leaves them to the OS's cache. `FILES=writer` (default): a file per
   writer; `FILES=shared`: one file, the appends and their force serialised.
-- **Durability, honestly**: `force` is fdatasync on Linux and fsync on macOS, which — unlike `F_FULLFSYNC` — does not
-  flush the drive's own cache. The files are on the host's file system (on the Mac: APFS on the internal SSD), where
+- **Durability, honestly**: `force` is fdatasync on Linux and, on macOS, `fcntl(F_FULLFSYNC)` (measured on the M4 Max:
+  4.1 ms, against 22 µs for a plain `fsync`; see the M4 Max results) — a flush of the drive's own cache. The files are on the host's file system (on the Mac: APFS on the internal SSD), where
   PostgreSQL's WAL is on the Docker VM's virtual disk (pg_test_fsync). Same records, different disks: compare the shapes,
   and read the absolute figures with that in mind.
 - **Files**: `JSONL_DIR` (default `target/jsonl`) may hold nothing but the mode's own `provbench-<family>-<writer>.jsonl`
@@ -917,28 +918,155 @@ records/s at N=2, the serialisation the only cost left.
 
 ### Results on the M4 Max (JSONL)
 
-To be filled from `make bench.jsonl.matrix` and `make bench.direct.compare` on the M4 Max; no figure here before that
-run.
+`make bench.jsonl.matrix` on 2026-10-31: 16 runs in 4.3 min, **16 ok, 0 failed** (warm-up 3 s, measured 10 s; the
+smoke run before it, `results/2026-10-31-jsonl-smoke-mac.*`, 4/4 ok). Files on the internal SSD (APFS). Full tables:
+`results/2026-10-31-jsonl.md` and `.csv`. One run each, copied from the CSV.
+
+**On macOS a force is a full flush of the drive.** `FileChannel.force` issues `fcntl(F_FULLFSYNC)` on macOS (measured
+on this Mac with Java 17.0.5 and 19.0.1: 4.1 ms per 331-byte append and force, exactly `F_FULLFSYNC`'s 4.1 ms from C;
+plain `fsync` takes 22 µs). That flushes the SSD's own cache — more than PostgreSQL's commit does here: its WAL
+`fdatasync` in the Docker VM takes 92 µs (`pg_test_fsync`), so it does not reach the drive's cache, and PostgreSQL's
+default `wal_sync_method` on macOS does not use `F_FULLFSYNC` either (only `fsync_writethrough` does). With
+`FSYNC=batch` the JSONL rows below therefore measure a stricter durability than the database's, and the drive's flush
+serialises them: one writer 283 records/s, and no more than ~530 at any N.
 
 | phase | fam | N | B | fsync | files | records/s | MB/s | B/rec | p50 ms/batch | p99 ms/batch | CPU % |
 |---|---|---:|---:|---|---|---:|---:|---:|---:|---:|---:|
-| J1 | fs | 1 | 1 | batch | writer | | | | | | |
-| J1 | fs | 1 | 1 | off | writer | | | | | | |
-| J2 | fs | 2 | 1 | batch | writer | | | | | | |
-| J2 | fs | 4 | 1 | batch | writer | | | | | | |
-| J2 | fs | 8 | 1 | batch | writer | | | | | | |
-| J2 | fs | 16 | 1 | batch | writer | | | | | | |
-| J2 | fs | 32 | 1 | batch | writer | | | | | | |
-| J2 | fs | 64 | 1 | batch | writer | | | | | | |
-| J3 | fs | 16 | 1 | batch | shared | | | | | | |
-| J3 | fs | 64 | 1 | batch | shared | | | | | | |
-| J4 | fs | 16 | 10 | batch | writer | | | | | | |
-| J4 | fs | 16 | 100 | batch | writer | | | | | | |
-| J4 | fs | 16 | 1 | off | writer | | | | | | |
-| J4 | fs | 16 | 100 | off | writer | | | | | | |
-| J5 | tr | 1 | 1 | batch | writer | | | | | | |
-| J5 | tr | 16 | 1 | batch | writer | | | | | | |
+| J1 | fs | 1 | 1 | batch | writer | 282.9 | 0.08 | 314 | 4.118 | 6.648 | 5 |
+| J1 | fs | 1 | 1 | off | writer | 371991.5 | 120.35 | 339 | 0.002 | 0.005 | 100 |
+| J2 | fs | 2 | 1 | batch | writer | 266.5 | 0.08 | 314 | 8.415 | 16.938 | 4 |
+| J2 | fs | 4 | 1 | batch | writer | 328.9 | 0.1 | 314 | 12.578 | 37.289 | 5 |
+| J2 | fs | 8 | 1 | batch | writer | 434.4 | 0.13 | 317 | 21.059 | 55.76 | 8 |
+| J2 | fs | 16 | 1 | batch | writer | 532.6 | 0.16 | 316 | 32.816 | 100.189 | 13 |
+| J2 | fs | 32 | 1 | batch | writer | 473.0 | 0.14 | 317 | 68.299 | 429.749 | 15 |
+| J2 | fs | 64 | 1 | batch | writer | 521.5 | 0.16 | 317 | 102.394 | 910.571 | 20 |
+| J3 | fs | 16 | 1 | batch | shared | 286.6 | 0.09 | 313 | 63.828 | 203.534 | 4 |
+| J3 | fs | 64 | 1 | batch | shared | 280.1 | 0.08 | 315 | 243.817 | 936.519 | 4 |
+| J4 | fs | 16 | 10 | batch | writer | 5069.2 | 1.58 | 327 | 35.756 | 100.294 | 16 |
+| J4 | fs | 16 | 100 | batch | writer | 38980.1 | 12.42 | 334 | 41.775 | 178.218 | 21 |
+| J4 | fs | 16 | 1 | off | writer | 693221.9 | 225.96 | 342 | 0.02 | 0.164 | 1245 |
+| J4 | fs | 16 | 100 | off | writer | 3948557.2 | 1307.9 | 347 | 0.224 | 1.5 | 1306 |
+| J5 | tr | 1 | 1 | batch | writer | 349.9 | 0.07 | 222 | 4.104 | 5.806 | 3 |
+| J5 | tr | 16 | 1 | batch | writer | 512.9 | 0.11 | 225 | 36.332 | 153.539 | 9 |
 
 #### Three ways to write the same records
 
-(From the comparison's table: JSONL, direct and HTTP records/s at the same family, N and B.)
+`make bench.direct.compare HTTP_RESULTS=results/2026-10-31.csv,results/2026-10-31-jitfix.csv,results/2026-10-31-postfix.csv`
+(`results/2026-10-31-direct-compare.md`). The HTTP files are read in that order and the last match wins, so every HTTP
+figure below comes from a run with the JIT fix: `-postfix` (the whole HTTP matrix again, 2026-10-31, 47 runs in 38.2
+min, all ok) or, at N=32, `-jitfix`. Only runs with the default relation writers are paired, and no smoke report.
+fs unless stated, records/s; JSONL with a force per batch and a file per writer; HTTP with POOL ≥ N.
+
+| fam | N | B | JSONL | direct insert | direct post+key | direct combined | HTTP baseline | HTTP combined | JSONL B/rec |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| fs | 1 | 1 | 282.9 | 1197.6 | 509.1 | 932.1 | 491.6 | 883.2 | 314 |
+| fs | 2 | 1 | 266.5 | 529.6 | 965.1 | 1738.9 | 993.2 | 1546.5 | 314 |
+| fs | 4 | 1 | 328.9 | 3201.3 | 1404.3 | 2676.6 | 1541.3 | 2204.0 | 314 |
+| fs | 8 | 1 | 434.4 | 6049.7 | 2294.3 | 3330.0 | 2305.9 | 3653.0 | 317 |
+| fs | 16 | 1 | 532.6 | 7987.4 | 2227.5 | 5496.4 | 2889.7 | 4020.2 | 316 |
+| fs | 32 | 1 | 473.0 | 9371.1 | 3767.7 | 7530.4 | 3795.7 | 6579.0 | 317 |
+| fs | 64 | 1 | 521.5 | 12589.0 | 5272.8 | 9363.2 | | | 317 |
+| fs | 16 | 10 | 5069.2 | 24178.3 | 3586.2 | 8053.9 | | | 327 |
+| fs | 16 | 100 | 38980.1 | 28786.8 | 3354.2 | 9372.8 | | | 334 |
+| tr | 1 | 1 | 349.9 | 1160.9 | 444.2 | 762.3 | | | 222 |
+| tr | 16 | 1 | 512.9 | 7270.7 | 2693.4 | 5183.5 | 2897.2 | 5024.7 | 225 |
+
+Empty HTTP cells: not run at that N and B (the HTTP plan stops at N=32 and varies B at N=8; at N=1 its tr runs had no
+pool). HTTP combined at N=16 is 4,020.2 with a pool of 32 here, 5,003.7 with a pool of 16 in the same matrix, and
+4,907.3 in the `-jitfix` runs: one run each, the spread of the measurement at that load.
+
+Three readings. JSONL with a force per record is the *slowest* way on this Mac, not the fastest: each force is a 4.1 ms
+`F_FULLFSYNC` that PostgreSQL's commit does not pay here (above), and the drive serialises them (~530 records/s at most).
+Grouping restores it: a force per 100 records gives 38,980 records/s, and without a force JSONL writes 0.69 million
+records/s at N=16, 3.9 million in batches of 100 — serialisation is all that is left. Direct and HTTP doing the same work
+are within run-to-run noise of each other (HTTP/direct 0.73–1.30). And the store's own insert, without the per-record
+post-processing, is 2.4 to 3.6 times as fast as the full write.
+
+## For developers: how to write provenance with the toolbox
+
+What the three benchmarks say to a developer choosing how an application records provenance through ProvToolbox's
+template store. All figures: fs family, M4 Max (16 cores), PostgreSQL 16 in Docker Desktop, the template library with
+the JIT fix, one run each — read differences under about 10 % as noise (two runs of the same HTTP configuration gave
+4,020 and 5,004 records/s). An empty store: tables of millions of rows are not measured.
+
+### The options
+
+| | **1. The template service (HTTP)** | **2. In-process, direct JDBC** | **3. JSONL capture to files** |
+|---|---|---|---|
+| what it is | `POST provapi/statements` to a deployed service (generated from `prov-template-archetype`), one or several records per message | the generated catalogue and `service-templates-core` in your JVM, writing the same SQL on your own connections | each record's bindings appended as a JSON line to a local file, forced to disk per batch |
+| you get | everything: validation, records with ids, `PROV-Hash`, access control, idempotency, `__PROV_*` relations for navigation and explanations, activity counting, any client language | the same records and SQL; post-processing optional per layer; several records per transaction; JDBC batches | a durable, ordered capture — no store, no ids from a database, no relations, no queries, no access control |
+| records/s, one writer | 492 (all on) – 883 (switches) | 509 (all on) – 932 (switches); insert only 1,198 | 283 forcing each record; 372,000 without forcing |
+| records/s, best measured | 3,796 (all on, 32 clients) – 6,579 (switches, 32) | 5,273 (all on, 64) – 9,363 (switches, 64); 9,373 (switches, 100 per transaction); insert only 12,589 (64), 63,234 (one JDBC batch of 100) | 38,980 (16 writers, a force per 100); 3.9 million without forcing |
+| p99 per write at 16 writers | 19.7 ms (all on), 10.1 ms (switches) | 21.5 ms per transaction (all on), 9.1 ms (switches) | 100 ms forcing each record |
+| costs | a service to deploy and secure; its JVM uses 0.2–0.3 ms of CPU per record (on cores the database does not use) | coupling to the generated classes and schema; Java only; access control is yours | a later load into the store to make it queryable; on macOS a forced write is a full drive flush (4.1 ms) |
+
+### What to do
+
+1. **Default to the service.** Doing the same work, it is as fast as writing from your own JVM: HTTP reached 0.73–1.30
+   of the direct rate at every concurrency measured, with the same PostgreSQL time per record. HTTP, JSON and Jetty are
+   not what limits the store; the write pattern is (below). Expect about 2,300 records/s with 8 clients and 2,900 with
+   16, everything on, on a machine like this one.
+2. **Configure a pool, sized to your concurrent writers** (`jdbc.pool.size` ≥ clients). Without one, 16 clients share
+   one connection: 506 records/s, p99 172 ms, and relations written seconds late (up to 9.6 s) by a fire-and-forget
+   executor with no back-pressure. A pool larger than the number of clients buys nothing.
+3. **Turn on asynchronous relations** (`relations.write=async`) when readers can wait a few milliseconds for a record's
+   `__PROV_*` rows: +97 % with one client, +19 % with 8 (HTTP, `-postfix`); commit-to-visible 1–10 ms on average, the
+   queue drained, never full. One or two writer threads suffice.
+4. **Keep the hash, the access-controlled read-back and idempotency.** With 8 clients they cost +10 % (hash), +3 %
+   (access control) and nothing measurable (idempotency) — at the noise level, against the guarantees they give.
+   Together with async relations (`combined`) the gain is +50 % at 8 clients, +219 % with one.
+5. **Send concurrently, not in big messages.** Records per message save HTTP work but not commits — each entry is its
+   own transaction in the service: B = 10, 100 gave 2,251 and 2,198 records/s against 2,260 at B=1 (8 clients, a pool of 8). Eight
+   to 32 concurrent clients is where the store scales.
+6. **Embed (option 2) for bulk loads, not for speed per se.** What it adds is control of the transaction: 100 records
+   per transaction raise `combined` from 5,496 to 9,373 records/s, and the insert alone, as a JDBC batch of 100,
+   reaches 63,234 records/s — PostgreSQL then CPU-bound at 8 cores, its ceiling here. Skip the post-processing only if
+   you do not need what it writes (hash, relations) or will compute it later.
+7. **Use JSONL (option 3) as a buffer, not as the store**: to capture provenance where the store is out of reach, or
+   bursts faster than it ingests, then load it. Force per batch, not per record: on macOS a force is a full drive flush
+   (4.1 ms: 283 records/s), on Linux an `fdatasync`. It records bindings only: no ids from the store, no relations, no
+   queries until loaded.
+
+### Where the store's limit is, and what the toolbox could change
+
+Every record is a transaction of 5–7 statements: the insert (template row, its entities and activities,
+`record_index`), the read-back, the hash `UPDATE`, one `INSERT` per relation kind — with the client between them. The
+database's backends spend 66–76 % of their time idle inside those transactions, waiting for the next statement, and
+every commit flushes the WAL (`LWLock:WALWrite` up to 38 % at 64 writers). PostgreSQL never used more than 5.7 of its
+16 cores at one record per transaction. In order of what it would buy:
+
+1. **Fewer round trips per record**: the post-processing as SQL inside the insert (the function writing its
+   `__PROV_*` rows and returning the record, the hash from what it returns): towards the insert layer's cost, 2.4 times
+   less time per record.
+2. **A message's entries in one transaction** in the service: +47–71 % (`combined`), up to ×3.6 for the inserts.
+3. **WAL commit settings** (`commit_delay`, or `synchronous_commit = off` where losing the last moments on a crash is
+   acceptable): not measured.
+4. **A bulk endpoint** taking JSONL or many records, written as JDBC batches with asynchronous relations.
+
+Done on the branch already: the composite inserts no longer JIT-compiled (`SET jit = off`), which had taken 82–86 % of
+the database's time; `combined` with one client doubled (648.4 → 1,340.8 records/s).
+
+### HTTP matrix with the JIT fix
+
+The guide's HTTP figures come from `results/2026-10-31-postfix.*` (the matrix of [Results on the M4 Max](#results-on-the-m4-max)
+again, after the JIT fix; 47 runs, all ok). The variants against the baseline:
+
+| variant | N=1, POOL=0 records/s | vs baseline | N=8, POOL=8 records/s | vs baseline |
+|---|---:|---:|---:|---:|
+| baseline | 420.9 | — | 2259.7 | — |
+| noacl | 447.3 | +6.3 % | 2323.8 | +2.8 % |
+| acl-index | 457.3 | +8.6 % | | |
+| nohash | 515.7 | +22.5 % | 2475.0 | +9.5 % |
+| hash-header | 517.8 | +23.0 % | | |
+| async | 829.7 | +97.1 % | 2691.4 | +19.1 % |
+| nokey | 440.6 | +4.7 % | 1967.7 | −12.9 % |
+| key-noindex | 432.2 | +2.7 % | | |
+| nojit | 452.5 | +7.5 % | 2111.4 | −6.6 % |
+| combined | 1340.8 | +218.6 % | 3379.9 | +49.6 % |
+
+With the fix in, `nojit` changes nothing by construction: its +7.5 % and −6.6 % (and `nokey`'s −12.9 %, a run with a
+215 ms stall) show the noise of single runs. Clients (POOL=16), baseline and combined: N=1 491.6 and 883.2, N=2 993.2
+and 1,546.5, N=4 1,541.3 and 2,204.0, N=8 2,305.9 and 3,653.0, N=16 2,884.0 and 5,003.7, N=32 2,896.8 and 5,115.3 (32
+clients on 16 connections). Pool (N=16): 0, 4, 8, 16, 32 give 506.0, 1,590.1, 2,186.5, 2,884.0, 2,889.7 (baseline).
+Records per message (N=8, POOL=8): baseline 2,250.6 and 2,198.1 at B = 10, 100; combined 3,475.8 and 3,897.6. Transport:
+baseline 390.3 and 2,897.2, combined 1,262.2 and 5,024.7 (N=1 POOL=0; N=16 POOL=16).

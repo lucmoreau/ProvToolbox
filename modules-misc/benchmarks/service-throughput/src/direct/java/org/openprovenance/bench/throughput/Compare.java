@@ -58,7 +58,7 @@ final class Compare {
      */
     static void threeWays(Settings s, File results, List<Map<String, String>> direct, Map<String, Map<String, String>> http, StringBuilder sb) throws IOException {
         String cpu = cpuOf(new File(results, new Report(s, "direct").name + "-environment.md"));
-        File[] all = results.listFiles((d, n) -> n.endsWith(".csv") && n.contains("-jsonl"));
+        File[] all = results.listFiles((d, n) -> n.endsWith(".csv") && n.contains("-jsonl") && !n.contains("-smoke"));
         if (all == null || all.length == 0) return;
         Arrays.sort(all);
         Map<String, Map<String, String>> jsonl = new LinkedHashMap<>();
@@ -74,7 +74,7 @@ final class Compare {
         if (jsonl.isEmpty()) return;
         Map<String, Map<String, String>> directBy = new LinkedHashMap<>();
         for (Map<String, String> d : direct) {
-            if (!"ok".equals(d.get("status")) || !"0".equals(d.get("jdbc_batch"))) continue;
+            if (!"ok".equals(d.get("status")) || !"0".equals(d.get("jdbc_batch")) || !defaultWriters(s, d)) continue;
             String preset = "insert".equals(d.get("layer")) ? ("on".equals(d.get("key")) ? "insert+key" : "insert") : directPreset(d);
             if (preset != null) directBy.put(d.get("family") + "|" + preset + "|" + d.get("n") + "|" + d.get("b"), d);
         }
@@ -96,6 +96,13 @@ final class Compare {
         }
     }
 
+    /** Whether a run's relation writers are the plan's default (none: relations inline; WRITERS: async). The runs that
+     *  vary them (D5, G) are left out of the pairs, which would otherwise take whichever run was read last. */
+    private static boolean defaultWriters(Settings s, Map<String, String> r) {
+        String w = r.get("writers");
+        return w == null || w.isEmpty() || "0".equals(w) || s.get("WRITERS").equals(w);
+    }
+
     private static String rate(Map<String, String> r) {
         return r == null ? "" : r.get("records_per_s");
     }
@@ -114,7 +121,7 @@ final class Compare {
         } else {
             // every HTTP report of this machine (its environment file names the same CPU): never another machine's
             String cpu = cpuOf(new File(results, new Report(s, "direct").name + "-environment.md"));
-            File[] all = results.listFiles((d, n) -> n.endsWith(".csv") && !n.contains("-direct") && !n.contains("-compare") && !n.contains("-jsonl"));
+            File[] all = results.listFiles((d, n) -> n.endsWith(".csv") && !n.contains("-direct") && !n.contains("-compare") && !n.contains("-jsonl") && !n.contains("-smoke"));
             if (all != null) {
                 Arrays.sort(all);
                 for (File f : all) {
@@ -127,7 +134,7 @@ final class Compare {
         Map<String, Map<String, String>> byKey = new LinkedHashMap<>();
         for (File f : http) {
             for (Map<String, String> r : Report.readCsv(f)) {
-                if (!"ok".equals(r.get("status"))) continue;
+                if (!"ok".equals(r.get("status")) || !defaultWriters(s, r)) continue;
                 int n = Integer.parseInt(r.get("n"));
                 int pool = Integer.parseInt(r.get("pool"));
                 if (pool < n) continue;
@@ -144,12 +151,12 @@ final class Compare {
         sb.append("Direct: ").append(report.csv().getName()).append(". HTTP: ");
         for (File f : http) sb.append(f.getName()).append(' ');
         sb.append("\n\nPairs: direct post+key ~ HTTP baseline with its key (B=1), direct post ~ HTTP nokey or keyless baseline (B>1), direct combined ~ HTTP combined; same family, N and B; ")
-                .append("HTTP runs with POOL >= N only. The service's share = 1 - HTTP/direct records/s.\n\n");
+                .append("HTTP runs with POOL >= N only; the default relation writers only (runs varying WRITERS left out); smoke reports left out. The service's share = 1 - HTTP/direct records/s.\n\n");
         sb.append("| fam | direct | HTTP | N | B | direct records/s | HTTP records/s | HTTP/direct | direct rows/rec | HTTP rows/rec | direct PG ms/rec | HTTP PG ms/rec | direct p50 ms/tx | HTTP p50 ms/msg | HTTP svc ms/rec | direct client ms/rec | HTTP source |\n");
         sb.append("|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|\n");
         int pairs = 0;
         for (Map<String, String> d : direct) {
-            if (!"ok".equals(d.get("status"))) continue;
+            if (!"ok".equals(d.get("status")) || !defaultWriters(s, d)) continue;
             String preset = directPreset(d);
             if (preset == null || !"0".equals(d.get("jdbc_batch"))) continue;
             Map<String, String> h = byKey.get(d.get("family") + "|" + preset + "|" + d.get("n") + "|" + d.get("b"));

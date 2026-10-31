@@ -688,68 +688,143 @@ Java work between statements.
 
 ### Results on the M4 Max (direct)
 
-To be filled from `make bench.direct.matrix` and `make bench.direct.compare` on the M4 Max; no figure here before that
-run.
+`make bench.direct.matrix` on 2026-10-31: 43 runs in 33.8 min, **43 ok, 0 failed**, warm-up 5 s, measured 20 s,
+every run on an empty store, the template library with the JIT fix; every run's rows equal the catalogue's count
+exactly. Machine and software as in [Results on the M4 Max](#results-on-the-m4-max) (Temurin 19.0.1, client JVM
+`-Xms2g -Xmx2g -XX:+UseG1GC`, branch at fca84b7da). Full tables: `results/2026-10-31-direct.md` and `.csv`, top
+statements `-direct-statements.md`, environment `-direct-environment.md`, the comparison `-direct-compare.md`; the smoke
+run before it: `results/2026-10-31-direct-smoke-mac.*` (8/8 ok). Each figure is one run, copied from the CSV.
 
 #### D1. Layers (fs, N=1, B=1)
 
 | layer | key | readback | hash | relations | records/s | tx/s | rows/rec | WAL B/rec | p50 ms/tx | p99 ms/tx | client ms/rec | PG ms/rec | top waits |
 |---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| insert | off | | | | | | | | | | | | |
-| insert | on | | | | | | | | | | | | |
-| post | off | on | update | inline | | | | | | | | | |
-| post | on | on | update | inline | | | | | | | | | |
-| post | off | off | off | async | | | | | | | | | |
-| post | off | off | update | inline | | | | | | | | | |
-| post | off | on | header | inline | | | | | | | | | |
-| post | off | on | off | inline | | | | | | | | | |
-| post | off | on | update | async | | | | | | | | | |
+| insert | off |  |  |  | 1197.6 | 959.0 | 4.07 | 813 | 0.98 | 2.2 | 0.129 | 0.18 | IO:WALSync 42%; CPU 32%; Client:IdleInTransaction 23%; Client:ClientRead 3% |
+| insert | on |  |  |  | 1169.8 | 941.6 | 4.07 | 954 | 1.0 | 2.0 | 0.109 | 0.191 | CPU 41%; Client:IdleInTransaction 33%; IO:WALSync 24%; Client:ClientRead 2% |
+| post | off | on | update | inline | 494.4 | 391.8 | 8.95 | 1710 | 2.06 | 8.2 | 0.237 | 0.541 | Client:IdleInTransaction 66%; CPU 19%; IO:WALSync 9%; Client:ClientRead 5% |
+| post | on | on | update | inline | 509.1 | 408.6 | 9.01 | 1825 | 2.01 | 7.57 | 0.227 | 0.52 | Client:IdleInTransaction 67%; CPU 24%; IO:WALSync 6%; Client:ClientRead 3% |
+| post | off | off | off | async | 932.1 | 742.8 | 7.99 | 1456 | 1.14 | 3.41 | 0.169 | 0.441 | Client:IdleInTransaction 33%; CPU 29%; IO:WALSync 24%; Client:ClientRead 12%; LWLock:WALWrite 1% |
+| post | off | off | update | inline | 537.8 | 437.3 | 9.05 | 1724 | 1.94 | 6.59 | 0.163 | 0.472 | Client:IdleInTransaction 72%; CPU 13%; IO:WALSync 9%; Client:ClientRead 5% |
+| post | off | on | header | inline | 557.9 | 444.2 | 8.0 | 1426 | 1.89 | 6.47 | 0.221 | 0.447 | Client:IdleInTransaction 68%; CPU 21%; IO:WALSync 9%; Client:ClientRead 3%; IO:WALWrite 1% |
+| post | off | on | off | inline | 562.4 | 446.0 | 7.99 | 1425 | 1.85 | 6.85 | 0.19 | 0.466 | Client:IdleInTransaction 68%; CPU 23%; Client:ClientRead 6%; IO:WALSync 4% |
+| post | off | on | update | async | 660.3 | 532.2 | 9.03 | 1746 | 1.49 | 6.35 | 0.209 | 0.575 | Client:IdleInTransaction 36%; CPU 34%; IO:WALSync 21%; Client:ClientRead 6%; LWLock:WALWrite 3% |
 
 #### D2. Writers (fs, B=1)
 
-| N | insert records/s | post+key records/s | combined records/s | PG CPU % (combined) | busy backends (combined) | top waits (combined) |
-|---:|---:|---:|---:|---:|---:|---|
-| 1 | | | | | | |
-| 2 | | | | | | |
-| 4 | | | | | | |
-| 8 | | | | | | |
-| 16 | | | | | | |
-| 32 | | | | | | |
-| 64 | | | | | | |
+| N | insert records/s | post+key records/s | combined records/s | PG CPU % (insert / post+key / combined) | busy backends (combined) | p99 ms/tx (combined) | top waits (combined) |
+|---:|---:|---:|---:|---|---:|---:|---|
+| 1 | 1197.6 | 509.1 | 932.1 | 22 / 26 / 41 | 0.9 | 3.41 | Client:IdleInTransaction 33%; CPU 29%; IO:WALSync 24%; Client:ClientRead 12%; LWLock:WALWrite 1% |
+| 2 | 529.6 | 965.1 | 1738.9 | 13 / 52 / 74 | 1.9 | 3.46 | Client:IdleInTransaction 46%; CPU 24%; IO:WALSync 18%; Client:ClientRead 8%; LWLock:WALWrite 4% |
+| 4 | 3201.3 | 1404.3 | 2676.6 | 71 / 91 / 119 | 3.2 | 4.55 | Client:IdleInTransaction 49%; CPU 24%; IO:WALSync 17%; LWLock:WALWrite 6%; Client:ClientRead 4% |
+| 8 | 6049.7 | 2294.3 | 3330.0 | 143 / 155 / 173 | 5.6 | 11.56 | Client:IdleInTransaction 55%; CPU 18%; LWLock:WALWrite 11%; IO:WALSync 10%; Client:ClientRead 5% |
+| 16 | 7987.4 | 2227.5 | 5496.4 | 220 / 175 / 269 | 10.4 | 9.09 | Client:IdleInTransaction 51%; LWLock:WALWrite 18%; CPU 18%; IO:WALSync 7%; Client:ClientRead 6% |
+| 32 | 9371.1 | 3767.7 | 7530.4 | 342 / 383 / 409 | 20.1 | 13.55 | Client:IdleInTransaction 56%; LWLock:WALWrite 19%; CPU 15%; Client:ClientRead 6%; IO:WALSync 4% |
+| 64 | 12589.0 | 5272.8 | 9363.2 | 485 / 542 / 573 | 38.4 | 24.29 | Client:IdleInTransaction 58%; LWLock:WALWrite 21%; CPU 12%; Client:ClientRead 4%; IO:WALSync 2% |
+
+(N=1 is D1's runs: insert, post+key, combined.)
 
 #### D3. Records per transaction (fs, N=16)
 
-| B | insert | insert, JDBC batch | post+key | combined | p50 ms/tx (combined) |
-|---:|---:|---:|---:|---:|---:|
-| 1 | | — | | | |
-| 10 | | | | | |
-| 100 | | | | | |
+| B | insert | insert, JDBC batch | post+key | combined | p50 ms/tx (combined) | PG CPU % (insert batch / combined) |
+|---:|---:|---:|---:|---:|---:|---|
+| 1 | 7987.4 | — | 2227.5 | 5496.4 | 3.12 | — / 269 |
+| 10 | 24178.3 | 30626.8 | 3586.2 | 8053.9 | 18.71 | 504 / 417 |
+| 100 | 28786.8 | 63233.5 | 3354.2 | 9372.8 | 153.25 | 818 / 421 |
+
+(B=1 is D2's N=16 runs.)
 
 #### D4. Transport family (B=1)
 
 | preset | N | records/s | rows/rec | PG ms/rec | p99 ms/tx |
 |---|---:|---:|---:|---:|---:|
-| insert | 1 | | | | |
-| post+key | 1 | | | | |
-| combined | 1 | | | | |
-| insert | 16 | | | | |
-| post+key | 16 | | | | |
-| combined | 16 | | | | |
+| insert | 1 | 1160.9 | 4.45 | 0.22 | 3.87 |
+| post+key | 1 | 444.2 | 13.19 | 0.615 | 10.28 |
+| combined | 1 | 762.3 | 12.2 | 0.585 | 6.87 |
+| insert | 16 | 7270.7 | 4.45 | 0.291 | 7.35 |
+| post+key | 16 | 2693.4 | 13.2 | 0.917 | 25.68 |
+| combined | 16 | 5183.5 | 12.21 | 0.581 | 11.84 |
 
 #### D5. Relation writers (fs, combined, N=32)
 
-| writers | records/s | lag p50 ms | lag p95 ms |
-|---:|---:|---:|---:|
-| 1 | | | |
-| 2 | | | |
-| 4 | | | |
+| writers | records/s | lag p50 ms | lag p95 ms | writer lag mean ms | writer lag max ms | drain s |
+|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 7394.2 | 37.2 | 63.0 | 7.5 | 84.3 | 0.0 |
+| 2 | 7530.4 | 39.2 | 55.9 | 5.8 | 69.6 | 0.0 |
+| 4 | 6300.2 | 36.5 | 49.9 | 6.3 | 47.3 | 0.0 |
+
+(WRITERS=2 is D2's N=32 combined run.)
 
 #### Direct against HTTP
 
-(From `results/<date>-direct-compare.md`: records/s direct and HTTP, their ratio — the service's share of the time
-per record — rows/record both ways, PostgreSQL ms per record both ways.)
+`make bench.direct.compare HTTP_RESULTS=results/2026-10-31-jitfix.csv`: paired with the HTTP runs made after the JIT
+fix only (the matrix's HTTP runs had the composites JIT-compiled: another store). Same family, N, B = 1 and work;
+the HTTP pool equals N.
+
+| fam | direct | HTTP | N | direct records/s | HTTP records/s | HTTP/direct | direct rows/rec | HTTP rows/rec | direct PG ms/rec | HTTP PG ms/rec | direct p50 ms/tx | HTTP p50 ms/msg | HTTP service ms/rec |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| fs | post+key | baseline | 8 | 2294.3 | 2278.1 | 0.99 | 9.0 | 9.02 | 0.674 | 0.672 | 3.65 | 3.72 | 0.261 |
+| fs | post+key | baseline | 16 | 2227.5 | 2961.0 | 1.33 | 9.03 | 9.01 | 0.787 | 0.818 | 9.28 | 5.78 | 0.296 |
+| fs | post+key | baseline | 32 | 3767.7 | 3795.7 | 1.01 | 9.01 | 9.04 | 1.018 | 0.96 | 8.65 | 9.03 | 0.317 |
+| fs | combined | combined | 8 | 3330.0 | 3677.4 | 1.10 | 8.01 | 7.96 | 0.52 | 0.501 | 2.36 | 2.36 | 0.184 |
+| fs | combined | combined | 16 | 5496.4 | 4907.3 | 0.89 | 8.0 | 8.01 | 0.49 | 0.565 | 3.12 | 3.53 | 0.188 |
+| fs | combined | combined | 32 | 7530.4 | 6579.0 | 0.87 | 8.0 | 8.02 | 0.544 | 0.617 | 4.61 | 5.3 | 0.185 |
+| tr | post+key | baseline | 16 | 2693.4 | 2838.6 | 1.05 | 13.2 | 13.28 | 0.917 | 0.889 | 6.6 | 6.47 | 0.309 |
+| tr | combined | combined | 16 | 5183.5 | 5024.2 | 0.97 | 12.21 | 12.21 | 0.581 | 0.644 | 3.56 | 3.76 | 0.187 |
+
+(`-direct-compare.md` also pairs D5's one- and four-writer runs with the HTTP combined run at two writers; left out
+here.)
 
 #### What the database sustains alone
 
-(To be written from D2 and the comparison: where records/s stops growing with N, what saturates then — PostgreSQL CPU
-against the VM's 16 cores, WAL, the top wait events — and how much of the HTTP ceiling is the service.)
+Read with the same cautions as the HTTP results: single runs, an empty store; and here PostgreSQL is reached through
+Docker Desktop's VM, so every statement crosses the VM boundary. Two runs fell below their neighbours with WAL
+stalls — insert at N=2 (529.6 records/s, below N=1's 1,197.6; IO:WALSync 46 %, LWLock:WALWrite 42 %, max 174 ms) and
+post+key at N=16 (2,227.5, below N=8's 2,294.3; LWLock:WALWrite 28 %, max 292 ms) — and are best read as noise until
+re-run.
+
+**The web service costs no throughput.** Doing the same work at the same concurrency, HTTP reached 0.87–1.33 of the
+direct rate (0.99, 1.01 for the baseline's work at N=8, 32; 1.10, 0.89, 0.87 for combined at N=8, 16, 32; tr 1.05,
+0.97), with the same PostgreSQL time per record both ways (e.g. 0.674 and 0.672 ms at N=8). The service's own work —
+0.18–0.32 ms of CPU per record — runs on cores the database does not use, and adds under a millisecond to a message
+(p50 within 0.7 ms, except post+key at N=16). Only combined at N=16–32 is direct faster, by 12–15 %. The ceilings of the HTTP
+runs are those of the store's write pattern, not of Jetty, JSON or the service.
+
+**The write pattern: a transaction per record, statements with Java between them.** At N=1 the insert alone (the
+insert function and `record_index`, one statement) writes 1,197.6 records/s; with the service's post-processing
+(read-back, hash and its `UPDATE`, `__PROV_*` relations: 4.9 more rows per record, 900 B more WAL) 494.4 — 2.4 times
+the time per record, PostgreSQL 0.18 → 0.54 ms per record. And the writers' backends spend 66–72 % of their samples
+`Client:IdleInTransaction` with the post-processing on (23–33 % for the insert alone): inside the record's
+transaction, waiting for the client's next statement. Against `post` (494.4, keyless): the read-back without its
+access-control join +8.8 %, the hash without its `UPDATE` +12.8 %, no hash +13.8 %, async relations +33.6 %,
+all together (`combined`) +88.5 % (932.1); the Idempotency-Key costs nothing (post+key 509.1).
+
+**Where it saturates.** With N writers, B=1 (D2), every preset still grows at N=64 but less than linearly beyond 16:
+insert 1,198 → 7,987 (N=16) → 12,589 records/s (N=64), post+key 509 → 5,273, combined 932 → 9,363. At N=64
+PostgreSQL uses 4.9–5.7 of the VM's 16 cores: not CPU. What rises with N is the WAL: `LWLock:WALWrite` 38 % of the
+insert's samples at N=64, 21 % of combined's — every record's commit flushes the WAL, and the commits queue for the WAL
+write lock. With post-processing the backends stay mostly idle in their transactions (58–76 %).
+
+**What grouping saves** (D3, N=16). Records per transaction: insert 7,987 → 24,178 (B=10) → 28,787 (B=100); the same
+inserts as one JDBC batch 30,627 and **63,234 records/s** (B=100), PostgreSQL then at 8.2 cores with `CPU` its top wait
+(61 %): that is the database's own ceiling for these inserts on this machine, about five times the per-record-commit
+rate. With the post-processing, grouping helps less, since each record keeps its round trips: post+key 2,228 → 3,586
+→ 3,354 (+61 %, +51 %), combined 5,496 → 8,054 → 9,373 (+47 %, +71 %); idle-in-transaction 71–81 %.
+
+**Transport** (D4): insert 1,160.9 and 7,270.7 records/s (N=1, 16), post+key 444.2 and 2,693.4, combined 762.3 and
+5,183.5; 13.2 rows per record.
+
+**Relation writers** (D5, combined, N=32): one, two, four writers 7,394, 7,530, 6,300 records/s, the writers' own lag
+5.8–7.5 ms on average, at most 84 ms, the queue drained at the window's end: one or two writers suffice.
+
+**What I would change in the store**, from these results:
+
+1. Fewer round trips per record: the post-processing as SQL inside the record's statement — the insert function
+   writing its `__PROV_*` rows and returning the record (no read-back), the hash computed from what it returns — would
+   bring a record near the insert layer's cost (2.4 times less time per record at N=1).
+2. Several records per transaction in the service: an entry commits alone today; committing a message's B entries
+   together gave +47–71 % (combined) and up to ×3.6 for the inserts, by sparing a WAL flush per record.
+3. WAL commit contention (`LWLock:WALWrite` up to 38 %): `commit_delay`/`commit_siblings`, or `synchronous_commit = off`
+   where losing the last few hundred milliseconds on a crash is acceptable — not measured here.
+4. A bulk path (one JDBC batch of composed inserts, relations asynchronous) for loads: 63,234 records/s on this machine.
+5. Measure on a Linux host with PostgreSQL on a local socket: here every statement crosses Docker Desktop's VM, which
+   inflates the idle-in-transaction time the post-processing shows.

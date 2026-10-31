@@ -254,13 +254,14 @@ so on that machine the real plan would take 47 × (40 + 11.8) s ≈ 41 min.
 - **Each run starts on an empty store**: tables of thousands of rows, all in cache. The figures are those of a young
   store; a store of millions of rows (index depth, the unindexed `access_control.record` and `__PROV_*` scans of
   other readers) is not in this plan.
-- **JIT compiles every composite insert.** The generated composite functions (`insert_<t>_composite_and_linker`,
-  `…_array`) make the planner estimate 25 million rows (the default 1000 rows of set-returning functions, joined),
-  over `jit_above_cost`, so PostgreSQL 16 (JIT on by default) JIT-compiles the statement at every call: ~20 ms of the
-  composite's ~23 ms in the cloud session (EXPLAIN ANALYZE: `JIT … Emission 19.2 ms, Total 21.9 ms`), 83 % of the
-  database's time in the smoke runs, though a composite is 1 message in 12 (fs). Hence the `nojit` variant. Whether the
-  deployed PostgreSQL has JIT on (it is a build option) decides whether this matters there; `ROWS` on the generated
-  functions, or `jit = off` for the store, would remove it.
+- **JIT compiled every composite insert** (fixed on this branch, see [The JIT fix](#the-jit-fix)). The statements
+  inside the generated composite functions (`insert_<t>_composite_and_linker`, `…_array`) join set-returning
+  functions, which the planner estimates at 1000 rows each — 25 million rows joined — over `jit_above_cost`, so
+  PostgreSQL 16 (JIT on by default) JIT-compiled them at every call: ~20 ms of the composite's ~23 ms in the cloud
+  session (EXPLAIN ANALYZE: `JIT … Emission 19.2 ms, Total 21.9 ms`), 83 % of the database's time in the smoke runs,
+  though a composite is 1 message in 12 (fs). Hence the `nojit` variant. The calling statement (the query invoker) is
+  not the one compiled: a plain `EXPLAIN` of it costs 84, far under `jit_above_cost` — the compilation happens in the
+  functions' own statements, planned at each call.
 - **A shared digest corrupted concurrent hashes** (fixed on this branch): `TemplateQuery` hashed every request with one
   `MessageDigest`; with a pool, two submissions hashing at once failed (500) or could get a wrong hash. Now one digest
   per thread (`ConcurrentHashTest`).
@@ -466,7 +467,7 @@ if it does, its composite inserts pay the cost measured here.
 
 1. Take JIT off the composite inserts, in the store alone: `ROWS` estimates on the generated set-returning functions
    (`CompilerSQL`), or `SET jit = off` as an attribute of the generated composite functions. From A and B: −52 % of
-   PostgreSQL's CPU per record, p99 halved, +20 % records/s.
+   PostgreSQL's CPU per record, p99 halved, +20 % records/s. **Done on this branch** (`SET jit = off`), measured below.
 2. Never run a store under concurrent load without a pool sized to its concurrent writers; and replace the no-pool
    relation path (fire-and-forget, unbounded, seconds behind) by the bounded writer.
 3. Enable the asynchronous relation writer where readers accept a few milliseconds' lag: +22–31 %, one writer enough.
@@ -475,3 +476,37 @@ if it does, its composite inserts pay the cost measured here.
 5. Measure next: N=32 with POOL=32 (and the harness on another host) for the machine's ceiling; `combined` with JIT
    off; a store pre-filled with millions of rows, where the unindexed `access_control.record` and `__PROV_*` reads may
    start to cost (the probe's own `__PROV_*` lookup already took 14 ms per call at N=16, run 28, on a store 30 s old).
+
+### The JIT fix
+
+The compiler now declares the composite insert functions `SET jit = off` (`CompilerSqlComposer.COMPOSITE_FUNCTION_SETTINGS`,
+on `insert_<t>_composite_array` and `insert_<t>_composite_and_linker`; `CompositeFunctionJitTest`): JIT is off while
+they run, nowhere else. The template library regenerated with it carries the setting on 2 fs and 4 transport
+functions (`pg_proc.proconfig` = `{jit=off}` in `provbench`). Re-measured on 2026-10-31 with the same harness, warm-up
+10 s, measured 30 s, 10 runs, all ok (`results/2026-10-31-jitfix.*`, `make bench.run LABEL=jitfix …`); "before" is
+the matrix above (for N=32, POOL=32 there is none: the plan had stopped at 16 connections).
+
+| fam | variant | N | POOL | records/s before | records/s after | change | p99 ms before | p99 ms after | PG ms/rec after | PG CPU % after |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| fs | baseline | 1 | 0 | 358.8 | 435.0 | +21.2 % | 20.06 | 10.81 | 0.606 | 26 |
+| fs | combined | 1 | 0 | 648.4 | 1378.8 | +112.6 % | 13.13 | 2.98 | 0.42 | 58 |
+| fs | baseline | 8 | 8 | 1918.8 | 2278.1 | +18.7 % | 23.78 | 12.32 | 0.672 | 153 |
+| fs | combined | 8 | 8 | 2587.3 | 3677.4 | +42.1 % | 20.37 | 6.8 | 0.501 | 184 |
+| fs | baseline | 16 | 16 | 2533.2 | 2961.0 | +16.9 % | 31.73 | 18.65 | 0.818 | 242 |
+| fs | combined | 16 | 16 | 4006.5 | 4907.3 | +22.5 % | 22.06 | 10.03 | 0.565 | 277 |
+| fs | baseline | 32 | 32 | — | 3795.7 | | — | 28.83 | 0.96 | 364 |
+| fs | combined | 32 | 32 | — | 6579.0 | | — | 15.41 | 0.617 | 406 |
+| tr | baseline | 16 | 16 | 2498.4 | 2838.6 | +13.6 % | 33.05 | 21.44 | 0.889 | 252 |
+| tr | combined | 16 | 16 | 3638.7 | 5024.2 | +38.1 % | 23.66 | 11.28 | 0.644 | 324 |
+
+Reading:
+
+- The composite insert costs 0.30–0.45 ms per call instead of 9.3–12.4 ms, and 8–16 % of the statements' time
+  instead of 82–86 % (`-jitfix-statements.md`). The baseline at N=1 (435.0 records/s, PostgreSQL 0.606 ms per record)
+  is the matrix's `nojit` run (435.6, 0.566): the fix removes exactly what `jit = off` for the whole database removed.
+- With the fix the switches matter more than before: `combined` is now +217 % over the baseline at N=1 (1,378.8 against
+  435.0) and +66 % at N=16 (4,907.3 against 2,961.0); p99 falls to 3–15 ms.
+- 32 parallel writers (N=32, POOL=32) still scale: baseline 2,961 → 3,796 records/s (+28 %), combined 4,907 → 6,579
+  (+34 %), with PostgreSQL at 3.6–4.1 cores of the VM's 16 and the service JVM at 1.2 cores. **The highest rate
+  measured is now 6,579 records/s, p99 15.4 ms** (fs, combined, N=32, POOL=32): the machine's ceiling is still above
+  it.

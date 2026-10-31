@@ -295,95 +295,183 @@ parallel clients needs the target machine (4 vCPU here, shared by clients, servi
 
 ## Results on the M4 Max
 
-To be filled from `make bench.matrix` on the target machine: macOS, Apple M4 Max (16 cores, 48 GB), Docker Desktop (VM
-16 CPUs, ~7.6 GB), Java 17–19. Copy the machine table and the run table from `results/<date>.md`; no figure here
-before that run.
+`make bench.matrix` on 2026-10-31: 47 runs in 38.4 min, **47 ok, 0 failed**, warm-up 10 s, measured 30 s each, every
+run on an empty store. Full tables: `results/2026-10-31.md` and `.csv`, top statements `results/2026-10-31-statements.md`,
+environment `results/2026-10-31-environment.md`. The smoke run before it (`results/2026-10-31-smoke-mac.*`): 4/4 ok.
+Every figure below is copied from `results/2026-10-31.csv`; each is a single run.
 
 ### Machine and software
 
 | | |
 |---|---|
-| CPU, cores, RAM | |
-| storage | |
-| Docker VM (CPUs, RAM) | |
-| pg_test_fsync (fdatasync, one 8 kB write) | |
-| PostgreSQL | |
-| Java, service JVM flags | |
-| ProvToolbox commit | |
+| CPU, cores, RAM | Apple M4 Max, 16 cores (16 logical), 48 GiB; macOS 26.5.2 (aarch64) |
+| storage | internal SSD (APFS, Apple Fabric) |
+| Docker VM (CPUs, RAM) | Docker Desktop 29.7.2, kernel 6.12.76-linuxkit, 16 CPUs, 8,216,018,944 bytes (7.65 GiB), cgroup v2 |
+| pg_test_fsync (fdatasync, one 8 kB write) | 10918.572 ops/s, 92 µs/op, on the named volume inside the Docker VM (`results/pg_test_fsync-Mac.txt`) |
+| PostgreSQL | 16.15 (Debian 16.15-1.pgdg13+2, aarch64) in Docker; `shared_buffers` 1310728kB, `max_connections` 200, `pg_stat_statements`, `track_io_timing` on; `jit` at its default (on) |
+| Java, service JVM flags | Temurin 19.0.1 (service and harness); `-Xms2g -Xmx2g -XX:+UseG1GC`; embedded Jetty 11, 200 threads |
+| ProvToolbox commit | `bench/service-throughput` fa0551de5; template library provenance-templates 0cf246b (0.1.0-SNAPSHOT), composite size 3 |
 
 ### A. Each variant alone (fs, N=1, B=1, POOL=0)
 
 | variant | msg/s | records/s | rows/rec | WAL B/rec | p50 ms | p99 ms | svc ms/rec | PG ms/rec | lag p95 ms | vs baseline |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| baseline | | | | | | | | | | |
-| noacl | | | | | | | | | | |
-| acl-index | | | | | | | | | | |
-| nohash | | | | | | | | | | |
-| hash-header | | | | | | | | | | |
-| async | | | | | | | | | | |
-| nokey | | | | | | | | | | |
-| key-noindex | | | | | | | | | | |
-| nojit | | | | | | | | | | |
-| combined | | | | | | | | | | |
+| baseline | 286.4 | 358.8 | 9.02 | 2019 | 2.15 | 20.06 | 0.765 | 1.179 | 8.2 | — |
+| noacl | 294.6 | 368.9 | 9.0 | 2002 | 2.08 | 19.4 | 0.79 | 1.094 | 9.1 | +2.8 % |
+| acl-index | 284.9 | 358.9 | 8.98 | 2000 | 2.1 | 19.96 | 0.839 | 1.186 | 8.6 | +0.0 % |
+| nohash | 331.4 | 414.3 | 8.01 | 1740 | 1.79 | 18.07 | 0.659 | 1.093 | 9.9 | +15.5 % |
+| hash-header | 300.8 | 376.1 | 7.98 | 1701 | 1.93 | 20.42 | 0.726 | 1.141 | 9.5 | +4.8 % |
+| async | 376.3 | 470.6 | 9.05 | 1940 | 1.26 | 17.98 | 0.521 | 1.196 | 12.3 | +31.2 % |
+| nokey | 270.1 | 336.7 | 9.0 | 1854 | 2.25 | 21.24 | 0.841 | 1.196 | 9.6 | -6.2 % |
+| key-noindex | 274.5 | 344.1 | 9.01 | 1893 | 2.18 | 20.73 | 0.818 | 1.201 | 9.1 | -4.1 % |
+| nojit | 349.6 | 435.6 | 9.01 | 2004 | 2.33 | 10.79 | 0.673 | 0.566 | 9.8 | +21.4 % |
+| combined | 516.0 | 648.4 | 8.0 | 1463 | 0.91 | 13.13 | 0.438 | 1.037 | 13.9 | +80.7 % |
+
+(svc and PG ms/rec: CPU time per record; lag: the harness's probe, from the response to the first visible `__PROV_*`
+row.)
 
 ### B. Under concurrency (fs, N=8, B=1, POOL=8)
 
-| variant | msg/s | records/s | p50 ms | p99 ms | svc CPU % | PG CPU % | lag p95 ms |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| baseline | | | | | | | |
-| noacl | | | | | | | |
-| nohash | | | | | | | |
-| async | | | | | | | |
-| nokey | | | | | | | |
-| nojit | | | | | | | |
-| combined | | | | | | | |
+| variant | msg/s | records/s | p50 ms | p99 ms | svc CPU % | PG CPU % | svc ms/rec | PG ms/rec | lag p95 ms | vs baseline |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| baseline | 1532.9 | 1918.8 | 3.59 | 23.78 | 53 | 280 | 0.275 | 1.458 | 4.7 | — |
+| noacl | 1556.7 | 1943.5 | 3.53 | 23.64 | 52 | 263 | 0.268 | 1.355 | 5.4 | +1.3 % |
+| nohash | 1594.1 | 1989.8 | 3.26 | 22.68 | 49 | 273 | 0.247 | 1.372 | 4.6 | +3.7 % |
+| async | 1871.2 | 2340.9 | 2.77 | 20.96 | 62 | 348 | 0.265 | 1.487 | 31.0 | +22.0 % |
+| nokey | 1523.6 | 1901.7 | 3.64 | 24.4 | 54 | 275 | 0.285 | 1.448 | 5.6 | -0.9 % |
+| nojit | 1828.7 | 2291.3 | 3.7 | 12.11 | 58 | 153 | 0.253 | 0.669 | 8.0 | +19.4 % |
+| combined | 2076.3 | 2587.3 | 2.44 | 20.37 | 61 | 357 | 0.234 | 1.38 | 40.2 | +34.8 % |
+
+(CPU %: of one core.)
 
 ### C. Clients (fs, POOL=16)
 
-| N | baseline records/s | baseline p99 ms | combined records/s | combined p99 ms | PG CPU % (combined) |
-|---:|---:|---:|---:|---:|---:|
-| 1 | | | | | |
-| 2 | | | | | |
-| 4 | | | | | |
-| 8 | | | | | |
-| 16 | | | | | |
-| 32 | | | | | |
+| N | baseline records/s | baseline p99 ms | PG CPU % (baseline) | combined records/s | combined p99 ms | PG CPU % (combined) | svc CPU % (combined) |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 351.2 | 18.43 | 41 | 539.2 | 13.99 | 59 | 22 |
+| 2 | 719.6 | 17.92 | 88 | 1014.0 | 14.86 | 117 | 27 |
+| 4 | 1215.7 | 20.41 | 160 | 1715.5 | 16.31 | 212 | 41 |
+| 8 | 1870.8 | 24.85 | 274 | 2871.1 | 17.74 | 354 | 61 |
+| 16 | 2533.2 | 31.73 | 426 | 4006.5 | 22.06 | 543 | 84 |
+| 32 | 2428.8 | 46.67 | 415 | 3874.7 | 30.26 | 562 | 94 |
 
 ### D. Pool size (fs, N=16)
 
-| POOL | baseline records/s | combined records/s | combined p99 ms |
-|---:|---:|---:|---:|
-| 0 | | | |
-| 4 | | | |
-| 8 | | | |
-| 16 | | | |
-| 32 | | | |
+| POOL | baseline records/s | baseline p99 ms | baseline lag p50 ms | baseline lag max ms | combined records/s | combined p99 ms |
+|---:|---:|---:|---:|---:|---:|---:|
+| 0 | 435.5 | 204.42 | 6175.0 | 15323.2 | 780.0 | 122.92 |
+| 4 | 1178.0 | 38.43 | 1.9 | 9.9 | 1770.0 | 28.17 |
+| 8 | 1882.6 | 30.6 | 3.1 | 7.7 | 2789.7 | 23.2 |
+| 16 | 2533.2 | 31.73 | 4.1 | 11.3 | 4006.5 | 22.06 |
+| 32 | 2530.7 | 31.29 | 3.8 | 12.8 | 3872.9 | 21.66 |
+
+(POOL=16 rows are runs of C.)
 
 ### E. Records per message (fs, N=8, POOL=8)
 
-| B | baseline records/s | combined records/s | p50 ms per message |
-|---:|---:|---:|---:|
-| 1 | | | |
-| 10 | | | |
-| 100 | | | |
+| B | baseline records/s | p50 ms per message | svc ms/rec | combined records/s | p50 ms per message | svc ms/rec |
+|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 1901.7 | 3.64 | 0.285 | 2587.3 | 2.44 | 0.234 |
+| 10 | 2039.7 | 34.1 | 0.235 | 3059.8 | 20.57 | 0.167 |
+| 100 | 2080.5 | 341.84 | 0.199 | 3121.6 | 206.12 | 0.135 |
+
+(B > 1 is keyless, so the B=1 baseline row is B's `nokey` run; the B=1 combined row is B's `combined`.)
 
 ### F. Transport family
 
-| variant | N | POOL | records/s | p99 ms | rows/rec |
-|---|---:|---:|---:|---:|---:|
-| baseline | 1 | 0 | | | |
-| combined | 1 | 0 | | | |
-| baseline | 16 | 16 | | | |
-| combined | 16 | 16 | | | |
+| variant | N | POOL | msg/s | records/s | p99 ms | rows/rec | WAL B/rec | svc ms/rec | PG ms/rec |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| baseline | 1 | 0 | 207.8 | 294.9 | 22.9 | 13.19 | 2688 | 0.916 | 1.461 |
+| combined | 1 | 0 | 392.0 | 557.6 | 13.4 | 12.18 | 2138 | 0.517 | 1.295 |
+| baseline | 16 | 16 | 1745.9 | 2498.4 | 33.05 | 13.27 | 2485 | 0.317 | 2.002 |
+| combined | 16 | 16 | 2540.3 | 3638.7 | 23.66 | 12.52 | 2114 | 0.198 | 1.68 |
 
 ### G. Relation writers (fs, combined, N=16, POOL=16)
 
-| writers | records/s | lag p50 ms | lag p95 ms | drain s |
-|---:|---:|---:|---:|---:|
-| 1 | | | | |
-| 2 | | | | |
-| 4 | | | | |
+| writers | records/s | p99 ms | lag p50 ms | lag p95 ms | service lag mean ms | service lag max ms | submissions blocked | drain s |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 4290.7 | 20.79 | 33.1 | 50.9 | 4.3 | 63.9 | 0 | 0.0 |
+| 2 | 4006.5 | 22.06 | 32.2 | 52.2 | 3.9 | 56.5 | 0 | 0.01 |
+| 4 | 3835.0 | 23.23 | 33.4 | 56.9 | 3.5 | 46.1 | 0 | 0.0 |
+
+(WRITERS=2 is C's N=16 combined run.)
 
 ### What each part costs
 
-(From A and B: records/s and ms per record against the baseline, per variant; to be written from the results.)
+Read with two cautions: each figure is one run, and the N=1 runs differ by up to about 6 % where nothing should change
+(`nokey` −6.2 %, `key-noindex` −4.1 %), so a difference of that size is noise; and every run starts on an empty store.
+
+**Against the prior estimate.** Sequential on one connection (A, baseline) the store wrote 358.8 records/s, 2.8 ms of
+wall time per record (0.77 ms of service CPU, 1.18 ms of PostgreSQL CPU), against the estimate's 150–250 records/s and
+~5 ms; rows per record are 9.0 (fs) and 13.2 (tr), inside the estimate's 8–14. With a pool and parallel clients the
+baseline reached 2,533 records/s at N=16 (C), PostgreSQL using 4.3 cores: at or above the estimate's 1,000–2,000 on 4
+cores.
+
+**Each variant against the baseline** (A at N=1, B at N=8):
+
+- *JIT* (`nojit`) is the largest single cost: +21.4 % records/s at N=1 and +19.4 % at N=8; PostgreSQL CPU per record
+  1.179 → 0.566 ms (−52 %) and 1.458 → 0.669 ms (−54 %), PostgreSQL CPU at N=8 280 % → 153 %, p99 halved (20.06 → 10.79
+  ms, 23.78 → 12.11 ms). It is all the composite: `file_transforming_composite`'s insert is one message in twelve but
+  86.3 % of the statements' time at N=1 (9.3 ms per call) and 82.3 % at N=16 (12.4 ms per call), and 0.28 ms per call
+  with JIT off (`-statements.md`, runs 01, 09, 22).
+- *Asynchronous relations* (`async`): +31.2 % at N=1 (service CPU per record 0.765 → 0.521 ms, p50 2.15 → 1.26 ms) and
+  +22.0 % at N=8. At POOL=0 the relations were already off the request (today's fire-and-forget executor), yet the
+  bounded writer is faster: its writers have connections of their own and batch, where the executor's inserts queue on
+  the requests' single connection.
+- *Hash*: `nohash` +15.5 % at N=1, but +3.7 % at N=8; it removes one row per record (9.02 → 8.01) and 279 B of WAL
+  (2019 → 1740). `hash-header` (hash computed, no `UPDATE`) +4.8 %: the `UPDATE` itself is 0.009 ms per call in
+  PostgreSQL. Under concurrency the hash is at the noise level.
+- *Access control on the read-back* (`noacl`): +2.8 % at N=1, +1.3 % at N=8; an index on `access_control(record)`
+  (`acl-index`) changes nothing (+0.0 %). Noise, on an empty store.
+- *Idempotency* (`nokey`, `key-noindex`): −6.2 % and −4.1 % at N=1, −0.9 % at N=8: no measurable cost; the key saves
+  165 B of WAL per record when absent (2019 → 1854).
+- *All code switches together* (`combined` = noacl + nohash + async, keyless): +80.7 % at N=1 (648.4 records/s;
+  service 0.438, PostgreSQL 1.037 ms per record) and +34.8 % at N=8 (2,587 records/s). `combined` keeps JIT on; with
+  JIT off as well it was not measured.
+
+**Where throughput saturates.** With POOL=16 (C), records/s grows with the clients up to N=16 (baseline 351 → 2,533,
+×7.2; combined 539 → 4,007, ×7.4) and falls slightly at N=32 (2,429; 3,875), where p50 latency doubles (5.82 → 13.53
+ms baseline): 32 clients wait for 16 connections. The pool (D) caps throughput below N — POOL 0, 4, 8, 16 give 436,
+1,178, 1,883, 2,533 records/s at N=16 — and POOL=32 for 16 clients adds nothing (2,531). At the top nothing on the
+machine is saturated: PostgreSQL uses 4.3 cores (baseline) to 5.6 (combined) of the VM's 16, the service JVM under one
+core (84–94 %), WAL ~4.6 MB/s, against an fdatasync of 92 µs. **The ceiling measured is the plan's concurrency (16
+connections), not the hardware**: each submission's latency, dominated by the composite's JIT, times 16. Where the
+machine's own ceiling lies (N=32 with POOL=32, harness on another host) this plan does not show.
+
+**No pool.** At POOL=0 (D) 16 clients get 436 records/s with p99 204 ms, and the relations — on today's 3-thread
+executor sharing the single connection — were visible 6.2 s (p50) to 15.3 s (max) after the response: an unbounded
+backlog, lost if the service stops. Any concurrent load needs a pool.
+
+**What B saves.** B > 1 saves HTTP and per-message service work, not commits (each entry is its own transaction): at
+N=8, POOL=8, B = 1, 10, 100 give 1,902, 2,040, 2,081 records/s keyless (+7 %, +9 %) and 2,587, 3,060, 3,122 combined
+(+18 %, +21 %); service CPU per record falls 0.285 → 0.199 ms (−30 %) and 0.234 → 0.135 ms (−42 %), PostgreSQL's
+barely moves. A message's latency grows with B (p50 34 ms at B=10, 342 ms at B=100, baseline).
+
+**Async lag and drain.** The service's own commit-to-visible lag averaged 1.0–4.7 ms in every async run, its maximum
+12.7–86.9 ms except in two runs: 795 ms (tr, N=16) and 1,834 ms (combined, POOL=32), the latter with a 1,851 ms maximum
+request latency in the same run — a stall of the whole store (GC, checkpoint or the VM), not of the queue. The
+harness's probe, from the response with 5 ms polling over unindexed `__PROV_*`, saw p50 8.5–55.8 ms, p95 12.3–82.7 ms.
+No submission ever waited for the queue (blocked 0), and it drained within 0.01 s of the window's end. One writer keeps
+up (G: 1, 2, 4 writers 4,291, 4,007, 3,835 records/s, lag alike); the highest rate of the matrix, **4,291 records/s,
+p99 20.8 ms**, is combined with one writer at N=16, POOL=16.
+
+**Transport family** (F): 13.2 rows per record, more PostgreSQL time per record (1.46 ms at N=1, 2.00 at N=16); baseline
+295 and 2,498 records/s, combined 558 (+89 %) and 3,639 (+46 %).
+
+**JIT in the deployed PostgreSQL.** The deployed PostgreSQL (5432) answers `SHOW jit` = `on` (read 2026-10-31, the only
+statement run against it). Whether it compiles also needs a server built with LLVM (`pg_jit_available()`, not checked);
+if it does, its composite inserts pay the cost measured here.
+
+**What I would change in the store**, in order of what it buys:
+
+1. Take JIT off the composite inserts, in the store alone: `ROWS` estimates on the generated set-returning functions
+   (`CompilerSQL`), or `SET jit = off` as an attribute of the generated composite functions. From A and B: −52 % of
+   PostgreSQL's CPU per record, p99 halved, +20 % records/s.
+2. Never run a store under concurrent load without a pool sized to its concurrent writers; and replace the no-pool
+   relation path (fire-and-forget, unbounded, seconds behind) by the bounded writer.
+3. Enable the asynchronous relation writer where readers accept a few milliseconds' lag: +22–31 %, one writer enough.
+4. Keep the hash, the access-controlled read-back and idempotency: on this store each is at the noise level under
+   concurrency, not worth the guarantee it gives up.
+5. Measure next: N=32 with POOL=32 (and the harness on another host) for the machine's ceiling; `combined` with JIT
+   off; a store pre-filled with millions of rows, where the unindexed `access_control.record` and `__PROV_*` reads may
+   start to cost (the probe's own `__PROV_*` lookup already took 14 ms per call at N=16, run 28, on a store 30 s old).

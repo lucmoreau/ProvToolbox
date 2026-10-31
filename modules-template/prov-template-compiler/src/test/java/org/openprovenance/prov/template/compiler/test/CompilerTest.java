@@ -141,30 +141,35 @@ public class CompilerTest extends TestCase {
 
     }
 
+    /**
+     * Runs {@code command} in directory {@code where}, echoing its output, and fails the test if it exits with a
+     * non-zero code, so that, e.g., a failed build of the generated project is reported as such (with its output)
+     * rather than as a missing file later on.
+     */
     public static void execute(String [] command, String where) {
+        ProcessBuilder pb = new ProcessBuilder(command)
+                .directory(new File(where))
+                .redirectErrorStream(true);
+        pb.environment().put("MAVEN_OPTS", "--add-opens jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-opens jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED --add-opens jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED");
 
+        StringBuilder tail = new StringBuilder();
+        int exitVal;
         try {
-            Runtime rt = Runtime.getRuntime();
-
-            String path=System.getenv("PATH");
-            String[] envp = {
-                    "MAVEN_OPTS=--add-opens jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-opens jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED --add-opens jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED  --add-opens jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-                    "PATH=" + path
-            };
-            Process pr = rt.exec(command, envp, new File(where));
-            BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-            String line=null;
-            while((line=input.readLine()) != null) {
-                System.out.println(line);
+            Process pr = pb.start();
+            try (BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()))) {
+                String line;
+                while ((line = input.readLine()) != null) {
+                    System.out.println(line);
+                    if (line.contains("ERROR")) tail.append(line).append('\n');
+                }
             }
-
-            int exitVal = pr.waitFor();
-            System.out.println("Exited with error code "+exitVal);
-
-        } catch(Exception e) {
-            System.out.println(e.toString());
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            exitVal = pr.waitFor();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException("could not run " + String.join(" ", command) + " in " + where, e);
+        }
+        System.out.println("Exited with error code " + exitVal);
+        if (exitVal != 0) {
+            fail("'" + String.join(" ", command) + "' in " + where + " exited with code " + exitVal + "\n" + tail);
         }
     }
 

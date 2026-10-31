@@ -44,6 +44,15 @@ final class Settings {
         values.put("STOP_ON_FAIL", "0");
         values.put("PLAN", "full");
         values.put("JAVA", System.getProperty("java.home") + File.separator + "bin" + File.separator + "java");
+        // the direct JDBC mode (DirectMain): what each writer does per record, and how records are grouped
+        values.put("LAYER", "post");          // insert: insert function + record_index; post: + the service's post-processing
+        values.put("KEY", "on");              // an Idempotency-Key per record
+        values.put("READBACK", "on");         // post: the read-back's access-control join (submission.readback.access_control)
+        values.put("HASH", "update");         // post: update|header|off (submission.hash)
+        values.put("RELATIONS", "inline");    // post: inline|async (relations.write)
+        values.put("JDBC_BATCH", "0");        // insert, B > 1: the B statements sent in one round trip
+        values.put("HTTP_RESULTS", "");       // bench.direct.compare: the HTTP CSV(s) to compare with (comma-separated), else all
+
         for (String a : args) {
             int eq = a.indexOf('=');
             if (eq <= 0) throw new IllegalArgumentException("expected KEY=value, got " + a);

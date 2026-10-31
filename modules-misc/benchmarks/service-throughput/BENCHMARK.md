@@ -15,6 +15,7 @@ behaviour as it was: nothing changes for an existing deployment.
 - [Caveats and findings from building it](#caveats-and-findings-from-building-it)
 - [Smoke run (cloud session, smoke only)](#smoke-run-cloud-session-smoke-only)
 - [Results on the M4 Max](#results-on-the-m4-max)
+- [Direct JDBC mode](#direct-jdbc-mode)
 
 ## Running it
 
@@ -510,3 +511,245 @@ Reading:
   (+34 %), with PostgreSQL at 3.6–4.1 cores of the VM's 16 and the service JVM at 1.2 cores. **The highest rate
   measured is now 6,579 records/s, p99 15.4 ms** (fs, combined, N=32, POOL=32): the machine's ceiling is still above
   it.
+
+## Direct JDBC mode
+
+The same records written to the same store **without the web service**: no HTTP, no JSON, no Jetty, no per-request
+work of the service — what the database (and the generated SQL) sustains alone, and so, against the HTTP runs, what
+the service costs.
+
+### Design
+
+- **The same SQL, composed by the generated code.** The harness loads the template library's generated
+  `<catalogue.package>.CatalogueDispatcher` (fs: `org.openprovenance.templates.catalogue.fs`, tr:
+  `org.openprovenance.templates.catalogue.transport`) by name, as `TemplateService` does, and calls
+  `initEnactorConverter`/`initCompositeEnactorConverter` with a `queryExecutor` of its own. A record goes through the
+  catalogue's enactor converter exactly as a posted entry does: the record built in the template's property order
+  (`getPropertyOrder()`, as `TemplateLogic.convertToArray` builds it from JSON), turned into the generated `…Inputs`
+  bean by the generated converter, checked by the generated `BeanChecker2`, its SQL composed by the generated
+  `QueryInvoker4` (`WITH insertion_result AS (SELECT * FROM insert_<t>(…)) INSERT INTO record_index … RETURNING id`;
+  composites `insert_<t>_composite_and_linker(ARRAY[…])`), run by the `queryExecutor` on the transaction's
+  connection (`Storage.executeQuery`, as the service's), the result read by the generated completer.
+- **The post-processing reused, not re-implemented** (service-templates-core, in-process, unchanged): `TemplateQuery`
+  (read-back, hash, `updateHash`; its constructor installs the same traversal functions as at the service's start),
+  `TemplateLogic.submitPostProcessing` as the completers' post-processing callback, `RelationMapping` (inline
+  `__PROV_*` inserts), `AsyncRelationWriter` (attached through `org.openprovenance.prov.service.core.DirectAccess`, a
+  one-method class of the direct sources in that package: `TemplateQuery.getRelationMapping()` is package-private),
+  `SubmissionSwitches` (the run's READBACK/HASH/RELATIONS, read as the service reads its configuration), `Querier` and
+  `PooledConnections` (a transaction per `Querier.inTransaction`), `Storage`, `SubmissionKeyManager` (the
+  Idempotency-Key the invoker writes into `record_index.submission_key`), `PrincipalManager` (principal `nil`, the
+  service's without security).
+- **The schema as the service makes it**: after the reset, `sql.initializer` (the library's SQL, with the JIT fix),
+  `utils.sql` (from the generated webapp's classes), then `TemplateQuery`'s constructor. No `activity_log` (no service):
+  `record_index` is the cross-check.
+- **The records** are the HTTP mode's (`Family`: same templates, weights, composites of 3, unique values, references to
+  ids returned earlier).
+- **Connections**: N writer threads, a pool of N (`PooledConnections`): each transaction on a connection of its own;
+  async relations on the writer's own pool, as in the service.
+- **Build and classpath**: `src/direct/java` and `src/direct-test/java`, compiled only with `mvn -Pdirect` into
+  `target/direct` against service-templates-core (`provided`). It runs on the generated fs webapp's `WEB-INF/classes`
+  and `WEB-INF/lib` — the jars the service runs on, both catalogues being in the one library jar — then the harness's
+  libraries. The default build (the HTTP mode) is unchanged: it has no service class and no service dependency.
+- **Environment**: the service's classes read `TPL_*`, `PROV_*`, `TEMPLATE_CONFIG`, `JDBC_POOL_SIZE` (class
+  initialisation of `TemplateService`, whose `headerInfo` the post-processing uses); when any is set, `DirectMain` runs
+  itself again in a JVM without them, so nothing of the caller's environment reaches them.
+
+### What each layer includes
+
+| setting | values | what a record costs |
+|---|---|---|
+| `LAYER=insert` | | the insert function (template row, the entities/activities it allocates) and the `record_index` row, in one statement; no post-processing |
+| `LAYER=post` (default) | | + the service's post-processing per record: read-back, hash and its `UPDATE`, `__PROV_*` relations — a composite's elements each, then the composite (as in the service) |
+| `READBACK` | `on`, `off` | post: the read-back's `record_index`/`access_control` join (`submission.readback.access_control`) |
+| `HASH` | `update`, `header`, `off` | post: `submission.hash` |
+| `RELATIONS` | `inline`, `async` | post: `relations.write` (with `WRITERS`, `QUEUE`, `BATCH`) |
+| `KEY` | `on` (default), `off` | an Idempotency-Key per record (allowed at any B here: the 400 on several entries is the service's) |
+| `B` | 1, 10, 100 | records per **transaction** (the service commits each entry on its own; here B records commit together) |
+| `JDBC_BATCH` | `0`, `1` | with `LAYER=insert`: the B composed statements sent in one round trip (one `Statement.execute` of the B statements, their results read in turn). The SQL carries its values inline (no `PreparedStatement` to `addBatch`), and the post-processing needs each record's id before its next statement, so a batch is for the insert layer only (refused with `LAYER=post`). |
+
+Presets of the plan: `insert` (KEY=off), `insert+key`, `post` (every switch at the service's default, KEY=off),
+`post+key` (the HTTP baseline's work), `combined` (READBACK=off HASH=off RELATIONS=async KEY=off: the HTTP combined's).
+
+### What is measured
+
+As the HTTP mode, minus the service: transactions/s and records/s; rows written/s and per record (n_tup_ins +
+n_tup_upd); WAL/s and per record; latency per **transaction** p50/p95/p99/max; the client JVM's CPU (the harness
+writing directly: its writers, the probe and the sampler) and PostgreSQL's (cgroup); top statements; relation lag
+(probed, async only); `record_index` + records; and, every 100 ms of the window, the **wait events** of the writers'
+backends (`pg_stat_activity`: `CPU` when active without one, `type:event` otherwise, `Client:IdleInTransaction`
+between a transaction's statements — the client's own time inside it), the top five in the CSV with the mean number of
+busy backends.
+
+Checks (a run that fails one is FAIL, loudly): no failed transaction; `record_index` grew by the records written;
+**rows written equal exactly what the catalogue says these records write** — per simple record its template row, one
+row per output variable, its `record_index` row, with `LAYER=post` one row per relation tuple of the seven stored
+kinds and the hash `UPDATE`; per composite of k its k element rows, its shared outputs once and the others per
+element, k + 1 `record_index` rows, its own row, k linker rows, and with `LAYER=post` the elements' relations and k + 1
+`UPDATE`s. With everything on, that is 9.0 rows per record (fs) and 13.2 (tr) on the mix, as in the HTTP runs. For this
+check the settle before each snapshot is 10.5 s, not the HTTP mode's 2.5 s: PostgreSQL 16 keeps an idle backend's
+pending table statistics up to 10 s (`PGSTAT_IDLE_INTERVAL`) when it flushed less than a second before. (So the HTTP
+mode's rows/s may miss or gain up to about a second of each backend's rows at the window's edges — the two edges
+partly cancel; under 3 % at 30 s.)
+
+### Running it
+
+```bash
+make bench.prepare
+```
+
+```bash
+make bench.db.up
+```
+
+```bash
+make bench.direct.run FAMILY=fs LAYER=post KEY=on N=16 B=1
+```
+
+```bash
+make bench.direct.matrix
+```
+
+```bash
+make bench.direct.compare HTTP_RESULTS=results/2026-10-31.csv,results/2026-10-31-jitfix.csv
+```
+
+`bench.direct.*` build `-Pdirect` (running `DirectGuardTest` and `GuardTest`) and need the generated services
+(`bench.prepare`; after a change to service-templates-core or the template library: `mvn install` them and
+`make bench.service.build FAMILY=fs`, and `tr`). The HTTP service must be down (the run refuses otherwise). Results:
+`results/<date>-direct.csv` and `.md` (the same machine and software header, a "direct client JVM" row), `-statements.md`,
+`-environment.md`. `bench.direct.compare` writes `results/<date>-direct-compare.md`: each direct run beside the HTTP run
+doing the same work — direct `post+key` and HTTP `baseline` with its key (B=1); direct `post` and HTTP `nokey`, or the
+keyless `baseline` at B>1; direct `combined` and HTTP `combined`; same family, N and B; HTTP runs with POOL ≥ N only (at
+POOL=0 the service shares one connection: another store). By default the HTTP files are those whose environment file
+names the same CPU (never another machine's); `HTTP_RESULTS` names them instead. `bench.direct.plan` prints the plan;
+`bench.direct.smoke` is the short check of this section. Defaults: warm-up 5 s, measured 20 s (one JVM stays warm across
+the matrix), `DIRECT_JVM_FLAGS` `-Xms2g -Xmx2g -XX:+UseG1GC`.
+
+The guard: `DirectRun` runs `Store.guard()` (the allow-list above: URLs, the labelled container by system identifier,
+the cluster's databases) before anything is opened, reset or written, and refuses while the HTTP service is up; every
+connection of the mode (writers, relation writers, probe, sampler, schema set-up) comes from `Store.connect`, which
+checks the JDBC URL against the allow-list. `DirectGuardTest`: a refusing guard stops a run before any connection or
+reset; connections to `bookptm`, `templates`, a `chronicle_*` database are refused before any network; the service
+classes see none of `TPL_DB_USER`, `TPL_DB_PASS`, `TPL_SECURITY_CONFIG`, `PROV_STORAGE_CONFIG`, `TEMPLATE_CONFIG`,
+`JDBC_POOL_SIZE`; a JDBC batch with post-processing is refused before any connection; the settings' values.
+
+### The plan and its budget
+
+`make bench.direct.plan` (`PLAN=full`, warm-up 5 s, measured 20 s):
+
+| phase | runs | what varies |
+|---|---:|---|
+| D1. layers, fs, N=1 B=1 | 9 | insert, insert+key, post, post+key, combined; post with READBACK=off, HASH=header, HASH=off, RELATIONS=async alone |
+| D2. writers, fs, B=1 | 18 | N = 2, 4, 8, 16, 32, 64 × insert, post+key, combined (N=1 in D1) |
+| D3. records per transaction, fs, N=16 | 8 | B = 10, 100 × insert, post+key, combined; insert as one JDBC batch at B = 10, 100 |
+| D4. transport family, B=1 | 6 | N = 1, 16 × insert, post+key, combined |
+| D5. relation writers, fs, combined, N=32 | 2 | WRITERS = 1, 4 (2 in D2) |
+
+43 runs × (5 s warm-up + 20 s measured + ~25 s for the reset, the schema and catalogue set-up — ~1.2 s here — the two
+10.5 s settles and the collection) ≈ 43 × 50 s ≈ 36 min: under the 45 minutes. In the cloud smoke run the 8 direct
+runs (3 s + 8 s each) took 4.7 min: ~24 s per run beyond its 11 s of load, within the 25 s budgeted.
+
+### Smoke run (cloud session, smoke only)
+
+Linux VM, 4 vCPU Intel Xeon @ 2.10 GHz, 16 GB, Docker 29.9 (cgroup v1), PostgreSQL 16.15, Java 21 (release 15 bytecode),
+the template library rebuilt with the JIT fix; warm-up 3 s, measured 8 s, N=2: **smoke figures, to show the mode works, not
+results** — on 4 vCPUs the client, the service (HTTP) and PostgreSQL share the cores. `make bench.direct.smoke LABEL=smoke-cloud`:
+8 runs, 8 ok (`results/2026-10-31-direct-smoke-cloud.*`); every run's rows equal the catalogue's count exactly.
+
+| fam | layer | key | readback | hash | relations | N | B | JDBC batch | records/s | tx/s | rows/rec | p50 ms/tx | p99 ms/tx | client ms/rec | PG ms/rec | busy | top waits | status |
+|---|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+| fs | insert | off |  |  |  | 2 | 1 | 0 | 748.4 | 601.9 | 4.08 | 3.05 | 7.33 | 0.947 | 1.102 | 1.3 | CPU 33%; IO:WALSync 33%; Client:IdleInTransaction 21%; LWLock:WALWrite 10%; Client:ClientRead 2% | ok |
+| fs | post | on | on | update | inline | 2 | 1 | 0 | 288.4 | 227.4 | 8.96 | 7.36 | 27.05 | 3.9 | 2.956 | 1.8 | Client:IdleInTransaction 42%; CPU 36%; IO:WALSync 17%; LWLock:WALWrite 3%; Client:ClientRead 2% | ok |
+| fs | post | off | off | off | async | 2 | 1 | 0 | 419.7 | 331.3 | 7.96 | 5.19 | 16.93 | 2.905 | 2.359 | 2.2 | Client:IdleInTransaction 35%; CPU 29%; IO:WALSync 20%; LWLock:WALWrite 10%; Client:ClientRead 5% | ok |
+| tr | insert | off |  |  |  | 2 | 1 | 0 | 787.2 | 554.1 | 4.45 | 3.22 | 8.4 | 0.568 | 1.071 | 1.4 | CPU 36%; IO:WALSync 27%; Client:IdleInTransaction 24%; LWLock:WALWrite 8%; Client:ClientRead 3% | ok |
+| tr | post | on | on | update | inline | 2 | 1 | 0 | 328.8 | 226.2 | 13.21 | 6.83 | 25.62 | 1.223 | 3.045 | 1.7 | Client:IdleInTransaction 49%; CPU 37%; IO:WALSync 10%; Client:ClientRead 2%; LWLock:WALWrite 1% | ok |
+| tr | post | off | off | off | async | 2 | 1 | 0 | 559.7 | 393.2 | 12.23 | 4.26 | 13.03 | 0.871 | 2.216 | 2.5 | CPU 37%; Client:IdleInTransaction 34%; IO:WALSync 18%; LWLock:WALWrite 6%; Client:ClientRead 4% | ok |
+| fs | insert | off |  |  |  | 2 | 10 | 1 | 2628.9 | 209.3 | 4.06 | 8.17 | 28.83 | 0.204 | 0.489 | 1.5 | CPU 75%; Client:IdleInTransaction 11%; IO:WALSync 8%; Client:ClientRead 2%; IO:DataFileExtend 2% | ok |
+| fs | post | off | on | update | inline | 2 | 10 | 0 | 458.5 | 36.9 | 9.0 | 44.6 | 203.04 | 1.092 | 2.299 | 2.0 | Client:IdleInTransaction 63%; CPU 30%; Client:ClientRead 5%; IO:WALSync 2% | ok |
+
+Against HTTP on the same VM (`make bench.direct.compare LABEL=smoke-cloud`, the HTTP runs `results/2026-10-31-smoke-cloud-jitfix.*`,
+N=2, POOL=4, same durations; `results/2026-10-31-direct-smoke-cloud-compare.md`):
+
+| fam | direct | HTTP | B | direct records/s | HTTP records/s | HTTP/direct | direct rows/rec | HTTP rows/rec |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| fs | post+key | baseline | 1 | 288.4 | 145.2 | 0.50 | 8.96 | 8.42 |
+| fs | combined | combined | 1 | 419.7 | 179.0 | 0.43 | 7.96 | 7.33 |
+| tr | post+key | baseline | 1 | 328.8 | 144.1 | 0.44 | 13.21 | 12.36 |
+| tr | combined | combined | 1 | 559.7 | 206.3 | 0.37 | 12.23 | 11.25 |
+| fs | post | baseline | 10 | 458.5 | 237.3 | 0.52 | 9.0 | 9.51 |
+
+Read as smoke: the HTTP mode reached 0.37–0.52 of the direct rate here, where the service's JVM competes with
+PostgreSQL and the client for 4 cores. The HTTP rows/record differ from the exact counts (8.42 against 8.96, 9.51
+against 9.00 at B=10) because of the HTTP mode's 2.5 s settle on 8-second windows (see above); at 30 s on the M4 Max
+they were 9.0. With B=10 records per transaction, `post` keeps 9.00 rows/record. The insert layer as one JDBC batch of
+10 wrote 2,629 records/s, against 748 at one record per transaction. With the post-processing on, the writers'
+backends spend 35–63 % of their samples `Client:IdleInTransaction`: inside a transaction, waiting for the client's
+Java work between statements.
+
+### Results on the M4 Max (direct)
+
+To be filled from `make bench.direct.matrix` and `make bench.direct.compare` on the M4 Max; no figure here before that
+run.
+
+#### D1. Layers (fs, N=1, B=1)
+
+| layer | key | readback | hash | relations | records/s | tx/s | rows/rec | WAL B/rec | p50 ms/tx | p99 ms/tx | client ms/rec | PG ms/rec | top waits |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| insert | off | | | | | | | | | | | | |
+| insert | on | | | | | | | | | | | | |
+| post | off | on | update | inline | | | | | | | | | |
+| post | on | on | update | inline | | | | | | | | | |
+| post | off | off | off | async | | | | | | | | | |
+| post | off | off | update | inline | | | | | | | | | |
+| post | off | on | header | inline | | | | | | | | | |
+| post | off | on | off | inline | | | | | | | | | |
+| post | off | on | update | async | | | | | | | | | |
+
+#### D2. Writers (fs, B=1)
+
+| N | insert records/s | post+key records/s | combined records/s | PG CPU % (combined) | busy backends (combined) | top waits (combined) |
+|---:|---:|---:|---:|---:|---:|---|
+| 1 | | | | | | |
+| 2 | | | | | | |
+| 4 | | | | | | |
+| 8 | | | | | | |
+| 16 | | | | | | |
+| 32 | | | | | | |
+| 64 | | | | | | |
+
+#### D3. Records per transaction (fs, N=16)
+
+| B | insert | insert, JDBC batch | post+key | combined | p50 ms/tx (combined) |
+|---:|---:|---:|---:|---:|---:|
+| 1 | | — | | | |
+| 10 | | | | | |
+| 100 | | | | | |
+
+#### D4. Transport family (B=1)
+
+| preset | N | records/s | rows/rec | PG ms/rec | p99 ms/tx |
+|---|---:|---:|---:|---:|---:|
+| insert | 1 | | | | |
+| post+key | 1 | | | | |
+| combined | 1 | | | | |
+| insert | 16 | | | | |
+| post+key | 16 | | | | |
+| combined | 16 | | | | |
+
+#### D5. Relation writers (fs, combined, N=32)
+
+| writers | records/s | lag p50 ms | lag p95 ms |
+|---:|---:|---:|---:|
+| 1 | | | |
+| 2 | | | |
+| 4 | | | |
+
+#### Direct against HTTP
+
+(From `results/<date>-direct-compare.md`: records/s direct and HTTP, their ratio — the service's share of the time
+per record — rows/record both ways, PostgreSQL ms per record both ways.)
+
+#### What the database sustains alone
+
+(To be written from D2 and the comparison: where records/s stops growing with N, what saturates then — PostgreSQL CPU
+against the VM's 16 cores, WAL, the top wait events — and how much of the HTTP ceiling is the service.)

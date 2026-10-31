@@ -181,6 +181,11 @@ final class Family {
         return m;
     }
 
+    /** The elements of each composite. */
+    int compositeSize() {
+        return compositeSize;
+    }
+
     /** The template records an entry writes: 1, or a composite's own and its elements'. */
     int records(Template t) {
         return t.composite() ? 1 + compositeSize : 1;

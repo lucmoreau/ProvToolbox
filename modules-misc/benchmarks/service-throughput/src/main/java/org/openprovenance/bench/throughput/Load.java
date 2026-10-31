@@ -87,7 +87,7 @@ final class Load {
     }
 
     /** A record whose relations the probe watches for: its template, its id, when its response arrived. */
-    private static final class Probe {
+    static final class Probe {
         final String template;
         final long id;
         final long respondedNanos;
@@ -227,7 +227,7 @@ final class Load {
     }
 
     /** Watches each probed record until one of its relation rows is visible; the lag from its response. */
-    private static void probe(Connection c, BlockingQueue<Probe> probes, AtomicBoolean done, Outcome o) {
+    static void probe(Connection c, BlockingQueue<Probe> probes, AtomicBoolean done, Outcome o) {
         try (PreparedStatement ps = Store.relationProbe(c)) {
             while (!done.get() || !probes.isEmpty()) {
                 Probe p = probes.poll(100, TimeUnit.MILLISECONDS);

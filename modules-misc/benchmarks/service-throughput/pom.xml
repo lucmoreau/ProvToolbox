@@ -24,6 +24,7 @@
         <postgresql.version>42.7.4</postgresql.version>
         <jackson.version>2.17.2</jackson.version>
         <junit.version>4.13.2</junit.version>
+        <provtoolbox.version>2.3.0-SNAPSHOT</provtoolbox.version>
     </properties>
 
     <dependencies>
@@ -60,6 +61,78 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <!--
+          The direct JDBC mode (src/direct/java, src/direct-test/java): the store written to without the web service,
+          through the generated catalogue's enactors and service-templates-core's post-processing, in-process. Its own
+          build directory (target/direct), so the default build (the HTTP mode, no service class) is unaffected:
+          mvn -Pdirect package. Compiled against service-templates-core (provided); run on the generated webapp's
+          WEB-INF/classes and WEB-INF/lib (the Makefile's bench.direct.* targets), the very jars the service runs on.
+        -->
+        <profile>
+            <id>direct</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.openprovenance.prov</groupId>
+                    <artifactId>service-templates-core</artifactId>
+                    <version>${provtoolbox.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <directory>${project.basedir}/target/direct</directory>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.6.0</version>
+                        <executions>
+                            <execution>
+                                <id>direct-sources</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/direct/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>direct-test-sources</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/direct-test/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.6.1</version>
+                        <executions>
+                            <execution>
+                                <id>harness-lib</id>
+                                <phase>none</phase>
+                            </execution>
+                            <execution>
+                                <id>launcher-lib</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <build>
         <finalName>service-throughput</finalName>

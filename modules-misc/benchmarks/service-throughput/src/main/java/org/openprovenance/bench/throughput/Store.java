@@ -20,7 +20,7 @@ import java.util.Properties;
  * {@value Settings#VOLUME}, published on 127.0.0.1:{@value Guard#DB_PORT}), and what the harness reads from it. Every
  * write goes through {@link #guard} first.
  */
-final class Store {
+class Store {
 
     private final Settings settings;
 
@@ -74,13 +74,18 @@ final class Store {
 
     /** A connection to the benchmark's cluster: provbench, or postgres (to list its databases). */
     static Connection connect(String database) throws SQLException {
+        return connect(database, "provbench-harness");
+    }
+
+    /** As {@link #connect(String)}, its backend named {@code applicationName} in pg_stat_activity. */
+    static Connection connect(String database, String applicationName) throws SQLException {
         String url = database.equals(Guard.DB_NAME) ? Settings.JDBC_URL : "jdbc:postgresql://localhost:" + Guard.DB_PORT + "/postgres";
         if (database.equals(Guard.DB_NAME)) Guard.jdbcUrl(url);
         else if (!database.equals("postgres")) throw new Guard.Refused("no connection to " + database);
         Properties p = new Properties();
         p.setProperty("user", Settings.DB_USER);
         p.setProperty("password", Settings.DB_PASS);
-        p.setProperty("ApplicationName", "provbench-harness");
+        p.setProperty("ApplicationName", applicationName);
         return DriverManager.getConnection(url, p);
     }
 
@@ -201,8 +206,10 @@ final class Store {
         s.rowsWritten = Long.parseLong(scalar(c, "SELECT COALESCE(SUM(n_tup_ins + n_tup_upd), 0)::bigint FROM pg_stat_user_tables"));
         s.walBytes = Long.parseLong(scalar(c, "SELECT (pg_current_wal_lsn() - '0/0'::pg_lsn)::bigint"));
         s.recordIndex = Long.parseLong(scalar(c, "SELECT count(*) FROM record_index"));
-        try (Statement st = c.createStatement(); ResultSet rs = st.executeQuery("SELECT kind, SUM(count)::bigint FROM activity_log GROUP BY kind")) {
-            while (rs.next()) s.activity.put(rs.getString(1), rs.getLong(2));
+        if (scalar(c, "SELECT to_regclass('activity_log')::text") != null) {   // none without the service (direct mode)
+            try (Statement st = c.createStatement(); ResultSet rs = st.executeQuery("SELECT kind, SUM(count)::bigint FROM activity_log GROUP BY kind")) {
+                while (rs.next()) s.activity.put(rs.getString(1), rs.getLong(2));
+            }
         }
         s.cpuMicros = containerCpuMicros(container);
         return s;

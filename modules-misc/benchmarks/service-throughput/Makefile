@@ -40,6 +40,7 @@ SETTINGS = FAMILY=$(FAMILY) VARIANT=$(VARIANT) N=$(N) B=$(B) POOL=$(POOL) WARMUP
 	WRITERS=$(WRITERS) QUEUE=$(QUEUE) BATCH=$(BATCH) COMPOSITE_SIZE=$(COMPOSITE_SIZE) JETTY_MAX_THREADS=$(JETTY_MAX_THREADS) \
 	"SERVICE_JVM_FLAGS=$(SERVICE_JVM_FLAGS)" PLAN=$(PLAN) LABEL=$(LABEL) STOP_ON_FAIL=$(STOP_ON_FAIL)
 
+.PHONY: bench.direct.build bench.direct.run bench.direct.plan bench.direct.matrix bench.direct.smoke bench.direct.compare
 .PHONY: bench.help bench.build bench.prepare bench.service.build bench.guard bench.db.up bench.db.down bench.db.reset \
 	bench.db.destroy bench.service.up bench.service.down bench.run bench.matrix bench.plan bench.smoke
 
@@ -50,6 +51,9 @@ bench.help:
 	@echo "make bench.run FAMILY=fs VARIANT=baseline N=1 B=1 POOL=0 WARMUP=10 DURATION=30"
 	@echo "make bench.plan | bench.matrix [PLAN=full|smoke] [LABEL=...]"
 	@echo "variants: baseline noacl acl-index nohash hash-header async nokey key-noindex nojit combined"
+	@echo "direct JDBC mode (no web service):"
+	@echo "make bench.direct.run FAMILY=fs LAYER=insert|post KEY=on|off READBACK=on|off HASH=update|header|off RELATIONS=inline|async N=1 B=1 JDBC_BATCH=0|1"
+	@echo "make bench.direct.plan | bench.direct.matrix [PLAN=full|smoke] | bench.direct.compare [HTTP_RESULTS=results/<file>.csv,...]"
 
 # ---------------------------------------------------------------- build
 
@@ -135,3 +139,51 @@ bench.matrix: bench.build
 # the short check this module was proved with: both families, baseline and async, N=2 POOL=4, a few seconds each
 bench.smoke: bench.build
 	$(HARNESS) matrix $(SETTINGS) PLAN=smoke WARMUP=3 DURATION=8 LABEL=$(if $(LABEL),$(LABEL),smoke)
+
+# ---------------------------------------------------------------- direct JDBC mode (no web service; see BENCHMARK.md)
+#
+# Built with -Pdirect into target/direct (the HTTP build above is unaffected); run on the generated fs webapp's
+# WEB-INF/classes and WEB-INF/lib (service-templates-core, the template library with both catalogues, their
+# dependencies: the jars the service runs on), with the harness's own libraries after them. The JVM loads the
+# service's classes in-process: it re-runs itself without any TPL_*, PROV_*, TEMPLATE_CONFIG or JDBC_POOL_SIZE of the
+# caller. Its own defaults: warm-up 5 s, measure 20 s (one JVM stays warm across the matrix's runs), unless WARMUP or
+# DURATION are given.
+
+LAYER ?= post
+KEY ?= on
+READBACK ?= on
+HASH ?= update
+RELATIONS ?= inline
+JDBC_BATCH ?= 0
+HTTP_RESULTS ?=
+DIRECT_JVM_FLAGS ?= -Xms2g -Xmx2g -XX:+UseG1GC
+D_WARMUP = $(if $(filter command line environment,$(origin WARMUP)),$(WARMUP),5)
+D_DURATION = $(if $(filter command line environment,$(origin DURATION)),$(DURATION),20)
+DIRECT_WEBAPP = target/services/provbench-fs/provbench-fs-service/target/provbench-fs-service-0.1.0-SNAPSHOT-unsecure
+DIRECT_CP = target/direct/service-throughput.jar:$(DIRECT_WEBAPP)/WEB-INF/classes:$(DIRECT_WEBAPP)/WEB-INF/lib/*:$(firstword $(wildcard target/launcher-lib/jetty-jakarta-servlet-api-*.jar)):target/lib/*
+DIRECT = $(JAVA) $(DIRECT_JVM_FLAGS) -Dbench.home="$(CURDIR)" -cp "$(DIRECT_CP)" org.openprovenance.bench.throughput.DirectMain
+DIRECT_SETTINGS = FAMILY=$(FAMILY) N=$(N) B=$(B) WARMUP=$(D_WARMUP) DURATION=$(D_DURATION) WRITERS=$(WRITERS) QUEUE=$(QUEUE) BATCH=$(BATCH) \
+	COMPOSITE_SIZE=$(COMPOSITE_SIZE) LAYER=$(LAYER) KEY=$(KEY) READBACK=$(READBACK) HASH=$(HASH) RELATIONS=$(RELATIONS) \
+	JDBC_BATCH=$(JDBC_BATCH) PLAN=$(PLAN) LABEL=$(LABEL) STOP_ON_FAIL=$(STOP_ON_FAIL) HTTP_RESULTS=$(HTTP_RESULTS)
+
+bench.direct.build: target/direct/service-throughput.jar bench.build
+	@if [ ! -d $(DIRECT_WEBAPP)/WEB-INF/lib ]; then echo "no generated service: make bench.prepare"; exit 1; fi
+
+target/direct/service-throughput.jar: pom.xml $(shell find src -name '*.java')
+	$(MVN) -B -q -f pom.xml -Pdirect package
+
+bench.direct.run: bench.direct.build
+	$(DIRECT) direct-run $(DIRECT_SETTINGS)
+
+bench.direct.plan: bench.direct.build
+	@$(DIRECT) direct-plan $(DIRECT_SETTINGS)
+
+bench.direct.matrix: bench.direct.build
+	$(DIRECT) direct-matrix $(DIRECT_SETTINGS)
+
+# both families: insert, post+key, combined at N=2; fs at B=10: insert as one JDBC batch, post (keyless); 3 s + 8 s each
+bench.direct.smoke: bench.direct.build
+	$(DIRECT) direct-matrix $(DIRECT_SETTINGS) PLAN=smoke WARMUP=3 DURATION=8 LABEL=$(if $(LABEL),$(LABEL),smoke)
+
+bench.direct.compare: bench.direct.build
+	$(DIRECT) direct-compare $(DIRECT_SETTINGS)

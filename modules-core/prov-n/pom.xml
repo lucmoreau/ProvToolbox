@@ -12,6 +12,10 @@
     <packaging>jar</packaging>
     <description>A Parser for PROV-N Provenance Notation.</description>
 
+    <properties>
+        <antlr4.version>4.13.2</antlr4.version>
+    </properties>
+
 
 
 
@@ -25,6 +29,11 @@
             <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
             <version>3.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>${antlr4.version}</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
@@ -91,26 +100,24 @@
             </plugin>
 
 
-            <!--       <plugin>
-                 <groupId>org.antlr</groupId>
-                 <artifactId>antlr4-maven-plugin</artifactId>
-                 <version>4.5.1</version>
-
-                 <executions>
-
-                       <execution>
-                     <phase>generate-sources</phase>
-                         <goals>
-                           <goal>antlr4</goal>
-                         </goals>
-                         <configuration>
-
-                         </configuration>
-                       </execution>
-                 </executions>
-
-                   </plugin>
-            -->
+            <!-- The new PROV-N parser (src/main/antlr4/.../ProvN.g4), see ProvNReader.
+                 It coexists with the ANTLR 3 parser above (PROV_N.g, see Utility), until the latter is retired. -->
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>${antlr4.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                        <configuration>
+                            <visitor>true</visitor>
+                            <listener>false</listener>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

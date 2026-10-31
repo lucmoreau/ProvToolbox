@@ -84,4 +84,22 @@ public class GuardTest {
         refused(() -> Guard.databases(List.of("provbench", "postgres", "templates")), "templates in the cluster");
         refused(() -> Guard.databases(List.of("postgres", "template0", "template1")), "no provbench");
     }
+
+    @Test
+    public void theJsonlDirectoryHoldsNothingButTheBenchmarksFiles() throws Exception {
+        java.io.File dir = java.nio.file.Files.createTempDirectory("provbench-guard").toFile();
+        assertEquals(dir, Guard.jsonlDirectory(dir));                                   // empty
+        assertEquals(new java.io.File(dir, "new"), Guard.jsonlDirectory(new java.io.File(dir, "new")));   // absent: created by the run
+        new java.io.File(dir, "provbench-fs-w0.jsonl").createNewFile();
+        new java.io.File(dir, "provbench-tr-shared.jsonl").createNewFile();
+        Guard.jsonlDirectory(dir);                                                       // its own files only
+        java.io.File foreign = new java.io.File(dir, "notes.txt");
+        foreign.createNewFile();
+        refused(() -> Guard.jsonlDirectory(dir), "a file the benchmark did not write");
+        foreign.delete();
+        new java.io.File(dir, "bookptm.jsonl").createNewFile();
+        refused(() -> Guard.jsonlDirectory(dir), "a .jsonl file not named as the benchmark's");
+        refused(() -> Guard.jsonlDirectory(new java.io.File(dir, "provbench-fs-w0.jsonl")), "a file, not a directory");
+        refused(() -> Guard.jsonlDirectory(null), "no directory");
+    }
 }

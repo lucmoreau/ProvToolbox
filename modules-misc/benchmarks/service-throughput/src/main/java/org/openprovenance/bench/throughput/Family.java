@@ -181,6 +181,67 @@ final class Family {
         return m;
     }
 
+    /**
+     * The output variables of each simple template: what its insert function allocates in the store (the catalogue's
+     * ioMap outputs, provenance-templates 0.1.0-SNAPSHOT). A composite's elements share the outputs its {@code shared}
+     * names, one id per composite, and have the others each.
+     */
+    static final Map<String, List<String>> OUTPUTS = Map.ofEntries(
+            Map.entry("org.openprovenance.templates.fs.FileInit", List.of("entity", "entity0", "activity")),
+            Map.entry("org.openprovenance.templates.fs.FileTransforming", List.of("transformed_file", "transforming")),
+            Map.entry("org.openprovenance.templates.fs.FileFiltering", List.of("filtered_file", "filtering")),
+            Map.entry("org.openprovenance.templates.fs.FileTraining", List.of("pipeline", "training")),
+            Map.entry("org.openprovenance.templates.fs.FileValidating", List.of("score", "validating")),
+            Map.entry("org.openprovenance.templates.fs.FileApproving", List.of("approved_pipeline", "approval_record", "approving")),
+            Map.entry("org.openprovenance.templates.fs.FileSplitting", List.of("split_file1", "split_file2", "splitting")),
+            Map.entry("org.openprovenance.templates.transport.EntityInit", List.of("entity", "entity0", "activity")),
+            Map.entry("org.openprovenance.templates.responsibility.AgentInit", List.of("agent", "agent0", "activity")),
+            Map.entry("org.openprovenance.templates.transport.Transporting", List.of("item1", "transporting")),
+            Map.entry("org.openprovenance.templates.transport.HandingOver", List.of("item1", "handingover")),
+            Map.entry("org.openprovenance.templates.transport.Weighing", List.of("item1", "weighing")),
+            Map.entry("org.openprovenance.templates.transport.Packing", List.of("container1", "item1", "adding")),
+            Map.entry("org.openprovenance.templates.transport.Unpacking", List.of("container1", "item1", "item0", "removing")));
+
+    /**
+     * An entry's complete bindings, as a store would hold them, without a store: the entry ({@link #entry}) with its
+     * record id ({@code ID}) and its output variables bound to ids allocated from {@code ids}; a composite's own
+     * {@code ID}, each element's, the shared outputs one id per composite (in place of the tokens). The outputs are
+     * remembered, so that later records refer to them, as with the ids a store returns.
+     */
+    @SuppressWarnings("unchecked")
+    Map<String, Object> bindings(Template t, Map<String, Object> entry, AtomicLong ids) {
+        Map<String, Object> m = new LinkedHashMap<>();
+        m.put("isA", entry.get("isA"));
+        m.put("ID", ids.incrementAndGet());
+        if (!t.composite()) {
+            entry.forEach((k, v) -> { if (!k.equals("isA")) m.put(k, v); });
+            for (String out : OUTPUTS.getOrDefault(t.isA, List.of())) m.put(out, newId(ids));
+            return m;
+        }
+        entry.forEach((k, v) -> { if (!k.equals("isA") && !k.equals("__elements")) m.put(k, v); });
+        Map<String, Long> shared = new LinkedHashMap<>();
+        for (String name : t.shared) shared.put(name, newId(ids));
+        List<Map<String, Object>> elements = new ArrayList<>();
+        for (Map<String, Object> e : (List<Map<String, Object>>) entry.get("__elements")) {
+            Map<String, Object> b = new LinkedHashMap<>();
+            b.put("isA", e.get("isA"));
+            b.put("ID", ids.incrementAndGet());
+            e.forEach((k, v) -> { if (!k.equals("isA")) b.put(k, shared.containsKey(k) ? shared.get(k) : v); });
+            for (String out : OUTPUTS.getOrDefault(t.element.isA, List.of())) {
+                if (!shared.containsKey(out)) b.put(out, newId(ids));
+            }
+            elements.add(b);
+        }
+        m.put("__elements", elements);
+        return m;
+    }
+
+    private long newId(AtomicLong ids) {
+        long id = ids.incrementAndGet();
+        remember(id);
+        return id;
+    }
+
     /** The elements of each composite. */
     int compositeSize() {
         return compositeSize;

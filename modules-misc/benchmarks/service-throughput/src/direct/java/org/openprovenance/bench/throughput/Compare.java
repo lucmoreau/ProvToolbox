@@ -51,6 +51,55 @@ final class Compare {
         return null;
     }
 
+    /**
+     * The JSONL mode beside the others, at the same family, N and B: the records' bindings appended to local files with
+     * a force per batch (FSYNC=batch, a file per writer), the direct insert layer, direct post+key and combined, HTTP
+     * baseline and combined (records/s). JSONL reports of this machine only (same CPU in their environment file).
+     */
+    static void threeWays(Settings s, File results, List<Map<String, String>> direct, Map<String, Map<String, String>> http, StringBuilder sb) throws IOException {
+        String cpu = cpuOf(new File(results, new Report(s, "direct").name + "-environment.md"));
+        File[] all = results.listFiles((d, n) -> n.endsWith(".csv") && n.contains("-jsonl"));
+        if (all == null || all.length == 0) return;
+        Arrays.sort(all);
+        Map<String, Map<String, String>> jsonl = new LinkedHashMap<>();
+        for (File f : all) {
+            String base = f.getName().substring(0, f.getName().length() - ".csv".length());
+            if (cpu == null || !cpu.equals(cpuOf(new File(results, base + "-environment.md")))) continue;
+            for (Map<String, String> r : Report.readCsv(f)) {
+                if ("ok".equals(r.get("status")) && "batch".equals(r.get("fsync")) && "writer".equals(r.get("files"))) {
+                    jsonl.put(r.get("family") + "|" + r.get("n") + "|" + r.get("b"), r);
+                }
+            }
+        }
+        if (jsonl.isEmpty()) return;
+        Map<String, Map<String, String>> directBy = new LinkedHashMap<>();
+        for (Map<String, String> d : direct) {
+            if (!"ok".equals(d.get("status")) || !"0".equals(d.get("jdbc_batch"))) continue;
+            String preset = "insert".equals(d.get("layer")) ? ("on".equals(d.get("key")) ? "insert+key" : "insert") : directPreset(d);
+            if (preset != null) directBy.put(d.get("family") + "|" + preset + "|" + d.get("n") + "|" + d.get("b"), d);
+        }
+        sb.append("\n## Three ways to write the same records\n\nrecords/s at the same family, N and B: JSONL (the bindings appended to local files, ")
+                .append("a force per batch, a file per writer), direct (no web service), HTTP (the service). '' = not run.\n\n");
+        sb.append("| fam | N | B | JSONL | direct insert | direct post+key | direct combined | HTTP baseline | HTTP combined | JSONL B/rec |\n");
+        sb.append("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n");
+        for (Map<String, String> j : jsonl.values()) {
+            String f = j.get("family");
+            String n = j.get("n");
+            String b = j.get("b");
+            sb.append("| ").append(f).append(" | ").append(n).append(" | ").append(b).append(" | ").append(j.get("records_per_s"))
+                    .append(" | ").append(rate(directBy.get(f + "|insert|" + n + "|" + b)))
+                    .append(" | ").append(rate(directBy.get(f + "|post+key|" + n + "|" + b)))
+                    .append(" | ").append(rate(directBy.get(f + "|combined|" + n + "|" + b)))
+                    .append(" | ").append(rate(http.get(f + "|post+key|" + n + "|" + b)))
+                    .append(" | ").append(rate(http.get(f + "|combined|" + n + "|" + b)))
+                    .append(" | ").append(j.get("bytes_per_record")).append(" |\n");
+        }
+    }
+
+    private static String rate(Map<String, String> r) {
+        return r == null ? "" : r.get("records_per_s");
+    }
+
     static int run(Settings s) throws IOException {
         File results = s.resultsDir();
         List<File> http = new ArrayList<>();
@@ -65,7 +114,7 @@ final class Compare {
         } else {
             // every HTTP report of this machine (its environment file names the same CPU): never another machine's
             String cpu = cpuOf(new File(results, new Report(s, "direct").name + "-environment.md"));
-            File[] all = results.listFiles((d, n) -> n.endsWith(".csv") && !n.contains("-direct") && !n.contains("-compare"));
+            File[] all = results.listFiles((d, n) -> n.endsWith(".csv") && !n.contains("-direct") && !n.contains("-compare") && !n.contains("-jsonl"));
             if (all != null) {
                 Arrays.sort(all);
                 for (File f : all) {
@@ -119,6 +168,7 @@ final class Compare {
                     .append(" | ").append(h.get("source")).append(" |\n");
         }
         if (pairs == 0) sb.append("\n(no direct run has an HTTP counterpart in these files)\n");
+        threeWays(s, results, direct, byKey, sb);
         File out = new File(results, report.name + "-compare.md");
         Files.writeString(out.toPath(), sb.toString(), StandardCharsets.UTF_8);
         System.out.println(sb);

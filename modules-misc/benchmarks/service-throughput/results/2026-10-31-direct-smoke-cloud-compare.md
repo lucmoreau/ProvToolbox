@@ -11,3 +11,12 @@ Pairs: direct post+key ~ HTTP baseline with its key (B=1), direct post ~ HTTP no
 | tr | post+key | baseline | 2 | 1 | 328.8 | 144.1 | 0.44 | 13.21 | 12.36 | 3.045 | 3.661 | 6.83 | 16.79 | 9.983 | 1.223 | 2026-10-31-smoke-cloud-jitfix.csv |
 | tr | combined | combined | 2 | 1 | 559.7 | 206.3 | 0.37 | 12.23 | 11.25 | 2.216 | 2.768 | 4.26 | 12.43 | 6.051 | 0.871 | 2026-10-31-smoke-cloud-jitfix.csv |
 | fs | post | baseline | 2 | 10 | 458.5 | 237.3 | 0.52 | 9.0 | 9.51 | 2.299 | 3.083 | 44.6 | 93.98 | 4.372 | 1.092 | 2026-10-31-smoke-cloud-jitfix.csv |
+
+## Three ways to write the same records
+
+records/s at the same family, N and B: JSONL (the bindings appended to local files, a force per batch, a file per writer), direct (no web service), HTTP (the service). '' = not run.
+
+| fam | N | B | JSONL | direct insert | direct post+key | direct combined | HTTP baseline | HTTP combined | JSONL B/rec |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| fs | 2 | 1 | 4762.3 | 748.4 | 288.4 | 419.7 | 145.2 | 179.0 | 329 |
+| tr | 2 | 1 | 7175.3 | 787.2 | 328.8 | 559.7 | 144.1 | 206.3 | 233 |

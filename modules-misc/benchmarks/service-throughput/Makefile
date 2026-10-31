@@ -40,6 +40,7 @@ SETTINGS = FAMILY=$(FAMILY) VARIANT=$(VARIANT) N=$(N) B=$(B) POOL=$(POOL) WARMUP
 	WRITERS=$(WRITERS) QUEUE=$(QUEUE) BATCH=$(BATCH) COMPOSITE_SIZE=$(COMPOSITE_SIZE) JETTY_MAX_THREADS=$(JETTY_MAX_THREADS) \
 	"SERVICE_JVM_FLAGS=$(SERVICE_JVM_FLAGS)" PLAN=$(PLAN) LABEL=$(LABEL) STOP_ON_FAIL=$(STOP_ON_FAIL)
 
+.PHONY: bench.jsonl.run bench.jsonl.plan bench.jsonl.matrix bench.jsonl.smoke
 .PHONY: bench.direct.build bench.direct.run bench.direct.plan bench.direct.matrix bench.direct.smoke bench.direct.compare
 .PHONY: bench.help bench.build bench.prepare bench.service.build bench.guard bench.db.up bench.db.down bench.db.reset \
 	bench.db.destroy bench.service.up bench.service.down bench.run bench.matrix bench.plan bench.smoke
@@ -54,6 +55,8 @@ bench.help:
 	@echo "direct JDBC mode (no web service):"
 	@echo "make bench.direct.run FAMILY=fs LAYER=insert|post KEY=on|off READBACK=on|off HASH=update|header|off RELATIONS=inline|async N=1 B=1 JDBC_BATCH=0|1"
 	@echo "make bench.direct.plan | bench.direct.matrix [PLAN=full|smoke] | bench.direct.compare [HTTP_RESULTS=results/<file>.csv,...]"
+	@echo "JSONL mode (the bindings appended to local files: no store, no service):"
+	@echo "make bench.jsonl.run FAMILY=fs N=1 B=1 FSYNC=batch|off FILES=writer|shared [JSONL_DIR=target/jsonl] | bench.jsonl.plan | bench.jsonl.matrix"
 
 # ---------------------------------------------------------------- build
 
@@ -187,3 +190,31 @@ bench.direct.smoke: bench.direct.build
 
 bench.direct.compare: bench.direct.build
 	$(DIRECT) direct-compare $(DIRECT_SETTINGS)
+
+# ---------------------------------------------------------------- JSONL mode (no store, no service; see BENCHMARK.md)
+#
+# The same records' bindings serialised as JSON lines and appended to files of the local file system (JSONL_DIR,
+# default target/jsonl, which may hold nothing but the mode's own provbench-*.jsonl files), N writers, B records per
+# write, FSYNC=batch forcing each write to disk (as a commit) or off. Part of the default (HTTP) build: no service class,
+# no database. Its own defaults: warm-up 3 s, measure 10 s, unless WARMUP or DURATION are given.
+
+FSYNC ?= batch
+FILES ?= writer
+JSONL_DIR ?= target/jsonl
+J_WARMUP = $(if $(filter command line environment,$(origin WARMUP)),$(WARMUP),3)
+J_DURATION = $(if $(filter command line environment,$(origin DURATION)),$(DURATION),10)
+JSONL_SETTINGS = FAMILY=$(FAMILY) N=$(N) B=$(B) WARMUP=$(J_WARMUP) DURATION=$(J_DURATION) COMPOSITE_SIZE=$(COMPOSITE_SIZE) \
+	FSYNC=$(FSYNC) FILES=$(FILES) JSONL_DIR=$(JSONL_DIR) PLAN=$(PLAN) LABEL=$(LABEL) STOP_ON_FAIL=$(STOP_ON_FAIL)
+
+bench.jsonl.run: bench.build
+	$(HARNESS) jsonl-run $(JSONL_SETTINGS)
+
+bench.jsonl.plan: bench.build
+	@$(HARNESS) jsonl-plan $(JSONL_SETTINGS)
+
+bench.jsonl.matrix: bench.build
+	$(HARNESS) jsonl-matrix $(JSONL_SETTINGS)
+
+# both families at N=2 with a force per record, fs without force, fs at B=10 in one shared file; 2 s + 5 s each
+bench.jsonl.smoke: bench.build
+	$(HARNESS) jsonl-matrix $(JSONL_SETTINGS) PLAN=smoke WARMUP=2 DURATION=5 LABEL=$(if $(LABEL),$(LABEL),smoke)

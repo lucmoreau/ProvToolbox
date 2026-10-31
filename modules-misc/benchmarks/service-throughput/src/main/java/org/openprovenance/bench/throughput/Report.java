@@ -70,7 +70,9 @@ final class Report {
             st.append("| ").append(t[0]).append(" | ").append(t[1]).append(" | ").append(t[2]).append(" | ").append(t[3]).append(" | ").append(t[4])
                     .append(" | `").append(t[5].replace("|", "\\|").replace("`", "'")).append("` |\n");
         }
-        Files.writeString(statements().toPath(), st.toString(), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        if (!row.topStatements.isEmpty() || !"jsonl".equals(row.values.get("mode"))) {   // the JSONL mode has no statements
+            Files.writeString(statements().toPath(), st.toString(), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        }
     }
 
     private static String cell(String v) {
@@ -124,6 +126,11 @@ final class Report {
 
     /** The machine and the software, recorded once per report (the environment file). */
     void recordEnvironment() throws Exception {
+        recordEnvironment(true);
+    }
+
+    /** As {@link #recordEnvironment()}; without the store's rows when {@code database} is false (the JSONL mode). */
+    void recordEnvironment(boolean database) throws Exception {
         if (environment().exists()) return;
         StringBuilder sb = new StringBuilder();
         String os = System.getProperty("os.name");
@@ -166,9 +173,13 @@ final class Report {
                 "server {{.ServerVersion}}, VM {{.OperatingSystem}} kernel {{.KernelVersion}}, {{.NCPU}} CPUs, {{.MemTotal}} bytes RAM, cgroup v{{.CgroupVersion}}, storage {{.Driver}}"));
         row(sb, "PostgreSQL storage", "named Docker volume " + Settings.VOLUME + " inside the Docker VM (not a bind mount): pg_test_fsync measures the VM's disk");
         row(sb, "pg_test_fsync", Store.fdatasyncFigure(s) + " (full output: results/" + Store.fsyncFile(s).getName() + ")");
-        try (Connection c = Store.connect(Guard.DB_NAME)) {
-            row(sb, "PostgreSQL", Store.version(c));
-            row(sb, "PostgreSQL settings (non-default)", Store.nonDefaultSettings(c));
+        if (database) {
+            try (Connection c = Store.connect(Guard.DB_NAME)) {
+                row(sb, "PostgreSQL", Store.version(c));
+                row(sb, "PostgreSQL settings (non-default)", Store.nonDefaultSettings(c));
+            }
+        } else {
+            row(sb, "PostgreSQL", "not used (JSONL mode)");
         }
         String commit = out("git", "-C", s.home.getAbsolutePath(), "rev-parse", "HEAD");
         String dirty = out("git", "-C", s.home.getAbsolutePath(), "status", "--porcelain", "--untracked-files=no").isBlank() ? "" : " (+ uncommitted changes)";
@@ -239,7 +250,7 @@ final class Report {
         StringBuilder rule = new StringBuilder("|");
         for (String[] c : columns) {
             head.append(' ').append(c[1]).append(" |");
-            rule.append(Set.of("run", "family", "variant", "key", "status", "layer", "readback", "hash", "relations", "waits_top", "mode").contains(c[0]) ? "---|" : "---:|");
+            rule.append(Set.of("run", "family", "variant", "key", "status", "layer", "readback", "hash", "relations", "waits_top", "mode", "fsync", "files").contains(c[0]) ? "---|" : "---:|");
         }
         sb.append(head).append('\n').append(rule).append('\n');
         for (Map<String, String> r : rows) {

@@ -129,6 +129,27 @@ public final class Guard {
         }
     }
 
+    /** The files the JSONL mode writes, and the only ones it ever deletes: provbench-&lt;family&gt;-&lt;writer&gt;.jsonl. */
+    public static final java.util.regex.Pattern JSONL_FILE = java.util.regex.Pattern.compile("provbench-[a-z]+-[a-z0-9]+\\.jsonl");
+
+    /**
+     * The JSONL mode's directory: absent (it is created), or holding nothing but the mode's own files
+     * ({@link #JSONL_FILE}), so that clearing it between runs can only delete what the benchmark wrote.
+     */
+    public static java.io.File jsonlDirectory(java.io.File dir) {
+        if (dir == null) throw new Refused("no JSONL directory");
+        if (dir.exists() && !dir.isDirectory()) throw new Refused("the JSONL directory " + dir + " is a file");
+        String[] names = dir.list();
+        if (names != null) {
+            for (String n : names) {
+                if (!JSONL_FILE.matcher(n).matches()) {
+                    throw new Refused("the JSONL directory " + dir + " holds " + n + ", which the benchmark did not write: name an empty or new directory");
+                }
+            }
+        }
+        return dir;
+    }
+
     /** The cluster holds no database but the benchmark's and PostgreSQL's own. */
     public static void databases(Collection<String> names) {
         Set<String> foreign = new TreeSet<>(names);

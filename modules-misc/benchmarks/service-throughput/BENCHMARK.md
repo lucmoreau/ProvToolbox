@@ -16,6 +16,7 @@ behaviour as it was: nothing changes for an existing deployment.
 - [Smoke run (cloud session, smoke only)](#smoke-run-cloud-session-smoke-only)
 - [Results on the M4 Max](#results-on-the-m4-max)
 - [Direct JDBC mode](#direct-jdbc-mode)
+- [JSONL mode](#jsonl-mode)
 
 ## Running it
 
@@ -651,7 +652,7 @@ runs (3 s + 8 s each) took 4.7 min: ~24 s per run beyond its 11 s of load, withi
 
 ### Smoke run (cloud session, smoke only)
 
-Linux VM, 4 vCPU Intel Xeon @ 2.10 GHz, 16 GB, Docker 29.9 (cgroup v1), PostgreSQL 16.15, Java 21 (release 15 bytecode),
+Linux VM, 4 vCPU Intel Xeon @ 2.80 GHz (another host than the HTTP smoke run of 2026-10-30), 16 GB, Docker 29.9 (cgroup v1), PostgreSQL 16.15, Java 21 (release 15 bytecode),
 the template library rebuilt with the JIT fix; warm-up 3 s, measured 8 s, N=2: **smoke figures, to show the mode works, not
 results** — on 4 vCPUs the client, the service (HTTP) and PostgreSQL share the cores. `make bench.direct.smoke LABEL=smoke-cloud`:
 8 runs, 8 ok (`results/2026-10-31-direct-smoke-cloud.*`); every run's rows equal the catalogue's count exactly.
@@ -828,3 +829,116 @@ rate. With the post-processing, grouping helps less, since each record keeps its
 4. A bulk path (one JDBC batch of composed inserts, relations asynchronous) for loads: 63,234 records/s on this machine.
 5. Measure on a Linux host with PostgreSQL on a local socket: here every statement crosses Docker Desktop's VM, which
    inflates the idle-in-transaction time the post-processing shows.
+
+## JSONL mode
+
+For comparison: the same records' **bindings serialised as JSON lines and appended to files of the local file
+system** — no store, no service, no index, no relation, nothing read back. A floor: what writing the records down
+costs at all, beside what the database (direct mode) and the service (HTTP mode) add to it.
+
+### Design
+
+- **The records** are the other modes' (`Family`: same templates, weights, composites of 3, unique values,
+  references to ids allocated earlier). Each line is a record's **complete bindings** (`Family.bindings`): `isA`, its
+  `ID`, its input values, and its output variables bound to ids the harness allocates — what the store's insert
+  function allocates (`Family.OUTPUTS`, the catalogue's ioMap outputs). A composite is one line with its
+  `__elements`: its own `ID`, each element's, its shared outputs one id per composite (in place of the tokens), the
+  others one per element. About 330 bytes per template record for fs, 230 for tr.
+- **Writes**: N writer threads; each serialises B records (Jackson), appends them in one `FileChannel.write` and, with
+  `FSYNC=batch` (default), forces them to disk (`FileChannel.force(false)`) before the next: B records as one durable
+  unit, as a transaction's commit. `FSYNC=off` leaves them to the OS's cache. `FILES=writer` (default): a file per
+  writer; `FILES=shared`: one file, the appends and their force serialised.
+- **Durability, honestly**: `force` is fdatasync on Linux and fsync on macOS, which — unlike `F_FULLFSYNC` — does not
+  flush the drive's own cache. The files are on the host's file system (on the Mac: APFS on the internal SSD), where
+  PostgreSQL's WAL is on the Docker VM's virtual disk (pg_test_fsync). Same records, different disks: compare the shapes,
+  and read the absolute figures with that in mind.
+- **Files**: `JSONL_DIR` (default `target/jsonl`) may hold nothing but the mode's own `provbench-<family>-<writer>.jsonl`
+  (the guard: `Guard.jsonlDirectory`, tested in `GuardTest`); the run deletes those before it starts and after its
+  checks (gigabytes at full speed with `FSYNC=off`), never anything else. No database, no Docker: the JSONL mode is part
+  of the default (HTTP) build and needs neither.
+- **Checks** (a run that fails one is FAIL): the files hold exactly the bytes written and one line per entry (warm-up
+  and window), every 997th line and the last parse as JSON with an `isA`.
+- **Measured**: records/s (template records, a composite counting 1 + 3) and batches/s, MB/s and bytes per record,
+  latency per batch (serialisation, write and force) p50/p95/p99/max, the harness JVM's CPU.
+
+### Running it
+
+```bash
+make bench.jsonl.run FAMILY=fs N=16 B=1 FSYNC=batch FILES=writer
+```
+
+```bash
+make bench.jsonl.matrix
+```
+
+`bench.jsonl.plan` prints the plan; `bench.jsonl.smoke` is the short check. Defaults: warm-up 3 s, measured 10 s
+(nothing to start or reset). Results: `results/<date>-jsonl.csv` and `.md`, `-environment.md` (with the JSONL
+directory's file system). `make bench.direct.compare` adds a table **"Three ways to write the same records"** to
+`results/<date>-direct-compare.md`: at the same family, N and B, JSONL (`FSYNC=batch`, a file per writer), direct
+`insert`, `post+key`, `combined`, HTTP `baseline`, `combined` — reports of the same machine only.
+
+### The plan and its budget
+
+| phase | runs | what varies |
+|---|---:|---|
+| J1. one writer, fs, B=1 | 2 | FSYNC = batch, off |
+| J2. writers, fs, B=1, a force per record, a file each | 6 | N = 2, 4, 8, 16, 32, 64 |
+| J3. one shared file, fs, B=1 | 2 | N = 16, 64 |
+| J4. records per force, fs, N=16 | 4 | B = 10, 100 with FSYNC=batch; B = 1, 100 with FSYNC=off |
+| J5. transport family, B=1 | 2 | N = 1, 16 |
+
+16 runs × (3 s warm-up + 10 s measured + ~3 s to clear, count and delete) ≈ 4.3 min (the smoke run's 4 runs at 2 s + 5 s
+took 0.5 min here). At N=64 with `FSYNC=off` the files grow at hundreds of MB/s: the run deletes them, but leave a few GB
+free.
+
+### Smoke run (cloud session, smoke only)
+
+Linux VM (4 vCPU Xeon, ext4 on a virtual disk), Java 21, warm-up 2 s, measured 5 s: **smoke figures, not results**.
+`make bench.jsonl.smoke LABEL=smoke-cloud`: 4 runs, 4 ok (`results/2026-10-31-jsonl-smoke-cloud.*`).
+
+| fam | N | B | fsync | files | records/s | batches/s | MB/s | B/rec | p50 ms/batch | p99 ms/batch | CPU % | status |
+|---|---:|---:|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| fs | 2 | 1 | batch | writer | 4762.3 | 3802.4 | 1.49 | 329 | 0.428 | 1.723 | 57 | ok |
+| tr | 2 | 1 | batch | writer | 7175.3 | 5000.5 | 1.59 | 233 | 0.35 | 1.022 | 62 | ok |
+| fs | 2 | 1 | off | writer | 179626.8 | 143877.7 | 58.83 | 343 | 0.004 | 0.093 | 200 | ok |
+| fs | 2 | 10 | batch | shared | 18525.5 | 1493.8 | 5.91 | 335 | 1.134 | 4.845 | 73 | ok |
+
+Three ways on this VM, N=2, B=1 (`results/2026-10-31-direct-smoke-cloud-compare.md`; the HTTP runs N=2, POOL=4), records/s:
+
+| fam | JSONL, a force per record | direct insert | direct post+key | direct combined | HTTP baseline | HTTP combined |
+|---|---:|---:|---:|---:|---:|---:|
+| fs | 4762.3 | 748.4 | 288.4 | 419.7 | 145.2 | 179.0 |
+| tr | 7175.3 | 787.2 | 328.8 | 559.7 | 144.1 | 206.3 |
+
+Read as smoke (the three were run minutes apart on a shared VM, the JSONL files on its virtual disk, PostgreSQL's WAL
+in a container on the same disk): appending a record's bindings and forcing them to disk is about 6–9 times as fast as
+the store's insert alone, and 30–50 times as fast as a record through the service; without the force, 180,000
+records/s at N=2, the serialisation the only cost left.
+
+### Results on the M4 Max (JSONL)
+
+To be filled from `make bench.jsonl.matrix` and `make bench.direct.compare` on the M4 Max; no figure here before that
+run.
+
+| phase | fam | N | B | fsync | files | records/s | MB/s | B/rec | p50 ms/batch | p99 ms/batch | CPU % |
+|---|---|---:|---:|---|---|---:|---:|---:|---:|---:|---:|
+| J1 | fs | 1 | 1 | batch | writer | | | | | | |
+| J1 | fs | 1 | 1 | off | writer | | | | | | |
+| J2 | fs | 2 | 1 | batch | writer | | | | | | |
+| J2 | fs | 4 | 1 | batch | writer | | | | | | |
+| J2 | fs | 8 | 1 | batch | writer | | | | | | |
+| J2 | fs | 16 | 1 | batch | writer | | | | | | |
+| J2 | fs | 32 | 1 | batch | writer | | | | | | |
+| J2 | fs | 64 | 1 | batch | writer | | | | | | |
+| J3 | fs | 16 | 1 | batch | shared | | | | | | |
+| J3 | fs | 64 | 1 | batch | shared | | | | | | |
+| J4 | fs | 16 | 10 | batch | writer | | | | | | |
+| J4 | fs | 16 | 100 | batch | writer | | | | | | |
+| J4 | fs | 16 | 1 | off | writer | | | | | | |
+| J4 | fs | 16 | 100 | off | writer | | | | | | |
+| J5 | tr | 1 | 1 | batch | writer | | | | | | |
+| J5 | tr | 16 | 1 | batch | writer | | | | | | |
+
+#### Three ways to write the same records
+
+(From the comparison's table: JSONL, direct and HTTP records/s at the same family, N and B.)

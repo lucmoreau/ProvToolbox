@@ -51,7 +51,11 @@ final class Settings {
         values.put("HASH", "update");         // post: update|header|off (submission.hash)
         values.put("RELATIONS", "inline");    // post: inline|async (relations.write)
         values.put("JDBC_BATCH", "0");        // insert, B > 1: the B statements sent in one round trip
-        values.put("HTTP_RESULTS", "");       // bench.direct.compare: the HTTP CSV(s) to compare with (comma-separated), else all
+        values.put("HTTP_RESULTS", "");
+        // the JSONL mode (JsonlRun): the records' bindings appended to local files, no store, no service
+        values.put("JSONL_DIR", "target/jsonl");   // holds nothing but provbench-*.jsonl (Guard.jsonlDirectory)
+        values.put("FSYNC", "batch");             // batch: force to disk after each B records (as a commit); off: the OS's cache
+        values.put("FILES", "writer");            // writer: a file per writer; shared: one file, appends serialised       // bench.direct.compare: the HTTP CSV(s) to compare with (comma-separated), else all
 
         for (String a : args) {
             int eq = a.indexOf('=');

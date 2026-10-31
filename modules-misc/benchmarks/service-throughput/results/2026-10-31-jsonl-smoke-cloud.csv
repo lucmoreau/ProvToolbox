@@ -1,0 +1,5 @@
+run,mode,family,n,b,fsync,files,warmup_s,duration_s,batches,records,batches_per_s,records_per_s,mb_per_s,bytes_per_record,lat_p50_ms,lat_p95_ms,lat_p99_ms,lat_max_ms,client_cpu_pct,client_cpu_ms_per_record,failures,file_bytes,status,problems
+j1793455174-01,jsonl,fs,2,1,batch,writer,2,5,19015,23815,3802.4,4762.3,1.49,329,0.428,0.895,1.723,24.445,57,0.1188,0,10587461,ok,
+j1793455174-02,jsonl,tr,2,1,batch,writer,2,5,25005,35880,5000.5,7175.3,1.59,233,0.35,0.684,1.022,7.487,62,0.087,0,11103816,ok,
+j1793455174-03,jsonl,fs,2,1,off,writer,2,5,720393,899388,143877.7,179626.8,58.83,343,0.004,0.044,0.093,15.749,200,0.0111,0,467294975,ok,
+j1793455174-04,jsonl,fs,2,10,batch,shared,2,5,7471,92650,1493.8,18525.5,5.91,335,1.134,2.654,4.845,66.057,73,0.0396,0,42396039,ok,

@@ -17,6 +17,9 @@ import java.util.List;
  *   run            one run: FAMILY VARIANT N B POOL WARMUP DURATION [WRITERS QUEUE BATCH]
  *   matrix         the plan (PLAN=full|smoke), each run appended to results/&lt;date&gt;[-LABEL].csv/.md
  *   plan           the plan and its time budget, nothing run
+ *   jsonl-run      the JSONL mode, one run: FAMILY N B FSYNC FILES JSONL_DIR WARMUP DURATION (no store, no service)
+ *   jsonl-plan     the JSONL plan and its budget
+ *   jsonl-matrix   the JSONL plan (PLAN=full|smoke), results/&lt;date&gt;-jsonl[-LABEL].csv/.md
  * </pre>
  * Every command that writes runs the guard first and stops on a refusal (exit status 3).
  */
@@ -90,6 +93,20 @@ public final class Main {
             }
             case "matrix":
                 return matrix(s);
+            case "jsonl-run": {
+                Report report = new Report(s, "jsonl");
+                JsonlRun.recordEnvironment(report, s);
+                Run.Row row = new JsonlRun(s).execute("j" + System.currentTimeMillis() / 1000);
+                appendAligned(report, row);
+                report.writeMarkdown("Service throughput, JSONL mode, " + report.name, null, JsonlRun.COLUMNS, JsonlRun.INTRO, JsonlRun.LEGEND);
+                System.out.println("results: " + report.csv() + ", " + report.markdown());
+                return row.ok() ? 0 : 1;
+            }
+            case "jsonl-plan":
+                System.out.println(JsonlRun.describePlan(JsonlRun.plan(s), s));
+                return 0;
+            case "jsonl-matrix":
+                return JsonlRun.matrix(s);
             default:
                 throw new IllegalArgumentException("unknown command " + command);
         }
@@ -143,7 +160,7 @@ public final class Main {
     }
 
     /** An aborted run's row carries fewer columns: padded to the CSV's header so the columns stay aligned. */
-    private static void appendAligned(Report report, Run.Row row) throws java.io.IOException {
+    static void appendAligned(Report report, Run.Row row) throws java.io.IOException {
         List<java.util.Map<String, String>> existing = Report.readCsv(report.csv());
         if (!existing.isEmpty() && !existing.get(0).keySet().equals(row.values.keySet())) {
             Run.Row aligned = new Run.Row();

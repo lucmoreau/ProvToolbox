@@ -141,7 +141,7 @@ public class CompilerQueryInvoker {
                                     METHOD_CALL(STRING,"concat",
                                             List.of(
                                                     CONSTANT("'"),
-                                                    VARIABLE("time"),
+                                                    METHOD_CALL(VARIABLE("time"), "replace", List.of(CONSTANT("'"), CONSTANT("''"))),
                                                     CONSTANT("'::timestamptz"))))
 
 
@@ -163,7 +163,7 @@ public class CompilerQueryInvoker {
                                     METHOD_CALL(STRING,"concat",
                                             List.of(
                                                     CONSTANT("'"),
-                                                    VARIABLE("date"),
+                                                    METHOD_CALL(VARIABLE("date"), "replace", List.of(CONSTANT("'"), CONSTANT("''"))),
                                                     CONSTANT("'::date"))))
 
 
@@ -224,7 +224,7 @@ public class CompilerQueryInvoker {
                     .BODY(
                             IF(BINARY_OP(VARIABLE("str"),"==",Constant.getNull()))
                                     .THEN(METHOD_CALL("return", List.of(CONSTANT("''::json"))))
-                                    .ELSE(RETURN(BINARY_OP(BINARY_OP(CONSTANT("'"), "+", VARIABLE("str")), "+", CONSTANT("'::json"))))
+                                    .ELSE(RETURN(BINARY_OP(BINARY_OP(CONSTANT("'"), "+", METHOD_CALL(VARIABLE("str"), "replace", List.of(CONSTANT("'"), CONSTANT("''")))), "+", CONSTANT("'::json"))))
                     );
             pastClass.METHOD(ms5);
         }
@@ -255,6 +255,36 @@ public class CompilerQueryInvoker {
         };
     }
 
+    /**
+     * Decides how the value of input variable {@code key} is rendered in the SQL composed by a query invoker.
+     * <p>
+     * Returns the special SQL type (a key of {@link #converterForSpecialType(String)}) whose converter must be
+     * applied to the bean field, or {@code null} when the value can be appended as is (numbers, booleans).
+     * <ul>
+     *     <li>An explicit {@code @sql.type} with a converter (nullableTEXT, nonNullableTEXT, timestamptz, date, json) wins.</li>
+     *     <li>A field whose Java type is {@link String} and has no {@code @sql.type} defaults to nullableTEXT: the generated
+     *     SQL table and insert function declare it as TEXT, so it must be passed as a quoted, escaped TEXT literal.
+     *     Appending it raw would both fail on ordinary values and allow SQL injection.</li>
+     *     <li>A {@link String} field with an {@code @sql.type} that has no converter is rejected: there is no safe way
+     *     to render it.</li>
+     * </ul>
+     */
+    public String sqlConversionFor(String key, TemplateBindingsSchema bindingsSchema, String templateName) {
+        final String declared = descriptorUtils.getSqlType(key, bindingsSchema);
+        if (declared != null && converterForSpecialType(declared) != null) {
+            return declared;
+        }
+        final boolean isString = String.class.equals(compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key));
+        if (!isString) {
+            return null;
+        }
+        if (declared == null) {
+            return NULLABLE_TEXT;
+        }
+        throw new IllegalStateException("Template " + templateName + ": variable '" + key + "' has a string type but \"@sql.type\": \""
+                + declared + "\" has no SQL converter; use one of " + NULLABLE_TEXT + ", " + NON_NULLABLE_TEXT + ", " + TIMESTAMPTZ + ", " + SQL_DATE + ", " + JSON_TEXT);
+    }
+
     public void simpleQueryInvoker(TemplatesProjectConfiguration configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, Method m, String beanVar, String queryInvoker) {
         TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
@@ -268,23 +298,19 @@ public class CompilerQueryInvoker {
                     m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(","))));
                 }
                 first = false;
-                final String sqlType = descriptorUtils.getSqlType(key, bindingsSchema);
+                final String sqlType = sqlConversionFor(key, bindingsSchema, config.name);
                 if (sqlType != null) {
                     String fun = converterForSpecialType(sqlType);
-                    if (fun != null) {
-                        if (queryInvoker == null) {
-                            m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(fun, List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
-                        } else {
-                            m.BODY(METHOD_CALL(VARIABLE(SB_VAR),
-                                    "append",
-                                    List.of(METHOD_CALL(VARIABLE(queryInvoker),
-                                            fun,
-                                            List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
-                        }
-                        foundSpecialTypes.add(sqlType);
+                    if (queryInvoker == null) {
+                        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(fun, List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
                     } else {
-                        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(VARIABLE(beanVar), key))));
+                        m.BODY(METHOD_CALL(VARIABLE(SB_VAR),
+                                "append",
+                                List.of(METHOD_CALL(VARIABLE(queryInvoker),
+                                        fun,
+                                        List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
                     }
+                    foundSpecialTypes.add(sqlType);
                 } else {
                     m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(VARIABLE(beanVar), key))));
                 }
@@ -310,30 +336,23 @@ public class CompilerQueryInvoker {
 
             if (descriptorUtils.isInput(key, bindingsSchema) || (sharing != null && sharing.contains(key))) {
                 String comment = (sharing != null && sharing.contains(key)) ? "/* sharing */" : "";
-                final String sqlType = descriptorUtils.getSqlType(key, bindingsSchema);
+                final String sqlType = sqlConversionFor(key, bindingsSchema, config.name);
+                if (!comment.isEmpty()) m.COMMENT(comment);
                 if (sqlType != null) {
                     String fun = converterForSpecialType(sqlType);
-                    if (fun != null) {
-                        if (!comment.isEmpty()) m.COMMENT(comment);
-                        if (queryInvoker != null) {
-                            m.BODY(METHOD_CALL(VARIABLE(SB_VAR),
-                                    "append",
-                                    List.of(METHOD_CALL(VARIABLE(queryInvoker),
-                                            fun,
-                                            List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
-                        } else {
-                            m.BODY(METHOD_CALL(VARIABLE(SB_VAR),
-                                    "append",
-                                    List.of(METHOD_CALL(fun, List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
-                        }
-                        foundSpecialTypes.add(sqlType);
-
+                    if (queryInvoker != null) {
+                        m.BODY(METHOD_CALL(VARIABLE(SB_VAR),
+                                "append",
+                                List.of(METHOD_CALL(VARIABLE(queryInvoker),
+                                        fun,
+                                        List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
                     } else {
-                        if (!comment.isEmpty()) m.COMMENT(comment);
-                        m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(VARIABLE(beanVar), key)))) ;
+                        m.BODY(METHOD_CALL(VARIABLE(SB_VAR),
+                                "append",
+                                List.of(METHOD_CALL(fun, List.of(METHOD_CALL(VARIABLE(beanVar), key))))));
                     }
+                    foundSpecialTypes.add(sqlType);
                 } else {
-                    if (!comment.isEmpty()) m.COMMENT(comment);
                     m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(METHOD_CALL(VARIABLE(beanVar), key))));
                 }
             } else {

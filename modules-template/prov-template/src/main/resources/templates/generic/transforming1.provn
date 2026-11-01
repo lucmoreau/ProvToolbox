@@ -22,7 +22,7 @@ document
     wasDerivedFrom(var:output,var:input,var:activity,-,-)
     wasAssociatedWith(var:activity,var:agent,var:plan)
     actedOnBehalfOf(var:agent,var:responsible,var:activity)
-    wasAttributedTo(var:output,var:agent,-)
+    wasAttributedTo(var:output,var:agent)
 
 
 

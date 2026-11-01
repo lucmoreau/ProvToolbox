@@ -6,6 +6,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-n: the ANTLR 3 PROV-N parser is deprecated, to be replaced by the ANTLR 4 parser (ProvNReader) after this release: the reading methods of Utility (readDocument, convertSyntaxTreeToJavaBean), and, for removal, those exposing the ANTLR 3 parser or its trees (getParserForFile/Stream/CharStream, convertSyntaxTreeToTree, convertTreeToJavaBean, printTree) and TreeTraversal. ProvDeserialiser is not deprecated: it will then read with ProvNReader, which rejects invalid PROV-N rather than recover from it (see its javadoc)
 * future versions to be work with latest jackson, remove prov-xml, and antlr3 parser.
 
+
 `2.2.5`
 * prov-template-archetype: navigator tab supports backward and forward traversals
 * service-templates-core: idempotency of statement posting, and support for idempotency-key in template service

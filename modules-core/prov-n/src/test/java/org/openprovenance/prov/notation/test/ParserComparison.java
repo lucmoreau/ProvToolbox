@@ -16,11 +16,6 @@ import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Bundle;
-import org.openprovenance.prov.model.DerivedByInsertionFrom;
-import org.openprovenance.prov.model.DerivedByRemovalFrom;
-import org.openprovenance.prov.model.DictionaryMembership;
-import org.openprovenance.prov.model.Entry;
-import org.openprovenance.prov.model.Key;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
@@ -244,50 +239,9 @@ public class ParserComparison {
     }
 
     private boolean statementEquals(StatementOrBundle s1, StatementOrBundle s2) {
-        if (s1.getKind() != s2.getKind()) return false;
+        if (s1.getKind() != s2.getKind() || !s1.equals(s2)) return false;
         Collection<Attribute> a1 = pFactory.getAttributes((Statement) s1), a2 = pFactory.getAttributes((Statement) s2);
-        if (a1.size() != a2.size() || !new HashSet<>(a1).equals(new HashSet<>(a2))) return false;
-        switch (s1.getKind()) {
-            // the vanilla beans for these statements, and their Entry and Key, do not implement equals: compared field by field
-            case PROV_DICTIONARY_INSERTION: {
-                DerivedByInsertionFrom d1 = (DerivedByInsertionFrom) s1, d2 = (DerivedByInsertionFrom) s2;
-                return Objects.equals(d1.getId(), d2.getId())
-                        && Objects.equals(d1.getNewDictionary(), d2.getNewDictionary())
-                        && Objects.equals(d1.getOldDictionary(), d2.getOldDictionary())
-                        && entriesEqual(d1.getKeyEntityPair(), d2.getKeyEntityPair());
-            }
-            case PROV_DICTIONARY_REMOVAL: {
-                DerivedByRemovalFrom d1 = (DerivedByRemovalFrom) s1, d2 = (DerivedByRemovalFrom) s2;
-                if (!(Objects.equals(d1.getId(), d2.getId())
-                        && Objects.equals(d1.getNewDictionary(), d2.getNewDictionary())
-                        && Objects.equals(d1.getOldDictionary(), d2.getOldDictionary())
-                        && d1.getKey().size() == d2.getKey().size())) return false;
-                for (int i = 0; i < d1.getKey().size(); i++) {
-                    if (!keyEquals(d1.getKey().get(i), d2.getKey().get(i))) return false;
-                }
-                return true;
-            }
-            case PROV_DICTIONARY_MEMBERSHIP: {
-                DictionaryMembership d1 = (DictionaryMembership) s1, d2 = (DictionaryMembership) s2;
-                return Objects.equals(d1.getDictionary(), d2.getDictionary())
-                        && entriesEqual(d1.getKeyEntityPair(), d2.getKeyEntityPair());
-            }
-            default:
-                return s1.equals(s2);
-        }
-    }
-
-    private static boolean entriesEqual(List<Entry> l1, List<Entry> l2) {
-        if (l1.size() != l2.size()) return false;
-        for (int i = 0; i < l1.size(); i++) {
-            if (!keyEquals(l1.get(i).getKey(), l2.get(i).getKey())) return false;
-            if (!Objects.equals(l1.get(i).getEntity(), l2.get(i).getEntity())) return false;
-        }
-        return true;
-    }
-
-    private static boolean keyEquals(Key k1, Key k2) {
-        return Objects.equals(k1.getValue(), k2.getValue()) && Objects.equals(k1.getType(), k2.getType());
+        return a1.size() == a2.size() && new HashSet<>(a1).equals(new HashSet<>(a2));
     }
 
     private static String namespaceDifference(String where, Namespace n1, Namespace n2) {

@@ -71,17 +71,16 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.model.test.Ro
 	}
 	@Override
 	public void testDictionaryMembership1() {
-		System.out.println(escapeRed("########## Skipping testDictionaryMembership1 (provn)"));
+		// a membership without entry is written as no statement at all
+		System.out.println(escapeRed("########## Skipping testDictionaryMembership1 (provn): a membership without entry"));
 	}
-	@Override
-	public void testDictionaryMembership2() {
-		System.out.println(escapeRed("########## Skipping testDictionaryMembership2 (provn)"));
-	}
+	// PROV-N has one key-entity pair per prov:hadDictionaryMember: a membership with several entries is written as
+	// several statements, and so read back as several memberships
 	@Override public void testDictionaryMembership3() {
-		System.out.println(escapeRed("########## Skipping testDictionaryMembership3 (provn)"));
+		System.out.println(escapeRed("########## Skipping testDictionaryMembership3 (provn): several entries in a membership"));
 	}
 	@Override public void testDictionaryMembership4() {
-		System.out.println(escapeRed("########## Skipping testDictionaryMembership4 (provn)"));
+		System.out.println(escapeRed("########## Skipping testDictionaryMembership4 (provn): several entries in a membership"));
 	}
 
 }

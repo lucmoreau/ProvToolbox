@@ -375,27 +375,25 @@ public class ParserComparisonTest extends TestCase {
         assertSame(doc("entity(ex:e1)") + "\n// entity(ex:e2)\n/* entity(ex:e3) */\n\n");
     }
 
-    /** The old parser drops these statements; the new one reads them as derivations of the corresponding type (PROV-DM 5.2). */
+    /**
+     * wasRevisionOf, wasQuotedFrom and hadPrimarySource, of early drafts of PROV-N, are not in the W3C Recommendation:
+     * there, they are derivations with prov:type prov:Revision, prov:Quotation, prov:PrimarySource. The old parser
+     * accepts them as keywords, and drops the statements. For the new one, as for the Recommendation, such a statement
+     * is an extensibility expression, named by an unprefixed qualified name: ignored, as any extension it does not
+     * know, if there is a default namespace, and rejected, since its name cannot be resolved, if there is none.
+     */
     public void testDivergenceRevisionQuotationPrimarySource() {
-        Map<String, QualifiedName> types = Map.of("wasRevisionOf", name.PROV_REVISION,
-                                                  "wasQuotedFrom", name.PROV_QUOTATION,
-                                                  "hadPrimarySource", name.PROV_PRIMARY_SOURCE);
-        for (Map.Entry<String, QualifiedName> e : types.entrySet()) {
-            String typeLiteral = "'prov:" + e.getValue().getLocalPart() + "'";
+        for (String keyword : List.of("wasRevisionOf", "wasQuotedFrom", "hadPrimarySource")) {
+            String statement = keyword + "(ex:id; ex:e2, ex:e1, ex:a, ex:g, ex:u, [ex:x=1])";
 
-            Outcome o = comparison.compareString(doc(e.getKey() + "(ex:id; ex:e2, ex:e1, ex:a, ex:g, ex:u, [ex:x=1])"));
-            assertEquals(o.toString(), Verdict.DIFFERENT, o.verdict);
-            assertTrue(o.oldDocument.getStatementOrBundle().isEmpty());
+            Outcome o = comparison.compareString("document\ndefault <http://example.org/default/>\nprefix ex <http://example.org/>\n"
+                                                 + "entity(ex:e0)\n" + statement + "\nendDocument\n");
+            assertEquals(o.toString(), Verdict.SAME, o.verdict);
+            assertEquals(1, o.newDocument.getStatementOrBundle().size());
 
-            // the same as the derivation with that type
-            Document expected = read(doc("wasDerivedFrom(ex:id; ex:e2, ex:e1, ex:a, ex:g, ex:u, [ex:x=1, prov:type=" + typeLiteral + "])"));
-            assertNull(comparison.difference(expected, o.newDocument));
-
-            WasDerivedFrom d = (WasDerivedFrom) single(e.getKey() + "(ex:e2, ex:e1)");
-            assertEquals(ex("e2"), d.getGeneratedEntity());
-            assertEquals(ex("e1"), d.getUsedEntity());
-            assertEquals(1, d.getType().size());
-            assertEquals(e.getValue(), d.getType().get(0).getValue());
+            o = comparison.compareString(doc("entity(ex:e0)", statement));
+            assertEquals(o.toString(), Verdict.NEW_REJECTS, o.verdict);
+            assertTrue(o.newFailure, o.newFailure.contains(keyword));
         }
     }
 

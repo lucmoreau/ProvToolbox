@@ -232,39 +232,13 @@ public class ProvNTreeTraversal extends ProvNBaseVisitor<Object> {
 
     @Override
     public Object visitDerivationExpression(DerivationExpressionContext ctx) {
-        return derivation(ctx.optionalIdentifier(), ctx.derivationArguments(), null);
-    }
-
-    /** A revision is a derivation of type prov:Revision (PROV-DM, Section 5.2.2). */
-    @Override
-    public Object visitRevisionExpression(RevisionExpressionContext ctx) {
-        return derivation(ctx.optionalIdentifier(), ctx.derivationArguments(), name.PROV_REVISION);
-    }
-
-    /** A quotation is a derivation of type prov:Quotation (PROV-DM, Section 5.2.3). */
-    @Override
-    public Object visitQuotationExpression(QuotationExpressionContext ctx) {
-        return derivation(ctx.optionalIdentifier(), ctx.derivationArguments(), name.PROV_QUOTATION);
-    }
-
-    /** A primary source is a derivation of type prov:PrimarySource (PROV-DM, Section 5.2.4). */
-    @Override
-    public Object visitHadPrimarySourceExpression(HadPrimarySourceExpressionContext ctx) {
-        return derivation(ctx.optionalIdentifier(), ctx.derivationArguments(), name.PROV_PRIMARY_SOURCE);
-    }
-
-    private Object derivation(OptionalIdentifierContext id, DerivationArgumentsContext ctx, QualifiedName derivationType) {
-        List<Attribute> attributes = attributes(ctx.optionalAttributeValuePairs());
-        if (derivationType != null) {
-            attributes.add(pFactory.newAttribute(name.PROV_TYPE, derivationType, name.PROV_QUALIFIED_NAME));
-        }
-        return c.newWasDerivedFrom(optionalIdentifier(id),
+        return c.newWasDerivedFrom(optionalIdentifier(ctx.optionalIdentifier()),
                                    identifierOrMarker(ctx.generated),
                                    identifierOrMarker(ctx.used),
                                    identifierOrMarker(ctx.activity),
                                    identifierOrMarker(ctx.generation),
                                    identifierOrMarker(ctx.usage),
-                                   attributes);
+                                   attributes(ctx.optionalAttributeValuePairs()));
     }
 
     @Override

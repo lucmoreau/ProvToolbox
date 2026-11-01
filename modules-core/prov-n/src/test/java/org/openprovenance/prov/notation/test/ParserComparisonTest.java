@@ -9,7 +9,6 @@ import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -18,6 +17,7 @@ import java.util.stream.Stream;
 
 import junit.framework.TestCase;
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.model.exception.QualifiedNameException;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
@@ -56,12 +56,6 @@ public class ParserComparisonTest extends TestCase {
        Corpora of PROV-N files
        ====================================================================== */
 
-    /**
-     * Files that the old parser accepts, and the new one rejects, on purpose: they have text after endDocument
-     * (see {@link #testDivergenceTextAfterEndDocument()}).
-     */
-    static final Set<String> TEXT_AFTER_END_DOCUMENT = Set.of("w3c-publication2.prov-asn", "w3c-publication2.provn");
-
     /** All the PROV-N files under a directory. */
     static List<Path> provnFiles(Path root) throws IOException {
         try (Stream<Path> paths = Files.walk(root)) {
@@ -94,13 +88,11 @@ public class ParserComparisonTest extends TestCase {
         }
     }
 
-    /** No document is read differently by the two parsers, and the new parser only rejects what it should. */
+    /** No document is read differently by the two parsers, and the new parser rejects none that the old one accepts. */
     static void checkOutcomes(Map<Verdict, List<Outcome>> outcomes) {
         List<String> failures = new ArrayList<>();
         for (Outcome o : outcomes.get(Verdict.DIFFERENT)) failures.add(o.toString());
-        for (Outcome o : outcomes.get(Verdict.NEW_REJECTS)) {
-            if (!TEXT_AFTER_END_DOCUMENT.contains(Path.of(o.source).getFileName().toString())) failures.add(o.toString());
-        }
+        for (Outcome o : outcomes.get(Verdict.NEW_REJECTS)) failures.add(o.toString());
         assertTrue("Parsers disagree:\n" + String.join("\n", failures), failures.isEmpty());
     }
 
@@ -358,10 +350,17 @@ public class ParserComparisonTest extends TestCase {
         assertNull(wgb.getTime());
     }
 
-    /** The old parser ignores what follows endDocument; the new parser requires the end of the input. */
+    /**
+     * The old parser ignores what follows endDocument; the new parser allows only whitespace and comments after the
+     * document (see {@link #testSeveralDocuments()} for streams of documents).
+     */
     public void testDivergenceTextAfterEndDocument() {
-        Outcome o = comparison.compareString(doc("entity(ex:e1)") + "entity(ex:e2)\n");
-        assertEquals(o.toString(), Verdict.NEW_REJECTS, o.verdict);
+        for (String trailing : List.of("entity(ex:e2)\n", "#entity(ex:e2)\n", doc("entity(ex:e2)"))) {
+            Outcome o = comparison.compareString(doc("entity(ex:e1)") + trailing);
+            assertEquals(o.toString(), Verdict.NEW_REJECTS, o.verdict);
+        }
+        // comments and whitespace are fine
+        assertSame(doc("entity(ex:e1)") + "\n// entity(ex:e2)\n/* entity(ex:e3) */\n\n");
     }
 
     /** The old parser drops these statements; the new one reads them as derivations of the corresponding type (PROV-DM 5.2). */
@@ -480,6 +479,45 @@ public class ParserComparisonTest extends TestCase {
                 fail("invalid prefix " + prefix);
             } catch (ProvNSyntaxException expected) {
             }
+        }
+    }
+
+    /** A stream of documents: readDocuments reads them all, readDocument rejects more than one. */
+    public void testSeveralDocuments() {
+        String two = "document\nprefix ex <http://example.org/>\nentity(ex:e1)\nendDocument\n"
+                + "// the second one\n"
+                + "document\nprefix ex <http://example2.org/>\nentity(ex:e2)\n"
+                + "bundle ex:b\n entity(ex:e3)\nendBundle\nendDocument\n";
+        List<Document> docs = reader.readDocumentsFromString(two);
+        assertEquals(2, docs.size());
+        // each document as if read alone
+        assertNull(comparison.difference(read("document\nprefix ex <http://example.org/>\nentity(ex:e1)\nendDocument\n"), docs.get(0)));
+        // prefixes are declared per document: ex is bound anew in the second one
+        Entity e2 = (Entity) docs.get(1).getStatementOrBundle().get(0);
+        assertEquals("http://example2.org/", e2.getId().getNamespaceURI());
+        assertEquals("http://example2.org/", docs.get(1).getNamespace().getPrefixes().get("ex"));
+
+        // a prefix of the first document is not declared in the second
+        try {
+            reader.readDocumentsFromString("document\nprefix ex <http://example.org/>\nendDocument\ndocument\nentity(ex:e1)\nendDocument\n");
+            fail("ex is not declared in the second document");
+        } catch (QualifiedNameException expected) {
+        }
+
+        assertTrue(reader.readDocumentsFromString("").isEmpty());
+        assertTrue(reader.readDocumentsFromString("// no document\n").isEmpty());
+        assertEquals(1, reader.readDocumentsFromString(doc("entity(ex:e1)")).size());
+
+        try {
+            read(two);
+            fail("readDocument reads a single document");
+        } catch (ProvNSyntaxException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("use readDocuments"));
+        }
+        try {
+            reader.readDocumentsFromString(two + "entity(ex:e4)\n");
+            fail("statements outside a document");
+        } catch (ProvNSyntaxException expected) {
         }
     }
 

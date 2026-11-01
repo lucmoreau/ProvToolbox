@@ -11,7 +11,8 @@
   as TreeTraversal did for the ANTLR 3 tree. For the documents both accept, the two parsers
   construct the same representation (see ParserComparisonTest). Deliberate differences:
 
-    - the input must end after 'endDocument' (the ANTLR 3 parser ignored what followed);
+    - nothing but whitespace and comments may follow the last 'endDocument' (the ANTLR 3 parser
+      ignored what followed); a stream may hold several documents (rule documents);
     - wasRevisionOf, wasQuotedFrom and hadPrimarySource are read as derivations of type
       prov:Revision, prov:Quotation, prov:PrimarySource (the ANTLR 3 parser dropped them);
     - a datatype must be a qualified name, as in PROV-N (an IRI made TreeTraversal fail);
@@ -56,13 +57,26 @@ grammar ProvN;
    Documents, bundles, namespaces
    ====================================================================== */
 
+/* Entry rules. PROV-N defines a document, not what surrounds it: how many documents a stream
+   holds is for its reader to say. Only whitespace and comments may follow the last document. */
+
+/* A stream holding exactly one document, such as a file or a text/provenance-notation body. */
+oneDocument
+    : document EOF
+    ;
+
+/* A stream holding a sequence of documents, each with its own namespace declarations. */
+documents
+    : document* EOF
+    ;
+
+/* A document block, as defined by PROV-N. */
 document
     : 'document'
       namespaceDeclarations?
       expression*
       bundle*
       'endDocument'
-      EOF
     ;
 
 bundle

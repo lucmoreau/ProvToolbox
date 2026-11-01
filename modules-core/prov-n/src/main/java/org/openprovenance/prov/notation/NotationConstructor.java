@@ -21,7 +21,6 @@ import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 public class NotationConstructor implements ModelConstructor, ModelConstructorExtension {
     public static final String MARKER = "-";
-    boolean abbrev = false;
     final private BufferedWriter buffer;
 
 
@@ -193,44 +192,32 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
     @Override
     public DictionaryMembership newDictionaryMembership(QualifiedName dict,
                                                         List<Entry> keyEntitySet) {
-        if (abbrev) {
-            String s = "provx:hadDictionaryMember(" + idOrMarker(dict) + ","
-                    + keyEntitySet(keyEntitySet) + ")";
+        // PROV-N (PROV-Dictionary) has one key-entity pair per statement: one statement per entry
+        for (Entry entry : keyEntitySet) {
+            String s = "prov:hadDictionaryMember("
+                    + idOrMarker(dict)
+                    + ","
+                    + idOrMarker(entry.getEntity())
+                    + ","
+                    + ProvUtilities.valueToNotationString(entry.getKey())
+                    + ")";
             writeln(s);
-        } else {
-            for (Entry entry : keyEntitySet) {
-
-                String s = "prov:hadDictionaryMember("
-                        + idOrMarker(dict)
-                        + ","
-                        + idOrMarker(entry.getEntity())
-                        + ","
-                        + ProvUtilities.valueToNotationString(entry.getKey())
-                        + ")";
-                writeln(s);
-            }
         }
         return null;
     }
 
     @Override
     public DictionaryMembership newDictionaryMembership(QualifiedName id, QualifiedName dict, List<Entry> keyEntitySet, Collection<Attribute> attributes) {
-        if (abbrev) {
-            String s = "provx:hadDictionaryMember(" + idOrMarker(dict) + ","
-                    + keyEntitySet(keyEntitySet) + ")";
+        // PROV-N (PROV-Dictionary) has one key-entity pair per statement: one statement per entry
+        for (Entry entry : keyEntitySet) {
+            String s = "prov:hadDictionaryMember("
+                    + idOrMarker(dict)
+                    + ","
+                    + idOrMarker(entry.getEntity())
+                    + ","
+                    + ProvUtilities.valueToNotationString(entry.getKey())
+                    + ")";
             writeln(s);
-        } else {
-            for (Entry entry : keyEntitySet) {
-
-                String s = "prov:hadDictionaryMember("
-                        + idOrMarker(dict)
-                        + ","
-                        + idOrMarker(entry.getEntity())
-                        + ","
-                        + ProvUtilities.valueToNotationString(entry.getKey())
-                        + ")";
-                writeln(s);
-            }
         }
         return null;
     }

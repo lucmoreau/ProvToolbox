@@ -34,6 +34,7 @@ import org.openprovenance.prov.notation.Utility;
  * The ANTLR 3 parser recovers from syntax errors, and only logs them: here, they are counted, so that a document
  * that it reads with errors counts as rejected.
  */
+@SuppressWarnings({"deprecation", "removal"}) // compares with the deprecated ANTLR 3 parser, on purpose
 public class ParserComparison {
 
     public enum Verdict {

@@ -30,6 +30,15 @@ import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
 
+/**
+ * Reading and writing PROV-N.
+ * <p>
+ * The reading methods use the ANTLR 3 parser (PROV_N.g, {@link TreeTraversal}), and are deprecated: use
+ * {@link ProvNReader}, which uses the ANTLR 4 parser (ProvN.g4, {@link ProvNTreeTraversal}). The methods that expose
+ * the ANTLR 3 parser or its trees will be removed with it; the others will read with {@link ProvNReader}, after which
+ * they will reject what is not valid PROV-N, rather than recover from it (see {@link ProvNReader}).
+ * The writing methods are not concerned.
+ */
 public class Utility {
 
     static Logger logger= LogManager.getLogger(Utility.class);
@@ -66,6 +75,8 @@ public class Utility {
 
     }
 
+    /** @deprecated returns the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
+    @Deprecated(since = "2.3.0", forRemoval = true)
     public PROV_NParser getParserForFile(String file) {
         try {
             CharStream input = new ANTLRFileStream(file);
@@ -75,6 +86,8 @@ public class Utility {
         }
     }
 
+    /** @deprecated returns the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
+    @Deprecated(since = "2.3.0", forRemoval = true)
     public PROV_NParser getParserForStream(InputStream is) {
         try {
             CharStream input = new ANTLRInputStream(is);
@@ -83,6 +96,8 @@ public class Utility {
             throw new UncheckedException(e);
         }
     }
+    /** @deprecated returns the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
+    @Deprecated(since = "2.3.0", forRemoval = true)
     public PROV_NParser getParserForCharStream(CharStream input) throws java.io.IOException {
 
         PROV_NLexer lex = new PROV_NLexer(input);
@@ -99,12 +114,16 @@ public class Utility {
         }
     };
 
+    /** @deprecated returns the tree of the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
+    @Deprecated(since = "2.3.0", forRemoval = true)
     public CommonTree convertSyntaxTreeToTree(String file)  {
         PROV_NParser parser=getParserForFile(file);
         return convertSyntaxTreeToTree(parser);
     }
 
 
+    /** @deprecated returns the tree of the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
+    @Deprecated(since = "2.3.0", forRemoval = true)
     public CommonTree convertSyntaxTreeToTree(InputStream is){
         PROV_NParser parser=getParserForStream(is);
         return convertSyntaxTreeToTree(parser);
@@ -123,6 +142,9 @@ public class Utility {
     }
 
 
+    /** @deprecated converts the tree of the ANTLR 3 parser; use {@link ProvNReader#convert(ProvNParser.DocumentContext, ModelConstructor)} */
+    @Deprecated(since = "2.3.0", forRemoval = true)
+    @SuppressWarnings("removal")
     public Object convertTreeToJavaBean(CommonTree tree, ProvFactory pFactory) {
         if (tree==null) return null;
         return new TreeTraversal(pFactory,pFactory, dateTimeOption, optionalTimeZone).convert(tree);
@@ -141,6 +163,8 @@ public class Utility {
         return s;
     }
 
+    /** @deprecated reads with the ANTLR 3 parser; use {@link ProvNReader#readDocument(String)} */
+    @Deprecated(since = "2.3.0")
     public Object convertSyntaxTreeToJavaBean(String file, ProvFactory pFactory) {
         CommonTree tree= convertSyntaxTreeToTree(file);
         return convertTreeToJavaBean(tree,pFactory);
@@ -181,6 +205,8 @@ public class Utility {
     }
 
     /* from http://www.antlr.org/wiki/display/ANTLR3/Interfacing+AST+with+Java */
+    /** @deprecated prints the tree of the ANTLR 3 parser, which will be removed with it */
+    @Deprecated(since = "2.3.0", forRemoval = true)
     public void printTree(CommonTree t, int indent) {
         if ( t != null ) {
             StringBuffer sb = new StringBuffer(indent);
@@ -275,12 +301,16 @@ public class Utility {
 
     }
 
+    /** @deprecated reads with the ANTLR 3 parser; use {@link ProvNReader#readDocument(String)} */
+    @Deprecated(since = "2.3.0")
     public Document readDocument(String filename, ProvFactory pFactory)  {
         CommonTree tree = convertSyntaxTreeToTree(filename);
         Object doc=convertTreeToJavaBean(tree,pFactory);
         return (Document)doc;
     }
 
+    /** @deprecated reads with the ANTLR 3 parser; use {@link ProvNReader#readDocument(InputStream)} */
+    @Deprecated(since = "2.3.0")
     public Document readDocument(InputStream is, ProvFactory pFactory)  {
         CommonTree tree = convertSyntaxTreeToTree(is);
         Object doc=convertTreeToJavaBean(tree,pFactory);

@@ -33,11 +33,10 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 /**
  * Reading and writing PROV-N.
  * <p>
- * The reading methods use the ANTLR 3 parser (PROV_N.g, {@link TreeTraversal}), and are deprecated: use
- * {@link ProvNReader}, which uses the ANTLR 4 parser (ProvN.g4, {@link ProvNTreeTraversal}). The methods that expose
- * the ANTLR 3 parser or its trees will be removed with it; the others will read with {@link ProvNReader}, after which
- * they will reject what is not valid PROV-N, rather than recover from it (see {@link ProvNReader}).
- * The writing methods are not concerned.
+ * Documents are read with the ANTLR 4 parser (ProvN.g4), via {@link ProvNReader}: a document that is not valid
+ * PROV-N is rejected with a {@link ProvNSyntaxException} (see {@link ProvDeserialiser} for how this parser differs from
+ * the ANTLR 3 one, used up to 2.3.0). The methods that expose the ANTLR 3 parser (PROV_N.g) or its trees
+ * ({@link TreeTraversal}) are deprecated, and will be removed with it.
  */
 public class Utility {
 
@@ -163,11 +162,9 @@ public class Utility {
         return s;
     }
 
-    /** @deprecated reads with the ANTLR 3 parser; use {@link ProvNReader#readDocument(String)} */
-    @Deprecated(since = "2.3.0")
+    /** Reads a PROV-N document from a file, with the ANTLR 4 parser (see {@link ProvNReader#readDocument(String)}). */
     public Object convertSyntaxTreeToJavaBean(String file, ProvFactory pFactory) {
-        CommonTree tree= convertSyntaxTreeToTree(file);
-        return convertTreeToJavaBean(tree,pFactory);
+        return readDocument(file, pFactory);
     }
 
     /** A conversion function that copies a Java Bean deeply.
@@ -301,20 +298,20 @@ public class Utility {
 
     }
 
-    /** @deprecated reads with the ANTLR 3 parser; use {@link ProvNReader#readDocument(String)} */
-    @Deprecated(since = "2.3.0")
+    /**
+     * Reads a PROV-N document from a file, with the ANTLR 4 parser (see {@link ProvNReader#readDocument(String)}).
+     * @throws ProvNSyntaxException if the file does not hold a syntactically valid PROV-N document
+     */
     public Document readDocument(String filename, ProvFactory pFactory)  {
-        CommonTree tree = convertSyntaxTreeToTree(filename);
-        Object doc=convertTreeToJavaBean(tree,pFactory);
-        return (Document)doc;
+        return new ProvNReader(pFactory, dateTimeOption, optionalTimeZone).readDocument(filename);
     }
 
-    /** @deprecated reads with the ANTLR 3 parser; use {@link ProvNReader#readDocument(InputStream)} */
-    @Deprecated(since = "2.3.0")
+    /**
+     * Reads a PROV-N document from a stream, with the ANTLR 4 parser (see {@link ProvNReader#readDocument(InputStream)}).
+     * @throws ProvNSyntaxException if the stream does not hold a syntactically valid PROV-N document
+     */
     public Document readDocument(InputStream is, ProvFactory pFactory)  {
-        CommonTree tree = convertSyntaxTreeToTree(is);
-        Object doc=convertTreeToJavaBean(tree,pFactory);
-        return (Document)doc;
+        return new ProvNReader(pFactory, dateTimeOption, optionalTimeZone).readDocument(is);
     }
 
 

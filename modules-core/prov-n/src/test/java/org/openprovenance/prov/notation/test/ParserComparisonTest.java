@@ -1,5 +1,6 @@
 package org.openprovenance.prov.notation.test;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -111,6 +112,16 @@ public class ParserComparisonTest extends TestCase {
         for (Outcome o : outcomes.get(Verdict.DIFFERENT)) failures.add(o.toString());
         for (Outcome o : outcomes.get(Verdict.NEW_REJECTS)) failures.add(o.toString());
         assertTrue("Parsers disagree:\n" + String.join("\n", failures), failures.isEmpty());
+
+        // PROV-N shipped in src/main, such as the templates that prov-template instantiates at build time, is read by
+        // the toolbox: the parser must accept it, even where the ANTLR 3 parser read it only by recovering from errors
+        List<String> unreadable = new ArrayList<>();
+        for (Verdict v : List.of(Verdict.BOTH_REJECT, Verdict.NEW_REJECTS)) {
+            for (Outcome o : outcomes.get(v)) {
+                if (o.source.contains(File.separator + "src" + File.separator + "main" + File.separator)) unreadable.add(o.toString());
+            }
+        }
+        assertTrue("PROV-N in src/main that the parser rejects:\n" + String.join("\n", unreadable), unreadable.isEmpty());
     }
 
     /** The PROV-N files of this module. */

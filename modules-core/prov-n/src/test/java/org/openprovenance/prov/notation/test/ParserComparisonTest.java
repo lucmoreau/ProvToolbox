@@ -1,9 +1,11 @@
 package org.openprovenance.prov.notation.test;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -12,8 +14,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import junit.framework.TestCase;
 import org.openprovenance.prov.model.*;
@@ -56,18 +56,35 @@ public class ParserComparisonTest extends TestCase {
        Corpora of PROV-N files
        ====================================================================== */
 
-    /** All the PROV-N files under a directory. */
+    /**
+     * All the PROV-N files under a directory, in this checkout only: hidden directories (.git, .claude, .idea, ...),
+     * nested checkouts (git worktrees, which hold other branches), and build outputs are skipped.
+     */
     static List<Path> provnFiles(Path root) throws IOException {
-        try (Stream<Path> paths = Files.walk(root)) {
-            return paths.filter(p -> {
-                            String s = p.toString();
-                            return s.endsWith(".provn") || s.endsWith(".pn") || s.endsWith(".asn") || s.endsWith(".prov-asn");
-                        })
-                        .filter(p -> !p.toString().contains(File.separator + "target" + File.separator))
-                        .filter(p -> !p.toString().contains(File.separator + "node_modules" + File.separator))
-                        .sorted()
-                        .collect(Collectors.toList());
-        }
+        List<Path> files = new ArrayList<>();
+        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                if (dir.equals(root)) return FileVisitResult.CONTINUE;
+                String name = dir.getFileName().toString();
+                if (name.startsWith(".") || name.equals("target") || name.equals("node_modules")
+                        || Files.exists(dir.resolve(".git"))) {
+                    return FileVisitResult.SKIP_SUBTREE;
+                }
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                String s = file.getFileName().toString();
+                if (s.endsWith(".provn") || s.endsWith(".pn") || s.endsWith(".asn") || s.endsWith(".prov-asn")) {
+                    files.add(file);
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        files.sort(null);
+        return files;
     }
 
     Map<Verdict, List<Outcome>> compareAll(List<Path> files) {

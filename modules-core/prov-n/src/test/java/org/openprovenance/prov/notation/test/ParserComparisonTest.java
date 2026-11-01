@@ -330,8 +330,10 @@ public class ParserComparisonTest extends TestCase {
     }
 
     /**
-     * The marker '-' where PROV-N requires an identifier, as ProvToolbox writes for an argument that a statement lacks:
-     * the old parser reports a syntax error, but recovers the same document as the new parser, with null for the argument.
+     * The marker '-' where PROV-N requires an identifier, read as an absent argument (null). Statements sharing an
+     * identifier may be merged into a valid one, although each lacks required arguments (see Markers, in ProvN.g4).
+     * ProvToolbox writes the marker for an argument that a statement lacks; the old parser reports a syntax error, but
+     * recovers the same document as the new parser.
      */
     public void testMarkerForRequiredIdentifier() {
         for (String statement : List.of("wasGeneratedBy(ex:gen200;-,ex:a,-)",
@@ -343,6 +345,16 @@ public class ParserComparisonTest extends TestCase {
             Outcome o = comparison.compareString(doc("entity(ex:e0)", statement));
             assertEquals(o.toString(), Verdict.OLD_RECOVERS, o.verdict);
         }
+        // two parts of one delegation, each lacking a required argument, which their merge has
+        Document d = read(doc("actedOnBehalfOf(ex:del1; ex:ag2, -, ex:a2)", "actedOnBehalfOf(ex:del1; ex:ag2, ex:ag1, -)"));
+        ActedOnBehalfOf part1 = (ActedOnBehalfOf) d.getStatementOrBundle().get(0);
+        ActedOnBehalfOf part2 = (ActedOnBehalfOf) d.getStatementOrBundle().get(1);
+        assertEquals(part1.getId(), part2.getId());
+        assertNull(part1.getResponsible());
+        assertEquals(ex("a2"), part1.getActivity());
+        assertEquals(ex("ag1"), part2.getResponsible());
+        assertNull(part2.getActivity());
+
         WasGeneratedBy wgb = (WasGeneratedBy) single("wasGeneratedBy(ex:gen200;-,ex:a,-)");
         assertEquals(ex("gen200"), wgb.getId());
         assertNull(wgb.getEntity());

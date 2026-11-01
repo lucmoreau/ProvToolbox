@@ -46,9 +46,23 @@
 
   PROV-N requires some arguments of statements to be identifiers, e.g. the activity of an association.
   This grammar also accepts the marker '-' for them (rule identifierOrMarker), which is read as an
-  absent argument (null): ProvToolbox writes the marker for an argument that a statement lacks, and
-  so reads back what it writes, as the ANTLR 3 parser did through error recovery. A validator can then
-  report the missing argument.
+  absent argument (null). This leniency is deliberate, and addresses an oversight of the PROV-N
+  specification.
+
+  Statements that share an identifier describe the same relation, and may be merged into one
+  (PROV-Constraints, unification of statements with the same identifier). The merged statement may
+  well have all its required arguments, and so be valid PROV-N, while the statements it is merged
+  from each lack some. For instance,
+
+      actedOnBehalfOf(ex:del1; ex:ag2, -, ex:a2)
+      actedOnBehalfOf(ex:del1; ex:ag2, ex:ag1, -)
+
+  merge into actedOnBehalfOf(ex:del1; ex:ag2, ex:ag1, ex:a2). A strict reading of PROV-N rejects
+  the two statements, although their merge is valid: they must therefore be expressible in PROV-N.
+  It is for a validator, after merging, to report an argument that is still missing.
+
+  Accordingly, ProvToolbox writes the marker for an argument that a statement lacks, and reads back
+  what it writes (the ANTLR 3 parser did so too, though only through error recovery).
 */
 
 grammar ProvN;
@@ -290,6 +304,8 @@ optionalIdentifier
     : (identifierOrMarker ';')?
     ;
 
+/* Also where PROV-N requires an identifier: statements that are merged with others sharing their
+   identifier may lack some required arguments (see Markers, above). */
 identifierOrMarker
     : identifier
     | '-'

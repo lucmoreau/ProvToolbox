@@ -41,22 +41,36 @@ public final class TemplateIndex {
     }
 
 
-    public void addEntry(String templateId, String format, String filepath)  {
-        try {
-            this.index.putIfAbsent(templateId, new TemplateLocator());
-            TemplateLocator locator=this.index.get(templateId);
-            locator.set(format, filepath);
-            persist(this.templateDir, this.index);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    /** Adds an entry and writes the index file; see {@link #putEntry} to defer the write. */
+    public synchronized void addEntry(String templateId, String format, String filepath)  {
+        putEntry(templateId, format, filepath);
+        persist();
     }
-    public void addProvenanceEntry(String templateId, String format, String filepath)  {
 
+    /** Adds a provenance entry and writes the index file; see {@link #putProvenanceEntry} to defer the write. */
+    public synchronized void addProvenanceEntry(String templateId, String format, String filepath)  {
+        putProvenanceEntry(templateId, format, filepath);
+        persist();
+    }
+
+    /**
+     * Adds an entry in memory only: a task generating several formats of one template puts each of them, then
+     * {@link #persist()}s once, rather than rewriting the whole index file for every entry.
+     */
+    public synchronized void putEntry(String templateId, String format, String filepath)  {
+        this.index.putIfAbsent(templateId, new TemplateLocator());
+        this.index.get(templateId).set(format, filepath);
+    }
+
+    /** Adds a provenance entry in memory only; see {@link #putEntry}. */
+    public synchronized void putProvenanceEntry(String templateId, String format, String filepath)  {
+        this.index.putIfAbsent(templateId, new TemplateLocator());
+        this.index.get(templateId).setProvenance(TemplateExtension.from(format), filepath);
+    }
+
+    /** Writes the index file. */
+    public synchronized void persist() {
         try {
-            this.index.putIfAbsent(templateId, new TemplateLocator());
-            TemplateLocator locator=this.index.get(templateId);
-            locator.setProvenance(TemplateExtension.from(format), filepath);
             persist(this.templateDir, this.index);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -70,7 +84,7 @@ public final class TemplateIndex {
      * @param extensions list of preferred extensions in order
      * @return template location or null if not found
      */
-    public String get(String templateId, List<TemplateExtension> extensions) {
+    public synchronized String get(String templateId, List<TemplateExtension> extensions) {
         return extensions
                 .stream()
                 .map(ext -> {
@@ -83,7 +97,7 @@ public final class TemplateIndex {
                 .orElse(null);
     }
 
-    public String getAbsolute(String templateId, List<TemplateExtension> extensions) {
+    public synchronized String getAbsolute(String templateId, List<TemplateExtension> extensions) {
         return extensions
                 .stream()
                 .map(ext -> {

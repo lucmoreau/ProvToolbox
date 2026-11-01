@@ -13,6 +13,7 @@ import org.openprovenance.prov.template.utils.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -93,8 +94,7 @@ public class InstantiateTask implements ConfigTask {
         String outputId=(outputFullyQualifiedName ==null)?output: outputFullyQualifiedName;
 
 
-        TemplateIndexPath templateLibraryPath =new TemplateIndexPath(updatedTemplatePath.stream().map(loc-> new TemplateIndex(loc,true)).collect(Collectors.toList()));
-        //System.out.println("InstantiateTask: templateLibraryPath=" + templateLibraryPath);
+        TemplateIndexPath templateLibraryPath = executor.indexPath(updatedTemplatePath);
 
 
         Pair<FileInputStream, File> pair=executor.findFileinDirs2(templateTasksBatch.bindings_path, bindings);
@@ -126,7 +126,7 @@ public class InstantiateTask implements ConfigTask {
 
         List<String> loggedRecords=new LinkedList<>();
 
-        TemplateIndex outputIndex=new TemplateIndex(templateTasksBatch.output_dir, true);
+        TemplateIndex outputIndex=executor.index(templateTasksBatch.output_dir);
 
         // extract extension from filename
         String informat = executor.getFormat(templateFile);
@@ -142,18 +142,22 @@ public class InstantiateTask implements ConfigTask {
     }
 
     private void saveAllOutputs(TemplateTasksBatch templateTasksBatch, BatchExecutor executor, String inputBasedir, TemplateIndex outputIndex, String outputId, Document doc, String templateLocation, String bindingsLocation, String time, long secondsSince2023_01_01, List<String> loggedRecords) throws IOException {
+        boolean copy = copyinput != null && copyinput;
+        List<Pair<String, File>> files = new ArrayList<>();
         for (String format: formats) {
-            Path documentPath = Path.of(templateTasksBatch.output_dir, output + "." + format);
+            files.add(Pair.of(format, documentPath(templateTasksBatch, format).toFile()));
+            if (copy) {
+                files.add(Pair.of(format, new File(templateTasksBatch.output_dir + "/" + template.replace(".provn","."+format))));
+            }
+        }
+        executor.serializeAll(doc, files);
 
-            outputIndex.addEntry(outputId,format, outputIndex.relativize(documentPath).toString());
-            Files.createDirectories(documentPath.getParent());
-            executor.serialize(new FileOutputStream(documentPath.toFile()), format, doc, false);
+        for (String format: formats) {
+            Path documentPath = documentPath(templateTasksBatch, format);
+            outputIndex.putEntry(outputId,format, outputIndex.relativize(documentPath).toString());
             executor.checkSchema(templateTasksBatch, schemaCheck, format, documentPath.toFile(), output);
-            if (copyinput != null && copyinput) {
-                executor.serialize(new FileOutputStream(templateTasksBatch.output_dir + "/" + template.replace(".provn","."+format)), format, doc, false);
-                synchronized (outputIndex) {
-                    outputIndex.addEntry(template, format, template.replace(".provn","."+format));
-                }
+            if (copy) {
+                outputIndex.putEntry(template, format, template.replace(".provn","."+format));
             }
             String csvRecord = createExpansionCsvRecord(format, templateLocation, bindingsLocation, time, secondsSince2023_01_01);
             loggedRecords.add(csvRecord);
@@ -162,6 +166,11 @@ public class InstantiateTask implements ConfigTask {
         checkVariables(inputBasedir, doc);
 
         executor.exportProvenanceAsCsv(templateTasksBatch, this, outputId, outputIndex, loggedRecords);
+        outputIndex.persist();   // once, for every entry of this task
+    }
+
+    private Path documentPath(TemplateTasksBatch templateTasksBatch, String format) {
+        return Path.of(templateTasksBatch.output_dir, output + "." + format);
     }
 
     private void checkVariables(String inputBasedir, Document doc) throws IOException {

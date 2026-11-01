@@ -3,7 +3,7 @@
     <parent>
         <artifactId>modules-core</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.2.5</version>
+        <version>2.3.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -12,6 +12,10 @@
     <packaging>jar</packaging>
     <description>A Parser for PROV-N Provenance Notation.</description>
 
+    <properties>
+        <antlr4.version>4.13.2</antlr4.version>
+    </properties>
+
 
 
 
@@ -19,12 +23,17 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>2.2.5</version>
+            <version>2.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
             <version>3.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>${antlr4.version}</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
@@ -38,14 +47,14 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>2.2.5</version>
+            <version>2.3.0</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld</artifactId>
-            <version>2.2.5</version>
+            <version>2.3.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -91,26 +100,24 @@
             </plugin>
 
 
-            <!--       <plugin>
-                 <groupId>org.antlr</groupId>
-                 <artifactId>antlr4-maven-plugin</artifactId>
-                 <version>4.5.1</version>
-
-                 <executions>
-
-                       <execution>
-                     <phase>generate-sources</phase>
-                         <goals>
-                           <goal>antlr4</goal>
-                         </goals>
-                         <configuration>
-
-                         </configuration>
-                       </execution>
-                 </executions>
-
-                   </plugin>
-            -->
+            <!-- The new PROV-N parser (src/main/antlr4/.../ProvN.g4), see ProvNReader.
+                 It coexists with the ANTLR 3 parser above (PROV_N.g, see Utility), until the latter is retired. -->
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>${antlr4.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                        <configuration>
+                            <visitor>true</visitor>
+                            <listener>false</listener>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

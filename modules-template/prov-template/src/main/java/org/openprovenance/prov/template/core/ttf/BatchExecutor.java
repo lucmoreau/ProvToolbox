@@ -138,7 +138,7 @@ public class BatchExecutor {
         templateTasksBatch.bindings_path = TemplateTasksBatch.addBaseDir(inputBasedir, templateTasksBatch.bindings_path);
         templateTasksBatch.output_dir = TemplateTasksBatch.addBaseDir(outputBasedir, templateTasksBatch.output_dir);
 
-        TemplateIndexPath templateLibraryPath =new TemplateIndexPath(templateTasksBatch.template_path.stream().map(loc-> new TemplateIndex(loc,true)).collect(Collectors.toList()));
+        indexPath(templateTasksBatch.template_path);   // reads the libraries' indexes, building the missing ones, before the tasks
 
         logger.info("template_path: " + templateTasksBatch.template_path);
         logger.info("bindings_path: " + templateTasksBatch.bindings_path);
@@ -172,7 +172,7 @@ public class BatchExecutor {
                 }
             }
             if (outputIndex!=null) {
-                outputIndex.addProvenanceEntry(templateId, TemplateExtension.PROVCSV.toString(), task.hasProvenance());
+                outputIndex.putProvenanceEntry(templateId, TemplateExtension.PROVCSV.toString(), task.hasProvenance());   // persisted by the task
             }
 
         }
@@ -233,6 +233,70 @@ public class BatchExecutor {
 
     public void serialize(OutputStream fileOutputStream, String format, Document doc, boolean b) {
         serializerMap.get(format).serialiseDocument(fileOutputStream, doc, b);
+    }
+
+    public void serializeToFile(File file, String format, Document doc) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            serialize(fos, format, doc, false);
+        }
+    }
+
+    /** Whether a format is a rendering by the dot program (png, svg, pdf, or a qualified variant of them). */
+    static boolean isRendering(String format) {
+        String ext = format.substring(format.lastIndexOf('.') + 1);
+        return ext.equals("png") || ext.equals("svg") || ext.equals("pdf");
+    }
+
+    /** Renderings are produced concurrently, unless -Dorg.openprovenance.prov.template.ttf.parallel=false. */
+    static final boolean PARALLEL = !"false".equals(System.getProperty("org.openprovenance.prov.template.ttf.parallel"));
+
+    /**
+     * Serialises a document to the given files, each in its format: the text formats in turn, then the renderings
+     * concurrently, since each is a run of the dot program during which the JVM only waits. The renderings of one
+     * document dominate the execution of a template tasks file.
+     * @param outputs pairs of a format and the file to write in that format
+     */
+    public void serializeAll(Document doc, List<Pair<String, File>> outputs) throws IOException {
+        List<Pair<String, File>> renderings = new ArrayList<>();
+        for (Pair<String, File> output : outputs) {
+            Path parent = output.getRight().toPath().toAbsolutePath().getParent();
+            if (parent != null) Files.createDirectories(parent);
+            if (isRendering(output.getLeft())) {
+                renderings.add(output);
+            } else {
+                serializeToFile(output.getRight(), output.getLeft(), doc);
+            }
+        }
+        if (PARALLEL && renderings.size() > 1) {
+            try {
+                renderings.parallelStream().forEach(r -> {
+                    try {
+                        serializeToFile(r.getRight(), r.getLeft(), doc);
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                });
+            } catch (UncheckedIOException e) {
+                throw e.getCause();
+            }
+        } else {
+            for (Pair<String, File> r : renderings) {
+                serializeToFile(r.getRight(), r.getLeft(), doc);
+            }
+        }
+    }
+
+    /** The indexes of the template directories named so far, each read or built once, holding the entries the tasks add. */
+    private final Map<String, TemplateIndex> indexes = new HashMap<>();
+
+    /** The index of a template directory, read (or built, when it has no index file) the first time it is named. */
+    public synchronized TemplateIndex index(String dir) {
+        return indexes.computeIfAbsent(Path.of(dir).toAbsolutePath().normalize().toString(), k -> new TemplateIndex(dir, true));
+    }
+
+    /** The indexes of the given template directories, in order. */
+    public TemplateIndexPath indexPath(List<String> dirs) {
+        return new TemplateIndexPath(dirs.stream().map(this::index).collect(Collectors.toList()));
     }
 
     /**

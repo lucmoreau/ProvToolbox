@@ -8,6 +8,7 @@
 
 ## Update history
 
+- **2026-10-24** — T29 (ttf execution is slow) retired here; T30 filed for the `dot` runs that remain.
 - **2026-10-16** — `TODO.md` and `DONE.md` restructured on the pattern of nextgen's `ODOO-TODO.md` / `ODOO-DONE.md`;
   the Done section of `TODO.md` (T27, T1, T14, T9, T19, T20) moved here. T28 filed.
 
@@ -17,12 +18,47 @@
 
 | T# | Description | Completed | Section |
 |----|-------------|-----------|---------|
+| T29 | ttf execution (`execute-ttf`): the merge rewrote every format once per input, every task re-read and rewrote `index.json`, the `dot` renderings ran one at a time — fixed; nextgen/template `make ttf.execute` 2 min 22 s → 15.3 s | 2026-10-24 | [T29 section](#-t29-ttf-execution-is-slow-2026-10-24) |
 | T27 | ptm templates: an expanded/merged document derived from one input only — now from both (template and bindings; template1 and template2) | 2026-10-09 | [T27 section](#-t27-ptm-templates-a-document-derived-from-one-input-only-2026-10-09) |
 | T9 | Rust code generation: `bean.count + 1` on an `Option<i32>` | by 2026-05-24 | [T9 section](#-t9-rust-code-generation-arithmetic-on-an-option-by-2026-05-24) |
 | T19 | The navigation display visualises atype icons, falling back on template icons | by 2026-05-24 | [T19 section](#-t19-atype-icons-in-the-navigation-display-by-2026-05-24) |
 | T20 | Streaming progress for `/templates/viz` (SSE endpoint, per-stage panel in the navigator) | 2026-05-19 | [T20 section](#-t20-streaming-progress-for-templatesviz-2026-05-19) |
 | T1 | template-compiler: CompilerCommon uses the new code generation pattern for the Common Bean | by 2026-05-24 | [T1 section](#-t1-template-compiler-the-common-bean-code-generation-by-2026-05-24) |
 | T14 | Template expansion keeps an association without agent but with a plan | by 2026-05-24 | [T14 section](#-t14-an-association-without-agent-but-with-a-plan-by-2026-05-24) |
+
+---
+
+## ✅ T29: ttf execution is slow (2026-10-24)
+
+**Filed 2026-10-22** (Luc: `mvn test` in provenance-templates-library takes minutes executing its ttfs;
+`modules-tools/prov-toolbox-plugin/.../ttf/BatchExecutor.java` → `modules-template/prov-template/.../core/ttf`).
+
+**Measured** (2026-10-22, the eight `execute-ttf` executions of `provenance-templates-library/pom.xml`, 131 tasks — 110
+instantiate, 21 merge — run through a harness timing each task and each (de)serialiser, Linux, 4 cores, graphviz 2.43).
+Before: 25.8 s in the executor (29.6 s wall), of which 17.9 s serialisation, 0.9 s deserialisation, 5–7 s the rest
+(instantiation, index files, schema checks, csv records). Text formats are negligible (provn 0.5–6 ms, jsonld 5–27 ms per
+document); every png, svg, qualified.png, qualified.svg output is one `dot` process: png ~27–105 ms, svg ~17–28 ms
+(micro-benchmark: `dot -V` 5 ms, layout 15 ms, png render 45 ms, svg 16 ms; png+svg from one run 40 ms). The 21 merge tasks
+took 13.4 s of the 25.8 s: `MergeTask` serialised the merged document once per (input other than the first) × format,
+so the 327 image outputs of the library were rendered 529 times. The index of the output directory was re-read by every
+task (two or three `index.json` reads, ~4 ms each) and rewritten by every `addEntry` (~2 ms, one per format and one per
+provenance record) — ~20 ms per task, ~3 s. Java-side CPU is small: a JFR profile of the 62 triangle tasks sampled 40
+execution samples in 8 s, the JVM waiting on `dot` the rest. On macOS, where a `dot` process start is far dearer, the
+count of `dot` runs is what the minutes are made of.
+
+**Done** (commit 62915e0, merged 2026-10-24). `MergeTask` writes each format once (the merging records per input kept as
+before); `BatchExecutor` holds one `TemplateIndex` per directory for its life (`index`, `indexPath`), the tasks `putEntry`
+and `persist()` once per task (`TemplateIndex` gained the deferred methods, its methods synchronized);
+`BatchExecutor.serializeAll` writes the text formats in turn, then the renderings (png, svg, pdf and qualified variants)
+concurrently through `parallelStream` (off with `-Dorg.openprovenance.prov.template.ttf.parallel=false`); output streams
+closed. `MergeTaskTest`.
+
+**Results.** Library here: 11.9 s in the executor (17.9 s wall), merges 3.0 s; the 671 generated files identical to before
+but for the vargen UUIDs, `index.json` equal as parsed JSON. nextgen/template, `make ttf.execute` on Luc's Mac
+(2026-10-24): 2 min 22 s before; 1 min 07 s with the renderings sequential (the merge and index fixes alone, 2.1×);
+15.3 s with them concurrent (9.3×); the 1229 generated files, indexes included, byte-identical to the old code's.
+
+What remains — one `dot` run per layout, one `ajv` run per batch, `dot`'s stderr — is T30 in `TODO.md`.
 
 ---
 

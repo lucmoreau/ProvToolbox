@@ -28,22 +28,33 @@ public class RelationMapping {
     }
 
     public void mapGraphToRelations(String template, int id, Object[] record) {
+        if (querier.inTransactionNow()) {
+            // Inside a submission's transaction: the relations are written now, on its connection, and commit with it —
+            // a reader never sees the record without them, and a failure rolls the whole submission back.
+            relationQueries(template, id, record).forEach(q -> querier.do_statements(null, null, q));
+            return;
+        }
         executor.execute(() -> {
-            logger.debug("Template: " + template + " " + id);
-            Map<String, Map<String, int[]>> templateRelations = templateDispatcher.getRelation0().get(template);
-            String[] foreignTables = templateDispatcher.getForeignTables().get(template);
-            Collection<BiConsumer<StringBuilder, Object>> queries = new LinkedList<>();
-            if (templateRelations != null) {
-                for (String property : templateRelations.keySet()) {
-                    Map<String, int[]> propertyRelations = templateRelations.get(property);
-                    BiConsumer<StringBuilder, Object> insertForRelations = createInsertForRelations(template, id, record, property, propertyRelations, foreignTables);
-                    if (insertForRelations != null) queries.add(insertForRelations);
-                }
-            }
+            Collection<BiConsumer<StringBuilder, Object>> queries = relationQueries(template, id, record);
             queries.forEach(q ->
                     executor.execute(() -> querier.do_statements(null, null, q)));
             logger.debug("COMPLETED for " + template + " " + id );
         });
+    }
+
+    private Collection<BiConsumer<StringBuilder, Object>> relationQueries(String template, int id, Object[] record) {
+        logger.debug("Template: " + template + " " + id);
+        Map<String, Map<String, int[]>> templateRelations = templateDispatcher.getRelation0().get(template);
+        String[] foreignTables = templateDispatcher.getForeignTables().get(template);
+        Collection<BiConsumer<StringBuilder, Object>> queries = new LinkedList<>();
+        if (templateRelations != null) {
+            for (String property : templateRelations.keySet()) {
+                Map<String, int[]> propertyRelations = templateRelations.get(property);
+                BiConsumer<StringBuilder, Object> insertForRelations = createInsertForRelations(template, id, record, property, propertyRelations, foreignTables);
+                if (insertForRelations != null) queries.add(insertForRelations);
+            }
+        }
+        return queries;
     }
 
     BiConsumer<StringBuilder, Object> createInsertForRelations(String template, int id, Object[] record, String relation, Map<String, int[]> propertyRelations, String[] foreignTables) {

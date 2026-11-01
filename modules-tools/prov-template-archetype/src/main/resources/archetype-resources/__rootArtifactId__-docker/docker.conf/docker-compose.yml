@@ -34,6 +34,10 @@ services:
       - GITHUB_ALLOWLIST
       - TPL_DB_USER=${symbol_dollar}{TPL_DB_USER:?TPL_DB_USER must be set, see env.example}
       - TPL_DB_PASS=${symbol_dollar}{TPL_DB_PASS:?TPL_DB_PASS must be set, see env.example}
+      # activity counters (the dashboard's Activity tab); defaults inside the service
+      - TPL_ACTIVITY_FLUSH_SECONDS=${symbol_dollar}{TPL_ACTIVITY_FLUSH_SECONDS:-10}
+      - TPL_ACTIVITY_BUCKET_SECONDS=${symbol_dollar}{TPL_ACTIVITY_BUCKET_SECONDS:-10}
+      - TPL_ACTIVITY_RETENTION_DAYS=${symbol_dollar}{TPL_ACTIVITY_RETENTION_DAYS:-400}
       - PROV_STORAGE_CONFIG=/home/pservice/config/storage-configuration.json
       - TEMPLATE_CONFIG=/home/pservice/config/template-config.json
       - TPL_HOST=${symbol_dollar}{TPL_PUBLIC_URL:-http://localhost:${symbol_dollar}{TPL_HTTP_PORT:-8080}}${serviceContext}

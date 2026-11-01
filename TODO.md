@@ -1,7 +1,7 @@
 # ProvToolbox TODO — Outstanding Work
 
-> **🔢 LAST ALLOCATED TASK NUMBER: T28** — the highest task id ever assigned (whether still open here or retired to
-> `DONE.md`). **When allocating a new task, take the NEXT number (T29) and bump this line.** Do NOT reuse a number
+> **🔢 LAST ALLOCATED TASK NUMBER: T30** — the highest task id ever assigned (whether still open here or retired to
+> `DONE.md`). **When allocating a new task, take the NEXT number (T31) and bump this line.** Do NOT reuse a number
 > freed by retirement. T22–T25 were placeholders never filled (removed 2026-10-16); their numbers stay taken.
 >
 > Completed tasks are in `DONE.md`. Paths are relative to the repository root unless stated.
@@ -21,6 +21,7 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 | # | Task | Priority | Category | Section |
 |---|---|---|---|---|
+| T30 | ttf execution: the `dot` runs left after T29 — one run per layout for the png and svg of a document; `validate-ttf` one `ajv` run per batch; `dot`'s stderr drained. | ⬜ BACKLOG | Template / Build | [T30 section](#-t30-ttf-execution-one-dot-run-per-layout) |
 | T28 | The Browser tab checks every listed record's hash at once — with ~2,000 records the browser drops ~400 checks and rows on screen can show no verdict. | 🟡 MEDIUM | Service / Dashboard | [T28 section](#-t28-the-browser-tab-checks-every-records-hash-at-once) |
 | T26 | log2prov cannot read composite template records (null builder slots in the generated Init, FQN vs name key, literal `\n` between the composite's records). | 🟡 MEDIUM | Template compiler / log2prov | [T26 section](#-t26-log2prov-cannot-read-composite-template-records) |
 | T21 | Accept bindings files in yaml format: schema validation, a `-bindingsformat` option, the service instantiation page, the book's chapter 5. | ⬜ BACKLOG | Templates / Bindings | [T21 section](#-t21-bindings-files-in-yaml-format) |
@@ -35,6 +36,31 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 ---
 
 ## Tasks
+
+---
+
+### ⬜ T30: ttf execution: one dot run per layout
+
+**Priority**: ⬜ BACKLOG.  **Category**: Template / Build.
+**Filed 2026-10-24**, what T29 (`DONE.md`) left: after it, the time of a template tasks file is the `dot` runs that remain,
+one per image output, overlapping where the cores allow.
+
+- One `dot` run per layout: png and svg (and qualified.png/qualified.svg) of a document share a layout; `dot -Tpng -o a.png
+  -Tsvg -o b.svg f.dot` lays out once — `ProvToDot` would gain a multi-output `convert`, and the tasks a way to group the
+  formats sharing a `ProvToDot` configuration (prov-template does not depend on prov-dot: a small interface in prov-model,
+  or a `layoutKey` on the serialiser). In provenance-templates-library ~265 pairs, so half the process starts; the gain is
+  the process start and the layout, dearer on macOS, smaller when the renderings already run concurrently.
+- `validate-ttf` (`TtbSchemaValidator`) starts one `ajv` (node) process per ttf, 26 per build in the library's first
+  execution: validate every ttf in one `ajv` run (`-d` repeated), or in the JVM with networknt, which `SchemaCheck` already uses.
+- `ProvToDot.convert(Document, OutputStream, type, title)` neither drains nor waits on `dot`'s stderr: a chatty `dot` could
+  block on a full pipe, more so now that several run at once; redirect stderr or read it on a thread, and `waitFor`.
+- `MergeTask` re-reads its inputs from disk although the tasks that generated them left them in the executor's document cache;
+  reading them is cheap (~1 s in all) and `IndexedDocument.merge` may mutate the statements it is given, so leave as is unless profiled.
+- The library's `pom.xml` also runs 47 `provconvert` executions and 24 `exec` ones at `test`; they are outside the ttf path
+  and were not measured.
+
+**DoD.** The png and svg of one document come from one `dot` run; `validate-ttf` starts one process per batch; the timing
+harness of T29 (a `BatchExecutor` subclass timing tasks and serialisers) shows the ttf time as the necessary `dot` runs.
 
 ---
 

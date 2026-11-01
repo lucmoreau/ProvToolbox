@@ -157,6 +157,21 @@ PostgreSQL needs credentials:
 | `TPL_DB_USER`       | the service's database account |
 | `TPL_DB_PASS`       | its password |
 
+The service also counts its activity (messages posted to `provapi/statements`,
+records written) in the `activity_log` table of the same database, shown by the
+dashboard's *Activity* tab (`<context>/forms.html#tab_activity`, refreshed every
+10 s, or every `N` s with `?refresh=N`). The counting costs nothing on the request
+path: the counts are kept in memory and written in one batched upsert per flush,
+at most one row per bucket and per kind. See `service-templates-core`'s
+`ACTIVITY.md` in ProvToolbox for the table and how another service adds its own
+kinds.
+
+| variable                      | meaning | default |
+|-------------------------------|---------|---------|
+| `TPL_ACTIVITY_FLUSH_SECONDS`  | seconds between two writes of the counters; `0` turns the counting off | `10` |
+| `TPL_ACTIVITY_BUCKET_SECONDS` | width of a time bucket (one row per bucket and per kind) | `10` |
+| `TPL_ACTIVITY_RETENTION_DAYS` | rows older than this are deleted; `0` keeps them for ever | `400` |
+
 The data live in `docker.conf/deploy/` (git-ignored); `TPL_DATA_DIR` moves them.
 PostgreSQL creates the accounts only on the first start of an empty data
 folder. If that first start failed, or ran with other values, the service

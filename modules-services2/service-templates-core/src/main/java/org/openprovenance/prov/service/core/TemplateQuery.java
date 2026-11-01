@@ -204,6 +204,11 @@ public class TemplateQuery {
         return map.entrySet().stream().collect(Collectors.toMap(e -> shortNames.get(e.getKey()), Map.Entry::getValue));
     }
 
+    /** A submission: its statements in one transaction when the service has a pool ({@link Querier#inTransaction}). */
+    public <T> T inTransaction(java.util.function.Supplier<T> work) {
+        return querier.inTransaction(work);
+    }
+
     RelationMapping getRelationMapping() {
         return relationMapping;
     }
@@ -4150,7 +4155,7 @@ public class TemplateQuery {
         List<TemplateConnection> the_records = new LinkedList<>();
 
         String selectedAsASql=selectedVizKinds.stream().map(x -> ("" + x.ordinal())).collect(Collectors.joining(",","ARRAY[",  "]"));
-        querier.do_query(the_records,
+        querier.do_read_query(the_records,
                 null,
                 (sb, data) -> {
                     sb.append("SELECT DISTINCT * FROM ");
@@ -4237,7 +4242,7 @@ public class TemplateQuery {
         List<TemplateConnection> the_records = new LinkedList<>();
 
         String selectedAsASql=selectedVizKinds.stream().map(x -> ("" + x.ordinal())).collect(Collectors.joining(",","ARRAY[",  "]"));
-        querier.do_query(the_records,
+        querier.do_read_query(the_records,
                 null,
                 (sb, data) -> {
                     sb.append("SELECT DISTINCT * FROM ");
@@ -4335,7 +4340,7 @@ public class TemplateQuery {
             throw new IllegalArgumentException("no short name for template qualified name " + fullyQualifiedName);
         }
         //System.out.println("propertyOrder = " + Arrays.toString(propertyOrder));
-        querier.do_query(the_records,
+        querier.do_read_query(the_records,
                 null,
                 (sb, data) -> {
             /* generate following query
@@ -4384,15 +4389,23 @@ public class TemplateQuery {
         return the_records;
     }
 
-    public void whereAccessControl(String principal, StringBuilder sb) {
-        sb.append("\n WHERE (record_index.principal='");
-        sb.append(principal);
-        sb.append("' OR access_control.record IS NOT NULL)");
+    /** The record-level access control (RecordAccess): readers named by the security configuration see every record. */
+    private RecordAccess access = RecordAccess.NONE;
+
+    public void setReaders(java.util.Collection<String> readers) {
+        this.access = RecordAccess.readers(readers);
     }
+
+    public boolean isReader(String principal) {
+        return access.isReader(principal);
+    }
+
+    public void whereAccessControl(String principal, StringBuilder sb) {
+        access.where(principal, sb);
+    }
+
     public void andAccessControl(String principal, StringBuilder sb) {
-        sb.append("\n AND (record_index.principal='");
-        sb.append(principal);
-        sb.append("' OR access_control.record IS NOT NULL)");
+        access.and(principal, sb);
     }
 
     public void joinAccessControl(String template_table_name, String principal, StringBuilder sb) {
@@ -4437,7 +4450,7 @@ public class TemplateQuery {
         List<RecordEntry2> linked_records = new LinkedList<>();
         Set<Integer> seen= new HashSet<>();
 
-        querier.do_query(linked_records,
+        querier.do_read_query(linked_records,
                 null,
                 (sb, data) -> {
                     StringBuffer aggregator= new StringBuffer();
@@ -4534,7 +4547,7 @@ public class TemplateQuery {
     public List<RecordEntry2> queryTemplatesRecordsById(String base_relation, Integer id, Integer limit, String principal) {
         List<RecordEntry2> linked_records = new LinkedList<>();
 
-        querier.do_query(linked_records,
+        querier.do_read_query(linked_records,
                 null,
                 (sb, data) -> {
                     sb.append("SELECT * FROM ");
@@ -4565,7 +4578,7 @@ public class TemplateQuery {
     public List<Integer> queryIds4MostRecentTemplatesRecords(String base_relation, Integer count, String principal) {
         List<Integer> linked_records = new LinkedList<>();
 
-        querier.do_query(linked_records,
+        querier.do_read_query(linked_records,
                 null,
 
                 (sb, data) -> {
@@ -4606,7 +4619,7 @@ public class TemplateQuery {
             return rows;             //   empty table → empty result, no second query
         }
 
-        querier.do_query(rows,
+        querier.do_read_query(rows,
                 null,
 
                 (sb, data) -> {
@@ -4705,7 +4718,7 @@ public class TemplateQuery {
 
         //System.out.println("linker = " + linker);
 
-        querier.do_query(linked_records,
+        querier.do_read_query(linked_records,
                 null,
                 (sb, data) -> {
                     sb.append("SELECT * FROM (");
@@ -5132,8 +5145,8 @@ public class TemplateQuery {
      * {@code target_property}."
      *
      * <p>The iteration logic is identical to {@link #generateBackwardTemplateTraversal}
-     * — same outer loop over entity tables, same virtual-output fix for
-     * all-input (decorator/overlay) and activity-output-only templates, same
+     * — same outer loop over entity tables, same virtual outputs for the overlay
+     * templates (see {@link #collectBackwardDispatchRows(Map, Map)}), same
      * self-join guard — so the two representations encode exactly the same graph.
      * A PL/pgSQL {@code backwardTraversal} can therefore replace the static UNION
      * with a lookup into this table, executing only the 2–12 relevant queries
@@ -5159,7 +5172,7 @@ public class TemplateQuery {
         // for any unusual external invocation with a different map.
         List<String[]> rows = (ioMap == this.ioMap)
                 ? getBackwardDispatchRows()
-                : collectBackwardDispatchRows(ioMap);
+                : collectBackwardDispatchRows(ioMap, subjects());
 
         StringBuilder sb = new StringBuilder();
 
@@ -5212,9 +5225,42 @@ public class TemplateQuery {
      */
     public List<String[]> getBackwardDispatchRows() {
         if (cachedBackwardDispatchRows == null) {
-            cachedBackwardDispatchRows = collectBackwardDispatchRows(ioMap);
+            cachedBackwardDispatchRows = collectBackwardDispatchRows(ioMap, subjects());
         }
         return cachedBackwardDispatchRows;
+    }
+
+    /**
+     * The subjects of each template's own relations, by SQL short name: the variables
+     * that stand on the derived, attributed or specialised side of a statement of the
+     * template — the {@code output} column of {@code predecessor_table}, which
+     * {@link #regenerateTypedPredecessorTable} builds from the same typed successors
+     * (the untyped successors hold only some of the relations: an input that is only
+     * attributed would be missed). An <em>input</em> variable among them is one the
+     * template makes an assertion about without producing it — the only kind of input a
+     * backward walk may arrive at (see {@link #collectBackwardDispatchRows(Map, Map)}).
+     */
+    Map<String, Set<String>> subjects() {
+        return subjectsOf(typedSuccessors, shortNames);
+    }
+
+    /**
+     * {@link #subjects()} from a typed successors map — per template, input variable to a
+     * list alternating successor variable and relation kind — and the templates' short names.
+     */
+    static Map<String, Set<String>> subjectsOf(Map<String, Map<String, List<String>>> typedSuccessors,
+                                               Map<String, String> shortNames) {
+        Map<String, Set<String>> result = new HashMap<>();
+        if (typedSuccessors == null) return result;
+        typedSuccessors.forEach((template, byInput) -> {
+            if (byInput == null) return;
+            Set<String> s = result.computeIfAbsent(shortNames.getOrDefault(template, template), k -> new HashSet<>());
+            byInput.values().forEach(successorsAndKinds -> {
+                if (successorsAndKinds == null) return;
+                for (int i = 0; i < successorsAndKinds.size(); i += 2) s.add(successorsAndKinds.get(i));
+            });
+        });
+        return result;
     }
 
     /**
@@ -5230,10 +5276,22 @@ public class TemplateQuery {
      * {@code TemplateQuery} (which would require a live {@link Querier} / DB connection).
      * Internal callers should use {@link #getBackwardDispatchRows()} instead, which caches.
      *
-     * @param ioMap input/output property map (short SQL names), as returned by {@link #getIoMap}
+     * <p>A row's target is a declared output of the target template, with one exception:
+     * an <em>overlay</em> — a template with no output in the entity table at hand — may be
+     * arrived at through an input it makes an assertion about (one of {@code subjects}:
+     * the template derives, attributes or specialises it). An input that is merely used
+     * (a task, a plan, an agent, a tenant) is never a target: the rows matching it hold
+     * sibling consumers of the same entity, not its ancestors, and a walk that arrived
+     * there would fan out through every record that shares the value.
+     *
+     * @param ioMap    input/output property map (short SQL names), as returned by {@link #getIoMap}
+     * @param subjects per template (short SQL name), the variables that are the subject of one of
+     *                 its own relations — {@link #subjects()}; null or absent means the template
+     *                 asserts nothing about its inputs, so none of them is a target
      * @return the dispatch rows; deterministic order via {@link LinkedHashSet}
      */
-    public static List<String[]> collectBackwardDispatchRows(Map<String, Map<String, Map<String, String>>> ioMap) {
+    public static List<String[]> collectBackwardDispatchRows(Map<String, Map<String, Map<String, String>>> ioMap,
+                                                             Map<String, Set<String>> subjects) {
 
         Set<String> allTables = ioMap.get(OUTPUT).values().stream()
                 .map(Map::values).flatMap(Collection::stream)
@@ -5255,16 +5313,23 @@ public class TemplateQuery {
             Map<String, Map<String, String>> input_table  = filterMapAccordingToTable(table, input);
             Map<String, Map<String, String>> output_table = filterMapAccordingToTable(table, output);
 
-            // ── Virtual-output fix (mirrors generateBackwardTemplateTraversal) ──
-            // All-input and activity-output-only templates would otherwise be
-            // unreachable as traversal targets; inject them using their input
-            // properties as virtual output keys.
+            // ── Virtual outputs: the overlays only, and only their subject inputs ──
+            // filterMapAccordingToTable keeps every template as a key, with an empty
+            // map where it has no output in THIS table — true of nearly every
+            // template in nearly every table, not just of the overlays. So the test
+            // is not "no output here" but "no output here AND the input is a subject
+            // of the template's own relations".
             for (String template : input_table.keySet()) {
-                if (!output_table.containsKey(template) || output_table.get(template).isEmpty()) {
-                    output_table.put(template, input_table.get(template));
-                }
+                if (output_table.containsKey(template) && !output_table.get(template).isEmpty()) continue;
+                Set<String> templateSubjects = (subjects == null) ? null : subjects.get(template);
+                if (templateSubjects == null || templateSubjects.isEmpty()) continue;
+                Map<String, String> virtual = new LinkedHashMap<>();
+                input_table.get(template).forEach((property, entityTable) -> {
+                    if (templateSubjects.contains(property)) virtual.put(property, entityTable);
+                });
+                if (!virtual.isEmpty()) output_table.put(template, virtual);
             }
-            // ──────────────────────────────────────────────────────────────────
+            // ─────────────────────────────────────────────────────────────────────
 
             for (String in_template : input_table.keySet()) {
                 if (input_table.get(in_template).keySet().isEmpty()) continue;
@@ -5335,7 +5400,7 @@ public class TemplateQuery {
     public String generateCreateTraversalIndexes(Map<String, Map<String, Map<String, String>>> ioMap) {
         List<String[]> rows = (ioMap == this.ioMap)
                 ? getBackwardDispatchRows()
-                : collectBackwardDispatchRows(ioMap);
+                : collectBackwardDispatchRows(ioMap, subjects());
 
         // Four ordered sets — LinkedHashSet preserves insertion order for deterministic SQL.
         // Target side  (r[2], r[3]): consumed by backwardTraversal  (WHERE target_property = $v)
@@ -5379,7 +5444,7 @@ public class TemplateQuery {
     public String generateDropTraversalIndexes(Map<String, Map<String, Map<String, String>>> ioMap) {
         List<String[]> rows = (ioMap == this.ioMap)
                 ? getBackwardDispatchRows()
-                : collectBackwardDispatchRows(ioMap);
+                : collectBackwardDispatchRows(ioMap, subjects());
 
         Set<String>            tables          = new LinkedHashSet<>();
         Set<Map.Entry<String,String>> tableCols = new LinkedHashSet<>();
@@ -5513,7 +5578,7 @@ public class TemplateQuery {
     public List<Object[]> queryFromSql(String sql, boolean withHeader) {
         List<Object> linked_records = new LinkedList<>();
 
-        return querier.do_query(linked_records,
+        return querier.do_read_query(linked_records,
                 null,
                 (sb, data) -> {
                     sb.append(sql);

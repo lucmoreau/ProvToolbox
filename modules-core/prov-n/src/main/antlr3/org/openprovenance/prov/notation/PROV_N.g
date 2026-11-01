@@ -1,6 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2011-2012 Luc Moreau
  *******************************************************************************/
+/*
+  DEPRECATED (since 2.3.0): this ANTLR 3 grammar, and the parser generated from it (PROV_NParser,
+  PROV_NLexer), will be removed after the 2.3.0 release. They are replaced by the ANTLR 4 grammar
+  src/main/antlr4/org/openprovenance/prov/notation/ProvN.g4, read via ProvNReader.
+*/
+
 grammar PROV_N;
 
 options {

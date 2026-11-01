@@ -2,7 +2,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.4.0-SNAPSHOT`
 * prov-n: PROV-N is read with the ANTLR 4 parser (ProvN.g4, ProvNReader): ProvDeserialiser, hence InteropFramework and the services, and Utility.readDocument/convertSyntaxTreeToJavaBean. A document that is not valid PROV-N is rejected with a ProvNSyntaxException listing all errors, where the ANTLR 3 parser recovered from errors and only logged them; see ProvDeserialiser for the other differences. The ANTLR 3 parser remains only behind the deprecated methods of Utility that expose it, and TreeTraversal, to be removed
-*
+* prov-template-compiler: generated query invokers no longer write a String input into the composed SQL unquoted: an input without "@sql.type" is passed as nullableTEXT (a raw xsd:string such as transporting's ilocation or weighing's unit failed with 'column "x" does not exist' and allowed SQL injection), a String input whose "@sql.type" has no converter fails generation, and the timestamptz, date and json converters escape quotes; the Python and JavaScript emitters escape string constants (the generated Python QueryInvokers did not parse)
 
 
 `2.3.0`

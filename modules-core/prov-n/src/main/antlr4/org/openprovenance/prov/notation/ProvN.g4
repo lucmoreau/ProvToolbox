@@ -13,8 +13,9 @@
 
     - nothing but whitespace and comments may follow the last 'endDocument' (the ANTLR 3 parser
       ignored what followed); a stream may hold several documents (rule documents);
-    - wasRevisionOf, wasQuotedFrom and hadPrimarySource are read as derivations of type
-      prov:Revision, prov:Quotation, prov:PrimarySource (the ANTLR 3 parser dropped them);
+    - wasRevisionOf, wasQuotedFrom and hadPrimarySource, which early drafts of PROV-N had, but
+      not the W3C Recommendation, are not keywords (the ANTLR 3 parser accepted them, then
+      dropped them); see derivationExpression;
     - a datatype must be a qualified name, as in PROV-N (an IRI made TreeTraversal fail);
     - a STRING_LITERAL_LONG2 ("""...""") may have a datatype;
     - PN_CHARS_BASE includes the characters [#x10000-#xEFFFF], as in PROV-N.
@@ -130,9 +131,6 @@ expression
       /* Component 3: derivations */
     | derivationExpression
     | influenceExpression
-    | hadPrimarySourceExpression
-    | quotationExpression
-    | revisionExpression
       /* Component 5: alternate entities */
     | alternateExpression
     | specializationExpression
@@ -206,24 +204,12 @@ responsibilityExpression
    Component 3: derivations
    ====================================================================== */
 
+/* Revisions, quotations and primary sources are derivations with prov:type prov:Revision,
+   prov:Quotation, prov:PrimarySource. As in the W3C Recommendation, there are no wasRevisionOf,
+   wasQuotedFrom or hadPrimarySource expressions (early drafts had them): such a statement is an
+   extensibility expression, whose name is an unprefixed qualified name. */
 derivationExpression
-    : 'wasDerivedFrom' '(' optionalIdentifier derivationArguments ')'
-    ;
-
-revisionExpression
-    : 'wasRevisionOf' '(' optionalIdentifier derivationArguments ')'
-    ;
-
-quotationExpression
-    : 'wasQuotedFrom' '(' optionalIdentifier derivationArguments ')'
-    ;
-
-hadPrimarySourceExpression
-    : 'hadPrimarySource' '(' optionalIdentifier derivationArguments ')'
-    ;
-
-derivationArguments
-    : generated=identifierOrMarker ',' used=identifierOrMarker (',' activity=identifierOrMarker ',' generation=identifierOrMarker ',' usage=identifierOrMarker)? optionalAttributeValuePairs
+    : 'wasDerivedFrom' '(' optionalIdentifier generated=identifierOrMarker ',' used=identifierOrMarker (',' activity=identifierOrMarker ',' generation=identifierOrMarker ',' usage=identifierOrMarker)? optionalAttributeValuePairs ')'
     ;
 
 influenceExpression

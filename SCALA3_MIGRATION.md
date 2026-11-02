@@ -34,7 +34,7 @@ prov-n, prov-jsonld and prov-validation are left out). Port in layer order.
 | 3 | `modules-summarisation/prov-typemap` | `modules-summarisation/prov-typemap-scala3` | prov-scala-misc, prov-summarisation | 466 / 47 | **DONE** |
 | 3 | `modules-explanations/prov-query` | `modules-explanations/prov-query-scala3` | prov-scala-misc, nlg-spec-transformer, prov-nf, prov-summarisation (parser-combinators, parboiled2) | 1377 / 905 | **DONE** (built with the lexaccess stub; re-run once with the real lexicon) |
 | 4 | `modules-explanations/prov-explanations` | `modules-explanations/prov-explanations-scala3` | nlg-wrapper, prov-query, prov-nf, prov-summarisation | 1515 / 1160 | **COMPILES** — full test run pending (needs lexicon) |
-| 5 | `modules-explanations/prov-summary-explanations` | `modules-explanations/prov-summary-explanations-scala3` | prov-query, prov-explanations, prov-summarisation | 85 / 0 | TODO |
+| 5 | `modules-explanations/prov-summary-explanations` | `modules-explanations/prov-summary-explanations-scala3` | prov-query, prov-explanations, prov-summarisation | 85 / 0 | **DONE** (no tests) |
 | 6 | `modules-executable-provman` | `modules-executable-provman-scala3` | everything above (scopt) | 1674 / 32 | TODO |
 
 Note: `prov-validation` (Java) depends on `prov-scala-misc` only in **test** scope,
@@ -217,6 +217,7 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 | Date | Step | Result / notes |
 |---|---|---|
 | 2026-11-02 | Plan written, branch `scala3-port` created | Root pom: properties `scala3.version=3.9.0`, `scala3.release=17`. Helper script `scala3-migration/copy-module.py`. |
+| 2026-11-02 | prov-summary-explanations-scala3 | Compiled with no source change; no tests in 2.13 either. `dependency:tree` clean. |
 | 2026-11-02 | prov-explanations-scala3 | Compiled with **no source change**. Both suites (`NlgSpec`, `ExplanationSpec`, 27 tests) abort in **both** versions on the missing lexaccess class. **TODO with the lexicon**: full test run of both, compare. `dependency:tree` clean. |
 | 2026-11-02 | prov-query-scala3 | Fixes #1 (25 actions, new script `parboiled-actions.py`), #6 (test), #13, #14, #15. Tests same as 2.13: ScalaTest 11/11 (these suites do not need the lexicon). `target/` outputs identical. `dependency:tree` clean. |
 | 2026-11-02 | nlg-spec-transformer-scala3 | Built with the lexaccess stub. Fixes #8 (auto), #9, #10, #11, #12. Main + test compile. `xmlSpec` (no lexicon): 2/2 in both versions. `TransformSpecsSpec`, `SentencesFromJsonSpec`, `LoadPhraseSpec` abort in **both** versions on the missing lexaccess class. **TODO with the lexicon**: full test run of both (2.13 expects 24 tests), compare. |

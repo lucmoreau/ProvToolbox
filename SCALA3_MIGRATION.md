@@ -4,6 +4,44 @@ This is a living document. **Whoever works on the migration (human or Claude ses
 updates the "Progress log" and the status column after every step and commits it
 with the work.** A new session should be able to resume from this file alone.
 
+## ▶ Current status and next steps (handover, 2026-11-02)
+
+**Status:** all 12 Scala modules have a Scala 3 copy (`X-scala3`) on branch `scala3-port`,
+and all of them compile (main + test) against Scala 3.9.0. 9 are fully verified against
+their 2.13 twins (same test results, plus identical generated files where checked). 3 are
+only partly verified, because the cloud session could not download the SimpleNLG lexicon
+(see "Build environment notes"):
+`nlg-wrapper-scala3`, `nlg-spec-transformer-scala3`, `prov-explanations-scala3`
+(and the `narrate`/`explain` commands of provman). No 2.13 module was modified.
+
+**Next steps, in order (for the next session, e.g. on the maintainer's machine):**
+
+1. `git fetch origin scala3-port && git checkout scala3-port`.
+2. Make sure there is **no lexaccess stub** left in `~/.m2`
+   (`rm -rf ~/.m2/repository/gov/nih/nlm/nls/lexaccess`; the cloud session only created
+   it in its own container, but check anyway) and that graphviz `dot` is installed.
+3. Build everything once: `mvn -B install -DskipTests -Dexec.skip=true`
+   (this also downloads the lexicon into `modules-explanations/nlg-wrapper*/dictionary`).
+4. **Step V (verify the 3 pending modules).** For each of `nlg-wrapper`,
+   `nlg-spec-transformer` and `prov-explanations`, run
+   `mvn -B test -Dexec.skip=true -pl modules-explanations/X` and the same for
+   `X-scala3`. Compare the ScalaTest summaries (expected counts: 30, 24, 27 tests). Fix any
+   difference in the `-scala3` copy only, and add each new kind of fix to the catalogue
+   below. Then smoke-test provman's `narrate`/`explain` with both
+   `modules-executable-provman*/target/appassembler/bin/provmanagement`.
+   Mark the modules **DONE** in the table and log the results.
+5. **Step D (docs/release).** The `attach-javadocs` (scaladoc `doc-jar`) execution is
+   disabled in all copies (see recipe step 2). Before any `mvn -P release` /
+   `make release` from this branch, either make scaladoc work for Scala 3 (try
+   scala-maven-plugin 4.10.x and Scala 3 scaladoc options) or keep the `-scala3` modules out
+   of the release. Maven Central requires javadoc jars.
+6. Optional, ask the maintainer first: clean the deprecation warnings (catalogue #17),
+   e.g. one `-rewrite -source 3.4-migration` pass per module.
+7. **Phase R (retirement)**, see the end of this file.
+
+Tools: `scala3-migration/copy-module.py` (creates a copy) and
+`scala3-migration/parboiled-actions.py` (fix #1).
+
 ## Decisions (agreed with the maintainer, 2026-11-02)
 
 | Topic | Decision |
@@ -49,12 +87,12 @@ without pulling Scala 2.13 classes in. **Always check** with
 |---|---|---|
 | scala-library | `scala-library 2.13.18` | `scala3-library_3 ${scala3.version}` |
 | scalatest | `scalatest_2.13 3.2.19` | `scalatest_3 3.2.19` ✅ |
-| parboiled2 | `parboiled_2.13 2.5.1` | `parboiled_3 2.5.1` (macro lib; Scala 3 supported since 2.5.0; check rule syntax differences) |
+| parboiled2 | `parboiled_2.13 2.5.1` | `parboiled_3 2.5.1` ✅ (macro lib: actions must be lambdas, fix #1) |
 | parser-combinators | `scala-parser-combinators_2.13 2.4.0` | `scala-parser-combinators_3 2.4.0` ✅ |
 | parallel collections | `scala-parallel-collections_2.13 1.0.4` | `scala-parallel-collections_3 1.0.4` ✅ |
-| scala-xml | `scala-xml_2.13` | `scala-xml_3 2.x` (latest 2.5.0) |
-| jackson-module-scala | `jackson-module-scala_2.13 ${jackson.version}` | `jackson-module-scala_3 ${jackson.version}` ✅ (2.21.2 exists). Scala 3 has no `ScalaObjectMapper`/`ClassTagExtensions` with Manifest — check usages. |
-| scopt | `scopt_2.13` | `scopt_3 4.1.0` |
+| scala-xml | `scala-xml_2.13 2.1.0` (test) | `scala-xml_3 2.1.0` ✅ |
+| jackson-module-scala | `jackson-module-scala_2.13 ${jackson.version}` | `jackson-module-scala_3 ${jackson.version}` ✅ (2.21.2). No `ScalaObjectMapper` in Scala 3, fix #10. |
+| scopt | `scopt_2.13 4.1.0` | `scopt_3 4.1.0` ✅ |
 
 ## Build environment notes
 
@@ -220,6 +258,7 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 | Date | Step | Result / notes |
 |---|---|---|
 | 2026-11-02 | Plan written, branch `scala3-port` created | Root pom: properties `scala3.version=3.9.0`, `scala3.release=17`. Helper script `scala3-migration/copy-module.py`. |
+| 2026-11-02 | Handover | All 12 copies exist and compile. `mvn validate` on the whole reactor OK (85 modules). Handover section written at the top. Next: steps V, D, R. |
 | 2026-11-02 | modules-executable-provman-scala3 | Fix #16. Full `mvn install` (with antrun, appassembler, assembly): ScalaTest 2/2 in both. The generated man page `provmanagement.1` (built by running the CLI) is identical. Smoke test with `target/appassembler/bin/provmanagement` on `types/100009/100009.provn`: `translate` to provn/svg/dot, `normalize` and `summary` all give **byte-identical** output in 2.13 and Scala 3 (`translate` to `.json` fails in both: `json` is not a `Format`, pre-existing). `dependency:tree` clean. |
 | 2026-11-02 | prov-summary-explanations-scala3 | Compiled with no source change; no tests in 2.13 either. `dependency:tree` clean. |
 | 2026-11-02 | prov-explanations-scala3 | Compiled with **no source change**. Both suites (`NlgSpec`, `ExplanationSpec`, 27 tests) abort in **both** versions on the missing lexaccess class. **TODO with the lexicon**: full test run of both, compare. `dependency:tree` clean. |

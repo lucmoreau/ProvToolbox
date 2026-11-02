@@ -1,0 +1,357 @@
+{
+  "types" : {
+    "0" : [ {
+      "type" : "Ent"
+    } ],
+    "5" : [ {
+      "type" : "Usd",
+      "t" : [ {
+        "type" : "Wdf",
+        "t" : [ {
+          "type" : "Ent"
+        } ],
+        "a" : [ ]
+      } ]
+    }, {
+      "type" : "Act"
+    }, {
+      "type" : "Waw",
+      "t" : [ {
+        "type" : "Ag"
+      } ],
+      "pl" : [ {
+        "type" : "Ent"
+      } ]
+    }, {
+      "type" : "Usd",
+      "t" : [ {
+        "type" : "Ent"
+      } ]
+    } ],
+    "10" : [ {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Ent"
+      } ],
+      "a" : [ ]
+    }, {
+      "type" : "Ent"
+    }, {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Wdf",
+        "t" : [ {
+          "type" : "Ent"
+        } ],
+        "a" : [ ]
+      }, {
+        "type" : "Wgb",
+        "t" : [ {
+          "type" : "Act"
+        } ]
+      } ],
+      "a" : [ ]
+    } ],
+    "1" : [ {
+      "type" : "Ag"
+    } ],
+    "6" : [ {
+      "type" : "Act"
+    }, {
+      "type" : "Usd",
+      "t" : [ {
+        "type" : "Wdf",
+        "t" : [ {
+          "type" : "Ent"
+        } ],
+        "a" : [ ]
+      }, {
+        "type" : "Wgb",
+        "t" : [ {
+          "type" : "Act"
+        } ]
+      } ]
+    }, {
+      "type" : "Usd",
+      "t" : [ {
+        "type" : "Ent"
+      } ]
+    }, {
+      "type" : "Waw",
+      "t" : [ {
+        "type" : "Ag"
+      } ],
+      "pl" : [ ]
+    } ],
+    "9" : [ {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Ent"
+      } ],
+      "a" : [ ]
+    }, {
+      "type" : "Wgb",
+      "t" : [ {
+        "type" : "Act"
+      } ]
+    }, {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Wdf",
+        "t" : [ {
+          "type" : "Ent"
+        } ],
+        "a" : [ ]
+      } ],
+      "a" : [ ]
+    }, {
+      "type" : "Wgb",
+      "t" : [ {
+        "type" : "Waw",
+        "t" : [ {
+          "type" : "Ag"
+        } ],
+        "pl" : [ {
+          "type" : "Ent"
+        } ]
+      }, {
+        "type" : "Usd",
+        "t" : [ {
+          "type" : "Ent"
+        } ]
+      } ]
+    }, {
+      "type" : "Ent"
+    } ],
+    "2" : [ {
+      "type" : "Spec",
+      "t" : [ {
+        "type" : "Ent"
+      } ]
+    }, {
+      "type" : "Ent"
+    } ],
+    "7" : [ {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Ent"
+      } ],
+      "a" : [ ]
+    }, {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Spec",
+        "t" : [ {
+          "type" : "Ent"
+        } ]
+      } ],
+      "a" : [ ]
+    }, {
+      "type" : "Ent"
+    } ],
+    "3" : [ {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Ent"
+      } ],
+      "a" : [ ]
+    }, {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Wdf",
+        "t" : [ {
+          "type" : "Ent"
+        } ],
+        "a" : [ ]
+      } ],
+      "a" : [ ]
+    }, {
+      "type" : "Ent"
+    } ],
+    "11" : [ {
+      "type" : "Usd",
+      "t" : [ {
+        "type" : "Wdf",
+        "t" : [ {
+          "type" : "Ent"
+        } ],
+        "a" : [ ]
+      } ]
+    }, {
+      "type" : "Act"
+    }, {
+      "type" : "Usd",
+      "t" : [ {
+        "type" : "Ent"
+      } ]
+    }, {
+      "type" : "Waw",
+      "t" : [ {
+        "type" : "Ag"
+      } ],
+      "pl" : [ ]
+    } ],
+    "8" : [ {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Ent"
+      } ],
+      "a" : [ ]
+    }, {
+      "type" : "Wgb",
+      "t" : [ {
+        "type" : "Act"
+      } ]
+    }, {
+      "type" : "Wgb",
+      "t" : [ {
+        "type" : "Waw",
+        "t" : [ {
+          "type" : "Ag"
+        } ],
+        "pl" : [ {
+          "type" : "Ent"
+        } ]
+      }, {
+        "type" : "Usd",
+        "t" : [ {
+          "type" : "Ent"
+        } ]
+      } ]
+    }, {
+      "type" : "Ent"
+    }, {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Wdf",
+        "t" : [ {
+          "type" : "Ent"
+        } ],
+        "a" : [ ]
+      }, {
+        "type" : "Wgb",
+        "t" : [ {
+          "type" : "Act"
+        } ]
+      } ],
+      "a" : [ ]
+    } ],
+    "4" : [ {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Ent"
+      } ],
+      "a" : [ ]
+    }, {
+      "type" : "Wgb",
+      "t" : [ {
+        "type" : "Act"
+      } ]
+    }, {
+      "type" : "Wgb",
+      "t" : [ {
+        "type" : "Usd",
+        "t" : [ {
+          "type" : "Ent"
+        } ]
+      }, {
+        "type" : "Waw",
+        "t" : [ {
+          "type" : "Ag"
+        } ],
+        "pl" : [ ]
+      } ]
+    }, {
+      "type" : "Ent"
+    }, {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Wdf",
+        "t" : [ {
+          "type" : "Ent"
+        } ],
+        "a" : [ ]
+      }, {
+        "type" : "Wgb",
+        "t" : [ {
+          "type" : "Act"
+        } ]
+      } ],
+      "a" : [ ]
+    } ]
+  },
+  "typeStrings" : {
+    "0" : "[Ent()]",
+    "5" : "[Act(),Usd([Ent()]),Usd([Wdf([Ent()],[])]),Waw([Ag()],[Ent()])]",
+    "10" : "[Ent(),Wdf([Ent()],[]),Wdf([Wdf([Ent()],[]),Wgb([Act()])],[])]",
+    "1" : "[Ag()]",
+    "6" : "[Act(),Usd([Ent()]),Usd([Wdf([Ent()],[]),Wgb([Act()])]),Waw([Ag()],[])]",
+    "9" : "[Ent(),Wdf([Ent()],[]),Wdf([Wdf([Ent()],[])],[]),Wgb([Act()]),Wgb([Usd([Ent()]),Waw([Ag()],[Ent()])])]",
+    "2" : "[Ent(),Spec([Ent()])]",
+    "7" : "[Ent(),Wdf([Ent()],[]),Wdf([Spec([Ent()])],[])]",
+    "3" : "[Ent(),Wdf([Ent()],[]),Wdf([Wdf([Ent()],[])],[])]",
+    "11" : "[Act(),Usd([Ent()]),Usd([Wdf([Ent()],[])]),Waw([Ag()],[])]",
+    "8" : "[Ent(),Wdf([Ent()],[]),Wdf([Wdf([Ent()],[]),Wgb([Act()])],[]),Wgb([Act()]),Wgb([Usd([Ent()]),Waw([Ag()],[Ent()])])]",
+    "4" : "[Ent(),Wdf([Ent()],[]),Wdf([Wdf([Ent()],[]),Wgb([Act()])],[]),Wgb([Act()]),Wgb([Usd([Ent()]),Waw([Ag()],[])])]"
+  },
+  "names" : {
+    "t:T6" : 6,
+    "t:T1" : 1,
+    "t:T7" : 7,
+    "t:T5" : 5,
+    "t:T2" : 2,
+    "t:T11" : 11,
+    "t:T10" : 10,
+    "t:T3" : 3,
+    "t:T9" : 9,
+    "t:T0" : 0,
+    "t:T4" : 4,
+    "t:T8" : 8
+  },
+  "base" : {
+    "0" : [ "https://mimic.physionet.org/mimiciii/1.4/process/223253", "https://mimic.physionet.org/mimiciii/1.4/process/224274", "https://mimic.physionet.org/mimiciii/1.4/process/225401", "https://mimic.physionet.org/mimiciii/1.4/process/221223", "https://mimic.physionet.org/mimiciii/1.4/process/224275", "https://mimic.physionet.org/mimiciii/1.4/process/225402", "https://mimic.physionet.org/mimiciii/1.4/patients/75500" ],
+    "5" : [ "https://mimic.physionet.org/mimiciii/1.4/procedures/227034", "https://mimic.physionet.org/mimiciii/1.4/procedures/227030", "https://mimic.physionet.org/mimiciii/1.4/procedures/227033", "https://mimic.physionet.org/mimiciii/1.4/procedures/227032", "https://mimic.physionet.org/mimiciii/1.4/procedures/227036", "https://mimic.physionet.org/mimiciii/1.4/procedures/227035", "https://mimic.physionet.org/mimiciii/1.4/procedures/227031" ],
+    "10" : [ "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632491020.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632499300.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632482800.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632481600.0" ],
+    "1" : [ "https://mimic.physionet.org/mimiciii/1.4/units/7", "https://mimic.physionet.org/mimiciii/1.4/staff/15218", "https://mimic.physionet.org/mimiciii/1.4/units/45", "https://mimic.physionet.org/mimiciii/1.4/staff/14411", "https://mimic.physionet.org/mimiciii/1.4/staff/20889" ],
+    "6" : [ "https://mimic.physionet.org/mimiciii/1.4/stay/227217", "https://mimic.physionet.org/mimiciii/1.4/stay/227218", "https://mimic.physionet.org/mimiciii/1.4/stay/227219" ],
+    "9" : [ "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632485260.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632481660.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632474400.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632491080.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632499360.0" ],
+    "2" : [ "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473" ],
+    "7" : [ "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632464293.0" ],
+    "3" : [ "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632485200.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632474340.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632464920.0" ],
+    "11" : [ "https://mimic.physionet.org/mimiciii/1.4/stay/227216" ],
+    "8" : [ "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632565120.0" ],
+    "4" : [ "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632565173.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632993203.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632895802.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632919990.0" ]
+  },
+  "prettyNames" : {
+    "0" : "_0",
+    "5" : "_5",
+    "10" : "_10",
+    "1" : "_1",
+    "6" : "_6",
+    "9" : "_9",
+    "2" : "_2",
+    "7" : "_7",
+    "3" : "_3",
+    "11" : "_11",
+    "8" : "_8",
+    "4" : "_4"
+  },
+  "prefixes" : {
+    "t" : "http://openprovenance.og/summary/xyz/types#"
+  },
+  "nsBase" : "http://openprovenance.og/summary/xyz/types#",
+  "features" : {
+    "[Ent(),Wdf([Ent()],[]),Wdf([Wdf([Ent()],[]),Wgb([Act()])],[]),Wgb([Act()]),Wgb([Usd([Ent()]),Waw([Ag()],[])])]" : 4,
+    "[Ent(),Wdf([Ent()],[]),Wdf([Wdf([Ent()],[])],[]),Wgb([Act()]),Wgb([Usd([Ent()]),Waw([Ag()],[Ent()])])]" : 5,
+    "[Ent(),Wdf([Ent()],[]),Wdf([Wdf([Ent()],[]),Wgb([Act()])],[]),Wgb([Act()]),Wgb([Usd([Ent()]),Waw([Ag()],[Ent()])])]" : 1,
+    "[Ent(),Wdf([Ent()],[]),Wdf([Wdf([Ent()],[]),Wgb([Act()])],[])]" : 4,
+    "[Ag()]" : 5,
+    "[Ent()]" : 7,
+    "[Act(),Usd([Ent()]),Usd([Wdf([Ent()],[])]),Waw([Ag()],[Ent()])]" : 7,
+    "[Ent(),Wdf([Ent()],[]),Wdf([Spec([Ent()])],[])]" : 1,
+    "[Ent(),Wdf([Ent()],[]),Wdf([Wdf([Ent()],[])],[])]" : 3,
+    "[Act(),Usd([Ent()]),Usd([Wdf([Ent()],[]),Wgb([Act()])]),Waw([Ag()],[])]" : 3,
+    "[Ent(),Spec([Ent()])]" : 1,
+    "[Act(),Usd([Ent()]),Usd([Wdf([Ent()],[])]),Waw([Ag()],[])]" : 1
+  }
+}

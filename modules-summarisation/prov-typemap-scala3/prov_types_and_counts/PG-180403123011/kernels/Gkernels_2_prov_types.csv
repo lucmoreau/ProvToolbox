@@ -1,0 +1,10 @@
+Number,Type
+1,"Set(Wgb(Set(Act())), Wdf(Set(Ent()),Set(Act())), Ent(), Wgb(Set(Usd(Set(Ent())))))"
+2,Set(Ent())
+3,"Set(Act(), Usd(Set(Ent())), Usd(Set(Wgb(Set(Act())), Wdf(Set(Ent()),Set(Act())))))"
+4,"Set(Act(), Usd(Set(Ent())))"
+5,"Set(Wdf(Set(Wgb(Set(Act())), Wdf(Set(Ent()),Set(Act()))),Set(Usd(Set(Ent())))), Wgb(Set(Act())), Wdf(Set(Ent()),Set(Act())), Ent(), Wgb(Set(Usd(Set(Ent())))))"
+6,"Set(Act(), Usd(Set(Wgb(Set(Act())), Winvb(Set(Act())), Wdf(Set(Ent()),Set(Act())))), Usd(Set(Ent())), Usd(Set(Wgb(Set(Act())), Wdf(Set(Ent()),Set(Act())))))"
+7,"Set(Wdf(Set(Wgb(Set(Act())), Wdf(Set(Ent()),Set(Act()))),Set(Usd(Set(Ent())))), Winvb(Set(Act())), Wgb(Set(Act())), Wdf(Set(Ent()),Set(Act())), Ent(), Winvb(Set(Usd(Set(Ent())))), Wgb(Set(Usd(Set(Ent())))))"
+8,"Set(Act(), Usd(Set(Winvb(Set(Act())), Wgb(Set(Act())), Wdf(Set(Ent()),Set(Act())))), Usd(Set(Ent())), Usd(Set(Wgb(Set(Act())), Wdf(Set(Ent()),Set(Act())))))"
+9,"Set(Wdf(Set(Wgb(Set(Act())), Wdf(Set(Ent()),Set(Act()))),Set(Usd(Set(Ent())))), Wgb(Set(Act())), Winvb(Set(Act())), Wdf(Set(Ent()),Set(Act())), Ent(), Wgb(Set(Usd(Set(Ent())))), Winvb(Set(Usd(Set(Ent())))))"

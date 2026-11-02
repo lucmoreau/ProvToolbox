@@ -1,0 +1,9 @@
+Number,Type
+1,"Set(Prim(pgo:PokemonStrong), Ent())"
+2,"Set(Prim(pgo:Player), Ent())"
+3,"Set(Act(), Prim(pgo:BallCollection))"
+4,"Set(Prim(pgo:Pokestop), Ent())"
+5,"Set(Act(), Prim(pgo:PokemonCapture))"
+6,"Set(Prim(pgo:PokemonWeak), Ent())"
+7,"Set(Prim(pgo:PokemonNormal), Ent())"
+8,"Set(Prim(pgo:PokemonDispose), Act())"

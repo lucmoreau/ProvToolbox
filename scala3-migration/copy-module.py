@@ -17,7 +17,8 @@ It
   3. registers <module>-scala3 in the parent aggregator pom, right after <module>.
 
 The script refuses to run if the copy already exists, so it never overwrites work.
-Source code is copied unchanged: fixing it for Scala 3 is a manual step.
+Source code is copied unchanged except for one safe syntactic rewrite (typed lambda
+parameters get parentheses, fix #8 in SCALA3_MIGRATION.md); other fixes are manual.
 """
 import os
 import re
@@ -143,6 +144,25 @@ def rewrite_pom(s):
     return own, s
 
 
+# Scala 3 requires parentheses around a typed lambda parameter: `{x: T => ...}` -> `{(x: T) => ...}`.
+# Valid in Scala 2 as well; applied to every .scala file of the copy.
+LAMBDA = re.compile(r"\{(\s*)([a-z]\w*)\s*:\s*([A-Z][\w\[\], .]*?)\s*=>")
+
+
+def fix_lambda_parens(root):
+    total = 0
+    for d, _, files in os.walk(root):
+        for f in files:
+            if f.endswith(".scala"):
+                p = os.path.join(d, f)
+                s = open(p).read()
+                s2, n = LAMBDA.subn(r"{\1(\2:\3) =>", s)
+                if n:
+                    open(p, "w").write(s2)
+                    total += n
+    return total
+
+
 def register(module_dir):
     parent_dir, name = os.path.split(module_dir.rstrip("/"))
     parent_pom = os.path.join(parent_dir or ".", "pom.xml")
@@ -171,6 +191,9 @@ def main():
     shutil.copytree(src, dst, ignore=shutil.ignore_patterns("target", "*.iml", ".idea"))
     own, pom = rewrite_pom(open(os.path.join(dst, "pom.xml")).read())
     open(os.path.join(dst, "pom.xml"), "w").write(pom)
+    n = fix_lambda_parens(dst)
+    if n:
+        print("fixed %d lambda(s) needing parentheses around a typed parameter" % n)
     parent_pom = register(src)
     print("created %s (artifactId %s-scala3), registered in %s" % (dst, own, parent_pom))
 

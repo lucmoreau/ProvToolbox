@@ -1,0 +1,260 @@
+{
+  "types" : {
+    "0" : [ {
+      "type" : "Ag",
+      "types" : [ ]
+    }, {
+      "type" : "Prim",
+      "s" : "prov:Organization",
+      "types" : [ "prov:Organization" ]
+    } ],
+    "5" : [ {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Ent",
+        "types" : [ ]
+      } ],
+      "a" : [ ],
+      "types" : [ ]
+    }, {
+      "type" : "Alt",
+      "t" : [ {
+        "type" : "Ent",
+        "types" : [ ]
+      } ],
+      "types" : [ ]
+    }, {
+      "type" : "Spec",
+      "t" : [ {
+        "type" : "Ent",
+        "types" : [ ]
+      } ],
+      "types" : [ ]
+    }, {
+      "type" : "Ent",
+      "types" : [ ]
+    } ],
+    "10" : [ {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Ent",
+        "types" : [ ]
+      } ],
+      "a" : [ ],
+      "types" : [ ]
+    }, {
+      "type" : "Spec",
+      "t" : [ {
+        "type" : "Ent",
+        "types" : [ ]
+      } ],
+      "types" : [ ]
+    }, {
+      "type" : "Ent",
+      "types" : [ ]
+    } ],
+    "1" : [ {
+      "type" : "Act",
+      "types" : [ ]
+    } ],
+    "6" : [ {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Ent",
+        "types" : [ ]
+      } ],
+      "a" : [ ],
+      "types" : [ ]
+    }, {
+      "type" : "Ent",
+      "types" : [ ]
+    } ],
+    "9" : [ {
+      "type" : "Wgb",
+      "t" : [ {
+        "type" : "Act",
+        "types" : [ ]
+      } ],
+      "types" : [ ]
+    }, {
+      "type" : "Ent",
+      "types" : [ ]
+    } ],
+    "2" : [ {
+      "type" : "Ent",
+      "types" : [ ]
+    } ],
+    "7" : [ {
+      "type" : "Wgb",
+      "t" : [ {
+        "type" : "Act",
+        "types" : [ ]
+      } ],
+      "types" : [ ]
+    }, {
+      "type" : "Wat",
+      "t" : [ {
+        "type" : "Ag",
+        "types" : [ ]
+      }, {
+        "type" : "Prim",
+        "s" : "prov:Person",
+        "types" : [ "prov:Person" ]
+      } ],
+      "types" : [ "prov:Person" ]
+    }, {
+      "type" : "Ent",
+      "types" : [ ]
+    } ],
+    "3" : [ {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Ent",
+        "types" : [ ]
+      } ],
+      "a" : [ ],
+      "types" : [ ]
+    }, {
+      "type" : "Wgb",
+      "t" : [ {
+        "type" : "Act",
+        "types" : [ ]
+      } ],
+      "types" : [ ]
+    }, {
+      "type" : "Ent",
+      "types" : [ ]
+    } ],
+    "11" : [ {
+      "type" : "Aobo",
+      "t" : [ {
+        "type" : "Ag",
+        "types" : [ ]
+      }, {
+        "type" : "Prim",
+        "s" : "prov:Organization",
+        "types" : [ "prov:Organization" ]
+      } ],
+      "a" : [ {
+        "type" : "Act",
+        "types" : [ ]
+      } ],
+      "types" : [ "prov:Organization" ]
+    }, {
+      "type" : "Ag",
+      "types" : [ ]
+    }, {
+      "type" : "Prim",
+      "s" : "prov:Person",
+      "types" : [ "prov:Person" ]
+    } ],
+    "8" : [ {
+      "type" : "Act",
+      "types" : [ ]
+    }, {
+      "type" : "Usd",
+      "t" : [ {
+        "type" : "Ent",
+        "types" : [ ]
+      } ],
+      "types" : [ ]
+    } ],
+    "4" : [ {
+      "type" : "Act",
+      "types" : [ ]
+    }, {
+      "type" : "Usd",
+      "t" : [ {
+        "type" : "Ent",
+        "types" : [ ]
+      } ],
+      "types" : [ ]
+    }, {
+      "type" : "Waw",
+      "t" : [ {
+        "type" : "Ag",
+        "types" : [ ]
+      }, {
+        "type" : "Prim",
+        "s" : "prov:Person",
+        "types" : [ "prov:Person" ]
+      } ],
+      "pl" : [ ],
+      "types" : [ "prov:Person" ]
+    } ]
+  },
+  "typeStrings" : {
+    "0" : "[Ag(),Prim(prov:Organization)]",
+    "5" : "[Alt([Ent()]),Ent(),Spec([Ent()]),Wdf([Ent()],[])]",
+    "10" : "[Ent(),Spec([Ent()]),Wdf([Ent()],[])]",
+    "1" : "[Act()]",
+    "6" : "[Ent(),Wdf([Ent()],[])]",
+    "9" : "[Ent(),Wgb([Act()])]",
+    "2" : "[Ent()]",
+    "7" : "[Ent(),Wat([Ag(),Prim(prov:Person)]),Wgb([Act()])]",
+    "3" : "[Ent(),Wdf([Ent()],[]),Wgb([Act()])]",
+    "11" : "[Ag(),Aobo([Ag(),Prim(prov:Organization)],[Act()]),Prim(prov:Person)]",
+    "8" : "[Act(),Usd([Ent()])]",
+    "4" : "[Act(),Usd([Ent()]),Waw([Ag(),Prim(prov:Person)],[])]"
+  },
+  "names" : {
+    "t:T6" : 6,
+    "t:T1" : 1,
+    "t:T7" : 7,
+    "t:T5" : 5,
+    "t:T2" : 2,
+    "t:T11" : 11,
+    "t:T10" : 10,
+    "t:T3" : 3,
+    "t:T9" : 9,
+    "t:T0" : 0,
+    "t:T4" : 4,
+    "t:T8" : 8
+  },
+  "base" : {
+    "0" : [ "http://example/chartgen" ],
+    "5" : [ "http://example/articleV2" ],
+    "10" : [ "http://example/articleV1" ],
+    "1" : [ "http://example/compile", "http://example/compile2" ],
+    "6" : [ "http://example/blogEntry" ],
+    "9" : [ "http://example/composition" ],
+    "2" : [ "http://example/article", "http://example/dataSet1", "http://example/regionList" ],
+    "7" : [ "http://example/chart1" ],
+    "3" : [ "http://example/chart2", "http://example/dataSet2" ],
+    "11" : [ "http://example/ag1" ],
+    "8" : [ "http://example/correct" ],
+    "4" : [ "http://example/compose", "http://example/illustrate" ]
+  },
+  "prettyNames" : {
+    "0" : "chartgen_0",
+    "5" : "articleV2_5",
+    "10" : "articleV1_10",
+    "1" : "compile_1",
+    "6" : "blogEntry_6",
+    "9" : "composition_9",
+    "2" : "example_2",
+    "7" : "chart1_7",
+    "3" : "example_3",
+    "11" : "ag1_11",
+    "8" : "correct_8",
+    "4" : "example_4"
+  },
+  "prefixes" : {
+    "t" : "http://openprovenance.og/summary/xyz/types#"
+  },
+  "nsBase" : "http://openprovenance.og/summary/xyz/types#",
+  "features" : {
+    "[Ent(),Wat([Ag(),Prim(prov:Person)]),Wgb([Act()])]" : 1,
+    "[Act()]" : 2,
+    "[Ent(),Wdf([Ent()],[])]" : 1,
+    "[Ag(),Aobo([Ag(),Prim(prov:Organization)],[Act()]),Prim(prov:Person)]" : 1,
+    "[Ent(),Wdf([Ent()],[]),Wgb([Act()])]" : 2,
+    "[Ent(),Wgb([Act()])]" : 1,
+    "[Act(),Usd([Ent()])]" : 1,
+    "[Ent()]" : 3,
+    "[Act(),Usd([Ent()]),Waw([Ag(),Prim(prov:Person)],[])]" : 2,
+    "[Alt([Ent()]),Ent(),Spec([Ent()]),Wdf([Ent()],[])]" : 1,
+    "[Ent(),Spec([Ent()]),Wdf([Ent()],[])]" : 1,
+    "[Ag(),Prim(prov:Organization)]" : 1
+  }
+}

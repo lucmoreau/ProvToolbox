@@ -30,8 +30,8 @@ prov-n, prov-jsonld and prov-validation are left out). Port in layer order.
 | 1 | `modules-explanations/nlg-spec-transformer` | `modules-explanations/nlg-spec-transformer-scala3` | prov-model-scala, nlg-wrapper | 3146 / 1293 | TODO |
 | 2 | `modules-nf/prov-nf` | `modules-nf/prov-nf-scala3` | prov-scala-misc | 4899 / 1407 | **DONE** |
 | 2 | `modules-summarisation/prov-summarisation` | `modules-summarisation/prov-summarisation-scala3` | prov-scala-misc (jackson-module-scala, parallel collections) | 2562 / 1753 | **DONE** |
-| 3 | `modules-nf/prov-signature` | `modules-nf/prov-signature-scala3` | prov-nf | 239 / 213 | TODO |
-| 3 | `modules-summarisation/prov-typemap` | `modules-summarisation/prov-typemap-scala3` | prov-scala-misc, prov-summarisation | 466 / 47 | TODO |
+| 3 | `modules-nf/prov-signature` | `modules-nf/prov-signature-scala3` | prov-nf | 239 / 213 | **DONE** |
+| 3 | `modules-summarisation/prov-typemap` | `modules-summarisation/prov-typemap-scala3` | prov-scala-misc, prov-summarisation | 466 / 47 | **DONE** |
 | 3 | `modules-explanations/prov-query` | `modules-explanations/prov-query-scala3` | prov-scala-misc, nlg-spec-transformer, prov-nf, prov-summarisation (parser-combinators, parboiled2) | 1377 / 905 | TODO |
 | 4 | `modules-explanations/prov-explanations` | `modules-explanations/prov-explanations-scala3` | nlg-wrapper, prov-query, prov-nf, prov-summarisation | 1515 / 1160 | TODO |
 | 5 | `modules-explanations/prov-summary-explanations` | `modules-explanations/prov-summary-explanations-scala3` | prov-query, prov-explanations, prov-summarisation | 85 / 0 | TODO |
@@ -78,7 +78,8 @@ without pulling Scala 2.13 classes in. **Always check** with
 ## Recipe for porting one module `X` (repeat per module)
 
 **Use the script**: `python3 scala3-migration/copy-module.py <dir>/X` does steps 1–3
-(copy without `target/` and `*.iml`, rewrite the pom, register in the parent pom).
+(copy without `target/` and `*.iml`, rewrite the pom, register in the parent pom),
+and also applies fix #8 (lambda parentheses) to all `.scala` files of the copy.
 Then review `diff <dir>/X/pom.xml <dir>/X-scala3/pom.xml` before building.
 If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 (e.g. a hard-coded `_2.13`), fix that by hand.
@@ -182,6 +183,8 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 | Date | Step | Result / notes |
 |---|---|---|
 | 2026-11-02 | Plan written, branch `scala3-port` created | Root pom: properties `scala3.version=3.9.0`, `scala3.release=17`. Helper script `scala3-migration/copy-module.py`. |
+| 2026-11-02 | prov-signature-scala3 | One fix #8. Tests same as 2.13: JUnit 1/1, ScalaTest 0 (the ScalaTest runner finds no suites in 2.13 either). `dependency:tree` clean. Fix #8 is now automatic in `copy-module.py`. |
+| 2026-11-02 | prov-typemap-scala3 | Compiled unchanged. The ScalaTest run prints no summary line in 2.13 either ("Expected test count is: 2"). The test output (type maps, JSON) is identical to 2.13, apart from a trailing space in a suite name. `dependency:tree` clean. |
 | 2026-11-02 | prov-summarisation-scala3 | Main compiled unchanged. One test needed fix #8. Tests same as 2.13: ScalaTest 32/32 (once graphviz was installed). All JSON/DOT/PROV-N/SVG outputs in `target/` are byte-identical to the 2.13 run. `dependency:tree` clean (jackson-module-scala_3, parallel-collections_3). |
 | 2026-11-02 | prov-nf-scala3 | Builds with tests. Fixes #6 (main + `UnificationSpec` `getKind` → `kind`) and #8. Tests same as 2.13: JUnit 1/1, ScalaTest 94/94. `dependency:tree` clean (prov-validation brings no 2.13 classes). |
 | 2026-11-02 | prov-scala-misc-scala3 | Builds with tests. Fixes #5–#8. Tests same as 2.13: JUnit 18/18, ScalaTest 6/6. `dependency:tree` clean. |

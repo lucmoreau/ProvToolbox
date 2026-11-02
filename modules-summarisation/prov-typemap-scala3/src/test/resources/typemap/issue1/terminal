@@ -1,0 +1,414 @@
+Davids-MacBook-Pro:prov-scala-typemap davidkohan$ mvn -X exec:java -Dexec.mainClass="org.openprovenance.prov.scala.typemap.TypeMap" -Dexec.args="/Users/davidkohan/Documents/JMLR-Paper/types2/index2-simp.txt tmap-sets-of-types-CM-RS2.json"
+Apache Maven 3.6.3 (cecedd343002696d0abb50b32b541b8a6ba2883f)
+Maven home: /usr/local/Cellar/maven/3.6.3_1/libexec
+Java version: 13, vendor: Oracle Corporation, runtime: /Library/Java/JavaVirtualMachines/openjdk-13.jdk/Contents/Home
+Default locale: en_GB, platform encoding: UTF-8
+OS name: "mac os x", version: "10.15.4", arch: "x86_64", family: "mac"
+[DEBUG] Created new class realm maven.api
+[DEBUG] Importing foreign packages into class realm maven.api
+[DEBUG]   Imported: javax.annotation.* < plexus.core
+[DEBUG]   Imported: javax.annotation.security.* < plexus.core
+[DEBUG]   Imported: javax.enterprise.inject.* < plexus.core
+[DEBUG]   Imported: javax.enterprise.util.* < plexus.core
+[DEBUG]   Imported: javax.inject.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.artifact < plexus.core
+[DEBUG]   Imported: org.apache.maven.classrealm < plexus.core
+[DEBUG]   Imported: org.apache.maven.cli < plexus.core
+[DEBUG]   Imported: org.apache.maven.configuration < plexus.core
+[DEBUG]   Imported: org.apache.maven.exception < plexus.core
+[DEBUG]   Imported: org.apache.maven.execution < plexus.core
+[DEBUG]   Imported: org.apache.maven.execution.scope < plexus.core
+[DEBUG]   Imported: org.apache.maven.lifecycle < plexus.core
+[DEBUG]   Imported: org.apache.maven.model < plexus.core
+[DEBUG]   Imported: org.apache.maven.monitor < plexus.core
+[DEBUG]   Imported: org.apache.maven.plugin < plexus.core
+[DEBUG]   Imported: org.apache.maven.profiles < plexus.core
+[DEBUG]   Imported: org.apache.maven.project < plexus.core
+[DEBUG]   Imported: org.apache.maven.reporting < plexus.core
+[DEBUG]   Imported: org.apache.maven.repository < plexus.core
+[DEBUG]   Imported: org.apache.maven.rtinfo < plexus.core
+[DEBUG]   Imported: org.apache.maven.settings < plexus.core
+[DEBUG]   Imported: org.apache.maven.toolchain < plexus.core
+[DEBUG]   Imported: org.apache.maven.usability < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.authentication < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.authorization < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.events < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.observers < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.proxy < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.repository < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.resource < plexus.core
+[DEBUG]   Imported: org.codehaus.classworlds < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.* < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.classworlds < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.component < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.configuration < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.container < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.context < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.lifecycle < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.logging < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.personality < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.Xpp3Dom < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlPullParser < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlPullParserException < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlSerializer < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.* < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.artifact < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.collection < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.deployment < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.graph < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.impl < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.installation < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.internal.impl < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.metadata < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.repository < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.resolution < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.spi < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.transfer < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.version < plexus.core
+[DEBUG]   Imported: org.fusesource.jansi.* < plexus.core
+[DEBUG]   Imported: org.slf4j.* < plexus.core
+[DEBUG]   Imported: org.slf4j.event.* < plexus.core
+[DEBUG]   Imported: org.slf4j.helpers.* < plexus.core
+[DEBUG]   Imported: org.slf4j.spi.* < plexus.core
+[DEBUG] Populating class realm maven.api
+[INFO] Error stacktraces are turned on.
+[DEBUG] Message scheme: color
+[DEBUG] Message styles: debug info warning error success failure strong mojo project
+[DEBUG] Reading global settings from /usr/local/Cellar/maven/3.6.3_1/libexec/conf/settings.xml
+[DEBUG] Reading user settings from /Users/davidkohan/.m2/settings.xml
+[DEBUG] Reading global toolchains from /usr/local/Cellar/maven/3.6.3_1/libexec/conf/toolchains.xml
+[DEBUG] Reading user toolchains from /Users/davidkohan/.m2/toolchains.xml
+[DEBUG] Using local repository at /Users/davidkohan/.m2/repository
+[DEBUG] Using manager EnhancedLocalRepositoryManager with priority 10.0 for /Users/davidkohan/.m2/repository
+[INFO] Scanning for projects...
+[DEBUG] Extension realms for project org.openprovenance.prov:prov-scala-typemap:jar:0.9.2.2-SNAPSHOT: (none)
+[DEBUG] Looking up lifecycle mappings for packaging jar from ClassRealm[plexus.core, parent: null]
+[DEBUG] Extension realms for project org.openprovenance.prov:modules-summarisation:pom:0.9.2.2-SNAPSHOT: (none)
+[DEBUG] Looking up lifecycle mappings for packaging pom from ClassRealm[plexus.core, parent: null]
+[DEBUG] Extension realms for project org.openprovenance.prov:provman:pom:0.9.2.2-SNAPSHOT: (none)
+[DEBUG] Looking up lifecycle mappings for packaging pom from ClassRealm[plexus.core, parent: null]
+[DEBUG] Resolving plugin prefix exec from [org.apache.maven.plugins, org.codehaus.mojo]
+[DEBUG] Could not find metadata org.apache.maven.plugins/maven-metadata.xml in local (/Users/davidkohan/.m2/repository)
+[DEBUG] Skipped remote request for org.apache.maven.plugins/maven-metadata.xml, locally cached metadata up-to-date.
+[DEBUG] Could not find metadata org.codehaus.mojo/maven-metadata.xml in local (/Users/davidkohan/.m2/repository)
+[DEBUG] Skipped remote request for org.codehaus.mojo/maven-metadata.xml, locally cached metadata up-to-date.
+[DEBUG] Resolved plugin prefix exec to org.codehaus.mojo:exec-maven-plugin from repository central
+[DEBUG] Could not find metadata org.codehaus.mojo:exec-maven-plugin/maven-metadata.xml in local (/Users/davidkohan/.m2/repository)
+[DEBUG] Skipped remote request for org.codehaus.mojo:exec-maven-plugin/maven-metadata.xml, locally cached metadata up-to-date.
+[DEBUG] Resolved plugin version for org.codehaus.mojo:exec-maven-plugin to 1.6.0 from repository central (https://repo.maven.apache.org/maven2, default, releases)
+[DEBUG] === REACTOR BUILD PLAN ================================================
+[DEBUG] Project: org.openprovenance.prov:prov-scala-typemap:jar:0.9.2.2-SNAPSHOT
+[DEBUG] Tasks:   [exec:java]
+[DEBUG] Style:   Regular
+[DEBUG] =======================================================================
+[INFO] 
+[INFO] -------------< org.openprovenance.prov:prov-scala-typemap >-------------
+[INFO] Building |---- PROV-SCALA-TYPEMAP 0.9.2.2-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[DEBUG] Resolving plugin prefix exec from [org.apache.maven.plugins, org.codehaus.mojo]
+[DEBUG] Could not find metadata org.apache.maven.plugins/maven-metadata.xml in local (/Users/davidkohan/.m2/repository)
+[DEBUG] Skipped remote request for org.apache.maven.plugins/maven-metadata.xml, locally cached metadata up-to-date.
+[DEBUG] Could not find metadata org.codehaus.mojo/maven-metadata.xml in local (/Users/davidkohan/.m2/repository)
+[DEBUG] Skipped remote request for org.codehaus.mojo/maven-metadata.xml, locally cached metadata up-to-date.
+[DEBUG] Resolved plugin prefix exec to org.codehaus.mojo:exec-maven-plugin from repository central
+[DEBUG] Could not find metadata org.codehaus.mojo:exec-maven-plugin/maven-metadata.xml in local (/Users/davidkohan/.m2/repository)
+[DEBUG] Skipped remote request for org.codehaus.mojo:exec-maven-plugin/maven-metadata.xml, locally cached metadata up-to-date.
+[DEBUG] Resolved plugin version for org.codehaus.mojo:exec-maven-plugin to 1.6.0 from repository central (https://repo.maven.apache.org/maven2, default, releases)
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] === PROJECT BUILD PLAN ================================================
+[DEBUG] Project:       org.openprovenance.prov:prov-scala-typemap:0.9.2.2-SNAPSHOT
+[DEBUG] Dependencies (collect): []
+[DEBUG] Dependencies (resolve): [test]
+[DEBUG] Repositories (dependencies): [central (https://repo.maven.apache.org/maven2, default, releases)]
+[DEBUG] Repositories (plugins)     : [central (https://repo.maven.apache.org/maven2, default, releases)]
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Goal:          org.codehaus.mojo:exec-maven-plugin:1.6.0:java (default-cli)
+[DEBUG] Style:         Regular
+[DEBUG] Configuration: <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <addOutputToClasspath default-value="true">${addOutputToClasspath}</addOutputToClasspath>
+  <addResourcesToClasspath default-value="false">${addResourcesToClasspath}</addResourcesToClasspath>
+  <arguments>${exec.arguments}</arguments>
+  <classpathScope default-value="runtime">${exec.classpathScope}</classpathScope>
+  <cleanupDaemonThreads default-value="true">${exec.cleanupDaemonThreads}</cleanupDaemonThreads>
+  <commandlineArgs>${exec.args}</commandlineArgs>
+  <daemonThreadJoinTimeout default-value="15000">${exec.daemonThreadJoinTimeout}</daemonThreadJoinTimeout>
+  <includePluginDependencies default-value="false">${exec.includePluginsDependencies}</includePluginDependencies>
+  <includeProjectDependencies default-value="true">${exec.includeProjectDependencies}</includeProjectDependencies>
+  <keepAlive default-value="false">${exec.keepAlive}</keepAlive>
+  <killAfter default-value="-1">${exec.killAfter}</killAfter>
+  <localRepository default-value="${localRepository}"/>
+  <mainClass>${exec.mainClass}</mainClass>
+  <pluginDependencies default-value="${plugin.artifacts}"/>
+  <project default-value="${project}"/>
+  <remoteRepositories default-value="${project.remoteArtifactRepositories}"/>
+  <skip default-value="false">${exec.skip}</skip>
+  <sourceRoot>${sourceRoot}</sourceRoot>
+  <stopUnresponsiveDaemonThreads default-value="false">${exec.stopUnresponsiveDaemonThreads}</stopUnresponsiveDaemonThreads>
+  <testSourceRoot>${testSourceRoot}</testSourceRoot>
+</configuration>
+[DEBUG] =======================================================================
+[DEBUG] Dependency collection stats: {ConflictMarker.analyzeTime=845142, ConflictMarker.markTime=267585, ConflictMarker.nodeCount=65, ConflictIdSorter.graphTime=326836, ConflictIdSorter.topsortTime=207886, ConflictIdSorter.conflictIdCount=33, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=3776099, ConflictResolver.conflictItemCount=64, DefaultDependencyCollector.collectTime=145587629, DefaultDependencyCollector.transformTime=6920602}
+[DEBUG] org.openprovenance.prov:prov-scala-typemap:jar:0.9.2.2-SNAPSHOT
+[DEBUG]    org.openprovenance.prov:modules-scala-core:jar:0.9.2.2-SNAPSHOT:compile
+[DEBUG]       org.openprovenance.prov:prov-model:jar:0.9.2:compile
+[DEBUG]          org.apache.commons:commons-lang3:jar:3.9:compile
+[DEBUG]          javax.xml.bind:jaxb-api:jar:2.3.1:compile
+[DEBUG]             javax.activation:javax.activation-api:jar:1.2.0:compile
+[DEBUG]          org.apache.commons:commons-collections4:jar:4.4:compile
+[DEBUG]          commons-io:commons-io:jar:2.6:compile
+[DEBUG]          log4j:log4j:jar:1.2.17:compile
+[DEBUG]       org.openprovenance.prov:prov-model-scala:jar:0.9.2:compile
+[DEBUG]          org.openprovenance.prov:prov-jsonld:jar:0.9.2:compile
+[DEBUG]          org.parboiled:parboiled_2.12:jar:2.1.8:compile
+[DEBUG]             com.chuusai:shapeless_2.12:jar:2.3.3:compile
+[DEBUG]                org.typelevel:macro-compat_2.12:jar:1.1.1:compile
+[DEBUG]       com.fasterxml.jackson.dataformat:jackson-dataformat-xml:jar:2.9.9:compile
+[DEBUG]          com.fasterxml.jackson.module:jackson-module-jaxb-annotations:jar:2.9.9:compile
+[DEBUG]          org.codehaus.woodstox:stax2-api:jar:3.1.4:compile
+[DEBUG]          com.fasterxml.woodstox:woodstox-core:jar:5.1.0:compile
+[DEBUG]    com.fasterxml.jackson.module:jackson-module-scala_2.12:jar:2.9.9:compile
+[DEBUG]       com.fasterxml.jackson.core:jackson-core:jar:2.9.9:compile
+[DEBUG]       com.fasterxml.jackson.core:jackson-annotations:jar:2.9.9:compile
+[DEBUG]       com.fasterxml.jackson.core:jackson-databind:jar:2.9.9:compile
+[DEBUG]       com.fasterxml.jackson.module:jackson-module-paranamer:jar:2.9.9:compile
+[DEBUG]          com.thoughtworks.paranamer:paranamer:jar:2.8:compile
+[DEBUG]    org.openprovenance.prov:prov-scala-summarisation:jar:0.9.2.2-SNAPSHOT:compile
+[DEBUG]    org.slf4j:slf4j-jdk14:jar:1.7.13:test
+[DEBUG]       org.slf4j:slf4j-api:jar:1.7.13:test
+[DEBUG]    org.scala-lang:scala-library:jar:2.12.10:compile
+[DEBUG]    org.scalatest:scalatest_2.12:jar:3.1.0-RC3:test
+[DEBUG]       org.scalatest:scalatest-compatible:jar:3.1.0-RC3:test
+[DEBUG]       org.scalactic:scalactic_2.12:jar:3.1.0-RC3:test
+[DEBUG]       org.scala-lang:scala-reflect:jar:2.12.10:test
+[DEBUG]       org.scala-lang.modules:scala-xml_2.12:jar:1.2.0:test
+[DEBUG]    junit:junit:jar:4.2:test
+[INFO] 
+[INFO] --- exec-maven-plugin:1.6.0:java (default-cli) @ prov-scala-typemap ---
+[DEBUG] Dependency collection stats: {ConflictMarker.analyzeTime=294947, ConflictMarker.markTime=138218, ConflictMarker.nodeCount=93, ConflictIdSorter.graphTime=175555, ConflictIdSorter.topsortTime=41221, ConflictIdSorter.conflictIdCount=39, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=1702774, ConflictResolver.conflictItemCount=78, DefaultDependencyCollector.collectTime=149973546, DefaultDependencyCollector.transformTime=2443759}
+[DEBUG] org.codehaus.mojo:exec-maven-plugin:jar:1.6.0
+[DEBUG]    org.apache.maven:maven-toolchain:jar:2.2.1:compile
+[DEBUG]    org.apache.maven:maven-project:jar:2.2.1:compile
+[DEBUG]       org.apache.maven:maven-settings:jar:2.2.1:compile
+[DEBUG]       org.apache.maven:maven-profile:jar:2.2.1:compile
+[DEBUG]       org.apache.maven:maven-plugin-registry:jar:2.2.1:compile
+[DEBUG]       org.codehaus.plexus:plexus-interpolation:jar:1.11:compile
+[DEBUG]       org.codehaus.plexus:plexus-container-default:jar:1.0-alpha-9-stable-1:compile
+[DEBUG]          junit:junit:jar:4.12:test (scope managed from default) (version managed from default)
+[DEBUG]             org.hamcrest:hamcrest-core:jar:1.3:test
+[DEBUG]    org.apache.maven:maven-model:jar:2.2.1:compile
+[DEBUG]    org.apache.maven:maven-artifact:jar:2.2.1:compile
+[DEBUG]    org.apache.maven:maven-artifact-manager:jar:2.2.1:compile
+[DEBUG]       org.apache.maven:maven-repository-metadata:jar:2.2.1:compile
+[DEBUG]       backport-util-concurrent:backport-util-concurrent:jar:3.1:compile
+[DEBUG]    org.apache.maven:maven-core:jar:2.2.1:compile
+[DEBUG]       org.apache.maven:maven-plugin-parameter-documenter:jar:2.2.1:compile
+[DEBUG]       org.slf4j:slf4j-jdk14:jar:1.5.6:runtime
+[DEBUG]          org.slf4j:slf4j-api:jar:1.5.6:runtime
+[DEBUG]       org.slf4j:jcl-over-slf4j:jar:1.5.6:runtime
+[DEBUG]       org.apache.maven.reporting:maven-reporting-api:jar:2.2.1:compile
+[DEBUG]          org.apache.maven.doxia:doxia-sink-api:jar:1.1:compile
+[DEBUG]          org.apache.maven.doxia:doxia-logging-api:jar:1.1:compile
+[DEBUG]       org.apache.maven:maven-error-diagnostics:jar:2.2.1:compile
+[DEBUG]       commons-cli:commons-cli:jar:1.2:compile
+[DEBUG]       org.apache.maven:maven-plugin-descriptor:jar:2.2.1:compile
+[DEBUG]       org.codehaus.plexus:plexus-interactivity-api:jar:1.0-alpha-4:compile
+[DEBUG]       org.apache.maven:maven-monitor:jar:2.2.1:compile
+[DEBUG]       classworlds:classworlds:jar:1.1:compile
+[DEBUG]       org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3:compile
+[DEBUG]          org.sonatype.plexus:plexus-cipher:jar:1.4:compile
+[DEBUG]    org.apache.maven:maven-plugin-api:jar:2.2.1:compile
+[DEBUG]    org.codehaus.plexus:plexus-utils:jar:3.0.20:compile
+[DEBUG]    org.apache.commons:commons-exec:jar:1.3:compile
+[DEBUG] Created new class realm plugin>org.codehaus.mojo:exec-maven-plugin:1.6.0
+[DEBUG] Importing foreign packages into class realm plugin>org.codehaus.mojo:exec-maven-plugin:1.6.0
+[DEBUG]   Imported:  < maven.api
+[DEBUG] Populating class realm plugin>org.codehaus.mojo:exec-maven-plugin:1.6.0
+[DEBUG]   Included: org.codehaus.mojo:exec-maven-plugin:jar:1.6.0
+[DEBUG]   Included: org.codehaus.plexus:plexus-interpolation:jar:1.11
+[DEBUG]   Included: backport-util-concurrent:backport-util-concurrent:jar:3.1
+[DEBUG]   Included: org.slf4j:slf4j-jdk14:jar:1.5.6
+[DEBUG]   Included: org.slf4j:jcl-over-slf4j:jar:1.5.6
+[DEBUG]   Included: org.apache.maven.reporting:maven-reporting-api:jar:2.2.1
+[DEBUG]   Included: org.apache.maven.doxia:doxia-sink-api:jar:1.1
+[DEBUG]   Included: org.apache.maven.doxia:doxia-logging-api:jar:1.1
+[DEBUG]   Included: commons-cli:commons-cli:jar:1.2
+[DEBUG]   Included: org.codehaus.plexus:plexus-interactivity-api:jar:1.0-alpha-4
+[DEBUG]   Included: org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3
+[DEBUG]   Included: org.sonatype.plexus:plexus-cipher:jar:1.4
+[DEBUG]   Included: org.codehaus.plexus:plexus-utils:jar:3.0.20
+[DEBUG]   Included: org.apache.commons:commons-exec:jar:1.3
+[DEBUG] Configuring mojo org.codehaus.mojo:exec-maven-plugin:1.6.0:java from plugin realm ClassRealm[plugin>org.codehaus.mojo:exec-maven-plugin:1.6.0, parent: jdk.internal.loader.ClassLoaders$AppClassLoader@55054057]
+[DEBUG] Configuring mojo 'org.codehaus.mojo:exec-maven-plugin:1.6.0:java' with basic configurator -->
+[DEBUG]   (f) addOutputToClasspath = true
+[DEBUG]   (f) addResourcesToClasspath = false
+[DEBUG]   (f) arguments = []
+[DEBUG]   (f) classpathScope = runtime
+[DEBUG]   (f) cleanupDaemonThreads = true
+[DEBUG]   (f) commandlineArgs = /Users/davidkohan/Documents/JMLR-Paper/types2/index2-simp.txt tmap-sets-of-types-CM-RS2.json
+[DEBUG]   (f) daemonThreadJoinTimeout = 15000
+[DEBUG]   (f) includePluginDependencies = false
+[DEBUG]   (f) includeProjectDependencies = true
+[DEBUG]   (f) keepAlive = false
+[DEBUG]   (f) killAfter = -1
+[DEBUG]   (f) localRepository =       id: local
+      url: file:///Users/davidkohan/.m2/repository/
+   layout: default
+snapshots: [enabled => true, update => always]
+ releases: [enabled => true, update => always]
+
+[DEBUG]   (f) mainClass = org.openprovenance.prov.scala.typemap.TypeMap
+[DEBUG]   (f) pluginDependencies = [org.codehaus.mojo:exec-maven-plugin:maven-plugin:1.6.0:, org.apache.maven:maven-toolchain:jar:2.2.1:compile, org.apache.maven:maven-project:jar:2.2.1:compile, org.apache.maven:maven-settings:jar:2.2.1:compile, org.apache.maven:maven-profile:jar:2.2.1:compile, org.apache.maven:maven-plugin-registry:jar:2.2.1:compile, org.codehaus.plexus:plexus-interpolation:jar:1.11:compile, org.codehaus.plexus:plexus-container-default:jar:1.0-alpha-9-stable-1:compile, org.apache.maven:maven-model:jar:2.2.1:compile, org.apache.maven:maven-artifact:jar:2.2.1:compile, org.apache.maven:maven-artifact-manager:jar:2.2.1:compile, org.apache.maven:maven-repository-metadata:jar:2.2.1:compile, backport-util-concurrent:backport-util-concurrent:jar:3.1:compile, org.apache.maven:maven-core:jar:2.2.1:compile, org.apache.maven:maven-plugin-parameter-documenter:jar:2.2.1:compile, org.slf4j:slf4j-jdk14:jar:1.5.6:runtime, org.slf4j:slf4j-api:jar:1.5.6:runtime, org.slf4j:jcl-over-slf4j:jar:1.5.6:runtime, org.apache.maven.reporting:maven-reporting-api:jar:2.2.1:compile, org.apache.maven.doxia:doxia-sink-api:jar:1.1:compile, org.apache.maven.doxia:doxia-logging-api:jar:1.1:compile, org.apache.maven:maven-error-diagnostics:jar:2.2.1:compile, commons-cli:commons-cli:jar:1.2:compile, org.apache.maven:maven-plugin-descriptor:jar:2.2.1:compile, org.codehaus.plexus:plexus-interactivity-api:jar:1.0-alpha-4:compile, org.apache.maven:maven-monitor:jar:2.2.1:compile, classworlds:classworlds:jar:1.1:compile, org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3:compile, org.sonatype.plexus:plexus-cipher:jar:1.4:compile, org.apache.maven:maven-plugin-api:jar:2.2.1:compile, org.codehaus.plexus:plexus-utils:jar:3.0.20:compile, org.apache.commons:commons-exec:jar:1.3:compile]
+[DEBUG]   (f) project = MavenProject: org.openprovenance.prov:prov-scala-typemap:0.9.2.2-SNAPSHOT @ /Users/davidkohan/projects/for-the-explanations-branch/prov-scala/provman/modules-summarisation/prov-scala-typemap/pom.xml
+[DEBUG]   (f) remoteRepositories = [      id: central
+      url: https://repo.maven.apache.org/maven2
+   layout: default
+snapshots: [enabled => false, update => daily]
+ releases: [enabled => true, update => daily]
+]
+[DEBUG]   (f) skip = false
+[DEBUG]   (f) stopUnresponsiveDaemonThreads = false
+[DEBUG] -- end configuration --
+[DEBUG] Invoking : org.openprovenance.prov.scala.typemap.TypeMap.main()
+[DEBUG] Plugin Dependencies will be excluded.
+[DEBUG] Project Dependencies will be included.
+[DEBUG] Collected project artifacts [org.openprovenance.prov:modules-scala-core:jar:0.9.2.2-SNAPSHOT:compile, org.openprovenance.prov:prov-model:jar:0.9.2:compile, org.apache.commons:commons-lang3:jar:3.9:compile, javax.xml.bind:jaxb-api:jar:2.3.1:compile, javax.activation:javax.activation-api:jar:1.2.0:compile, org.apache.commons:commons-collections4:jar:4.4:compile, commons-io:commons-io:jar:2.6:compile, log4j:log4j:jar:1.2.17:compile, org.openprovenance.prov:prov-model-scala:jar:0.9.2:compile, org.openprovenance.prov:prov-jsonld:jar:0.9.2:compile, org.parboiled:parboiled_2.12:jar:2.1.8:compile, com.chuusai:shapeless_2.12:jar:2.3.3:compile, org.typelevel:macro-compat_2.12:jar:1.1.1:compile, com.fasterxml.jackson.dataformat:jackson-dataformat-xml:jar:2.9.9:compile, com.fasterxml.jackson.module:jackson-module-jaxb-annotations:jar:2.9.9:compile, org.codehaus.woodstox:stax2-api:jar:3.1.4:compile, com.fasterxml.woodstox:woodstox-core:jar:5.1.0:compile, com.fasterxml.jackson.module:jackson-module-scala_2.12:jar:2.9.9:compile, com.fasterxml.jackson.core:jackson-core:jar:2.9.9:compile, com.fasterxml.jackson.core:jackson-annotations:jar:2.9.9:compile, com.fasterxml.jackson.core:jackson-databind:jar:2.9.9:compile, com.fasterxml.jackson.module:jackson-module-paranamer:jar:2.9.9:compile, com.thoughtworks.paranamer:paranamer:jar:2.8:compile, org.openprovenance.prov:prov-scala-summarisation:jar:0.9.2.2-SNAPSHOT:compile, org.scala-lang:scala-library:jar:2.12.10:compile]
+[DEBUG] Collected project classpath [/Users/davidkohan/projects/for-the-explanations-branch/prov-scala/provman/modules-summarisation/prov-scala-typemap/target/classes]
+[DEBUG] Adding to classpath : file:/Users/davidkohan/projects/for-the-explanations-branch/prov-scala/provman/modules-summarisation/prov-scala-typemap/target/classes/
+[DEBUG] Adding project dependency artifact: modules-scala-core to classpath
+[DEBUG] Adding project dependency artifact: prov-model to classpath
+[DEBUG] Adding project dependency artifact: commons-lang3 to classpath
+[DEBUG] Adding project dependency artifact: jaxb-api to classpath
+[DEBUG] Adding project dependency artifact: javax.activation-api to classpath
+[DEBUG] Adding project dependency artifact: commons-collections4 to classpath
+[DEBUG] Adding project dependency artifact: commons-io to classpath
+[DEBUG] Adding project dependency artifact: log4j to classpath
+[DEBUG] Adding project dependency artifact: prov-model-scala to classpath
+[DEBUG] Adding project dependency artifact: prov-jsonld to classpath
+[DEBUG] Adding project dependency artifact: parboiled_2.12 to classpath
+[DEBUG] Adding project dependency artifact: shapeless_2.12 to classpath
+[DEBUG] Adding project dependency artifact: macro-compat_2.12 to classpath
+[DEBUG] Adding project dependency artifact: jackson-dataformat-xml to classpath
+[DEBUG] Adding project dependency artifact: jackson-module-jaxb-annotations to classpath
+[DEBUG] Adding project dependency artifact: stax2-api to classpath
+[DEBUG] Adding project dependency artifact: woodstox-core to classpath
+[DEBUG] Adding project dependency artifact: jackson-module-scala_2.12 to classpath
+[DEBUG] Adding project dependency artifact: jackson-core to classpath
+[DEBUG] Adding project dependency artifact: jackson-annotations to classpath
+[DEBUG] Adding project dependency artifact: jackson-databind to classpath
+[DEBUG] Adding project dependency artifact: jackson-module-paranamer to classpath
+[DEBUG] Adding project dependency artifact: paranamer to classpath
+[DEBUG] Adding project dependency artifact: prov-scala-summarisation to classpath
+[DEBUG] Adding project dependency artifact: scala-library to classpath
+[DEBUG] joining on thread Thread[org.openprovenance.prov.scala.typemap.TypeMap.main(),5,org.openprovenance.prov.scala.typemap.TypeMap]
+[DEBUG] Setting accessibility to true in order to invoke main().
+[WARNING] 
+java.util.NoSuchElementException: key not found: Set(Wdf(Set(Ent()),Set()), Wgb(Set(Act())))
+    at scala.collection.MapLike.default (MapLike.scala:235)
+    at scala.collection.MapLike.default$ (MapLike.scala:234)
+    at scala.collection.AbstractMap.default (Map.scala:63)
+    at scala.collection.MapLike.apply (MapLike.scala:144)
+    at scala.collection.MapLike.apply$ (MapLike.scala:143)
+    at scala.collection.AbstractMap.apply (Map.scala:63)
+    at org.openprovenance.prov.scala.typemap.TypeMap$.$anonfun$makeConciseTypeMap$1 (TypeMap.scala:126)
+    at scala.collection.TraversableLike.$anonfun$map$1 (TraversableLike.scala:238)
+    at scala.collection.immutable.HashMap$HashMap1.foreach (HashMap.scala:234)
+    at scala.collection.immutable.HashMap$HashTrieMap.foreach (HashMap.scala:468)
+    at scala.collection.TraversableLike.map (TraversableLike.scala:238)
+    at scala.collection.TraversableLike.map$ (TraversableLike.scala:231)
+    at scala.collection.AbstractTraversable.map (Traversable.scala:108)
+    at org.openprovenance.prov.scala.typemap.TypeMap$.makeConciseTypeMap (TypeMap.scala:126)
+    at org.openprovenance.prov.scala.typemap.TypeMap$.doIndexFile (TypeMap.scala:76)
+    at org.openprovenance.prov.scala.typemap.TypeMap$.main (TypeMap.scala:45)
+    at org.openprovenance.prov.scala.typemap.TypeMap.main (TypeMap.scala)
+    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)
+    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)
+    at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)
+    at java.lang.reflect.Method.invoke (Method.java:567)
+    at org.codehaus.mojo.exec.ExecJavaMojo$1.run (ExecJavaMojo.java:282)
+    at java.lang.Thread.run (Thread.java:830)
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.801 s
+[INFO] Finished at: 2020-04-02T20:00:17+01:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.codehaus.mojo:exec-maven-plugin:1.6.0:java (default-cli) on project prov-scala-typemap: An exception occured while executing the Java class. key not found: Set(Wdf(Set(Ent()),Set()), Wgb(Set(Act()))) -> [Help 1]
+org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal org.codehaus.mojo:exec-maven-plugin:1.6.0:java (default-cli) on project prov-scala-typemap: An exception occured while executing the Java class. key not found: Set(Wdf(Set(Ent()),Set()), Wgb(Set(Act())))
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:215)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:156)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:148)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:117)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:81)
+    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:56)
+    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:128)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:305)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:192)
+    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:105)
+    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:957)
+    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:289)
+    at org.apache.maven.cli.MavenCli.main (MavenCli.java:193)
+    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)
+    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)
+    at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)
+    at java.lang.reflect.Method.invoke (Method.java:567)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:282)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:225)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:406)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:347)
+Caused by: org.apache.maven.plugin.MojoExecutionException: An exception occured while executing the Java class. key not found: Set(Wdf(Set(Ent()),Set()), Wgb(Set(Act())))
+    at org.codehaus.mojo.exec.ExecJavaMojo.execute (ExecJavaMojo.java:339)
+    at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo (DefaultBuildPluginManager.java:137)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:210)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:156)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:148)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:117)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:81)
+    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:56)
+    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:128)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:305)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:192)
+    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:105)
+    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:957)
+    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:289)
+    at org.apache.maven.cli.MavenCli.main (MavenCli.java:193)
+    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)
+    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)
+    at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)
+    at java.lang.reflect.Method.invoke (Method.java:567)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:282)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:225)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:406)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:347)
+Caused by: java.util.NoSuchElementException: key not found: Set(Wdf(Set(Ent()),Set()), Wgb(Set(Act())))
+    at scala.collection.MapLike.default (MapLike.scala:235)
+    at scala.collection.MapLike.default$ (MapLike.scala:234)
+    at scala.collection.AbstractMap.default (Map.scala:63)
+    at scala.collection.MapLike.apply (MapLike.scala:144)
+    at scala.collection.MapLike.apply$ (MapLike.scala:143)
+    at scala.collection.AbstractMap.apply (Map.scala:63)
+    at org.openprovenance.prov.scala.typemap.TypeMap$.$anonfun$makeConciseTypeMap$1 (TypeMap.scala:126)
+    at scala.collection.TraversableLike.$anonfun$map$1 (TraversableLike.scala:238)
+    at scala.collection.immutable.HashMap$HashMap1.foreach (HashMap.scala:234)
+    at scala.collection.immutable.HashMap$HashTrieMap.foreach (HashMap.scala:468)
+    at scala.collection.TraversableLike.map (TraversableLike.scala:238)
+    at scala.collection.TraversableLike.map$ (TraversableLike.scala:231)
+    at scala.collection.AbstractTraversable.map (Traversable.scala:108)
+    at org.openprovenance.prov.scala.typemap.TypeMap$.makeConciseTypeMap (TypeMap.scala:126)
+    at org.openprovenance.prov.scala.typemap.TypeMap$.doIndexFile (TypeMap.scala:76)
+    at org.openprovenance.prov.scala.typemap.TypeMap$.main (TypeMap.scala:45)
+    at org.openprovenance.prov.scala.typemap.TypeMap.main (TypeMap.scala)
+    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)
+    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)
+    at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)
+    at java.lang.reflect.Method.invoke (Method.java:567)
+    at org.codehaus.mojo.exec.ExecJavaMojo$1.run (ExecJavaMojo.java:282)
+    at java.lang.Thread.run (Thread.java:830)
+[ERROR] 
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

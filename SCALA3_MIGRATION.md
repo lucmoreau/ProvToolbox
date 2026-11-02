@@ -39,6 +39,19 @@ only partly verified, because the cloud session could not download the SimpleNLG
    e.g. one `-rewrite -source 3.4-migration` pass per module.
 7. **Phase R (retirement)**, see the end of this file.
 
+**Scala 3 provman (command-line tool)**: `modules-executable-provman-scala3` is provman built
+only on the `-scala3` modules (its runtime repo has `scala3-library_3`/`scala-library` 3.9.0 and
+`_3` libraries, no 2.13 jar). Build and run it next to the 2.13 one:
+
+```bash
+mvn -B install -Dexec.skip=true -pl modules-executable-provman-scala3 -am
+modules-executable-provman-scala3/target/appassembler/bin/provmanagement translate --infile doc.provn --outfile doc.svg
+```
+
+(`-am` also builds the upstream `-scala3` and Java modules. The packaged distribution is
+`target/modules-executable-provman-scala3-<version>-release.tar.gz`, and the launcher
+is still called `provmanagement`.)
+
 Tools: `scala3-migration/copy-module.py` (creates a copy) and
 `scala3-migration/parboiled-actions.py` (fix #1).
 

@@ -1,0 +1,12 @@
+
+document
+  prefix ex <http://example/>
+  entity(ex:e10,[prov:value = 1,ex:foo = 'ex:a'])
+  entity(ex:e20,[prov:value = 1,ex:foo = 'ex:a'])
+  wasDerivedFrom(ex:der10;ex:e10,ex:a1)
+  wasDerivedFrom(ex:der10;ex:e20,ex:a1)
+
+   wasDerivedFrom(ex:e10,ex:a1, [ex:foo=1])  // note:
+   wasDerivedFrom(ex:e20,ex:a1, [ex:foo=1])  // either or both is fine
+
+endDocument

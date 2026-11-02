@@ -1,0 +1,17 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+
+   wasDerivedFrom(ex:e10,ex:e1, [ex:foo=1])
+   wasDerivedFrom(ex:e10,ex:e1, [ex:foo=2])
+
+  
+
+
+endDocument
+

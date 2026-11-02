@@ -1,0 +1,19 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+
+   activity(ex:a1, [ex:foo=1])
+   activity(ex:a1, [ex:foo='ex:a'])
+
+   used(ex:usd1; ex:a1,ex:e1,-)
+   used(ex:usd1; ex:a2,ex:e2,-)
+
+   used(ex:a1, ex:e1, -)
+
+endDocument
+

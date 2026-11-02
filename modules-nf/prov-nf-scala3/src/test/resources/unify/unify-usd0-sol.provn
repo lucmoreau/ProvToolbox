@@ -1,0 +1,6 @@
+
+document
+  prefix ex <http://example/>
+  used(-;ex:a1,ex:e10,-,[ex:foo = 1])
+  used(-;ex:a1,ex:e10,-,[ex:foo = 2])
+endDocument

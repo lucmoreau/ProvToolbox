@@ -28,7 +28,7 @@ prov-n, prov-jsonld and prov-validation are left out). Port in layer order.
 | 0 | `modules-explanations/nlg-wrapper` | `modules-explanations/nlg-wrapper-scala3` | – (jackson-module-scala) | 1039 / 629 | TODO (needs clojars, see notes) |
 | 1 | `modules-misc/prov-scala-misc` | `modules-misc/prov-scala-misc-scala3` | prov-model-scala | 4397 / 941 | **DONE** |
 | 1 | `modules-explanations/nlg-spec-transformer` | `modules-explanations/nlg-spec-transformer-scala3` | prov-model-scala, nlg-wrapper | 3146 / 1293 | TODO |
-| 2 | `modules-nf/prov-nf` | `modules-nf/prov-nf-scala3` | prov-scala-misc | 4899 / 1407 | TODO |
+| 2 | `modules-nf/prov-nf` | `modules-nf/prov-nf-scala3` | prov-scala-misc | 4899 / 1407 | **DONE** |
 | 2 | `modules-summarisation/prov-summarisation` | `modules-summarisation/prov-summarisation-scala3` | prov-scala-misc (jackson-module-scala, parallel collections) | 2562 / 1753 | TODO |
 | 3 | `modules-nf/prov-signature` | `modules-nf/prov-signature-scala3` | prov-nf | 239 / 213 | TODO |
 | 3 | `modules-summarisation/prov-typemap` | `modules-summarisation/prov-typemap-scala3` | prov-scala-misc, prov-summarisation | 466 / 47 | TODO |
@@ -144,11 +144,15 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
    `a.setLocation(x)`, `b.setStatement(x)` fail with "value setLocation is not a member",
    *unless* a Java interface the class implements declares the method. Fix: use the
    field directly (`a.location`, `a.location = x`, `b.statement = x`).
+   This also holds **across modules**: bean accessors are in the class file but not in
+   TASTy, so a downstream Scala 3 module (or test) cannot call `x.getKind()`/`b.getNamespace`
+   on a Scala-defined class either → use `x.kind`, `b.namespace`. Java callers are unaffected.
 7. **A `lazy val` cannot implement an abstract `val`** ("lazy value X may not override a
    non-lazy value"). Fix: declare the abstract member as `def` in the trait
    (`trait Indexing` in `immutable/Indexer.scala`).
 8. **Lambda with a typed parameter needs parentheses**: `map{v:T => ...}` →
-   `map{(v:T) => ...}`.
+   `map{(v:T) => ...}`. Regex used on a whole file:
+   `\{(\s*)([a-z]\w*)\s*:\s*([A-Z][\w\[\], .]*?)\s*=>` → `{\1(\2:\3) =>`.
 9. Remaining **warnings** (not errors, left as is under the minimal-change policy):
    `_` wildcard in types (use `?`), `with` as a type operator (use `&`), identifiers with `$`.
    They can be rewritten automatically later with `-rewrite -source 3.4-migration`.
@@ -173,5 +177,6 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 | Date | Step | Result / notes |
 |---|---|---|
 | 2026-11-02 | Plan written, branch `scala3-port` created | Root pom: properties `scala3.version=3.9.0`, `scala3.release=17`. Helper script `scala3-migration/copy-module.py`. |
+| 2026-11-02 | prov-nf-scala3 | Builds with tests. Fixes #6 (main + `UnificationSpec` `getKind` → `kind`) and #8. Tests same as 2.13: JUnit 1/1, ScalaTest 94/94. `dependency:tree` clean (prov-validation brings no 2.13 classes). |
 | 2026-11-02 | prov-scala-misc-scala3 | Builds with tests. Fixes #5–#8. Tests same as 2.13: JUnit 18/18, ScalaTest 6/6. `dependency:tree` clean. |
 | 2026-11-02 | prov-model-scala-scala3 | Builds with tests. Fixes #1–#4 of the catalogue. Tests same as 2.13: JUnit 149/149, ScalaTest 16/16. `dependency:tree` clean (only `_3` + scala-library 3.9.0). |

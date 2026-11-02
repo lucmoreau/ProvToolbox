@@ -1,0 +1,18 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+   wasInformedBy(ex:winfb1; ex:e1, ex:a1)
+   wasInformedBy(ex:winfb1; ex:e2, ex:a2)
+   wasInformedBy(ex:winfb1; ex:e2, ex:a2,[ex:foo='ex:a'])
+   wasInformedBy(ex:winfb1; ex:e2, ex:a2,[ex:foo='ex:b'])
+   wasInformedBy(ex:winfb1; ex:e2, ex:a2,[ex:foo='ex:c',ex:foo='ex:d'])
+
+
+
+endDocument
+

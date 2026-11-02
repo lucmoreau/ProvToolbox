@@ -1,0 +1,18 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+   wasInfluencedBy(ex:winflb1; ex:e1, ex:a1)
+   wasInfluencedBy(ex:winflb1; ex:e2, ex:a2)
+   wasInfluencedBy(ex:winflb1; ex:e2, ex:a2,[ex:foo='ex:a'])
+   wasInfluencedBy(ex:winflb1; ex:e2, ex:a2,[ex:foo='ex:b'])
+   wasInfluencedBy(ex:winflb1; ex:e2, ex:a2,[ex:foo='ex:c',ex:foo='ex:d'])
+
+
+
+endDocument
+

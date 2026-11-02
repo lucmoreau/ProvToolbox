@@ -12,6 +12,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>prov-nf</module>
+        <module>prov-nf-scala3</module>
         <module>prov-signature</module>
         <module>prov-service-signature</module>
         <module>service-signature</module>

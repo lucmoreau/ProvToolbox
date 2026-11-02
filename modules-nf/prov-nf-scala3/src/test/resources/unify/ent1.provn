@@ -1,0 +1,18 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+
+   entity(ex:e1, [prov:value=1])
+   entity(ex:e1, [ex:foo='ex:a'])
+
+   wasGeneratedBy(ex:gen1; ex:e1,ex:a1,-)
+   wasGeneratedBy(ex:gen1; ex:e2,ex:a1,-)
+
+
+endDocument
+

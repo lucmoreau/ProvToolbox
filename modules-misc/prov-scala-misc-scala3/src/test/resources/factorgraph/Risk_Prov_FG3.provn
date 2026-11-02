@@ -1,0 +1,99 @@
+document
+
+  prefix food <http://provenance.ecs.soton.ac.uk/food#>
+  prefix qmra <http://provenance.ecs.soton.ac.uk/qmra#>
+  prefix factorGraph <http://provenance.ecs.soton.ac.uk/factorGraph#>
+  prefix prov <http://provenance.ecs.soton.ac.uk/prov#>
+  prefix var <http://openprovenance.org/var#>
+  
+  //bundle food:foodProduct1  
+
+  //Activity=====================================================
+  activity(qmra:processing_1, [
+        prov:label="helo1",
+        prov:label="bonjour"@FR,
+        qmra:label="bonjour"@FR,
+        qmra:label="hello"@EN,	
+	prov:type='food:processingProcess',
+	food:pathogen='qmra:growth',
+	qmra:cpd="0.9666,0.0334"
+  ])
+  activity(qmra:processing_2, 2016-03-08T14:21:12.085558, 2016-03-09T14:21:12.085558, [
+	prov:type='food:processingProcess',
+	food:pathogen='qmra:growth',
+	qmra:cpd="0.9666,0.0334"
+  ])
+  activity(qmra:storing_1, [
+	prov:type='food:storingProcess',
+	food:pathogen='qmra:growth',
+	qmra:cpd="0.9897,0.0103; 0.0000,1.0000"
+  ])
+  activity(qmra:storing_2, [
+	prov:type='food:storingProcess',
+	food:pathogen='qmra:growth',
+	qmra:cpd="0.9897,0.0103; 0.0000,1.0000"
+  ])
+  activity(qmra:preparing_1, [  
+	prov:type='food:preparingProcess',
+	food:pathogen='qmra:crossContamination',
+	qmra:cpd="1.0000,0.0000; 0.2765,0.7235"
+  ])
+  activity(qmra:preparing_2, [  
+	prov:type='food:preparingProcess',
+	food:pathogen='qmra:crossContamination',
+	qmra:cpd="1.0000,0.0000; 0.2765,0.7235"
+  ])
+  activity(qmra:cooking, [
+    prov:type='food:cookingProcess',
+	food:pathogen='qmra:inactivation',
+	qmra:cpd="1.0000,0.9172; 0.9172,0.8413 :: 0.0000,0.0000; 0.0000,0.0069"
+  ])
+  
+  //Entity=====================================================
+  entity(qmra:processedProduct_1, [
+	prov:type='food:processedProduct'
+  ])
+  entity(qmra:processedProduct_2, [
+	prov:type='food:processedProduct'
+  ])
+  entity(qmra:storedProduct_1, [
+	prov:type='food:storedProduct'
+  ])
+  entity(qmra:storedProduct_2, [
+	prov:type='food:storedProduct'
+  ])
+  entity(qmra:preparedProduct_1, [
+	prov:type='food:preparedProduct'
+  ])
+  entity(qmra:preparedProduct_2, [
+	prov:type='food:preparedProduct'
+  ])  
+  entity(qmra:cookedProduct, [
+	prov:type='food:cookedProduct'
+  ])  
+
+  //Generation + Communication + Usage====================================
+  wasGeneratedBy(qmra:processedProduct_1, qmra:processing_1, 2017-03-08T14:21:12.085558)
+  wasGeneratedBy(qmra:processedProduct_2, qmra:processing_2, -)
+  wasGeneratedBy(qmra:storedProduct_1, qmra:storing_1, -)
+  wasGeneratedBy(qmra:storedProduct_2, qmra:storing_2, -)
+  wasGeneratedBy(qmra:preparedProduct_1, qmra:preparing_1, -)
+  wasGeneratedBy(qmra:preparedProduct_2, qmra:preparing_2, -)
+  wasGeneratedBy(qmra:cookedProduct, qmra:cooking, -)
+  
+  used(qmra:storing_1, qmra:processedProduct_1, 2016-03-08T14:21:12.085558)
+  used(qmra:storing_2, qmra:processedProduct_2, -)
+  used(qmra:preparing_1, qmra:storedProduct_1, -)
+  used(qmra:preparing_2, qmra:storedProduct_2, -)
+  used(qmra:cooking, qmra:preparedProduct_1, -)
+  used(qmra:cooking, qmra:preparedProduct_2, -) 
+  
+  wasDerivedFrom(qmra:storedProduct_1, qmra:processedProduct_1, -, -, -)
+  wasDerivedFrom(qmra:storedProduct_2, qmra:processedProduct_2, -, -, -)
+  wasDerivedFrom(qmra:preparedProduct_1, qmra:storedProduct_1, -, -, -)
+  wasDerivedFrom(qmra:preparedProduct_2, qmra:storedProduct_2, -, -, -)
+  wasDerivedFrom(qmra:cookedProduct, qmra:preparedProduct_1, -, -, -)
+  wasDerivedFrom(qmra:cookedProduct, qmra:preparedProduct_2, -, -, -)
+
+  //endBundle
+endDocument

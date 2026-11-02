@@ -1,0 +1,36 @@
+
+	$(PROVMAN) narrate --infile src/test/resources/prov/loan/small-loan2.provn   --outfile target/narrative-loan.provn --matrix target/narrative-loan-matrix.txt --text target/narrative-loan.txt --description target/narrative-loan-order.json --language src/main/resources/nlg/templates/provbasic/provbasic.json,src/main/resources/nlg/templates/foaf/foaf.json,src/main/resources/nlg/templates/loan/loan.json --linear
+
+
+
+The option --description allows for a descriptor file to be saved. It contains a JSON dictionary with the following elements.
+
+-   "theOrderedStatements": is a vector of statements as ordered by the constraints.  The contents is an JSON structure, not too very user friendly. Key properties include:
+   - "id": the identifier of the statemet (used in property "theOrderStatementIds")
+   - "kind" : a string describing the type of statement, e.g. "PROV_ACTIVITY",
+
+
+
+- "theOrderStatementIds": is a vector of Identifiers. Each of them is a Qualified Name also represented as a dictionary with the following properties:
+
+    - "prefix" : the prefix of the Qualified Name
+    - "localPart" : the local part of the QUalified Name
+    - "namespaceURI" : the Namespace URI denoted by the prefix
+    - "uri" : the URI corresponding to that Qualified Name
+
+
+- "idx": an index of all event identifiers (statements of type "PROV_GENERATION", "PROV_INVALIDATION", "PROV_START", "PROV_END").
+   All statements without id in the original document are given a unique id with prefix https://openprovenance.org/nlg#.
+   PROV-CONSTRAINTS also infers generation/invalidation/start/end events, if they do not exist already, with prefix
+      http://openprovenance.org/validation/4a8204cd-7825-4a71-9e71-411b2d936fb2# with a new  UUID for each validated document.
+
+
+- "evt": an table mapping uri ids to statements.
+The contents is an JSON structure, not too very user friendly. Key properties include:
+   - "id": the identifier of the statemet (used in property "theOrderStatementIds")
+   - "kind" : a string describing the type of statement, e.g. "PROV_START",  "PROV_END, ...
+
+
+- ""order": contains a linearlisation of events, denoted by their number
+
+

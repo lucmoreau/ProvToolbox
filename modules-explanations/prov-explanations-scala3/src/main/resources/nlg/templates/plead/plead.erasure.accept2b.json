@@ -1,0 +1,140 @@
+
+{
+
+	"select": {
+		"decision":       {"@type": "prov:Entity"},
+		"application":    {"@type": "prov:Entity"},
+		"officer":        {"@type": "prov:Agent"},
+		"erasing":        {"@type": "prov:Activity"},
+		"assoc":          {"@type": "prov:WasAssociatedWith"},
+		"wib":            {"@type": "prov:WasInvalidatedBy"},
+		"wsb1":           {"@type": "prov:WasStartedBy"}},
+
+	"query": [
+
+		"prefix ln <https://plead-project.org/ns/loan#>",
+		"prefix pl <https://plead-project.org/ns/plead#>",
+
+
+		"select * from waw a prov:WasAssociatedWith",
+		"from officer a prov:Agent",
+		" join waw.agent = officer.id",
+		"from erasing a prov:Activity",
+		" join waw.activity=erasing.id",
+
+		"from wsb1 a prov:WasStartedBy",
+		" join erasing.id=wsb1.activity",
+		"from decision a prov:Entity",
+		" join wsb1.trigger=decision.id",
+		"from wib a prov:WasInvalidatedBy",
+		" join erasing.id=wib.activity",
+		"from application a prov:Entity",
+		" join wib.entity=application.id",
+
+
+		"where officer[prov:type]     >= 'prov:Person'",
+		"  and decision[prov:type]    >= 'pl:ReviewDecision'",
+		"  and decision[prov:type]    >= 'pl:AcceptanceDecision'",
+		"  and application[prov:type]     >= 'ln:LoanApplication'",
+
+		"group by decision,officer, erasing,wib aggregate application with Seq"
+
+	],
+
+
+
+	"sentence": {
+		"type": "clause",
+		"object": {
+			"type": "noun_phrase",
+			"determiner": "the",
+			"features": {"number": "plural"},
+			"head": "data",
+			"pre-modifiers": [{
+				"type":"adjective_phrase",
+				"head":"following"}]
+		},
+		"indirect_object": {
+			"type": "preposition_phrase",
+			"preposition": "on",
+			"noun": {
+				"type": "@funcall",
+				"@object": "wib",
+				"@property": "ln:at",
+				"@optional": "true",
+				"@function": "timestring"}
+		},
+		"verb": "delete",
+
+		"modifiers": [
+			{
+				"type":  "noun_phrase",
+				"head":  ":"
+			},
+			{
+				"type": "coordinated_phrase",
+				"conjunction": "and",
+				"@iterator": {
+					"type": "@iterator",
+					"@variable": "application",
+					"@clause": "coordinates",
+					"@element": {
+						"type": "@funcall",
+						"@object": "application",
+						"@property": "prov:type",
+						"@function": "lookup-type",
+						"@arg1": "noun_phrase",
+						"@arg2": "ln",
+						"post-modifiers": [
+							{
+								"type": "adjective_phrase",
+								"head": {
+									"type": "@funcall",
+									"@object": "application",
+									"@field":  "id",
+									"@function": "noun+localname",
+									"@arg1": ""
+								},
+								"features": {
+									"markup_element": "span",
+									"markup_attributes": {
+										"type": "@funcall",
+										"@object": "application",
+										"@function": "markup-for-id",
+										"@field":  "id",
+										"@arg1": "provelement"
+									}
+								}
+							}
+						],
+						"features": {
+							"head_markup_element": "span",
+							"head_markup_attributes": {
+								"type": "@funcall",
+								"@object": "application",
+								"@function": "markup-for-id",
+								"@field":  "id",
+								"@arg1": "provelement"
+							}
+						}
+					}
+				}
+			}
+
+		],
+
+		"features" : {"tense": "past", "passive":  "true"}
+
+
+	},
+
+	"context": {
+		"ex": "http://example.org/#",
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"ln": "https://plead-project.org/ns/loan#",
+		"pl": "https://plead-project.org/ns/plead#",
+		"pd": "https://pandas.pydata.org/#"
+	}
+
+
+}

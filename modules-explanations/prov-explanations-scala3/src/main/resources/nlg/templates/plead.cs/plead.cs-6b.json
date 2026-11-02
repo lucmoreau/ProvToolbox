@@ -1,0 +1,107 @@
+{
+  "select": {
+    "decision": {
+      "@type": "prov:Entity"
+    },
+    "request": {
+      "@type": "prov:Entity"
+    },
+    "officer": {
+      "@type": "prov:Agent"
+    },
+    "reviewing": {
+      "@type": "prov:Activity"
+    },
+    "assoc": {
+      "@type": "prov:WasAssociatedWith"
+    },
+    "der1": {
+      "@type": "prov:WasDerivedFrom"
+    }
+  },
+  "query": [
+    "prefix cs <http://openprovenance.org/ns/creditscoring#>",
+    "prefix pl <http://openprovenance.org/ns/plead#>",
+    "prefix app <https://explain.openprovenance.org/creditscoring/>",
+    "select * from recommendation a prov:Entity",
+    "where recommendation[prov:type] >= 'pl:AutomatedRecommendation'"
+  ],
+  "sentence": {
+    "type": "paragraph",
+    "items": [
+      {
+        "type": "clause",
+        "subject": {
+          "type": "noun_phrase",
+          "determiner": "The",
+          "head": "recommendation",
+          "post-modifiers": [
+            {
+              "type": "preposition_phrase",
+              "preposition": "of",
+              "noun": {
+                "type": "noun_phrase",
+                "determiner": "the",
+                "head": "system"
+              }
+            }
+          ]
+        },
+        "verb": {
+          "type": "verb_phrase",
+          "head": "was",
+          "post-modifiers": [
+            {
+              "type": "preposition_phrase",
+              "preposition": "to",
+              "noun": "refuse"
+            }
+          ]
+        },
+        "object": {
+          "type": "noun_phrase",
+          "head": "application",
+          "specifier": "##borrower-possessive"
+        },
+        "complements": [
+          {
+            "type": "clause",
+            "indirect_object": {
+              "type": "preposition_phrase",
+              "preposition": "of",
+              "noun": {
+                          "type": "@funcall",
+                          "@object": "recommendation",
+                          "@property": "pl:reason",
+                          "@function": "lookup-type",
+                          "@arg1": "noun_phrase",
+                          "features": {
+                              "head_markup_element": "span",
+                              "head_markup_attributes": {
+                                  "type": "@funcall",
+                                  "@object": "recommendation",
+                                  "@function": "markup-for-id",
+                                  "@field":  "id",
+                                  "@arg1": "provelement"
+                              }
+                          }
+                        }
+            },
+            "complementiser": "because"
+          }
+        ],
+        "features": {
+          "type": "features",
+          "tense": "past"
+        }
+      }
+    ],
+    "properties": {}
+  },
+  "context": {
+  "ex": "http://example.org/#",
+    "app": "https://explain.openprovenance.org/creditscoring/",
+    "pl": "http://openprovenance.org/ns/plead#",
+    "cs": "http://openprovenance.org/ns/creditscoring#"
+  }
+}

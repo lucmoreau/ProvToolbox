@@ -1,0 +1,9 @@
+{
+    "name": "sa",
+    "templates": [
+        "sa.on.time.first.choice2.json"
+    ],
+    "dictionaries": ["sa-dictionary.json"],
+    "profiles": ["sa-profile1.json"]
+}
+	

@@ -1,0 +1,90 @@
+{
+	"select": {"appl": {"@type": "prov:Entity"},
+		"cust": {"@type": "prov:Agent"},
+		"wat":  {"@type": "prov:WasAttributedTo"}},
+
+	"query": [
+
+		"prefix ln <https://plead-project.org/ns/loan#>",
+
+
+		"select * from wat a prov:WasAttributedTo",
+
+		"from appl a prov:Entity",
+		" join wat.entity=appl.id",
+
+		"from cust a prov:Agent",
+		" join wat.agent=cust.id",
+
+		"where appl[prov:type] >= 'ln:LoanApplication' "
+	],
+
+
+	"where": [{
+		"type": "@funcall",
+		"@object": "appl",
+		"@property":  "prov:type",
+		"@function":  "includesQualifiedName",
+		"@arg1":     "ln:LoanApplication"},
+		{
+			"type": "@funcall",
+			"@object": "wat",
+			"@field":  "entity",
+			"@function":  "equals",
+			"@object1":     "appl",
+			"@field1":     "id"},
+		{
+			"type": "@funcall",
+			"@object": "wat",
+			"@field":  "agent",
+			"@function":  "equals",
+			"@object1":     "cust",
+			"@field1":     "id"}],
+
+	"sentence": {
+		"type": "clause",
+		"subject": {"type": "noun_phrase",
+			"head": {
+				"type": "@funcall",
+				"@object": "cust",
+				"@field":  "id",
+				"@function": "noun+localname",
+				"@arg1":   "customer"}},
+		"verb": "apply",
+		"modifiers": [{
+			"type": "preposition_phrase",
+			"preposition": "for",
+			"noun":  {
+				"type":"noun_phrase",
+				"determiner": "a",
+				"head": {
+					"type": "@funcall",
+					"@object": "appl",
+					"@field":  "id",
+					"@function": "noun+localname",
+					"@arg1": "loan"}}},
+			{
+				"type": "preposition_phrase",
+				"preposition": "in support of",
+				"noun":  {
+					"type":"noun_phrase",
+					"determiner": "a",
+					"head": {
+						"type": "@funcall",
+						"@object": "appl",
+						"@property": "ln:attr_purpose",
+						"@function": "identity"}}}],
+
+		"features" : {"tense": "past"}
+
+	},
+
+	"context": {
+		"ex": "http://example.org/#",
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"ln": "https://plead-project.org/ns/loan#",
+		"pd": "https://pandas.pydata.org/#"
+	}
+
+
+}

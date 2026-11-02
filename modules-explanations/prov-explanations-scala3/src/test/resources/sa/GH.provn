@@ -1,0 +1,51 @@
+document
+prefix sch <https://www.get-information-schools.service.gov.uk/Establishments/Establishment/Details/>
+prefix ch <http://southampton-citizen-portal.mock/children/>
+prefix uuid <urn:uuid:>
+prefix pl <https://plead-project.org/ns/plead#>
+prefix appl <http://southampton-citizen-portal.mock/school-applications/>
+prefix ex <http://example.org/>
+prefix sa <https://plead-project.org/ns/school-admission#>
+prefix u <http://southampton-citizen-portal.mock/users/>
+entity(sch:116450/ranked-list/2020,[prov:type = 'sa:SchoolPlaceRankedList', sa:year = "2020" %% xsd:int, sa:school = 'sch:116450'])
+entity(appl:2020/GH/1,[prov:type = 'sa:SchoolPlacePreference', prov:type = 'sa:Preference1', sa:school = 'sch:116507', sa:ehcp = "false" %% xsd:boolean, sa:pcare = "false" %% xsd:boolean, sa:vulnerable = "false" %% xsd:boolean, sa:medical = "false" %% xsd:boolean, sa:in_catchment = "false" %% xsd:boolean, sa:distance = "2.735" %% xsd:double, sa:sibling = "false" %% xsd:boolean, sa:feeder = "false" %% xsd:boolean, sa:late = "false" %% xsd:boolean])
+entity(sch:116507/ranked-list/2020,[prov:type = 'sa:SchoolPlaceRankedList', sa:year = "2020" %% xsd:int, sa:school = 'sch:116507'])
+entity(sch:116507/pan/2020,[prov:type = 'sa:PublishedAdmissionNumber', prov:value = "180" %% xsd:int, sa:year = "2020" %% xsd:int, sa:school = 'sch:116507'])
+entity(sch:116450/pan/2020,[prov:type = 'sa:PublishedAdmissionNumber', prov:value = "180" %% xsd:int, sa:year = "2020" %% xsd:int, sa:school = 'sch:116450'])
+entity(sch:116450/offers/2020/165,[prov:type = 'sa:SchoolPlaceOffer', sa:year = "2020" %% xsd:int, sa:school = 'sch:116450', sa:child = 'ch:GH'])
+entity(sch:116507/ranked-list/2020/580,[prov:type = 'sa:SchoolPlaceRankedPosition', sa:rank = "580" %% xsd:int])
+entity(sch:116507/offers/2020/580,[prov:type = 'sa:WaitingListPlace', sa:year = "2020" %% xsd:int, sa:school = 'sch:116507', sa:waiting_list_rank = "580" %% xsd:int, sa:child = 'ch:GH'])
+entity(appl:2020/GH,[prov:type = 'sa:SchoolPlaceApplication', sa:year = "2020" %% xsd:int, sa:applicant = 'ch:GH'])
+entity(sch:116450/ranked-list/2020/165,[prov:type = 'sa:SchoolPlaceRankedPosition', sa:rank = "165" %% xsd:int])
+entity(appl:2020/GH/3,[prov:type = 'sa:SchoolPlacePreference', prov:type = 'sa:Preference3', sa:school = 'sch:116450', sa:ehcp = "false" %% xsd:boolean, sa:pcare = "false" %% xsd:boolean, sa:vulnerable = "false" %% xsd:boolean, sa:medical = "false" %% xsd:boolean, sa:in_catchment = "false" %% xsd:boolean, sa:distance = "0.419" %% xsd:double, sa:sibling = "false" %% xsd:boolean, sa:feeder = "false" %% xsd:boolean, sa:late = "false" %% xsd:boolean])
+activity(uuid:b3af17bb-80fa-448a-8c6e-d5f292cbd9ce,-,-,[prov:type = 'pl:MachineLedActivity', prov:type = 'sa:AllocatingSchoolPlace'])
+activity(ex:ranking/116450/2020,-,-,[prov:type = 'pl:MachineLedActivity', prov:type = 'sa:RankingSchoolPlace'])
+activity(uuid:54d71106-b024-4832-8de8-df4b61366de9,-,-,[prov:type = 'pl:MachineLedActivity', prov:type = 'sa:AllocatingSchoolPlace'])
+activity(ex:ranking/116507/2020,-,-,[prov:type = 'pl:MachineLedActivity', prov:type = 'sa:RankingSchoolPlace'])
+agent(u:GH,[prov:type = 'prov:Person', prov:type = 'sa:Parent'])
+used(ex:ranking/116450/2020,appl:2020/GH/3,-)
+used(uuid:b3af17bb-80fa-448a-8c6e-d5f292cbd9ce,sch:116450/ranked-list/2020/165,-)
+used(uuid:b3af17bb-80fa-448a-8c6e-d5f292cbd9ce,sch:116450/pan/2020,-)
+used(ex:ranking/116507/2020,appl:2020/GH/1,-)
+used(uuid:54d71106-b024-4832-8de8-df4b61366de9,sch:116507/ranked-list/2020/580,-)
+used(uuid:54d71106-b024-4832-8de8-df4b61366de9,sch:116507/pan/2020,-)
+wasGeneratedBy(sch:116450/ranked-list/2020,ex:ranking/116450/2020,-)
+wasGeneratedBy(sch:116450/ranked-list/2020/165,ex:ranking/116450/2020,-)
+wasGeneratedBy(sch:116450/offers/2020/165,uuid:b3af17bb-80fa-448a-8c6e-d5f292cbd9ce,-)
+wasGeneratedBy(sch:116507/ranked-list/2020,ex:ranking/116507/2020,-)
+wasGeneratedBy(sch:116507/ranked-list/2020/580,ex:ranking/116507/2020,-)
+wasGeneratedBy(sch:116507/offers/2020/580,uuid:54d71106-b024-4832-8de8-df4b61366de9,-)
+wasDerivedFrom(sch:116450/ranked-list/2020/165, appl:2020/GH/3)
+wasDerivedFrom(sch:116450/offers/2020/165, sch:116450/ranked-list/2020/165)
+wasDerivedFrom(sch:116450/offers/2020/165, sch:116450/pan/2020)
+wasDerivedFrom(sch:116507/ranked-list/2020/580, appl:2020/GH/1)
+wasDerivedFrom(sch:116507/offers/2020/580, sch:116507/ranked-list/2020/580)
+wasDerivedFrom(sch:116507/offers/2020/580, sch:116507/pan/2020)
+wasAttributedTo(appl:2020/GH, u:GH)
+wasAttributedTo(appl:2020/GH/3, u:GH)
+wasAttributedTo(appl:2020/GH/1, u:GH)
+hadMember(appl:2020/GH,appl:2020/GH/3)
+hadMember(sch:116450/ranked-list/2020,sch:116450/ranked-list/2020/165)
+hadMember(appl:2020/GH,appl:2020/GH/1)
+hadMember(sch:116507/ranked-list/2020,sch:116507/ranked-list/2020/580)
+endDocument

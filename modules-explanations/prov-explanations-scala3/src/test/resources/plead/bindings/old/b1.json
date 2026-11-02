@@ -1,0 +1,87 @@
+{
+    "var" : {
+        "institution" : [ {
+            "@id" : "ex:institution"
+        }],
+        "computer": [ {
+            "@id": "ex:machine/iMac"
+        }],
+        "application": [ {
+            "@id": "ex:applications/128350251"
+        }],
+        "application/v1": [ {
+            "@id": "ex:applications/v1"
+        }],
+        "decision": [ {
+            "@id": "ex:decision/128350251"
+        }],
+        "applicant": [ {
+            "@id": "ex:applicants/128350251"
+        }],
+        "credit_history": [ {
+            "@id": "ex:credit_history/128350251"
+        }],
+        "recommendation": [ {
+            "@id": "ex:recommendation/128350251"
+        }],
+        "reviewing": [ {
+            "@id": "ex:review_recommendation/128350251"
+        }],
+        "classifying": [ {
+            "@id": "ex:classify_loans/128350251"
+        }],
+        "fico_score": [ {
+            "@id": "ex:fico_score/128350251"
+        }],
+        "loan_features": [ {
+            "@id": "py:loan_features/128350251"
+        }],
+        "processing": [ {
+            "@id": "ex:process_application/128350251"
+        }],
+        "staff1": [ {
+            "@id": "ex:staff/211"
+        }],
+        "staff2": [ {
+            "@id": "ex:staff/112"
+        }],
+        "credit_agency": [ {
+            "@id": "ex:credit_agency"
+        }],
+        "fico": [ {
+            "@id": "ex:fico"
+        }],
+        "reviewing_request": [ {
+            "@id": "ex:review_request/1234"
+        }],
+        "rectifying": [ {
+            "@id": "ex:rectifying/1234"
+        }],
+        "rectification_review_decision": [ {
+            "@id": "ex:rectification_review_decision/1234"
+        }],
+        "customer_request": [ {
+            "@id": "ex:customer_requests/1234"
+        }],
+        "document": [ {
+            "@id": "ex:documents/12754"
+        }],
+        "pipeline": [ {
+            "@id": "py:4780959224"
+        }],
+        "file": [ {
+            "@id": "localfile:dt_pipeline.pickled"
+        }]
+    },
+    "vargen" : { },
+    "context" : {
+        "pd": "https://pandas.pydata.org/#",
+        "py": "urn:python:var:",
+        "sk": "https://scikit-learn.org/stable/modules/generated/sklearn.",
+        "ln": "https://plead-project.org/ns/loan#",
+        "pl": "https://plead-project.org/ns/plead#",
+        "localfile": "file:///Users/me/mlpipeline/",
+        "ex" : "http://example.org/"
+    },
+    "template" : null
+}

@@ -1,0 +1,67 @@
+prefix sch <https://www.get-information-schools.service.gov.uk/Establishments/Establishment/Details/>
+prefix ch <http://southampton-citizen-portal.mock/children/>
+prefix pl <https://plead-project.org/ns/plead#>
+prefix appl <http://southampton-citizen-portal.mock/school-applications/>
+prefix ex <http://example.org/>
+prefix sa <https://plead-project.org/ns/school-admission#>
+
+select * from (
+    select * from wl_place a prov:Entity
+
+    from der1 a prov:WasDerivedFrom
+     join wl_place.id=der1.generatedEntity
+
+    from rankedlist a prov:Entity
+     join der1.usedEntity=rankedlist.id
+
+    from der2 a prov:WasDerivedFrom
+     join rankedlist.id=der2.generatedEntity
+
+    from preference a prov:Entity
+     join der2.usedEntity=preference.id
+
+    from attr1 a prov:WasAttributedTo
+     join preference.id=attr1.entity
+
+    from applicant a prov:Agent
+     join attr1.agent=applicant.id
+
+    from der3 a prov:WasDerivedFrom
+     join wl_place.id=der3.generatedEntity
+
+    from pan a prov:Entity
+     join der3.usedEntity=pan.id
+
+    where wl_place[prov:type]     >= 'sa:WaitingListPlace'
+    and  rankedlist[prov:type]    >= 'sa:SchoolPlaceRankedPosition'
+    and  preference[prov:type]    >= 'sa:SchoolPlacePreference'
+    and  pan[prov:type]           >= 'sa:PublishedAdmissionNumber'
+    and  preference[sa:school] = wl_place[sa:school]
+)
+from (
+    select * from offer a prov:Entity
+
+    from der1P a prov:WasDerivedFrom
+     join offer.id=der1P.generatedEntity
+
+    from rankedlistP a prov:Entity
+     join der1P.usedEntity=rankedlistP.id
+
+    from der2P a prov:WasDerivedFrom
+     join rankedlistP.id=der2P.generatedEntity
+
+    from preferenceP a prov:Entity
+     join der2P.usedEntity=preferenceP.id
+
+    from attr2 a prov:WasAttributedTo
+     join preferenceP.id=attr2.entity
+
+    from applicantP a prov:Agent
+     join attr2.agent=applicantP.id
+
+    where offer[prov:type]        >= 'sa:SchoolPlaceOffer'
+    and  rankedlistP[prov:type]    >= 'sa:SchoolPlaceRankedPosition'
+    and  preferenceP[prov:type]    >= 'sa:SchoolPlacePreference'
+    and  preferenceP[sa:school]    =  offer[sa:school]
+)
+join applicant.id=applicantP.id

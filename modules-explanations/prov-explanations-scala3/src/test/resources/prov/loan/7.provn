@@ -1,0 +1,53 @@
+document
+  prefix pd <https://pandas.pydata.org/#>
+  prefix py <urn:python:var:>
+  prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>
+  prefix ln <https://plead-project.org/ns/loan#>
+  prefix pl <https://plead-project.org/ns/plead#>
+  prefix loan <https://provexplain.openprovenance.org/loan/>
+  prefix file <file://>
+  prefix ex <http://example/org>
+  
+  agent(ex:institution, [prov:type='prov:Organization'])
+  agent(ex:machine/d98d922bb852, [prov:type='prov:SoftwareAgent', ln:machine_system="Linux", ln:machine_release="3.10.0-957.1.3.el7.x86_64", ln:machine_version="#1 SMP Thu Nov 29 14:49:43 UTC 2018", ln:machine_python_version="3.6.8"])
+  agent(ex:applicants/132777240, [prov:type='ln:LoanApplicant', prov:type='prov:Person'])
+  agent(ex:credit_agency, [prov:type='prov:Organization', prov:type='ln:CreditReferencingAgency'])
+  agent(ex:fico, [prov:type='prov:Organization', prov:type='ln:CreditReferencingAgency'])
+  agent(ex:staff/112, [prov:type='prov:Person', prov:role='ln:CreditOfficer'])
+  entity(ex:applications/132777240, [ln:attr_loan_amnt="5125" %% xsd:float, ln:attr_term=" 36 months", ln:attr_emp_title="Warehouse handler", ln:attr_emp_length="3 years", ln:attr_home_ownership="OWN", ln:attr_annual_inc="47862" %% xsd:float, ln:attr_purpose="credit_card", ln:attr_title="Credit card refinancing", ln:attr_zip_code="347xx", ln:attr_addr_state="FL", ln:attr_application_type="Individual", prov:type='pl:Controlled', prov:type='ln:LoanApplication'])
+  entity(ex:credit_history/132777240, [ln:attr_earliest_cr_line="Apr-1994", ln:attr_open_acc="14" %% xsd:float, ln:attr_pub_rec="0" %% xsd:float, ln:attr_revol_bal="2764" %% xsd:float, ln:attr_revol_util="7.4" %% xsd:float, ln:attr_mort_acc="1" %% xsd:float, ln:attr_pub_rec_bankruptcies="0" %% xsd:float, prov:type='ln:CreditReference'])
+  entity(ex:fico_score/132777240, [prov:type='ln:FICOScore', ln:fico_range_low="705" %% xsd:float, ln:fico_range_high="709" %% xsd:float])
+  entity(loan:pipeline/1, [prov:type='sk:pipeline.Pipeline'])
+  entity(py:loan_features/132777240, [ln:attr_loan_amnt="5125" %% xsd:float, ln:attr_term="36" %% xsd:float, ln:attr_int_rate="16.01" %% xsd:float, ln:attr_installment="180.21" %% xsd:float, ln:attr_emp_length="3" %% xsd:float, ln:attr_dti="39.02" %% xsd:float, ln:attr_earliest_cr_line="1994" %% xsd:float, ln:attr_open_acc="14" %% xsd:float, ln:attr_revol_util="7.4" %% xsd:float, ln:attr_total_acc="23" %% xsd:float, ln:attr_mort_acc="1" %% xsd:float, ln:attr_log_annual_inc="4.68" %% xsd:float, ln:attr_fico_score="707" %% xsd:float, ln:attr_log_revol_bal="3.4417" %% xsd:float, ln:attr_sub_grade_C5="1" %% xsd:float, ln:attr_home_ownership_OWN="1" %% xsd:float, ln:attr_verification_status_Verified="1" %% xsd:float, ln:attr_purpose_credit_card="1" %% xsd:float, ln:attr_addr_state_FL="1" %% xsd:float, ln:attr_initial_list_status_w="1" %% xsd:float, prov:type='pd:Series'])
+  entity(ex:recommendation/132777240, [prov:type='ln:AutomatedLoanRecommendation', ln:recommendation='ln:approved', ln:probability_chargeoff="0.259626" %% xsd:float])
+  entity(ex:decision/132777240, [prov:type='ln:HumanDecision', ln:result='ln:approved'])
+  wasAttributedTo(ex:applications/132777240, ex:applicants/132777240)
+  wasAttributedTo(ex:credit_history/132777240, ex:credit_agency)
+  wasAttributedTo(ex:fico_score/132777240, ex:fico)
+  wasAttributedTo(ex:decision/132777240, ex:staff/112)
+  wasDerivedFrom(py:loan_features/132777240, ex:applications/132777240, -, -, -)
+  wasDerivedFrom(py:loan_features/132777240, ex:credit_history/132777240, -, -, -)
+  wasDerivedFrom(py:loan_features/132777240, ex:fico_score/132777240, -, -, -)
+  wasDerivedFrom(ex:recommendation/132777240, py:loan_features/132777240, ex:classify_loans/132777240, -, -)
+  wasDerivedFrom(ex:decision/132777240, ex:recommendation/132777240, ex:review_recommendation/132777240, -, -)
+  wasDerivedFrom(ex:decision/132777240, ex:applications/132777240, ex:review_recommendation/132777240, -, -)
+  wasDerivedFrom(ex:decision/132777240, ex:credit_history/132777240, ex:review_recommendation/132777240, -, -)
+  wasDerivedFrom(ex:decision/132777240, ex:fico_score/132777240, ex:review_recommendation/132777240, -, -)
+  activity(ex:classify_loans/132777240, 2019-06-07T16:34:05.711889, 2019-06-07T16:34:05.716620)
+  activity(ex:review_recommendation/132777240, -, -, [prov:type='pl:HumanLedActivity', prov:type='ln:LoanAssessment'])
+  activity(ex:process_application/132777240, 2019-06-07T16:34:05.241416, 2019-06-07T16:34:05.717773)
+  used(ex:classify_loans/132777240, py:loan_features/132777240, -)
+  used(ex:review_recommendation/132777240, ex:applications/132777240, -)
+  used(ex:review_recommendation/132777240, ex:recommendation/132777240, -)
+  used(ex:review_recommendation/132777240, ex:credit_history/132777240, -)
+  used(ex:review_recommendation/132777240, ex:fico_score/132777240, -)
+  used(ex:process_application/132777240, ex:applications/132777240, -)
+  wasAssociatedWith(ex:classify_loans/132777240, ex:machine/d98d922bb852, loan:pipeline/1)
+  wasAssociatedWith(ex:review_recommendation/132777240, ex:staff/112, ex:policy/loan_review/2019)
+  wasAssociatedWith(ex:process_application/132777240, ex:institution, -)
+  actedOnBehalfOf(ex:machine/d98d922bb852, ex:institution, -)
+  actedOnBehalfOf(ex:staff/112, ex:institution, -)
+  wasGeneratedBy(ex:recommendation/132777240, ex:classify_loans/132777240, -)
+  wasGeneratedBy(ex:decision/132777240, ex:review_recommendation/132777240, -)
+  wasGeneratedBy(ex:decision/132777240, ex:process_application/132777240, -)
+endDocument

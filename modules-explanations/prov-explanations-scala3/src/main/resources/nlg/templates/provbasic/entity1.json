@@ -1,0 +1,33 @@
+
+{
+
+    "select": {"ent": {"@type": "prov:Entity"}},
+
+    "query": "select * from ent a prov:Entity",
+
+ 
+    "sentence": {
+	"type": "clause",
+	"subject": {"type": "noun_phrase",
+		    "head": {"type": "@funcall",
+			     "@object": "ent",
+			     "@field":  "id",
+			     "@function": "localname"},
+		    "features": {"number": {"type": "@funcall",
+					    "@object": "ent",
+					    "@field": "id",
+					    "@function": "pluralp"}}},
+	"verb": "be",
+	"object": {"type":"noun_phrase",
+		   "head":"entity",
+		   "determiner":"a"},
+	"features" : {"tense": "present"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#"
+    }
+    
+    
+}

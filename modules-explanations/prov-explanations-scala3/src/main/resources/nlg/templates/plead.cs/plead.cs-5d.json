@@ -1,0 +1,181 @@
+{
+  "select": {
+    "decision": {
+      "@type": "prov:Entity"
+    },
+    "request": {
+      "@type": "prov:Entity"
+    },
+    "officer": {
+      "@type": "prov:Agent"
+    },
+    "reviewing": {
+      "@type": "prov:Activity"
+    },
+    "assoc": {
+      "@type": "prov:WasAssociatedWith"
+    },
+    "der1": {
+      "@type": "prov:WasDerivedFrom"
+    }
+  },
+  "query": [
+    "prefix cs <http://openprovenance.org/ns/creditscoring#>",
+    "prefix pl <http://openprovenance.org/ns/plead#>",
+    "prefix app <https://explain.openprovenance.org/creditscoring/>",
+    "prefix csd <https://explain.openprovenance.org/creditscoring/ns#>",
+    "select * from decision a prov:Entity",
+    "from der1 a provext:WasDerivedFromStar",
+    "join decision.id = der1.generatedEntity",
+    "from record a prov:Entity",
+    "join der1.usedEntity = record.id",
+    "where decision[prov:type] >= 'pl:Decision'",
+    "and record[prov:type] >= 'cs:CreditRecord'",
+    "group by decision aggregate record with Seq"
+  ],
+  "sentence": {
+    "type": "paragraph",
+    "items": [
+      {
+        "type": "clause",
+        "subject": "We",
+        "verb": {
+          "type": "verb_phrase",
+          "head": "receive "
+        },
+        "object": {
+          "type": "coordinated_phrase",
+          "conjunction": "and",
+          "coordinates": [
+            {
+              "type": "noun_phrase",
+              "determiner": "a",
+              "head": "credit report"
+            },
+            {
+              "type": "noun_phrase",
+              "head": "credit score"
+            }
+          ],
+          "post-modifiers": [
+            {
+              "type": "preposition_phrase",
+              "preposition": "from",
+              "noun": "CRA"
+            }
+          ]
+        },
+        "complements": [
+          {
+            "type": "clause",
+            "verb": {
+              "type": "verb_phrase",
+              "head": "calculated",
+              "post-modifiers": [
+                {
+                  "type": "verb_phrase",
+                  "head": "based",
+                  "object": {
+                    "type": "coordinated_phrase",
+                    "conjunction": "and",
+                    "@iterator": {
+                      "type": "@iterator",
+                      "@variable": "record",
+                      "@clause": "coordinates",
+                      "@element": {
+                        "type": "@funcall",
+                        "@object": "record",
+                        "@property": "prov:type",
+                        "@function": "lookup-type",
+                        "@arg1": "noun_phrase",
+                        "@arg2": "csd",
+                        "post-modifiers": [
+                          {
+                            "type": "adjective_phrase",
+                            "head": {
+                              "type": "@funcall",
+                              "@object": "record",
+                              "@field": "id",
+                              "@function": "noun+localname",
+                              "@arg1": ""
+                            },
+                            "features": {
+                              "markup_element": "span",
+                              "markup_attributes": {
+                                "type": "@funcall",
+                                "@object": "record",
+                                "@function": "markup-for-id",
+                                "@field": "id",
+                                "@arg1": "provelement"
+                              }
+                            }
+                          },
+                          {
+                            "type": "preposition_phrase",
+                            "preposition": "on",
+                            "noun": {
+                              "type": "noun_phrase",
+                              "head": {
+                                "type": "@funcall",
+                                "@object": "record",
+                                "@property": "pl:created_at",
+                                "@function": "identity"
+                              },
+                              "features": {
+                                "markup_element": "span",
+                                "markup_attributes": {
+                                  "type": "@funcall",
+                                  "@object": "record",
+                                  "@function": "markup-for-id",
+                                  "@field": "id",
+                                  "@arg1": "provelement"
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "features": {
+                          "head_markup_element": "span",
+                          "head_markup_attributes": {
+                            "type": "@funcall",
+                            "@object": "record",
+                            "@function": "markup-for-id",
+                            "@field": "id",
+                            "@arg1": "provelement"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "features": {
+                    "type": "features",
+                    "tense": "past"
+                  }
+                }
+              ]
+            },
+            "complementiser": "which",
+            "features": {
+              "type": "features",
+              "tense": "past",
+              "passive": "true",
+              "number": "plural"
+            }
+          }
+        ],
+        "features": {
+          "type": "features",
+          "tense": "past"
+        }
+      }
+    ],
+    "properties": {}
+  },
+  "context": {
+    "ex": "http://example.org/#",
+    "app": "https://explain.openprovenance.org/creditscoring/",
+    "pl": "http://openprovenance.org/ns/plead#",
+    "cs": "http://openprovenance.org/ns/creditscoring#",
+    "csd": "https://explain.openprovenance.org/creditscoring/ns#"
+  }
+}

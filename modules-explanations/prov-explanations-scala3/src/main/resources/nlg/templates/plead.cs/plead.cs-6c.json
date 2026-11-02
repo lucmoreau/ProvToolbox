@@ -1,0 +1,130 @@
+{
+  "select": {
+    "decision": {
+      "@type": "prov:Entity"
+    },
+    "request": {
+      "@type": "prov:Entity"
+    },
+    "officer": {
+      "@type": "prov:Agent"
+    },
+    "reviewing": {
+      "@type": "prov:Activity"
+    },
+    "assoc": {
+      "@type": "prov:WasAssociatedWith"
+    },
+    "der1": {
+      "@type": "prov:WasDerivedFrom"
+    }
+  },
+  "query": [
+    "prefix cs <http://openprovenance.org/ns/creditscoring#>",
+    "prefix pl <http://openprovenance.org/ns/plead#>",
+    "prefix app <https://explain.openprovenance.org/creditscoring/>",
+    "select * from decision a prov:Entity",
+    "from wat a prov:WasAttributedTo",
+    " join decision.id = wat.entity",
+    "from officer a prov:Agent",
+    " join wat.agent = officer.id",
+    "from gen a prov:WasGeneratedBy",
+    " join decision.id = gen.entity",
+    "from review a prov:Activity",
+    "join gen.activity = review.id",
+    "from waw a prov:WasAssociatedWith",
+    "join review.id = waw.activity",
+    "where decision[prov:type] >= 'pl:HumanDecision'",
+    "and officer[prov:type] >= 'prov:Person'",
+    "and review[prov:type] >= 'pl:HumanLedActivity'"
+  ],
+  "sentence": {
+    "type": "clause",
+    "verb": "review",
+    "object": {
+      "type": "noun_phrase",
+      "determiner": "the",
+      "head": "decision"
+    },
+    "post-modifiers": [
+      {
+        "type": "preposition_phrase",
+        "preposition": "at",
+        "noun": {
+          "type": "noun_phrase",
+          "head": {
+            "type": "@funcall",
+            "@object": "review",
+            "@field": "endTime",
+            "@function": "timestring"
+          },
+          "features": {
+            "head_markup_element": "span",
+            "head_markup_attributes": {
+              "type": "@funcall",
+              "@object": "review",
+              "@function": "markup-for-id",
+              "@field": "id",
+              "@arg1": "provelement"
+            }
+          }
+        }
+      }
+    ],
+    "subject": {
+      "type": "noun_phrase",
+      "head": {
+        "type": "@funcall",
+        "@object": "officer",
+        "@field": "id",
+        "@function": "noun+localname",
+        "@arg1": "credit officer"
+      },
+      "post-modifiers": [
+        {
+          "type": "clause",
+          "subject": "who",
+          "verb": "confirmed",
+          "object": {
+            "type": "coordinated_phrase",
+            "conjunction": "and",
+            "coordinates": [
+              {
+                "type": "noun_phrase",
+                "determiner": "the",
+                "head": "credit"
+              },
+              {
+                "type": "noun_phrase",
+                "head": "risk assessments"
+              }
+            ]
+          },
+          "features": {
+            "tense": "past"
+          }
+        }
+      ],
+      "features": {
+        "head_markup_element": "span",
+        "head_markup_attributes": {
+          "type": "@funcall",
+          "@object": "officer",
+          "@function": "markup-for-id",
+          "@field": "id",
+          "@arg1": "provelement"
+        }
+      }
+    },
+    "features": {
+      "passive": "true",
+      "tense": "past"
+    }
+  },
+  "context": {
+    "ex": "http://example.org/#",
+    "app": "https://explain.openprovenance.org/creditscoring/",
+    "pl": "http://openprovenance.org/ns/plead#",
+    "cs": "http://openprovenance.org/ns/creditscoring#"
+  }
+}

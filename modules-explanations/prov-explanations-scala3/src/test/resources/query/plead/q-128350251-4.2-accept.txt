@@ -1,0 +1,26 @@
+
+prefix ln <https://plead-project.org/ns/loan#>
+prefix pl <https://plead-project.org/ns/plead#>
+
+
+select * from waw a prov:WasAssociatedWith
+from officer a prov:Agent
+ join waw.agent=officer.id
+from rectifying a prov:Activity
+ join waw.activity=rectifying.id
+
+from wsb1 a prov:WasStartedBy
+ join rectifying.id=wsb1.activity
+from decision a prov:Entity
+ join wsb1.trigger=decision.id
+from wgb a prov:WasGeneratedBy
+ join rectifying.id=wgb.activity
+from application a prov:Entity
+ join wgb.entity=application.id
+
+where officer[prov:type]     >= 'prov:Person'
+  and decision[prov:type]    >= 'pl:ReviewDecision'
+  and decision[prov:type]    >= 'pl:AcceptanceDecision'
+  and rectifying[prov:type]  >= 'pl:AmendingData'
+
+

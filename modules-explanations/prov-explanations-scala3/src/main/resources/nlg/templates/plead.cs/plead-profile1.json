@@ -1,0 +1,248 @@
+
+{
+	"ln:datacontroller": {
+	},
+
+	"ln:datacontroller-possessive": {
+		"ln:datacontroller-noun":
+		{
+			"features":
+			{
+				"pronominal": "false",
+				"possessive": "true"
+			}
+		}
+	},
+
+
+	"ln:company": {
+		"ln:company-noun": {
+			"features":
+			{
+				"pronominal": "false",
+				"possessive": "false"
+			}
+		},
+		"ln:company-pronoun-1": {
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "false",
+				"person": "first",
+				"number": "plural"
+			}
+		}
+	},
+
+	"ln:company-possessive": {
+		"ln:company-noun": {
+			"features":
+			{
+				"pronominal": "false",
+				"possessive": "true"
+			}
+		},
+		"ln:company-pronoun-1": {
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "true",
+				"person": "first",
+				"number": "plural"
+			}
+		}
+	},
+
+
+	"ln:datasubject": {
+		"ln:datasubject-person1":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"person": "first"
+			}
+		},
+		"ln:datasubject-person2":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "false",
+				"person": "second"
+			}
+		},
+		"ln:datasubject-noun":
+		{
+			"features":
+			{
+				"pronominal": "false",
+				"possessive": "false"
+			}
+		},
+		"ln:datasubject-person3-f":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "false",
+				"gender": "feminine",
+				"person": "third"
+			}
+		},
+		"ln:datasubject-person3-m":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "false",
+				"gender": "masculine",
+				"person": "third"
+			}
+		}
+	},
+	"ln:datasubject-possessive": {
+		"ln:datasubject-person1":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "true",
+				"person": "first"
+			}
+		},
+		"ln:datasubject-person2":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "true",
+				"person": "second"
+			}
+		},
+		"ln:datasubject-noun":
+		{
+			"features":
+			{
+				"pronominal": "false",
+				"possessive": "true"
+			}
+		},
+		"ln:datasubject-person3-f":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "true",
+				"gender": "feminine",
+				"person": "third"
+			}
+		},
+		"ln:datasubject-person3-m":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"gender": "masculine",
+				"possessive": "true",
+				"person": "third"
+			}
+		}
+	},
+	"ln:borrower": {
+		"ln:borrower-person1":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"person": "first"
+			}
+		},
+		"ln:borrower-person2":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "false",
+				"person": "second"
+			}
+		},
+		"ln:borrower-noun":
+		{
+			"features":
+			{
+				"pronominal": "false",
+				"possessive": "false"
+			}
+		},
+		"ln:borrower-person3-f":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "false",
+				"gender": "feminine",
+				"person": "third"
+			}
+		},
+		"ln:borrower-person3-m":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "false",
+				"gender": "masculine",
+				"person": "third"
+			}
+		}
+	},
+	"ln:borrower-possessive": {
+		"ln:borrower-person1":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "true",
+				"person": "first"
+			}
+		},
+		"ln:borrower-person2":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "true",
+				"person": "second"
+			}
+		},
+		"ln:borrower-noun":
+		{
+			"features":
+			{
+				"pronominal": "false",
+				"possessive": "true"
+			}
+		},
+		"ln:borrower-person3-f":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"possessive": "true",
+				"gender": "feminine",
+				"person": "third"
+			}
+		},
+		"ln:borrower-person3-m":
+		{
+			"features":
+			{
+				"pronominal": "true",
+				"gender": "masculine",
+				"possessive": "true",
+				"person": "third"
+			}
+		}
+	}
+
+}

@@ -1,0 +1,32 @@
+prefix ln <https://plead-project.org/ns/loan#>
+prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>
+prefix pl <https://plead-project.org/ns/plead#>
+prefix pd <https://pandas.pydata.org/#>
+
+
+select * from application a prov:Entity
+from wdf a prov:WasDerivedFrom
+ join application.id=wdf.usedEntity
+from cfapp a prov:Entity
+ join wdf.generatedEntity=cfapp.id
+from wdf2 a prov:WasDerivedFrom
+ join cfapp.id=wdf2.usedEntity
+from decision a prov:Entity
+ join wdf2.generatedEntity=decision.id
+
+where application[prov:type] >= 'ln:LoanApplication'
+  and cfapp[prov:type]       >= 'ln:LoanApplication'
+  and cfapp[prov:type]       >= 'pl:CounterFactualInput'
+  and decision[prov:type]    >= 'ln:HumanDecision'
+   or decision[prov:type]    >= 'ln:AutomatedDecision'
+  and decision[prov:type]    >= 'pl:CounterFactualOutput'   
+  and wdf[prov:type]         >= 'pl:CounterFactualDerivation'
+
+
+
+
+group by application aggregate wdf,cfapp,decision with Seq
+
+
+
+

@@ -19,6 +19,7 @@
         <module>prov-query</module>
         <module>prov-query-scala3</module>
         <module>prov-explanations</module>
+        <module>prov-explanations-scala3</module>
         <module>prov-service-xplain</module>
         <module>prov-summary-explanations</module>
         <module>service-xplain</module>

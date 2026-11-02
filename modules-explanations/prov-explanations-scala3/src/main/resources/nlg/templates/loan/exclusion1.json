@@ -1,0 +1,107 @@
+{
+	"select": {"recommendation": {"@type": "prov:Entity"}},
+
+	"query": [
+
+		"prefix ln <https://plead-project.org/ns/loan#>",
+		"prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>",
+		"prefix pl <https://plead-project.org/ns/plead#>",
+		"prefix pd <https://pandas.pydata.org/#>",
+
+
+		"select * from recommendation a prov:Entity",
+		"from wdf a prov:WasDerivedFrom",
+		" join recommendation.id=wdf.generatedEntity",
+		"from  features a prov:Entity",
+		" join wdf.usedEntity=features.id",
+		"from wdf0 a prov:WasDerivedFrom",
+		" join features.id=wdf0.generatedEntity",
+		"from data a prov:Entity",
+		" join wdf0.usedEntity=data.id",
+
+		"where features[prov:type] >= 'pd:Series'",
+		"and   recommendation[prov:type] >= 'ln:AutomatedLoanRecommendation'",
+
+		"group by recommendation, features aggregate data with Seq"
+
+
+
+	],
+
+	"sentence": {
+		"type": "clause",
+		"object":  {
+			"type": "coordinated_phrase",
+			"conjunction": "and",
+			"@iterator": {
+				"type": "@iterator",
+				"@variable": "@values",
+				"@element": {
+					"type": "@funcall",
+					"@clause": "coordinates",
+					"@function": "difference-lookup-attribute",
+					"@args": [
+						{
+							"type": "@iterator",
+							"@variable": "data",
+							"@clause": "@arg1",
+							"@flatten": "true",
+							"@element": {
+								"type": "@funcall",
+								"@object": "data",
+								"@property":  "@attributes",
+								"@function": "flatten"
+							}
+						},
+						{
+							"type": "@funcall",
+							"@object": "features",
+							"@property":  "@attributes",
+							"@function": "flatten"
+						}]}}},
+		"verb": "are",
+		"subject": {
+			"type": "noun_phrase",
+			"determiner": "the",
+			"head": "data",
+			"complements": [
+				{
+					"type": "clause",
+					"complementiser": "that",
+					"subject": "##company",
+					"verb": "exclude",
+					"features": {
+						"tense": "past"
+					},
+					"complements": [
+						{
+							"type": "preposition_phrase",
+							"preposition": "for the processing of",
+							"noun": {
+								"type": "noun_phrase",
+								"head": "loan application",
+								"specifier": "##borrower-possessive"
+							}
+
+						}
+					]
+				}
+			]
+		},
+
+
+		"features" : {"tense": "present", "number": "plural"}
+
+	},
+
+	"context": {
+		"ex": "http://example.org/#",
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"ln": "https://plead-project.org/ns/loan#",
+		"pd": "https://pandas.pydata.org/#",
+		"py": "urn:python:var:",
+		"sk": "https://scikit-learn.org/stable/modules/generated/sklearn."
+	}
+
+
+}

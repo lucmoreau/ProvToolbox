@@ -1,0 +1,97 @@
+{
+    "var" : {
+        "institution" : [ {
+            "@id" : "ex:institution"
+        }],
+        "application": [ {
+            "@id": "ex:applications/128350251"
+        }],
+        "application/v1": [ {
+            "@id": "ex:applications/128350251/v1"
+        }],
+
+        "applicant": [ {
+            "@id": "ex:applicants/128350251"
+        }],
+        "staff2": [ {
+            "@id": "ex:staff/112"
+        }],
+        "reviewing_request": [ {
+            "@id": "ex:review_request/1234"
+        }],
+        "rectifying": [ {
+            "@id": "ex:rectifying/1234"
+        }],
+        "rectification_review_decision": [ {
+            "@id": "ex:rectification_review_decision/1234"
+        }],
+        "customer_request": [ {
+            "@id": "ex:customer_requests/1234"
+        }],
+        "document": [ {
+            "@id": "ex:documents/12754"
+        }],
+        "document_type": [ {
+            "@id": "ln:Payslip"
+        }],
+        "document_location": [ "some/file/location" ],
+        "request_reason": [ "My annual income is not correct, it is 150000 not 50000" ],
+        "comment": [ "The annual income is incorrect and updated after reviewing proofs" ],
+        "request_date": [[  {
+            "@value": "2020-05-13T14:58:15",
+            "@type": "xsd:dateTime"
+        }]],
+        "reviewing_start": [[  {
+            "@value": "2020-05-15T14:21:00",
+            "@type": "xsd:dateTime"
+        }]],
+        "reviewing_end": [[  {
+            "@value": "2020-05-15T14:29:00",
+            "@type": "xsd:dateTime"
+        }]],
+        "used_time": [[  {
+            "@value": "2020-05-15T14:21:00",
+            "@type": "xsd:dateTime"
+        }]],
+        "rectifying_start": [[  {
+            "@value": "2020-05-15T14:29:30",
+            "@type": "xsd:dateTime"
+        }]],
+        "rectifying_end": [[  {
+            "@value": "2020-05-15T14:29:31",
+            "@type": "xsd:dateTime"
+        }]],
+        "attr_loan_amnt": [[  {
+            "@value": "12025",
+            "@type": "xsd:float"
+        }]],
+        "attr_term": ["36 months"],
+        "attr_emp_title": ["Lead Vet Tech"],
+        "attr_emp_length": ["4 years"],
+        "attr_home_ownership": ["RENT"],
+        "attr_annual_inc":  [[  {
+            "@value": "15000",
+            "@type": "xsd:float"
+        }]],
+        "attr_purpose": ["credit_card"] ,
+        "attr_title": ["Credit card refinancing"],
+        "attr_zip_code": [ "950xx"],
+        "attr_addr_state": ["CA"],
+        "attr_application_type": ["Joint App"],
+        "application_created_at": [[  {
+            "@value": "2019-05-15T14:29:30",
+            "@type": "xsd:dateTime"
+        }]]
+    },
+    "vargen" : { },
+    "context" : {
+        "pd": "https://pandas.pydata.org/#",
+        "py": "urn:python:var:",
+        "sk": "https://scikit-learn.org/stable/modules/generated/sklearn.",
+        "ln": "https://plead-project.org/ns/loan#",
+        "pl": "https://plead-project.org/ns/plead#",
+        "localfile": "file:///Users/me/mlpipeline/",
+        "ex" : "http://example.org/"
+    },
+    "template" : "rectification-4.2-accept"
+}

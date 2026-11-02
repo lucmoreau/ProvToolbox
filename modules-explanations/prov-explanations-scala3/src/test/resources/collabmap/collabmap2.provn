@@ -1,0 +1,17 @@
+document
+  default <http://www.collabmap.org/data/local/20140716/>
+  prefix collabmap <http://www.orchid.ac.uk/ontologies/collabmap.owl#>
+
+  entity(Building2231.0, [prov:type='collabmap:Building'])
+  entity(Route12902.0, [prov:type='collabmap:Route'])
+  entity(UpVote12904.0, [prov:type='collabmap:Vote', prov:value=1])
+  activity(RouteIdentification7236, 2012-02-13T15:09:47, 2012-02-13T15:09:52, [prov:type='collabmap:RouteIdentification'])
+  wasDerivedFrom(Route12902.0, Building2231.0, RouteIdentification7236, -, -)
+  wasGeneratedBy(Route12902.0, RouteIdentification7236, 2012-02-13T15:09:52)
+  wasDerivedFrom(UpVote12904.0, Route12902.0, RouteIdentification7236, -, -, [prov:type='collabmap:votedOn'])
+  wasDerivedFrom(UpVote12904.0, Building2231.0, RouteIdentification7236, -, -)
+  wasGeneratedBy(UpVote12904.0, RouteIdentification7236, 2012-02-13T15:09:52)
+  used(RouteIdentification7236, Building2231.0, 2012-02-13T15:09:47)
+endDocument
+
+

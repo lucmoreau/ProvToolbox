@@ -1,0 +1,16 @@
+prefix ln <https://plead-project.org/ns/loan#>
+prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>
+prefix pl <https://plead-project.org/ns/plead#>
+prefix pd <https://pandas.pydata.org/#>
+
+
+select * from recommendation a prov:Entity
+from wdf a prov:WasDerivedFrom
+ join recommendation.id=wdf.generatedEntity
+from  features a prov:Entity
+ join wdf.usedEntity=features.id
+
+where features[prov:type] >= 'pd:Series'
+and   recommendation[prov:type] >= 'ln:AutomatedLoanRecommendation'
+
+

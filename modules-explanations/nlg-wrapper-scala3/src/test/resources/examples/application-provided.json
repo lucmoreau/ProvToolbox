@@ -1,0 +1,24 @@
+{
+    "type":"noun_phrase",
+    "determiner":"the",
+    "head":"application",
+    "features":{
+        "type":"features",
+        "number": "singular"
+    },
+    "complements":[
+        {
+            "type":"clause",
+            "subject":"you",
+            "verb":"provide",
+            "complementiser":"which",
+            "features":
+            {
+                "type":"features",
+                "tense":"past",
+                "passive":"true"}}],
+    "pre-modifiers":[
+        {
+            "type":"noun_phrase",
+            "head":" loan"}]
+}

@@ -1,0 +1,12 @@
+{ "type":"clause",
+  "features": {"tense":"past","passive":"true"},
+  "object":{
+    "type":"noun_phrase",
+    "head":"e1",
+    "features":{"number":"singular"}},
+  "modifiers":[
+    {"type":"preposition_phrase",
+      "preposition":"to",
+      "noun":"ag1"}],
+  "verb":"attribute"
+}

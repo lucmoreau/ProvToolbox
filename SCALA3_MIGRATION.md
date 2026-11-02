@@ -25,7 +25,7 @@ prov-n, prov-jsonld and prov-validation are left out). Port in layer order.
 | Layer | Module (2.13 path) | Scala3 copy | Depends on (Scala) | Main LOC / test LOC | Status |
 |---|---|---|---|---|---|
 | 0 | `modules-core/prov-model-scala` | `modules-core/prov-model-scala-scala3` | – (parboiled2) | 6564 / 446 | **DONE** |
-| 0 | `modules-explanations/nlg-wrapper` | `modules-explanations/nlg-wrapper-scala3` | – (jackson-module-scala) | 1039 / 629 | TODO (needs clojars, see notes) |
+| 0 | `modules-explanations/nlg-wrapper` | `modules-explanations/nlg-wrapper-scala3` | – (jackson-module-scala) | 1039 / 629 | **COMPILES** — full test run pending (needs lexicon) |
 | 1 | `modules-misc/prov-scala-misc` | `modules-misc/prov-scala-misc-scala3` | prov-model-scala | 4397 / 941 | **DONE** |
 | 1 | `modules-explanations/nlg-spec-transformer` | `modules-explanations/nlg-spec-transformer-scala3` | prov-model-scala, nlg-wrapper | 3146 / 1293 | TODO |
 | 2 | `modules-nf/prov-nf` | `modules-nf/prov-nf-scala3` | prov-scala-misc | 4899 / 1407 | **DONE** |
@@ -72,8 +72,15 @@ without pulling Scala 2.13 classes in. **Always check** with
   (needed by `nlg-wrapper`). So `nlg-wrapper` and everything downstream of it
   (`nlg-spec-transformer`, `prov-query`, `prov-explanations`,
   `prov-summary-explanations`, provman) could not be built there, not even in 2.13.
-  These have to be done on a machine with clojars access (or with
-  `repo.clojars.org` allowed in the environment's network settings).
+  The lexicon data (`lexAccess2013.tgz` from `data.lhncbc.nlm.nih.gov`) was also blocked.
+  **Workaround used in the cloud session (compile only)**: an *empty stub*
+  `lexaccess-dist-2013.jar` installed into the local `~/.m2` (never committed), with
+  `mvn ... -Dexec.skip=true -Dmaven.antrun.skip=true -P '!missing-lexicon'`. That
+  compiles main + test code; tests that touch SimpleNLG's lexicon abort with
+  `NoClassDefFoundError: gov/nih/nlm/nls/lexAccess/Api/LexAccessApi`.
+  **On a machine with real access, delete any such stub first**
+  (`rm -rf ~/.m2/repository/gov/nih/nlm/nls/lexaccess`), then build normally and run
+  the full test suites of the "COMPILES" modules against their 2.13 twins.
 
 ## Recipe for porting one module `X` (repeat per module)
 
@@ -159,7 +166,18 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 8. **Lambda with a typed parameter needs parentheses**: `map{v:T => ...}` →
    `map{(v:T) => ...}`. Regex used on a whole file:
    `\{(\s*)([a-z]\w*)\s*:\s*([A-Z][\w\[\], .]*?)\s*=>` → `{\1(\2:\3) =>`.
-9. Remaining **warnings** (not errors, left as is under the minimal-change policy):
+9. **`using` is a (soft) keyword**: Java annotation arguments named `using` need backticks:
+   `@JsonDeserialize(using = classOf[X])` → ``@JsonDeserialize(`using` = classOf[X])``
+   ("expression expected but = found" + "Missing arguments for constructor JsonDeserialize").
+10. **jackson-module-scala: `ScalaObjectMapper` does not exist for Scala 3.** Replace the
+    mixin with `ClassTagExtensions` (`new ObjectMapper with ClassTagExtensions`).
+    Behaviour caveat: `ClassTagExtensions.readValue[T]` uses a `ClassTag`, so the type
+    arguments of a generic `T` (e.g. `Map[String, List[X]]`) are erased, unlike the
+    `Manifest`-based `ScalaObjectMapper`. Where the code only calls the Java API
+    `readValue(in, classOf[X])` (as in nlg-wrapper) this changes nothing. Check each
+    `readValue[...]`/`convertValue[...]` call with a generic type argument (nlg-spec-transformer
+    `SpecLoader.scala` still to do).
+11. Remaining **warnings** (not errors, left as is under the minimal-change policy):
    `_` wildcard in types (use `?`), `with` as a type operator (use `&`), identifiers with `$`.
    They can be rewritten automatically later with `-rewrite -source 3.4-migration`.
 
@@ -183,6 +201,7 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 | Date | Step | Result / notes |
 |---|---|---|
 | 2026-11-02 | Plan written, branch `scala3-port` created | Root pom: properties `scala3.version=3.9.0`, `scala3.release=17`. Helper script `scala3-migration/copy-module.py`. |
+| 2026-11-02 | nlg-wrapper-scala3 | Built with the lexaccess stub (see notes). Fixes #9, #10. Main + test compile. `-Dsuites=nlg.wrapper.xmlSpec` (no lexicon needed): 3/3 in both 2.13 and Scala 3. Other suites abort for lack of the lexicon in **both** versions. **TODO on a machine with the lexicon**: full `mvn test` of both, compare (2.13 expects 30 tests). |
 | 2026-11-02 | prov-signature-scala3 | One fix #8. Tests same as 2.13: JUnit 1/1, ScalaTest 0 (the ScalaTest runner finds no suites in 2.13 either). `dependency:tree` clean. Fix #8 is now automatic in `copy-module.py`. |
 | 2026-11-02 | prov-typemap-scala3 | Compiled unchanged. The ScalaTest run prints no summary line in 2.13 either ("Expected test count is: 2"). The test output (type maps, JSON) is identical to 2.13, apart from a trailing space in a suite name. `dependency:tree` clean. |
 | 2026-11-02 | prov-summarisation-scala3 | Main compiled unchanged. One test needed fix #8. Tests same as 2.13: ScalaTest 32/32 (once graphviz was installed). All JSON/DOT/PROV-N/SVG outputs in `target/` are byte-identical to the 2.13 run. `dependency:tree` clean (jackson-module-scala_3, parallel-collections_3). |

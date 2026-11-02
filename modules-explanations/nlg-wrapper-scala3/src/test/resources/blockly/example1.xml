@@ -1,0 +1,66 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+    <block type="clause" id="DsMh!1ytm{LO=MmdoO6s" x="110" y="376">
+        <value name="SUBJECT">
+            <block type="text" id="1oa+Sekm6k|O~p5QKd4m">
+                <field name="TEXT">John</field>
+            </block>
+        </value>
+        <value name="VERB">
+            <block type="text" id="]M5X[wfv7Z!)R?3)6yoH">
+                <field name="TEXT">eat</field>
+            </block>
+        </value>
+        <value name="DIRECT_OBJECT">
+            <block type="coordinated_phrase" id="8P?+ncl|[i5(p7+j=h4s">
+                <value name="CONJUNCTION">
+                    <block type="text" id="tiPysm_5BBl-2Fx$;=?F">
+                        <field name="TEXT">and</field>
+                    </block>
+                </value>
+                <value name="COORDINATES">
+                    <block type="lists_create_with" id="EdR,?[x$l!(Dk%VtQnQ6">
+                        <mutation items="2"></mutation>
+                        <value name="ADD0">
+                            <block type="noun_phrase" id="V.tG,ooNdY:wliYW5JBU">
+                                <value name="DETERMINER">
+                                    <block type="text" id="md6|VnoH_@PA%oW_c_j$">
+                                        <field name="TEXT">an</field>
+                                    </block>
+                                </value>
+                                <value name="HEAD">
+                                    <block type="text" id="=IYIZn:mBsqEm-V/mx31">
+                                        <field name="TEXT">apple</field>
+                                    </block>
+                                </value>
+                            </block>
+                        </value>
+                        <value name="ADD1">
+                            <block type="noun_phrase" id=",%wnFZ/B?qT;qrH@UdVl">
+                                <value name="DETERMINER">
+                                    <block type="text" id="qhW#d1zlQWQMXI$r+wj,">
+                                        <field name="TEXT">a</field>
+                                    </block>
+                                </value>
+                                <value name="HEAD">
+                                    <block type="text" id="xQQP0|D?kQ5@YL{(c^2C">
+                                        <field name="TEXT">pear</field>
+                                    </block>
+                                </value>
+                                <value name="FEATURES">
+                                    <block type="features" id="df8@{Av[VeiLu2YXWVc0">
+                                        <field name="TENSE_TICK">FALSE</field>
+                                        <field name="TENSE_CHOICE">PRESENT</field>
+                                        <field name="VOICE_TICK">FALSE</field>
+                                        <field name="VOICE_CHOICE">PASSIVE</field>
+                                        <field name="NUMBER_TICK">TRUE</field>
+                                        <field name="NUMBER_CHOICE">PLURAL</field>
+                                    </block>
+                                </value>
+                            </block>
+                        </value>
+                    </block>
+                </value>
+            </block>
+        </value>
+    </block>
+</xml>

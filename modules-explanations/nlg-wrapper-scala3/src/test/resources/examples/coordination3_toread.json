@@ -1,0 +1,35 @@
+{
+  "type" : "clause",
+  "subject" : {
+    "type" : "noun_phrase",
+    "head" : "Luc",
+    "modifiers" : [ ],
+    "pre-modifiers" : [ ],
+    "post-modifiers" : [ ],
+    "specifier" : null,
+    "complements" : [ ],
+    "features" : { },
+    "@features" : { }
+  },
+  "verb" : {
+    "type" : "verb_phrase",
+    "head" : "eats",
+    "modifiers" : [ ],
+    "pre-modifiers" : [ ],
+    "post-modifiers" : [ ],
+    "features" : { },
+    "@features" : { }
+  },
+    "object" : {
+	"type" : "coordinated_phrase",
+	"coordinates" : [ "cabbage",
+			  "lettuce" ],
+	"conjunction" : "and",
+	"features" : { }
+    },
+  "indirect_object" : null,
+  "complements" : [ ],
+  "modifiers" : [ ],
+  "features" : { },
+  "@features" : { }
+}

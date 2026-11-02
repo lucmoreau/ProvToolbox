@@ -13,6 +13,7 @@
 
     <modules>
         <module>nlg-wrapper</module>
+        <module>nlg-wrapper-scala3</module>
         <module>nlg-spec-transformer</module>
         <module>prov-query</module>
         <module>prov-explanations</module>

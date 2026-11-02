@@ -1,0 +1,206 @@
+{
+    "type" : "clause",
+    "subject" : {
+        "type" : "noun_phrase",
+        "determiner" : "the",
+        "head" : "data",
+        "modifiers" : [ ],
+        "pre-modifiers" : [ ],
+        "post-modifiers" : [ ],
+        "specifier" : null,
+        "complements" : [ {
+            "type" : "clause",
+            "subject" : {
+                "type" : "noun_phrase",
+                "head" : "Company Co",
+                "modifiers" : [ ],
+                "pre-modifiers" : [ ],
+                "post-modifiers" : [ ],
+                "specifier" : null,
+                "complements" : [ ],
+                "features" : { },
+                "@features" : { }
+            },
+            "verb" : "considered",
+            "object" : null,
+            "indirect_object" : null,
+            "complements" : [ {
+                "type" : "preposition_phrase",
+                "preposition" : "for",
+                "noun" : {
+                    "type" : "noun_phrase",
+                    "head" : "loan application",
+                    "modifiers" : [ ],
+                    "pre-modifiers" : [ ],
+                    "post-modifiers" : [ ],
+                    "specifier" : {
+                        "type" : "noun_phrase",
+                        "determiner" : "the",
+                        "head" : "borrower",
+                        "modifiers" : [ ],
+                        "pre-modifiers" : [ ],
+                        "post-modifiers" : [ ],
+                        "specifier" : null,
+                        "complements" : [ ],
+                        "features" : {
+                            "pronominal" : "false",
+                            "possessive" : "true"
+                        },
+                        "@features" : { }
+                    },
+                    "complements" : [ ],
+                    "features" : { },
+                    "@features" : { }
+                },
+                "complements" : [ ],
+                "specifier" : null
+            } ],
+            "modifiers" : [ ],
+            "complementiser" : "",
+            "features" : {
+                "tense" : "past"
+            }
+        } ],
+        "features" : { },
+        "@features" : { }
+    },
+    "verb" : "are",
+    "object" : {
+        "type" : "coordinated_phrase",
+        "coordinates" : [ "revolving line utilization rate", "the number of derogatory public records", "the number of public record bankruptcies", "the number of mortgage accounts", "total credit revolving balance", "the number of open credit lines", {
+            "type" : "noun_phrase",
+            "head" : "the month",
+            "modifiers" : [ ],
+            "pre-modifiers" : [ ],
+            "post-modifiers" : [ ],
+            "specifier" : null,
+            "complements" : [ {
+                "type" : "clause",
+                "subject" : {
+                    "type" : "noun_phrase",
+                    "head" : "credit line",
+                    "modifiers" : [ ],
+                    "pre-modifiers" : [ {
+                        "type" : "adjective_phrase",
+                        "head" : "earliest reported",
+                        "modifiers" : [ ],
+                        "pre-modifiers" : [ ],
+                        "post-modifiers" : [ ]
+                    } ],
+                    "post-modifiers" : [ ],
+                    "specifier" : {
+                        "type" : "noun_phrase",
+                        "determiner" : "the",
+                        "head" : "borrower",
+                        "modifiers" : [ ],
+                        "pre-modifiers" : [ ],
+                        "post-modifiers" : [ ],
+                        "specifier" : null,
+                        "complements" : [ ],
+                        "features" : {
+                            "pronominal" : "false",
+                            "possessive" : "true"
+                        },
+                        "@features" : { }
+                    },
+                    "complements" : [ ],
+                    "features" : { },
+                    "@features" : { }
+                },
+                "verb" : "was opened",
+                "object" : null,
+                "indirect_object" : null,
+                "complements" : [ ],
+                "modifiers" : [ ],
+                "complementiser" : "",
+                "features" : {
+                    "tense" : "past"
+                }
+            } ],
+            "features" : { },
+            "@features" : { }
+        }, {
+            "type" : "noun_phrase",
+            "head" : "lower FICO score",
+            "modifiers" : [ ],
+            "pre-modifiers" : [ ],
+            "post-modifiers" : [ ],
+            "specifier" : {
+                "type" : "noun_phrase",
+                "determiner" : "the",
+                "head" : "borrower",
+                "modifiers" : [ ],
+                "pre-modifiers" : [ ],
+                "post-modifiers" : [ ],
+                "specifier" : null,
+                "complements" : [ ],
+                "features" : {
+                    "pronominal" : "false",
+                    "possessive" : "true"
+                },
+                "@features" : { }
+            },
+            "complements" : [ ],
+            "features" : { },
+            "@features" : { }
+        }, {
+            "type" : "noun_phrase",
+            "head" : "higher FICO score",
+            "modifiers" : [ ],
+            "pre-modifiers" : [ ],
+            "post-modifiers" : [ ],
+            "specifier" : {
+                "type" : "noun_phrase",
+                "determiner" : "the",
+                "head" : "borrower",
+                "modifiers" : [ ],
+                "pre-modifiers" : [ ],
+                "post-modifiers" : [ ],
+                "specifier" : null,
+                "complements" : [ ],
+                "features" : {
+                    "pronominal" : "false",
+                    "possessive" : "true"
+                },
+                "@features" : { }
+            },
+            "complements" : [ ],
+            "features" : { },
+            "@features" : { }
+        }, "type of application", "the home ownership status", "the loan title", {
+            "type" : "noun_phrase",
+            "determiner" : "the",
+            "head" : "state",
+            "modifiers" : [ ],
+            "pre-modifiers" : [ ],
+            "post-modifiers" : [ ],
+            "specifier" : null,
+            "complements" : [ ],
+            "features" : { },
+            "@features" : { }
+        }, "employment length in years", "the purpose of the loan", "the listed amount of the loan", "the self-reported job title", {
+            "type" : "noun_phrase",
+            "determiner" : "the",
+            "head" : "address",
+            "modifiers" : [ ],
+            "pre-modifiers" : [ ],
+            "post-modifiers" : [ ],
+            "specifier" : null,
+            "complements" : [ ],
+            "features" : { },
+            "@features" : { }
+        }, "the self-reported annual income", "the number of payments on the loan" ],
+        "@iterator" : null,
+        "@pick" : null,
+        "conjunction" : "and",
+        "features" : {
+            "markup_element" : "ul"
+        }
+    },
+    "indirect_object" : null,
+    "complements" : [ ],
+    "modifiers" : [ ],
+    "features" : {
+        "tense" : "present"
+    }
+}

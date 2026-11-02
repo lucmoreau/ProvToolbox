@@ -13,6 +13,7 @@
 
     <modules>
         <module>prov-summarisation</module>
+        <module>prov-summarisation-scala3</module>
         <module>prov-typemap</module>
         <module>prov-service-summary</module>
         <module>service-summary</module>

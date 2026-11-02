@@ -29,7 +29,7 @@ prov-n, prov-jsonld and prov-validation are left out). Port in layer order.
 | 1 | `modules-misc/prov-scala-misc` | `modules-misc/prov-scala-misc-scala3` | prov-model-scala | 4397 / 941 | **DONE** |
 | 1 | `modules-explanations/nlg-spec-transformer` | `modules-explanations/nlg-spec-transformer-scala3` | prov-model-scala, nlg-wrapper | 3146 / 1293 | TODO |
 | 2 | `modules-nf/prov-nf` | `modules-nf/prov-nf-scala3` | prov-scala-misc | 4899 / 1407 | **DONE** |
-| 2 | `modules-summarisation/prov-summarisation` | `modules-summarisation/prov-summarisation-scala3` | prov-scala-misc (jackson-module-scala, parallel collections) | 2562 / 1753 | TODO |
+| 2 | `modules-summarisation/prov-summarisation` | `modules-summarisation/prov-summarisation-scala3` | prov-scala-misc (jackson-module-scala, parallel collections) | 2562 / 1753 | **DONE** |
 | 3 | `modules-nf/prov-signature` | `modules-nf/prov-signature-scala3` | prov-nf | 239 / 213 | TODO |
 | 3 | `modules-summarisation/prov-typemap` | `modules-summarisation/prov-typemap-scala3` | prov-scala-misc, prov-summarisation | 466 / 47 | TODO |
 | 3 | `modules-explanations/prov-query` | `modules-explanations/prov-query-scala3` | prov-scala-misc, nlg-spec-transformer, prov-nf, prov-summarisation (parser-combinators, parboiled2) | 1377 / 905 | TODO |
@@ -60,6 +60,11 @@ without pulling Scala 2.13 classes in. **Always check** with
 
 - Always pass `-Dexec.skip=true`: `prov-model` runs `exec-maven-plugin` checks for
   `ajv`, `dot`, `jq`... which are not installed everywhere (they are only presence checks).
+- **Graphviz `dot` must be installed** (`apt-get install graphviz`), otherwise 3 tests
+  of prov-summarisation fail (in 2.13 as well) with `Cannot run program "dot"`.
+- Extra check worth doing for modules that write files in tests: run the 2.13 and the
+  Scala 3 tests, then `diff -rq X/target X-scala3/target -x classes -x test-classes -x "*.jar" -x "maven-*" -x surefire-reports -x "generated*" -x analysis`.
+  It should report only `site`.
 - First build of the Java upstream modules (once per machine):
   `mvn -B install -DskipTests -Dmaven.javadoc.skip=true -Dexec.skip=true -pl modules-core/prov-model-scala,modules-misc/prov-scala-misc -am`
 - **Cloud session limitation (2026-11-02)**: the Claude cloud environment could not
@@ -177,6 +182,7 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 | Date | Step | Result / notes |
 |---|---|---|
 | 2026-11-02 | Plan written, branch `scala3-port` created | Root pom: properties `scala3.version=3.9.0`, `scala3.release=17`. Helper script `scala3-migration/copy-module.py`. |
+| 2026-11-02 | prov-summarisation-scala3 | Main compiled unchanged. One test needed fix #8. Tests same as 2.13: ScalaTest 32/32 (once graphviz was installed). All JSON/DOT/PROV-N/SVG outputs in `target/` are byte-identical to the 2.13 run. `dependency:tree` clean (jackson-module-scala_3, parallel-collections_3). |
 | 2026-11-02 | prov-nf-scala3 | Builds with tests. Fixes #6 (main + `UnificationSpec` `getKind` → `kind`) and #8. Tests same as 2.13: JUnit 1/1, ScalaTest 94/94. `dependency:tree` clean (prov-validation brings no 2.13 classes). |
 | 2026-11-02 | prov-scala-misc-scala3 | Builds with tests. Fixes #5–#8. Tests same as 2.13: JUnit 18/18, ScalaTest 6/6. `dependency:tree` clean. |
 | 2026-11-02 | prov-model-scala-scala3 | Builds with tests. Fixes #1–#4 of the catalogue. Tests same as 2.13: JUnit 149/149, ScalaTest 16/16. `dependency:tree` clean (only `_3` + scala-library 3.9.0). |

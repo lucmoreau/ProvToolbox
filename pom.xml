@@ -398,6 +398,9 @@
 		<scalatest.mvn.plugin.version>2.2.0</scalatest.mvn.plugin.version>
 		<scala.parallel.collection.version>1.0.4</scala.parallel.collection.version>
 		<scala.binary.version>2.13</scala.binary.version>
+		<!-- Scala 3 (side-by-side "-scala3" modules, see SCALA3_MIGRATION.md) -->
+		<scala3.version>3.9.0</scala3.version> <!-- latest LTS -->
+		<scala3.release>17</scala3.release> <!-- scala >= 3.8 requires jdk 17 -->
 		<scala.parser.comb.version>2.4.0</scala.parser.comb.version> <!-- 1.1.2 -->
 		<parboiled.version>2.5.1</parboiled.version> <!-- 2.5.0 -->
 

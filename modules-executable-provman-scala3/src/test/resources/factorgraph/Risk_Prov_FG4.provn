@@ -1,0 +1,23 @@
+document
+
+  prefix food <http://provenance.ecs.soton.ac.uk/food#>
+  prefix qmra <http://provenance.ecs.soton.ac.uk/qmra#>
+  prefix factorGraph <http://provenance.ecs.soton.ac.uk/factorGraph#>
+  prefix prov <http://provenance.ecs.soton.ac.uk/prov#>
+  prefix var <http://openprovenance.org/var#>
+  
+  //bundle food:foodProduct1  
+
+  //Activity=====================================================
+  activity(qmra:processing_1, [
+        prov:label="helo1",
+        prov:label="bonjour"@FR,
+        qmra:label="bon"@FR,
+        qmra:label="hel"@EN,	
+	prov:type='food:processingProcess',
+	food:pathogen='qmra:growth',
+	qmra:cpd="0.9666,0.0334"
+  ])
+
+  //endBundle
+endDocument

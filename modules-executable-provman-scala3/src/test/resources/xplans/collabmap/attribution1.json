@@ -1,0 +1,43 @@
+
+{
+
+	"select": {"attr": {"@type": "prov:WasAttributedTo"}},
+
+	"query": "select * from attr a prov:WasAttributedTo",
+
+	"sentence": {
+		"type": "clause",
+		"object":  {
+			"type": "noun_phrase",
+			"head": {
+				"type": "@funcall",
+				"@object": "attr",
+				"@field":  "entity",
+				"@function": "localname"},
+			"features": {
+				"number": {
+					"type": "@funcall",
+					"@object": "attr",
+					"@field": "entity",
+					"@function": "pluralp"}}},
+		"verb": "attribute",
+		"modifiers": [{
+			"type": "preposition_phrase",
+			"preposition": "to",
+			"noun": {
+				"type": "@funcall",
+				"@object": "attr",
+				"@field": "agent",
+				"@function": "localname"}}],
+		"features" : {
+			"tense": "past",
+			"passive": "true"}
+
+	},
+
+	"context": {
+		"ex": "http://example.org/#"
+	}
+
+
+}

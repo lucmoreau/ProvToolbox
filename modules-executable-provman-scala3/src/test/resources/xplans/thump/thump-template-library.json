@@ -1,0 +1,16 @@
+{
+    "name": "thump",
+    "templates": [
+        "thump.plan.actions1a.json",
+        "thump.plan.failure1a.json",
+        "thump.plan.failure1b.json",
+        "thump.plan.failure1c.json",
+        "thump.plan.failure1d.json",
+        "thump.plan.models1a.json",
+        "thump.plan.models1b.json",
+        "thump.plan.models1c.json"
+    ],
+    "dictionaries": ["thump-dictionary.json"],
+    "profiles": ["thump-profile1.json"]
+}
+	

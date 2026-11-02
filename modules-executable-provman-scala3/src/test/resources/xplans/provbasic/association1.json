@@ -1,0 +1,31 @@
+
+{
+
+    "select": {"waw": {"@type": "prov:WasAssociatedWith"}},
+
+    "query": "select * from waw a prov:WasAssociatedWith",    
+ 
+    "sentence": {
+	"type": "clause",
+	"object":  {"type": "noun_phrase",
+		    "head": {"type": "@funcall",
+			     "@object": "waw",
+			     "@field":  "activity",
+			     "@function": "localname"}},
+	"verb": "associate",
+	"modifiers": [{"type": "preposition_phrase",
+		       "preposition": "with",
+		       "noun": {"type": "@funcall",
+				"@object": "waw",
+				"@field": "agent",
+				"@function": "localname"}}],	
+	"features" : {"tense": "past",
+		      "passive": "true"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#"
+    }
+    
+}

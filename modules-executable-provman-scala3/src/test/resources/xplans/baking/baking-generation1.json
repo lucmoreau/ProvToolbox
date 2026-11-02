@@ -1,0 +1,61 @@
+
+{
+
+    "select": {"gen": {"@type": "prov:WasGeneratedBy"},
+	       "act": {"@type": "prov:Activity"}},
+
+
+    "query": [
+	"prefix ex <http://example.org/#>",
+	"select * from gen a prov:WasGeneratedBy",
+	"from act a prov:Activity",
+	"join gen.activity = act.id",
+	"where act[prov:type] >= 'ex:Baking' "],
+
+    "where": [{"@object": "act",
+	       "@property":  "prov:type",
+	       "@function":  "equalsQualifiedName",
+	       "@arg1":     "ex:Baking"},
+	      {"@object": "act",
+	       "@field":  "id",
+	       "@function":  "equals",
+	       "@object1":     "gen",
+	       "@field1":     "activity"}],    
+
+    "sentence": {
+	"type": "clause",
+	"object":  {"type": "noun_phrase",
+		    "head": {"type": "@funcall",
+			     "@object": "gen",
+			     "@field":  "entity",
+			     "@function": "localname"},
+		    "features": {"number": {"type": "@funcall",
+					    "@object": "gen",
+					    "@field": "entity",
+					    "@function": "pluralp"}}},
+	"verb": "bake",
+	"modifiers": [{"type": "preposition_phrase",
+		       "preposition": "during",
+		       "noun": {"type": "@funcall",
+				"@object": "gen",
+				"@field": "activity",
+				"@optional": "true",				
+				"@function": "localname"}},
+		      {"type": "preposition_phrase",
+		       "preposition": "at",
+		       "noun": {"type": "@funcall",
+				"@object": "gen",
+				"@field": "time",
+				"@optional": "true",				
+				"@function": "timestring"}}],	
+	"features" : {"tense": "past",
+		      "passive": "true"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#"
+    }
+    
+    
+}

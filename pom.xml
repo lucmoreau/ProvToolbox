@@ -36,6 +36,7 @@
 		<module>modules-services-metrics</module>
 
 		<module>modules-executable-provman</module>
+		<module>modules-executable-provman-scala3</module>
 		<module>modules-tools</module>
 
 

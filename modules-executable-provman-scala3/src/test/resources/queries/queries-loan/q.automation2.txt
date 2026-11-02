@@ -1,0 +1,46 @@
+prefix ln <https://plead-project.org/ns/loan#>
+
+
+select * from waw a prov:WasAssociatedWith
+from officer a prov:Agent
+ join waw.agent = officer.id
+from reviewing a prov:Activity
+ join waw.activity=reviewing.id
+
+from der1 a prov:WasDerivedFrom
+ join reviewing.id=der1.activity
+from decision a prov:Entity
+ join der1.generatedEntity=decision.id
+from application a prov:Entity
+ join der1.usedEntity=application.id
+
+from der2 a prov:WasDerivedFrom
+ join reviewing.id=der2.activity
+from decision a prov:Entity
+ join der2.generatedEntity=decision.id
+from fico a prov:Entity
+ join der2.usedEntity=fico.id
+
+from der3 a prov:WasDerivedFrom
+ join reviewing.id=der3.activity
+from decision a prov:Entity
+ join der3.generatedEntity=decision.id
+from reco a prov:Entity
+ join der3.usedEntity=reco.id
+
+from der4 a prov:WasDerivedFrom
+ join reviewing.id=der4.activity
+from decision a prov:Entity
+ join der4.generatedEntity=decision.id
+from credit a prov:Entity
+ join der4.usedEntity=credit.id
+
+
+where officer[prov:type]     >= 'prov:Person'
+  and decision[prov:type]    >= 'ln:HumanDecision'
+  and application[prov:type] >= 'ln:LoanApplication'
+  and reviewing[prov:type]   >= 'ln:LoanAssessment'
+  and fico[prov:type]        >= 'ln:FICOScore'  
+  and reco[prov:type]        >= 'ln:AutomatedLoanRecommendation'  
+  and credit[prov:type]        >= 'ln:CreditReference'
+  

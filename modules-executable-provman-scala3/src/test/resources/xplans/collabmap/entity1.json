@@ -1,0 +1,46 @@
+
+{
+
+	"select": {"ent": {"@type": "prov:Entity"}},
+
+	"query": "select * from ent a prov:Entity",
+
+
+	"sentence": {
+		"type": "clause",
+		"subject": {
+			"type": "noun_phrase",
+			"head": {
+				"type": "@funcall",
+				"@object": "ent",
+				"@field":  "id",
+				"@function": "localname"
+			},
+			"features": {
+				"number": {
+					"type": "@funcall",
+					"@object": "ent",
+					"@field": "id",
+					"@function": "pluralp"}}},
+		"verb": "be",
+		"object": {
+			"type": "@funcall",
+			"@object": "ent",
+			"@property": "prov:type",
+			"@function": "lookup-type",
+			"@arg1": "noun_phrase",
+			"@arg2": "collabmap"
+		},
+		"features" : {
+			"tense": "present"
+		}
+
+	},
+
+	"context": {
+		"ex": "http://example.org/#",
+		"collabmap": "http://www.orchid.ac.uk/ontologies/collabmap.owl#"
+	}
+
+
+}

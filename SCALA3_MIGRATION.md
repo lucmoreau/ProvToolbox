@@ -35,7 +35,7 @@ prov-n, prov-jsonld and prov-validation are left out). Port in layer order.
 | 3 | `modules-explanations/prov-query` | `modules-explanations/prov-query-scala3` | prov-scala-misc, nlg-spec-transformer, prov-nf, prov-summarisation (parser-combinators, parboiled2) | 1377 / 905 | **DONE** (built with the lexaccess stub; re-run once with the real lexicon) |
 | 4 | `modules-explanations/prov-explanations` | `modules-explanations/prov-explanations-scala3` | nlg-wrapper, prov-query, prov-nf, prov-summarisation | 1515 / 1160 | **COMPILES** — full test run pending (needs lexicon) |
 | 5 | `modules-explanations/prov-summary-explanations` | `modules-explanations/prov-summary-explanations-scala3` | prov-query, prov-explanations, prov-summarisation | 85 / 0 | **DONE** (no tests) |
-| 6 | `modules-executable-provman` | `modules-executable-provman-scala3` | everything above (scopt) | 1674 / 32 | TODO |
+| 6 | `modules-executable-provman` | `modules-executable-provman-scala3` | everything above (scopt) | 1674 / 32 | **DONE** (built with the lexaccess stub; `narrate`/`explain` commands not exercised) |
 
 Note: `prov-validation` (Java) depends on `prov-scala-misc` only in **test** scope,
 so `prov-nf-scala3` / `prov-explanations-scala3` can depend on prov-validation
@@ -193,7 +193,10 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 15. **Lambdas with a typed parameter outside braces** need parentheses too, e.g.
     `case None => _: Record =>` → `case None => (_: Record) =>`; `x: Record => ...` →
     `(x: Record) => ...`. The automatic regex (#8) only covers the `{x: T =>` form.
-16. Remaining **warnings** (not errors, left as is under the minimal-change policy):
+16. **A `val` cannot implement an empty-paren `def x(): T`** ("value queryResult ... has
+    incompatible type"). Here a case-class field implemented `def queryResult(): Output` of
+    `trait OutConfig`. Fix: declare `def queryResult: Output` and call it without `()`.
+17. Remaining **warnings** (not errors, left as is under the minimal-change policy):
    `_` wildcard in types (use `?`), `with` as a type operator (use `&`), identifiers with `$`.
    They can be rewritten automatically later with `-rewrite -source 3.4-migration`.
 
@@ -217,6 +220,7 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 | Date | Step | Result / notes |
 |---|---|---|
 | 2026-11-02 | Plan written, branch `scala3-port` created | Root pom: properties `scala3.version=3.9.0`, `scala3.release=17`. Helper script `scala3-migration/copy-module.py`. |
+| 2026-11-02 | modules-executable-provman-scala3 | Fix #16. Full `mvn install` (with antrun, appassembler, assembly): ScalaTest 2/2 in both. The generated man page `provmanagement.1` (built by running the CLI) is identical. Smoke test with `target/appassembler/bin/provmanagement` on `types/100009/100009.provn`: `translate` to provn/svg/dot, `normalize` and `summary` all give **byte-identical** output in 2.13 and Scala 3 (`translate` to `.json` fails in both: `json` is not a `Format`, pre-existing). `dependency:tree` clean. |
 | 2026-11-02 | prov-summary-explanations-scala3 | Compiled with no source change; no tests in 2.13 either. `dependency:tree` clean. |
 | 2026-11-02 | prov-explanations-scala3 | Compiled with **no source change**. Both suites (`NlgSpec`, `ExplanationSpec`, 27 tests) abort in **both** versions on the missing lexaccess class. **TODO with the lexicon**: full test run of both, compare. `dependency:tree` clean. |
 | 2026-11-02 | prov-query-scala3 | Fixes #1 (25 actions, new script `parboiled-actions.py`), #6 (test), #13, #14, #15. Tests same as 2.13: ScalaTest 11/11 (these suites do not need the lexicon). `target/` outputs identical. `dependency:tree` clean. |

@@ -1,0 +1,35 @@
+
+{
+
+    "select": {"mem": {"@type": "provext:HadMember"}},
+
+    "query": "select * from mem a provext:HadMember",        
+ 
+ 
+    "sentence": {
+	"type": "clause",
+	"subject":  {"type": "noun_phrase",
+		     "head": {"type": "@funcall",
+			      "@object": "mem",
+			      "@field":  "entity",
+			      "@function": "localname"},
+		     "features": {"number": {"type": "@funcall",
+					     "@object": "mem",
+					     "@field": "entity",
+					     "@function": "pluralp"}}},
+	"verb": "is member",
+	"modifiers": [{"type": "preposition_phrase",
+		       "preposition": "of",
+		       "noun": {"type": "@funcall",
+				"@object": "mem",
+				"@field": "collection",
+				"@function": "localname"}}],	
+	"features" : {"tense": "past"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#"
+    }
+    
+}

@@ -1,0 +1,34 @@
+
+{
+
+    "select": {"alt": {"@type": "provext:AlternateOf"}},
+
+    "query": "select * from alt a provext:AlternateOf",        
+ 
+    "sentence": {
+	"type": "clause",
+	"subject":  {"type": "noun_phrase",
+		    "head": {"type": "@funcall",
+			     "@object": "alt",
+			     "@field":  "alternate1",
+			     "@function": "localname"},
+		    "features": {"number": {"type": "@funcall",
+					    "@object": "alt",
+					    "@field": "alternate1",
+					    "@function": "pluralp"}}},
+	"verb": "be an alternate",
+	"modifiers": [{"type": "preposition_phrase",
+		       "preposition": "of",
+		       "noun": {"type": "@funcall",
+				"@object": "alt",
+				"@field": "alternate2",
+				"@function": "localname"}}],	
+	"features" : {"tense": "past"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#"
+    }
+    
+}

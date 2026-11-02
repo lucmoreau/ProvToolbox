@@ -1,0 +1,118 @@
+{
+    "environment": {
+        "environment": {},
+        "statements": {},
+        "seqStatements": {}
+    },
+
+    "phrase":
+    {
+        "type": "clause",
+        "subject": {
+            "type": "noun_phrase",
+            "determiner": "the",
+            "head": "source",
+            "pre-modifiers": [{
+                "type":"adjective_phrase",
+                "head":"data"}],
+            "features": {"number": "plural"}
+
+        },
+        "verb": "is",
+        "object": {
+            "type": "coordinated_phrase",
+            "conjunction": "and",
+            "coordinates": [
+                {
+                    "type": "noun_phrase",
+                    "determiner": "the",
+                    "post-modifiers": [
+                        {
+                            "type":"verb_phrase",
+                            "head": "provided",
+                            "features":{
+                                "form":"pastParticiple"
+                            },
+                            "post-modifiers": [
+                                {
+                                    "type":"preposition_phrase",
+                                    "noun": {
+                                        "type": "noun_phrase",
+                                        "head": "you"
+                                    },
+                                    "preposition": "by"}
+                            ]
+                        }
+                    ],
+                    "head": "loan application"},
+                {
+                    "type": "noun_phrase",
+                    "determiner": "a",
+                    "post-modifiers": [{
+                        "type":"verb_phrase",
+                        "head": "provided",
+                        "features":{
+                            "form":"pastParticiple"
+                        },
+                        "post-modifiers": [
+                            {
+                                "type":"preposition_phrase",
+                                "preposition": "by",
+                                "noun": {
+                                    "type":"noun_phrase",
+                                    "determiner": "the",
+                                    "head": "creditAgency"}
+                            },
+                            {
+                                "type": "preposition_phrase",
+                                "preposition": "at",
+                                "noun": {
+                                    "type":"noun_phrase",
+                                    "head": "16:00"
+                                }}
+                        ]
+                    }
+                    ],
+                    "head": "credit reference"
+                },
+                {
+                    "type":"noun_phrase",
+                    "determiner": "a",
+                    "head": "fico score",
+                    "post-modifiers": [
+                        {
+                            "type":"verb_phrase",
+                            "head": "provided",
+                            "features":{
+                                "form":"pastParticiple"
+                            },
+                            "post-modifiers": [
+                                {
+                                    "type":"preposition_phrase",
+                                    "preposition": "by",
+                                    "noun": {
+                                        "type":"noun_phrase",
+                                        "determiner": "the",
+                                        "head": "credit agency"
+                                    }}
+                            ,
+                                {
+                                    "type": "preposition_phrase",
+                                    "preposition": "at",
+                                    "noun": {
+                                        "type":"noun_phrase",
+                                        "head": "18:00"
+                                    }
+                                }
+                            ]
+                        }
+                    ]}
+            ]
+        },
+
+        "features" : {"tense": "past"}
+
+
+    }
+
+}

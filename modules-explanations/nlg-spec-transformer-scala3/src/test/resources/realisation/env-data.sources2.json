@@ -1,0 +1,140 @@
+{
+	"environment": {
+		"environment": {},
+		"statements": {},
+		"seqStatements": {}
+	},
+	"phrase": {
+		"type": "clause",
+		"subject": {
+			"type": "noun_phrase",
+			"determiner": "the",
+			"features": {
+				"number": "plural"
+			},
+			"head": "source",
+			"pre-modifiers": [
+				{
+					"type": "adjective_phrase",
+					"head": "data"
+				}
+			]
+		},
+		"object": {
+			"type": "coordinated_phrase",
+			"conjunction": "and",
+			"@iterator": {
+				"type": "@iterator",
+				"@variable": "data,supplierAgency",
+				"@clause": "coordinates",
+				"@element": {
+					"type": "@funcall",
+					"@object": "data",
+					"@property": "prov:type",
+					"@function": "lookup-type",
+					"@arg1": "noun_phrase",
+					"@arg2": "ln",
+					"post-modifiers": [
+						{
+							"type": "adjective_phrase",
+							"head": {
+								"type": "@funcall",
+								"@object": "data",
+								"@field": "id",
+								"@function": "noun+localname",
+								"@arg1": ""
+							},
+							"features": {
+								"markup_element": "span",
+								"markup_attributes": {
+									"type": "@funcall",
+									"@object": "data",
+									"@function": "markup-for-id",
+									"@field": "id",
+									"@arg1": "provelement"
+								}
+							}
+						},
+						{
+							"type": "verb_phrase",
+							"head": "provided",
+							"features": {
+								"form": "pastParticiple"
+							},
+							"post-modifiers": [
+								{
+									"type": "preposition_phrase",
+									"preposition": "by",
+									"noun": {
+										"type": "@funcall",
+										"@object": "supplierAgency",
+										"@property": "prov:type",
+										"@function": "lookup-type",
+										"@arg1": "noun_phrase",
+										"@arg2": "ln",
+										"determiner": "the"
+									},
+									"features": {
+										"markup_element": "span",
+										"markup_attributes": {
+											"type": "@funcall",
+											"@object": "supplierAgency",
+											"@function": "markup-for-id",
+											"@field": "id",
+											"@arg1": "provelement"
+										}
+									}
+								},
+								{
+									"type": "adjective_phrase",
+									"head": {
+										"type": "@funcall",
+										"@object": "supplierAgency",
+										"@field": "id",
+										"@function": "noun+localname",
+										"@arg1": ""
+									},
+									"features": {
+										"markup_element": "span",
+										"markup_attributes": {
+											"type": "@funcall",
+											"@object": "supplierAgency",
+											"@function": "markup-for-id",
+											"@field": "id",
+											"@arg1": "provelement"
+										}
+									}
+								},
+								{
+									"type": "preposition_phrase",
+									"preposition": "at",
+									"noun": {
+										"type": "@funcall",
+										"@object": "data",
+										"@property": "ln:created_at",
+										"@optional": "true",
+										"@function": "timestring"
+									}
+								}
+							]
+						}
+					],
+					"features": {
+						"head_markup_element": "span",
+						"head_markup_attributes": {
+							"type": "@funcall",
+							"@object": "data",
+							"@function": "markup-for-id",
+							"@field": "id",
+							"@arg1": "provelement"
+						}
+					}
+				}
+			}
+		},
+		"verb": "is",
+		"features": {
+			"tense": "past"
+		}
+	}
+}

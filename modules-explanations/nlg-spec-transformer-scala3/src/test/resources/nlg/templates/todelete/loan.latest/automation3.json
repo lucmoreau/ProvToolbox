@@ -1,0 +1,117 @@
+
+{
+
+    "select": {"decision":       {"@type": "prov:Entity"},
+	       "application":    {"@type": "prov:Entity"},
+	       "fico":           {"@type": "prov:Entity"},
+	       "recommendation": {"@type": "prov:Entity"},
+	       "credit":         {"@type": "prov:Entity"},	       	       	       
+	       "der1":           {"@type": "prov:WasDerivedFrom"},
+	       "der2":           {"@type": "prov:WasDerivedFrom"},
+	       "der3":           {"@type": "prov:WasDerivedFrom"},
+	       "der4":           {"@type": "prov:WasDerivedFrom"}},
+
+    "query": [
+
+	"prefix ln <https://plead-project.org/ns/loan#>",
+
+
+	"select * from features a prov:Entity",
+	"from der1 a prov:WasDerivedFrom",
+	" join features.id=der1.generatedEntity",
+	"from der2 a prov:WasDerivedFrom",
+	" join features.id=der2.generatedEntity",
+	"from der3 a prov:WasDerivedFrom",
+	" join features.id=der3.generatedEntity",
+
+ 
+	"from application a prov:Entity",
+	" join der1.usedEntity=application.id",
+
+	"from credit a prov:Entity",
+	" join der2.usedEntity=credit.id",
+
+	"from fico a prov:Entity",
+	" join der3.usedEntity=fico.id",
+
+	"from der4 a prov:WasDerivedFrom",
+	" join features.id=der4.usedEntity",
+
+	"from decision a prov:Entity",
+	" join der4.generatedEntity=decision.id",
+
+
+	"where decision[prov:type]    >= 'ln:AutomatedLoanRecommendation'",
+	"  and application[prov:type] >= 'ln:LoanApplication'",
+	"  and fico[prov:type]        >= 'ln:FICOScore'  ",
+	"  and credit[prov:type]      >= 'ln:CreditReference'"
+  
+
+    ],
+  
+	
+
+    "sentence": {
+	"type": "clause",
+
+	"subject": {"type": "noun_phrase",
+		    "determiner": "your",		   
+		    "head": "loan application"},
+
+	"verb": "was automatically approved",
+
+
+	"complements": [
+
+	    {
+		"type": "preposition_phrase",
+		"preposition": "based on",
+		"noun": {
+		    "type": "coordinated_phrase",
+		    "conjunction": "and",
+		    "coordinates": [
+			{"type": "noun_phrase",
+			 "determiner": "your",
+			 "post-modifiers": [{"type":"noun_phrase",
+					     "head": "itself"},
+					    {"type":"noun_phrase",
+					     "head": {"@object": "application",
+						      "@field":  "id",
+						      "@function": "noun+localname",
+						      "@arg1": ""}}
+					   ],
+			 "head": "application"},
+			{"type": "noun_phrase",
+			 "determiner": "a",
+			 "post-modifiers": [{"type":"noun_phrase",
+					     "head": {"@object": "credit",
+						      "@field":  "id",
+						      "@function": "noun+localname",
+						      "@arg1": ""}}
+					   ],
+			 "head": "credit reference"},
+			{"type":"noun_phrase",
+			 "determiner": "a",					 
+			 "head": {"@object": "fico",
+				  "@field":  "id",
+				  "@function": "noun+localname",
+				  "@arg1": "fico score"}}
+		    ]
+		}
+	    }
+	],
+	
+    "features" : {"tense": "past"}
+
+	
+    },
+
+    "context": {
+	"ex": "http://example.org/#",	
+	"foaf": "http://xmlns.com/foaf/0.1/",
+	"ln": "https://plead-project.org/ns/loan#",
+	"pd": "https://pandas.pydata.org/#"
+    }
+    
+    
+}

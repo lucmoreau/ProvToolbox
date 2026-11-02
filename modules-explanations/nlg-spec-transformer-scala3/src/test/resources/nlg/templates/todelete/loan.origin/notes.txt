@@ -1,0 +1,3 @@
+
+
+The loan processor recommended to approve the loan applicaton based on the following loan features.

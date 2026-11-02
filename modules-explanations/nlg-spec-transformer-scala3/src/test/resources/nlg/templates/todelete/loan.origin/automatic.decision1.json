@@ -1,0 +1,90 @@
+
+{
+
+    "select": {"decision":       {"@type": "prov:Entity"}},
+
+    "query": [
+
+	"prefix ln <https://plead-project.org/ns/loan#>",
+	"prefix pl <https://plead-project.org/ns/plead#>",	
+
+
+	"select * from features a prov:Entity",
+
+	"from der1 a prov:WasDerivedFrom",
+	" join features.id=der1.generatedEntity",
+
+	"from data a prov:Entity",
+	" join der1.usedEntity=data.id",
+
+	"from der2 a prov:WasDerivedFrom",
+	" join features.id=der2.usedEntity",
+
+	"from decision a prov:Entity",
+	" join der2.generatedEntity=decision.id",
+
+	"from der3 a prov:WasDerivedFrom",
+	" join decision.id=der3.generatedEntity",
+
+	"from application a prov:Entity",
+	" join der3.usedEntity=application.id",
+
+
+	"where decision[prov:type]    >= 'ln:AutomatedLoanRecommendation'",
+	"  and application[prov:type] >= 'ln:LoanApplication'",
+
+	"group by decision aggregate application, data with Seq"
+
+  
+
+    ],
+  
+	
+
+    "sentence": {
+	"type": "clause",
+
+	"subject": {"type": "noun_phrase",
+		    "head": "loan application",
+		    "specifier": "##borrower-possessive"},
+
+	"verb": "was automatically approved",
+
+
+	"complements": [
+
+		{
+			"type": "preposition_phrase",
+			"preposition": "based on",
+			"noun": {
+				"type": "coordinated_phrase",
+				"conjunction": "and",
+				"@iterator": {
+					"@variable": "data",
+					"@clause": "coordinates",
+					"@element": {
+						"@object": "data",
+						"@property":  "prov:type",
+						"@function": "lookup-type",
+						"@arg1": "noun_phrase",
+						"@arg2": "ln"}
+				}
+			}
+		}
+
+	],
+	
+	"features" : {"tense": "past"}
+
+	
+    },
+
+    "context": {
+	"ex": "http://example.org/#",	
+	"foaf": "http://xmlns.com/foaf/0.1/",
+	"ln": "https://plead-project.org/ns/loan#",
+	"pd": "https://pandas.pydata.org/#"
+    }
+    
+    
+}

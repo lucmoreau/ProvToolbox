@@ -1,0 +1,28 @@
+
+{
+
+    "select": {"act": {"@type": "prov:Activity"}},
+
+    "query": "select * from act a prov:Activity",
+ 
+    "sentence": {
+	"type": "clause",
+	"subject": {"type": "noun_phrase",
+		    "head": {"type": "@funcall",
+			     "@object": "act",
+			     "@field":  "id",
+			     "@function": "localname"}},
+	"verb": "be",
+	"object": {"type":"noun_phrase",
+		   "head":"activity",
+		   "determiner":"a"},
+	"features" : {"tense": "present"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#"
+    }
+    
+    
+}

@@ -1,0 +1,121 @@
+{
+	"select": {"recommendation": {"@type": "prov:Entity"}},
+
+	"query": [
+
+		"prefix ln <https://plead-project.org/ns/loan#>",
+		"prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>",
+		"prefix ex <http://example/org>",
+
+
+		"select * from waw a prov:WasAssociatedWith",
+		"from actor a prov:Agent",
+		" join waw.agent = actor.id",
+		"from do a prov:Activity",
+		" join waw.activity=do.id",
+
+		"from wgb a prov:WasGeneratedBy",
+		" join do.id=wgb.activity",
+		"from pipeline a prov:Entity",
+		" join wgb.entity=pipeline.id",
+		"from wdf a prov:WasDerivedFrom",
+		" join pipeline.id=wdf.usedEntity",
+		"from recommendation a prov:Entity",
+		" join wdf.generatedEntity=recommendation.id",
+
+
+		"from wdf2 a provext:WasDerivedFromPlus",
+		" join pipeline.id=wdf2.generatedEntity",
+		"from pipeline2 a prov:Entity",
+		" join wdf2.usedEntity=pipeline2.id",
+		"from wgb2 a prov:WasGeneratedBy",
+		" join pipeline2.id=wgb2.entity",
+		"from do2 a prov:Activity",
+		" join wgb2.activity=do2.id",
+
+		"from waw2 a prov:WasAssociatedWith",
+		" join do2.id=waw2.activity",
+		"from actor2 a prov:Agent",
+		" join waw2.agent = actor2.id",
+
+
+
+
+		"where actor[prov:type]          >= 'prov:Person'",
+		"  and recommendation[prov:type] >= 'ln:AutomatedLoanRecommendation'",
+		"  and do [prov:type]            >= 'ln:PipelineApproval'",
+		"  and pipeline [prov:type]      >= 'sk:pipeline.Pipeline'",
+		"  and pipeline2[prov:type]      >= 'sk:pipeline.Pipeline'",
+
+
+
+		"group by recommendation aggregate pipeline2,do2,actor2 with Seq"
+
+
+	],
+
+	"sentence": {
+		"type": "clause",
+		"subject": {
+			"type": "noun_phrase",
+			"determiner": "the",
+			"head": {
+				"type": "@funcall",
+				"@object": "recommendation",
+				"@field":  "id",
+				"@function": "noun+localname",
+				"@arg1": "recommendation"}},
+		"verb": "be",
+		"complements":  [
+			{
+				"type": "coordinated_phrase",
+				"conjunction": "and",
+				"@iterator": {
+					"type": "@iterator",
+					"@variable": "actor2,do2",
+					"@clause": "coordinates",
+					"@element": {
+						"type":"adjective_phrase",
+						"head":"influenced",
+						"post-modifiers": [
+							{
+								"type":"adjective_phrase",
+								"head": {
+									"type": "@funcall",
+									"@object": "do2",
+									"@field":  "id",
+									"@function": "noun+localname",
+									"@arg1": ""}},
+							{
+								"type":"preposition_phrase",
+								"preposition": "by",
+								"noun": {
+									"type":"noun_phrase",
+									"determiner": "the",
+									"head": {
+										"type": "@funcall",
+										"@object": "actor2",
+										"@field":  "id",
+										"@function": "noun+localname",
+										"@arg1": "agent"}}}
+						]
+					}
+				}
+			}
+		],
+
+		"features" : {"tense": "past"}
+
+	},
+
+	"context": {
+		"ex": "http://example.org/#",
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"ln": "https://plead-project.org/ns/loan#",
+		"pd": "https://pandas.pydata.org/#",
+		"py": "urn:python:var:",
+		"sk": "https://scikit-learn.org/stable/modules/generated/sklearn."
+	}
+
+
+}

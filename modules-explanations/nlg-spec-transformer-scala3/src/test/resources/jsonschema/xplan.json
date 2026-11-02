@@ -1,0 +1,295 @@
+
+
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "definitions" : {
+        "Determiner": {
+            "description": "a determiner",
+            "type": "string"
+        },
+        "Phrase": {
+            "OneOf": [
+                {
+                    "$ref": "#/definitions/Clause"
+                }
+            ]
+        },
+        "Verb": {
+            "OneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "$ref": "#/definitions/Clause"
+                }
+            ]
+        },
+        "Object": {
+            "OneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "$ref": "#/definitions/Funcall"
+                },
+                {
+                    "$ref": "#/definitions/Clause"
+                }
+            ]
+        },
+        "Clause": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["clause", "noun_phrase", "verb_phrase", "coordinated_phrase", "preposition_phrase"]
+                },
+                "determiner": {
+                    "$ref": "#/definitions/Determiner"
+                },
+                "subject": {
+                    "$ref": "#/definitions/Phrase"
+                },
+                "indirect_object": {
+                    "$ref": "#/definitions/Phrase"
+                },
+                "object": {
+                    "$ref": "#/definitions/Object"
+                },
+                "verb": {
+                    "$ref": "#/definitions/Verb"
+                },
+                "head":  {
+                    "$ref": "#/definitions/Head"
+                },
+                "conjunction": {
+                    "type": "string"
+                },
+                "coordinates": {
+                    "$ref": "#/definitions/ArrayOfClause"
+                },
+                "complements": {
+                    "$ref": "#/definitions/Complements"
+                },
+                "front-modifiers": {
+                    "$ref": "#/definitions/PreModifiers"
+                },
+                "pre-modifiers": {
+                    "$ref": "#/definitions/PreModifiers"
+                },
+                "post-modifiers": {
+                    "$ref": "#/definitions/PostModifiers"
+                },
+                "modifiers": {
+                    "$ref": "#/definitions/Modifiers"
+                },
+                "@iterator": {
+                    "type": "object"
+                },
+                "features": {
+                    "$ref": "#/definitions/Features"
+                }
+            },
+            "required": [
+                "type"
+            ],
+            "additionalProperties": false
+        },
+        "StringArray": {
+            "description" : "an array of strings",
+            "type": "array",
+            "items": {
+                "type" : "string"
+            }
+        },
+        "Funcall": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "enum": ["@funcall"]
+                },
+                "@object": {
+                    "type": "string"
+                },
+                "@field": {
+                    "type": "string"
+                },
+                "@function": {
+                    "type": "string"
+                },
+                "@arg1": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "type",
+                "@object",
+                "@field",
+                "@function"
+            ]
+        },
+        "StringOrFuncall": {
+            "OneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "$ref": "#/definitions/Funcall"
+                }
+            ]
+        },
+        "Head": {
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "$ref": "#/definitions/Funcall"
+                }
+            ]
+        },
+        "ArrayOfClause": {
+            "description" : "an array of clause",
+            "type": "array",
+            "items": {
+                "type" : "object"
+            }
+        },
+        "ArrayOfWhere": {
+            "description" : "an array of where clause",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Clause"
+            }
+        },
+        "Query": {
+            "OneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "$ref": "#/definitions/StringArray"
+                }
+            ]
+        },
+
+        "Complements": {
+            "OneOf": [
+                {
+                    "type": "array"
+                },
+                {
+                    "type": "object"
+                }
+            ]
+        },
+        "Features": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "tense": {
+                    "type": "string"
+                },
+                "passive": {
+                    "type": "string"
+                },
+                "number": {
+                    "$ref": "#/definitions/StringOrFuncall"
+                },
+                "head_markup_element": {
+                    "type": "string"
+                },
+                "head_markup_attributes": {
+                    "$ref": "#/definitions/Funcall"
+                }
+            },
+            "additionalProperties": false
+        },
+        "PreModifiers": {
+            "type": "array"
+        },
+        "Modifiers": {
+            "type": "array"
+        },
+        "PostModifiers": {
+            "type": "array"
+        }
+    },
+    "properties": {
+        "select": {
+            "type": "object"
+        },
+        "query": {
+            "$ref": "#/definitions/Query"
+        },
+        "where": {
+            "$ref": "#/definitions/ArrayOfClause"
+        },
+        "sentence": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["paragraph", "clause", "coordinated_phrase"]
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Clause"
+                    }
+                },
+                "properties": {
+                    "type": "object"
+                },
+                "subject": {
+                    "$ref": "#/definitions/Clause"
+                },
+                "object": {
+                    "$ref": "#/definitions/Object"
+                },
+                "indirect_object": {
+                    "$ref": "#/definitions/Phrase"
+                },
+                "verb": {
+                    "type": "string"
+                },
+                "features": {
+                    "$ref": "#/definitions/Features"
+                },
+                "complements": {
+                    "$ref": "#/definitions/Complements"
+                },
+                "modifiers": {
+                    "$ref": "#/definitions/Modifiers"
+                },
+                "post-modifiers": {
+                    "$ref": "#/definitions/PostModifiers"
+                },
+                "conjunction": {
+                    "type": "string"
+                },
+                "coordinates": {
+                    "$ref": "#/definitions/ArrayOfClause"
+                }
+            },
+            "additionalProperties": false
+        },
+        "context": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "string"
+            }
+        }
+    },
+    "required": [
+        "select",
+        "sentence",
+        "context"
+    ],
+    "additionalProperties": false
+}
+

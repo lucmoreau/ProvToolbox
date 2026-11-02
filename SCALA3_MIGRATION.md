@@ -27,7 +27,7 @@ prov-n, prov-jsonld and prov-validation are left out). Port in layer order.
 | 0 | `modules-core/prov-model-scala` | `modules-core/prov-model-scala-scala3` | – (parboiled2) | 6564 / 446 | **DONE** |
 | 0 | `modules-explanations/nlg-wrapper` | `modules-explanations/nlg-wrapper-scala3` | – (jackson-module-scala) | 1039 / 629 | **COMPILES** — full test run pending (needs lexicon) |
 | 1 | `modules-misc/prov-scala-misc` | `modules-misc/prov-scala-misc-scala3` | prov-model-scala | 4397 / 941 | **DONE** |
-| 1 | `modules-explanations/nlg-spec-transformer` | `modules-explanations/nlg-spec-transformer-scala3` | prov-model-scala, nlg-wrapper | 3146 / 1293 | TODO |
+| 1 | `modules-explanations/nlg-spec-transformer` | `modules-explanations/nlg-spec-transformer-scala3` | prov-model-scala, nlg-wrapper | 3146 / 1293 | **COMPILES** — full test run pending (needs lexicon) |
 | 2 | `modules-nf/prov-nf` | `modules-nf/prov-nf-scala3` | prov-scala-misc | 4899 / 1407 | **DONE** |
 | 2 | `modules-summarisation/prov-summarisation` | `modules-summarisation/prov-summarisation-scala3` | prov-scala-misc (jackson-module-scala, parallel collections) | 2562 / 1753 | **DONE** |
 | 3 | `modules-nf/prov-signature` | `modules-nf/prov-signature-scala3` | prov-nf | 239 / 213 | **DONE** |
@@ -174,10 +174,17 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
     Behaviour caveat: `ClassTagExtensions.readValue[T]` uses a `ClassTag`, so the type
     arguments of a generic `T` (e.g. `Map[String, List[X]]`) are erased, unlike the
     `Manifest`-based `ScalaObjectMapper`. Where the code only calls the Java API
-    `readValue(in, classOf[X])` (as in nlg-wrapper) this changes nothing. Check each
-    `readValue[...]`/`convertValue[...]` call with a generic type argument (nlg-spec-transformer
-    `SpecLoader.scala` still to do).
-11. Remaining **warnings** (not errors, left as is under the minimal-change policy):
+    `readValue(in, classOf[X])` (as in nlg-wrapper and nlg-spec-transformer, checked) this
+    changes nothing. Check each `readValue[...]`/`convertValue[...]` call with a generic type
+    argument in later modules.
+11. **No `ClassTag` for an intersection with an abstract type.** `x.transform[Phrase with F](e)`
+    with `def transform[F <: Phrase](e)(implicit c: ClassTag[F])` → "No ClassTag available
+    for Phrase & F". Scala 2 used the erasure (`Phrase`). Same behaviour, made explicit:
+    `x.transform[Phrase with F](e)(ClassTag[Phrase with F](classOf[Phrase]))` (SpecLoader.scala).
+12. **`case class C private (...)` also makes the synthetic `apply` private** in Scala 3.
+    `C(...)` called from elsewhere fails with "object C ... does not take parameters".
+    Fix: widen to `private[pkg]` (here `case class Result private[primitive]`, Primitive.scala).
+13. Remaining **warnings** (not errors, left as is under the minimal-change policy):
    `_` wildcard in types (use `?`), `with` as a type operator (use `&`), identifiers with `$`.
    They can be rewritten automatically later with `-rewrite -source 3.4-migration`.
 
@@ -201,6 +208,7 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 | Date | Step | Result / notes |
 |---|---|---|
 | 2026-11-02 | Plan written, branch `scala3-port` created | Root pom: properties `scala3.version=3.9.0`, `scala3.release=17`. Helper script `scala3-migration/copy-module.py`. |
+| 2026-11-02 | nlg-spec-transformer-scala3 | Built with the lexaccess stub. Fixes #8 (auto), #9, #10, #11, #12. Main + test compile. `xmlSpec` (no lexicon): 2/2 in both versions. `TransformSpecsSpec`, `SentencesFromJsonSpec`, `LoadPhraseSpec` abort in **both** versions on the missing lexaccess class. **TODO with the lexicon**: full test run of both (2.13 expects 24 tests), compare. |
 | 2026-11-02 | nlg-wrapper-scala3 | Built with the lexaccess stub (see notes). Fixes #9, #10. Main + test compile. `-Dsuites=nlg.wrapper.xmlSpec` (no lexicon needed): 3/3 in both 2.13 and Scala 3. Other suites abort for lack of the lexicon in **both** versions. **TODO on a machine with the lexicon**: full `mvn test` of both, compare (2.13 expects 30 tests). |
 | 2026-11-02 | prov-signature-scala3 | One fix #8. Tests same as 2.13: JUnit 1/1, ScalaTest 0 (the ScalaTest runner finds no suites in 2.13 either). `dependency:tree` clean. Fix #8 is now automatic in `copy-module.py`. |
 | 2026-11-02 | prov-typemap-scala3 | Compiled unchanged. The ScalaTest run prints no summary line in 2.13 either ("Expected test count is: 2"). The test output (type maps, JSON) is identical to 2.13, apart from a trailing space in a suite name. `dependency:tree` clean. |

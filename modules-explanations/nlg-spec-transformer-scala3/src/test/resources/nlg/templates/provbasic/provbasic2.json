@@ -1,0 +1,22 @@
+{
+    "name": "provbasic",
+    "templates": ["actedonbehalfof1.json",
+		  "activity1.json",
+		  "agent1.json",
+		  "alternate1.json",
+		  "association1.json",
+		  "attribution1.json",
+		  "derivation1.json",
+		  "end1.json",
+//		  "end2.json",
+//		  "end3.json",
+		  "entity1.json",
+		  "generation1.json",
+		  "invalidation1.json",
+		  "specialization1.json",
+		  "start1.json",
+//		  "start2.json",
+//		  "start3.json",
+		  "usage1.json"]
+}
+	

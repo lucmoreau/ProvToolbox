@@ -1,0 +1,8 @@
+{
+    "name": "loan",
+    "templates": ["automation2.json",
+		  "data.sources1.json",
+		  "responsibility1.json",		  
+		  "loan.application1.json"]
+}
+	

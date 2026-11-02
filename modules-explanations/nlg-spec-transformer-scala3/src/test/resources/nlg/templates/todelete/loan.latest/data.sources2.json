@@ -1,0 +1,119 @@
+
+{
+
+	"select": {"decision":       {"@type": "prov:Entity"}},
+
+	"query": [
+		"prefix ln <https://plead-project.org/ns/loan#>",
+
+
+		"select * from der1 a prov:WasDerivedFrom",
+		"from decision a prov:Entity",
+		" join der1.generatedEntity=decision.id",
+		"from data a prov:Entity",
+		" join der1.usedEntity=data.id",
+
+
+		"from wat1 a prov:WasAttributedTo",
+		" join data.id=wat1.entity",
+		"from supplierAgency a prov:Agent",
+		" join wat1.agent = supplierAgency.id",
+
+
+
+		"where decision[prov:type]    >= 'ln:AutomatedDecision'",
+		"   or decision[prov:type]    >= 'ln:HumanDecision'",
+
+		"group by decision aggregate data,supplierAgency with Seq"
+
+	],
+
+	"sentence": {
+		"type": "clause",
+		"subject": {
+			"type": "noun_phrase",
+			"determiner": "the",
+			"features": {"number": "plural"},
+			"head": "source",
+			"pre-modifiers": [{
+				"type":"adjective_phrase",
+				"head":"data"}]
+		},
+		"object": {
+			"type": "coordinated_phrase",
+			"conjunction": "and",
+			"@iterator": {
+				"type": "@iterator",
+				"@variable": "data,supplierAgency",
+				"@clause": "coordinates",
+				"@element": {
+					"type": "@funcall",
+					"@object": "data",
+					"@property":  "prov:type",
+					"@function": "lookup-type",
+					"@arg1": "noun_phrase",
+					"@arg2": "ln",
+					"post-modifiers": [
+						{
+							"type": "adjective_phrase",
+							"head": {
+								"type": "@funcall",
+								"@object": "data",
+								"@field":  "id",
+								"@function": "noun+localname",
+								"@arg1": ""}},
+						{
+							"type": "adjective_phrase",
+							"head": "provided",
+							"post-modifiers": [
+								{
+									"type":"preposition_phrase",
+									"preposition": "by",
+									"noun": {
+										"type": "@funcall",
+										"@object": "supplierAgency",
+										"@property":  "prov:type",
+										"@function": "lookup-type",
+										"@arg1": "noun_phrase",
+										"@arg2": "ln",
+										"determiner": "the"}},
+								{
+									"type": "adjective_phrase",
+									"head": {
+										"type": "@funcall",
+										"@object": "supplierAgency",
+										"@field":  "id",
+										"@function": "noun+localname",
+										"@arg1": ""}},
+								{
+									"type": "preposition_phrase",
+									"preposition": "at",
+									"noun": {
+										"type": "@funcall",
+										"@object": "data",
+										"@property": "ln:created_at",
+										"@optional": "true",
+										"@function": "timestring"}}
+							]
+						}
+					]
+				}
+			}
+		},
+
+		"verb": "is",
+
+		"features" : {"tense": "past"}
+
+
+	},
+
+	"context": {
+		"ex": "http://example.org/#",
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"ln": "https://plead-project.org/ns/loan#",
+		"pd": "https://pandas.pydata.org/#"
+	}
+
+
+}

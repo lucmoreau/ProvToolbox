@@ -1,0 +1,64 @@
+{
+    "@context" : [ {
+        "xsd" : "http://www.w3.org/2001/XMLSchema#",
+        "ex" : "http://another.org/",
+        "prov" : "http://www.w3.org/ns/prov#",
+        "foo" : "http://example.org/"
+    }, "http://openprovenance.org/prov.jsonld" ],
+    "@graph" : [
+        {
+            "@type" : "prov:Bundle",
+            "@context" : [ {
+                "xsd" : "http://www.w3.org/2001/XMLSchema#",
+                "ex" : "http://example.org/",
+                "prov" : "http://www.w3.org/ns/prov#"
+            }, "http://openprovenance.org/prov.jsonld" ],
+            "@id" : "ex:var1",
+            "@graph" : [ {
+                "@type" : "prov:Activity",
+                "@id" : "ex:a1",
+                "prov:role" : [ ],
+                "prov:value" : [ ],
+                "prov:type" : [ ],
+                "prov:label" : [ ],
+                "prov:location" : [ ]
+            }, {
+                "@type" : "prov:Entity",
+                "@id" : "ex:e1",
+                "prov:role" : [ ],
+                "prov:value" : [ ],
+                "prov:type" : [ ],
+                "prov:label" : [ ],
+                "prov:location" : [ ]
+            }, {
+                "@type" : "prov:Usage",
+                "@id" : "ex:use1",
+                "activity" : "ex:a1",
+                "entity" : "ex:e1",
+                "prov:role" : [ ],
+                "prov:value" : [ ],
+                "prov:type" : [ ],
+                "prov:label" : [ ],
+                "prov:location" : [ ]
+            } ]
+        }, {
+            "@type" : "prov:Bundle",
+            "@context" : [ {
+                "xsd" : "http://www.w3.org/2001/XMLSchema#",
+                "ex" : "http://another.org/",
+                "prov" : "http://www.w3.org/ns/prov#"
+            }, "http://openprovenance.org/prov.jsonld" ],
+            "@id" : "ex:var2",
+            "@graph" : [
+                {
+                    "@type" : "prov:Entity",
+                    "@id" : "ex:ee1",
+                    "prov:role" : [ ],
+                    "prov:value" : [ ],
+                    "prov:type" : [ ],
+                    "prov:label" : [ ],
+                    "prov:location" : [ ]
+                }
+            ]
+        } ]
+}

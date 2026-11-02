@@ -1,0 +1,117 @@
+{
+	"select": {"pipeline": {"@type": "prov:Entity"}},
+
+	"query": [
+
+		"prefix ln <https://plead-project.org/ns/loan#>",
+		"prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>",
+		"prefix ex <http://example/org>",
+
+
+		"select * from pipeline a prov:Entity",
+		"from wdf a provext:WasDerivedFromStar",
+		" join pipeline.id = wdf.generatedEntity",
+		"from ancestor a prov:Entity",
+		" join wdf.usedEntity=ancestor.id",
+		"from wgb a prov:WasGeneratedBy",
+		" join ancestor.id=wgb.entity",
+		"from do a prov:Activity",
+		" join wgb.activity=do.id",
+		"from waw a prov:WasAssociatedWith",
+		" join do.id=waw.activity",
+		"from actor a prov:Agent",
+		" join waw.agent=actor.id",
+
+
+		"where pipeline [prov:type]      >= 'sk:pipeline.Pipeline'",
+		"  and pipeline [prov:type]      >= 'ln:ApprovedPipeline'",
+		"  and ancestor[prov:type]       >= 'ln:File'",
+		"   or ancestor[prov:type]       >= 'sk:pipeline.Pipeline' ",
+
+		"group by pipeline aggregate ancestor,do,actor with Seq"
+
+	],
+
+	"sentence": {
+		"type": "clause",
+		"subject": {
+			"type": "noun_phrase",
+			"head": "responsibilities for the AI pipeline"},
+		"verb": "be",
+		"complements":  [
+			{
+				"type": "coordinated_phrase",
+				"conjunction": "and",
+				"@iterator": {
+					"type": "@iterator",
+					"@variable": "actor,do,ancestor",
+					"@clause": "coordinates",
+					"@element": {
+						"type":"clause",
+						"complementiser": "that",
+						"subject": {
+							"type": "@funcall",
+							"@object": "actor",
+							"@property":  "prov:type",
+							"@function": "lookup-type",
+							"@arg1": "noun_phrase",
+							"@arg2": "ln",
+							"determiner": "",
+							"post-modifiers": [
+								{
+									"type":"adjective_phrase",
+									"head": {
+										"type": "@funcall",
+										"@object": "actor",
+										"@field":  "id",
+										"@function": "noun+localname",
+										"@arg1": ""}}
+							]},
+						"verb": {
+							"type": "@funcall",
+							"@object": "do",
+							"@property":  "prov:type",
+							"@function": "lookup-type",
+							"@arg1": "verb_phrase",
+							"@arg2": "pl"},
+						"object": {
+							"type": "@funcall",
+							"@object": "ancestor",
+							"@property":  "prov:type",
+							"@function": "lookup-type",
+							"@arg1": "noun_phrase",
+							"@arg2": "ln,sk",
+							"post-modifiers": [
+								{
+									"type":"noun_phrase",
+									"head": {
+										"type": "@funcall",
+										"@object": "ancestor",
+										"@field":  "id",
+										"@function": "noun+localname",
+										"@arg1": ""}}
+							]
+						},
+						"features" : {"tense": "past"}
+					}
+				}
+			}
+
+		],
+
+		"features" : {"tense": "past", "number": "plural"}
+
+	},
+
+	"context": {
+		"ex": "http://example.org/#",
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"ln": "https://plead-project.org/ns/loan#",
+		"pl": "https://plead-project.org/ns/plead#",
+		"pd": "https://pandas.pydata.org/#",
+		"py": "urn:python:var:",
+		"sk": "https://scikit-learn.org/stable/modules/generated/sklearn."
+	}
+
+
+}

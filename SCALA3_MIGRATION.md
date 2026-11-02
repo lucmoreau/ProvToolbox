@@ -32,7 +32,7 @@ prov-n, prov-jsonld and prov-validation are left out). Port in layer order.
 | 2 | `modules-summarisation/prov-summarisation` | `modules-summarisation/prov-summarisation-scala3` | prov-scala-misc (jackson-module-scala, parallel collections) | 2562 / 1753 | **DONE** |
 | 3 | `modules-nf/prov-signature` | `modules-nf/prov-signature-scala3` | prov-nf | 239 / 213 | **DONE** |
 | 3 | `modules-summarisation/prov-typemap` | `modules-summarisation/prov-typemap-scala3` | prov-scala-misc, prov-summarisation | 466 / 47 | **DONE** |
-| 3 | `modules-explanations/prov-query` | `modules-explanations/prov-query-scala3` | prov-scala-misc, nlg-spec-transformer, prov-nf, prov-summarisation (parser-combinators, parboiled2) | 1377 / 905 | TODO |
+| 3 | `modules-explanations/prov-query` | `modules-explanations/prov-query-scala3` | prov-scala-misc, nlg-spec-transformer, prov-nf, prov-summarisation (parser-combinators, parboiled2) | 1377 / 905 | **DONE** (built with the lexaccess stub; re-run once with the real lexicon) |
 | 4 | `modules-explanations/prov-explanations` | `modules-explanations/prov-explanations-scala3` | nlg-wrapper, prov-query, prov-nf, prov-summarisation | 1515 / 1160 | TODO |
 | 5 | `modules-explanations/prov-summary-explanations` | `modules-explanations/prov-summary-explanations-scala3` | prov-query, prov-explanations, prov-summarisation | 85 / 0 | TODO |
 | 6 | `modules-executable-provman` | `modules-executable-provman-scala3` | everything above (scopt) | 1674 / 32 | TODO |
@@ -133,8 +133,9 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
    (or any non-lambda). Rewrite it to a lambda with the right arity:
    `~> ((a1, a2) => makeX(a1, a2))`, `~> (a1 => makeX(a1))`, `~> (() => makeX())`.
    `~> (makeX _)` does **not** help for vals. In prov-model-scala this was done for
-   all 103 actions in `ProvnParser.scala` with a small script. Apply the same to
-   `prov-query/.../ProvQLParser.scala` and to any other `rule { ... ~> f }`.
+   all 103 actions in `ProvnParser.scala`, and for the 25 in prov-query's `ProvQLParser.scala`
+   with **`python3 scala3-migration/parboiled-actions.py Parser.scala <files declaring the actions>`**
+   (it reads each action's arity from its `val/def f: (A, B) => R` declaration).
 2. **Same-package definitions shadow explicit imports.** `ProvnParser.scala` (package
    `...scala.immutable`) imported `org.openprovenance.prov.model.StatementOrBundle.Kind`,
    but Scala 3 resolved `Kind` to the same-package `object Kind` (an `Enumeration`), giving
@@ -184,7 +185,15 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 12. **`case class C private (...)` also makes the synthetic `apply` private** in Scala 3.
     `C(...)` called from elsewhere fails with "object C ... does not take parameters".
     Fix: widen to `private[pkg]` (here `case class Result private[primitive]`, Primitive.scala).
-13. Remaining **warnings** (not errors, left as is under the minimal-change policy):
+13. **View bounds `T <% X` are gone.** Replace with an implicit conversion parameter and
+    apply it explicitly: `def convert[T](t0: T)(implicit ev: T => X) = { val t = ev(t0); ... }`
+    (QFactory.scala). The existing `implicit def` conversions (`OrType.aToOr3`...) still satisfy `ev`.
+14. **No type ascription after a tuple pattern**: `val (a, b): (A, B) = e` → `val (a, b) = e`
+    (the type is inferred from `e`).
+15. **Lambdas with a typed parameter outside braces** need parentheses too, e.g.
+    `case None => _: Record =>` → `case None => (_: Record) =>`; `x: Record => ...` →
+    `(x: Record) => ...`. The automatic regex (#8) only covers the `{x: T =>` form.
+16. Remaining **warnings** (not errors, left as is under the minimal-change policy):
    `_` wildcard in types (use `?`), `with` as a type operator (use `&`), identifiers with `$`.
    They can be rewritten automatically later with `-rewrite -source 3.4-migration`.
 
@@ -208,6 +217,7 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 | Date | Step | Result / notes |
 |---|---|---|
 | 2026-11-02 | Plan written, branch `scala3-port` created | Root pom: properties `scala3.version=3.9.0`, `scala3.release=17`. Helper script `scala3-migration/copy-module.py`. |
+| 2026-11-02 | prov-query-scala3 | Fixes #1 (25 actions, new script `parboiled-actions.py`), #6 (test), #13, #14, #15. Tests same as 2.13: ScalaTest 11/11 (these suites do not need the lexicon). `target/` outputs identical. `dependency:tree` clean. |
 | 2026-11-02 | nlg-spec-transformer-scala3 | Built with the lexaccess stub. Fixes #8 (auto), #9, #10, #11, #12. Main + test compile. `xmlSpec` (no lexicon): 2/2 in both versions. `TransformSpecsSpec`, `SentencesFromJsonSpec`, `LoadPhraseSpec` abort in **both** versions on the missing lexaccess class. **TODO with the lexicon**: full test run of both (2.13 expects 24 tests), compare. |
 | 2026-11-02 | nlg-wrapper-scala3 | Built with the lexaccess stub (see notes). Fixes #9, #10. Main + test compile. `-Dsuites=nlg.wrapper.xmlSpec` (no lexicon needed): 3/3 in both 2.13 and Scala 3. Other suites abort for lack of the lexicon in **both** versions. **TODO on a machine with the lexicon**: full `mvn test` of both, compare (2.13 expects 30 tests). |
 | 2026-11-02 | prov-signature-scala3 | One fix #8. Tests same as 2.13: JUnit 1/1, ScalaTest 0 (the ScalaTest runner finds no suites in 2.13 either). `dependency:tree` clean. Fix #8 is now automatic in `copy-module.py`. |

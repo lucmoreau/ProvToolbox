@@ -1,7 +1,8 @@
 package org.openprovenance.prov.service.metrics;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.interop.InteropFramework;
@@ -66,7 +67,7 @@ public class MetricsCalculator extends Rules {
         this(new DummyMetricsQuery(),null);
     }
 
-    ObjectMapper om=new ObjectMapper();
+    ObjectMapper om=JsonMapper.builderWithJackson2Defaults().build();
 
 
 
@@ -97,14 +98,14 @@ public class MetricsCalculator extends Rules {
             String mapId=persistTypeMap();
             System.out.println("=========== mapId: " + mapId);
 
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
 
         return new MetricsRecord(id, "document", metrics, features, validationReport, traffic, hash);
     }
 
-    public String serializeValidatiorReportOrErrorAsString(Object validationReport) throws JsonProcessingException {
+    public String serializeValidatiorReportOrErrorAsString(Object validationReport) throws JacksonException {
         if (validationReport instanceof ValidationReport) {
             registerMissingNamespace((ValidationReport) validationReport);
             return serializeValidationReportAsString((ValidationReport) validationReport);

@@ -1,10 +1,10 @@
 package org.openprovenance.prov.service.core.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
-import java.io.IOException;
 
 import static org.openprovenance.prov.service.core.ServiceUtils.getSystemOrEnvironmentVariableOrDefault;
 
@@ -26,8 +26,8 @@ public class StorageConfiguration implements EnvironmentVariables {
 
     public static StorageConfiguration loadConfiguration() {
         try {
-            return new ObjectMapper().readValue(new File(provStorageConfigurationFile), StorageConfiguration.class);
-        } catch (IOException e) {
+            return JsonMapper.builderWithJackson2Defaults().build().readValue(new File(provStorageConfigurationFile), StorageConfiguration.class);
+        } catch (JacksonException e) { // Jackson 3: unchecked, also for I/O errors (was IOException)
             throw new RuntimeException(e);
         }
     }
@@ -35,8 +35,8 @@ public class StorageConfiguration implements EnvironmentVariables {
     @Override
     public String toString() {
         try {
-            return new ObjectMapper().writeValueAsString(this);
-        } catch (JsonProcessingException e) {
+            return JsonMapper.builderWithJackson2Defaults().build().writeValueAsString(this);
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }

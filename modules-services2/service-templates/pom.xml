@@ -120,9 +120,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId> <!-- Jackson 3: was the javax jackson-jaxrs-json-provider (inert with RESTEasy 6), used for databind only -->
+            <version>${jackson3.version}</version>
         </dependency>
 
         <dependency>
@@ -134,7 +134,7 @@
 
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-jaxrs2-jakarta</artifactId>
+            <artifactId>swagger-rest</artifactId> <!-- Jackson 3: swagger-core 3 (was swagger-jaxrs2-jakarta) -->
             <version>${swagger.version}</version>
         </dependency>
         <dependency>

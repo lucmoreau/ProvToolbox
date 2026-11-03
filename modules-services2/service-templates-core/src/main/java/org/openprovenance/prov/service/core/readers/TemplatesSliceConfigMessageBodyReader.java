@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.core.readers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
@@ -18,7 +19,7 @@ import java.lang.reflect.Type;
 @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
 public class TemplatesSliceConfigMessageBodyReader implements MessageBodyReader<TemplatesSliceConfig> {
 
-    ObjectMapper om=new ObjectMapper();
+    ObjectMapper om=JsonMapper.builderWithJackson2Defaults().build();
 
     @Override
     public boolean isReadable(Class<?> aClass, Type type, Annotation[] annotations, MediaType mediaType) {

@@ -1,9 +1,10 @@
 package org.openprovenance.prov.service.metrics;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.exc.StreamConstraintsException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.exc.StreamConstraintsException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.rules.SimpleMetrics;
 import org.openprovenance.prov.rules.TrafficLightResult;
 
@@ -101,7 +102,7 @@ public class MetricsQuery {
         return id.get();
     }
 
-    ObjectMapper om=new ObjectMapper();
+    ObjectMapper om=JsonMapper.builderWithJackson2Defaults().build();
 
 
     public MetricsRecord getMetricsRecord(String id) {
@@ -127,7 +128,7 @@ public class MetricsQuery {
         data.artifact = rs.getString("artifact");
         try {
             data.metrics=om.readValue(rs.getString("counts"), countMetrics);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             HashMap<String,String> metricsError = new HashMap<>();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             e.printStackTrace(new PrintStream(outputStream));
@@ -141,7 +142,7 @@ public class MetricsQuery {
             Map<String,String> featureError = new HashMap<>();
             featureError.put("error",featuresString);
             data.features=featureError;
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             Map<String,List<String>> featureError = new HashMap<>();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             e.printStackTrace(new PrintStream(outputStream));
@@ -159,7 +160,7 @@ public class MetricsQuery {
         }
         try {
             data.traffic=om.readValue(rs.getString("traffic"), Object.class);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             HashMap<String,String> trafficError = new HashMap<>();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             e.printStackTrace(new PrintStream(outputStream));
@@ -168,7 +169,7 @@ public class MetricsQuery {
         }
         try {
             data.hash=om.readValue(rs.getString("hash"), Object.class);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             HashMap<String,String> hashError = new HashMap<>();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             e.printStackTrace(new PrintStream(outputStream));

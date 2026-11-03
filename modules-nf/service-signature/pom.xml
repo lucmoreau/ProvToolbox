@@ -128,7 +128,7 @@
 
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-jaxrs2-jakarta</artifactId>
+            <artifactId>swagger-rest</artifactId> <!-- Jackson 3: swagger-core 3 (was swagger-jaxrs2-jakarta) -->
             <version>${swagger.version}</version>
         </dependency>
 

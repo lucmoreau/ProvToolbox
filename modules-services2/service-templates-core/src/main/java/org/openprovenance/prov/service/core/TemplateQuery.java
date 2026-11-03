@@ -1,8 +1,9 @@
 package org.openprovenance.prov.service.core;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -155,7 +156,7 @@ public class TemplateQuery {
                 (sb, data) -> {
                     try {
                         regenerateTypedPredecessorTable(sb);
-                    } catch (JsonProcessingException e) {
+                    } catch (JacksonException e) {
                         throw new RuntimeException(e);
                     }
                 });
@@ -3931,7 +3932,7 @@ public class TemplateQuery {
                         try {
                             Map<String, String> hash2 = om.readValue(hash1, Map.class);
                             data.putAll(hash2);
-                        } catch (IOException e) {
+                        } catch (JacksonException e) { // Jackson 3: unchecked (was IOException)
                             throw new RuntimeException(e);
                         }
                     }
@@ -4080,7 +4081,7 @@ public class TemplateQuery {
         map.remove("csv");
         try {
             return om.writeValueAsString(map);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
@@ -4502,7 +4503,7 @@ public class TemplateQuery {
                                 parent=((List<Integer>)(parents.get(0))).get(0);
                                 parent_relation=(String)(parents.get(1));
                             }
-                        } catch (JsonProcessingException e) {
+                        } catch (JacksonException e) {
                             throw new RuntimeException(e);
                         }
                         if (parent!=null && !seen.contains(parent)) {
@@ -4533,7 +4534,7 @@ public class TemplateQuery {
                             }
                             record.authorized=authorized;
                             record.hash=hash;
-                        } catch (IOException e) {
+                        } catch (JacksonException e) { // Jackson 3: unchecked (was IOException)
                             throw new RuntimeException("failed to parse authorized field: " + authorized1, e);
                         }
 
@@ -4777,7 +4778,7 @@ public class TemplateQuery {
             ioMap.get(INPUT). entrySet().removeIf( entry -> toExclude.contains(entry.getKey()) || entry.getValue() == null || entry.getValue().isEmpty());
             ioMap.get(OUTPUT).entrySet().removeIf( entry -> toExclude.contains(entry.getKey()) || entry.getValue() == null || entry.getValue().isEmpty());
             return ioMap;
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
@@ -4785,7 +4786,7 @@ public class TemplateQuery {
     public Map<String,Set<String>> getUniqueMap(String uniqueMapString) {
         try {
             return om.readValue(uniqueMapString, typeRef3);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
@@ -4793,7 +4794,7 @@ public class TemplateQuery {
     public  Map<String, String> getShortNames(String shortNamesString) {
         try {
             return om.readValue(shortNamesString, typeRef2);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
@@ -5479,9 +5480,9 @@ public class TemplateQuery {
 
 /*
 
-    private StringBuilder regeneratePredecessorTable(StringBuilder sb) throws JsonProcessingException {
+    private StringBuilder regeneratePredecessorTable(StringBuilder sb) throws JacksonException {
         Map<String, Map<String, List<String>>> successors0 = this.templateDispatcher.getSuccessors();
-        Map<String,String> shortNames= new ObjectMapper().readValue(templateDispatcher.getShortNames(), typeRef2);
+        Map<String,String> shortNames= JsonMapper.builderWithJackson2Defaults().build().readValue(templateDispatcher.getShortNames(), typeRef2);
         List<List<String>> successorsList=new ArrayList<>();
         for (String key : successors0.keySet()) {
             Map<String, List<String>> value = successors0.get(key);
@@ -5523,11 +5524,11 @@ public class TemplateQuery {
 
  */
 
-    private StringBuilder regenerateTypedPredecessorTable(StringBuilder sb) throws JsonProcessingException {
+    private StringBuilder regenerateTypedPredecessorTable(StringBuilder sb) throws JacksonException {
         Map<String, Map<String, List<String>>> successors0 = this.templateDispatcher.getTypedSuccessors();
         Map<Integer,String> provTypes=Stream.of(StatementOrBundle.Kind.values())
                 .collect(Collectors.toMap(Enum::ordinal, StatementOrBundle.Kind::name));
-        Map<String,String> shortNames= new ObjectMapper().readValue(templateDispatcher.getShortNames(), typeRef2);
+        Map<String,String> shortNames= JsonMapper.builderWithJackson2Defaults().build().readValue(templateDispatcher.getShortNames(), typeRef2);
         List<List<String>> successorsList=new ArrayList<>();
         for (String key : successors0.keySet()) {
             Map<String, List<String>> value = successors0.get(key);

@@ -51,7 +51,10 @@ Still on Jackson 2 (files using the API): only the service modules (C8): service
 prov-service-core 7, service-metrics 5, and 1–2 files in prov-service-security-pac, service-translator,
 service-xplain, service-summary, service-signature; plus swagger-core 2.2 and the JAX-RS JSON providers.
 
-**Next:** C8 (services), C9 (pac4j and Spring Boot islands), PROV-XML step 2, phase D.
+**C8 is DONE (2026-11-03)**: services on Jackson 3 and swagger-core 3.0.0; verified at runtime
+(service-translator: ITs and HTTP responses identical before/after).
+
+**Next:** C9 (pac4j and Spring Boot islands), PROV-XML step 2, phase D.
 
 ## 1. What changes in Jackson 3 (summary of what matters here)
 
@@ -89,7 +92,7 @@ our template compiler generates.
 | `jackson-module-scala_3` | 4 | `tools.jackson.module:jackson-module-scala_3` | ✅ 3.2.4 |
 | `jackson-module-jakarta-xmlbind-annotations` | 1 (prov-nf) | `tools.jackson.module:jackson-module-jakarta-xmlbind-annotations` | ✅ 3.2.4 |
 | `jackson-jakarta-rs-json-provider` | 2 (service-xplain, service-summary) | `tools.jackson.jakarta.rs:jackson-jakarta-rs-json-provider` | ✅ 3.2.4 |
-| `jackson-jaxrs-json-provider` (javax) | 6 (service-metrics, prov-service-security-pac, service-translator, service-templates-core, service-templates, archetype) | `tools.jackson.jaxrs:jackson-jaxrs-json-provider` | ✅ 3.2.4 (but see note: should these be the jakarta one?) |
+| `jackson-jaxrs-json-provider` (javax) | 6 (service-metrics, prov-service-security-pac, service-translator, service-templates-core, service-templates, archetype) | `tools.jackson.jaxrs:jackson-jaxrs-json-provider` | ✅ 3.2.4, but **not needed (C8)**: it is the javax (JAX-RS 2) provider, inert with RESTEasy 6 (Jakarta); these modules only used it to get `jackson-databind`, so it is replaced by `tools.jackson.core:jackson-databind` |
 
 ### 2.2 Source footprint (tracked `.java` + `.scala`)
 
@@ -149,7 +152,7 @@ non-ProvToolbox artifact that declares a Jackson dependency.
 |---|---|---|---|---|
 | networknt `json-schema-validator` **1.5.9** | databind, dataformat-yaml 2.18.3 | **direct**: prov-template and prov-template-compiler (compile scope), prov-jsonld and prov-storage-mongodb (test scope only). **Transitively in 22 modules (compile/provided)** via prov-template, mostly through prov-interop (6 Java files use its API: `SchemaCheck` in prov-template; `CompilerJsonSchema`, `CompilerDocumentation`, `JsonSchemaTesting` in prov-template-compiler; tests in prov-jsonld and the compiler) | ✅ **3.x line** (3.0.8; Java 17 + Jackson 3). Its 2.x line is still Jackson 2 | upgrade 1.5.9 → 3.0.x in **two steps**: first 1.5.9 → **2.0.x** (new API, still Jackson 2, so it can be done and tested before any Jackson change), then 2.0.x → 3.0.x (same API, Jackson 3). API mapping (from the project's `doc/migration-2.0.0.md`): `JsonSchemaFactory` → `SchemaRegistry` (`SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_7)`), `JsonSchema` → `Schema`, `ValidationMessage` → `Error` (`getMessage()` no longer contains the instance location; `validate` returns a `List`), `SpecVersion.VersionFlag` → `SpecificationVersion`, `SchemaValidatorsConfig` → `SchemaRegistryConfig` (+ `WalkConfig`, `ExecutionConfig`) |
 | flipkart `zjsonpatch` **0.4.14** | core, databind 2.14 | prov-template | ✅ **moved to `io.github.vishwakarma:zjsonpatch` 0.6.x** (0.6.4): `Jackson3JsonPatch`/`Jackson3JsonDiff`, Jackson an optional dependency | change coordinates, use the Jackson3* classes, declare databind 3 |
-| swagger-core **2.2.41** (`swagger-jaxrs2-jakarta`, `-core-jakarta`, `-models-jakarta`) | databind, yaml, jsr310, jakarta-rs-json-provider 2.19.2 | 13 service modules (prov-service-*, service-*) | ✅ **swagger-core 3.0.0** (released 2026-10-28): Jackson 3 only, Java 17, **`swagger-jaxrs2-jakarta` renamed `swagger-rest`**. 2.2.x stays on Jackson 2 | upgrade to 3.0.x. Very new, so check maturity; can be done last (services) |
+| swagger-core **2.2.41** (`swagger-jaxrs2-jakarta`, `-core-jakarta`, `-models-jakarta`) | databind, yaml, jsr310, jakarta-rs-json-provider 2.19.2 | 13 service modules (prov-service-*, service-*) | ✅ **swagger-core 3.0.0** (released 2026-10-28): Jackson 3 only, Java 17, **`swagger-jaxrs2-jakarta` renamed `swagger-rest`**. 2.2.x stays on Jackson 2 | **done in C8**: 3.0.0. Only change for ProvToolbox: package `io.swagger.v3.jaxrs2` → `io.swagger.v3.rest` (`OpenApiResource`, `AcceptHeaderOpenApiResource`); annotations unchanged. It is compiled against JAX-RS 4.0 / Servlet 6.1 (`provided`), but runs on RESTEasy 6.2 (JAX-RS 3.1) + Jetty 11: verified, OpenAPI JSON/YAML byte-identical to swagger 2.2.41's. It brings the Jackson 3 `jackson-jakarta-rs-json-provider` (auto-registered, see 5b #26) |
 | `mongojack` **5.0.3** | databind, jsr310 2.16.1 | prov-storage-mongodb + 9 service modules | ✅ **6.0.0**: Jackson 3, Java 17, **MongoDB driver 5.x only** | upgrade to 6.0.x (+ Mongo driver 5, check `MIGRATING.md`) |
 | pac4j **5.7.9** (`pac4j-http`, `-oauth`, `-oidc`) | databind 2.14 | prov-service-security-pac, service-metrics, service-templates, service-templates-core | ❌ **no Jackson 3 release.** pac4j master (6.6.1-SNAPSHOT) uses Jackson **2.22.4**. pac4j 6 needs JDK 17 + jakartaee-pac4j 8 | **Jackson 2 island** (decision D3); upgrade pac4j 5.7 → 6.x separately |
 | scribejava **8.3.3** (via pac4j-oauth) | databind 2.14 | same 4 modules | ❌ Jackson 2 (8.3.3 is the latest release, from 2022; the project looks inactive) | goes with pac4j |
@@ -230,7 +233,7 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 | C5 | prov-template (+ YAML, zjsonpatch), prov-template-compiler (+ generated code, generated poms), template library, archetype | **DONE** (archetype's service sources: with C8): prov-template migrated (tests 31 run, same 2 timezone failures as baseline; outputs identical; json-schema-validator 3.0.8; zjsonpatch → `io.github.vishwakarma:zjsonpatch` 0.6.4 `Jackson3JsonDiff` in tests). prov-template-compiler migrated (tests 158 run, same 1 error as baseline: nested `templates_cli` build needs the jsweet candy; outputs identical). The compiler's **generated** code now uses `JsonMapper.builderWithJackson2Defaults().build()` (`CompilerClientTest`) and generated poms depend on `tools.jackson.core:jackson-databind` 3.2.4 (`CompilerMaven`). **To verify on the maintainer's machine: the generated `templates_cli` project builds and its tests pass** (not possible in the cloud). Dependants migrated (compile): prov-interop (`InteropFramework`; no Jackson 2 left, module-info only `tools.jackson.databind`), prov-service-translation (`TemplateService`, `ActionExpand`), prov-storage-mongodb test, prov-template-library tests, prov-toolbox-plugin (`WebjarPreparer`). Comparison build: see progress log |
 | C6 | prov-interop, storage (api, filesystem, redis, mongodb + mongojack 6) | **DONE**: migrated during C2/C5; C6 removed the last Jackson 2 (prov-storage-mongodb's test-scope json-schema-validator 1.5.9 → 3.x). `dependency:tree` of the 4 storage modules: no Jackson 2 |
 | C7 | validation, nf, signature, summarisation, typemap, explanations (nlg-*), query, provman | **DONE** (full comparison build: tests identical to the baseline except the PROV-XML removals; outputs as after C5, same 62 files of known noise; same reactor failures, all environmental): prov-validation (C2), **prov-nf** (JUnit 1, ScalaTest 94, 280 outputs identical), **prov-summarisation** (32/32) + **prov-typemap** (565 outputs identical), **provman** (2/2), **nlg-wrapper**, **nlg-spec-transformer**, **prov-query** (11/11), **prov-explanations** (Scala renames; its tests need the lexicon, aborted as in the baseline); prov-signature has no Jackson code. `TypePropagator.om` is now an immutable Jackson 3 mapper with the Scala module; callers that enabled `INDENT_OUTPUT` on it now use `writerWithDefaultPrettyPrinter()`. **Both bridges removed**: prov-service-summary (back to `ndStorage.serializeObjectToStore(TypePropagator.om(), …)`) and prov-service-xplain (`PhraseEnvironmentReader` adds the PROV deserialisers to `SpecLoader.mapper().rebuild()`, one mapper reads the whole phrase environment again; smoke-tested: Scala `context` map, PROV document with label, attribute and namespace) |
-| C8 | Services (prov-service-*, service-*): JAX-RS provider 3.x, swagger-core 3 | TODO |
+| C8 | Services (prov-service-*, service-*): JAX-RS provider 3.x, swagger-core 3 | **DONE** (2026-11-03): all service Java code on Jackson 3 (prov-service-core, -security-pac, service-translator, service-templates-core, service-metrics, service-xplain, service-summary, service-signature test); swagger-core 2.2.41 → **3.0.0** (`swagger-rest`, 5b #27); the JAX-RS JSON provider is the Jackson 3 one and gets a Jackson-2-defaults mapper from the new `JsonMapperResolver` in prov-service-core (5b #26); javax `jackson-jaxrs-json-provider` (inert) replaced by `jackson-databind` 3. Fixes 5b #28–#30. Only Jackson 2 left in the services: pac4j's (prov-service-security-pac and its users) and Spring Boot's (service-templates tests: `ServiceInvoker`, `PleadWorkflowIT` use Spring WebFlux's `Jackson2JsonEncoder`), see C9. **Verified at runtime** (service-translator war in a standalone Jetty 11, section 6): 166 ITs, same results before/after (164 pass; `InstantiaterIT`, `ValidateIT` fail in both, no `Location` with the in-memory storage); HTTP responses of 14 endpoints (OpenAPI JSON/YAML, configuration, documents in 3 formats, metrics, validation report, seeded random document) identical before/after. Not run in the cloud: the other services' ITs (PostgreSQL, lexicon, MongoDB) |
 | C9 | Remaining Jackson 2 islands (pac4j, Spring Boot) decided per D3 | TODO |
 | D | Clean-up: remove Jackson 2 properties/dependencies, check `mvn dependency:tree` has no `com.fasterxml.jackson.core:jackson-databind`, regenerate DEPENDENCIES.md / license trees | TODO |
 
@@ -389,6 +392,25 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
     `module.setDefaultUseWrapper(false)` → `XmlMapper.builderWithJackson2Defaults().defaultUseWrapper(false)`;
     `setAnnotationIntrospector(pair)` → `.annotationIntrospector(pair)` on the builder;
     `new JakartaXmlBindAnnotationIntrospector(TypeFactory.defaultInstance())` → `new JakartaXmlBindAnnotationIntrospector()`.
+26. **JAX-RS JSON provider defaults**: the Jackson 3 `JacksonJsonProvider` (auto-registered from
+    `META-INF/services`, it comes with swagger-rest; service-xplain and service-summary also add one)
+    builds its mapper with **Jackson 3 defaults** unless a `ContextResolver<JsonMapper>` is
+    registered (the Jackson 2 provider used Jackson 2 defaults). prov-service-core's
+    `rest.JsonMapperResolver` returns `JsonMapper.builderWithJackson2Defaults().build()`; every
+    `Application` registers it as a singleton (D2).
+27. **swagger-core 3**: artifact `swagger-jaxrs2-jakarta` → `swagger-rest`, package
+    `io.swagger.v3.jaxrs2` → `io.swagger.v3.rest`.
+28. **`catch (IOException e)` around `readValue(File|InputStream|String)`**: Jackson 3 throws only
+    unchecked `JacksonException` (I/O errors are wrapped in `JacksonIOException`), so the catch no
+    longer compiles ("never thrown"). Use `catch (JacksonException e)`; behaviour is the same.
+29. **Mapper shared and mutated after construction** (service-templates-core: `TemplateLogic`'s
+    constructor called `om.setSerializationInclusion(NON_NULL)` on `TemplateService`'s mapper).
+    Jackson 3: `TemplateService` builds its mapper with
+    `.changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(NON_NULL))`, and `TemplateLogic`
+    uses `om.rebuild()...build()` with the same setting. `JavaTimeModule` is not needed (java.time is
+    built into databind 3).
+30. `mapper.writer(PrettyPrinter)` → `mapper.writer().with(PrettyPrinter)`; JsonNode `asText()` on a
+    number → `asString()` (returns the number's text, like Jackson 2).
 15. **Whitespace text in XML**: Jackson 3's XML parser reports the whitespace-only content of an
     element without children (an empty pretty-printed `<document>`) as a property `""`
     (`UnrecognizedPropertyException`). No `XmlReadFeature` controls it; prov-jsonld-xml's
@@ -426,10 +448,16 @@ These fail in the baseline for environmental reasons, so they are **not** regres
   and with `-fae` everything downstream would be skipped. Do **not** exclude tests with
   `-Dtest='!pattern'`: it replaces surefire's default includes, so `module-info` and helper
   classes get run as tests and most counts become 0.
-- **Integration tests (`*IT`, failsafe) are not run in the cloud** (`-DskipITs`). The services'
+- **Integration tests (`*IT`, failsafe) are not run in the full build** (`-DskipITs`). The services'
   ITs (e.g. service-translator `TranslateIT`, `DateIT`) need the service running with its
-  storage (MongoDB), and in the cloud each call times out. They must be run on the
-  maintainer's machine, before and after.
+  storage (MongoDB by default). In the cloud, the jetty-maven-plugin cannot start the webapp
+  (`NoClassDefFoundError: InteropMediaType` while Jetty resolves the servlet container
+  initialisers: the plugin's class realm; unrelated to Jackson). **Workaround used in C8**: run the
+  war in a standalone Jetty 11.0.26 (`jetty-home`, modules `server,http,deploy,annotations,webapp,jsp`)
+  on port 7071 at `/service`, with `-DPROV_STORAGE_CONFIG=<fs-memory storage json>` and
+  `-DRESOURCES_HOST=http://localhost:7071/service/provapi/resources`, then
+  `mvn verify -Djetty.skip=true -pl modules-services/service-translator` with the pom's
+  `PROV_STORAGE_CONFIG` pointing to `storage-configuration-fs-memory.json` (local edit, not committed).
 - PostgreSQL (service-templates), GraalVM (prov-toolbox-js-embedding) and docker
   (docker-* modules) are not available in the cloud container either.
 - prov-jsonld's `schema.check` (`make schema.test`) downloads the published schema from
@@ -456,6 +484,7 @@ These fail in the baseline for environmental reasons, so they are **not** regres
 |---|---|---|
 | 2026-11-03 | A1 | Branch `jackson3-port` created off `scala3-port` (66ce97c). Inventory done (section 2). |
 | 2026-11-03 | baseline build | `mvn install -DskipTests` of the whole Scala-3-only reactor: all code modules OK (see section 6 for the packaging modules that cannot be built in the cloud). |
+| 2026-11-03 | C8 done | Services migrated; swagger-core 3.0.0; `JsonMapperResolver` keeps the JAX-RS provider on Jackson 2 defaults. service-translator run in a standalone Jetty: 166 ITs and 14 HTTP responses identical before/after. All 14 service modules compile; Jackson 2 left only from pac4j and Spring Boot (C9). |
 | 2026-11-03 | C7 done | nlg-wrapper, nlg-spec-transformer, prov-query, prov-explanations migrated; prov-service-xplain bridge removed. Full comparison build: tests identical to the baseline (except PROV-XML removals), outputs as after C5 (62 files of known noise), same reactor failures (environmental). |
 | 2026-11-03 | C7 (nf, summarisation, typemap, provman) | Migrated; tests and outputs identical to baseline; summary bridge removed. |
 | 2026-11-03 | C6 done | Storage modules checked: only prov-storage-mongodb's test-scope json-schema-validator was still Jackson 2 (upgraded). No Jackson 2 in their dependency trees. |

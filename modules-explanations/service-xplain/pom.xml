@@ -78,9 +78,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+            <groupId>tools.jackson.jakarta.rs</groupId>
             <artifactId>jackson-jakarta-rs-json-provider</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson3.version}</version>
         </dependency>
 
         <dependency>
@@ -96,7 +96,7 @@
 
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-jaxrs2-jakarta</artifactId>
+            <artifactId>swagger-rest</artifactId> <!-- Jackson 3: swagger-core 3 (was swagger-jaxrs2-jakarta) -->
             <version>${swagger.version}</version>
         </dependency>
 

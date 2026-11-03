@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.metrics;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.fasterxml.jackson.core.StreamReadConstraints.DEFAULT_MAX_NUM_LEN;
+import static tools.jackson.core.StreamReadConstraints.DEFAULT_MAX_NUM_LEN;
 
 public class MetricsPostService extends PostService {
 
@@ -114,7 +115,7 @@ public class MetricsPostService extends PostService {
                 return utils.composeResponseSeeOther("../rating.html?m=" + location).build();
 
 
-                //StreamingOutput promise= out -> new ObjectMapper().writeValue(out, o);
+                //StreamingOutput promise= out -> JsonMapper.builderWithJackson2Defaults().build().writeValue(out, o);
 
 
                 //return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();

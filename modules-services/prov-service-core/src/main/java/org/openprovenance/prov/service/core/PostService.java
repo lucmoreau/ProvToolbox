@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.core;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
@@ -263,7 +264,7 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
                             content = {
                                     @Content(mediaType = MEDIA_APPLICATION_JSON)})})
     public Response getConfiguration(@Context HttpHeaders headers) {
-        StreamingOutput promise= out -> new ObjectMapper().writeValue(out, configuration);
+        StreamingOutput promise= out -> JsonMapper.builderWithJackson2Defaults().build().writeValue(out, configuration);
 
         return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_APPLICATION_JSON).build();
     }

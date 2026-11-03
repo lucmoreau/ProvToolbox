@@ -77,7 +77,7 @@
         <dependency>
             <groupId>com.networknt</groupId>
             <artifactId>json-schema-validator</artifactId>
-            <version>1.5.9</version>
+            <version>${json-schema-validator.version}</version> <!-- 3.x: Jackson 3 -->
             <scope>test</scope>
         </dependency>
         <dependency>

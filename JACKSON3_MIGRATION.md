@@ -189,10 +189,10 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 | A1 | Inventory of direct Jackson use (poms, sources, module-info, generators) | DONE |
 | A2 | Dependency trees of the whole reactor: which third-party libs pull Jackson 2 | DONE (section 3, 3.1) |
 | A3 | Check each library's Jackson 3 release (versions, API changes) | DONE (section 3). Library-specific API migration notes are written when each module is ported |
-| B0 | Root pom: compiler `release`/`source` 15 → 17 (D5); full build + tests to check nothing else breaks | **done in pom, verification running**: the baseline run (B2) uses release 17. All modules built so far compile, and prov-model 613, prov-jsonld 660, prov-jsonld-xml 147 tests pass |
-| B1 | Root pom: add `tools.jackson:jackson-bom` (dependencyManagement) and a `jackson3.version` property; keep the Jackson 2 properties while modules migrate | **done in pom, NOT YET BUILT**: `jackson3.version=3.2.4`, BOM imported. The BOM manages the shared `jackson-annotations` at 2.22, so `jackson.annotation.version` moved 2.21 → 2.22 for consistency. Next: full build + tests, compared with the B2 baseline (this also shows whether the test results are stable from run to run) |
+| B0 | Root pom: compiler `release`/`source` 15 → 17 (D5); full build + tests to check nothing else breaks | **DONE**: the whole reactor compiles with release 17; test results as in 5c |
+| B1 | Root pom: add `tools.jackson:jackson-bom` (dependencyManagement) and a `jackson3.version` property; keep the Jackson 2 properties while modules migrate | **DONE**: `jackson3.version=3.2.4`, BOM imported. The BOM manages the shared `jackson-annotations` at 2.22, so `jackson.annotation.version` moved 2.21 → 2.22. Verified: full test run **identical** to the baseline (`test-summary.py --diff`), and test outputs identical apart from known noise (see 5a step 5) |
 | B2 | Baseline: record current test results (`jackson3-migration/test-summary.py` over the build logs → `jackson3-migration/baseline-tests.tsv`) and sample outputs for later comparison | **DONE (cloud)**: `jackson3-migration/baseline-tests.tsv`, 31 modules with tests (unit tests only, `-DskipITs`; prov-storage-mongodb not run). Pre-existing failures listed in 5c. Caveat: the baseline was run in segments. Modules from service-translator onwards (last segment, `-rf :service-translator`) already ran with the B1 root pom (annotations 2.22 + BOM); the others ran before B1. Snapshot of 5,793 files written by tests under `target/` (json/jsonld/provn/xml/dot/svg/...): kept outside the repo; regenerate by running the baseline command on commit 3606168 |
-| C1 | prov-model (annotations only: check, module-info) | TODO |
+| C1 | prov-model (annotations only: check, module-info) | **DONE, no change needed**: only `com.fasterxml.jackson.annotation` (2 files), which Jackson 3 keeps; `module-info` `requires com.fasterxml.jackson.annotation` stays |
 | C2 | prov-jsonld (+ json-schema-validator 3.x) | TODO |
 | C3 | prov-jsonld-xml | TODO |
 | C4 | prov-model-scala (Scala), prov-n, prov-scala-misc | TODO |
@@ -228,7 +228,13 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 5. **Build and test** the module and its dependants. Compare with the baseline:
    `python3 jackson3-migration/test-summary.py <log> > after.tsv` then
    `python3 jackson3-migration/test-summary.py --diff jackson3-migration/baseline-tests.tsv after.tsv`.
-   Diff the files the tests write (`target/`) against the B2 snapshot.
+   Diff the files the tests write (`target/`) against the B2 snapshot with
+   `python3 jackson3-migration/compare-outputs.py <snapshot-dir> <file-list>` (it ignores
+   run-to-run noise: timestamps, UUIDs, order of JSON arrays/lines).
+   **Known noise** that differs even between two identical runs: prov-generator's random
+   graphs (51 files), `prov-jsonld/target/agent8.via.jsonld`,
+   `provman/target/q.responsibility5.json`, and `provconvert.txt`/`provmanagement.txt` (man-page
+   text from the OS). Measured by B1 against B2: 56 of 5,793 files, all noise.
 6. Check that the module no longer has Jackson 2 on its classpath (unless it is a D3 island):
    `mvn -B dependency:tree -pl <module> | grep -E "com.fasterxml.jackson.(core:jackson-(core|databind)|dataformat|module|datatype|jaxrs|jakarta)"`.
 7. Update the status table and progress log, commit, push.
@@ -292,6 +298,7 @@ These fail in the baseline for environmental reasons, so they are **not** regres
 |---|---|---|
 | 2026-11-03 | A1 | Branch `jackson3-port` created off `scala3-port` (66ce97c). Inventory done (section 2). |
 | 2026-11-03 | baseline build | `mvn install -DskipTests` of the whole Scala-3-only reactor: all code modules OK (see section 6 for the packaging modules that cannot be built in the cloud). |
+| 2026-11-03 | B1 verified, C1 | B1 full test run: identical to the baseline. Outputs compared with the new `jackson3-migration/compare-outputs.py`: identical except known noise. C1 (prov-model) needs no change. |
 | 2026-11-03 | B2 | Baseline recorded (`jackson3-migration/baseline-tests.tsv`, section 5c). It took several attempts: w3.org blocked (use `-fn`), MongoDB timeouts (exclude the module), service ITs (`-DskipITs`), GraalVM. B1 verification build started with the same settings. |
 | 2026-11-03 | B0, B1, B2 (in progress) | Root pom: release 17 (B0); Jackson 3 BOM + annotations 2.22 (B1, not built yet). Baseline test run started (prov-storage-mongodb skipped, no MongoDB; see section 6). Added `jackson3-migration/test-summary.py`. Found that json-schema-validator spreads from prov-template (not prov-jsonld, where it is test scope only). Added D6 (ProvToolbox public API) and the per-module recipe (5a). |
 | 2026-11-03 | A2, A3 | Verbose dependency trees of 72 modules. Third-party Jackson users: json-schema-validator, zjsonpatch, swagger-core, mongojack, pac4j (+scribejava), Spring Boot 2.7. Jackson 3 status checked for each (section 3). Verified in the jar: databind 3.2.4 has `JsonMapper.builderWithJackson2Defaults()` and `MapperBuilder.configureForJackson2()` (D2 is feasible). Found D5 (JDK 17). |

@@ -45,7 +45,7 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
 
 
         if (jp.isExpectedStartArrayToken()) {
-            Object[] objects=jp.readValueAs(Object[].class);
+            Object[] objects=deserializationContext.readValue(jp, Object[].class);
             for (Object o: objects) {
                 processContextObject(ns, o);
             }

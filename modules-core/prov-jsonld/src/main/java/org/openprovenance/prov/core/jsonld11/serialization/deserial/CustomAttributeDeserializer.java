@@ -38,7 +38,7 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
     @Override
     public Attribute deserialize(JsonParser jp, DeserializationContext deserializationContext) {
         if (jp.isExpectedStartObjectToken()) {
-            final AttributeTypedValue valueAndType=jp.readValueAs(AttributeTypedValue.class);
+            final AttributeTypedValue valueAndType=deserializationContext.readValue(jp, AttributeTypedValue.class);
             final QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
             return deserialize_TypedValue(elementName,valueAndType,deserializationContext);
         } else {

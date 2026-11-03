@@ -18,7 +18,7 @@ public class CustomBundleDeserializer extends ValueDeserializer<Bundle> {
     @Override
     public Bundle deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
         Namespace ns= getAttributes().get().get(JSONLD_CONTEXT_KEY_NAMESPACE);
-        MisnamedBundle mbun= jsonParser.readValueAs(MisnamedBundle.class);
+        MisnamedBundle mbun= deserializationContext.readValue(jsonParser, MisnamedBundle.class);
         mbun.getNamespace().setParent(ns);
         return (Bundle) mbun.toBundle(pf);
     }

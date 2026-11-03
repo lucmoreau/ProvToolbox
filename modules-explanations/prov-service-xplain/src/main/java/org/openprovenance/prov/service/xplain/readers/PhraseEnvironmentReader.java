@@ -1,13 +1,10 @@
 package org.openprovenance.prov.service.xplain.readers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JavaType;
+import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.cfg.MapperBuilder;
-import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.type.ArrayType;
-import org.openprovenance.prov.vanilla.Document;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
@@ -31,21 +28,15 @@ public class PhraseEnvironmentReader implements MessageBodyReader<PhraseEnvironm
 
     static final Logger logger = LogManager.getLogger(PhraseEnvironmentReader.class);
 
-    /* TEMPORARY BRIDGE (JACKSON3_MIGRATION.md, step C2): the PROV document is read with the
-     * Jackson 3 PROV deserialiser, the rest of the phrase environment (Scala types of
-     * nlg-spec-transformer) with SpecLoader's Jackson 2 mapper. Before, the PROV deserialisers were
-     * added to SpecLoader's (shared) mapper, which cannot work while prov-jsonld is on Jackson 3 and
-     * nlg-spec-transformer on Jackson 2. Remove when nlg-spec-transformer is on Jackson 3 (step C7). */
     ProvDeserialiser deserialiser;
     private final ObjectMapper objectMapper;
 
     public PhraseEnvironmentReader() {
-
-
-        this.objectMapper = SpecLoader.mapper();
-        this.deserialiser=new CustomDeserialiser(JsonMapper.builderWithJackson2Defaults());
-
-
+        /* Jackson 3: mappers are immutable. With Jackson 2, the PROV deserialisers were added to
+         * SpecLoader's shared mapper; now they are added to a copy of it (rebuild()), whose mapper
+         * reads the whole phrase environment, the PROV document included. */
+        this.deserialiser=new CustomDeserialiser(SpecLoader.mapper().rebuild());
+        this.objectMapper = deserialiser.getMapper();
     }
     
     static class CustomDeserialiser extends ProvDeserialiser {
@@ -83,16 +74,8 @@ public class PhraseEnvironmentReader implements MessageBodyReader<PhraseEnvironm
     public PhraseEnvironment readFrom(Class<PhraseEnvironment> aClass, Type type, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> multivaluedMap, InputStream inputStream) throws IOException, WebApplicationException {
 
         try {
-            // see the TEMPORARY BRIDGE note above
-            JsonNode tree = objectMapper.readTree(inputStream);
-            JsonNode document = tree instanceof ObjectNode ? ((ObjectNode) tree).remove("document") : null;
-            PhraseEnvironment environment = objectMapper.treeToValue(tree, PhraseEnvironment.class);
-            if (document != null && !document.isNull()) {
-                byte[] json = objectMapper.writeValueAsBytes(document);
-                environment.setDocument((Document) deserialiser.deserialiseDocument(new java.io.ByteArrayInputStream(json)));
-            }
-            return environment;
-        } catch (com.fasterxml.jackson.databind.JsonMappingException re) {
+            return objectMapper.readValue(inputStream, PhraseEnvironment.class);
+        } catch (JacksonException re) {
             logger.throwing(re);
             throw re;
         }

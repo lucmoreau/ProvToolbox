@@ -1,19 +1,19 @@
 package org.openprovenance.prov.scala.nlgspec_transformer
 
-import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer
-import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
+import tools.jackson.core.JsonGenerator
+import tools.jackson.databind.jsontype.TypeSerializer
+import tools.jackson.databind.{ValueSerializer, SerializationContext}
 
 import org.openprovenance.prov.scala.nlgspec_transformer.defs.StringPhrase
 
 
 
-class CustomStringPhraseSerializer extends JsonSerializer[StringPhrase]{
-  override def serialize(s: StringPhrase, jsonGenerator: JsonGenerator, serializerProvider: SerializerProvider): Unit = {
+class CustomStringPhraseSerializer extends ValueSerializer[StringPhrase]{
+  override def serialize(s: StringPhrase, jsonGenerator: JsonGenerator, serializerProvider: SerializationContext): Unit = {
     jsonGenerator.writeString(s.value)
   }
 
-  override def serializeWithType(s: StringPhrase, jsonGenerator: JsonGenerator, serializers: SerializerProvider, typeSer: TypeSerializer): Unit = {
+  override def serializeWithType(s: StringPhrase, jsonGenerator: JsonGenerator, serializers: SerializationContext, typeSer: TypeSerializer): Unit = {
     //super.serializeWithType(value, gen, serializers, typeSer)
     jsonGenerator.writeString(s.value)
   }

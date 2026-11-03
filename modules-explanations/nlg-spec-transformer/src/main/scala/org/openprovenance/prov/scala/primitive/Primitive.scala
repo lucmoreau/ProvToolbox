@@ -1,6 +1,6 @@
 package org.openprovenance.prov.scala.primitive
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.ObjectMapper
 import nlg.wrapper.Constants
 import org.openprovenance.prov.model
 import org.openprovenance.prov.scala.immutable.{ProvFactory, _}

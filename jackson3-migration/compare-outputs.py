@@ -7,9 +7,9 @@ Usage: python3 jackson3-migration/compare-outputs.py SNAPSHOT_DIR FILE_LIST [--s
 
 FILE_LIST holds the relative paths (from the repository root) of the files in the snapshot.
 By default the comparison ignores run-to-run noise: ISO date-times (tests use "now") and
-UUIDs are replaced by placeholders. JSON files are compared after parsing, with arrays
-sorted; other files are compared as a sorted multiset of lines (sets of attributes are
-serialised in hash order, which depends on those values). --strict compares bytes.
+UUIDs, byte-array identity hashes ([B@...) and DOT blank-node ids are replaced by placeholders. JSON files are compared after parsing, with arrays
+sorted; other files are compared as a sorted multiset of tokens split at commas, ';', ']' and line ends
+(sets of attributes are serialised in hash order, which depends on those values). --strict compares bytes.
 Note: files that are random by design (prov-generator's graphs) always differ.
 Prints the files that still differ and a per-module count.
 """
@@ -20,10 +20,13 @@ import sys
 
 TS = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?')
 UUID = re.compile(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}')
+# Java identity hash of a byte array (prov-n writes xsd:base64Binary values as byte[].toString())
+BYTES = re.compile(r'\[B@[0-9a-f]+')
+BLANK = re.compile(r'\bbn[0-9]+\b')  # blank node ids in DOT files
 
 
 def scrub(text):
-    return UUID.sub('<UUID>', TS.sub('<TIMESTAMP>', text))
+    return BLANK.sub('bn', BYTES.sub('[B@', UUID.sub('<UUID>', TS.sub('<TIMESTAMP>', text))))
 
 
 def canon(x):
@@ -44,7 +47,8 @@ def norm(data):
         return json.dumps(canon(json.loads(text)), sort_keys=True)
     except ValueError:
         pass
-    return sorted(l.strip().rstrip(',') for l in scrub(text).splitlines() if l.strip())
+    # tokens split at commas and line ends: attribute order within a PROV-N statement is hash order
+    return sorted(t.strip() for t in re.split(r'[,\n;\]]', scrub(text)) if t.strip())
 
 
 def main():

@@ -11,7 +11,16 @@ to resume from this file alone.
 
 *(updated as work progresses, see the progress log at the end)*
 
-Phase A (analysis) in progress.
+**Phase A (analysis) is done.** The answer to "do all libraries support Jackson 3?" is
+**no**: pac4j (+ scribejava) has no Jackson 3 release, and Spring Boot 2.7 needs a
+major upgrade (to 4.x) first. All the others have one (json-schema-validator 3.x,
+zjsonpatch 0.6 under new coordinates, swagger-core 3.0, mongojack 6), but usually as a new
+major version with its own API changes. See section 3.
+
+**Waiting on the maintainer:** decisions D1–D5 in section 4 (proposals given). Until they
+are confirmed, only the low-risk preparatory steps (B0, B1, B2) are done.
+
+**Next:** B0 (JDK 17), B1 (BOM), B2 (baseline), then C1...
 
 ## 1. What changes in Jackson 3 (summary of what matters here)
 
@@ -97,28 +106,49 @@ generator/parser renames ~32 files; `TypeReference` 7/31; XML (`XmlMapper`,
 
 ## 3. Third-party libraries and Jackson 3 support (the key question)
 
-Libraries that use Jackson themselves have to be on a Jackson 3 version, or Jackson 2 stays on
-the classpath next to Jackson 3. That's allowed (different packages, so no clash), but the
-two don't share configuration, modules, or annotations other than `com.fasterxml.jackson.annotation`.
+**Short answer: not all of them.** Every third-party library that uses Jackson has a
+Jackson 3 version **except pac4j** (and scribejava, which pac4j pulls in). Spring Boot
+only supports Jackson 3 from 4.x, and this project is on 2.7.
 
-| Library (current version) | Used in | Uses Jackson? | Jackson 3 support | Action |
+The list below is complete for the whole reactor: it comes from
+`mvn dependency:tree -Dverbose=true` over all 72 resolvable modules (A2). It shows every
+non-ProvToolbox artifact that declares a Jackson dependency.
+
+| Library (current) | Brings (Jackson 2) | ProvToolbox modules affected | Jackson 3 support | Action |
 |---|---|---|---|---|
-| networknt `json-schema-validator` 1.5.9 | prov-jsonld, prov-storage-mongodb, prov-template, prov-template-compiler | yes (Jackson 2 `JsonNode` API) | ✅ **3.x line** (3.0.8): Java 17 + Jackson 3. 2.x line = Jackson 2. Major API change from 1.x | upgrade 1.5.9 → 3.x (API migration) |
-| flipkart `zjsonpatch` 0.4.14 | prov-template | yes | ✅ since 0.6.x: separate Jackson 3 API set; Jackson becomes an optional dependency | upgrade, use the Jackson 3 API, declare databind |
-| swagger-core `swagger-jaxrs2-jakarta` 2.2.41 | 13 service modules | yes | ✅ **swagger-core 3.0.0** (released 2026-10-28): Jackson 3 only, Java 17, artifact renamed **`swagger-rest`**. 2.2.x stays on Jackson 2 | upgrade to 3.0.x (very new: check maturity) |
-| `mongojack` 5.0.3 | prov-storage-mongodb | yes (core of the library) | ✅ **6.x**: Jackson 3, Java 17, Mongo driver 5.x only | upgrade to 6.x (+ Mongo driver 5) |
-| pac4j 5.7.9 | prov-service-security-pac | yes (pac4j-core) | ❓ no Jackson 3 release found: pac4j 6.3.4 is on Jackson 2.21. pac4j 6 needs JDK 17 + jakartaee-pac4j 8 | **blocker candidate**: keep Jackson 2 for this module only, or wait |
-| Spring Boot 2.7.6 | service-templates, archetype | yes | ✅ Spring Boot **4.x** (Jackson 3 by default, Jackson 2 deprecated). 2.7 → 4 is a large jump (Spring 7, Jakarta) | separate sub-project; keep Jackson 2 meanwhile |
-| RESTEasy 6.2.14 | services | not in core; the JSON provider is Jackson's own `jackson-jakarta-rs-json-provider` | ✅ Jackson publishes `tools.jackson.jakarta.rs` 3.x (RESTEasy's own Jackson 3 provider is still beta, `dev.resteasy.providers`) | switch provider artifact |
-| titanium-json-ld 1.4.1 | prov-jsonld, mongodb | no (Jakarta JSON-P) | n/a | none |
-| Apache Jena 5.x | prov-template-compiler, prov-sparql-query | to check (dependency tree) | | |
-| jedis, xmlsec, SimpleNLG, graalvm, netty, quartz, log4j, commons-*, javapoet, antlr, jsweet, izpack, maven libs | various | no (log4j: optional JSON layout only) | n/a | none |
+| networknt `json-schema-validator` **1.5.9** | databind, dataformat-yaml 2.18.3 | **direct** in prov-jsonld, prov-storage-mongodb, prov-template, prov-template-compiler; **transitively in 26 modules** (via prov-jsonld) | ✅ **3.x line** (3.0.8; Java 17 + Jackson 3). Its 2.x line is still Jackson 2 | upgrade 1.5.9 → 3.0.x: **API change** (1.x → 2.x renamed `JsonSchemaFactory`/`ValidationMessage`...) plus Jackson 3 |
+| flipkart `zjsonpatch` **0.4.14** | core, databind 2.14 | prov-template | ✅ **moved to `io.github.vishwakarma:zjsonpatch` 0.6.x** (0.6.4): `Jackson3JsonPatch`/`Jackson3JsonDiff`, Jackson an optional dependency | change coordinates, use the Jackson3* classes, declare databind 3 |
+| swagger-core **2.2.41** (`swagger-jaxrs2-jakarta`, `-core-jakarta`, `-models-jakarta`) | databind, yaml, jsr310, jakarta-rs-json-provider 2.19.2 | 13 service modules (prov-service-*, service-*) | ✅ **swagger-core 3.0.0** (released 2026-10-28): Jackson 3 only, Java 17, **`swagger-jaxrs2-jakarta` renamed `swagger-rest`**. 2.2.x stays on Jackson 2 | upgrade to 3.0.x. Very new, so check maturity; can be done last (services) |
+| `mongojack` **5.0.3** | databind, jsr310 2.16.1 | prov-storage-mongodb + 9 service modules | ✅ **6.0.0**: Jackson 3, Java 17, **MongoDB driver 5.x only** | upgrade to 6.0.x (+ Mongo driver 5, check `MIGRATING.md`) |
+| pac4j **5.7.9** (`pac4j-http`, `-oauth`, `-oidc`) | databind 2.14 | prov-service-security-pac, service-metrics, service-templates, service-templates-core | ❌ **no Jackson 3 release.** pac4j master (6.6.1-SNAPSHOT) uses Jackson **2.22.4**. pac4j 6 needs JDK 17 + jakartaee-pac4j 8 | **Jackson 2 island** (decision D3); upgrade pac4j 5.7 → 6.x separately |
+| scribejava **8.3.3** (via pac4j-oauth) | databind 2.14 | same 4 modules | ❌ Jackson 2 (8.3.3 is the latest release, from 2022; the project looks inactive) | goes with pac4j |
+| Spring Boot **2.7.6** (`spring-boot-starter-json`) | databind, jdk8, jsr310, parameter-names 2.13.4 | service-templates (+ the archetype's generated `-service` project) | ✅ only in **Spring Boot 4.x** (Jackson 3 default, Jackson 2 deprecated). 2.7 → 4 is a large separate upgrade (Spring 6/7, Boot 3 → 4) | **Jackson 2 island** until Spring Boot is upgraded (D3) |
 
-*(To be confirmed and completed with `mvn dependency:tree` over the whole reactor, section 3.1.)*
+Checked and **not** using Jackson: titanium-json-ld (Jakarta JSON-P), Apache Jena 5.x,
+RESTEasy 6.2 core (JSON goes through Jackson's own JAX-RS provider), jedis, xmlsec,
+SimpleNLG/lexaccess, graalvm polyglot, netty, quartz, javapoet, antlr, jsweet, izpack,
+commons-*, Maven libraries. log4j-core's JSON layout (optional) is not used.
 
-### 3.1 Transitive Jackson 2 on the classpath (from dependency trees)
+Coexistence: Jackson 2 (`com.fasterxml.jackson.{core,databind}`) and Jackson 3
+(`tools.jackson.*`) have different packages and artifacts, so both can be on one classpath.
+They **share** `jackson-annotations` (2.20+), which works with both. A library on Jackson 2
+keeps its own `ObjectMapper` and its own Jackson 2 jars. So "Jackson 2 islands" are possible,
+but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 
-*(filled in step A2)*
+### 3.1 Jackson 2 artifacts currently on the classpaths (dependency trees, 2026-11-03)
+
+| Artifact | Versions seen | Origin |
+|---|---|---|
+| jackson-annotations | 2.21 | ProvToolbox (kept in Jackson 3) |
+| jackson-core, jackson-databind | 2.21.2 | ProvToolbox (managed) |
+| jackson-dataformat-xml | 2.21.2 | ProvToolbox |
+| jackson-dataformat-yaml | 2.18.3, 2.19.2 | json-schema-validator, swagger (ProvToolbox's own prov-template declares it too) |
+| jackson-datatype-jsr310 | 2.16.1, 2.19.2 | mongojack, swagger (built into databind 3) |
+| jackson-datatype-jdk8, jackson-module-parameter-names | 2.13.4 | Spring Boot 2.7 |
+| jackson-jakarta-rs-base / -json-provider | 2.19.2, 2.21.2 | swagger, ProvToolbox services |
+| jackson-jaxrs-base / -json-provider (javax), jackson-module-jaxb-annotations | 2.21.2 | ProvToolbox (6 poms) |
+| jackson-module-jakarta-xmlbind-annotations | 2.19.2, 2.21.2 | swagger, prov-nf |
+| jackson-module-scala_3 | 2.21.2 | ProvToolbox Scala modules |
 
 ## 4. Decisions to take (proposals; the maintainer to confirm)
 
@@ -134,6 +164,11 @@ two don't share configuration, modules, or annotations other than `com.fasterxml
 - **D3 – Libraries without Jackson 3 support** (pac4j; Spring Boot 2.7 until upgraded):
   keep Jackson 2 *only* in those modules (coexistence), and record them as "remaining
   Jackson 2" in this file.
+- **D5 – JDK 17 everywhere.** Jackson 3 jars are Java 17 class files. Java modules still
+  compile with `release 15` (root pom, maven-compiler-plugin), and javac `--release 15`
+  cannot read them. So step B0 raises the root `release`/`source` to 17. The Scala modules
+  already use 17. The JSweet candies (`release 11`) only use the shared annotations, so
+  they are not affected.
 - **D4 – Tooling.** Use OpenRewrite `UpgradeJackson_2_3` for Java modules where it helps,
   then fix by hand. Scala (6 modules) by hand / sed.
 
@@ -142,8 +177,9 @@ two don't share configuration, modules, or annotations other than `com.fasterxml
 | Step | What | Status |
 |---|---|---|
 | A1 | Inventory of direct Jackson use (poms, sources, module-info, generators) | DONE |
-| A2 | Dependency trees of the whole reactor: which third-party libs pull Jackson 2 | TODO |
-| A3 | Check each library's Jackson 3 release (versions, API changes) | partly done (section 3) |
+| A2 | Dependency trees of the whole reactor: which third-party libs pull Jackson 2 | DONE (section 3, 3.1) |
+| A3 | Check each library's Jackson 3 release (versions, API changes) | DONE (section 3). Library-specific API migration notes are written when each module is ported |
+| B0 | Root pom: compiler `release`/`source` 15 → 17 (D5); full build + tests to check nothing else breaks | TODO |
 | B1 | Root pom: add `tools.jackson:jackson-bom` (dependencyManagement) and a `jackson3.version` property; keep the Jackson 2 properties while modules migrate | TODO |
 | B2 | Baseline: record current test results and sample outputs (PROV-JSON, JSON-LD, XML, template bindings, provman outputs) for later comparison | TODO |
 | C1 | prov-model (annotations only: check, module-info) | TODO |
@@ -157,8 +193,23 @@ two don't share configuration, modules, or annotations other than `com.fasterxml
 | C9 | Remaining Jackson 2 islands (pac4j, Spring Boot) decided per D3 | TODO |
 | D | Clean-up: remove Jackson 2 properties/dependencies, check `mvn dependency:tree` has no `com.fasterxml.jackson.core:jackson-databind`, regenerate DEPENDENCIES.md / license trees | TODO |
 
-## 6. Progress log
+## 6. Build environment notes (what a fresh machine/container needs)
+
+- Tools used by the build (exec-maven-plugin checks and Makefiles): `ajv` (**ajv-cli 3.x**:
+  `npm i -g ajv-cli@3`; ajv-cli 5 rejects the draft-04 schemas), `jq`, graphviz `dot`, `curl`, `make`.
+  Without them, prov-model and prov-template-library fail. Do **not** use `-Dexec.skip=true`
+  for a full build: it also skips the template compiler runs (prov-template's
+  template-library zip, prov-template-library), and the later modules then fail.
+- The cloud container could not build: jsweet candies (`repository.jsweet.org` unreachable),
+  provconvert's izpack installer, docker-* modules (no docker), and anything needing the
+  SimpleNLG lexicon (see SCALA3_MIGRATION.md; nlg-wrapper built with
+  `-P '!missing-lexicon' -Dmaven.antrun.skip=true` against a local lexaccess stub).
+  All Java/Scala code modules compiled and installed.
+
+## 7. Progress log
 
 | Date | Step | Result / notes |
 |---|---|---|
 | 2026-11-03 | A1 | Branch `jackson3-port` created off `scala3-port` (66ce97c). Inventory done (section 2). |
+| 2026-11-03 | baseline build | `mvn install -DskipTests` of the whole Scala-3-only reactor: all code modules OK (see section 6 for the packaging modules that cannot be built in the cloud). |
+| 2026-11-03 | A2, A3 | Verbose dependency trees of 72 modules. Third-party Jackson users: json-schema-validator, zjsonpatch, swagger-core, mongojack, pac4j (+scribejava), Spring Boot 2.7. Jackson 3 status checked for each (section 3). Verified in the jar: databind 3.2.4 has `JsonMapper.builderWithJackson2Defaults()` and `MapperBuilder.configureForJackson2()` (D2 is feasible). Found D5 (JDK 17). |

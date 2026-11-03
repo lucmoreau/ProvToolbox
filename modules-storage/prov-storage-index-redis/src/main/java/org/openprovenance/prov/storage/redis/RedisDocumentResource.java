@@ -1,7 +1,7 @@
 package org.openprovenance.prov.storage.redis;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.ResourceIndex;
@@ -87,7 +87,7 @@ public class RedisDocumentResource implements DocumentResource {
         this.thrown=thrown;
     }
 
-    static public final ObjectMapper om=new ObjectMapper();
+    static public final ObjectMapper om=tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().build(); // D2
 
     Map<String, Object> extension=null;
 
@@ -103,7 +103,7 @@ public class RedisDocumentResource implements DocumentResource {
         try {
             m = om.readValue(s, Map.class);
             extension=m;
-        } catch (IOException e) {
+        } catch (JacksonException e) { // Jackson 3: unchecked, replaces IOException
             e.printStackTrace();
         }
         return m;
@@ -115,7 +115,7 @@ public class RedisDocumentResource implements DocumentResource {
             String s = null;
             try {
                 s = om.writeValueAsString(extension);
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 e.printStackTrace();
             }
             if (s != null) {

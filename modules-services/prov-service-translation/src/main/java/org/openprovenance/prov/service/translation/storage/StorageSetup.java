@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.translation.storage;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.core.xml.serialization.ProvSerialiser;
@@ -75,7 +76,7 @@ public class StorageSetup {
         ServiceShutdownListener.registerForShutdown(documentStorage::close);
         MongoNonDocumentResourceStorage nonDocumentStorage = new MongoNonDocumentResourceStorage(mongoHost, mongoDbName);
         ServiceShutdownListener.registerForShutdown(nonDocumentStorage::close);
-        MongoBindingsResourceStorage bindingsStorage = new MongoBindingsResourceStorage(mongoHost, mongoDbName, new ObjectMapper());
+        MongoBindingsResourceStorage bindingsStorage = new MongoBindingsResourceStorage(mongoHost, mongoDbName, JsonMapper.builderWithJackson2Defaults().build());
         ServiceShutdownListener.registerForShutdown(bindingsStorage::close);
         utilsConfig.storageManager=documentStorage;
         utilsConfig.nonDocumentResourceStorage=nonDocumentStorage;
@@ -91,7 +92,7 @@ public class StorageSetup {
         utilsConfig.storageManager=new DocumentResourceStorageFileSystem(factory, uploadLocation);
         ProvSerialiser serial = new ProvSerialiser();
         utilsConfig.serialiser=(OutputStream out, Object document, String mediaType, boolean formatted) -> serial.serialiseOtherObject(out, document,false, false);
-        utilsConfig.genericResourceStorageMap.put(ActionExpand.BINDINGS_KEY,new BindingsResourceStorageFileSystem(new ObjectMapper(), uploadLocation));
+        utilsConfig.genericResourceStorageMap.put(ActionExpand.BINDINGS_KEY,new BindingsResourceStorageFileSystem(JsonMapper.builderWithJackson2Defaults().build(), uploadLocation));
         return utilsConfig;
     }
 

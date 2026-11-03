@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.translation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,7 +38,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
-
 
 
 @Path("")
@@ -231,7 +231,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
         Rules rules= rulesFactory.newRules();
         Object o=rules.computeMetrics(doc, utils.getProvFactory());
 
-        StreamingOutput promise= out -> new ObjectMapper().writeValue(out, o);
+        StreamingOutput promise= out -> JsonMapper.builderWithJackson2Defaults().build().writeValue(out, o);
 
         return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
 

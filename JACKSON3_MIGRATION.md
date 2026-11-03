@@ -25,10 +25,15 @@ C1 (prov-model) needs no change.
 ProvToolbox's public APIs (prov-jsonld's serialisers, prov-storage-api, prov-template's Bindings),
 so C2 is a coordinated change across several modules, not a single module. See the C2 row
 in section 5 for what is done and what is left.
-**The reactor build is temporarily red** for: prov-storage-index-redis,
-prov-service-translation, prov-service-validation, prov-service-summary (and the modules
-after them). Each passes a Jackson 2 `ObjectMapper` to the storage API, which now takes a
-Jackson 3 one. Fixing these 4 is the next step; then run the full comparison build (section 6).
+Comparison build (2026-11-03, after the 4 modules above): test results **identical to the
+baseline for every module except provman**, and outputs identical except known noise **plus two
+differences to investigate**:
+1. **provman does not compile**: `UtilsXplain.exportToJson` passes a Jackson 2 Scala mapper to
+   prov-jsonld's `ProvSerialiser`. Fix: build it from a Jackson 3 builder with
+   `tools.jackson.module:jackson-module-scala_3` (dependency to add; the Jackson 3 BOM only manages
+   the `_2.1x` Scala modules, so give the version explicitly, = `jackson3.version`).
+2. **29 prov-n output files and 1 prov-toolbox-plugin file differ** (beyond the known noise): not
+   analysed yet.
 
 ## 1. What changes in Jackson 3 (summary of what matters here)
 
@@ -223,7 +228,10 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 | prov-storage-mongodb | **migrated**, **mongojack 5.0.3 → 6.0.0** (MongoDB driver 5.6.2); `MongoJackModule.configure(mapper)` replaces `registerModule`; test still reads `Bindings` with Jackson 2 | compiles; **tests need MongoDB** (not run) |
 | prov-service-xplain | **temporary bridge** in `PhraseEnvironmentReader`: PROV document read with Jackson 3, the rest with nlg-spec-transformer's Jackson 2 Scala mapper (remove in C7). Behaviour change: the PROV deserialisers are no longer added to the *shared* `SpecLoader.mapper()` (check with the xplain ITs) | compiles |
 | service-translator, service-metrics, service-templates (test `ValidationReportMessageBodyReader`), archetype copy | mix-in added on `mapper.rebuild()` | compile |
-| prov-storage-index-redis, prov-service-translation, prov-service-validation, prov-service-summary | **TODO**: they pass Jackson 2 mappers to the storage API | — |
+| prov-storage-index-redis | **migrated** (1 file; it only had Jackson 2 transitively) | compiles |
+| prov-service-validation | **migrated** where it meets the storage API (`StorageSetup`: `MongoJackModule.configure(Mapper.getValidationReportMapper())`) | compiles |
+| prov-service-translation | **partly**: `StorageSetup`, `BindingsResourceStorageFileSystem`, `TranslationService` on Jackson 3; `TemplateService` and `ActionExpand` deliberately **left on Jackson 2** (they only deal with prov-template's `Bindings`/templates; move with C5) | compiles |
+| prov-service-summary | **temporary bridge** in `SummaryService` (`storeWithJackson2`/`loadWithJackson2`): summaries are prov-summarisation's Scala objects, written with its Jackson 2 mapper, stored as bytes (same bytes as before with the filesystem storage; the MongoDB storage does not support object storage). Remove in C7 | compiles |
 
 ## 5a. Recipe for migrating one module (repeat per module, in the order of section 5)
 

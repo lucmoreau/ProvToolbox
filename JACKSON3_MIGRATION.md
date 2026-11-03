@@ -28,10 +28,24 @@ Verification (full comparison build): **test results identical to the baseline f
 outputs identical except known noise, plus 6 provman query-result JSON files that were
 **truncated (invalid JSON) with Jackson 2** and are now complete and valid (see 5b #11).
 
-**C3: prov-jsonld-xml is retired** (commented out of the build; see the C3 row: 5 modules still
-depend on it, decision pending). **Next:** C4 (prov-model-scala's Jackson 2 copies of the JSON-LD
-serialisers: reuse `AnySetterAttributesModule`!), C5 (prov-template + compiler: removes the
-Jackson 2 left in prov-interop, prov-service-translation, prov-storage-mongodb's test).
+**C3: prov-jsonld-xml is retired** and **PROV-XML support is dropped** (step 1 done; step 2,
+the services' advertised formats, still TODO: see the C3 row).
+
+**C5 is DONE (2026-11-03).** prov-template, prov-template-compiler (incl. generated code and
+poms), template library, and the Jackson 2 left in prov-interop, prov-service-translation,
+prov-storage-mongodb's test and prov-toolbox-plugin. Comparison build: tests identical to the
+baseline (except the expected PROV-XML removals: prov-jsonld-xml, and roundtrip, whose only test
+was the XML one); outputs as after C2. **On the maintainer's machine: `modules-template` builds
+(incl. the generated `templates_cli`), and prov-storage-mongodb passes 151/151 with MongoDB**
+(after the maintainer's fix e901e85, catalogue #21).
+
+Still on Jackson 2 (files using the API): prov-model-scala 40, prov-nf 21, nlg-wrapper 19,
+prov-scala-misc 18, service-templates-core 12, nlg-spec-transformer 8, prov-service-core 7,
+service-metrics 5, prov-service-xplain 3, prov-explanations 3, and a few 1–2 file modules (services,
+benchmarks, roundtrip, provman, prov-summarisation, prov-query).
+
+**Next:** C4 (prov-model-scala's Jackson 2 copies of the JSON-LD serialisers: reuse
+`AnySetterAttributesModule`!, and Scala modules prov-scala-misc), then C7, C8, PROV-XML step 2.
 
 ## 1. What changes in Jackson 3 (summary of what matters here)
 
@@ -207,7 +221,7 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 | C2 | prov-jsonld (+ json-schema-validator 3.x), and the modules its change breaks | **DONE** — tests identical to baseline; see the detail table below |
 | C3 | prov-jsonld-xml | **RETIRED by the maintainer (2026-11-03)**: commented out of `modules-core/pom.xml`. (Its Jackson 3 migration had been done, tests 147/147, commit 0332a1a; the sources stay in the tree.) **PROV-XML support dropped** (maintainer's decision): no module depends on it any more. Step 1 (done): dependency removed from prov-interop, roundtrip, benchmarks, prov-service-core, prov-storage-mongodb; PROVX reader/writer and the PROVX format registration (`.provx`/`.xml` extensions, `application/provenance+xml`) removed from prov-interop; `RoundTripFromJavaXMLViaLegacyTest` deleted; the validation service no longer stores an (unserved) XML report, and `ServiceUtilsConfig.serialiser`/`ObjectSerialiser` (only used for it) are removed; PROV-XML removed from the `TranslateIT`/`DateIT` integration tests (incl. archetype copies). `Formats.ProvFormat.PROVX` and the media-type constants stay in prov-model. **Step 2 (TODO)**: remove PROV-XML from what the services advertise (content negotiation and `@Produces` lists, swagger `@Content`, `ALLOWABLE_*_EXTENSIONS`, `UploadForm` enums, `ServletConfig` filter, message body writers, `ServiceUtils` cases) |
 | C4 | prov-model-scala (Scala), prov-n, prov-scala-misc | TODO |
-| C5 | prov-template (+ YAML, zjsonpatch), prov-template-compiler (+ generated code, generated poms), template library, archetype | **IN PROGRESS**: prov-template migrated (tests 31 run, same 2 timezone failures as baseline; outputs identical; json-schema-validator 3.0.8; zjsonpatch → `io.github.vishwakarma:zjsonpatch` 0.6.4 `Jackson3JsonDiff` in tests). prov-template-compiler migrated (tests 158 run, same 1 error as baseline: nested `templates_cli` build needs the jsweet candy; outputs identical). The compiler's **generated** code now uses `JsonMapper.builderWithJackson2Defaults().build()` (`CompilerClientTest`) and generated poms depend on `tools.jackson.core:jackson-databind` 3.2.4 (`CompilerMaven`). **To verify on the maintainer's machine: the generated `templates_cli` project builds and its tests pass** (not possible in the cloud). Dependants migrated (compile): prov-interop (`InteropFramework`; no Jackson 2 left, module-info only `tools.jackson.databind`), prov-service-translation (`TemplateService`, `ActionExpand`), prov-storage-mongodb test, prov-template-library tests, prov-toolbox-plugin (`WebjarPreparer`). Comparison build: see progress log |
+| C5 | prov-template (+ YAML, zjsonpatch), prov-template-compiler (+ generated code, generated poms), template library, archetype | **DONE** (archetype's service sources: with C8): prov-template migrated (tests 31 run, same 2 timezone failures as baseline; outputs identical; json-schema-validator 3.0.8; zjsonpatch → `io.github.vishwakarma:zjsonpatch` 0.6.4 `Jackson3JsonDiff` in tests). prov-template-compiler migrated (tests 158 run, same 1 error as baseline: nested `templates_cli` build needs the jsweet candy; outputs identical). The compiler's **generated** code now uses `JsonMapper.builderWithJackson2Defaults().build()` (`CompilerClientTest`) and generated poms depend on `tools.jackson.core:jackson-databind` 3.2.4 (`CompilerMaven`). **To verify on the maintainer's machine: the generated `templates_cli` project builds and its tests pass** (not possible in the cloud). Dependants migrated (compile): prov-interop (`InteropFramework`; no Jackson 2 left, module-info only `tools.jackson.databind`), prov-service-translation (`TemplateService`, `ActionExpand`), prov-storage-mongodb test, prov-template-library tests, prov-toolbox-plugin (`WebjarPreparer`). Comparison build: see progress log |
 | C6 | prov-interop, storage (api, filesystem, redis, mongodb + mongojack 6) | TODO |
 | C7 | validation, nf, signature, summarisation, typemap, explanations (nlg-*), query, provman | TODO |
 | C8 | Services (prov-service-*, service-*): JAX-RS provider 3.x, swagger-core 3 | TODO |
@@ -350,6 +364,11 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
     `ObjectMapper`: replace by `JsonMapper.builderWithJackson2Defaults().build()` too (D2). It also
     produces **`tools.jackson.core.JsonProcessingException`, which does not exist**: use `JacksonException`.
     `JsonNode.fields()` (iterator) → `properties()` (a `Set`): add `.iterator()` where needed.
+21. **`p.readValueAs(type)` inside a deserializer** (maintainer's fix, e901e85): it goes through the
+    parser's own ObjectReadContext. mongojack 6 builds its BSON parser on a context that is not bound
+    to a parser, so reading from MongoDB failed with an NPE (`_readCapabilities` is null; 143 errors in
+    prov-storage-mongodb). Use **`ctxt.readValue(p, type)`** (the ongoing deserialization's context)
+    everywhere, also in the Scala modules.
 15. **Whitespace text in XML**: Jackson 3's XML parser reports the whitespace-only content of an
     element without children (an empty pretty-printed `<document>`) as a property `""`
     (`UnrecognizedPropertyException`). No `XmlReadFeature` controls it; prov-jsonld-xml's
@@ -417,6 +436,7 @@ These fail in the baseline for environmental reasons, so they are **not** regres
 |---|---|---|
 | 2026-11-03 | A1 | Branch `jackson3-port` created off `scala3-port` (66ce97c). Inventory done (section 2). |
 | 2026-11-03 | baseline build | `mvn install -DskipTests` of the whole Scala-3-only reactor: all code modules OK (see section 6 for the packaging modules that cannot be built in the cloud). |
+| 2026-11-03 | C5 done | Comparison build: tests identical to baseline (except PROV-XML removals), outputs as after C2. Maintainer: modules-template builds; prov-storage-mongodb 151/151 after e901e85 (`readValueAs` → `ctxt.readValue`, catalogue #21). |
 | 2026-11-03 | C5 (dependants) | prov-interop, prov-service-translation, mongodb test, template library tests, prov-toolbox-plugin moved off Jackson 2. Everything compiles. |
 | 2026-11-03 | C5 (compiler) | prov-template-compiler migrated (json-schema-validator 3 API in `JsonSchemaTesting`/`CompilerJsonSchema`/`CompilerDocumentation`; generated code and poms on Jackson 3). Tests as baseline (158, 1 env error). |
 | 2026-11-03 | C5 (prov-template) | prov-template migrated; found catalogue #16 (asText/textValue semantics) and fixed it in prov-jsonld too (660/660 still). Dependants of prov-template not migrated yet (build red for them). |

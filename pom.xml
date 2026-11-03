@@ -35,8 +35,8 @@
 		<module>modules-services2</module>
 		<module>modules-services-metrics</module>
 
+		<module>modules-executable-provman-scala2</module>
 		<module>modules-executable-provman</module>
-		<module>modules-executable-provman-scala3</module>
 		<module>modules-tools</module>
 
 
@@ -398,7 +398,7 @@
 		<scalatest.version>3.2.19</scalatest.version> <!-- 3.2.18 3.2.17, 3.1.4, 3.1.0-RC3 -->
 		<scalatest.mvn.plugin.version>2.2.0</scalatest.mvn.plugin.version>
 		<scala.parallel.collection.version>1.0.4</scala.parallel.collection.version>
-		<scala.binary.version>2.13</scala.binary.version>
+		<scala.binary.version>3</scala.binary.version> <!-- Scala 3 by default; the -scala2 modules set 2.13 -->
 		<!-- Scala 3 (side-by-side "-scala3" modules, see SCALA3_MIGRATION.md) -->
 		<scala3.version>3.9.0</scala3.version> <!-- latest LTS -->
 		<scala3.release>17</scala3.release> <!-- scala >= 3.8 requires jdk 17 -->

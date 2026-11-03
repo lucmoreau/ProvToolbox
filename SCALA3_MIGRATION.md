@@ -4,6 +4,22 @@ This is a living document. **Whoever works on the migration (human or Claude ses
 updates the "Progress log" and the status column after every step and commits it
 with the work.** A new session should be able to resume from this file alone.
 
+## ▶ Scala 3 is the default (2026-11-03)
+
+The modules were swapped: each Scala 3 copy `X-scala3` is now `X` (directory and artifactId),
+and each 2.13 module `X` is now `X-scala2` (directory, artifactId, `<name>` suffix ` (Scala 2)`).
+The root pom sets `scala.binary.version=3`; the `-scala2` poms set it back to `2.13` and depend
+only on `-scala2` artifacts. The Java consumers (prov-validation, roundtrip, benchmarks, the
+services) keep the plain artifactIds, so they now get the Scala 3 builds (no `_2.13` jar on
+their classpath, checked with `dependency:tree`). Full `mvn install` and the tests of all 24
+Scala modules and the consumers pass, with the same counts in each 2.13/Scala 3 pair,
+including the lexicon suites (nlg-wrapper 30, nlg-spec-transformer 24, prov-explanations 27).
+
+In the rest of this file (written before the swap), `X-scala3` means today's `X`, and `X`
+(the 2.13 module) means today's `X-scala2`. `scala3-migration/copy-module.py` assumed the
+old layout and is no longer of use. Still open: step D (scaladoc jars for the Scala 3 modules,
+needed for a Maven Central release), and deleting the `-scala2` modules when no longer needed.
+
 ## ▶ Current status and next steps (handover, 2026-11-02)
 
 **Status:** all 12 Scala modules have a Scala 3 copy (`X-scala3`) on branch `scala3-port`,
@@ -271,6 +287,7 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 | Date | Step | Result / notes |
 |---|---|---|
 | 2026-11-02 | Plan written, branch `scala3-port` created | Root pom: properties `scala3.version=3.9.0`, `scala3.release=17`. Helper script `scala3-migration/copy-module.py`. |
+| 2026-11-03 | Scala 3 is the default | `X-scala3` → `X`, `X` → `X-scala2` (12 modules), root `scala.binary.version=3`. Full build OK; tests of all 24 Scala modules and of the Java consumers pass, same counts per pair, lexicon suites included (step V done). |
 | 2026-11-02 | Handover | All 12 copies exist and compile. `mvn validate` on the whole reactor OK (85 modules). Handover section written at the top. Next: steps V, D, R. |
 | 2026-11-02 | modules-executable-provman-scala3 | Fix #16. Full `mvn install` (with antrun, appassembler, assembly): ScalaTest 2/2 in both. The generated man page `provmanagement.1` (built by running the CLI) is identical. Smoke test with `target/appassembler/bin/provmanagement` on `types/100009/100009.provn`: `translate` to provn/svg/dot, `normalize` and `summary` all give **byte-identical** output in 2.13 and Scala 3 (`translate` to `.json` fails in both: `json` is not a `Format`, pre-existing). `dependency:tree` clean. |
 | 2026-11-02 | prov-summary-explanations-scala3 | Compiled with no source change; no tests in 2.13 either. `dependency:tree` clean. |

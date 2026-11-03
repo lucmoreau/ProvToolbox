@@ -2,6 +2,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.3.0-SNAPSHOT`
 * service-templates-core, prov-template-archetype: activity of the store counted (messages posted to /statements, records written) in the activity_log table at next to no cost on the request path (in-memory counters, one batched upsert per flush), with a kind column naming what is counted so other services (chronicle) log to the same table; GET provapi/activity/summary.json and series.json; the dashboard's Activity tab (last minute, hour, day, week; refresh period a field or ?refresh=N); TPL_ACTIVITY_FLUSH_SECONDS, TPL_ACTIVITY_BUCKET_SECONDS, TPL_ACTIVITY_RETENTION_DAYS
+* Scala 3 (3.9.0 LTS) by default: prov-model-scala, prov-scala-misc, prov-nf, prov-signature, prov-summarisation, prov-typemap, nlg-wrapper, nlg-spec-transformer, prov-query, prov-explanations, prov-summary-explanations and modules-executable-provman are built with Scala 3 (`_3` libraries, Java 17 bytecode, so Java 17+ at run time); the Scala 2.13 builds stay available as `<artifactId>-scala2` (same packages: never put an artifact and its `-scala2` twin on one classpath). See SCALA3_MIGRATION.md
 * 
 
 `2.2.5`

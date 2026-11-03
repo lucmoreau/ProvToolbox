@@ -2650,7 +2650,7 @@ class Document(val statementOrBundle: Iterable[StatementOrBundle],
 }
 
 class OrderedDocument( val orderedStatementOrBundle: Seq[StatementOrBundle],
-		                   @BeanProperty override val namespace: Namespace) extends Document(orderedStatementOrBundle.toSet,namespace) {
+		                   override val namespace: Namespace) /* scala3: @BeanProperty dropped, inherited getNamespace returns this val */ extends Document(orderedStatementOrBundle.toSet,namespace) {
   def this (doc: Document) = {
     this(doc.statementOrBundle.toSeq,doc.namespace)
   }

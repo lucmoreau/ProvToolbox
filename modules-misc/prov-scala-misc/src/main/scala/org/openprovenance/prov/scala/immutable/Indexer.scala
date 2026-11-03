@@ -285,19 +285,19 @@ object Indexer {
 
 case class SizeRange (edgeMin:Int, edgeMax:Int, nodeMin:Int, nodeMax:Int) 
 
-trait Indexing {
+trait Indexing /* scala3: abstract lazy-implemented members are defs */ {
      val amap: Map[QualifiedName,Int]
-     val succ: Map[Int,Map[Int,Iterable[Relation]]]
-     val pred: Map[Int,Map[Int,Iterable[Relation]]]     
-     val nodes: Map[Int,Node]
-     val types: Map[Int,Set[QualifiedName]]
+     def succ: Map[Int,Map[Int,Iterable[Relation]]]
+     def pred: Map[Int,Map[Int,Iterable[Relation]]]     
+     def nodes: Map[Int,Node]
+     def types: Map[Int,Set[QualifiedName]]
      def document (): Document 
-     val absentNodes: Set[Int]
+     def absentNodes: Set[Int]
      
      val idsVec: Iterable[QualifiedName]
-     val idsFun: Map[Int,QualifiedName]
+     def idsFun: Map[Int,QualifiedName]
 
-    val sizeRange:SizeRange
+    def sizeRange:SizeRange
     
     def idPrinter: QualifiedName => String = (q:QualifiedName) => amap(q).toString
     

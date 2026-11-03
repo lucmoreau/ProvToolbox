@@ -42,8 +42,8 @@
 
         <dependency>
             <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scala.library.version}</version> <!-- 2.12.1 -->
+            <artifactId>scala3-library_3</artifactId>
+            <version>${scala3.version}</version> <!-- 2.12.1 -->
         </dependency>
 
         <dependency>
@@ -98,6 +98,7 @@
 
 
     <properties>
+        <scala.binary.version>3</scala.binary.version> <!-- Scala 3 module -->
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <cached.dictionary.folder>${basedir}/dictionary</cached.dictionary.folder>
         <deployed.dictionary.folder>${project.build.directory}/dictionary</deployed.dictionary.folder>
@@ -119,6 +120,14 @@
         </testResources>
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${scala3.release}</release>
+                </configuration>
+            </plugin>
+
 
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
@@ -142,6 +151,7 @@
                     </execution>
                     <execution>
                         <id>attach-javadocs</id>
+                        <phase>none</phase> <!-- scala3: doc-jar of scala-maven-plugin 4.9.x passes scala2 scaladoc options; disabled, see SCALA3_MIGRATION.md -->
                         <goals>
                             <goal>doc-jar</goal>
                         </goals>
@@ -154,9 +164,13 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <scalaVersion>${scala3.version}</scalaVersion>
                     <args>
                         <arg>-deprecation</arg>
                         <arg>-feature</arg>
+                        <arg>-no-indent</arg>
+                        <arg>-release</arg>
+                        <arg>${scala3.release}</arg>
                     </args>
                     <jvmArgs>
                         <jvmArg>-Xms64m</jvmArg>

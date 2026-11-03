@@ -119,7 +119,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
 
         def go(): Unit = {
-          Namespace.withThreadNamespace(doc1.getNamespace)
+          Namespace.withThreadNamespace(doc1.namespace)
           execQuery(Print(t1))
           execQuery(Print(t2))
           execQuery(Print(t3))
@@ -214,7 +214,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
 
           def go(): Unit = {
-          Namespace.withThreadNamespace(doc1.getNamespace)
+          Namespace.withThreadNamespace(doc1.namespace)
          /* execQuery(Print(_reviewing))
 
           execQuery(Print(j2))
@@ -295,7 +295,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
 
         def go(): Unit = {
-          Namespace.withThreadNamespace(doc1.getNamespace)
+          Namespace.withThreadNamespace(doc1.namespace)
 
 
           execQuery(Print(responsibility1_query))
@@ -382,7 +382,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
 
         def go(): Unit = {
-          Namespace.withThreadNamespace(doc1.getNamespace)
+          Namespace.withThreadNamespace(doc1.namespace)
           execQuery(Print(responsibility1_query))
         }
       }
@@ -412,7 +412,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val si    = new StatementIndexer(doc1)
     val interp = makeInterp(doc1, si)
     var count  = 0
-    Namespace.withThreadNamespace(doc1.getNamespace)
+    Namespace.withThreadNamespace(doc1.namespace)
     interp.execOp(op)(_ => count += 1)
     count
   }
@@ -423,7 +423,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val si    = new StatementIndexer(doc1)
     val interp = makeInterp(doc1, si)
     var allNull = true
-    Namespace.withThreadNamespace(doc1.getNamespace)
+    Namespace.withThreadNamespace(doc1.namespace)
     interp.execOp(op) { rec =>
       allNull = allNull && QueryInterpreter.getStatementOrNull(rec(field)).contains(None)
     }
@@ -612,7 +612,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
             "wdf","usedEntity"),"wdf","generatedEntity",Scan("prov:Entity",toSchema("recommendation"), None),"recommendation","id")))))
 
         def go(): Unit = {
-          Namespace.withThreadNamespace(doc1.getNamespace)
+          Namespace.withThreadNamespace(doc1.namespace)
 
           t1 should be (ast1)
           t2 should be (ast2)

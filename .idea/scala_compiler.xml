@@ -5,5 +5,14 @@
       <option name="deprecationWarnings" value="true" />
       <option name="featureWarnings" value="true" />
     </profile>
+    <profile name="Maven 2" modules="prov-model-scala-scala3">
+      <option name="deprecationWarnings" value="true" />
+      <option name="featureWarnings" value="true" />
+      <parameters>
+        <parameter value="-no-indent" />
+        <parameter value="-release" />
+        <parameter value="17" />
+      </parameters>
+    </profile>
   </component>
 </project>

@@ -14,8 +14,8 @@
     <modules>
         <module>prov-dot</module>
         <module>prov-generator</module>
+        <module>prov-scala-misc-scala2</module>
         <module>prov-scala-misc</module>
-        <module>prov-scala-misc-scala3</module>
         <module>roundtrip</module>
         <module>benchmarks</module>
     </modules>

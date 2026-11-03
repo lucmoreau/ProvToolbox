@@ -178,7 +178,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     	         if (processTemplateAttributes(attribute, env2, s, ta)) {
     	           null_attr_expansion 
     	         } else {
-    	          (true, vals.asScala.toSet.map{v:TypedValue =>
+    	          (true, vals.asScala.toSet.map{(v:TypedValue) =>
     	                               pf.newAttribute(attribute.elementName,
     	                                               v.getValue(),
     	                                               v.getType()).asInstanceOf[Attribute]})

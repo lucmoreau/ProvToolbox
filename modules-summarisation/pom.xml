@@ -12,10 +12,10 @@
     <artifactId>modules-summarisation</artifactId>
 
     <modules>
+        <module>prov-summarisation-scala2</module>
         <module>prov-summarisation</module>
-        <module>prov-summarisation-scala3</module>
+        <module>prov-typemap-scala2</module>
         <module>prov-typemap</module>
-        <module>prov-typemap-scala3</module>
         <module>prov-service-summary</module>
         <module>service-summary</module>
     </modules>

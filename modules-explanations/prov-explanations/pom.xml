@@ -13,6 +13,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>${scala3.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>nlg-wrapper</artifactId>
             <version>2.3.0-SNAPSHOT</version>
@@ -72,11 +78,20 @@
 
 
     <properties>
+        <scala.binary.version>3</scala.binary.version> <!-- Scala 3 module -->
         <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${scala3.release}</release>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
@@ -99,6 +114,7 @@
                     </execution>
                     <execution>
                         <id>attach-javadocs</id>
+                        <phase>none</phase> <!-- scala3: doc-jar of scala-maven-plugin 4.9.x passes scala2 scaladoc options; disabled, see SCALA3_MIGRATION.md -->
                         <goals>
                             <goal>doc-jar</goal>
                         </goals>
@@ -111,9 +127,13 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <scalaVersion>${scala3.version}</scalaVersion>
                     <args>
                         <arg>-deprecation</arg>
                         <arg>-feature</arg>
+                        <arg>-no-indent</arg>
+                        <arg>-release</arg>
+                        <arg>${scala3.release}</arg>
                     </args>
                     <jvmArgs>
                         <jvmArg>-Xms64m</jvmArg>

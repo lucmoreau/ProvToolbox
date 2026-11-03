@@ -17,10 +17,11 @@ major upgrade (to 4.x) first. All the others have one (json-schema-validator 3.x
 zjsonpatch 0.6 under new coordinates, swagger-core 3.0, mongojack 6), but usually as a new
 major version with its own API changes. See section 3.
 
-**Waiting on the maintainer:** decisions D1–D5 in section 4 (proposals given). Until they
-are confirmed, only the low-risk preparatory steps (B0, B1, B2) are done.
+**Decisions D1–D6 confirmed by the maintainer (2026-11-03)**, all as proposed (section 4).
+**Phase B is done** (JDK 17, Jackson 3 BOM, baseline; B1 verified identical to the baseline).
+C1 (prov-model) needs no change.
 
-**Next:** B0 (JDK 17), B1 (BOM), B2 (baseline), then C1...
+**Next:** C2 (prov-jsonld), following the recipe in 5a.
 
 ## 1. What changes in Jackson 3 (summary of what matters here)
 
@@ -150,26 +151,26 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 | jackson-module-jakarta-xmlbind-annotations | 2.19.2, 2.21.2 | swagger, prov-nf |
 | jackson-module-scala_3 | 2.21.2 | ProvToolbox Scala modules |
 
-## 4. Decisions to take (proposals; the maintainer to confirm)
+## 4. Decisions (confirmed by the maintainer on 2026-11-03, all as proposed)
 
-- **D1 – One step or incremental?** Proposal: incremental, module by module in dependency
+- **D1 – One step or incremental?** ✅ Confirmed: incremental, module by module in dependency
   order, as for Scala 3. Jackson 2 and 3 can coexist on one classpath (different packages,
   shared annotations), so the build stays green between steps. Unlike Scala 3, no
   side-by-side copies are needed.
-- **D2 – Output compatibility.** Jackson 3's new defaults (alphabetical property order, ISO
+- **D2 – Output compatibility.** ✅ Confirmed: keep Jackson 2 output (`builderWithJackson2Defaults()`). Jackson 3's new defaults (alphabetical property order, ISO
   dates...) can change serialized PROV. Proposal: build every mapper with
   **`JsonMapper.builderWithJackson2Defaults()`** (or the equivalent `XmlMapper`
   builder) to keep byte-identical output, and verify with round-trip tests and output diffs.
   Moving to the Jackson 3 defaults can be a separate, deliberate change later.
-- **D3 – Libraries without Jackson 3 support** (pac4j; Spring Boot 2.7 until upgraded):
+- **D3 – Libraries without Jackson 3 support** ✅ Confirmed: leave Jackson 2 there for now, migrate those modules' own code. (pac4j; Spring Boot 2.7 until upgraded):
   keep Jackson 2 *only* in those modules (coexistence), and record them as "remaining
   Jackson 2" in this file.
-- **D5 – JDK 17 everywhere.** Jackson 3 jars are Java 17 class files. Java modules still
+- **D5 – JDK 17 everywhere.** ✅ Done (B0). Jackson 3 jars are Java 17 class files. Java modules still
   compile with `release 15` (root pom, maven-compiler-plugin), and javac `--release 15`
   cannot read them. So step B0 raises the root `release`/`source` to 17. The Scala modules
   already use 17. The JSweet candies (`release 11`) only use the shared annotations, so
   they are not affected.
-- **D6 – ProvToolbox's own public API changes.** About 57 public methods in ProvToolbox
+- **D6 – ProvToolbox's own public API changes.** ✅ Confirmed: break it, new major version. About 57 public methods in ProvToolbox
   (prov-jsonld 12, prov-jsonld-xml 12, prov-storage-mongodb 8, prov-template 5,
   nlg-wrapper 5, service-templates-core 4, prov-model-scala 4, ...) take or return Jackson
   types (`ObjectMapper`, `JsonNode`, `JsonGenerator`...), and custom serializers are
@@ -179,7 +180,7 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
   change. Proposal: accept it and release the result as a new major version of ProvToolbox
   (together with Scala 3 and JDK 17), and keep method names where possible
   (e.g. `ProvMixin.addProvMixin(MapperBuilder<?,?> b)` next to `addProvMixin(ObjectMapper)`).
-- **D4 – Tooling.** Use OpenRewrite `UpgradeJackson_2_3` for Java modules where it helps,
+- **D4 – Tooling.** ✅ Confirmed (with D1): OpenRewrite first for Java, Scala by hand. Use OpenRewrite `UpgradeJackson_2_3` for Java modules where it helps,
   then fix by hand. Scala (6 modules) by hand / sed.
 
 ## 5. Plan (phases and steps)
@@ -298,6 +299,7 @@ These fail in the baseline for environmental reasons, so they are **not** regres
 |---|---|---|
 | 2026-11-03 | A1 | Branch `jackson3-port` created off `scala3-port` (66ce97c). Inventory done (section 2). |
 | 2026-11-03 | baseline build | `mvn install -DskipTests` of the whole Scala-3-only reactor: all code modules OK (see section 6 for the packaging modules that cannot be built in the cloud). |
+| 2026-11-03 | decisions | Maintainer confirmed D1–D6 as proposed. |
 | 2026-11-03 | B1 verified, C1 | B1 full test run: identical to the baseline. Outputs compared with the new `jackson3-migration/compare-outputs.py`: identical except known noise. C1 (prov-model) needs no change. |
 | 2026-11-03 | B2 | Baseline recorded (`jackson3-migration/baseline-tests.tsv`, section 5c). It took several attempts: w3.org blocked (use `-fn`), MongoDB timeouts (exclude the module), service ITs (`-DskipITs`), GraalVM. B1 verification build started with the same settings. |
 | 2026-11-03 | B0, B1, B2 (in progress) | Root pom: release 17 (B0); Jackson 3 BOM + annotations 2.22 (B1, not built yet). Baseline test run started (prov-storage-mongodb skipped, no MongoDB; see section 6). Added `jackson3-migration/test-summary.py`. Found that json-schema-validator spreads from prov-template (not prov-jsonld, where it is test scope only). Added D6 (ProvToolbox public API) and the per-module recipe (5a). |

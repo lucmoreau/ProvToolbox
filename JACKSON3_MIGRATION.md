@@ -227,7 +227,7 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 | C4 | prov-model-scala (Scala), prov-n, prov-scala-misc | **DONE** (full comparison build: tests identical to baseline except the PROV-XML removals; outputs as after C5): prov-model-scala **done** (its Java `jsonld11` copy of the JSON-LD serialisers: builder-based `ProvSerialiser(MapperBuilder, boolean)` and `customize2(MapperBuilder)`, `ProvMixin`/`ProvMixin2.addProvMixin(MapperBuilder)`, `AnySetterAttributesModule` reused from prov-jsonld; JUnit 149/149, ScalaTest 16/16, 406 outputs identical). prov-n: no Jackson. prov-scala-misc **done** (17 XML bean classes with `@JacksonXmlRootElement` + `BindingsJson`, all Java: OpenRewrite; JUnit 18/18, ScalaTest 6/6, 291 outputs identical). benchmarks and roundtrip (had Jackson 2 only transitively) migrated |
 | C5 | prov-template (+ YAML, zjsonpatch), prov-template-compiler (+ generated code, generated poms), template library, archetype | **DONE** (archetype's service sources: with C8): prov-template migrated (tests 31 run, same 2 timezone failures as baseline; outputs identical; json-schema-validator 3.0.8; zjsonpatch → `io.github.vishwakarma:zjsonpatch` 0.6.4 `Jackson3JsonDiff` in tests). prov-template-compiler migrated (tests 158 run, same 1 error as baseline: nested `templates_cli` build needs the jsweet candy; outputs identical). The compiler's **generated** code now uses `JsonMapper.builderWithJackson2Defaults().build()` (`CompilerClientTest`) and generated poms depend on `tools.jackson.core:jackson-databind` 3.2.4 (`CompilerMaven`). **To verify on the maintainer's machine: the generated `templates_cli` project builds and its tests pass** (not possible in the cloud). Dependants migrated (compile): prov-interop (`InteropFramework`; no Jackson 2 left, module-info only `tools.jackson.databind`), prov-service-translation (`TemplateService`, `ActionExpand`), prov-storage-mongodb test, prov-template-library tests, prov-toolbox-plugin (`WebjarPreparer`). Comparison build: see progress log |
 | C6 | prov-interop, storage (api, filesystem, redis, mongodb + mongojack 6) | **DONE**: migrated during C2/C5; C6 removed the last Jackson 2 (prov-storage-mongodb's test-scope json-schema-validator 1.5.9 → 3.x). `dependency:tree` of the 4 storage modules: no Jackson 2 |
-| C7 | validation, nf, signature, summarisation, typemap, explanations (nlg-*), query, provman | TODO |
+| C7 | validation, nf, signature, summarisation, typemap, explanations (nlg-*), query, provman | **IN PROGRESS**: prov-validation (C2), **prov-nf** (JUnit 1, ScalaTest 94, 280 outputs identical), **prov-summarisation** (32/32) + **prov-typemap** (565 outputs identical), **provman** (2/2) done; prov-signature has no Jackson code. `TypePropagator.om` is now an immutable Jackson 3 mapper with the Scala module; callers that enabled `INDENT_OUTPUT` on it now use `writerWithDefaultPrettyPrinter()`. The prov-service-summary **bridge is removed** (back to `ndStorage.serializeObjectToStore(TypePropagator.om(), …)`). TODO: nlg-wrapper, nlg-spec-transformer, prov-query, prov-explanations; then remove the prov-service-xplain bridge |
 | C8 | Services (prov-service-*, service-*): JAX-RS provider 3.x, swagger-core 3 | TODO |
 | C9 | Remaining Jackson 2 islands (pac4j, Spring Boot) decided per D3 | TODO |
 | D | Clean-up: remove Jackson 2 properties/dependencies, check `mvn dependency:tree` has no `com.fasterxml.jackson.core:jackson-databind`, regenerate DEPENDENCIES.md / license trees | TODO |
@@ -380,6 +380,13 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
     to a parser, so reading from MongoDB failed with an NPE (`_readCapabilities` is null; 143 errors in
     prov-storage-mongodb). Use **`ctxt.readValue(p, type)`** (the ongoing deserialization's context)
     everywhere, also in the Scala modules.
+24. **Global mapper mutated by callers** (`TypePropagator.om.enable(INDENT_OUTPUT)` in prov-summarisation
+    and provman): with Jackson 2 this made *every later use* of the shared mapper indented. Jackson 3:
+    `om.writerWithDefaultPrettyPrinter().writeValue(...)` at those call sites only.
+25. **jackson-dataformat-xml 3**: `JacksonXmlModule` no longer exists. `new XmlMapper(module)` with
+    `module.setDefaultUseWrapper(false)` → `XmlMapper.builderWithJackson2Defaults().defaultUseWrapper(false)`;
+    `setAnnotationIntrospector(pair)` → `.annotationIntrospector(pair)` on the builder;
+    `new JakartaXmlBindAnnotationIntrospector(TypeFactory.defaultInstance())` → `new JakartaXmlBindAnnotationIntrospector()`.
 15. **Whitespace text in XML**: Jackson 3's XML parser reports the whitespace-only content of an
     element without children (an empty pretty-printed `<document>`) as a property `""`
     (`UnrecognizedPropertyException`). No `XmlReadFeature` controls it; prov-jsonld-xml's
@@ -447,6 +454,7 @@ These fail in the baseline for environmental reasons, so they are **not** regres
 |---|---|---|
 | 2026-11-03 | A1 | Branch `jackson3-port` created off `scala3-port` (66ce97c). Inventory done (section 2). |
 | 2026-11-03 | baseline build | `mvn install -DskipTests` of the whole Scala-3-only reactor: all code modules OK (see section 6 for the packaging modules that cannot be built in the cloud). |
+| 2026-11-03 | C7 (nf, summarisation, typemap, provman) | Migrated; tests and outputs identical to baseline; summary bridge removed. |
 | 2026-11-03 | C6 done | Storage modules checked: only prov-storage-mongodb's test-scope json-schema-validator was still Jackson 2 (upgraded). No Jackson 2 in their dependency trees. |
 | 2026-11-03 | C4 done | Full comparison build: tests identical to baseline except the PROV-XML removals; outputs as after C5. |
 | 2026-11-03 | C4 (prov-scala-misc) | prov-scala-misc migrated (tests and outputs identical); benchmarks, roundtrip fixed (catalogue #23). Full comparison build next. |

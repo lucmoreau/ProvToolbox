@@ -1,7 +1,8 @@
 package org.openprovenance.prov.scala.summary
 import java.io.InputStream
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.{ClassTagExtensions, DefaultScalaModule}
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.module.scala.DefaultScalaModule
 import org.openprovenance.prov.immutable.Utils
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable._
@@ -15,8 +16,10 @@ object TypePropagator {
 
   // val TYPE_NS = "http://openprovenance.og/summary/types#"
   val SUM_NS: String = NS.SUM_NS
-  val om: ObjectMapper with ClassTagExtensions = new ObjectMapper() with ClassTagExtensions
-  om.registerModule(DefaultScalaModule)
+  // Jackson 3: an immutable mapper (Jackson 2 defaults, D2) with the Scala module. Was a mutable
+  // `ObjectMapper with ClassTagExtensions` (the ClassTag methods were not used); callers that enabled
+  // INDENT_OUTPUT on it (for good, for every later user) now use om.writerWithDefaultPrettyPrinter().
+  val om: ObjectMapper = JsonMapper.builderWithJackson2Defaults().addModule(DefaultScalaModule).build()
   import org.openprovenance.prov.scala.immutable.ProvFactory.pf
   
   val u=new Utils

@@ -1,8 +1,5 @@
 package org.openprovenance.prov.scala.interop
 
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.json.JsonMapper
-import com.fasterxml.jackson.module.scala.{ClassTagExtensions, DefaultScalaModule}
 import org.openprovenance.prov.scala.iface.{Explainer, Narrative, Narrator, QueryEngine}
 import org.openprovenance.prov.scala.immutable.{Document, Statement}
 import org.openprovenance.prov.scala.interop.CommandLine.{output, outputer}
@@ -84,8 +81,7 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEn
 
 
   private def exportToJson(outw: java.io.Writer, any: AnyRef): Unit = {
-    TypePropagator.om.enable(SerializationFeature.INDENT_OUTPUT);
-    TypePropagator.om.writeValue(outw, any)
+    TypePropagator.om.writerWithDefaultPrettyPrinter().writeValue(outw, any) // jackson 3: no mutation of the shared mapper
   }
 
   private def exportToJson(out: Output, records: AnyRef): Unit = {

@@ -70,7 +70,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
         // Jackson 3: mappers are immutable. The PROV serialiser and deserialiser both configure this
         // builder (as they configured the shared mapper with Jackson 2); the mapper given to MongoJack is
-        // then built from it, with the MongoJack module. Jackson 2 defaults (JACKSON3_MIGRATION.md, D2).
+        // then built from it, with the MongoJack module. Jackson 2 defaults (docs/JACKSON3_MIGRATION.md, D2).
         JsonMapper.Builder builder=JsonMapper.builderWithJackson2Defaults();
 
         this.serialiser=new ProvSerialiser(builder, false);

@@ -19,7 +19,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     final static private Collection<String> myMedia = Set.of(InteropMediaType.MEDIA_APPLICATION_JSON);
 
-    // Jackson 3: immutable mappers, configured when built; Jackson 2 defaults (JACKSON3_MIGRATION.md, D2)
+    // Jackson 3: immutable mappers, configured when built; Jackson 2 defaults (docs/JACKSON3_MIGRATION.md, D2)
     private final ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().disable(SerializationFeature.INDENT_OUTPUT).build();
     private final ObjectMapper mapperWithFormat = JsonMapper.builderWithJackson2Defaults().enable(SerializationFeature.INDENT_OUTPUT).build();
     private final ProvJsonWriter writer;

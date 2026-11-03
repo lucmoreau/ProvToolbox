@@ -6,7 +6,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@WebFilter({"*.provn"}) // PROV-XML (*.provx) support dropped, see JACKSON3_MIGRATION.md
+@WebFilter({"*.provn"}) // PROV-XML (*.provx) support dropped, see docs/JACKSON3_MIGRATION.md
 public class ServletConfig implements Filter {
 
     @Override

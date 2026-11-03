@@ -1,7 +1,7 @@
 package org.openprovenance.prov.service.template;
 
 // Jackson 2 on purpose: Spring Boot 2.7's WebFlux codecs (Jackson2JsonEncoder/Decoder) need a Jackson 2
-// ObjectMapper (Jackson 2 island, JACKSON3_MIGRATION.md C9)
+// ObjectMapper (Jackson 2 island, docs/JACKSON3_MIGRATION.md C9)
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

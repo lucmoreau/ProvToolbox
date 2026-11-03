@@ -32,7 +32,7 @@ public class CompilerClientTest {
     final PastFactory pastFactory;
 
     static final ClassName PRINT_STREAM = ClassName.get("PrintStream", "java.io");
-    // Jackson 3 (JACKSON3_MIGRATION.md): generated code uses JsonMapper.builderWithJackson2Defaults().build() (D2)
+    // Jackson 3 (docs/JACKSON3_MIGRATION.md): generated code uses JsonMapper.builderWithJackson2Defaults().build() (D2)
     static final ClassName JSON_MAPPER = ClassName.get("JsonMapper", "tools.jackson.databind.json");
     static final ClassName TEST_CASE = ClassName.get("TestCase", "junit.framework");
 

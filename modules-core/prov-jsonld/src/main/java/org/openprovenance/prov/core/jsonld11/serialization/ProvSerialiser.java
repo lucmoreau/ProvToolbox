@@ -42,7 +42,7 @@ public class  ProvSerialiser implements org.openprovenance.prov.model.ProvSerial
     final ObjectWriter writer;
 
     public ProvSerialiser () {
-        // Jackson 2 defaults keep the serialised PROV byte-identical (JACKSON3_MIGRATION.md, D2)
+        // Jackson 2 defaults keep the serialised PROV byte-identical (docs/JACKSON3_MIGRATION.md, D2)
         this(JsonMapper.builderWithJackson2Defaults(), false);
     }
 

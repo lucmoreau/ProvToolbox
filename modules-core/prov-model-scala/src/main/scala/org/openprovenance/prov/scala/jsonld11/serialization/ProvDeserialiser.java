@@ -34,7 +34,7 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
     }
 
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) {
-        // Jackson 3: configured on the builder, then built; Jackson 2 defaults (JACKSON3_MIGRATION.md, D2)
+        // Jackson 3: configured on the builder, then built; Jackson 2 defaults (docs/JACKSON3_MIGRATION.md, D2)
         JsonMapper.Builder builder = JsonMapper.builderWithJackson2Defaults();
 
         SimpleModule module =

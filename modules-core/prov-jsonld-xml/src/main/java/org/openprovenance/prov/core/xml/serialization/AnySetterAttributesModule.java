@@ -22,7 +22,7 @@ import java.util.Set;
  * (databind #5952), so the attributes would be silently dropped. This module removes these names
  * from the ignorable set of every bean deserializer that has an any-setter; other ignorals are kept.
  * Copy of the class of the same name in prov-jsonld (this module does not depend on it).
- * See JACKSON3_MIGRATION.md (catalogue of fixes).</p>
+ * See docs/JACKSON3_MIGRATION.md (catalogue of fixes).</p>
  */
 public class AnySetterAttributesModule extends SimpleModule {
 

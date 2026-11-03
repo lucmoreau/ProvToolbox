@@ -56,7 +56,7 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
 
 
     public XmlMapper getMapper() {
-        // Jackson 3: immutable mappers, configured on the builder; Jackson 2 defaults (JACKSON3_MIGRATION.md, D2)
+        // Jackson 3: immutable mappers, configured on the builder; Jackson 2 defaults (docs/JACKSON3_MIGRATION.md, D2)
         XmlMapper.Builder mapper = XmlMapper.builderWithJackson2Defaults();
 
         SimpleModule module =

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Summarise test results per module from one or more Maven build logs
-(see JACKSON3_MIGRATION.md, step B2).
+(see docs/JACKSON3_MIGRATION.md, step B2).
 
 Usage:
     python3 jackson3-migration/test-summary.py build.log [more.log ...] > summary.tsv

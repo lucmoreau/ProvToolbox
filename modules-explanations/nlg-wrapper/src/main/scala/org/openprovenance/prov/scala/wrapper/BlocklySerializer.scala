@@ -94,7 +94,7 @@ class BlocklySerializer(wrap_erase: Boolean) {
     }
     outputFactory2.setProperty(XMLOutputFactory2.P_AUTOMATIC_NS_PREFIX, true)
     outputFactory2.configureForRobustness()
-    // Jackson 2 defaults for the factory and the mapper (JACKSON3_MIGRATION.md, D2)
+    // Jackson 2 defaults for the factory and the mapper (docs/JACKSON3_MIGRATION.md, D2)
     val xmlFactory = XmlFactory.builderWithJackson2Defaults().xmlInputFactory(inputFactory2).xmlOutputFactory(outputFactory2).build()
     XmlMapper.builder(xmlFactory).configureForJackson2()
   }

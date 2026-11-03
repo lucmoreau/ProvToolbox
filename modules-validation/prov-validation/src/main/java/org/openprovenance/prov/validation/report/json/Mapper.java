@@ -14,7 +14,7 @@ public class Mapper {
 
     static public ObjectMapper getValidationReportMapper() {
         // Jackson 3: immutable mappers, so everything is configured on one builder, then built.
-        // Jackson 2 defaults keep the output unchanged (JACKSON3_MIGRATION.md, D2).
+        // Jackson 2 defaults keep the output unchanged (docs/JACKSON3_MIGRATION.md, D2).
         JsonMapper.Builder mapper = JsonMapper.builderWithJackson2Defaults();
 
         new ProvSerialiser().customize(mapper);

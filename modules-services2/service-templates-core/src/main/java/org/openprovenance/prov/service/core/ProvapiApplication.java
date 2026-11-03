@@ -119,7 +119,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 
 
 		singletons.add(new OpenApiResource());
-		// Jackson 3: the JSON provider uses a mapper with Jackson 2 defaults (JACKSON3_MIGRATION.md, D2)
+		// Jackson 3: the JSON provider uses a mapper with Jackson 2 defaults (docs/JACKSON3_MIGRATION.md, D2)
 		singletons.add(new org.openprovenance.prov.service.core.rest.JsonMapperResolver());
 		singletons.add(new AcceptHeaderOpenApiResource());
 		singletons.add(new JsonOrCsvMessageBodyReader());

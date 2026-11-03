@@ -38,7 +38,7 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
     private final TimeZone optionalTimeZone;
 
     public ProvDeserialiser() {
-        // Jackson 2 defaults keep the behaviour of the Jackson 2 version (JACKSON3_MIGRATION.md, D2)
+        // Jackson 2 defaults keep the behaviour of the Jackson 2 version (docs/JACKSON3_MIGRATION.md, D2)
         this(JsonMapper.builderWithJackson2Defaults());
     }
 

@@ -70,7 +70,7 @@ public class StatementsHandler extends SimpleModule{
 
 
             // Jackson 3's XML parser reports the whitespace-only text of an element without children as a
-            // property named "" (Jackson 2 did not); see JACKSON3_MIGRATION.md, catalogue #15
+            // property named "" (Jackson 2 did not); see docs/JACKSON3_MIGRATION.md, catalogue #15
             if ("".equals(propertyName)
                     && jp.currentToken() == tools.jackson.core.JsonToken.VALUE_STRING
                     && jp.getString().isBlank()) {

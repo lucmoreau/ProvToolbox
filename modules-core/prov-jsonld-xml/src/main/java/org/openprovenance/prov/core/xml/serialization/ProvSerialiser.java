@@ -132,7 +132,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
         outputFactory2.setProperty(XMLOutputFactory2.P_AUTOMATIC_NS_PREFIX,Boolean.TRUE);
         outputFactory2.configureForRobustness();
-        // Jackson 2 defaults for the factory and the mapper keep the output unchanged (JACKSON3_MIGRATION.md, D2)
+        // Jackson 2 defaults for the factory and the mapper keep the output unchanged (docs/JACKSON3_MIGRATION.md, D2)
         XmlFactory xmlFactory = XmlFactory.builderWithJackson2Defaults()
                 .xmlInputFactory(inputFactory2)
                 .xmlOutputFactory(outputFactory2)

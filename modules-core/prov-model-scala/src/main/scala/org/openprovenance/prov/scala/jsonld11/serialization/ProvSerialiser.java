@@ -39,7 +39,7 @@ public class ProvSerialiser extends org.openprovenance.prov.core.json.serializat
     }
 
     public ProvSerialiser (boolean embedContext) {
-        // Jackson 2 defaults keep the serialised output unchanged (JACKSON3_MIGRATION.md, D2)
+        // Jackson 2 defaults keep the serialised output unchanged (docs/JACKSON3_MIGRATION.md, D2)
         this(JsonMapper.builderWithJackson2Defaults(), embedContext);
     }
 

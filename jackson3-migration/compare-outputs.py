@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Compare the files written by tests (under target/) with a snapshot taken earlier
-(see JACKSON3_MIGRATION.md, steps B2 and 5a).
+(see docs/JACKSON3_MIGRATION.md, steps B2 and 5a).
 
 Usage: python3 jackson3-migration/compare-outputs.py SNAPSHOT_DIR FILE_LIST [--strict]
 

@@ -12,7 +12,7 @@ import tools.jackson.databind.json.JsonMapper;
  * <p>Without this resolver, the Jackson 3 provider uses a mapper with Jackson 3 defaults
  * (e.g. properties sorted alphabetically, dates as ISO strings), whereas the Jackson 2 provider
  * used Jackson 2 defaults. This resolver keeps the JSON written by the services as it was
- * (JACKSON3_MIGRATION.md, D2). Applications register it as a singleton.</p>
+ * (docs/JACKSON3_MIGRATION.md, D2). Applications register it as a singleton.</p>
  */
 @Provider
 public class JsonMapperResolver implements ContextResolver<JsonMapper> {

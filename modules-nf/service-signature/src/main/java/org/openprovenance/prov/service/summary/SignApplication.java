@@ -53,7 +53,7 @@ public class SignApplication extends Application {
         singletons.add(new NFXMLDocumentMessageBodyWriter());
         singletons.add(new ByteArrayMessageBodyWriter());
         singletons.add(new OpenApiResource());
-        // Jackson 3: the JSON provider uses a mapper with Jackson 2 defaults (JACKSON3_MIGRATION.md, D2)
+        // Jackson 3: the JSON provider uses a mapper with Jackson 2 defaults (docs/JACKSON3_MIGRATION.md, D2)
         singletons.add(new org.openprovenance.prov.service.core.rest.JsonMapperResolver());
         singletons.add(new AcceptHeaderOpenApiResource());
 

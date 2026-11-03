@@ -21,7 +21,7 @@ import java.util.Set;
  * so these keys reached the any-setter. Jackson 3 registers them as ignorable unconditionally
  * (databind #5952), so the attributes would be silently dropped. This module removes these names
  * from the ignorable set of every bean deserializer that has an any-setter; other ignorals are kept.
- * See JACKSON3_MIGRATION.md (catalogue of fixes).</p>
+ * See docs/JACKSON3_MIGRATION.md (catalogue of fixes).</p>
  */
 public class AnySetterAttributesModule extends SimpleModule {
 

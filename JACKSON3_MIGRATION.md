@@ -43,13 +43,15 @@ was the XML one); outputs as after C2. **On the maintainer's machine: `modules-t
 plus benchmarks and roundtrip. Comparison build: tests identical to the baseline (except the
 PROV-XML removals), outputs as after C5.
 
-Still on Jackson 2 (files using the API): prov-nf 21, nlg-wrapper 19, service-templates-core 12,
-nlg-spec-transformer 8, prov-service-core 7, service-metrics 5, prov-service-xplain 3,
-prov-explanations 3, and a few 1–2 file modules (services, provman, prov-summarisation, prov-query).
+**C6 is DONE** (storage) and **C7 is DONE (2026-11-03)**: prov-nf, summarisation, typemap,
+NLG modules, query, explanations, provman; the xplain and summary bridges are removed.
+Comparison build: tests identical to the baseline (except the PROV-XML removals), outputs as after C5.
 
-**Next:** C6 (storage: only redis/filesystem/api done in C2, check), C7 (prov-nf, summarisation,
-typemap, NLG modules, query, explanations, provman; remove the xplain and summary bridges), C8
-(services), PROV-XML step 2.
+Still on Jackson 2 (files using the API): only the service modules (C8): service-templates-core 12,
+prov-service-core 7, service-metrics 5, and 1–2 files in prov-service-security-pac, service-translator,
+service-xplain, service-summary, service-signature; plus swagger-core 2.2 and the JAX-RS JSON providers.
+
+**Next:** C8 (services), C9 (pac4j and Spring Boot islands), PROV-XML step 2, phase D.
 
 ## 1. What changes in Jackson 3 (summary of what matters here)
 
@@ -227,7 +229,7 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 | C4 | prov-model-scala (Scala), prov-n, prov-scala-misc | **DONE** (full comparison build: tests identical to baseline except the PROV-XML removals; outputs as after C5): prov-model-scala **done** (its Java `jsonld11` copy of the JSON-LD serialisers: builder-based `ProvSerialiser(MapperBuilder, boolean)` and `customize2(MapperBuilder)`, `ProvMixin`/`ProvMixin2.addProvMixin(MapperBuilder)`, `AnySetterAttributesModule` reused from prov-jsonld; JUnit 149/149, ScalaTest 16/16, 406 outputs identical). prov-n: no Jackson. prov-scala-misc **done** (17 XML bean classes with `@JacksonXmlRootElement` + `BindingsJson`, all Java: OpenRewrite; JUnit 18/18, ScalaTest 6/6, 291 outputs identical). benchmarks and roundtrip (had Jackson 2 only transitively) migrated |
 | C5 | prov-template (+ YAML, zjsonpatch), prov-template-compiler (+ generated code, generated poms), template library, archetype | **DONE** (archetype's service sources: with C8): prov-template migrated (tests 31 run, same 2 timezone failures as baseline; outputs identical; json-schema-validator 3.0.8; zjsonpatch → `io.github.vishwakarma:zjsonpatch` 0.6.4 `Jackson3JsonDiff` in tests). prov-template-compiler migrated (tests 158 run, same 1 error as baseline: nested `templates_cli` build needs the jsweet candy; outputs identical). The compiler's **generated** code now uses `JsonMapper.builderWithJackson2Defaults().build()` (`CompilerClientTest`) and generated poms depend on `tools.jackson.core:jackson-databind` 3.2.4 (`CompilerMaven`). **To verify on the maintainer's machine: the generated `templates_cli` project builds and its tests pass** (not possible in the cloud). Dependants migrated (compile): prov-interop (`InteropFramework`; no Jackson 2 left, module-info only `tools.jackson.databind`), prov-service-translation (`TemplateService`, `ActionExpand`), prov-storage-mongodb test, prov-template-library tests, prov-toolbox-plugin (`WebjarPreparer`). Comparison build: see progress log |
 | C6 | prov-interop, storage (api, filesystem, redis, mongodb + mongojack 6) | **DONE**: migrated during C2/C5; C6 removed the last Jackson 2 (prov-storage-mongodb's test-scope json-schema-validator 1.5.9 → 3.x). `dependency:tree` of the 4 storage modules: no Jackson 2 |
-| C7 | validation, nf, signature, summarisation, typemap, explanations (nlg-*), query, provman | **IN PROGRESS**: prov-validation (C2), **prov-nf** (JUnit 1, ScalaTest 94, 280 outputs identical), **prov-summarisation** (32/32) + **prov-typemap** (565 outputs identical), **provman** (2/2) done; prov-signature has no Jackson code. `TypePropagator.om` is now an immutable Jackson 3 mapper with the Scala module; callers that enabled `INDENT_OUTPUT` on it now use `writerWithDefaultPrettyPrinter()`. The prov-service-summary **bridge is removed** (back to `ndStorage.serializeObjectToStore(TypePropagator.om(), …)`). TODO: nlg-wrapper, nlg-spec-transformer, prov-query, prov-explanations; then remove the prov-service-xplain bridge |
+| C7 | validation, nf, signature, summarisation, typemap, explanations (nlg-*), query, provman | **DONE** (full comparison build: tests identical to the baseline except the PROV-XML removals; outputs as after C5, same 62 files of known noise; same reactor failures, all environmental): prov-validation (C2), **prov-nf** (JUnit 1, ScalaTest 94, 280 outputs identical), **prov-summarisation** (32/32) + **prov-typemap** (565 outputs identical), **provman** (2/2), **nlg-wrapper**, **nlg-spec-transformer**, **prov-query** (11/11), **prov-explanations** (Scala renames; its tests need the lexicon, aborted as in the baseline); prov-signature has no Jackson code. `TypePropagator.om` is now an immutable Jackson 3 mapper with the Scala module; callers that enabled `INDENT_OUTPUT` on it now use `writerWithDefaultPrettyPrinter()`. **Both bridges removed**: prov-service-summary (back to `ndStorage.serializeObjectToStore(TypePropagator.om(), …)`) and prov-service-xplain (`PhraseEnvironmentReader` adds the PROV deserialisers to `SpecLoader.mapper().rebuild()`, one mapper reads the whole phrase environment again; smoke-tested: Scala `context` map, PROV document with label, attribute and namespace) |
 | C8 | Services (prov-service-*, service-*): JAX-RS provider 3.x, swagger-core 3 | TODO |
 | C9 | Remaining Jackson 2 islands (pac4j, Spring Boot) decided per D3 | TODO |
 | D | Clean-up: remove Jackson 2 properties/dependencies, check `mvn dependency:tree` has no `com.fasterxml.jackson.core:jackson-databind`, regenerate DEPENDENCIES.md / license trees | TODO |
@@ -454,6 +456,7 @@ These fail in the baseline for environmental reasons, so they are **not** regres
 |---|---|---|
 | 2026-11-03 | A1 | Branch `jackson3-port` created off `scala3-port` (66ce97c). Inventory done (section 2). |
 | 2026-11-03 | baseline build | `mvn install -DskipTests` of the whole Scala-3-only reactor: all code modules OK (see section 6 for the packaging modules that cannot be built in the cloud). |
+| 2026-11-03 | C7 done | nlg-wrapper, nlg-spec-transformer, prov-query, prov-explanations migrated; prov-service-xplain bridge removed. Full comparison build: tests identical to the baseline (except PROV-XML removals), outputs as after C5 (62 files of known noise), same reactor failures (environmental). |
 | 2026-11-03 | C7 (nf, summarisation, typemap, provman) | Migrated; tests and outputs identical to baseline; summary bridge removed. |
 | 2026-11-03 | C6 done | Storage modules checked: only prov-storage-mongodb's test-scope json-schema-validator was still Jackson 2 (upgraded). No Jackson 2 in their dependency trees. |
 | 2026-11-03 | C4 done | Full comparison build: tests identical to baseline except the PROV-XML removals; outputs as after C5. |

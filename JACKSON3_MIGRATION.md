@@ -191,7 +191,7 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 | A3 | Check each library's Jackson 3 release (versions, API changes) | DONE (section 3). Library-specific API migration notes are written when each module is ported |
 | B0 | Root pom: compiler `release`/`source` 15 → 17 (D5); full build + tests to check nothing else breaks | **done in pom, verification running**: the baseline run (B2) uses release 17. All modules built so far compile, and prov-model 613, prov-jsonld 660, prov-jsonld-xml 147 tests pass |
 | B1 | Root pom: add `tools.jackson:jackson-bom` (dependencyManagement) and a `jackson3.version` property; keep the Jackson 2 properties while modules migrate | **done in pom, NOT YET BUILT**: `jackson3.version=3.2.4`, BOM imported. The BOM manages the shared `jackson-annotations` at 2.22, so `jackson.annotation.version` moved 2.21 → 2.22 for consistency. Next: full build + tests, compared with the B2 baseline (this also shows whether the test results are stable from run to run) |
-| B2 | Baseline: record current test results (`jackson3-migration/test-summary.py` over the build logs → `jackson3-migration/baseline-tests.tsv`) and sample outputs for later comparison | in progress |
+| B2 | Baseline: record current test results (`jackson3-migration/test-summary.py` over the build logs → `jackson3-migration/baseline-tests.tsv`) and sample outputs for later comparison | **DONE (cloud)**: `jackson3-migration/baseline-tests.tsv`, 31 modules with tests (unit tests only, `-DskipITs`; prov-storage-mongodb not run). Pre-existing failures listed in 5c. Snapshot of 5,793 files written by tests under `target/` (json/jsonld/provn/xml/dot/svg/...): kept outside the repo; regenerate by running the baseline command on commit 3606168 |
 | C1 | prov-model (annotations only: check, module-info) | TODO |
 | C2 | prov-jsonld (+ json-schema-validator 3.x) | TODO |
 | C3 | prov-jsonld-xml | TODO |
@@ -237,12 +237,37 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 
 *(fill in during phase C)*
 
+## 5c. Baseline: pre-existing test failures (before any Jackson change)
+
+These fail in the baseline for environmental reasons, so they are **not** regressions:
+
+| Module | Baseline | Cause |
+|---|---|---|
+| prov-interop | 1 error | test reads `/Users/luc/git-papers/papers/book-ptm/...` (hard-coded path on the maintainer's machine) |
+| prov-template | 2 failures | **timezone-dependent**: bindings10.json expects `2023-09-05T20:31:56.570Z` but parsing gives `21:31:56.570+01:00` (same instant, different representation). Date handling in bindings is exactly where Jackson 3 defaults differ, so watch this test closely |
+| prov-template-compiler | 1 error | missing `target/libs/templates/templates_cli/target/example_template_block.json` (nested `templates_cli` build could not resolve its dependencies in the cloud) |
+| service-templates | 1 error | needs PostgreSQL (`conn` is null) |
+| nlg-wrapper, nlg-spec-transformer, prov-explanations | ScalaTest ABORTED | no SimpleNLG lexicon in the cloud |
+| prov-toolbox-js-embedding | surefire fork fails | needs a GraalVM JDK (JVMCI options rejected by OpenJDK 21) |
+
 ## 6. Build environment notes (what a fresh machine/container needs)
 
 - prov-model runs `dot --version`. Graphviz 2.43 (Ubuntu 24.04) only knows `dot -V`;
   a shim in `/usr/local/bin/dot` that maps `--version` to `-V` works.
-- Full baseline test run: `mvn -B install -P '!missing-lexicon' -fae -Dmaven.test.failure.ignore=true -Dtest.failure.ignore=true`
-  (`test.failure.ignore` is the property that nlg-wrapper's scalatest configuration reads).
+- **Full test run used for the baseline and the comparisons** (cloud):
+  `mvn -B install -DskipTests -fn -pl modules-storage/prov-storage-mongodb -am` then
+  `mvn -B install -P '!missing-lexicon' -fn -DskipITs -Dmaven.test.failure.ignore=true -Dtest.failure.ignore=true -pl '!modules-storage/prov-storage-mongodb'`.
+  `test.failure.ignore` is the property that nlg-wrapper's scalatest configuration reads.
+  `-fn` (not `-fae`) is needed because prov-jsonld's `schema.check` fails without www.w3.org,
+  and with `-fae` everything downstream would be skipped. Do **not** exclude tests with
+  `-Dtest='!pattern'`: it replaces surefire's default includes, so `module-info` and helper
+  classes get run as tests and most counts become 0.
+- **Integration tests (`*IT`, failsafe) are not run in the cloud** (`-DskipITs`). The services'
+  ITs (e.g. service-translator `TranslateIT`, `DateIT`) need the service running with its
+  storage (MongoDB), and in the cloud each call times out. They must be run on the
+  maintainer's machine, before and after.
+- PostgreSQL (service-templates), GraalVM (prov-toolbox-js-embedding) and docker
+  (docker-* modules) are not available in the cloud container either.
 - prov-jsonld's `schema.check` (`make schema.test`) downloads the published schema from
   www.w3.org, which the cloud network policy blocks. Its 660 tests had already run.
 - **MongoDB**: prov-storage-mongodb's tests need a MongoDB server on localhost. Without
@@ -267,5 +292,6 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 |---|---|---|
 | 2026-11-03 | A1 | Branch `jackson3-port` created off `scala3-port` (66ce97c). Inventory done (section 2). |
 | 2026-11-03 | baseline build | `mvn install -DskipTests` of the whole Scala-3-only reactor: all code modules OK (see section 6 for the packaging modules that cannot be built in the cloud). |
+| 2026-11-03 | B2 | Baseline recorded (`jackson3-migration/baseline-tests.tsv`, section 5c). It took several attempts: w3.org blocked (use `-fn`), MongoDB timeouts (exclude the module), service ITs (`-DskipITs`), GraalVM. B1 verification build started with the same settings. |
 | 2026-11-03 | B0, B1, B2 (in progress) | Root pom: release 17 (B0); Jackson 3 BOM + annotations 2.22 (B1, not built yet). Baseline test run started (prov-storage-mongodb skipped, no MongoDB; see section 6). Added `jackson3-migration/test-summary.py`. Found that json-schema-validator spreads from prov-template (not prov-jsonld, where it is test scope only). Added D6 (ProvToolbox public API) and the per-module recipe (5a). |
 | 2026-11-03 | A2, A3 | Verbose dependency trees of 72 modules. Third-party Jackson users: json-schema-validator, zjsonpatch, swagger-core, mongojack, pac4j (+scribejava), Spring Boot 2.7. Jackson 3 status checked for each (section 3). Verified in the jar: databind 3.2.4 has `JsonMapper.builderWithJackson2Defaults()` and `MapperBuilder.configureForJackson2()` (D2 is feasible). Found D5 (JDK 17). |

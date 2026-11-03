@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.core.ttf;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvUtilities;
@@ -44,7 +45,7 @@ public class InstantiateTask implements ConfigTask {
 
 
     static private final Ptm_instantiatingBuilder instantiateBuilder =new Ptm_instantiatingBuilder();
-    private ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
 
     @Override
     public String toString() {

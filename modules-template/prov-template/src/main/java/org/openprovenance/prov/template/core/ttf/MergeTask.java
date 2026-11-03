@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.core.ttf;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
@@ -173,7 +174,7 @@ public class MergeTask implements ConfigTask {
         Optional<StatementChecker> statementChecker;
 
         if (variableCheck!=null) {
-            ProvVariables pv=new ObjectMapper().readValue(new File(TemplateTasksBatch.addBaseDir(inputBasedir, variableCheck)), ProvVariables.class);
+            ProvVariables pv=JsonMapper.builderWithJackson2Defaults().build().readValue(new File(TemplateTasksBatch.addBaseDir(inputBasedir, variableCheck)), ProvVariables.class);
             statementChecker= Optional.of(new StatementChecker(new VariableChecker(pv)));
         } else {
             statementChecker=Optional.empty();

@@ -29,16 +29,16 @@ public class SchemaVersionsTest extends TestCase {
     }
 
     static void collectRefs(JsonNode node, List<String> refs) {
-        if (node.isObject()) node.properties().iterator().forEachRemaining(f -> { if (f.getKey().equals("$ref")) refs.add(f.getValue().asString()); else collectRefs(f.getValue(), refs); });
+        if (node.isObject()) node.properties().iterator().forEachRemaining(f -> { if (f.getKey().equals("$ref")) refs.add(f.getValue().asString("")); else collectRefs(f.getValue(), refs); });
         else if (node.isArray()) node.forEach(n -> collectRefs(n, refs));
     }
 
     public void testEachVersionHasItsSchemas() throws IOException {
         for (String version : Constants.JSONLD_SCHEMA_VERSIONS) {
             JsonNode spec = resource(Constants.jsonldSchemaResource(version));
-            assertEquals(version, Constants.JSONLD_SCHEMA_URL, spec.get("$id").asString());
+            assertEquals(version, Constants.JSONLD_SCHEMA_URL, spec.get("$id").asString(""));
             JsonNode openprov = resource(Constants.openprovSchemaResource(version));
-            assertEquals(version, Constants.OPENPROV_SCHEMA_URL, openprov.get("$id").asString());
+            assertEquals(version, Constants.OPENPROV_SCHEMA_URL, openprov.get("$id").asString(""));
             List<String> refs = new ArrayList<>();
             collectRefs(openprov.get("definitions"), refs);
             String prefix = Constants.JSONLD_SCHEMA_URL + "#/definitions/";
@@ -66,14 +66,14 @@ public class SchemaVersionsTest extends TestCase {
             String strict = version + Constants.JSONLD_SCHEMA_QN_SUFFIX;
             JsonNode qn = resource(Constants.jsonldSchemaResource(strict)).deepCopy();
             JsonNode spec = resource(Constants.jsonldSchemaResource(version));
-            assertEquals(strict, "https://openprovenance.org/prov-jsonld/schema-" + strict + ".json", qn.get("$id").asString());
-            String pattern = qn.get("definitions").get("QualifiedName").get("pattern").asString();
+            assertEquals(strict, "https://openprovenance.org/prov-jsonld/schema-" + strict + ".json", qn.get("$id").asString(""));
+            String pattern = qn.get("definitions").get("QualifiedName").get("pattern").asString("");
             assertTrue(strict, "ex:shed".matches(pattern) && !"ex:a:b".matches(pattern) && !"ex:café".matches(pattern));
-            ((tools.jackson.databind.node.ObjectNode) qn).put("$id", spec.get("$id").asString());
+            ((tools.jackson.databind.node.ObjectNode) qn).put("$id", spec.get("$id").asString(""));
             tools.jackson.databind.node.ObjectNode qname = (tools.jackson.databind.node.ObjectNode) qn.get("definitions").get("QualifiedName");
             JsonNode specQname = spec.get("definitions").get("QualifiedName");
-            qname.put("pattern", specQname.get("pattern").asString());
-            if (specQname.has("$comment")) qname.put("$comment", specQname.get("$comment").asString()); else qname.remove("$comment");
+            qname.put("pattern", specQname.get("pattern").asString(""));
+            if (specQname.has("$comment")) qname.put("$comment", specQname.get("$comment").asString("")); else qname.remove("$comment");
             assertEquals(strict + " differs from " + version + " elsewhere", spec, qn);
             assertEquals(Constants.openprovSchemaResource(version), Constants.openprovSchemaResource(strict));
         }
@@ -84,9 +84,9 @@ public class SchemaVersionsTest extends TestCase {
         JsonNode v0825 = resource(Constants.jsonldSchemaResource("2024-08-25")).get("definitions");
         JsonNode v0912 = resource(Constants.jsonldSchemaResource("2026-09-12")).get("definitions");
         JsonNode v1014 = resource(Constants.jsonldSchemaResource("2026-10-14")).get("definitions");
-        assertEquals("Entity", v0825.get("prov:Entity").get("properties").get("@type").get("pattern").asString());
-        assertEquals("^Entity$", v0912.get("prov:Entity").get("properties").get("@type").get("pattern").asString());
-        assertEquals("^Entity$", v1014.get("prov:Entity").get("properties").get("@type").get("pattern").asString());
+        assertEquals("Entity", v0825.get("prov:Entity").get("properties").get("@type").get("pattern").asString(""));
+        assertEquals("^Entity$", v0912.get("prov:Entity").get("properties").get("@type").get("pattern").asString(""));
+        assertEquals("^Entity$", v1014.get("prov:Entity").get("properties").get("@type").get("pattern").asString(""));
         assertFalse(v0912.has("node_reference"));
         assertTrue(v1014.has("node_reference"));
     }

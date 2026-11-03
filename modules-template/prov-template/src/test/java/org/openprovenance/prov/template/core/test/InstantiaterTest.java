@@ -3,7 +3,8 @@ package org.openprovenance.prov.template.core.test;
 import java.io.File;
 import java.io.IOException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
@@ -25,7 +26,7 @@ public class InstantiaterTest extends TestCase {
     final BindingsBuilder bindingsBuilder = new BindingsBuilder(pf);
     boolean addOrderp=true;
 
-    ObjectMapper mapper=new ObjectMapper();
+    ObjectMapper mapper=JsonMapper.builderWithJackson2Defaults().build();
 
     public  void expandAndCheck(String templateFilename, String inBindings_asProv, String inBindings, String out) throws IOException {
 

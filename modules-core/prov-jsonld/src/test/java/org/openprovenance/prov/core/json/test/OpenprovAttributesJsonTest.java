@@ -81,9 +81,9 @@ public class OpenprovAttributesJsonTest extends TestCase {
         JsonNode att = json.get("wasAttributedTo").get("ex:att");
         assertEquals("{\"$\":\"ex:asc1\",\"type\":\"prov:QUALIFIED_NAME\"}", att.get("openprov:association").toString());
         assertNull(att.get("openprov:hadAssociation"));
-        assertEquals("ex:gen0", json.get("hadMember").get("ex:mem").get("openprov:collectionGeneration").get("$").asString());
-        assertEquals("ex:e0", json.get("specializationOf").get("ex:spe").get("openprov:previousEntity").get("$").asString());
-        assertEquals("ex:e1", json.get("wasInformedBy").get("ex:com").get("openprov:entity").get("$").asString());
+        assertEquals("ex:gen0", json.get("hadMember").get("ex:mem").get("openprov:collectionGeneration").get("$").asString(""));
+        assertEquals("ex:e0", json.get("specializationOf").get("ex:spe").get("openprov:previousEntity").get("$").asString(""));
+        assertEquals("ex:e1", json.get("wasInformedBy").get("ex:com").get("openprov:entity").get("$").asString(""));
         assertFalse(json.toString(), json.toString().contains("openprov:had"));
     }
 
@@ -160,13 +160,13 @@ public class OpenprovAttributesJsonTest extends TestCase {
         assertEquals(fromProvn.getStatementOrBundle(), fromJson.getStatementOrBundle());
         assertEquals(fromProvn.getStatementOrBundle(), fromJsonld.getStatementOrBundle());
         JsonNode ld = JsonMapper.builderWithJackson2Defaults().build().readTree(jsonld.toByteArray());
-        assertEquals("https://openprovenance.org/ns/openprov.jsonld", ld.get("@context").get(1).asString());
+        assertEquals("https://openprovenance.org/ns/openprov.jsonld", ld.get("@context").get(1).asString(""));
         assertEquals(List.of(), org.openprovenance.prov.core.test.Schemas.violations(org.openprovenance.prov.core.test.Schemas.schemaFor(ld), ld));
         for (JsonNode n : ld.get("@graph")) {
-            if ("Attribution".equals(n.get("@type").asString())) assertEquals("ex:asc1", n.get("association").get(0).asString());
-            if ("Communication".equals(n.get("@type").asString())) assertEquals("ex:e1", n.get("entity").get(0).asString());
-            if ("Start".equals(n.get("@type").asString())) assertEquals("ex:gen1", n.get("generation").get(0).asString());
-            if ("End".equals(n.get("@type").asString())) assertEquals("ex:gen2", n.get("generation").get(0).asString());
+            if ("Attribution".equals(n.get("@type").asString(""))) assertEquals("ex:asc1", n.get("association").get(0).asString(""));
+            if ("Communication".equals(n.get("@type").asString(""))) assertEquals("ex:e1", n.get("entity").get(0).asString(""));
+            if ("Start".equals(n.get("@type").asString(""))) assertEquals("ex:gen1", n.get("generation").get(0).asString(""));
+            if ("End".equals(n.get("@type").asString(""))) assertEquals("ex:gen2", n.get("generation").get(0).asString(""));
         }
     }
 }

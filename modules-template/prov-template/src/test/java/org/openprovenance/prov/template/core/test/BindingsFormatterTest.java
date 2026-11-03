@@ -1,8 +1,9 @@
 package org.openprovenance.prov.template.core.test;
 
 import org.openprovenance.prov.template.formatter.BindingsFormatter;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import static org.junit.Assert.*;
  */
 abstract public class BindingsFormatterTest {
     private final BindingsFormatter formatter = new BindingsFormatter();
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
 
     @Test
     public void testLevel1KeysAligned() throws IOException {

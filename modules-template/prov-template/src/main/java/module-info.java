@@ -1,8 +1,8 @@
 module prov.template {
     requires com.fasterxml.jackson.annotation;
-    requires com.fasterxml.jackson.core;
-    requires com.fasterxml.jackson.databind;
-    requires com.fasterxml.jackson.dataformat.yaml;
+    requires tools.jackson.core;
+    requires tools.jackson.databind;
+    requires tools.jackson.dataformat.yaml;
 
     requires org.apache.commons.lang3;
     requires org.apache.commons.text;

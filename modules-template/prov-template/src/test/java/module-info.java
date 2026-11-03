@@ -1,7 +1,7 @@
 module prov.template.test {
-    requires com.fasterxml.jackson.databind;
+    requires tools.jackson.databind;
     requires com.fasterxml.jackson.annotation;
-    requires com.fasterxml.jackson.core;
+    requires tools.jackson.core;
     requires junit;
     requires prov.model;
     requires prov.notation;

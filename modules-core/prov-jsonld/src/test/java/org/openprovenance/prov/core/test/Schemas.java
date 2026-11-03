@@ -76,7 +76,7 @@ public class Schemas {
     /** The schema a PROV-JSONLD document is held to: the openprov one when its context cites the openprov context. */
     public static Schema schemaFor(JsonNode document) {
         JsonNode context = document.path("@context");
-        for (JsonNode c : context) if (c.isString() && OPENPROV_CONTEXT_URL.equals(c.asString())) return OPENPROV_JSONLD;
+        for (JsonNode c : context) if (c.isString() && OPENPROV_CONTEXT_URL.equals(c.asString(""))) return OPENPROV_JSONLD;
         return PROV_JSONLD;
     }
 

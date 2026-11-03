@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.fasterxml.jackson.databind.type.LogicalType.Map;
+import static tools.jackson.databind.type.LogicalType.Map;
 
 public class QDescriptor implements SingleDescriptor {
     public static final String AT_ID = "@id";

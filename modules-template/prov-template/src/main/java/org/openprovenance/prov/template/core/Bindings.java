@@ -1,10 +1,12 @@
 package org.openprovenance.prov.template.core;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.template.json.Descriptors;
 import org.openprovenance.prov.template.json.QDescriptor;
+import tools.jackson.core.JacksonException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,14 +35,14 @@ public class Bindings {
 
 
 
-    public static final ObjectMapper mapper = new ObjectMapper();
+    public static final ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
 
     public static Bindings importBindings(JsonNode json) {
 
         try {
             return mapper.treeToValue(json,Bindings.class);
 
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             e.printStackTrace();
             throw new UncheckedException("JSON conversion to bean failed", e);
         }

@@ -97,7 +97,7 @@ public class ProvJsonld7Test extends TestCase {
 
     /** The agent's node in the document as written. */
     static JsonNode writtenArthur(File file) throws IOException {
-        for (JsonNode n : mapper.readTree(file).get("@graph")) if (n.path("@id").asString().equals("ex:arthur")) return n;
+        for (JsonNode n : mapper.readTree(file).get("@graph")) if (n.path("@id").asString("").equals("ex:arthur")) return n;
         throw new AssertionError("no ex:arthur in " + file);
     }
 

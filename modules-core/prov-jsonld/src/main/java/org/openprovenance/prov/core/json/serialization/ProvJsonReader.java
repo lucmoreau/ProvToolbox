@@ -57,8 +57,8 @@ public class ProvJsonReader implements ProvJsonVocabulary {
             if (PREFIX.equals(key)) continue;
             if (LEGACY_ID.equals(key) && bundleId != null) {
                 // ProvToolbox up to 2.2.4 repeated the bundle's identifier inside it, a JSON-LD habit; it must be the key's
-                QualifiedName declared = id(section.getValue().asString(), ns);
-                if (!declared.equals(bundleId)) throw new ProvJsonException("bundle " + section.getValue().asString() + " under key " + bundleId);
+                QualifiedName declared = id(section.getValue().asString(""), ns);
+                if (!declared.equals(bundleId)) throw new ProvJsonException("bundle " + section.getValue().asString("") + " under key " + bundleId);
                 continue;
             }
             if (BUNDLE.equals(key)) {
@@ -94,7 +94,7 @@ public class ProvJsonReader implements ProvJsonVocabulary {
             Iterator<Map.Entry<String, JsonNode>> it = object(prefixes, PREFIX).properties().iterator();
             while (it.hasNext()) {
                 Map.Entry<String, JsonNode> e = it.next();
-                String uri = e.getValue().asString();
+                String uri = e.getValue().asString("");
                 if (DEFAULT.equals(e.getKey())) {
                     ns.setDefaultNamespace(uri);
                 } else if (!BLANK_PREFIX.equals(e.getKey())) {
@@ -211,27 +211,27 @@ public class ProvJsonReader implements ProvJsonVocabulary {
      * submission has it; an object carries its value under {@code $} with a {@code type} or a {@code lang}.
      */
     public Attribute attribute(QualifiedName elementName, JsonNode v, Namespace ns) {
-        if (v.isString()) return pf.newAttribute(elementName, v.stringValue(), name.XSD_STRING);
-        if (v.isBoolean()) return pf.newAttribute(elementName, v.asString(), name.XSD_BOOLEAN);
+        if (v.isString()) return pf.newAttribute(elementName, v.stringValue(null), name.XSD_STRING);
+        if (v.isBoolean()) return pf.newAttribute(elementName, v.asString(""), name.XSD_BOOLEAN);
         if (v.isNumber()) {
             QualifiedName type;
             if (v.isInt()) type = name.XSD_INT;
             else if (v.isLong()) type = name.XSD_LONG;
             else if (v.isBigInteger()) type = name.XSD_INTEGER;
             else type = name.XSD_DECIMAL;
-            return pf.newAttribute(elementName, v.asString(), type);
+            return pf.newAttribute(elementName, v.asString(""), type);
         }
         if (!v.isObject()) throw new ProvJsonException("not a PROV-JSON literal: " + v);
         JsonNode dollar = v.get(DOLLAR);
         if (dollar == null) throw new ProvJsonException("a literal object needs a \"$\": " + v);
-        String value = dollar.asString();
+        String value = dollar.asString("");
         JsonNode lang = v.get(LANG);
         JsonNode type = v.get(TYPE);
         if (lang != null) {
-            return pf.newAttribute(elementName, pf.newInternationalizedString(value, lang.asString()), name.PROV_LANG_STRING);
+            return pf.newAttribute(elementName, pf.newInternationalizedString(value, lang.asString("")), name.PROV_LANG_STRING);
         }
         if (type == null) return pf.newAttribute(elementName, value, name.XSD_STRING);
-        String typeName = type.asString();
+        String typeName = type.asString("");
         if (XSD_QNAME.equals(typeName) || PROV_QUALIFIED_NAME.equals(typeName)) {
             return pf.newAttribute(elementName, id(value, ns), name.PROV_QUALIFIED_NAME);
         }
@@ -263,7 +263,7 @@ public class ProvJsonReader implements ProvJsonVocabulary {
         JsonNode v = r.get(property);
         if (v == null || v.isNull()) return null;
         if (!v.isString()) throw new ProvJsonException(property + " must be an identifier, not " + v);
-        return id(v.stringValue(), ns);
+        return id(v.stringValue(null), ns);
     }
 
     /** One identifier or an array of them: a membership may list several members. */
@@ -272,9 +272,9 @@ public class ProvJsonReader implements ProvJsonVocabulary {
         List<QualifiedName> result = new ArrayList<>();
         if (v == null || v.isNull()) return result;
         if (v.isArray()) {
-            for (JsonNode e : v) result.add(id(e.asString(), ns));
+            for (JsonNode e : v) result.add(id(e.asString(""), ns));
         } else {
-            result.add(id(v.asString(), ns));
+            result.add(id(v.asString(""), ns));
         }
         return result;
     }
@@ -283,7 +283,7 @@ public class ProvJsonReader implements ProvJsonVocabulary {
         JsonNode v = r.get(property);
         if (v == null || v.isNull()) return null;
         try {
-            return pf.newISOTime(v.asString(), dateTimeOption, timeZone);
+            return pf.newISOTime(v.asString(""), dateTimeOption, timeZone);
         } catch (RuntimeException e) {
             throw new ProvJsonException(property + " is not an xsd:dateTime: " + v, e);
         }

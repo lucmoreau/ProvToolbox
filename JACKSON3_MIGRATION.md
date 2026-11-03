@@ -207,7 +207,7 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 | C2 | prov-jsonld (+ json-schema-validator 3.x), and the modules its change breaks | **DONE** — tests identical to baseline; see the detail table below |
 | C3 | prov-jsonld-xml | **RETIRED by the maintainer (2026-11-03)**: commented out of `modules-core/pom.xml`. (Its Jackson 3 migration had been done, tests 147/147, commit 0332a1a; the sources stay in the tree.) **PROV-XML support dropped** (maintainer's decision): no module depends on it any more. Step 1 (done): dependency removed from prov-interop, roundtrip, benchmarks, prov-service-core, prov-storage-mongodb; PROVX reader/writer and the PROVX format registration (`.provx`/`.xml` extensions, `application/provenance+xml`) removed from prov-interop; `RoundTripFromJavaXMLViaLegacyTest` deleted; the validation service no longer stores an (unserved) XML report, and `ServiceUtilsConfig.serialiser`/`ObjectSerialiser` (only used for it) are removed; PROV-XML removed from the `TranslateIT`/`DateIT` integration tests (incl. archetype copies). `Formats.ProvFormat.PROVX` and the media-type constants stay in prov-model. **Step 2 (TODO)**: remove PROV-XML from what the services advertise (content negotiation and `@Produces` lists, swagger `@Content`, `ALLOWABLE_*_EXTENSIONS`, `UploadForm` enums, `ServletConfig` filter, message body writers, `ServiceUtils` cases) |
 | C4 | prov-model-scala (Scala), prov-n, prov-scala-misc | TODO |
-| C5 | prov-template (+ YAML, zjsonpatch), prov-template-compiler (+ generated code, generated poms), template library, archetype | TODO |
+| C5 | prov-template (+ YAML, zjsonpatch), prov-template-compiler (+ generated code, generated poms), template library, archetype | **IN PROGRESS**: prov-template migrated (tests 31 run, same 2 timezone failures as baseline; outputs identical; json-schema-validator 3.0.8; zjsonpatch → `io.github.vishwakarma:zjsonpatch` 0.6.4 `Jackson3JsonDiff` in tests). **Build red** until its dependants are migrated: prov-template-compiler, template library, prov-interop (`InteropFramework` bindings), prov-service-translation (`TemplateService`, `ActionExpand`), prov-storage-mongodb test |
 | C6 | prov-interop, storage (api, filesystem, redis, mongodb + mongojack 6) | TODO |
 | C7 | validation, nf, signature, summarisation, typemap, explanations (nlg-*), query, provman | TODO |
 | C8 | Services (prov-service-*, service-*): JAX-RS provider 3.x, swagger-core 3 | TODO |
@@ -330,6 +330,16 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
     prov-jsonld-xml: inner `<agent prov:ref=.../>` became top-level statements). Use
     `jsonParser.skipChildren()` to end on the element's END_OBJECT. Grep for `readValueAsTree`
     in the other modules. Also prefer `ctxt.readValue(p, type)` to `p.readValueAs(type)` in handlers.
+16. **`asText()` → `asString()` changes behaviour (OpenRewrite rename)**: Jackson 2 `asText()` returned
+    `""` for containers and missing nodes. Jackson 3 `asString()` **throws** (`JsonNodeException: 'ArrayNode'
+    method asString() cannot coerce`). The faithful translation is **`asString("")`**. Likewise Jackson 2
+    `textValue()` returned `null` for non-text nodes, and Jackson 3 `stringValue()` throws: use
+    **`stringValue(null)`**. Found in prov-template's `SchemaCheck` (`@context` as an array); applied to all
+    54 converted call sites of prov-jsonld (11 in `ProvJsonReader`) as well. **Apply to every module after OpenRewrite.**
+17. **`JsonParser.readValueAsTree()` returns a `TreeNode`** in Jackson 3; `ctxt.readTreeAsValue` needs a
+    `JsonNode`, so use `JsonNode node = ctxt.readTree(parser)`. `ObjectMapper.getFactory()` is gone
+    (`tokenStreamFactory()`; for a format test use `mapper instanceof YAMLMapper`). `YAMLMapper` has no
+    `builderWithJackson2Defaults()`: use `YAMLMapper.builder().configureForJackson2()`.
 15. **Whitespace text in XML**: Jackson 3's XML parser reports the whitespace-only content of an
     element without children (an empty pretty-printed `<document>`) as a property `""`
     (`UnrecognizedPropertyException`). No `XmlReadFeature` controls it; prov-jsonld-xml's
@@ -397,6 +407,7 @@ These fail in the baseline for environmental reasons, so they are **not** regres
 |---|---|---|
 | 2026-11-03 | A1 | Branch `jackson3-port` created off `scala3-port` (66ce97c). Inventory done (section 2). |
 | 2026-11-03 | baseline build | `mvn install -DskipTests` of the whole Scala-3-only reactor: all code modules OK (see section 6 for the packaging modules that cannot be built in the cloud). |
+| 2026-11-03 | C5 (prov-template) | prov-template migrated; found catalogue #16 (asText/textValue semantics) and fixed it in prov-jsonld too (660/660 still). Dependants of prov-template not migrated yet (build red for them). |
 | 2026-11-03 | PROV-XML dropped (step 1) | Maintainer: remove the dependency on prov-jsonld-xml and drop PROV-XML support. Done in the code (see C3 row); the services' advertised formats are step 2. |
 | 2026-11-03 | C3 retired | Maintainer is retiring prov-jsonld-xml: module commented out of `modules-core/pom.xml`. Comparison build for C3 stopped. Its 5 dependants still reference it (open point). |
 | 2026-11-03 | C3 (module) | prov-jsonld-xml migrated (OpenRewrite + builder rewrite + `AnySetterAttributesModule` copy + fixes #13–#15). Tests 147/147 (were 89 errors before fix #14), outputs identical. Next: build the dependants, full comparison build. |

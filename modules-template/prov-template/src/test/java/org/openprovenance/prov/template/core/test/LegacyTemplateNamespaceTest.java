@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.core.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import junit.framework.TestCase;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.notation.Utility;
@@ -35,7 +36,7 @@ public class LegacyTemplateNamespaceTest extends TestCase {
     }
 
     Bindings bindings() throws IOException {
-        return new ObjectMapper().readValue(new File(BINDINGS), Bindings.class);
+        return JsonMapper.builderWithJackson2Defaults().build().readValue(new File(BINDINGS), Bindings.class);
     }
 
     String notation(Document doc) {

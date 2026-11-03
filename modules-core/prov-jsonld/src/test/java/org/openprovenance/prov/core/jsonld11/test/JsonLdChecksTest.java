@@ -74,7 +74,7 @@ public class JsonLdChecksTest extends TestCase {
         tools.jackson.databind.JsonNode after = Schemas.read("src/main/resources/2026-10-14/jsonldschema.json").get("definitions").get("QualifiedName");
         assertEquals(before.get("type"), after.get("type"));
         assertEquals(before.get("pattern"), after.get("pattern"));
-        assertTrue(after.get("$comment").asString().contains("https://www.w3.org/TR/prov-n/#prod-QUALIFIED_NAME"));
+        assertTrue(after.get("$comment").asString("").contains("https://www.w3.org/TR/prov-n/#prod-QUALIFIED_NAME"));
     }
 
     /**

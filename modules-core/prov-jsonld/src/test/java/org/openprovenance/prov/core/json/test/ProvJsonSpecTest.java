@@ -312,18 +312,18 @@ public class ProvJsonSpecTest extends TestCase {
         JsonNode json = written();
         JsonNode gen = json.get("wasGeneratedBy").get("ex:gen1");
         assertEquals(List.of("prov:entity", "prov:activity", "prov:time", "prov:role"), fieldNames(gen));
-        assertEquals(at("2011-11-16T16:06:00").toXMLFormat(), gen.get("prov:time").asString());
+        assertEquals(at("2011-11-16T16:06:00").toXMLFormat(), gen.get("prov:time").asString(""));
         JsonNode start = json.get("wasStartedBy").get("ex:start1");
         assertEquals(List.of("prov:activity", "prov:trigger", "prov:starter", "prov:time"), fieldNames(start));
         JsonNode der = json.get("wasDerivedFrom").get("ex:der1");
         assertEquals(List.of("prov:generatedEntity", "prov:usedEntity", "prov:activity", "prov:generation", "prov:usage", "prov:type"), fieldNames(der));
-        assertEquals("ex:gen1", der.get("prov:generation").asString());
+        assertEquals("ex:gen1", der.get("prov:generation").asString(""));
         JsonNode assoc = json.get("wasAssociatedWith").values().iterator().next();
-        assertEquals("plan", assoc.get("prov:plan").asString());
+        assertEquals("plan", assoc.get("prov:plan").asString(""));
         // a blank identifier for a relation without one
         assertTrue(json.get("wasAttributedTo").propertyNames().iterator().next().startsWith("_:"));
         // the qualified specialization is a specializationOf under its identifier
-        assertEquals("c", json.get("specializationOf").get("ex:spe2").get("prov:specificEntity").asString());
+        assertEquals("c", json.get("specializationOf").get("ex:spe2").get("prov:specificEntity").asString(""));
         assertNull(json.get("qualifiedSpecializationOf"));
         // one member is a string, several an array
         List<JsonNode> members = new java.util.ArrayList<>();
@@ -334,7 +334,7 @@ public class ProvJsonSpecTest extends TestCase {
 
     public void testWrittenBundle() throws IOException {
         JsonNode b1 = written().get("bundle").get("ex:b1");
-        assertEquals("http://example.org/bundle#", b1.get("prefix").get("b").asString());
+        assertEquals("http://example.org/bundle#", b1.get("prefix").get("b").asString(""));
         assertNull(b1.get("@id"));
         assertEquals("{\"$\":\"dans le lot\",\"lang\":\"fr\"}", b1.get("entity").get("b:e3").get("prov:label").toString());
     }
@@ -364,8 +364,8 @@ public class ProvJsonSpecTest extends TestCase {
         assertNull(mem.getId());
         assertEquals("ex:Part", ((LangString) mem.getType().get(0).getValue()).getValue());
         JsonNode out = new ProvSerialiser().toJson(d);
-        assertEquals("identified and described", out.get("specializationOf").get("ex:spe").get("ex:note").asString());
-        assertEquals("ex:Part", out.get("hadMember").values().iterator().next().get("prov:type").asString());
+        assertEquals("identified and described", out.get("specializationOf").get("ex:spe").get("ex:note").asString(""));
+        assertEquals("ex:Part", out.get("hadMember").values().iterator().next().get("prov:type").asString(""));
         assertEquals(d.getStatementOrBundle(), new ProvDeserialiser().deserialiseDocument(out).getStatementOrBundle());
     }
 

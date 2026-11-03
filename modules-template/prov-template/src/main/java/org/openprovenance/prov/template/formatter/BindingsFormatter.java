@@ -1,9 +1,10 @@
 package org.openprovenance.prov.template.formatter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 import java.util.*;
@@ -18,7 +19,7 @@ import java.util.*;
  * 6. Nested array elements aligned
  */
 public class BindingsFormatter {
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
     private StringBuilder sb;
     private int level2ValueColumn = -1;
 
@@ -103,7 +104,7 @@ public class BindingsFormatter {
 
         // Calculate level 2 key width
         List<String> keys = new ArrayList<>();
-        obj.fieldNames().forEachRemaining(keys::add);
+        obj.propertyNames().iterator().forEachRemaining(keys::add);
         int level2KeyWidth = keys.stream()
                 .mapToInt(String::length)
                 .max()

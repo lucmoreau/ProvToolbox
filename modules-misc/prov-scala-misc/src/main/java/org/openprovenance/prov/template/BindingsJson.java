@@ -1,13 +1,13 @@
 package org.openprovenance.prov.template;
-
+import tools.jackson.databind.json.JsonMapper;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import tools.jackson.core.JacksonException;
 
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
@@ -17,8 +17,8 @@ import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.exc.StreamWriteException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.core.exc.StreamWriteException;
 
 public class BindingsJson {
 	
@@ -68,7 +68,7 @@ public class BindingsJson {
         if (v instanceof String) {
             String s=(String)v;
             if (s.startsWith("{")) {
-                ObjectMapper mapper = new ObjectMapper();
+                ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
                 try {
                     v=mapper.readValue((String)v,Hashtable.class);
                 } catch (Exception e) {
@@ -222,7 +222,7 @@ public class BindingsJson {
 			                      BindingsBean bean,
 			                      boolean pretty) {
 
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
 		try {
 			if (pretty) {
 				mapper.writerWithDefaultPrettyPrinter().writeValue(new File(output_file1), bean);
@@ -238,12 +238,12 @@ public class BindingsJson {
 
     public static BindingsBean importBean(File input_file1) {
 
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
         try {
             BindingsBean bean=mapper.readValue(input_file1,BindingsBean.class);
             return bean;
             
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             e.printStackTrace();
             throw new UncheckedException("JSON serialization failed", e);
         }
@@ -251,12 +251,12 @@ public class BindingsJson {
     
     public static BindingsBean importBean(InputStream input_file1) {
 
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
         try {
             BindingsBean bean=mapper.readValue(input_file1,BindingsBean.class);
             return bean;
             
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             e.printStackTrace();
             throw new UncheckedException("JSON serialization failed", e);
         }

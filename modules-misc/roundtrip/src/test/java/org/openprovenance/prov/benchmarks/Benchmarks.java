@@ -1,6 +1,6 @@
 package org.openprovenance.prov.benchmarks;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.model.ProvSerialiser;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
@@ -18,7 +18,7 @@ public class Benchmarks {
     ProvFactory pf=ProvFactory.getFactory();
 
     class JsonDeserialiser implements ProvDeserialiser {
-        ObjectMapper om=new ObjectMapper();
+        ObjectMapper om=tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().build();
         @Override
         public Document deserialiseDocument(InputStream in) throws IOException {
             om.readValue(in, Map.class);
@@ -26,12 +26,12 @@ public class Benchmarks {
         }
     }
     static class JsonSerialiser implements ProvSerialiser {
-        ObjectMapper om=new ObjectMapper();
+        ObjectMapper om=tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().build();
         @Override
         public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
             try {
                 om.writeValue(out,document);
-            } catch (IOException e) {
+            } catch (tools.jackson.core.JacksonException e) { // jackson 3: unchecked
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }

@@ -1,6 +1,6 @@
 package org.openprovenance.prov.bean.xml;
 import java.util.List;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 
 @JacksonXmlRootElement(localName="hadMember")

@@ -67,6 +67,12 @@
             <version>${xmlsec.version}</version>
         </dependency>
 
+        <dependency> <!-- Jackson 3 Scala module, for prov-jsonld's (Jackson 3) serialiser, see JACKSON3_MIGRATION.md -->
+            <groupId>tools.jackson.module</groupId>
+            <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
+            <version>${jackson3.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.scala-lang.modules</groupId>
             <artifactId>scala-parallel-collections_${scala.binary.version}</artifactId>

@@ -28,10 +28,10 @@ in section 5 for what is done and what is left.
 Comparison build (2026-11-03, after the 4 modules above): test results **identical to the
 baseline for every module except provman**, and outputs identical except known noise **plus two
 differences to investigate**:
-1. **provman does not compile**: `UtilsXplain.exportToJson` passes a Jackson 2 Scala mapper to
-   prov-jsonld's `ProvSerialiser`. Fix: build it from a Jackson 3 builder with
-   `tools.jackson.module:jackson-module-scala_3` (dependency to add; the Jackson 3 BOM only manages
-   the `_2.1x` Scala modules, so give the version explicitly, = `jackson3.version`).
+1. ~~provman does not compile~~ **fixed**: `UtilsXplain.exportToJson` now builds prov-jsonld's
+   `ProvSerialiser` from a Jackson 3 builder with `tools.jackson.module:jackson-module-scala_3`
+   (added to provman's pom with `${jackson3.version}`: the Jackson 3 BOM only manages the `_2.1x`
+   Scala modules). Tests 2/2 as baseline.
 2. **29 prov-n output files and 1 prov-toolbox-plugin file differ** (beyond the known noise): not
    analysed yet.
 

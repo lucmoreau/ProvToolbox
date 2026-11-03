@@ -11,9 +11,6 @@
     <artifactId>modules-executable-provman</artifactId>
 
 
-    <properties>
-        <scala.binary.version>3</scala.binary.version> <!-- Scala 3 module -->
-    </properties>
 
     <dependencies>
         <dependency>

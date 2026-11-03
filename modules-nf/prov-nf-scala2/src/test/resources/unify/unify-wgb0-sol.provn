@@ -1,5 +1,0 @@
-
-document
-  prefix ex <http://example/>
-  wasGeneratedBy(-;ex:e10,ex:a1,-,[ex:foo = 1, ex:foo = 2])
-endDocument

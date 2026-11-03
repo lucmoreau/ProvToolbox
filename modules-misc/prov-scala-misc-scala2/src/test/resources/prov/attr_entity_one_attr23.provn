@@ -1,6 +1,0 @@
-document
-default <http://example.org/>
-prefix ex <http://example.org/>
-entity(et23,[prov:type = 'abcde'])
-endDocument
-

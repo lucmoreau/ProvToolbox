@@ -11,9 +11,7 @@
     <artifactId>modules-nf</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>prov-nf-scala2</module>
         <module>prov-nf</module>
-        <module>prov-signature-scala2</module>
         <module>prov-signature</module>
         <module>prov-service-signature</module>
         <module>service-signature</module>

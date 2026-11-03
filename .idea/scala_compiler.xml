@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="Maven 1" modules="modules-executable-provman,nlg-spec-transformer,nlg-wrapper,prov-explanations,prov-model-scala,prov-nf,prov-query,prov-scala-misc,prov-signature,prov-summarisation,prov-summary-explanations,prov-typemap">
-      <option name="deprecationWarnings" value="true" />
-      <option name="featureWarnings" value="true" />
-    </profile>
-    <profile name="Maven 2" modules="prov-model-scala-scala3">
+    <profile name="Maven 2" modules="modules-executable-provman,modules-executable-provman-scala3,nlg-spec-transformer,nlg-spec-transformer-scala3,nlg-wrapper,nlg-wrapper-scala3,prov-explanations,prov-explanations-scala3,prov-model-scala,prov-model-scala-scala3,prov-nf,prov-nf-scala3,prov-query,prov-query-scala3,prov-scala-misc,prov-scala-misc-scala3,prov-signature,prov-signature-scala3,prov-summarisation,prov-summarisation-scala3,prov-summary-explanations,prov-summary-explanations-scala3,prov-typemap,prov-typemap-scala3">
       <option name="deprecationWarnings" value="true" />
       <option name="featureWarnings" value="true" />
       <parameters>

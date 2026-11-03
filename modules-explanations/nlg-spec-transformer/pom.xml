@@ -92,7 +92,6 @@
 
 
     <properties>
-        <scala.binary.version>3</scala.binary.version> <!-- Scala 3 module -->
         <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
 

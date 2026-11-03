@@ -4,24 +4,29 @@ This is a living document. **Whoever works on the migration (human or Claude ses
 updates the "Progress log" and the status column after every step and commits it
 with the work.** A new session should be able to resume from this file alone.
 
-## ▶ Scala 3 is the default (2026-11-03)
+## ▶ Done: Scala 3 only (2026-11-03)
 
-The modules were swapped: each Scala 3 copy `X-scala3` is now `X` (directory and artifactId),
-and each 2.13 module `X` is now `X-scala2` (directory, artifactId, `<name>` suffix ` (Scala 2)`).
-The root pom sets `scala.binary.version=3`; the `-scala2` poms set it back to `2.13` and depend
-only on `-scala2` artifacts. The Java consumers (prov-validation, roundtrip, benchmarks, the
-services) keep the plain artifactIds, so they now get the Scala 3 builds (no `_2.13` jar on
-their classpath, checked with `dependency:tree`). Full `mvn install` and the tests of all 24
-Scala modules and the consumers pass, with the same counts in each 2.13/Scala 3 pair,
-including the lexicon suites (nlg-wrapper 30, nlg-spec-transformer 24, prov-explanations 27).
+The migration is complete. ProvToolbox builds its Scala modules with Scala 3 only; the 2.13
+modules were removed (Phase R). The last commit holding both, the Scala 3 modules as `X` and
+the 2.13 ones as `X-scala2`, is tagged **`scala-v2-and-v3`**.
 
-In the rest of this file (written before the swap), `X-scala3` means today's `X`, and `X`
-(the 2.13 module) means today's `X-scala2`. `scala3-migration/copy-module.py` assumed the
-old layout and is no longer of use. Step D is done (2026-11-03): the Scala 3 modules use
-scala-maven-plugin `${scala3.plugin.version}` = 4.10.0, which runs the Scala 3 scaladoc with Scala 3
-options (4.9.x passed `-doc-format`/`-doc-title`, and the title was read as a source file), and
-`doc-jar` is enabled again, so each attaches a `-javadoc.jar`. The `-scala2` modules stay on
-`${scala.plugin.version}` (4.9.7). Still open: deleting the `-scala2` modules when no longer needed.
+How it got there (2026-11-03):
+1. Swap: each Scala 3 copy `X-scala3` became `X` (directory and artifactId), each 2.13 module `X`
+   became `X-scala2`; root `scala.binary.version=3`. The Java consumers (prov-validation,
+   roundtrip, benchmarks, the services) kept the plain artifactIds and so moved to Scala 3 (no
+   `_2.13` jar on their classpath, checked with `dependency:tree`). Tests of all 24 Scala modules
+   and the consumers passed, same counts in each 2.13/Scala 3 pair, lexicon suites included
+   (nlg-wrapper 30, nlg-spec-transformer 24, prov-explanations 27): step V done.
+2. Step D: the Scala 3 modules use scala-maven-plugin `${scala3.plugin.version}` = 4.10.0, which
+   runs the Scala 3 scaladoc with Scala 3 options (4.9.x passed `-doc-format`/`-doc-title`, and the
+   title was read as a source file); `doc-jar` is enabled again, each module attaches a `-javadoc.jar`.
+3. Phase R: the 12 `-scala2` modules deleted, with the 2.13 properties of the root pom
+   (`scala.library.version`, `scala.plugin.version`) and the per-module
+   `scala.binary.version=3` overrides (the root sets it).
+
+The rest of this file is the migration as it was carried out, kept for reference: there, `X-scala3`
+means today's `X`, and `X` means the removed 2.13 module. `scala3-migration/` holds the scripts
+used for the copies (`copy-module.py` assumes the side-by-side layout and is no longer of use).
 
 ## ▶ Current status and next steps (handover, 2026-11-02)
 
@@ -290,6 +295,7 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 | Date | Step | Result / notes |
 |---|---|---|
 | 2026-11-02 | Plan written, branch `scala3-port` created | Root pom: properties `scala3.version=3.9.0`, `scala3.release=17`. Helper script `scala3-migration/copy-module.py`. |
+| 2026-11-03 | Phase R | Tag `scala-v2-and-v3` on the last commit with both. The 12 `-scala2` modules removed, root pom without `scala.library.version`/`scala.plugin.version`. Full `mvn clean install` with tests: 3195 JUnit (1 skipped) and 242 ScalaTest tests pass. Not Scala-related and left as they were: service-templates' integration tests need a local PostgreSQL role `user` (run with `-DskipITs`), and prov-toolbox-js-embedding's GraalVM test JVM does not start on JDK 19. |
 | 2026-11-03 | Step D: scaladoc | Property `scala3.plugin.version=4.10.0` for the 12 Scala 3 modules, `doc-jar` re-enabled. All 12 build a `-javadoc.jar` (prov-model-scala 143 HTML pages, prov-nf 84, ...); tests unchanged with 4.10.0. |
 | 2026-11-03 | Scala 3 is the default | `X-scala3` → `X`, `X` → `X-scala2` (12 modules), root `scala.binary.version=3`. Full build OK; tests of all 24 Scala modules and of the Java consumers pass, same counts per pair, lexicon suites included (step V done). |
 | 2026-11-02 | Handover | All 12 copies exist and compile. `mvn validate` on the whole reactor OK (85 modules). Handover section written at the top. Next: steps V, D, R. |

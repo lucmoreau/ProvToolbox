@@ -13,7 +13,6 @@
         <module>prov-model</module>
         <module>prov-jsonld</module>
         <module>prov-jsonld-xml</module>
-        <module>prov-model-scala-scala2</module>
         <module>prov-model-scala</module>
         <module>prov-n</module>
     </modules>

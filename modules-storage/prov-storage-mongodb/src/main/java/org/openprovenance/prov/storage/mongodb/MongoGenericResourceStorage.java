@@ -1,6 +1,6 @@
 package org.openprovenance.prov.storage.mongodb;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -61,7 +61,8 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
         TypeWrapper<TYPE> instance=wmake.get();
         Class<TypeWrapper<TYPE>> wrapperClass = (Class<TypeWrapper<TYPE>>) instance.getClass();
 
-        mapper.registerModule(org.mongojack.internal.MongoJackModule.DEFAULT_MODULE_INSTANCE);
+        // Jackson 3 / mongojack 6: mappers are immutable, configure() returns a copy with the MongoJack module
+        mapper = org.mongojack.internal.MongoJackModule.configure(mapper);
 
         MongoCollection<TypeWrapper<TYPE>> generic=db.getCollection(collectionName,wrapperClass);
         this.genericCollection = JacksonMongoCollection.builder().withObjectMapper(mapper).build(generic,wrapperClass, UuidRepresentation.STANDARD);

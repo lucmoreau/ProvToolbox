@@ -1,12 +1,14 @@
 package org.openprovenance.prov.core.jsonld11.serialization;
 
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.type.ArrayType;
-import com.fasterxml.jackson.databind.type.MapType;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+import tools.jackson.core.Version;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.cfg.MapperBuilder;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.type.ArrayType;
+import tools.jackson.databind.type.MapType;
+import tools.jackson.databind.type.TypeFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.*;
@@ -17,9 +19,11 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.vanilla.Bundle;
 import org.openprovenance.prov.vanilla.Document;
+import tools.jackson.core.JacksonException;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.TimeZone;
 
@@ -34,26 +38,23 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
     private final TimeZone optionalTimeZone;
 
     public ProvDeserialiser() {
-        this(new ObjectMapper());
+        // Jackson 2 defaults keep the behaviour of the Jackson 2 version (JACKSON3_MIGRATION.md, D2)
+        this(JsonMapper.builderWithJackson2Defaults());
     }
 
-    public ProvDeserialiser(ObjectMapper mapper) {
-        this.mapper = mapper;
-        this.dateTimeOption = DateTimeOption.PRESERVE;
-        this.optionalTimeZone = null;
-        customize(mapper);
+    /* Jackson 3: mappers are immutable, so the deserialiser configures the given builder
+     * (instead of mutating a given mapper, as with Jackson 2) and builds its mapper from it. */
+    public ProvDeserialiser(MapperBuilder<?, ?> builder) {
+        this(builder, DateTimeOption.PRESERVE, null);
     }
-    public ProvDeserialiser(ObjectMapper mapper, DateTimeOption dateTimeOption) {
-        this.mapper = mapper;
-        this.dateTimeOption = dateTimeOption;
-        this.optionalTimeZone = null;
-        customize(mapper);
+    public ProvDeserialiser(MapperBuilder<?, ?> builder, DateTimeOption dateTimeOption) {
+        this(builder, dateTimeOption, null);
     }
-    public ProvDeserialiser(ObjectMapper mapper, DateTimeOption dateTimeOption, TimeZone optionalTimeZone) {
-        this.mapper = mapper;
+    public ProvDeserialiser(MapperBuilder<?, ?> builder, DateTimeOption dateTimeOption, TimeZone optionalTimeZone) {
         this.dateTimeOption = dateTimeOption;
         this.optionalTimeZone = optionalTimeZone;
-        customize(mapper);
+        customize(builder);
+        this.mapper = builder.build();
     }
 
     public ProvMixin provMixin() {
@@ -69,7 +70,7 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
         getAttributes().get().remove(JSONLD_CONTEXT_KEY_NAMESPACE);
         try {
             return mapper.readValue(in, Document.class);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             logger.throwing(e);
             throw new UncheckedException(e);
         }
@@ -79,18 +80,18 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
         getAttributes().get().remove(JSONLD_CONTEXT_KEY_NAMESPACE);
         try {
             return mapper.readValue(in, Document.class);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             logger.throwing(e);
             throw new UncheckedException(e);
         }
     }
 
 
-    public void customize(ObjectMapper mapper) {
+    public void customize(MapperBuilder<?, ?> mapper) {
 
         SimpleModule module =
                 new SimpleModule("CustomKindDeserializer", new Version(1, 0, 0, null, null, null));
-        TypeFactory typeFactory = mapper.getTypeFactory();
+        TypeFactory typeFactory = mapper.typeFactory();
 
         // DESERIALISER
         MapType mapType2 = typeFactory.constructMapType(HashMap.class, String.class, Object.class);
@@ -104,7 +105,9 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
 
         provMixin().addProvMixin(mapper);
 
-        mapper.registerModule(module);
+        mapper.addModule(module);
+        // Jackson 3: let PROV attribute keys reach the any-setter again (see AnySetterAttributesModule)
+        mapper.addModule(new AnySetterAttributesModule());
     }
 
     public CustomNamespaceDeserializer newCustomNamespaceDeserializer(ArrayType arrayType) {

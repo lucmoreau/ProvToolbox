@@ -1,5 +1,5 @@
 module prov.storage.filesystem {
-    requires com.fasterxml.jackson.databind;
+    requires tools.jackson.databind;
     requires org.apache.commons.io;
     requires prov.interop;
     requires prov.model;

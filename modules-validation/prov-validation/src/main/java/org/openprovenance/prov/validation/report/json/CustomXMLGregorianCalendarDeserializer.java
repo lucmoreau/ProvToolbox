@@ -1,15 +1,13 @@
 package org.openprovenance.prov.validation.report.json;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.validation.VarTime;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.io.IOException;
 
 public class CustomXMLGregorianCalendarDeserializer extends StdDeserializer<XMLGregorianCalendar> {
 
@@ -33,8 +31,8 @@ public class CustomXMLGregorianCalendarDeserializer extends StdDeserializer<XMLG
 
 
     @Override
-    public XMLGregorianCalendar deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        String text = jsonParser.getText();
+    public XMLGregorianCalendar deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
+        String text = jsonParser.getString();
         if (text.startsWith("http")) {
             return new VarTime(text);
         } else {

@@ -1,6 +1,6 @@
 package org.openprovenance.prov.interop;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
@@ -95,7 +95,7 @@ public class Outputer implements InteropMediaType {
         serializer.putAll(
                 Map.of( PROVN,  () -> new ProvSerialiser(pFactory),
                         PROVX,  () -> new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true),
-                        JSONLD, () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(new ObjectMapper(), false),
+                        JSONLD, () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(JsonMapper.builderWithJackson2Defaults(), false),
                         JSON,   org.openprovenance.prov.core.json.serialization.ProvSerialiser::new,
                         TURTLE, () -> { throw new UnsupportedOperationException("light turtle converter not integrated yet"); },
                         TRIG,   () -> { throw new UnsupportedOperationException("light turtle converter not integrated yet"); }

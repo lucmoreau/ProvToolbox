@@ -1,6 +1,6 @@
 package org.openprovenance.prov.core.json.serialization;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.DocumentedUnsupportedCaseException;
 import org.openprovenance.prov.vanilla.ProvFactory;
@@ -50,20 +50,20 @@ public class ProvJsonReader implements ProvJsonVocabulary {
 
     private void readScope(JsonNode scope, Namespace ns, List<Statement> statements, List<Bundle> bundles, QualifiedName bundleId) {
         boolean bundlesAllowed = bundleId == null;
-        Iterator<Map.Entry<String, JsonNode>> sections = scope.fields();
+        Iterator<Map.Entry<String, JsonNode>> sections = scope.properties().iterator();
         while (sections.hasNext()) {
             Map.Entry<String, JsonNode> section = sections.next();
             String key = section.getKey();
             if (PREFIX.equals(key)) continue;
             if (LEGACY_ID.equals(key) && bundleId != null) {
                 // ProvToolbox up to 2.2.4 repeated the bundle's identifier inside it, a JSON-LD habit; it must be the key's
-                QualifiedName declared = id(section.getValue().asText(), ns);
-                if (!declared.equals(bundleId)) throw new ProvJsonException("bundle " + section.getValue().asText() + " under key " + bundleId);
+                QualifiedName declared = id(section.getValue().asString(), ns);
+                if (!declared.equals(bundleId)) throw new ProvJsonException("bundle " + section.getValue().asString() + " under key " + bundleId);
                 continue;
             }
             if (BUNDLE.equals(key)) {
                 if (!bundlesAllowed) throw new ProvJsonException("a bundle must not contain a bundle");
-                Iterator<Map.Entry<String, JsonNode>> entries = object(section.getValue(), key).fields();
+                Iterator<Map.Entry<String, JsonNode>> entries = object(section.getValue(), key).properties().iterator();
                 while (entries.hasNext()) {
                     Map.Entry<String, JsonNode> e = entries.next();
                     bundles.add(readBundle(id(e.getKey(), ns), object(e.getValue(), e.getKey()), ns));
@@ -71,7 +71,7 @@ public class ProvJsonReader implements ProvJsonVocabulary {
                 continue;
             }
             if (!SECTIONS.contains(key)) throw new ProvJsonException("unknown PROV-JSON section: " + key);
-            Iterator<Map.Entry<String, JsonNode>> records = object(section.getValue(), key).fields();
+            Iterator<Map.Entry<String, JsonNode>> records = object(section.getValue(), key).properties().iterator();
             while (records.hasNext()) {
                 Map.Entry<String, JsonNode> r = records.next();
                 statements.add(readStatement(key, r.getKey(), object(r.getValue(), r.getKey()), ns));
@@ -91,10 +91,10 @@ public class ProvJsonReader implements ProvJsonVocabulary {
         Namespace ns = new Namespace();
         ns.addKnownNamespaces();
         if (prefixes != null) {
-            Iterator<Map.Entry<String, JsonNode>> it = object(prefixes, PREFIX).fields();
+            Iterator<Map.Entry<String, JsonNode>> it = object(prefixes, PREFIX).properties().iterator();
             while (it.hasNext()) {
                 Map.Entry<String, JsonNode> e = it.next();
-                String uri = e.getValue().asText();
+                String uri = e.getValue().asString();
                 if (DEFAULT.equals(e.getKey())) {
                     ns.setDefaultNamespace(uri);
                 } else if (!BLANK_PREFIX.equals(e.getKey())) {
@@ -190,7 +190,7 @@ public class ProvJsonReader implements ProvJsonVocabulary {
     /** The attributes of a record: every property that is not one of the relation's own. */
     private Collection<Attribute> attributes(JsonNode r, Namespace ns) {
         List<Attribute> attrs = new ArrayList<>();
-        Iterator<Map.Entry<String, JsonNode>> fields = r.fields();
+        Iterator<Map.Entry<String, JsonNode>> fields = r.properties().iterator();
         while (fields.hasNext()) {
             Map.Entry<String, JsonNode> f = fields.next();
             if (CORE_PROPERTIES.contains(f.getKey())) continue;
@@ -211,27 +211,27 @@ public class ProvJsonReader implements ProvJsonVocabulary {
      * submission has it; an object carries its value under {@code $} with a {@code type} or a {@code lang}.
      */
     public Attribute attribute(QualifiedName elementName, JsonNode v, Namespace ns) {
-        if (v.isTextual()) return pf.newAttribute(elementName, v.textValue(), name.XSD_STRING);
-        if (v.isBoolean()) return pf.newAttribute(elementName, v.asText(), name.XSD_BOOLEAN);
+        if (v.isString()) return pf.newAttribute(elementName, v.stringValue(), name.XSD_STRING);
+        if (v.isBoolean()) return pf.newAttribute(elementName, v.asString(), name.XSD_BOOLEAN);
         if (v.isNumber()) {
             QualifiedName type;
             if (v.isInt()) type = name.XSD_INT;
             else if (v.isLong()) type = name.XSD_LONG;
             else if (v.isBigInteger()) type = name.XSD_INTEGER;
             else type = name.XSD_DECIMAL;
-            return pf.newAttribute(elementName, v.asText(), type);
+            return pf.newAttribute(elementName, v.asString(), type);
         }
         if (!v.isObject()) throw new ProvJsonException("not a PROV-JSON literal: " + v);
         JsonNode dollar = v.get(DOLLAR);
         if (dollar == null) throw new ProvJsonException("a literal object needs a \"$\": " + v);
-        String value = dollar.asText();
+        String value = dollar.asString();
         JsonNode lang = v.get(LANG);
         JsonNode type = v.get(TYPE);
         if (lang != null) {
-            return pf.newAttribute(elementName, pf.newInternationalizedString(value, lang.asText()), name.PROV_LANG_STRING);
+            return pf.newAttribute(elementName, pf.newInternationalizedString(value, lang.asString()), name.PROV_LANG_STRING);
         }
         if (type == null) return pf.newAttribute(elementName, value, name.XSD_STRING);
-        String typeName = type.asText();
+        String typeName = type.asString();
         if (XSD_QNAME.equals(typeName) || PROV_QUALIFIED_NAME.equals(typeName)) {
             return pf.newAttribute(elementName, id(value, ns), name.PROV_QUALIFIED_NAME);
         }
@@ -262,8 +262,8 @@ public class ProvJsonReader implements ProvJsonVocabulary {
     private QualifiedName ref(JsonNode r, String property, Namespace ns) {
         JsonNode v = r.get(property);
         if (v == null || v.isNull()) return null;
-        if (!v.isTextual()) throw new ProvJsonException(property + " must be an identifier, not " + v);
-        return id(v.textValue(), ns);
+        if (!v.isString()) throw new ProvJsonException(property + " must be an identifier, not " + v);
+        return id(v.stringValue(), ns);
     }
 
     /** One identifier or an array of them: a membership may list several members. */
@@ -272,9 +272,9 @@ public class ProvJsonReader implements ProvJsonVocabulary {
         List<QualifiedName> result = new ArrayList<>();
         if (v == null || v.isNull()) return result;
         if (v.isArray()) {
-            for (JsonNode e : v) result.add(id(e.asText(), ns));
+            for (JsonNode e : v) result.add(id(e.asString(), ns));
         } else {
-            result.add(id(v.asText(), ns));
+            result.add(id(v.asString(), ns));
         }
         return result;
     }
@@ -283,7 +283,7 @@ public class ProvJsonReader implements ProvJsonVocabulary {
         JsonNode v = r.get(property);
         if (v == null || v.isNull()) return null;
         try {
-            return pf.newISOTime(v.asText(), dateTimeOption, timeZone);
+            return pf.newISOTime(v.asString(), dateTimeOption, timeZone);
         } catch (RuntimeException e) {
             throw new ProvJsonException(property + " is not an xsd:dateTime: " + v, e);
         }

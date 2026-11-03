@@ -2,7 +2,7 @@ package org.openprovenance.prov.validation.report.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.validation.report.Dependencies;

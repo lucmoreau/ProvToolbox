@@ -1,6 +1,7 @@
 package org.openprovenance.prov.storage.mongodb;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import junit.framework.TestCase;
 
 import org.openprovenance.prov.template.core.Bindings;
@@ -13,7 +14,7 @@ public class MongoBindingsDbTest extends TestCase {
     public static final String EX_NS = "http://example.org";
     public static final String EX_PREFIX = "ex";
 
-    ObjectMapper mapper=new ObjectMapper();
+    ObjectMapper mapper=JsonMapper.builderWithJackson2Defaults().build();
 
     public void testMongoStorage() throws IOException {
 
@@ -25,7 +26,8 @@ public class MongoBindingsDbTest extends TestCase {
         assertNotNull(id);
 
 
-        Bindings bindings1= Bindings.fromStream(mapper, new FileInputStream("src/test/resources/bindings1.json"));
+        // prov-template (Bindings) is still on Jackson 2 until step C5 of JACKSON3_MIGRATION.md
+        Bindings bindings1= Bindings.fromStream(new com.fasterxml.jackson.databind.ObjectMapper(), new FileInputStream("src/test/resources/bindings1.json"));
 
         ds.serializeObjectToStore(bindings1,id);
 

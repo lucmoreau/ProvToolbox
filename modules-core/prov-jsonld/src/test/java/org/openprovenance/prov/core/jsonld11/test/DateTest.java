@@ -1,6 +1,7 @@
 package org.openprovenance.prov.core.jsonld11.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import junit.framework.TestCase;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 import org.openprovenance.prov.model.DateTimeOption;
@@ -39,7 +40,7 @@ public class DateTest extends TestCase {
     public void testDateJsonldUTC() {
      //   System.out.println(jsonld);
 
-        ProvDeserialiser deserial = new ProvDeserialiser(new ObjectMapper(), DateTimeOption.UTC);
+        ProvDeserialiser deserial = new ProvDeserialiser(JsonMapper.builderWithJackson2Defaults(), DateTimeOption.UTC);
         InputStream inputStream = new ByteArrayInputStream(jsonld.getBytes());
         org.openprovenance.prov.model.Document doc = deserial.deserialiseDocument(inputStream);
         assertNotNull(doc);
@@ -63,7 +64,7 @@ public class DateTest extends TestCase {
     }
     public void testDateJsonldPreserve() {
 
-        ProvDeserialiser deserial = new ProvDeserialiser(new ObjectMapper(), DateTimeOption.PRESERVE);
+        ProvDeserialiser deserial = new ProvDeserialiser(JsonMapper.builderWithJackson2Defaults(), DateTimeOption.PRESERVE);
         InputStream inputStream = new ByteArrayInputStream(jsonld.getBytes());
         org.openprovenance.prov.model.Document doc = deserial.deserialiseDocument(inputStream);
         assertNotNull(doc);
@@ -91,7 +92,7 @@ public class DateTest extends TestCase {
         TimeZone tz = TimeZone.getTimeZone("Japan");
 
 
-        ProvDeserialiser deserial = new ProvDeserialiser(new ObjectMapper(), DateTimeOption.TIMEZONE, tz);
+        ProvDeserialiser deserial = new ProvDeserialiser(JsonMapper.builderWithJackson2Defaults(), DateTimeOption.TIMEZONE, tz);
         InputStream inputStream = new ByteArrayInputStream(jsonld.getBytes());
         org.openprovenance.prov.model.Document doc = deserial.deserialiseDocument(inputStream);
         assertNotNull(doc);

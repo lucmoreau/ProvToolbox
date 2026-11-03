@@ -1,6 +1,6 @@
 package org.openprovenance.prov.storage.filesystem;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 

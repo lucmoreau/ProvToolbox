@@ -35,6 +35,10 @@
             <version>${jackson.annotation.version}</version>
             <scope>compile</scope>
         </dependency>
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
 
         <!-- to support json(ld) serialization of ValidationReports and their Statements -->
 

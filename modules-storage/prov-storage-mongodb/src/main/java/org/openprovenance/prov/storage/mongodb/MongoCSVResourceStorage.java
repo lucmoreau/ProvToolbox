@@ -1,6 +1,6 @@
 package org.openprovenance.prov.storage.mongodb;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -58,7 +58,8 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
 
         this.mongoClient = MongoClients.create(new ConnectionString("mongodb://" + host + ":27017"));
         MongoDatabase db = mongoClient.getDatabase(dbname);
-        mapper.registerModule(org.mongojack.internal.MongoJackModule.DEFAULT_MODULE_INSTANCE);
+        // Jackson 3 / mongojack 6: mappers are immutable, configure() returns a copy with the MongoJack module
+        mapper = org.mongojack.internal.MongoJackModule.configure(mapper);
         MongoCollection<CSVWrapper> generic=db.getCollection(COLLECTION_CSV,CSVWrapper.class);
         this.csvCollection = JacksonMongoCollection.builder().withObjectMapper(mapper).build(generic,CSVWrapper.class, UuidRepresentation.STANDARD);
         this.mapper=mapper;

@@ -1,6 +1,6 @@
 package org.openprovenance.prov.interop;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.DateTimeOption;
@@ -43,8 +43,8 @@ public class Inputer implements InteropMediaType {
         deserializer.putAll(
                 Map.of(PROVN, () -> new ProvDeserialiser(pFactory, interopFramework.getConfig().dateTime, interopFramework.getConfig().timeZone),
                         PROVX, () -> new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(interopFramework.getConfig().dateTime, interopFramework.getConfig().timeZone),
-                        JSONLD, () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), interopFramework.getConfig().dateTime, interopFramework.getConfig().timeZone),
-                        JSON, () -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), interopFramework.getConfig().dateTime, interopFramework.getConfig().timeZone))
+                        JSONLD, () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(JsonMapper.builderWithJackson2Defaults(), interopFramework.getConfig().dateTime, interopFramework.getConfig().timeZone),
+                        JSON, () -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(JsonMapper.builderWithJackson2Defaults().build(), interopFramework.getConfig().dateTime, interopFramework.getConfig().timeZone))
         );
 
         return deserializer;
@@ -57,8 +57,8 @@ public class Inputer implements InteropMediaType {
         deserializer.putAll(
                 Map.of(PROVN, (DateTimeOption dateTime, TimeZone timeZone) -> new ProvDeserialiser(pFactory, dateTime, timeZone),
                         PROVX, (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(dateTime, timeZone),
-                        JSONLD, (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), dateTime, timeZone),
-                        JSON, (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), dateTime, timeZone))
+                        JSONLD, (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(JsonMapper.builderWithJackson2Defaults(), dateTime, timeZone),
+                        JSON, (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(JsonMapper.builderWithJackson2Defaults().build(), dateTime, timeZone))
         );
 
         return deserializer;

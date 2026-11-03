@@ -1,12 +1,11 @@
 package org.openprovenance.prov.core.jsonld11.serialization.deserial;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.model.Namespace;
 
-import java.io.IOException;
 import java.util.Map;
 
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.JSONLD_CONTEXT_KEY_NAMESPACE;
@@ -30,7 +29,7 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
 
 
     @Override
-    public Namespace deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
+    public Namespace deserialize(JsonParser jp, DeserializationContext deserializationContext) {
 
 
         //Namespace previous=(Namespace)deserializationContext.getAttribute(CONTEXT_KEY_NAMESPACE);

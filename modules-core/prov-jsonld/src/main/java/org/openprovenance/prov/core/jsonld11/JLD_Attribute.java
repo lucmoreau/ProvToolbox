@@ -1,8 +1,8 @@
 package org.openprovenance.prov.core.jsonld11;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomAttributeValueSerializer;
@@ -10,6 +10,7 @@ import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.vanilla.Label;
 import org.openprovenance.prov.vanilla.Type;
+import org.w3c.dom.Node;
 
 
 @JsonPropertyOrder({ "elementName", "type", "value" })
@@ -40,7 +41,7 @@ public interface JLD_Attribute extends Constants {
     void setValueFromObject(Object anObject);
 
     @JsonIgnore
-    void setValueFromObject(org.w3c.dom.Node n);
+    void setValueFromObject(Node n);
 
     @JsonIgnore
     void setValueFromObject(byte[] bytes);

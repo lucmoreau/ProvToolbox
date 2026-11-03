@@ -1,7 +1,8 @@
 package org.openprovenance.prov.core.jsonld11.test;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import junit.framework.TestCase;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
@@ -33,7 +34,7 @@ public class OpenprovTermsTest extends TestCase {
     static final String OPENPROV = NamespacePrefixMapper.OPENPROV_NS;
     static final String EX = "http://example.org/";
     static final ProvFactory pf = new org.openprovenance.prov.vanilla.ProvFactory();
-    static final ObjectMapper mapper = new ObjectMapper();
+    static final ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
 
     Document read(String file) throws IOException {
         try (FileInputStream in = new FileInputStream("src/test/resources/openprov/" + file)) {
@@ -68,7 +69,7 @@ public class OpenprovTermsTest extends TestCase {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         new ProvSerialiser().serialiseDocument(out, doc, true);
         JsonNode graph = mapper.readTree(out.toByteArray()).get("@graph");
-        for (JsonNode n : graph) if (n.get("@type").asText().equals(type)) return n;
+        for (JsonNode n : graph) if (n.get("@type").asString().equals(type)) return n;
         throw new AssertionError("no " + type + " in " + graph);
     }
 
@@ -96,8 +97,8 @@ public class OpenprovTermsTest extends TestCase {
         assertEquals(1, att.getOther().stream().filter(x -> EX.equals(x.getElementName().getNamespaceURI())).count());
 
         JsonNode json = written(doc, "Attribution");
-        assertEquals("ex:asc1", json.get("association").get(0).asText());
-        assertEquals("ex:der2", json.get("agentDerivation").get(0).asText());
+        assertEquals("ex:asc1", json.get("association").get(0).asString());
+        assertEquals("ex:der2", json.get("agentDerivation").get(0).asString());
         assertNull("no compact IRI for a scoped term", json.get("openprov:hadAssociation"));
         assertEquals(doc.getStatementOrBundle(), reread(doc).getStatementOrBundle());
     }
@@ -114,8 +115,8 @@ public class OpenprovTermsTest extends TestCase {
         assertEquals(ex("gen1"), o.get("hadItemGeneration"));
 
         JsonNode json = written(doc, "Membership");
-        assertEquals("ex:gen0", json.get("collectionGeneration").get(0).asText());
-        assertEquals("ex:item1", json.get("entity").get(0).asText());
+        assertEquals("ex:gen0", json.get("collectionGeneration").get(0).asString());
+        assertEquals("ex:item1", json.get("entity").get(0).asString());
         assertEquals(doc.getStatementOrBundle(), reread(doc).getStatementOrBundle());
     }
 
@@ -131,8 +132,8 @@ public class OpenprovTermsTest extends TestCase {
         assertEquals(ex("spec0"), o.get("hadSpecialization"));
 
         JsonNode json = written(doc, "Specialization");
-        assertEquals("ex:e0", json.get("previousEntity").get(0).asText());
-        assertEquals("ex:spec0", json.get("specialization").get(0).asText());
+        assertEquals("ex:e0", json.get("previousEntity").get(0).asString());
+        assertEquals("ex:spec0", json.get("specialization").get(0).asString());
         assertEquals(doc.getStatementOrBundle(), reread(doc).getStatementOrBundle());
     }
 
@@ -180,8 +181,8 @@ public class OpenprovTermsTest extends TestCase {
         assertEquals(ex("e"), o.get("hadEntity"));
 
         JsonNode json = written(doc, "Communication");
-        assertEquals("ex:e", json.get("entity").get(0).asText());
-        assertEquals("ex:usd", json.get("usage").get(0).asText());
+        assertEquals("ex:e", json.get("entity").get(0).asString());
+        assertEquals("ex:usd", json.get("usage").get(0).asString());
         assertNull(json.get("openprov:hadEntity"));
         assertEquals(doc.getStatementOrBundle(), reread(doc).getStatementOrBundle());
     }
@@ -191,7 +192,7 @@ public class OpenprovTermsTest extends TestCase {
         WasStartedBy wsb = only(start, WasStartedBy.class);
         assertEquals(ex("a0"), wsb.getStarter());
         assertEquals(Map.of("hadGeneration", ex("gen")), openprov(wsb));
-        assertEquals("ex:gen", written(start, "Start").get("generation").get(0).asText());
+        assertEquals("ex:gen", written(start, "Start").get("generation").get(0).asString());
         assertEquals(start.getStatementOrBundle(), reread(start).getStatementOrBundle());
 
         Document end = read("end.jsonld");
@@ -199,7 +200,7 @@ public class OpenprovTermsTest extends TestCase {
         assertEquals(ex("a0"), web.getEnder());
         assertEquals(Map.of("hadGeneration", ex("gen")), openprov(web));
         JsonNode json = written(end, "End");
-        assertEquals("ex:gen", json.get("generation").get(0).asText());
+        assertEquals("ex:gen", json.get("generation").get(0).asString());
         assertNull(json.get("openprov:hadGeneration"));
         assertEquals(end.getStatementOrBundle(), reread(end).getStatementOrBundle());
     }
@@ -214,8 +215,8 @@ public class OpenprovTermsTest extends TestCase {
         Map<String, Kind> types = Map.of("Attribution", Kind.PROV_ATTRIBUTION, "Membership", Kind.PROV_MEMBERSHIP, "Specialization", Kind.PROV_SPECIALIZATION, "Communication", Kind.PROV_COMMUNICATION, "Start", Kind.PROV_START, "End", Kind.PROV_END);
         for (Map.Entry<String, Kind> e : types.entrySet()) {
             Map<String, String> inContext = new TreeMap<>();
-            context.get(e.getKey()).get("@context").fields().forEachRemaining(t -> {
-                String id = t.getValue().path("@id").asText();
+            context.get(e.getKey()).get("@context").properties().iterator().forEachRemaining(t -> {
+                String id = t.getValue().path("@id").asString();
                 if (id.startsWith("openprov:")) inContext.put(t.getKey(), id.substring("openprov:".length()));
             });
             assertEquals(e.getKey(), inContext, new TreeMap<>(OpenprovTerms.scope(e.getValue())));
@@ -234,10 +235,10 @@ public class OpenprovTermsTest extends TestCase {
         Map<String, Kind> types = Map.of("Attribution", Kind.PROV_ATTRIBUTION, "Membership", Kind.PROV_MEMBERSHIP, "Specialization", Kind.PROV_SPECIALIZATION, "Communication", Kind.PROV_COMMUNICATION, "Start", Kind.PROV_START, "End", Kind.PROV_END);
         for (Map.Entry<String, Kind> e : types.entrySet()) {
             Set<String> expected = new TreeSet<>();
-            spec.get("prov:" + e.getKey()).get("properties").fieldNames().forEachRemaining(expected::add);
+            spec.get("prov:" + e.getKey()).get("properties").propertyNames().iterator().forEachRemaining(expected::add);
             expected.addAll(OpenprovTerms.scope(e.getValue()).keySet());
             Set<String> actual = new TreeSet<>();
-            openprov.get("prov:" + e.getKey()).get("properties").fieldNames().forEachRemaining(actual::add);
+            openprov.get("prov:" + e.getKey()).get("properties").propertyNames().iterator().forEachRemaining(actual::add);
             assertEquals(e.getKey(), expected, actual);
         }
         for (String file : List.of("attribution.jsonld", "membership.jsonld", "specialization.jsonld", "communication.jsonld", "start.jsonld", "end.jsonld")) {

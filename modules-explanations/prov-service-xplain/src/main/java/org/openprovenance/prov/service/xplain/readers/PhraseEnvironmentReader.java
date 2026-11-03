@@ -1,8 +1,13 @@
 package org.openprovenance.prov.service.xplain.readers;
 
-import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.ArrayType;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.cfg.MapperBuilder;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.type.ArrayType;
+import org.openprovenance.prov.vanilla.Document;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
@@ -26,6 +31,11 @@ public class PhraseEnvironmentReader implements MessageBodyReader<PhraseEnvironm
 
     static final Logger logger = LogManager.getLogger(PhraseEnvironmentReader.class);
 
+    /* TEMPORARY BRIDGE (JACKSON3_MIGRATION.md, step C2): the PROV document is read with the
+     * Jackson 3 PROV deserialiser, the rest of the phrase environment (Scala types of
+     * nlg-spec-transformer) with SpecLoader's Jackson 2 mapper. Before, the PROV deserialisers were
+     * added to SpecLoader's (shared) mapper, which cannot work while prov-jsonld is on Jackson 3 and
+     * nlg-spec-transformer on Jackson 2. Remove when nlg-spec-transformer is on Jackson 3 (step C7). */
     ProvDeserialiser deserialiser;
     private final ObjectMapper objectMapper;
 
@@ -33,14 +43,14 @@ public class PhraseEnvironmentReader implements MessageBodyReader<PhraseEnvironm
 
 
         this.objectMapper = SpecLoader.mapper();
-        this.deserialiser=new CustomDeserialiser(this.objectMapper);
+        this.deserialiser=new CustomDeserialiser(JsonMapper.builderWithJackson2Defaults());
 
 
     }
     
     static class CustomDeserialiser extends ProvDeserialiser {
-        CustomDeserialiser(ObjectMapper om) {
-            super(om);
+        CustomDeserialiser(MapperBuilder<?, ?> builder) {
+            super(builder);
         }
 
         @Override
@@ -73,7 +83,15 @@ public class PhraseEnvironmentReader implements MessageBodyReader<PhraseEnvironm
     public PhraseEnvironment readFrom(Class<PhraseEnvironment> aClass, Type type, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> multivaluedMap, InputStream inputStream) throws IOException, WebApplicationException {
 
         try {
-            return objectMapper.readValue(inputStream, PhraseEnvironment.class);
+            // see the TEMPORARY BRIDGE note above
+            JsonNode tree = objectMapper.readTree(inputStream);
+            JsonNode document = tree instanceof ObjectNode ? ((ObjectNode) tree).remove("document") : null;
+            PhraseEnvironment environment = objectMapper.treeToValue(tree, PhraseEnvironment.class);
+            if (document != null && !document.isNull()) {
+                byte[] json = objectMapper.writeValueAsBytes(document);
+                environment.setDocument((Document) deserialiser.deserialiseDocument(new java.io.ByteArrayInputStream(json)));
+            }
+            return environment;
         } catch (com.fasterxml.jackson.databind.JsonMappingException re) {
             logger.throwing(re);
             throw re;

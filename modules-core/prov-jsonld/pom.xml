@@ -19,9 +19,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -37,7 +36,7 @@
         <dependency>
             <groupId>com.networknt</groupId>
             <artifactId>json-schema-validator</artifactId>
-            <version>1.5.9</version>
+            <version>${json-schema-validator.version}</version> <!-- 3.x: Jackson 3; 1.5.9 was Jackson 2 -->
             <scope>test</scope>
         </dependency>
         <dependency>

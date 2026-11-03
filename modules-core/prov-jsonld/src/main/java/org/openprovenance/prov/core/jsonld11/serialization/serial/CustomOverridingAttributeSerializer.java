@@ -1,12 +1,10 @@
 package org.openprovenance.prov.core.jsonld11.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import tools.jackson.core.JsonGenerator;
 import org.openprovenance.prov.vanilla.QualifiedName;
 import org.openprovenance.prov.vanilla.TypedValue;
-
-import java.io.IOException;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
 
 import static org.openprovenance.prov.core.jsonld11.serialization.Constants.PROPERTY_AT_ID;
 import static org.openprovenance.prov.core.jsonld11.serialization.serial.CustomAttributeValueSerializer.prnt;
@@ -19,16 +17,16 @@ import static org.openprovenance.prov.core.jsonld11.serialization.serial.CustomK
  * context coerces to {@code @id} (as the key serialiser just recorded), a node reference {@code {"@id": ...}} under
  * any other (https://github.com/openprov/prov-jsonld/issues/7).
  */
-final public class CustomOverridingAttributeSerializer extends JsonSerializer<TypedValue> {
+final public class CustomOverridingAttributeSerializer extends ValueSerializer<TypedValue> {
 
-    private final JsonSerializer<TypedValue> defaultSerializer;
+    private final ValueSerializer<TypedValue> defaultSerializer;
 
-    public CustomOverridingAttributeSerializer(JsonSerializer<TypedValue> serializer) {
+    public CustomOverridingAttributeSerializer(ValueSerializer<TypedValue> serializer) {
         defaultSerializer = serializer;
     }
 
     @Override
-    final public void serialize(TypedValue o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    final public void serialize(TypedValue o, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
 
         if (o.getValue() instanceof QualifiedName) {
             final String qn = prnt((QualifiedName) o.getValue());
@@ -36,7 +34,7 @@ final public class CustomOverridingAttributeSerializer extends JsonSerializer<Ty
                 jsonGenerator.writeString(qn);
             } else {
                 jsonGenerator.writeStartObject();
-                jsonGenerator.writeStringField(PROPERTY_AT_ID, qn);
+                jsonGenerator.writeStringProperty(PROPERTY_AT_ID, qn);
                 jsonGenerator.writeEndObject();
             }
         } else {

@@ -3,14 +3,14 @@ package org.openprovenance.prov.core.jsonld11;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.ScopedKeyDeserializer;
 import org.openprovenance.prov.core.jsonld11.serialization.serial.ScopedKeySerializer;
 import org.openprovenance.prov.model.Attribute;
 import java.util.Map;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.QualifiedName;

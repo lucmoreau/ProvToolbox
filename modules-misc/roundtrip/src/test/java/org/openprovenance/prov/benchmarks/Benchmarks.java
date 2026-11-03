@@ -39,7 +39,7 @@ public class Benchmarks {
 
     }
 
-    ProvSerialiser   jsonldSerialiser   = new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(new ObjectMapper(),false);
+    ProvSerialiser   jsonldSerialiser   = new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults(),false);
     ProvDeserialiser jsonldDeserialiser = new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser();
     ProvSerialiser   provnSerialiser    = new org.openprovenance.prov.notation.ProvSerialiser(pf);
     ProvDeserialiser provnDeserialiser  = new org.openprovenance.prov.notation.ProvDeserialiser(pf);

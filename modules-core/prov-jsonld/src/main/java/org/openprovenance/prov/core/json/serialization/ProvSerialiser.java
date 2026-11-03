@@ -1,14 +1,15 @@
 package org.openprovenance.prov.core.json.serialization;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.model.interop.InteropMediaType;
+import tools.jackson.core.JacksonException;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Set;
@@ -18,8 +19,9 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     final static private Collection<String> myMedia = Set.of(InteropMediaType.MEDIA_APPLICATION_JSON);
 
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final ObjectMapper mapperWithFormat = new ObjectMapper();
+    // Jackson 3: immutable mappers, configured when built; Jackson 2 defaults (JACKSON3_MIGRATION.md, D2)
+    private final ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().disable(SerializationFeature.INDENT_OUTPUT).build();
+    private final ObjectMapper mapperWithFormat = JsonMapper.builderWithJackson2Defaults().enable(SerializationFeature.INDENT_OUTPUT).build();
     private final ProvJsonWriter writer;
 
     public ProvSerialiser() {
@@ -28,8 +30,6 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     public ProvSerialiser(ProvFactory pf) {
         this.writer = new ProvJsonWriter(pf);
-        mapperWithFormat.enable(SerializationFeature.INDENT_OUTPUT);
-        mapper.disable(SerializationFeature.INDENT_OUTPUT);
     }
 
     /** The PROV-JSON tree of a document, for callers that want to inspect or embed it rather than write it. */
@@ -41,7 +41,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
         try {
             (formatted ? mapperWithFormat : mapper).writeValue(out, writer.write(document));
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new UncheckedException(e);
         }
     }
@@ -49,7 +49,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     public void serialiseObject(OutputStream out, Object document, boolean formatted) {
         try {
             (formatted ? mapperWithFormat : mapper).writeValue(out, document);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new UncheckedException(e);
         }
     }

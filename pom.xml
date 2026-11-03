@@ -455,8 +455,9 @@
 		<jackson.annotation.version>2.22</jackson.annotation.version> <!-- 2.21, 2.20; shared by jackson 2 and 3, aligned with jackson-bom 3.x -->
 		<!-- Jackson 3 (tools.jackson), see JACKSON3_MIGRATION.md. Jackson 2 (jackson.version) stays until all modules are migrated -->
 		<jackson3.version>3.2.4</jackson3.version>
+		<json-schema-validator.version>3.0.8</json-schema-validator.version> <!-- networknt; 3.x = Jackson 3, 1.5.9 = Jackson 2 -->
 
-		<mongojack.version>5.0.3</mongojack.version> <!-- 4.11.1,4.0.3, 3.0.3, 2.10.1, 2.10.1, 2.10.0 -->  <!-- https://github.com/mongojack/mongojack/blob/master/MIGRATING.md -->
+		<mongojack.version>6.0.0</mongojack.version> <!-- 6.x: Jackson 3, mongodb driver 5 (JACKSON3_MIGRATION.md); 5.0.3, 4.11.1,4.0.3, 3.0.3, 2.10.1, 2.10.1, 2.10.0 -->  <!-- https://github.com/mongojack/mongojack/blob/master/MIGRATING.md -->
 		<poet.version>1.13.0</poet.version> <!--1.11.1 -->
 
 		<scm.version>2.1.0</scm.version> <!-- 1.3 -->

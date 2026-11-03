@@ -1,8 +1,8 @@
 package org.openprovenance.prov.core.jsonld11;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomKeyDeserializer;
 import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomKeySerializer;
 import org.openprovenance.prov.model.Attribute;

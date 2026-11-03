@@ -1,11 +1,10 @@
 package org.openprovenance.prov.scala.jsonld11.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ser.std.StdSerializer;
 import org.openprovenance.prov.scala.immutable.TypedValue;
+import tools.jackson.databind.SerializationContext;
 
-import java.io.IOException;
 import java.util.Set;
 
 
@@ -22,12 +21,12 @@ public class CustomAttributesSerializer extends StdSerializer<Object> {
     }
 
     @Override
-    public void serialize(Object o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(Object o, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
         String newKey=(String)serializerProvider.getAttribute(CustomMapSerializer2.CONTEXT_KEY_FOR_MAP);
 
         Set<TypedValue> set=(Set<TypedValue>) o;
         if (!(set.isEmpty())) {
-            jsonGenerator.writeFieldName(newKey);
+            jsonGenerator.writeName(newKey);
             jsonGenerator.writeStartArray();
             for (TypedValue a : set) {
                 new CustomTypedValueSerializer().serialize(a, jsonGenerator, serializerProvider);

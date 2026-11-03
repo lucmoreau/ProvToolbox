@@ -1,7 +1,8 @@
 package org.openprovenance.prov.scala.jsonld11;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import junit.framework.TestCase;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.scala.immutable.ProvFactory;
@@ -26,7 +27,7 @@ public class ProvJsonld7Test extends TestCase {
     static final String EX = "http://example.org/";
     static final String FOAF = "http://xmlns.com/foaf/0.1/";
     static final ProvFactory pf = ProvFactory.pf();
-    static final ObjectMapper mapper = new ObjectMapper();
+    static final ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
 
     static Document read(String file) throws IOException {
         try (FileInputStream in = new FileInputStream("src/test/resources/prov-jsonld-7/" + file)) {
@@ -56,7 +57,7 @@ public class ProvJsonld7Test extends TestCase {
     /** The agent's foaf:pastProject as written. */
     static JsonNode writtenPastProject(byte[] json) throws IOException {
         for (JsonNode n : mapper.readTree(json).get("@graph")) {
-            if (n.path("@id").asText().equals("ex:arthur")) return n.get("foaf:pastProject");
+            if (n.path("@id").asString("").equals("ex:arthur")) return n.get("foaf:pastProject");
         }
         throw new AssertionError("no ex:arthur in " + new String(json));
     }

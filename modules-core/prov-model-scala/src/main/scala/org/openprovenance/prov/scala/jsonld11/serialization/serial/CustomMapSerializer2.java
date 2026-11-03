@@ -1,12 +1,10 @@
 package org.openprovenance.prov.scala.jsonld11.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ser.std.StdSerializer;
 import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 import org.openprovenance.prov.scala.immutable.QualifiedName;
-
-import java.io.IOException;
+import tools.jackson.databind.SerializationContext;
 
 
 public class CustomMapSerializer2 extends StdSerializer<QualifiedName> {
@@ -24,7 +22,7 @@ public class CustomMapSerializer2 extends StdSerializer<QualifiedName> {
     }
 
     @Override
-    public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
         String s=q.getPrefix() + ":" + q.getLocalPart();
         if (s.equals("prov:type")) {
             s= Constants.PROPERTY_PROV_TYPE;

@@ -1,12 +1,9 @@
 package org.openprovenance.prov.scala.jsonld11.serialization.deserial;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.model.StatementOrBundle;
-
-import java.io.IOException;
 
 
 public class CustomKindDeserializer extends StdDeserializer<StatementOrBundle.Kind> {
@@ -16,7 +13,7 @@ public class CustomKindDeserializer extends StdDeserializer<StatementOrBundle.Ki
     }
 
     @Override
-    public StatementOrBundle.Kind deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public StatementOrBundle.Kind deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
         return StatementOrBundle.Kind.PROV_ACTIVITY;
     }
 

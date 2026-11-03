@@ -59,7 +59,7 @@ Jackson 2 BOM; no ProvToolbox code uses Jackson 2 except service-templates' Spri
 
 **PROV-XML step 2 is DONE (2026-11-03)**: the services no longer advertise or accept PROV-XML.
 
-**Phase D is DONE (2026-11-03)**: the migration is complete. Jackson 3 everywhere, except the
+**Phase D is DONE (2026-11-03)**: the migration is complete. Final full comparison build: tests identical to the baseline (except the PROV-XML removals), outputs identical up to known noise. Jackson 3 everywhere, except the
 pac4j and Spring Boot 2.7 islands (D3/C9).
 
 **Open points for the maintainer:** run the services' ITs on a machine with MongoDB/PostgreSQL
@@ -495,6 +495,7 @@ These fail in the baseline for environmental reasons, so they are **not** regres
 |---|---|---|
 | 2026-11-03 | A1 | Branch `jackson3-port` created off `scala3-port` (66ce97c). Inventory done (section 2). |
 | 2026-11-03 | baseline build | `mvn install -DskipTests` of the whole Scala-3-only reactor: all code modules OK (see section 6 for the packaging modules that cannot be built in the cloud). |
+| 2026-11-03 | final verification | Full comparison build after PROV-XML step 2 and phase D: tests identical to the baseline (except the PROV-XML removals); outputs as after C9 (known noise only); same environmental reactor failures. |
 | 2026-11-03 | D done | Leftovers checked (poms, module-info, bridges, OpenRewrite); `PleadWorkflowIT` to Jackson 3; `ServiceInvoker` kept on Jackson 2 (Spring). DEPENDENCIES.md regenerated. |
 | 2026-11-03 | PROV-XML step 2 | PROV-XML removed from the services' media types, swagger docs, form values and HTML forms. OpenAPI differs from C8 only by those entries; ITs as before. pac4j 6.6.0 checked: still Jackson 2 (2.22.4). |
 | 2026-11-03 | C8+C9 verified | Full comparison build: tests identical to the baseline (except the PROV-XML removals); outputs as after C7, plus noise only: prov-model-scala `entity8.jsonld` (same values; two "now" timestamps 1 ms apart change the order, like `entity8.via.jsonld`) and service-translator failsafe reports (left by the manual IT runs; the build uses `-DskipITs`). Reactor failures: as before, minus SERVICE: XPLAIN (a dummy lexicon zip is now in its `dictionary/`, gitignored). |

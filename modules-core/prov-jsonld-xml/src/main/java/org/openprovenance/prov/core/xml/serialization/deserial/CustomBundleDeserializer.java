@@ -1,26 +1,24 @@
 package org.openprovenance.prov.core.xml.serialization.deserial;
 
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.dataformat.xml.deser.FromXmlParser;
 import org.openprovenance.prov.core.xml.serialization.MisnamedBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.vanilla.Bundle;
-
-import java.io.IOException;
+import tools.jackson.databind.ValueDeserializer;
 
 import static org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil.getNamespace;
 import static org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil.newNamespace;
 import static org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil.setNamespace;
 
-public class CustomBundleDeserializer extends JsonDeserializer<Bundle> {
+public class CustomBundleDeserializer extends ValueDeserializer<Bundle> {
     static final ProvFactory pf = org.openprovenance.prov.vanilla.ProvFactory.getFactory();
 
     @Override
-    public Bundle deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+    public Bundle deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
         FromXmlParser xmlParser=(FromXmlParser)jsonParser;
 
         // get the document namespace from the context

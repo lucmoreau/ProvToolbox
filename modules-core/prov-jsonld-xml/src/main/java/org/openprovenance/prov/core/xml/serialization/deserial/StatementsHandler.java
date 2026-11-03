@@ -1,15 +1,15 @@
 package org.openprovenance.prov.core.xml.serialization.deserial;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.Version;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.deser.DeserializationProblemHandler;
+import tools.jackson.databind.module.SimpleModule;
 import org.openprovenance.prov.core.xml.serialization.Constants;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.vanilla.*;
+import tools.jackson.databind.ValueDeserializer;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class StatementsHandler extends SimpleModule{
     public void setupModule(SetupContext context) {
         // Required, as documented in the Javadoc of SimpleModule
         super.setupModule(context);
-        context.addDeserializationProblemHandler(new MyDeserializationProblemHandler());
+        context.addHandler(new MyDeserializationProblemHandler()); // jackson 3 name
     }
 
 
@@ -107,21 +107,28 @@ public class StatementsHandler extends SimpleModule{
         @Override
         public boolean handleUnknownProperty(DeserializationContext ctxt,
                                              JsonParser jp,
-                                             JsonDeserializer<?> deserializer,
+                                             ValueDeserializer<?> deserializer,
                                              Object beanOrClass,
-                                             String propertyName)
-                throws IOException {
+                                             String propertyName) {
+
+            // Jackson 3's XML parser reports the whitespace-only text of an element without children
+            // (e.g. an empty, pretty-printed <document>) as a property named ""; Jackson 2 did not.
+            if ("".equals(propertyName)
+                    && jp.currentToken() == tools.jackson.core.JsonToken.VALUE_STRING
+                    && jp.getString().isBlank()) {
+                return true;
+            }
 
             Class<? extends StatementOrBundle> cl;
             if ((beanOrClass instanceof Document) && ((cl= statementOrBundleMap.get(propertyName))!=null)) {
-                StatementOrBundle s=jp.readValueAs(cl);
+                StatementOrBundle s=ctxt.readValue(jp, cl); // jackson 3: read through the current context (was jp.readValueAs)
                 Document doc=(Document) beanOrClass;
                 doc.getStatementOrBundle().add(s);
                 return true;
             }
             Class<? extends Statement> cl2;
             if ((beanOrClass instanceof Bundle) && ((cl2 = statementMap.get(propertyName)) != null)) {
-                Statement s = jp.readValueAs(cl2);
+                Statement s = ctxt.readValue(jp, cl2); // jackson 3: read through the current context (was jp.readValueAs)
                 Bundle bun = (Bundle) beanOrClass;
                 bun.getStatement().add(s);
                 return true;

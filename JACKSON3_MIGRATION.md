@@ -204,7 +204,7 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 | B2 | Baseline: record current test results (`jackson3-migration/test-summary.py` over the build logs → `jackson3-migration/baseline-tests.tsv`) and sample outputs for later comparison | **DONE (cloud)**: `jackson3-migration/baseline-tests.tsv`, 31 modules with tests (unit tests only, `-DskipITs`; prov-storage-mongodb not run). Pre-existing failures listed in 5c. Caveat: the baseline was run in segments. Modules from service-translator onwards (last segment, `-rf :service-translator`) already ran with the B1 root pom (annotations 2.22 + BOM); the others ran before B1. Snapshot of 5,793 files written by tests under `target/` (json/jsonld/provn/xml/dot/svg/...): kept outside the repo; regenerate by running the baseline command on commit 3606168 |
 | C1 | prov-model (annotations only: check, module-info) | **DONE, no change needed**: only `com.fasterxml.jackson.annotation` (2 files), which Jackson 3 keeps; `module-info` `requires com.fasterxml.jackson.annotation` stays |
 | C2 | prov-jsonld (+ json-schema-validator 3.x), and the modules its change breaks | **DONE** — tests identical to baseline; see the detail table below |
-| C3 | prov-jsonld-xml | TODO |
+| C3 | prov-jsonld-xml | **module migrated**, tests 147/147 as baseline, outputs identical; dependants: see progress log |
 | C4 | prov-model-scala (Scala), prov-n, prov-scala-misc | TODO |
 | C5 | prov-template (+ YAML, zjsonpatch), prov-template-compiler (+ generated code, generated poms), template library, archetype | TODO |
 | C6 | prov-interop, storage (api, filesystem, redis, mongodb + mongojack 6) | TODO |
@@ -319,6 +319,20 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
     `UtilsXplain.exportToJson` wrote truncated, invalid JSON with Jackson 2 (it failed silently at
     the Scala `enumType` property). With Jackson 3 and its Scala module, the 6 affected files
     (`q.*.json`, `16.json`, `loan2-result.json`) are complete and valid.
+13. **XML (jackson-dataformat-xml 3)**: `new XmlMapper(xmlFactory)` → `XmlMapper.builder(XmlFactory.builderWithJackson2Defaults().xmlInputFactory(..).xmlOutputFactory(..).build()).configureForJackson2()`
+    (D2 for a custom factory; `XmlMapper.builderWithJackson2Defaults()` otherwise).
+    `SetupContext.addDeserializationProblemHandler` → `addHandler`; `JsonGenerator.writeObject` → `writePOJO`;
+    the StAX helpers' checked `IOException` → `JacksonIOException.construct(new IOException(e))`.
+14. **Token-skipping that relied on Jackson 2 internals**: `nextValue(); readValueAsTree(); readValueAsTree();`
+    worked in Jackson 2 only because `readValueAsTree()` cleared the current token. In Jackson 3 the
+    parser stayed inside the element, and the rest of the document was misread (89 errors in
+    prov-jsonld-xml: inner `<agent prov:ref=.../>` became top-level statements). Use
+    `jsonParser.skipChildren()` to end on the element's END_OBJECT. Grep for `readValueAsTree`
+    in the other modules. Also prefer `ctxt.readValue(p, type)` to `p.readValueAs(type)` in handlers.
+15. **Whitespace text in XML**: Jackson 3's XML parser reports the whitespace-only content of an
+    element without children (an empty pretty-printed `<document>`) as a property `""`
+    (`UnrecognizedPropertyException`). No `XmlReadFeature` controls it; prov-jsonld-xml's
+    `StatementsHandler` problem handler now accepts a blank `""` property.
 12. **Reverting OpenRewrite where the code talks to a Jackson 2 module**: OpenRewrite converts
     everything in a module. Where a class only deals with a module that is still on Jackson 2
     (e.g. prov-service-translation's `TemplateService`/`ActionExpand` with prov-template), restore
@@ -382,6 +396,7 @@ These fail in the baseline for environmental reasons, so they are **not** regres
 |---|---|---|
 | 2026-11-03 | A1 | Branch `jackson3-port` created off `scala3-port` (66ce97c). Inventory done (section 2). |
 | 2026-11-03 | baseline build | `mvn install -DskipTests` of the whole Scala-3-only reactor: all code modules OK (see section 6 for the packaging modules that cannot be built in the cloud). |
+| 2026-11-03 | C3 (module) | prov-jsonld-xml migrated (OpenRewrite + builder rewrite + `AnySetterAttributesModule` copy + fixes #13–#15). Tests 147/147 (were 89 errors before fix #14), outputs identical. Next: build the dependants, full comparison build. |
 | 2026-11-03 | C2 done | Remaining 4 modules fixed (redis migrated; translation partly; validation; summary bridge); provman fixed. Full comparison build: tests identical to baseline everywhere; outputs identical except noise + 6 provman JSON files no longer truncated. `compare-outputs.py` also ignores `[B@` hashes, DOT blank nodes, in-line attribute order. |
 | 2026-11-03 | C2 (in progress) | prov-jsonld migrated and verified (660/660; outputs identical except noise). Found and fixed the silent attribute loss (catalogue #2). prov-validation migrated (232/232). prov-interop (partly), storage api/filesystem/mongodb (mongojack 6) migrated, xplain bridged, test readers fixed. Left: redis, prov-service-translation, -validation, -summary (they pass Jackson 2 mappers to the storage API). Build red for those. |
 | 2026-11-03 | decisions | Maintainer confirmed D1–D6 as proposed. |

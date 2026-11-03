@@ -1,14 +1,13 @@
 package org.openprovenance.prov.core.xml.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ser.std.StdSerializer;
 import org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.vanilla.QualifiedName;
+import tools.jackson.databind.SerializationContext;
 import org.openprovenance.prov.core.xml.serialization.stax.StaxStreamWriterUtil;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import static org.openprovenance.prov.core.xml.serialization.stax.StaxStreamWriterUtil.writeNamespace;
@@ -26,7 +25,7 @@ public class CustomQualifiedNameSerializer extends StdSerializer<QualifiedName> 
 
 
     @Override
-    public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
 
         String prefix = q.getPrefix();
         String str =  q.getLocalPart();

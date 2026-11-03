@@ -1,9 +1,9 @@
 module prov.jsonld.xml {
     requires com.ctc.wstx;
     requires com.fasterxml.jackson.annotation;
-    requires com.fasterxml.jackson.core;
-    requires com.fasterxml.jackson.databind;
-    requires com.fasterxml.jackson.dataformat.xml;
+    requires tools.jackson.core;
+    requires tools.jackson.databind;
+    requires tools.jackson.dataformat.xml;
     requires java.xml;
     requires org.apache.logging.log4j;
     requires org.codehaus.stax2;

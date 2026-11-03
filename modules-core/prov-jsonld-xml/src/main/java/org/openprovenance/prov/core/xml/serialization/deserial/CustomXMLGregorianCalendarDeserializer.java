@@ -1,19 +1,18 @@
 package org.openprovenance.prov.core.xml.serialization.deserial;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.exception.TimeZoneException;
 import org.openprovenance.prov.vanilla.ProvFactory;
+import tools.jackson.databind.ValueDeserializer;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.io.IOException;
 import java.util.TimeZone;
 
-public class CustomXMLGregorianCalendarDeserializer extends JsonDeserializer<XMLGregorianCalendar> {
+public class CustomXMLGregorianCalendarDeserializer extends ValueDeserializer<XMLGregorianCalendar> {
     private static final Logger logger = LogManager.getLogger(CustomXMLGregorianCalendarDeserializer.class);
     static final ProvFactory pf=ProvFactory.getFactory();
     private final DateTimeOption dateTimeOption;
@@ -32,8 +31,8 @@ public class CustomXMLGregorianCalendarDeserializer extends JsonDeserializer<XML
     }
 
     @Override
-    public XMLGregorianCalendar deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        String text = jsonParser.getText();
+    public XMLGregorianCalendar deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
+        String text = jsonParser.getString();
         XMLGregorianCalendar xmlGregorianCalendar = pf.newISOTime(text, dateTimeOption, optionalTimeZone);
         logger.debug("Deserialized XMLGregorianCalendar: {} {}", text, xmlGregorianCalendar);
         return xmlGregorianCalendar;

@@ -1,18 +1,15 @@
 package org.openprovenance.prov.core.xml.serialization.deserial;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.dataformat.xml.deser.FromXmlParser;
 import org.openprovenance.prov.vanilla.ProvFactory;
+import tools.jackson.databind.ValueDeserializer;
 import org.openprovenance.prov.core.xml.serialization.ProvDeserialiser;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 
-import java.io.IOException;
-
-public class CustomQualifiedNameDeserializerAsXmlAttribute extends JsonDeserializer<QualifiedName> { //StdDeserializer<QualifiedName> {
+public class CustomQualifiedNameDeserializerAsXmlAttribute extends ValueDeserializer<QualifiedName> { //StdDeserializer<QualifiedName> {
 
     private static final ProvFactory pf= ProvDeserialiser.pf;
 
@@ -24,16 +21,16 @@ public class CustomQualifiedNameDeserializerAsXmlAttribute extends JsonDeseriali
 
 
     @Override
-    public QualifiedName deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public QualifiedName deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
         Namespace ns = DeserializerUtil.getNamespace();
 
         FromXmlParser xmlParser=(FromXmlParser)jsonParser;
 
         String ref = DeserializerUtil.getAttributeValue(ns, xmlParser, "ref");
-        jsonParser.nextValue();
-
-        jsonParser.readValueAsTree();
-        jsonParser.readValueAsTree();
+        // Jackson 3: consume the rest of the element (<x prov:ref="..."/>), ending on its END_OBJECT.
+        // Was nextValue() + 2 x readValueAsTree(), which relied on Jackson 2 clearing the current token
+        // after readValueAsTree(); Jackson 3 does not, which left the parser inside the element.
+        jsonParser.skipChildren();
 
         return ns.stringToQualifiedName(ref, pf, false);
 

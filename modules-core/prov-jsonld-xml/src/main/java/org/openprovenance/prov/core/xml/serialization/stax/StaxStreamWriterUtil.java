@@ -1,7 +1,7 @@
 package org.openprovenance.prov.core.xml.serialization.stax;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.codehaus.stax2.typed.TypedXMLStreamWriter;
 import org.openprovenance.prov.core.xml.serialization.serial.CustomTypedValueSerializer;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
@@ -13,37 +13,37 @@ import java.io.IOException;
 import java.io.Serializable;
 
 public class StaxStreamWriterUtil implements Serializable {
-    public static void setPrefix(JsonGenerator jsonGenerator, String prefix, String provNs) throws IOException {
+    public static void setPrefix(JsonGenerator jsonGenerator, String prefix, String provNs) {
         ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
         try {
             xmlGenerator.getStaxWriter().setPrefix(prefix, provNs);
         } catch (XMLStreamException e) {
             e.printStackTrace();
-            throw new IOException(e);
+            throw tools.jackson.core.exc.JacksonIOException.construct(new IOException(e)); // jackson 3: unchecked
         }
     }
 
-    public static void  writeNamespace(JsonGenerator jsonGenerator, String prefix, String provNs) throws IOException {
+    public static void  writeNamespace(JsonGenerator jsonGenerator, String prefix, String provNs) {
         try {
             ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
             xmlGenerator.getStaxWriter().writeNamespace(prefix, provNs);
         } catch (XMLStreamException e) {
             e.printStackTrace();
-            throw new IOException(e);
+            throw tools.jackson.core.exc.JacksonIOException.construct(new IOException(e)); // jackson 3: unchecked
         }
     }
-    public static void  writeDefaultNamespace(JsonGenerator jsonGenerator, String provNs) throws IOException {
+    public static void  writeDefaultNamespace(JsonGenerator jsonGenerator, String provNs) {
         try {
             ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
             xmlGenerator.getStaxWriter().setDefaultNamespace(provNs);
             xmlGenerator.getStaxWriter().writeDefaultNamespace(provNs);
         } catch (XMLStreamException e) {
             e.printStackTrace();
-            throw new IOException(e);
+            throw tools.jackson.core.exc.JacksonIOException.construct(new IOException(e)); // jackson 3: unchecked
         }
     }
 
-    public static String  getDefaultNamespace(JsonGenerator jsonGenerator) throws IOException {
+    public static String  getDefaultNamespace(JsonGenerator jsonGenerator) {
         ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
         return xmlGenerator.getStaxWriter().getNamespaceContext().getNamespaceURI("");
     }

@@ -1,10 +1,10 @@
 package org.openprovenance.prov.core.xml.serialization;
 
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.type.CollectionType;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.core.Version;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.type.CollectionType;
+import tools.jackson.databind.type.TypeFactory;
+import tools.jackson.dataformat.xml.XmlMapper;
 import org.openprovenance.prov.core.xml.serialization.deserial.*;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Namespace;
@@ -56,21 +56,24 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
 
 
     public XmlMapper getMapper() {
-        XmlMapper mapper = new XmlMapper();
+        // Jackson 3: immutable mappers, configured on the builder; Jackson 2 defaults (JACKSON3_MIGRATION.md, D2)
+        XmlMapper.Builder mapper = XmlMapper.builderWithJackson2Defaults();
 
         SimpleModule module =
                 new StatementsHandler("CustomKindDeserializer", new Version(1, 0, 0, null, null, null));
 
-        TypeFactory typeFactory = mapper.getTypeFactory();
+        TypeFactory typeFactory = mapper.typeFactory();
         CollectionType setType = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.model.Attribute.class);
         module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
         module.addDeserializer(XMLGregorianCalendar.class, new CustomXMLGregorianCalendarDeserializer(dateTimeOption,optionalTimeZone));
         module.addDeserializer(Bundle.class, new CustomBundleDeserializer());
         module.addKeyDeserializer(QualifiedName.class, new CustomKeyDeserializer());
 
-        mapper.registerModule(module);
+        mapper.addModule(module);
+        // Jackson 3: let PROV attribute keys reach the any-setter again (see AnySetterAttributesModule)
+        mapper.addModule(new AnySetterAttributesModule());
         provMixin.addProvMixin(mapper);
-        return mapper;
+        return mapper.build();
     }
 
 }

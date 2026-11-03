@@ -28,8 +28,8 @@ Verification (full comparison build): **test results identical to the baseline f
 outputs identical except known noise, plus 6 provman query-result JSON files that were
 **truncated (invalid JSON) with Jackson 2** and are now complete and valid (see 5b #11).
 
-**C3: prov-jsonld-xml is retired** and **PROV-XML support is dropped** (step 1 done; step 2,
-the services' advertised formats, still TODO: see the C3 row).
+**C3: prov-jsonld-xml is retired** and **PROV-XML support is dropped** (steps 1 and 2 done:
+prov-interop and the services no longer read, write or advertise PROV-XML; see the C3 row).
 
 **C5 is DONE (2026-11-03).** prov-template, prov-template-compiler (incl. generated code and
 poms), template library, and the Jackson 2 left in prov-interop, prov-service-translation,

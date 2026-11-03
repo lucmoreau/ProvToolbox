@@ -4,7 +4,7 @@ Living document: **whoever works on the migration updates the status columns and
 progress log after every step, and commits it with the work.** A new session should be able
 to resume from this file alone.
 
-- Branch: `jackson3-port`, off `scala3-port` (which is now Scala 3 only, see SCALA3_MIGRATION.md).
+- Branch: `jackson3-port`, off `scala3-port` (which is now Scala 3 only, see docs/SCALA3_MIGRATION.md).
 - Started: 2026-11-03.
 
 ## ▶ Current status and next steps
@@ -484,7 +484,7 @@ These fail in the baseline for environmental reasons, so they are **not** regres
   template-library zip, prov-template-library), and the later modules then fail.
 - The cloud container could not build: jsweet candies (`repository.jsweet.org` unreachable),
   provconvert's izpack installer, docker-* modules (no docker), and anything needing the
-  SimpleNLG lexicon (see SCALA3_MIGRATION.md; nlg-wrapper built with
+  SimpleNLG lexicon (see docs/SCALA3_MIGRATION.md; nlg-wrapper built with
   `-P '!missing-lexicon' -Dmaven.antrun.skip=true` against a local lexaccess stub).
   All Java/Scala code modules compiled and installed.
 

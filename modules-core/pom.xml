@@ -12,7 +12,7 @@
     <modules>
         <module>prov-model</module>
         <module>prov-jsonld</module>
-        <module>prov-jsonld-xml</module>
+        <!-- <module>prov-jsonld-xml</module> --> <!-- retired (not migrated to Jackson 3), see JACKSON3_MIGRATION.md -->
         <module>prov-model-scala</module>
         <module>prov-n</module>
     </modules>

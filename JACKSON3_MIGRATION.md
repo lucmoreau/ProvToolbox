@@ -28,7 +28,8 @@ Verification (full comparison build): **test results identical to the baseline f
 outputs identical except known noise, plus 6 provman query-result JSON files that were
 **truncated (invalid JSON) with Jackson 2** and are now complete and valid (see 5b #11).
 
-**Next:** C3 (prov-jsonld-xml), then C4 (prov-model-scala's Jackson 2 copies of the JSON-LD
+**C3: prov-jsonld-xml is retired** (commented out of the build; see the C3 row: 5 modules still
+depend on it, decision pending). **Next:** C4 (prov-model-scala's Jackson 2 copies of the JSON-LD
 serialisers: reuse `AnySetterAttributesModule`!), C5 (prov-template + compiler: removes the
 Jackson 2 left in prov-interop, prov-service-translation, prov-storage-mongodb's test).
 
@@ -204,7 +205,7 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 | B2 | Baseline: record current test results (`jackson3-migration/test-summary.py` over the build logs → `jackson3-migration/baseline-tests.tsv`) and sample outputs for later comparison | **DONE (cloud)**: `jackson3-migration/baseline-tests.tsv`, 31 modules with tests (unit tests only, `-DskipITs`; prov-storage-mongodb not run). Pre-existing failures listed in 5c. Caveat: the baseline was run in segments. Modules from service-translator onwards (last segment, `-rf :service-translator`) already ran with the B1 root pom (annotations 2.22 + BOM); the others ran before B1. Snapshot of 5,793 files written by tests under `target/` (json/jsonld/provn/xml/dot/svg/...): kept outside the repo; regenerate by running the baseline command on commit 3606168 |
 | C1 | prov-model (annotations only: check, module-info) | **DONE, no change needed**: only `com.fasterxml.jackson.annotation` (2 files), which Jackson 3 keeps; `module-info` `requires com.fasterxml.jackson.annotation` stays |
 | C2 | prov-jsonld (+ json-schema-validator 3.x), and the modules its change breaks | **DONE** — tests identical to baseline; see the detail table below |
-| C3 | prov-jsonld-xml | **module migrated**, tests 147/147 as baseline, outputs identical; dependants: see progress log |
+| C3 | prov-jsonld-xml | **RETIRED by the maintainer (2026-11-03)**: commented out of `modules-core/pom.xml`. (Its Jackson 3 migration had been done, tests 147/147, commit 0332a1a; the sources stay in the tree.) **Open point**: 5 modules still declare a dependency on it (prov-interop, benchmarks, roundtrip, prov-service-core, prov-storage-mongodb). They now resolve it only from a local `~/.m2`, so they fail on a clean machine until the dependency (and the PROV-XML code that uses it, e.g. prov-interop's PROVX (de)serialiser) is removed or replaced. Waiting for the maintainer's decision |
 | C4 | prov-model-scala (Scala), prov-n, prov-scala-misc | TODO |
 | C5 | prov-template (+ YAML, zjsonpatch), prov-template-compiler (+ generated code, generated poms), template library, archetype | TODO |
 | C6 | prov-interop, storage (api, filesystem, redis, mongodb + mongojack 6) | TODO |
@@ -396,6 +397,7 @@ These fail in the baseline for environmental reasons, so they are **not** regres
 |---|---|---|
 | 2026-11-03 | A1 | Branch `jackson3-port` created off `scala3-port` (66ce97c). Inventory done (section 2). |
 | 2026-11-03 | baseline build | `mvn install -DskipTests` of the whole Scala-3-only reactor: all code modules OK (see section 6 for the packaging modules that cannot be built in the cloud). |
+| 2026-11-03 | C3 retired | Maintainer is retiring prov-jsonld-xml: module commented out of `modules-core/pom.xml`. Comparison build for C3 stopped. Its 5 dependants still reference it (open point). |
 | 2026-11-03 | C3 (module) | prov-jsonld-xml migrated (OpenRewrite + builder rewrite + `AnySetterAttributesModule` copy + fixes #13–#15). Tests 147/147 (were 89 errors before fix #14), outputs identical. Next: build the dependants, full comparison build. |
 | 2026-11-03 | C2 done | Remaining 4 modules fixed (redis migrated; translation partly; validation; summary bridge); provman fixed. Full comparison build: tests identical to baseline everywhere; outputs identical except noise + 6 provman JSON files no longer truncated. `compare-outputs.py` also ignores `[B@` hashes, DOT blank nodes, in-line attribute order. |
 | 2026-11-03 | C2 (in progress) | prov-jsonld migrated and verified (660/660; outputs identical except noise). Found and fixed the silent attribute loss (catalogue #2). prov-validation migrated (232/232). prov-interop (partly), storage api/filesystem/mongodb (mongojack 6) migrated, xplain bridged, test readers fixed. Left: redis, prov-service-translation, -validation, -summary (they pass Jackson 2 mappers to the storage API). Build red for those. |

@@ -20,8 +20,7 @@ import static org.openprovenance.prov.service.core.writers.VanillaDocumentMessag
 
 @Provider
 @Produces({
-		InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, InteropMediaType.MEDIA_APPLICATION_PROVENANCE_XML,
-		InteropMediaType.MEDIA_APPLICATION_JSON, InteropMediaType.MEDIA_APPLICATION_JSONLD,
+		InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, InteropMediaType.MEDIA_APPLICATION_JSON, InteropMediaType.MEDIA_APPLICATION_JSONLD,
 		InteropMediaType.MEDIA_IMAGE_SVG_XML, InteropMediaType.MEDIA_APPLICATION_PDF,
 		InteropMediaType.MEDIA_IMAGE_JPEG, InteropMediaType.MEDIA_IMAGE_PNG })
 public class DocumentMessageBodyWriter implements MessageBodyWriter<Document> {

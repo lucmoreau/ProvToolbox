@@ -17,7 +17,6 @@ import java.lang.reflect.Type;
 @Provider
 @Produces({
 		InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION,
-		InteropMediaType.MEDIA_APPLICATION_PROVENANCE_XML,
 		InteropMediaType.MEDIA_APPLICATION_JSON,
 		InteropMediaType.MEDIA_IMAGE_SVG_XML, InteropMediaType.MEDIA_APPLICATION_PDF })
 public class ScalaDocumentMessageBodyWriter implements MessageBodyWriter<Document> {

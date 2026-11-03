@@ -72,7 +72,6 @@ public class SummaryService implements Constants, InteropMediaType {
                     //headers=@Header(name="location",description="Location of posted document"),
                     content = {@Content(mediaType = MEDIA_TEXT_TURTLE),
                                @Content(mediaType = MEDIA_TEXT_PROVENANCE_NOTATION),
-                               @Content(mediaType = MEDIA_APPLICATION_PROVENANCE_XML),
                                @Content(mediaType = MEDIA_APPLICATION_TRIG),
                                @Content(mediaType = MEDIA_APPLICATION_RDF_XML),
                                @Content(mediaType = MEDIA_APPLICATION_JSON)}),

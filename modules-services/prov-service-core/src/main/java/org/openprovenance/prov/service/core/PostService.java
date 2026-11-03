@@ -204,7 +204,7 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
     @Tag(name = DOCUMENTS)
     @Consumes({
             MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
-            MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_JSON})
+            MEDIA_APPLICATION_JSON})
     @Operation(
             summary = "Post a document, directly, creates a resource, supports content negotiation, redirects to URL providing serialization for the resource",
             description = "It supports the direct posting of documents using a prov serialization.",
@@ -215,7 +215,6 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
                             content = {
                                     @Content(mediaType = MEDIA_TEXT_TURTLE),
                                     @Content(mediaType = MEDIA_TEXT_PROVENANCE_NOTATION),
-                                    @Content(mediaType = MEDIA_APPLICATION_PROVENANCE_XML),
                                     @Content(mediaType = MEDIA_APPLICATION_JSON)}),
                     @ApiResponse(
                             responseCode = "303",

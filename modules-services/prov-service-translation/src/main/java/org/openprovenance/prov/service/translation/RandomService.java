@@ -57,7 +57,6 @@ public class RandomService implements Constants, InteropMediaType, ApiUriFragmen
     @GET
     @Path(FRAGMENT_DOCUMENTS + "random/{nodes}/{degree}")
     @Produces({  MEDIA_TEXT_PROVENANCE_NOTATION,
-        MEDIA_APPLICATION_PROVENANCE_XML,
             MEDIA_APPLICATION_JSON,
             MEDIA_APPLICATION_JSONLD,
             MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF, MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG})
@@ -66,7 +65,6 @@ public class RandomService implements Constants, InteropMediaType, ApiUriFragmen
 	       description = "Random generation of PROV document, with a set number of nodes and a maximum degree",
 	       responses = { @ApiResponse(responseCode = "200", 
 	                                  content={@Content(mediaType=MEDIA_TEXT_PROVENANCE_NOTATION),
-	    		                               @Content(mediaType=MEDIA_APPLICATION_PROVENANCE_XML),
                                                @Content(mediaType=MEDIA_APPLICATION_JSON),
                                                @Content(mediaType=MEDIA_APPLICATION_JSONLD),
 	    		                               @Content(mediaType=MEDIA_IMAGE_SVG_XML),
@@ -85,7 +83,6 @@ public class RandomService implements Constants, InteropMediaType, ApiUriFragmen
     @GET
     @Path(FRAGMENT_DOCUMENTS + "random/{nodes}/{degree}/{seed}")
     @Produces({  MEDIA_TEXT_PROVENANCE_NOTATION,
-	    MEDIA_APPLICATION_PROVENANCE_XML,
 	    MEDIA_APPLICATION_JSON, MEDIA_APPLICATION_JSONLD,
             MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF,MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG})
     @Tag(name="random")
@@ -93,7 +90,6 @@ public class RandomService implements Constants, InteropMediaType, ApiUriFragmen
 	       description = "andom generation of PROV document, with a set number of nodes,  a maximum degree and a set seed for the random generato",
 	    		   responses = { @ApiResponse(responseCode = "200", 
                    content={@Content(mediaType=MEDIA_TEXT_PROVENANCE_NOTATION),
-                            @Content(mediaType=MEDIA_APPLICATION_PROVENANCE_XML),
                             @Content(mediaType=MEDIA_APPLICATION_JSON),
                             @Content(mediaType=MEDIA_IMAGE_SVG_XML),
                             @Content(mediaType=MEDIA_IMAGE_PNG),

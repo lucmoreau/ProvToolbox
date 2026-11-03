@@ -71,7 +71,6 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
                        @ApiResponse( responseCode = "200", 
                                      content={//@Content(mediaType=MEDIA_TEXT_HTML),
                                               @Content(mediaType=MEDIA_TEXT_PROVENANCE_NOTATION),
-                                              @Content(mediaType=MEDIA_APPLICATION_PROVENANCE_XML),
                                               @Content(mediaType=MEDIA_APPLICATION_JSON),
                                               @Content(mediaType=MEDIA_APPLICATION_JSONLD),
                                               @Content(mediaType=MEDIA_IMAGE_SVG_XML),
@@ -85,7 +84,6 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
                        @ApiResponse( responseCode = "406", description = "Not Acceptable")})
     @Produces({
             MEDIA_TEXT_PROVENANCE_NOTATION,
-            MEDIA_APPLICATION_PROVENANCE_XML,
             MEDIA_APPLICATION_JSON,
             MEDIA_APPLICATION_JSONLD,
             MEDIA_IMAGE_SVG_XML,
@@ -118,7 +116,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
                                                   name = "extension",
                                                   description = "serialization type, expressed as file extension",
                                                   example = "provn",
-                                                  schema=@Schema(allowableValues={"json", "provn", "provx", "jsonld", "svg", "png", "pdf", "jpg","jpeg"}),
+                                                  schema=@Schema(allowableValues={"json", "provn", "jsonld", "svg", "png", "pdf", "jpg","jpeg"}),
                                                   required = true)
                                               @PathParam("extension") String extension,
                                           @Parameter(

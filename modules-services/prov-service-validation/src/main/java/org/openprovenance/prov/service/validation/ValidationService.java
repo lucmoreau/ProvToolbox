@@ -97,7 +97,7 @@ public class ValidationService  implements Constants,InteropMediaType, SwaggerTa
     public Response getNormalized(@Context HttpServletResponse response,
                                   @Context Request request,
                                   @PathParam("docId") String msg,
-                                  @Parameter(name = HEADER_PARAM_ACCEPT, description = "Accept header parameter", example = "application/json,text/provenance-notation,application/provenance+xml,image/svg+xml,image/png,image/jpeg,application/pdf",
+                                  @Parameter(name = HEADER_PARAM_ACCEPT, description = "Accept header parameter", example = "application/json,text/provenance-notation,image/svg+xml,image/png,image/jpeg,application/pdf",
                                           // "text/html,text/turtle,,application/trig,",
                                           required = false) @HeaderParam(HEADER_PARAM_ACCEPT) String accept) {
 

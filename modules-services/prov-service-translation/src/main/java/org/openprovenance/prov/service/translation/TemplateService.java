@@ -141,7 +141,7 @@ public class TemplateService  implements Constants, InteropMediaType, ApiUriFrag
     @GET
     @Path(FRAGMENT_DOCUMENTS + "bindings/{name}")
     @Produces({ MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
-            MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
+            MEDIA_APPLICATION_TRIG,
              MEDIA_APPLICATION_JSON, MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF,MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG})
     @Tag(name = TEMPLATE)
     public Response getDocumentsFromBindingsSchema(@Context HttpServletResponse response,
@@ -190,7 +190,7 @@ public class TemplateService  implements Constants, InteropMediaType, ApiUriFrag
                                 @Context HttpServletRequest request,
                                 @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg,
                                 @Parameter(name = "type", description = "serialization type", example = "provn",
-                                        schema=@Schema(allowableValues={"json","ttl","provn","provx","rdf","trig","svg","png","pdf","jpg","jpeg"}), required = true) @PathParam("type") String type)
+                                        schema=@Schema(allowableValues={"json","ttl","provn","rdf","trig","svg","png","pdf","jpg","jpeg"}), required = true) @PathParam("type") String type)
     throws IOException {
 
         logger.debug("Retrieving template");

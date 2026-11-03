@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.translation.actions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +43,7 @@ public class ActionExpand implements ActionPerformer {
 
     public ActionExpand(ServiceUtils utils) {
         this.utils= utils;
-        this.om=new ObjectMapper();
+        this.om=JsonMapper.builderWithJackson2Defaults().build();
 
         ResourceIndex<?> indexer=utils.getExtensionMap().get(TemplateResource.getResourceKind());
         this.resourceIndex=(ResourceIndex<TemplateResource>) indexer;

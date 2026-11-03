@@ -1,8 +1,8 @@
 package org.openprovenance.plugin.webjar;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -211,14 +211,14 @@ public class WebjarPreparer extends AbstractMojo {
      * the two directories would otherwise lose its template silently.
      */
     static void mergeIndex(Path source, Path target) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().build();
         JsonNode into = mapper.readTree(target.toFile());
         JsonNode from = mapper.readTree(source.toFile());
         if (!(into instanceof ObjectNode) || !(from instanceof ObjectNode)) {
             throw new IOException("template index is not a JSON object: " + (into instanceof ObjectNode ? source : target));
         }
         ObjectNode merged = (ObjectNode) into;
-        for (java.util.Iterator<java.util.Map.Entry<String, JsonNode>> it = from.fields(); it.hasNext(); ) {
+        for (java.util.Iterator<java.util.Map.Entry<String, JsonNode>> it = from.properties().iterator(); it.hasNext(); ) { // jackson 3: fields() -> properties()
             java.util.Map.Entry<String, JsonNode> e = it.next();
             JsonNode had = merged.get(e.getKey());
             if (had == null) {

@@ -9,7 +9,7 @@ import java.net.URLConnection;
 import java.util.*;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Variant;
 import org.apache.logging.log4j.Logger;
@@ -631,9 +631,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         if (config.metrics != null) {
             Object data=new Rules().computeMetrics(doc, pFactory);
             try {
-                new ObjectMapper().writeValue(new File(config.metrics), data);
+                tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().build().writeValue(new File(config.metrics), data);
                 return 0;
-            } catch (IOException e) {
+            } catch (tools.jackson.core.JacksonException e) { // jackson 3: unchecked
                 throw new RuntimeException(e);
             }
         }
@@ -690,9 +690,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     Bindings inBindings;
                     try {
                         inBindings = config.bindings.equals("-")?
-                                new ObjectMapper().readValue(System.in, Bindings.class):
-                                new ObjectMapper().readValue(new File(config.bindings), Bindings.class);
-                    } catch (IOException e) {
+                                tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().build().readValue(System.in, Bindings.class):
+                                tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().build().readValue(new File(config.bindings), Bindings.class);
+                    } catch (tools.jackson.core.JacksonException e) { // jackson 3: unchecked
                         throw new InteropException("problem parsing bindings file " + config.bindings, e);
                     }
                     expanded = myInstantiater.instantiate(doc, inBindings);

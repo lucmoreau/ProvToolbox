@@ -1,8 +1,9 @@
 package org.openprovenance.prov.service.translation;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -70,7 +71,7 @@ public class TemplateService  implements Constants, InteropMediaType, ApiUriFrag
     }
 
 
-    static ObjectMapper mapper = new ObjectMapper();
+    static ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
 
     @GET
     @Path("/bindings/{name}")
@@ -84,7 +85,7 @@ public class TemplateService  implements Constants, InteropMediaType, ApiUriFrag
 
         final MultivaluedMap<String, String> valueMap = info.getQueryParameters();
         String bindingsUrl="https://nms.kcl.ac.uk/luc.moreau/dev/bindings/" + name + ".json";
-        JsonNode bindings_schema = mapper.readTree(new URL(bindingsUrl));
+        JsonNode bindings_schema; try (java.io.InputStream in = new URL(bindingsUrl).openStream()) { bindings_schema = mapper.readTree(in); } // jackson 3: no readTree(URL)
         expandBindingsSchema(bindings_schema, valueMap);
         return ServiceUtils.composeResponseOK(bindings_schema).build();
     }
@@ -125,8 +126,8 @@ public class TemplateService  implements Constants, InteropMediaType, ApiUriFrag
         if (locatedNode==null) return;
         JsonNode the_locatedValue=locatedNode.get(tag);
         if (the_locatedValue!=null) {
-            if (the_locatedValue.isTextual()) {
-                String s=the_locatedValue.textValue();
+            if (the_locatedValue.isString()) {
+                String s=the_locatedValue.stringValue();
                 String s2=s.replace("*",value);
                 if (!(s.equals(s2))) {
                     locatedNode.put(tag,s2);
@@ -152,11 +153,11 @@ public class TemplateService  implements Constants, InteropMediaType, ApiUriFrag
 
         String bindingsUrl="https://nms.kcl.ac.uk/luc.moreau/dev/bindings/" + name + ".json";
 
-        JsonNode bindings_schema = mapper.readTree(new URL(bindingsUrl));
+        JsonNode bindings_schema; try (java.io.InputStream in = new URL(bindingsUrl).openStream()) { bindings_schema = mapper.readTree(in); } // jackson 3: no readTree(URL)
 
         expandBindingsSchema(bindings_schema, valueMap);
 
-        String the_template=bindings_schema.get("template").asText();
+        String the_template=bindings_schema.get("template").asString("");
 
         boolean allExpanded=false;
         boolean addOrderp=false;

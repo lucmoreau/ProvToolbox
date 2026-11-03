@@ -1,7 +1,7 @@
 package org.openprovenance.plugin.webjar;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -27,7 +27,7 @@ public class WebjarPreparerIndexTest {
     @Rule
     public TemporaryFolder tmp = new TemporaryFolder();
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().build();
 
     private File dir(String name, String index, String... files) throws IOException {
         File d = tmp.newFolder(name);

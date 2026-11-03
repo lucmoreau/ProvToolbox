@@ -26,8 +26,7 @@ public class MongoBindingsDbTest extends TestCase {
         assertNotNull(id);
 
 
-        // prov-template (Bindings) is still on Jackson 2 until step C5 of JACKSON3_MIGRATION.md
-        Bindings bindings1= Bindings.fromStream(new com.fasterxml.jackson.databind.ObjectMapper(), new FileInputStream("src/test/resources/bindings1.json"));
+        Bindings bindings1= Bindings.fromStream(mapper, new FileInputStream("src/test/resources/bindings1.json"));
 
         ds.serializeObjectToStore(bindings1,id);
 

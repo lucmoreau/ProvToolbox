@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.openprovenance.prov.model.StatementOrBundle.Kind;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 
 @JacksonXmlRootElement(localName="specializationOf")

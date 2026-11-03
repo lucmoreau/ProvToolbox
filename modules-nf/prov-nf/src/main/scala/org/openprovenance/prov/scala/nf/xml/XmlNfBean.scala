@@ -1,9 +1,8 @@
 package org.openprovenance.prov.scala.nf.xml
 
-import com.fasterxml.jackson.databind.`type`.TypeFactory
-import com.fasterxml.jackson.databind.introspect.{AnnotationIntrospectorPair, JacksonAnnotationIntrospector}
-import com.fasterxml.jackson.dataformat.xml.{JacksonXmlModule, XmlMapper}
-import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector
+import tools.jackson.databind.introspect.{AnnotationIntrospectorPair, JacksonAnnotationIntrospector}
+import tools.jackson.dataformat.xml.XmlMapper
+import tools.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector
 import jakarta.xml.bind.DatatypeConverter
 import org.apache.logging.log4j.{LogManager, Logger}
 import org.openprovenance.apache.commons.lang.StringEscapeUtils
@@ -561,38 +560,30 @@ object XmlNfBean {
   
   def toXMLWithStream(sw: XMLStreamWriter, statements: Set[org.openprovenance.prov.scala.nf.Statement]): Unit = {
     val beans=statements.map(toBean).toList
-    val module=new JacksonXmlModule()
-    // and then configure, for example:
-    module.setDefaultUseWrapper(false)
 
     val ll: util.LinkedList[xml.Statement] =sortBeans(beans)
 
-    val xmlMapper = new XmlMapper(module)
+    val xmlMapper = XmlMapper.builderWithJackson2Defaults().defaultUseWrapper(false).build() // jackson 3: configured on the builder (D2)
     ll.iterator().asScala.foreach(xmlMapper.writeValue(sw, _))
   }
   
   def toXMLWithStream(sw: XMLStreamWriter, doc:  org.openprovenance.prov.nf.xml.Document): Unit = {
-    val module=new JacksonXmlModule()
-    // and then configure, for example:
-    module.setDefaultUseWrapper(false)
 
     
        
     val primary = new JacksonAnnotationIntrospector()
-    val secondary = new JakartaXmlBindAnnotationIntrospector(TypeFactory.defaultInstance())
+    val secondary = new JakartaXmlBindAnnotationIntrospector()
     val pair = new AnnotationIntrospectorPair(primary, secondary)
 
 
-    val xmlMapper = new XmlMapper(module)
+    val xmlMapper = XmlMapper.builderWithJackson2Defaults().defaultUseWrapper(false).annotationIntrospector(pair).build() // jackson 3: configured on the builder (D2)
 
     logger.info("sorting statements list (2)")
     val ll=new util.LinkedList[org.openprovenance.prov.nf.xml.Statement]
     ll.addAll(doc.statements)
     Collections.sort(ll)
     doc.statements=ll
-
-    xmlMapper.setAnnotationIntrospector(pair)
-    //val xmlMapper = new XmlMapper(module)
+    //val xmlMapper = XmlMapper.builderWithJackson2Defaults().defaultUseWrapper(false).build() // jackson 3: configured on the builder (D2)
     xmlMapper.writeValue(sw, doc)
   }
 
@@ -834,17 +825,12 @@ object XmlNfBean {
 
   def fromXMLWithStream(sr: XMLStreamReader): DocumentProxy = {
     
-    val module=new JacksonXmlModule()
-    // and then configure, for example:
-    module.setDefaultUseWrapper(false)
-    
     val primary = new JacksonAnnotationIntrospector()
-    val secondary =  new JakartaXmlBindAnnotationIntrospector(TypeFactory.defaultInstance)
+    val secondary =  new JakartaXmlBindAnnotationIntrospector()
     val pair = new AnnotationIntrospectorPair(primary, secondary)
 
 
-    val xmlMapper = new XmlMapper(module)
-    xmlMapper.setAnnotationIntrospector(pair)
+    val xmlMapper = XmlMapper.builderWithJackson2Defaults().defaultUseWrapper(false).annotationIntrospector(pair).build() // jackson 3: configured on the builder (D2)
 
 
     val docClass=new org.openprovenance.prov.nf.xml.Document().getClass

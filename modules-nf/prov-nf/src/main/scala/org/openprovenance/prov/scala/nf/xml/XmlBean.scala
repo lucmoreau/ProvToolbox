@@ -24,8 +24,7 @@ import org.openprovenance.prov.scala.immutable.WasInfluencedBy
 import org.openprovenance.prov.scala.immutable.WasInformedBy
 import org.openprovenance.prov.scala.immutable.WasInvalidatedBy
 import org.openprovenance.prov.scala.immutable.WasStartedBy
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import tools.jackson.dataformat.xml.XmlMapper
 
 import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.stream.XMLOutputFactory
@@ -279,11 +278,8 @@ object XmlBean {
   
   def toXMLWithStream(sw: XMLStreamWriter, statements: Set[Statement]): Unit = {
     val beans: Set[xml.Statement] =statements.map(toBean)
-    val module=new JacksonXmlModule()
-    // and then configure, for example:
-    module.setDefaultUseWrapper(false)
 
-    val xmlMapper = new XmlMapper(module)
+    val xmlMapper = XmlMapper.builderWithJackson2Defaults().defaultUseWrapper(false).build() // jackson 3: configured on the builder (D2)
     beans.foreach(xmlMapper.writeValue(sw, _))
   }
 
@@ -343,11 +339,8 @@ object XmlBean {
     null
   }
   def fromXMLWithStream(sr: XMLStreamReader): Set[Statement] = {
-    val module=new JacksonXmlModule()
-    // and then configure, for example:
-    module.setDefaultUseWrapper(false)
 
-    val xmlMapper = new XmlMapper(module)
+    val xmlMapper = XmlMapper.builderWithJackson2Defaults().defaultUseWrapper(false).build() // jackson 3: configured on the builder (D2)
     val expr=xmlMapper.readValue(sr, Statement.getClass)
     
     null

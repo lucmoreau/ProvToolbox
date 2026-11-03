@@ -17,8 +17,11 @@ including the lexicon suites (nlg-wrapper 30, nlg-spec-transformer 24, prov-expl
 
 In the rest of this file (written before the swap), `X-scala3` means today's `X`, and `X`
 (the 2.13 module) means today's `X-scala2`. `scala3-migration/copy-module.py` assumed the
-old layout and is no longer of use. Still open: step D (scaladoc jars for the Scala 3 modules,
-needed for a Maven Central release), and deleting the `-scala2` modules when no longer needed.
+old layout and is no longer of use. Step D is done (2026-11-03): the Scala 3 modules use
+scala-maven-plugin `${scala3.plugin.version}` = 4.10.0, which runs the Scala 3 scaladoc with Scala 3
+options (4.9.x passed `-doc-format`/`-doc-title`, and the title was read as a source file), and
+`doc-jar` is enabled again, so each attaches a `-javadoc.jar`. The `-scala2` modules stay on
+`${scala.plugin.version}` (4.9.7). Still open: deleting the `-scala2` modules when no longer needed.
 
 ## ▶ Current status and next steps (handover, 2026-11-02)
 
@@ -287,6 +290,7 @@ If a 2.13 module uses a Scala library not covered by `_${scala.binary.version}`
 | Date | Step | Result / notes |
 |---|---|---|
 | 2026-11-02 | Plan written, branch `scala3-port` created | Root pom: properties `scala3.version=3.9.0`, `scala3.release=17`. Helper script `scala3-migration/copy-module.py`. |
+| 2026-11-03 | Step D: scaladoc | Property `scala3.plugin.version=4.10.0` for the 12 Scala 3 modules, `doc-jar` re-enabled. All 12 build a `-javadoc.jar` (prov-model-scala 143 HTML pages, prov-nf 84, ...); tests unchanged with 4.10.0. |
 | 2026-11-03 | Scala 3 is the default | `X-scala3` → `X`, `X` → `X-scala2` (12 modules), root `scala.binary.version=3`. Full build OK; tests of all 24 Scala modules and of the Java consumers pass, same counts per pair, lexicon suites included (step V done). |
 | 2026-11-02 | Handover | All 12 copies exist and compile. `mvn validate` on the whole reactor OK (85 modules). Handover section written at the top. Next: steps V, D, R. |
 | 2026-11-02 | modules-executable-provman-scala3 | Fix #16. Full `mvn install` (with antrun, appassembler, assembly): ScalaTest 2/2 in both. The generated man page `provmanagement.1` (built by running the CLI) is identical. Smoke test with `target/appassembler/bin/provmanagement` on `types/100009/100009.provn`: `translate` to provn/svg/dot, `normalize` and `summary` all give **byte-identical** output in 2.13 and Scala 3 (`translate` to `.json` fails in both: `json` is not a `Format`, pre-existing). `dependency:tree` clean. |

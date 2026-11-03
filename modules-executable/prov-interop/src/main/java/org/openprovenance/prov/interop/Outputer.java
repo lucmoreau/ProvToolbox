@@ -94,7 +94,6 @@ public class Outputer implements InteropMediaType {
         Map<Formats.ProvFormat, SerializerFunction> serializer = new HashMap<>();
         serializer.putAll(
                 Map.of( PROVN,  () -> new ProvSerialiser(pFactory),
-                        PROVX,  () -> new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true),
                         JSONLD, () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(JsonMapper.builderWithJackson2Defaults(), false),
                         JSON,   org.openprovenance.prov.core.json.serialization.ProvSerialiser::new,
                         TURTLE, () -> { throw new UnsupportedOperationException("light turtle converter not integrated yet"); },

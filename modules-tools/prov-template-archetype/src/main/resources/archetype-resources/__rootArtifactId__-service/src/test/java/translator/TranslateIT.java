@@ -77,15 +77,6 @@ abstract public class TranslateIT extends RoundTripFromJavaTest implements ApiUr
     public boolean checkTest(String name, ProvFormat format)
     {
 
-        if (name.endsWith("bundle4"+extension()) && format.equals(ProvFormat.PROVX)) {
-            System.out.println(escapeRed("${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound} Skipping  comparison for bundle4 and PROVX"));
-            return false;
-        }
-        if (name.endsWith("bundle5"+extension()) &&  format.equals(ProvFormat.PROVX)) {
-            System.out.println(escapeRed("${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound} Skipping  comparison for bundle5 and PROVX"));
-            return false;
-        }
-
         return true;
     }
 
@@ -103,12 +94,10 @@ abstract public class TranslateIT extends RoundTripFromJavaTest implements ApiUr
         String location=fileToUri.get(file);
         Document doc2 = readDocument(location,MEDIA_APPLICATION_JSON,           ".json");
         Document doc3 = readDocument(location,MEDIA_TEXT_PROVENANCE_NOTATION,   ".provn");
-        Document doc1 = readDocument(location,MEDIA_APPLICATION_PROVENANCE_XML, ".provx");
         Document doc5 = readDocument(location,MEDIA_APPLICATION_JSONLD,         ".jsonld");
         @SuppressWarnings("unused")
         Object o1=readObject(location, MEDIA_IMAGE_SVG_XML);
         List<Pair> ll= new LinkedList<>();
-        ll.add(new Pair(doc1, ProvFormat.PROVX));
         ll.add(new Pair(doc2, ProvFormat.JSON));
         ll.add(new Pair(doc3, ProvFormat.PROVN));
         ll.add(new Pair(doc5, ProvFormat.JSONLD));

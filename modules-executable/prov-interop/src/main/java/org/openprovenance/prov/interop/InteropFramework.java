@@ -407,14 +407,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     mimeTypeRevMap.put(MEDIA_APPLICATION_JSONLD, ProvFormat.JSONLD);
                     provTypeMap.put(ProvFormat.JSONLD, ProvFormatType.INPUTOUTPUT);
                     break;
-                case PROVX:
-                    extensionMap.put(ProvFormat.PROVX, EXTENSION_PROVX);
-                    extensionRevMap.put(EXTENSION_PROVX, ProvFormat.PROVX);
-                    extensionRevMap.put(EXTENSION_XML, ProvFormat.PROVX);
-                    mimeTypeMap.put(ProvFormat.PROVX, MEDIA_APPLICATION_PROVENANCE_XML);
-                    mimeTypeRevMap.put(MEDIA_APPLICATION_PROVENANCE_XML, ProvFormat.PROVX);
-                    provTypeMap.put(ProvFormat.PROVX, ProvFormatType.INPUTOUTPUT);
-                    break;
+                // PROVX: PROV-XML support dropped (prov-jsonld-xml retired, see JACKSON3_MIGRATION.md)
                 default:
                     break;
 

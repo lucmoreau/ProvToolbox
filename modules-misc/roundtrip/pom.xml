@@ -21,13 +21,6 @@
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-jsonld-xml</artifactId>
-            <version>2.5.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model-scala</artifactId>
             <version>2.5.0-SNAPSHOT</version>
             <scope>test</scope>
@@ -36,13 +29,6 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld</artifactId>
-            <version>2.5.0-SNAPSHOT</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-jsonld-xml</artifactId>
             <version>2.5.0-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>

@@ -157,12 +157,12 @@ public class ValidationServiceUtils  extends ServiceUtils {
 			// Do i want to expose this as a visible resource?
 			//NonDocumentResource reportResource=getNonDocumentResourceIndex().newResource();
 
-			String reportStorageId     = nonDocumentResourceStorage.newStore("xml", MediaType.APPLICATION_XML);
 			String jsonReportStorageId = reportStorage.newStore("json", MediaType.APPLICATION_JSON);
 			String matrixTextId        = matrixStorage.newStore("txt", MediaType.TEXT_PLAIN);
 			String matrixPngId         = matrixStorage.newStore("png", ValidationService.IMAGE_PNG_TYPE.toString());
 
-			vr.setReport(reportStorageId);
+			// no XML report any more: PROV-XML support dropped (prov-jsonld-xml retired), and the
+			// report was not served (content negotiation offers HTML and JSON only)
 			vr.setJsonReport(jsonReportStorageId);
 			vr.setMatrix(matrixTextId);
 			vr.setPngMatrix(matrixPngId);
@@ -179,15 +179,7 @@ public class ValidationServiceUtils  extends ServiceUtils {
 			reportStorage.serializeObjectToStore(report,jsonReportStorageId);
 
 
-			// for XML Serialisation, remove all namespaces
-			report.setNamespace(null);
-			report.getValidationReport().forEach(r -> r.setNamespace(null));
 
-
-			//store report.xml
-			ByteArrayOutputStream baos=new ByteArrayOutputStream();
-			utils.getConfig().serialiser.serialiseObject(baos,report,"ignore", false);
-			nonDocumentResourceStorage.copyStringToStore(baos.toString(),reportStorageId);
 
 
 

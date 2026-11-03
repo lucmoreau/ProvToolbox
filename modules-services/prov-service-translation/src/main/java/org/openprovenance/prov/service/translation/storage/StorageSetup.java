@@ -4,7 +4,6 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.core.xml.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.ServiceUtilsConfig;
 import org.openprovenance.prov.service.core.ServiceShutdownListener;
@@ -81,8 +80,6 @@ public class StorageSetup {
         utilsConfig.storageManager=documentStorage;
         utilsConfig.nonDocumentResourceStorage=nonDocumentStorage;
         utilsConfig.genericResourceStorageMap.put(ActionExpand.BINDINGS_KEY,bindingsStorage);
-        ProvSerialiser serial=new ProvSerialiser();
-        utilsConfig.serialiser=(OutputStream out, Object document, String mediaType, boolean formatted) -> serial.serialiseOtherObject(out, document,false, false);
         return utilsConfig;
     }
 
@@ -90,8 +87,6 @@ public class StorageSetup {
     protected ServiceUtilsConfig withFileSystem(ServiceUtilsConfig utilsConfig, ProvFactory factory, StorageConfiguration configuration) {
         File uploadLocation = new File(configuration.uploaded_filepath);
         utilsConfig.storageManager=new DocumentResourceStorageFileSystem(factory, uploadLocation);
-        ProvSerialiser serial = new ProvSerialiser();
-        utilsConfig.serialiser=(OutputStream out, Object document, String mediaType, boolean formatted) -> serial.serialiseOtherObject(out, document,false, false);
         utilsConfig.genericResourceStorageMap.put(ActionExpand.BINDINGS_KEY,new BindingsResourceStorageFileSystem(JsonMapper.builderWithJackson2Defaults().build(), uploadLocation));
         return utilsConfig;
     }

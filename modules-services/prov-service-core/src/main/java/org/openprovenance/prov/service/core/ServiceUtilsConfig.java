@@ -23,7 +23,6 @@ public class ServiceUtilsConfig extends StorageConfig {
     public ResourceStorage storageManager;
     public int documentCacheSize;
     public ProvFactory pFactory;
-    public ObjectSerialiser serialiser;
     public boolean autoDelete=true;
     public int deletePeriod=600;
 }

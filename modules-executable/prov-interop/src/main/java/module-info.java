@@ -11,7 +11,6 @@ module prov.interop {
     requires prov.template.compiler;
     requires prov.jsonld;
     requires prov.dot;
-    requires prov.jsonld.xml;
 
     exports org.openprovenance.prov.interop;
 

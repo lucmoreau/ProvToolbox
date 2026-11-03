@@ -1,5 +1,5 @@
 module prov.template.compiler.test{
-    requires com.fasterxml.jackson.databind;
+    requires tools.jackson.databind;
     requires com.networknt.schema;
     requires junit;
     requires org.apache.commons.io;

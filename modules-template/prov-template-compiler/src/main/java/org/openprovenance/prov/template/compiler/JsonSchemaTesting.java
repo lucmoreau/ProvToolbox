@@ -1,11 +1,12 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.networknt.schema.JsonSchema;
-import com.networknt.schema.JsonSchemaFactory;
-import com.networknt.schema.SpecVersion;
-import com.networknt.schema.SpecVersionDetector;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import com.networknt.schema.Schema;
+import com.networknt.schema.SchemaLocation;
+import com.networknt.schema.SchemaRegistry;
+import com.networknt.schema.SpecificationVersion;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,7 +18,7 @@ import java.net.URL;
 
 public class JsonSchemaTesting {
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
 
     protected JsonNode getJsonNodeFromClasspath(String name) throws IOException {
         InputStream is1 = Thread.currentThread().getContextClassLoader()
@@ -30,46 +31,48 @@ public class JsonSchemaTesting {
     }
 
     protected JsonNode getJsonNodeFromUrl(String url) throws IOException {
-        return mapper.readTree(new URL(url));
+        try (java.io.InputStream in = new URL(url).openStream()) { // jackson 3: no readTree(URL)
+            return mapper.readTree(in);
+        }
     }
 
-    protected JsonSchema getJsonSchemaFromClasspath(String name) {
-        JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
+    protected Schema getJsonSchemaFromClasspath(String name) {
+        SchemaRegistry factory = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_4); // json-schema-validator 3.x
         InputStream is = Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream(name);
         return factory.getSchema(is);
     }
-    protected JsonSchema getJsonSchemaFromClasspathV7(String name) {
-        JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
+    protected Schema getJsonSchemaFromClasspathV7(String name) {
+        SchemaRegistry factory = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_7); // json-schema-validator 3.x
         InputStream is = Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream(name);
         return factory.getSchema(is);
     }
 
-    protected JsonSchema getJsonSchemaFromFile(String name) throws FileNotFoundException {
-        JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
+    protected Schema getJsonSchemaFromFile(String name) throws FileNotFoundException {
+        SchemaRegistry factory = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_4); // json-schema-validator 3.x
         InputStream is = new FileInputStream(name);
         return factory.getSchema(is);
     }
 
-    protected JsonSchema getJsonSchemaFromStringContent(String schemaContent) {
-        JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
+    protected Schema getJsonSchemaFromStringContent(String schemaContent) {
+        SchemaRegistry factory = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_4); // json-schema-validator 3.x
         return factory.getSchema(schemaContent);
     }
 
-    protected JsonSchema getJsonSchemaFromUrl(String uri) throws URISyntaxException {
-        JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
-        return factory.getSchema(new URI(uri));
+    protected Schema getJsonSchemaFromUrl(String uri) throws URISyntaxException {
+        SchemaRegistry factory = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_4); // json-schema-validator 3.x
+        return factory.getSchema(SchemaLocation.of(new URI(uri).toString()));
     }
 
-    protected JsonSchema getJsonSchemaFromJsonNode(JsonNode jsonNode) {
-        JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
+    protected Schema getJsonSchemaFromJsonNode(JsonNode jsonNode) {
+        SchemaRegistry factory = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_4); // json-schema-validator 3.x
         return factory.getSchema(jsonNode);
     }
 
     // Automatically detect version for given JsonNode
-    protected JsonSchema getJsonSchemaFromJsonNodeAutomaticVersion(JsonNode jsonNode) {
-        JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersionDetector.detect(jsonNode));
+    protected Schema getJsonSchemaFromJsonNodeAutomaticVersion(JsonNode jsonNode) {
+        SchemaRegistry factory = SchemaRegistry.withDefaultDialect(SpecificationVersion.fromSchemaNode(jsonNode).orElseThrow()); // json-schema-validator 3.x
         return factory.getSchema(jsonNode);
     }
 

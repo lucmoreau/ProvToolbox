@@ -1,13 +1,12 @@
 package org.openprovenance.prov.template.descriptors;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.Version;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.ValueDeserializer;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.function.Function;
@@ -15,10 +14,11 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class DescriptorUtils {
-    public void setupDeserializer(ObjectMapper om) {
-        JsonDeserializer<Descriptor> customDeserializer = new JsonDeserializer<>() {
+    /** Jackson 3: mappers are immutable, so the descriptor deserializer is added to a builder (was: registered on a given mapper). */
+    public <B extends tools.jackson.databind.cfg.MapperBuilder<?, ?>> B setupDeserializer(B om) {
+        ValueDeserializer<Descriptor> customDeserializer = new ValueDeserializer<>() {
             @Override
-            public Descriptor deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+            public Descriptor deserialize(JsonParser jp, DeserializationContext ctxt) {
                 if (jp.isExpectedStartObjectToken()) {
                     return jp.readValueAs(NameDescriptor.class);
                 } else if (jp.isExpectedStartArrayToken()) {
@@ -28,7 +28,7 @@ public class DescriptorUtils {
                     return res;
 
                 } else {
-                    throw new UnsupportedEncodingException("current token " + jp.getCurrentToken());
+                    throw tools.jackson.databind.DatabindException.from(ctxt, "current token " + jp.currentToken()); // jackson 3: unchecked
                 }
             }
         };
@@ -36,7 +36,8 @@ public class DescriptorUtils {
                 .addDeserializer(Descriptor.class, customDeserializer);
         //	.registerSubtypes(NameDescriptor.class); // add your subtypes here.
 
-        om.registerModule(aModule);
+        om.addModule(aModule);
+        return om;
     }
 
     public Iterator<String> fieldNamesIterator(TemplateBindingsSchema descriptor) {

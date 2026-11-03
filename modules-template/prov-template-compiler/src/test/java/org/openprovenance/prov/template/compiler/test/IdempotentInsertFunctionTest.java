@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import junit.framework.TestCase;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
@@ -22,13 +23,9 @@ import java.util.Map;
 public class IdempotentInsertFunctionTest extends TestCase {
 
     private final ProvFactory pf = new org.openprovenance.prov.vanilla.ProvFactory();
-    private final ObjectMapper om = new ObjectMapper();
-
-    {
-        // Descriptor is polymorphic (AttributeDescriptor / NameDescriptor) — register the project's
-        // custom deserializer, exactly as the compiler does when reading cbindings.
-        new DescriptorUtils().setupDeserializer(om);
-    }
+    // Descriptor is polymorphic (AttributeDescriptor / NameDescriptor) — register the project's
+    // custom deserializer, exactly as the compiler does when reading cbindings (Jackson 3: on the builder).
+    private final ObjectMapper om = new DescriptorUtils().setupDeserializer(JsonMapper.builderWithJackson2Defaults()).build();
 
     // currency-registering shaped: two entity outputs + one activity output + one compulsory input.
     // The @unique placeholder is substituted per test.

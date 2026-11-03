@@ -7,7 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.BiFunction;
-
+import tools.jackson.databind.json.JsonMapper;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -16,13 +16,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Document;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.log2prov.interfaces.*;
 import org.openprovenance.prov.template.types.TypesRecordProcessor;
+import tools.jackson.core.JacksonException;
 
 abstract public class FileBuilder {
-    static ObjectMapper mapper = new ObjectMapper();
+    static ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
 
     static Logger logger= LogManager.getLogger(FileBuilder.class);
 
@@ -143,12 +144,12 @@ abstract public class FileBuilder {
                     } else {
                         System.out.println("unknown method " + methodName);
                     }
-                } catch (IOException e) {
+                } catch (JacksonException e) {
                     e.printStackTrace();
                 }
                 line= r.readLine();
             }
-        } catch (IOException e1) {
+        } catch (JacksonException | IOException e1) {
             e1.printStackTrace();
         }
 

@@ -1,13 +1,12 @@
 package org.openprovenance.prov.template.compiler.configuration;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.ValueDeserializer;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,9 +42,9 @@ public class InterfaceDeclaration {
     }
 
     /** Accepts both the legacy array form (= variables) and the object form. */
-    public static class Deserializer extends JsonDeserializer<InterfaceDeclaration> {
+    public static class Deserializer extends ValueDeserializer<InterfaceDeclaration> {
         @Override
-        public InterfaceDeclaration deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        public InterfaceDeclaration deserialize(JsonParser p, DeserializationContext ctxt) {
             InterfaceDeclaration declaration = new InterfaceDeclaration();
             if (p.currentToken() == JsonToken.START_ARRAY) {
                 declaration.variables = ctxt.readValue(p, ctxt.getTypeFactory()
@@ -61,7 +60,7 @@ public class InterfaceDeclaration {
         private static List<String> toList(JsonNode node) {
             if (node == null || node.isNull()) return null;
             List<String> result = new LinkedList<>();
-            node.forEach(item -> result.add(item.asText()));
+            node.forEach(item -> result.add(item.asString("")));
             return result;
         }
     }

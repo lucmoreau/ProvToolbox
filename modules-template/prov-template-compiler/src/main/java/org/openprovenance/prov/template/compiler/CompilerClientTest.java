@@ -32,7 +32,8 @@ public class CompilerClientTest {
     final PastFactory pastFactory;
 
     static final ClassName PRINT_STREAM = ClassName.get("PrintStream", "java.io");
-    static final ClassName OBJECT_MAPPER = ClassName.get("ObjectMapper", "com.fasterxml.jackson.databind");
+    // Jackson 3 (JACKSON3_MIGRATION.md): generated code uses JsonMapper.builderWithJackson2Defaults().build() (D2)
+    static final ClassName JSON_MAPPER = ClassName.get("JsonMapper", "tools.jackson.databind.json");
     static final ClassName TEST_CASE = ClassName.get("TestCase", "junit.framework");
 
     public CompilerClientTest(ProvFactory pFactory) {
@@ -75,10 +76,10 @@ public class CompilerClientTest {
                     DEFINITION(OBJECT, VARIABLE(resvar + count),
                             METHOD_CALL(beanClass, "examplar", List.of())));
 
-            // new ObjectMapper().writeValue(System.out, res0)
+            // JsonMapper.builderWithJackson2Defaults().build().writeValue(System.out, res0)
             method.BODY(
                     METHOD_CALL(
-                            CONSTRUCTOR_CALL(OBJECT_MAPPER, List.of()),
+                            METHOD_CALL(METHOD_CALL(JSON_MAPPER, "builderWithJackson2Defaults", List.of()), "build", List.of()),
                             "writeValue",
                             List.of(METHOD_CALL(SYSTEM, "out"), VARIABLE(resvar + count))));
 

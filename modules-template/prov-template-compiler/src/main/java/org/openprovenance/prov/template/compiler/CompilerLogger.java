@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -13,6 +12,7 @@ import org.openprovenance.prov.template.compiler.past.type.ArrayType;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
+import tools.jackson.core.JacksonException;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
@@ -111,7 +111,7 @@ public class CompilerLogger {
                             .MODIFIERS(Modifier.STATIC, Modifier.PUBLIC, Modifier.FINAL)
                             .INITIALIZER(CONSTANT(objectMapper.writeValueAsString(inputOutputMaps))));
 
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
 

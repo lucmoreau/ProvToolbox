@@ -1,7 +1,7 @@
 package org.openprovenance.prov.template.compiler.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.networknt.schema.ValidationMessage;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.openprovenance.prov.configuration.Configuration;
@@ -32,7 +32,7 @@ public class CompilerTest extends TestCase {
     QualifiedName var_c=pf.newQualifiedName(VAR_NS, "c", "var");
     QualifiedName var_d=pf.newQualifiedName(VAR_NS, "d", "var");
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectMapper objectMapper = JsonMapper.builderWithJackson2Defaults().build();
 
 
     public void testCompiler1() throws IOException {
@@ -137,13 +137,13 @@ public class CompilerTest extends TestCase {
         //TODO: LUC: cannot make this work on travis
         //execute(new String[] {"/usr/local/bin/ajv", "-s", templateJsonSchema, "-d", theExamplarJsonFile},".");
 
-        com.networknt.schema.JsonSchema schema = cp.getCompilerJsonSchema().setupJsonSchemaFromClasspathV7("schema/json-schema-v7.json");
-        Set<ValidationMessage> result = cp.getCompilerJsonSchema().checkSchema(schema, templateJsonSchema);
+        com.networknt.schema.Schema schema = cp.getCompilerJsonSchema().setupJsonSchemaFromClasspathV7("schema/json-schema-v7.json");
+        Set<com.networknt.schema.Error> result = cp.getCompilerJsonSchema().checkSchema(schema, templateJsonSchema);
         System.out.println(result);
 
         System.out.println("#### checking schema compatibility for " + theExamplarJsonFile);
-        com.networknt.schema.JsonSchema schema2 = cp.getCompilerJsonSchema().setupJsonSchemaFromFile(templateJsonSchema);
-        Set<ValidationMessage> result2 = cp.getCompilerJsonSchema().checkSchema(schema2, theExamplarJsonFile);
+        com.networknt.schema.Schema schema2 = cp.getCompilerJsonSchema().setupJsonSchemaFromFile(templateJsonSchema);
+        Set<com.networknt.schema.Error> result2 = cp.getCompilerJsonSchema().checkSchema(schema2, theExamplarJsonFile);
         System.out.println(result2);
 
 

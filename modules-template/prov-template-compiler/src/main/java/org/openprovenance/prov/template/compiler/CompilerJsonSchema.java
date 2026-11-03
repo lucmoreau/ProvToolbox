@@ -1,15 +1,15 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import com.networknt.schema.JsonSchema;
-import com.networknt.schema.ValidationMessage;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import com.networknt.schema.Schema;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
+import tools.jackson.core.JacksonException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,7 +22,7 @@ import static org.openprovenance.prov.template.compiler.common.Constants.ELEMENT
 public class CompilerJsonSchema {
     private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
-    ObjectMapper om = new ObjectMapper();
+    ObjectMapper om = JsonMapper.builderWithJackson2Defaults().build();
     Map<String, Object> jsonSchemaAsAMap = initializeSchemaMap();
 
     public CompilerJsonSchema(ProvFactory pFactory) {
@@ -44,7 +44,7 @@ public class CompilerJsonSchema {
 
             om.writerWithDefaultPrettyPrinter().writeValue(new File(path), jsonSchemaAsAMap);
 
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             e.printStackTrace();
         }
     }
@@ -220,45 +220,46 @@ public class CompilerJsonSchema {
 
     static class Tester extends  JsonSchemaTesting {
         @Override
-        public com.networknt.schema.JsonSchema getJsonSchemaFromClasspath(String name) {
+        public com.networknt.schema.Schema getJsonSchemaFromClasspath(String name) {
             return super.getJsonSchemaFromClasspath(name);
         }
         @Override
-        public com.networknt.schema.JsonSchema getJsonSchemaFromClasspathV7(String name) {
+        public com.networknt.schema.Schema getJsonSchemaFromClasspathV7(String name) {
             return super.getJsonSchemaFromClasspathV7(name);
         }
 
         @Override
-        protected com.networknt.schema.JsonSchema getJsonSchemaFromFile(String name) throws FileNotFoundException {
+        protected com.networknt.schema.Schema getJsonSchemaFromFile(String name) throws FileNotFoundException {
             return super.getJsonSchemaFromFile(name);
         }
     }
 
     final Tester tester=new Tester();
 
-    public JsonSchema setupJsonSchemaFromClasspath(String file)  {
+    public Schema setupJsonSchemaFromClasspath(String file)  {
         System.out.println("### getting schema from classpath " + file);
-        com.networknt.schema.JsonSchema schema2=tester.getJsonSchemaFromClasspath(file);
+        com.networknt.schema.Schema schema2=tester.getJsonSchemaFromClasspath(file);
         return schema2;
     }
-    public JsonSchema setupJsonSchemaFromClasspathV7(String file)  {
+    public Schema setupJsonSchemaFromClasspathV7(String file)  {
         System.out.println("### getting schema from classpath " + file);
-        com.networknt.schema.JsonSchema schema2=tester.getJsonSchemaFromClasspathV7(file);
+        com.networknt.schema.Schema schema2=tester.getJsonSchemaFromClasspathV7(file);
         return schema2;
     }
 
 
-    public JsonSchema setupJsonSchemaFromFile(String file) throws FileNotFoundException {
+    public Schema setupJsonSchemaFromFile(String file) throws FileNotFoundException {
         System.out.println("#### getting schema from File " + file);
-        com.networknt.schema.JsonSchema schema2=tester.getJsonSchemaFromFile(file);
+        com.networknt.schema.Schema schema2=tester.getJsonSchemaFromFile(file);
 
         return schema2;
 
     }
 
-    public Set<ValidationMessage> checkSchema(com.networknt.schema.JsonSchema schema, String file) throws IOException {
+    public Set<com.networknt.schema.Error> checkSchema(com.networknt.schema.Schema schema, String file) throws IOException {
         JsonNode node = om.readTree(new File(file));
-        Set<ValidationMessage> errors = schema.validate(node);
+        // json-schema-validator 3.x returns a List (1.x: a Set of ValidationMessage)
+        Set<com.networknt.schema.Error> errors = new java.util.LinkedHashSet<>(schema.validate(node));
         return errors;
     }
 

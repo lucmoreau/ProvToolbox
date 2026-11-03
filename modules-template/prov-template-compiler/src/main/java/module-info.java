@@ -1,7 +1,7 @@
 module prov.template.compiler {
     requires com.fasterxml.jackson.annotation;
-    requires com.fasterxml.jackson.core;
-    requires com.fasterxml.jackson.databind;
+    requires tools.jackson.core;
+    requires tools.jackson.databind;
 
     requires com.squareup.javapoet;
     requires java.compiler;

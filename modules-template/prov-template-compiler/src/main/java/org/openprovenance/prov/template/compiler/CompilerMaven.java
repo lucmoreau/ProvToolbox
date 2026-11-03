@@ -395,8 +395,8 @@ mvn -f jsweet/jsweet-pom.xml jsweet:jsweet
     public void addJacksonDependency(Model model) {
         Dependency dep = new Dependency();
         dep.setArtifactId("jackson-databind");
-        dep.setGroupId("com.fasterxml.jackson.core");
-        dep.setVersion("2.9.9");
+        dep.setGroupId("tools.jackson.core"); // Jackson 3 (was com.fasterxml.jackson.core 2.9.9)
+        dep.setVersion("3.2.4");
         dep.setScope("test");
         model.addDependency(dep);
     }

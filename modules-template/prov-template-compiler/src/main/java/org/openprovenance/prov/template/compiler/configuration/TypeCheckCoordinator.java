@@ -1,13 +1,14 @@
 package org.openprovenance.prov.template.compiler.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.checker.ExternalTypeRegistry;
 import org.openprovenance.prov.template.compiler.past.checker.TypeChecker;
 import org.openprovenance.prov.template.compiler.past.checker.TypeDiagnostic;
+import tools.jackson.core.JacksonException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,8 +87,8 @@ public class TypeCheckCoordinator {
             System.err.println("################## End of type checking diagnostics ===");
             System.out.println("################## Type Checker Registry Summary:\n ");
             try {
-                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File("target/registry.json"),typeChecker.getRegistry().getAllSignatures());
-            } catch (IOException e) {
+                JsonMapper.builderWithJackson2Defaults().build().writerWithDefaultPrettyPrinter().writeValue(new File("target/registry.json"),typeChecker.getRegistry().getAllSignatures());
+            } catch (JacksonException e) {
                 throw new RuntimeException(e);
             }
         } else {

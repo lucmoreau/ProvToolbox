@@ -2,12 +2,13 @@ package org.openprovenance.prov.template.compiler.past.emitter.registry;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
+import tools.jackson.core.JacksonException;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,11 +87,11 @@ public class RustMethodRegistry {
                         "rust-registry.json not found on classpath next to RustMethodRegistry. " +
                         "Expected at: org/openprovenance/prov/template/compiler/past/emitter/registry/rust-registry.json");
             }
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
             RustMethodRegistry registry = mapper.readValue(is, RustMethodRegistry.class);
             registry.buildIndexes();
             return registry;
-        } catch (IOException e) {
+        } catch (JacksonException | java.io.IOException e) { // jackson 3: JacksonException is unchecked, close() still throws IOException
             throw new IllegalStateException("Failed to load or parse rust-registry.json", e);
         }
     }

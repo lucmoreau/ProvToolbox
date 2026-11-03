@@ -142,6 +142,19 @@
 		</license>
 	</licenses>
 
+	<dependencyManagement>
+		<dependencies>
+			<!-- Jackson 3: manages tools.jackson.* artifacts and the shared com.fasterxml.jackson.core:jackson-annotations -->
+			<dependency>
+				<groupId>tools.jackson</groupId>
+				<artifactId>jackson-bom</artifactId>
+				<version>${jackson3.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -227,7 +240,7 @@
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<version>${javadoc.plugin.version}</version>
 						<configuration>
-							<source>15</source>
+							<source>17</source>
 						</configuration>
 						<executions>
 							<execution>
@@ -273,7 +286,7 @@
 				<configuration>
 					<!-- aligned with maven-compiler-plugin release and the release
 					     profile's javadoc configuration -->
-					<source>15</source>
+					<source>17</source>
 				</configuration>
 			</plugin>
 
@@ -305,7 +318,7 @@
 					<version>${compiler.plugin.version}</version>
 
 					<configuration>
-						<release>15</release>
+						<release>17</release> <!-- jackson 3 requires jdk 17, see JACKSON3_MIGRATION.md (D5) -->
 					</configuration>
 				</plugin>
 
@@ -439,7 +452,9 @@
 
 
 		<jackson.version>2.21.2</jackson.version><!--2.20.2, 2.19.4, 2.18.5, 2.17.1, 2.15.2, 2.14.2, 2.11.2, 2.9.9 -->
-		<jackson.annotation.version>2.21</jackson.annotation.version> <!-- 2.20 -->
+		<jackson.annotation.version>2.22</jackson.annotation.version> <!-- 2.21, 2.20; shared by jackson 2 and 3, aligned with jackson-bom 3.x -->
+		<!-- Jackson 3 (tools.jackson), see JACKSON3_MIGRATION.md. Jackson 2 (jackson.version) stays until all modules are migrated -->
+		<jackson3.version>3.2.4</jackson3.version>
 
 		<mongojack.version>5.0.3</mongojack.version> <!-- 4.11.1,4.0.3, 3.0.3, 2.10.1, 2.10.1, 2.10.0 -->  <!-- https://github.com/mongojack/mongojack/blob/master/MIGRATING.md -->
 		<poet.version>1.13.0</poet.version> <!--1.11.1 -->

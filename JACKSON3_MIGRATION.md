@@ -116,7 +116,7 @@ non-ProvToolbox artifact that declares a Jackson dependency.
 
 | Library (current) | Brings (Jackson 2) | ProvToolbox modules affected | Jackson 3 support | Action |
 |---|---|---|---|---|
-| networknt `json-schema-validator` **1.5.9** | databind, dataformat-yaml 2.18.3 | **direct** in prov-jsonld, prov-storage-mongodb, prov-template, prov-template-compiler; **transitively in 26 modules** (via prov-jsonld) | ✅ **3.x line** (3.0.8; Java 17 + Jackson 3). Its 2.x line is still Jackson 2 | upgrade 1.5.9 → 3.0.x: **API change** (1.x → 2.x renamed `JsonSchemaFactory`/`ValidationMessage`...) plus Jackson 3 |
+| networknt `json-schema-validator` **1.5.9** | databind, dataformat-yaml 2.18.3 | **direct**: prov-template and prov-template-compiler (compile scope), prov-jsonld and prov-storage-mongodb (test scope only). **Transitively in 22 modules (compile/provided)** via prov-template, mostly through prov-interop (6 Java files use its API: `SchemaCheck` in prov-template; `CompilerJsonSchema`, `CompilerDocumentation`, `JsonSchemaTesting` in prov-template-compiler; tests in prov-jsonld and the compiler) | ✅ **3.x line** (3.0.8; Java 17 + Jackson 3). Its 2.x line is still Jackson 2 | upgrade 1.5.9 → 3.0.x in **two steps**: first 1.5.9 → **2.0.x** (new API, still Jackson 2, so it can be done and tested before any Jackson change), then 2.0.x → 3.0.x (same API, Jackson 3). API mapping (from the project's `doc/migration-2.0.0.md`): `JsonSchemaFactory` → `SchemaRegistry` (`SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_7)`), `JsonSchema` → `Schema`, `ValidationMessage` → `Error` (`getMessage()` no longer contains the instance location; `validate` returns a `List`), `SpecVersion.VersionFlag` → `SpecificationVersion`, `SchemaValidatorsConfig` → `SchemaRegistryConfig` (+ `WalkConfig`, `ExecutionConfig`) |
 | flipkart `zjsonpatch` **0.4.14** | core, databind 2.14 | prov-template | ✅ **moved to `io.github.vishwakarma:zjsonpatch` 0.6.x** (0.6.4): `Jackson3JsonPatch`/`Jackson3JsonDiff`, Jackson an optional dependency | change coordinates, use the Jackson3* classes, declare databind 3 |
 | swagger-core **2.2.41** (`swagger-jaxrs2-jakarta`, `-core-jakarta`, `-models-jakarta`) | databind, yaml, jsr310, jakarta-rs-json-provider 2.19.2 | 13 service modules (prov-service-*, service-*) | ✅ **swagger-core 3.0.0** (released 2026-10-28): Jackson 3 only, Java 17, **`swagger-jaxrs2-jakarta` renamed `swagger-rest`**. 2.2.x stays on Jackson 2 | upgrade to 3.0.x. Very new, so check maturity; can be done last (services) |
 | `mongojack` **5.0.3** | databind, jsr310 2.16.1 | prov-storage-mongodb + 9 service modules | ✅ **6.0.0**: Jackson 3, Java 17, **MongoDB driver 5.x only** | upgrade to 6.0.x (+ Mongo driver 5, check `MIGRATING.md`) |
@@ -169,6 +169,16 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
   cannot read them. So step B0 raises the root `release`/`source` to 17. The Scala modules
   already use 17. The JSweet candies (`release 11`) only use the shared annotations, so
   they are not affected.
+- **D6 – ProvToolbox's own public API changes.** About 57 public methods in ProvToolbox
+  (prov-jsonld 12, prov-jsonld-xml 12, prov-storage-mongodb 8, prov-template 5,
+  nlg-wrapper 5, service-templates-core 4, prov-model-scala 4, ...) take or return Jackson
+  types (`ObjectMapper`, `JsonNode`, `JsonGenerator`...), and custom serializers are
+  public classes. Several follow the "pass an `ObjectMapper` and mutate it" pattern (e.g.
+  `ProvMixin` calls `mapper.addMixIn(...)`, and `ProvDeserialiser` calls `registerModule`), which
+  must become "configure a `MapperBuilder`". Users of these APIs will see a breaking
+  change. Proposal: accept it and release the result as a new major version of ProvToolbox
+  (together with Scala 3 and JDK 17), and keep method names where possible
+  (e.g. `ProvMixin.addProvMixin(MapperBuilder<?,?> b)` next to `addProvMixin(ObjectMapper)`).
 - **D4 – Tooling.** Use OpenRewrite `UpgradeJackson_2_3` for Java modules where it helps,
   then fix by hand. Scala (6 modules) by hand / sed.
 
@@ -179,9 +189,9 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 | A1 | Inventory of direct Jackson use (poms, sources, module-info, generators) | DONE |
 | A2 | Dependency trees of the whole reactor: which third-party libs pull Jackson 2 | DONE (section 3, 3.1) |
 | A3 | Check each library's Jackson 3 release (versions, API changes) | DONE (section 3). Library-specific API migration notes are written when each module is ported |
-| B0 | Root pom: compiler `release`/`source` 15 → 17 (D5); full build + tests to check nothing else breaks | TODO |
-| B1 | Root pom: add `tools.jackson:jackson-bom` (dependencyManagement) and a `jackson3.version` property; keep the Jackson 2 properties while modules migrate | TODO |
-| B2 | Baseline: record current test results and sample outputs (PROV-JSON, JSON-LD, XML, template bindings, provman outputs) for later comparison | TODO |
+| B0 | Root pom: compiler `release`/`source` 15 → 17 (D5); full build + tests to check nothing else breaks | **done in pom, verification running**: the baseline run (B2) uses release 17. All modules built so far compile, and prov-model 613, prov-jsonld 660, prov-jsonld-xml 147 tests pass |
+| B1 | Root pom: add `tools.jackson:jackson-bom` (dependencyManagement) and a `jackson3.version` property; keep the Jackson 2 properties while modules migrate | **done in pom, NOT YET BUILT**: `jackson3.version=3.2.4`, BOM imported. The BOM manages the shared `jackson-annotations` at 2.22, so `jackson.annotation.version` moved 2.21 → 2.22 for consistency. Next: full build + tests, compared with the B2 baseline (this also shows whether the test results are stable from run to run) |
+| B2 | Baseline: record current test results (`jackson3-migration/test-summary.py` over the build logs → `jackson3-migration/baseline-tests.tsv`) and sample outputs for later comparison | in progress |
 | C1 | prov-model (annotations only: check, module-info) | TODO |
 | C2 | prov-jsonld (+ json-schema-validator 3.x) | TODO |
 | C3 | prov-jsonld-xml | TODO |
@@ -193,8 +203,53 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 | C9 | Remaining Jackson 2 islands (pac4j, Spring Boot) decided per D3 | TODO |
 | D | Clean-up: remove Jackson 2 properties/dependencies, check `mvn dependency:tree` has no `com.fasterxml.jackson.core:jackson-databind`, regenerate DEPENDENCIES.md / license trees | TODO |
 
+## 5a. Recipe for migrating one module (repeat per module, in the order of section 5)
+
+1. **Before**: make sure the module's baseline test line is in
+   `jackson3-migration/baseline-tests.tsv` (step B2).
+2. **pom**: replace each Jackson 2 dependency by its Jackson 3 equivalent (section 2.1).
+   Drop `<version>`: the root pom imports `tools.jackson:jackson-bom` (B1). Keep
+   `com.fasterxml.jackson.core:jackson-annotations` unchanged. Upgrade the third-party
+   library to its Jackson 3 version at the same time (section 3).
+3. **module-info.java** (main and test): `requires com.fasterxml.jackson.core` →
+   `tools.jackson.core`, `...databind` → `tools.jackson.databind`,
+   `...dataformat.xml` → `tools.jackson.dataformat.xml`, `...dataformat.yaml` →
+   `tools.jackson.dataformat.yaml`. `opens ... to com.fasterxml.jackson.databind` → `to tools.jackson.databind`.
+4. **Sources**:
+   - Java: try OpenRewrite first (only on this module):
+     `mvn -B -pl <module> org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.activeRecipes=org.openrewrite.java.jackson.UpgradeJackson_2_3 -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-jackson:RELEASE`,
+     then review the diff and fix the rest by hand.
+   - Scala: by hand (sed for the import renames, then the compiler errors).
+   - Typical manual fixes: mutable mapper set-up → builder (`JsonMapper.builderWithJackson2Defaults()`,
+     per D2); `catch (IOException)` around pure Jackson calls → `catch (JacksonException)`
+     or remove; `JsonSerializer`/`JsonDeserializer`/`SerializerProvider` → `ValueSerializer`/
+     `ValueDeserializer`/`SerializationContext`; streaming and tree-model renames (section 1).
+     Add each new kind of fix to the catalogue (section 5b).
+5. **Build and test** the module and its dependants. Compare with the baseline:
+   `python3 jackson3-migration/test-summary.py <log> > after.tsv` then
+   `python3 jackson3-migration/test-summary.py --diff jackson3-migration/baseline-tests.tsv after.tsv`.
+   Diff the files the tests write (`target/`) against the B2 snapshot.
+6. Check that the module no longer has Jackson 2 on its classpath (unless it is a D3 island):
+   `mvn -B dependency:tree -pl <module> | grep -E "com.fasterxml.jackson.(core:jackson-(core|databind)|dataformat|module|datatype|jaxrs|jakarta)"`.
+7. Update the status table and progress log, commit, push.
+
+## 5b. Catalogue of fixes found so far
+
+*(fill in during phase C)*
+
 ## 6. Build environment notes (what a fresh machine/container needs)
 
+- prov-model runs `dot --version`. Graphviz 2.43 (Ubuntu 24.04) only knows `dot -V`;
+  a shim in `/usr/local/bin/dot` that maps `--version` to `-V` works.
+- Full baseline test run: `mvn -B install -P '!missing-lexicon' -fae -Dmaven.test.failure.ignore=true -Dtest.failure.ignore=true`
+  (`test.failure.ignore` is the property that nlg-wrapper's scalatest configuration reads).
+- prov-jsonld's `schema.check` (`make schema.test`) downloads the published schema from
+  www.w3.org, which the cloud network policy blocks. Its 660 tests had already run.
+- **MongoDB**: prov-storage-mongodb's tests need a MongoDB server on localhost. Without
+  one, each test waits for a 30 s timeout, so the module takes hours. In the cloud
+  baseline, the run was resumed after it (`-rf :prov-storage-index-redis`), and its tests
+  must be compared on a machine with MongoDB. **Redis**: `apt-get install redis-server` then
+  `redis-server --daemonize yes` (done in the cloud container).
 - Tools used by the build (exec-maven-plugin checks and Makefiles): `ajv` (**ajv-cli 3.x**:
   `npm i -g ajv-cli@3`; ajv-cli 5 rejects the draft-04 schemas), `jq`, graphviz `dot`, `curl`, `make`.
   Without them, prov-model and prov-template-library fail. Do **not** use `-Dexec.skip=true`
@@ -212,4 +267,5 @@ but Jackson 2 isn't fully gone until pac4j and Spring Boot are dealt with.
 |---|---|---|
 | 2026-11-03 | A1 | Branch `jackson3-port` created off `scala3-port` (66ce97c). Inventory done (section 2). |
 | 2026-11-03 | baseline build | `mvn install -DskipTests` of the whole Scala-3-only reactor: all code modules OK (see section 6 for the packaging modules that cannot be built in the cloud). |
+| 2026-11-03 | B0, B1, B2 (in progress) | Root pom: release 17 (B0); Jackson 3 BOM + annotations 2.22 (B1, not built yet). Baseline test run started (prov-storage-mongodb skipped, no MongoDB; see section 6). Added `jackson3-migration/test-summary.py`. Found that json-schema-validator spreads from prov-template (not prov-jsonld, where it is test scope only). Added D6 (ProvToolbox public API) and the per-module recipe (5a). |
 | 2026-11-03 | A2, A3 | Verbose dependency trees of 72 modules. Third-party Jackson users: json-schema-validator, zjsonpatch, swagger-core, mongojack, pac4j (+scribejava), Spring Boot 2.7. Jackson 3 status checked for each (section 3). Verified in the jar: databind 3.2.4 has `JsonMapper.builderWithJackson2Defaults()` and `MapperBuilder.configureForJackson2()` (D2 is feasible). Found D5 (JDK 17). |

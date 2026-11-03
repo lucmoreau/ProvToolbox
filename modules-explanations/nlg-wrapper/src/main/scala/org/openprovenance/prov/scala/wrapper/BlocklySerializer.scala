@@ -1,9 +1,9 @@
 package org.openprovenance.prov.scala.wrapper
 
 import com.ctc.wstx.stax.{WstxInputFactory, WstxOutputFactory}
-import com.fasterxml.jackson.core.Version
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.dataformat.xml.{XmlFactory, XmlMapper}
+import tools.jackson.core.Version
+import tools.jackson.databind.SerializationFeature
+import tools.jackson.dataformat.xml.{XmlFactory, XmlMapper}
 import nlg.wrapper.{Block, Root, StatementsHandler}
 import Blockly.BLOCKLY_NS
 import nlg.wrapper.stax.{ElementEraserXMLStreamWriter2, NamespaceXMLStreamWriter2}
@@ -30,7 +30,7 @@ class BlocklySerializer(wrap_erase: Boolean) {
     val mapper = getMapper(formatted)
     try mapper.writeValue(out, document)
     catch {
-      case e: IOException =>
+      case e: tools.jackson.core.JacksonException => // jackson 3: unchecked
         e.printStackTrace()
         throw new RuntimeException(e)
     }
@@ -41,7 +41,7 @@ class BlocklySerializer(wrap_erase: Boolean) {
     try {
       mapper.readValue(in , classOf[Block])
     } catch {
-      case e: IOException =>
+      case e: tools.jackson.core.JacksonException => // jackson 3: unchecked
         e.printStackTrace()
         throw new RuntimeException(e)
     }
@@ -53,7 +53,7 @@ class BlocklySerializer(wrap_erase: Boolean) {
     try {
       mapper.readValue(in , classOf[Root])
     } catch {
-      case e: IOException =>
+      case e: tools.jackson.core.JacksonException => // jackson 3: unchecked
         e.printStackTrace()
         throw new RuntimeException(e)
     }
@@ -62,22 +62,23 @@ class BlocklySerializer(wrap_erase: Boolean) {
 
 
   def getMapper(formatted: Boolean): XmlMapper = {
-    val mapper = getXmlMapper
-    if (formatted) mapper.enable(SerializationFeature.INDENT_OUTPUT)
+    // Jackson 3: configured on the builder, then built
+    val builder = getXmlMapperBuilder
+    if (formatted) builder.enable(SerializationFeature.INDENT_OUTPUT)
     val module = new StatementsHandler("CustomBlockly", new Version(1, 0, 0, null, null, null))
 
-    mapper.registerModule(module)
+    builder.addModule(module)
 
     //val module = makeModule
     //mapper.registerModule(module)
     //val filterProvider = makeFilter
     //mapper.setFilterProvider(filterProvider)
     //provMixin.addProvMixin(mapper)
-    mapper
+    builder.build()
   }
 
 
-  def getXmlMapper: XmlMapper = {
+  def getXmlMapperBuilder: XmlMapper.Builder = {
     val inputFactory2 = new WstxInputFactory
     val outputFactory2 = new WstxOutputFactory() {
       override def createXMLStreamWriter(w: OutputStream, enco: String): XMLStreamWriter = { //mConfig.enableAutomaticNamespaces(true);
@@ -93,8 +94,9 @@ class BlocklySerializer(wrap_erase: Boolean) {
     }
     outputFactory2.setProperty(XMLOutputFactory2.P_AUTOMATIC_NS_PREFIX, true)
     outputFactory2.configureForRobustness()
-    val xmlFactory = new XmlFactory(inputFactory2, outputFactory2)
-    new XmlMapper(xmlFactory)
+    // Jackson 2 defaults for the factory and the mapper (JACKSON3_MIGRATION.md, D2)
+    val xmlFactory = XmlFactory.builderWithJackson2Defaults().xmlInputFactory(inputFactory2).xmlOutputFactory(outputFactory2).build()
+    XmlMapper.builder(xmlFactory).configureForJackson2()
   }
 
 

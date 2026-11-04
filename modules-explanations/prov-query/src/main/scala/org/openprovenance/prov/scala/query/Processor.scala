@@ -37,8 +37,8 @@ class Processor (finder:Option[String]=>StatementAccessor[Statement], env: Envir
 
   def accumulateInto(where: Option[mutable.Set[Record]]): Record => Unit = {
     where match {
-      case None => _: Record =>
-      case Some(set) => x: Record => set += x
+      case None => (_: Record) =>
+      case Some(set) => (x: Record) => set += x
     }
   }
 

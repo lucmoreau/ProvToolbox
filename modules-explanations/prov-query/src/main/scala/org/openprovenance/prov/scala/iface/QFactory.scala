@@ -15,7 +15,7 @@ import scala.collection.mutable
 object QFactory  {
   def makeStatementAccessor(statements: Seq[Statement]): StatementAccessor[Statement] = {
     val idx: Map[Kind.Value, List[Statement]] = StatementIndexer.splitByStatementType(statements)
-    val (allDerivationsPlus, allDerivationsStar): (List[WasDerivedFromPlus], List[WasDerivedFromStar]) = StatementIndexer.computeDerivationClosure(idx)
+    val (allDerivationsPlus, allDerivationsStar) /* scala3: no type ascription after a tuple pattern; type is (List[WasDerivedFromPlus], List[WasDerivedFromStar]) */ = StatementIndexer.computeDerivationClosure(idx)
 
     (type_string: String) => {
       val kind = QuerySetup.nameMapper(type_string)
@@ -55,7 +55,8 @@ class QFactory {
         val result1: Set[RField] = queryProcessor.toFields(records)
         println("found " + records.size + " records (and " + result1.size + " fields)")
 
-        def convert[T <% StatementOrNull or Seq[Statement] or Seq[TypedValue]](t: T): Seq[Statement] = {
+        def convert[T](t0: T)(implicit ev: T => (StatementOrNull or Seq[Statement] or Seq[TypedValue])): Seq[Statement] = {
+          val t = ev(t0) // scala3: view bound `<%` no longer supported; conversion applied explicitly
           t.a match {
             case None => t.b match {
               case None => throw new UnsupportedOperationException

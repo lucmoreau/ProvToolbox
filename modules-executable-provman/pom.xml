@@ -11,7 +11,14 @@
     <artifactId>modules-executable-provman</artifactId>
 
 
+
     <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>${scala3.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-scala-misc</artifactId>
@@ -111,9 +118,17 @@
 
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${scala3.release}</release>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>${scala.plugin.version}</version>
+                <version>${scala3.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>scala-compile-first</id>
@@ -144,9 +159,13 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <scalaVersion>${scala3.version}</scalaVersion>
                     <args>
                         <arg>-deprecation</arg>
                         <arg>-feature</arg>
+                        <arg>-no-indent</arg>
+                        <arg>-release</arg>
+                        <arg>${scala3.release}</arg>
                     </args>
                     <jvmArgs>
                         <jvmArg>-Xms64m</jvmArg>

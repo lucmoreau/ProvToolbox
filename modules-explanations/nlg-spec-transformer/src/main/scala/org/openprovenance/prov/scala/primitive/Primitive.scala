@@ -16,7 +16,7 @@ case class Triple (subject: QualifiedName,
   override val hashCode: Int = scala.runtime.ScalaRunTime._hashCode(Triple.this)
 }
 
-case class Result private (string: Option[String], phrase:Option[Phrase], map:Option[Map[String,Object]], set:Option[Seq[Object]]) {
+case class Result private[primitive] /* scala3: was private; the synthetic apply is now private too */ (string: Option[String], phrase:Option[Phrase], map:Option[Map[String,Object]], set:Option[Seq[Object]]) {
   def this(s:String) = {
     this(Option(s),None,None,None)
   }
@@ -809,7 +809,7 @@ object Primitive {
     function match {
       case "profile-features" =>
         val profiles: Map[String, Map[String, Object]] =environment.profiles(arg1).asInstanceOf[Map[String,Map[String,Object]]]
-        val arr: Array[Object] =environment.theprofile.flatMap{ p:String => profiles.get(p)}.flatMap(amap => amap.get("features"))
+        val arr: Array[Object] =environment.theprofile.flatMap{ (p:String) => profiles.get(p)}.flatMap(amap => amap.get("features"))
         if (arr.isEmpty) {
           Map()
         } else {

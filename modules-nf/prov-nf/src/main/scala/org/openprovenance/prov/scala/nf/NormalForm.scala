@@ -1908,7 +1908,7 @@ object Normalizer {
     val ss2=ss.map(s => inNormalForm(s)).toSet
     new Bundle(Set(b.id),
       ss2,
-      b.getNamespace)
+      b.namespace)
   }
 
   def inNormalForm(s: org.openprovenance.prov.scala.immutable.Statement): Statement = {
@@ -2018,7 +2018,7 @@ object Normalizer {
   def index_membership1(ss: Set[Statement], equiv_init: Set[Set[QualifiedName]]=Set()): (Map[IndexingPair, Set[Statement]], Map[QualifiedName, Set[QualifiedName]]) = {
     index_membership(ss,
       s=>s.asInstanceOf[MultiIdentifiable].id,
-      {idset:Any=>idset.asInstanceOf[Set[QualifiedName]].nonEmpty},
+      {(idset:Any) =>idset.asInstanceOf[Set[QualifiedName]].nonEmpty},
       equiv_init)
   }
 
@@ -2711,18 +2711,18 @@ class KeyIndexer (val nisi: NoIdStatementIndexer,
     sets.foreach { s => tc.add2(s) }
     val part = tc.partition()
 
-    val (wgb_yes,wgb_no)=split(nisi.statements, {s:Statement => s match { case wgb:WasGeneratedBy => if (wasGeneratedBy.isDefinedAt(ComplexKey(wgb)))
+    val (wgb_yes,wgb_no)=split(nisi.statements, {(s:Statement) => s match { case wgb:WasGeneratedBy => if (wasGeneratedBy.isDefinedAt(ComplexKey(wgb)))
       Some(wgb) else None
     case _ => None }})
-    val (wib_yes,wib_no)=split(wgb_no,          {s:Statement => s match { case wib:WasInvalidatedBy => if (wasInvalidatedBy.isDefinedAt(ComplexKey(wib)))
+    val (wib_yes,wib_no)=split(wgb_no,          {(s:Statement) => s match { case wib:WasInvalidatedBy => if (wasInvalidatedBy.isDefinedAt(ComplexKey(wib)))
       Some(wib) else None
     case _ => None }})
 
-    val (wsb_yes,wsb_no)=split(wib_no,          {s:Statement => s match { case wsb:WasStartedBy => if (wasStartedBy.isDefinedAt(ComplexKey(wsb)))
+    val (wsb_yes,wsb_no)=split(wib_no,          {(s:Statement) => s match { case wsb:WasStartedBy => if (wasStartedBy.isDefinedAt(ComplexKey(wsb)))
       Some(wsb) else None
     case _ => None }})
 
-    val (web_yes,web_no)=split(wsb_no,          {s:Statement => s match { case web:WasEndedBy => if (wasEndedBy.isDefinedAt(ComplexKey(web)))
+    val (web_yes,web_no)=split(wsb_no,          {(s:Statement) => s match { case web:WasEndedBy => if (wasEndedBy.isDefinedAt(ComplexKey(web)))
       Some(web) else None
     case _ => None }})
 

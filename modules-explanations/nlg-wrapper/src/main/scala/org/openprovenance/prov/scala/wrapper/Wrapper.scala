@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.annotation.{JsonDeserialize, JsonSerialize
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.module.scala.ScalaObjectMapper
+import com.fasterxml.jackson.module.scala.ClassTagExtensions // scala3: ScalaObjectMapper does not exist for Scala 3
 import nlg.wrapper.{Block, BlocklyContents, Constants}
 import defs.StringPhrase
 import simplenlg.features._
@@ -230,8 +230,8 @@ object defs {
     }
   }
 
-  case class Clause(@JsonDeserialize(using = classOf[CustomOptionNounFormDeserializer]) subject:  Option[NounForm],
-                    @JsonDeserialize(using = classOf[CustomOptionVerbFormDeserializer]) verb:     Option[VerbForm],
+  case class Clause(@JsonDeserialize(`using` = classOf[CustomOptionNounFormDeserializer]) subject:  Option[NounForm],
+                    @JsonDeserialize(`using` = classOf[CustomOptionVerbFormDeserializer]) verb:     Option[VerbForm],
                     @JsonProperty("object")
                     direct_object:   Option[Phrase],
                     indirect_object: Option[Phrase],
@@ -366,7 +366,7 @@ object defs {
   }
 
   case class VerbPhrase(head: Head,
-                        @JsonProperty("object")@JsonDeserialize(using = classOf[CustomOptionPhraseDeserializer])
+                        @JsonProperty("object")@JsonDeserialize(`using` = classOf[CustomOptionPhraseDeserializer])
                         direct_object:   Option[Phrase]=None,
                         indirect_object: Option[Phrase]=None,
                         modifiers: Seq[Phrase]=Seq(),
@@ -495,7 +495,7 @@ object defs {
   }
 
   case class PrepositionPhrase(preposition: String,
-                               @JsonDeserialize(using = classOf[CustomOptionNounFormDeserializer]) noun: Option[NounForm],
+                               @JsonDeserialize(`using` = classOf[CustomOptionNounFormDeserializer]) noun: Option[NounForm],
                                complements: Seq[Phrase]=Seq(),
                                specifier: Option[NounPhrase]=None,
                                features:        Features=Map(),
@@ -680,7 +680,7 @@ object IO {
 
   import defs.Phrase
 
-  val mapper:ObjectMapper = new ObjectMapper  with ScalaObjectMapper
+  val mapper:ObjectMapper = new ObjectMapper  with ClassTagExtensions
   mapper.registerModule(DefaultScalaModule)
   mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
 

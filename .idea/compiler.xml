@@ -69,5 +69,19 @@
         <module name="service-signature" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="modules-executable-provman-scala3" target="17" />
+      <module name="nlg-spec-transformer-scala3" target="17" />
+      <module name="nlg-wrapper-scala3" target="17" />
+      <module name="prov-explanations-scala3" target="17" />
+      <module name="prov-model-scala-scala3" target="17" />
+      <module name="prov-nf-scala3" target="17" />
+      <module name="prov-query-scala3" target="17" />
+      <module name="prov-scala-misc-scala3" target="17" />
+      <module name="prov-signature-scala3" target="17" />
+      <module name="prov-summarisation-scala3" target="17" />
+      <module name="prov-summary-explanations-scala3" target="17" />
+      <module name="prov-typemap-scala3" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

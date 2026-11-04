@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.module.scala.ScalaObjectMapper
+import com.fasterxml.jackson.module.scala.ClassTagExtensions // scala3: ScalaObjectMapper does not exist for Scala 3
 import nlg.wrapper._
 import Constants.AT_ITERATOR
 import org.openprovenance.prov.model.Bundle
@@ -406,8 +406,8 @@ object defs  {
     if (s.startsWith("##")) environment.snippets.get(s) else  None
   }
 
-  case class Clause(@JsonDeserialize(using = classOf[CustomOptionNounFormDeserializer]) subject:  Option[NounForm],
-                    @JsonDeserialize(using = classOf[CustomOptionVerbFormDeserializer]) verb:     Option[VerbForm],
+  case class Clause(@JsonDeserialize(`using` = classOf[CustomOptionNounFormDeserializer]) subject:  Option[NounForm],
+                    @JsonDeserialize(`using` = classOf[CustomOptionVerbFormDeserializer]) verb:     Option[VerbForm],
                     @JsonProperty("object")
                     direct_object:   Option[Phrase],
                     indirect_object: Option[Phrase],
@@ -486,14 +486,14 @@ object defs  {
     if (v==null) None else v
   }
   case class NounPhrase(determiner:     String,
-                        @JsonDeserialize(using = classOf[CustomHeadFormDeserializer])
+                        @JsonDeserialize(`using` = classOf[CustomHeadFormDeserializer])
                         head:           Option[HeadForm],
                         modifiers:      Seq[Phrase]=Seq(),
                         @JsonProperty("pre-modifiers")
                         pre_modifiers:  Seq[Phrase]=Seq(),
                         @JsonProperty("post-modifiers")
                         post_modifiers: Seq[Phrase]=Seq(),
-                        @JsonDeserialize(using = classOf[CustomOptionNounFormDeserializer]) specifier:      Option[NounForm]=None,
+                        @JsonDeserialize(`using` = classOf[CustomOptionNounFormDeserializer]) specifier:      Option[NounForm]=None,
                         complements:    Seq[Phrase]=Seq(),
                         comments:       String=null,
                         features:       Features=Map())
@@ -557,7 +557,7 @@ object defs  {
 
 
   case class VerbPhrase(head: Head,
-                        @JsonProperty("object")@JsonDeserialize(using = classOf[CustomOptionPhraseDeserializer])
+                        @JsonProperty("object")@JsonDeserialize(`using` = classOf[CustomOptionPhraseDeserializer])
                         direct_object:   Option[Phrase]=None,
                         indirect_object: Option[Phrase]=None,
                         modifiers: Seq[Phrase]=Seq(),
@@ -616,7 +616,7 @@ object defs  {
   }
 
 
-  case class AdjectivePhrase(@JsonDeserialize(using = classOf[CustomHeadFormDeserializer])
+  case class AdjectivePhrase(@JsonDeserialize(`using` = classOf[CustomHeadFormDeserializer])
                              head: Option[HeadForm],
                              modifiers: Seq[Phrase]=Seq(),
                              @JsonProperty("pre-modifiers")
@@ -663,7 +663,7 @@ object defs  {
   }
 
 
-  case class AdverbPhrase(@JsonDeserialize(using = classOf[CustomHeadFormDeserializer])
+  case class AdverbPhrase(@JsonDeserialize(`using` = classOf[CustomHeadFormDeserializer])
                              head: Option[HeadForm],
                              modifiers: Seq[Phrase]=Seq(),
                              @JsonProperty("pre-modifiers")
@@ -710,7 +710,7 @@ object defs  {
   }
 
   case class PrepositionPhrase(preposition: String,
-                               @JsonDeserialize(using = classOf[CustomOptionNounFormDeserializer]) noun: Option[NounForm],  //TODO: I HAD TO MAKE THIS AN OPTION, FOR THE DESERIALIZER TO BE CALLED???
+                               @JsonDeserialize(`using` = classOf[CustomOptionNounFormDeserializer]) noun: Option[NounForm],  //TODO: I HAD TO MAKE THIS AN OPTION, FOR THE DESERIALIZER TO BE CALLED???
                                complements: Seq[Phrase]=Seq(),
                                specifier: Option[NounPhrase]=None,
                                features: Features=Map()) extends Phrase with HasComplements with HasSpecifier with HasFeatures {
@@ -1081,7 +1081,7 @@ object defs  {
 
       val post: Seq[Phrase]=nullSeq(post_modifiers).flatMap(arg => arg.transform[Phrase](e))
 
-      CoordinatedPhrase(null, res2.toSeq, null, "and", post).transform[Phrase with F](e)
+      CoordinatedPhrase(null, res2.toSeq, null, "and", post).transform[Phrase with F](e)(ClassTag[Phrase with F](classOf[Phrase])) /* scala3: no ClassTag synthesised for Phrase & F; scala2 used the erasure (Phrase) */
     }
   }
 
@@ -1328,7 +1328,7 @@ object SpecLoader {
 
   val pf: ProvMixin2 =new ProvDeserialiser().provMixin()
 
-  val mapper:ObjectMapper = new ObjectMapper  with ScalaObjectMapper
+  val mapper:ObjectMapper = new ObjectMapper  with ClassTagExtensions
   mapper.registerModule(DefaultScalaModule)
   mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
 

@@ -392,12 +392,14 @@
 
 		<!-- <java.version>1.8</java.version> -->
 
-		<scala.library.version>2.13.18</scala.library.version> <!-- 2.13.13, 2.13.12, 2.12.18 -->
-		<scala.plugin.version>4.9.7</scala.plugin.version> <!-- 4.8.1, 4.2.0 -->
 		<scalatest.version>3.2.19</scalatest.version> <!-- 3.2.18 3.2.17, 3.1.4, 3.1.0-RC3 -->
 		<scalatest.mvn.plugin.version>2.2.0</scalatest.mvn.plugin.version>
 		<scala.parallel.collection.version>1.0.4</scala.parallel.collection.version>
-		<scala.binary.version>2.13</scala.binary.version>
+		<scala.binary.version>3</scala.binary.version>
+		<!-- Scala 3, see SCALA3_MIGRATION.md -->
+		<scala3.version>3.9.0</scala3.version> <!-- latest LTS -->
+		<scala3.plugin.version>4.10.0</scala3.plugin.version> <!-- 4.9.x passes scala 2 scaladoc options to the scala 3 scaladoc -->
+		<scala3.release>17</scala3.release> <!-- scala >= 3.8 requires jdk 17 -->
 		<scala.parser.comb.version>2.4.0</scala.parser.comb.version> <!-- 1.1.2 -->
 		<parboiled.version>2.5.1</parboiled.version> <!-- 2.5.0 -->
 

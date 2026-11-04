@@ -1054,7 +1054,7 @@ endDocument
     summary1.nodes(idx2) shouldBe a [Activity]
     summary1.nodes(idx2).asInstanceOf[Activity].other(new QualifiedName("sum","size",SUM_NS)).head.value should be ("3")
     
-    Graphics.toDot(doc2, {q:QualifiedName => summary1.amap(q).toString }, summary1.sizeRange, new File("target/pc1-sum.dot"))
+    Graphics.toDot(doc2, {(q:QualifiedName) => summary1.amap(q).toString }, summary1.sizeRange, new File("target/pc1-sum.dot"))
     Graphics.dotConvert("target/pc1-sum.dot","target/pc1-sum.svg","svg")
     
     println(" quantities " + summary1.sizeRange)

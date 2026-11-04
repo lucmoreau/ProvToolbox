@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.ValidationMessage;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
+import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.notation.Utility;
@@ -116,7 +117,15 @@ public class CompilerTest extends TestCase {
 
 
 
-        execute(new String[]{"mvn", "clean", "install"}, "target/libs/templates");
+        // templates_l2p depends on prov-template-compiler and prov-interop, which this build has not installed yet (this
+        // test runs before the former's install phase, and the latter comes later in the reactor): they are only found if
+        // the same version was installed earlier, which is never so for a release version, nor in an empty local repository.
+        if (installedLocally("prov-template-compiler") && installedLocally("prov-interop")) {
+            execute(new String[]{"mvn", "clean", "install"}, "target/libs/templates");
+        } else {
+            System.out.println("#### " + Configuration.toolboxVersion + " is not installed locally yet, not building " + l2p_lib);
+            execute(new String[]{"mvn", "clean", "install", "-pl", cli_lib, "-am"}, "target/libs/templates");
+        }
         //execute(new String[] {"mvn", "clean", "install"},"target/libs/templates", null);
 
         final String theExamplarJsonFile = cli_dir + "/target/example_template_block.json";
@@ -139,6 +148,13 @@ public class CompilerTest extends TestCase {
 
 
 
+    }
+
+    /** Whether the local Maven repository holds the jar of this toolbox artifact, at the version of this build. */
+    static boolean installedLocally(String artifact) {
+        String repository = System.getProperty("maven.repo.local", System.getProperty("user.home") + "/.m2/repository");
+        String version = Configuration.toolboxVersion;
+        return new File(repository + "/org/openprovenance/prov/" + artifact + "/" + version + "/" + artifact + "-" + version + ".jar").exists();
     }
 
     /**

@@ -16,8 +16,6 @@ import org.openprovenance.prov.notation.ProvNParser.*;
  * Traverses the parse tree that the ANTLR 4 parser {@link ProvNParser} builds for a PROV-N document, and
  * constructs its PROV representation by invoking the methods of a {@link ModelConstructor}.
  * <p>
- * This is the counterpart of {@link TreeTraversal}, which does the same for the tree built by the ANTLR 3
- * parser ({@link PROV_NParser}), and it constructs the same representation.
  * The visit of a statement returns the object built by the {@link ModelConstructor}; the visit of a literal,
  * its Java value: a {@link String}, a {@link LangString}, an {@link Integer}, or a pair (an {@code Object[]})
  * value and datatype, for a typed literal.

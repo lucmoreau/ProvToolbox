@@ -11,23 +11,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.antlr.runtime.ANTLRInputStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.CharStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.Token;
-import org.antlr.runtime.TokenStream;
-import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.CommonTreeAdaptor;
-import org.antlr.runtime.tree.TreeAdaptor;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
-import org.openprovenance.prov.model.exception.UncheckedException;
 
 
 /**
@@ -35,8 +24,7 @@ import org.openprovenance.prov.model.exception.UncheckedException;
  * <p>
  * Documents are read with the ANTLR 4 parser (ProvN.g4), via {@link ProvNReader}: a document that is not valid
  * PROV-N is rejected with a {@link ProvNSyntaxException} (see {@link ProvDeserialiser} for how this parser differs from
- * the ANTLR 3 one, used up to 2.3.0). The methods that expose the ANTLR 3 parser (PROV_N.g) or its trees
- * ({@link TreeTraversal}) are deprecated, and will be removed with it.
+ * the ANTLR 3 one, used up to 2.3.0).
  */
 public class Utility {
 
@@ -59,97 +47,6 @@ public class Utility {
     public static void warn(Exception e) {
         logger.warn(e.getMessage());
     }
-
-    static class ParserWithErrorHandling extends PROV_NParser {
-        public void reportError(RecognitionException re) {
-            super.reportError(re);
-            errors.add(re);
-        }
-
-        public List<RecognitionException> errors=new LinkedList<RecognitionException>();
-
-        public ParserWithErrorHandling(TokenStream input) {
-            super(input);
-        }
-
-    }
-
-    /** @deprecated returns the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    public PROV_NParser getParserForFile(String file) {
-        try {
-            CharStream input = new ANTLRFileStream(file);
-            return getParserForCharStream(input);
-        } catch (IOException e) {
-            throw new UncheckedException(e);
-        }
-    }
-
-    /** @deprecated returns the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    public PROV_NParser getParserForStream(InputStream is) {
-        try {
-            CharStream input = new ANTLRInputStream(is);
-            return getParserForCharStream(input);
-        } catch (IOException e) {
-            throw new UncheckedException(e);
-        }
-    }
-    /** @deprecated returns the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    public PROV_NParser getParserForCharStream(CharStream input) throws java.io.IOException {
-
-        PROV_NLexer lex = new PROV_NLexer(input);
-        CommonTokenStream tokens = new  CommonTokenStream(lex);
-        //PROV_NParser parser = new PROV_NParser(tokens);
-        PROV_NParser parser = new ParserWithErrorHandling(tokens);
-
-        return parser;
-    }
-
-    static final TreeAdaptor adaptor = new CommonTreeAdaptor() {
-        public Object create(Token payload) {
-            return new CommonTree(payload);
-        }
-    };
-
-    /** @deprecated returns the tree of the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    public CommonTree convertSyntaxTreeToTree(String file)  {
-        PROV_NParser parser=getParserForFile(file);
-        return convertSyntaxTreeToTree(parser);
-    }
-
-
-    /** @deprecated returns the tree of the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    public CommonTree convertSyntaxTreeToTree(InputStream is){
-        PROV_NParser parser=getParserForStream(is);
-        return convertSyntaxTreeToTree(parser);
-    }
-
-    private CommonTree convertSyntaxTreeToTree(PROV_NParser parser){
-        parser.setTreeAdaptor(adaptor);
-        PROV_NParser.document_return ret = null;
-        try {
-            ret = parser.document();
-        } catch (RecognitionException e) {
-            throw new UncheckedException(e);
-        }
-        CommonTree tree = (CommonTree)ret.getTree();
-        return tree;
-    }
-
-
-    /** @deprecated converts the tree of the ANTLR 3 parser; use {@link ProvNReader#convert(ProvNParser.DocumentContext, ModelConstructor)} */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    @SuppressWarnings("removal")
-    public Object convertTreeToJavaBean(CommonTree tree, ProvFactory pFactory) {
-        if (tree==null) return null;
-        return new TreeTraversal(pFactory,pFactory, dateTimeOption, optionalTimeZone).convert(tree);
-    }
-
-
 
     public String convertBeanToHTML(final Document doc, ProvFactory pFactory) {
         StringWriter writer=new StringWriter();
@@ -199,21 +96,6 @@ public class Utility {
         bt.doAction(withImpliedNamespaces(doc, pFactory));
         nc.flush();
         // nc.close();
-    }
-
-    /* from http://www.antlr.org/wiki/display/ANTLR3/Interfacing+AST+with+Java */
-    /** @deprecated prints the tree of the ANTLR 3 parser, which will be removed with it */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    public void printTree(CommonTree t, int indent) {
-        if ( t != null ) {
-            StringBuffer sb = new StringBuffer(indent);
-            for ( int i = 0; i < indent; i++ )
-                sb = sb.append("   ");
-            for ( int i = 0; i < t.getChildCount(); i++ ) {
-                System.out.println("" + i + sb.toString() + t.getChild(i).toString());
-                printTree((CommonTree)t.getChild(i), indent+1);
-            }
-        }
     }
 
     public void writeTextToFile(String text,

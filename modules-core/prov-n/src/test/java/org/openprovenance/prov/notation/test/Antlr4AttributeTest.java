@@ -1,17 +1,17 @@
 package org.openprovenance.prov.notation.test;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.notation.ProvNReader;
 
 /**
- * The attribute tests of {@link AttributeTest}, where PROV-N is read by the ANTLR 4 parser. Each file is also read by
- * the ANTLR 3 parser, which must not construct a different document.
+ * The attribute tests of {@link AttributeTest}, where PROV-N is read by the ANTLR 4 parser.
  */
 public class Antlr4AttributeTest extends AttributeTest {
-	final ParserComparison comparison = new ParserComparison(pFactory);
+	final ProvNReader reader = new ProvNReader(pFactory);
 
 	@Override
 	public Document readDocument(String file) {
-		return comparison.readCheckingOldParser(Antlr4Files.relocate(file));
+		return reader.readDocument(Antlr4Files.relocate(file));
 	}
 
 	@Override

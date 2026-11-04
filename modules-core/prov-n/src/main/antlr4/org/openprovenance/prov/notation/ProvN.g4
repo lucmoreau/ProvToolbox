@@ -5,11 +5,10 @@
 /*
   Grammar for PROV-N, the Provenance Notation (https://www.w3.org/TR/prov-n/), for ANTLR 4.
 
-  It is meant to replace the ANTLR 3 grammar (src/main/antlr3/.../PROV_N.g). ANTLR 4 no longer
-  builds an abstract syntax tree with rewrite rules: the parser returns a parse tree, which
-  ProvNTreeTraversal (a visitor) converts into PROV beans, through the ModelConstructor interface,
-  as TreeTraversal did for the ANTLR 3 tree. For the documents both accept, the two parsers
-  construct the same representation (see ParserComparisonTest). Deliberate differences:
+  It replaces the ANTLR 3 grammar (PROV_N.g, removed; see the git history for its last
+  version). The parser returns a parse tree, which ProvNTreeTraversal (a visitor) converts into PROV
+  beans, through the ModelConstructor interface. Up to its removal, the two parsers constructed the
+  same representation for the documents both accepted. Deliberate differences:
 
     - nothing but whitespace and comments may follow the last 'endDocument' (the ANTLR 3 parser
       ignored what followed); a stream may hold several documents (rule documents);

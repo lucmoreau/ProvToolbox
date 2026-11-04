@@ -2,7 +2,7 @@ package org.openprovenance.prov.notation.test;
 
 import java.io.File;
 
-/** The files written by the round trip tests of the ANTLR 4 parser are kept apart from those of the ANTLR 3 parser's tests. */
+/** The files written by the round trip tests of the ANTLR 4 parser are kept apart from those of the other tests. */
 final class Antlr4Files {
     private Antlr4Files() {}
 

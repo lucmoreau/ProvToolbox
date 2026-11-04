@@ -31,9 +31,7 @@ import org.openprovenance.prov.model.exception.UncheckedException;
  * Reads PROV-N documents with the ANTLR 4 parser ({@link ProvNParser}, generated from ProvN.g4), and
  * constructs their PROV representation through a {@link ModelConstructor} (see {@link ProvNTreeTraversal}).
  * <p>
- * It is meant to replace the reading methods of {@link Utility}, which rely on the ANTLR 3 parser, and it
- * constructs the same representation. Unlike them, it does not attempt to recover from syntax errors:
- * a document that is not valid PROV-N is rejected with a {@link ProvNSyntaxException} that lists all errors.
+ * It does not attempt to recover from syntax errors: a document that is not valid PROV-N is rejected with a {@link ProvNSyntaxException} that lists all errors.
  * <p>
  * The readDocument methods read a stream holding exactly one document (as a file or a
  * text/provenance-notation body does); the readDocuments methods, a stream holding a sequence of documents.

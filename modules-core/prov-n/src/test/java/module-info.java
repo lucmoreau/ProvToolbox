@@ -1,5 +1,5 @@
 module prov.notation.test {
-    requires antlr.runtime;
+    requires org.antlr.antlr4.runtime;
     requires junit;
     requires prov.model;
     requires prov.model.test;

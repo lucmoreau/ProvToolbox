@@ -75,7 +75,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
 
     u.indexer.entity.size should be (2)
     u.indexer.activity.size should be (0)
-    u.indexer.entity(q("e1")).getKind() should be (Kind.PROV_ENTITY)
+    u.indexer.entity(q("e1")).kind should be (Kind.PROV_ENTITY)
     d.statements().count(_.isInstanceOf[Activity]) should be (0)
     d.statements().count(_.isInstanceOf[Entity]) should be (2)
     d.statements().count(_.isInstanceOf[WasGeneratedBy]) should be (2)
@@ -90,7 +90,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
     
     u.indexer.entity.size should be (0)
     u.indexer.activity.size should be (2)
-    u.indexer.activity(q("a1")).getKind() should be (Kind.PROV_ACTIVITY)
+    u.indexer.activity(q("a1")).kind should be (Kind.PROV_ACTIVITY)
     d.statements().count(_.isInstanceOf[Activity]) should be (2)
     d.statements().count(_.isInstanceOf[Entity]) should be (0)
     d.statements().count(_.isInstanceOf[WasInvalidatedBy]) should be (2)
@@ -104,7 +104,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
     
     u.indexer.entity.size should be (0)
     u.indexer.activity.size should be (2)
-    u.indexer.activity(q("a1")).getKind() should be (Kind.PROV_ACTIVITY)
+    u.indexer.activity(q("a1")).kind should be (Kind.PROV_ACTIVITY)
     d.statements().count(_.isInstanceOf[Activity]) should be (2)
     d.statements().count(_.isInstanceOf[Entity]) should be (0)
     d.statements().count(_.isInstanceOf[Used]) should be (2)
@@ -120,7 +120,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
 
     u.indexer.entity.size should be (2)
     u.indexer.activity.size should be (0)
-    u.indexer.entity(q("e10")).getKind() should be (Kind.PROV_ENTITY)
+    u.indexer.entity(q("e10")).kind should be (Kind.PROV_ENTITY)
     
     d.statements().count(_.isInstanceOf[Activity]) should be (0)
     d.statements().count(_.isInstanceOf[Entity]) should be (2)
@@ -136,7 +136,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
 
     u.indexer.entity.size should be (2)
     u.indexer.activity.size should be (0)
-    u.indexer.entity(q("e10")).getKind() should be (Kind.PROV_ENTITY)
+    u.indexer.entity(q("e10")).kind should be (Kind.PROV_ENTITY)
     
     
     d.statements().count(_.isInstanceOf[Activity]) should be (0)
@@ -153,7 +153,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
 
     u.indexer.entity.size should be (0)
     u.indexer.activity.size should be (2)
-    u.indexer.activity(q("a1")).getKind() should be (Kind.PROV_ACTIVITY)
+    u.indexer.activity(q("a1")).kind should be (Kind.PROV_ACTIVITY)
     
     
     d.statements().count(_.isInstanceOf[Activity]) should be (2)

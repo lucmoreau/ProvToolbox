@@ -1,19 +1,19 @@
 package org.openprovenance.prov.notation.test;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.notation.ProvNReader;
 import org.openprovenance.prov.model.test.ProvFrameworkTest;
 
 /**
  * The round trip tests of {@link RoundTripFromJavaTest} (Java, written as PROV-N, read back, and compared with the
- * original), where PROV-N is read by the ANTLR 4 parser. Each file is also read by the ANTLR 3 parser, which must not
- * construct a different document.
+ * original), where PROV-N is read by the ANTLR 4 parser.
  */
 public class Antlr4RoundTripFromJavaTest extends RoundTripFromJavaTest {
-	final ParserComparison comparison = new ParserComparison(ProvFrameworkTest.pFactory);
+	final ProvNReader reader = new ProvNReader(ProvFrameworkTest.pFactory);
 
 	@Override
 	public Document readDocument(String file) {
-		return comparison.readCheckingOldParser(Antlr4Files.relocate(file));
+		return reader.readDocument(Antlr4Files.relocate(file));
 	}
 
 	@Override

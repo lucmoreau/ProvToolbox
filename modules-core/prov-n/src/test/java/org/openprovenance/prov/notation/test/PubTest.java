@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import junit.framework.TestCase;
 
 import org.openprovenance.prov.model.*;
-import  org.antlr.runtime.tree.CommonTree;
 import org.openprovenance.prov.model.ProvSerialiser;
 import org.openprovenance.prov.notation.Utility;
 
@@ -45,9 +44,7 @@ abstract public class PubTest extends TestCase
     public void auxTestReadASNSaveXML(String file, String file2) throws IOException {
 
         Utility u=new Utility(DateTimeOption.PRESERVE, null);
-        CommonTree tree = u.convertSyntaxTreeToTree(file);
-
-        Object o2=u.convertTreeToJavaBean(tree,pFactory);
+        Object o2=u.readDocument(file,pFactory);
 
         graph1=(Document)o2;
 

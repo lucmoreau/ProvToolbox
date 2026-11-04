@@ -3,7 +3,7 @@
     <parent>
         <artifactId>modules-explanations</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.3.0</version>
+        <version>2.4.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,40 +13,46 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>${scala3.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>nlg-wrapper</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-query</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-validation</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-nf</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.0</version>
         </dependency>
 
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-summarisation</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.0</version>
         </dependency>
 
         <dependency>
@@ -78,9 +84,17 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${scala3.release}</release>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>${scala.plugin.version}</version>
+                <version>${scala3.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>scala-compile-first</id>
@@ -111,9 +125,13 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <scalaVersion>${scala3.version}</scalaVersion>
                     <args>
                         <arg>-deprecation</arg>
                         <arg>-feature</arg>
+                        <arg>-no-indent</arg>
+                        <arg>-release</arg>
+                        <arg>${scala3.release}</arg>
                     </args>
                     <jvmArgs>
                         <jvmArg>-Xms64m</jvmArg>

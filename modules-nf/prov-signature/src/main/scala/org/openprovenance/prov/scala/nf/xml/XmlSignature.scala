@@ -125,7 +125,7 @@ object  XmlSignature {
 
 
     // TODO: this is part of the verification
-    namesToSign.foreach( {nameToSign : QName => {
+    namesToSign.foreach( {(nameToSign:QName) => {
       var found = false
       signedElementEvents.foreach( { signedElement => {
         //println("signedElement " + signedElement)

@@ -15,59 +15,59 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
     rule { WS ~ namespaceDeclarations ~ WS ~ selectClause }
 
   def selectClause: Rule[HNil, Operator :: HNil]  =
-    rule { "select" ~ WS ~ ( "*" ~ WS ~> makeEmptyList | fieldList) ~ WS ~ fromClause ~ whereClause ~ groupClause ~> makeSelect }
+    rule { "select" ~ WS ~ ( "*" ~ WS ~> (() => makeEmptyList()) | fieldList) ~ WS ~ fromClause ~ whereClause ~ groupClause ~> ((a1, a2) => makeSelect(a1, a2)) }
 
-  def whereClause: Rule[Operator :: HNil, Operator :: HNil]  = rule { optional( "where" ~ WS ~ oneOrMore (pred).separatedBy(WS ~ "and" ~ WS) ~ WS) ~> makeWhere  }
+  def whereClause: Rule[Operator :: HNil, Operator :: HNil]  = rule { optional( "where" ~ WS ~ oneOrMore (pred).separatedBy(WS ~ "and" ~ WS) ~ WS) ~> ((a1, a2) => makeWhere(a1, a2))  }
 
   def fromClause: Rule[HNil, Operator :: HNil] = rule { "from" ~ WS ~ tableClause ~ WS ~ optional(joinClause1)}
 
   def joinClause1: Rule[Operator :: HNil, Operator :: HNil] = rule { "from" ~ WS ~ oneOrMore (tableJoinClause).separatedBy(WS ~ "from" ~ WS) }
 
   def tableClause: Rule[HNil, Operator :: HNil] = rule {
-    fieldIdent ~ WS ~ "a" ~ WS ~ identifier ~ WS ~ optional ("in" ~ WS ~ "document" ~ WS ~ fieldIdent ~ WS ) ~> makeScan |
+    fieldIdent ~ WS ~ "a" ~ WS ~ identifier ~ WS ~ optional ("in" ~ WS ~ "document" ~ WS ~ fieldIdent ~ WS ) ~> ((a1, a2, a3) => makeScan(a1, a2, a3)) |
       "(" ~ WS ~ selectClause ~ WS ~ ")"
   }
 
   def groupClause: Rule[Operator :: HNil, Operator :: HNil] = rule {
     optional("group" ~ WS ~ "by" ~ WS ~ fieldIdList ~ WS ~ "aggregate" ~ WS ~ fieldIdList
-      ~ WS ~ "with" ~ WS ~ (capture("Seq")  | capture("Set")  | capture("Count") )~ WS ~ optional("order" ~ WS ~ "by" ~ WS ~ ref ~ WS ) ~> makeGroup)
+      ~ WS ~ "with" ~ WS ~ (capture("Seq")  | capture("Set")  | capture("Count") )~ WS ~ optional("order" ~ WS ~ "by" ~ WS ~ ref ~ WS ) ~> ((a1, a2, a3, a4, a5) => makeGroup(a1, a2, a3, a4, a5)))
   }
 
   def tableJoinClause: Rule[Operator :: HNil, Operator :: HNil] =
-    rule { tableClause ~ WS ~ ("join" ~ WS ~ joinClause2 ~> makeTableJoin | "left" ~ WS ~ "join" ~ WS ~ joinClause2 ~> makeTableLJoin | "optional" ~ WS ~ "join" ~ WS ~ joinClause2 ~ optional("when" ~ WS ~ pred) ~> makeTableOptJoin)}
+    rule { tableClause ~ WS ~ ("join" ~ WS ~ joinClause2 ~> ((a1, a2, a3) => makeTableJoin(a1, a2, a3)) | "left" ~ WS ~ "join" ~ WS ~ joinClause2 ~> ((a1, a2, a3) => makeTableLJoin(a1, a2, a3)) | "optional" ~ WS ~ "join" ~ WS ~ joinClause2 ~ optional("when" ~ WS ~ pred) ~> ((a1, a2, a3, a4) => makeTableOptJoin(a1, a2, a3, a4)))}
 
   def pred: Rule[HNil, Predicate :: HNil] = rule {
-    ref  ~ ( ">=" ~ WS ~ ref ~> makeIncludes ~ WS |
-      "!>=" ~ WS ~ ref ~> makeIncludesNot ~ WS |
-      "?>=" ~ WS ~ ref ~> makeIncludesOpt ~ WS |
-      "="  ~ WS ~ ( ref  ~> makeEq | int_literal  ~> makeEqL)  ~ WS |
-      "exists" ~ WS ~> makeExists ~ WS |
-      "absent" ~ WS ~> makeAbsent ~ WS |
-      "intersects" ~ WS ~ "{" ~ WS ~ oneOrMore(qualifiedNameLiteral).separatedBy(WS ~ "," ~ WS) ~ WS ~ "}" ~ WS ~> makeInSet) ~ optional ( "or" ~ WS ~ pred ~> makeOr )}
+    ref  ~ ( ">=" ~ WS ~ ref ~> ((a1, a2) => makeIncludes(a1, a2)) ~ WS |
+      "!>=" ~ WS ~ ref ~> ((a1, a2) => makeIncludesNot(a1, a2)) ~ WS |
+      "?>=" ~ WS ~ ref ~> ((a1, a2) => makeIncludesOpt(a1, a2)) ~ WS |
+      "="  ~ WS ~ ( ref  ~> ((a1, a2) => makeEq(a1, a2)) | int_literal  ~> ((a1, a2) => makeEqL(a1, a2)))  ~ WS |
+      "exists" ~ WS ~> (a1 => makeExists(a1)) ~ WS |
+      "absent" ~ WS ~> (a1 => makeAbsent(a1)) ~ WS |
+      "intersects" ~ WS ~ "{" ~ WS ~ oneOrMore(qualifiedNameLiteral).separatedBy(WS ~ "," ~ WS) ~ WS ~ "}" ~ WS ~> ((a1, a2) => makeInSet(a1, a2))) ~ optional ( "or" ~ WS ~ pred ~> ((a1, a2) => makeOr(a1, a2)) )}
 
   def qualifiedNameLiteral: Rule[HNil, QualifiedName :: HNil] = rule { '\'' ~ qualified_name ~ '\'' ~ WS }
 
   def joinClause2: Rule[HNil, (Ref, Ref) :: HNil] = rule {
-    ref  ~ WS ~ "=" ~ WS ~ ref ~> makeJoinPair ~ WS }
+    ref  ~ WS ~ "=" ~ WS ~ ref ~> ((a1, a2) => makeJoinPair(a1, a2)) ~ WS }
 
   def identifier: Rule[HNil, QualifiedName :: HNil] = qualified_name
 
-  def fieldIdent: Rule[HNil, String :: HNil] = rule { capture (pn_local_no_dot) ~> makeText }
+  def fieldIdent: Rule[HNil, String :: HNil] = rule { capture (pn_local_no_dot) ~> (a1 => makeText(a1)) }
 
-  def fieldList: Rule[HNil, Seq[(String,Option[String])] :: HNil] = rule { oneOrMore(fieldIdent ~ optional(WS ~ "as" ~ WS ~ fieldIdent) ~> makeFieldIdentPair).separatedBy(WS ~ "," ~ WS)}
+  def fieldList: Rule[HNil, Seq[(String,Option[String])] :: HNil] = rule { oneOrMore(fieldIdent ~ optional(WS ~ "as" ~ WS ~ fieldIdent) ~> ((a1, a2) => makeFieldIdentPair(a1, a2))).separatedBy(WS ~ "," ~ WS)}
 
   def fieldIdList: Rule[HNil, Seq[String] :: HNil] = rule { oneOrMore(fieldIdent).separatedBy(WS ~ "," ~ WS)}
 
   def ref: Rule[HNil, Ref :: HNil] = rule {
-    (fieldIdent ~ WS ~ ( "[" ~ WS ~ identifier ~> makeProperty ~ WS ~ "]" ~ WS ~ optional("[" ~ WS ~ fieldIdent ~ WS ~ "]" ~ WS) ~> makeJsonKeyProp |
-      "." ~ WS ~ fieldIdent ~> makeField ~ WS ) ) |
-      '\'' ~ qualified_name ~ '\'' ~> makeValue ~ WS
+    (fieldIdent ~ WS ~ ( "[" ~ WS ~ identifier ~> ((a1, a2) => makeProperty(a1, a2)) ~ WS ~ "]" ~ WS ~ optional("[" ~ WS ~ fieldIdent ~ WS ~ "]" ~ WS) ~> ((a1, a2) => makeJsonKeyProp(a1, a2)) |
+      "." ~ WS ~ fieldIdent ~> ((a1, a2) => makeField(a1, a2)) ~ WS ) ) |
+      '\'' ~ qualified_name ~ '\'' ~> (a1 => makeValue(a1)) ~ WS
     /*|
       """'[^']*'""".r ^^ (s => Value(s.drop(1).dropRight(1))) */ /* |
       """[0-9]+""".r ^^ (s => Value(s.toInt))*/
   }
 
-  def int_literal: Rule[HNil, String :: HNil] = rule { capture ( optional ( marker ) ~ oneOrMore ( CharPredicate.Digit ) ) ~> makeText ~ WS }
+  def int_literal: Rule[HNil, String :: HNil] = rule { capture ( optional ( marker ) ~ oneOrMore ( CharPredicate.Digit ) ) ~> (a1 => makeText(a1)) ~ WS }
 
   private val marker: CharPredicate = CharPredicate('-')
 

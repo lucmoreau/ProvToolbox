@@ -453,8 +453,33 @@ public class ProvUtilities {
         }
     }
 
+    /**
+     * The value of the body of a PROV-N string literal, in which the escape sequences of production ECHAR denote
+     * the characters they stand for, as in SPARQL, whose string literals PROV-N reuses.
+     */
     public static String unescape (String s) {
-        return s.replace("\\\"","\"");
+        if (s.indexOf('\\') == -1) return s;
+        StringBuilder sb = new StringBuilder(s.length());
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c != '\\' || i == s.length() - 1) {
+                sb.append(c);
+                continue;
+            }
+            char next = s.charAt(++i);
+            switch (next) {
+                case 't': sb.append('\t'); break;
+                case 'b': sb.append('\b'); break;
+                case 'n': sb.append('\n'); break;
+                case 'r': sb.append('\r'); break;
+                case 'f': sb.append('\f'); break;
+                case '\\':
+                case '"':
+                case '\'': sb.append(next); break;
+                default: sb.append(c).append(next); // not an escape sequence: the grammar does not allow it
+            }
+        }
+        return sb.toString();
     }
 
     public static String valueToNotationString(org.openprovenance.prov.model.Key key) {
@@ -463,8 +488,14 @@ public class ProvUtilities {
 
 
 
+    /** The body of a PROV-N short string literal ("..."), which may hold no line break, for this value. */
     public static String escape (String s) {
-        return s.replace("\\", "\\\\").replace("\"", "\\\"");  //TODO: use char translation as in QualifiedNameUtil
+        return escapeLong(s).replace("\n", "\\n").replace("\r", "\\r");  //TODO: use char translation as in QualifiedNameUtil
+    }
+
+    /** The body of a PROV-N long string literal ("""..."""), which may hold line breaks, for this value. */
+    private static String escapeLong (String s) {
+        return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
     public final static String internationalizedStringUri=NamespacePrefixMapper.PROV_NS+"InternationalizedString";
@@ -483,7 +514,7 @@ public class ProvUtilities {
         } else if (val instanceof String) {
             String s=(String)val;
             if (s.contains("\n")) {
-                return "\"\"\"" + escape(s) + "\"\"\"" ;
+                return "\"\"\"" + escapeLong(s) + ((xsdType==null)? "\"\"\"" : "\"\"\" %% " + Namespace.qualifiedNameToStringWithNamespace(xsdType));
             } else {
                 //FIXME: It's here that we should detect an int and generate the compact form: e.g. 1 instand of 1 %% xsd:int
                 // However dictionaries failed to be parsed then

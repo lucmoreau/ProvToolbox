@@ -11,33 +11,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.antlr.runtime.ANTLRInputStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.CharStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.Token;
-import org.antlr.runtime.TokenStream;
-import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.CommonTreeAdaptor;
-import org.antlr.runtime.tree.TreeAdaptor;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
-import org.openprovenance.prov.model.exception.UncheckedException;
 
 
 /**
  * Reading and writing PROV-N.
  * <p>
- * The reading methods use the ANTLR 3 parser (PROV_N.g, {@link TreeTraversal}), and are deprecated: use
- * {@link ProvNReader}, which uses the ANTLR 4 parser (ProvN.g4, {@link ProvNTreeTraversal}). The methods that expose
- * the ANTLR 3 parser or its trees will be removed with it; the others will read with {@link ProvNReader}, after which
- * they will reject what is not valid PROV-N, rather than recover from it (see {@link ProvNReader}).
- * The writing methods are not concerned.
+ * Documents are read with the ANTLR 4 parser (ProvN.g4), via {@link ProvNReader}: a document that is not valid
+ * PROV-N is rejected with a {@link ProvNSyntaxException} (see {@link ProvDeserialiser} for how this parser differs from
+ * the ANTLR 3 one, used up to 2.3.0).
  */
 public class Utility {
 
@@ -61,97 +48,6 @@ public class Utility {
         logger.warn(e.getMessage());
     }
 
-    static class ParserWithErrorHandling extends PROV_NParser {
-        public void reportError(RecognitionException re) {
-            super.reportError(re);
-            errors.add(re);
-        }
-
-        public List<RecognitionException> errors=new LinkedList<RecognitionException>();
-
-        public ParserWithErrorHandling(TokenStream input) {
-            super(input);
-        }
-
-    }
-
-    /** @deprecated returns the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    public PROV_NParser getParserForFile(String file) {
-        try {
-            CharStream input = new ANTLRFileStream(file);
-            return getParserForCharStream(input);
-        } catch (IOException e) {
-            throw new UncheckedException(e);
-        }
-    }
-
-    /** @deprecated returns the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    public PROV_NParser getParserForStream(InputStream is) {
-        try {
-            CharStream input = new ANTLRInputStream(is);
-            return getParserForCharStream(input);
-        } catch (IOException e) {
-            throw new UncheckedException(e);
-        }
-    }
-    /** @deprecated returns the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    public PROV_NParser getParserForCharStream(CharStream input) throws java.io.IOException {
-
-        PROV_NLexer lex = new PROV_NLexer(input);
-        CommonTokenStream tokens = new  CommonTokenStream(lex);
-        //PROV_NParser parser = new PROV_NParser(tokens);
-        PROV_NParser parser = new ParserWithErrorHandling(tokens);
-
-        return parser;
-    }
-
-    static final TreeAdaptor adaptor = new CommonTreeAdaptor() {
-        public Object create(Token payload) {
-            return new CommonTree(payload);
-        }
-    };
-
-    /** @deprecated returns the tree of the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    public CommonTree convertSyntaxTreeToTree(String file)  {
-        PROV_NParser parser=getParserForFile(file);
-        return convertSyntaxTreeToTree(parser);
-    }
-
-
-    /** @deprecated returns the tree of the ANTLR 3 parser; use {@link ProvNReader#parse(org.antlr.v4.runtime.CharStream)} */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    public CommonTree convertSyntaxTreeToTree(InputStream is){
-        PROV_NParser parser=getParserForStream(is);
-        return convertSyntaxTreeToTree(parser);
-    }
-
-    private CommonTree convertSyntaxTreeToTree(PROV_NParser parser){
-        parser.setTreeAdaptor(adaptor);
-        PROV_NParser.document_return ret = null;
-        try {
-            ret = parser.document();
-        } catch (RecognitionException e) {
-            throw new UncheckedException(e);
-        }
-        CommonTree tree = (CommonTree)ret.getTree();
-        return tree;
-    }
-
-
-    /** @deprecated converts the tree of the ANTLR 3 parser; use {@link ProvNReader#convert(ProvNParser.DocumentContext, ModelConstructor)} */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    @SuppressWarnings("removal")
-    public Object convertTreeToJavaBean(CommonTree tree, ProvFactory pFactory) {
-        if (tree==null) return null;
-        return new TreeTraversal(pFactory,pFactory, dateTimeOption, optionalTimeZone).convert(tree);
-    }
-
-
-
     public String convertBeanToHTML(final Document doc, ProvFactory pFactory) {
         StringWriter writer=new StringWriter();
         NotationConstructor nc=new HTMLConstructor(writer);
@@ -163,11 +59,9 @@ public class Utility {
         return s;
     }
 
-    /** @deprecated reads with the ANTLR 3 parser; use {@link ProvNReader#readDocument(String)} */
-    @Deprecated(since = "2.3.0")
+    /** Reads a PROV-N document from a file, with the ANTLR 4 parser (see {@link ProvNReader#readDocument(String)}). */
     public Object convertSyntaxTreeToJavaBean(String file, ProvFactory pFactory) {
-        CommonTree tree= convertSyntaxTreeToTree(file);
-        return convertTreeToJavaBean(tree,pFactory);
+        return readDocument(file, pFactory);
     }
 
     /** A conversion function that copies a Java Bean deeply.
@@ -202,21 +96,6 @@ public class Utility {
         bt.doAction(withImpliedNamespaces(doc, pFactory));
         nc.flush();
         // nc.close();
-    }
-
-    /* from http://www.antlr.org/wiki/display/ANTLR3/Interfacing+AST+with+Java */
-    /** @deprecated prints the tree of the ANTLR 3 parser, which will be removed with it */
-    @Deprecated(since = "2.3.0", forRemoval = true)
-    public void printTree(CommonTree t, int indent) {
-        if ( t != null ) {
-            StringBuffer sb = new StringBuffer(indent);
-            for ( int i = 0; i < indent; i++ )
-                sb = sb.append("   ");
-            for ( int i = 0; i < t.getChildCount(); i++ ) {
-                System.out.println("" + i + sb.toString() + t.getChild(i).toString());
-                printTree((CommonTree)t.getChild(i), indent+1);
-            }
-        }
     }
 
     public void writeTextToFile(String text,
@@ -301,20 +180,20 @@ public class Utility {
 
     }
 
-    /** @deprecated reads with the ANTLR 3 parser; use {@link ProvNReader#readDocument(String)} */
-    @Deprecated(since = "2.3.0")
+    /**
+     * Reads a PROV-N document from a file, with the ANTLR 4 parser (see {@link ProvNReader#readDocument(String)}).
+     * @throws ProvNSyntaxException if the file does not hold a syntactically valid PROV-N document
+     */
     public Document readDocument(String filename, ProvFactory pFactory)  {
-        CommonTree tree = convertSyntaxTreeToTree(filename);
-        Object doc=convertTreeToJavaBean(tree,pFactory);
-        return (Document)doc;
+        return new ProvNReader(pFactory, dateTimeOption, optionalTimeZone).readDocument(filename);
     }
 
-    /** @deprecated reads with the ANTLR 3 parser; use {@link ProvNReader#readDocument(InputStream)} */
-    @Deprecated(since = "2.3.0")
+    /**
+     * Reads a PROV-N document from a stream, with the ANTLR 4 parser (see {@link ProvNReader#readDocument(InputStream)}).
+     * @throws ProvNSyntaxException if the stream does not hold a syntactically valid PROV-N document
+     */
     public Document readDocument(InputStream is, ProvFactory pFactory)  {
-        CommonTree tree = convertSyntaxTreeToTree(is);
-        Object doc=convertTreeToJavaBean(tree,pFactory);
-        return (Document)doc;
+        return new ProvNReader(pFactory, dateTimeOption, optionalTimeZone).readDocument(is);
     }
 
 

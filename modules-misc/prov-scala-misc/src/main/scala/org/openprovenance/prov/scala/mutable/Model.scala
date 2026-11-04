@@ -58,7 +58,7 @@ trait HasOther {
     def setOther(others: java.util.List[org.openprovenance.prov.model.Other]): Unit = {
       other=others
     }
-    def getOther(): util.List[model.Other] = {
+    def getOther(): java.util.List[model.Other] = {
       if (other==null) {
         other=new java.util.LinkedList()
       }
@@ -76,7 +76,7 @@ trait HasValue {
 trait HasType {
      //@BeanProperty
     var typex: java.util.List[org.openprovenance.prov.model.Type]=new java.util.LinkedList()
-    def getType(): util.List[model.Type] = { typex }
+    def getType(): java.util.List[model.Type] = { typex }
     
 }
 
@@ -1137,19 +1137,19 @@ class QualifiedName () extends org.openprovenance.prov.model.QualifiedName {
 
 object ProvFactory {
     @scala.annotation.tailrec
-    def splitrec(attributes: util.List[Attribute],
-                 ls: util.List[org.openprovenance.prov.model.Label],
-                 ts: util.List[org.openprovenance.prov.model.Type],
-                 vs: util.List[org.openprovenance.prov.model.Value],
-                 locs: util.List[org.openprovenance.prov.model.Location],
-                 rs: util.List[org.openprovenance.prov.model.Role],
-                 os: util.List[org.openprovenance.prov.model.Other])
-    : (util.List[org.openprovenance.prov.model.Label],
-       util.List[org.openprovenance.prov.model.Type],
-       util.List[org.openprovenance.prov.model.Value],
-       util.List[org.openprovenance.prov.model.Location],
-       util.List[org.openprovenance.prov.model.Role],
-       util.List[org.openprovenance.prov.model.Other]) = {
+    def splitrec(attributes: java.util.List[Attribute],
+                 ls: java.util.List[org.openprovenance.prov.model.Label],
+                 ts: java.util.List[org.openprovenance.prov.model.Type],
+                 vs: java.util.List[org.openprovenance.prov.model.Value],
+                 locs: java.util.List[org.openprovenance.prov.model.Location],
+                 rs: java.util.List[org.openprovenance.prov.model.Role],
+                 os: java.util.List[org.openprovenance.prov.model.Other])
+    : (java.util.List[org.openprovenance.prov.model.Label],
+       java.util.List[org.openprovenance.prov.model.Type],
+       java.util.List[org.openprovenance.prov.model.Value],
+       java.util.List[org.openprovenance.prov.model.Location],
+       java.util.List[org.openprovenance.prov.model.Role],
+       java.util.List[org.openprovenance.prov.model.Other]) = {
         if ((attributes == null) || (attributes.isEmpty)) {
             (ls, ts, vs, locs, rs, os)
         } else{
@@ -1167,9 +1167,9 @@ object ProvFactory {
     }
 
 
-    private def extend[T](ls: util.List[T], l: T):  util.List[T]= {
+    private def extend[T](ls: java.util.List[T], l: T):  java.util.List[T]= {
         if (ls==null) {
-            val ls2=new util.LinkedList[T]()
+            val ls2=new java.util.LinkedList[T]()
             ls2.add(l)
             ls2
         } else {
@@ -1259,14 +1259,14 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
                                     delegate: model.QualifiedName,
                                     responsible: model.QualifiedName,
                                     activity: model.QualifiedName,
-                                    attributes: util.Collection[Attribute]): model.ActedOnBehalfOf = {
+                                    attributes: java.util.Collection[Attribute]): model.ActedOnBehalfOf = {
         val a=new ActedOnBehalfOf
         a.id=id
         a.delegate=delegate
         a.responsible=responsible
         a.activity=activity
 
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), new java.util.LinkedList[model.Location](), new java.util.LinkedList[model.Role](), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("ActedOnBehalfOf cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("ActedOnBehalfOf cannot have locations")
@@ -1286,13 +1286,13 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
      * @param attributes an optional set of attribute-value pairs representing additional information about this association of this activity with this agent.
      * @return an instance of {@link WasAssociatedWith}
      */
-    override def newWasAssociatedWith(id: model.QualifiedName, activity: model.QualifiedName, agent: model.QualifiedName, plan: model.QualifiedName, attributes: util.Collection[Attribute]): model.WasAssociatedWith = {
+    override def newWasAssociatedWith(id: model.QualifiedName, activity: model.QualifiedName, agent: model.QualifiedName, plan: model.QualifiedName, attributes: java.util.Collection[Attribute]): model.WasAssociatedWith = {
         val a = new WasAssociatedWith
         a.id = id
         a.activity=activity
         a.agent = agent
         a.plan = plan
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), a.getRole(), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), new java.util.LinkedList[model.Location](), a.getRole(), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasAssociatedWith cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("WasAssociatedWith cannot have locations")
@@ -1307,12 +1307,12 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
      * @param attributes an optional set of attribute-value pairs representing additional information about this attribution.
      * @return an instance of {@linkWasAttributedTo}
      */
-    override def newWasAttributedTo(id: model.QualifiedName, entity: model.QualifiedName, agent: model.QualifiedName, attributes: util.Collection[Attribute]): model.WasAttributedTo = {
+    override def newWasAttributedTo(id: model.QualifiedName, entity: model.QualifiedName, agent: model.QualifiedName, attributes: java.util.Collection[Attribute]): model.WasAttributedTo = {
         val a = new WasAttributedTo
         a.id = id
         a.entity = entity
         a.agent = agent
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), new java.util.LinkedList[model.Location](), new java.util.LinkedList[model.Role](), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasAttributedTo cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("WasAttributedTo cannot have locations")
@@ -1328,12 +1328,12 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
      * @param attributes an optional set of attribute-value pairs representing additional information about this communication.
      * @return an instance of {@link WasInformedBy}
      */
-    override def newWasInformedBy(id: model.QualifiedName, informed: model.QualifiedName, informant: model.QualifiedName, attributes: util.Collection[Attribute]): model.WasInformedBy = {
+    override def newWasInformedBy(id: model.QualifiedName, informed: model.QualifiedName, informant: model.QualifiedName, attributes: java.util.Collection[Attribute]): model.WasInformedBy = {
         val a = new WasInformedBy
         a.id = id
         a.informed = informed
         a.informant = informant
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), new java.util.LinkedList[model.Location](), new java.util.LinkedList[model.Role](), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasInformedBy cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("WasInformedBy cannot have locations")
@@ -1351,23 +1351,23 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
      * @param attributes an optional set of attribute-value pairs representing additional information about this invalidation
      * @return an instance of {@link WasInvalidatedBy}
      */
-    override def newWasInvalidatedBy(id: model.QualifiedName, entity: model.QualifiedName, activity: model.QualifiedName, time: XMLGregorianCalendar, attributes: util.Collection[model.Attribute]): model.WasInvalidatedBy = {
+    override def newWasInvalidatedBy(id: model.QualifiedName, entity: model.QualifiedName, activity: model.QualifiedName, time: XMLGregorianCalendar, attributes: java.util.Collection[model.Attribute]): model.WasInvalidatedBy = {
         val a = new WasInvalidatedBy
         a.id = id
         a.entity = entity
         a.activity = activity
         a.time=time
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasInvalidatedBy cannot have values")
         a
     }
 
-    private def attributeList(attributes: util.Collection[Attribute]): util.LinkedList[Attribute] = {
+    private def attributeList(attributes: java.util.Collection[Attribute]): java.util.LinkedList[Attribute] = {
         if (attributes==null) {
-            new util.LinkedList[Attribute]()
+            new java.util.LinkedList[Attribute]()
         } else {
-            new util.LinkedList[Attribute](attributes)
+            new java.util.LinkedList[Attribute](attributes)
         }
     }
 
@@ -1380,13 +1380,13 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
      * @param attributes an optional set of attribute-value pairs representing additional information about this usage
      * @return an instance of {@link Used}
      */
-    override def newUsed(id: model.QualifiedName, activity: model.QualifiedName, entity: model.QualifiedName, time: XMLGregorianCalendar, attributes: util.Collection[Attribute]): model.Used = {
+    override def newUsed(id: model.QualifiedName, activity: model.QualifiedName, entity: model.QualifiedName, time: XMLGregorianCalendar, attributes: java.util.Collection[Attribute]): model.Used = {
         val a = new Used
         a.id = id
         a.entity = entity
         a.activity = activity
         a.time=time
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("Used cannot have values")
         a
@@ -1403,14 +1403,14 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
      * @param attributes an optional set of <a href="http://www.w3.org/TR/prov-dm/#end.attributes">attribute-value pairs</a> representing additional information about this activity start
      * @return an instance of {@link WasStartedBy}
      */
-    override def newWasEndedBy(id: model.QualifiedName, activity: model.QualifiedName, trigger: model.QualifiedName, ender: model.QualifiedName, time: XMLGregorianCalendar, attributes: util.Collection[Attribute]): model.WasEndedBy = {
+    override def newWasEndedBy(id: model.QualifiedName, activity: model.QualifiedName, trigger: model.QualifiedName, ender: model.QualifiedName, time: XMLGregorianCalendar, attributes: java.util.Collection[Attribute]): model.WasEndedBy = {
         val a = new WasEndedBy
         a.id = id
         a.ender = ender
         a.activity = activity
         a.trigger = trigger
         a.time=time
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasEndedBy cannot have values")
         a
@@ -1427,14 +1427,14 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
      * @param attributes an optional set of <a href="http://www.w3.org/TR/prov-dm/#start.attributes">attribute-value pairs</a> representing additional information about this activity start
      * @return an instance of {@link WasStartedBy}
      */
-    override def newWasStartedBy(id: model.QualifiedName, activity: model.QualifiedName, trigger: model.QualifiedName, starter: model.QualifiedName, time: XMLGregorianCalendar, attributes: util.Collection[Attribute]): model.WasStartedBy = {
+    override def newWasStartedBy(id: model.QualifiedName, activity: model.QualifiedName, trigger: model.QualifiedName, starter: model.QualifiedName, time: XMLGregorianCalendar, attributes: java.util.Collection[Attribute]): model.WasStartedBy = {
         val a = new WasStartedBy
         a.id = id
         a.starter = starter
         a.activity = activity
         a.trigger = trigger
         a.time=time
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasStartedBy cannot have values")
         a
@@ -1449,13 +1449,13 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
      * @param attributes an optional set of attribute-value pairs representing additional information about this generation
      * @return an instance of {@link WasGeneratedBy}
      */
-    override def newWasGeneratedBy(id: model.QualifiedName, entity: model.QualifiedName, activity: model.QualifiedName, time: XMLGregorianCalendar, attributes: util.Collection[Attribute]): model.WasGeneratedBy = {
+    override def newWasGeneratedBy(id: model.QualifiedName, entity: model.QualifiedName, activity: model.QualifiedName, time: XMLGregorianCalendar, attributes: java.util.Collection[Attribute]): model.WasGeneratedBy = {
         val a = new WasGeneratedBy
         a.id = id
         a.entity = entity
         a.activity = activity
         a.time=time
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasGeneratedBy cannot have values")
         a
@@ -1473,12 +1473,12 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
      * @param attributes an optional set of attribute-value pairs representing additional information about this association
      * @return an instance of {@link WasInfluencedBy}
      */
-    override def newWasInfluencedBy(id: model.QualifiedName, influencee: model.QualifiedName, influencer: model.QualifiedName, attributes: util.Collection[Attribute]): model.WasInfluencedBy =  {
+    override def newWasInfluencedBy(id: model.QualifiedName, influencee: model.QualifiedName, influencer: model.QualifiedName, attributes: java.util.Collection[Attribute]): model.WasInfluencedBy =  {
         val a = new WasInfluencedBy
         a.id = id
         a.influencer = influencer
         a.influencee = influencee
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), new util.LinkedList[model.Role](), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), a.location, new java.util.LinkedList[model.Role](), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasInfluencedBy cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("WasInfluencedBy cannot have locations")
@@ -1486,12 +1486,12 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         a
     }
 
-    override def newActivity(id: model.QualifiedName, startTime: XMLGregorianCalendar, endTime: XMLGregorianCalendar, attributes: util.Collection[Attribute]): model.Activity = {
+    override def newActivity(id: model.QualifiedName, startTime: XMLGregorianCalendar, endTime: XMLGregorianCalendar, attributes: java.util.Collection[Attribute]): model.Activity = {
         val a = new Activity
         a.id=id
         a.startTime=startTime
         a.endTime=endTime
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), new util.LinkedList[model.Role](), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), a.getLocation(), new java.util.LinkedList[model.Role](), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("Activity cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("Activity cannot have locations")
@@ -1499,10 +1499,10 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         a
     }
 
-    override def newAgent(id: model.QualifiedName, attributes: util.Collection[Attribute]): model.Agent = {
+    override def newAgent(id: model.QualifiedName, attributes: java.util.Collection[Attribute]): model.Agent = {
         val a = new Agent
         a.id = id
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), new util.LinkedList[model.Role](), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), a.getLocation(), new java.util.LinkedList[model.Role](), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("Agent cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("Agent cannot have locations")
@@ -1529,7 +1529,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
      * @param attributes an optional set of <a href="http://www.w3.org/TR/prov-dm/#end.attributes">attribute-value pairs</a> representing additional information about this derivation
      * @return an instance of {@link WasDerivedFrom}
      */
-    override def newWasDerivedFrom(id: model.QualifiedName, e2: model.QualifiedName, e1: model.QualifiedName, activity: model.QualifiedName, generation: model.QualifiedName, usage: model.QualifiedName, attributes: util.Collection[Attribute]): model.WasDerivedFrom = {
+    override def newWasDerivedFrom(id: model.QualifiedName, e2: model.QualifiedName, e1: model.QualifiedName, activity: model.QualifiedName, generation: model.QualifiedName, usage: model.QualifiedName, attributes: java.util.Collection[Attribute]): model.WasDerivedFrom = {
         val a = new WasDerivedFrom
         a.id = id
         a.generatedEntity = e2
@@ -1537,7 +1537,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         a.activity = activity
         a.generation = generation
         a.usage = usage
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), new java.util.LinkedList[model.Location](), new java.util.LinkedList[model.Role](), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasDerivedFrom cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("WasDerivedFrom cannot have locations")
@@ -1558,36 +1558,36 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         new Role(value,`type`)
     }
 
-    override def newQualifiedAlternateOf(id: model.QualifiedName, e2: model.QualifiedName, e1: model.QualifiedName, attributes: util.Collection[Attribute]): QualifiedAlternateOf = {
+    override def newQualifiedAlternateOf(id: model.QualifiedName, e2: model.QualifiedName, e1: model.QualifiedName, attributes: java.util.Collection[Attribute]): QualifiedAlternateOf = {
         val a = new AlternateOf
         a.id = id
         a.alternate1 = e1
         a.alternate2 = e2
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), new java.util.LinkedList[model.Location](), new java.util.LinkedList[model.Role](), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("QualifiedAlternateOf cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("QualifiedAlternateOf cannot have locations")
         if (!rs.isEmpty) throw new UnsupportedOperationException("QualifiedAlternateOf cannot have roles")
         a
     }
-    override def newQualifiedSpecializationOf(id: model.QualifiedName, e2: model.QualifiedName, e1: model.QualifiedName, attributes: util.Collection[Attribute]): QualifiedSpecializationOf = {
+    override def newQualifiedSpecializationOf(id: model.QualifiedName, e2: model.QualifiedName, e1: model.QualifiedName, attributes: java.util.Collection[Attribute]): QualifiedSpecializationOf = {
         val a = new SpecializationOf
         a.id = id
         a.specificEntity = e2
         a.generalEntity = e1
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), new java.util.LinkedList[model.Location](), new java.util.LinkedList[model.Role](), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("QualifiedSpecializationOf cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("QualifiedSpecializationOf cannot have locations")
         if (!rs.isEmpty) throw new UnsupportedOperationException("QualifiedSpecializationOf cannot have roles")
         a
     }
-    override def newQualifiedHadMember(id: model.QualifiedName, c: model.QualifiedName, e: util.Collection[model.QualifiedName], attributes: util.Collection[Attribute]): QualifiedHadMember = {
+    override def newQualifiedHadMember(id: model.QualifiedName, c: model.QualifiedName, e: java.util.Collection[model.QualifiedName], attributes: java.util.Collection[Attribute]): QualifiedHadMember = {
         val a = new HadMember
         a.id = id
         a.collection = c
-        a.entity = new util.LinkedList[model.QualifiedName](e)
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        a.entity = new java.util.LinkedList[model.QualifiedName](e)
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), a.getType(), new java.util.LinkedList[model.Value](), new java.util.LinkedList[model.Location](), new java.util.LinkedList[model.Role](), a.getOther())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("QualifiedHadMember cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("QualifiedHadMember cannot have locations")
@@ -1616,7 +1616,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
      * @param bundles    a collection of bundles
      * @return an instance of {@link Document}, with this prefix-namespace mapping, statements, and bundles
      */
-    override def newDocument(namespace: Namespace, statements: util.Collection[Statement], bundles: util.Collection[model.Bundle]): model.Document = {
+    override def newDocument(namespace: Namespace, statements: java.util.Collection[Statement], bundles: java.util.Collection[model.Bundle]): model.Document = {
         val d = new Document
         d.setNamespace(namespace)
         d.getStatementOrBundle.addAll(statements)
@@ -1630,17 +1630,17 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
      * @param statementsOrBundles a list of statements or bundles
      * @return an instance of {@link Document}, with this prefix-namespace mapping, statements, and bundles
      */
-    override def newDocument(namespace: Namespace, statementsOrBundles: util.List[StatementOrBundle]): model.Document = {
+    override def newDocument(namespace: Namespace, statementsOrBundles: java.util.List[StatementOrBundle]): model.Document = {
         val d = new Document
         d.setNamespace(namespace)
         if (statementsOrBundles!=null) d.getStatementOrBundle.addAll(statementsOrBundles)
         d
     }
 
-    override def newEntity(id: model.QualifiedName, attributes: util.Collection[Attribute]): model.Entity = {
+    override def newEntity(id: model.QualifiedName, attributes: java.util.Collection[Attribute]): model.Entity = {
         val a = new Entity
         a.id = id
-        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), new util.LinkedList[model.Type](), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), new util.LinkedList[model.Other]())
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new java.util.LinkedList[model.Label](), new java.util.LinkedList[model.Type](), new java.util.LinkedList[model.Value](), new java.util.LinkedList[model.Location](), new java.util.LinkedList[model.Role](), new java.util.LinkedList[model.Other]())
         a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         a.typex=ts
         if (vs.isEmpty) {
@@ -1649,7 +1649,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
             a.setValue(vs.get(0))
             if (vs.size()>1) throw new UnsupportedOperationException("Entity cannot have more than one value");
         }
-        a.setLocation(locs)
+        a.location = locs
         a.setOther(os)
         a
     }
@@ -1662,11 +1662,11 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         }
     }
 
-    override def newHadMember(c: model.QualifiedName, e: util.Collection[model.QualifiedName]): model.HadMember = {
+    override def newHadMember(c: model.QualifiedName, e: java.util.Collection[model.QualifiedName]): model.HadMember = {
         val a = new HadMember
         a.id = null
         a.collection = c
-        a.entity = new util.LinkedList[model.QualifiedName](e)
+        a.entity = new java.util.LinkedList[model.QualifiedName](e)
         a
     }
 
@@ -1695,12 +1695,12 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         a
     }
 
-    override def newNamedBundle(id: model.QualifiedName, namespace: Namespace, statements: util.Collection[Statement]): model.Bundle = {
+    override def newNamedBundle(id: model.QualifiedName, namespace: Namespace, statements: java.util.Collection[Statement]): model.Bundle = {
         val b=new Bundle
         b.id=id
         b.setNamespace(namespace)
 
-        b.setStatement(new util.LinkedList[Statement](statements.stream().map(x => newStatement(x.asInstanceOf[org.openprovenance.prov.model.Statement])).collect(Collectors.toList())));
+        b.statement = (new java.util.LinkedList[Statement](statements.stream().map(x => newStatement(x.asInstanceOf[org.openprovenance.prov.model.Statement])).collect(Collectors.toList())));
         b
     }
 
@@ -1714,15 +1714,15 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         throw new UnsupportedOperationException("Entry not supported")
     }
 
-    override def newDictionaryMembership(id: model.QualifiedName, dict: model.QualifiedName, keyEntitySet: util.List[model.Entry], attributes: util.Collection[model.Attribute]): model.DictionaryMembership = {
+    override def newDictionaryMembership(id: model.QualifiedName, dict: model.QualifiedName, keyEntitySet: java.util.List[model.Entry], attributes: java.util.Collection[model.Attribute]): model.DictionaryMembership = {
         throw new UnsupportedOperationException("DictionaryMembership not supported")
     }
 
-    override def newDerivedByInsertionFrom(id: model.QualifiedName, after: model.QualifiedName, before: model.QualifiedName, keyEntitySet: util.List[Entry], attributes: util.Collection[Attribute]): DerivedByInsertionFrom = {
+    override def newDerivedByInsertionFrom(id: model.QualifiedName, after: model.QualifiedName, before: model.QualifiedName, keyEntitySet: java.util.List[Entry], attributes: java.util.Collection[Attribute]): DerivedByInsertionFrom = {
         throw new UnsupportedOperationException("DerivedByInsertionFrom not supported")
     }
 
-    override def newDerivedByRemovalFrom(id: model.QualifiedName, after: model.QualifiedName, before: model.QualifiedName, keys: util.List[Key], attributes: util.Collection[Attribute]): DerivedByRemovalFrom = {
+    override def newDerivedByRemovalFrom(id: model.QualifiedName, after: model.QualifiedName, before: model.QualifiedName, keys: java.util.List[Key], attributes: java.util.Collection[Attribute]): DerivedByRemovalFrom = {
         throw new UnsupportedOperationException("DerivedByRemovalFrom not supported")
     }
 }

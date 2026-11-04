@@ -74,7 +74,7 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEn
     val result: _root_.org.openprovenance.prov.scala.iface.QueryResult[_root_.org.openprovenance.prov.scala.query.QueryInterpreter.RField] = queryEngine.processQuery(queryContents, doc)
     println("found " + result.getRecords.size + " records (and " + result.getRecords.headOption.getOrElse(Map()).keySet.size + " fields)")
 
-    if (outConfig.queryResult()!=null) exportToJson(outConfig.queryResult(),result.getRecords.asJava)
+    if (outConfig.queryResult!=null) exportToJson(outConfig.queryResult,result.getRecords.asJava)
 
     val doc2 = result.getDocument
     outputer(doc2, outConfig)

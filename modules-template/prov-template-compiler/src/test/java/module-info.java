@@ -8,6 +8,7 @@ module prov.template.compiler.test{
     requires prov.template;
     requires prov.template.compiler;
     requires java.compiler;
+    requires com.squareup.javapoet;
 
     exports org.openprovenance.prov.template.compiler.test;
     exports org.example.remote;

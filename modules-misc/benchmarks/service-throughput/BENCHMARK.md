@@ -18,6 +18,7 @@ behaviour as it was: nothing changes for an existing deployment.
 - [Direct JDBC mode](#direct-jdbc-mode)
 - [JSONL mode](#jsonl-mode)
 - [For developers: how to write provenance with the toolbox](#for-developers-how-to-write-provenance-with-the-toolbox)
+- [Backward traversal mode](#backward-traversal-mode)
 
 ## Running it
 
@@ -1070,3 +1071,37 @@ and 1,546.5, N=4 1,541.3 and 2,204.0, N=8 2,305.9 and 3,653.0, N=16 2,884.0 and 
 clients on 16 connections). Pool (N=16): 0, 4, 8, 16, 32 give 506.0, 1,590.1, 2,186.5, 2,884.0, 2,889.7 (baseline).
 Records per message (N=8, POOL=8): baseline 2,250.6 and 2,198.1 at B = 10, 100; combined 3,475.8 and 3,897.6. Transport:
 baseline 390.3 and 2,897.2, combined 1,262.2 and 5,024.7 (N=1 POOL=0; N=16 POOL=16).
+
+## Backward traversal mode
+
+What a backward traversal costs as the store grows (`TraversalRun`): the store's `backwardtraversal_star_typed` over plain
+JDBC, the statement of `TemplateQuery.recursiveTraversal` with its access-control join, derivations only, the navigator's
+bounds lifted. No service in the measured path: the only HTTP routes to a walk add Graphviz or slicing. It returns the
+connections (identifiers, template names, properties, types), not the records' values.
+
+The scenario is synthetic: pipelines of init, filtering, k transformings, splitting, training, validating and approving,
+k choosing the lineage's length; a workflow of the template library has one or two transformings. Five target pipelines
+per k, then pipelines of k = 3 up to each store size. The service is started once per pass to create the schema, the
+traversal functions and their indexes, then stopped; records are written with the generated insert functions and an index
+entry, without hash or `__PROV_*` rows, so a store of 10^6 records is 419 MB, inside `shared_buffers`: a store in memory.
+
+```bash
+make bench.traversal.plan
+```
+
+```bash
+make bench.traversal.matrix LABEL=book
+```
+
+Defaults: `TR_SIZES=10000,100000,1000000`, `TR_DEPTHS=10,100,1000`, `TR_READERS=1,16`, `TR_PASSES=5` (one store per pass),
+`TR_WARMUP=3`, `TR_DURATION=10`; about 30 min. Results in `results/<date>-traversal[-LABEL].csv`. A query must return exactly
+the k + 6 connections of its pipeline, never truncated, and `record_index` must hold the records written; anything else
+is FAIL. `make bench.traversal.access` runs the statement as a principal with no access to the records.
+
+Found with it, not fixed: the statement's access-control condition sits in the `LEFT JOIN ... ON`, with no `WHERE`, so it
+removes no row: that principal gets the same connections as the owner. Measured at SQL level; the service's endpoints were
+not tested.
+
+`book/book-figure.R` and `book/traversal-figure.R` draw the figures of the runs labelled `book` of one date
+(`Rscript book/book-figure.R 2026-11-06`). The runs of 2026-11-06 used the binaries built for those of 2026-10-31, with
+`make -o bench.build -o bench.direct.build`: the local repository's template library no longer had the JIT fix.

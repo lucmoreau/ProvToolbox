@@ -1,16 +1,20 @@
 # The book section's figure and summary: records/s of each way to store the same records (fs family), mean of the
 # repeated runs (LABEL=book) with its 95 % confidence interval (Student's t on the runs' means). Run from the module:
-#   Rscript book/book-figure.R
+#   Rscript book/book-figure.R 2026-11-06
+# The date names one campaign of runs: figures from different days are not mixed.
 suppressPackageStartupMessages(library(ggplot2))
 
 res <- "results"
-read_all <- function(pattern) {
-  files <- list.files(res, pattern = pattern, full.names = TRUE)
+campaign <- commandArgs(trailingOnly = TRUE)[1]
+stopifnot(!is.na(campaign))
+read_all <- function(suffix) {
+  files <- file.path(res, paste0(campaign, suffix))
+  stopifnot(all(file.exists(files)))
   do.call(rbind, lapply(files, function(f) read.csv(f, stringsAsFactors = FALSE)))
 }
-http   <- read_all("^[0-9]{4}-[0-9]{2}-[0-9]{2}-book\\.csv$")
-direct <- read_all("^[0-9]{4}-[0-9]{2}-[0-9]{2}-direct-book\\.csv$")
-jsonl  <- read_all("^[0-9]{4}-[0-9]{2}-[0-9]{2}-jsonl-book\\.csv$")
+http   <- read_all("-book.csv")
+direct <- read_all("-direct-book.csv")
+jsonl  <- read_all("-jsonl-book.csv")
 stopifnot(all(http$status == "ok"), all(direct$status == "ok"), all(jsonl$status == "ok"))
 
 jsonl$option <- ifelse(jsonl$b == 1, "JSONL, a force per record", "JSONL, a force per 100 records")

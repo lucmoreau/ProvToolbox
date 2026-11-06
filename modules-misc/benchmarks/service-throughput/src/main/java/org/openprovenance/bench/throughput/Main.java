@@ -20,6 +20,9 @@ import java.util.List;
  *   jsonl-run      the JSONL mode, one run: FAMILY N B FSYNC FILES JSONL_DIR WARMUP DURATION (no store, no service)
  *   jsonl-plan     the JSONL plan and its budget
  *   jsonl-matrix   the JSONL plan (PLAN=full|smoke), results/&lt;date&gt;-jsonl[-LABEL].csv/.md
+ *   traversal-plan   the backward traversal plan and its budget
+ *   traversal-matrix the backward traversal plan: TR_SIZES TR_DEPTHS TR_READERS TR_PASSES, results/&lt;date&gt;-traversal[-LABEL].csv
+ *   traversal-access whether the traversal's statement hides a record from a principal without access
  * </pre>
  * Every command that writes runs the guard first and stops on a refusal (exit status 3).
  */
@@ -107,6 +110,13 @@ public final class Main {
                 return 0;
             case "jsonl-matrix":
                 return JsonlRun.matrix(s);
+            case "traversal-plan":
+                System.out.println(TraversalRun.describePlan(s));
+                return 0;
+            case "traversal-matrix":
+                return new TraversalRun(s).matrix();
+            case "traversal-access":
+                return new TraversalRun(s).accessCheck();
             default:
                 throw new IllegalArgumentException("unknown command " + command);
         }

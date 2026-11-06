@@ -53,6 +53,13 @@ final class Settings {
         values.put("JDBC_BATCH", "0");        // insert, B > 1: the B statements sent in one round trip
         values.put("HTTP_RESULTS", "");
         // the JSONL mode (JsonlRun): the records' bindings appended to local files, no store, no service
+        // the traversal mode
+        values.put("TR_SIZES", "10000,100000,1000000");
+        values.put("TR_DEPTHS", "10,100,1000");
+        values.put("TR_READERS", "1,16");
+        values.put("TR_PASSES", "5");
+        values.put("TR_WARMUP", "3");
+        values.put("TR_DURATION", "10");
         values.put("JSONL_DIR", "target/jsonl");   // holds nothing but provbench-*.jsonl (Guard.jsonlDirectory)
         values.put("FSYNC", "batch");             // batch: force to disk after each B records (as a commit); off: the OS's cache
         values.put("FILES", "writer");            // writer: a file per writer; shared: one file, appends serialised       // bench.direct.compare: the HTTP CSV(s) to compare with (comma-separated), else all

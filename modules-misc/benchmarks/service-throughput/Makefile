@@ -215,6 +215,17 @@ bench.jsonl.plan: bench.build
 bench.jsonl.matrix: bench.build
 	$(HARNESS) jsonl-matrix $(JSONL_SETTINGS)
 
+TRAVERSAL_SETTINGS = TR_SIZES=$(TR_SIZES) TR_DEPTHS=$(TR_DEPTHS) TR_READERS=$(TR_READERS) TR_PASSES=$(TR_PASSES) TR_WARMUP=$(TR_WARMUP) TR_DURATION=$(TR_DURATION) LABEL=$(LABEL)
+
+bench.traversal.plan: bench.build
+	@$(HARNESS) traversal-plan $(TRAVERSAL_SETTINGS)
+
+bench.traversal.matrix: bench.build
+	$(HARNESS) traversal-matrix $(TRAVERSAL_SETTINGS)
+
+bench.traversal.access: bench.build
+	$(HARNESS) traversal-access
+
 # both families at N=2 with a force per record, fs without force, fs at B=10 in one shared file; 2 s + 5 s each
 bench.jsonl.smoke: bench.build
 	$(HARNESS) jsonl-matrix $(JSONL_SETTINGS) PLAN=smoke WARMUP=2 DURATION=5 LABEL=$(if $(LABEL),$(LABEL),smoke)
